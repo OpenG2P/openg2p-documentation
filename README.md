@@ -1,10 +1,10 @@
-# About OpenG2P
+# Home
 
-<figure><img src=".gitbook/assets/openg2p-logo.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/openg2p-logo.png" alt=""><figcaption><p>(Under construction!)</p></figcaption></figure>
 
-OpenG2P is an open source platform upon which government-to-person (G2P)  solutions could be built. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
+OpenG2P is an open source platform upon which government-to-person (G2P) solutions could be built. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
 
-The platform offers people facing processes such as onboarding into schemes, identity verification, and cash transfers to their bank  accounts. It also incorporates government department facing features such as creation of registries and beneficiary lists, eligibility checks, scheme definition, payment disbursement and reconciliation.
+The platform offers people facing processes such as onboarding into schemes, identity verification, and cash transfers to their bank accounts. It also incorporates government department facing features such as creation of registries and beneficiary lists, eligibility checks, scheme definition, payment disbursement and reconciliation.
 
 OpenG2P is a DPG (Digital Public Good) recognized by the DPGA and has received contributions and support from multiple organisations and implementers. Its roadmap includes support for non-monetary benefits, proof of delivery, beneficiary management, secure registries, and decision making support.
 
