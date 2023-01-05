@@ -1,3 +1,7 @@
+---
+description: (Under construction!)
+---
+
 # Home
 
 <figure><img src=".gitbook/assets/openg2p-logo.png" alt=""><figcaption><p>(Under construction!)</p></figcaption></figure>
