@@ -1,3 +1,3 @@
 # Table of contents
 
-* [About OpenG2P](README.md)
+* [Home](README.md)
