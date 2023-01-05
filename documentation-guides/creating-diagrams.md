@@ -2,7 +2,7 @@
 
 ## Context
 
-Creating editable diagrams in non-proprietary formats using open source tools is challenging. Here, we suggest using [Draw.io](https://app.diagrams.net/) for creating diagrams and saving them directly in Github repository.
+Creating editable diagrams in open formats using open source tools is challenging. Here, we suggest [Draw.io](https://app.diagrams.net/) for creating diagrams and saving them directly in Github repository.
 
 ## Creating new diagram
 
