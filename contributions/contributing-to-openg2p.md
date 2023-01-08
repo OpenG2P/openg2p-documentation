@@ -18,15 +18,15 @@ Raise bugs/issues/tasks on Github Issues of individual repo.
 
 ## Coding conventions
 
-* For Odoo modules, follow the \[Odoo Coding Guidelines]\([https://www.odoo.com/documentation/16.0/contributing/development/coding\_guidelines.html](https://www.odoo.com/documentation/15.0/contributing/development/coding\_guidelines.html).
+* For Odoo modules, follow the [Odoo Coding Guidelines.](https://www.odoo.com/documentation/15.0/contributing/development/coding\_guidelines.html)
 * For non-Odoo Python code, follow [PEP 8 – Style Guide for Python Code](https://peps.python.org/pep-0008/).
 
-### Documentation contributions
+## Documentation contributions
 
-The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/documentation). To highlight a correction or request for additional documentation, raise a Github Issue on the respository. To contribute to the documentation follow the steps given under Code contriutions.
+The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/documentation). To highlight a correction or request for additional documentation, raise a Github Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
 
 ## Branching conventions
 
 For Odoo module repositories, a prefix of Odoo version is added to the branch name, e.g. `15.0-develop`. For non-Odoo module repositories, you should find a `develop` branch where in-progress work may be checked-in.
 
-A release branch is forked out of the `develop` branch and subsequently release specific check-ins are made on this branch. After the release this branch is tagged, frozen and merged with the `develop` branch. Thus, all the changes releated to release are available in `develop` for further development.
+A release branch is forked out of the `develop` branch and subsequently release specific check-ins are made on this branch. After the release, this branch is tagged, frozen and merged into the `develop` branch. Thus, all the changes related to the release are available in `develop` for further development.
