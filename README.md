@@ -2,7 +2,7 @@
 description: (Under construction!)
 ---
 
-# Home
+# 🏠 Home
 
 <figure><img src=".gitbook/assets/openg2p-logo2.png" alt=""><figcaption></figcaption></figure>
 
