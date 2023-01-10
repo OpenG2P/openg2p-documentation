@@ -4,7 +4,9 @@ description: (Under construction!)
 
 # 🏠 Home
 
-<figure><img src=".gitbook/assets/openg2p-logo2.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/under-construction.jpeg" alt=""><figcaption></figcaption></figure>
+
+<figure><img src=".gitbook/assets/openg2p-logo-small.png" alt=""><figcaption></figcaption></figure>
 
 OpenG2P is an open source platform upon which government-to-person (G2P) solutions could be built. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
 
