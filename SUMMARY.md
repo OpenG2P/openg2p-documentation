@@ -2,7 +2,11 @@
 
 * [🏠 Home](README.md)
 * [🧱 Modules](modules/README.md)
-  * [Registration](modules/registration.md)
+  * [Registration](modules/registration/README.md)
+    * [Unified Registry](modules/registration/unified-registry.md)
+    * [Onboarding](modules/registration/onboarding.md)
+    * [Deduplication](modules/registration/deduplication.md)
+    * [Self Service Portal](modules/registration/self-service-portal.md)
   * [Beneficiary Management](modules/beneficiary-management.md)
   * [Eligibility Enrolment](modules/eligibility-enrolment.md)
   * [Entitlement Assessment](modules/entitlement-assessment.md)
