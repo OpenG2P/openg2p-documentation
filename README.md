@@ -1,10 +1,6 @@
----
-description: (Under construction!)
----
-
 # 🏠 Home
 
-<figure><img src=".gitbook/assets/under-construction.jpeg" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/under-construction.jpeg" alt=""><figcaption><p><em><strong>Docs under construction</strong></em></p></figcaption></figure>
 
 <figure><img src=".gitbook/assets/openg2p-logo-small.png" alt=""><figcaption></figcaption></figure>
 
