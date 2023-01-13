@@ -8,3 +8,6 @@
   * [Beneficiary](user-guides/beneficiary.md)
   * [Disbursement](user-guides/disbursement.md)
   * [Voucher Service](user-guides/voucher-service.md)
+  * [Verification Service](user-guides/verification-service.md)
+  * [Dedeplication Service](user-guides/dedeplication-service.md)
+  * [Webhooks](user-guides/webhooks.md)
