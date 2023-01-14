@@ -10,7 +10,7 @@
     * [Deduplication](modules/registration/deduplication.md)
     * [Self Service Portal](modules/registration/self-service-portal.md)
   * [Beneficiary Management](modules/beneficiary-management.md)
-  * [Eligibility Enrolment](modules/eligibility-enrolment.md)
+  * [Eligibility and Enrolment](modules/eligibility-and-enrolment.md)
   * [Entitlement Assessment](modules/entitlement-assessment.md)
   * [Payments and Service Delivery](modules/payments-and-service-delivery.md)
 * [📖 Documentation Guides](documentation-guides/README.md)
