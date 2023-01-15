@@ -10,6 +10,8 @@ Raise bugs/issues/tasks on Github Issues of individual repo.
 
 ## Code contributions
 
+To contribute code to the OpenG2P project, follow the steps given below:
+
 1. Create an issue on Github related to your task.
 2. Fork the corresponding repository.
 3. Commit your changes in your forked repo. Make sure issue id of Github is mentioned in square braces, e.g. `[#6] Minor changes to fix the bug.`
@@ -27,6 +29,8 @@ The documentation of the project is available as `.md` files in the [Documentati
 
 ## Branching conventions
 
-For Odoo module repositories, a prefix of Odoo version is added to the branch name, e.g. `15.0-develop`. For non-Odoo module repositories, you should find a `develop` branch where in-progress work may be checked-in.
+For Odoo module repositories, a prefix of Odoo version is added to the branch name, e.g. `15.0-1.0.0, 15.0-develop.`
 
-A release branch is forked out of the `develop` branch and subsequently release specific check-ins are made on this branch. After the release, this branch is tagged, frozen and merged into the `develop` branch. Thus, all the changes related to the release are available in `develop` for further development.
+For non-Odoo module repositories, you should find a `develop` branch in the repo where in-progress work may be checked-in.
+
+For releases, a release branch is forked out of the `develop` branch and subsequently, release specific check-ins are made on this branch. After the release, this branch is Git tagged, frozen and merged into the `develop` branch. Thus, all the changes related to the release are available in `develop` for further development.
