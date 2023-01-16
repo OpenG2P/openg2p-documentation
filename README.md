@@ -11,3 +11,7 @@ The platform offers people facing processes such as onboarding into schemes, ide
 OpenG2P is a DPG (Digital Public Good) recognized by the DPGA and has received contributions and support from multiple organisations and implementers. Its roadmap includes support for non-monetary benefits, proof of delivery, beneficiary management, secure registries, and decision making support.
 
 The project, co-founded by the Government of Sierra Leone and UNDP and supported by Mifos ([https://mifos.org/](https://mifos.org/)) in the early stages, is now housed in IIIT Bengaluru, a university in India.
+
+
+
+<figure><img src=".gitbook/assets/openg2p-overview.png" alt=""><figcaption><p>Overview</p></figcaption></figure>
