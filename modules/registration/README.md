@@ -12,9 +12,10 @@ Registry supports the following functions\*\*:
 
 1. CRUD operations
 2. Attestation
-3. Verifiable credentials
-4. Anonymous profile
-5. Complex queries
+3. Evidence
+4. Verifiable credentials
+5. Anonymous profile
+6. Complex queries
 
 {% hint style="info" %}
 \*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.
