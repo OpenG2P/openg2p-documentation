@@ -1,4 +1,0 @@
-# Unified Registry
-
-## Introduction
-
