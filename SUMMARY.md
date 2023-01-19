@@ -27,6 +27,6 @@
 * [📖 Documentation Guides](documentation-guides/README.md)
   * [Creating Diagrams](documentation-guides/creating-diagrams.md)
 * [👥 Community](community/README.md)
-  * [Contributing](community/contributing.md)
+  * [Contributing](community/contributing-to-openg2p.md)
   * [Code of Conduct](community/code-of-conduct.md)
 * [📗 License](license.md)
