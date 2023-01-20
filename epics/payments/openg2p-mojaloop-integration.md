@@ -10,7 +10,7 @@ The architecture and implementation mentioned below is purely for demonstrations
 
 Below is the reference architecture of how the disbursements could be triggered from OpenG2P.
 
-<figure><img src="../../.gitbook/assets/Openg2p Payment Manager.ref.drawio.svg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/openg2p-payment-manager-ref-drawio.svg" alt=""><figcaption></figcaption></figure>
 
 ## Proof of concept implementation - demo #1
 
@@ -20,7 +20,7 @@ For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment In
 * In the following implementation OpenG2P sends the list of Payments to be triggered to the  [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), which in turn calls the pre-configured DFSP with relevant Payer and Payee details. (Payer being the Government/Department/Treasury)
 * The following simulators and services (from the diagram) are used in place of real systems.
 
-<figure><img src="../../.gitbook/assets/Openg2p Payments Diagram.drawio.svg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/openg2p-payments-diagram-drawio.svg" alt=""><figcaption></figcaption></figure>
 
 ### Usage - Payment Cycle Guide
 
