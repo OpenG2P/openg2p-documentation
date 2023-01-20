@@ -1,5 +1,7 @@
 # OpenG2P Mojaloop Integration
 
+## Introduction
+
 This page describes reference implementation for payment integration between OpenG2P and Mojaloop based Financial Systems.
 
 ## Architecture
@@ -8,7 +10,7 @@ Below is the reference architecture of how the disbursements could be triggered 
 
 <figure><img src="../../.gitbook/assets/Openg2p Payment Manager.ref.drawio.svg" alt=""><figcaption></figcaption></figure>
 
-## Proof of concept implementation - Demo #1
+## Proof of concept implementation - demo #1
 
 For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), as payment manager from OpenG2P.
 
