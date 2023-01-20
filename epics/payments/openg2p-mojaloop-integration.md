@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This page describes reference implementation for payment integration between OpenG2P and Mojaloop based Financial Systems.
+This page describes **reference implementation** for payment integration between OpenG2P and Mojaloop based Financial Systems.
+
+The architecture and implementation mentioned below is purely for demonstrations and is not intended for production deployments.
 
 ## Architecture
 
