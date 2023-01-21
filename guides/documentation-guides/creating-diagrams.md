@@ -9,12 +9,12 @@ Creating editable diagrams in open formats using open source tools is challengin
 * Fork `openg2p-documentation` repository to your local Github account.
 * On [Draw.io](https://app.diagrams.net/) website choose Github as your storage.
 
-<figure><img src="../.gitbook/assets/draw-io-storage.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/draw-io-storage.png" alt=""><figcaption></figcaption></figure>
 
 * Authorize Draw.io app on Github (follow the steps are prompted). Select `openg2p-documentation` and the branch you wish to add your diagram.
 * Select format of diagram as `.svg`.
 
-<figure><img src="../.gitbook/assets/draw-io-file-format.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/draw-io-file-format.png" alt=""><figcaption></figcaption></figure>
 
 * Select repository, branch and `.gitbook/assests` folder to save the diagram.
 * Create the diagram and save - it will get git committed to your repository.
