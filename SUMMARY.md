@@ -30,6 +30,7 @@
   * [Notifications](modules/notifications.md)
   * [Monitoring and Reporting](modules/monitoring-and-reporting.md)
   * [Data Exchange](modules/data-exchange.md)
+* [⚒ Testing](testing.md)
 * [👥 Community](community/README.md)
   * [Contributing](community/contributing-to-openg2p.md)
   * [Code of Conduct](community/code-of-conduct.md)
