@@ -21,7 +21,9 @@ Registry supports the following functions\*\*:
 \*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.
 {% endhint %}
 
+## Individuals and groups
 
+A registry may contain individuals or groups like family, household etc.&#x20;
 
 
 
