@@ -45,5 +45,5 @@
     * [openg2p-registry](guides/developer-guides/github-repositories/openg2p-registry.md)
     * [openg2p-program](guides/developer-guides/github-repositories/openg2p-program.md)
   * [Getting Started](guides/developer-guides/getting-started.md)
-* [Deployment Guide](guides/deployment-guide/README.md)
+* [📘 Deployment Guide](guides/deployment-guide/README.md)
   * [Getting Started](guides/deployment-guide/getting-started.md)
