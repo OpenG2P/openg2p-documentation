@@ -16,14 +16,18 @@ If a country has issued unique foundational IDs (like [MOSIP](https://mosip.io))
 
 If various foundations IDs like driving license, tax number, student ID etc. are accepted while registration, then deduplication across the IDs is somewhat challenging if a link between these is not already established and available to OpenG2P system. In this case, heuristics are applied on demographic data to detect potential duplicates.
 
-### [No ID](#user-content-fn-1)[^1]
+### No ID
 
-In cases registrants were onboarded without any ID, the deduplication is performed using heuristics on demographic data.
+In case registrants were onboarded without any ID, the deduplication is performed using heuristics on demographic data.
+
+{% hint style="success" %}
+OpenG2P is an inclusive platform. The system does not prevent registrations of persons who do not have an ID. This is especially applicable during emergency relief like floods, war, and other calamities.
+{% endhint %}
 
 ## Deduplication of groups
 
-The deduplication method for groups is context dependent. For eg. if a group of individuals register&#x20;
+Deduplication of groups refers to removing duplicate groups within a type of group like family, household. The deduplication method is context dependent and is configured via rules. For example, if same family has registered itself twice, it will be flagged as a duplicate. However, there are more complex scenarios - say, an individual appears in two different households while other members are different. Such cases will be flagged off based on the configured rules.&#x20;
 
 ## Manual adjudication
 
-[^1]: Example annotation
+Resolution of duplicates is generally done via a manual adjudication process, where an authority is visually able to see the reason for duplication. The authority can then decide whether the case is a duplicate or not based on the process set by country/department/ministry.

@@ -40,7 +40,7 @@
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
 * [📔 User Guides](guides/user-guides.md)
-* [👩💻 👩💻 Developer Guides](guides/developer-guides/README.md)
+* [👩💻 👩💻 👩💻 Developer Guides](guides/developer-guides/README.md)
   * [Github Repositories](guides/developer-guides/github-repositories/README.md)
     * [openg2p-registry](guides/developer-guides/github-repositories/openg2p-registry.md)
     * [openg2p-program](guides/developer-guides/github-repositories/openg2p-program.md)
