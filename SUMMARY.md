@@ -11,3 +11,4 @@
   * [Verification Service](user-guides/verification-service.md)
   * [Deduplication Service](user-guides/deduplication-service.md)
   * [Webhooks](user-guides/webhooks.md)
+* [Github Repositories](github-repositories.md)
