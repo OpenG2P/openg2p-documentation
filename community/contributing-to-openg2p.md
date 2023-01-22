@@ -2,7 +2,7 @@
 
 ## Introduction
 
-We welcome contributions to the OpenG2P Project.
+OpenG2P is collaborative effort of several contributors. We welcome contributions to the OpenG2P Project.
 
 ## Issues
 
