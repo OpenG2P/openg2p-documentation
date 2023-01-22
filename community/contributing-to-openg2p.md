@@ -25,7 +25,7 @@ To contribute code to the OpenG2P project, follow the steps given below:
 
 ## Documentation contributions
 
-The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/documentation). To highlight a correction or request for additional documentation, raise a Github Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
+The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/openg2p-documentation). To highlight a correction or request for additional documentation, raise a Github Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
 
 ## Versioning
 
