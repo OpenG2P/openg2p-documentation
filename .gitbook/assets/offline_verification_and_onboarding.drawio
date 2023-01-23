@@ -1,22 +1,27 @@
-<mxfile host="app.diagrams.net" modified="2023-01-23T03:46:52.994Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.55" etag="dGYxugNVWx3YaI3LKZFe" version="20.8.10" type="github">
+<mxfile host="app.diagrams.net" modified="2023-01-23T03:50:38.003Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.55" etag="xRTJRfPRk9IGDy7p2WNU" version="20.8.10" type="github">
   <diagram name="Page-1" id="o-WcfcInXSFLguWIEui-">
     <mxGraphModel dx="1050" dy="581" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="750" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="ue6BMAs2nXa-dUuCiXmT-1" value="Offline Verification &amp;amp; Onboarding" style="swimlane;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=20;html=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="30" width="540" height="480" as="geometry">
+          <mxGeometry x="30" y="30" width="590" height="480" as="geometry">
             <mxRectangle x="190.00000000000045" y="10" width="70" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ue6BMAs2nXa-dUuCiXmT-2" value="Systems" style="swimlane;startSize=20;html=1;" vertex="1" parent="ue6BMAs2nXa-dUuCiXmT-1">
-          <mxGeometry y="20" width="120" height="460" as="geometry" />
+        <mxCell id="ue6BMAs2nXa-dUuCiXmT-2" value="Systems &amp;amp; Interfaces" style="swimlane;startSize=20;html=1;" vertex="1" parent="ue6BMAs2nXa-dUuCiXmT-1">
+          <mxGeometry y="20" width="140" height="460" as="geometry">
+            <mxRectangle y="20" width="40" height="460" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ue6BMAs2nXa-dUuCiXmT-31" value="ODK Collect" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;imageAspect=0;image=https://play-lh.googleusercontent.com/o1wBffF6jmXOXSGs6OQDcPwNmrnIMwPX61b00_GfuA27TAG_M592SfylBXB31ExNa8nG=w240-h480-rw" vertex="1" parent="ue6BMAs2nXa-dUuCiXmT-2">
+          <mxGeometry x="40" y="30" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ue6BMAs2nXa-dUuCiXmT-3" value="Field Agents" style="swimlane;startSize=20;html=1;" vertex="1" parent="ue6BMAs2nXa-dUuCiXmT-1">
-          <mxGeometry x="120" y="20" width="300" height="460" as="geometry" />
+          <mxGeometry x="140" y="20" width="300" height="460" as="geometry" />
         </mxCell>
         <mxCell id="ue6BMAs2nXa-dUuCiXmT-4" value="Beneficiaries" style="swimlane;startSize=20;html=1;" vertex="1" parent="ue6BMAs2nXa-dUuCiXmT-1">
-          <mxGeometry x="420" y="20" width="120" height="460" as="geometry" />
+          <mxGeometry x="440" y="20" width="150" height="460" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
