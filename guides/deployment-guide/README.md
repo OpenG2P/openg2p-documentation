@@ -1,2 +1,2 @@
-# 📘 Deployment Guide
+# Deployment Guide
 

@@ -1,5 +1,2 @@
 # Payment Cycles
 
-## Introduction
-
-Payments

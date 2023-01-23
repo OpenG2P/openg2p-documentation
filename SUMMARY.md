@@ -37,7 +37,7 @@
 * [📗 License](license.md)
 * [📒 Glossary](glossary.md)
 
-## 📖 Guides
+## Guides
 
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
