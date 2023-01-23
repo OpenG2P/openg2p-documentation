@@ -48,4 +48,4 @@
   * [Getting Started](guides/developer-guides/getting-started.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
   * [Getting Started](guides/deployment-guide/getting-started.md)
-* [References](guides/references.md)
+* [📑 References](guides/references.md)
