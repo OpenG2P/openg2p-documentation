@@ -8,6 +8,8 @@ Digital payments infrastructure (DPI) could vary from country to country. It is 
 * [Mojaloop Payment Switch](https://payments.mifos.org/)
 * [GSMA Mobile Money APIs](https://www.gsma.com/mobilefordevelopment/mobile-money/mobile-money-api/)
 
+## FAQ
+
 <details>
 
 <summary>How do I create a custom connector?</summary>
