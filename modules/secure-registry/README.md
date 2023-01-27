@@ -25,6 +25,16 @@ Registry supports the following functions\*\*:
 
 A registry may contain individuals or groups like family, household etc.&#x20;
 
+## FAQ
+
+<details>
+
+<summary>Is the data encrypted and saved in DB?</summary>
+
+Yes, all person data is encrypted with strong cryptographic techniques and saved in the DB. The decryption of this data happens in-memory.
+
+</details>
+
 
 
 
