@@ -14,6 +14,8 @@ Below is the reference architecture of how the disbursements could be triggered 
 
 ## Proof of concept implementation - demo #1
 
+{% embed url="https://www.loom.com/share/29de864fd01a47dcbbdc9eee057b274b" %}
+
 For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), as payment manager from OpenG2P.
 
 * OpenG2P uses the configured Payment Manager and triggers payments in the way the payment manager understands.
