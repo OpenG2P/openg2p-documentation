@@ -50,10 +50,6 @@ Social assistance programs that make receipt of benefits conditional upon benefi
 
 The set of obligations that each beneficiary household must comply with in order to continue receiving cash benefits. Common examples include school attendance, health visits, and labor/work efforts.
 
-#### DFSP
-
-Digital Financial Service Provider.
-
 #### De-duplication.
 
 A technique to detect duplicate identity records. Biometric data—including fingerprints and iris scans—are commonly used to de-duplicate identities in order to identify false or inconsistent identity claims and to establish uniqueness.

@@ -43,6 +43,7 @@
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
 * [📔 User Guides](guides/user-guides.md)
 * [👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
+  * [Creating Custom Payment Connector](guides/developer-guides/creating-custom-payment-connector.md)
   * [Github Repositories](guides/developer-guides/github-repositories/README.md)
     * [openg2p-registry](guides/developer-guides/github-repositories/openg2p-registry.md)
     * [openg2p-program](guides/developer-guides/github-repositories/openg2p-program.md)
