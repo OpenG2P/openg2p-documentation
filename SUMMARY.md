@@ -31,7 +31,7 @@
   * [Monitoring and Reporting](modules/monitoring-and-reporting.md)
   * [Data Exchange](modules/data-exchange.md)
 * [🔗 Integrations](integrations/README.md)
-  * [Integration with MOSIP](integrations/integration-with-mosip/README.md)
+  * [Integration with MOSIP](integrations/integration-with-mosip.md)
     * [MTS Connector](integrations/integration-with-mosip/mts-connector.md)
 * [⚒ Testing](testing.md)
 * [👥 Community](community/README.md)

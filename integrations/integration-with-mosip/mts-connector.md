@@ -12,7 +12,7 @@ MTS Connector (MTS-C) is a OpenG2P module which will be an addon to [Odoo](https
 * OpenG2P can schedule a daily job to fetch the delta for the day
 * A manual import feature will also be provided
 
-<figure><img src="https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F4EyCrLbFom7vj7UcMIUZ%2Fuploads%2FCvobXXdzD7uplIVW2czN%2Fmosip-token-seeder-connector.png?alt=media&#x26;token=4406d1fa-ae02-4114-9c61-566fcc5d0389" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/mosip-token-seeder-connector.svg" alt=""><figcaption></figcaption></figure>
 
 ## Input <a href="#input" id="input"></a>
 
