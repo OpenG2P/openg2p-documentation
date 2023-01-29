@@ -2,12 +2,11 @@
 
 ## Introduction
 
-OpenG2P integrates with MOSIP to provide following functions:
+OpenG2P integrates with MOSIP to verify the UIN/VIDs provide by individuals as part of the registration process. As a result of the verification, OpenG2P receives a unique token against individual's UIN/VID along with KYC data. This data is stored in the registry.
 
-1. Tokenise [registry](../modules/secure-registry/) using MOSIP ID.
-2. Provide user login using MOSIP ID on the [Self Service Portal](../modules/self-service-portal.md).
 
-## Tokenisation
 
-Tokenisation is achieved by connecting to MOSIP Token Seeder&#x20;
+##
+
+##
 

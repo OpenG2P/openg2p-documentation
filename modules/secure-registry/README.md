@@ -11,13 +11,14 @@ The registry is queried by various programs to create beneficiary list.  See [Pr
 Registry supports the following features\*\*:
 
 1. Tokenised registry
-2. Deduplicated entries
-3. CRUD operations
-4. Attestation
-5. Evidence
-6. Verifiable credentials
-7. Anonymous profile
-8. Complex queries
+2. Verification with ID system
+3. Deduplicated entries
+4. CRUD operations
+5. Attestation
+6. Evidence
+7. Verifiable credentials
+8. Anonymous profile
+9. Complex queries
 
 {% hint style="info" %}
 \*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.
