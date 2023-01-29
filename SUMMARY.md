@@ -30,7 +30,7 @@
   * [Notifications](modules/notifications.md)
   * [Monitoring and Reporting](modules/monitoring-and-reporting.md)
   * [Data Exchange](modules/data-exchange.md)
-* [Integrations](integrations/README.md)
+* [🔗 Integrations](integrations/README.md)
   * [Integration with MOSIP](integrations/integration-with-mosip.md)
 * [⚒ Testing](testing.md)
 * [👥 Community](community/README.md)
