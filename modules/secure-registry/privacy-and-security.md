@@ -11,3 +11,6 @@ Data at rest is encrypted using strong cryptographic techniques. The decryption 
 ## Privacy
 
 Data is anonymised while being displayed in human readable form (for example, UI screen). Similarly, any query results from registry are anonymised such that this information cannot be used to specifically target an individual.
+
+### Tokenisation
+

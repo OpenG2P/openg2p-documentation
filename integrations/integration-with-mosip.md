@@ -11,4 +11,3 @@ OpenG2P integrates with MOSIP to provide following functions:
 
 Tokenisation is achieved by connecting to MOSIP Token Seeder&#x20;
 
-More details [here](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder/openg2p-registry-mts-connector).

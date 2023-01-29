@@ -1,22 +1,19 @@
-# MTS Connector
+# ODK MTS Connector
 
 ## Overview <a href="#overview" id="overview"></a>
 
-MTS Connector (MTS-C) is a OpenG2P module which will be an addon to [Odoo](https://www.odoo.com/). MOI will help in fetching the tokenised data from the ODK Central by calling the [MOSIP Token Seeder](https://app.gitbook.com/o/-M1FyzBr-VmticWYm8QI/s/4EyCrLbFom7vj7UcMIUZ/integrations/mosip-token-seeder) (MTS) and store the same in beneficiary registry. This will be an important module in deduplication process when OpenG2P system is using MOSIP as its id platform.
+ODK MTS Connector is an OpenG2P Odoo addon that fetches tokenised data from the ODK Central by calling the [MOSIP Token Seeder](https://app.gitbook.com/o/-M1FyzBr-VmticWYm8QI/s/4EyCrLbFom7vj7UcMIUZ/integrations/mosip-token-seeder) (MTS) and stores in the registry.&#x20;
 
-## Features of MTS-C <a href="#features-of-mts-c" id="features-of-mts-c"></a>
+## Features  <a href="#features-of-mts-c" id="features-of-mts-c"></a>
 
-* Generates MOSIP token while fetching from the ODK
 * Uses callback delivery type of MTS
 * Completely asynchronous execution
 * OpenG2P can schedule a daily job to fetch the delta for the day
-* A manual import feature will also be provided
+* Manual import feature (TBD)
 
 <figure><img src="../../.gitbook/assets/mosip-token-seeder-connector.svg" alt=""><figcaption></figcaption></figure>
 
-## Input <a href="#input" id="input"></a>
-
-In OpenG2P, the user can configure for following fields to setup an interface with MTS.
+## Configuration <a href="#input" id="input"></a>
 
 **Name**: A string to identify the connector
 
