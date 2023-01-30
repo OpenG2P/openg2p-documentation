@@ -12,14 +12,15 @@ Registry supports the following features\*\*:
 
 1. Tokenised registry
 2. Schema base fields
-3. Verification with ID system
-4. Deduplicated entries
-5. CRUD operations
-6. Attestation
-7. Evidence
-8. Verifiable credentials
-9. Anonymous profile
-10. Complex queries
+3. REST APIs interface
+4. Verification with ID system
+5. Deduplicated entries
+6. CRUD operations
+7. Attestation
+8. Evidence
+9. Verifiable credentials
+10. Anonymous profile
+11. Complex queries
 
 {% hint style="info" %}
 \*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.
