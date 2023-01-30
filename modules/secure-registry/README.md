@@ -23,7 +23,7 @@ Registry supports the following features\*\*:
 11. Complex queries
 
 {% hint style="info" %}
-\*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.
+\*\* Full implementations of these features will be available in version 1.2.x of OpenG2P.
 {% endhint %}
 
 ## Individuals and groups
