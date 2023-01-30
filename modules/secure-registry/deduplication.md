@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Deduplication refers to the process of removing duplicate entries in the registry and merging all the parameters associated with an individual or a group into a single record.
+Deduplication refers to the process of removing duplicate entries in the registry, thus avoiding double-dipping, and merging all the demographic fields associated with an individual or a group into a single record.&#x20;
 
 ## Deduplication of individuals
 
