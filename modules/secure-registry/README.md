@@ -2,7 +2,7 @@
 
 ## Introduction
 
-OpenG2P offers a secure registry that stores person details that have been collected across multiple programs. Duplication of person's data is avoided by deduplicating using the unique ID associated with the person (like MOSIP) or by running demographic deduplication heuristics such that the same person is not added multiple times to the same registry. To avoid duplication of fields like age, date of birth, city etc.,  the fields are "codified" with [schemas](schema-for-fields.md).&#x20;
+OpenG2P offers a secure registry that stores person details that have been collected across multiple programs. Duplication of person's data is avoided by deduplicating using the unique ID associated with the person (like MOSIP) or by running demographic deduplication heuristics such that the same person is not added multiple times to the same registry. To avoid duplication of fields like age, date of birth, city etc., the fields are "codified" with [schemas](schema-for-fields.md).&#x20;
 
 The data in the registry is encrypted at rest. &#x20;
 
@@ -11,14 +11,15 @@ The registry is queried by various programs to create beneficiary list.  See [Pr
 Registry supports the following features\*\*:
 
 1. Tokenised registry
-2. Verification with ID system
-3. Deduplicated entries
-4. CRUD operations
-5. Attestation
-6. Evidence
-7. Verifiable credentials
-8. Anonymous profile
-9. Complex queries
+2. Schema base fields
+3. Verification with ID system
+4. Deduplicated entries
+5. CRUD operations
+6. Attestation
+7. Evidence
+8. Verifiable credentials
+9. Anonymous profile
+10. Complex queries
 
 {% hint style="info" %}
 \*\* Full implementations of these functions will be available in version 1.2.x of OpenG2P.

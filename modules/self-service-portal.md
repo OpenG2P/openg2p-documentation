@@ -6,11 +6,9 @@ Self Service Portal is a resident facing portal that lets a person log in to the
 
 * View enrolled programs
 * View all the demographic information submitted across programs
-* Apply for a new program
 * Update demographic information
+* Apply for a new program
 * View list of all programs offered by the government/ministry/department.
-
-Detailed stories of features and development status is available here:
 
 ## OpenID Connect integration
 
