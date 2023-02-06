@@ -1,6 +1,10 @@
 # Table of contents
 
 * [🏠 Home](README.md)
+* [Modules](modules/README.md)
+  * [OpenG2P ERP](modules/openg2p-erp.md)
+  * [Verification Service](modules/verification-service.md)
+  * [Deduplication Service](modules/deduplication-service.md)
 * [📖 User Guides](user-guides/README.md)
   * [ODK](user-guides/odk.md)
   * [Tasks and Processes](user-guides/tasks-and-processes.md)

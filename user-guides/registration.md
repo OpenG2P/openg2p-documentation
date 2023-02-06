@@ -10,7 +10,7 @@
 
 ## Checking duplicates
 
-<figure><img src="../.gitbook/assets/deduplication (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/deduplication.png" alt=""><figcaption></figcaption></figure>
 
 ## Changing state in bulk
 

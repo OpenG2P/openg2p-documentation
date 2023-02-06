@@ -1,4 +1,4 @@
-# Dedeplication Service
+# Deduplication Service
 
 ## About
 
@@ -6,7 +6,7 @@
 * Government-to-persons programs must be confident of the uniqueness of beneficiaries they serve and avoid double-dipping.
 * A social protection transfer program, as an example, should not be paying the same individual multiple times per period.
 
-<figure><img src="../.gitbook/assets/deduplication.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/deduplication (1).png" alt=""><figcaption></figcaption></figure>
 
 ## Deduplication guide
 
