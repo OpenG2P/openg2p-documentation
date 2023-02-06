@@ -1,7 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
-* [Modules](modules/README.md)
+* [🧱 Modules](modules/README.md)
   * [OpenG2P ERP](modules/openg2p-erp.md)
   * [Verification Service](modules/verification-service.md)
   * [Deduplication Service](modules/deduplication-service.md)
