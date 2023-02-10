@@ -6,7 +6,9 @@ OpenG2P is collaborative effort of several contributors. We welcome contribution
 
 ## Issues
 
-Raise bugs/issues/tasks on Github Issues of individual repo.
+Raise bugs/issues/tasks on Github Issues of individual repositories.
+
+All the issues and tasks are tracked using [Jira](https://openg2p.atlassian.net).
 
 ## Code contributions
 
