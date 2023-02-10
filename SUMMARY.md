@@ -32,6 +32,7 @@
   * [Monitoring and Reporting](modules/monitoring-and-reporting.md)
   * [Data Exchange](modules/data-exchange.md)
 * [🔗 Integrations](integrations/README.md)
+  * [Mojaloop Integration](integrations/mojaloop-integration.md)
   * [Integration with MOSIP](integrations/integration-with-mosip.md)
     * [ODK MTS Connector](integrations/integration-with-mosip/mts-connector.md)
     * [Registry MTS Connector](integrations/integration-with-mosip/registry-mts-connector.md)
