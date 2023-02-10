@@ -8,6 +8,8 @@ This page describes reference implementation for payment integration between Ope
 
 ## Proof of concept implementation - demo #1 <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
+{% embed url="https://www.loom.com/share/29de864fd01a47dcbbdc9eee057b274b" %}
+
 For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), as payment manager from OpenG2P.
 
 * OpenG2P uses the configured Payment Manager and triggers payments in the way the payment manager understands.
