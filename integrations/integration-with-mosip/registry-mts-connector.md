@@ -21,7 +21,7 @@ Registry MTS Connector (RMC) is an Odoo addon that fetches [MOSIP Auth Token](ht
 
 **MTS Input type**: OMC option could be proceeded by selecting "_OpenG2P Registry_". &#x20;
 
-**Mapping**: MTS Field mapping as required by the API. Please refer MTS Documentation. Format of Mapping would be JSON.&#x20;
+**Mapping**: MTS Field mapping as required by the API. Please refer to MTS Documentation. Format of Mapping would be JSON.&#x20;
 
 **Output Type**: MTS-C only supports JSON output type of MTS.&#x20;
 
@@ -35,11 +35,11 @@ Registry MTS Connector (RMC) is an Odoo addon that fetches [MOSIP Auth Token](ht
 
 **Interval in minutes**: Interval at which the MTS-C job runs.
 
-**Filters to apply to Registry**: A [domain filter](https://odootricks.tips/about/building-blocks/domain-in-odoo/) can be used to identify the records for tokenisation. For. eg. Only records which have VID associated with it and is not tokenised need to be picked for tokenisation. &#x20;
+**Filters to apply to Registry**: A [domain filter](https://odootricks.tips/about/building-blocks/domain-in-odoo/) can be used to identify the records for tokenisation. For. eg. Only records which have VID associated with it and are not tokenised need to be picked for tokenisation. &#x20;
 
 **List of fields to be used**: List of fields which will be supplied as auth data. This field list may be a superset of fields required for auth as it may contain data required by the callback API.  This list should be a valid JSON string array.
 
-**Callback URL**: A URL end point which would be called upon successful processing at MTS
+**Callback URL**: A URL endpoint which would be called upon successful processing at MTS
 
 **Callback HTTP Method**: HTTP Method (POST/PUT/GET/PATCH) used while MTS makes the callback
 
@@ -49,6 +49,6 @@ Registry MTS Connector (RMC) is an Odoo addon that fetches [MOSIP Auth Token](ht
 
 **Callback Auth Database**: DB instance used by Odoo.&#x20;
 
-**Callback auth username**: Username to access callback api
+**Callback auth username**: Username to access callback API
 
-**Callback auth password**: Password to access callback api
+**Callback auth password**: Password to access callback API

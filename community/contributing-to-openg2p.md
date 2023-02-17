@@ -2,11 +2,11 @@
 
 ## Introduction
 
-OpenG2P is collaborative effort of several contributors. We welcome contributions to the OpenG2P Project.
+OpenG2P is a collaborative effort of several contributors. We welcome contributions to the OpenG2P Project.
 
 ## Issues
 
-Raise bugs/issues/tasks on Github Issues of individual repositories.
+Raise bugs/issues/tasks on GitHub Issues of individual repositories.
 
 All the issues and tasks are tracked using [Jira](https://openg2p.atlassian.net).
 
@@ -16,8 +16,8 @@ To contribute code to the OpenG2P project, follow the steps given below:
 
 1. Create an issue on Github related to your task.
 2. Fork the corresponding repository.
-3. Commit your changes in your forked repo. Make sure issue id of Github is mentioned in square braces, e.g. `[#6] Minor changes to fix the bug.`
-4. Raise a Pull Request (PR) on the appropriate branch. In general it is safe to send PRs to `develop` branch of a repo.
+3. Commit your changes in your forked repo. Make sure the issue id of GitHub is mentioned in square braces, e.g. `[#6] Minor changes to fix the bug.`
+4. Raise a Pull Request (PR) on the appropriate branch. In general, it is safe to send PRs to `develop` branch of a repo.
 5. The PRs shall be reviewed by the technical team and merged after approval.
 
 ## Coding conventions
@@ -27,7 +27,7 @@ To contribute code to the OpenG2P project, follow the steps given below:
 
 ## Documentation contributions
 
-The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/openg2p-documentation). To highlight a correction or request for additional documentation, raise a Github Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
+The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/openg2p-documentation). To highlight a correction or request for additional documentation, raise a GitHub Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
 
 ## Versioning
 
@@ -35,7 +35,7 @@ For Odoo modules, follow the [Odoo Versioning](https://setuptools-odoo.readthedo
 
 For Non-Odoo modules, follow [Semantic Versioning](https://semver.org/).
 
-OpenG2P release will follow Semantic Versioning.  For Github branches and tags versions, refer to sections below.
+OpenG2P release will follow Semantic Versioning.  For GitHub branches and tags versions, refer to the sections below.
 
 ## Branching conventions
 
