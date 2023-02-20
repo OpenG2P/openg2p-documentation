@@ -6,8 +6,5 @@ description: Work in progress
 
 ## Introduction
 
-The guide here pertains to production deployment of OpenG2P.  For developer install, refer to Developer Zone.
+The guide here pertains to the **production** [deployment of OpenG2P on Kubernetes cluster.](deployment-on-kubernetes/) For developer installation, refer to [Developer Zone](../developer-guides/). &#x20;
 
-Currently recommended models of deployment:
-
-* [Deployment on Kubernetes](broken-reference)

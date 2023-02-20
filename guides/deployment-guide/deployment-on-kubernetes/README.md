@@ -4,7 +4,11 @@ description: Work in progress
 
 # Deployment on Kubernetes
 
-## Prerequisites
+## Introduction
+
+The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.&#x20;
+
+## Cluster setup
 
 * Kubernetes Cluster, with given [requirements](broken-reference). Use this guide to [setup the K8s Cluster](broken-reference).
 
