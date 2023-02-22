@@ -15,13 +15,15 @@ ODK MTS Connector is an OpenG2P Odoo addon that fetches tokenised data from the 
 
 ## Configuration <a href="#input" id="input"></a>
 
+|Property|Description|
+|---|---|
 |`Name`| A string to identify the connector|
 |`URL to reach MTS`| URL for MTS API|
-|`MTS Input type`| MTS-C connects over "_ODK_" which is the first option in this selection. OMC option could be proceeded by selecting "_OpenG2P Registry_".|
-|`Mapping`| MTS Field mapping as required by the API. Please refer to [MTS Documentation`.` ](https|//app.gitbook.com/o/-M1FyzBr-VmticWYm8QI/s/4EyCrLbFom7vj7UcMIUZ/integrations/mosip-token-seeder/mts-developer-guides/mosip-token-seeder-api)The format of Mapping would be JSON.|
+|`MTS Input type`| MTS-C connects over "_ODK_" which is the first option in this selection. OMC option could be proceeded by selecting _OpenG2P Registry_.|
+|`Mapping`| MTS Field mapping as required by the API. Refer to [MTS Documentation](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder). The format of Mapping would be JSON.|
 |`Output Type`| MTS-C only supports JSON output type of MTS.|
-|`Output Format`| Output format is a [JQ ](https|//stedolan.github.io/jq/)string which will be used by MTS to format its output to suite the caller's requirement.|
-|`Delivery Type`| Currently supporting only "Callback". Callback feature can be used to make MTS do a submission of results onto an API within Odoo. The output formatting will help in making the desired input for the api.|
+|`Output Format`| Output format is a [JQ](https://stedolan.github.io/jq/)string which will be used by MTS to format its output to suite the caller's requirement.|
+|`Delivery Type`| Currently supporting only "Callback". Callback feature can be used to make MTS do a submission of results onto an API within Odoo. The output formatting will help in making the desired input for the API.|
 |`Job Type`| MTS-C provides both recurring and one time execution. Recurring can be configured to do continuous pull from the ODK over MTS.|
 |`Interval in minutes`| Interval at which the MTS-C job runs.|
 |`MOSIP Language`| MOSIP language setup. The default is "_eng_".|
@@ -34,4 +36,5 @@ ODK MTS Connector is an OpenG2P Odoo addon that fetches tokenised data from the 
 |`Callback Timeout`| Timeout awaited by the callback until acknowledged with a response.|
 |`Callback Auth Type`| Type of authentication expected by callback URL. MTS-C currently support Odoo type which uses the session-based authentication implemented by Odoo.|
 |`Callback Auth Database`| DB instance used by Odoo.|
-|`Callback auth username`| Username to access callback API\|
+|`Callback auth username`| Username to access callback API|
+
