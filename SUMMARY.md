@@ -47,7 +47,8 @@
 
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
-* [📔 User Guides](guides/user-guides.md)
+* [📔 User Guides](guides/user-guides/README.md)
+  * [Registration](guides/user-guides/registration.md)
 * [👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Creating Custom Payment Connector](guides/developer-guides/creating-custom-payment-connector.md)
