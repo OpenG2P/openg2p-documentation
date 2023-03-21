@@ -6,7 +6,7 @@
 
 ## Modules
 
-* [Secure registry](secure-registry/)
+* [Registration](secure-registry/)
 * [Program management](beneficiary-management.md)
 * [Payments](eligibility-and-enrolment.md)
 * [Self service portal](self-service-portal.md)

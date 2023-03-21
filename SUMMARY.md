@@ -2,7 +2,7 @@
 
 * [🏠 Home](README.md)
 * [🧱 Modules](modules/README.md)
-  * [Secure Registry](modules/secure-registry/README.md)
+  * [Registration](modules/secure-registry/README.md)
     * [Offline Registration](modules/secure-registry/offline-registration.md)
     * [Online Registration](modules/secure-registry/online-registration.md)
     * [ID Verification](modules/secure-registry/id-verification.md)
