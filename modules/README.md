@@ -1,8 +1,8 @@
 # 🧱 Modules
 
-## Modules and ecosystem
+## Modules&#x20;
 
-{% embed url="https://docs.google.com/presentation/d/1COdbi2Q1HbTKwU1epbuBYQi4OaE_6tXc3q9aSCml6XA/edit?usp=sharing" %}
+{% embed url="https://docs.google.com/presentation/d/1-Jg9J3Xz92tqyJ1eMIMu0FcUe5SyTqVwM1cCr9O9GLY/edit?usp=sharing" %}
 
 ## Modules
 
