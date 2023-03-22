@@ -1,6 +1,6 @@
 # 🧱 Modules
 
-## Social Protection Delivery Chain&#x20;
+## Social Benefits Delivery Chain&#x20;
 
 {% embed url="https://docs.google.com/presentation/d/1-Jg9J3Xz92tqyJ1eMIMu0FcUe5SyTqVwM1cCr9O9GLY/edit?usp=sharing" %}
 
