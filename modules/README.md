@@ -9,8 +9,8 @@
 * [Registration](secure-registry/)
 * [Program management](beneficiary-management.md)
 * [Payments](eligibility-and-enrolment.md)
-* [Self service portal](self-service-portal.md)
-* [Notifications](notifications.md)
+* [Self service portal](self-service-portal/)
+* [Notifications](self-service-portal/notifications.md)
 * [Monitoring and reporting](monitoring-and-reporting.md)
 
 <figure><img src="https://raw.githubusercontent.com/shibu-narayanan/openg2p-documentation/develop/.gitbook/assets/openg2p_linear_flow.svg" alt=""><figcaption></figcaption></figure>
