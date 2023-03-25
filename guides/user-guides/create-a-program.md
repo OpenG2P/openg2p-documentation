@@ -12,45 +12,38 @@ The user must have a Program Manager role. See [Assign Roles to Users](assign-ro
 
 1. Navigate to Program using the menu bar.
 
-<figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption><p>Create a new program</p></figcaption></figure>
 
-2. Click on the _Create Program_ button to reach the Program creation page.  Provide Program name, [Target type](../../modules/beneficiary-management.md#target-types) and currency. There are tabs for the configuration of various managers
+2. Click on the _Create Program_ button to reach the Program creation page.  Provide Program name, t[arget type](../../modules/beneficiary-management.md#target-types) and currency. There are tabs for the configuration of various managers.
+3.  **Eligibility criteria:**
 
-<figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption><p>Configure eligibility criteria</p></figcaption></figure>
+4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](../../modules/program-management/eligibility.md#domain-filters). You may set multiple eligibility criteria.&#x20;
+5.  **Cycle Manager:**  Set parameters of [disbursement cycles](../../modules/beneficiary-management/disbursement-cycles.md).
 
-1.
+    <figure><img src="../../.gitbook/assets/cycle-manager.png" alt=""><figcaption></figcaption></figure>
 
-Use the '+Add filter' button to set the eligibility criteria.
+    * _Auto-approve Entitlements:_ To set entitlements via rules, without any manual approvals.
+    * _Approver Group:_ The group name of the user who has permission to approve cycles. See [Assign Roles to Uses](assign-roles-to-users.md).
+    * _Recurrence:_ The time period for the repetition of a cycle.
+6.  **Entitlement Manager:**  Set parameters for [entitlements](../../modules/program-management/entitlement.md).
 
-* Using existing filters set multiple eligibility criteria.
 
-<figure><img src="../../.gitbook/assets/Eligibility-criteria.png" alt=""><figcaption></figcaption></figure>
 
-5. Cycle Manager
+    <figure><img src="../../.gitbook/assets/entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
-* Auto approve Entitlements - For auto approving the entitlements.
-* Approver Group -  Mapped role user should be able to approve the cycles.
-* Recurrence - The time period for the repetition of a cycle is defined.
+    * _Amount Per Cycle:_ The amount disbursement of a group or individual per cycle.
+    * _Amount Per Individual In Group:_ Amount of disbursement per individual in a group when the program [target type](../../modules/beneficiary-management.md#target-types) is "group".
+    * _Maximum number of individuals in a group:_  Maximum number of individuals who get disbursements per group (optional).
+    * _Transfer Fee(%):_ Fee incurred for disbursement as a percentage of disbursement (optional).
+    * _Transfer Fee Amount:_ Fee incurred for disbursement as an absolute amount (optional).
+    * _Entitlement Validation Group:_ The group name of the user who has permission to approve entitlements. See [Assign Roles to Uses](assign-roles-to-users.md).&#x20;
+7. **Map Portal form:** Map a portal form to this program.  [Create a portal form](create-portal-form.md) before this mapping. &#x20;
+8. Click the _Next_ button to import the matching registrants to the creating program. In the pop-up window select _Yes_.
+9.
 
-<figure><img src="../../.gitbook/assets/cycle-manager.png" alt=""><figcaption></figcaption></figure>
-
-6. Entitlement Manager
-
-* Amount Per Cycle - The amount disbursement of a group or individual per cycle is defined.&#x20;
-* Amount Per Individual In Group - When the target type is a group disbursement amount per individual in a group is defined.
-* The maximum number of individuals in a group - Sets the maximum number of individuals who get disbursements per group(optional).
-* Transfer Fee(%) - Sets the transfer fee per disbursement(optional).
-* Transfer Fee Amount - Set the transfer fee amount per disbursement(optional)
-* Entitlement Validation Group - Mapped role user should be able to validate the entitlements.&#x20;
-
-<figure><img src="../../.gitbook/assets/entitlement-manager.png" alt=""><figcaption></figcaption></figure>
-
-5. A portal form needs to be created before mapping it while creating the program(Portal Form Creation).
-6. Click the 'Next' button to import the matching registrants to the creating program and in the pop-up window select 'Yes'.
-
-<figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
-
-7. Once the program is created it will be listed under the program list view page.
+    <figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
+10. &#x20;Once the program is created it will be listed under the program list view page.
 
 <figure><img src="../../.gitbook/assets/program-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
