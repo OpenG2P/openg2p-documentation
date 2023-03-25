@@ -12,3 +12,7 @@ The Program Management module offers a rich set of functions to define various b
 * Ended
 * Reactivated
 
+## Target types
+
+A program may be targeted to an individual or a group. A group may be a household, family or any other group to which the program is targeted.&#x20;
+

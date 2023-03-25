@@ -6,7 +6,7 @@ The guide here provides steps to create a new program. A program is typically cr
 
 ## Pre-requisites
 
-* The user should have a Program Manager role.
+The user must have a Program Manager role. See [Assign Roles to Users](assign-roles-to-users.md) guide.
 
 ## Steps
 
@@ -14,14 +14,14 @@ The guide here provides steps to create a new program. A program is typically cr
 
 <figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on the Create Program button and will be navigated to the Program creation page.
+2. Click on the _Create Program_ button to reach the Program creation page.  Provide Program name, [Target type](../../modules/beneficiary-management.md#target-types) and currency. There are tabs for the configuration of various managers
 
 <figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption></figcaption></figure>
 
-3. Target Type - To know more about target type click here.
-4. Eligibility Manager&#x20;
+1.
 
-* Use the '+Add filter' button to set the eligibility criteria.
+Use the '+Add filter' button to set the eligibility criteria.
+
 * Using existing filters set multiple eligibility criteria.
 
 <figure><img src="../../.gitbook/assets/Eligibility-criteria.png" alt=""><figcaption></figcaption></figure>
