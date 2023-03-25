@@ -48,7 +48,7 @@
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
 * [📔 How-To Guides](guides/user-guides/README.md)
-  * [Create a Program](guides/user-guides/create-a-program.md)
+  * [Create Program](guides/user-guides/create-program.md)
   * [Create Portal Form](guides/user-guides/create-portal-form.md)
   * [Assign Roles to Users](guides/user-guides/assign-roles-to-users.md)
 * [👩💻 Developer Zone](guides/developer-guides/README.md)
