@@ -6,6 +6,10 @@ The Payments module consists of several functions to efficiently execute cash tr
 
 Payments are generally executed in cycles and batches.
 
+## Payments demo
+
+{% embed url="https://www.youtube.com/watch?v=O_CyoNZ2Mig" %}
+
 
 
 

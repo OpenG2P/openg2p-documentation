@@ -1,5 +1,7 @@
 # Self Service Portal
 
+##
+
 ## Introduction
 
 Self Service Portal is a resident facing portal that lets a person log in to the portal using a national ID or other IDs, and perform the following functions:
@@ -25,3 +27,7 @@ The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to 
 ## Detailed features&#x20;
 
 {% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-19" %}
+
+## Registration demo
+
+{% embed url="https://www.youtube.com/watch?v=DZweP3qKkn8" %}

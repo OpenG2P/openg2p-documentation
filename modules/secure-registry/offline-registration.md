@@ -14,3 +14,6 @@ OpenG2P offers mechanisms to carry out registrations on the field in areas where
 
 {% embed url="https://docs.google.com/presentation/d/1s278Cyq6neU_OhdL4E7t60zDWLpF_Wxprc5HFlyGlu0/edit?usp=sharing" %}
 
+## Offline registration demo
+
+{% embed url="https://www.youtube.com/watch?v=0jjkq4SoONM" %}

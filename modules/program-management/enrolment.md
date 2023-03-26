@@ -11,3 +11,7 @@ Program eligibility could be defined as simple filters on the data collected for
 ## Program assignment
 
 ## Program enrolment
+
+### Demo
+
+{% embed url="https://www.youtube.com/watch?v=5NOfSTehmtU" %}
