@@ -6,7 +6,7 @@ The guide here provides steps to create a new user and assign a role. This proce
 
 ## Pre-requisites
 
-* The user should have an Administrator role
+The user should have an Administrator role.
 
 ## Steps
 
@@ -14,18 +14,16 @@ The guide here provides steps to create a new user and assign a role. This proce
 
 <figure><img src="../../.gitbook/assets/settings-menu-bar.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Users & Companies_ and then choose Users, will navigate to the user's list view page.
+2. Click on _Users & Companies_ and then select _Users_ to reach user's list view page.
 
 <figure><img src="../../.gitbook/assets/user-and-companies.png" alt=""><figcaption></figcaption></figure>
 
-3. Click on the _Create_ button and will be navigated to the user creation page.
+3. Click on the _Create_ button to reach user creation page.
 
 <figure><img src="../../.gitbook/assets/user-creation-page.png" alt=""><figcaption></figcaption></figure>
 
-4. _Email_ - Provide the valid email Id because invitation mail will be sent over.
+4. _Email:_ Provide a valid email Id. The invitation email will be sent to this Id.
 5. Select the role for a user from the _OpenG2P module access_ section.&#x20;
-
-* User roles and functionalities
 
 <figure><img src="../../.gitbook/assets/openg2p-module-access.png" alt=""><figcaption></figcaption></figure>
 
