@@ -1,7 +1,5 @@
 # Self Service Portal
 
-##
-
 ## Introduction
 
 Self Service Portal is a resident facing portal that lets a person log in to the portal using a national ID or other IDs, and perform the following functions:
@@ -11,6 +9,8 @@ Self Service Portal is a resident facing portal that lets a person log in to the
 * Update demographic information
 * Apply for a new program
 * View a list of all programs offered by the government/ministry/department.
+
+OpenG2P offers a reference implementation of such a self service portal.
 
 ## OpenID Connect integration
 
