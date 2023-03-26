@@ -20,8 +20,6 @@ Users can log in via any OpenID Connect (OIDC) Auth provider. Any ID system that
 
 The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to provide user login via MOSIP ID.&#x20;
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
-
 ## Program application form
 
 ## Detailed features&#x20;
