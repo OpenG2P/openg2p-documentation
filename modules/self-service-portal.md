@@ -14,17 +14,19 @@ OpenG2P offers a reference implementation of such a self service portal.
 
 ## OpenID Connect integration
 
-Users can log in via any OpenID Connect (OIDC) Auth provider. Any ID system that implements ODIC specification can be integrated with Self Service Portal for user login.&#x20;
+Users can log in via any OpenID Connect (OIDC) Auth provider. Any ID system that implements ODIC specification can be integrated with Self Service Portal for user login.
 
 ### Login using MOSIP ID
 
-The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to provide user login via MOSIP ID.&#x20;
+The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to provide user login via MOSIP ID.
+
+<figure><img src="../.gitbook/assets/ssp-login-page.png" alt=""><figcaption></figcaption></figure>
 
 ## Program application form
 
-## Detailed features&#x20;
+## Detailed features
 
-{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-19" %}
+\{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-19" %\}
 
 ## Registration demo
 
