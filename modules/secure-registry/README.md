@@ -28,6 +28,22 @@ Identification of records in the registry is done with configured [ID types](id-
 
 #### Group membership kind
 
+## Records management
+
+### Merging&#x20;
+
+### Archival&#x20;
+
+### Delete
+
+### Export
+
+### Notification
+
+Notification via SMS and Email may be sent to the selected records.
+
+### Self service portal access&#x20;
+
 ## Registration Process
 
 * Program creation&#x20;
@@ -40,7 +56,7 @@ Identification of records in the registry is done with configured [ID types](id-
 * ID verification and KYC
 
 {% hint style="info" %}
-### Next generation registry
+### <mark style="color:purple;">Next generation registry</mark>
 
 In the roadmap of OpenG2P, an enhanced secure registry with the following features is planned.&#x20;
 

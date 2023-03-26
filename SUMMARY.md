@@ -46,6 +46,8 @@
 ## Guides
 
 * [📔 How-To Guides](guides/user-guides/README.md)
+  * [Provide self service portal access to registrants](guides/user-guides/provide-self-service-portal-access-to-registrants.md)
+  * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
   * [Create Program](guides/user-guides/create-a-program.md)
   * [Create User And Assign Role](guides/user-guides/assign-roles-to-users.md)
   * [Create ODK Form](guides/user-guides/create-odk-form.md)
