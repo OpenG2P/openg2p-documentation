@@ -24,10 +24,6 @@ The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to 
 
 ## Program application form
 
-## Detailed features
-
-\{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-19" %\}
-
 ## Registration demo
 
 {% embed url="https://www.youtube.com/watch?v=DZweP3qKkn8" %}
