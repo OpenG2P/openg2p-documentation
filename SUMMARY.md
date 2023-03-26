@@ -47,8 +47,8 @@
 
 * [📔 How-To Guides](guides/user-guides/README.md)
   * [Create Program](guides/user-guides/create-a-program.md)
-  * [Create Portal Form](guides/user-guides/create-portal-form.md)
-  * [Assign Roles to Users](guides/user-guides/assign-roles-to-users.md)
+  * [Create User And Assign Role](guides/user-guides/create-user-and-assign-role.md)
+  * [Create an ODK form](guides/user-guides/create-an-odk-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
 * [👩💻 Developer Zone](guides/developer-guides/README.md)

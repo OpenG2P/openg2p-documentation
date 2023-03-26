@@ -6,7 +6,7 @@ The guide here provides steps to create a new program. A program is typically cr
 
 ## Pre-requisites
 
-The user must have a Program Manager role. See [Assign Roles to Users](assign-roles-to-users.md) guide.
+The user must have a Program Manager role. See [Assign Roles to Users](create-user-and-assign-role.md) guide.
 
 ## Steps
 
@@ -24,7 +24,7 @@ The user must have a Program Manager role. See [Assign Roles to Users](assign-ro
     <figure><img src="../../.gitbook/assets/cycle-manager.png" alt=""><figcaption></figcaption></figure>
 
     * _Auto-approve Entitlements:_ To set entitlements via rules, without any manual approvals.
-    * _Approver Group:_ The group name of the user who has permission to approve cycles. See [Assign Roles to Uses](assign-roles-to-users.md).
+    * _Approver Group:_ The group name of the user who has permission to approve cycles. See [Assign Roles to Uses](create-user-and-assign-role.md).
     * _Recurrence:_ The time period for the repetition of a cycle.
 6.  **Entitlement Manager:**  Set parameters for [entitlements](../../modules/program-management/entitlement.md).
 
@@ -37,13 +37,11 @@ The user must have a Program Manager role. See [Assign Roles to Users](assign-ro
     * _Maximum number of individuals in a group:_  Maximum number of individuals who get disbursements per group (optional).
     * _Transfer Fee(%):_ Fee incurred for disbursement as a percentage of disbursement (optional).
     * _Transfer Fee Amount:_ Fee incurred for disbursement as an absolute amount (optional).
-    * _Entitlement Validation Group:_ The group name of the user who has permission to approve entitlements. See [Assign Roles to Uses](assign-roles-to-users.md).&#x20;
-7. **Map Portal form:** Map a portal form to this program.  [Create a portal form](create-portal-form.md) before this mapping. &#x20;
+    * _Entitlement Validation Group:_ The group name of the user who has permission to approve entitlements. See [Assign Roles to Uses](create-user-and-assign-role.md).&#x20;
+7. **Map Portal form:** Map a portal form to this program.  [Create a portal form](broken-reference) before this mapping. &#x20;
 8. Click the _Next_ button to import the matching registrants to the creating program. In the pop-up window select _Yes_.
-9.
 
-    <figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
-10. &#x20;Once the program is created it will be listed under the program list view page.
+<figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/program-list-view-page.png" alt=""><figcaption></figcaption></figure>
+9. Once the program is created it will be listed under the program list view page.
 
