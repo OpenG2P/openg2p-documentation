@@ -53,7 +53,7 @@
   * [Create ODK Form](guides/user-guides/create-odk-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
-* [👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
+* [👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Creating Custom Payment Connector](guides/developer-guides/creating-custom-payment-connector.md)
   * [Github Repositories](guides/developer-guides/github-repositories/README.md)
