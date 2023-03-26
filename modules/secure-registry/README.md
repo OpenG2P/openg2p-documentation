@@ -2,33 +2,71 @@
 
 ## Introduction
 
-OpenG2P offers a secure registry that stores person details that have been collected across multiple programs. Duplication of person's data is avoided by deduplicating using the unique ID associated with the person (like MOSIP) or by running demographic deduplication heuristics such that the same person is not added multiple times to the same registry. To avoid duplication of fields like age, date of birth, city etc., the fields are "codified" with [schemas](schema-for-fields.md).&#x20;
+The registration module of OpenG2P offers registration of persons into programs via the following methods:
 
-The data in the registry is encrypted at rest.\*\*
+1. Agent assisted registration&#x20;
+2. Self-registration by a potential beneficiary&#x20;
+3. API-based registration by other systems
 
-The registry is queried by various programs to create beneficiary list.  See [Program Management](../beneficiary-management.md). The queried data is **anonymised** such that Personally Identifiable Information (PII) is not exposed in a human readable form or provided to downstream systems.&#x20;
+Agent-assisted registration supports [offline registration](offline-registration.md) in areas where connectivity may be a challenge.
 
-Registry supports the following features\*\*:
+Registration can be done for individuals or groups like families, households, schools etc.
+
+## Identification of records
+
+Identification of records in the registry is done with configured [ID types](id-types.md). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license etc.&#x20;
+
+## Individual and groups
+
+### Individual registry
+
+### Group registry&#x20;
+
+#### Group relationships
+
+#### Group types
+
+#### Group membership kind
+
+## Registration Process
+
+* Program creation&#x20;
+* ODK form template creation&#x20;
+* Upload of form to ODK Central
+* Assigning forms to agents
+* Field registration by the agent using ODK Collect on an Android tablet/phone.
+* Submission of form to ODK Central
+* Addition of record to the registry&#x20;
+* ID verification and KYC
+
+{% hint style="info" %}
+### Next generation registry
+
+In the roadmap of OpenG2P, an enhanced secure registry with the following features is planned.&#x20;
 
 1. Tokenised registry
 2. Schema base fields
 3. REST APIs interface
-4. Verification with ID system
+4. Verification with an ID system
 5. Deduplicated entries
 6. CRUD operations
-7. Attestation
-8. Evidence
-9. Verifiable credentials
-10. Anonymous profile
-11. Complex queries
-
-{% hint style="info" %}
-\*\* Full implementations of these features will be available in version 1.2.x of OpenG2P.
+7. Complex queries
+8. Anonymous profile
+9. Data encrypted at rest
+10. Verifiable credentials
+11. Evidence
+12. Attestation
 {% endhint %}
 
-## Individuals and groups
+## FAQ
 
-A registry may contain individuals or groups like family, household etc.&#x20;
+<details>
+
+<summary></summary>
+
+
+
+</details>
 
 
 
