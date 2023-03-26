@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Self Service Portal is a resident facing portal that lets a person log in to the portal using a national ID or other IDs, and perform the following functions:
+OpenG2P offers a _reference implementation_ of a person facing Self Service Portal that lets a person log in to the portal using a national ID or other IDs, and perform the following functions:
 
 * View enrolled programs
 * View all the demographic information submitted across programs
