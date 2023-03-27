@@ -12,6 +12,10 @@ Agent-assisted registration supports [offline registration](offline-registration
 
 Registration can be done for individuals or groups like families, households, schools etc.
 
+A high-level view of the agent assisted registration flow is given below:
+
+{% embed url="https://docs.google.com/presentation/d/1qpqvp83VYzUkMWwePT_Ohb06rTvPxvWn--C39YZX47k/edit?usp=share_link" %}
+
 ## Identification of records
 
 Identification of records in the registry is done with configured [ID types](id-types.md). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license etc.&#x20;
