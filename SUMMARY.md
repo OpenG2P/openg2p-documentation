@@ -54,7 +54,7 @@
     * [ODK Form Mapping](guides/user-guides/form-mapping/odk-form-mapping.md)
     * [Portal Form Mapping](guides/user-guides/form-mapping/portal-form-mapping.md)
   * [Create MTS Connector](guides/user-guides/create-mts-connector.md)
-  * [Provide self service portal access to registrants](guides/user-guides/provide-self-service-portal-access-to-registrants.md)
+  * [Provide Self Service Portal Access to Registrants](guides/user-guides/provide-self-service-portal-access-to-registrants.md)
   * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
