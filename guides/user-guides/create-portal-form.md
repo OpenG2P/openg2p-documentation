@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides steps to create a new portal form for a program.
+This guide provides steps to create a new portal form for a program. This form will show up on the Self Service Portal when the user selects a program to apply.
 
 ## Pre-requisites
 
@@ -31,4 +31,4 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 <figure><img src="../../.gitbook/assets/field-section.png" alt=""><figcaption></figcaption></figure>
 
 6. Add more form fields using _+Field_ from the _STYLE_ section.
-7. Save the form once the form is designed as per requirements using the _Save_ button.
+7. Save the form using the _Save_ button.
