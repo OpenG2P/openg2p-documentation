@@ -10,7 +10,7 @@ Below is the reference architecture of how the disbursements could be triggered 
 
 <figure><img src="../.gitbook/assets/openg2p-payment-manager-connections.svg" alt=""><figcaption></figcaption></figure>
 
-## Proof of concept implementation - demo #1 <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
+## Payments demo <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
 {% embed url="https://www.loom.com/share/29de864fd01a47dcbbdc9eee057b274b" %}
 
