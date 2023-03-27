@@ -1,16 +1,17 @@
-# Create ODK form
+# Create ODK Form
 
 ## Description
 
-This guide provides steps to create a new [ODK form](../../modules/secure-registry/offline-registration.md#odk-form) for a program.
+This guide provides steps to create a new ODK form for a program.
 
 ## Pre-requisites
 
-The user should have an Administrator role. See [Create User and Assign Role](assign-roles-to-users.md) guide.
+* [ODK Central](https://docs.getodk.org/central-intro/) should be deployed and available.
+* The user should have an Administrator role. See [Create User and Assign Role](assign-roles-to-users.md) guide.
 
 ## Steps
 
-1. Login to [ODK Central](../../modules/secure-registry/offline-registration.md#odk-central).
+1. Login to ODK Central.&#x20;
 2. Click on the +_New_ button to create a new project
 
 <figure><img src="../../.gitbook/assets/odk-central.png" alt=""><figcaption></figcaption></figure>
