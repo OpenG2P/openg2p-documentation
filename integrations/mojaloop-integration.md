@@ -2,7 +2,11 @@
 
 ## Introduction <a href="#introduction" id="introduction"></a>
 
-This page describes reference implementation for payment integration between OpenG2P and Mojaloop based Financial Systems. The architecture and implementation mentioned below is purely for demonstrations and is not intended for production deployments.ArchitectureBelow is the reference architecture of how the disbursements could be triggered from OpenG2P.
+This page describes reference implementation for payment integration between OpenG2P and Mojaloop based Financial Systems. The architecture and implementation mentioned below is purely for demonstrations and is not intended for production deployments.
+
+## Architecture
+
+Below is the reference architecture of how the disbursements could be triggered from OpenG2P.
 
 <figure><img src="../.gitbook/assets/openg2p-payment-manager-connections.svg" alt=""><figcaption></figcaption></figure>
 
