@@ -7,7 +7,7 @@ This guide provides steps to create a new ODK form for a program.
 ## Pre-requisites
 
 * [ODK Central](https://docs.getodk.org/central-intro/) should be deployed and available.
-* The user should have an Administrator role. See [Create User and Assign Role](assign-roles-to-users.md) guide.
+* The user should have an Administrator role in ODK Central. See [Create User and Assign Role](assign-roles-to-users.md) guide.
 
 ## Steps
 

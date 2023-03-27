@@ -38,7 +38,7 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
     * _Transfer Fee(%):_ Fee incurred for disbursement as a percentage of disbursement (optional).
     * _Transfer Fee Amount:_ Fee incurred for disbursement as an absolute amount (optional).
     * _Entitlement Validation Group:_ The group name of the user who has permission to approve entitlements. See [Create User and Assign Role](assign-roles-to-users.md).&#x20;
-7. **Map Portal form:** Map a portal form to this program. [Create a portal form](broken-reference) before this mapping. &#x20;
+7. **Map Portal form:** Map a portal form to this program. [Create a portal form](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/xkdlCOLME2p03rS8nG8u/\~/changes/168/guides/user-guides/create-portal-form) before this mapping. &#x20;
 8. Click the _Next_ button to import the matching registrants to the creating program. In the pop-up window select _Yes_.
 
 <figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
