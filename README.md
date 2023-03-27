@@ -13,7 +13,3 @@ The project, co-founded by the Government of Sierra Leone and UNDP and supported
 ## The Social Benefits Delivery Chain
 
 {% embed url="https://docs.google.com/presentation/d/1-Jg9J3Xz92tqyJ1eMIMu0FcUe5SyTqVwM1cCr9O9GLY/edit?usp=sharing" %}
-
-## Registration flow
-
-{% embed url="https://docs.google.com/presentation/d/1qpqvp83VYzUkMWwePT_Ohb06rTvPxvWn--C39YZX47k/edit?usp=sharing" %}
