@@ -12,9 +12,13 @@ Below is the reference architecture of how the disbursements are triggered from 
 
 ## Payment process
 
-* The beneficiary list along with entitlements is created in OpenG2P
-* Payments are approved
-* &#x20;
+* The beneficiary list is created on OpenG2P
+* Payment cycles are created
+* Entitlements assigned&#x20;
+* Batches created
+* Batch payment triggered via Payment Manager. The request is sent to Payment Hub which in turn calls Mojaloop APIs running on DFSP1.
+
+
 
 ## Interoperability layer <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
@@ -22,7 +26,7 @@ The payment architecture may vary from country to country. An interoperability l
 
 <figure><img src="https://payments.mifos.org/wp-content/uploads/sites/20/2022/12/Screenshot-2022-12-27-at-10541-PM-transformed.png" alt=""><figcaption></figcaption></figure>
 
-Payment Hub connects to Mojaloop via the Mothe jaloop Connector.&#x20;
+Payment Hub connects to Mojaloop via the Mojaloop Connector.&#x20;
 
 {% hint style="info" %}
 As part of the roadmap, OpenG2P is working towards supporting payments interfaces being defined as part of the [G2P Connect](https://g2pconnect.global/) initiative.&#x20;
@@ -30,15 +34,13 @@ As part of the roadmap, OpenG2P is working towards supporting payments interface
 
 ## Payments demo <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
-{% embed url="https://www.loom.com/share/29de864fd01a47dcbbdc9eee057b274b" %}
+{% embed url="https://www.youtube.com/watch?v=O_CyoNZ2Mig" %}
 
 For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), as payment manager from OpenG2P.
 
 * OpenG2P uses the configured Payment Manager and triggers payments in the way the payment manager understands.
 * In the following implementation OpenG2P sends the list of Payments to be triggered to the [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), which in turn calls the pre-configured DFSP with relevant Payer and Payee details. (Payer being the Government/Department/Treasury)
 * The following simulators and services (from the diagram) are used in place of real systems.
-
-<figure><img src="../.gitbook/assets/openg2p-mojaloop-integration-setup.svg" alt=""><figcaption></figcaption></figure>
 
 ### Usage - payment cycle guide <a href="#usage-payment-cycle-guide" id="usage-payment-cycle-guide"></a>
 

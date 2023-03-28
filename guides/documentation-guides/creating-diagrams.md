@@ -18,7 +18,7 @@ Creating editable diagrams in open formats using open source tools is challengin
 * Login to gitbook.com and open the page you want to insert the image.
 * Insert the image using the options shown by Gitbook.
 
-## Edit existing diagram
+## Editing existing diagram
 
 * Fork `openg2p-documentation` repository to your local Github account.
 * On [Draw.io](https://app.diagrams.net/) website choose Github as your storage.
