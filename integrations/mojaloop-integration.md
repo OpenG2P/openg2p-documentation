@@ -12,9 +12,7 @@ Below is the reference architecture of how the disbursements are triggered from 
 
 ## Payment process
 
-The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of DSFP1. DFSP1 takes the transaction forward with Mojaloop Switch.
-
-
+The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of the Digital Financial Service Provider (DSFP). DFSP1 takes the transaction forward with Mojaloop Switch.
 
 ## Interoperability layer <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
