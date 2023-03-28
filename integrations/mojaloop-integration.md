@@ -12,11 +12,7 @@ Below is the reference architecture of how the disbursements are triggered from 
 
 ## Payment process
 
-* The beneficiary list is created on OpenG2P
-* Payment cycles are created
-* Entitlements assigned&#x20;
-* Batches created
-* Batch payment triggered via Payment Manager. The request is sent to Payment Hub which in turn calls Mojaloop APIs running on DFSP1.
+The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of DSFP1. DFSP1 takes the transaction forward with Mojaloop Switch.
 
 
 
@@ -36,28 +32,3 @@ As part of the roadmap, OpenG2P is working towards supporting payments interface
 
 {% embed url="https://www.youtube.com/watch?v=O_CyoNZ2Mig" %}
 
-For the purposes of PoC Demonstration, we have chosen [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), as payment manager from OpenG2P.
-
-* OpenG2P uses the configured Payment Manager and triggers payments in the way the payment manager understands.
-* In the following implementation OpenG2P sends the list of Payments to be triggered to the [SP Convergence Payment Interoperability Layer](https://sp-convergence.github.io/payments-interoperability-layer/documentation/pocs/G2P.html), which in turn calls the pre-configured DFSP with relevant Payer and Payee details. (Payer being the Government/Department/Treasury)
-* The following simulators and services (from the diagram) are used in place of real systems.
-
-### Usage - payment cycle guide <a href="#usage-payment-cycle-guide" id="usage-payment-cycle-guide"></a>
-
-(TODO: Elaborate)
-
-#### **Prerequisites**
-
-* The relevant registrant are registered into OpenG2P.
-* The relevant Program is to be configured with the details of entitlement, eligibility etc.
-
-#### **Procedure**
-
-* Configure a new Payment manager on the Program, with all the required details.
-* Enrol eligible registrants into the program.
-* Create a new "Cycle" on the program.
-* Create Entitlements.
-* Approve Entitlements.
-* Approve Cycle.
-* Prepare Payments. Payment Batches are created based on the configurations.
-* Send Payments. Payment Batches will be disbursed based on the configurations.

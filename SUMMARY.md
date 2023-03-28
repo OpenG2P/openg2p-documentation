@@ -62,6 +62,7 @@
     * [Offline Registration](guides/user-guides/registration/offline-registration.md)
     * [Online Self Registartion](guides/user-guides/registration/online-self-registartion.md)
   * [Provide Self Service Portal Access to Registrants](guides/user-guides/provide-self-service-portal-access-to-registrants.md)
+  * [Configure Payment Manager](guides/user-guides/configure-payment-manager.md)
   * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
