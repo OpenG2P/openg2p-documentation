@@ -6,7 +6,7 @@ This guide will help to provide the form access to the field agent. which helps 
 
 ## Pre-requisites
 
-* Access Providers should have the Administrator role in ODK Central.
+The access provider should have the Administrator role in ODK Central.
 
 ## Steps
 
@@ -20,10 +20,10 @@ This guide will help to provide the form access to the field agent. which helps 
 <figure><img src="../../../.gitbook/assets/odk-app-users.png" alt=""><figcaption></figcaption></figure>
 
 4. Click on the +_Create App User_ button to add a field agent to the program.
-5. Provide the name of the field agent on the popup window and click on _Create_ button, Agent name will be listed under the App user list.
+5. Provide the name of the field agent on the popup window and click on _Create_ button. Agent name will be listed under the App user list.
 
 <figure><img src="../../../.gitbook/assets/create-app-user.png" alt=""><figcaption></figcaption></figure>
 
-6. Navigate to _Form Access_, select forms to give access to the field agent and click on the _Save_ button.
+6. Navigate to _Form Access_ and __ select the forms for which access is to be given. Click on the _Save_ button.
 
 <figure><img src="../../../.gitbook/assets/form-access.png" alt=""><figcaption></figcaption></figure>
