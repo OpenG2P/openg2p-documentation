@@ -15,7 +15,7 @@ Creating editable diagrams in open formats using open source tools is challengin
 <figure><img src="../../.gitbook/assets/draw-io-file-format.png" alt=""><figcaption></figcaption></figure>
 
 * Create the diagram and save it on your local machine. Make sure you follow the file naming convention of lowercase with hyphens as word separations.
-* Login to gitbook.com and open the page you want to insert the image.
+* Login to Gitbook and open the page you want to insert the image.
 * Insert the image using the options shown by Gitbook.
 
 ## Editing existing diagram
