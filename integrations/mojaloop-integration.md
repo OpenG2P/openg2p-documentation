@@ -6,7 +6,7 @@ This page describes the integration of OpenG2P with the [Mojaloop](https://mojal
 
 ## Functional architecture
 
-Below is the reference architecture of how the disbursements are triggered from OpenG2P.
+Below is the reference architecture of disbursements triggered from OpenG2P resulting in cash transfers.
 
 <figure><img src="../.gitbook/assets/openg2p-payments-diagram-drawio.svg" alt=""><figcaption><p>OpenG2P Payments Functional Architecture</p></figcaption></figure>
 
@@ -16,10 +16,10 @@ The beneficiary list is created on OpenG2P. After creating payment cycles and en
 
 Reconciliation at the OpenG2P end is done via status API calls to Payment Hub which is responsible for gathering payment status information of all transactions from DFSPs and Switch.
 
-In the current integration, the account id of the payee is available in OpenG2P registry and passed on to Payment Hub (hence propagated to Mojaloop). The account id of the payer is configured in the[ Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md).&#x20;
+In the current integration, the account id of the payee is available in the OpenG2P registry and passed on to Payment Hub (hence propagated to Mojaloop). The account id of the payer is configured in the[ Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md).&#x20;
 
 {% hint style="info" %}
-If [Account Mapper](https://g2pconnect.global/) is available as part of Digital Public Infrastructure, then the account id need not be stored in OpenG2P registry.
+If [Account Mapper](https://g2pconnect.global/) is available as part of Digital Public Infrastructure, then the account id need not be stored in the OpenG2P registry.
 {% endhint %}
 
 ## Payment Hub <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
