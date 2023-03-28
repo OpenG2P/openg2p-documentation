@@ -8,7 +8,7 @@ This page describes the integration of OpenG2P with the [Mojaloop](https://mojal
 
 Below is the reference architecture of how the disbursements are triggered from OpenG2P.
 
-<figure><img src="../.gitbook/assets/openg2p-payment-manager-connections.svg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/openg2p-payments-diagram-drawio.svg" alt=""><figcaption></figcaption></figure>
 
 ## Payment process
 
