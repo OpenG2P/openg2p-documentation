@@ -2,13 +2,19 @@
 
 ## Introduction <a href="#introduction" id="introduction"></a>
 
-This page describes integration of OpenG2P with the [Mojaloop](https://mojaloop.io/) switch enabling cash transfer from one bank (treasury bank, for instance) to an individual's bank account. The connection to Mojaloop is achieved via an intermediate interoperability layer like the [Payment Hub](https://payments.mifos.org/) of Mifos.&#x20;
+This page describes the integration of OpenG2P with the [Mojaloop](https://mojaloop.io/) switch enabling cash transfer from one bank (treasury bank, for instance) to an individual's bank account. The connection to Mojaloop is achieved via an intermediate interoperability layer like the [Payment Hub](https://payments.mifos.org/) of Mifos.&#x20;
 
 ## Architecture
 
-Below is the reference architecture of how the disbursements could be triggered from OpenG2P.
+Below is the reference architecture of how the disbursements are triggered from OpenG2P.
 
 <figure><img src="../.gitbook/assets/openg2p-payment-manager-connections.svg" alt=""><figcaption></figcaption></figure>
+
+## Payment process
+
+* The beneficiary list along with entitlements is created in OpenG2P
+* Payments are approved
+* &#x20;
 
 ## Interoperability layer <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
