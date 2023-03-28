@@ -4,11 +4,11 @@
 
 This page describes the integration of OpenG2P with the [Mojaloop](https://mojaloop.io/) switch enabling cash transfer from one bank (treasury bank, for instance) to an individual's bank account. The connection to Mojaloop is achieved via an intermediate interoperability layer like the [Payment Hub](https://payments.mifos.org/) of Mifos.&#x20;
 
-## Architecture
+## Functional Architecture
 
 Below is the reference architecture of how the disbursements are triggered from OpenG2P.
 
-<figure><img src="../.gitbook/assets/openg2p-payments-diagram-drawio.svg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/openg2p-payments-diagram-drawio.svg" alt=""><figcaption><p>OpenG2P Payments Functional Architecture</p></figcaption></figure>
 
 ## Payment process
 
@@ -20,7 +20,7 @@ The beneficiary list is created on OpenG2P. After creating payment cycles and en
 
 The payment architecture may vary from country to country. An interoperability layer like Payment Hub shields the downstream variations by offering a uniform payments API interface such that systems like OpenG2P do not have to modify the payments code, thus enabling interoperability with any payment system. Of course, customisation needs to be done on the Payment Hub, where a specific Payment Connector needs to be created specifically for the payment systems interface.&#x20;
 
-<figure><img src="https://payments.mifos.org/wp-content/uploads/sites/20/2022/12/Screenshot-2022-12-27-at-10541-PM-transformed.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://payments.mifos.org/wp-content/uploads/sites/20/2022/12/Screenshot-2022-12-27-at-10541-PM-transformed.png" alt=""><figcaption><p>Payment Hub</p></figcaption></figure>
 
 Payment Hub connects to Mojaloop via the Mojaloop Connector.&#x20;
 
