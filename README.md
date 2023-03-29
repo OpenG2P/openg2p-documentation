@@ -10,6 +10,4 @@ OpenG2P is a DPG (Digital Public Good) recognized by the DPGA and has received c
 
 The project, co-founded by the Government of Sierra Leone and UNDP and supported by Mifos ([https://mifos.org/](https://mifos.org/)) in the early stages, is now housed in [IIIT Bengaluru](https://www.iiitb.ac.in/), a university in India.
 
-## The Social Benefits Delivery Chain
-
 <figure><img src=".gitbook/assets/deliery-chain.png" alt=""><figcaption></figcaption></figure>
