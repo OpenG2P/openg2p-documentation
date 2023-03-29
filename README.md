@@ -12,4 +12,4 @@ The project, co-founded by the Government of Sierra Leone and UNDP and supported
 
 ## The Social Benefits Delivery Chain
 
-{% embed url="https://docs.google.com/presentation/d/1-Jg9J3Xz92tqyJ1eMIMu0FcUe5SyTqVwM1cCr9O9GLY/edit?usp=sharing" %}
+<figure><img src=".gitbook/assets/deliery-chain.png" alt=""><figcaption></figcaption></figure>
