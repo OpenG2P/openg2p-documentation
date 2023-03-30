@@ -6,7 +6,8 @@
 
 * [🏥 Self Service Portal](epics/self-service-portal/README.md)
   * [eSignet Login](epics/self-service-portal/esignet-login.md)
-* [📈 Platform Enhancements](epics/platform-enhancements.md)
+* [📈 Platform Enhancements](epics/platform-enhancements/README.md)
+  * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
 * [💵 Payments](epics/payments.md)
 
 ## Testing
