@@ -14,7 +14,7 @@ Registration can be done for individuals or groups like families, households, sc
 
 A high-level view of the agent assisted registration flow is given below:
 
-{% embed url="https://docs.google.com/presentation/d/1qpqvp83VYzUkMWwePT_Ohb06rTvPxvWn--C39YZX47k/edit?usp=share_link" %}
+<figure><img src="../../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
 ## Identification of records
 

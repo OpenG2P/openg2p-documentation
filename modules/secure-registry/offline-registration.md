@@ -12,7 +12,7 @@ ODK is an open source toolkit that uses offline forms to collect data.  ODK Coll
 
 A typical flow of enrolling a beneficiary by collecting data on the field by an agent, in offline mode, is illustrated below.
 
-{% embed url="https://docs.google.com/presentation/d/1s278Cyq6neU_OhdL4E7t60zDWLpF_Wxprc5HFlyGlu0/edit?usp=sharing" %}
+<figure><img src="../../.gitbook/assets/cash-grant-scenario.png" alt=""><figcaption></figcaption></figure>
 
 ## Offline registration demo
 
