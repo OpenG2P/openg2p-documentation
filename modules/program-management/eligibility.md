@@ -8,6 +8,8 @@ A given program will have certain criteria to consider individuals eligible for 
 
 In OpenG2P, Eligibility Manager is a separate software module where the eligibility of a program is configured. If custom plugins are written, they are added to the Eligibility Manager.
 
+Note that one eligibility manager can be associated with only one program. Each program should have its own eligibility manager created and configured.
+
 ## Domain filters
 
 ## Custom eligibility plugins
