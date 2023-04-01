@@ -1,2 +1,0 @@
-# Configure Payment Manager
-

@@ -18,7 +18,7 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 3.  **Eligibility criteria:**
 
     <figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption><p>Configure eligibility criteria</p></figcaption></figure>
-4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](../../modules/program-management/eligibility.md#domain-filters). You may set multiple eligibility criteria.&#x20;
+4. Use_+Add filter_ to set eligibility criteria using [Domain Filters](../../modules/program-management/eligibility.md#domain-filters). You may set multiple eligibility criteria.&#x20;
 5.  **Cycle Manager:**  Set parameters of [disbursement cycles](../../modules/beneficiary-management/disbursement-cycles.md).
 
     <figure><img src="../../.gitbook/assets/cycle-manager.png" alt=""><figcaption></figcaption></figure>
