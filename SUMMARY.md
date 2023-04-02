@@ -57,7 +57,7 @@
   * [Download Form on ODK Collect](guides/user-guides/download-form-on-odk-collect.md)
   * [Create MTS Connector](guides/user-guides/create-mts-connector/README.md)
     * [Create ODK MTS Connector](guides/user-guides/create-mts-connector/create-odk-mts-connector.md)
-    * [Create OpenG2P Registry MTS Connector.](guides/user-guides/create-mts-connector/create-openg2p-registry-mts-connector..md)
+    * [Create OpenG2P Registry MTS Connector](guides/user-guides/create-mts-connector/create-openg2p-registry-mts-connector.md)
   * [Registration](guides/user-guides/registration/README.md)
     * [Offline Registration](guides/user-guides/registration/offline-registration.md)
     * [Online Self Registartion](guides/user-guides/registration/online-self-registartion.md)
