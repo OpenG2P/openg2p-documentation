@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-04-06T09:01:07.411Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="pfbnmDT4DliPB-nFcNS-" version="21.1.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-04-06T09:01:14.944Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="PiF-yhw3PEUmbHkNgxY0" version="21.1.2" type="github">
   <diagram name="Page-1" id="4CPgPNE-6awET73HkTQn">
     <mxGraphModel dx="1434" dy="834" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="800" math="0" shadow="0">
       <root>
@@ -78,7 +78,7 @@
           <mxGeometry x="720" y="550" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="8cWyVWaOQBvI74vChej5-27" value="Scan Vucher" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;" vertex="1" parent="1">
-          <mxGeometry x="371" y="550" width="170" height="60" as="geometry" />
+          <mxGeometry x="360" y="550" width="170" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
