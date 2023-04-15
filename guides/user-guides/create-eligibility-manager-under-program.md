@@ -1,8 +1,8 @@
-# Create Eligibility Manager
+# Create Eligibility Manager under Program
 
 ## Description
 
-This guide provides steps to create and configure the eligibility manager.
+This guide provides steps to create and configure the eligibility manager inside the program.
 
 ## Pre-requisites
 

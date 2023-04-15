@@ -18,13 +18,13 @@ The user should have a role which is configured in the _Approver Group_ under _C
 
 <figure><img src="../../.gitbook/assets/program-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
-3. After Clicking on Create New Cycle, the new cycle will be added in the cycle section with _Draft_ status.
+3. After Clicking on _Create New Cycle_, the new cycle will be added in the cycle section with _Draft_ status.
 
 <figure><img src="../../.gitbook/assets/program-detailed-view.png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/draft-cycle.png" alt=""><figcaption></figcaption></figure>
 
-4. Navigate inside the cycle using the button beside the cycle name.&#x20;
+4. Navigate inside the cycle using the arrow icon button beside the cycle name.&#x20;
 5. After clicking on _Copy Beneficiaries from Program_ button program beneficiaries will be copied into the cycle.
 
 <figure><img src="../../.gitbook/assets/cycle-detailed-view-page.png" alt=""><figcaption></figcaption></figure>

@@ -1,4 +1,4 @@
-# Create Payment Manager
+# Create Payment Manager under Program
 
 ## Description
 
@@ -34,7 +34,7 @@ The user must have the Program Manager role.
 
 <figure><img src="../../.gitbook/assets/payment-method.png" alt=""><figcaption></figcaption></figure>
 
-7. If a payment manager is already created ([Create Payment Manager](create-payment-manager-1/)), search and select the same or else once the name is provided to the program manager, _Create and Edit_ buttons will appear. Click on _Create and Edit_ to create a payment manager.
+7. If a payment manager is already created ([Create Payment Manager](create-payment-managers-types/)), search and select the same or else once the name is provided to the program manager, _Create and Edit_ buttons will appear. Click on _Create and Edit_ to create a payment manager.
 
 <figure><img src="../../.gitbook/assets/payment-manager-name.png" alt=""><figcaption></figcaption></figure>
 

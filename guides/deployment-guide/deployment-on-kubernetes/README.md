@@ -8,11 +8,11 @@ description: Work in progress
 
 The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.&#x20;
 
-## Cluster setup
+## Pre-requisites
 
-* Kubernetes Cluster, with given [requirements](broken-reference). Use this guide to [setup the K8s Cluster](broken-reference).
+* K8s cluster is set up as given [here](cluster-setup.md).
 
-## Installation
+## Installation of OpenG2P
 
 * This section assumes the OpenG2P docker is already packaged. See Packaging Instructions.
 * Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging)  and go to [charts/openg2p](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/openg2p) directory
@@ -33,7 +33,7 @@ The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) clust
           --set global.selfServiceHostname=selfservice.openg2p.sandbox.net
       ```
 
-## ODK Installation
+## Installation of ODK
 
 *   From the [charts/odk-central](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/odk-central) directory, run the following to install ODK helm chart.
 

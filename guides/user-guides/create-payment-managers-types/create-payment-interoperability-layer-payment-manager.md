@@ -26,7 +26,7 @@ The user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/payment-interop-creation-page (1).png" alt=""><figcaption></figcaption></figure>
 
-5. Once the payment manager is saved it will be listed under the payment manager list view page which further can be used under the program configuration for which it was created.
+5. Once the payment manager is saved it will be listed under the payment manager list view page which further can be used under the program configuration for which it is mapped.
 
 <figure><img src="../../../.gitbook/assets/payment-interop-listview-page.png" alt=""><figcaption></figcaption></figure>
 

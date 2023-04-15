@@ -23,5 +23,5 @@ This Guide will help to create the [ODK MTS Connector](../../../integrations/int
 
 <figure><img src="../../../.gitbook/assets/mts-input-type-odk.png" alt=""><figcaption></figcaption></figure>
 
-4. Click the Save button and the connector will be listed under the MTS  Connectors list view page.
+4. Click the _Save_ button and the connector will be listed under the MTS  Connectors list view page.
 5. Click on _Start_ in the MTS Collectors list view page to start the created connector.

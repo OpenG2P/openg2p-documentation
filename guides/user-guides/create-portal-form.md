@@ -22,11 +22,11 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 
 <figure><img src="../../.gitbook/assets/website-home-page.png" alt=""><figcaption></figcaption></figure>
 
-4. Click on Page to create a form.
+4. Click on _Page_ to create a form.
 
 <figure><img src="../../.gitbook/assets/page-form.png" alt=""><figcaption></figcaption></figure>
 
-5. Provide the form name in the Page title field and click on _Create_ button of the New Page pop-up window.
+5. Enter the page title and click on _Create_ button under New Page pop-up window.
 
 <figure><img src="../../.gitbook/assets/new-page.png" alt=""><figcaption></figcaption></figure>
 

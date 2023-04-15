@@ -1,8 +1,8 @@
-# Configure Notification Manager
+# Create Notification Manager under Program
 
 ## Description
 
-This guide provides steps to create and configure the deduplication manager.
+This guide provides steps to create and configure the notification manager.
 
 ## Pre-requisites
 
@@ -10,7 +10,7 @@ The user must have the Program Manager role.
 
 ## Steps
 
-1. Navigate to Programs using the menu bar.&#x20;
+1. Navigate to _Programs_ using the menu bar.&#x20;
 
 <figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
@@ -18,7 +18,7 @@ The user must have the Program Manager role.
 
 <figure><img src="../../.gitbook/assets/program-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
-3. Navigate to the Configuration section on Program detailed view page.
+3. Navigate to the _Configuration_ section on Program detailed view page.
 
 <figure><img src="../../.gitbook/assets/program-detailed-view.png" alt=""><figcaption></figcaption></figure>
 

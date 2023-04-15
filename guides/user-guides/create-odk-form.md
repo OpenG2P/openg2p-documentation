@@ -25,7 +25,7 @@ This guide provides steps to create a new ODK form for a program.
 
 <figure><img src="../../.gitbook/assets/project-overview-page.png" alt=""><figcaption></figcaption></figure>
 
-5. Choose a file which has form values and upload it. To learn more about creating form files click here.
+5. Choose a file which has form values and upload it.
 
 <figure><img src="../../.gitbook/assets/form-upload.png" alt=""><figcaption></figcaption></figure>
 

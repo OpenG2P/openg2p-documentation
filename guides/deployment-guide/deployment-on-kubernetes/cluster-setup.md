@@ -4,18 +4,19 @@ description: Work in progress
 
 # Cluster Setup
 
-The following guide uses [RKE2](https://docs.rke2.io) to setup the Kubernetes Cluster.
+## Introduction
 
-## Setup
+The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (K8s) cluster.
 
-### Prerequisites
+## Prerequisites
 
-* The following tools are required on all the nodes and the client machine during the following setup.
+* The requirements for setting up the cluster are met as given [here](k8s-cluster-requirements.md).
+* The following tools are installed on all the nodes and the client machine.
   * `ufw` , `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`&#x20;
 
-### Firewall setup
+## Firewall setup
 
-*   Setup firewall rules on each node. The following uses `ufw` to setup firewall.
+*   Set up firewall rules on each node. The following uses `ufw` to setup firewall.
 
     * SSH into each node, and change to superuser.
     * Run the following command for each rule in the following table

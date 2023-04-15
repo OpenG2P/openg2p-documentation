@@ -20,5 +20,16 @@ This guide will help to download the program form on ODK Collect Application run
 <figure><img src="../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
 
 3. Open the ODK Collect application in the field agent device.
+
+<figure><img src="../../.gitbook/assets/odk-collect-app.png" alt=""><figcaption></figcaption></figure>
+
 4. Click on _Add Project_ to scan the configuration QR code.
-5. After scanning the _Client Configuration QR_ _code_ all the given access __ program forms will be downloaded to the field agent's device.
+
+<figure><img src="../../.gitbook/assets/odk-collect-project-scan.png" alt=""><figcaption></figcaption></figure>
+
+5. After scanning the _Client Configuration QR_ _code_ all the given access program forms will be downloaded to the field agent's device.
+
+<figure><img src="../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/odk-collect-program-home-page.png" alt=""><figcaption></figcaption></figure>
+

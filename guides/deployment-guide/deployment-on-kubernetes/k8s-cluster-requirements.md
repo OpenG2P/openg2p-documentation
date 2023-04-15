@@ -2,17 +2,26 @@
 description: Work in progress
 ---
 
-# Requirements
+# K8s Cluster Requirements
 
-The requirements to setup a Kubernetes Cluster, on which OpenG2P can be deployed, are given below.
+The requirements to set up a Kubernetes Cluster, on which OpenG2P can be deployed, are given below.
 
 ## Hardware requirements
 
-| Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of VMs\* | Preferred Operating System |
-| ------------- | :---: | :---: | :-----------: | --------------: | -------------------------- |
-| Cluster nodes |   12  | 32 GB |     128 GB    |               3 | Ubuntu Server 22.04        |
+### For Dev/QA/UAT setups
 
-\* Virtual Machines
+| Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
+| ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
+| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
+| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
+
+### For pilot setups
+
+| Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
+| ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
+| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
+| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
+| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server 22.04        |
 
 ## Networking configuration
 
@@ -24,9 +33,9 @@ The following domain names and mappings will be required. (The following is only
 
 | Domain                 | Mapped to                                                                   |
 | ---------------------- | --------------------------------------------------------------------------- |
-| openg2p.sandbox.net    | "A" Record mapped to atleast 3 nodes of the K8s Cluster.                    |
+| openg2p.sandbox.net    | "A" Record mapped to at least 3 nodes of the K8s Cluster.                   |
 | \*.openg2p.sandbox.net | "CNAME" Record mapped to the above domain. (This is a wildcard DNS mapping) |
 
 ## Certificate requirements
 
-One wildcard certificate is required atleast, depending on the above domain names used. This can also be generated using letsencrypt.
+One wildcard certificate is required at least, depending on the above domain names used. This can also be generated using letsencrypt.

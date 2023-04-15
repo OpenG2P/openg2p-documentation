@@ -10,11 +10,11 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 
 ## Steps
 
-1. Navigate to _Program_ using the menu bar.
+1. Navigate to _Programs_ using the menu bar.
 
 <figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption><p>Create a new program</p></figcaption></figure>
 
-2. Click on the _Create Program_ to reach the Program creation page.  Provide Program name, t[arget type](../../modules/beneficiary-management.md#target-types) and currency. There are tabs for the configuration of various managers.
+2. Click on the _Create Program_ to reach the Program creation page.  Provide Program name, target type and currency. There are tabs for the configuration of various managers.
 3.  **Eligibility criteria:**
 
     <figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption><p>Configure eligibility criteria</p></figcaption></figure>

@@ -1,8 +1,8 @@
-# Create Deduplication Manager
+# Create Deduplication Manager under Program
 
 ## Description
 
-This guide provides steps to create and configure the deduplication manager.
+This guide provides steps to create and configure the deduplication manager inside the program.
 
 ## Pre-requisites
 

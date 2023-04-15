@@ -1,4 +1,4 @@
-# Create OpenG2P Registry MTS Connector.
+# Create OpenG2P Registry MTS Connector
 
 ## Description
 
@@ -14,7 +14,7 @@ The user must have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/mts-connectors-menu-bar.png" alt=""><figcaption></figcaption></figure>
 
-2. Navigate to the MTS Connector creation page by clicking the _Create_ button on the MTS Connector list view page.
+2. Navigate to the MTS Connector creation page by clicking the _Create_ button.
 
 <figure><img src="../../../.gitbook/assets/connector-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
@@ -22,5 +22,5 @@ The user must have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/mts-input-type-openg2p-registry.png" alt=""><figcaption></figcaption></figure>
 
-4. Click on _Start_ in the MTS Collectors list view page to start the created connector.
-5. Click the Save button and the connector will be listed under the MTS  Connectors list view page.
+4. Click on the _Start_ button under the MTS Connectors list view page to start the created connector.
+5. Click the _Save_ button and the connector will be listed under the MTS  Connectors list view page.
