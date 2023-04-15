@@ -7,4 +7,4 @@ This guide will provide the steps for registering beneficiaries into the OpenG2P
 There are two ways of Registration:
 
 1. [Offline Registration](offline-registration.md)
-2. [Online Self Registration](online-self-registration.md)
+2. [Online Self Registration](online-self-registartion.md)

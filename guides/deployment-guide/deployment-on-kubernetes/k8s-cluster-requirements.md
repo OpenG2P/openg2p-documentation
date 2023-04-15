@@ -23,9 +23,10 @@ The requirements to set up a Kubernetes Cluster, on which OpenG2P can be deploye
 | Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
 | Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server 22.04        |
 
-## Networking configuration
+## Networking requirements
 
-WIP
+* All the machines in the same network.
+* Public IP assigned to the Wireguard machine.
 
 ## DNS requirements
 
