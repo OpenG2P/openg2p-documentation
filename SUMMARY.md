@@ -87,7 +87,7 @@
 * [👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Creating Custom Payment Connector](guides/developer-guides/creating-custom-payment-connector.md)
-  * [Github Repositories](guides/developer-guides/github-repositories/README.md)
+  * [About Github Repositories](guides/developer-guides/github-repositories/README.md)
     * [openg2p-registry](guides/developer-guides/github-repositories/openg2p-registry.md)
     * [openg2p-program](guides/developer-guides/github-repositories/openg2p-program.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
