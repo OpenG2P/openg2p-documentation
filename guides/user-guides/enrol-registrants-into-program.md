@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide will help to enrol registrants who are registered through offline registration and online self-registration process into the program.
+This guide will help enrol registrants into a program, who are registered through offline registration and online self-registration process.
 
 ## Pre-requisites
 
