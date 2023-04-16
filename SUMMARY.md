@@ -11,6 +11,7 @@
 * [💵 Payments](epics/payments.md)
 * [🛠 Proxy Means Test](epics/proxy-means-test.md)
 * [💰 Voucher based Payment](epics/voucher-based-payment.md)
+* [Pilot](epics/pilot.md)
 
 ## Testing
 
