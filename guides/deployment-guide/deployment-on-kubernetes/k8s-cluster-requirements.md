@@ -10,16 +10,16 @@ description: Work in progress
 
 | Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
 | ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
-| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
-| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
+| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 20.04        |
+| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 20.04        |
 
 ### For staging setups
 
 | Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
 | ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
-| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
-| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
-| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server f22.04       |
+| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 20.04        |
+| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 20.04        |
+| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server 20.04        |
 
 ### For production setups
 
