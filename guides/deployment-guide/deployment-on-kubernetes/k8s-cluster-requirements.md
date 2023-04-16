@@ -4,24 +4,26 @@ description: Work in progress
 
 # K8s Cluster Requirements
 
-The requirements to set up a Kubernetes Cluster, on which OpenG2P can be deployed, are given below.
-
 ## Hardware requirements
 
-### For Dev/QA/UAT setups
+### For sandbox setups
 
 | Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
 | ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
 | Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
 | Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
 
-### For pilot setups
+### For staging setups
 
 | Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
 | ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
 | Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 22.04        |
 | Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 22.04        |
-| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server 22.04        |
+| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server f22.04       |
+
+### For production setups
+
+TBD
 
 ## Networking requirements
 
