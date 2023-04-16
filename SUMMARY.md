@@ -93,7 +93,7 @@
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
   * [Deployment on Kubernetes](guides/deployment-guide/deployment-on-kubernetes/README.md)
     * [K8s Cluster Requirements](guides/deployment-guide/deployment-on-kubernetes/k8s-cluster-requirements.md)
-    * [Cluster Setup](guides/deployment-guide/deployment-on-kubernetes/cluster-setup.md)
+    * [K8s Cluster Setup](guides/deployment-guide/deployment-on-kubernetes/cluster-setup.md)
     * [Rancher Server Setup](guides/deployment-guide/deployment-on-kubernetes/rancher-server-setup.md)
     * [NFS Server Setup](guides/deployment-guide/deployment-on-kubernetes/nfs-server-setup.md)
     * [SSL Certificates using Letsencrypt](guides/deployment-guide/deployment-on-kubernetes/ssl-certificates-using-letsencrypt.md)

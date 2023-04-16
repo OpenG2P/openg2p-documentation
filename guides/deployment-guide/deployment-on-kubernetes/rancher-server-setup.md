@@ -4,16 +4,23 @@ description: Work in progress
 
 # Rancher Server Setup
 
-### Cluster setup
+## Introduction
 
-* It is recommended to setup a single node cluster, to install rancher.
-* Setup a new rke2 cluster, single server node. Use the [Cluster Setup](broken-reference) guide.&#x20;
-  * Do not remove the stock ingress controller in server config.
-  * No need to install istio.
+Rancher is used to managing multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
 
-### Rancher install
+## Kubernetes cluster setup
 
-*   To install rancher use this (hostname to be edited in the below command):
+* Set up a new RKE2 cluster. Refer to the [K8s Cluster Setup](cluster-setup.md) guide.&#x20;
+  * Do not remove the stock ingress controller in the server config.
+  * No need to install Istio.
+
+{% hint style="info" %}
+It is recommended to set up a double-node cluster for high availability.  However, for the non-production environments, you may create a single node cluster to conserve resources
+{% endhint %}
+
+## Rancher installation
+
+*   To install Rancher use this (hostname to be edited in the below command):
 
     ```bash
     helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
@@ -33,13 +40,13 @@ description: Work in progress
         --key=path/to/key/file
     ```
 
-### Longhorn Setup
+## Longhorn Setup
 
-* Use this to install longhorn. [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
+* Install[ Longhorn as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/).
 
-### Keycloak setup
+## Keycloak setup
 
-* From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory, run the following to install Keycloak (hostname to be edited in the below command).
+* From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) folder, run the following to install Keycloak (hostname to be edited in the below command).
 * ```bash
   helm repo add bitnami https://charts.bitnami.com/bitnami
   helm repo update
@@ -51,5 +58,7 @@ description: Work in progress
     --set ingress.extraTls[0].hosts[0]=keycloak.openg2p.org \
     -f rancher-keycloak-values.yaml
   ```
-* ### Integrate Rancher and Keycloak
-  * Integrate Rancher and Keycloak using this, [Rancher Auth - Keycloak (SAML)](https://docs.ranchermanager.rancher.io/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-keycloak-saml)
+
+## Integrate Rancher and Keycloak
+
+Integrate Rancher and Keycloak using [Rancher Auth - Keycloak (SAML)](https://docs.ranchermanager.rancher.io/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-keycloak-saml) guide.

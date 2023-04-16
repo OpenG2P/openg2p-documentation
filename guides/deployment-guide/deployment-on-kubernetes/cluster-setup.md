@@ -2,7 +2,7 @@
 description: Work in progress
 ---
 
-# Cluster Setup
+# K8s Cluster Setup
 
 ## Introduction
 
@@ -57,7 +57,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 | TCP      | 2380        | RKE2 server nodes            | etcd peer port                  |
 | TCP      | 30000:32767 | RKE2 server and agent nodes  | NodePort port range             |
 
-### K8s setup
+## K8s setup
 
 * The following setup has to be done for each cluster node.
 * Choose odd number of server nodes. Example if there are 3 nodes, choose 1 server node and two agent nodes. If there are 7 nodes, choose 3 server nodes and 4 agent nodes.
@@ -107,18 +107,18 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
     ```
 * Additional Reference: [RKE2 High Availabilty Installation](https://docs.rke2.io/install/ha)
 
-### Import cluster into Rancher.
+## &#x20;Cluster import into Rancher.
 
 * This section assumes a Rancher server has already been setup and operational. [Rancher Server Setup](broken-reference) in case not already done.
 * Navigate to Cluster Management section in Rancher.
 * Click on `Import Existing` cluster. And follow the steps to import the newly created cluster.
 * After Rancher import, do not use the the kubeconfig from server anymore. Use it only via downloading kubeconfig from rancher.
 
-### Longhorn setup
+## Longhorn setup
 
 * Use this to install longhorn. [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
-### Istio setup
+## Istio setup
 
 * The following setup can be done from the client machine. This install Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
 *   From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory, configure the istio-operator.yaml, and run;
