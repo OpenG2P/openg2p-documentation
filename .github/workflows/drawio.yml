@@ -1,7 +1,6 @@
 name: DrawIO to PNG Conversion
 
-on:
-  push:
+on: push
 
 jobs:
   image-conversion:
