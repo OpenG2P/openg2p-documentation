@@ -20,7 +20,7 @@ When the form is submitted either by ODK or the beneficiaries portal, follow the
 2.  Create computed fields of the form in the Program Registrant Info model.\
 
 
-    <figure><img src="../.gitbook/assets/Screenshot from 2023-04-03 15-34-42 (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../.gitbook/assets/Screenshot from 2023-04-03 15-34-42 (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 
 3.  After creating the computed fields, assign some weightage to the computed fields.\
