@@ -3,7 +3,7 @@ name: DrawIO to PNG Conversion
 on: push
 
 jobs:
-  image-conversion:
+  drawio-png-conversion:
     runs-on: ubuntu-20.04
     defaults: 
       run: 
