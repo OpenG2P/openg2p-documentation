@@ -1,16 +1,8 @@
-# 🛠 Proxy Means Test
+# 🛠 Proxy Means Test - User Guide
 
 ## Introduction
 
 It’s another eligibility criteria where the PMT score will be calculated based on the variables and their weights. The weights on these variables are then used to identify those who will be eligible to receive benefits using an eligibility cut-off line.
-
-## How PMT Score is Calculated
-
-PMT Score = ∑ f\*w
-
-where,\
-&#x20;           f = parameter field or variable\
-&#x20;           w = weightage
 
 ## How to Configure PMT
 

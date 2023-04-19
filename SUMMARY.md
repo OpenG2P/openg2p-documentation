@@ -9,7 +9,7 @@
 * [📈 Platform Enhancements](epics/platform-enhancements/README.md)
   * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
 * [💵 Payments](epics/payments.md)
-* [🛠 Proxy Means Test](epics/proxy-means-test.md)
+* [🛠 Proxy Means Test - User Guide](epics/proxy-means-test.md)
 * [💰 Voucher based Payment](epics/voucher-based-payment.md)
 * [Pilot](epics/pilot.md)
 
