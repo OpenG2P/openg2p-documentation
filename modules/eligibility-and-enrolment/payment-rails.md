@@ -14,6 +14,6 @@ Digital payments infrastructure (DPI) could vary from country to country. It is 
 
 <summary>How do I create a custom connector?</summary>
 
-Refer to the guide [here](../../guides/developer-guides/creating-custom-payment-connector.md).
+Refer to the guide [here](broken-reference).
 
 </details>
