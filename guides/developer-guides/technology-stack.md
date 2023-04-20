@@ -5,6 +5,7 @@ This page lists all the technologies used in building OpenG2P. Free and open-sou
 | Domain                          | Tools/Technologies | Version | Licence Type                                                      |
 | ------------------------------- | ------------------ | ------- | ----------------------------------------------------------------- |
 | Operating System                | Ubuntu Server      | 20.04   | Free                                                              |
+| Business Apps                   | Odoo               | 15.0    | LGPL                                                              |
 | Development - Language Runtime  | Python             | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
 | Database                        | Postgres           |         | Postgres License BSD 2-clause "Simplified License"                |
 | ID Verification                 | MOSIP Token Seeder |         | MPL 2.0                                                           |
@@ -13,7 +14,7 @@ This page lists all the technologies used in building OpenG2P. Free and open-sou
 | Data streaming                  | Debezium           |         | Apache 2.0                                                        |
 | Offline data collection         | ODK                |         | Apache 2.0                                                        |
 | Visualization                   | Kibana             |         | Elastic License 2.0                                               |
-| S3 Storage                      | MinIO              |         |                                                                   |
+| S3 Storage                      | MinIO              |         | AGPL 3.0                                                          |
 | Development - API Documentation | Swagger            |         | Apache License 2.0                                                |
 | Task Management                 | Jira               |         | Not Open source                                                   |
 | Source Code Management          | GitHub             |         | Commercial - Github                                               |
