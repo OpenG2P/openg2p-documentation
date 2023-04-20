@@ -6,6 +6,7 @@ This page lists all the technologies used in building OpenG2P. Free and open-sou
 | ------------------------------- | ------------------ | ------- | ----------------------------------------------------------------- |
 | Operating System                | Ubuntu Server      | 20.04   | Free                                                              |
 | Business Apps                   | Odoo               | 15.0    | LGPL                                                              |
+| ID System                       | MOSIP              | 1.2     | MPL 2.0                                                           |
 | Development - Language Runtime  | Python             | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
 | Database                        | Postgres           |         | Postgres License BSD 2-clause "Simplified License"                |
 | ID Verification                 | MOSIP Token Seeder |         | MPL 2.0                                                           |
