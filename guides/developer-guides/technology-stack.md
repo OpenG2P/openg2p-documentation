@@ -17,11 +17,11 @@ This page lists all the technologies used in building OpenG2P. Free and open-sou
 | Visualization                   | Kibana             |         | Elastic License 2.0                                               |
 | S3 Storage                      | MinIO              |         | AGPL 3.0                                                          |
 | Development - API Documentation | Swagger            |         | Apache License 2.0                                                |
-| Task Management                 | Jira               |         | Not Open source                                                   |
-| Source Code Management          | GitHub             |         | Commercial - Github                                               |
+| Task Management                 | Jira               |         | Commercial (OpenG2P has a free license)                           |
+| Source Code Management          | GitHub             |         | Commercial (OpenG2P uses Free plan)                               |
 | Deployment                      | Docker             |         | Apache 2.0                                                        |
 | DevOps tools                    | Ansible            |         | GNU GPL v3.0                                                      |
-| DevOps tools                    | Github actions     |         |                                                                   |
+| DevOps tools                    | Github actions     |         | Free                                                              |
 | DevOps tools                    | Prometheus         |         | Apache License 2.0                                                |
 | DevOps tools                    | Grafana            |         | Apache License 2.0                                                |
 | Messaging                       | Apache Kafka       |         | Apache License 2.0                                                |
