@@ -1,0 +1,56 @@
+name: DrawIO to PNG Conversion
+
+on: 
+  push:
+
+jobs:
+  drawio-png-conversion:
+    runs-on: ubuntu-20.04
+    defaults: 
+      run: 
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Read changed files
+        id: files
+        uses: jitterbit/get-changed-files@v1
+
+      - name: Check for drawio files
+        run: |
+          export DRAWIO=0
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            echo ${changed_file}
+            if [[ "${changed_file##*.}" == "drawio" ]]; then
+                export DRAWIO=1
+                break
+            fi
+          done
+          if [[ "$DRAWIO" == "0" ]]; then
+            echo "No drawio file. Exiting"
+            exit 1 
+          fi
+
+      - name: Install snapd
+        run: sudo apt install snapd -y
+
+      - name: Install xvfb
+        run: sudo apt -y install curl xvfb nano libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libgbm1
+
+      - name: Install Drawio
+        run: sudo snap install drawio 
+
+      - name: Convert 
+        run: |
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            xvfb-run -a drawio -x -f png ${changed_file} --headless --disable-gpu --no-sandbox \;
+          done
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Converted drawio image to png"
+          git push
