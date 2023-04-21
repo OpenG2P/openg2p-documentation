@@ -2,7 +2,9 @@ name: DrawIO to PNG Conversion
 
 on: 
   push:
-
+  pull_request:
+    types:
+      - closed
 jobs:
   drawio-png-conversion:
     runs-on: ubuntu-20.04
