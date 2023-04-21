@@ -1,10 +1,10 @@
 name: DrawIO to PNG Conversion
 
 on: 
-  - pull_request:
-      types:
-        - closed
-  - push:
+  pull_request:
+    types:
+      - closed
+  push:
 
 jobs:
   drawio-png-conversion:
