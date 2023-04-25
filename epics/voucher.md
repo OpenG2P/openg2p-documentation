@@ -2,17 +2,17 @@
 
 ## Introduction
 
-A voucher is a digitally signed document (with a QR code) or letter of guarantee against which a beneficiary can avail a service without having to pay for it, or is entitled to withdraw cash.
+A voucher is a digitally signed document (say, with a QR code) or letter of guarantee against which a beneficiary can avail a service without having to pay for it, or is entitled to withdraw cash.
 
 Vouchers may be issued in several forms:
 
-1. Paper-based with a letter and QR code
+1. Paper-based letter and QR code
 2. Verifiable Credential (VC) on a smartphone
 
 ## Design
 
 * Entitlement Id == Voucher Id
-*
+* Voucher code?
 
 ## Sample
 
