@@ -47,6 +47,7 @@
 
 * [📔 How-To Guides](guides/user-guides/README.md)
   * [Create Program](guides/user-guides/create-a-program.md)
+  * [Configure Proxy Mean Test](guides/user-guides/configure-proxy-mean-test.md)
   * [Create User and Assign Role](guides/user-guides/assign-roles-to-users.md)
   * [Create ODK Form](guides/user-guides/create-odk-form.md)
   * [Create Portal Form](guides/user-guides/create-portal-form.md)
