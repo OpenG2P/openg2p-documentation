@@ -30,7 +30,7 @@ jobs:
       - name: Check for drawio files
         run: |
           export DRAWIO=0
-          for changed_file in ${{ steps.files.outputs.all }}; do
+          for changed_file in ${{ steps.files.outputs.added_modified }}; do
             echo ${changed_file}
             if [[ "${changed_file##*.}" == "drawio" ]]; then
                 export DRAWIO=1
