@@ -5,7 +5,20 @@ on:
     types:
       - closed
 
-permissions: read-all|write-all
+permissions: 
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  id-token: write
+  issues: write
+  discussions: write
+  packages: write
+  pages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
 
 jobs:
   drawio-png-conversion:
@@ -17,7 +30,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Read changed files
+      - name:  changed files
         id: files
         uses: jitterbit/get-changed-files@v1
 
