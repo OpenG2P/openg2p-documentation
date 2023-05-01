@@ -5,11 +5,7 @@ on:
     types:
       - closed
 
-permissions:
-  push: write
-  pull-requests: write
-  issues: write
-  repository-projects: write
+permissions: read-all|write-all
 
 jobs:
   drawio-png-conversion:
