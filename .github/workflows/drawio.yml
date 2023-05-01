@@ -6,6 +6,7 @@ on:
       - closed
 
 permissions:
+  push: write
   pull-requests: write
   issues: write
   repository-projects: write
