@@ -24,7 +24,7 @@ The user must have a Program Manager role.
 
 4. Enable PMT and click on _Add a line_ in the _PMT Parameters_ field.
 
-<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 20-50-30.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 20-50-30 (1).png" alt=""><figcaption></figcaption></figure>
 
 5. Select the field and provide its weightage.
 
@@ -54,11 +54,11 @@ Settings --> Developer Tools --> 'Activate the developer mode'
 
 2. Click on _Technical_ in the setting menu.&#x20;
 
-<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-13-13 (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-13-13.png" alt=""><figcaption></figcaption></figure>
 
 3. Navigate to _Models_ under _Database Structure_ heading.
 
-<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-18-38.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-18-38 (1).png" alt=""><figcaption></figcaption></figure>
 
 4. Search _Program Registrant Info_ model in the search bar.
 
