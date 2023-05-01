@@ -16,7 +16,7 @@ The user should be assigned to the Program Manager role.
 
 2. Click on _Configuration_ and then on _ID Deduplication Manager._
 
-<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
 3. Click the Create button to navigate to the ID deduplication manager creation page.
 

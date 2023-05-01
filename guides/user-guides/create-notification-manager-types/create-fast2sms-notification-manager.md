@@ -14,7 +14,7 @@ This guide will provide the steps to create a Fast2SMS notification manager.
 
 2. Click on _Configuration_ and then on _Fast2SMS Notification Manager._
 
-<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
 2. Click the _Create_ button to navigate to the Fast2SMS notification manager creation page.
 

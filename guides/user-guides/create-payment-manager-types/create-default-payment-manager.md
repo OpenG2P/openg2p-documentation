@@ -16,7 +16,7 @@ The user should have a Program Manager role.
 
 2. Click on Configuration and then on Payment Interoperability Layer Payment Manager.&#x20;
 
-<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
 3. Click on Create button which will navigate to the Default Payment Manager creation page.
 
