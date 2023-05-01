@@ -4,6 +4,12 @@ on:
   pull_request:
     types:
       - closed
+
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
 jobs:
   drawio-png-conversion:
     runs-on: ubuntu-20.04
