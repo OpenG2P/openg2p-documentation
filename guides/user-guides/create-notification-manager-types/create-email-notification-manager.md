@@ -16,7 +16,7 @@ The user should have a Program Manager role assigned.
 
 2. Click on _Configuration_ and then on _Email Notification Manager._
 
-<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Click the _Create_ button to navigate to the email notification manager creation page.
 

@@ -40,4 +40,4 @@ The user must have the Program Manager role.
 
 8. Click on the _Save & Close_ button which will save the notification manager to that program under configuration.
 
-<figure><img src="../../.gitbook/assets/added-notification-manager.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/added-notification-manager (1).png" alt=""><figcaption></figcaption></figure>
