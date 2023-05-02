@@ -39,7 +39,7 @@ jobs:
           done
           if [[ "$DRAWIO" == "0" ]]; then
             echo "No drawio file. Exiting"
-            exit 0
+            exit 1 
           fi
 
       - name: Install snapd
