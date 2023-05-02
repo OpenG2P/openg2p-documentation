@@ -18,6 +18,10 @@ jobs:
       run: 
         shell: bash
     steps:
+      - name: Only run on main repository
+        if: github.repository == 'OpenG2P/openg2p-documentation'
+        continue-on-error: true
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -39,7 +43,7 @@ jobs:
           done
           if [[ "$DRAWIO" == "0" ]]; then
             echo "No drawio file. Exiting"
-            exit 1 
+            exit 0
           fi
 
       - name: Install snapd
