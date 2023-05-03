@@ -53,8 +53,10 @@ jobs:
 
       - name: Convert 
         run: |
-          for changed_file in ${{ steps.files.outputs.all }}; do
-            xvfb-run -a drawio -x -f png ${changed_file} --headless --disable-gpu --no-sandbox \;
+          for changed_file in ${{ steps.files.outputs.added_modified }}; do
+            if [[ "${changed_file##*.}" == "drawio" ]]; then
+              xvfb-run -a drawio -x -f png ${changed_file} --width 1920 --headless --disable-gpu --no-sandbox \;
+            fi
           done
 
       - name: Commit Changes
