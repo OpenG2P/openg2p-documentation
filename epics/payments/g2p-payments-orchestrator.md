@@ -17,7 +17,7 @@ Mifos's Payment Hub is an open source project designed for this purpose. However
 4. No visible plan in the PH roadmap to make interfaces compliant with G2P Connect
 5. According to engineers who have inspected the code and tried using PH, the impression is that the code is not very well written and modularized for making changes and enhancing the system
 
-**G2P Payments Orchestrator (GPO)** is envisaged as an open source "interoperability layer" along with bulk payment orchestration that connects any upstream G2P system like OpenG2P to the specific payment rails of a country while addressing some of the issues mentioned above.
+**G2P Payments Orchestrator (GPO)** is envisaged as an open source "interoperability layer" along with bulk payment orchestration that connects any upstream G2P system like OpenG2P to the specific payment rails of a country while addressing some of the issues mentioned above.  The GPO is proposed to be developed as part of the OpenG2P project available under MPL 2.0 license.
 
 ## High level view
 
