@@ -8,6 +8,7 @@ When it comes to G2P payments we face the following challenges:
 
 * Interfacing with various non-standard payment interfaces and systems that are not interoperable with each other.&#x20;
 * Handling bulk payment processing as typically social benefit transfers are done in bulk and the entire process needs to be done in a short period of time, esp. in emergency scenarios.
+* Reconciliation all payments issued by the upstream system
 
 Mifos's Payment Hub is an open source project designed for this purpose. However, we see the following practical difficulties with the PH:
 
