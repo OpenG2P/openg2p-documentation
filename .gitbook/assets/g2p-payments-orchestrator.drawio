@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-02T11:09:17.972Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="z2Sojiaq0mGTbHK_VhQ0" version="21.2.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-03T10:04:44.975Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="YYensl6rgpmSjR1TZocG" version="21.2.4" type="github">
   <diagram name="Page-1" id="FgLuap44XJ5UT9zUbCwf">
     <mxGraphModel dx="948" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
       <root>
@@ -48,6 +48,18 @@
         </mxCell>
         <mxCell id="PaHSEo2nT983F2EYWPFA-24" value="Status" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="277" y="259" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yHeX7ZxyDF3udKAo5U5P-1" value="&lt;b&gt;A&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="292" y="232" width="21" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="yHeX7ZxyDF3udKAo5U5P-2" value="&lt;b&gt;B&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="500" y="173" width="21" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="yHeX7ZxyDF3udKAo5U5P-3" value="&lt;b&gt;C&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="559" y="204" width="21" height="21" as="geometry" />
+        </mxCell>
+        <mxCell id="yHeX7ZxyDF3udKAo5U5P-4" value="&lt;b&gt;D&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="553" y="279" width="21" height="21" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
