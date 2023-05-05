@@ -83,7 +83,7 @@
     * [Create Fast2SMS Notification Manager](guides/user-guides/create-notification-manager-types/create-fast2sms-notification-manager.md)
   * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
   * [Map ODK Form](guides/user-guides/map-odk-form.md)
-  * [Integrate with MOSIP e-Signet](guides/user-guides/integrate-with-mosip-e-signet.md)
+  * [Integrate MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
   * [Map Self Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)

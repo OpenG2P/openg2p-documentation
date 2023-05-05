@@ -1,4 +1,4 @@
-# Integrate with MOSIP e-Signet
+# Integrate MOSIP e-Signet
 
 ## Description
 
@@ -37,8 +37,8 @@ These steps are executed by MOSIP Partner Admin
 [pms-api-docs.json](../../.gitbook/assets/pms-api-docs.json)
 {% endswagger %}
 
-* `authParnterId:` Partner ID in [this](integrate-with-mosip-e-signet.md#configure-openg2p-as-a-partner-on-mosip) step.&#x20;
-* `policyId` : Policy ID in [this](integrate-with-mosip-e-signet.md#configure-openg2p-as-a-partner-on-mosip) step.
+* `authParnterId:` Partner ID in [this](integrate-mosip-e-signet.md#configure-openg2p-as-a-partner-on-mosip) step.&#x20;
+* `policyId` : Policy ID in [this](integrate-mosip-e-signet.md#configure-openg2p-as-a-partner-on-mosip) step.
 * `publicKey:` Generate [JWK](https://openid.net/specs/draft-jones-json-web-key-03.html).
 * `logoUri`: URL of your logo accessible publicly.
 * &#x20;`grantTypes` = `["authorization_code"]`
