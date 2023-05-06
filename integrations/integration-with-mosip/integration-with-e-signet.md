@@ -8,6 +8,10 @@ OpenG2P can use [e-Signet](https://docs.esignet.io/) for authentication. e-Signe
 
 Here, OpenG2P is a Relying Party and the Authentication System is MOSIP.  Learn [more](https://docs.esignet.io/integration-guides/authentication-system-integration).
 
+## Configure OpenG2P for e-Signet
+
+Refer to the guide [Integrate MOSIP e-Signet](../../guides/user-guides/integrate-mosip-e-signet.md).
+
 
 
 ##
