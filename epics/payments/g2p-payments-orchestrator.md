@@ -16,7 +16,7 @@ With regard to G2P payments, the following are some of the challenges encountere
 2. PH uses the Zeebe orchestration engine whose license is not as permissive as Apache 2.0 or MPL 2.0. Zeebe prohibits free usage for commercial cloud deployments. See [Zeebe FAQ](https://camunda.com/legal/terms/cloud-terms-and-conditions/zeebe-license-overview-and-faq/).
 3. Lack of responsive support from the PH contributors.
 4. No visible plan in the PH roadmap to make interfaces compliant with G2P Connect and other emerging interoperable standards.
-5. According to engineers who have inspected the code and tried using PH, the impression is that the code is not very well written and modularized for making changes and enhancing the system
+5. According to engineers who have inspected the code and tried using PH, the impression is that the code is not well modularized and amenable to changes and enhancements.
 
 **G2P Payments Orchestrator (GPO)** is envisaged as an open source module comprising of "interoperability layer" along with bulk payment orchestration that connects any upstream G2P system like OpenG2P to the specific payment rails of a country while addressing some of the issues mentioned above. The focus of GPO's functionality and design is G2P payments. The GPO is proposed to be developed as part of the OpenG2P project available under MPL 2.0 license.
 
