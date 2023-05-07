@@ -30,12 +30,32 @@ As depicted above, GPO sits between a G2P system and payment channels. The goal 
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpo-tech-architecture.png" alt=""><figcaption></figcaption></figure>
 
+The GPO consists of the following major components:
+
+1. [Kafka](https://kafka.apache.org/) for event streaming
+2. [Nussknacker](https://github.com/TouK/nussknacker) for real-time stream processing
+3. Payment Connectors (PCs) specific to payment rails
+
+Upstream G2P systems send the payment transfer requests to Kafka topics as JSON messages. Nussknacker can be visually programmed (no-code) to filter (and even transform) these requests and direct them to appropriate Kafka topics for the consumers. The input requests published in the _Request_ topic from the G2P system are checked for basic sanity and forwarded to the _Filtered Requests_ topic to be picked by PCs who in turn interface with specific payment systems like a payment gateway, core banking API or Mobile Money APIs. The response from these systems is received by the PCs, converted to JSON and published to the _Response_ topic. These response messages are filtered for cases of retries and failure by Nussknacker and published in corresponding Kafka topics. The "retry" messages are sent back to _Filtered Requests_ topic. G2P systems pick messages from Malformed Input, Success, and Failure topics for further actions.
+
+Several different responses from the downstream payment rails may need to be filtered and directed to Kafka topics. More such topics may be defined along with the addition of logic in Nussknacker.
+
+## Scalability&#x20;
+
+Kafka and Nussknacker are highly scalable systems while Payment Connectors need to be designed and written supporting high scalability (for e.g. stateless micros services architecture)
+
+## Bulk processing
+
+## JSON message structure
+
+The JSON messages flowing through the system need to be standardised for processing.&#x20;
+
 ## Open source technologies
 
 The GPO uses open source technologies with very permissible license terms:
 
-| Tool               | License    | Comments        |
-| ------------------ | ---------- | --------------- |
-| Nussknacker        | Apache 2.0 |                 |
-| Apache Kafka       | Apache 2.0 |                 |
-| Payment Connectors | GPLv2      | If Java is used |
+| Tool                                               | License    | Comments        |
+| -------------------------------------------------- | ---------- | --------------- |
+| [Nussknacker](https://github.com/TouK/nussknacker) | Apache 2.0 |                 |
+| Apache Kafka                                       | Apache 2.0 |                 |
+| Payment Connectors                                 | GPLv2      | If Java is used |
