@@ -27,3 +27,5 @@ With regard to G2P payments, the following are some of the challenges encountere
 As depicted above, GPO sits between a G2P system and payment channels. The goal is to have a standard interface at **A** while **B,** **C**, **D** etc. may be custom interfaces and API calls specific to the payment system.&#x20;
 
 ## Technical Architecture
+
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpo-tech-architecture.png" alt=""><figcaption></figcaption></figure>
