@@ -36,7 +36,7 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 
 7. Edit the form fields from the _STYLE_ section.&#x20;
 
-<figure><img src="../../.gitbook/assets/field-section (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/field-section.png" alt=""><figcaption></figcaption></figure>
 
 8. Add more form fields using _+Field_ from the _STYLE_ section.
 9. Save the form using the _Save_ button.

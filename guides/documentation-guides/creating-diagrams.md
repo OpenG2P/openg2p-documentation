@@ -46,3 +46,11 @@ If a `.drawio` already exists in the `.gitbook/assets` folder then you must dire
 8. Upon acceptance of the Pull Request, a [Github Action Workflow](../../.github/workflows/drawio.yml) will trigger the conversion of the`.drawio` file to `.png`.&#x20;
 9. If you have not added the URL of the PNG to your Gitbook pages follow step 6 of [Creating New Diagram](creating-diagrams.md#creating-new-diagram).
 10. If the URL already exists in Gitbook, the updated image should appear after a page refresh.
+
+## Deleting a digram
+
+1. Delete the diagram from Gitbook listing found here:
+
+<figure><img src="../../.gitbook/assets/images-listing.png" alt="" width="256"><figcaption></figcaption></figure>
+
+2. Delete the diagram from Github repository `openg2p-documentation` from the corresponding branch&#x20;
