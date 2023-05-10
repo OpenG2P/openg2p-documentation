@@ -81,8 +81,6 @@ This method is applicable if MOSIP Partner Management APIs are **not** available
 * `clientAuthMethods`= `["private_key_jwt"]`
 * `redirectUris`: URLs of the form `https://<your web portal>/auth_oauth/signin`
 
-Note down the Client ID as an output of the above step.
-
 ### Enable e-Signet on OpenG2P
 
 These steps are executed by OpenG2P Admin on the OpenG2P Admin interface.
