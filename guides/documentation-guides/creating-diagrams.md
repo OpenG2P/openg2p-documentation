@@ -52,6 +52,10 @@ If a `.drawio` already exists in the `.gitbook/assets` folder then you must dire
 
 1. Delete the diagram from Gitbook listing found here:
 
+<div align="center">
+
 <figure><img src="../../.gitbook/assets/images-listing.png" alt="" width="256"><figcaption></figcaption></figure>
+
+</div>
 
 2. Delete the diagram from Github repository `openg2p-documentation` from the corresponding branch&#x20;
