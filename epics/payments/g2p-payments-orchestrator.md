@@ -12,13 +12,14 @@ With regard to G2P payments, the following are some of the challenges encountere
 
 [Mifos's Payment Hub](https://payments.mifos.org/) (PH) is an open source project designed for this purpose. However, we see the following practical difficulties with the PH:
 
-1. PH has been designed for several use cases including P2P, P2G, B2B etc. Hence the overall software is bulky for just the G2P use case.
+1. PH has been designed for several use cases including P2P, P2G, B2B etc. Hence the overall software is bulky for just the G2P use case.&#x20;
 2. PH uses the Zeebe orchestration engine whose license is not as permissive as Apache 2.0 or MPL 2.0. Zeebe prohibits free usage for commercial cloud deployments. See [Zeebe FAQ](https://camunda.com/legal/terms/cloud-terms-and-conditions/zeebe-license-overview-and-faq/).
 3. Lack of responsive support from the PH contributors.
 4. No visible plan in the PH roadmap to make interfaces compliant with G2P Connect and other emerging interoperable standards.
-5. According to engineers who have inspected the code and tried using PH, the impression is that the code is not well modularized and amenable to changes and enhancements.
 
-**G2P Payments Orchestrator (GPO)** is envisaged as an open source module comprising of "interoperability layer" along with bulk payment orchestration that connects any upstream G2P system like OpenG2P to the specific payment rails of a country while addressing some of the issues mentioned above. The focus of GPO's functionality and design is G2P payments. The GPO is proposed to be developed as part of the OpenG2P project available under MPL 2.0 license.
+**G2P Payments Orchestrator (GPO)** is envisaged as an open source module comprising of "interoperability layer" along with bulk payment orchestration that connects any upstream G2P system like OpenG2P to the specific payment rails of a country while addressing some of the issues mentioned above. The focus of GPO's functionality and design is G2P payments. It is important to note that, unlike real-time payment systems that are subject to peak loads, G2P payments are mostly not real-time. Bulk transfers are assumed to take some time depending on the capacity of downstream payment channels. Therefore, GPO need not be "over-designed" for peaking loads as in a transactional system.&#x20;
+
+The GPO is proposed to be developed as part of the OpenG2P project available under MPL 2.0 license.
 
 ## High level view
 
@@ -42,7 +43,7 @@ Several different responses from the downstream payment rails may need to be fil
 
 ## Scalability&#x20;
 
-Kafka and Nussknacker are highly scalable systems while Payment Connectors need to be designed and written supporting high scalability (for e.g. stateless micros services architecture)
+Kafka and Nussknacker are highly scalable systems while Payment Connectors need to be designed and written supporting high scalability (e.g. stateless micros services architecture). However,&#x20;
 
 ## Bulk processing
 
