@@ -65,3 +65,5 @@ jobs:
           git add .
           git commit -m "Converted drawio image to png"
           git push
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
