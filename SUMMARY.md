@@ -1,6 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
+* [Architecture](architecture.md)
 * [🧱 Modules](modules/README.md)
   * [Registration](modules/secure-registry/README.md)
     * [Offline Registration](modules/secure-registry/offline-registration.md)
@@ -88,7 +89,7 @@
   * [Map Self Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
-* [👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
+* [👩💻 👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [About Github Repositories](guides/developer-guides/github-repositories/README.md)
