@@ -1,4 +1,4 @@
-# Architecture
+# 🏢 Architecture
 
 ## Functional Architecture
 

@@ -1,7 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
-* [Architecture](architecture.md)
+* [🏢 Architecture](architecture.md)
 * [🧱 Modules](modules/README.md)
   * [Registration](modules/secure-registry/README.md)
     * [Offline Registration](modules/secure-registry/offline-registration.md)
