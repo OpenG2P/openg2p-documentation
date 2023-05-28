@@ -1,11 +1,8 @@
-# Integrate MOSIP e-Signet
+# Integrate with MOSIP e-Signet
 
 ## Description
 
-This guide provides steps to integrate [OpenG2P with MOSIP-eSignet](../../integrations/integration-with-mosip/integration-with-e-signet.md). The entire configuration is accomplished by the following actors:
-
-1. MOSIP Partner Admin
-2. OpenG2P Admin
+This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider. &#x20;
 
 ## Prerequisites
 
@@ -23,18 +20,23 @@ This guide provides steps to integrate [OpenG2P with MOSIP-eSignet](../../integr
 
 ### Configure OpenG2P as a partner on MOSIP
 
-* [Guide](https://docs.mosip.io/1.2.0/modules/partner-management-services/auth-credential-partner) for MOSIP 1.2.0
-* Guide for MOSIP 1.1.5 (TBD)
-
-Note down the Partner ID and Policy ID from the above steps.
+1. Create an **Auth Partner** for OpenG2P on MOSIP.
+   * [Guide](https://docs.mosip.io/1.2.0/modules/partner-management-services/auth-credential-partner) for MOSIP 1.2.0
+   * Guide for MOSIP 1.1.5 (TBD)
+2. Create a **MISP Partner** for OpenG2P on MOSIP.
+3. Note down the following from the above steps:
+   1. Auth Partner ID&#x20;
+   2. Auth Policy ID&#x20;
+   3. Auth API Key
+   4. MISP License Key
+   5. Auth partner signed certificate&#x20;
+   6. IDA Partner certificate (App id: IDA, Ref Id: PARTNER)
 
 ### Configure OpenG2P as relying party on e-Signet
 
-These steps are executed by MOSIP Partner Admin
-
 #### Using PMS API
 
-This method is applicable if MOSIP Partner Management APIs are available.
+This method is applicable if MOSIP Partner Management APIs are available. These steps are executed by MOSIP Partner Admin
 
 1. Create an e-Signet OIDC client using PMS OIDC API:
 

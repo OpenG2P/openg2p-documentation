@@ -85,7 +85,7 @@
   * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
   * [Configure ID Types](guides/user-guides/configure-id-types.md)
   * [Map ODK Form](guides/user-guides/map-odk-form.md)
-  * [Integrate MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
+  * [Integrate with MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
   * [Map Self Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
