@@ -16,7 +16,7 @@ The user should have a Program Manager role.
 
 2. Click on Configuration and then on Payment Hub EE Payment Manager.&#x20;
 
-<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
 3. Click on _Create_ button which will navigate to the Payment Hub EE Payment Manager creation page.
 
@@ -24,7 +24,7 @@ The user should have a Program Manager role.
 
 4. In the payment manager creation page provide a name for the payment manager, select the program name, select Automatically Create batch if needed, and all the other configurations will auto-populate and can be changed accordingly.
 
-<figure><img src="../../../.gitbook/assets/payment-hub-ee-creation-page (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-hub-ee-creation-page.png" alt=""><figcaption></figcaption></figure>
 
 5. Once the payment manager is saved it will be listed under the payment manager list view page which further can be used under the program configuration for which it was created.
 

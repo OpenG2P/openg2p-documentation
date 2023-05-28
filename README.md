@@ -1,8 +1,8 @@
 # 🏠 Home
 
-<figure><img src=".gitbook/assets/openg2p-logo-small.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/openg2p-black-new-logo.png" alt="" width="375"><figcaption></figcaption></figure>
 
-[OpenG2P](https://openg2p.org) is an open source platform upon which government-to-person (G2P) solutions could be built. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
+[OpenG2P](https://openg2p.org) is an open source platform that provides the foundation to build government-to-person (G2P) solutions. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
 
 The platform offers people facing processes such as onboarding into schemes, identity verification, and cash transfers to their bank accounts. It also incorporates government department facing features such as the creation of registries and beneficiary lists, eligibility checks, scheme definition, payment disbursement and reconciliation.
 
