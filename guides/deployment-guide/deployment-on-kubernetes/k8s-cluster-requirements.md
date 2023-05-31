@@ -27,10 +27,10 @@ TBD
 
 The following domain names and mappings will be required. Examples:
 
-| Example Domains                                                                                                                                               | Mapped to                                                                    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| <ul><li>openg2p.<em>&#x3C;your domain></em></li><li>uat.<em>&#x3C;your domain></em></li><li>pilot.openg2p.<em>&#x3C;your domain></em></li></ul>               | "A" Record mapped to at least 3 nodes of the K8s Cluster or load balancer IP |
-| <p></p><ul><li>*. openg2p.<em>&#x3C;your domain></em></li><li>*.uat.<em>&#x3C;your domain></em></li><li>*.pilot.openg2p.<em>&#x3C;your domain></em></li></ul> | "CNAME" Record mapped to the above domain. (This is a wildcard DNS mapping)  |
+| Domain Name (examples)                                                                                                                                        | Mapped to                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| <ul><li>openg2p.<em>&#x3C;your domain></em></li><li>uat.<em>&#x3C;your domain></em></li><li>pilot.openg2p.<em>&#x3C;your domain></em></li></ul>               | "A" Record mapped to Load Balancer IP **or** at least 3 nodes of the K8s Cluster |
+| <p></p><ul><li>*. openg2p.<em>&#x3C;your domain></em></li><li>*.uat.<em>&#x3C;your domain></em></li><li>*.pilot.openg2p.<em>&#x3C;your domain></em></li></ul> | "CNAME" Record mapped to the above domain. (This is a wildcard DNS mapping)      |
 
 ## Certificate requirements
 
