@@ -19,10 +19,7 @@ Registrants or individuals can apply for a program and avail themselves of the b
 
 
 
-    | email | Please enter a valid email address    |
-    | ----- | ------------------------------------- |
-    | url   | Please enter a valid url              |
-    | tel   | Please enter a valid telephone number |
+    <table data-header-hidden><thead><tr><th width="100">Type</th><th>Error Message</th></tr></thead><tbody><tr><td>email</td><td>Please enter a valid email address</td></tr><tr><td>url</td><td>Please enter a valid url</td></tr><tr><td>tel</td><td>Please enter a valid telephone number</td></tr></tbody></table>
 4. When all the input checks are performed, finally the form data gets submitted along with the program id in the submitted URL.
 5. In the submitted action controller, the form data will be saved in the `additional_g2p_info` field which is present in `res.partner` model in json format.
 6. After saving the form data, Application ID is generated.
