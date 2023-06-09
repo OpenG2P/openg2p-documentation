@@ -1,4 +1,4 @@
-# Registration
+# Beneficiary Registration
 
 The registration module of OpenG2P offers registration of persons into programs via the following methods:
 
