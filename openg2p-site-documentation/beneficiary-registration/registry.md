@@ -26,17 +26,6 @@ Identification of records in the registry is done with configured [ID types](bro
 
 ### Export
 
-## Registration Process
-
-* Program creation&#x20;
-* ODK form template creation&#x20;
-* Upload of form to ODK Central
-* Assigning forms to agents
-* Field registration by the agent using ODK Collect on an Android tablet/phone.
-* Submission of form to ODK Central
-* Addition of record to the registry&#x20;
-* ID verification and KYC
-
 {% hint style="info" %}
 
 

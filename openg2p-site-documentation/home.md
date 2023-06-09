@@ -1,6 +1,6 @@
 # Home
 
-<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 [OpenG2P](https://openg2p.org) is an open-source platform that provides the foundation to build government-to-person (G2P) solutions. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
 
@@ -10,4 +10,4 @@ OpenG2P is a Digital Public Good ([DPG](https://digitalpublicgoods.net/registry/
 
 The project, co-founded by the Government of Sierra Leone and UNDP and supported by [Mifos](https://mifos.org) in the early stages, is now housed in[ IIIT Bangalore](https://www.iiitb.ac.in/), a not-for-profit university in India.
 
-<figure><img src="../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption></figcaption></figure>

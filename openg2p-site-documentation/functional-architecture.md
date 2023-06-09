@@ -27,4 +27,4 @@ Each social benefits delivery scheme is configured as a program in the platform.
 
 ### Technical architecture <a href="#technical-architecture" id="technical-architecture"></a>
 
-<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
