@@ -30,7 +30,15 @@
 
 ***
 
-* [Page 1](page-1.md)
 * [OpenG2P Site Documentation](openg2p-site-documentation/README.md)
   * [Home](openg2p-site-documentation/home.md)
   * [Functional Architecture](openg2p-site-documentation/functional-architecture.md)
+  * [Registration](openg2p-site-documentation/registration/README.md)
+    * [Registry](openg2p-site-documentation/registration/registry.md)
+    * [Registration Methods](openg2p-site-documentation/registration/registration-methods/README.md)
+      * [Agent/Officer Assisted Registration](openg2p-site-documentation/registration/registration-methods/agent-officer-assisted-registration.md)
+      * [Self Registration via Portal](openg2p-site-documentation/registration/registration-methods/self-registration-via-portal.md)
+      * [API Based Registration](openg2p-site-documentation/registration/registration-methods/api-based-registration.md)
+    * [Registration Features](openg2p-site-documentation/registration/registration-features/README.md)
+      * [Privacy and Security](openg2p-site-documentation/registration/registration-features/privacy-and-security.md)
+      * [Schema for Fields](openg2p-site-documentation/registration/registration-features/schema-for-fields.md)
