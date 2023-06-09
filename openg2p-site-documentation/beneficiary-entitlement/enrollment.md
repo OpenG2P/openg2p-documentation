@@ -7,3 +7,7 @@ Enrolment is the process of creating a beneficiary list of individuals or groups
 ## Program assignment
 
 ## Program enrolment
+
+## Demo
+
+{% embed url="https://youtu.be/5NOfSTehmtU" %}
