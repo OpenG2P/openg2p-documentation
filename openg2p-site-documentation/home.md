@@ -10,4 +10,4 @@ OpenG2P is a Digital Public Good ([DPG](https://digitalpublicgoods.net/registry/
 
 The project, co-founded by the Government of Sierra Leone and UNDP and supported by [Mifos](https://mifos.org) in the early stages, is now housed in[ IIIT Bangalore](https://www.iiitb.ac.in/), a not-for-profit university in India.
 
-<figure><img src="../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
