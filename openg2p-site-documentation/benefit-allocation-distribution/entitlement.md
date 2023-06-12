@@ -9,3 +9,6 @@ Entitlement is the quantity of benefit that a beneficiary is entitled to receive
 ## Approval process
 
 <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+## Demo
+
