@@ -19,7 +19,7 @@ OpenG2P offers mechanisms to carry out registrations on the field in areas where
 
 ODK is an open-source toolkit that uses offline forms to collect data.  ODK Collect is the client-side app while ODK Central is the server-side app.  Learn more about ODK [here](https://docs.getodk.org/). A high-level view of the agent-assisted registration flow is given below:
 
-<figure><img src="../../../.gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (3) (1) (1) (2).png" alt=""><figcaption></figcaption></figure>
 
 ## ID Verification
 

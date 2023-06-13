@@ -1,2 +1,2 @@
-# Beneficiary Entitlement
+# Benefit Allocation/Distribution
 
