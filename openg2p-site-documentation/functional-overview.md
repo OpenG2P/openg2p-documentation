@@ -62,7 +62,7 @@ This object storage stores supporting documents such as consent forms, ID proof,
 
 ## Functional Architecture
 
-OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose functionalities per their needs. The platform is built to allow inclusion and has supporting features. For example, beneficiaries in remote areas without any network connectivity can be registered offline. The platform enables bulk payments as well as on-demand payments. The payment approval can involve digital approval, multiple approvals, and manual interventions and the platform can support such disparate benefit disbursements.
+OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose functionalities per their needs. The platform is built to allow inclusion and has supporting features. For example, beneficiaries in remote areas without any network connectivity can be registered offline. The platform enables bulk payments as well as on-demand assistance using service provider portal. The payment approval can involve digital approval, multiple approvals, and manual interventions and the platform can support such disparate benefit disbursements.
 
 <figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
