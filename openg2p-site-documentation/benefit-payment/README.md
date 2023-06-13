@@ -1,2 +1,2 @@
-# Benefit Disbursement
+# Benefit Payment
 
