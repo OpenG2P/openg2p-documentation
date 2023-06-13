@@ -1,15 +1,5 @@
 # Home
 
-OpenG2P Docs
-
-1.0.0
-
-License Community
-
-Search
-
-⌃K
-
 <figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
 [OpenG2P](https://openg2p.org) is an open-source platform that provides the foundation to build government-to-person (G2P) solutions. The roots of the platform lie in the social benefit delivery systems originally developed in response to the Ebola outbreak in Sierra Leone.
