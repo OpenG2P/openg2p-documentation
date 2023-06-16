@@ -8,13 +8,7 @@ Identification of records in the registry is done with configured [ID types](bro
 
 ### Individual registry
 
-### Group registry&#x20;
-
-#### Group relationships
-
-#### Group types
-
-#### Group membership kind
+### Group registry
 
 ## Records management
 
@@ -25,6 +19,10 @@ Identification of records in the registry is done with configured [ID types](bro
 ### Delete
 
 ### Export
+
+### Grant portal access
+
+### Add to Program
 
 {% hint style="info" %}
 
