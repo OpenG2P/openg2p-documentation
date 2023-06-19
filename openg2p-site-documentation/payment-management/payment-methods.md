@@ -2,4 +2,4 @@
 
 ## Bulk Payments
 
-## Reimbursements
+## Individual Payment
