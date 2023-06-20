@@ -1,6 +1,6 @@
-# Beneficiary Registration
+# Registration
 
-Beneficiary registration requires a program to be created as a first step.&#x20;
+Registration requires a program to be created as a first step.&#x20;
 
 ## Program Creation
 
