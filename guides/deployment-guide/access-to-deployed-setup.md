@@ -16,10 +16,10 @@ The table below enumerates various admin/user access to the entire deployment. T
 
 ## Wireguard access to users
 
-The guide below provides steps to provide Wireguard access to users. Note that the access must provided for each unique device (like a desktop, laptop, mobile phone etc). Multiple logins with same conf file is not possible.&#x20;
+The guide below provides steps to provide Wireguard access to users' devices (called peers). Note that the access must be provided to each unique device (like a desktop, laptop, mobile phone etc). Multiple logins with same conf file is not possible.&#x20;
 
 {% hint style="warning" %}
-Sharing of Wireguard conf file with other users must not be done for security reasons.
+The Wireguard conf file MUST NOT be shared with any other users for security reasons.
 {% endhint %}
 
 ### Steps&#x20;
@@ -29,13 +29,13 @@ Sharing of Wireguard conf file with other users must not be done for security re
     ```
     > ssh -i <SSH key pem file> <user>@<ip>
     ```
-2.  Change to Wireguard conf folder
+2.  Navigate to Wireguard conf folder
 
     ```
-    > cd /etc/wireguard/conf
+    > cd /etc/wireguard_general
     ```
 3. You will see several pre-created peer config files. You may assign any one of the file (not assigned before) to a new peer/user.
-4.  Edit`assigned.txt` file to assign a new the peer (client/user). Make sure a file is assigned to a unique user and an already assigned file is never re-assigned to another user.
+4.  Edit`assigned.txt` file to assign a new the peer (client/user). Make sure a conf file is assigned to a unique user, already assigned file is never re-assigned to another user.
 
     ```
     > vim assigned.txt
@@ -45,14 +45,5 @@ Sharing of Wireguard conf file with other users must not be done for security re
     ```
     > peer1 : <peer name>
     ```
-6.  Edit the peer config file. Example:
-
-    ```
-    > vim peer1.conf 
-    ```
-
-* Delete the DNS IP.
-* Update the allowed IP's(subnet IP of AWS).
-
-7. Share the conf file with the peer/user.
+6. Share the conf file with the peer/user securely. Example: `peer1/peer1.conf`
 
