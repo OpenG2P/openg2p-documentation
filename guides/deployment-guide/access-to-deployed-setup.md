@@ -47,3 +47,6 @@ The Wireguard conf file MUST NOT be shared with any other users for security rea
     ```
 6. Share the conf file with the peer/user securely. Example: `peer1/peer1.conf`
 
+## Wireguard client installation
+
+Follow the guide [here](https://github.com/mosip/documentation/blob/1.2.0/docs/wireguard-client-installation-guide.md).
