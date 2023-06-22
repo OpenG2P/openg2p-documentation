@@ -1,6 +1,7 @@
 name: DrawIO to PNG Conversion
 
 on: 
+  push:
   pull_request:
     types:
       - closed
@@ -9,6 +10,7 @@ permissions:
   contents: write
   pull-requests: write
   repository-projects: write
+  actions: write
 
 jobs:
   drawio-png-conversion:

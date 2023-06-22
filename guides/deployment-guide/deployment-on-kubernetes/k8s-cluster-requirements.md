@@ -8,18 +8,11 @@ description: Work in progress
 
 ### For sandbox setups
 
-| Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
-| ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
-| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 20.04        |
-| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 20.04        |
+<table><thead><tr><th width="136">Purpose</th><th align="center">vCPUs</th><th align="center">RAM</th><th align="center">Storage (SSD)</th><th align="right">Number of Virtual Machines*</th><th>Preferred Operating System</th></tr></thead><tbody><tr><td>Cluster nodes</td><td align="center">8</td><td align="center">32 GB</td><td align="center">128 GB</td><td align="right">3</td><td>Ubuntu Server 20.04</td></tr><tr><td>Wireguard</td><td align="center">4</td><td align="center">16 GB</td><td align="center">64 GB</td><td align="right">1</td><td>Ubuntu Server 20.04</td></tr></tbody></table>
 
 ### For staging setups
 
-| Purpose       | vCPUs |  RAM  | Storage (SSD) | Number of Virtual Machines\* | Preferred Operating System |
-| ------------- | :---: | :---: | :-----------: | ---------------------------: | -------------------------- |
-| Cluster nodes |   8   | 32 GB |     128 GB    |                            3 | Ubuntu Server 20.04        |
-| Wireguard     |   4   | 16 GB |     64 GB     |                            1 | Ubuntu Server 20.04        |
-| Backup        |   4   | 16 GB |     512 GB    |                            1 | Ubuntu Server 20.04        |
+<table><thead><tr><th width="136">Purpose</th><th align="center">vCPUs</th><th align="center">RAM</th><th align="center">Storage (SSD)</th><th align="right">Number of Virtual Machines*</th><th>Preferred Operating System</th></tr></thead><tbody><tr><td>Cluster nodes</td><td align="center">8</td><td align="center">32 GB</td><td align="center">128 GB</td><td align="right">3</td><td>Ubuntu Server 20.04</td></tr><tr><td>Wireguard</td><td align="center">4</td><td align="center">16 GB</td><td align="center">64 GB</td><td align="right">1</td><td>Ubuntu Server 20.04</td></tr><tr><td>Backup</td><td align="center">4</td><td align="center">16 GB</td><td align="center">512 GB</td><td align="right">1</td><td>Ubuntu Server 20.04</td></tr></tbody></table>
 
 ### For production setups
 
@@ -32,12 +25,12 @@ TBD
 
 ## DNS requirements
 
-The following domain names and mappings will be required. (The following is only a list sample hostnames).
+The following domain names and mappings will be required. Examples:
 
-| Domain                 | Mapped to                                                                   |
-| ---------------------- | --------------------------------------------------------------------------- |
-| openg2p.sandbox.net    | "A" Record mapped to at least 3 nodes of the K8s Cluster.                   |
-| \*.openg2p.sandbox.net | "CNAME" Record mapped to the above domain. (This is a wildcard DNS mapping) |
+| Domain Name (examples)                                                                                                                                        | Mapped to                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| <ul><li>openg2p.<em>&#x3C;your domain></em></li><li>uat.<em>&#x3C;your domain></em></li><li>pilot.openg2p.<em>&#x3C;your domain></em></li></ul>               | "A" Record mapped to Load Balancer IP **or** at least 3 nodes of the K8s Cluster |
+| <p></p><ul><li>*. openg2p.<em>&#x3C;your domain></em></li><li>*.uat.<em>&#x3C;your domain></em></li><li>*.pilot.openg2p.<em>&#x3C;your domain></em></li></ul> | "CNAME" Record mapped to the above domain. (This is a wildcard DNS mapping)      |
 
 ## Certificate requirements
 

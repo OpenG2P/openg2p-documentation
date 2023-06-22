@@ -1,6 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
+* [🏢 Architecture](architecture.md)
 * [🧱 Modules](modules/README.md)
   * [Registration](modules/secure-registry/README.md)
     * [Offline Registration](modules/secure-registry/offline-registration.md)
@@ -84,7 +85,7 @@
   * [Send Notification to Individual Registrants](guides/user-guides/send-notification-to-individual-registrants.md)
   * [Configure ID Types](guides/user-guides/configure-id-types.md)
   * [Map ODK Form](guides/user-guides/map-odk-form.md)
-  * [Integrate MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
+  * [Integrate with MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
   * [Map Self Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
@@ -101,5 +102,6 @@
     * [Rancher Server Setup](guides/deployment-guide/deployment-on-kubernetes/rancher-server-setup.md)
     * [NFS Server Setup](guides/deployment-guide/deployment-on-kubernetes/nfs-server-setup.md)
     * [SSL Certificates using Letsencrypt](guides/deployment-guide/deployment-on-kubernetes/ssl-certificates-using-letsencrypt.md)
+  * [Access to Deployed Setup](guides/deployment-guide/access-to-deployed-setup.md)
   * [Post Install Configuration](guides/deployment-guide/post-install-instructions.md)
   * [Packaging OpenG2P Docker](guides/deployment-guide/packaging-openg2p-docker.md)

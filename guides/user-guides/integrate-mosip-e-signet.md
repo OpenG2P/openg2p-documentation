@@ -1,11 +1,8 @@
-# Integrate MOSIP e-Signet
+# Integrate with MOSIP e-Signet
 
 ## Description
 
-This guide provides steps to integrate [OpenG2P with MOSIP-eSignet](../../integrations/integration-with-mosip/integration-with-e-signet.md). The entire configuration is accomplished by the following actors:
-
-1. MOSIP Partner Admin
-2. OpenG2P Admin
+This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider. &#x20;
 
 ## Prerequisites
 
@@ -23,18 +20,23 @@ This guide provides steps to integrate [OpenG2P with MOSIP-eSignet](../../integr
 
 ### Configure OpenG2P as a partner on MOSIP
 
-* [Guide](https://docs.mosip.io/1.2.0/modules/partner-management-services/auth-credential-partner) for MOSIP 1.2.0
-* Guide for MOSIP 1.1.5 (TBD)
-
-Note down the Partner ID and Policy ID from the above steps.
+1. Create an **Auth Partner** for OpenG2P on MOSIP.
+   * [Guide](https://docs.mosip.io/1.2.0/modules/partner-management-services/auth-credential-partner) for MOSIP 1.2.0
+   * Guide for MOSIP 1.1.5 (TBD)
+2. Create a **MISP Partner** for OpenG2P on MOSIP.
+3. Note down the following from the above steps:
+   1. Auth Partner ID&#x20;
+   2. Auth Policy ID&#x20;
+   3. Auth API Key
+   4. MISP License Key
+   5. Auth partner signed certificate&#x20;
+   6. IDA Partner certificate (App id: IDA, Ref Id: PARTNER)
 
 ### Configure OpenG2P as relying party on e-Signet
 
-These steps are executed by MOSIP Partner Admin
-
 #### Using PMS API
 
-This method is applicable if MOSIP Partner Management APIs are available.
+This method is applicable if MOSIP Partner Management APIs are available. These steps are executed by MOSIP Partner Admin
 
 1. Create an e-Signet OIDC client using PMS OIDC API:
 
@@ -93,21 +95,21 @@ These steps are executed by OpenG2P Admin on the OpenG2P Admin interface.
 
 2. Create a new OIDC Provider with the following details:
 
-| Parameter                                | Value                                                                                                                                      |                                                                                                                                               |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Client ID                                | _The_ _output_ _of the_ [previous section](integrate-mosip-e-signet.md#configure-openg2p-as-relying-party-on-e-signet).                    |                                                                                                                                               |
-| Auth Flow                                | OpenID Connect (authorization code flow)                                                                                                   |                                                                                                                                               |
-| Token map                                | sub:user\_id                                                                                                                               |                                                                                                                                               |
-| Client Authentication Method             | Private Key JWT                                                                                                                            |                                                                                                                                               |
-| Private Key Method                       | _Private key used for JWK creation in the_ [previous section](integrate-mosip-e-signet.md#configure-openg2p-as-relying-party-on-e-signet). |                                                                                                                                               |
-| Assertion Type                           | JWT Bearer                                                                                                                                 |                                                                                                                                               |
-| Authorization URL                        | _e-Signet's authorize endpoint._                                                                                                           | Example: [https://esignet.mec.mosip.net/authorize](https://esignet.mec.mosip.net/authorize)                                                   |
-| Userinfo URL                             | _e-Signet's userinfo API_                                                                                                                  | Example: [https://api.mec.mosip.net/v1/esignet/oidc/userinfo](https://api.mec.mosip.net/v1/esignet/oidc/userinfo)                             |
-| Token URL                                | _e-Signet's token API_                                                                                                                     | Example: [https://api.mec.mosip.net/v1/esignet/oauth/token](https://api.mec.mosip.net/v1/esignet/oauth/token)                                 |
-| JWKS URL                                 | _e-Signet's JWKS API_                                                                                                                      | Example: [https://api.mec.mosip.net/v1/esignet/oauth/.well-known/jwks.json](https://api.mec.mosip.net/v1/esignet/oauth/.well-known/jwks.json) |
-| Use G2P Reg ID                           | True                                                                                                                                       |                                                                                                                                               |
-| G2P Registrant ID Type                   | _MOSIP PSUT ID Type_                                                                                                                       | As configured in step 9 of [Prerequisites](integrate-mosip-e-signet.md#prerequisites).                                                        |
-| Partner Creation Call Validate URL       | True                                                                                                                                       | Specifies whether to call the MOSIP e-KYC API to fetch data into OpenG2P                                                                      |
-| Partner Creation Validate Response       | name:name email:email phone:phone\_number birthdate:birthdate gender:gender address:address                                                |                                                                                                                                               |
-| Default Group User Creation              | User types / Portal                                                                                                                        | Specifies all users signing up through this OIDC Provider (e-Signet) are only going to be portal users                                        |
-| Login Attribute Mapping On User Creation | email                                                                                                                                      | To allow users to sign in with their email and password after initial signup with e-Signet.                                                   |
+| Parameter                                | Value                                                                                                                                    |                                                                                                                                               |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Client ID                                | The output of the [previous section](integrate-mosip-e-signet.md#configure-openg2p-as-relying-party-on-e-signet).                        |                                                                                                                                               |
+| Auth Flow                                | `OpenID Connect (authorization code flow)`                                                                                               |                                                                                                                                               |
+| Token map                                | `sub:user_id`                                                                                                                            |                                                                                                                                               |
+| Client Authentication Method             | `Private Key JWT`                                                                                                                        |                                                                                                                                               |
+| Private Key Method                       | Private key used for JWK creation in the [previous section](integrate-mosip-e-signet.md#configure-openg2p-as-relying-party-on-e-signet). |                                                                                                                                               |
+| Assertion Type                           | `JWT Bearer`                                                                                                                             |                                                                                                                                               |
+| Authorization URL                        | e-Signet's authorize endpoint.                                                                                                           | Example: [https://esignet.mec.mosip.net/authorize](https://esignet.mec.mosip.net/authorize)                                                   |
+| Userinfo URL                             | e-Signet's userinfo API                                                                                                                  | Example: [https://api.mec.mosip.net/v1/esignet/oidc/userinfo](https://api.mec.mosip.net/v1/esignet/oidc/userinfo)                             |
+| Token URL                                | e-Signet's token API                                                                                                                     | Example: [https://api.mec.mosip.net/v1/esignet/oauth/token](https://api.mec.mosip.net/v1/esignet/oauth/token)                                 |
+| JWKS URL                                 | e-Signet's JWKS API                                                                                                                      | Example: [https://api.mec.mosip.net/v1/esignet/oauth/.well-known/jwks.json](https://api.mec.mosip.net/v1/esignet/oauth/.well-known/jwks.json) |
+| Use G2P Reg ID                           | `True`                                                                                                                                   |                                                                                                                                               |
+| G2P Registrant ID Type                   | MOSIP PSUT ID Type                                                                                                                       | As configured in step 9 of [Prerequisites](integrate-mosip-e-signet.md#prerequisites).                                                        |
+| Partner Creation Call Validate URL       | `True`                                                                                                                                   | Specifies whether to call the MOSIP e-KYC API to fetch data into OpenG2P                                                                      |
+| Partner Creation Validate Response       | `name:name email:email phone:phone_number birthdate:birthdate gender:gender address:address`                                             |                                                                                                                                               |
+| Default Group User Creation              | `User types / Portal`                                                                                                                    | Specifies all users signing up through this OIDC Provider (e-Signet) are only going to be portal users                                        |
+| Login Attribute Mapping On User Creation | `email`                                                                                                                                  | To allow users to sign in with their email and password after initial signup with e-Signet.                                                   |
