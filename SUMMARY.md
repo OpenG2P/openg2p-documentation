@@ -79,3 +79,8 @@
     * [Mojaloop Integration](openg2p-site-documentation/external-system-integrations/mojaloop-integration.md)
     * [GSMA Mobile Money](openg2p-site-documentation/external-system-integrations/gsma-mobile-money.md)
   * [Notifications](openg2p-site-documentation/notifications.md)
+* [GUIDES](guides/README.md)
+  * [How-To Guides](guides/how-to-guides/README.md)
+    * [Reimburse using Service Provider Portal](guides/how-to-guides/reimburse-using-service-provider-portal.md)
+    * [Configure Email Server](guides/how-to-guides/configure-email-server.md)
+    * [Deploy Smart-Scanner App](guides/how-to-guides/deploy-smart-scanner-app.md)
