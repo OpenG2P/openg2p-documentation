@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide will provide the steps to register beneficiaries through an offline process.  [offline registration](../../secure-registry/offline-registration.md) is done by the Field Agent.
+This guide will provide the steps to register beneficiaries through an offline process.  [offline registration](../../secure-registry/registration-methods/offline-registration.md) is done by the Field Agent.
 
 ## Pre-requisites
 

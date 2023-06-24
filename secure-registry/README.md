@@ -8,17 +8,17 @@ The registration module of OpenG2P offers registration of persons into programs 
 2. Self-registration by a potential beneficiary&#x20;
 3. API-based registration by other systems
 
-Agent-assisted registration supports [offline registration](offline-registration.md) in areas where connectivity may be a challenge.
+Agent-assisted registration supports [offline registration](registration-methods/offline-registration.md) in areas where connectivity may be a challenge.
 
 Registration can be done for individuals or groups like families, households, schools etc.
 
 A high-level view of the agent assisted registration flow is given below:
 
-<figure><img src="../../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
 ## Identification of records
 
-Identification of records in the registry is done with configured [ID types](id-types.md). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license etc.&#x20;
+Identification of records in the registry is done with configured [ID types](broken-reference). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license etc.&#x20;
 
 ## Individual and groups
 
