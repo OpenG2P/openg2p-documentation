@@ -8,9 +8,7 @@ OpenG2P offers mechanisms to carry out registrations on the field in areas where
 
 ODK is an open source toolkit that uses offline forms to collect data.  ODK Collect is the client-side app while ODK Central is the server-side app.  Learn more about ODK [here](https://docs.getodk.org/).
 
-## Cash grant scenario
-
-A typical flow of enrolling a beneficiary by collecting data on the field by an agent, in offline mode, is illustrated below.
+##
 
 <figure><img src="../../.gitbook/assets/cash-grant-scenario.png" alt=""><figcaption></figcaption></figure>
 
