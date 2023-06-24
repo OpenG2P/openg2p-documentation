@@ -2,28 +2,5 @@
 
 This page lists all the technologies used in building OpenG2P. Free and open-source softwares with clear long-term support availability have been chosen. Certain choices can be replaced with other free or commercial options for deployment.
 
-| Domain                          | Tools/Technologies | Version | Licence Type                                                      |
-| ------------------------------- | ------------------ | ------- | ----------------------------------------------------------------- |
-| Operating System                | Ubuntu Server      | 20.04   | Free                                                              |
-| Business Apps                   | Odoo               | 15.0    | LGPL                                                              |
-| ID System                       | MOSIP              | 1.2     | MPL 2.0                                                           |
-| Development - Language Runtime  | Python             | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
-| Database                        | Postgres           |         | Postgres License BSD 2-clause "Simplified License"                |
-| ID Verification                 | MOSIP Token Seeder |         | MPL 2.0                                                           |
-| ID Verification                 | eSignet            |         | MPL 2.0                                                           |
-| Analytics Engine                | Elasticsearch      |         | Elastic License 2.0                                               |
-| Data streaming                  | Debezium           |         | Apache 2.0                                                        |
-| Offline data collection         | ODK                |         | Apache 2.0                                                        |
-| Visualization                   | Kibana             |         | Elastic License 2.0                                               |
-| S3 Storage                      | MinIO              |         | AGPL 3.0                                                          |
-| Development - API Documentation | Swagger            |         | Apache License 2.0                                                |
-| Task Management                 | Jira               |         | Commercial (OpenG2P has a free license)                           |
-| Source Code Management          | GitHub             |         | Commercial (OpenG2P uses Free plan)                               |
-| Deployment                      | Docker             |         | Apache 2.0                                                        |
-| DevOps tools                    | Ansible            |         | GNU GPL v3.0                                                      |
-| DevOps tools                    | Github actions     |         | Free                                                              |
-| DevOps tools                    | Prometheus         |         | Apache License 2.0                                                |
-| DevOps tools                    | Grafana            |         | Apache License 2.0                                                |
-| Messaging                       | Apache Kafka       |         | Apache License 2.0                                                |
-| Web Server/HTTP proxy server    | Nginx              |         |                                                                   |
+<table><thead><tr><th>Domain</th><th>Tools/Technologies</th><th width="123">Version</th><th>Licence Type</th></tr></thead><tbody><tr><td>Operating System</td><td>Ubuntu Server</td><td>20.04</td><td>Free</td></tr><tr><td>Business Apps</td><td>Odoo</td><td>15.0</td><td>LGPL</td></tr><tr><td>ID System</td><td>MOSIP</td><td>1.2</td><td>MPL 2.0</td></tr><tr><td>Development - Language Runtime</td><td>Python</td><td>3.5+</td><td><a href="https://docs.python.org/3/license.html#psf-license">PSF License</a></td></tr><tr><td>Database</td><td>Postgres</td><td></td><td>Postgres License BSD 2-clause "Simplified License"</td></tr><tr><td>ID Verification</td><td>MOSIP Token Seeder</td><td></td><td>MPL 2.0</td></tr><tr><td>ID Verification</td><td>eSignet</td><td></td><td>MPL 2.0</td></tr><tr><td>Analytics Engine</td><td>Elasticsearch</td><td></td><td>Elastic License 2.0</td></tr><tr><td>Data streaming</td><td>Debezium</td><td></td><td>Apache 2.0</td></tr><tr><td>Offline data collection</td><td>ODK</td><td></td><td>Apache 2.0</td></tr><tr><td>Visualization</td><td>Kibana</td><td></td><td>Elastic License 2.0</td></tr><tr><td>S3 Storage</td><td>MinIO</td><td></td><td>AGPL 3.0</td></tr><tr><td>Development - API Documentation</td><td>Swagger</td><td></td><td>Apache License 2.0</td></tr><tr><td>Task Management</td><td>Jira</td><td></td><td>Commercial (OpenG2P has a free license)</td></tr><tr><td>Source Code Management</td><td>GitHub</td><td></td><td>Commercial (OpenG2P uses Free plan)</td></tr><tr><td>Deployment</td><td>Docker</td><td></td><td>Apache 2.0</td></tr><tr><td>DevOps tools</td><td>Ansible</td><td></td><td>GNU GPL v3.0</td></tr><tr><td>DevOps tools</td><td>Github actions</td><td></td><td>Free</td></tr><tr><td>DevOps tools</td><td>Prometheus</td><td></td><td>Apache License 2.0</td></tr><tr><td>DevOps tools</td><td>Grafana</td><td></td><td>Apache License 2.0</td></tr><tr><td>Messaging</td><td>Apache Kafka</td><td></td><td>Apache License 2.0</td></tr><tr><td>Web Server/HTTP proxy server</td><td>Nginx</td><td></td><td></td></tr></tbody></table>
 
