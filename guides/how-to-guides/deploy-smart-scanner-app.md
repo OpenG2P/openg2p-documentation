@@ -24,17 +24,17 @@ The user must possess an Android Phone with an Android OS version (?) or above a
 
 4. Enable the option _Allow apps from this source,_ click on the downloaded file, and install the application by clicking _Install_.
 
-<figure><img src="../../.gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
 
 
 
 5. If the SmartScanner app is successfully installed, then this icon will appear on the mobile screen.
 
-<figure><img src="../../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
 
 6. Search for "wire guard" in the Android Play Store.&#x20;
 
-<figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
 
 7. Install the WireGuard app, open it, and click on the + icon to add the tunnel.
 
@@ -50,17 +50,17 @@ The user must possess an Android Phone with an Android OS version (?) or above a
 
 10. Activate the tunnel in WireGuard.
 
-<figure><img src="../../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
 
 11. Open the SmartScanner App. It should show the option _Voucher Code_.
 
-<figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
 
 12. Click on the _Voucher Code_ and scan the QR code shown here.
 
-<figure><img src="../../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
 
 13. If the SmartScanner App is successfully deployed, then the scan will show these details.
 
-<figure><img src="../../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
 
