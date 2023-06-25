@@ -82,5 +82,5 @@
 * [GUIDES](guides/README.md)
   * [How-To Guides](guides/how-to-guides/README.md)
     * [Submit reimbursement using Service Provider Portal](guides/how-to-guides/submit-reimbursement-using-service-provider-portal.md)
-    * [Deploy Smart-Scanner App](guides/how-to-guides/deploy-smart-scanner-app.md)
+    * [Deploy SmartScanner App](guides/how-to-guides/deploy-smartscanner-app.md)
     * [Configure Email Server](guides/how-to-guides/configure-email-server.md)

@@ -1,3 +1,0 @@
-# Accounting
-
-Conditional Cash Transfer
