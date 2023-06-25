@@ -82,5 +82,6 @@
 * [GUIDES](guides/README.md)
   * [How-To Guides](guides/how-to-guides/README.md)
     * [Submit Reimbursement Using Service Provider Portal](guides/how-to-guides/submit-reimbursement-using-service-provider-portal.md)
-    * [Deploy SmartScanner App](guides/how-to-guides/deploy-smartscanner-app.md)
+    * [Install SmartScanner App](guides/how-to-guides/install-smartscanner-app.md)
     * [Configure Email Server](guides/how-to-guides/configure-email-server.md)
+    * [Install WireGuard App And Activate Tunnel](guides/how-to-guides/install-wireguard-app-and-activate-tunnel.md)
