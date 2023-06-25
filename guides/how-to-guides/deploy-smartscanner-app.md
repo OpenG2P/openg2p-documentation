@@ -46,7 +46,7 @@ The user must possess an Android Phone with an Android OS version (?) or above a
 
 9. Select the WireGuard conf file provided by the system administrator. On successful tunnel creation, the tunnel name will appear at the top of the app.
 
-<figure><img src="../../.gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (13).png" alt=""><figcaption></figcaption></figure>
 
 10. Activate the tunnel in WireGuard.
 
