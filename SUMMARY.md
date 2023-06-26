@@ -85,3 +85,4 @@
     * [Install SmartScanner App](guides/how-to-guides/install-smartscanner-app.md)
     * [Configure Email Server](guides/how-to-guides/configure-email-server.md)
     * [Install WireGuard App And Activate Tunnel](guides/how-to-guides/install-wireguard-app-and-activate-tunnel.md)
+    * [Writing Guidelines For How-To Guides](guides/how-to-guides/writing-guidelines-for-how-to-guides.md)
