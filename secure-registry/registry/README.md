@@ -2,7 +2,7 @@
 
 ## Identification of records
 
-Identification of records in the registry is done with configured [ID types](broken-reference). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;
+Identification of records in the registry is done with configured [ID types](./#id-types). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;
 
 ## Individual and groups
 
@@ -52,7 +52,7 @@ In the roadmap of OpenG2P, an enhanced secure registry with the following featur
 7. Complex queries
 8. Anonymous profile
 9. Data encrypted at rest
-10. Verifiable credentials
+10. [Verifiable credentials](../../beneficiary-management/verifiable-credentials.md)
 11. Evidence
 12. Attestation
 {% endhint %}
