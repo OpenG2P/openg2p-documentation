@@ -10,9 +10,9 @@ The registration module of OpenG2P offers registration of persons into programs 
 
 Agent-assisted registration supports [offline registration](registration-methods/offline-registration.md) in areas where connectivity may be a challenge.
 
-Registration can be done for individuals or groups like families, households, schools etc.
+Registration can be done for individuals or groups like families, households, schools, etc.
 
-A high-level view of the agent assisted registration flow is given below:
+A high-level view of the agent-assisted registration flow is given below:
 
 <figure><img src="../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
