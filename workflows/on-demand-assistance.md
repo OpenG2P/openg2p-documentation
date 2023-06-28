@@ -2,22 +2,17 @@
 
 ## Introduction
 
-On-demand assistance is especially useful for scenarios like urgent surgeries, treatments, and other crisis situations. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation for providing assistance using multiple stages of approvals.
+On-demand assistance is especially useful for scenarios like urgent surgeries, treatments, and other crises. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation for assisting using multiple stages of approvals.
 
 ## Process
 
-## Multi-stage approval
+1. The beneficiary provides details of assistance such as the type and cost of treatment along with the name, address, gender, age, occupation, and family information.
+2. The assistance application is reviewed and assessed in multiple stages by the officers designated by the program administrator/manager. At each stage, the designated officer will either approve/reject the application with a valid reason. If the application is rejected at any one of the stages, the approval process stops.
+3. After all the designated officers approve the application, the final approving officer will also issue an entitlement voucher. The entitlement voucher has a QR code that can be scanned to view beneficiary entitlement and prove the authenticity of the entitlement voucher.
+4. The beneficiary takes the entitlement voucher to the service provider. The service provider scans the entitlement voucher. If the QR scan is valid, the service provider assists the beneficiary.
 
-This example shows multi-stage approval with three stages. The program manager/administrator can custom-assign an assessment officer for each stage. Though this example shows three stages, the number of stages can be customized.
+## Reference scenario
 
-The assessment can be rejected at any stage. In either case, the assessing officer needs to add the reason for the acceptance/rejection in the assessment.
+This example describes on-demand assistance with multi-stage approval.&#x20;
 
-If the assessment is rejected by any officer, then the process stops.
-
-The entitlement is prepared by the Senior Officer after three assessments in this example.
-
-The entitlement voucher can be communicated digitally or printed on paper. The voucher contains a QR code, which can be scanned to view and digitally verify the entitlement details.
-
-After successful submission, the service provider can view the status and details of reimbursement on the _Service Provider Portal._
-
-<figure><img src="../.gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
