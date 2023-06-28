@@ -26,7 +26,7 @@ user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/default-eligibility-manager-creation-page.png" alt=""><figcaption></figcaption></figure>
 
-4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](../../../modules/program-management/eligibility.md#domain-filters). You may specify multiple eligibility criteria.
+4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](../../../beneficiary-management/eligibility.md#domain-filters). You may specify multiple eligibility criteria.
 
 <figure><img src="../../../.gitbook/assets/default-eligibility-manager-filter.png" alt=""><figcaption></figcaption></figure>
 

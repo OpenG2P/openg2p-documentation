@@ -12,11 +12,11 @@ Below is the reference architecture of disbursements triggered from OpenG2P resu
 
 ## Payment process
 
-The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub (PH) and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of the Digital Financial Service Provider (DSFP). DFSP1 takes the transaction forward with Mojaloop Switch.&#x20;
+The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub (PH) and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of the Digital Financial Service Provider (DSFP). DFSP1 takes the transaction forward with Mojaloop Switch.&#x20;
 
 Reconciliation at the OpenG2P end is done via status API calls to Payment Hub which is responsible for gathering payment status information of all transactions from DFSPs and Switch.
 
-In the current integration, the account id of the payee is available in the OpenG2P registry and passed on to Payment Hub (hence propagated to Mojaloop). The account id of the payer is configured in the[ Payment Manager](../modules/eligibility-and-enrolment/payment-manager.md).&#x20;
+In the current integration, the account id of the payee is available in the OpenG2P registry and passed on to Payment Hub (hence propagated to Mojaloop). The account id of the payer is configured in the[ Payment Manager](../eligibility-and-enrolment/payment-manager.md).&#x20;
 
 {% hint style="info" %}
 If [Account Mapper](https://g2pconnect.global/) is available as part of Digital Public Infrastructure, then the account id need not be stored in the OpenG2P registry.

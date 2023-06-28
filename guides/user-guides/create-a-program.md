@@ -22,22 +22,22 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
     <figure><img src="../../.gitbook/assets/program-creation-page.png" alt=""><figcaption><p>Configure eligibility criteria</p></figcaption></figure>
 
     </div>
-4. Use_+Add filter_ to set eligibility criteria using [Domain Filters](../../modules/program-management/eligibility.md#domain-filters). You may set multiple eligibility criteria.&#x20;
-5.  **Cycle Manager:**  Set parameters of [disbursement cycles](../../modules/beneficiary-management/disbursement-cycles.md).
+4. Use_+Add filter_ to set eligibility criteria using [Domain Filters](../../beneficiary-management/eligibility.md#domain-filters). You may set multiple eligibility criteria.&#x20;
+5.  **Cycle Manager:**  Set parameters of [disbursement cycles](../../beneficiary-management/disbursement-cycles.md).
 
     <figure><img src="../../.gitbook/assets/cycle-manager.png" alt=""><figcaption></figcaption></figure>
 
     * _Auto-approve Entitlements:_ To set entitlements via rules, without any manual approvals.
     * _Approver Group:_ The group name of the user who has permission to approve cycles. See [Create User and Assign Role](assign-roles-to-users.md).
     * _Recurrence:_ The time period for the repetition of a cycle.
-6.  **Entitlement Manager:**  Set parameters for [entitlements](../../modules/program-management/entitlement.md).
+6.  **Entitlement Manager:**  Set parameters for [entitlements](../../beneficiary-management/entitlement.md).
 
 
 
     <figure><img src="../../.gitbook/assets/entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
     * _Amount Per Cycle:_ The amount disbursement of a group or individual per cycle.
-    * _Amount Per Individual In Group:_ Amount of disbursement per individual in a group when the program [target type](../../modules/beneficiary-management.md#target-types) is "group".
+    * _Amount Per Individual In Group:_ Amount of disbursement per individual in a group when the program [target type](../../beneficiary-management/#target-types) is "group".
     * _Maximum number of individuals in a group:_  Maximum number of individuals who get disbursements per group (optional).
     * _Transfer Fee(%):_ Fee incurred for disbursement as a percentage of disbursement (optional).
     * _Transfer Fee Amount:_ Fee incurred for disbursement as an absolute amount (optional).

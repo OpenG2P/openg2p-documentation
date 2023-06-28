@@ -43,19 +43,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 
 
-| Protocol | Port        | Should be accessible by only | Description                     |
-| -------- | ----------- | ---------------------------- | ------------------------------- |
-| TCP      | 22          |                              | SSH                             |
-| TCP      | 80          |                              | Postgres ports                  |
-| TCP      | 443         |                              | Postgres ports                  |
-| TCP      | 5432:5434   |                              | Postgres ports                  |
-| TCP      | 9345        | RKE2 agent nodes             | Kubernetes API                  |
-| TCP      | 6443        | RKE2 agent nodes             | Kubernetes API                  |
-| UDP      | 8472        | RKE2 server and agent nodes  | Required only for Flannel VXLAN |
-| TCP      | 10250       | RKE2 server and agent nodes  | kubelet                         |
-| TCP      | 2379        | RKE2 server nodes            | etcd client port                |
-| TCP      | 2380        | RKE2 server nodes            | etcd peer port                  |
-| TCP      | 30000:32767 | RKE2 server and agent nodes  | NodePort port range             |
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432:5434</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
 ## K8s setup
 
