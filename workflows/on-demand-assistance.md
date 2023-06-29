@@ -2,7 +2,7 @@
 
 ## Introduction
 
-On-demand assistance is especially useful for scenarios like urgent surgeries, treatments, and other crises. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation for assisting using multiple stages of approvals.
+On-demand assistance is especially useful for scenarios like urgent surgeries, treatments, and other crises. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation using multiple stages of approvals.
 
 ## Process
 
@@ -15,7 +15,7 @@ On-demand assistance is especially useful for scenarios like urgent surgeries, t
 
 This example describes on-demand assistance with multi-stage approval.&#x20;
 
-<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/1.0.0/.gitbook/assets/on-demand-assistance-swimlane.png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 * The program manager/administrator can custom-assign an assessment officer for each stage.&#x20;

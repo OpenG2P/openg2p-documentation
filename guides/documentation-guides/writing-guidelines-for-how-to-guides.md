@@ -8,3 +8,5 @@
 * Use quotes for a phrase/word if the phrase/word has to be represented as is.
 * Provide a link at the first mention of a new/different topic. For example, if the guide is talking about installing the SmartScanner app, and the WireGuard app is mentioned, then provide the link for WireGuard.&#x20;
 * Use clear and crisp images.
+* The filename for images should follow the naming convention of every word in lower case, and words separated by hyphens i.e. view-all-programs.png.
+
