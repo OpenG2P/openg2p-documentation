@@ -15,10 +15,18 @@ On-demand assistance is especially useful for scenarios like urgent surgeries, t
 
 This example describes on-demand assistance with multi-stage approval.&#x20;
 
+<div>
+
 <figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/1.0.0/.gitbook/assets/on-demand-assistance-swimlane.png" alt=""><figcaption></figcaption></figure>
 
-{% hint style="info" %}
+ 
+
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/2201c02a187365e8c6de1f30d61d863ca3329068/.gitbook/assets/on-demand-assistance.png" alt=""><figcaption></figcaption></figure>
+
+</div>
+
+### Customizations
+
 * The program manager/administrator can custom-assign an assessment officer for each stage.&#x20;
 * Though this example shows three stages, the number of stages can be customized.&#x20;
 * The entitlement voucher can be communicated digitally or printed on paper.&#x20;
-{% endhint %}
