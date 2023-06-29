@@ -1,6 +1,6 @@
 # Install SmartScanner App
 
-## Description  <a href="#description" id="description"></a>
+## escription  <a href="#description" id="description"></a>
 
 The guide here provides steps to install the SmartScanner app. This app allows users to scan the QR code in the entitlement voucher.
 
@@ -24,20 +24,20 @@ The user must possess an Android Phone with [WireGuard tunnel](https://app.gitbo
 
 4. Enable the option _Allow apps from this source,_ click on the downloaded file, and install the application as described in step#2.
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/allow-apps (1).png" alt=""><figcaption></figcaption></figure>
 
 5. If the SmartScanner app is successfully installed, then this icon will appear on the mobile screen.
 
-<figure><img src="../../.gitbook/assets/image (13).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/smart-scanner-app-icon.png" alt=""><figcaption></figcaption></figure>
 
 6. Open the SmartScanner app. It should show the option _Voucher Code_.
 
-<figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/voucher-code-command.png" alt=""><figcaption></figcaption></figure>
 
 7. Click on the _Voucher Code_ and scan the QR code shown here.
 
-<figure><img src="../../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-code.png" alt=""><figcaption></figcaption></figure>
 
 8. If the SmartScanner app is successfully installed, then the scan will show these details.
 
-<figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan.png" alt=""><figcaption></figcaption></figure>
