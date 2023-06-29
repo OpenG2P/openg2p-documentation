@@ -25,8 +25,8 @@ This example describes on-demand assistance with multi-stage approval.&#x20;
 
 </div>
 
-{% hint style="info" %}
+### Customizations
+
 * The program manager/administrator can custom-assign an assessment officer for each stage.&#x20;
 * Though this example shows three stages, the number of stages can be customized.&#x20;
 * The entitlement voucher can be communicated digitally or printed on paper.&#x20;
-{% endhint %}
