@@ -34,7 +34,7 @@ Beneficiaries should have the MOSIP-issued national ID with them.
 
 8. Click on _Apply_ to fill in the beneficiary details in the program form.
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/All Programs (1).png" alt=""><figcaption></figcaption></figure>
 
 9. Once the form fields are filled click on Submit button for application submission.
 
