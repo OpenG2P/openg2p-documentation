@@ -42,7 +42,7 @@
     * [ODK MTS Connector](integrations/integration-with-mosip/mts-connector.md)
     * [Registry MTS Connector](integrations/integration-with-mosip/registry-mts-connector.md)
     * [Integration with e-Signet](integrations/integration-with-mosip/integration-with-e-signet.md)
-* [API](api.md)
+* [↔ API](api.md)
 * [⚒ Testing](testing.md)
 * [👥 Community](community/README.md)
   * [Contributing](community/contributing-to-openg2p.md)
