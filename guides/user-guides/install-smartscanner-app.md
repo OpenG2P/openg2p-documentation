@@ -40,4 +40,4 @@ The user must possess an Android Phone with [WireGuard tunnel](https://app.gitbo
 
 8. If the SmartScanner app is successfully installed, then the scan will show these details.
 
-<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan (1).png" alt=""><figcaption></figcaption></figure>
