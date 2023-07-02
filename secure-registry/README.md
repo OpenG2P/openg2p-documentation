@@ -6,7 +6,9 @@ Intake is the process of gathering information, while registration is the proces
 
 Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry/). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enroll in the program and are referred to as beneficiaries.&#x20;
 
-_**TODO: Diagram of registration process only. The diagram may contain entities like “Registry” etc.**_
+This is a pictorial representation of the OpenG2P registration process.
+
+<figure><img src="../.gitbook/assets/registration-process.png" alt=""><figcaption></figcaption></figure>
 
 ## Registration approaches
 
@@ -55,10 +57,6 @@ The applicant information is filled in using general intake sheets. These intake
 #### Notifications
 
 The platform can be configured to send [Notifications](../notifications.md) to the applicants via multiple channels such as email, sms, etc.&#x20;
-
-## Deduplication
-
-OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
 
 ## Developer References
 

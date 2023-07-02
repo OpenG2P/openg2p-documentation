@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The registration module of OpenG2P offers registration of persons into programs via the following interfaces:
+OpenG2P platform offers registration of persons into programs via the following interfaces:
 
 1. Mobile registration app&#x20;
 2. Self-registration by a potential beneficiary&#x20;

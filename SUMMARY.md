@@ -10,7 +10,6 @@
   * [ID Verification](secure-registry/id-verification.md)
   * [Registry](secure-registry/registry/README.md)
     * [Registrant Information](secure-registry/registry/registrant-information.md)
-    * [Privacy and Security](secure-registry/registry/privacy-and-security.md)
 * [🅿 Program Management](beneficiary-management/README.md)
   * [Eligibility Assessment](beneficiary-management/eligibility.md)
   * [Enrolment](beneficiary-management/enrolment.md)
