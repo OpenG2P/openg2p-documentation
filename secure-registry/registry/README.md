@@ -1,5 +1,7 @@
 # Registry
 
+## Introduction
+
 ## Identification of records
 
 Identification of records in the registry is done with configured [ID types](./#id-types). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;

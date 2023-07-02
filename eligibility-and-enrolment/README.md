@@ -1,4 +1,4 @@
-# Payments
+# 💵 Payment Management
 
 ## Introduction
 

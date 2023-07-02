@@ -24,7 +24,7 @@ The Service Provider Portal user has login access to the portal using MOSIP ID/N
 
 5. The beneficiary details are available by scanning the QR code on the entitlement voucher (also called Guarantee Letter) using the [SmartScanner app](install-smartscanner-app.md). The scan should show details similar to the format in the image below.&#x20;
 
-<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan.png" alt=""><figcaption></figcaption></figure>
 
 6. Enter the details from the scan into the _Submission Form and_ click _Submit_. This will show a user prompt to confirm the details. Click _Submit_.
 

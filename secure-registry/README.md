@@ -1,33 +1,76 @@
-# Registration
+# 📋 Intake And Registration
 
 ## Introduction
 
-The registration module of OpenG2P offers registration of persons into programs via the following methods:
+Intake is the process of gathering information, while registration is the process of recording and verifying that information. The OpenG2P platform verifies the recorded information in the background by confirming the identity and demographic details of the applicant digitally. Background [ID Verification](id-verification.md) allows information gathering, recording, and verification to happen simultaneously, and the entire process is referred to as registration throughout the documentation.
 
-1. Agent assisted registration&#x20;
-2. Self-registration by a potential beneficiary&#x20;
-3. API-based registration by other systems
+Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry/). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enroll in the program and are referred to as beneficiaries.&#x20;
 
-Agent-assisted registration supports [offline registration](registration-methods/offline-registration.md) in areas where connectivity may be a challenge.
+_**TODO: Diagram of registration process only. The diagram may contain entities like “Registry” etc.**_
 
-Registration can be done for individuals or groups like families, households, schools, etc.
+## Registration approaches
 
-A high-level view of the agent-assisted registration flow is given below:
+Registration can be carried out via multiple channels such as digital service windows/kiosks, social workers, local registration offices, door-to-door visits, referrals from other programs, etc. The registration approach can be either on-demand or administrative-driven. Three key features distinguish between these two approaches:
 
-<figure><img src="../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
+#### **Applicant-initiated vs program-initiated**
 
-## Registration Process
+Whether the registration process was initiated by the applicant (on-demand) or by the program administrator (administrator-driven)
 
-* Program creation&#x20;
-* ODK form template creation&#x20;
-* Upload of form to ODK Central
-* Assigning forms to agents
-* Field registration by the agent using ODK Collect on an Android tablet/phone.
-* Submission of form to ODK Central
-* Addition of record to the registry&#x20;
-* ID verification and KYC
+#### **Individual vs group registration**
 
-## FAQ
+Whether applicants registered themselves individually (on-demand) or registered as a group/family/household (administrator-driven)
+
+#### **Continuous vs time-bound**
+
+Whether applicants could register at the time of their choosing (on-demand) or had to apply in a specific time window (administrator-driven)
+
+## Registration interfaces
+
+While on-demand and administrative-driven approaches are two distinct models, the registration process operates in a spectrum between these two models. For example, a program may allow the applicants to register individually (on-demand) but may allow them to apply only in a certain time window (administrative-driven). OpenG2P platform has a flexible implementation and through its various [Registration Interfaces](registration-methods/) aims to cater to a combination of approaches across different registration modalities and programs.&#x20;
+
+## Registration features
+
+OpenG2P registration interfaces are key client-facing interfaces. The clients here could be the applicants, social workers, program administrators, program managers, etc. There are the main features offered by these interfaces:
+
+#### **Authentic**&#x20;
+
+The clients log into the system using their MOSIP ID/National ID allowing the information to be verified while it is being recorded. Additionally, logging in using National ID can pre-fill the information fields in an authentic manner.
+
+#### **Always available**
+
+OpenG2P's [Mobile Registration App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without any internet connectivity.&#x20;
+
+#### **Secure**
+
+The applicant's information is encrypted at rest and during transit allowing the information to be secure against malicious attacks.
+
+#### **Privacy-preserving**
+
+The platform allows for consent forms to be filled out and recorded before starting the intake. The recorded information is not used for any purpose other than the explicitly stated purpose in the consent form.&#x20;
+
+#### Customizable intake
+
+The applicant information is filled in using general intake sheets. These intake sheets can be customized per the assessment information required by the program.
+
+#### Notifications
+
+The platform can be configured to send [Notifications](../notifications.md) to the applicants via multiple channels such as email, sms, etc.&#x20;
+
+## Deduplication
+
+OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
+
+## Developer References
+
+[**API**](../api.md)
+
+[**Code**](../guides/developer-guides/)
+
+## Guides
+
+## FAQs
+
+
 
 <details>
 
