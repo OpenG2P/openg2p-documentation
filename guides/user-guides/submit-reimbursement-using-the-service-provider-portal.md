@@ -32,7 +32,7 @@ The Service Provider Portal user has login access to the portal using MOSIP ID/N
 
 7. Successful submission will show a confirmation page with details such as the application Id and submission date.&#x20;
 
-<figure><img src="../../.gitbook/assets/reimbursement-confirmation.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/reimbursement-confirmation (1).png" alt=""><figcaption></figcaption></figure>
 
 8. You can optionally click _Go to Home_ to view the submitted reimbursements. You should see that the status of reimbursement has changed to _Applied_.
 

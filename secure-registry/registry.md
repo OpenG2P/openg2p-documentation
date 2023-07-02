@@ -8,7 +8,7 @@ The purpose of the registry is to provide a single source of truth to the progra
 
 ## Identification of records
 
-Identification of records in the registry is done with configured [ID types](./#id-types). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;
+Identification of records in the registry is done with configured [ID types](registry.md#id-types). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;
 
 ## Individual and groups
 
@@ -16,7 +16,7 @@ Individual registrant information is entered in a single row. Whereas group deta
 
 ## Deduplication
 
-OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../../beneficiary-management/deduplication.md).&#x20;
+OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
 
 ## Privacy and security
 
@@ -80,16 +80,16 @@ In the roadmap of OpenG2P, an enhanced secure registry with the following featur
 7. Complex queries
 8. Anonymous profile
 9. Data encrypted at rest
-10. [Verifiable credentials](../../beneficiary-management/verifiable-credentials.md)
+10. [Verifiable credentials](../beneficiary-management/verifiable-credentials.md)
 11. Evidence
 12. Attestation
 {% endhint %}
 
 ## Developer References
 
-[**API**](../../api.md)
+[**API**](../api.md)
 
-[**Code**](../../guides/developer-guides/)
+[**Code**](../guides/developer-guides/)
 
 ## Guides
 
