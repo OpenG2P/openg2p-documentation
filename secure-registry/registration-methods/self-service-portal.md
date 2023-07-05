@@ -26,8 +26,6 @@ The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to 
 
 <figure><img src="../../.gitbook/assets/ssp-login-page.png" alt=""><figcaption></figcaption></figure>
 
-## Program application form
-
 ## Registration demo
 
 {% embed url="https://www.youtube.com/watch?v=DZweP3qKkn8" %}
