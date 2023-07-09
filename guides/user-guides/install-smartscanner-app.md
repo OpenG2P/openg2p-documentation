@@ -1,6 +1,6 @@
 # Install SmartScanner App
 
-## escription  <a href="#description" id="description"></a>
+## Description  <a href="#description" id="description"></a>
 
 The guide here provides steps to install the SmartScanner app. This app allows users to scan the QR code in the entitlement voucher.
 
