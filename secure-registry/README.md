@@ -8,7 +8,7 @@ Registration aims to provide detailed records for [Eligibility Assessment](../be
 
 This is a pictorial representation of the OpenG2P registration process.
 
-<figure><img src="../.gitbook/assets/registration-process.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/10c5eb7b0884c079607f48b07d63088f0a8523c7/.gitbook/assets/registration-process.png" alt=""><figcaption></figcaption></figure>
 
 ## Registration approaches
 
