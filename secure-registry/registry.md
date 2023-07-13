@@ -14,9 +14,9 @@ Identification of records in the registry is done with configured [ID types](reg
 
 Individual registrant information is entered in a single row. Whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.&#x20;
 
-## Deduplication
+## Multiple entries
 
-OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
+OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
 
 ## Privacy and security
 
@@ -33,36 +33,6 @@ Data is anonymised while being displayed in human-readable form (for example, UI
 ## **Custom registrant/beneficiary information**
 
 More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the most commonly used fields such as name, age, gender, address, identity, etc. as a fixed number of individual fields. Any additional information is captured as key-value pairs held together in a blob.&#x20;
-
-## Records management
-
-#### View
-
-#### Search
-
-#### Merging&#x20;
-
-#### Archival&#x20;
-
-#### Delete
-
-#### Export
-
-#### Grant portal access
-
-#### Add to program
-
-## Configuration
-
-#### Group relationships
-
-#### Group types
-
-#### Group membership kind
-
-#### Registrant tags
-
-#### ID types
 
 {% hint style="info" %}
 
