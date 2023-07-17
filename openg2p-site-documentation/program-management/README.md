@@ -40,7 +40,9 @@ OpenG2P platform has a backend office application for program administrator/mana
 
 #### Proxy Means Test
 
-Absolute threshold, relative threshold, filters
+Absolute threshold, relative threshold,&#x20;
+
+#### Custom eligibility filters
 
 #### Deduplication
 
