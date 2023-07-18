@@ -17,7 +17,7 @@ This example describes on-demand assistance with multi-stage approval.&#x20;
 
 <div>
 
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/1.0.0/.gitbook/assets/on-demand-assistance-swimlane.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/1.1/.gitbook/assets/on-demand-assistance-swimlane.png" alt=""><figcaption></figcaption></figure>
 
  
 

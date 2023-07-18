@@ -23,7 +23,9 @@ Creating editable diagrams in open formats using open source tools is challengin
 6. On Github, upload/commit the `.drawio` file to **your fork** of `openg2p-documentation` repository in the branch of choice to the following folder: `.gitbook/assets`.&#x20;
 7. Send a Pull Request.
 8. After the PR is merged on the upstream repo a [Gitbook Action Workflow](../../.github/workflows/drawio.yml) will get triggered to convert the same to PNG format with `*.png` extension. The PNG file will be available in the same folder as the `.drawio` file. In this case, it will be the repository's `.gitbook/assets` folder.&#x20;
-9. On Gitbook, insert the PNG image using the _URL_ options shown by Gitbook. The URL to be given will be the GitHub URL e.g. [https://github.com/OpenG2P/openg2p-documentation/raw/1.0.0/.gitbook/assets/add-deduplication-manager.png](https://github.com/OpenG2P/openg2p-documentation/raw/1.0.0/.gitbook/assets/add-deduplication-manager.png). Make sure you pick this URL in **Raw** format which will be available on the _Download_ button on Github
+9. On Gitbook, insert the PNG image using the _URL_ options shown by Gitbook. The URL to be given will be the
+GitHub URL e.g.
+[https://github.com/OpenG2P/openg2p-documentation/raw/1.1/.gitbook/assets/add-deduplication-manager.png](https://github.com/OpenG2P/openg2p-documentation/raw/1.1/.gitbook/assets/add-deduplication-manager.png). Make sure you pick this URL in **Raw** format which will be available on the _Download_ button on Github
 
 <figure><img src="../../.gitbook/assets/github-raw-image-link.png" alt=""><figcaption></figcaption></figure>
 
