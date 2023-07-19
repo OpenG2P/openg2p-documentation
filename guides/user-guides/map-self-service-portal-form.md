@@ -6,17 +6,15 @@ This guide provides steps to map the portal form for the new and existing progra
 
 ## Pre-requisites
 
-The user must have a Program Manager role.&#x20;
+The user must have a Program Manager role. The program is already created using the steps from the [create-a-program.md](create-a-program.md "mention") guide.&#x20;
 
 ## Steps
 
-#### For New Program
-
-1. Click on _Home_ Menu and navigate to Programs.
+1.
 
 <figure><img src="../../.gitbook/assets/map-portal-home.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Create Program_.
+2.
 
 <figure><img src="../../.gitbook/assets/map-portal-allprogram.png" alt=""><figcaption></figcaption></figure>
 
@@ -24,7 +22,7 @@ The user must have a Program Manager role.&#x20;
 
 <figure><img src="../../.gitbook/assets/map-portal-new.png" alt=""><figcaption></figcaption></figure>
 
-4. Check the _Box_ if the user wants multiple submissions. And Select the _Portal Form_ that needs to be mapped from the drop-down list.
+4.
 
 <figure><img src="../../.gitbook/assets/map-portal-dropdown.png" alt=""><figcaption></figcaption></figure>
 
