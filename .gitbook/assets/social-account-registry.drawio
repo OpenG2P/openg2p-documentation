@@ -1,9 +1,60 @@
-<mxfile host="app.diagrams.net" modified="2023-07-18T04:33:20.106Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" version="21.3.5" etag="1iM1AN-26n8F_CGPXh60" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-19T09:05:04.107Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="dOScs3XW0jBwLflyR0lu" version="21.6.2" type="github">
   <diagram name="Page-1" id="8PbpVKS6RdY8HKoXxjfP">
-    <mxGraphModel>
+    <mxGraphModel dx="948" dy="582" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-1" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;Social Account Registry&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-2" value="" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="120" width="640" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-3" value="OpenG2P Deployment" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="375" y="120" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-5" value="OpenG2P Payment Manager" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-6" value="G2P Payments Bridge" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-7" value="Social Account Registry*" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="460" y="240" width="300" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-8" value="&lt;i&gt;* The SAR will be compliant with G2P Connect interfaces and eventually evolve into ID Account Mapper as envisaged by CDPI&amp;nbsp;&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="750" width="540" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-10" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="560" y="290" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-11" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;ID1: Account 1&lt;br&gt;ID2: Account 2&lt;br&gt;ID3: Account 3&lt;br&gt;&amp;nbsp;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="335" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-12" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;G2P Connect Wrapper&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="475" y="300" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="SzVb1SEn_ud-ZYpJ9THC-13" target="SzVb1SEn_ud-ZYpJ9THC-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-13" value="Self Service Portal" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="SzVb1SEn_ud-ZYpJ9THC-14" target="SzVb1SEn_ud-ZYpJ9THC-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-14" value="e-Signet/OIDC" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="860" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-15" value="ID Auth" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="SzVb1SEn_ud-ZYpJ9THC-18" target="SzVb1SEn_ud-ZYpJ9THC-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SzVb1SEn_ud-ZYpJ9THC-18" value="User" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#232F3E;fillColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="540" y="590" width="60" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
