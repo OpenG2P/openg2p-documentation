@@ -6,6 +6,10 @@
 
 <figure><img src="https://raw.githubusercontent.com/OpenG2P/openg2p-documentation/1.1/.gitbook/assets/social-account-registry.png" alt=""><figcaption></figcaption></figure>
 
+The SAR will be compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and eventually, evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI \
+\
+PSUT: Partner Specific User Token
+
 ## Sunbird Account Mapper
 
 * Account mapper compliant to the G2P Connect interface
