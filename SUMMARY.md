@@ -51,6 +51,11 @@
 ## Guides
 
 * [📔 How-To Guides](guides/user-guides/README.md)
+  * [Configure Entitlement Voucher](guides/user-guides/configure-entitlement-voucher.md)
+  * [Multi-Stage Configuration](guides/user-guides/multi-stage-configuration.md)
+  * [Multi-Stage Approval](guides/user-guides/multi-stage-approval.md)
+  * [Create Odoo Roles](guides/user-guides/create-odoo-roles.md)
+  * [Custom Portal Form](guides/user-guides/custom-portal-form.md)
   * [Create Program](guides/user-guides/create-a-program.md)
   * [Configure Proxy Mean Test](guides/user-guides/configure-proxy-mean-test.md)
   * [Create User and Assign Role](guides/user-guides/assign-roles-to-users.md)
@@ -89,7 +94,7 @@
   * [Configure ID Types](guides/user-guides/configure-id-types.md)
   * [Map ODK Form](guides/user-guides/map-odk-form.md)
   * [Integrate with MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
-  * [Map Self Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
+  * [Map Self-Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
   * [Install WireGuard App And Activate Tunnel](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
   * [Install SmartScanner App](guides/user-guides/install-smartscanner-app.md)
   * [Submit Reimbursement Using the Service Provider Portal](guides/user-guides/submit-reimbursement-using-the-service-provider-portal.md)

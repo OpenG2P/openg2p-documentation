@@ -2,9 +2,9 @@
 
 ## Description
 
-This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider. &#x20;
+This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider.
 
-## Prerequisites
+## Pre-requisites
 
 1. MOSIP IDA is installed
 2. The e-Signet server is installed and configured to connect to MOSIP IDA
@@ -25,11 +25,11 @@ This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../
    * Guide for MOSIP 1.1.5 (TBD)
 2. Create a **MISP Partner** for OpenG2P on MOSIP.
 3. Note down the following from the above steps:
-   1. Auth Partner ID&#x20;
-   2. Auth Policy ID&#x20;
+   1. Auth Partner ID
+   2. Auth Policy ID
    3. Auth API Key
    4. MISP License Key
-   5. Auth partner signed certificate&#x20;
+   5. Auth partner signed certificate
    6. IDA Partner certificate (App id: IDA, Ref Id: PARTNER)
 
 ### Configure OpenG2P as relying party on e-Signet
@@ -68,12 +68,12 @@ This method is applicable if MOSIP Partner Management APIs are **not** available
 * `clientName:` Arbitrary string.
 * `relyingParnterId:` Partner ID in [this](integrate-mosip-e-signet.md#configure-openg2p-as-a-partner-on-mosip) step.
 * `publicKey:` Generated [JWK](https://openid.net/specs/draft-jones-json-web-key-03.html).
-*   `authContextRefs`:&#x20;
+*   `authContextRefs`:
 
     ```
     ["mosip:idp:acr:biometrics","mosip:idp:acr:generated-code"]
     ```
-*   `userClaims`:&#x20;
+*   `userClaims`:
 
     ```
     ["birthdate","address","gender","name","phone_number","email","picture"]

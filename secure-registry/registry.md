@@ -8,15 +8,15 @@ The purpose of the registry is to provide a single source of truth to the progra
 
 ## Identification of records
 
-Identification of records in the registry is done with configured [ID types](registry.md#id-types). ID can be foundational like  MOSIP ID or functional like a voter's card, tax number, driving license, etc.&#x20;
+Identification of records in the registry is done with configured [ID types](registry.md#id-types). ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driving license, etc.
 
 ## Individual and groups
 
-Individual registrant information is entered in a single row. Whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.&#x20;
+Individual registrant information is entered in a single row. Whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.
 
 ## Deduplication
 
-OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
+OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).
 
 ## Privacy and security
 
@@ -32,7 +32,7 @@ Data is anonymised while being displayed in human-readable form (for example, UI
 
 ## **Custom registrant/beneficiary information**
 
-More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the most commonly used fields such as name, age, gender, address, identity, etc. as a fixed number of individual fields. Any additional information is captured as key-value pairs held together in a blob.&#x20;
+More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the most commonly used fields such as name, age, gender, address, identity, etc. as a fixed number of individual fields. Any additional information is captured as key-value pairs held together in a blob.
 
 ## Records management
 
@@ -40,9 +40,9 @@ More often than not, program administrators require additional information about
 
 #### Search
 
-#### Merging&#x20;
+#### Merging
 
-#### Archival&#x20;
+#### Archival
 
 #### Delete
 
@@ -65,11 +65,9 @@ More often than not, program administrators require additional information about
 #### ID types
 
 {% hint style="info" %}
+#### <mark style="color:purple;">Next generation registry</mark>
 
-
-### <mark style="color:purple;">Next generation registry</mark>
-
-In the roadmap of OpenG2P, an enhanced secure registry with the following features is planned.&#x20;
+In the roadmap of OpenG2P, an enhanced secure registry with the following features is planned.
 
 1. Tokenised registry
 2. Schema base fields
