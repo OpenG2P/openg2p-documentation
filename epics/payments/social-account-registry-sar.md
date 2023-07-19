@@ -1,6 +1,6 @@
-# Social Account Registry
+# Social Account Registry (SAR)
 
-## Introduction
+## Architecture
 
 
 
@@ -27,7 +27,7 @@
 * Notification to the user via SMS/email
 * Onboarding of consumer apps (like OpenG2P)
 
-## SAR Account Validator
+## Account Validator
 
 One suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.&#x20;
 

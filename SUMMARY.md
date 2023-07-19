@@ -12,7 +12,7 @@
 * [📈 Platform Enhancements](epics/platform-enhancements/README.md)
   * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
 * [💵 Payments](epics/payments.md)
-  * [Social Account Registry](epics/payments/social-account-registry.md)
+  * [Social Account Registry (SAR)](epics/payments/social-account-registry-sar.md)
   * [G2P Payments Orchestrator](epics/payments/g2p-payments-orchestrator.md)
   * [💰 OpenSPP Voucher Payment](epics/voucher-based-payment.md)
 * [Ability To Assign Programs To Program Manager](epics/ability-to-assign-programs-to-program-manager.md)
