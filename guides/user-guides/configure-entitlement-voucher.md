@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides steps to add entitlement vouchers for the program.
+This guide provides steps to add entitlement vouchers for the beneficiaries. The entitled beneficiaries can use these vouchers to avail of a service.&#x20;
 
 ## Pre-requisites
 
