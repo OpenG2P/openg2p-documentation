@@ -14,9 +14,9 @@ Identification of records in the registry is done with configured [ID types](reg
 
 Individual registrant information is entered in a single row. Whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.
 
-## Deduplication
+## Multiple entries
 
-OpenG2P platform provides the flexibility of retaining/avoiding duplicate applicant entries across the registry. For example, during an emergency situation such as a flood or earthquake, the program administrator might choose to build a registry without bothering about duplicate entries and work on deduplication later. Another example is that a program administrator may choose to keep duplicate applicant entries as long as the beneficiary information is deduplicated within a program using the [Deduplication Manager](../beneficiary-management/deduplication.md).
+OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](broken-reference).
 
 ## Privacy and security
 
