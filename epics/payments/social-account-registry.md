@@ -6,22 +6,30 @@
 
 <figure><img src="https://raw.githubusercontent.com/OpenG2P/openg2p-documentation/1.1/.gitbook/assets/social-account-registry.png" alt=""><figcaption></figcaption></figure>
 
-## Sunbird Registry
+## Sunbird Account Mapper
 
-* Account mapper compliant to G2P Connect interface
-* Database of ID Tokens and Account Numbers
+* Account mapper compliant to the G2P Connect interface
+* Database of ID and Account Numbers. The IDs may be tokens like [PSUT in MOSIP.](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
+* Can host multiple IDs associated with the same account. Eg.&#x20;
 
-## Token Mapper
 
-* With user consent, map token SAR token to OpenG2P app
-* Database table for token mapping
+
+| ID                                  | Account Number |
+| ----------------------------------- | -------------- |
+| 234AFBC@mosip.openg2p               | 45678756456    |
+| DBCF34A@mosip.socialaccountregistry | 45678756456    |
+
+* If relationships between entries is supported in Sunbird, then the same can be used to show linkages between different IDs for a user.
+
+## SAR Controller
+
 * Automatic deletion of records based on expiry set
-* Notification to user via SMS/email
+* Notification to the user via SMS/email
 * Onboarding of consumer apps (like OpenG2P)
 
 ## SAR Account Validator
 
-One suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depends on the response from the bank.&#x20;
+One suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.&#x20;
 
 Configuration: Treasury account details
 
