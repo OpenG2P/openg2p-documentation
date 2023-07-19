@@ -53,8 +53,6 @@
 * [📔 How-To Guides](guides/user-guides/README.md)
   * [Configure Entitlement Voucher](guides/user-guides/configure-entitlement-voucher.md)
   * [Multi-Stage Configuration](guides/user-guides/multi-stage-configuration.md)
-  * [Multi-Stage Approval](guides/user-guides/multi-stage-approval.md)
-  * [Create Odoo Roles](guides/user-guides/create-odoo-roles.md)
   * [Custom Portal Form](guides/user-guides/custom-portal-form.md)
   * [Create Program](guides/user-guides/create-a-program.md)
   * [Configure Proxy Mean Test](guides/user-guides/configure-proxy-mean-test.md)
