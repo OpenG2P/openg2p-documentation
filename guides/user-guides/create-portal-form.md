@@ -1,26 +1,26 @@
-# Create Portal Form
+# Create Self-Service Portal Form
 
 ## Description
 
-This guide provides steps to create a new portal form for a program. This form will show up on the Self-Service Portal when the user selects a program to apply.
+This guide provides steps for the Website Editor to create a general intake sheet. This intake sheet is filled by the applicant while applying for a program.
 
 ## Pre-requisites
 
-The user must have a Program Manager role. See [Create User and Assign Role](assign-roles-to-users.md) guide.
+The user must have a Website Editor role.
 
 ## Steps
 
-1. &#x20;Navigate to the _Website_ using the menu bar.
+1. Navigate to the _Website_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/menu-website.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/website-openg2p (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Go to Website_ to navigate to the website home page.
 
-<figure><img src="../../.gitbook/assets/go-to-website.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/go-to-website-openg2p (1).png" alt=""><figcaption></figcaption></figure>
 
-3. Click on the + _New_ button to create new form.
+3. Click on the + _New_ button to create a new form.
 
-<figure><img src="../../.gitbook/assets/website-home-page.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Page_ to create a form.
 
@@ -30,13 +30,28 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 
 <figure><img src="../../.gitbook/assets/new-page.png" alt=""><figcaption></figcaption></figure>
 
-6. Drag and drop the _Form_ in the _Dynamic Content_ from the _BLOCKS_ section.
+6. Drag and drop the _Form_ in the _Dynamic Content_ from the _BLOCKS_ section
+7. The _Edit_ tool appears. Click on the _Form's Fields_ to enable the _Style Section_.
 
 <figure><img src="../../.gitbook/assets/drag-and-drop.png" alt=""><figcaption></figcaption></figure>
 
-7. Edit the form fields from the _STYLE_ section.&#x20;
+8. &#x20;Select _Apply For Program_ and add more form fields using _+Field_ from the _STYLE_ section.
 
-<figure><img src="../../.gitbook/assets/field-section.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/add-fields-in-form.png" alt=""><figcaption></figcaption></figure>
 
-8. Add more form fields using _+Field_ from the _STYLE_ section.
-9. Save the form using the _Save_ button.
+9. In the _Field_ section, select the type _Existing Fields_ and select the fields of choice.
+
+<figure><img src="../../.gitbook/assets/add-existing-fields-in-form.png" alt=""><figcaption></figcaption></figure>
+
+10. To add fields that are not available under Existing Fields, use the type _Custom Field_ and add desired fields.
+
+<figure><img src="../../.gitbook/assets/custom-form-custom (1).png" alt=""><figcaption></figcaption></figure>
+
+11. Click _Save_ to add the field to the portal form.
+
+<figure><img src="../../.gitbook/assets/custom-result.PNG" alt=""><figcaption></figcaption></figure>
+
+12. You can also create a form from an existing one on the portal by clicking the + sign on the menu and selecting the desired one.
+
+<figure><img src="../../.gitbook/assets/edit-existing-form.png" alt=""><figcaption></figcaption></figure>
+
