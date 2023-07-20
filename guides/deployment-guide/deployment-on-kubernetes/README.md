@@ -6,7 +6,7 @@ description: Work in progress
 
 ## Introduction
 
-The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.&#x20;
+The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.
 
 ## Pre-requisites
 
@@ -15,13 +15,15 @@ The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) clust
 ## Installation of OpenG2P
 
 * This section assumes the OpenG2P docker is already packaged. See Packaging Instructions.
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging)  and go to [charts/openg2p](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/openg2p) directory
+* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to [charts/openg2p](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/openg2p) directory
   *   Run, (This installs the ref-impl dockers):
 
       ```
       ./install.sh \
+          --set global.mailName=openg2p.sandbox.net \
           --set global.hostname=openg2p.sandbox.net \
-          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net
+          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net \
+          --set global.serviceProviderHostname=serviceprovider.openg2p.sandbox.net
       ```
   *   If use different docker image or tag use:
 
@@ -29,8 +31,10 @@ The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) clust
       ./install.sh \
           --set odoo.image.repository=<docker image name> \
           --set odoo.image.tag=<docker image tag> \
+          --set global.mailName=openg2p.sandbox.net \
           --set global.hostname=openg2p.sandbox.net \
-          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net
+          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net \
+          --set global.serviceProviderHostname=serviceprovider.openg2p.sandbox.net
       ```
 
 ## Installation of ODK
@@ -61,3 +65,7 @@ The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) clust
       ```
       helm -n odk delete odk-central
       ```
+
+## Installation of Minio as S3 Object Store for OpenG2P
+
+* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging). Follow the instructions given at [infra/minio](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra/minio).
