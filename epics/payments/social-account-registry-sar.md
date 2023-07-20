@@ -25,26 +25,44 @@ PSUT: Partner Specific User Token
 
 * If relationships between entries is supported in Sunbird, then the same can be used to show linkages between different IDs for a user.
 
-## SAR Controller
+## Mapper Service
 
-* Automatic deletion of records based on expiry set
-* Notification to the user via SMS/email
-* Onboarding of consumer apps (like OpenG2P)
+Service to manage several mapping related tasks and provide APIs for users to connect and update their account numbers.
 
-## Account Validator
-
-One suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.&#x20;
-
-Configuration: Treasury account details
-
-## Self Service Portal
+### Authentication
 
 * Authentication page leading to e-Signet interface.
-* Consent page for users to map token for a time period specifically for an app (like OpenG2P)
 * Display of current account number of the user.
 * Option to add/update the account number and account details.
 * Notification to users via email/sms
 * Onboarding of authenticators like e-Signet.
+
+### Onboarding&#x20;
+
+Onboarding of consumer apps (like OpenG2P)
+
+### ID linking
+
+* Linking of Mapper PSUT with Application PSUT.
+* Consent page for users to map token for a time period specifically for an app (like OpenG2P)
+* Automatic deletion of records based on expiry set
+* Notification to the user via SMS/email
+
+### Expiry handling
+
+* TBD&#x20;
+
+### Account validation&#x20;
+
+A suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.&#x20;
+
+Configuration: Treasury account details&#x20;
+
+## Self Service Portal
+
+* Front end service for Web based user interface to carry out above functions
+
+
 
 
 
