@@ -12,7 +12,7 @@ The user must have a Website Editor role.
 
 1. Navigate to the _Website_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/website-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/website-openg2p.png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Go to Website_ to navigate to the website home page.
 
@@ -20,7 +20,7 @@ The user must have a Website Editor role.
 
 3. Click on the + _New_ button to create a new form.
 
-<figure><img src="../../.gitbook/assets/custom-form (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form.PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Page_ to create a form.
 
@@ -45,7 +45,7 @@ The user must have a Website Editor role.
 
 10. To add fields that are not available under Existing Fields, use the type _Custom Field_ and add desired fields.
 
-<figure><img src="../../.gitbook/assets/custom-form-custom (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form-custom.png" alt=""><figcaption></figcaption></figure>
 
 11. Click _Save_ to add the field to the portal form.
 

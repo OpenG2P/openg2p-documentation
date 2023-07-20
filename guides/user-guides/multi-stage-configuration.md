@@ -12,11 +12,11 @@ The user must have the Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/home-page-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/home-page-openg2p.png" alt=""><figcaption></figcaption></figure>
 
 2. Click on the P_rogram_ Name for which configuration is to be done.
 
-<figure><img src="../../.gitbook/assets/all-programs-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-programs-openg2p.png" alt=""><figcaption></figcaption></figure>
 
 3. Navigate to the _Configuration_ section on the program detailed view page.
 
