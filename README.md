@@ -1,6 +1,6 @@
 # 🏠 Home
 
-<div align="left">
+<div align="center">
 
 <figure><img src=".gitbook/assets/Open G2P Horizontal Logo@2x.png" alt="" width="375"><figcaption></figcaption></figure>
 
