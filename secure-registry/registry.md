@@ -2,9 +2,9 @@
 
 ## Introduction
 
-OpenG2P registry is a single repository containing details of the registrants and beneficiaries. The registry uses [PostgreSQL](https://www.postgresql.org/) for maintaining the information in a single DB table.
+OpenG2P registry is a single repository containing details of the registrants. The registry uses [PostgreSQL](https://www.postgresql.org/) for maintaining the information in a single DB table.
 
-The purpose of the registry is to provide a single source of truth to the program administrators and managers. Program administrators can grant access to other program participants to act on this information. For example, some of the participants can be granted rights to allocate entitlements while some other participants can only view the entitlements for accounting purposes.
+The purpose of the registry is to provide a single source of truth to the program administrators and managers. Program administrators can grant access to other program participants to act on this information.
 
 ## Identification of records
 
@@ -16,7 +16,7 @@ Individual registrant information is entered in a single row. Whereas group deta
 
 ## Multiple entries
 
-OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](broken-reference).
+OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
 
 ## Privacy and security
 
@@ -30,7 +30,7 @@ Data at rest is encrypted using strong cryptographic techniques. The data is dec
 
 Data is anonymised while being displayed in human-readable form (for example, UI screen). Similarly, any query results from the registry are anonymised such that this information cannot be used to specifically target an individual.
 
-## **Custom registrant/beneficiary information**
+## **Custom registrant information**
 
 More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the most commonly used fields such as name, age, gender, address, identity, etc. as a fixed number of individual fields. Any additional information is captured as key-value pairs held together in a blob.
 

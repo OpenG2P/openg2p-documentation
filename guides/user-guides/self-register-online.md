@@ -38,10 +38,10 @@ Beneficiaries should have the MOSIP-issued national ID with them.
 
 9. Once the form fields are filled click on Submit button for application submission.
 
-<figure><img src="../../.gitbook/assets/beneficiary-portal-application-form-page (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 10. Once the program form is submitted, the program will be added to the _My Programs_ section with the _Submitted_ status and the beneficiary will be registered to the program. also will be listed in the _OpenG2P Registry Individual_ as well.
 
-<figure><img src="../../.gitbook/assets/my-programs.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/my-programs (1).png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/program-registrant (1).png" alt=""><figcaption></figcaption></figure>

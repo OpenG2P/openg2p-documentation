@@ -54,7 +54,7 @@ Settings --> Developer Tools --> 'Activate the developer mode'
 
 2. Click on _Technical_ in the setting menu.&#x20;
 
-<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-13-13 (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-13-13 (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Navigate to _Models_ under _Database Structure_ heading.
 
