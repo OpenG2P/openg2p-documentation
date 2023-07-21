@@ -47,6 +47,7 @@ Onboarding of consumer apps (like OpenG2P)
 * Consent page for users to map token for a time period specifically for an app (like OpenG2P)
 * Automatic deletion of records based on expiry set
 * Notification to the user via SMS/email
+* Maintaining linkage status (reflected on the portal for the user)
 
 ### Expiry handling
 
