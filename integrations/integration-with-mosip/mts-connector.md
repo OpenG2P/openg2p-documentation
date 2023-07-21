@@ -2,7 +2,7 @@
 
 ## Overview <a href="#overview" id="overview"></a>
 
-ODK MTS Connector is an OpenG2P Odoo addon that fetches tokenised data from the ODK Central by calling the [MOSIP Token Seeder](http://localhost:5000/s/4EyCrLbFom7vj7UcMIUZ/integrations/mosip-token-seeder) (MTS) and stores it in the registry.
+ODK MTS Connector is an OpenG2P Odoo addon that fetches tokenised data from the ODK Central by calling the [MOSIP Token Seeder](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder) (MTS) and stores it in the registry.
 
 ## Features <a href="#features-of-mts-c" id="features-of-mts-c"></a>
 
