@@ -12,7 +12,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 * The requirements for setting up the cluster are met as given [here](k8s-cluster-requirements.md).
 * The following tools are installed on all the nodes and the client machine.
-  * `ufw` , `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`&#x20;
+  * `ufw` , `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 
 ## Firewall setup
 
@@ -41,15 +41,13 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
     * Additional Reference: [RKE2 Networking Requirements](https://docs.rke2.io/install/requirements#networking)
 
-
-
 <table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432:5434</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
 ## K8s setup
 
 * The following setup has to be done for each cluster node.
 * Choose odd number of server nodes. Example if there are 3 nodes, choose 1 server node and two agent nodes. If there are 7 nodes, choose 3 server nodes and 4 agent nodes.
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging)  and go to [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory.
+* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory.
 * For the first server node:
   * Configure `rke2-server.conf.primary.template`,
   * SSH into the node. Place the file to this path: `/etc/rancher/rke2/config.yaml`. Create the directory if not present already. `mkdir -p /etc/rancher/rke2` .
@@ -95,9 +93,9 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
     ```
 * Additional Reference: [RKE2 High Availabilty Installation](https://docs.rke2.io/install/ha)
 
-## &#x20;Cluster import into Rancher.
+## Cluster import into Rancher.
 
-* This section assumes a Rancher server has already been setup and operational. [Rancher Server Setup](broken-reference) in case not already done.
+* This section assumes a Rancher server has already been setup and operational. [Rancher Server Setup](broken-reference/) in case not already done.
 * Navigate to Cluster Management section in Rancher.
 * Click on `Import Existing` cluster. And follow the steps to import the newly created cluster.
 * After Rancher import, do not use the the kubeconfig from server anymore. Use it only via downloading kubeconfig from rancher.
@@ -115,6 +113,13 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
     istioctl operator init
     kubectl apply -f istio-operator.yaml
     ```
+
+    *   If an external Loadbalancer is being used, then use the `istio-operator-external-lb.yaml` file.
+
+        ```
+        kubectl apply -f istio-operator-external-lb.yaml
+        ```
+    * Configure the operator.yaml with any further configuration.
 *   Gather Wildcard TLS certificate and key and run;
 
     ```
@@ -127,6 +132,12 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
     ```
     kubectl apply -f istio-gateway.yaml
     ```
+
+    *   If using external loadbalancer/external TLS termination, use the `istio-gateway-no-tls.yaml` file.
+
+        ```
+        kubectl apply -f istio-gateway-no-tls.yaml
+        ```
 
 ## Adding new nodes
 
@@ -143,4 +154,3 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
     systemctl enable rke2-server
     systemctl start rke2-server
     ```
-
