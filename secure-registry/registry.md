@@ -8,7 +8,7 @@ The purpose of the registry is to provide a single source of truth to the progra
 
 ## Identification of records
 
-Identification of records in the registry is done with configured [ID types](registry.md#id-types). ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driving license, etc.
+Identification of records in the registry is done with configured ID types. ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driving license, etc.
 
 ## Individual and groups
 
@@ -16,7 +16,7 @@ Individual registrant information is entered in a single row. Whereas group deta
 
 ## Multiple entries
 
-OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../beneficiary-management/deduplication.md).&#x20;
+OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../beneficiary-management/deduplication.md).
 
 ## Privacy and security
 
@@ -65,7 +65,7 @@ More often than not, program administrators require additional information about
 #### ID types
 
 {% hint style="info" %}
-#### <mark style="color:purple;">Next generation registry</mark>
+<mark style="color:purple;">**Next generation registry**</mark>
 
 In the roadmap of OpenG2P, an enhanced secure registry with the following features is planned.
 
