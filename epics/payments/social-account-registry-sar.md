@@ -2,13 +2,17 @@
 
 ## Architecture
 
-
+The Social Account Registry (SAR) maintains a mapping of a user ID and Financial Service Provider (FSP) account details like bank, mobile wallet etc. primarily aimed at cash transfers in a social benefit delivery system. The SAR offers a user-facing portal for adding/updating FSP account details after authentication.
 
 <figure><img src="https://raw.githubusercontent.com/OpenG2P/openg2p-documentation/1.1/.gitbook/assets/social-account-registry.png" alt=""><figcaption></figcaption></figure>
 
-The SAR will be compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and eventually, evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI \
 \
 PSUT: Partner Specific User Token
+
+{% hint style="info" %}
+The SAR will be compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and eventually, evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI \
+
+{% endhint %}
 
 ## Sunbird Account Mapper
 
@@ -43,7 +47,7 @@ Onboarding of consumer apps (like OpenG2P)
 
 ### ID linking
 
-* Linking of Mapper PSUT with Application PSUT.
+* Linking of SAR PSUT with Application PSUT.
 * Consent page for users to map token for a time period specifically for an app (like OpenG2P)
 * Automatic deletion of records based on expiry set
 * Notification to the user via SMS/email
