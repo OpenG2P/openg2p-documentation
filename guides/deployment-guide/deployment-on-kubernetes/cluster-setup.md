@@ -95,7 +95,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 ## Cluster import into Rancher.
 
-* This section assumes a Rancher server has already been setup and operational. [Rancher Server Setup](broken-reference/) in case not already done.
+* This section assumes a Rancher server has already been setup and operational. [Rancher Server Setup](rancher-server-setup.md) in case not already done.
 * Navigate to Cluster Management section in Rancher.
 * Click on `Import Existing` cluster. And follow the steps to import the newly created cluster.
 * After Rancher import, do not use the the kubeconfig from server anymore. Use it only via downloading kubeconfig from rancher.
