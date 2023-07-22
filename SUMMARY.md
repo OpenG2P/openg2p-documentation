@@ -11,6 +11,7 @@
   * [Registry](secure-registry/registry.md)
 * [🅿 Program Management](beneficiary-management/README.md)
   * [Eligibility Assessment](beneficiary-management/eligibility.md)
+  * [Proxy Means Test](beneficiary-management/proxy-means-test.md)
   * [Enrolment](beneficiary-management/enrolment.md)
   * [Deduplication](beneficiary-management/deduplication.md)
   * [Disbursement Cycles](beneficiary-management/disbursement-cycles.md)
