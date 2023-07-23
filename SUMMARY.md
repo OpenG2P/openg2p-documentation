@@ -1,6 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
+  * [Grievance Redressal System](readme/grievance-redressal-system.md)
 * [🏢 Architecture](architecture.md)
 * [📋 Registration](secure-registry/README.md)
   * [Registration Interfaces](secure-registry/registration-methods/README.md)
