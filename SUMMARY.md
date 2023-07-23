@@ -1,7 +1,6 @@
 # Table of contents
 
 * [🏠 Home](README.md)
-  * [Grievance Redressal System](readme/grievance-redressal-system.md)
 * [🏢 Architecture](architecture.md)
 * [📋 Registration](secure-registry/README.md)
   * [Registration Interfaces](secure-registry/registration-methods/README.md)
@@ -33,6 +32,7 @@
     * [Accounting](eligibility-and-enrolment/accounting/accounting.md)
     * [Reconciliation](eligibility-and-enrolment/accounting/reconciliation.md)
     * [Reports](eligibility-and-enrolment/accounting/reports.md)
+* [Grievance Redressal System](grievance-redressal-system.md)
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
