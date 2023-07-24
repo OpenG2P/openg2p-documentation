@@ -56,7 +56,7 @@ The applicant information is filled in using general intake sheets. These intake
 
 #### Notifications
 
-The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via multiple channels such as email, sms, etc.
+The platform can be configured to send [Notifications](../notifications.md) to the applicants via multiple channels such as email, sms, etc.
 
 ## Developer References
 
