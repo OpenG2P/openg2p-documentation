@@ -36,7 +36,7 @@
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
-  * [On-Demand Assistance](workflows/on-demand-assistance.md)
+  * [Immediate Individual  Assistance On-Demand](workflows/on-demand-assistance.md)
 * [🔗 Integrations](integrations/README.md)
   * [Mojaloop Integration](integrations/mojaloop-integration.md)
   * [MOSIP Integration](integrations/integration-with-mosip.md)
