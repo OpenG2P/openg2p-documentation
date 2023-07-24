@@ -16,7 +16,7 @@
   * [Deduplication](beneficiary-management/deduplication.md)
   * [Disbursement Cycles](beneficiary-management/disbursement-cycles.md)
   * [Entitlement](beneficiary-management/entitlement.md)
-  * [Notifications](notifications.md)
+  * [Notifications](beneficiary-management/notifications.md)
   * [Verifiable Credentials](beneficiary-management/verifiable-credentials.md)
 * [💵 Payment Management](eligibility-and-enrolment/README.md)
   * [Payment Cycles](eligibility-and-enrolment/payment-cycles.md)
