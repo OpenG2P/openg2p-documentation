@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-07-24T15:48:51.673Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="S-u_5Dx4VQ8SDgZGy2gs" version="21.6.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-24T15:49:41.849Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="tyssnkTJeWs2DMXX9EeB" version="21.6.5" type="github">
   <diagram name="Page-1" id="TvEwbHPf6EAsib68XRe2">
     <mxGraphModel dx="880" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -25,8 +25,8 @@
         <mxCell id="c0uuogZmkq0kA0NrOmdT-7" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;Authentication&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="440" y="160" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="c0uuogZmkq0kA0NrOmdT-8" value="&lt;b style=&quot;font-size: 12px;&quot;&gt;OpenG2P Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="610" y="160" width="110" height="30" as="geometry" />
+        <mxCell id="c0uuogZmkq0kA0NrOmdT-8" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;OpenG2P Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="600" y="160" width="130" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-14" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" parent="1" source="c0uuogZmkq0kA0NrOmdT-9" target="c0uuogZmkq0kA0NrOmdT-10" edge="1">
           <mxGeometry relative="1" as="geometry" />
