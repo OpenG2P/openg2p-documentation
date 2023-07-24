@@ -1,23 +1,26 @@
-<mxfile host="app.diagrams.net" modified="2023-07-24T15:55:56.819Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="7uSY_2S2jrAbEgQdmZZP" version="21.6.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-24T16:05:33.093Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="4POAtxe29q14JeyvueKJ" version="21.6.5" type="github">
   <diagram name="Page-1" id="TvEwbHPf6EAsib68XRe2">
     <mxGraphModel dx="880" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="eSp6TRRAINO9dE_yyKuI-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="329" y="130" width="250" height="310" as="geometry" />
+        </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-37" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="590" y="160" width="150" height="100" as="geometry" />
+          <mxGeometry x="605" y="160" width="150" height="100" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="172" y="160" width="150" height="100" as="geometry" />
+          <mxGeometry x="156" y="160" width="150" height="100" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-2" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.layered_rect;dx=10;outlineConnect=0;whiteSpace=wrap;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="197" y="190" width="100" height="60" as="geometry" />
+          <mxGeometry x="181" y="190" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-3" value="Offline Records" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="212" y="200" width="60" height="30" as="geometry" />
+          <mxGeometry x="196" y="200" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-4" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;ODK Central&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="203.5" y="160" width="87" height="30" as="geometry" />
+          <mxGeometry x="187.5" y="160" width="87" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-5" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="360" y="160" width="190" height="170" as="geometry" />
@@ -26,7 +29,7 @@
           <mxGeometry x="370" y="160" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-8" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;OpenG2P Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="600" y="160" width="130" height="30" as="geometry" />
+          <mxGeometry x="615" y="160" width="130" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-14" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" parent="1" source="c0uuogZmkq0kA0NrOmdT-9" target="c0uuogZmkq0kA0NrOmdT-10" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -68,25 +71,28 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-26" value="Encrypted &amp;amp; Signed Offline Records" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="285" y="340" width="110" height="40" as="geometry" />
+          <mxGeometry x="335" y="335" width="80" height="40" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-27" value="Auth Tokens&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="490" y="340" width="60" height="40" as="geometry" />
+          <mxGeometry x="487" y="340" width="60" height="40" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-31" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" parent="1" source="c0uuogZmkq0kA0NrOmdT-1" target="c0uuogZmkq0kA0NrOmdT-9" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-35" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.layered_rect;dx=10;outlineConnect=0;whiteSpace=wrap;fontSize=16;" parent="1" vertex="1">
-          <mxGeometry x="620" y="190" width="100" height="60" as="geometry" />
+          <mxGeometry x="635" y="190" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-36" value="Authenticated Records + Auth Tokens" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="642" y="197.5" width="50" height="35" as="geometry" />
+          <mxGeometry x="657" y="197.5" width="50" height="35" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-49" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" parent="1" source="c0uuogZmkq0kA0NrOmdT-47" target="c0uuogZmkq0kA0NrOmdT-13" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-47" value="MOSIP IDA Server" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="1" vertex="1">
           <mxGeometry x="380" y="380" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eSp6TRRAINO9dE_yyKuI-3" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;Authentication System&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="365" y="130" width="170" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
