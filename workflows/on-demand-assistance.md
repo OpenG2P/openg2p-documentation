@@ -1,8 +1,8 @@
-# On-Demand Assistance
+# Immediate Individual  Assistance On-Demand
 
 ## Introduction
 
-On-demand assistance is especially useful for scenarios like urgent surgeries, treatments, and other crises. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation using multiple stages of approvals.
+Immediate assistance is especially useful for scenarios like urgent surgeries, treatments, and other crises. However, to prevent instances of fraud, it is imperative to do a thorough assessment of beneficiary entitlement. This section details one reference implementation using multiple stages of approvals.
 
 ## Process
 
@@ -13,7 +13,7 @@ On-demand assistance is especially useful for scenarios like urgent surgeries, t
 
 ## Reference scenario
 
-This example describes on-demand assistance with multi-stage approval.&#x20;
+This example describes on-demand assistance with multi-stage approval.
 
 <div>
 
@@ -27,6 +27,6 @@ This example describes on-demand assistance with multi-stage approval.&#x20;
 
 ### Customizations
 
-* The program manager/administrator can custom-assign an assessment officer for each stage.&#x20;
-* Though this example shows three stages, the number of stages can be customized.&#x20;
-* The entitlement voucher can be communicated digitally or printed on paper.&#x20;
+* The program manager/administrator can custom-assign an assessment officer for each stage.
+* Though this example shows three stages, the number of stages can be customized.
+* The entitlement voucher can be communicated digitally or printed on paper.
