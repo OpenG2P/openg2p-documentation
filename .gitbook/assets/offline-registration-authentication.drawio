@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-07-24T15:51:53.791Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="LPevvqHV1VkaihZx_tXQ" version="21.6.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-07-24T15:53:18.338Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="1DWouRQZMQCHBo5sYRZl" version="21.6.5" type="github">
   <diagram name="Page-1" id="TvEwbHPf6EAsib68XRe2">
     <mxGraphModel dx="880" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -22,8 +22,8 @@
         <mxCell id="c0uuogZmkq0kA0NrOmdT-5" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="360" y="160" width="190" height="170" as="geometry" />
         </mxCell>
-        <mxCell id="c0uuogZmkq0kA0NrOmdT-7" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;Authentication&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="440" y="160" width="60" height="30" as="geometry" />
+        <mxCell id="c0uuogZmkq0kA0NrOmdT-7" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;MOSIP Token Seeder&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="370" y="160" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="c0uuogZmkq0kA0NrOmdT-8" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;OpenG2P Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="600" y="160" width="130" height="30" as="geometry" />
