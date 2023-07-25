@@ -29,7 +29,7 @@ The user should have a Program Manager role assigned.
 * _On Enrolled In Program Template_: Select the template from the drop-down for program enrolment notification.
 * _On Cycle Started Template:_ Select the template from the drop-down for the program cycle started notification.
 * _On Cycle Ended Template_: Select the template from the drop-down for the program cycle-ended notification.
-* Select _Send Immediately_ to send the email notification to beneficiaries after the program enrollment, at the start of the cycle and at the end of a cycle.
+* Select _Send Immediately_ to send the email notification to beneficiaries after the program enrollment, at the start of the cycle, and at the end of a cycle.
 
 <figure><img src="../../../.gitbook/assets/email-notification-manager-creation-page.png" alt=""><figcaption></figcaption></figure>
 

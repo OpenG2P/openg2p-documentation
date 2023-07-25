@@ -8,7 +8,7 @@ This guide helps beneficiaries to self-register through the beneficiary portal.
 
 Beneficiaries should have the MOSIP-issued national ID with them.
 
-## Steps&#x20;
+## Steps
 
 1. Go to the beneficiaries portal login page.
 
@@ -34,14 +34,16 @@ Beneficiaries should have the MOSIP-issued national ID with them.
 
 8. Click on _Apply_ to fill in the beneficiary details in the program form.
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/ssp-all-programs.PNG" alt=""><figcaption></figcaption></figure>
 
-9. Once the form fields are filled click on Submit button for application submission.
+9. Once the form fields are filled click on _Submit_ button for application submission.
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/ssp-application.PNG" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/ssp-submission.PNG" alt=""><figcaption></figcaption></figure>
 
 10. Once the program form is submitted, the program will be added to the _My Programs_ section with the _Submitted_ status and the beneficiary will be registered to the program. also will be listed in the _OpenG2P Registry Individual_ as well.
 
-<figure><img src="../../.gitbook/assets/my-programs (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/ssp-my-program.PNG" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/program-registrant (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/ssp-program.PNG" alt=""><figcaption></figcaption></figure>
