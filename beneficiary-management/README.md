@@ -74,4 +74,4 @@ OpenG2P platform allows multiple programs to run in parallel. These programs enr
 
 ## Assistance unit
 
-OpenG2P defines an assistance unit as an individual or a group. A group may be a household, family or any other group to which the program is targeted.&#x20;
+OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family or any other group to which the program is targeted.&#x20;
