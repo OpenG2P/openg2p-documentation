@@ -2,15 +2,16 @@
 
 ## Introduction
 
-OpenG2P offers a reference implementation for an applicant-facing interface named Self Service Portal where an applicant can log in using UIN or any similar foundational or functional ID and then apply for a program. In self-service mode, typically, OTP or QR code is used in addition to a unique ID number for logging in. In assisted mode, typically, the assisting officer has biometric devices connected to the machine hosting Self-Service Portal for biometric authentication.
+Self-Service Portal allows an applicant seeking assistance to register from any place with internet connectivity. The applicant logs in using a foundational or functional ID and then applies for a program. For self-registration, typically, OTP or QR code is used in addition to a unique ID number for logging in. For assisted registration, typically, the assisting officer uses a biometric device connected to the machine hosting Self-Service Portal for biometric authentication.
 
 The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
-* View enrolled programs
-* View all the demographic information submitted across programs
-* Update demographic information
+* View a list of available programs
 * Apply for a new program
-* View a list of all programs offered by the government/ministry/department.
+* Track the status of the application
+* Update demographic information
+* View the programs the applicant is enrolled into&#x20;
+* View all the demographic information submitted across programs
 
 ## Registration process
 

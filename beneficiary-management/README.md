@@ -20,7 +20,7 @@ A progressive approach works towards the betterment of beneficiaries in the long
 
 #### Categorical targeting
 
-A lot of times, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a specific age. Administrators need filtering criteria to glean this information from existing registrations instead of conducting another costly and time-consuming registration drive.
+A lot of times, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a specific age. Administrators need filtering criteria to glean this information from existing registry records instead of conducting another costly and time-consuming registration drive.
 
 **Deciding the entitlement amount**
 
@@ -62,7 +62,7 @@ OpenG2P platform allows the Program Administrators to divide the benefit disburs
 
 #### Multiple notification channels
 
-OpenG2P supports both sms-based and email-based notifications for the beneficiaries. In addition, Program Administrators can also send/print Entitlement Vouchers/Guarantee Letters with customized QR codes to establish the authenticity of entitlement.
+OpenG2P supports both SMS-based and email-based notifications for the beneficiaries. In addition, Program Administrators can also send/print Entitlement Vouchers with customized QR codes to establish the authenticity of entitlement.
 
 #### Monitoring multiple programs in parallel
 

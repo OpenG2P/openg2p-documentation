@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In the OpenG2P platform, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from applicants while recording and verification are the processes to add the authenticated information to the [Registry](registry.md). The platform verifies the applicant's details in the background by confirming the identity and demographic details of the applicant digitally.
+In the OpenG2P platform, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from applicants while recording and verification are the processes to add the verified information to the [Registry](registry.md). The platform verifies the applicant's details in the background by confirming the identity and demographic details of the applicant digitally.
 
 Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enrol in the program and are referred to as beneficiaries.
 
@@ -32,7 +32,7 @@ While on-demand and administrative-driven approaches are two distinct models, th
 
 ## Registration features
 
-OpenG2P registration interfaces are key client-facing interfaces. The clients here could be the applicants, social workers, program administrators, program managers, etc. There are the main features offered by these interfaces:
+OpenG2P registration interfaces are key client-facing interfaces. The clients here could be the applicants, social workers, program administrators, program managers, etc. These are the main features offered by these interfaces:
 
 #### **Authentic**
 
@@ -56,7 +56,7 @@ The applicant information is filled in using general intake sheets. These intake
 
 #### Notifications
 
-The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via multiple channels such as email, sms, etc.
+The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via email and SMS.
 
 ## FAQs
 

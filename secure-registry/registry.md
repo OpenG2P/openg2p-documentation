@@ -10,9 +10,9 @@ The purpose of the registry is to provide a single source of truth to the progra
 
 Identification of records in the registry is done with configured ID types. ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driving license, etc.
 
-## Individual and groups
+## Individuals and groups
 
-Individual registrant information is entered in a single row. Whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.
+Individual registrant information is entered in a single row, whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.
 
 ## Multiple entries
 
