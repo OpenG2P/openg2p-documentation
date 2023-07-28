@@ -10,12 +10,12 @@ Rancher is used to managing multiple clusters. Being a critical component of clu
 
 ## Kubernetes cluster setup
 
-* Set up a new RKE2 cluster. Refer to the [K8s Cluster Setup](cluster-setup.md) guide.&#x20;
+* Set up a new RKE2 cluster. Refer to the [K8s Cluster Setup](cluster-setup.md) guide.
   * Do not remove the stock ingress controller in the server config.
   * No need to install Istio.
 
 {% hint style="info" %}
-It is recommended to set up a double-node cluster for high availability.  However, for the non-production environments, you may create a single node cluster to conserve resources
+It is recommended to set up a double-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources
 {% endhint %}
 
 ## Rancher installation
@@ -46,7 +46,7 @@ It is recommended to set up a double-node cluster for high availability.  Howeve
 
 ## Keycloak setup
 
-* From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) folder, run the following to install Keycloak (hostname to be edited in the below command).
+* From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) folder, run the following to install Keycloak (hostname to be edited in the below command).
 * ```bash
   helm repo add bitnami https://charts.bitnami.com/bitnami
   helm repo update

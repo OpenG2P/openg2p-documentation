@@ -47,7 +47,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 * The following setup has to be done for each cluster node.
 * Choose odd number of server nodes. Example if there are 3 nodes, choose 1 server node and two agent nodes. If there are 7 nodes, choose 3 server nodes and 4 agent nodes.
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory.
+* Clone the [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment) and go to [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory.
 * For the first server node:
   * Configure `rke2-server.conf.primary.template`,
   * SSH into the node. Place the file to this path: `/etc/rancher/rke2/config.yaml`. Create the directory if not present already. `mkdir -p /etc/rancher/rke2` .
@@ -107,7 +107,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 ## Istio setup
 
 * The following setup can be done from the client machine. This install Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
-*   From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory, configure the istio-operator.yaml, and run;
+*   From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory, configure the istio-operator.yaml, and run;
 
     ```
     istioctl operator init
@@ -141,7 +141,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 ## Adding new nodes
 
-* From [infra](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
+* From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
 * Configure the the config.yaml with relevant values.
 *   Run this to download rke2.
 
