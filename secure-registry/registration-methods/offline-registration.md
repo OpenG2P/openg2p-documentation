@@ -37,7 +37,7 @@ The submitted forms are uploaded to ODK Central once the agent moves to an area 
 
 A program administrator needs to [create ODK MTS Connector](../../guides/user-guides/create-mts-connector/create-odk-mts-connector.md) to map the ODK forms in ODK Central to the OpenG2P registry. MTS Connector is the glue that holds ODK Central, MTS, and OpenG2P Registry together.&#x20;
 
-<figure><img src="../../.gitbook/assets/offline-registration-process.drawio (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/a4ff32ed25418396de2b811c2b23e143f233e78b/.gitbook/assets/offline-registration-process.png" alt=""><figcaption></figcaption></figure>
 
 The ODK MTS Connector regularly queries the ODK Central for submitted forms. Whenever forms are available, the MTS Connector maps the KYC data from the forms and sends them to MTS. MTS outputs an authentication token for each KYC data after performing [ID verification](../id-verification.md#registrant-authentication-using-mts). The authentication token is the proof of the registrant's authentication by the MOSIP ID Authentication system.
 
