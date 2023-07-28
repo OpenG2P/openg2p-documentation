@@ -2,11 +2,9 @@
 
 ## Introduction
 
-OpenG2P offers the on-demand approach via the Self Service Portal where a person logins via his/her ID and then applies for a program. In self-service mode, typically, OTP would be used for login. In assisted mode, the registering officer may have biometric devices connected to his/her machine, and the registrant can perform biometric authentication in an online manner.&#x20;
+OpenG2P offers a reference implementation for an applicant-facing interface named Self Service Portal where an applicant can log in using UIN or any similar foundational or functional ID and then apply for a program. In self-service mode, typically, OTP or QR code is used in addition to a unique ID number for logging in. In assisted mode, typically, the assisting officer has biometric devices connected to the machine hosting Self-Service Portal for biometric authentication.
 
-Online registration assumes that an ID verification service is available to connect via APIs and perform verification of the identity of a person. In the case of MOSIP, for e.g, the verification can be done using the [e-Signet](https://docs.mosip.io/1.2.0/integrations/e-signet) solution.
-
-OpenG2P offers a _reference implementation_ of a person facing Self Service Portal that lets a person log in to the portal using a national ID or other IDs, and perform the following functions:
+The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
 * View enrolled programs
 * View all the demographic information submitted across programs
@@ -14,18 +12,33 @@ OpenG2P offers a _reference implementation_ of a person facing Self Service Port
 * Apply for a new program
 * View a list of all programs offered by the government/ministry/department.
 
-OpenG2P offers a reference implementation of such a self-service portal.
+## Registration process
+
+A program administrator has to carry out these steps to allow applicants to apply for a program:
+
+* [Create a program](../../guides/user-guides/create-a-program.md)
+* [Create a Self-Service Portal form](../../guides/user-guides/create-portal-form.md)
+* [Map Self-Service Portal form](../../guides/user-guides/map-self-service-portal-form.md)
+
+Applicant's ID verification takes place during the log-in. The applicant also provides consent to share demographic details with the Self-Service Portal. Upon successful ID verification, the Self-Service Portal can automatically fill in the applicant's demographic details based on the consent provided at the time of log-in. The applicant fills in the rest of the details and applies for a program. Learn more about self-registration [here](../../guides/user-guides/self-register-online.md).
 
 ## OpenID Connect integration
 
-Users can log in via any OpenID Connect (OIDC) Auth provider. Any ID system that implements ODIC specification can be integrated with Self Service Portal for user login.
+Self-Service Portal allows integration with any OpenID Connect (OIDC) client.  The portal has an existing integration with [e-Signet](https://docs.esignet.io/). Learn more about ID verification using e-Signet [here](../id-verification.md#applicant-authentication-using-e-signet).
 
-### Login using MOSIP ID
+### MOSIP integration
 
-The Self Service Portal integrates with [e-Signet](https://docs.esignet.io/) to provide user login via MOSIP ID.
+The Self-Service Portal also integrates with MOSIP to provide user login via MOSIP ID.
 
 <figure><img src="../../.gitbook/assets/ssp-login-page (1).png" alt=""><figcaption></figcaption></figure>
 
 ## Registration demo
 
 {% embed url="https://www.youtube.com/watch?v=DZweP3qKkn8" %}
+
+## References
+
+* [Create a Self-Service Portal form](../../guides/user-guides/create-portal-form.md)
+* [Map Self-Service Portal form](../../guides/user-guides/map-self-service-portal-form.md)
+* [Self-register online](../../guides/user-guides/self-register-online.md)
+* [ID verification using e-Signet](../id-verification.md#applicant-authentication-using-e-signet)

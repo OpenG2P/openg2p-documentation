@@ -34,36 +34,6 @@ Data is anonymised while being displayed in human-readable form (for example, UI
 
 More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the most commonly used fields such as name, age, gender, address, identity, etc. as a fixed number of individual fields. Any additional information is captured as key-value pairs held together in a blob.
 
-## Records management
-
-#### View
-
-#### Search
-
-#### Merging
-
-#### Archival
-
-#### Delete
-
-#### Export
-
-#### Grant portal access
-
-#### Add to program
-
-## Configuration
-
-#### Group relationships
-
-#### Group types
-
-#### Group membership kind
-
-#### Registrant tags
-
-#### ID types
-
 {% hint style="info" %}
 <mark style="color:purple;">**Next generation registry**</mark>
 
@@ -82,13 +52,5 @@ In the roadmap of OpenG2P, an enhanced secure registry with the following featur
 11. Evidence
 12. Attestation
 {% endhint %}
-
-## Developer References
-
-[**API**](../api.md)
-
-[**Code**](../guides/developer-guides/)
-
-## Guides
 
 ## FAQs

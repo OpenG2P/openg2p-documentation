@@ -6,9 +6,9 @@ In the OpenG2P platform, registration is a series of three processes - intake, r
 
 Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enrol in the program and are referred to as beneficiaries.
 
-This is a pictorial representation of the OpenG2P registration inputs and components.
+A high-level view of the administrator-driven registration in offline mode is given below:&#x20;
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/10c5eb7b0884c079607f48b07d63088f0a8523c7/.gitbook/assets/registration-process.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
 ## Registration approaches
 
@@ -38,7 +38,7 @@ OpenG2P registration interfaces are key client-facing interfaces. The clients he
 
 The clients log into the system using their MOSIP ID/National ID allowing the information to be verified while it is being recorded. Additionally, logging in using National ID can pre-fill the information fields in an authentic manner.
 
-#### **Always available**
+#### **Offline mode**
 
 OpenG2P's [Mobile Registration App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without any internet connectivity.
 
@@ -57,14 +57,6 @@ The applicant information is filled in using general intake sheets. These intake
 #### Notifications
 
 The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via multiple channels such as email, sms, etc.
-
-## Developer References
-
-[**API**](../api.md)
-
-[**Code**](../guides/developer-guides/)
-
-## Guides
 
 ## FAQs
 
