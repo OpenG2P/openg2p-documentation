@@ -12,13 +12,13 @@ MTS Connectors can take inputs from both ODK Central and OpenG2P registry. Since
 
 A high-level representation of the interactions between different components during authentication is shown below:
 
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/971450a496bb056097b16b73358aa3b1448bb37c/.gitbook/assets/authentication-using-mts.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/authentication-using-mts.png" alt=""><figcaption></figcaption></figure>
 
 ## Applicant authentication using e-Signet&#x20;
 
 OpenG2P's Self-Service Portal can be integrated with an OpenID Connect Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system such as MOSIP or National ID database to authenticate the applicants in the backend.&#x20;
 
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/a4ff32ed25418396de2b811c2b23e143f233e78b/.gitbook/assets/authentication-using-esignet.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/e9fdceeedd6e483eb45098b9a72f013a331451cf/.gitbook/assets/authentication-using-esignet.png" alt=""><figcaption></figcaption></figure>
 
 A few key points to note in this process are:
 

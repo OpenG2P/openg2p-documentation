@@ -4,7 +4,7 @@
 
 OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose functionalities per their needs. The platform is built to allow inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline. The platform also supports multiple stages of approval with each approval carried out by a different officer.
 
-<figure><img src=".gitbook/assets/functional-architecture.png" alt=""><figcaption><p>Functional Architecture</p></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/functional-architecture.png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 **External System Integrations**
@@ -16,4 +16,4 @@ The platform can integrate with payment systems other than the three payment sys
 
 ## Technical architecture
 
-<figure><img src=".gitbook/assets/technical-architecture.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/technical-architecture.png" alt=""><figcaption></figcaption></figure>

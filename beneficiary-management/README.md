@@ -70,7 +70,7 @@ OpenG2P platform allows multiple programs to run in parallel. These programs enr
 
 ## Program management process
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 
 ## Assistance unit
 
