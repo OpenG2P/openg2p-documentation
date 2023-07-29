@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # SSL Certificates using Letsencrypt
 
 ## Generate certificates

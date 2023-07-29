@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # Packaging OpenG2P Docker
 
 This page contains steps to be performed for packaging different components and addons, of OpenG2P and similar, into a docker image.

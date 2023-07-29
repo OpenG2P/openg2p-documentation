@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # K8s Cluster Setup
 
 ## Introduction

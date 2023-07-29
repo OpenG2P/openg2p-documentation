@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # Post Install Configuration
 
 ## Post-install configuration

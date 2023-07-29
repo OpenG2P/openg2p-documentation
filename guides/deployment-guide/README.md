@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # 📘 Deployment Guide
 
 ## Introduction

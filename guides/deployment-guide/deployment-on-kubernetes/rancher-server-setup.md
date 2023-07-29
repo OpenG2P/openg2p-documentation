@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # Rancher Server Setup
 
 ## Introduction
