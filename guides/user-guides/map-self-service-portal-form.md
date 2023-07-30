@@ -16,7 +16,7 @@ The user must have a _Program Manager_ role and the program has been created usi
 
 2. Click on _Configuration_.
 
-<figure><img src="../../.gitbook/assets/all-programs-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-programs-openg2p (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Select _Portal Pages_ from the dropdown.
 

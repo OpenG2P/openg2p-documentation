@@ -1,6 +1,6 @@
 # Table of contents
 
-* [🏠 Home](README.md)
+* [Untitled](README.md)
 * [🏢 Architecture](architecture.md)
 * [📋 Registration](secure-registry/README.md)
   * [Registration Interfaces](secure-registry/registration-methods/README.md)
