@@ -29,8 +29,25 @@ def grep_text(directory, pattern):
     return matches
 
 
+def filter_files(assets, extensions):
+   """
+   assets: list of filenames
+   extentions: list of extensions. Example, ['.txt', '.drawio', '.TXT']
+   Remove all the files with extensions mentioned in the list 'extensions'. The search is case sensitive
+   so make sure you give all the extensions.
+   """
+   filtered = []
+   extensions = [x.strip() for x in extensions]
+   for asset in assets:
+      _, extension = os.path.splitext(asset) 
+      if extension.strip() not in extensions: 
+          filtered.append(asset)
+   return filtered
+ 
+       
 all_assets = list_files(ASSETS)
-for asset in all_assets:
+filtered_assets = filter_files(all_assets, ['.drawio'])
+for asset in filtered_assets:
     asset = os.path.basename(asset).strip()
     results = grep_text(ROOT, asset)
     if len(results) == 0:
