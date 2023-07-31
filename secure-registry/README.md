@@ -8,7 +8,7 @@ Registration aims to provide detailed records for [Eligibility Assessment](../be
 
 A high-level view of the administrator-driven registration in offline mode is given below:&#x20;
 
-<figure><img src="../.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 ## Registration approaches
 
