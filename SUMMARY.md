@@ -100,7 +100,7 @@
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
   * [Writing Guidelines For How-To Guides](guides/documentation-guides/writing-guidelines-for-how-to-guides.md)
-* [👩💻 Developer Zone](guides/developer-guides/README.md)
+* [Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [About Github Repositories](guides/developer-guides/github-repositories/README.md)
