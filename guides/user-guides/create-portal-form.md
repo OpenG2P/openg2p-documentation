@@ -16,7 +16,7 @@ The user must have a Website Editor role.
 
 2. Click on _Go to Website_ to navigate to the website home page.
 
-<figure><img src="../../.gitbook/assets/go-to-website-openg2p (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 3. Click on the + _New_ button to create a new form.
 
