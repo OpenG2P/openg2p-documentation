@@ -8,7 +8,7 @@ Registration aims to provide detailed records for [Eligibility Assessment](../be
 
 A high-level view of the administrator-driven registration in offline mode is given below:&#x20;
 
-<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/00d70c2522faff12a735f69918503f2aa1485c78/.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
 ## Registration approaches
 
