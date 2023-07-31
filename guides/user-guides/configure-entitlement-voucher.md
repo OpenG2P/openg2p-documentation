@@ -36,11 +36,11 @@ The user must have the Program Administrator role.
 
 7. Navigate to the newly developed box, enter the manager's name, and click on _Create and Edit_.
 
-<figure><img src="../../.gitbook/assets/configure-entitlement-voucher-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/configure-entitlement-voucher-entitlement-manager (1).png" alt=""><figcaption></figcaption></figure>
 
 8. A new dialogue box appears enter the amount per cycle, fill in the necessary details, type the voucher file configuration, and click on _Create and Edit._
 
-<figure><img src="../../.gitbook/assets/configure-entitlement-voucher-manager-create.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/configure-entitlement-voucher-manager-create (1).png" alt=""><figcaption></figcaption></figure>
 
 9. A _Payment File Configuration_ pop-up appears, select the _Type_, add the _Template_ and _QR Code_, and click on _Save_.&#x20;
 
