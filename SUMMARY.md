@@ -90,5 +90,5 @@
     * [Submit Reimbursement Using Service Provider Portal](guides/how-to-guides/submit-reimbursement-using-service-provider-portal.md)
     * [Install SmartScanner App](guides/how-to-guides/install-smartscanner-app.md)
     * [Configure Email Server](guides/how-to-guides/configure-email-server.md)
-    * [Install WireGuard Client on Android Phone](guides/how-to-guides/install-wireguard-app-and-activate-tunnel.md)
+    * [Install WireGuard Client on Android Device](guides/how-to-guides/install-wireguard-app-and-activate-tunnel.md)
     * [Writing Guidelines For How-To Guides](guides/how-to-guides/writing-guidelines-for-how-to-guides.md)
