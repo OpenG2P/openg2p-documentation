@@ -53,6 +53,7 @@
 ## Guides
 
 * [📔 How-To Guides](guides/user-guides/README.md)
+  * [Install WireGuard Client on Desktop/Laptop](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
   * [Configure Entitlement Voucher](guides/user-guides/configure-entitlement-voucher.md)
   * [Multi-Stage Configuration](guides/user-guides/multi-stage-configuration.md)
   * [Create Program](guides/user-guides/create-a-program.md)
@@ -94,13 +95,13 @@
   * [Map ODK Form](guides/user-guides/map-odk-form.md)
   * [Integrate with MOSIP e-Signet](guides/user-guides/integrate-mosip-e-signet.md)
   * [Map Self-Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
-  * [Install WireGuard App And Activate Tunnel](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
+  * [Install WireGuard Client on Android Device](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
   * [Install SmartScanner App](guides/user-guides/install-smartscanner-app.md)
   * [Submit Reimbursement Using the Service Provider Portal](guides/user-guides/submit-reimbursement-using-the-service-provider-portal.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
   * [Writing Guidelines For How-To Guides](guides/documentation-guides/writing-guidelines-for-how-to-guides.md)
-* [👩💻 Developer Zone](guides/developer-guides/README.md)
+* [👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [About Github Repositories](guides/developer-guides/github-repositories/README.md)
