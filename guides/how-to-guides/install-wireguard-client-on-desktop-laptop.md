@@ -1,12 +1,12 @@
-# Install Wireguard Client on Desktop/Laptop
+# Install WireGuard Client on Desktop/Laptop
 
 ## Description
 
-The guide here provides steps to install the Wireguard client on your Windows laptop/desktop.
+The guide here provides steps to install the WireGuard client on your Windows laptop/desktop.
 
 ## Pre-requisites
 
-Wireguard conf file obtained from your System Administrator.
+WireGuard conf file obtained from your System Administrator.
 
 ## Steps
 

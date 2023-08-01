@@ -82,7 +82,7 @@
   * [Notifications](openg2p-site-documentation/notifications.md)
 * [GUIDES](guides/README.md)
   * [How-To Guides](guides/how-to-guides/README.md)
-    * [Install Wireguard Client on Desktop/Laptop](guides/how-to-guides/install-wireguard-client-on-desktop-laptop.md)
+    * [Install WireGuard Client on Desktop/Laptop](guides/how-to-guides/install-wireguard-client-on-desktop-laptop.md)
     * [Create Odoo Roles](guides/how-to-guides/create-odoo-roles.md)
     * [Multi-Stage Approval](guides/how-to-guides/multi-stage-approval.md)
     * [Multi-Stage Configuration](guides/how-to-guides/multi-stage-configuration.md)
