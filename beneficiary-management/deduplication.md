@@ -2,32 +2,44 @@
 
 ## Introduction
 
-Deduplication refers to the process of removing duplicate entries in the registry, thus avoiding double-dipping, and merging all the demographic fields associated with an individual or a group into a single record.&#x20;
+Deduplication refers to the process of removing duplicate entries in the program, thus avoiding double-dipping, and merging all the demographic fields associated with an individual or a group into a single record.
 
-## Deduplication of individuals
+Each program in the OpenG2P program should have at least one deduplication manager configured. A separate deduplication manager must be created and configured for a program.
 
-Individuals are deduplicated by any of the below methods or a combination of these:
+## Deduplication manager types
 
-### Unique foundational ID
+OpenG2P platform supports three types of Deduplication Managers:
 
-If a country has issued unique foundational IDs (like [MOSIP](https://mosip.io)) then deduplication is trivial -- there is only one record associated with an ID. For privacy, the foundational ID itself is not stored in the registry. Instead, a ['token'](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id) or [virtual ID](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#vid) associated with the ID is stored.
+#### Default Deduplication Manager
 
-### Functional IDs
+This deduplication manager is assigned by default to each program. Since it is mandatory to configure at least one deduplication manager, program administrators can use this deduplication manager if they are sure of unique registration entries or do not want to run the deduplication.
 
-If functional IDs like driver's license, tax number, student ID etc. are accepted while registration, then deduplication across IDs is somewhat challenging if a link between these is not already established and available to the OpenG2P system. In this case, heuristics are applied to demographic data to detect potential duplicates.
+#### ID Deduplication Manager
 
-### No ID
+This deduplication manager will deduplicate the registrants based on the ID of the registrants. The program administrators should configure the ID type that will be used for deduplication. To learn more about ID type configuration, click [here](../guides/user-guides/configure-id-types.md).
 
-In case registrants were onboarded without an ID, the deduplication is performed using heuristics on demographic data.
+#### Phone Number Deduplication Manager
 
-{% hint style="success" %}
-OpenG2P is guided by the principle of **inclusion.** The system does not prevent registrations of persons who do not have an ID. This is especially applicable during emergency relief like floods, war, and other calamities.
-{% endhint %}
+The registrants can be deduplicated based on their phone numbers. This deduplication manager is often configured along with the ID Deduplication Manager.
 
-## Deduplication of groups
+## Deduplication manager configuration
 
-Deduplication of groups refers to removing duplicate groups within a type of group like a family, or household. The deduplication method is context-dependent and is configured via rules. For example, if the same family has registered itself twice, it will be flagged as a duplicate. However, there are more complex scenarios - say, an individual appears in two different households while other members are different. Such cases will be flagged based on the configured rules.&#x20;
+Configuring a deduplication manager in a program is a two-step process.
 
-## Manual adjudication
+#### Create a deduplication manager type
 
-Resolution of duplicates is generally done via a manual adjudication process, where an authority is visually able to inspect the data and reason for duplication. The authority can then decide whether the case is a duplicate or not based on the process set by the country/department/ministry.
+The program administrator must create at least one deduplication manager for each deduplication manager type required. To learn more about this step, click [here](../guides/user-guides/create-deduplication-manager-types/).
+
+#### Add the deduplication manager to a program
+
+The program administrator needs to add the deduplication manager created in the first step. To learn more about this step, click [here](../guides/user-guides/create-deduplication-manager.md).
+
+## How-To Guides
+
+[Configure ID Types](../guides/user-guides/configure-id-types.md)
+
+[Create Deduplication Manager Types](../guides/user-guides/create-deduplication-manager-types/)
+
+[Create Deduplication Manager under Program](../guides/user-guides/create-deduplication-manager.md)
+
+##

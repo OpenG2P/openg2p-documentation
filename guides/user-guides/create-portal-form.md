@@ -45,7 +45,7 @@ The user must have a Website Editor role.
 
 10. To add fields that are not available under Existing Fields, use the type _Custom Field_ and add desired fields.
 
-<figure><img src="../../.gitbook/assets/custom-form-custom (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form-custom.png" alt=""><figcaption></figcaption></figure>
 
 11. Click _Save_ to add the field to the portal form.
 
