@@ -103,6 +103,7 @@
   * [Writing Guidelines For How-To Guides](guides/documentation-guides/writing-guidelines-for-how-to-guides.md)
 * [👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
+  * [Installing OpenG2P On Linux](guides/developer-guides/installing-openg2p-on-linux.md)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [About Github Repositories](guides/developer-guides/github-repositories/README.md)
     * [openg2p-registry](guides/developer-guides/github-repositories/openg2p-registry.md)
