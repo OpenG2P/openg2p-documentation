@@ -14,7 +14,7 @@
   * [Proxy Means Test](beneficiary-management/proxy-means-test.md)
   * [Enrolment](beneficiary-management/enrolment.md)
   * [Deduplication](beneficiary-management/deduplication.md)
-  * [Disbursement Cycles](beneficiary-management/disbursement-cycles.md)
+  * [Cycles](beneficiary-management/disbursement-cycles.md)
   * [Entitlement](beneficiary-management/entitlement.md)
   * [Notifications](beneficiary-management/notifications.md)
   * [Verifiable Credentials](beneficiary-management/verifiable-credentials.md)

@@ -24,7 +24,7 @@ The user should have a Program Manager role.
 
 4. In the payment manager creation page provide a name for the payment manager, select the program name, select Automatically Create batch if required, provide the Payment End Point URL and Select the Payee DFSP ID Type.
 
-<figure><img src="../../../.gitbook/assets/payment-interop-creation-page (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-interop-creation-page (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 5. Once the payment manager is saved it will be listed under the payment manager list view page which further can be used under the program configuration for which it is mapped.
 
