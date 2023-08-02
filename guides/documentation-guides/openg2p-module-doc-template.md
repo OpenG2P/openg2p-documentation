@@ -43,7 +43,7 @@ G2PNotificationsVoucher --->|sends Email via| EmailServer
 ### Dependencies
 
 * Any external libraries used. List them.
-* `g2p_entitlement_voucher`&#x20;
+* `g2p_entitlement_voucher`
 * `g2p_notifications_base`
 
 ### User interface
@@ -52,16 +52,18 @@ G2PNotificationsVoucher --->|sends Email via| EmailServer
 * Any new menu items created.
 * Any new actions created.
 
-### Configuration&#x20;
+### Configuration
 
 * Any system configurations and parameters that apply to this module.
 * Any configurations required for using this module. (List)
 
-### Error codes&#x20;
+### Error codes
 
-* What are the error codes/exceptions thrown by this module.&#x20;
+* What are the error codes/exceptions thrown by this module.
 
 ### Source code
+
+[https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher](https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher)
 
 ### Installation
 
