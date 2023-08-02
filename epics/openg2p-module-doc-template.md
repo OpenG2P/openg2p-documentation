@@ -27,20 +27,42 @@ G2P Notifications: Voucher
 
 * What are salient design features?
 * Why were certain design decisions taken in a particular way?
+* Design patterns used.
+* Algorithms used.
 * Anything a developer should know about the design of this module.
-* Any scope for improvement and further design work that is pending
+* Any scope for improvement and further design work that is pending.
 
 ### Relationships with other entities
 
-
-
 ```mermaid
+graph TD
+G2PNotificationsVoucher --->|sends SMS via| SMSServer
+G2PNotificationsVoucher --->|sends Email via| EmailServer
 ```
 
 ### Dependencies
 
 * Any external libraries used. List them.
+* `g2p_entitlement_voucher`&#x20;
+* `g2p_notifications_base`
+
+### User interface
+
+* Any new screens created/modified (with screenshots)
+* Any new menu items created.
+* Any new actions created.
+
+### Configuration&#x20;
+
+* Any system configurations and parameters that apply to this module.
+* Any configurations required for using this module. (List)
+
+### Error codes&#x20;
+
+* What are the error codes/exceptions thrown by this module.&#x20;
+
+### Source code
 
 ### Installation
 
-### Code base
+###
