@@ -16,6 +16,7 @@
   * [G2P Payments Orchestrator](epics/payments/g2p-payments-orchestrator.md)
   * [💰 OpenSPP Voucher Payment](epics/voucher-based-payment.md)
 * [Ability To Assign Programs To Program Manager](epics/ability-to-assign-programs-to-program-manager.md)
+* [OpenG2P Module Doc Template](epics/openg2p-module-doc-template.md)
 * [App: On demand assistance](epics/app-on-demand-assistance/README.md)
   * [Beneficiaries link in program list](epics/app-on-demand-assistance/beneficiaries-link-in-program-list.md)
   * [Add additional fields to Beneficiary view](epics/app-on-demand-assistance/add-additional-fields-to-beneficiary-view.md)
