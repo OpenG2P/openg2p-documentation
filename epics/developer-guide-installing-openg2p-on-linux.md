@@ -1,0 +1,126 @@
+# Developer guide - Installing OpenG2P on Linux
+
+## Pre-requisites
+
+* A Linux server
+* Python
+* Git
+* PostgreSQL
+
+## [Installation of ODOO](https://www.odoo.com/documentation/15.0/administration/install/install.html#installing-odoo)
+
+* ### Step  1: Update System Packages
+  *   Log in to your Linux server using SSH and update the package list and upgrade the existing packages:
+
+      ```bash
+      sudo apt update
+      sudo apt upgrade -y
+      ```
+
+
+
+* ### Step 2: Install Dependencies
+  *   Odoo requires several dependencies to function correctly. Install them using the following commands:
+
+      ```bash
+      sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev libpq-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libopenjp2-7-dev libtiff5-dev libffi-dev nodejs npm
+      ```
+
+
+
+* ### Step 3: Create Odoo User
+  *   It is recommended to create a separate system user to run Odoo for security purposes. Create the user with the following command:
+
+      ```bash
+      sudo adduser --system --home=/opt/odoo --group odoo
+      ```
+
+
+* ### Step 4: Install and Configure PostgreSQL
+  *   Install PostgreSQL server and create a new database user for Odoo:
+
+      ```bash
+      sudo apt install -y postgresql
+      sudo su - postgres
+      createuser --createdb --username postgres --no-createrole --no-superuser --pwprompt odoo_user
+      exit
+      ```
+
+
+
+* ### Step 5 : Install Wkhtmltopdf <a href="#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977" id="docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977"></a>
+  *   Odoo supports printing reports as PDF files. Wkhtmltopdf helps to generate PDF reports from HTML data format. Moreover, the Qweb template reports are converted to HTML format by the report engine and Wkhtmltopdf will produce the PDF report:
+
+      ```bash
+      sudo wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+      sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
+      sudo apt install -f
+      ```
+
+      \
+
+* ### Step 6: Install Odoo
+  *   Clone the Odoo 15 repository from the official GitHub repository:
+
+      ```bash
+      sudo git clone https://github.com/odoo/odoo.git /opt/odoo/odoo15
+      ```
+
+{% hint style="info" %}
+Cloning the odoo15 repo takes time because of the large file.
+{% endhint %}
+
+*   Switch to the Odoo 15 directory and install the required Python libraries:
+
+    ```bash
+    sudo chown -R odoo: /opt/odoo/odoo15
+    cd /opt/odoo/odoo15
+    sudo pip3 install -r requirements.txt
+    ```
+
+
+
+* ### Step 7: Configure Odoo
+  *   Create a configuration file for Odoo:
+
+      ```bash
+      sudo cp /opt/odoo/odoo15/debian/odoo.conf /etc/odoo15.conf
+      sudo chown odoo: /etc/odoo15.conf
+      sudo chmod 640 /etc/odoo15.conf
+      ```
+  *   Edit the configuration file `/etc/odoo15.conf` and set the appropriate values for the following parameters:
+
+      ```
+      [options]
+      addons_path = /opt/odoo/odoo15/addons
+      admin_passwd = strong_admin_password
+      db_host = localhost
+      db_port = 5432
+      db_user = odoo_user
+      db_password = your_database_password
+      ```
+
+      \
+
+* ### Step 8: Start Odoo
+  *   Start the Odoo server using the following command:
+
+      ```bash
+      /opt/odoo/odoo15/odoo-bin -c /etc/odoo15.conf
+      ```
+
+### Installation of OpenG2P Module
+
+* Create a _custom-addons_ directory inside the odoo15, to keep all the extra modules.
+*   Clone all the OpenG2P modules:
+
+    ```bash
+    git clone <repo_url>
+    ```
+*   Install the required Python libraries for all the custom addons:
+
+    ```bash
+    cd /opt/odoo/custom-addons/<module_directory>
+    sudo pip3 install -r requirements.txt
+    ```
+* Add addons directory path to the _odoo15.conf_ file

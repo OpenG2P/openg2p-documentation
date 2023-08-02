@@ -24,6 +24,7 @@
   * [Beneficiary view action button placement: Development](epics/app-on-demand-assistance/beneficiary-view-action-button-placement-development.md)
   * [Copy registrant (individual) view to beneficiary view](epics/app-on-demand-assistance/copy-registrant-individual-view-to-beneficiary-view.md)
 * [📄 Documents : S3 Bucket Integration](epics/documents-s3-bucket-integration.md)
+* [Developer guide - Installing OpenG2P on Linux](epics/developer-guide-installing-openg2p-on-linux.md)
 
 ## Testing
 
