@@ -38,6 +38,10 @@ The program administrator needs to add the deduplication manager created in the 
 
 Deduplication of registrants is a one-click operation once deduplication managers are added to the program. The deduplication manager does not distinguish between original and duplicate records, and all beneficiaries with the same field value as configured in the deduplication managers are listed as duplicates.
 
+The figure below shows two duplicate entries.&#x20;
+
+<figure><img src="../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption></figcaption></figure>
+
 ## How-To Guides
 
 [Configure ID Types](../guides/user-guides/configure-id-types.md)
