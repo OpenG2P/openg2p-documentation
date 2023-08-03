@@ -34,6 +34,10 @@ The program administrator must create at least one deduplication manager for eac
 
 The program administrator needs to add the deduplication manager created in the first step. To learn more about this step, click [here](../guides/user-guides/create-deduplication-manager.md).
 
+## Deduplicating registrants
+
+Deduplication of registrants is a one-click operation once deduplication managers are added to the program. The deduplication manager does not distinguish between original and duplicate records, and all beneficiaries with the same field value as configured in the deduplication managers are listed as duplicates.
+
 ## How-To Guides
 
 [Configure ID Types](../guides/user-guides/configure-id-types.md)
