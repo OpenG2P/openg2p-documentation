@@ -36,7 +36,7 @@ The program administrator needs to add the deduplication manager created in the 
 
 ## Deduplicating registrants
 
-Deduplication of registrants is a one-click operation once deduplication managers are added to the program. The deduplication manager does not distinguish between original and duplicate records, and all beneficiaries with the same field value as configured in the deduplication managers are listed as duplicates.
+Deduplication of registrants is a one-click operation once deduplication managers are added to the program. The deduplication manager does not distinguish between original and duplicate records, and all beneficiaries with the same field value - as configured for duplicate detection - are listed as duplicates.
 
 The figure below shows two duplicate entries.&#x20;
 
