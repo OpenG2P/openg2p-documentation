@@ -45,4 +45,3 @@ The user must have a Program Manager role. See [Create User and Assign Role](ass
 <figure><img src="../../.gitbook/assets/maching-registrants.png" alt=""><figcaption></figcaption></figure>
 
 8. Once the program is created it will be listed under the program list view page.
-9. **Map Portal Form:** Use the guides [Create Self-Service Portal Form](create-portal-form.md) and [Map Self-Service Portal Form](map-self-service-portal-form.md) for this step.
