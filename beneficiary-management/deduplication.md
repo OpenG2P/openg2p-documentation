@@ -32,7 +32,7 @@ The program administrator must create at least one deduplication manager for eac
 
 #### Add the deduplication manager to a program
 
-The program administrator needs to add the deduplication manager created in the first step. To learn more about this step, click [here](../guides/user-guides/create-deduplication-manager.md).
+The program administrator needs to add the deduplication manager(s) created in the first step to the program. To learn more about this step, click [here](../guides/user-guides/create-deduplication-manager.md).
 
 ## Deduplicating registrants
 
