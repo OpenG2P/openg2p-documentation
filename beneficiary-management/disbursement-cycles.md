@@ -1,11 +1,17 @@
-# Disbursement Cycles
+# Program Cycles
 
 ## Introduction
 
-A program may have disbursement done in multiple time cycles with start and end dates for each cycle. Such cycles may be defined and triggered as per the schedule defined in each cycle.
+A program may have disbursement done in multiple time cycles with start and end dates for each cycle. Such cycles may be defined and triggered as per the schedule defined in each cycle. Each program should have at least one cycle manager associated with it.&#x20;
 
-## Cycles
+<figure><img src="../.gitbook/assets/program-cycles.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="https://lh6.googleusercontent.com/_U-WEqXDiVCKlcb6E-4g8DGpYvDBNT0JWym9-8tPXUlQjtRcLwgLfaIhLgd2rE5-U2F7zClRfw3SMrsQ7Bs6kKfjP1ESDPsDIinHzIdRroVHRmNp8k05zKUeiUltcndPVO-QZApMPemdPog=s2048" alt=""><figcaption><p>Cycles defined for disbursement</p></figcaption></figure>
+## Cycle manager
 
-<figure><img src="https://lh5.googleusercontent.com/C76Zt0_MkMXaJabsTBYvv_RlpzwOgzbOg1UBsJSMeN-ER9_RFMQrdHK_kBi7wRJoZax4EGDOkEg2MDZrExKumBjcS5eOGTUG3fIkvYG945beQ2iyy50zDzYKyfYmWBHuBI51MdFjUa2wTnc=s2048" alt=""><figcaption><p>Cycle is approved</p></figcaption></figure>
+OpenG2P provides many convenient single-click actions for program cycle management. Program administrators can use these features to quickly create new cycles, copy beneficiaries from the program, and prepare and approve entitlements. To learn more about these steps, click [here](../guides/user-guides/create-and-approve-disbursement-cycle.md).
+
+<figure><img src="../.gitbook/assets/program-cycle-prepare-payments.png" alt=""><figcaption></figcaption></figure>
+
+## How-To Guides
+
+[Create and approve the disbursement cycle](../guides/user-guides/create-and-approve-disbursement-cycle.md)
