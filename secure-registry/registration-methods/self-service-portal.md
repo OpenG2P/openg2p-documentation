@@ -17,9 +17,9 @@ The Self-Service Portal registration process assumes that an authentication serv
 
 A program administrator has to carry out these steps to allow applicants to apply for a program:
 
-* [Create a program](../../guides/user-guides/create-a-program.md)
-* [Create a Self-Service Portal form](../../guides/user-guides/create-portal-form.md)
-* [Map Self-Service Portal form](../../guides/user-guides/map-self-service-portal-form.md)
+* Create a program: To learn the steps, click [here](../../guides/user-guides/create-a-program.md).
+* Create a Self-Service Portal form: To learn the steps, click [here](../../guides/user-guides/create-portal-form.md).
+* Map Self-Service Portal form: To learn the steps, click [here](../../guides/user-guides/map-self-service-portal-form.md).
 
 Applicant's ID verification takes place during the log-in. The applicant also provides consent to share demographic details with the Self-Service Portal. Upon successful ID verification, the Self-Service Portal can automatically fill in the applicant's demographic details based on the consent provided at the time of log-in. The applicant fills in the rest of the details and applies for a program. Learn more about self-registration [here](../../guides/user-guides/self-register-online.md).
 
@@ -37,9 +37,9 @@ The Self-Service Portal also integrates with MOSIP to provide user login via MOS
 
 {% embed url="https://www.youtube.com/watch?v=DZweP3qKkn8" %}
 
-## References
+## How-To Guides
 
-* [Create a Self-Service Portal form](../../guides/user-guides/create-portal-form.md)
-* [Map Self-Service Portal form](../../guides/user-guides/map-self-service-portal-form.md)
-* [Self-register online](../../guides/user-guides/self-register-online.md)
-* [ID verification using e-Signet](../id-verification.md#applicant-authentication-using-e-signet)
+* [Create Program](../../guides/user-guides/create-a-program.md)
+* [Create Self-Service Portal Form](../../guides/user-guides/create-portal-form.md)
+* [Map Self-Service Portal Form](../../guides/user-guides/map-self-service-portal-form.md)
+* [Self Register Online](../../guides/user-guides/self-register-online.md)
