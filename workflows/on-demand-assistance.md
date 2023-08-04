@@ -1,4 +1,4 @@
-# Immediate Individual  Assistance On-Demand
+# Immediate Individual Assistance On-Demand
 
 ## Introduction
 
@@ -15,15 +15,7 @@ Immediate assistance is especially useful for scenarios like urgent surgeries, t
 
 This example describes on-demand assistance with multi-stage approval.
 
-<div>
-
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/1.1/.gitbook/assets/on-demand-assistance-swimlane.png" alt=""><figcaption></figcaption></figure>
-
- 
-
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/2201c02a187365e8c6de1f30d61d863ca3329068/.gitbook/assets/on-demand-assistance.png" alt=""><figcaption></figcaption></figure>
-
-</div>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/8a03d5f1c4c2808fdb9c6725f32442f21b6de7cf/.gitbook/assets/on-demand-assistance.png" alt=""><figcaption></figcaption></figure>
 
 ### Customizations
 
