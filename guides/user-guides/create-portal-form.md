@@ -20,7 +20,7 @@ The user must have a Website Editor role.
 
 3. Click on the + _New_ button to create a new form.
 
-<figure><img src="../../.gitbook/assets/custom-form.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Page_ to create a form.
 

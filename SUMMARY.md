@@ -115,6 +115,6 @@
     * [Rancher Server Setup](guides/deployment-guide/deployment-on-kubernetes/rancher-server-setup.md)
     * [NFS Server Setup](guides/deployment-guide/deployment-on-kubernetes/nfs-server-setup.md)
     * [SSL Certificates using Letsencrypt](guides/deployment-guide/deployment-on-kubernetes/ssl-certificates-using-letsencrypt.md)
-  * [Access to Deployed Setup](guides/deployment-guide/access-to-deployed-setup.md)
   * [Post Install Configuration](guides/deployment-guide/post-install-instructions.md)
+  * [Access to Deployed Setup](guides/deployment-guide/access-to-deployed-setup.md)
   * [Packaging OpenG2P Docker](guides/deployment-guide/packaging-openg2p-docker.md)

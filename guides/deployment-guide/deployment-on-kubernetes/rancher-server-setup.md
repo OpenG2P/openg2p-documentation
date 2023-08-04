@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Rancher is used to managing multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
+Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
 
 ## Kubernetes cluster setup
 
@@ -42,7 +42,7 @@ It is recommended to set up a double-node cluster for high availability. However
 
 ## Keycloak setup
 
-* From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) folder, run the following to install Keycloak (hostname to be edited in the below command).
+* From [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/rancher) folder, run the following to install Keycloak (hostname to be edited in the below command).
 * ```bash
   helm repo add bitnami https://charts.bitnami.com/bitnami
   helm repo update
@@ -52,7 +52,7 @@ It is recommended to set up a double-node cluster for high availability. However
     --version "7.1.18" \
     --set ingress.hostname=keycloak.openg2p.org \
     --set ingress.extraTls[0].hosts[0]=keycloak.openg2p.org \
-    -f rancher-keycloak-values.yaml
+    -f keycloak-values.yaml
   ```
 
 ## Integrate Rancher and Keycloak

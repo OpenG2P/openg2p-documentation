@@ -4,64 +4,148 @@
 
 The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.
 
-## Pre-requisites
+## Prerequisites
 
 * K8s cluster is set up as given [here](cluster-setup.md).
+* The following utilities/tools must be present on the user's machine.
+  * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 
-## Installation of OpenG2P
+## Installation
 
-* This section assumes the OpenG2P docker is already packaged. See Packaging Instructions.
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to [charts/openg2p](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/openg2p) directory
-  *   Run, (This installs the ref-impl dockers):
+Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0) repository, and continue the installation of each of the following components from the [kubernetes](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes) directory.
 
-      ```
-      ./install.sh \
-          --set global.mailName=openg2p.sandbox.net \
-          --set global.hostname=openg2p.sandbox.net \
-          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net \
-          --set global.serviceProviderHostname=serviceprovider.openg2p.sandbox.net
-      ```
-  *   If use different docker image or tag use:
+Choose and install the components needed for your cluster from the following. If you wish to install all the components below, run this from the [kubernetes](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes) directory (This doesn't include [Reporting](./#reporting)):
 
-      ```
-      ./install.sh \
-          --set odoo.image.repository=<docker image name> \
-          --set odoo.image.tag=<docker image tag> \
-          --set global.mailName=openg2p.sandbox.net \
-          --set global.hostname=openg2p.sandbox.net \
-          --set global.selfServiceHostname=selfservice.openg2p.sandbox.net \
-          --set global.serviceProviderHostname=serviceprovider.openg2p.sandbox.net
-      ```
+```
+OPENG2P_HOSTNAME=openg2p.sandbox.net \
+ODK_HOSTNAME=odk.openg2p.sandbox.net \
+KEYCLOAK_HOSTNAME=keycloak.openg2p.sandbox.net \
+KAFKA_UI_HOSTNAME=kafka.openg2p.sandbox.net \
+KIBANA_HOSTNAME=kibana.openg2p.sandbox.net \
+MINIO_HOSTNAME=minio.openg2p.sandbox.net \
+    ./install-all.sh
+```
 
-## Installation of ODK
+### PostgreSQL
 
-*   From the [charts/odk-central](https://github.com/OpenG2P/openg2p-packaging/tree/develop/charts/odk-central) directory, run the following to install ODK helm chart.
+* Navigate to [kubernetes/postgresql ](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/postgresql)directory.
+*   Run:
 
+    ```bash
+    ./install.sh
     ```
-    ./install.sh \
-        --set global.hostname=openg2p.sandbox.net
-    ```
-*   Note: The above helm chart uses the following docker images built from [https://github.com/getodk/central/tree/v2023.1.0](https://github.com/getodk/central/tree/v2023.1.0), since ODK Central doesn't provide pre-built docker images for these.
 
-    ```
-    openg2p/odk-central-backend:v2023.1.0
-    openg2p/odk-central-frontend:v2023.1.0
-    openg2p/odk-central-enketo:v2023.1.0
-    ```
-* Post installation:
-  *   Exec into the service pod, and create user (and promote if required).
+### OpenG2P
 
-      ```
+* Prerequisites:
+  * PostgreSQL \[REQUIRED]
+  * Minio \[Optional]
+  * ODK \[Optional]
+  * Packaged OpenG2P docker. [Packaging Instructions](../packaging-openg2p-docker.md). \[Optional]
+* Navigate to [kubernetes/openg2p](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/openg2p) directory.
+*   Run: (This installs the reference package dockers)
+
+    <pre class="language-bash"><code class="lang-bash"><strong>OPENG2P_HOSTNAME=openg2p.sandbox.net \
+    </strong>    ./install.sh
+    </code></pre>
+
+    *   If use already have a custom packaged docker image or tag use:
+
+        ```bash
+        OPENG2P_HOSTNAME=openg2p.sandbox.net \
+        OPENG2P_ODOO_IMAGE_REPO=<docker image name> \
+        OPENG2P_ODOO_IMAGE_TAG=<docker image tag> \
+            ./install.sh
+        ```
+* Post installation: Refer to [Post Install Configuration](../post-install-instructions.md)
+
+### ODK
+
+* Prerequisites:
+  * PostgreSQL \[REQUIRED]
+* Navigate to [kubernetes/odk-central](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/odk-central) directory.
+*   Run the following to install ODK helm chart.
+
+    ```bash
+    ODK_HOSTNAME=odk.openg2p.sandbox.net \
+        ./install.sh
+    ```
+
+    *   Note: The above helm chart uses the following docker images built from [https://github.com/getodk/central/tree/v2023.1.0](https://github.com/getodk/central/tree/v2023.1.0), since ODK Central doesn't provide pre-built docker images for these.
+
+        ```
+        openg2p/odk-central-backend:v2023.1.0
+        openg2p/odk-central-frontend:v2023.1.0
+        openg2p/odk-central-enketo:v2023.1.0
+        ```
+* Post-installation:
+  *   Exec into the service pod, and create a user (and promote if required).
+
+      ```bash
       kubectl exec -it <service-pod> -- odk-cmd -u <email> user-create
       kubectl exec -it <service-pod> -- odk-cmd -u <email> user-promote
       ```
-* Uninstallation:
-  *   To uninstall, just delete the helm installation of odk-central. Example:
 
-      ```
-      helm -n odk delete odk-central
-      ```
+### Minio
 
-## Installation of Minio as S3 Object Store for OpenG2P
+* Navigate to [kubernetes/minio](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/minio) directory.
+*   Run:
 
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging). Follow the instructions given at [infra/minio](https://github.com/OpenG2P/openg2p-packaging/tree/develop/infra/minio).
+    ```bash
+    MINIO_HOSTNAME=minio.openg2p.sandbox.net \
+        ./install.sh
+    ```
+* Post-installation:
+  * Once OpenG2P is installed, do the following:
+    * Navigate to OpenG2P Documents (From OpenG2P Menu) -> Document Store.
+    * Configure URL and password for this backend service (Like `http://minio.minio:9000`). Password and account-id/username can be obtained from the secrets in minio namespace.
+
+### Keycloak
+
+* Navigate to [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/keycloak) directory.
+*   Run:
+
+    ```bash
+    OPENG2P_HOSTNAME=openg2p.sandbox.net
+    KEYCLOAK_HOSTNAME=keycloak.openg2p.sandbox.net \
+        ./install.sh
+    ```
+
+### Kafka
+
+* Navigate to [kubernetes/kafka](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/kafka) directory.
+*   Run:
+
+    ```bash
+    KAFKA_UI_HOSTNAME=kafka.openg2p.sandbox.net \
+        ./install.sh
+    ```
+
+### Logging and Elasticsearch
+
+* Navigate to [kubernetes/logging](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/logging) directory.
+*   Run:
+
+    ```bash
+    KIBANA_HOSTNAME=kibana.openg2p.sandbox.net \
+        ./install.sh
+    ```
+
+### Reporting
+
+* Prerequisites:
+  * Kafka \[REQUIRED]
+  * PostgreSQL \[REQUIRED]
+  * OpenG2P \[REQUIRED]
+  * Logging \[REQUIRED]. (At least Elasticsearch is required)
+* Clone [https://github.com/OpenG2P/openg2p-reporting](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0).
+* Navigate to [scripts](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0/scripts) directory inside the above reporting repo.
+*   Run the following to install reporting
+
+    ```sh
+    ./install.sh
+    ```
+* Do the following to import the dashboards present in [dashboards](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0/dashboards) folder:
+  * Navigate to Kibana Stack Management -> Kibana Section -> Saved Objects.
+  * Import all files in [dashboards](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0/dashboards) folder.
+
