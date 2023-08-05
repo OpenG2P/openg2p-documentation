@@ -50,11 +50,15 @@ OpenG2P supports various eligibility filters to enrol potential beneficiaries ba
 
 Indicators are a powerful tool for abstracting information from a set of fields. Program Administrators can use indicators to take decisions on the appropriate amount of entitlement for each beneficiary.
 
+#### Document upload and view
+
+Social workers can upload supporting documents for beneficiaries. These documents can be stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the deployment configuration. Program administrators can view these documents from the program view to take decisions about the entitlements.
+
 #### Multi-stage approvals
 
 To reduce monopoly, Program Administrators can configure multiple stages and assign an assessment role for each stage. OpenG2P has successfully run a pilot program for the Philippines in which three program participants - a social worker, a Cader 1 officer, and a Cader 2 officer, independently assess and approve entitlements.&#x20;
 
-#### Disbursement cycles
+#### Program cycles
 
 OpenG2P platform allows the Program Administrators to divide the benefit disbursements into multiple cycles. Multiple cycles can enable the administrators to easily monitor the program for the effectiveness of enrolments and entitlements.
 
@@ -67,6 +71,8 @@ OpenG2P supports both SMS-based and email-based notifications for the beneficiar
 OpenG2P platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
 
 ## Program management process
+
+The figure below shows a high-level representation of the program management process.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 

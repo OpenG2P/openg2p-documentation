@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Self-Service Portal allows an applicant seeking assistance to register from any place with internet connectivity. The applicant logs in using a foundational or functional ID and then applies for a program. For self-registration, typically, OTP or QR code is used in addition to a unique ID number for logging in. For assisted registration, typically, the assisting officer uses a biometric device connected to the machine hosting Self-Service Portal for biometric authentication.
+Self-Service Portal allows an applicant seeking assistance to register from any place and device with internet connectivity. The applicant logs in using a foundational or functional ID and then applies for a program. For self-registration, typically, OTP or QR code is used in addition to a unique ID number for logging in. For assisted registration, typically, the assisting officer uses a biometric device connected to the machine hosting Self-Service Portal for biometric authentication.
 
 The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
@@ -10,8 +10,11 @@ The Self-Service Portal registration process assumes that an authentication serv
 * Apply for a new program
 * Track the status of the application
 * Update demographic information
+* Upload supporting documents
 * View the programs the applicant is enrolled into&#x20;
 * View all the demographic information submitted across programs
+
+Depending on the program implementation, the applicant can also apply for the same program multiple times to seek assistance multiple times. An example of such a case is seeking medical assistance for different treatments. It is assumed that program administrators will apply mechanisms to prevent cases of double-dipping.
 
 ## Registration process
 
