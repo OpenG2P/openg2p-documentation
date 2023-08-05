@@ -90,7 +90,6 @@
   * [Create Entitlement Manager Role](guides/user-guides/create-entitlement-manager-role.md)
   * [Create Entitlement Manager Type](guides/user-guides/create-entitlement-manager-type.md)
   * [Configure Entitlement Manager in Program](guides/user-guides/configure-entitlement-manager-in-program.md)
-  * [Create Entitlement Voucher Template and Configure QR Code](guides/user-guides/create-entitlement-voucher-template-and-configure-qr-code.md)
   * [Configure Entitlement Voucher](guides/user-guides/configure-entitlement-voucher.md)
   * [Multi-Stage Configuration](guides/user-guides/multi-stage-configuration.md)
   * [Multi-Stage Approval](guides/user-guides/multi-stage-approval.md)
