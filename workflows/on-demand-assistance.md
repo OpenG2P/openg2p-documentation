@@ -17,7 +17,7 @@ This example describes on-demand assistance with multi-stage approval.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/8a03d5f1c4c2808fdb9c6725f32442f21b6de7cf/.gitbook/assets/on-demand-assistance.png" alt=""><figcaption></figcaption></figure>
 
-### Customizations
+## Customizations
 
 * The program manager/administrator can custom-assign an assessment officer for each stage.
 * Though this example shows three stages, the number of stages can be customized.
