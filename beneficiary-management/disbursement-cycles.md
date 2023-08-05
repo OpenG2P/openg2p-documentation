@@ -6,12 +6,18 @@ A program may have disbursement done in multiple time cycles with start and end 
 
 <figure><img src="../.gitbook/assets/program-cycles.png" alt=""><figcaption></figcaption></figure>
 
+## Program Manager
+
+The program manager is a software module in the OpenG2P platform. It manages the number of cycles in a program and each request to create a cycle is executed through the program manager. The program administrators can easily replicate cycles by selecting the option to copy from the previous cycle. The manager also has a configuration option to create a cycle-less program. To learn the steps to configure a program manager, click [here](../guides/user-guides/configure-program-manager-in-program.md).
+
 ## Cycle manager
 
-OpenG2P provides many convenient single-click actions for program cycle management. Program administrators can use these features to quickly create new cycles, copy beneficiaries from the program, and prepare and approve entitlements. To learn more about these steps, click [here](../guides/user-guides/create-and-approve-disbursement-cycle.md).
+While the program manager manages all the cycles, each cycle is managed by a cycle manager. Cycle manager provides many convenient single-click actions to enable program administrators to quickly create new cycles, copy beneficiaries from the program, and prepare and approve entitlements. To learn more about these steps, click [here](../guides/user-guides/create-and-approve-disbursement-cycle.md).
 
 <figure><img src="../.gitbook/assets/program-cycle-prepare-payments.png" alt=""><figcaption></figcaption></figure>
 
 ## How-To Guides
 
-[Create and approve the disbursement cycle](../guides/user-guides/create-and-approve-disbursement-cycle.md)
+[Configure Program Manager in Program](../guides/user-guides/configure-program-manager-in-program.md)
+
+[Create and Approve Program Cycle](../guides/user-guides/create-and-approve-disbursement-cycle.md)
