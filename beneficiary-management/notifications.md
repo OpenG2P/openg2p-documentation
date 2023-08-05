@@ -18,7 +18,7 @@ OpenG2P manages notifications via notification managers. Each program has at lea
 * Email notification manager
 * Fast2SMS&#x20;
 
-OpenG2P provides simple templates for configuring the content of notifications based on the event and application.
+OpenG2P uses the in-built [Qweb Templates](https://www.odoo.com/documentation/16.0/developer/reference/frontend/qweb.html) and [Inline Templates](https://apps.odoo.com/apps/modules/10.0/mail\_inline\_css/) for configuring the HTML pages and fragments. Notifications are sent based on the event and application configurations.
 
 <figure><img src="../.gitbook/assets/notification-template.png" alt=""><figcaption></figcaption></figure>
 
