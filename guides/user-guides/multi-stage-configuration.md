@@ -6,7 +6,7 @@ This guide provides steps to add multiple entitlement managers for the program. 
 
 ## Pre-requisites
 
-The user must have the Program Administrator role and have created an entitlement manager group. Learn more about creating the entitlement manager group [here](create-entitlement-manager-group.md).
+The user must have the Program Administrator role and have created an entitlement manager group. Learn more about creating the entitlement manager group [here](create-entitlement-manager-role.md).
 
 ## Steps
 

@@ -1,4 +1,4 @@
-# Create Entitlement Manager Group
+# Create Entitlement Manager Role
 
 ## Description
 
