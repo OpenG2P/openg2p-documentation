@@ -43,7 +43,7 @@
     * [ODK MTS Connector](integrations/integration-with-mosip/mts-connector.md)
     * [Registry MTS Connector](integrations/integration-with-mosip/registry-mts-connector.md)
     * [Integration with e-Signet](integrations/integration-with-mosip/integration-with-e-signet.md)
-* [Releases](releases/README.md)
+* [📦 Releases](releases/README.md)
   * [1.1.0](releases/1.1.0/README.md)
     * [Release Notes](releases/1.1.0/release-notes.md)
 * [↔ REST API](api.md)
