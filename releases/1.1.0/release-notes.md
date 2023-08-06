@@ -12,9 +12,7 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 
 ## Features of this release
 
-
-
-<table><thead><tr><th width="310">Function</th><th>Features</th></tr></thead><tbody><tr><td>Registration</td><td><ul><li>Registry with security and privacy features</li><li>Tokenization of identifiers (foundational ID)</li><li>Bulk import and export</li><li>Deduplication using MOSIP ID or any ID platform</li><li>Offline registration using ODK</li><li>Registration over REST API</li></ul></td></tr><tr><td>Program Management</td><td><ul><li>Creation and configuration of multiple programs</li><li>Configuration of eligibility and other managers within a program</li><li>Proxy Means Test plugin</li><li>Rule-based eligibility</li><li>Multi-stage approval based on user role configuration</li><li>Role-based access control for program administrators</li></ul></td></tr><tr><td>Payments</td><td><ul><li>Payments integration with Mojaloop (Technology demonstration)</li><li>Cyclical and cycle-less payments</li></ul></td></tr><tr><td>Voucher based benefit delivery</td><td><ul><li>Digitally signed QR Code</li><li>Template-based voucher design</li><li>Voucher scanner Android app (reference implementation)</li></ul></td></tr><tr><td>Immediate individual assistance on-demand workflow</td><td><ul><li>Configuration mult-stage approval process from application to delivery of benefit</li></ul></td></tr><tr><td>Self service portal</td><td><ul><li>Login using e-Signet and MOSIP ID</li><li>Self-enrolment into a program (on-demand assistance)</li><li>Multi device UI</li><li>Support for upload of documents</li><li>Interactive dashboard</li><li>Real-time status updates</li></ul></td></tr><tr><td>Service provider portal  (<em>reference implementation)</em></td><td><ul><li>Reimbursements to service providers against a voucher</li><li>Generation of payments instructions</li></ul></td></tr><tr><td>Document management</td><td><ul><li>Upload and view</li></ul></td></tr><tr><td>Notifications</td><td><ul><li>SMS</li><li>Email</li></ul></td></tr><tr><td>i18n support</td><td><ul><li>Back office application configured for multiple languages</li></ul></td></tr><tr><td>Monitoring and reporting</td><td><ul><li>Debezium-Kafka-Elasticsearch-Kibana pipeline</li><li>Customizable dashboards</li><li>Real-time updation of data</li></ul></td></tr><tr><td>Kubernetes based production deployment infrastructure</td><td><ul><li>Helm charts</li><li>Instructions and scripts to deploy on Kubernetes</li></ul></td></tr></tbody></table>
+<table><thead><tr><th width="310">Function</th><th>Features</th></tr></thead><tbody><tr><td>Registration</td><td><ul><li>Registry with security and privacy features</li><li>Tokenization of identifiers (foundational ID)</li><li>Bulk import and export</li><li>Deduplication using MOSIP ID or any ID platform</li><li>Offline registration using ODK</li><li>Registration over REST API</li></ul></td></tr><tr><td>Program Management</td><td><ul><li>Creation and configuration of multiple programs</li><li>Configuration of eligibility and other managers within a program</li><li>Proxy Means Test plugin</li><li>Rule-based eligibility</li><li>Multi-stage approval based on user role configuration</li><li>Role-based access control for program administrators</li></ul></td></tr><tr><td>Payments</td><td><ul><li>Payments integration with Mojaloop (Technology demonstration)</li><li>Cyclical and cycle-less payments</li></ul></td></tr><tr><td>Voucher based benefit delivery</td><td><ul><li>Digitally signed QR Code</li><li>Template-based voucher design</li><li>Voucher scanner Android app (reference implementation)</li></ul></td></tr><tr><td>Immediate individual assistance on-demand workflow</td><td><ul><li>Configuration mult-stage approval process from application to delivery of benefit</li></ul></td></tr><tr><td>Self service portal</td><td><ul><li>Login using e-Signet and MOSIP ID</li><li>Self-enrolment into a program (on-demand assistance)</li><li>Multi device UI</li><li>Support for upload of documents</li><li>Interactive dashboard</li><li>Real-time status updates</li></ul></td></tr><tr><td>Service provider portal (<em>reference implementation)</em></td><td><ul><li>Reimbursements to service providers against a voucher</li><li>Generation of payments instructions</li></ul></td></tr><tr><td>Document management</td><td><ul><li>Upload and view</li></ul></td></tr><tr><td>Notifications</td><td><ul><li>SMS</li><li>Email</li></ul></td></tr><tr><td>i18n support</td><td><ul><li>Back office application configured for multiple languages</li></ul></td></tr><tr><td>Monitoring and reporting</td><td><ul><li>Debezium-Kafka-Elasticsearch-Kibana pipeline</li><li>Customizable dashboards</li><li>Real-time updation of data</li></ul></td></tr><tr><td>Kubernetes based production deployment infrastructure</td><td><ul><li>Helm charts</li><li>Instructions and scripts to deploy on Kubernetes</li></ul></td></tr></tbody></table>
 
 ## Release contents
 
@@ -29,20 +27,7 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 
 ## Source code
 
-| Github repository         | Version/Tag | Base      |
-| ------------------------- | :---------: | --------- |
-| openg2p-program           |    v1.1.0   | Odoo 15.0 |
-| openg2p-registry          |    v1.1.0   | Odoo 15.0 |
-| openg2p-self-service      |    v1.1.0   | Odoo 15.0 |
-| openg2p-auth              |    v1.1.0   | Odoo 15.0 |
-| openg2p-theme             |    v1.1.0   | Odoo 15.0 |
-| openg2p-notifications     |    v1.1.0   | Odoo 15.0 |
-| openg2p-documents         |    v1.1.0   | Odoo 15.0 |
-| odoo-json-field           |    v1.1.0   | Odoo 15.0 |
-| openg2p-security          |    v1.1.0   | Odoo 15.0 |
-| openg2p-packaging         | main branch | Non-Odoo  |
-| openg2p-helm              |    v1.1.0   | Non-Odoo  |
-| openg2p-deployment        |    v1.1.0   | Non-Odoo  |
+<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th><th>Base</th></tr></thead><tbody><tr><td>openg2p-program</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-registry</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-self-service</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-auth</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-theme</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-notifications</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-documents</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>odoo-json-field</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-mtss</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-security</td><td align="center">v1.1.0</td><td>Odoo 15.0</td></tr><tr><td>openg2p-packaging</td><td align="center">v1.1.0</td><td>Shell scripts</td></tr><tr><td>openg2p-helm</td><td align="center">v1.1.0</td><td>Helm charts</td></tr><tr><td>openg2p-deployment</td><td align="center">v1.1.0</td><td>Shell scripts, Python</td></tr><tr><td>openg2p-voucher-scanner-app</td><td align="center">v0.5.0</td><td>Android</td></tr><tr><td>openg2p-reporting</td><td align="center">v1.1.0</td><td>Shell scripts</td></tr></tbody></table>
 
 ## Build and deploy
 
@@ -52,4 +37,3 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 ## Test report
 
 ## Limitations and known issues
-
