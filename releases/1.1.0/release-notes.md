@@ -1,6 +1,6 @@
 # Release Notes
 
-### Release version: 1.1.0
+Release version: 1.1.0
 
 ### Release date: 7th August 2023
 
@@ -40,28 +40,17 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 * Test results
 
 {% embed url="https://docs.google.com/spreadsheets/d/1IfBrCoYBotCzyd-yQz-kCGlZrXll4qncZMIdH9XqS1A/edit#gid=0" %}
+Test Case Tracker
+{% endembed %}
 
 ## Limitations and known issues
 
-**Registry**
+* Document and file upload support is not available with Registry REST API. [#G2P-1011](https://openg2p.atlassian.net/browse/G2P-1011)
+* Issue with merging registry records. [#G2P-180](https://openg2p.atlassian.net/browse/G2P-180)
+* Multiple configurations for a program is not supported. [#G2P-206](https://openg2p.atlassian.net/browse/G2P-206?atlOrigin=eyJpIjoiYzhiMGY0MTE5MzdhNDgyYjk0NGY2ODQ2N2U0ZDQ1MDMiLCJwIjoiamlyYS1zbGFjay1pbnQifQ) [#G2P-1047](https://openg2p.atlassian.net/browse/G2P-1047?atlOrigin=eyJpIjoiNjFhMGNlN2U0ZTUwNDdhMmE3YTJhOTk4ZDhlNTRkYzYiLCJwIjoiamlyYS1zbGFjay1pbnQifQ) [#G2P-1048](https://openg2p.atlassian.net/browse/G2P-1048?atlOrigin=eyJpIjoiZmJmMjE0MDNkZmIxNGNiZDlhOWRhZTg0NDA0MzlhZTkiLCJwIjoiamlyYS1zbGFjay1pbnQifQ) [#G2P-1072](https://openg2p.atlassian.net/browse/G2P-1072?atlOrigin=eyJpIjoiMTI0Y2U0OWQ5NDUxNGIzMGJkOTRkNTRkYjgzZjgyY2EiLCJwIjoiamlyYS1zbGFjay1pbnQifQ)
+* There is an issue with program duplication caused by multiple dependencies when attempting to run a deep copy. [#G2P-1040](https://openg2p.atlassian.net/browse/G2P-1040?atlOrigin=eyJpIjoiOGVmOWRiZTBhODI3NDk4YmFmYzI5ZjgwY2RmNzRhNDciLCJwIjoiamlyYS1zbGFjay1pbnQifQ)
+* The application status changes to 'Completed' when an entitlement is approved instead of when the payment is sent. [#G2P-1060](https://openg2p.atlassian.net/browse/G2P-1060)
+* A program can be deleted only after manually deleting all the configuration managers within the program, even when there are no beneficiaries linked to the program. [#G2P-1041](https://openg2p.atlassian.net/browse/G2P-1041)
+* On the Self Service Portal, there is no multilingual support for client generated text. [#G2P-336](https://openg2p.atlassian.net/browse/G2P-336)
 
-* Document and file upload support is not available with Registry REST API
-* Issue with merging registry records:\
-  In OpenG2P 1.1.0, multiple records for the same individual is allowed in the Registry. These duplicate entries may be created when an individual registers with OpenG2P through various registration methods, or if the Program Manager/Administrator creates a record on behalf of the individual. Currently, the deduplication of registrants is done only within a program and not in the Registry. \
-  \
-  To this effect, in case there are multiple entries for an individual, it would help to be able to merge the records so there are no discrepancies. However, this functionality is&#x20;
-
-**Program Management**
-
-* Multiple managers in Program configuration
-* Duplicate program creation
-* Application status movement when entitlement approval from the list
-* Delete program possible only after removing all the managers manually (assuming there are no beneficiaries assigned/enrolled)
-
-**Payment**
-
-* Issues while configuring multiple payment manager
-
-**Self Service Portal**
-
-* Client generated text does not support multilingual support
+For a detailed list of issues, refer [here](https://openg2p.atlassian.net/issues/?filter=10016).
