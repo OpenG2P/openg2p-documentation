@@ -37,22 +37,19 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 ## Test report
 
 * Testing methodology - manual
-* For test report, click [here](https://docs.google.com/spreadsheets/d/1IfBrCoYBotCzyd-yQz-kCGlZrXll4qncZMIdH9XqS1A/edit#gid=0).
+* Test results
+
+{% embed url="https://docs.google.com/spreadsheets/d/1IfBrCoYBotCzyd-yQz-kCGlZrXll4qncZMIdH9XqS1A/edit#gid=0" %}
 
 ## Limitations and known issues
 
 **Registry**
 
-* Document and file upload support is not available with Registry REST API\
-
-*   Issue with merging registry records
-
-    \
-    In OpenG2P 1.1.0, multiple records for the same individual is allowed in the Registry. These duplicate entries may be created when an individual registers with OpenG2P through various registration methods, or if the Program Manager/Administrator creates a record on behalf of the individual. Currently, the deduplication of registrants is done only within a program and not in the Registry. \
-    \
-    To this effect, in case there are multiple entries for an individual, it would help to be able to merge the records so there are no discrepancies. However, this functionality is&#x20;
-
-
+* Document and file upload support is not available with Registry REST API
+* Issue with merging registry records:\
+  In OpenG2P 1.1.0, multiple records for the same individual is allowed in the Registry. These duplicate entries may be created when an individual registers with OpenG2P through various registration methods, or if the Program Manager/Administrator creates a record on behalf of the individual. Currently, the deduplication of registrants is done only within a program and not in the Registry. \
+  \
+  To this effect, in case there are multiple entries for an individual, it would help to be able to merge the records so there are no discrepancies. However, this functionality is&#x20;
 
 **Program Management**
 
