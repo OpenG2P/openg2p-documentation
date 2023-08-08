@@ -1,6 +1,6 @@
 # Release Notes
 
-Release version: 1.1.0
+### Release version: 1.1.0
 
 ### Release date: 7th August 2023
 
@@ -36,7 +36,7 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 
 ## Test report
 
-* Testing methodology - manual
+* Testing methodology:  Manual
 * Test results
 
 {% embed url="https://docs.google.com/spreadsheets/d/1IfBrCoYBotCzyd-yQz-kCGlZrXll4qncZMIdH9XqS1A/edit#gid=0" %}
