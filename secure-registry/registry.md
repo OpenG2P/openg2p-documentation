@@ -16,7 +16,7 @@ Individual registrant information is entered in a single row, whereas group deta
 
 ## Multiple entries
 
-OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../../beneficiary-management/deduplication.md).
+OpenG2P platform supports multiple entries for a registrant in the registry. The intent is to keep all the entries for a registrant and deduplicate later at the program level if required. Multiple entries allow program administrators the flexibility to build a registry without bothering about duplicate entries, especially during a crisis situation such as a flood, earthquake, tsunami, etc. and work on deduplication later using the [Deduplication Manager](../beneficiary-management/deduplication.md).
 
 ## Privacy and security
 

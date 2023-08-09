@@ -22,7 +22,7 @@ Education, employable skills, disability, and health conditions of earning membe
 
 ## Proxy Means Test Configuration
 
-Proxy Means Test plug-ins can be conveniently installed in the OpenG2P platform. The Proxy Means Test parameters are computed from the fields in the registry information of the individual/group. OpenG2P platform supports extensive yet easy configurations for defining computed fields.&#x20;
+Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The Proxy Means Test parameters are computed from the fields in the registry information of the individual/group. OpenG2P platform supports extensive yet easy configurations for defining computed fields.&#x20;
 
 ## How-To Guides
 

@@ -16,8 +16,8 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 
 ## Release contents
 
-* [OpenG2P Odoo package docker](https://hub.docker.com/layers/openg2p/openg2p-odoo-package/1.1.0/images/sha256-d9f39eb05ff11e00d5c31df045d1bcb164f8b9eaab124ec2b596cb959e29d43b?context=explore) (_see repositories listed below)_
-* Non-odoo modules:
+* [OpenG2P Odoo package docker](https://github.com/OpenG2P/openg2p-packaging/actions/runs/5781111111) (_see repositories listed below)_
+* Non-Odoo modules:
   * [Reporting](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0)
   * [Voucher scan Android app](https://github.com/OpenG2P/openg2p-voucher-scanner-app/releases/tag/v0.5.0)
 * Deployment components:
