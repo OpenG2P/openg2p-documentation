@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-09T19:09:43.313Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" version="21.3.7" etag="zJ0mfj0edjzwyWCuRpKb" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-09T19:19:03.299Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" version="21.3.7" etag="7cCIIihY6-wHROQu6koq" type="github">
   <diagram id="DjwuBjzQSKJYnALhCdY3" name="Page-1">
     <mxGraphModel dx="1360" dy="775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1070" math="0" shadow="0">
       <root>
@@ -12,6 +12,27 @@
         </mxCell>
         <mxCell id="4EAGslu62ZiDNw4BVvQ3-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="560" y="420" width="530" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-6" value="OpenG2P Odoo &lt;br&gt;Postgre DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="70" y="510" width="120" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-7" value="REST &lt;br&gt;API Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="110" width="120" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-8" value="Web socket real time messaging&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="520" width="120" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-9" value="Mobile App" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="795" y="60" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-10" value="Web app" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="795" y="430" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-11" value="React native" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="765" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-12" value="React&amp;nbsp; JS" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="490" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
