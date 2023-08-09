@@ -31,6 +31,7 @@
     * [In Account](eligibility-and-enrolment/payment-types/in-account.md)
   * [Payment Rails](eligibility-and-enrolment/payment-rails.md)
   * [Accounting](eligibility-and-enrolment/accounting.md)
+* [🔐 Security Features](security-features.md)
 * [💁 Grievance Redressal System](grievance-redressal-system.md)
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [⛓ Workflows](workflows/README.md)
