@@ -11,6 +11,7 @@
     * [Bulk Export From CSV](secure-registry/registration-methods/bulk-export-from-csv.md)
   * [ID Verification](secure-registry/id-verification.md)
   * [Registry](secure-registry/registry.md)
+  * [OpenG2P Security](secure-registry/openg2p-security.md)
 * [🅿 Program Management](beneficiary-management/README.md)
   * [Eligibility Assessment](beneficiary-management/eligibility.md)
   * [Proxy Means Test](beneficiary-management/proxy-means-test.md)
