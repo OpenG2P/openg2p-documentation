@@ -4,7 +4,7 @@
 * [🏢 Architecture](architecture.md)
 * [📋 Registration](secure-registry/README.md)
   * [Registration Interfaces](secure-registry/registration-methods/README.md)
-    * [Mobile Registration App](secure-registry/registration-methods/offline-registration.md)
+    * [ODK Collect App](secure-registry/registration-methods/offline-registration.md)
     * [Self Service Portal](secure-registry/registration-methods/self-service-portal.md)
     * [API Interface](secure-registry/registration-methods/api-interface.md)
     * [Manual Entry](secure-registry/registration-methods/manual-entry.md)

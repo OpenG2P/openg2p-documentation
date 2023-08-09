@@ -1,8 +1,8 @@
-# Mobile Registration App
+# ODK Collect App
 
 ## Introduction
 
-OpenG2P's Mobile Registration App uses ODK to collect and manage the registrant information. The app can be used offline as well to carry out field registrations in areas where Internet connectivity may not be available. The registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
+OpenG2P platform uses ODK Collect App to collect and manage the registrant information. The app can be used offline as well to carry out field registrations in areas where Internet connectivity may not be available. The registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
 
 The app also has an integrated QR code scanning application to scan the ID card of the registrant. The scanning application automatically populates the KYC data of the registrant in the ODK form and verifies the digital signature to establish the card's authenticity.&#x20;
 
@@ -12,7 +12,7 @@ ODK is an open-source toolkit that uses offline forms to collect data. ODK Colle
 
 ## Registration process
 
-There are three key steps involved in registration using ODK Collect-based Mobile Registration App.
+There are three key steps involved in registration using ODK Collect App.
 
 #### ODK Central Configuration
 
@@ -24,7 +24,7 @@ This step is carried out by a program administrator/manager. To enable the field
 
 #### Field registration
 
-The field registration agent downloads the ODK form using Mobile Registration App. To learn the steps, click [here](../../guides/user-guides/download-form-on-odk-collect.md).
+The field registration agent downloads the ODK form using ODK Collect App. To learn the steps, click [here](../../guides/user-guides/download-form-on-odk-collect.md).
 
 After downloading the app, the agent visits the field and follows these steps for registration:
 

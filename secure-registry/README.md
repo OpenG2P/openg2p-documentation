@@ -40,7 +40,7 @@ During online registrations, the applicants log into the system using their MOSI
 
 #### **Offline mode**
 
-OpenG2P's [Mobile Registration App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without internet connectivity.
+OpenG2P's [ODK Collect App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without internet connectivity.
 
 #### **Secure**
 

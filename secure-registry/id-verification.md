@@ -6,7 +6,7 @@ OpenG2P registration interfaces can be integrated with OIDC clients and ID authe
 
 ## Registrant authentication using MTS
 
-OpenG2P integrates with MOSIP Token Seeder (MTS) using MTS Connector to authenticate registrants registered using Mobile Registration App. The Unique ID Number (UIN) and demographic details provided by registrants are verified by calling APIs of the [MOSIP ID Authentication](https://docs.mosip.io/1.2.0/id-authentication) (IDA) system. The MOSIP IDA responds with an Authentication Token upon successful verification. MTS is a standalone service offered by MOSIP. Learn more about MOSIP integration [here](../integrations/integration-with-mosip.md).
+OpenG2P integrates with MOSIP Token Seeder (MTS) using MTS Connector to authenticate registrants registered using ODK Collect App. The Unique ID Number (UIN) and demographic details provided by registrants are verified by calling APIs of the [MOSIP ID Authentication](https://docs.mosip.io/1.2.0/id-authentication) (IDA) system. The MOSIP IDA responds with an Authentication Token upon successful verification. MTS is a standalone service offered by MOSIP. Learn more about MOSIP integration [here](../integrations/integration-with-mosip.md).
 
 MTS Connectors can take inputs from both ODK Central and OpenG2P registry. Since one MTS Connector takes only one type of input, separate MTS connectors are required for ODK Central and OpenG2P registry. Learn more about OpenG2P registry MTS Connectors [here](../integrations/integration-with-mosip/registry-mts-connector.md).
 
