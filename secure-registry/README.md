@@ -2,9 +2,9 @@
 
 ## Introduction
 
-In the OpenG2P platform, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from applicants while recording and verification are the processes to add the verified information to the [Registry](registry.md). The platform verifies the applicant's details in the background by confirming the identity and demographic details of the applicant digitally.
+In the OpenG2P platform, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from applicants while recording and verification are the processes to add the verified information to the [Registry](registry/). The platform verifies the applicant's details in the background by confirming the identity and demographic details of the applicant digitally.
 
-Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enrol in the program and are referred to as beneficiaries.
+Registration aims to provide detailed records for [Eligibility Assessment](../beneficiary-management/eligibility.md) in the form of a [Registry](registry/). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion set by the program manager, they become eligible to enrol in the program and are referred to as beneficiaries.
 
 A high-level view of the administrator-driven registration in offline mode is given below:&#x20;
 
