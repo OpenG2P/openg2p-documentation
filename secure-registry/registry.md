@@ -48,7 +48,7 @@ In the roadmap of OpenG2P, an enhanced secure registry with the following featur
 7. Complex queries
 8. Anonymous profile
 9. Data encrypted at rest
-10. [Verifiable credentials](../beneficiary-management/verifiable-credentials.md)
+10. [Verifiable credentials](broken-reference)
 11. Evidence
 12. Attestation
 {% endhint %}

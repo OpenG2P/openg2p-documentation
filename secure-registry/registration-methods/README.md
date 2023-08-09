@@ -4,9 +4,11 @@
 
 OpenG2P platform offers registration of persons into programs via the following interfaces:
 
-1. Mobile registration app&#x20;
-2. Self-registration by a potential beneficiary&#x20;
+1. Mobile registration app
+2. Self-registration by a potential beneficiary
 3. API-based registration by other systems
+4. Manual entry
+5. Bulk export from CSV
 
 Agent-assisted registration supports [offline registration](offline-registration.md) in areas where connectivity may be a challenge.
 

@@ -5,13 +5,13 @@
 * Install letsencrypt and certbot.
 
 ```bash
-sudo apt install letsencrypt certbot
+sudo apt install certbot
 ```
 
 * Generate Certificate.
 
 ```bash
-sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *openg2p.sandbox.net -d openg2p.sandbox.net
+sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg2p.sandbox.net -d openg2p.sandbox.net
 ```
 
 * The above command will ask for `_acme-challenge`, since the chosen challenge is of type DNS. Create the `_acme-challenge` TXT DNS record accordingly, and continue with the above prompt to certs generation.
@@ -22,7 +22,7 @@ sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *openg2
 * Run the same generate certs command to renew certs.
 
 ```bash
-sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *openg2p.sandbox.net -d openg2p.sandbox.net
+sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg2p.sandbox.net -d openg2p.sandbox.net
 ```
 
 * The above command will generate new pair of certificates. The DNS challenge needs to be performed again, as prompted.
@@ -34,4 +34,3 @@ kubectl create secret tls tls-openg2p-ingress -n istio-system \
   --cert=/etc/letsencrypt/live/openg2p.sandbox.net-renewed/fullchain.pem \
   --key=/etc/letsencrypt/live/openg2p.sandbox.net-renewed/privkey.pem
 ```
-

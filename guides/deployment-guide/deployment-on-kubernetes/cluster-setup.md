@@ -37,13 +37,13 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
     * Additional Reference: [RKE2 Networking Requirements](https://docs.rke2.io/install/requirements#networking)
 
-<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432:5434</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
 ## K8s setup
 
 * The following setup has to be done for each cluster node.
 * Choose odd number of server nodes. Example if there are 3 nodes, choose 1 server node and two agent nodes. If there are 7 nodes, choose 3 server nodes and 4 agent nodes.
-* Clone the [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment) and go to [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory.
+* Clone the [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment) and go to [kuberenetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/rke2) directory.
 * For the first server node:
   * Configure `rke2-server.conf.primary.template`,
   * SSH into the node. Place the file to this path: `/etc/rancher/rke2/config.yaml`. Create the directory if not present already. `mkdir -p /etc/rancher/rke2` .
@@ -103,7 +103,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 ## Istio setup
 
 * The following setup can be done from the client machine. This install Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
-*   From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory, configure the istio-operator.yaml, and run;
+*   From [kuberenetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, configure the istio-operator.yaml, and run;
 
     ```
     istioctl operator init
@@ -137,7 +137,7 @@ The following guide uses [RKE2](https://docs.rke2.io) to set up the Kubernetes (
 
 ## Adding new nodes
 
-* From [infra](https://github.com/OpenG2P/openg2p-deployment/tree/main/infra) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
+* From [kuberenetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/rke2) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
 * Configure the the config.yaml with relevant values.
 *   Run this to download rke2.
 

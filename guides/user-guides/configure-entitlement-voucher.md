@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides steps to add entitlement vouchers for the beneficiaries. The entitled beneficiaries can use these vouchers to avail of a service.&#x20;
+This guide provides steps to add entitlement vouchers for the beneficiaries. The entitled beneficiaries can use these vouchers to avail of a service.
 
 ## Pre-requisites
 
@@ -18,7 +18,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../.gitbook/assets/all-programs-openg2p.png" alt=""><figcaption></figcaption></figure>
 
-3. Navigate to the _Configuration_ section on Program detailed view page.
+3. Navigate to the _Configuration_ section on the Program detailed view page.
 
 <figure><img src="../../.gitbook/assets/configure-entitlement-voucher-configuration.png" alt=""><figcaption></figcaption></figure>
 
@@ -38,7 +38,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../.gitbook/assets/configure-entitlement-voucher-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
-8. A new dialogue box appears enter the amount per cycle, fill in the necessary details, type the voucher file configuration, and click on _Create and Edit._
+8. A new dialogue box appears, enter the amount per cycle, fill in the necessary details, type the voucher file configuration, and click on _Create and Edit._
 
 <figure><img src="../../.gitbook/assets/configure-entitlement-voucher-manager-create.png" alt=""><figcaption></figcaption></figure>
 

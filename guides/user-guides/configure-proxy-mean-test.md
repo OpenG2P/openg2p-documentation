@@ -1,8 +1,8 @@
-# Configure Proxy Mean Test
+# Configure Proxy Means Test
 
 ## Description
 
-The guide provides steps to enable and configure the proxy mean test.
+The guide provides steps to enable and configure the Proxy Means Test.
 
 ## Pre-requisites
 
@@ -52,7 +52,7 @@ Settings --> Developer Tools --> 'Activate the developer mode'
 
 <figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-11-10.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Technical_ in the setting menu.&#x20;
+2. Click on _Technical_ in the setting menu.
 
 <figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-13-13 (1) (1).png" alt=""><figcaption></figcaption></figure>
 
@@ -72,7 +72,7 @@ Settings --> Developer Tools --> 'Activate the developer mode'
 
 <figure><img src="../../.gitbook/assets/Screenshot from 2023-04-23 22-41-00.png" alt=""><figcaption></figcaption></figure>
 
-6. Add field name, type, label, dependencies field and compute logic.&#x20;
+6. Add field name, type, label, dependencies field and compute logic.
 
 <figure><img src="../../.gitbook/assets/Screenshot from 2023-04-03 15-34-42.png" alt=""><figcaption></figcaption></figure>
 

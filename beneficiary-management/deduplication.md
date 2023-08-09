@@ -42,6 +42,14 @@ The figure below shows two duplicate entries.&#x20;
 
 <figure><img src="../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption></figcaption></figure>
 
+## Deduplicating Individuals
+
+The deduplication manager also supports deduplication for the scenario in which the program administrator or approving authorities approve the [entitlement ](entitlement.md)of a single individual. The demographics of the individual will be deduplicated against that of every enrolled beneficiary.&#x20;
+
+If the program supports multiple entitlements for the same individual, then this deduplication can be skipped. It is assumed that in such a case, there are other mechanisms to ensure that double-dipping is prevented.
+
+Together, these features provide flexibility for program administrators to implement a wide variety of social protection programs.
+
 ## How-To Guides
 
 [Configure ID Types](../guides/user-guides/configure-id-types.md)

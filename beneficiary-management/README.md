@@ -22,7 +22,7 @@ A lot of times, program administrators need to target populations from a specifi
 
 **Deciding the entitlement amount**
 
-Depending upon the beneficiaries' profile, the benefit amount may vary. Determining eligibility and calculating benefits more often than not require different information. For example, a program for child nutrition is likely to provide more benefits to a family with two children than a family with one child.
+Depending upon the beneficiaries' profile, the benefit amount may vary. Determining eligibility and entitlement more often than not require different information. For example, a program for child nutrition may provide more entitlement benefits to a family with two children than a family with one child.
 
 **Monopoly in enrolment and entitlement**
 
@@ -46,27 +46,33 @@ Proxy Means Test is considered the most effective approach to reduce the error o
 
 OpenG2P supports various eligibility filters to enrol potential beneficiaries based on criteria such as age, gender, household size and composition, and location. Program Administrators can use these filters for Categorical Targeting as well.
 
-#### Indicators
+#### Computed fields
 
-Indicators are a powerful tool for abstracting information from a set of fields. Program Administrators can use indicators to take decisions on the appropriate amount of entitlement for each beneficiary.
+Computed fields are a powerful tool for abstracting information from a set of fields. Program Administrators can use these fields to decide the eligibility of each registrant.
+
+#### Document upload and view
+
+Social workers can upload supporting documents for beneficiaries. These documents can be stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the deployment configuration. Program administrators can view these documents from the program view to take decisions about the entitlements.
 
 #### Multi-stage approvals
 
-To reduce monopoly, Program Administrators can configure multiple stages and assign an assessment role for each stage. OpenG2P has successfully run a pilot program for the Philippines in which three program participants - a social worker, a Cader 1 officer, and a Cader 2 officer, independently assess and approve entitlements.&#x20;
+To avoid concentration of power and errors in decision-making abilities, Program Administrators can configure multiple stages and assign an assessment role for each stage. OpenG2P has successfully run a pilot program for the Philippines in which three program participants - one social worker and two officers, independently assess and approve entitlements.&#x20;
 
-#### Disbursement cycles
+#### Program cycles
 
 OpenG2P platform allows the Program Administrators to divide the benefit disbursements into multiple cycles. Multiple cycles can enable the administrators to easily monitor the program for the effectiveness of enrolments and entitlements.
 
 #### Multiple notification channels
 
-OpenG2P supports both SMS-based and email-based notifications for the beneficiaries. In addition, Program Administrators can also send/print Entitlement Vouchers with customized QR codes to establish the authenticity of entitlement.
+OpenG2P supports both SMS-based and email-based notifications for the beneficiaries. In addition, Program Administrators can also send/print Entitlement Vouchers with customized QR codes to establish the authenticity of entitlement. The QR code provides a digital signature that makes the voucher tamper-proof and authenticates/authorizes the registered service provider to provide the service, and the intended beneficiary to claim the service.
 
 #### Monitoring multiple programs in parallel
 
 OpenG2P platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
 
 ## Program management process
+
+The figure below shows a high-level representation of the program management process.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 

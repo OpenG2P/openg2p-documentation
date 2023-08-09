@@ -36,11 +36,11 @@ OpenG2P registration interfaces are key client-facing interfaces. The clients he
 
 #### **Authentic**
 
-The clients log into the system using their MOSIP ID/National ID allowing the information to be verified while it is being recorded. Additionally, logging in using National ID can pre-fill the information fields in an authentic manner.
+During online registrations, the applicants log into the system using their MOSIP ID/National ID and verify themselves. For registrations in offline mode, the registrants are authenticated using their demographic information by an authentication system.
 
 #### **Offline mode**
 
-OpenG2P's [Mobile Registration App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without any internet connectivity.
+OpenG2P's [Mobile Registration App](registration-methods/offline-registration.md) allows social workers and field registration officers to record the applicant's information without internet connectivity.
 
 #### **Secure**
 
@@ -48,11 +48,11 @@ The applicant's information is encrypted at rest and during transit allowing the
 
 #### **Privacy-preserving**
 
-The platform allows for consent forms to be filled out and recorded before starting the intake. The recorded information is not used for any purpose other than the explicitly stated purpose in the consent form.
+The platform allows consent forms to be filled out and recorded before starting the intake. The recorded information is not used for any purpose other than the explicitly stated purpose in the consent form.
 
 #### Customizable intake
 
-The applicant information is filled in using general intake sheets. These intake sheets can be customized per the assessment information required by the program.
+The applicant information is filled in using application forms (sometimes referred to as intake sheets). These application forms can be customized per the assessment information required by the program.
 
 #### Notifications
 
