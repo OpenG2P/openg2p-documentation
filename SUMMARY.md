@@ -32,7 +32,6 @@
   * [Payment Rails](eligibility-and-enrolment/payment-rails.md)
   * [Accounting](eligibility-and-enrolment/accounting.md)
 * [🔐 Privacy & Security](privacy-and-security.md)
-* [💁 Grievance Redressal System](grievance-redressal-system.md)
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
