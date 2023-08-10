@@ -22,9 +22,9 @@ OpenG2P uses the in-built [Qweb Templates](https://www.odoo.com/documentation/16
 
 <figure><img src="../.gitbook/assets/notification-template.png" alt=""><figcaption></figcaption></figure>
 
-## Configuring notification managers
+## Configuring notifications
 
-Sending the notifications requires two steps:
+Configuring the notifications requires two steps:
 
 #### Create a notification manager type
 

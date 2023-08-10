@@ -21,7 +21,7 @@ The program cycle should be created for a program.
 3. Once the payment batch is created, navigate to _Accounting_.
 4. Click on _Payment Batches_ to proceed further with payment.
 
-<figure><img src="../../.gitbook/assets/payment-batches.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/payment-batches (1).png" alt=""><figcaption></figcaption></figure>
 
 5. Click on the payment batch to which payment needs to be done.
 
@@ -34,4 +34,3 @@ The program cycle should be created for a program.
 7. Check the payment status in the payments section of the payment batches detailed view page.
 
 <figure><img src="../../.gitbook/assets/payment-batches-detailed-view-page.png" alt=""><figcaption></figcaption></figure>
-

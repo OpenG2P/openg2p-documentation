@@ -14,7 +14,7 @@ Each entitlement manager has one or more approving authority roles. The approvin
 
 #### Create entitlement manager type
 
-OpenG2P supports two types of entitlement managers: default entitlement managers and voucher entitlement managers. The voucher entitlement manager provides the configuration of an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher/) in addition to the configurations provided by the default entitlement manager. To learn the steps to create the entitlement manager type, click [here](../guides/user-guides/create-entitlement-manager-type.md).
+OpenG2P supports two types of entitlement managers: default entitlement managers and voucher entitlement managers. The voucher entitlement manager provides the configuration of an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) in addition to the configurations provided by the default entitlement manager. To learn the steps to create the entitlement manager type, click [here](../guides/user-guides/create-entitlement-manager-type.md).
 
 #### Configure entitlement manager in a program
 
@@ -34,11 +34,9 @@ The entitlement manager can have one or more stages of approval, and the program
 
 #### Entitlement voucher
 
-OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher/) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.
+OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.
 
-The entitlement manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files.&#x20;
-
-To learn the steps to configure an entitlement voucher, click [here](../guides/user-guides/configure-entitlement-voucher.md).
+The entitlement manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files. To learn the steps to configure an entitlement voucher, click [here](../guides/user-guides/configure-entitlement-voucher.md).
 
 ## Approval process
 

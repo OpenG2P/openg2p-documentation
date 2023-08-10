@@ -1,2 +1,4 @@
-# Payment Types
+# Reimbursement Programs
+
+## Introduction
 
