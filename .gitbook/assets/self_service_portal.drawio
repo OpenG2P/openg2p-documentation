@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-10T12:30:04.256Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="cSI27NOudhf5wGg5LIcp" version="21.6.7" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-10T12:30:33.145Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="B4FxwGg7cUfhNDzi_Sn_" version="21.6.7" type="github">
   <diagram id="DjwuBjzQSKJYnALhCdY3" name="Page-1">
     <mxGraphModel dx="1434" dy="802" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1070" math="0" shadow="0">
       <root>
@@ -64,7 +64,7 @@
         <mxCell id="6dZB4tW-6M1oG2YMDY4f-15" value="Program and Application Management" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="592.5" y="220" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="6dZB4tW-6M1oG2YMDY4f-16" value="Formio renderer" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="6dZB4tW-6M1oG2YMDY4f-16" value="Formio renderer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="592.5" y="670" width="120" height="50" as="geometry" />
         </mxCell>
         <mxCell id="6dZB4tW-6M1oG2YMDY4f-17" value="Oauth Providers" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
