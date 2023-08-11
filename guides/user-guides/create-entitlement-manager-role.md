@@ -1,8 +1,8 @@
-# Create Entitlement Manager Role
+# Create Custom Entitlement Manager Group
 
 ## Description
 
-The guide here provides steps to create a custom entitlement manager group and add the users for this group. Users included in this group get the group's access rights and permissions. The new role should have all the required platform access to approve an entitlement.
+This guide provides steps to create a custom entitlement manager group and add the users to this group. Users included in this group get the group's access rights and permissions.
 
 ## Pre-requisites
 
@@ -26,7 +26,7 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 <figure><img src="../../.gitbook/assets/odoo-create.PNG" alt=""><figcaption></figcaption></figure>
 
-5. Select _Application_ as _Openg2p Module Access_ from the drop-down list and add the _Name._
+5. Select _Application_. In the figure below, _Openg2p Module Access_ was selected from the drop-down list. Add the Name.
 
 <figure><img src="../../.gitbook/assets/group-application.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -46,7 +46,7 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 </div>
 
-8. Select _OpenG2P ModuleAccess / Administrator_ as _Group Name_ in the _Inherited_ tab and click on _Add a Line._ A pop-up window shows a list of groups to select from. A group that inherits from another group simultaneously gets the access rights of that group.
+8. Select _OpenG2P ModuleAccess / Administrator_ as _Group Name_ in the _Inherited_ tab and click on _Add a Line._ A pop-up window shows a list of groups to select from. This group will get the access rights of the _OpenG2P ModuleAccess / Administrator_ group, and the users added to this group will be automatically added to the _OpenG2P ModuleAccess / Administrator_ group.
 
 <div>
 
@@ -88,4 +88,4 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 12. Select the _Record Rules_ tab. This tab allows you to set up certain rules and access rights that can be configured within specific modules.
 13. Optionally select the _Notes_ tab to add any additional notes or remarks about the setup or group's configuration.
-14. Click on _Save._ A new approval group is created.
+14. Click on _Save._ A new entitlement approval group gets created.

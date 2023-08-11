@@ -85,7 +85,7 @@
   * [Create Notification Manager under Program](guides/user-guides/configure-notification-manager.md)
   * [Send Notifications to Individual Registrants](guides/user-guides/send-notifications-to-individual-registrants.md)
   * [Create and Approve Program Cycle](guides/user-guides/create-and-approve-disbursement-cycle.md)
-  * [Create Entitlement Manager Role](guides/user-guides/create-entitlement-manager-role.md)
+  * [Create Custom Entitlement Manager Group](guides/user-guides/create-entitlement-manager-role.md)
   * [Create Entitlement Manager Type](guides/user-guides/create-entitlement-manager-type.md)
   * [Configure Entitlement Manager in Program](guides/user-guides/configure-entitlement-manager-in-program.md)
   * [Configure Entitlement Voucher](guides/user-guides/configure-entitlement-voucher.md)
