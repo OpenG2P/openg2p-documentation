@@ -16,7 +16,7 @@ The beneficiary shows the entitlement voucher to the service provider, who scans
 
 ## Reimbursing Service Provider
 
-After serving the beneficiary, the service provider will raise a reimbursement request. These requests are listed in the [reimbursement programs](./). Program administrators can view these requests, validate them, and issue the payment to the service providers.
+After serving the beneficiary, the service provider will raise a reimbursement request. These requests are listed in the [reimbursement programs](payment-types.md). Program administrators can view these requests, validate them, and issue the payment to the service providers.
 
 ## How-To Guides
 
