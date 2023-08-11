@@ -52,6 +52,10 @@ Once the payment manager is configured, the program administrator navigates to t
 * **Prepare payments:** This step will create the payment batches based on the batch size.&#x20;
 * **Send payments:** This step will send the payments to the beneficiary accounts/wallets. To learn more about these steps, click [here](../guides/user-guides/prepare-and-send-payment.md).
 
+The figure below shows the cycle view with the action buttons to perform the three tasks described above.
+
+<figure><img src="../.gitbook/assets/send-payments.png" alt=""><figcaption></figcaption></figure>
+
 ## How-To Guides:
 
 [Create Payment Manager Types](../guides/user-guides/create-payment-manager-types/)

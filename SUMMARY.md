@@ -24,7 +24,7 @@
   * [Payment Manager](eligibility-and-enrolment/payment-manager.md)
   * [Payment Batches](eligibility-and-enrolment/payment-batches.md)
   * [Reimbursement Programs](eligibility-and-enrolment/payment-types/README.md)
-    * [Reimbursement to Service Provider](eligibility-and-enrolment/payment-types/voucher.md)
+    * [Service Provider Portal](eligibility-and-enrolment/payment-types/voucher.md)
   * [Payment Rails](eligibility-and-enrolment/payment-rails.md)
   * [Accounting](eligibility-and-enrolment/accounting.md)
 * [🔐 Privacy & Security](privacy-and-security.md)
