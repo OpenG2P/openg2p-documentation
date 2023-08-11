@@ -30,7 +30,7 @@ The user is a Program Administrator and has configured multiple stages of entitl
 
 </div>
 
-Note: Only the entitlement manager for the first stage can verify eligibility, enrol, and deduplicate the applicants. (Go to step#6 if you are the entitlement manager for the first stage).
+Note: Only the entitlement manager for the first stage can verify eligibility, enroll, and deduplicate the applicants. Go to the next step only if you are the entitlement manager for the first stage, or else skip the next step.
 
 4. Click on _Verify Eligibility_, _Enroll,_ and _Deduplication_. Once the applicant is enrolled the beneficiary status changes to _Enrolled_.
 
@@ -63,7 +63,7 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 
 <figure><img src="../../.gitbook/assets/entitlement-reject-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
-9. Click on _Create Entitlement_ to view the _Create Entitlement_ page and fill in the required details as described here.
+9. Click on _Create Entitlement_ to fill in the required details as described here.
 
 * _Service Provider:_ Select the service provider from the drop-down list.
 * _Recommended Amount:_ Enter the recommended amount as assessed.
@@ -74,31 +74,24 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 <figure><img src="../../.gitbook/assets/create-entitlement-mutliapproval.PNG" alt=""><figcaption></figcaption></figure>
 
 10. Click on _Create_. The entitlement will be created for the beneficiary.
-
-Note: Only the entitlement manager for the first stage can approve. (the status of entitlement will be changed from draft to pending validation).
-
-11. Click on _Entitlement_, and the entitlement will be in _Draft_ status
-
-<figure><img src="../../.gitbook/assets/entitlement-button-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
-
-12. Click the _Entitlement_, and a pop-up window appears with an _Approve_ _Entitlement_ button.
+11. Click the _Entitlements_, and a pop-up window appears with an _Approve_ _Entitlement_ button. Click on _Approve_ _Entitlement._
 
 <figure><img src="../../.gitbook/assets/draft-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
 
-13. Click on _Approve_ _Entitlement_, and the status will be changed to _Pending Validation._
+12. All the steps above have to be repeated by each entitlement manager configured in the _Approval Settings_ in the _Entitlement Manager_. To learn more about _Approval Settings_, refer to the [Multi-Stage Configuration](multi-stage-configuration.md) guide.&#x20;
 
-Note: Now, the entitlement manager with the second stage of approval approves the entitlement. (The status of entitlement will be changed from pending validation to approved only when the user is a final approver; otherwise,  the status will be pending validation until the final approver approves the entitlement.)
+Note: The status of entitlement is set according to the approval stage.
 
-14. Click on _Entitlement_, and the entitlement will be in _Pending Validation_ status.
+* _Draft:_ After approval from the entitlement manager for the first stage
+
+<figure><img src="../../.gitbook/assets/entitlement-button-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
+
+* _Pending Validation:_ After approval from the entitlement manager for any intermediate stage
 
 <figure><img src="../../.gitbook/assets/pending-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
-15. Click the _Entitlement_, and a pop-up window appears with an _Approve Entitlement_ button.
-
-<figure><img src="../../.gitbook/assets/pending-validation.PNG" alt=""><figcaption></figcaption></figure>
-
-16. Click on _Approve Entitlement_, and the status will be changed to _Approve_.
+* _Approved:_ After approval from the entitlement manager for the final stage
 
 <figure><img src="../../.gitbook/assets/approved-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
 
-**Note**: After final approval as per the payment configuration, the action buttons will be populated (if the voucher is set as part of the entitlement manager, the generate a voucher button will be populated).
+13. After the final approval, the action button _Print Voucher_ will be shown to the entitlement manager at the final stage.
