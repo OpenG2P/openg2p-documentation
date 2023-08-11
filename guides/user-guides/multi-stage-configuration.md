@@ -6,7 +6,7 @@ This guide provides steps to add multiple entitlement managers for the program. 
 
 ## Pre-requisites
 
-The user must have the Program Administrator role and have created an entitlement manager group. Learn more about creating the entitlement manager group [here](create-entitlement-manager-role.md).
+The user has a Program Administrator role and has created an entitlement manager group. Learn more about creating the entitlement manager group [here](create-entitlement-manager-role.md).
 
 ## Steps
 
@@ -39,7 +39,7 @@ The user must have the Program Administrator role and have created an entitlemen
 
 <figure><img src="../../.gitbook/assets/entitlement-validation-dropdown.png" alt=""><figcaption></figcaption></figure>
 
-9. Click on _Add a line._
+9. Click on _Add a line_ in the _Approval Settings_ tab.
 
 <figure><img src="../../.gitbook/assets/entitlement-manager-addline.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -47,7 +47,8 @@ The user must have the Program Administrator role and have created an entitlemen
 
 <figure><img src="../../.gitbook/assets/approval-setting.PNG" alt=""><figcaption></figcaption></figure>
 
-11. The manager gets added to the list of entitlement managers for the program.
-12. Delete the default entitlement manager and click on _Save_.
+11. The entitlement manager gets added to the list of entitlement managers for the program.
+12. Repeat steps from step#4 to step#11 to add one entitlement manager for each stage.
+13. Delete the default entitlement manager and click on _Save_.
 
 <figure><img src="../../.gitbook/assets/entitlement-manager-default.png" alt=""><figcaption></figcaption></figure>
