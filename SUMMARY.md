@@ -107,7 +107,7 @@
   * [Creating Diagrams](guides/documentation-guides/creating-diagrams.md)
   * [OpenG2P Module Doc Template](guides/documentation-guides/openg2p-module-doc-template.md)
   * [Writing Guidelines For How-To Guides](guides/documentation-guides/writing-guidelines-for-how-to-guides.md)
-* [👩💻 👩💻 👩💻 👩💻 👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
+* [👩💻 👩💻 👩💻 👩💻 👩💻 👩💻 👩💻 Developer Zone](guides/developer-guides/README.md)
   * [Getting Started](<guides/developer-guides/getting-started (1).md>)
   * [Installing OpenG2P On Linux](guides/developer-guides/installing-openg2p-on-linux.md)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
