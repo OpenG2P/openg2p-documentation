@@ -1,12 +1,12 @@
-# Create Payment Manager under Program
+# Configure Entitlement Manager in Program
 
 ## Description
 
-This guide provides steps to create and configure the payment manager.
+This guide provides steps to configure the payment manager in a program.
 
 ## Pre-requisites
 
-The user must have the Program Manager role.
+The user must have the Program Administrator role.
 
 ## Steps
 

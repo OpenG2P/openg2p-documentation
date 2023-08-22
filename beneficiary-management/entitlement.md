@@ -18,7 +18,7 @@ OpenG2P supports two types of entitlement managers: default entitlement managers
 
 #### Configure entitlement manager in a program
 
-In this step, the program administrators add the entitlement managers created in the second step to a program. To learn the steps to configure entitlement managers in a program, click [here](../guides/user-guides/configure-entitlement-manager-in-program.md).
+In this step, the program administrators add the entitlement managers created in the second step to a program. To learn the steps to configure entitlement managers in a program, click [here](broken-reference).
 
 ## Entitlement details
 
@@ -58,7 +58,7 @@ To learn the steps for multi-stage approval, click [here](../guides/user-guides/
 
 [Create Entitlement Manager Type](../guides/user-guides/create-entitlement-manager-type.md)&#x20;
 
-[Configure Entitlement Manager in Program](../guides/user-guides/configure-entitlement-manager-in-program.md)
+[Configure Entitlement Manager in Program](broken-reference)
 
 [Configure Entitlement Voucher](../guides/user-guides/configure-entitlement-voucher.md)
 
