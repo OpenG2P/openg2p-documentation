@@ -31,7 +31,7 @@ The user has a Program Administrator role and has created an entitlement manager
 <figure><img src="../../.gitbook/assets/entitlement-manager-pop-up.PNG" alt=""><figcaption></figcaption></figure>
 
 6. Another Pop-up window appears. Select _Default_ from the drop-down.
-7. Navigate to the newly developed box, enter the manager's name, and click on _Create and Edit_.
+7. Enter the manager's name, and click on _Create and Edit_.
 
 <figure><img src="../../.gitbook/assets/entitlement-default.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -39,11 +39,11 @@ The user has a Program Administrator role and has created an entitlement manager
 
 <figure><img src="../../.gitbook/assets/entitlement-validation-dropdown.png" alt=""><figcaption></figcaption></figure>
 
-9. Click on _Add a line_ in the _Approval Settings_ tab.
+9. Click on _Add a line_ in the _Approval Settings_ section.
 
 <figure><img src="../../.gitbook/assets/entitlement-manager-addline.PNG" alt=""><figcaption></figcaption></figure>
 
-10. In the _Approval Settings,_ add the approval.
+10. In the _Approval Settings,_ add the approval. And click on _Save_.
 
 <figure><img src="../../.gitbook/assets/approval-setting.PNG" alt=""><figcaption></figcaption></figure>
 

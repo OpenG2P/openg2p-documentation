@@ -18,7 +18,7 @@ The user must have the Program Manager role.
 
 <figure><img src="../../.gitbook/assets/program-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
-3. Navigate to the _Configuration_ section on Program detailed view page.
+3. Navigate to the _Configuration_ section on the Program detailed view page.
 
 <figure><img src="../../.gitbook/assets/program-detailed-view.png" alt=""><figcaption></figcaption></figure>
 
@@ -38,7 +38,7 @@ The user must have the Program Manager role.
 
 <figure><img src="../../.gitbook/assets/payment-manager-name.png" alt=""><figcaption></figcaption></figure>
 
-8. Provide the details in the payment manager creation manager.&#x20;
+8. Provide the details in the payment manager creation manager.
 
 <figure><img src="../../.gitbook/assets/payment-manager-create.png" alt=""><figcaption></figcaption></figure>
 

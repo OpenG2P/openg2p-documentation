@@ -12,11 +12,11 @@ The user is a Program Administrator and has configured multiple stages of entitl
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/program-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/program-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 2. Click on the desired program.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (2).PNG" alt=""><figcaption></figcaption></figure>
 
 3. Click on the _Beneficiaries_. Clicking will show the list of applicants.
 
@@ -46,15 +46,15 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 
 5. Click on _Prepare Assessment._
 
-<figure><img src="../../.gitbook/assets/enrolled-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/enrolled-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 6. A pop-up window appears. Click on _+ Add Assessment._
 
-<figure><img src="../../.gitbook/assets/add-assesment-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/add-assesment-multi-approval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 7. You can write an assessment in the new pop-up and click _Save_.
 
-<figure><img src="../../.gitbook/assets/assesment-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/assesment-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 8. After creating an assessment, the _Create Entitlement_ and _Reject_ buttons appear. You can make a decision based on the authenticity of the application.
 
@@ -71,7 +71,7 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 * _Valid From:_ Select the date when you want to begin the entitlement.
 * _Valid Until:_ Select the date when you want to end the entitlement.
 
-<figure><img src="../../.gitbook/assets/create-entitlement-mutliapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/create-entitlement-pop-up.PNG" alt=""><figcaption></figcaption></figure>
 
 10. Click on _Create_. The entitlement will be created for the beneficiary.
 11. Click the _Entitlements_, and a pop-up window appears with an _Approve_ _Entitlement_ button. Click on _Approve_ _Entitlement._
@@ -92,6 +92,6 @@ Note: The status of entitlement is set according to the approval stage.
 
 * _Approved:_ After approval from the entitlement manager for the final stage
 
-<figure><img src="../../.gitbook/assets/approved-multiapproval.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/approved-multiapproval (2).PNG" alt=""><figcaption></figcaption></figure>
 
 13. After the final approval, the action button _Print Voucher_ will be shown to the entitlement manager at the final stage.
