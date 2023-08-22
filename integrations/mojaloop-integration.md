@@ -2,7 +2,7 @@
 
 ## Introduction <a href="#introduction" id="introduction"></a>
 
-This page describes the integration of OpenG2P with the [Mojaloop](https://mojaloop.io/) switch enabling cash transfer from one bank (treasury bank, for instance) to an individual's bank account. The connection to Mojaloop is achieved via an intermediate interoperability layer like the [Payment Hub](https://payments.mifos.org/) of Mifos.
+This page describes the integration of OpenG2P with the [Mojaloop](https://mojaloop.io/) switch enabling cash transfer from one bank (treasury bank, for instance) to an individual's bank account. The connection to Mojaloop is achieved via an intermediate interoperability layer implemented by a Payment Hub (PH).
 
 ## Functional architecture
 
@@ -12,7 +12,7 @@ Below is the reference architecture of disbursements triggered from OpenG2P resu
 
 ## Payment process
 
-The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../eligibility-and-enrolment/payment-manager.md). This batch is received by the Payment Hub (PH) and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of the Digital Financial Service Provider (DSFP). DFSP1 takes the transaction forward with Mojaloop Switch.
+The beneficiary list is created on OpenG2P. After creating payment cycles and entitlements, payment batches are created for each cycle. A batch payment is triggered via the [Payment Manager](../eligibility-and-enrolment/payment-manager.md). This batch is received by the interoperability layer implemented by a Payment Hub (PH) and payments are orchestrated either in bulk or individually. The Payment Hub connects to the Mojaloop interface of the Digital Financial Service Provider (DSFP). DFSP1 takes the transaction forward with Mojaloop Switch.
 
 Reconciliation at the OpenG2P end is done via status API calls to Payment Hub which is responsible for gathering payment status information of all transactions from DFSPs and Switch.
 
