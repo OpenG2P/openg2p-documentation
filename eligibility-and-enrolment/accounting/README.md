@@ -1,7 +1,4 @@
-# Accounting
+# Reconciliation
 
 ## Introduction
 
-## Reconciliation
-
-## Reports
