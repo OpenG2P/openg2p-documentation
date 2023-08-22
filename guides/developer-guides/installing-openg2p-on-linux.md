@@ -65,31 +65,43 @@ sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1
 *   Clone the Odoo 15 repository from the official GitHub repository:
 
     ```bash
-    sudo git clone https://github.com/odoo/odoo.git /opt/odoo/odoo15
+    sudo git clone https://github.com/odoo/odoo.git -b 15.0 /opt/odoo/odoo15
     ```
 
 {% hint style="danger" %}
 Cloning the odoo15 repo takes time because of the large file.
 {% endhint %}
 
+*   Make a new Odoo Python virtual environment:
+
+    ```bash
+    cd /opt/odoo
+    python3 -m venv odoo-venv
+    ```
+*   Turn on the virtual environment:
+
+    ```bash
+    source odoo-venv/bin/activate
+    ```
 *   Switch to the Odoo 15 directory and install the required Python libraries:
 
     ```bash
-    sudo chown -R odoo: /opt/odoo/odoo15
+    sudo chown -R <odoo_user>: /opt/odoo/odoo15
     cd /opt/odoo/odoo15
-    sudo pip3 install -r requirements.txt
+    pip3 install wheel
+    pip3 install -r requirements.txt
     ```
 
 #### 7. Configure Odoo
 
-*   Create a configuration file for Odoo:
+*   Edit the configuration file `/opt/odoo/odoo15/debian/odoo.conf` and set the appropriate values for the following parameters:\
 
-    ```bash
-    sudo cp /opt/odoo/odoo15/debian/odoo.conf /etc/odoo15.conf
-    sudo chown odoo: /etc/odoo15.conf
-    sudo chmod 640 /etc/odoo15.conf
+
     ```
-*   Edit the configuration file `/etc/odoo15.conf` and set the appropriate values for the following parameters:
+    sudo nano /opt/odoo/odoo15/debian/odoo.conf
+    ```
+
+
 
     ```
     [options]
@@ -106,7 +118,7 @@ Cloning the odoo15 repo takes time because of the large file.
 *   Start the Odoo server using the following command:
 
     ```bash
-    /opt/odoo/odoo15/odoo-bin -c /etc/odoo15.conf
+    /opt/odoo/odoo15/odoo-bin -c /opt/odoo/odoo15/debian/odoo.conf
     ```
 
 ## Installation of OpenG2P package
@@ -121,7 +133,7 @@ Cloning the odoo15 repo takes time because of the large file.
 
     ```bash
     cd /opt/odoo/custom-addons/<module_directory>
-    sudo pip3 install -r requirements.txt
+    pip3 install -r requirements.txt
     ```
-4. Add addons directory path to the _odoo15.conf_ file
+4. Add addons directory path to the _odoo15.conf_ file.
 
