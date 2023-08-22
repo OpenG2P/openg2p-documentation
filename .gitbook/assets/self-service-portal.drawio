@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-22T17:58:56.856Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="TXQuSBsMeYjD_H8ephx4" version="21.6.8" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-22T17:59:16.932Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="UUouws_OS2fiDXb-EokL" version="21.6.8" type="github">
   <diagram id="DjwuBjzQSKJYnALhCdY3" name="Page-1">
     <mxGraphModel dx="1360" dy="775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1070" math="0" shadow="0">
       <root>
@@ -40,7 +40,7 @@
         <mxCell id="4EAGslu62ZiDNw4BVvQ3-5" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="840" y="160" width="190" height="350" as="geometry" />
         </mxCell>
-        <mxCell id="4EAGslu62ZiDNw4BVvQ3-6" value="OpenG2P Odoo &lt;br&gt;Postgre DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fad9d5;strokeColor=#ae4132;" parent="1" vertex="1">
+        <mxCell id="4EAGslu62ZiDNw4BVvQ3-6" value="OpenG2P Odoo &lt;br style=&quot;font-size: 14px;&quot;&gt;Postgre DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fad9d5;strokeColor=#ae4132;fontStyle=1;fontSize=14;" parent="1" vertex="1">
           <mxGeometry x="85" y="110" width="120" height="160" as="geometry" />
         </mxCell>
         <mxCell id="4EAGslu62ZiDNw4BVvQ3-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;" parent="1" vertex="1">
