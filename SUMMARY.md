@@ -101,7 +101,7 @@
   * [Prepare and Send Payment](guides/user-guides/prepare-and-send-payment.md)
   * [Install SmartScanner App](guides/user-guides/install-smartscanner-app.md)
   * [Submit Reimbursement Using the Service Provider Portal](guides/user-guides/submit-reimbursement-using-the-service-provider-portal.md)
-  * [Reimburse Service Provider](guides/user-guides/reimburse-service-provider.md)
+  * [Reimburse the service provider](guides/user-guides/reimburse-service-provider.md)
   * [Configure Program Manager in Program](guides/user-guides/configure-program-manager-in-program.md)
   * [Configure Entitlement Manager in Program](guides/user-guides/configure-entitlement-manager-in-program.md)
 * [📙 Documentation Guides](guides/documentation-guides/README.md)

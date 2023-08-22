@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides steps for multiple stages of approving a beneficiary's entitlement. Each stage is assigned one entitlement manager to carry out the necessary approvals.  The steps in this guide have to be carried out by each entitlement manager in the order of the stages.&#x20;
+This guide provides steps for multiple stages of approving a beneficiary's entitlement. Each stage is assigned one entitlement manager to carry out the necessary approvals.  The steps in this guide have to be carried out by each entitlement manager in the order of the stages.
 
 ## Pre-requisites
 
@@ -12,9 +12,13 @@ The user is a Program Administrator and has configured multiple stages of entitl
 
 1. Navigate to _Programs_ using the menu bar.
 
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
+
 <figure><img src="../../.gitbook/assets/program-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 2. Click on the desired program.
+
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/all-program-multiapproval (2).PNG" alt=""><figcaption></figcaption></figure>
 
@@ -49,6 +53,8 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 <figure><img src="../../.gitbook/assets/enrolled-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 6. A pop-up window appears. Click on _+ Add Assessment._
+
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/add-assesment-multi-approval (1).PNG" alt=""><figcaption></figcaption></figure>
 
