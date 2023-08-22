@@ -51,6 +51,7 @@
 ## Guides
 
 * [📔 How-To Guides](guides/user-guides/README.md)
+  * [Deduplicate Registrants](guides/user-guides/deduplicate-registrants.md)
   * [Install WireGuard Client on Desktop/Laptop](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
   * [Install WireGuard Client on Android Device](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
   * [Create User and Assign Role](guides/user-guides/assign-roles-to-users.md)
