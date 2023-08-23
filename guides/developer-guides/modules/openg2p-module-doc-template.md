@@ -1,7 +1,3 @@
----
-description: The title should have the exact module name, e.g. g2p_notifications_voucher
----
-
 # G2P Registry: Base
 
 ### Module name

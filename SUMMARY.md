@@ -116,6 +116,7 @@
     * [openg2p-program](guides/developer-guides/github-repositories/openg2p-program.md)
   * [Modules](guides/developer-guides/modules/README.md)
     * [G2P Registry: Base](guides/developer-guides/modules/openg2p-module-doc-template.md)
+    * [G2P Registry: Individual](guides/developer-guides/modules/openg2p-module-doc-template-1.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
   * [Deployment on Kubernetes](guides/deployment-guide/deployment-on-kubernetes/README.md)
     * [K8s Cluster Requirements](guides/deployment-guide/deployment-on-kubernetes/k8s-cluster-requirements.md)
