@@ -16,6 +16,8 @@ The user should have a Program Manager role.
 
 2. Click on _Configuration_.
 
+<figure><img src="../../../.gitbook/assets/payment-manager-conf.png" alt=""><figcaption></figcaption></figure>
+
 <figure><img src="../../../.gitbook/assets/payment-manager-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 3. Navigate to _Cash Payment Managers_ from the drop-down list.
