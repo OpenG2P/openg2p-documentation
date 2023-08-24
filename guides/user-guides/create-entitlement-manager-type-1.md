@@ -1,11 +1,8 @@
-# Create Entitlement Manager Type
+# Configure Entitlement Manager in Program
 
 ## Description
 
-This guide provides steps to create a default entitlement manager type. There are 2 types of entitlement managers available that can be created and configured in a program.
-
-1. Default Entitlement Manager
-2. Voucher Entitlement Manager
+This guide provides steps to configure an entitlement manager in the program.
 
 ## Pre-requisites
 
