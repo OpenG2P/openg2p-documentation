@@ -21,6 +21,7 @@
   * [Entitlement](beneficiary-management/entitlement.md)
   * [Notifications](beneficiary-management/notifications.md)
 * [💵 Payments](eligibility-and-enrolment/README.md)
+  * [Payment Modes](eligibility-and-enrolment/payment-modes.md)
   * [Payment Manager](eligibility-and-enrolment/payment-manager.md)
   * [Payment Batches](eligibility-and-enrolment/payment-batches.md)
   * [Payment Rails](eligibility-and-enrolment/payment-rails.md)

@@ -10,19 +10,19 @@ OpenG2P platform's program management module is built to solve the challenges fa
 
 **Error of exclusion**
 
-The error of exclusion usually happens during registrants' enrollment. For example, a first come first serve approach is easy to monitor and audit, but it may favour registrants with better awareness, approach and access. Furthermore, beneficiaries' income, household size and composition, address, etc. can change over time, but they may not be deemed eligible due to the lack of regular updates.
+The error of exclusion usually happens during registrants' enrollment. For example, a first come first serve approach is easy to monitor and audit, but it may favor registrants with better awareness, approach, and access. Furthermore, beneficiaries' income, household size and composition, address, etc. can change over time, but they may not be deemed eligible due to the lack of regular updates.
 
 **Implementing a progressive approach**
 
-A progressive approach works towards the betterment of beneficiaries in the long term. One example is an unemployment assistance program encompassing training, skill development, and job assistance instead of handing out cash benefits to unemployed registrants. This approach is difficult to implement as multiple programs should be monitored in parallel.
+A progressive approach works towards the betterment of beneficiaries in the long term. One example is an unemployment assistance program encompassing training, skill development, and job assistance instead of handing out cash benefits to unemployed registrants. This approach is challenging to implement as multiple programs should be monitored in parallel.
 
 #### Categorical targeting
 
-A lot of times, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a specific age. Administrators need filtering criteria to glean this information from existing registry records instead of conducting another costly and time-consuming registration drive.
+Often, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a specific age. Administrators need filtering criteria to glean this information from existing registry records instead of conducting another costly and time-consuming registration drive.
 
 **Deciding the entitlement amount**
 
-Depending upon the beneficiaries' profile, the benefit amount may vary. Determining eligibility and entitlement more often than not require different information. For example, a program for child nutrition may provide more entitlement benefits to a family with two children than a family with one child.
+Depending upon the beneficiaries' profile, the benefit amount may vary. Determining eligibility and entitlement more often than not requires different information. For example, a program for child nutrition may provide more entitlement benefits to a family with two children than a family with one child.
 
 **Monopoly in enrolment and entitlement**
 
@@ -34,17 +34,17 @@ Not notifying beneficiaries about their enrolment and entitlement can leave them
 
 ## Program management interface
 
-OpenG2P platform has a backend office application for program administrators/managers. Its program management module offers a rich set of functions to define various beneficiary programs, enrolled beneficiaries based on eligibility, calculate entitlements and disburse benefits to the beneficiaries.&#x20;
+OpenG2P platform has a backend office application for program administrators/managers. Its program management module offers a rich set of functions to define various beneficiary programs, enroll beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries.&#x20;
 
 ## Program management features
 
 #### Proxy Means Test
 
-Proxy Means Test is considered the most effective approach to reduce the error of exclusion arising from bias, preferences, and monopoly of the program participants.&#x20;
+The Proxy Means Test is considered the most effective approach to reduce the error of exclusion arising from bias, preferences, and monopoly of the program participants.&#x20;
 
 #### Eligibility filters
 
-OpenG2P supports various eligibility filters to enrol potential beneficiaries based on criteria such as age, gender, household size and composition, and location. Program Administrators can use these filters for Categorical Targeting as well.
+OpenG2P supports various eligibility filters to enroll potential beneficiaries based on criteria such as age, gender, household size and composition, and location. Program Administrators can use these filters for Categorical Targeting as well.
 
 #### Computed fields
 
@@ -52,7 +52,7 @@ Computed fields are a powerful tool for abstracting information from a set of fi
 
 #### Document upload and view
 
-Social workers can upload supporting documents for beneficiaries. These documents can be stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the deployment configuration. Program administrators can view these documents from the program view to take decisions about the entitlements.
+Social workers can upload supporting documents for beneficiaries. These documents can be stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the deployment configuration. Program administrators can view these documents from the program view to make decisions about the entitlements.
 
 #### Multi-stage approvals
 
@@ -64,18 +64,18 @@ OpenG2P platform allows the Program Administrators to divide the benefit disburs
 
 #### Multiple notification channels
 
-OpenG2P supports both SMS-based and email-based notifications for the beneficiaries. In addition, Program Administrators can also send/print Entitlement Vouchers with customized QR codes to establish the authenticity of entitlement. The QR code provides a digital signature that makes the voucher tamper-proof and authenticates/authorizes the registered service provider to provide the service, and the intended beneficiary to claim the service.
+OpenG2P supports sending notifications using SMS, email, and Fast2SMS for the beneficiaries. These notifications can be customized based on the mode of notification. To learn more, click [here](notifications.md).
 
 #### Monitoring multiple programs in parallel
 
-OpenG2P platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
+OpenG2P platform allows multiple programs to run in parallel. These programs enroll the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
 
 ## Program management process
 
-The figure below shows a high-level representation of the program management process.
+The figure below shows a high-level representation of the enrollment management process.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 
 ## Assistance unit
 
-OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family or any other group to which the program is targeted.&#x20;
+OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family, or any other group to which the program is targeted.&#x20;
