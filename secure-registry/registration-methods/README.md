@@ -10,6 +10,6 @@ OpenG2P platform offers registration of persons into programs via the following 
 4. Manual entry
 5. Bulk export from CSV
 
-ODK Collect App also supports [offline registration](offline-registration.md) in areas where connectivity may be a challenge.
+ODK Collect App also supports [offline registration](offline-registration.md) in remote areas without internet connectivity.
 
 Registration can be done for individuals or groups like families, households, schools, etc.

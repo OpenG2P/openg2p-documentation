@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Self-Service Portal allows an applicant seeking assistance to register from any place and device with internet connectivity. The applicant logs in using a foundational or functional ID and then applies for a program. For self-registration, typically, OTP or QR code is used in addition to a unique ID number for logging in. For assisted registration, typically, the assisting officer uses a biometric device connected to the machine hosting Self-Service Portal for biometric authentication.
+Self-Service Portal allows an applicant seeking assistance to register from any place and device with internet connectivity. The applicant logs in using a foundational or functional ID and then applies for a program. For self-registration, typically, an OTP or QR code is used in addition to a unique ID number for logging in. For assisted registration, typically, the assisting officer uses a biometric device connected to the machine hosting the Self-Service Portal for biometric authentication.
 
 The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
@@ -28,7 +28,7 @@ Applicant's ID verification takes place during the log-in. The applicant also pr
 
 ## OpenID Connect integration
 
-Self-Service Portal allows integration with any OpenID Connect (OIDC) client.  The portal has an existing integration with [e-Signet](https://docs.esignet.io/). Learn more about ID verification using e-Signet [here](../id-verification.md#applicant-authentication-using-e-signet).
+The Self-Service Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [e-Signet](https://docs.esignet.io/). To learn more about ID verification using e-Signet, click [here](../id-verification.md#applicant-authentication-using-e-signet).
 
 ### MOSIP integration
 
