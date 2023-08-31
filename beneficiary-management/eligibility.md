@@ -36,5 +36,5 @@ The image here shows eligibility criteria with two filters.&#x20;
 
 [Create Eligibility Manager Types](../guides/user-guides/create-eligibility-manager-1/)
 
-[Create Eligibility Manager Under Program](../guides/user-guides/create-eligibility-manager-1/)
+[Create an Eligibility Manager Under the Program](../guides/user-guides/create-eligibility-manager-1/)
 

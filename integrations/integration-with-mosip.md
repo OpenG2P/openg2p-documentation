@@ -1,4 +1,4 @@
-# Integration with MOSIP
+# MOSIP Integration
 
 ## Introduction
 
@@ -7,13 +7,8 @@ OpenG2P integrates with MOSIP to verify the UIN/VIDs provided by individuals as 
 There are two ways to obtain the MOSIP tokens:
 
 1. For new registrations that are conducted via ODK form, The MTS Connector is configured to pull data directly from ODK Central and return MOSIP tokens. See [ODK MTS Connector](integration-with-mosip/mts-connector.md).
-2. For already existing records in the registry, the [Registry MTS Connector](integration-with-mosip/registry-mts-connector.md) is used to trigger a connection with MTS and in turn receive MOSIP tokens for all the records requested.
-
-
-
-
+2. For already existing records in the registry, the [Registry MTS Connector](integration-with-mosip/registry-mts-connector.md) is used to trigger a connection with MTS and in turn, receive MOSIP tokens for all the records requested.
 
 ##
 
 ##
-

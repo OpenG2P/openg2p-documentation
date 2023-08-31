@@ -2,7 +2,7 @@
 
 ## Introduction
 
-OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate applicants/registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients and authentication systems such as the National ID database.
+OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate applicants/registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients and authentication systems like the National ID database.
 
 ## Registrant authentication using MTS
 

@@ -12,7 +12,7 @@ The portal allows a service provider to perform the following functions:
 * Apply for reimbursement
 * Track reimbursement status
 
-The beneficiary shows the entitlement voucher to the service provider, who scans the voucher for the authenticity of the voucher, beneficiary details, entitlement amount, validity time of entitlement, and supporting documents using the [SmartScanner App](../../guides/user-guides/install-smartscanner-app.md). To learn the steps for submitting reimbursement using Service Provider Portal, click [here](../../guides/user-guides/submit-reimbursement-using-the-service-provider-portal.md).
+The beneficiary shows the entitlement voucher to the service provider, who scans the voucher for the authenticity of the voucher, beneficiary details, entitlement amount, validity time of entitlement, and supporting documents using the [SmartScanner App](../../guides/user-guides/install-smartscanner-app.md). To learn the steps for submitting reimbursement using the Service Provider Portal, click [here](../../guides/user-guides/submit-reimbursement-using-the-service-provider-portal.md).
 
 ## Reimbursing Service Provider
 

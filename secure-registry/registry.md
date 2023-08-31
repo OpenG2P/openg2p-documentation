@@ -8,7 +8,7 @@ The purpose of the registry is to provide a single source of truth to the progra
 
 ## Identification of records
 
-Identification of records in the registry is done with configured ID types. ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driving license, etc.
+Identification of records in the registry is done with configured ID types. ID can be foundational like MOSIP ID or functional like a voter's card, tax number, driver's license, etc.
 
 ## Individuals and groups
 

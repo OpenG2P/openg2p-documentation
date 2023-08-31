@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Proxy Means Test (PMT) is a method widely used by governments and international organizations to estimate the income or consumption levels of households, particularly those in low and middle-income countries. PMT serves as a valuable tool for targeting social programs and subsidies effectively, ensuring that limited resources are allocated to those who need them the most. PMT is based on the principle that certain household characteristics, known as proxies, correlate with income and standard of living. These proxies may include household composition, housing quality, asset ownership, access to basic services, and other observable characteristics.
+Proxy Means Test (PMT) is a method widely used by governments and international organizations to estimate income or consumption levels of households, particularly those in low and middle-income countries. PMT serves as a valuable tool for targeting social programs and subsidies effectively, ensuring that limited resources are allocated to those who need them the most. PMT is based on the principle that certain household characteristics, known as proxies, correlate with income and standard of living. These proxies may include household composition, housing quality, asset ownership, access to basic services, and other observable characteristics.
 
 ## World Bank Formula
 
@@ -24,21 +24,22 @@ A proxy score is calculated for each household using the formula and indicates t
 
 Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](../guides/user-guides/configure-proxy-mean-test.md).
 
-The platform supports extensive yet easy configurations for calculating proxy scores from these computed fields. The figure below shows the configuration of observable characteristics and corresponding coefficients (weightage).&#x20;
+The platform supports extensive yet easy configurations for calculating proxy scores from these computed fields. The figure below shows the configuration of observable characteristics and corresponding coefficients (weightage).
 
 <figure><img src="../.gitbook/assets/pmt_configuration (1).png" alt=""><figcaption></figcaption></figure>
 
-The WB PMT score is calculated from the weighted sum of these fields. The formula for this configuration is:
+The WB PMT score is calculated from the weighted sum of these fields.&#x20;
 
-```
-PMT Score = x_number_of_children * 10 +
-              x_sqft_of_house * 25 +
-              x_sqft_of_land_owned * 40 +
-              x_access_to_electricity_connection * 10 +
-              x_own_a_vehicle * 15               
-```
+<pre><code><strong>The formula for the configuration in the diagram above is:
+</strong><strong>
+</strong><strong>PMT Score = x_number_of_children * 10 +
+</strong>            x_sqft_of_house * 25 +
+            x_sqft_of_land_owned * 40 +
+            x_access_to_electricity_connection * 10 +
+            x_own_a_vehicle * 15             
+</code></pre>
 
-The PMT score can be used either standalone or in conjunction with other eligibility criteria as shown in the figure below.
+The PMT score can be used either stand alone or in conjunction with other eligibility criteria as shown in the figure below.
 
 <figure><img src="../.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
 

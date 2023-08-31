@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A program may have disbursement done in multiple time cycles with start and end dates for each cycle. Such cycles may be defined and triggered as per the schedule defined in each cycle. Each program should have at least one cycle manager associated with it.&#x20;
+A program may have disbursements done in multiple cycles with different start and end dates for each cycle. Such cycles may be defined and triggered as per the schedule defined in each cycle. Each program should have at least one cycle manager associated with it.&#x20;
 
 <figure><img src="../.gitbook/assets/program-cycles.png" alt=""><figcaption></figcaption></figure>
 

@@ -22,7 +22,7 @@ In this step, the program administrators add the entitlement managers created in
 
 ## Entitlement details
 
-OpenG2P entitlement managers allow program administrators in configuring entitlement details under these broad categories.&#x20;
+OpenG2P entitlement managers allow program administrators to configure entitlement details under these broad categories.&#x20;
 
 #### Entitlement amount
 
@@ -47,8 +47,8 @@ The approval process can be single-stage or multi-stage based on the approval se
 The multi-stage approval typically follows this process:
 
 * The first approving authority inspects and verifies documents, enrols the beneficiary based on eligibility, and adds an assessment.
-* Subsequent approving authorities will skip the process of enrolment. However, they also inspect and verify documents, and add their assessments.
-* The last approving authority completes the approval process and additionally generates an entitlement voucher.
+* Subsequent approving authorities will skip the process of enrolment. However, they also inspect and verify beneficiary documents, and add their assessments.
+* The last approving authority completes the approval process and generates an entitlement voucher.
 
 To learn the steps for multi-stage approval, click [here](../guides/user-guides/multi-stage-approval.md).
 
@@ -58,11 +58,9 @@ To learn the steps for multi-stage approval, click [here](../guides/user-guides/
 
 [Create Entitlement Manager Type](broken-reference)&#x20;
 
-[Configure Entitlement Manager in Program](broken-reference)
+[Configure Entitlement Manager in the Program](broken-reference)
 
 [Configure Entitlement Voucher](broken-reference)
-
-[Multi-Stage Configuration](../guides/user-guides/multi-stage-configuration.md)
 
 [Multi-Stage Approval](../guides/user-guides/multi-stage-approval.md)
 

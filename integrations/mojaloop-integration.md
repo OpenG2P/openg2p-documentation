@@ -24,14 +24,14 @@ If [Account Mapper](https://g2pconnect.global/) is available as part of Digital 
 
 ## Payment Hub <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>
 
-The payment architecture may vary from country to country. An interoperability layer like Payment Hub shields the downstream variations by offering a uniform payments API interface such that systems like OpenG2P do not have to modify the payments code, thus enabling interoperability with any payment system. Of course, customisation needs to be done on the Payment Hub, where a specific Payment Connector needs to be created specifically for the payment systems interface.
+The payment architecture may vary from country to country. An interoperability layer like Payment Hub shields the downstream variations by offering a uniform payments API interface such that systems like OpenG2P do not have to modify the payment code, thus enabling interoperability with any payment system. Of course, customisation needs to be done on the Payment Hub, where a specific Payment Connector needs to be created specifically for the payment systems interface.
 
 <figure><img src="https://payments.mifos.org/wp-content/uploads/sites/20/2022/12/Screenshot-2022-12-27-at-10541-PM-transformed.png" alt=""><figcaption><p>Payment Hub</p></figcaption></figure>
 
 Payment Hub connects to Mojaloop via the Mojaloop Connector.
 
 {% hint style="info" %}
-As part of the roadmap, OpenG2P is working towards supporting payments interfaces being defined as part of the [G2P Connect](https://g2pconnect.global/) initiative.
+As part of the roadmap, OpenG2P is working towards supporting payment interfaces being defined as part of the [G2P Connect](https://g2pconnect.global/) initiative.
 {% endhint %}
 
 ## Payments demo <a href="#proof-of-concept-implementation-demo-1" id="proof-of-concept-implementation-demo-1"></a>

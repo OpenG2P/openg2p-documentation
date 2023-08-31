@@ -12,7 +12,7 @@ Once the eligibility criterion is configured in the program, the program adminis
 
 Upon enrollment, the status of all the eligible beneficiaries changes to enrolled. The status of ineligible beneficiaries changes to not eligible. Program administrators can view the status of both enrolled and non-eligible registrants.
 
-If the registrants have enrolled into the program using Self-Service Portal, then they can track their enrolment status from the portal. Learn more about [Self Service Portal](../secure-registry/registration-methods/self-service-portal.md).
+If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](../secure-registry/registration-methods/self-service-portal.md).
 
 ## Eligibility criteria change
 
@@ -24,4 +24,4 @@ OpenG2P allows the program administrators to change the eligibility criteria aft
 
 ## How-To Guides
 
-[Enrol Registrants into Program](../guides/user-guides/enrol-registrants-into-program.md)
+[Enrol Registrants into the Program](../guides/user-guides/enrol-registrants-into-program.md)

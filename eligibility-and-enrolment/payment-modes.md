@@ -30,7 +30,7 @@ OpenG2P integrates with [GSMA Mobile Money](https://www.gsma.com/mobilefordevelo
 
 ## OpenG2P entitlement vouchers
 
-OpenG2P platform facilitates program administrators to print/send [entitlement vouchers](../beneficiary-management/entitlement.md#entitlement-voucher) with customized QR codes. The QR code provides a digital signature that makes the voucher tamper-proof. The beneficiaries can carry the entitlement voucher physically/digitally to claim the benefits.&#x20;
+OpenG2P platform facilitates program administrators to print/send [entitlement vouchers](../beneficiary-management/entitlement.md#entitlement-voucher) with customized QR codes. The QR code provides a digital signature that makes the voucher tamper-proof and authorizes the intended beneficiary to claim the benefits at the payment service provider facility.
 
 Entitlement vouchers are versatile and can be used to disburse benefits other than cash. These are some of the well-known uses of entitlement vouchers:
 
@@ -38,5 +38,3 @@ Entitlement vouchers are versatile and can be used to disburse benefits other th
 * account/wallet transfer at banks/counters
 * payment guarantee for medical/service assistance
 * In-kind payments at the counters/kiosks
-
-The QR code in the entitlement voucher can also authenticate the intended beneficiary at the payment service provider facility.

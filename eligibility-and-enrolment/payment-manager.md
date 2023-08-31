@@ -22,7 +22,7 @@ This is the default manager created automatically. This is the simplest of all p
 
 #### Payment Interoperability Layer Payment Managers
 
-This payment manager is created for payment through [Mojaloop](../integrations/mojaloop-integration.md). Mojaloop can send payments for a variety of payment modes such as mobile wallets, IBAN, bank account numbers, registrant Id, etc. To learn the steps to create this payment manager, click [here](../guides/user-guides/create-payment-manager-types/create-payment-interoperability-layer-payment-manager.md).
+This payment manager is created for payment through [Mojaloop](../integrations/mojaloop-integration.md). Mojaloop can send payments for a variety of payment modes such as mobile wallets, IBAN, bank account numbers, registrant ID, etc. To learn the steps to create this payment manager, click [here](../guides/user-guides/create-payment-manager-types/create-payment-interoperability-layer-payment-manager.md).
 
 #### Cash Payment Managers
 
@@ -30,7 +30,7 @@ This payment manager is used to record cash payments instead of sending payments
 
 #### File Payment Managers
 
-This payment manager is used mainly to send a list of approved beneficiary entitlements to the bank or a similar disbursing authority. The list is sent in PDF/CSV file. The program administrator can also configure a template and QR code for this file. To learn the steps to configure this payment manager, click [here](../guides/user-guides/create-payment-manager-types/create-file-payment-manager.md).
+This payment manager is used mainly to send a list of approved beneficiary entitlements to the bank or a similar disbursing authority. The list is sent in a PDF/CSV file. The program administrator can also configure a template and QR code for this file. To learn the steps to configure this payment manager, click [here](../guides/user-guides/create-payment-manager-types/create-file-payment-manager.md).
 
 ## Payment manager configuration
 
@@ -66,7 +66,7 @@ The figure below shows the cycle view with the action buttons to perform the thr
 
 [Create Default Payment Manager](../guides/user-guides/create-payment-manager-types/create-default-payment-manager.md)
 
-[Create Cash Payment Manager](../guides/user-guides/create-payment-manager-types/create-cash-payment-manager.md)
+[Create a Cash Payment Manager](../guides/user-guides/create-payment-manager-types/create-cash-payment-manager.md)
 
 [Create File Payment Manager](../guides/user-guides/create-payment-manager-types/create-file-payment-manager.md)
 
