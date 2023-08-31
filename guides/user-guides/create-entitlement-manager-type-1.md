@@ -49,4 +49,4 @@ The user must have the Program Administrator role.
 
 11. In the _Entitlement Manager_ section, an entitlement manager is created.
 
-<figure><img src="../../.gitbook/assets/default-entitlement-manager (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-manager-save.png" alt=""><figcaption></figcaption></figure>

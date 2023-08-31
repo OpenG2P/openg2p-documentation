@@ -29,7 +29,7 @@ The user must have the Program Administrator role.
 5. Enter the details.
 
 * _Name:_ Enter the name of the manager.
-* _Programs:_ Select the program from the drop-down list
+* _Program:_ Select the program from the drop-down list
 * _Amount Per Cycle:_ Enter the amount per cycle.
 * _Amount Per Individual in Group:_ Enter the amount each individual in the group is entitled to.
 * _Currency:_ Enter the currency used for transactions.
