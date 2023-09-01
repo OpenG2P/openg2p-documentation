@@ -34,9 +34,7 @@ Not notifying beneficiaries about their enrolment and entitlement can leave them
 
 ## Program management interface
 
-OpenG2P platform has a backend office application for program administrators/managers. Its program management module offers a rich set of functions to define various beneficiary programs, enrol beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries.&#x20;
-
-## Program management features
+OpenG2P platform has a backend office application for program administrators. Its program management module offers a rich set of functions to define various beneficiary programs, enrol beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries. These are some of the facilities provided by the OpenG2P platform:
 
 #### Proxy Means Test
 

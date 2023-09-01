@@ -1,8 +1,8 @@
-# Create Custom Entitlement Manager Group
+# Create a Custom Group
 
 ## Description
 
-This guide provides steps to create a custom entitlement manager group and add the users to this group. Users included in this group get the group's access rights and permissions.
+This guide provides steps to create a custom group and add the users to this group. Users included in this group get the group's access rights and permissions.
 
 ## Pre-requisites
 
@@ -88,4 +88,4 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 12. Select the _Record Rules_ tab. This tab allows you to set up certain rules and access rights that can be configured within specific modules.
 13. Optionally select the _Notes_ tab to add any additional notes or remarks about the setup or group's configuration.
-14. Click on _Save._ A new entitlement approval group gets created.
+14. Click on _Save._ A new group gets created.

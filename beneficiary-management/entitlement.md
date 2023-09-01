@@ -10,11 +10,11 @@ Entitlement Manager is a software module provided by the OpenG2P platform. The m
 
 #### Configure the entitlement manager role
 
-Each entitlement manager has one or more approving authority roles. The approving authority role is played by a group of users who can approve the entitlements. Hence the approving authority role is configured as a group in the OpenG2P platform. OpenG2P provides a large variety of pre-defined groups. Additionally, program administrators can create custom groups that can be configured from scratch or inherited from pre-defined groups. To learn the steps to configure an approving authority role, click [here](../guides/user-guides/create-entitlement-manager-role.md).
+Each entitlement manager has one or more approving authority roles. The approving authority role is played by a group of users who can approve the entitlements. Hence the approving authority role is configured as a group in the OpenG2P platform. To learn the steps to configure an approving authority role, click [here](../guides/user-guides/create-entitlement-manager-role.md).
 
 #### Create entitlement manager type
 
-OpenG2P supports two types of entitlement managers: default entitlement managers and voucher entitlement managers. The voucher entitlement manager provides the configuration of an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) in addition to the configurations provided by the default entitlement manager. To learn the steps to create the entitlement manager type, click [here](broken-reference).
+OpenG2P supports two types of entitlement managers: default entitlement managers and voucher entitlement managers. The voucher entitlement manager configures an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template in addition to the configurations provided by the default entitlement manager. To learn the steps to create the entitlement manager type, click [here](broken-reference).
 
 #### Configure entitlement manager in a program
 
@@ -34,7 +34,7 @@ The entitlement manager can have one or more stages of approval, and the program
 
 #### Entitlement voucher
 
-OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.
+OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration. To understand the workflow for entitlement vouchers, click [here](../workflows/on-demand-assistance.md).
 
 The entitlement manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files. To learn the steps to configure an entitlement voucher, click [here](broken-reference).
 
@@ -54,7 +54,7 @@ To learn the steps for multi-stage approval, click [here](../guides/user-guides/
 
 ## How-To Guides
 
-[Create Entitlement Manager Role](../guides/user-guides/create-entitlement-manager-role.md)
+[Create a Custom Group](../guides/user-guides/create-entitlement-manager-role.md)
 
 [Create Entitlement Manager Type](broken-reference)&#x20;
 
