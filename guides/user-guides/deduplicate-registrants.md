@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide will help the user to identify the duplicate registrants in the program. And also help to deduplicate the registrants of the program who are enrolled with duplicate IDs.&#x20;
+This guide provides the steps to identify duplicate registrants in the program.  The registrants are deduplicated based on the Deduplication Managers configured in the program.&#x20;
 
 ## Pre-requisites <a href="#pre-requisites" id="pre-requisites"></a>
 
@@ -12,28 +12,24 @@ The user should have a Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/home-page-openg2p (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/home-page-openg2p (8).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on the desired program name.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (5).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (7).PNG" alt=""><figcaption></figcaption></figure>
 
-3. Once you have arrived on the Program Details page, check the _Beneficiaries_ section for the registrants who are in _Draft_ status.
+3. The _Programs_ detail page shows the number of beneficiaries enrolled in the program.
 
-<div>
+<figure><img src="../../.gitbook/assets/deduplication-program-beneficiary (1).png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/deduplication-program-beneficiary.png" alt=""><figcaption></figcaption></figure>
+4. &#x20;Check on the _Beneficiaries_ to view the complete list of registrants including the registrants in _Draft_ status.
 
- 
-
-<figure><img src="../../.gitbook/assets/deduplication-beneficiary-list.PNG" alt=""><figcaption></figcaption></figure>
-
-</div>
+<figure><img src="../../.gitbook/assets/deduplication-beneficiary-list (2).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Navigate back to the program detail view page and click on _Deduplicate._&#x20;
 
-<figure><img src="../../.gitbook/assets/deduplication-deduplicate (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-deduplicate (2).PNG" alt=""><figcaption></figcaption></figure>
 
-5. The applicant with duplicate IDs is marked with _Duplicate_ status.
+5. The registrants with duplicate IDs are marked _Duplicated_ in the status column.
 
-<figure><img src="../../.gitbook/assets/deduplication-list.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-list (2).PNG" alt=""><figcaption></figcaption></figure>
