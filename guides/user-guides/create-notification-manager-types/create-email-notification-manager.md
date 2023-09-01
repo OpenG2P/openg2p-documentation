@@ -29,8 +29,10 @@ The user should have a Program Manager role assigned.
 * _On Enrolled In Program Template_: Select the template from the drop-down for program enrolment notification.
 * _On Cycle Started Template:_ Select the template from the drop-down for the program cycle started notification.
 * _On Cycle Ended Template_: Select the template from the drop-down for the program cycle-ended notification.
-* Select _Send Immediately_ to send the email notification to beneficiaries after the program enrollment, at the start of the cycle, and at the end of a cycle.
+* _On Otp Send Template:_ Select the template from the drop-down for the program to send on Otp notification.
+* _On Generate Voucher Template:_ Select the template from the drop-down for the program to generate voucher notifications.
+* _Send Immediately:_ Check the box to send the email notification to beneficiaries after the program enrollment, at the start of the cycle, and the end of the cycle.
 
-<figure><img src="../../../.gitbook/assets/email-notification-manager-creation-page.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/email-template.PNG" alt=""><figcaption></figcaption></figure>
 
-5. After clicking on the _Save_ button notification will be saved under the email notification manager list view page.
+5. After clicking on the _Save_ button, the notification will be saved under the email notification manager list view page.
