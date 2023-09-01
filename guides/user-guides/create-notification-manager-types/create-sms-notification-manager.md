@@ -29,8 +29,8 @@ The user should have a Program Manager role assigned.
 * _On Enrolled In Program Template_: Select the template from the drop-down for program enrolment notification.
 * _On Cycle Started Template:_ Select the template from the drop-down for the program cycle started notification.
 * _On Cycle Ended Template_: Select the template from the drop-down for the program cycle-ended notification.
-* On Otp Send Template:  Select the template from the drop-down for the program to send on Otp notification.
-* On Generate Voucher Template: Select the template from the drop-down for the program to generate voucher notification.
+* On Otp Send Template: Select the template from the drop-down for the program to send on Otp notification.
+* On Generate Voucher Template: Select the template from the drop-down for the program to generate voucher notifications.
 
 <figure><img src="../../../.gitbook/assets/sms-create-page.PNG" alt=""><figcaption></figcaption></figure>
 
