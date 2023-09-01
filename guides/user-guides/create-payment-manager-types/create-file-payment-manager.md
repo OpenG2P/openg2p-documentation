@@ -2,11 +2,11 @@
 
 ## Description
 
-This guide provides the steps to configure the file payment manager for the program.
+This guide provides the steps to configure the file payment manager.
 
 ## Pre-requisites
 
-The user should have a Program Manager role.
+The user should have a Program Administrator role.
 
 ## Steps
 
@@ -18,33 +18,39 @@ The user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/payment-manager-conf.PNG" alt=""><figcaption></figcaption></figure>
 
-3. Navigate to _File Payment Managers_ from the drop-down list.
+3. Select _File Payment Managers_ from the drop-down list.
 
 <figure><img src="../../../.gitbook/assets/payment-manger-dropdown-fileconf (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Create_.
 
-<figure><img src="../../../.gitbook/assets/file-payment-manager-create (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/file-payment-manager-create (5).PNG" alt=""><figcaption></figcaption></figure>
 
-5. Enter the _Name_, Select the _Programs_ from the drop-down list, check the box if the user wants it to be an _Automatically Created Batch_, and choose _File Document Store_ from the drop-down list.
+5. Enter the details
+
+* _Name:_ Enter the name of the manager.
+* _Program:_ Select the program from the drop-down list
+* _Automatically Created Batch:_ Check the box if the user wants to create automatic batches.
+* Currency: Enter the currency.
+* _File Document Store:_ Select the file from the drop-down list.
 
 <figure><img src="../../../.gitbook/assets/file-payment-file-conf.png" alt=""><figcaption></figcaption></figure>
 
-Note: To avoid creating an automatic batch, follow these steps. Alternatively, if you wish to create an automatic batch, follow the steps beginning at serial number nine.
+Note: To avoid creating an automatic batch, follow these steps. Alternatively, if you wish to create an automatic batch, go to step#9.&#x20;
 
-6. If a user does not check the box, by default, the payment file configuration file appears. Click on _Add a Line._
+6. Click on _Add a Line_ under the _Payment File Configuration._
 
 <figure><img src="../../../.gitbook/assets/file-payment-addline.png" alt=""><figcaption></figcaption></figure>
 
 7. Select the file and click on _Select_.
 
-<figure><img src="../../../.gitbook/assets/payment-file-conf (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-payment-file.PNG" alt=""><figcaption></figcaption></figure>
 
 8. Click on _Save_.
 
 <figure><img src="../../../.gitbook/assets/file-payment-save.PNG" alt=""><figcaption></figcaption></figure>
 
-9. The Batch Tags field appears if the user checks the box _Automatically Create Batch_. Click on _Add a Line_.
+9. If the box _Automatically Create Batch_ was enabled, the _Batch Tags_ field appears. Click on _Add a Line_.
 
 <figure><img src="../../../.gitbook/assets/file-payment-batch-addline.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -56,9 +62,13 @@ Note: To avoid creating an automatic batch, follow these steps. Alternatively, i
 
 <figure><img src="../../../.gitbook/assets/file-payment-file-conf-dropdown.png" alt=""><figcaption></figcaption></figure>
 
-12. Click on _Save_.
+12. Click on _Save and Close_.
 
-<figure><img src="../../../.gitbook/assets/file-payment-save (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/save-close-batch-tags-file-conf.PNG" alt=""><figcaption></figcaption></figure>
+
+13. Click on _Save_.
+
+<figure><img src="../../../.gitbook/assets/file-payment-save (2).PNG" alt=""><figcaption></figcaption></figure>
 
 13. A new file payment manager is created and will be added to the list.
 
