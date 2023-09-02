@@ -91,7 +91,6 @@
   * [Send Notifications to Individual Registrants](guides/user-guides/send-notifications-to-individual-registrants.md)
   * [Configure Program Manager under Program](guides/user-guides/configure-program-manager-in-program.md)
   * [Create and Approve Program Cycle](guides/user-guides/create-and-approve-disbursement-cycle.md)
-  * [Multi-Stage Configuration](guides/user-guides/multi-stage-configuration.md)
   * [Multi-Stage Approval](guides/user-guides/multi-stage-approval.md)
   * [Create Entitlement Voucher Template](guides/user-guides/create-entitlement-voucher-template.md)
   * [Create Entitlement Manager Type](guides/user-guides/create-entitlement-manager-type/README.md)
