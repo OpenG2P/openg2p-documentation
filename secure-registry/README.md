@@ -36,7 +36,7 @@ OpenG2P registration interfaces are key client-facing interfaces. The clients he
 
 #### **Authentic**
 
-During online registrations, the applicants log into the system using their MOSIP ID/National ID and verify themselves. For registrations in offline mode, the registrants are authenticated using their demographic information by an authentication system.
+During online registrations, the applicants log into the system using their MOSIP ID/national ID and verify themselves. For registrations in offline mode, the registrants are authenticated using their demographic information by an authentication system.
 
 #### **Offline mode**
 

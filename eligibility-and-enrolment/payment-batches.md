@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Once the payment manager is configured, program administrators can prepare and send payments using single-click options provided by the OpenG2P platform. The platform also provides details of the payment batches, statistics, and payment details.
+Once the Payment Manager is configured, program administrators can prepare and send payments using single-click options provided by the OpenG2P platform. The platform also provides details of the payment batches, statistics, and payment details.
 
 ## Payment batch details
 

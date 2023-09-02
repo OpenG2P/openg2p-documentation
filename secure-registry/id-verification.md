@@ -2,7 +2,7 @@
 
 ## Introduction
 
-OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate applicants/registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients and authentication systems like the National ID database.
+OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate applicants/registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients and authentication systems like the national ID database.
 
 ## Registrant authentication using MTS
 
@@ -16,7 +16,7 @@ A high-level representation of the interactions between different components dur
 
 ## Applicant authentication using e-Signet&#x20;
 
-OpenG2P's Self-Service Portal can be integrated with an OpenID Connect Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system such as MOSIP or National ID database to authenticate the applicants in the backend.&#x20;
+OpenG2P's Self-Service Portal can be integrated with an OpenID Connect Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system such as MOSIP or national ID database to authenticate the applicants in the backend.&#x20;
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/e9fdceeedd6e483eb45098b9a72f013a331451cf/.gitbook/assets/authentication-using-esignet.png" alt=""><figcaption></figcaption></figure>
 

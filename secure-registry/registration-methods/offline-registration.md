@@ -16,7 +16,7 @@ Registration using the ODK Collect App is a three-step process.
 
 #### ODK Central Configuration
 
-This step is performed by a program administrator/manager. To enable the field registration agent to collect information on the ODK Collect App, the administrator/manager has to do these necessary configurations:
+This step is performed by a program administrator/manager. To enable the field registration agent to collect information on the ODK Collect App, the program administrator/manager has to do these necessary configurations:
 
 * Program creation - To learn the steps, click [here](../../guides/user-guides/create-a-program.md).
 * Create ODK form in ODK Central - To learn the steps, click [here](../../guides/user-guides/create-odk-form.md).

@@ -4,11 +4,11 @@
 
 Many programs disburse cash and other benefits through third parties such as service providers. These providers provide cash at the counter, medical treatments, and other such assistance. After providing services, they submit the bills to the accounting department of the social benefit delivery program.
 
-Before the era of digitalization, the majority of monetary benefits used to be delivered in cash. Now monetary benefits are evolving into digital payments delivered by payment service providers, often into bank or mobile money accounts of the beneficiaries. Digitalization of this process greatly reduced the instances of accounting and reconciliation errors and provided proof of delivery to program administrators and accountants.
+Before the era of digitalization, the majority of monetary benefits used to be delivered in cash. Now monetary benefits are evolving into digital payments delivered by payment service providers, often into bank or mobile money accounts of the beneficiaries. Digitalization of this process greatly reduces the instances of accounting and reconciliation errors and provides proof of delivery to program administrators and accountants.
 
 ## Reimbursement Programs
 
-OpenG2P platform's reimbursement programs provide an easy-to-use interface to program administrators and accountants for managing service provider payments. In terms of payment workflow, the reimbursement programs follow the same process as described in the Program Management [Payment Manager](../) section. Instead of beneficiaries and beneficiary payments, the reimbursement program lists the service providers and reimbursements.
+OpenG2P platform's reimbursement programs provide an easy-to-use interface to program administrators and accountants for managing service provider payments. In terms of payment workflow, the reimbursement programs follow the same process as described in the [Payment Manager](../) section. However, instead of beneficiaries and beneficiary payments, the reimbursement program lists the service providers and reimbursements.
 
 <figure><img src="../../.gitbook/assets/reimbursement-programs (1).png" alt=""><figcaption></figcaption></figure>
 
