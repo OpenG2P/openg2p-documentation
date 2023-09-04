@@ -34,6 +34,32 @@ Data is anonymized while displayed in human-readable form (for example, UI scree
 
 More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the commonly used fields, such as name, age, gender, address, identity, etc., as individual fields. Any additional information is captured as key-value pairs held together in a JSON blob.
 
+## Field name configurations
+
+
+
+#### ID Types
+
+ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once configured, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the [ID Deduplication Manager](../beneficiary-management/deduplication.md#id-deduplication-manager) to select the ID Type for deduplicating registrants.&#x20;
+
+<figure><img src="../.gitbook/assets/id-type (2).PNG" alt=""><figcaption></figcaption></figure>
+
+#### Registrant Tags
+
+Registrant tags are used to define the categories for Individuals and groups such as indigenous, solo parents, minors, unemployed, disabled, mentally challenged, etc. These tags can be used by the Eligibility Manager to enrol registrants for targeted programs.
+
+#### Relationships
+
+Relationship is used to record the relation between registrants such as father and son, mother and daughter, and village head and villagers.
+
+#### Group Types
+
+Group Types define the association among a group of registrants. Some common examples of Group Types are family, household, village, and company.
+
+#### Group Membership Kind
+
+The Group Membership Kind establishes the role of an individual in a group. For example, the individual could be a member or head of the group. This field is especially useful for programs that disburse the benefits to only the head of the group but also record the list of other members in the group.
+
 {% hint style="info" %}
 <mark style="color:purple;">**Next generation registry**</mark>
 
