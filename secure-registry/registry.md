@@ -34,13 +34,13 @@ Data is anonymized while displayed in human-readable form (for example, UI scree
 
 More often than not, program administrators require additional information about the registrants. However, each row in the database can have only a fixed number of fields. To provide customization, the OpenG2P registry captures the commonly used fields, such as name, age, gender, address, identity, etc., as individual fields. Any additional information is captured as key-value pairs held together in a JSON blob.
 
-## Field name configurations
+## Field value configurations
 
-
+OpenG2P platform provides configurations to define values (enumerations) for a field. These fields are related to the registrant's identity and association with other registrants. Once defined, these values are available for selection in a dropdown list for that field. This is the list of currently available configurations:
 
 #### ID Types
 
-ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once configured, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the [ID Deduplication Manager](../beneficiary-management/deduplication.md#id-deduplication-manager) to select the ID Type for deduplicating registrants.&#x20;
+ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once defined, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the [ID Deduplication Manager](../beneficiary-management/deduplication.md#id-deduplication-manager) to select the ID Type for deduplicating registrants.&#x20;
 
 <figure><img src="../.gitbook/assets/id-type (2).PNG" alt=""><figcaption></figcaption></figure>
 
