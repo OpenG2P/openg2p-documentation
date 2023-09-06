@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide will provide the steps to create an SMS notification manager.
+This guide will provide the steps to create an SMS Notification Manager.
 
 ## Pre-requisites
 
@@ -23,6 +23,10 @@ The user should have a Program Administrator role assigned.
 <figure><img src="../../../.gitbook/assets/sms-create (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Enter _Name_ and _Program_ in the _SMS Notification Managers_ view.
+
+
+
+
 
 <figure><img src="../../../.gitbook/assets/sms-template-name-and-program (2).PNG" alt="" width="456"><figcaption></figcaption></figure>
 
