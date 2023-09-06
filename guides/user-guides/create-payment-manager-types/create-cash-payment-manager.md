@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides the steps to configure the cash payment manager.
+This guide provides the steps to configure the Cash Payment Manager.
 
 ## Pre-requisites
 
@@ -26,11 +26,11 @@ The user should have a Program Administrator role.
 
 <figure><img src="../../../.gitbook/assets/cash-payment-create.PNG" alt=""><figcaption></figcaption></figure>
 
-5. Enter the details
+5. Enter the details.
 
 * _Name:_ Name of the manager
 * _Program:_ The program that will use this Payment Manager
-* _Automatically Created Batch:_ The program creates automatic batches when this checkbox is enabled
+* _Automatically Created Batch:_ If enabled, the system creates batches automatically
 * Currency: Currency used for beneficiary payment
 * _File Document Store:_ The type of storage used for the payment file
 * _Payment File Config:_ The name of the payment file
@@ -51,7 +51,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 <figure><img src="../../../.gitbook/assets/voucher-payment-select.png" alt=""><figcaption></figcaption></figure>
 
-8. Click on _Save_ and go to step#13.
+8. Click on _Save_ and go to step#14.
 
 <figure><img src="../../../.gitbook/assets/cash-payment-file-save.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -66,7 +66,7 @@ The payment file is configured based on the state of the _Automatically Created 
 11. A new pop-up window appears. Enter the details.
 
 * _Name_: The name of batch tags
-* _Order_: Order number used for&#x20;
+* _Order_: The order number of this batch during sequential execution of the batches
 * _Domain:_ Filter to add the criteria for this batch
 * _Max Batch Size_: Maximum number of payment entries in the batch
 * _Render per payment instead of batch_: If enabled, the payments are rendered individually instead of in a batch
