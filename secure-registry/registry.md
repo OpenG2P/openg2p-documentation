@@ -50,7 +50,19 @@ Registrant tags are used to define the categories for Individuals and groups suc
 
 #### Relationships
 
-Relationship is used to record the relation between registrants such as father and son, mother and daughter, and village head and villagers.
+Relationship is used to record the relation between registrants such as father and son, mother and daughter, and village head and villagers. Relationships can be established between individuals and groups. Some common examples are:
+
+* Individual<>Individual: Father<>Son, Mother<>Daughter, etc.
+* Individual<>Group: Village head<>Villagers, Social worker<>Group of beneficiaries, etc.
+* Group<>Individual: School<>Principal, Children<>Mother, etc.
+* Group<>Group: Class<>School, Schools<>Districts, etc.
+
+OpenG2P platform provides options for directionality in relationships, i.e. bi-directional or uni-directional based on context. Some examples are:
+
+* The father can authenticate the minor child, but the minor child cannot authenticate the father.
+* A representative from a group of beneficiaries can receive benefits on behalf of a beneficiary, but the beneficiary cannot receive benefits on behalf of the representative.
+
+The exact interpretation of relationships can vary according to the context and environment of the social protection program. OpenG2P provides all the necessary configurations to the Program Administrator to define complex relationships.
 
 #### Group Types
 
