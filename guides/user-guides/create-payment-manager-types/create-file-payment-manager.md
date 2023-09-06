@@ -26,19 +26,24 @@ The user should have a Program Administrator role.
 
 <figure><img src="../../../.gitbook/assets/file-payment-manager-create (5).PNG" alt=""><figcaption></figcaption></figure>
 
-5. Enter the details
+5. Enter the details.
 
-* _Name:_ Enter the name of the manager.
-* _Program:_ Select the program from the drop-down list
-* _Automatically Created Batch:_ Check the box if the user wants to create automatic batches.
-* Currency: Enter the currency.
-* _File Document Store:_ Select the file from the drop-down list.
+* _Name:_ Name of the manager
+* _Program:_ The program that will use this Payment Manager
+* _Automatically Created Batch:_ If enabled, the program creates batches automatically
+* Currency: Currency used for beneficiary payment
+* _File Document Store:_ The type of storage used for the payment file
+* _Payment File Config:_ The name of the payment file
+
+The payment file is configured based on the state of the _Automatically Created Batch_ checkbox:
+
+**Disabled:** Only one payment file is associated with this payment manager and configured using the _Payment File Config_ dropdown. Go to step#6.
+
+**Enabled:** Each batch has one payment file configured as part of the _Batch Tags_ configuration. In this case, the _Batch Tags_ configuration replaces the _Payment File Config_ dropdown. Go to step#9.
 
 <figure><img src="../../../.gitbook/assets/file-payment-file-conf.png" alt=""><figcaption></figcaption></figure>
 
-Note: To avoid creating an automatic batch, follow these steps. Alternatively, if you wish to create an automatic batch, go to step#9.&#x20;
-
-6. Click on _Add a Line_ under the _Payment File Configuration._
+6. Click on _Add a Line_ under the _Payment File Config._
 
 <figure><img src="../../../.gitbook/assets/file-payment-addline.png" alt=""><figcaption></figcaption></figure>
 
@@ -46,11 +51,11 @@ Note: To avoid creating an automatic batch, follow these steps. Alternatively, i
 
 <figure><img src="../../../.gitbook/assets/voucher-payment-file.PNG" alt=""><figcaption></figcaption></figure>
 
-8. Click on _Save_.
+8. Click on _Save_ and go to step#13.
 
 <figure><img src="../../../.gitbook/assets/file-payment-save.PNG" alt=""><figcaption></figcaption></figure>
 
-9. If the box _Automatically Create Batch_ was enabled, the _Batch Tags_ field appears. Click on _Add a Line_.
+9. Click on _Add a Line_ in _Batch Tags_ configuration.
 
 <figure><img src="../../../.gitbook/assets/file-payment-batch-addline.PNG" alt=""><figcaption></figcaption></figure>
 
@@ -58,18 +63,25 @@ Note: To avoid creating an automatic batch, follow these steps. Alternatively, i
 
 <figure><img src="../../../.gitbook/assets/file-payment-popup (2).PNG" alt=""><figcaption></figcaption></figure>
 
-11. A new pop-up window appears. Enter the details and select the configured file from the file drop-down list in the _File Config_ field.
+11. A new pop-up window appears. Enter the details.
 
-<figure><img src="../../../.gitbook/assets/file-payment-file-conf-dropdown.png" alt=""><figcaption></figcaption></figure>
+* _Name_: The name of batch tags
+* _Order_: Order number used for&#x20;
+* _Domain:_ Filter to add the criteria for this batch
+* _Max Batch Size_: Maximum number of payment entries in the batch
+* _Render per payment instead of batch_: If enabled, the payments are rendered individually instead of in a batch
+* _File Config:_ Name of the payment file for this batch
 
-12. Click on _Save and Close_.
+<figure><img src="../../../.gitbook/assets/batch-tags-drop-down (1).PNG" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/save-close-batch-tags-file-conf.PNG" alt=""><figcaption></figcaption></figure>
+12. Click on _Save & Close_.
+
+<figure><img src="../../../.gitbook/assets/batch-tags-template (1).PNG" alt=""><figcaption></figcaption></figure>
 
 13. Click on _Save_.
 
 <figure><img src="../../../.gitbook/assets/file-payment-save (2).PNG" alt=""><figcaption></figcaption></figure>
 
-13. A new file payment manager is created and will be added to the list.
+14. &#x20;A new File Payment Manager is created and added to the list.
 
 <figure><img src="../../../.gitbook/assets/file-payment-result.PNG" alt=""><figcaption></figcaption></figure>
