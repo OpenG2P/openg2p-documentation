@@ -4,6 +4,7 @@
 
 OpenG2P platform's program management is a sequence of processes encompassing program creation to deciding entitlement for the beneficiaries. Digitalization of these processes offers multiple benefits such as ease of administration, agility of operations, and data empowerment to name a few.
 
+{% hint style="info" %}
 ## Program management challenges <a href="#program-management-challenges" id="program-management-challenges"></a>
 
 OpenG2P platform's program management module is built to solve the challenges faced by program administrators in their day-to-day operations. Some of the common challenges are:
@@ -31,6 +32,9 @@ Program enrolment and entitlement decisions can be monopolized by a single entit
 #### Timely notifications
 
 Not notifying beneficiaries about their enrolment and entitlement can leave them confused, and undermines credibility and transparency. This step is often neglected in administrative-driven systems.
+{% endhint %}
+
+## &#x20;<a href="#program-management-challenges" id="program-management-challenges"></a>
 
 ## Program management interface
 
