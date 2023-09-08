@@ -27,7 +27,7 @@ OpenG2P provides a large variety of pre-defined groups (roles). These are the co
 * **Document Write, Document Read, Document Admin:** Registrants' documents, payment files, entitlement vouchers, etc. are stored in the storage configured by the administrators. To preserve privacy and enforce authorized viewing, these documents can only be accessed by authorized users who are part of these groups.
 * **Rest API POST, Rest API GET:** The OpenG2P platform provides access to REST APIs for various functionalities. However, access to these APIs is restricted to only authorized users who are part of these groups.
 
-Click [here](https://docs.google.com/spreadsheets/d/11sthec6Judcpcdoezkt4pliSt9fv-qcP/edit#gid=459521458) To get the complete list of OpenG2P pre-configured groups and their access permissions.
+Click [here](https://docs.google.com/spreadsheets/d/1hHhOzriP6-HBcQ9kGUZt7itEzqoHa8Yt/edit?usp=sharing\&ouid=105415667366253313455\&rtpof=true\&sd=true) To get the complete list of OpenG2P pre-configured groups and their access permissions.
 
 ### OpenG2P access rights
 
