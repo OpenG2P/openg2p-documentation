@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Program administrators must consider several factors before deciding on the payment mode. Some of these considerations are:
+Payment mode is the way in which the benefits are paid to the beneficiaries. Program administrators must consider several factors before deciding on the payment mode. Some of these considerations are:
 
-* How will the beneficiary authenticate themselves for receiving benefits?
 * Do the beneficiaries have to travel a long distance or stand in long queues to get the benefits?
-* Do the beneficiaries have a choice in spending the cash benefits for purchasing groceries and daily provisions at local stores?
-* What is the form of the benefit - medical assistance, job assistance, in-kind relief, nutritional supplements, etc.?
-* What are the safety and security facilities at the benefit payout location?
+* Do the beneficiaries have a choice in how they want to receive the benefit, i.e. cash, account, or mobile wallet?
+* Can the beneficiaries use the pre-loaded cash cards to purchase groceries and daily provisions at local stores or keep the cash for later use?
+* How will the beneficiary authenticate themselves for receiving benefits?
+* What are the safety and security facilities at the benefits payout location where beneficiaries receive in-hand cash?
 
 Most of these challenges can be easily solved by transferring payments digitally to the beneficiary bank accounts and mobile wallets. OpenG2P platform supports a variety of digital payments along with beneficiary authentication mechanisms to enable speedy, safe, and secure disbursements.
 
