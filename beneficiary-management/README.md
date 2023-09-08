@@ -34,11 +34,15 @@ Program enrolment and entitlement decisions can be monopolized by a single entit
 Not notifying beneficiaries about their enrolment and entitlement can leave them confused, and undermines credibility and transparency. This step is often neglected in administrative-driven systems.
 {% endhint %}
 
-## &#x20;<a href="#program-management-challenges" id="program-management-challenges"></a>
+### Program management process
 
-## Program management interface
+The figure below shows a high-level representation of the enrollment management process.
 
-OpenG2P platform has a backend office application for program administrators. Its program management module offers a rich set of functions to define various beneficiary programs, enrol beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries. These are some of the facilities provided by the OpenG2P platform:
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
+
+### OpenG2P program management features
+
+OpenG2P platform has a backend office application for program administrators. Its program management module offers a rich set of functions to define various beneficiary programs, enrol beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries. These are some of the features provided by the OpenG2P platform:
 
 #### Proxy Means Test
 
@@ -71,13 +75,3 @@ OpenG2P can send SMS, email, and Fast2SMS notifications to the beneficiaries. Th
 #### Monitoring multiple programs in parallel
 
 OpenG2P platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
-
-## Program management process
-
-The figure below shows a high-level representation of the enrollment management process.
-
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
-
-## Assistance unit
-
-OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family, or any other group to which the program is targeted.&#x20;

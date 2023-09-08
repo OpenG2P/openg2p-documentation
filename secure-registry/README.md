@@ -2,7 +2,9 @@
 
 ## Introduction
 
-In the OpenG2P platform, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from applicants while recording and verification are the processes to add the information of authenticated applicants to the [Registry](registry.md). The platform verifies the applicant's identity by checking the demographic details of the applicant in the background.
+According to the World Bank, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from registrants while recording is adding this information to the [Registry](registry.md). Verification is the process of authenticating those registrants whose information has been recorded.&#x20;
+
+In the OpenG2P platform, intake is carried out via offline/online forms, and recording via form submission. Verification (authentication) of registrants can be done prior to intake or after recording depending on the mode of registration (online/offline).
 
 Registration aims to collect detailed records in the [Registry](registry.md) for [Eligibility Assessment](../beneficiary-management/eligibility.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion, they become eligible to enrol in the program and are referred to as beneficiaries.
 
@@ -10,6 +12,7 @@ A high-level view of the administrator-driven registration in offline mode is gi
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/00d70c2522faff12a735f69918503f2aa1485c78/.gitbook/assets/registration-flow.png" alt=""><figcaption></figcaption></figure>
 
+{% hint style="info" %}
 ## Registration approaches
 
 Registration can be carried out via multiple channels such as digital service windows/kiosks, social workers, local registration offices, door-to-door visits, referrals from other programs, etc. The registration approach can be either on-demand or administrative-driven. Three key features distinguish between these two approaches:
@@ -25,10 +28,11 @@ Whether applicants registered themselves individually (on-demand) or registered 
 #### **Continuous vs. time-bound**
 
 Whether applicants could register at the time of their choosing (on-demand) or had to apply in a specific time window (administrator-driven)
+{% endhint %}
 
 ## Registration interfaces
 
-While on-demand and administrative-driven approaches are distinct models, the registration process operates in a spectrum between these two models. For example, a program may allow the applicants to register individually (on-demand) but only in a specific time window (administrative-driven). OpenG2P platform has a flexible implementation and caters to varied approaches across different registration modalities and programs through its various [Registration Interfaces](registration-methods/).
+While on-demand and administrative-driven approaches are distinct models described by the World Bank, the registration process operates in a spectrum between these two models. For example, a program may allow the applicants to register individually (on-demand) but only in a specific time window (administrative-driven). OpenG2P platform has a flexible implementation and caters to varied approaches across different registration modalities and programs through its various [Registration Interfaces](registration-methods/).
 
 ## Registration features
 
@@ -57,6 +61,10 @@ The applicant information is filled in using application forms (intake sheets). 
 #### Notifications
 
 The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via email and SMS.
+
+## Assistance unit
+
+OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family, or any other group to which the program is targeted.&#x20;
 
 ## FAQs
 
