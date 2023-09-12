@@ -35,6 +35,7 @@
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
   * [Immediate Individual Assistance On-Demand](workflows/on-demand-assistance.md)
+  * [Service Provider Reimbursement](workflows/service-provider-reimbursement.md)
 * [🔗 Integrations](integrations/README.md)
   * [Mojaloop Integration](integrations/mojaloop-integration.md)
   * [MOSIP Integration](integrations/integration-with-mosip.md)
