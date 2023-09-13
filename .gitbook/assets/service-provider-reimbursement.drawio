@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-09-13T15:33:40.822Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="xvVONSuegPQPehkCIr0t" version="21.7.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-09-13T15:34:43.658Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="sAD5INbdQUHboCmiKz_A" version="21.7.4" type="github">
   <diagram name="Page-1" id="q62bRp7j73unvZBwmudN">
     <mxGraphModel dx="880" dy="1546" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -109,14 +109,14 @@
         <mxCell id="oAgQb-vEMm98gggxlKGn-29" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
           <mxGeometry x="550" y="36" width="60" height="30" as="geometry" />
         </mxCell>
+        <mxCell id="oAgQb-vEMm98gggxlKGn-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="oAgQb-vEMm98gggxlKGn-1" source="oAgQb-vEMm98gggxlKGn-30" target="oAgQb-vEMm98gggxlKGn-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-30" value="Login into Service Provider Portal" style="ellipse;whiteSpace=wrap;html=1;container=0;fillColor=#dae8fc;strokeColor=#000000;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-1">
           <mxGeometry x="60" y="23" width="74" height="74" as="geometry" />
         </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-31" value="Scan QR code in entitlement voucher" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;container=0;fillColor=#dae8fc;strokeColor=#000000;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-1">
           <mxGeometry x="180" y="30" width="80" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="oAgQb-vEMm98gggxlKGn-32" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" edge="1" parent="oAgQb-vEMm98gggxlKGn-1" source="oAgQb-vEMm98gggxlKGn-30" target="oAgQb-vEMm98gggxlKGn-31">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-33" value="Receive payment" style="ellipse;whiteSpace=wrap;html=1;container=0;fillColor=#dae8fc;strokeColor=#000000;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-1">
           <mxGeometry x="712" y="25" width="70" height="70" as="geometry" />
