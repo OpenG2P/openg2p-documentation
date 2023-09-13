@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-09-12T15:22:34.862Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="ymF_a-qUZ_gLsZ6ygQ2t" version="21.7.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-09-13T11:10:13.073Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="xOYrFoHjODMJQwuEN-7g" version="21.7.4" type="github">
   <diagram name="Page-1" id="q62bRp7j73unvZBwmudN">
     <mxGraphModel dx="880" dy="1546" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -81,8 +81,8 @@
         <mxCell id="oAgQb-vEMm98gggxlKGn-21" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-16">
           <mxGeometry x="550" y="37" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="oAgQb-vEMm98gggxlKGn-22" value="Prepare payments" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#CCFFCC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-16">
-          <mxGeometry x="610" y="30" width="80" height="60" as="geometry" />
+        <mxCell id="oAgQb-vEMm98gggxlKGn-22" value="Prepare accounts payable file and embed QR code" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#CCFFCC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-16">
+          <mxGeometry x="610" y="30" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-23" value="Payment Switch" style="swimlane;html=1;startSize=20;horizontal=0;fillColor=#F8CECC;swimlaneFillColor=#FFFFFF;strokeColor=#808080;container=0;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-1">
           <mxGeometry x="20" y="480" width="800" height="120" as="geometry" />
@@ -95,7 +95,7 @@
             <mxPoint x="330" y="60" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oAgQb-vEMm98gggxlKGn-26" value="Receive digitally signed accounts payable CSV" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#F8CECC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
+        <mxCell id="oAgQb-vEMm98gggxlKGn-26" value="Receive accounts payable CSV" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#F8CECC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
           <mxGeometry x="180" y="30" width="89" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="oAgQb-vEMm98gggxlKGn-23" source="oAgQb-vEMm98gggxlKGn-28">
@@ -103,7 +103,7 @@
             <mxPoint x="480" y="60" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oAgQb-vEMm98gggxlKGn-28" value="Verify digital signature and transfer details" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#F8CECC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
+        <mxCell id="oAgQb-vEMm98gggxlKGn-28" value="Verify digital signature from the QR code" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#000000;align=center;container=0;fillColor=#F8CECC;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
           <mxGeometry x="330" y="30" width="84" height="60" as="geometry" />
         </mxCell>
         <mxCell id="oAgQb-vEMm98gggxlKGn-29" value="Yes" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" vertex="1" parent="oAgQb-vEMm98gggxlKGn-23">
@@ -145,7 +145,7 @@
         <mxCell id="oAgQb-vEMm98gggxlKGn-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="oAgQb-vEMm98gggxlKGn-1" source="oAgQb-vEMm98gggxlKGn-22" target="oAgQb-vEMm98gggxlKGn-26">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="670" y="490" />
+              <mxPoint x="680" y="490" />
               <mxPoint x="245" y="490" />
             </Array>
           </mxGeometry>
