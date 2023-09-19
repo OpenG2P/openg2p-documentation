@@ -20,9 +20,9 @@ Cash benefits can be disbursed through various means in the OpenG2P platform:
 
 While the OpenG2P platform supports accounting and payment status updates for this method of disbursement, it is not recommended due to the manual intervention required in the process.
 
-#### Payment using smart cards
+#### Payment using prepaid cards
 
-The program's payment system (outside the purview of OpenG2P) loads a smart card usable at ATMs, stores, point of sale (POS) kiosks, etc. OpenG2P supports accounting and payment status updates for this type of payment.
+The program's payment system (outside the purview of OpenG2P) loads a prepaid card usable at ATMs, stores, point of sale (POS) kiosks, etc. OpenG2P supports accounting and payment status updates for this type of payment.
 
 #### Cash disbursement in account through direct account transfer
 

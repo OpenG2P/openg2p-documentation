@@ -24,6 +24,7 @@
   * [Payment Modes](eligibility-and-enrolment/payment-modes.md)
   * [Payment Manager](eligibility-and-enrolment/payment-manager.md)
   * [Payment Batches](eligibility-and-enrolment/payment-batches.md)
+  * [ID Account Mapper](eligibility-and-enrolment/id-account-mapper.md)
   * [Payment Rails](eligibility-and-enrolment/payment-rails.md)
   * [Reimbursements](eligibility-and-enrolment/payment-types/README.md)
     * [Service Provider Portal](eligibility-and-enrolment/payment-types/voucher.md)
