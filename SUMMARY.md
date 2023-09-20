@@ -27,6 +27,7 @@
 
 ## Testing
 
+* [Automation Framework](testing/automation-framework.md)
 * [Testing](testing/testing.md)
 
 ***
