@@ -31,7 +31,6 @@
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [System Administration](system-administration/README.md)
   * [Role-Based Access Control](system-administration/role-based-access-control.md)
-  * [Developer Mode](system-administration/developer-mode.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
   * [Immediate Individual Assistance On-Demand](workflows/on-demand-assistance.md)
