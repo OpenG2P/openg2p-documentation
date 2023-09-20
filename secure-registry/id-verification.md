@@ -2,20 +2,20 @@
 
 ## Introduction
 
-OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate applicants/registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients and authentication systems like the national ID database.
+OpenG2P registration interfaces can be integrated with OIDC clients and ID authentication systems to authenticate registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients of authentication systems for foundational/functional ID.
 
 ### Registrant authentication using OpenID Connect
 
-OpenG2P's Self-Service Portal can be integrated with an OpenID Connect Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system such as MOSIP or national ID database to authenticate the applicants in the backend.&#x20;
+OpenG2P's Self-Service Portal can be integrated with an OpenID Connect Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system of any foundational or functional ID database to authenticate the registrants in the backend.&#x20;
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/e9fdceeedd6e483eb45098b9a72f013a331451cf/.gitbook/assets/authentication-using-esignet.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/authentication-using-esignet.drawio.png" alt=""><figcaption></figcaption></figure>
 
 A few key points to note in this process are:
 
 * The challenge could be OTP, biometric, or QR code.
-* The applicant shares the UIN, challenge, and consent via the authentication client.
+* The registrant shares the UIN, challenge, and consent via the authentication client.
 * The Self-Service Portal must get an Authorization Code before requesting the Access Token.
-* The Self-Service Portal gets access to the applicant's details after it receives the Access Token from the authentication system.
+* The Self-Service Portal gets access to the registrant's details after it receives the Access Token from the authentication system.
 * &#x20;UIN, challenge, and consent are shared in separate transactions. To view the e-Signet authentication process in detail, click [here](../integrations/integration-with-mosip/integration-with-e-signet.md).
 
 ### Registrant authentication using ID Authentication

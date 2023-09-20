@@ -11,7 +11,6 @@
     * [Bulk Export From CSV](secure-registry/registration-methods/bulk-export-from-csv.md)
   * [ID Verification](secure-registry/id-verification.md)
   * [Registry](secure-registry/registry.md)
-    * [Privacy in Registry](secure-registry/registry/privacy-in-registry.md)
 * [🅿 Program Management](beneficiary-management/README.md)
   * [Eligibility Assessment](beneficiary-management/eligibility.md)
   * [Proxy Means Test](beneficiary-management/proxy-means-test.md)

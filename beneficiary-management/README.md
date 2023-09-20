@@ -34,44 +34,60 @@ Program enrolment and entitlement decisions can be monopolized by a single entit
 Not notifying beneficiaries about their enrolment and entitlement can leave them confused, and undermines credibility and transparency. This step is often neglected in administrative-driven systems.
 {% endhint %}
 
-### Program management process
+## OpenG2P program management interface
+
+OpenG2P platform has a backend office application for program administrators. The platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Its program management module offers a rich set of functions for enrolment, eligibility criteria, program cycles, entitlement, and notifications.
+
+## OpenG2P program management process
 
 The figure below shows a high-level representation of the enrollment management process.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 
-### OpenG2P program management features
+### Eligibility criteria
 
-OpenG2P platform has a backend office application for program administrators. Its program management module offers a rich set of functions to define various beneficiary programs, enrol beneficiaries based on eligibility, calculate entitlements, and disburse benefits to the beneficiaries. These are some of the features provided by the OpenG2P platform:
+Program administrators configure eligibility criteria to enrol the eligible registrants in the program. OpenG2P Eligibility Managers provide these functions:
+
+#### Domain filters
+
+OpenG2P supports a variety of domain filters to set criteria for age, gender, household size, composition, and location. Program administrators can use these filters to define eligibility criteria.
 
 #### Proxy Means Test
 
-The Proxy Means Test is considered the most effective approach to reduce the error of exclusion arising from bias, preferences, and monopoly of the program participants.&#x20;
-
-#### Eligibility filters
-
-OpenG2P supports various eligibility filters to enrol potential beneficiaries based on criteria such as age, gender, household size and composition, and location. Program Administrators can use these filters for Categorical Targeting as well.
+The Proxy Means Test (PMT) is considered the most effective approach to reduce the error of exclusion. PMT is available as a separate plug-in in the OpenG2P platform. Using this plug-in, Program administrators can configure the regression analysis formula.
 
 #### Computed fields
 
-Computed fields are a powerful tool for abstracting information from a set of fields. Program Administrators can use these fields to decide the eligibility of each registrant.
+Computed fields are a powerful tool for abstracting information from a set of fields. Program administrators can use these fields in PMT and domain filters to configure complex eligibility criteria.
 
-#### Document upload and view
+### Deduplication criteria
 
-The supporting documents uploaded by the social workers are stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the system configuration. Program administrators can later view these documents from the program view for assessment and verification.
+The OpenG2P registry allows [multiple entries](../secure-registry/registry.md#multiple-entries) for the same registrant. Hence once the registrants are enrolled in the program as beneficiaries, they should be deduplicated. OpenG2P Deduplication Managers can deduplicate the beneficiaries based on foundational/functional IDs, and phone numbers.
+
+### Program cycles
+
+Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles. Using OpenG2P Program Manager and Cycle Manager, the program administrators can create multiple cycles and disburse benefits.
+
+### Entitlements
+
+Program administrators can use OpenG2P Entitlement Manager to configure all the aspects related to beneficiary entitlement. OpenG2P Entitlement Manager provides these configurations:
+
+#### Entitlement amount
+
+Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.&#x20;
+
+#### Entitlement vouchers
+
+An entitlement voucher authorises the intended beneficiary to claim the benefits at the service provider facility. The voucher has customized QR codes embedded. The QR code provides a digital signature that makes the voucher tamper-proof and establishes the authenticity of the voucher.
 
 #### Multi-stage approvals
 
-To avoid concentration of power and errors in decision-making abilities, Program Administrators can configure multiple stages and assign an assessment role for each stage. OpenG2P has successfully run a pilot program for the Philippines in which three program participants - one social worker and two officers, independently assess and approve entitlements.&#x20;
+To avoid concentration of power and errors in deciding the entitlement amount, Program administrators can configure multiple stages and assign a role for each stage.
 
-#### Program cycles
+### Notifications
 
-OpenG2P platform allows the Program Administrators to divide the benefit disbursements into multiple cycles. Multiple cycles can enable the administrators to easily monitor the program for the effectiveness of enrolments and entitlements.
+The beneficiaries can be notified (not shown in the diagram above) when they are entitled to benefits. OpenG2P platform provides Notification Managers that can be configured to send SMS, email, and Fast2SMS notifications to the beneficiaries. These notifications can be customized using templates. To learn more, click [here](notifications.md).
 
-#### Multiple notification channels
+### Document upload and view
 
-OpenG2P can send SMS, email, and Fast2SMS notifications to the beneficiaries. These notifications can be customized based on the mode of notification. To learn more, click [here](notifications.md).
-
-#### Monitoring multiple programs in parallel
-
-OpenG2P platform allows multiple programs to run in parallel. These programs enrol the registrants from the same registry database. Program administrators can use the [integrated reporting framework](../monitoring-and-reporting.md) to generate reports on registrants, beneficiaries, disbursements, and beneficiary categories, to name a few.
+The supporting documents uploaded by the social workers are stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the system configuration. Program administrators can later view these documents from the program view for assessment and verification.

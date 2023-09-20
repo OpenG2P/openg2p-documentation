@@ -38,9 +38,9 @@ While on-demand and administrative-driven approaches are distinct models describ
 
 OpenG2P registration interfaces are key client-facing interfaces. The clients here could be the applicants, social workers, program administrators, program managers, etc. These are the main features offered by these interfaces:
 
-#### **Authentic**
+#### **Authentication**
 
-During online registrations, the applicants log into the system using their MOSIP ID/national ID and verify themselves. For registrations in offline mode, the registrants are authenticated using their demographic information by an authentication system.
+During online registrations, the registrants log into the system using their MOSIP ID/national ID and verify themselves. For registrations in offline mode, the registrants are authenticated using their identity number and demographic information by an ID authentication system.
 
 #### **Offline mode**
 
@@ -48,7 +48,7 @@ OpenG2P's [ODK Collect App](registration-methods/offline-registration.md) allows
 
 #### **Secure**
 
-The applicant's information is encrypted at rest and during transit to secure the demographic information against malicious attacks.
+The registrant's information is encrypted at rest and during transit to secure the demographic information against malicious attacks.
 
 #### **Privacy-preserving**
 
@@ -58,11 +58,7 @@ The platform allows consent forms to be filled out and recorded before starting 
 
 The applicant information is filled in using application forms (intake sheets). These application forms can be customized per the assessment information required by the program.
 
-#### Notifications
-
-The platform can be configured to send [Notifications](../beneficiary-management/notifications.md) to the applicants via email and SMS.
-
-## Assistance unit
+## Assistance unit - group/individual
 
 OpenG2P defines an assistance unit as an **individual** or a **group**. A group may be a household, family, or any other group to which the program is targeted.&#x20;
 
