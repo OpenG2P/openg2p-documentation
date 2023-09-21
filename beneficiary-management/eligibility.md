@@ -10,31 +10,31 @@ In OpenG2P, Eligibility Manager is a separate software module for configuring el
 
 ## Configuring eligibility criteria in a program
 
-In the OpenG2P program, configuring eligibility criteria is a two-step process. Program administrators need to first create eligibility manager(s) based on type. In the second step, these eligibility managers are added to the program.
+In the OpenG2P program, configuring eligibility criteria is a two-step process. Program administrators need to first create Eligibility Manager(s) based on type. In the second step, these Eligibility Managers are added to the program.
 
-#### Creating eligibility manager type
+#### Creating Eligibility Manager type
 
-OpenG2P supports three types of eligibility managers.&#x20;
+OpenG2P supports three types of Eligibility Managers.&#x20;
 
-1. Default eligibility manager
-2. ID document eligibility manager
-3. Phone number eligibility manager
+1. Default Eligibility Manager
+2. ID document Eligibility Manager
+3. Phone number Eligibility Manager
 
-One eligibility manager can be associated with only one program. To learn the steps to create an eligibility manager, click [here](../guides/user-guides/create-eligibility-manager-1/).
+One Eligibility Manager can be associated with only one program. To learn the steps to create an Eligibility Manager, click [here](../guides/user-guides/create-eligibility-manager-1/).
 
-#### Adding an eligibility manager to a program
+#### Adding an Eligibility Manager to a program
 
-A program can have multiple eligibility managers. To learn the steps to add the eligibility managers, click [here](../guides/user-guides/create-eligibility-manager.md).
+A program can have multiple Eligibility Managers. To learn the steps to add the Eligibility Managers, click [here](../guides/user-guides/create-eligibility-manager.md).
 
 ## Eligibility filters
 
-The image here shows eligibility criteria with two filters.&#x20;
+The image here shows eligibility criteria with two filters: first for checking that the registrant is part of exactly one program, and second for checking that the registrant is unemployed.
 
-<figure><img src="../.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/eligibility-criteria-filters (1).PNG" alt=""><figcaption></figcaption></figure>
 
 ## How-To Guides:
 
 [Create Eligibility Manager Types](../guides/user-guides/create-eligibility-manager-1/)
 
-[Create Eligibility Manager Under Program](../guides/user-guides/create-eligibility-manager-1/)
+[Create an Eligibility Manager Under the Program](../guides/user-guides/create-eligibility-manager-1/)
 

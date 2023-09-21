@@ -1,2 +1,0 @@
-# Create Entitlement Manager Type
-
