@@ -42,7 +42,7 @@ OpenG2P platform has a backend office application for program administrators. Th
 
 The figure below shows a high-level representation of the enrollment management process.
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/a8a98c86cd7b0a186213e588d8642aac12eb64a6/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/c68b3e6da99fe077e2cbe5d5fc166b3e3487fbce/.gitbook/assets/program-management-process.png" alt=""><figcaption></figcaption></figure>
 
 ### Eligibility criteria
 

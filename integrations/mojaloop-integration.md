@@ -8,7 +8,7 @@ This page describes the integration of OpenG2P with the [Mojaloop](https://mojal
 
 Below is the reference architecture of disbursements triggered from OpenG2P resulting in cash transfers.
 
-<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/d653a054ac1e8902e8e6cd6a8e55d89aa174a881/.gitbook/assets/openg2p-payments-diagram.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/c68b3e6da99fe077e2cbe5d5fc166b3e3487fbce/.gitbook/assets/openg2p-payments-diagram.png" alt=""><figcaption></figcaption></figure>
 
 ## Payment process
 

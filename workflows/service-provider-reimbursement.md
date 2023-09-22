@@ -18,7 +18,7 @@ OpenG2P has a reference implementation for the Service Provider Portal. A servic
 
 ## Reference scenario
 
-<figure><img src="../.gitbook/assets/service-provider-reimbursement.drawio (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/c68b3e6da99fe077e2cbe5d5fc166b3e3487fbce/.gitbook/assets/service-provider-reimbursement.png" alt=""><figcaption></figcaption></figure>
 
 ## Customizations
 
