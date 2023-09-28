@@ -30,6 +30,7 @@
 * [🔐 Privacy & Security](privacy-and-security.md)
 * [📊 Monitoring and Reporting](monitoring-and-reporting.md)
 * [System Administration](system-administration/README.md)
+  * [Internationalization (i18n)](system-administration/internationalization-i18n.md)
   * [Role-Based Access Control](system-administration/role-based-access-control.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
