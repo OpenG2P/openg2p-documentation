@@ -118,6 +118,7 @@
   * [Installing OpenG2P On Linux](guides/developer-guides/installing-openg2p-on-linux.md)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [Modules](guides/developer-guides/modules/README.md)
+    * [G2P Notifications: Wiserv SMS Service Provider](guides/developer-guides/modules/g2p-notifications-wiserv-sms-service-provider.md)
     * [G2P Registry: Base](guides/developer-guides/modules/openg2p-module-doc-template.md)
     * [G2P Registry: Individual](guides/developer-guides/modules/openg2p-module-doc-template-1.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
