@@ -1,8 +1,8 @@
-# Social Payment Account Registry (SPAR)
+# Social Payments Account Registry (SPAR)
 
 ## Architecture
 
-The Social Payment Account Registry (SPAR) maintains a mapping of a user ID and Financial Service Provider (FSP) account details like bank, mobile wallet etc. primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
+The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Service Provider (FSP) account details like bank, mobile wallet etc. primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
 
 <figure><img src="https://raw.githubusercontent.com/OpenG2P/openg2p-documentation/develop/.gitbook/assets/social-account-registry.png" alt=""><figcaption></figcaption></figure>
 
