@@ -119,6 +119,7 @@
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [Modules](guides/developer-guides/modules/README.md)
     * [G2P Notifications: Wiserv SMS Service Provider](guides/developer-guides/modules/g2p-notifications-wiserv-sms-service-provider.md)
+    * [G2P Registry: Rest API](guides/developer-guides/modules/g2p-registry-rest-api.md)
     * [G2P Registry: Base](guides/developer-guides/modules/openg2p-module-doc-template.md)
     * [G2P Registry: Individual](guides/developer-guides/modules/openg2p-module-doc-template-1.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)

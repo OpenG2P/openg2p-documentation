@@ -10,7 +10,7 @@ G2P Registry: Base
 
 ### Technology base
 
-[Odoo](https://www.odoo.com/)
+[Odoo](https://www.odoo.com/), Rest Api
 
 ### Functionality
 
