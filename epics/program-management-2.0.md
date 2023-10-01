@@ -41,7 +41,11 @@ The Beneficiary registries will also use Sunbird RC, and thus sharing beneficiar
 
 ## Cache
 
-What happens to the existing Registry module of OpenG2P?  We believe this module may be used as a cache for intermediate processing.  For instance, if external registries do not have sophisticated filtering capabilities, and so we end up pulling a whole lot of demographic data from them. For further processing, the data needs to be cached. This cache must be cleared after processing is complete and the beneficiary list is created as the PII data of an individual may be required for processing.
+What happens to the existing Registry module of OpenG2P?  We believe this module may be used as a cache for intermediate processing.  For instance, if external registries do not have sophisticated filtering capabilities, and so we end up pulling a whole lot of demographic data from them. For further processing, the data needs to be cached. The PII data in the cache must be cleared after processing is complete and the beneficiary list is created. The cache may be used to store computed fields like PMT scores.&#x20;
+
+## Timestamp
+
+Every field that is pulled from other registries or computed within OpenG2P must be timestamped. Subird RC has some timestamp features _(to be studied)._ In the eligibility formula, it should be possible to specify the time period or timestamp of the input parameters for eligibility computation. &#x20;
 
 ## Deduplication
 
