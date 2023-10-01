@@ -16,6 +16,10 @@ monthly_income@TaxRegistry < 5000 AND total_owned_land_area@LandRegistry < 10
 
 We have assumed that external registries will have the capability to filter data based on the queries supplied as part of the G2P Connect interface and will be able to return just the IDs of the filtered data. If not, intermediate processing may be required. See [Cache](program-management-2.0.md#cache).
 
+
+
+<figure><img src="https://raw.githubusercontent.com/OpenG2P/openg2p-documentation/develop/.gitbook/assets/program-management-2.0.png" alt=""><figcaption></figcaption></figure>
+
 ## Registries
 
 Depending on where the registries are housed, or rather ownership of registries, we can classify them as below:
