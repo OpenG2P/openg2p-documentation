@@ -38,7 +38,7 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 <div>
 
-<figure><img src="../../.gitbook/assets/create-group-users.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/create-group-users.png" alt=""><figcaption></figcaption></figure>
 
  
 
