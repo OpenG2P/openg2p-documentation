@@ -6,5 +6,5 @@ The thoughts here are inspired by a request from the Philippines AICS team on th
 
 Document sharing is not different from general data sharing. Immediately coming to mind are architectural systems such as [X-ROAD](https://x-road.global/), [Open Banking](https://www.openbanking.org.uk/) and the recently announced [DEPA](https://depa.world/).
 
-While a country may take several years to build and deploy the above mechanisms, the attempt here is to design a document-sharing system that is implementable in the near term, aligns with the general principles of data sharing, and is interoperable with existing data-sharing standards.&#x20;
+Although it may take several years for a country to develop and implement the above mechanisms, the goal here is to create a document-sharing system that can be put into action in the short term. This system should be in accordance with the fundamental principles of data sharing and should seamlessly work alongside established data-sharing standards."&#x20;
 
