@@ -30,7 +30,7 @@ A program can have multiple Eligibility Managers. To learn the steps to add the 
 
 The image here shows eligibility criteria with two filters: first for checking that the registrant is part of exactly one program, and second for checking that the registrant is unemployed.
 
-<figure><img src="../.gitbook/assets/eligibility-criteria-filters (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/eligibility-criteria-filters (1).png" alt=""><figcaption></figcaption></figure>
 
 ## How-To Guides:
 

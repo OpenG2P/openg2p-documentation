@@ -1,6 +1,6 @@
 # Install SmartScanner App
 
-## Description  <a href="#description" id="description"></a>
+## Description <a href="#description" id="description"></a>
 
 The guide here provides steps to install the SmartScanner app. This app allows users to scan the QR code in the entitlement voucher.
 
@@ -24,7 +24,7 @@ The user must possess an Android Phone with [WireGuard tunnel](https://app.gitbo
 
 4. Enable the option _Allow apps from this source,_ click on the downloaded file, and install the application as described in step#2.
 
-<figure><img src="../../.gitbook/assets/allow-apps (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/allow-apps(1)(1).png" alt=""><figcaption></figcaption></figure>
 
 5. If the SmartScanner app is successfully installed, then this icon will appear on the mobile screen.
 

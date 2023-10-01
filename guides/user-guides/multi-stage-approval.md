@@ -12,11 +12,11 @@ The user is a Program Administrator and has configured multiple stages of entitl
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/program-multiapproval (5).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/program-multiapproval (2).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on the desired program.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (6).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval.png" alt=""><figcaption></figcaption></figure>
 
 3. Click on the _Beneficiaries_. Clicking will show the list of applicants.
 
