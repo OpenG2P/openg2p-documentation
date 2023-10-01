@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-10-01T12:18:58.614Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="NwwzAFq9hRIxWi-wREWy" version="21.8.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-10-01T12:28:21.309Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="zUcgBK4Ol6zQwyTOmDoP" version="21.8.2" type="github">
   <diagram name="Page-1" id="rN_hS6wD4mBMnE9EkRK9">
     <mxGraphModel dx="998" dy="662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
       <root>
@@ -77,7 +77,7 @@
           <mxGeometry x="584.15" y="220" width="79" height="24.71" as="geometry" />
         </mxCell>
         <mxCell id="cV53EIDMHRvjxTyQR8_N-86" value="&lt;b&gt;OpenG2P Deployment&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="520.15" y="512.04" width="89" height="17" as="geometry" />
+          <mxGeometry x="582.15" y="512.04" width="89" height="17" as="geometry" />
         </mxCell>
         <mxCell id="cV53EIDMHRvjxTyQR8_N-89" value="Beneficiary data consumers" style="text;html=1;strokeColor=none;fillColor=#E6E6E6;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=8 8;" vertex="1" parent="1">
           <mxGeometry x="930" y="396.5" width="80" height="45" as="geometry" />
