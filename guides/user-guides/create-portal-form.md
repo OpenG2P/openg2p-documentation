@@ -20,7 +20,7 @@ The user must have a Website Editor role.
 
 3. Click on the + _New_ button to create a new form.
 
-<figure><img src="../../.gitbook/assets/custom-form (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-form (1).png" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Page_ to create a form.
 
@@ -49,7 +49,7 @@ The user must have a Website Editor role.
 
 11. Click _Save_ to add the field to the portal form.
 
-<figure><img src="../../.gitbook/assets/custom-result.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/custom-result.png" alt=""><figcaption></figcaption></figure>
 
 12. You can also create a form from an existing one on the portal by clicking the + sign on the menu and selecting the desired one.
 
