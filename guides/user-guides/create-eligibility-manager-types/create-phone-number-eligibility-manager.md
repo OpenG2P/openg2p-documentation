@@ -28,4 +28,4 @@ user should have a Program Manager role.
 
 5. Click the _Save_ button to save the eligibility manager and it will be listed under the eligibility manager list view page.
 
-<figure><img src="../../../.gitbook/assets/phone-number-elibility-listview-page(1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/phone-number-elibility-listview-page (1).png" alt=""><figcaption></figcaption></figure>

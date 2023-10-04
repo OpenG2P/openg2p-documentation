@@ -16,7 +16,7 @@ OpenG2P platform has three types of users:
 
 In the OpenG2P platform, a role is implemented by defining a group, and the users playing the role are added to the group. Each user can be added to multiple groups. OpenG2P provides a large variety of pre-defined groups (roles). The users can be directly added to these groups (roles). To learn the steps to assign a user to a pre-defined group, click [here](../guides/user-guides/assign-roles-to-users.md).
 
-<figure><img src="../.gitbook/assets/pre-defined-groups (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/pre-defined-groups (1).PNG" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 OpenG2P pre-defined group name start with the prefix OpenG2P. All the other groups are provided by underlying Odoo platform.
@@ -43,11 +43,11 @@ The administrators can also create custom groups from scratch or inherit from pr
 
 To learn the steps to create a custom group, click [here](../guides/user-guides/create-entitlement-manager-role.md).&#x20;
 
-<figure><img src="../.gitbook/assets/inherited-groups.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/inherited-groups.PNG" alt=""><figcaption></figcaption></figure>
 
 The figure below shows the access rights for a group (role) that requires access to payment accounts.
 
-<figure><img src="../.gitbook/assets/rbac-access-rights.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/rbac-access-rights.PNG" alt=""><figcaption></figcaption></figure>
 
 ## How-to Guides
 

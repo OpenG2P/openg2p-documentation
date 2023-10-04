@@ -22,6 +22,6 @@ OpenG2P has a reference implementation for the Service Provider Portal. A servic
 
 ## Customizations
 
-1. The program manager/administrator can custom-assign an approving officer for multiple approvals.
+1. The program manager/administrator can custom-assign multiple approving officers for reimbursement approval.
 2. Though this example shows two approval stages, the number of stages can be customized.
 3. The payment mode for reimbursement can be customized.

@@ -12,7 +12,7 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 1. Navigate to _Settings_ using the menu bar.
 
-<figure><img src="../../.gitbook/assets/settings-odoo-role.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/settings-odoo role.PNG" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Activate the developer mode._
 
@@ -24,25 +24,25 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 4. Click on _Create_.
 
-<figure><img src="../../.gitbook/assets/odoo-create.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/odoo-create.PNG" alt=""><figcaption></figcaption></figure>
 
 5. Select _Application_. In the figure below, _Openg2p Module Access_ was selected from the drop-down list. Add the Name.
 
-<figure><img src="../../.gitbook/assets/group-application.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/group-application.PNG" alt=""><figcaption></figcaption></figure>
 
 6. Tick the check box _Share Group_ if you want to allow users of this group to grant additional access to other users who might not be in the original group.
 
-<figure><img src="../../.gitbook/assets/group-share-group.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/group-share-group.PNG" alt=""><figcaption></figcaption></figure>
 
 7. To add users to this group, click on _Add a Line._ A pop-up window appears to allow the selection of the users from a list. You can view and manage the users assigned to the group.
 
 <div>
 
-<figure><img src="../../.gitbook/assets/create-group-users.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/create-group-users.PNG" alt=""><figcaption></figcaption></figure>
 
  
 
-<figure><img src="../../.gitbook/assets/odoo-user.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/odoo-user.PNG" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -50,11 +50,11 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
 <div>
 
-<figure><img src="../../.gitbook/assets/group-inherited.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/group-inherited.PNG" alt=""><figcaption></figcaption></figure>
 
  
 
-<figure><img src="../../.gitbook/assets/inherits.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/inherits.PNG" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -66,7 +66,7 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
  
 
-<figure><img src="../../.gitbook/assets/odoo-menu.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/odoo-menu.PNG" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -78,13 +78,13 @@ The user must have a Program Administrator role. See the [Create User and Assign
 
  
 
-<figure><img src="../../.gitbook/assets/odoo-views.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/odoo-views.PNG" alt=""><figcaption></figcaption></figure>
 
 </div>
 
 11. Select the _Access Rights_ tab and click on _Add a Line._ Enter the name, and select the model from the drop-down. Tick one or more checkboxes for the relevant access options - _None_, _Read Access_, _Write Access_, _Create Access_, and _Delete Access_.
 
-<figure><img src="../../.gitbook/assets/create-group-access-rights.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Create-group-access-rights.PNG" alt=""><figcaption></figcaption></figure>
 
 12. Select the _Record Rules_ tab. This tab allows you to set up certain rules and access rights that can be configured within specific modules.
 13. Optionally select the _Notes_ tab to add any additional notes or remarks about the setup or group's configuration.
