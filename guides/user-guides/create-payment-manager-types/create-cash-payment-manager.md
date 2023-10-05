@@ -16,7 +16,7 @@ The user should have a Program Administrator role.
 
 2. Click on _Configuration_.
 
-<figure><img src="../../../.gitbook/assets/payment-manager-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manager-conf (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Select _Cash Payment Managers_ from the drop-down list.
 
@@ -37,7 +37,7 @@ The user should have a Program Administrator role.
 
 The payment file is configured based on the state of the _Automatically Created Batch_ checkbox:
 
-**Disabled:** Only one payment file is associated with this payment manager and configured using the _Payment File Config_ dropdown. Go to step#6.&#x20;
+**Disabled:** Only one payment file is associated with this payment manager and configured using the _Payment File Config_ dropdown. Go to step#6.
 
 **Enabled:** Each batch has one payment file configured as part of the _Batch Tags_ configuration. In this case, the _Batch Tags_ configuration replaces the _Payment File Config_ dropdown. Go to step#9.
 
@@ -72,11 +72,11 @@ The payment file is configured based on the state of the _Automatically Created 
 * _Render per payment instead of batch_: If enabled, the payments are rendered individually instead of in a batch
 * _File Config:_ Name of the payment file for this batch
 
-<figure><img src="../../../.gitbook/assets/batch-tags-drop-down.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/batch-tags-drop-down (2).png" alt=""><figcaption></figcaption></figure>
 
 12. Click on _Save & Close._
 
-<figure><img src="../../../.gitbook/assets/batch-tags-template.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/batch-tags-template (2).png" alt=""><figcaption></figcaption></figure>
 
 13. Click on _Save._
 

@@ -2,11 +2,11 @@
 
 ## Description
 
-This guide provides steps for multiple stages of approving a beneficiary's entitlement. Each stage is assigned one entitlement manager to carry out the necessary approvals.  The steps in this guide have to be carried out by each entitlement manager in the order of the stages.
+This guide provides steps for multiple stages of approving a beneficiary's entitlement. Each stage is assigned one entitlement manager to carry out the necessary approvals. The steps in this guide have to be carried out by each entitlement manager in the order of the stages.
 
 ## Pre-requisites
 
-The user is a Program Administrator and has configured multiple stages of entitlement and assigned an entitlement manager for each stage. Learn more about creating multiple stages of entitlement [here](broken-reference).
+The user is a Program Administrator and has configured multiple stages of entitlement and assigned an entitlement manager for each stage. Learn more about creating multiple stages of entitlement [here](broken-reference/).
 
 ## Steps
 
@@ -16,7 +16,7 @@ The user is a Program Administrator and has configured multiple stages of entitl
 
 2. Click on the desired program.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (2).png" alt=""><figcaption></figcaption></figure>
 
 3. Click on the _Beneficiaries_. Clicking will show the list of applicants.
 
@@ -46,7 +46,7 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 
 8. After creating an assessment, the _Create Entitlement_ and _Reject_ buttons appear. You can make a decision based on the authenticity of the application.
 
-* Authentic Application: Create an entitlement by clicking on the _Create Entitlement_ button_._
+* Authentic Application: Create an entitlement by clicking on the _Create Entitlement_ button\_.\_
 * Inauthentic Application: Reject the application by clicking on the _Reject_ button.
 
 <figure><img src="../../.gitbook/assets/create-entitlement.png" alt=""><figcaption></figcaption></figure>
@@ -66,7 +66,7 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 
 <figure><img src="../../.gitbook/assets/approve-entitlement-multi-stage.png" alt=""><figcaption></figcaption></figure>
 
-12. All the steps above have to be repeated by each entitlement manager configured in the _Approval Settings_ in the _Entitlement Manager_. To learn more about _Approval Settings_, refer to the [Multi-Stage Configuration](broken-reference) guide.&#x20;
+12. All the steps above have to be repeated by each entitlement manager configured in the _Approval Settings_ in the _Entitlement Manager_. To learn more about _Approval Settings_, refer to the [Multi-Stage Configuration](broken-reference/) guide.
 
 Note: The status of entitlement is set according to the approval stage.
 

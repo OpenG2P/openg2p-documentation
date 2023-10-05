@@ -16,7 +16,7 @@ The user should have a Program Administrator role.
 
 2. Click on _Configuration_.
 
-<figure><img src="../../../.gitbook/assets/payment-manager-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manager-conf (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Select _File Payment Managers_ from the drop-down list.
 
@@ -49,7 +49,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 7. Select the file and click on _Select_.
 
-<figure><img src="../../../.gitbook/assets/voucher-payment-file.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-payment-file (2).png" alt=""><figcaption></figcaption></figure>
 
 8. Click on _Save_ and go to step#14.
 
@@ -66,7 +66,7 @@ The payment file is configured based on the state of the _Automatically Created 
 11. A new pop-up window appears. Enter the details.
 
 * _Name_: The name of batch tags
-* _Order_: The order number of this batch when the system executes the batches sequentially&#x20;
+* _Order_: The order number of this batch when the system executes the batches sequentially
 * _Domain:_ Filter to add the criteria for this batch
 * _Max Batch Size_: Maximum number of payment entries in the batch
 * _Render per payment instead of batch_: If enabled, the payments are rendered individually instead of in a batch
@@ -82,6 +82,6 @@ The payment file is configured based on the state of the _Automatically Created 
 
 <figure><img src="../../../.gitbook/assets/file-payment-save.png" alt=""><figcaption></figcaption></figure>
 
-14. &#x20;A new File Payment Manager is created and added to the list.
+14. A new File Payment Manager is created and added to the list.
 
 <figure><img src="../../../.gitbook/assets/file-payment-result.png" alt=""><figcaption></figcaption></figure>

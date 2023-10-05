@@ -34,13 +34,13 @@ The user must have the Program Administrator role.
 * _Amount Per Individual in Group:_ Enter the amount each individual in the group is entitled to.
 * _Currency:_ Enter the currency used for transactions
 * _Maximum Number of Individual in Group:_ Enter the maximum group members.
-* _Transfer Fee (%):_ Enter the percentage of fees required for carrying out the transactions&#x20;
-* _Transfer Fee Amount:_ Enter the amount required for carrying out the transactions&#x20;
+* _Transfer Fee (%):_ Enter the percentage of fees required for carrying out the transactions
+* _Transfer Fee Amount:_ Enter the amount required for carrying out the transactions
 * _Entitlement Validation Group:_ Select the validation group from the drop-down list.
 
 <figure><img src="../../../.gitbook/assets/voucher-dropdown.png" alt=""><figcaption></figcaption></figure>
 
-6. Click the _Voucher File Config_ and select the voucher file from the drop-down list. To learn the steps to create a voucher file, follow the guide [Create Entitlement Voucher Template](../create-entitlement-voucher-template.md).&#x20;
+6. Click the _Voucher File Config_ and select the voucher file from the drop-down list. To learn the steps to create a voucher file, follow the guide [Create Entitlement Voucher Template](../create-entitlement-voucher-template.md).
 
 <figure><img src="../../../.gitbook/assets/voucher-file-conf.png" alt=""><figcaption></figcaption></figure>
 
@@ -48,7 +48,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../../.gitbook/assets/voucher-manager-storage.png" alt=""><figcaption></figcaption></figure>
 
-8. If you want to add multiple managers for entitlement approval then click on _Add a Line_ in the _Approval Settings_ section_._
+8. If you want to add multiple managers for entitlement approval then click on _Add a Line_ in the _Approval Settings_ section\_.\_
 
 **Note:** This step and the next step should be skipped if multiple managers are not required for entitlement approval.
 
@@ -60,7 +60,7 @@ The user must have the Program Administrator role.
 
 10. Click on _Save_.
 
-<figure><img src="../../../.gitbook/assets/voucher-save (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-save (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 11. The manager gets added to the list.
 
