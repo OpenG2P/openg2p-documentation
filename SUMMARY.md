@@ -41,6 +41,7 @@
   * [Immediate Individual Assistance On-Demand](workflows/on-demand-assistance.md)
   * [Service Provider Reimbursement](workflows/service-provider-reimbursement.md)
 * [🔗 Integrations](integrations/README.md)
+  * [M-PESA Integration](integrations/m-pesa-integration.md)
   * [Mojaloop Integration](integrations/mojaloop-integration.md)
   * [MOSIP Integration](integrations/integration-with-mosip.md)
     * [ODK MTS Connector](integrations/integration-with-mosip/mts-connector.md)
