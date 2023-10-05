@@ -8,3 +8,27 @@ Document sharing is not different from general data sharing. Immediately coming 
 
 Although it may take several years for a country to develop and implement the above mechanisms, the goal here is to create a document-sharing system that can be put into action in the short term. This system should be in accordance with the fundamental principles of data sharing and should seamlessly work alongside established data-sharing standards.
 
+<details>
+
+<summary>What is the relation between G2P Connect APIs and DEPA-like APIs - both define APIs for data sharing?</summary>
+
+Response from Vijay:
+
+Both complement each other. G2P Connect is primarily designed for two systems to search and get data. Multiple beneficiaries' data accessible is made possible. DEPA includes linking, discovery etc., flows and creates a network of entities and is restricted to single user data with consent artefact. The consent artefact is controlled by an independent 3rd entity called the Consent Manager. That is why I mentioned 3 independent operational models are required to cover all use cases for data sharing:
+
+1. User-controlled wallets where the user is empowered with trusted verifiable data/credentials to share.
+2. The DEPA-like architecture uses an independent data consent/data fiduciary kind of entity to obtain consent and to facilitate data sharing.
+3. G2P / x-road kind architecture where consent is independently acquired by either provider (notify) or consumer (search) without any data fiduciary in the middle to exchange data.
+
+In option #3, consent obtained through a consent manager (i.e. option 2) may also be used to fetch data by data consumer!
+
+</details>
+
+## Architecture
+
+For the immediate use case, we can perhaps go with the following approach:
+
+1. While registering a user via self-service portal or other means acquire consent from the user to share information with other departments. This could be a check-box on the portal
+2. On the backend create a consent object following some standard (?), store it and link it to the user registry entry.
+3. While fetching data from other registries check if consent is available for all the users whose data is being fetched. (this will be tricky as we don't know the result set from other registries).  One way of doing this is to pull the data into OpenG2P and use data of only those individuals whose consent is available and mark the ones that are not. Let it be a configuration/decision of the program manager to include such people with a notification that their data has been picked from other registries and is being used without explicit consent from them. (we have to understand the laws here, if such a thing is inline with existing policies and norms etc.).
+
