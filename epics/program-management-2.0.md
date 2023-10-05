@@ -41,6 +41,8 @@ OpenG2P's PM can continue to be built on Odoo. &#x20;
 
 For registries, we must consider [Sunbird RC](https://docs.sunbirdrc.dev/learn/readme) as it provides both the above functions and several others like attestation etc.&#x20;
 
+While each of the Internal registries may be specific to a purpose like a survey, or registrations for a program, the reason we will need multiple registries is that an instance of Sunbird RC registry is specific to a data schema.
+
 The Beneficiary registries will also use Sunbird RC, and thus sharing beneficiary data to other systems will become seamless.
 
 ## Cache
