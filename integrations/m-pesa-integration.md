@@ -15,7 +15,7 @@ description: Work in progress
 ## Integration setup
 
 * Show a diagram of the setup involving M-PESA components
-* Are we using any ID mapper? What are storing in OpenG2P
+* Are we using any ID mapper? What are we storing in OpenG2P as account info of user?
 
 ## Deployment&#x20;
 
