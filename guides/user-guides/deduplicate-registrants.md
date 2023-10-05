@@ -16,7 +16,7 @@ The user should have a Program Administrator role.
 
 2. Click on the desired program name.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (1).png" alt=""><figcaption></figcaption></figure>
 
 3. The _Programs_ detail page shows the number of beneficiaries enrolled in the program.
 

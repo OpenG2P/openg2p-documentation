@@ -45,7 +45,7 @@ The user must have the Program Administrator role.
 9. Click on _Save_.
 10. The manager gets added, click on _Save and Close_.
 
-<figure><img src="../../.gitbook/assets/entitlemet-manager-save-close.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlemet-manager-save-close (2).png" alt=""><figcaption></figcaption></figure>
 
 11. In the _Entitlement Manager_ section, an entitlement manager is created.
 

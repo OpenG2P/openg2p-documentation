@@ -16,7 +16,7 @@ The user must have the Program Administrator role.
 
 2. Click on _Reimbursement Programs_.
 
-<figure><img src="../../.gitbook/assets/reimburse-program.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/reimburse-program (2).png" alt=""><figcaption></figcaption></figure>
 
 3. Select the desired program for which reimbursement is required.
 
@@ -40,7 +40,7 @@ The user must have the Program Administrator role.
 
 8. Go back to the reimbursement page and click on _Approve Reimbursement_.
 
-<figure><img src="../../.gitbook/assets/reimburse-approve.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/reimburse-approve (2).png" alt=""><figcaption></figcaption></figure>
 
 9. Once the reimbursement is approved, a new button _Record Cash Payment_ appears. Click on this button.
 

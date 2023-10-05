@@ -12,7 +12,7 @@ The user should have a Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../.gitbook/assets/payment-manager-program.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manager-program (2).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Configuration_.
 

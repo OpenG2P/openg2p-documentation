@@ -60,7 +60,7 @@ The user must have the Program Administrator role.
 
 10. Click on _Save_.
 
-<figure><img src="../../../.gitbook/assets/voucher-save (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-save (1).png" alt=""><figcaption></figcaption></figure>
 
 11. The manager gets added to the list.
 

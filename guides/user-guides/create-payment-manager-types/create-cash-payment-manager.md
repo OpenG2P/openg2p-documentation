@@ -12,7 +12,7 @@ The user should have a Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../.gitbook/assets/payment-manager-program.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manager-program (2).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Configuration_.
 
@@ -53,7 +53,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 8. Click on _Save_ and go to step#14.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-file-save.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-file-save (2).png" alt=""><figcaption></figcaption></figure>
 
 9. Click on _Add a Line_ in _Batch Tags_ configuration.
 

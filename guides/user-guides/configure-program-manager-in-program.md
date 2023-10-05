@@ -16,7 +16,7 @@ The user must have the Program Administrator role.
 
 2. Click on the desired program.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Click on the _Configuration_ section on the program detailed view page.
 
