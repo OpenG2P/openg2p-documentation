@@ -2,7 +2,7 @@
 
 ## Introduction
 
-OpenG2P platform allows multiple options for storing registrant documents, evidence documents, entitlement vouchers, accounts payable files, etc. These are the currently supported document store options:
+OpenG2P platform allows multiple options for storing registrant documents, evidence documents, entitlement vouchers, accounts payable files, etc. Program administrators can later view these documents from the program view for assessment and verification. These are the currently supported document store options:
 
 1. AWS S3 object store
 2. MinIO object store
