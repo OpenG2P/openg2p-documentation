@@ -39,6 +39,10 @@ OpenG2P platform facilitates program administrators to print/send [entitlement v
 1. Paper-based letter with QR code
 2. Verifiable Credential (VC) on a smartphone
 
+This is a sample entitlement voucher.&#x20;
+
+{% file src="../.gitbook/assets/OpenG2P Generated Voucher Sample.pdf" %}
+
 ### Voucher code
 
 A **voucher code** is a random code associated with a voucher that the beneficiary needs to share with the service provider. The voucher code is required to claim the reimbursement. The idea is to reduce the chances of fraud arising by a service provider claiming reimbursement without any connection with the beneficiary.
@@ -52,5 +56,3 @@ Entitlement vouchers are versatile and can be used to disburse benefits other th
 * guarantee letter for medical/service assistance
 
 To understand an example workflow for entitlement vouchers, click [here](../workflows/on-demand-assistance.md).
-
-###
