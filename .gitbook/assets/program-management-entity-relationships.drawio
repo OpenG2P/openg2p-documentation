@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-10-06T09:33:28.800Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="zUHibx95Q-cs_IEbap5M" version="21.8.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-10-06T09:34:26.976Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="a0fEzvSV9rHkyoE1jvNH" version="21.8.2" type="github">
   <diagram name="Page-1" id="kgObe714VofC0hytf2PA">
     <mxGraphModel dx="880" dy="446" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -10,7 +10,7 @@
         <mxCell id="0FQ89p8uRsrz-iTd8Ci--84" value="Program" style="whiteSpace=wrap;html=1;align=center;rounded=1;" vertex="1" parent="1">
           <mxGeometry x="480" y="80" width="100" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="0FQ89p8uRsrz-iTd8Ci--85" value="Beneficiary" style="whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+        <mxCell id="0FQ89p8uRsrz-iTd8Ci--85" value="Registrants" style="whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="320" y="40" width="100" height="40" as="geometry" />
         </mxCell>
         <mxCell id="0FQ89p8uRsrz-iTd8Ci--86" value="Eligibility Manager" style="whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
