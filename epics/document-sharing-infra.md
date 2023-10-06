@@ -10,7 +10,7 @@ Although it may take several years for a country to develop and implement the ab
 
 <details>
 
-<summary>What is the relation between G2P Connect APIs and DEPA-like APIs - both define APIs for data sharing?</summary>
+<summary>What is the relation between G2P Connect APIs and DEPA APIs?  Both define APIs for data sharing.</summary>
 
 Response from Vijay:
 
@@ -30,5 +30,6 @@ For the immediate use case, we can perhaps go with the following approach:
 
 1. While registering a user via self-service portal or other means acquire consent from the user to share information with other departments. This could be a check-box on the portal
 2. On the backend create a consent object following some standard (?), store it and link it to the user registry entry.
-3. While fetching data from other registries check if consent is available for all the users whose data is being fetched. (this will be tricky as we don't know the result set from other registries).  One way of doing this is to pull the data into OpenG2P and use data of only those individuals whose consent is available and mark the ones that are not. Let it be a configuration/decision of the program manager to include such people with a notification that their data has been picked from other registries and is being used without explicit consent from them. (we have to understand the laws here, if such a thing is inline with existing policies and norms etc.).
+3. While fetching data from other registries check if consent is available for all the users whose data is being fetched. (this will be tricky as we don't know the result set from other registries).  One way of doing this is to pull the data into OpenG2P and use data of only those individuals whose consent is available and mark the ones that are not. Let it be a configuration/decision of the program manager to include such people with a notification that their data has been picked from other registries and is being used without explicit consent from them. (we have to understand the laws here, if such a thing is in line with existing policies and norms etc.).
+4. The [consent artefact](https://depa.world/learn/consent-artefact) from DEPA may be considered.
 
