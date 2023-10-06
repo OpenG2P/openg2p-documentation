@@ -33,7 +33,7 @@
   * [Developer Mode](system-administration/developer-mode.md)
   * [Role-Based Access Control](system-administration/role-based-access-control.md)
   * [Internationalization (i18n)](system-administration/internationalization-i18n.md)
-  * [Document Storage](system-administration/document-storage.md)
+  * [Document Store](system-administration/document-storage.md)
   * [Apps](system-administration/apps.md)
 * [⛓ Workflows](workflows/README.md)
   * [Cash grant scenario](workflows/cash-grant-scenario.md)
