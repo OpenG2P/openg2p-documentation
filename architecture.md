@@ -6,7 +6,7 @@ OpenG2P has a flexible architecture that allows governments and social benefit d
 
 ## Functional architecture
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/010947477bc4c70effbe42ce936e3813ecbfb648/.gitbook/assets/functional-architecture.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://raw.githubusercontent.com/smita-g2p/openg2p-documentation/1.1/.gitbook/assets/functional-architecture.png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 **External System Integrations**
