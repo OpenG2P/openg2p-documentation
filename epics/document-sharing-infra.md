@@ -33,5 +33,3 @@ For the immediate use case, we can perhaps go with the following approach:
 3. On DSS, create a consent object following a standard like [DEPA Consent Artefact](https://depa.world/learn/consent-artefact), store it and link it to the user registry entry via, say, the user's unique ID.
 4. The DSS exposes data-sharing APIs as defined in DEPA.
 
-{% embed url="https://docs.google.com/spreadsheets/d/1PrvkD51epeLyv0VppHQpjVcuT6OudrbFxGzJQLTeHVQ/edit#gid=0" %}
-
