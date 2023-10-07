@@ -2,7 +2,7 @@
 
 ## Introduction
 
-All the documents attached by the registrant, users or vendors will be saved in S3 bucket. This S3 bucket integration uses storage\_backend\_s3 and storage\_file package of odoo which is further extended to make it easier to access.
+All the documents attached by the registrant, users or vendors will be saved in S3 bucket. This S3 bucket integration uses `storage_backend_s3` and `storage_file` package of Odoo which is further extended to make it easier to access.
 
 ## Pre-requisites
 
