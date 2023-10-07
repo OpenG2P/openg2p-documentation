@@ -28,8 +28,26 @@ In option #3, consent obtained through a consent manager (i.e. option 2) may als
 
 For the immediate use case, we can perhaps go with the following approach:
 
-1. Create a Document Store Service (DSS) as an independent module with a store like MinIO.
-2. While registering a user via a self-service portal or other means acquire consent from the user to share information with other departments. This could be a check-box on the portal
+1. Create a Document Store Service (DSS) as an independent module/service with a data store like MinIO.
+2. While registering an individual via a self-service portal or other means acquire consent from the individual to share documents with other departments. This could be a checkbox on the portal.
 3. On DSS, create a consent object following a standard like [DEPA Consent Artefact](https://depa.world/learn/consent-artefact), store it and link it to the user registry entry via, say, the user's unique ID.
-4. The DSS exposes data-sharing APIs as defined in DEPA.
+4. The important point to note about the above consent is that usually, consent will be given by an individual (owner of the data) to the consumer of data to fetch data from the producer. As such, DSS being a producer of data, need not seek and store the above consent artefact. It is assumed that consent artefact will be sent by the consumer to the producer while requesting for data. However, since the consumer side systems may not be evolved enough, we will obtain blanket consent from the individual and use this consent artefact as a proxy.
+5. The DSS exposes data-sharing APIs as defined in DEPA.
+6. &#x20;The documents may be uploaded via a self-service portal. The uploaded documents are stored with a unique filename in the data store.
+7. Do we need to encrypt these documents? Probably overkill. (_TBD_).
+8. While sharing data with the consumer, the data must be encrypted. See the section below.
+
+## In-flight data encryption
+
+While sharing data with consumers it is imperative to encrypt the data.  X-Road kind of systems already take care of this in a unified manner. But since such an infra may not be available in countries we can use MOSIP's Partner Management and Key Management module to accomplish the same. The following MOSIP services will be required:
+
+1. **PMS**:  This module provides the capability to on-board partners with their encryption keys.
+2. **Key Manager**:  Required for key management, connecting to HSM, key rotation, and encrypting data.
+3. **Auth Manager:**  Required for authentication using Keycloak (t_o be understood_)
+4. **Keycloak**:  Partner onboarding
+5. **Audit Manager**:  Required for all MOSIP services.
+
+## Audit trace
+
+The DSS must save all the transaction history of the data shared for audit purposes. This could be simple table in the DB.
 
