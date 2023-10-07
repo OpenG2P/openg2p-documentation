@@ -53,6 +53,22 @@ What happens to the existing Registry module of OpenG2P?  We believe this module
 
 Every field that is pulled from other registries or computed within OpenG2P must be timestamped. Subird RC has some timestamp features _(to be studied)._ In the eligibility formula, it should be possible to specify the time period or timestamp of the input parameters for eligibility computation. &#x20;
 
+## Consent
+
+[G2P Connect Registry APIs](https://github.com/G2P-Connect/specs/blob/draft/release/yaml/registry\_core\_api\_v1.0.0.yaml) define a consent object. However, it is more like a placeholder and any consent object may be used here, for example, [DEPA Consent Artefact](https://depa.world/learn/consent-artefact). (Note that X-Road architecture does not define consent).
+
+<details>
+
+<summary>In X-Road documentation, I could not see the concept of user consent, consent artefact.  Am I missing something?</summary>
+
+Opinion:
+
+That is the core difference between the two models. How consent is obtained is kept outside in both G2P Connect X-Road.  Further, X-Road doesn’t care what messages are shared like HTTP body.  G2P ConnecX payload header/message can be carried in X-Road instance. In this model, some parts of G2P Connect and X-Road headers may repeat!  As a case study, OpenG2P along with CDPI can take up this integration.
+
+
+
+</details>
+
 ## Deduplication
 
 While receiving data from disparate sources, it is likely that IDs used in systems may be different. Here, demographic deduplication may be required. It is envisaged that this deduplication system will be a completely different module/service. _To be designed_.
