@@ -55,7 +55,12 @@ Every field that is pulled from other registries or computed within OpenG2P must
 
 ## Consent
 
-[G2P Connect Registry APIs](https://github.com/G2P-Connect/specs/blob/draft/release/yaml/registry\_core\_api\_v1.0.0.yaml) define a consent object. However, it is more like a placeholder and any consent object may be used here, for example, [DEPA Consent Artefact](https://depa.world/learn/consent-artefact). (Note that X-Road architecture does not define consent).
+[G2P Connect Registry APIs](https://github.com/G2P-Connect/specs/blob/draft/release/yaml/registry\_core\_api\_v1.0.0.yaml) define a consent object. However, it is more like a placeholder and any consent object may be used here, for example, [DEPA Consent Artefact](https://depa.world/learn/consent-artefact). (Note that X-Road architecture does not define consent). &#x20;
+
+Consent is individual to individual, it is not bulk. It's not clear how bulk consent can be given for data to be imported from other registries.  Alternatively, the 'authorise' object in the G2P Connect Registry APIs may be used.  One possible approach is to request blanket consent from a user while registering him and then store this consent which may referred later for audit purposes. The decision to use the consent of registrants is left to the country/program policies. Some suggested workflows:
+
+* Strict:  After the data is pulled from an external registry, all the registrants who have not yet provided consent are discarded (and possibly notified, along with a mechanism for them to apply for the program separately along with consent).&#x20;
+* Lenient:  To continue using data of all individuals, while notifying the ones who have yet not given consent along with a mechanism for them to provide consent, say, via self-service portal.
 
 <details>
 
