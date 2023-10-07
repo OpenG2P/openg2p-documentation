@@ -28,8 +28,8 @@ In option #3, consent obtained through a consent manager (i.e. option 2) may als
 
 For the immediate use case, we can perhaps go with the following approach:
 
-1. While registering a user via self-service portal or other means acquire consent from the user to share information with other departments. This could be a check-box on the portal
-2. On the backend create a consent object following some standard (?), store it and link it to the user registry entry.
-3. While fetching data from other registries check if consent is available for all the users whose data is being fetched. (this will be tricky as we don't know the result set from other registries).  One way of doing this is to pull the data into OpenG2P and use data of only those individuals whose consent is available and mark the ones that are not. Let it be a configuration/decision of the program manager to include such people with a notification that their data has been picked from other registries and is being used without explicit consent from them. (we have to understand the laws here, if such a thing is in line with existing policies and norms etc.).
-4. The [consent artefact](https://depa.world/learn/consent-artefact) from DEPA may be considered.
+1. Create a Document Store Service (DSS) as an independent module with a store like MinIO.
+2. While registering a user via a self-service portal or other means acquire consent from the user to share information with other departments. This could be a check-box on the portal
+3. On DSS, create a consent object following a standard like [DEPA Consent Artefact](https://depa.world/learn/consent-artefact), store it and link it to the user registry entry via, say, the user's unique ID.
+4. The DSS exposes data-sharing APIs as defined in DEPA.
 
