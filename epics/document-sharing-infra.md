@@ -53,11 +53,10 @@ The Cons of this approach is that a utility/tool/App will be required to open an
 
 While sharing data with consumers it is imperative to encrypt the data.  X-Road kind of systems already take care of this in a unified manner. But since such an infra may not be available in countries we can use MOSIP's Partner Management and Key Management module to accomplish the same. The following MOSIP services will be required:
 
-1. **PMS**:  This module provides the capability to on-board partners with their encryption keys.
-2. **Key Manager**:  Required for key management, connecting to HSM, key rotation, and encrypting data.
-3. **Auth Manager:**  Required for authentication using Keycloak (t_o be understood_)
-4. **Keycloak**:  Partner onboarding
-5. **Audit Manager**:  Required for all MOSIP services.
+1. [**PMS**](https://docs.mosip.io/1.2.0/modules/partner-management-services):  This module provides the capability to on-board partners with their encryption keys.
+2. [**Key Manager**](https://docs.mosip.io/1.2.0/modules/keymanager):  Required for key management, connecting to HSM, key rotation, and encrypting data.
+3. **Keycloak**:  Partner onboarding
+4. [**Audit Manager**](https://docs.mosip.io/1.2.0/modules/commons/audit-manager-developer-guide):  Required for all MOSIP services.
 
 The PMS infrastructure may be common infra shared by other services of OpenG2P as well.
 
