@@ -31,11 +31,23 @@ For the immediate use case, we can perhaps go with the following approach:
 1. Create a Document Store Service (DSS) as an independent module/service with a data store like MinIO.
 2. While registering an individual via a self-service portal or other means acquire consent from the individual to share documents with other departments. This could be a checkbox on the portal.
 3. On DSS, create a consent object following a standard like [DEPA Consent Artefact](https://depa.world/learn/consent-artefact), store it and link it to the user registry entry via, say, the user's unique ID.
-4. The important point to note about the above consent is that usually, consent will be given by an individual (owner of the data) to the consumer of data to fetch data from the producer. As such, DSS being a producer of data, need not seek and store the above consent artefact. It is assumed that consent artefact will be sent by the consumer to the producer while requesting for data. However, since the consumer side systems may not be evolved enough, we will obtain blanket consent from the individual and use this consent artefact as a proxy.
+4. The important point to note about the above consent is that usually consent is given by an individual (owner of the data) to the consumer of data to fetch data from the producer. As such, DSS being a producer of data, need not seek and store the above consent artefact. It is assumed that consent artefacts will be sent by the consumer to the producer while requesting data. However, since the consumer side systems may not be evolved enough, we will obtain blanket consent from the individual and use this consent artefact as a proxy.
 5. The DSS exposes data-sharing APIs as defined in DEPA.
-6. &#x20;The documents may be uploaded via a self-service portal. The uploaded documents are stored with a unique filename in the data store.
-7. Do we need to encrypt these documents? Probably overkill. (_TBD_).
-8. While sharing data with the consumer, the data must be encrypted. See the section below.
+6. The documents may be uploaded via a self-service portal. The uploaded documents are stored with a unique filename in the data store.
+7. Do we need to encrypt these documents at rest? Probably overkill. (_TBD_).
+8. While sharing data with the consumer, the data must be encrypted. See[ In-flight data encryption](document-sharing-infra.md#in-flight-data-encryption).
+
+## Verifiable Credentials
+
+The format of documents may be PDF, JPEG, PNG or other image format. These documents will be verified at various stages by officers. One suggested way to store the documents is in a [Verifiable Credential](https://www.w3.org/TR/vc-data-model-2.0/) (VC) format\*.  The metadata field of the VC may be used to add any additional information about the document, say, format, comments from the verifier, the ID of the user (_not sure about this_), the verifier's ID, etc. The VC will be digitally signed by a cryptographic key representing the office/department as the authority.
+
+The Pros of this approach are that the receiver of the document can verify the authenticity of the same, and at the same time store and further share the document with other consumers as envisaged in the DEPA architecture. The receiver can further add its own verification of the document as a chain VCs _(TODO: study the chain concept)_.&#x20;
+
+{% hint style="info" %}
+\* MOSIP embeds all the biometric data of an individual in a VC.&#x20;
+{% endhint %}
+
+The Cons of this approach is that a utility/tool/App will be required to open and view the document as it has to be extracted out of the VC.&#x20;
 
 ## In-flight data encryption
 
@@ -46,6 +58,8 @@ While sharing data with consumers it is imperative to encrypt the data.  X-Road 
 3. **Auth Manager:**  Required for authentication using Keycloak (t_o be understood_)
 4. **Keycloak**:  Partner onboarding
 5. **Audit Manager**:  Required for all MOSIP services.
+
+The PMS infrastructure may be common infra shared by other services of OpenG2P as well.
 
 ## Audit trace
 
