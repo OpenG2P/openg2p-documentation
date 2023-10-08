@@ -6,7 +6,7 @@ The thoughts here are inspired by a request from the Philippines AICS team on th
 
 Document sharing is not different from general data sharing. Immediately coming to mind are architectural systems such as [X-ROAD](https://x-road.global/), [Open Banking](https://www.openbanking.org.uk/) and the recently announced [DEPA](https://depa.world/).
 
-Although it may take several years for a country to develop and implement the above mechanisms, the goal here is to create a document-sharing system that can be put into action in the short term. This system should be in accordance with the fundamental principles of data sharing and should seamlessly work alongside established data-sharing standards.
+Although it may take several years for a country to develop and implement the above mechanisms, the goal here is to create a document-sharing system that can be put into action in the short term. This system should be by the fundamental principles of data sharing and should seamlessly work alongside established data-sharing standards.
 
 <details>
 
@@ -41,11 +41,13 @@ For the immediate use case, we can perhaps go with the following approach:
 
 The format of documents may be PDF, JPEG, PNG or other image format. These documents will be verified at various stages by officers. One suggested way to store the documents is in a [Verifiable Credential](https://www.w3.org/TR/vc-data-model-2.0/) (VC) format\*.  The metadata field of the VC may be used to add any additional information about the document, say, format, comments from the verifier, the ID of the user (_not sure about this_), the verifier's ID, etc. The VC will be digitally signed by a cryptographic key representing the office/department as the authority.
 
-The Pros of this approach are that the receiver of the document can verify the authenticity of the same, and at the same time store and further share the document with other consumers as envisaged in the DEPA architecture. The receiver can further add its own verification of the document as a chain VCs _(TODO: study the chain concept)_.&#x20;
+The Pros of this approach are that the receiver of the document can verify the authenticity of the same, and at the same time store and further share the document with other consumers as envisaged in the DEPA architecture. The receiver can further add its verification of the document as a chain VCs _(TODO: study the chain concept)_.&#x20;
 
 {% hint style="info" %}
 \* MOSIP embeds all the biometric data of an individual in a VC.&#x20;
 {% endhint %}
+
+Another huge benefit is that an individual may be allowed to download this VC and carry it with him in a wallet like Inji. The individual can then share the document directly with another party without having to depend on a data-sharing mechanism involving consent. This sharing could also happen offline as well.
 
 The Cons of this approach is that a utility/tool/App will be required to open and view the document as it has to be extracted out of the VC.&#x20;
 
@@ -59,6 +61,13 @@ While sharing data with consumers it is imperative to encrypt the data.  X-Road 
 4. [**Audit Manager**](https://docs.mosip.io/1.2.0/modules/commons/audit-manager-developer-guide):  Required for all MOSIP services.
 
 The PMS infrastructure may be common infra shared by other services of OpenG2P as well.
+
+## Direct sharing of VC by an individual
+
+As explained above the DDS system may offer a way for an individual to download the VC in his wallet like Inji. It is assumed that the consumer's application should have the ability to&#x20;
+
+1. Authenticate the individual.
+2. Accept a VC containing the document from the individual via a self-service portal or other mechanism.
 
 ## Audit trace
 
