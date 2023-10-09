@@ -14,7 +14,7 @@ OpenG2P is a robust and versatile platform built upon the Odoo framework, provid
 * **Data Encryption**: OpenG2P utilizes Odoo's data encryption protocols to secure data transmission between users' browsers and the server, safeguarding beneficiary data during communication.
 * **Database Encryption**: Sensitive beneficiary data stored in the database is encrypted using established encryption algorithms, providing an additional layer of protection.
 * **Attachment Security**: Files and attachments uploaded to OpenG2P are securely stored in an S3 bucket and accessed only by authorised users, with unauthorised data exposure.
-* **PII Encryption:** OpenG2P has a [privacy module ](https://docs.openg2p.org/secure-registry/registry/privacy-in-registry)for the registry which encrypts all the PII information stored in the database.
+* **PII Encryption:** OpenG2P has a [privacy module](https://github.com/OpenG2P/openg2p-security) for the registry which encrypts all the PII information stored in the database.
 
 ##
 
