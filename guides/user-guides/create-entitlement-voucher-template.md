@@ -20,11 +20,11 @@ The user must have the Program Administrator role.
 
 3. Select _Payment File Configs_ from the drop-down list.
 
-<figure><img src="../../.gitbook/assets/payment-file-fonf-drop-down.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/payment-file-fonf-drop-down.PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click the _Create_ button to view the _Payments File Configs_ creation page.
 
-<figure><img src="../../.gitbook/assets/create-paymeny-file-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/create-paymeny-file-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 5. The view allows to configure the _Payments File Template_.
 
@@ -35,11 +35,11 @@ The user must have the Program Administrator role.
 
 6. Click on _Template_ and add the HTML code.
 
-<figure><img src="../../.gitbook/assets/template-payment-file-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/template-payment-file-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 7. Click on _QR Codes_ and then on _Add a Line._
 
-<figure><img src="../../.gitbook/assets/payment-fileconf-qrcode-addline.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/payment-fileconf-qrcode-addline.PNG" alt=""><figcaption></figcaption></figure>
 
 8. A pop-up window _Qrcode Config_ appears.
 
@@ -54,8 +54,8 @@ The user must have the Program Administrator role.
 
 9. Click on _Save_.
 
-<figure><img src="../../.gitbook/assets/qr-code-template.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/qr-code-template.PNG" alt=""><figcaption></figcaption></figure>
 
 10. The file gets added, click on _Save_.
 
-<figure><img src="../../.gitbook/assets/save-qrcode.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/save-qrcode.PNG" alt=""><figcaption></figcaption></figure>

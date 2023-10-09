@@ -2,7 +2,7 @@
 
 ## Introduction
 
-For a given program, there are certain criteria by which individuals are eligible for that program. Assuming that eligibility can be expressed unambiguously based on an individual's demographic data, a program administrator can apply the criteria in the registry to create a list of beneficiaries.&#x20;
+For a given program, there are certain criteria by which individuals are eligible for that program. Assuming that eligibility can be expressed unambiguously based on an individual's demographic data, a program administrator can apply the criteria in the registry to create a list of beneficiaries.
 
 ## Eligibility Manager
 
@@ -14,7 +14,7 @@ In the OpenG2P program, configuring eligibility criteria is a two-step process. 
 
 #### Creating Eligibility Manager type
 
-OpenG2P supports three types of Eligibility Managers.&#x20;
+OpenG2P supports three types of Eligibility Managers.
 
 1. Default Eligibility Manager
 2. ID document Eligibility Manager
@@ -30,11 +30,10 @@ A program can have multiple Eligibility Managers. To learn the steps to add the 
 
 The image here shows eligibility criteria with two filters: first for checking that the registrant is part of exactly one program, and second for checking that the registrant is unemployed.
 
-<figure><img src="../.gitbook/assets/eligibility-criteria-filters (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/eligibility-criteria-filters (1).PNG" alt=""><figcaption></figcaption></figure>
 
 ## How-To Guides:
 
 [Create Eligibility Manager Types](../guides/user-guides/create-eligibility-manager-1/)
 
 [Create an Eligibility Manager Under the Program](../guides/user-guides/create-eligibility-manager-1/)
-

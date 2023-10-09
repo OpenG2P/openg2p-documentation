@@ -12,19 +12,19 @@ The user must have the Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../.gitbook/assets/conf-entitlement-manager-home.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/conf-entitlement-manager-home.PNG" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Configuration_.
 
-<figure><img src="../../../.gitbook/assets/conf-entitlement-manager-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/conf-entitlement-manager-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 3. Select _Voucher Entitlement Managers_ from the drop-down list.
 
-<figure><img src="../../../.gitbook/assets/voucher-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Create_.
 
-<figure><img src="../../../.gitbook/assets/voucher-create (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-create (1).PNG" alt=""><figcaption></figcaption></figure>
 
 5. Enter the details.
 
@@ -42,7 +42,7 @@ The user must have the Program Administrator role.
 
 6. Click the _Voucher File Config_ and select the voucher file from the drop-down list. To learn the steps to create a voucher file, follow the guide [Create Entitlement Voucher Template](../create-entitlement-voucher-template.md).
 
-<figure><img src="../../../.gitbook/assets/voucher-file-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-file-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 7. Click the _Voucher Document Store and select the file from_ the drop-down list.
 
@@ -60,8 +60,8 @@ The user must have the Program Administrator role.
 
 10. Click on _Save_.
 
-<figure><img src="../../../.gitbook/assets/voucher-save (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-save (1).PNG" alt=""><figcaption></figcaption></figure>
 
 11. The manager gets added to the list.
 
-<figure><img src="../../../.gitbook/assets/voucher-result.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/voucher-result.PNG" alt=""><figcaption></figcaption></figure>

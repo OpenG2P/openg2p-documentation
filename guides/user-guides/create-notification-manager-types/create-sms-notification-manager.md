@@ -20,7 +20,7 @@ The user should have a Program Administrator role assigned.
 
 3. Click the _Create_ button to view the _SMS Notification Manager_ creation page.
 
-<figure><img src="../../../.gitbook/assets/sms-create.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/sms-create.PNG" alt=""><figcaption></figcaption></figure>
 
 4. Enter _Name_ and _Program_ in the _SMS Notification Managers_ view.
 
@@ -34,7 +34,7 @@ The user should have a Program Administrator role assigned.
 * _On Otp Send Template_
 * _On Generate Voucher Template_
 
-<figure><img src="../../../.gitbook/assets/sms-template-event-types.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/sms-template-event-types.PNG" alt=""><figcaption></figcaption></figure>
 
 There are two ways to configure a template for an event:
 
@@ -57,7 +57,7 @@ b. Create a new template: Go to step#7
 * _Language:_ Language for the content
 * _Content:_ Content written using the Odoo platform's [QWeb](https://www.odoo.com/documentation/16.0/developer/reference/frontend/qweb.html) templating engine
 
-<figure><img src="../../../.gitbook/assets/enter-sms-template-details.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/enter-sms-template-details.PNG" alt=""><figcaption></figcaption></figure>
 
 9. Click on _Save_.
 

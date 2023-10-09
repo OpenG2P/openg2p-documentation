@@ -12,7 +12,7 @@ The beneficiary ID is normalised to represent functional or foundational ID. Sim
 
 Social benefit delivery programs can use OpenG2P G2P Payments Bridge to connect with ID Account Mapper as shown in the diagram below.
 
-<figure><img src="../.gitbook/assets/id-account-mapper (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/ID Account Mapper (2).png" alt=""><figcaption></figcaption></figure>
 
 These are the steps of payment disbursement using the OpenG2P G2P Payments Bridge:
 

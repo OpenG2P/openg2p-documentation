@@ -16,15 +16,15 @@ The user should have a Program Administrator role.
 
 2. Click on _Configuration_.
 
-<figure><img src="../../../.gitbook/assets/payment-manager-conf (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manager-conf.png" alt=""><figcaption></figcaption></figure>
 
 3. Select _Cash Payment Managers_ from the drop-down list.
 
-<figure><img src="../../../.gitbook/assets/payment-manger-dropdown-cash (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/payment-manger-dropdown-cash (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Click on _Create_.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-create.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-create.PNG" alt=""><figcaption></figcaption></figure>
 
 5. Enter the details.
 
@@ -41,11 +41,11 @@ The payment file is configured based on the state of the _Automatically Created 
 
 **Enabled:** Each batch has one payment file configured as part of the _Batch Tags_ configuration. In this case, the _Batch Tags_ configuration replaces the _Payment File Config_ dropdown. Go to step#9.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-manager-file-conf.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-manager-file-conf.PNG" alt=""><figcaption></figcaption></figure>
 
 6. Click on _Add a Line_ under the _Payment File Config_.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-details (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-details (2).PNG" alt=""><figcaption></figcaption></figure>
 
 7. Select the file and click on _Select_.
 
@@ -57,11 +57,11 @@ The payment file is configured based on the state of the _Automatically Created 
 
 9. Click on _Add a Line_ in _Batch Tags_ configuration.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-save (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-save (3).PNG" alt=""><figcaption></figcaption></figure>
 
 10. A dialogue box appears. Click on _Create._
 
-<figure><img src="../../../.gitbook/assets/batch-tags-list (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/batch-tags-list (1).PNG" alt=""><figcaption></figcaption></figure>
 
 11. A new pop-up window appears. Enter the details.
 
@@ -80,8 +80,8 @@ The payment file is configured based on the state of the _Automatically Created 
 
 13. Click on _Save._
 
-<figure><img src="../../../.gitbook/assets/cash-payment-save (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-save (1).PNG" alt=""><figcaption></figcaption></figure>
 
 14. A new Cash Payment Manager is created and added to the list.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-result.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-result.PNG" alt=""><figcaption></figcaption></figure>

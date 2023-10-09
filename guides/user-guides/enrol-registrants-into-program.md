@@ -23,7 +23,7 @@ This guide will help enrol registrants into a program, who are registered throug
 
 <figure><img src="../../.gitbook/assets/program-detailed-view.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/beneficiaries-list-view-page(1)(1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/beneficiaries-list-view-page (1).png" alt=""><figcaption></figcaption></figure>
 
 4. Navigate back to the program list view page and click on _Enrol Eligible Registrants_ to enrol the registrants who are in draft status.
 5. Enrolment of registrants will be based on the Eligibility criteria set as per the program.
