@@ -2,7 +2,7 @@
 
 ## Context
 
-The document here presents a collection of thoughts and scribbles on the next-generation Program and beneficiary management architecture of OpenG2P.
+The document here presents ideas on the next-generation program and beneficiary management architecture of OpenG2P inspired by emerging requirements in countries and the digital public infrastructure (DPI) thought process.
 
 ## Architecture
 
