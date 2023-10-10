@@ -19,3 +19,24 @@ The module will support the following functionalities at a high level
 3. Query ID Account Mapper to fetch individual bank account information (optional)
 4. History of past transactions
 5. Reporting
+
+## Architecture
+
+
+
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpb-architecture.png" alt=""><figcaption><p>GPB Architecture</p></figcaption></figure>
+
+### G2P Request Handler
+
+This functional block receives cash transfer requests from upstream systems like OpenG2P via the G2P Connect Disbursement APIs. The block parses the incoming request and writes in the DB. The Disbursement API is assumed to be Synchronous such that after DB write, 200 OK is returned back to the caller.  The disbursement request is expected to be split into batches depending on the optimum performance of the system in terms of CPU and Memory.
+
+When a Status API is called by the upstream system, this block reads the data from DB and returns back the status of requested transactions. The output may need to be 'paginated' depending on the volume of data returned.
+
+### Requests DB
+
+All the requests are persisted in a DB like Postgres along with status of each transfer request. Suggested columns in the DB:
+
+<table><thead><tr><th width="258"></th><th></th></tr></thead><tbody><tr><td><code>batch_id</code></td><td>ID of the requested batch</td></tr><tr><td>request_id</td><td>ID of the request (this may be assigned by the G2P Request Handler in case not available in the Disbursement request)</td></tr><tr><td>request_timestamp</td><td></td></tr><tr><td>from_fa</td><td></td></tr><tr><td>to_fa</td><td></td></tr><tr><td>amount</td><td></td></tr><tr><td>currency</td><td></td></tr><tr><td>status</td><td>Status of the request. This will be updated by multiple entities. The status enumeration may be NEW, FILED, PAID/FAILED</td></tr><tr><td>error_code</td><td>Any error code if the status is FAILED. This will be used by upsteam system to take necessary action like retry or giveup.</td></tr><tr><td>error_msg</td><td>Text error message </td></tr></tbody></table>
+
+
+
