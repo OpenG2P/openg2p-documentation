@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides the steps to identify duplicate registrants in the program.  The registrants are deduplicated based on the Deduplication Managers configured in the program.&#x20;
+This guide provides the steps to identify duplicate registrants in the program. The registrants are deduplicated based on the Deduplication Managers configured in the program.
 
 ## Pre-requisites <a href="#pre-requisites" id="pre-requisites"></a>
 
@@ -16,20 +16,20 @@ The user should have a Program Administrator role.
 
 2. Click on the desired program name.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (1).PNG" alt=""><figcaption></figcaption></figure>
 
 3. The _Programs_ detail page shows the number of beneficiaries enrolled in the program.
 
 <figure><img src="../../.gitbook/assets/deduplication-program-beneficiary (1).png" alt=""><figcaption></figcaption></figure>
 
-4. &#x20;Check on the _Beneficiaries_ to view the complete list of registrants including the registrants in _Draft_ status.
+4. Check on the _Beneficiaries_ to view the complete list of registrants including the registrants in _Draft_ status.
 
-<figure><img src="../../.gitbook/assets/deduplication-beneficiary-list (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-beneficiary-list (1).PNG" alt=""><figcaption></figcaption></figure>
 
-4. Navigate back to the program detail view page and click on _Deduplicate._&#x20;
+4. Navigate back to the program detail view page and click on _Deduplicate._
 
-<figure><img src="../../.gitbook/assets/deduplication-deduplicate.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-deduplicate.PNG" alt=""><figcaption></figcaption></figure>
 
 5. The registrants with duplicate IDs are marked _Duplicated_ in the status column.
 
-<figure><img src="../../.gitbook/assets/deduplication-list (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-list (1).PNG" alt=""><figcaption></figcaption></figure>

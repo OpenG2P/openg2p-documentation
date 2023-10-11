@@ -88,6 +88,12 @@ To avoid concentration of power and errors in deciding the entitlement amount, P
 
 The beneficiaries can be notified (not shown in the diagram above) when they are entitled to benefits. OpenG2P platform provides Notification Managers that can be configured to send SMS, email, and Fast2SMS notifications to the beneficiaries. These notifications can be customized using templates. To learn more, click [here](notifications.md).
 
-### Document upload and view
+### Entity relationships in a program
 
-The supporting documents uploaded by the social workers are stored in the cloud, [MinIO ](https://min.io/)(open-source storage), or any external storage based on the system configuration. Program administrators can later view these documents from the program view for assessment and verification.
+A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, and entitlement. The diagram below shows the relationships of these managers with the program.
+
+&#x20;
+
+<figure><img src="https://raw.githubusercontent.com/smita-g2p/openg2p-documentation/1.1/.gitbook/assets/program-management-entity-relationships.png" alt=""><figcaption></figcaption></figure>
+
+Payment Manager is described in the [next section](../eligibility-and-enrolment/).

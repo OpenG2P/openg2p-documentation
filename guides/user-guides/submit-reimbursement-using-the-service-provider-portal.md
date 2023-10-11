@@ -18,14 +18,14 @@ The Service Provider Portal user has login access to the portal using MOSIP ID/N
 
 <figure><img src="../../.gitbook/assets/reimbursements.png" alt=""><figcaption></figcaption></figure>
 
-3. Select the desired beneficiary and click on _Apply_.&#x20;
+3. Select the desired beneficiary and click on _Apply_.
 4. Applying for the reimbursement takes you to the _Submission Form_ page.
 
 <figure><img src="../../.gitbook/assets/reimbursemnt-form.png" alt=""><figcaption></figcaption></figure>
 
 5. The beneficiary details are available by scanning the QR code on the entitlement voucher (also called Guarantee Letter) using the [SmartScanner app](install-smartscanner-app.md). The scan should show details similar to the format in the image below.
 
-<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan(1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-voucher-qr-scan (1).png" alt=""><figcaption></figcaption></figure>
 
 6. Enter the details from the scan into the _Submission Form and_ click _Submit_. This will show a user prompt to confirm the details. Click _Submit_.
 
@@ -33,7 +33,7 @@ The Service Provider Portal user has login access to the portal using MOSIP ID/N
 
 7. Successful submission will show a confirmation page with details such as the application Id and submission date.
 
-<figure><img src="../../.gitbook/assets/reimbursement-confirmation(1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/reimbursement-confirmation (1).png" alt=""><figcaption></figcaption></figure>
 
 8. You can optionally click _Go to Home_ to view the submitted reimbursements. You should see that the status of reimbursement has changed to _Applied_.
 

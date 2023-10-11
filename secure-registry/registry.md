@@ -40,9 +40,9 @@ OpenG2P platform provides configurations to define values (enumerations) for a f
 
 #### ID Types
 
-ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once defined, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the [ID Deduplication Manager](../beneficiary-management/deduplication.md#id-deduplication-manager) to select the ID Type for deduplicating registrants.&#x20;
+ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once defined, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the [ID Deduplication Manager](../beneficiary-management/deduplication.md#id-deduplication-manager) to select the ID Type for deduplicating registrants.
 
-<figure><img src="../.gitbook/assets/id-type (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/id-type (2).PNG" alt=""><figcaption></figcaption></figure>
 
 #### Registrant Tags
 
@@ -86,7 +86,7 @@ In the roadmap of OpenG2P, an enhanced secure registry with the following featur
 7. Complex queries
 8. Anonymous profile
 9. Data encrypted at rest
-10. [Verifiable credentials](broken-reference)
+10. [Verifiable credentials](broken-reference/)
 11. Evidence
 12. Attestation
 {% endhint %}

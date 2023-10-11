@@ -20,10 +20,10 @@ The notification configurations need to be completed. See the guide, [Create Not
 
 2. Click on the desired program name.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (7) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Click on _Notify Registrants_.
 
-<figure><img src="../../.gitbook/assets/deduplication-deduplicate (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplication-deduplicate (2).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Notifications will be sent to the beneficiaries.

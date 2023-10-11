@@ -24,7 +24,7 @@ The user must have the Program Administrator role.
 
 4. Click on _Add a Line_ in the _Entitlement Managers_ section.
 
-<figure><img src="../../.gitbook/assets/entitlement-manager-addline.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-manager-addline.PNG" alt=""><figcaption></figcaption></figure>
 
 5. A pop-up window appears. Click on _Create._
 
@@ -38,15 +38,15 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../.gitbook/assets/created-and-edit-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
-8. Another dialogue box appears. Configure the entitlement manager details as described in the [Create Entitlement Manager Type](create-entitlement-manager-type/) guide.&#x20;
+8. Another dialogue box appears. Configure the entitlement manager details as described in the [Create Entitlement Manager Type](create-entitlement-manager-type/) guide.
 
 <figure><img src="../../.gitbook/assets/default-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
 9. Click on _Save_.
 10. The manager gets added, click on _Save and Close_.
 
-<figure><img src="../../.gitbook/assets/entitlemet-manager-save-close.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlemet-manager-save-close (2).png" alt=""><figcaption></figcaption></figure>
 
 11. In the _Entitlement Manager_ section, an entitlement manager is created.
 
-<figure><img src="../../.gitbook/assets/entitlement-manafer-saved.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-manafer-saved.PNG" alt=""><figcaption></figcaption></figure>
