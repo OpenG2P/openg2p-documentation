@@ -1,11 +1,6 @@
 ---
 description: '! working Inprogress'
-cover: https://g2pconnect.global/images/Home/g2p-connect1.png
-coverY: 0
 layout:
-  cover:
-    visible: true
-    size: hero
   title:
     visible: true
   description:
@@ -54,7 +49,7 @@ The "`g2p_payment_g2p_connect`" module is an integral component of Odoo 15, inte
 
 ### User interface
 
-**Submenu**: <mark style="background-color:orange;">Program --> Configuration -->G2P Connect Payment Managers</mark>
+**Submenu**: Program --> Configuration -->G2P Connect Payment Managers
 
 **G2P Connect Payment Managers**: Configuration views for setting up G2P Connect .
 
@@ -62,23 +57,23 @@ The "`g2p_payment_g2p_connect`" module is an integral component of Odoo 15, inte
 
 To utilize the **g2p\_payment\_g2p\_connect** module, configure the following settings within **G2P Connect Payment Manager**s (Configuration Views):
 
-<mark style="color:yellow;">**Payment Endpoint URL:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Specify the URL for payment disbursement.</mark>
+**Payment Endpoint URL:** Specify the URL for payment disbursement.
 
-<mark style="color:yellow;">**API Timeout:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Set the maximum time (in seconds) for the API request to complete.</mark>
+**API Timeout:** Set the maximum time (in seconds) for the API request to complete.
 
-<mark style="color:yellow;">**Payer Financial Address:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Enter the financial address of the payer.</mark>
+**Payer Financial Address:** Enter the financial address of the payer.
 
-<mark style="color:yellow;">**Payer Name:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Provide the payer's name.</mark>
+**Payer Name:** Provide the payer's name.
 
-<mark style="color:yellow;">**Payee ID Field:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Choose the field used as the payee's identification.</mark>
+**Payee ID Field:** Choose the field used as the payee's identification.
 
-<mark style="color:yellow;">**ID Type for Payee ID:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Define the type of ID used for payees.</mark>
+**ID Type for Payee ID:** Define the type of ID used for payees.
 
-<mark style="color:yellow;">**Payee Prefix:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">(Required only for All Options) Add a prefix to payee information.</mark>
+**Payee Prefix:** (Required only for All Options) Add a prefix to payee information.
 
-<mark style="color:yellow;">**Payee Suffix:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">(Required only for REG\_ID) Add a suffix to payee information.</mark>
+**Payee Suffix:** (Required only for REG\_ID) Add a suffix to payee information.
 
-<mark style="color:yellow;">**Locale:**</mark> <mark style="color:yellow;"></mark><mark style="color:yellow;">Set the locale for language and formatting preferences.</mark>
+**Locale:** Set the locale for language and formatting preferences.
 
 ### Error codes
 
