@@ -51,7 +51,7 @@ jobs:
         run: |
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             if [[ "${changed_file##*.}" == "drawio" ]]; then
-              xvfb-run -a drawio -x -f png ${changed_file} --width 1920 --headless --disable-gpu --no-sandbox \;
+              xvfb-run -a drawio -x -f png ${changed_file} --width 1920 --border 50 --headless --disable-gpu --no-sandbox \;
             fi
           done
 
