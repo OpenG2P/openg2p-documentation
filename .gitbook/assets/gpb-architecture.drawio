@@ -1,11 +1,11 @@
-<mxfile host="app.diagrams.net" modified="2023-10-11T05:43:23.910Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="0Cs9Hab0gfkvGbOaZIny" version="22.0.0" type="github">
+<mxfile host="app.diagrams.net" modified="2023-10-11T05:55:20.705Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="MCW4xA1oCgrdOHixB4__" version="22.0.0" type="github">
   <diagram name="Page-1" id="fYixJoHFOVJEpvpsFSck">
-    <mxGraphModel dx="1580" dy="1048" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
+    <mxGraphModel dx="1053" dy="699" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="dp3RieXPibleuZnMukXE-4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;" parent="1" vertex="1">
-          <mxGeometry x="250" y="130" width="800" height="340" as="geometry" />
+        <mxCell id="dp3RieXPibleuZnMukXE-4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5BB1A;strokeColor=#d6b656;align=left;" parent="1" vertex="1">
+          <mxGeometry x="260" y="160" width="740" height="250" as="geometry" />
         </mxCell>
         <mxCell id="dp3RieXPibleuZnMukXE-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="1" source="dp3RieXPibleuZnMukXE-2" target="dp3RieXPibleuZnMukXE-20" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -98,7 +98,7 @@
           <mxGeometry x="850" y="310.26" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="dp3RieXPibleuZnMukXE-31" value="Treasury Bank&amp;nbsp;" style="shape=mxgraph.signs.travel.bank;html=1;pointerEvents=1;fillColor=#0066CC;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;aspect=fixed;" parent="1" vertex="1">
-          <mxGeometry x="1190" y="258.83" width="60" height="51.43" as="geometry" />
+          <mxGeometry x="1130" y="268" width="60" height="51.43" as="geometry" />
         </mxCell>
         <mxCell id="dp3RieXPibleuZnMukXE-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.03;entryY=0.65;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="dp3RieXPibleuZnMukXE-24" target="dp3RieXPibleuZnMukXE-31" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -112,7 +112,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="dp3RieXPibleuZnMukXE-39" value="&lt;b&gt;G2P Payments Bridge&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="590" y="140" width="110" height="30" as="geometry" />
+          <mxGeometry x="590" y="170" width="110" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
