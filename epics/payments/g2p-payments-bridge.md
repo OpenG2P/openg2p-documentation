@@ -42,21 +42,28 @@ All the requests are persisted in a DB like Postgres along with status of each t
 
 The table is expected to contain millions of records and a history of past transactions. Indexing of columns will be critical for performance. Besides, the previous records may be 'archived'. This could be achieved via horizontal partitioning. The management of DB in this regard needs to be worked out during implementation.
 
-#### 2. File Dispatch
+#### 2. File Outgoing
 
 This table will hold the status of files dispatched
 
 <table><thead><tr><th width="280">Column</th><th>Description</th></tr></thead><tbody><tr><td>file_name</td><td></td></tr><tr><td>status</td><td>NEW/DISPATCHED</td></tr></tbody></table>
+
+#### 3. File Incoming
+
+This table will hold the status of files received from bank.
+
+<table><thead><tr><th width="280">Column</th><th>Description</th></tr></thead><tbody><tr><td>file_name</td><td></td></tr><tr><td>status</td><td>NEW/PROCESSED</td></tr></tbody></table>
 
 ## Payment File Creator
 
 This block will be like a cronjob that runs periodically and does the following
 
 * Read all the payment instructions that have not been processed yet (status: NEW) via direct query of DB
+* Query ID Account Mapper if translation from ID to bank account information is required.
 * Create an output file specific to the format accepted by a bank.&#x20;
 * Write the file in the File Storage
 * Update the status of all processed instructions as FILED.
-* Update status in the File Dispatch table as NEW.
+* Update status in the [File Outgoing](g2p-payments-bridge.md#2.-file-outgoing) table as NEW.
 
 This functional block may be implemented as a script that is run as cronjob. The features will be implemented:
 
@@ -70,19 +77,65 @@ This functional block may be implemented as a script that is run as cronjob. The
 
 ## File Store
 
-This will typically be large S3-compliant storage (like MinIO or AWS S3) to store all the payment instruction files. It will have two buckets - one for outgoing payment files and another for received payment files.
+This will typically be large S3-compliant storage (like MinIO or AWS S3) to store all the payment instruction files. It will have two buckets:
+
+* **Outgoing**: For outgoing payment files and another for received payment files.
+* **Incoming**: For files fetched from bank(s)
 
 ## File Dispatcher
 
-The File Dispatcher is also like a cronjob that does the following:
+The File Dispatcher is like a cronjob that does the following:
 
 * Picks an unprocessed (un-sent) file from the bucket and using bank interface transfers the file to the bank. This could be a mechanism like SFTP. This would be very bank-specific.
-* Update status in File Dispatch table in the DB as DISPATCHED.
+* Update status in [File Outgoing](g2p-payments-bridge.md#2.-file-outgoing) table in the DB as DISPATCHED.
 
 Features:
 
 * The implementation may be done via script called periodically.
 * The file dispatch mechanism will be specific to a bank. The script should be designed such that several dispatch mechanisms can be configured without having to make major changes in the code
 
+## File Fetcher
 
+The File Fetcher is like a cronjob that does the following:
+
+* Fetch fresh files form bank's systems and stores them in Incoming bucket
+* Update status in [File Incoming](g2p-payments-bridge.md#3.-file-incoming) table in the DB as NEW.
+
+Features:
+
+* The implementation may be done via script called periodically.
+* The file dispatch mechanism will be specific to a bank. The script should be designed such that several fetch mechanisms can be configured without having to make major changes in the code
+
+## Payment File Reader
+
+This block will be like a cronjob that runs periodically and does the following
+
+* Read an unprocessed file from File Store -> Incoming bucket. The list of unprocessed files is obtained by reading the [File Incoming](g2p-payments-bridge.md#3.-file-incoming) table.
+* Parse the file to read the status of each transaction. Translate the status to a common standard code if required.
+* Update the status in DB as PAID or FAILED.
+* Update error code and error messages
+* Update the status in the [File Incoming ](g2p-payments-bridge.md#3.-file-incoming)table as PROCESSED.
+
+This functional block may be implemented as a script that is run as cronjob. The features will be implemented:
+
+* Full in-memory processing
+* Entire processing and updates in DB should happen atomically. In case there is a failure, the script should be able to discard the incomplete process and start all over again.
+* Configuration for bucket ID, location, and credentials for accessing [File Store](g2p-payments-bridge.md#file-store).
+
+## Status codes
+
+Mapping of status codes returned by the bank and as expected by upstream G2P systems need to be worked out.  At this point of time, the following codes are defined by G2P Connect:
+
+```
+rjct.reference_id.invalid
+rjct.reference_id.duplicate 
+rjct.timestamp.invalid
+rjct.payer_fa.invalid
+rjct.payee_fa.invalid
+rjct.amount.invalid
+rjct.schedule_ts.invalid 
+rjct.currency_code.invalid 
+```
+
+## Performance and capacity
 
