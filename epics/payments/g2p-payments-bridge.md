@@ -139,3 +139,11 @@ rjct.currency_code.invalid
 
 ## Performance and capacity
 
+G2P payments are typically not real-time and can happen over several hours or even days. Assuming that SSD disks are used for DB and file storage, and all processing happens in-memory it should be possible to read a batch of 10, 000 to 100,000 from DB, process it, and write into a file in a few seconds (_hypothesis needs to be tested)._ Thus_,_ several million transactions processing should be possible in a day. A barebone calculation: if we assume 10,000 records can be read from DB, processed and written in a file in 10 seconds, then 3.6 million records can be processed in 1 hour.
+
+The response time of ID Account Mapper also needs to be considered. The query to ID Account Mapper should be in Sync mode to keep the design simple.
+
+The Payment File Creator, Payment File Reader, File Dispatcher, and File Fetcher must be designed such that they can run on independent CPUs.
+
+With this capacity, a single instance of each of the above would suffice. There may not be a need to have multiple instances of these blocks running in parallel as it will significantly increase the complexity of the design.
+
