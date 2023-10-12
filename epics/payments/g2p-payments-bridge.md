@@ -6,7 +6,7 @@ description: Work in progress
 
 ## Introduction
 
-The G2P Payments Bridge (GPB) fits in the the payment chain as shown below.&#x20;
+The G2P Payments Bridge (GPB) fits in the payment chain as shown below.&#x20;
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpb-payment-chain.png" alt=""><figcaption></figcaption></figure>
 
