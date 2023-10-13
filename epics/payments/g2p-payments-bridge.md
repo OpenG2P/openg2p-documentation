@@ -28,7 +28,7 @@ The module will support the following functionalities at a high level
 
 ### G2P Request Handler
 
-This functional block receives cash transfer requests from upstream systems like OpenG2P via the G2P Connect Disbursement APIs. The block parses the incoming request and writes in the DB. The Disbursement API is assumed to be Synchronous such that after DB write, 200 OK is returned to the caller. The disbursement request is expected to be split into batches depending on the optimum performance of the system in terms of CPU and Memory.
+This functional block receives cash transfer requests from upstream systems like OpenG2P via the G2P Connect Disbursement APIs. The block parses the incoming request and writes in the DB. The Disbursement API is assumed to be Synchronous such that after DB write, 200 OK is returned to the caller. The disbursement request is expected to be split into batches by the upstream system depending on the system's optimum performance in terms of CPU and Memory.
 
 When a Status API is called by the upstream system, this block reads the data from DB and returns the status of requested transactions. The output may need to be 'paginated' depending on the volume of data returned.
 
