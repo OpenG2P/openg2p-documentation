@@ -47,7 +47,7 @@ The Pros of this approach are that the receiver of the document can verify the a
 \* MOSIP embeds all the biometric data of an individual in a VC.&#x20;
 {% endhint %}
 
-Another huge benefit is that an individual may be allowed to download this VC and carry it with him in a wallet like Inji. The individual can then share the document directly with another party without having to depend on a data-sharing mechanism involving consent. This sharing could also happen offline as well.
+Another huge benefit is that an individual may be allowed to download this VC and carry it with him in a wallet like [Inji](https://docs.mosip.io/inji/). The individual can then share the document directly with another party without having to depend on a data-sharing mechanism involving consent. This sharing could also happen offline as well.
 
 The Cons of this approach is that a utility/tool/App will be required to open and view the document as it has to be extracted out of the VC.&#x20;
 
@@ -64,12 +64,12 @@ The PMS infrastructure may be common infra shared by other services of OpenG2P a
 
 ## Direct sharing of VC by an individual
 
-As explained above the DDS system may offer a way for an individual to download the VC in his wallet like Inji. It is assumed that the consumer's application should have the ability to&#x20;
+As explained above the DDS system may offer a way for an individual to download the VC in his wallet like [Inji](https://docs.mosip.io/inji/). It is assumed that the consumer's application should have the ability to&#x20;
 
 1. Authenticate the individual.
 2. Accept a VC containing the document from the individual via a self-service portal or other mechanism.
 
 ## Audit trace
 
-The DSS must save all the transaction history of the data shared for audit purposes. This could be simple table in the DB.
+The DSS must save all the transaction history of the data shared for audit purposes. This could be a simple table in the DB.
 
