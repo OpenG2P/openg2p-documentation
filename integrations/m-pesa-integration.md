@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # M-PESA Integration
 
 ## Introduction
@@ -26,8 +22,24 @@ This diagram here encapsulates the flow and components for an M-Pesa integration
 
 ## Deployment&#x20;
 
-* How to recreated/install this setup in our environments. TBD
-* Any configurations on OpenG2P and M-PESA side. TBD
+Instructions to deploy M-Pesa integration:
+
+1. Download the kube-config file from the rancher of a particular environment
+2. Set kube-config to that particular environment in your local dev environment
+3. Clone this repo into your local environment - [https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa)&#x20;
+4. Edit the `config.yaml` file with appropriate database location, username and password
+5. Edit the `virtualService.yaml` file with appropriate hostname.
+6. Run the below commands:
+
+{% code fullWidth="false" %}
+```
+kubectl create ns mpesa
+kubectl -n mpesa apply -f config.yaml
+kubectl -n mpesa apply -f deployment.yaml
+kubectl -n mpesa apply -f service.yaml
+kubectl -n mpesa apply -f virtualservice.yaml
+```
+{% endcode %}
 
 ## Demonstration
 
@@ -35,5 +47,4 @@ Here is a [link to the slides](https://docs.google.com/presentation/d/1CCk1JkUqn
 
 ## Source code
 
-* Point to all repositories, code, and utilities involved in this integration. TBD.
-
+Click [here](https://github.com/Abhishek-Wagh/openg2p-program/tree/15.0-develop/g2p\_payment\_simple\_mpesa) to go to the program repository, under which all the M-Pesa functions and code can be found [here](https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_simple\_mpesa).
