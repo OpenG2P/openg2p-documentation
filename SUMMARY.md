@@ -122,6 +122,7 @@
   * [Installing OpenG2P On Linux](guides/developer-guides/installing-openg2p-on-linux.md)
   * [Technology Stack](guides/developer-guides/technology-stack.md)
   * [Modules](guides/developer-guides/modules/README.md)
+    * [G2P Entitlement In-kind](guides/developer-guides/modules/g2p-entitlement-in-kind.md)
     * [OpenG2P Program Payment: G2P Connect Payment Manager](guides/developer-guides/modules/openg2p-program-payment-g2p-connect-payment-manager.md)
     * [G2P Notifications: Wiserv SMS Service Provider](guides/developer-guides/modules/g2p-notifications-wiserv-sms-service-provider.md)
     * [G2P Registry: Rest API](guides/developer-guides/modules/g2p-registry-rest-api.md)
