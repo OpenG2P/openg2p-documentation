@@ -57,7 +57,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 9. Click on _Add a Line_ in _Batch Tags_ configuration.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-save (3).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-save (1).PNG" alt=""><figcaption></figcaption></figure>
 
 10. A dialogue box appears. Click on _Create._
 
@@ -80,8 +80,8 @@ The payment file is configured based on the state of the _Automatically Created 
 
 13. Click on _Save._
 
-<figure><img src="../../../.gitbook/assets/cash-payment-save (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-save (5).PNG" alt=""><figcaption></figcaption></figure>
 
 14. A new Cash Payment Manager is created and added to the list.
 
-<figure><img src="../../../.gitbook/assets/cash-payment-result.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/cash-payment-result (1).PNG" alt=""><figcaption></figcaption></figure>

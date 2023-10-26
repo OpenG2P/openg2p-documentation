@@ -20,11 +20,11 @@ The user must have the Program Administrator role.
 
 3. Click on _Create_.
 
-<figure><img src="../../.gitbook/assets/id-types-create.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/id-types-create (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. A new bar appears. Enter the name and click on _Save_.
 
-<figure><img src="../../.gitbook/assets/id-create-blank (2).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/id-create-blank (3).PNG" alt=""><figcaption></figcaption></figure>
 
 5. The new ID type gets added to the list.
 

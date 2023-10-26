@@ -24,7 +24,7 @@ The user must have the Program Administrator role.
 
 4. Click on _Add a Line_ in the _Entitlement Managers_ section.
 
-<figure><img src="../../.gitbook/assets/entitlement-manager-addline.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/entitlement-manager-addline (1).PNG" alt=""><figcaption></figcaption></figure>
 
 5. A pop-up window appears. Click on _Create._
 

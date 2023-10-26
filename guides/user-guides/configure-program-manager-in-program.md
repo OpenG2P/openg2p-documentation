@@ -16,7 +16,7 @@ The user must have the Program Administrator role.
 
 2. Click on the desired program.
 
-<figure><img src="../../.gitbook/assets/all-program-multiapproval (2).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/all-program-multiapproval (8).PNG" alt=""><figcaption></figcaption></figure>
 
 3. Click on the _Configuration_ section on the program detailed view page.
 
@@ -38,7 +38,7 @@ The user must have the Program Administrator role.
 8. Enter the required _Number of Cycles._ Enable the checkbox _Copy previous cycle_ to allow each cycle to copy the beneficiary details from the previous cycle. Enable _Cycleless_ if no cycles are required in the program.
 9. Click on _Save._
 
-<figure><img src="../../.gitbook/assets/program-manager-save.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/program-manager-save (1).PNG" alt=""><figcaption></figcaption></figure>
 
 10. The manager gets added to the list of program managers. Click on _Save & Close_.
 
@@ -46,4 +46,4 @@ The user must have the Program Administrator role.
 
 10. Delete the default program manager and click on _Save_.
 
-<figure><img src="../../.gitbook/assets/program-manager-default (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/program-manager-default (2).PNG" alt=""><figcaption></figcaption></figure>

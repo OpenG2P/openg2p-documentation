@@ -24,7 +24,7 @@ The user should have a Program Administrator role.
 
 4. Click on _Create_.
 
-<figure><img src="../../../.gitbook/assets/file-payment-manager-create.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/file-payment-manager-create (5).PNG" alt=""><figcaption></figcaption></figure>
 
 5. Enter the details.
 
@@ -53,7 +53,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 8. Click on _Save_ and go to step#14.
 
-<figure><img src="../../../.gitbook/assets/file-payment-save (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/file-payment-save.PNG" alt=""><figcaption></figcaption></figure>
 
 9. Click on _Add a Line_ in _Batch Tags_ configuration.
 
@@ -80,7 +80,7 @@ The payment file is configured based on the state of the _Automatically Created 
 
 13. Click on _Save_.
 
-<figure><img src="../../../.gitbook/assets/file-payment-save.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/file-payment-save (2).PNG" alt=""><figcaption></figcaption></figure>
 
 14. A new File Payment Manager is created and added to the list.
 

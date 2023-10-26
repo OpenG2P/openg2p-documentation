@@ -130,6 +130,7 @@
     * [G2P Formio](guides/developer-guides/modules/g2p-formio.md)
     * [G2P Registry: Base](guides/developer-guides/modules/openg2p-module-doc-template.md)
     * [G2P Registry: Individual](guides/developer-guides/modules/openg2p-module-doc-template-1.md)
+    * [G2P: Proxy Means Test](guides/developer-guides/modules/g2p-proxy-means-test.md)
 * [📘 Deployment Guide](guides/deployment-guide/README.md)
   * [Deployment on Kubernetes](guides/deployment-guide/deployment-on-kubernetes/README.md)
     * [K8s Cluster Requirements](guides/deployment-guide/deployment-on-kubernetes/k8s-cluster-requirements.md)

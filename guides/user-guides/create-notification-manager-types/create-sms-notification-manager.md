@@ -20,7 +20,7 @@ The user should have a Program Administrator role assigned.
 
 3. Click the _Create_ button to view the _SMS Notification Manager_ creation page.
 
-<figure><img src="../../../.gitbook/assets/sms-create.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/sms-create (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. Enter _Name_ and _Program_ in the _SMS Notification Managers_ view.
 
