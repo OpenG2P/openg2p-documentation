@@ -13,12 +13,12 @@ On-demand assistance is especially useful for scenarios like urgent surgeries, t
 
 ## Reference scenario
 
-This example describes on-demand assistance with multi-stage approval.&#x20;
+This example describes on-demand assistance with multi-stage approval.
 
-<figure><img src="../../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
-1. The program manager/administrator can custom-assign an assessment officer for each stage.&#x20;
-2. Though this example shows three stages, the number of stages can be customized.&#x20;
-3. The entitlement voucher can be communicated digitally or printed on paper.&#x20;
+1. The program manager/administrator can custom-assign an assessment officer for each stage.
+2. Though this example shows three stages, the number of stages can be customized.
+3. The entitlement voucher can be communicated digitally or printed on paper.
 {% endhint %}

@@ -8,4 +8,4 @@ This page describes the integration of OpenG2P with the [Mojaloop](https://mojal
 
 Below is the reference architecture of disbursements triggered from OpenG2P resulting in cash transfers.
 
-<figure><img src="../../.gitbook/assets/image (10) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (41).png" alt=""><figcaption></figcaption></figure>

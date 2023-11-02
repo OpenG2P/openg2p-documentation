@@ -22,7 +22,7 @@ Admin can able to assign number of programs to a program manager.so that program
 
 <figure><img src="../.gitbook/assets/Screenshot from 2023-04-05 09-23-10.png" alt=""><figcaption><p>Assigning program to particular user(program manager)</p></figcaption></figure>
 
-<figure><img src="../.gitbook/assets/Screenshot from 2023-04-05 09-23-36 (1).png" alt=""><figcaption><p>Assigned programs showing in user(program manager) login</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/Screenshot from 2023-04-05 09-23-36.png" alt=""><figcaption><p>Assigned programs showing in user(program manager) login</p></figcaption></figure>
 
 ### Feature:
 
