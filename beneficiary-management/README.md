@@ -94,6 +94,6 @@ A program is composed of various managers, each of which configures the paramete
 
 &#x20;
 
-<figure><img src="https://raw.githubusercontent.com/smita-g2p/openg2p-documentation/1.1/.gitbook/assets/program-management-entity-relationships.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://raw.githubusercontent.com/openg2p/openg2p-documentation/1.2/.gitbook/assets/program-management-entity-relationships.png" alt=""><figcaption></figcaption></figure>
 
 Payment Manager is described in the [next section](../eligibility-and-enrolment/).
