@@ -1,11 +1,11 @@
-# 🅿 Program Management
+# 🅿 Program & Beneficiary Management
 
 ## Introduction <a href="#introduction" id="introduction"></a>
 
-OpenG2P platform's program management is a sequence of processes encompassing program creation to deciding entitlement for the beneficiaries. Digitalization of these processes offers multiple benefits such as ease of administration, agility of operations, and data empowerment to name a few.
+OpenG2P platform's Program and Beneficiary Management System (PBMS) offers a sequence of processes encompassing program creation to deciding entitlement for the beneficiaries. Digitalization of these processes offers multiple benefits such as ease of administration, agility of operations, and data empowerment to name a few.
 
 {% hint style="warning" %}
-## Program management challenges <a href="#program-management-challenges" id="program-management-challenges"></a>
+### Program management challenges <a href="#program-management-challenges" id="program-management-challenges"></a>
 
 OpenG2P platform's program management module is built to solve the challenges faced by program administrators in their day-to-day operations. Some of the common challenges are:
 
@@ -17,7 +17,7 @@ The error of exclusion usually happens during registrants' enrollment. For examp
 
 A progressive approach works towards the betterment of beneficiaries in the long term. One example is an unemployment assistance program encompassing training, skill development, and job assistance instead of handing out cash benefits to unemployed registrants. This approach is challenging to implement as multiple programs should be monitored in parallel.
 
-#### Categorical targeting
+**Categorical targeting**
 
 Often, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a certain age. Administrators need filtering criteria to glean this information from existing registry records instead of conducting another costly and time-consuming registration drive.
 
@@ -29,7 +29,7 @@ Depending upon the beneficiaries' profile, the benefit amount may vary. Determin
 
 Program enrolment and entitlement decisions can be monopolized by a single entity, and hence it is a good practice to digitize and distribute these decisions in a program.
 
-#### Timely notifications
+**Timely notifications**
 
 Not notifying beneficiaries about their enrolment and entitlement can leave them confused, and undermines credibility and transparency. This step is often neglected in administrative-driven systems.
 {% endhint %}
@@ -74,7 +74,7 @@ Program administrators can use OpenG2P Entitlement Manager to configure all the 
 
 #### Entitlement amount
 
-Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.&#x20;
+Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.
 
 #### Entitlement vouchers
 
@@ -91,8 +91,6 @@ The beneficiaries can be notified (not shown in the diagram above) when they are
 ### Entity relationships in a program
 
 A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, and entitlement. The diagram below shows the relationships of these managers with the program.
-
-&#x20;
 
 <figure><img src="https://raw.githubusercontent.com/openg2p/openg2p-documentation/1.2/.gitbook/assets/program-management-entity-relationships.png" alt=""><figcaption></figcaption></figure>
 
