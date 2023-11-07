@@ -2,7 +2,7 @@
 
 ## Description
 
-Developers can run the entire OpenG2P package on their machines. The guide here provides steps to install OpenG2P on a laptop/desktop running Linux.&#x20;
+Developers can run the entire OpenG2P package on their machines. The guide here provides steps to install OpenG2P on a laptop/desktop running Linux.
 
 ## Pre-requisites
 
@@ -94,31 +94,31 @@ Cloning the odoo15 repo takes time because of the large file.
 
 #### 7. Configure Odoo
 
-*   Edit the configuration file `/opt/odoo/odoo15/debian/odoo.conf` and set the appropriate values for the following parameters:\
+* Edit the configuration file `/opt/odoo/odoo15/debian/odoo.conf` and set the appropriate values for the following parameters:
 
+```
+sudo nano /opt/odoo/odoo15/debian/odoo.conf
+```
 
-    ```
-    sudo nano /opt/odoo/odoo15/debian/odoo.conf
-    ```
+```
+[options]
+addons_path = /opt/odoo/odoo15/addons,/opt/odoo/odoo15/custom-addons
+admin_passwd = strong_admin_password
+db_host = localhost
+db_port = 5432
+db_user = odoo_user
+db_password = your_database_password
+```
 
-
-
-    ```
-    [options]
-    addons_path = /opt/odoo/odoo15/addons
-    admin_passwd = strong_admin_password
-    db_host = localhost
-    db_port = 5432
-    db_user = odoo_user
-    db_password = your_database_password
-    ```
+* Inside the customs addons directories, place the relevant project module and custom third-party modules.
 
 #### 8. Start Odoo
 
 *   Start the Odoo server using the following command:
 
     ```bash
-    /opt/odoo/odoo15/odoo-bin -c /opt/odoo/odoo15/debian/odoo.conf
+    cd /opt/odoo/odoo15
+    ./odoo-bin -c debian/odoo.conf
     ```
 
 ## Installation of OpenG2P package
@@ -136,4 +136,3 @@ Cloning the odoo15 repo takes time because of the large file.
     pip3 install -r requirements.txt
     ```
 4. Add addons directory path to the _odoo15.conf_ file.
-
