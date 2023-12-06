@@ -6,17 +6,7 @@ OpenG2P has a flexible architecture that allows governments and social benefit d
 
 ## Functional architecture
 
-<figure><img src="https://raw.githubusercontent.com/openg2p/openg2p-documentation/1.2/.gitbook/assets/functional-architecture.png" alt=""><figcaption></figcaption></figure>
-
-{% hint style="info" %}
-**External System Integrations**
-
-Digital authentication can be facilitated using MOSIP or any other ID system because the platform is agnostic of ID systems.
-
-The platform can integrate with payment systems other than those shown in the diagram.
-{% endhint %}
-
-{% embed url="https://miro.com/app/live-embed/uXjVNQ8TPUo=/?embedId=840332099769&moveToViewport=-567,-313,1176,668" %}
+{% embed url="https://miro.com/app/board/uXjVNGpmGPw=/?share_link_id=873269042816" %}
 
 ## Technical architecture
 
