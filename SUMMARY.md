@@ -4,6 +4,7 @@
 
 ## 🖼 Epics
 
+* [Social Registry](epics/social-registry.md)
 * [Program and Beneficiary Management System 2.0](epics/program-management-2.0.md)
 * [Document Sharing Infra](epics/document-sharing-infra.md)
 * [🏥 Self Service Portal](epics/self-service-portal/README.md)
