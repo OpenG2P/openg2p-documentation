@@ -27,6 +27,12 @@ itertools
 
 
 
+## Folder Structure
+
+<figure><img src="../.gitbook/assets/Screenshot from 2023-12-12 14-13-13.png" alt=""><figcaption></figcaption></figure>
+
+Before using the application, make sure you have all these folders and files.
+
 ## Training
 
 To use this service, you first need to train the dedupe object. There is directory called [training](https://github.com/manoharsuggula/openg2p-demodedupe/tree/main/training). It contains the training files for the csv and db. Before using the service, you need to run these files separately. The whole training will take place in memory.&#x20;
@@ -68,15 +74,13 @@ JSON training is same as the csv training. In fact you can use the same training
 
 Database deduplication training is also a bit similar to that of CSV.&#x20;
 
-To train the db deduplicator,  you need to change a few lines in the code ([db\_training.py](https://github.com/manoharsuggula/openg2p-demodedupe/blob/main/training/db\_training.py)). You need to fill in the "db\_conf" variable. There is an example about how to fill db\_conf in the file for your reference. Then you need to fill in the fields variable. They are the fields of interest for deduplication. You need to make sure that the fields you mention here are the columns of the csv file. There is an example in the [file](https://github.com/manoharsuggula/openg2p-demodedupe/blob/main/training/db\_training.py) for your reference.&#x20;
+To train the db deduplicator,  you need to change a few lines in the code ([db\_training.py](https://github.com/manoharsuggula/openg2p-demodedupe/blob/main/training/db\_training.py)). You need to fill in the "db\_conf" variable. There is an example about how to fill db\_conf in the file for your reference. Then you need to fill in the fields variable. They are the fields of interest for deduplication. You need to make sure that the fields you mention here are the columns of the database table. you also need to edit the SELECT\_QUERY variable. You need to write a query in such a way that the output of the query should contain the id\_field and the fields of interest. There is an example in the [file](https://github.com/manoharsuggula/openg2p-demodedupe/blob/main/training/db\_training.py) for your reference.&#x20;
 
 Similar to [CSV training](demographic-deduplicator.md#csv), here also, user will be asked to crosscheck the training. After the process is done, code will output a db\_settings and db\_training.json file. You will be needing the **db\_settings** for later. You need to add that file in the [configurations](https://github.com/manoharsuggula/openg2p-demodedupe/tree/main/configurations) folder. If there is an existing file, replace it.&#x20;
 
 ### Limitations:
 
 There are a few limitations in training. The process is getting killed if we provide data more than 1500 rows for DB training. It is because, we are training in the memory. So, try to train on data less than 1500 rows. For CSV training, it is 3500 rows.&#x20;
-
-
 
 ## Deduplication
 
@@ -154,6 +158,10 @@ async def csv_deduplicate_download(txn_id):
 When the status is completed, we can download the output csv from this api. If the status is processing, it return a message saying status is processing.
 
 The downloaded file will contain all the original columns and 2 extra columns: "cluster\_id" and "confidence score". All the records with same cluster\_id are duplicates. &#x20;
+
+#### Note:&#x20;
+
+Before using csv deduplication, you need to make sure if there are folders named csv\_input and csv\_output. If there aren't any create them.&#x20;
 
 ### Database
 
