@@ -2,6 +2,9 @@
 
 * [🏠 Overview](README.md)
 * [🏢 Architecture](architecture.md)
+* [Modules](modules/README.md)
+  * [Social Payments Account Registry (SPAR)](modules/social-payments-account-registry-spar.md)
+  * [Program & Beneficiary Management System](modules/program-and-beneficiary-management-system.md)
 * [📋 Registration](secure-registry/README.md)
   * [Registration Interfaces](secure-registry/registration-methods/README.md)
     * [ODK Collect App](secure-registry/registration-methods/offline-registration.md)
