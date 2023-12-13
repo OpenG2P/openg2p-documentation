@@ -1,3 +1,22 @@
+---
+cover: .gitbook/assets/Screenshot 2023-12-13 at 3.29.08 PM.png
+coverY: 0
+layout:
+  cover:
+    visible: true
+    size: hero
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # 🏠 Overview
 
 <div align="center">
