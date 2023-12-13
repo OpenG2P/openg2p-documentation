@@ -1,4 +1,14 @@
-# ↔ API
+---
+description: >-
+  OpenG2P REST APIs allows you to create, update and retrieve individual/group
+  information.
+---
+
+# ↔ Getting Started with OpenG2P REST APIs
+
+OpenG2P REST APIs consist of the following end points.
+
+
 
 ## User authentication
 

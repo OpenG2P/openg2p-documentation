@@ -52,7 +52,7 @@
 * [📦 Releases](releases/README.md)
   * [1.1.0](releases/1.1.0/README.md)
     * [Release Notes](releases/1.1.0/release-notes.md)
-* [↔ REST API](api.md)
+* [↔ Getting Started with OpenG2P REST APIs](api.md)
 * [⚒ Testing](testing.md)
 * [👥 Community](community/README.md)
   * [Contributing](community/contributing-to-openg2p.md)

@@ -6,7 +6,7 @@ According to the World Bank, registration is a series of three processes - intak
 
 In the OpenG2P platform, intake is carried out via offline/online forms, and recording via form submission. Verification (authentication) of registrants can be done prior to intake or after recording depending on the mode of registration (online/offline).
 
-Registration aims to collect detailed records in the [Registry](registry.md) for [Eligibility Assessment](../beneficiary-management/eligibility.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion, they become eligible to enrol in the program and are referred to as beneficiaries.
+Registration aims to collect detailed records from the [Registry](registry.md) for [Eligibility Assessment](../beneficiary-management/eligibility.md). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion, they become eligible to enrol in the program and are referred to as beneficiaries.
 
 A high-level view of the administrator-driven registration in offline mode is given below:
 
@@ -27,7 +27,7 @@ Whether applicants registered themselves individually (on-demand) or registered 
 
 **Continuous vs. time-bound**
 
-Whether applicants could register at the time of their choosing (on-demand) or had to apply in a specific time window (administrator-driven)
+Whether applicants could register at the time of their choice (on-demand) or have to apply in a specific time window (administrator-driven)
 {% endhint %}
 
 ## Registration interfaces
@@ -52,7 +52,7 @@ The registrant's information is encrypted at rest and during transit to secure t
 
 #### **Privacy-preserving**
 
-The platform allows consent forms to be filled out and recorded before starting the intake. The recorded information is not used for purposes other than the explicitly stated purpose in the consent form.
+The platform allows the applicants to fill the consent forms and record them before the intake process. The recorded information is used only for the specific purposes stated in the consent forms.
 
 #### Customizable intake
 
