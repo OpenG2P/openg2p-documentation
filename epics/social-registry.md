@@ -14,3 +14,37 @@
 * Timestamped data&#x20;
 * Change log
 * Reporting (Statistics)
+
+## DB design
+
+For attestation and change log maintain following tables:
+
+* **Change log table**
+  * id of the field
+  * changed datetime
+  * changed by
+  * previous value
+  * new value
+  * comments
+* **Attestation table**
+  * id of the field
+  * status (NEW, ATTESTED, REJECTED ..)
+  * attested by
+  * attestation datetime
+  * comments
+
+The `status` fields will come from buisness processes and real use cases.
+
+## User interface
+
+UI required for the following:
+
+* Person to login, view and update records
+* Admin to view and attest fields with comments
+* Download of CSV for chosen fields of registry
+* Upload of attested CSV
+
+## Bulk attestation
+
+We should be able to download a CSV from the registry, apply bulk attestation, and upload back the CSV.  The upload should trigger update of registry, change log and attestation table
+
