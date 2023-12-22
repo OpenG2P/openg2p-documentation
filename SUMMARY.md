@@ -62,7 +62,7 @@
 ## Guides
 
 * [📔 How-To Guides](guides/user-guides/README.md)
-  * [Install WireGuard Client on Desktop/Laptop](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
+  * [Installation Guide](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
   * [Install WireGuard Client on Android Device](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
   * [Create User and Assign Role](guides/user-guides/assign-roles-to-users.md)
   * [Create a Custom Group](guides/user-guides/create-entitlement-manager-role.md)
