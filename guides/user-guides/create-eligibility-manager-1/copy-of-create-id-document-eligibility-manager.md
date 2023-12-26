@@ -14,7 +14,7 @@ user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Configuration_ and then on _ID document Eligibility Manager._&#x20;
+2. Click on _Configuration_ and then on _ID document Eligibility Manager._
 
 <figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
@@ -26,6 +26,6 @@ user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/id-document-eligibility-manager-creation-page.png" alt=""><figcaption></figcaption></figure>
 
-5. Click the _Save_ button to save the eligibility manager and it will be listed under the eligibility manager list view page.&#x20;
+5. Click the _Save_ button to save the eligibility manager and it will be listed under the eligibility manager list view page.
 
 <figure><img src="../../../.gitbook/assets/id-document-eligibility-manager-listview-page.png" alt=""><figcaption></figcaption></figure>

@@ -1,4 +1,4 @@
-# Configure Entitlement Manager in Program
+# Configure Payment Manager in Program
 
 ## Description
 

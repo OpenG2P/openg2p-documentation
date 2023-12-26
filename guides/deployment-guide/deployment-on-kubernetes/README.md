@@ -148,4 +148,3 @@ MINIO_HOSTNAME=minio.openg2p.sandbox.net \
 * Do the following to import the dashboards present in [dashboards](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0/dashboards) folder:
   * Navigate to Kibana Stack Management -> Kibana Section -> Saved Objects.
   * Import all files in [dashboards](https://github.com/OpenG2P/openg2p-reporting/tree/1.1.0/dashboards) folder.
-

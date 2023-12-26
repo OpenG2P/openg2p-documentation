@@ -16,13 +16,13 @@ The table below enumerates various admin/user access to the entire deployment. T
 
 ## Wireguard access to users
 
-The guide below provides steps to provide Wireguard access to users' devices (called peers). Note that the access must be provided to each unique device (like a desktop, laptop, mobile phone etc). Multiple logins with same conf file is not possible.&#x20;
+The guide below provides steps to provide Wireguard access to users' devices (called peers). Note that the access must be provided to each unique device (like a desktop, laptop, mobile phone etc). Multiple logins with same conf file is not possible.
 
 {% hint style="warning" %}
 The Wireguard conf file MUST NOT be shared with any other users for security reasons.
 {% endhint %}
 
-### Steps&#x20;
+### Steps
 
 1.  Login to the Wireguard node via SSH.
 

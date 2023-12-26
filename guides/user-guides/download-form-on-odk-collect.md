@@ -32,4 +32,3 @@ This guide will help to download the program form on ODK Collect Application run
 <figure><img src="../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/odk-collect-program-home-page.png" alt=""><figcaption></figcaption></figure>
-

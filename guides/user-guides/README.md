@@ -1,2 +1,2 @@
-# 📔 User Guides
+# User Guides
 

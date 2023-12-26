@@ -4,7 +4,7 @@ This page contains steps to be performed for packaging different components and 
 
 ## Instructions
 
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging)  and go to [packaging](https://github.com/OpenG2P/openg2p-packaging/tree/develop/packaging) directory
+* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to [packaging](https://github.com/OpenG2P/openg2p-packaging/tree/develop/packaging) directory
 *   Create text file, example `my-package.txt` . This signifies a package. This file should include all openg2p modules (repositories) to be packaged into a new docker. Each line describes one repository to include, and the structure of each line looks like this.
 
     ```

@@ -14,7 +14,7 @@ user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Configuration_ and then on _Default Eligibility Manager._&#x20;
+2. Click on _Configuration_ and then on _Default Eligibility Manager._
 
 <figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
@@ -26,9 +26,8 @@ user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/default-eligibility-manager-creation-page.png" alt=""><figcaption></figcaption></figure>
 
-4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](../../../beneficiary-management/eligibility.md#domain-filters). You may specify multiple eligibility criteria.
+4. Use _+Add filter_ to set eligibility criteria using [Domain Filters](broken-reference). You may specify multiple eligibility criteria.
 
 <figure><img src="../../../.gitbook/assets/default-eligibility-manager-filter.png" alt=""><figcaption></figcaption></figure>
 
-5. Click the _Save_ button to save the eligibility manager and it will be listed under the eligibility manager list view page.&#x20;
-
+5. Click the _Save_ button to save the eligibility manager and it will be listed under the eligibility manager list view page.

@@ -2,7 +2,7 @@
 
 ## Description
 
-This Guide will help to create the [ODK MTS Connector](../../../integrations/integration-with-mosip/mts-connector.md).
+This Guide will help to create the [ODK MTS Connector](broken-reference).
 
 ## Pre-requisites
 
@@ -19,9 +19,9 @@ This Guide will help to create the [ODK MTS Connector](../../../integrations/int
 
 <figure><img src="../../../.gitbook/assets/connector-list-view-page.png" alt=""><figcaption></figcaption></figure>
 
-3. Set _MTS Input Type_ as _ODK_ and for other fields configuration please go through [ODK MTS Connector Configuration](../../../integrations/integration-with-mosip/mts-connector.md).
+3. Set _MTS Input Type_ as _ODK_ and for other fields configuration please go through [ODK MTS Connector Configuration](broken-reference).
 
 <figure><img src="../../../.gitbook/assets/mts-input-type-odk.png" alt=""><figcaption></figcaption></figure>
 
-4. Click the _Save_ button and the connector will be listed under the MTS  Connectors list view page.
+4. Click the _Save_ button and the connector will be listed under the MTS Connectors list view page.
 5. Click on _Start_ in the MTS Collectors list view page to start the created connector.

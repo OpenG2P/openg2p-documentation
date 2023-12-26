@@ -11,12 +11,12 @@ This guide provides steps to create a new ODK form for a program.
 
 ## Steps
 
-1. Login to ODK Central.&#x20;
+1. Login to ODK Central.
 2. Click on the +_New_ button to create a new project
 
 <figure><img src="../../.gitbook/assets/odk-central.png" alt=""><figcaption></figcaption></figure>
 
-2. &#x20;Provide the project name same as the program name for which creating the form.
+2. Provide the project name same as the program name for which creating the form.
 
 <figure><img src="../../.gitbook/assets/project-name.png" alt=""><figcaption></figcaption></figure>
 

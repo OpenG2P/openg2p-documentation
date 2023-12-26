@@ -7,6 +7,3 @@ There are 3 types of notification managers available that can be created and the
 1. SMS Notification Manager
 2. Email Notification Manager
 3. Fast2SMS Notification Manager
-
-
-

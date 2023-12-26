@@ -6,7 +6,7 @@ This guide provides steps to map the portal form for an existing program. This f
 
 ## Pre-requisites
 
-The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](create-a-program.md) guide.&#x20;
+The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](create-a-program.md) guide.
 
 ## Steps
 
@@ -22,7 +22,7 @@ The user must have a _Program Manager_ role and the program has been created usi
 
 <figure><img src="../../.gitbook/assets/program-configuration.png" alt=""><figcaption></figcaption></figure>
 
-4. Select the desired form and check the box _Is Portal Form._&#x20;
+4. Select the desired form and check the box _Is Portal Form._
 
 <figure><img src="../../.gitbook/assets/is-portal-form.png" alt=""><figcaption></figcaption></figure>
 
@@ -38,7 +38,7 @@ The user must have a _Program Manager_ role and the program has been created usi
 
 <figure><img src="../../.gitbook/assets/all-programs-openg2p.png" alt=""><figcaption></figcaption></figure>
 
-8. In the selected program view, select _Map Portal Form_ tab_._
+8. In the selected program view, select _Map Portal Form_ tab\_.\_
 
 <figure><img src="../../.gitbook/assets/map-portal-map.png" alt=""><figcaption></figcaption></figure>
 
