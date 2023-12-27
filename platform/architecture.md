@@ -11,7 +11,7 @@ OpenG2P has a flexible architecture that allows governments and social benefit d
 The above diagram depicts the offerings of the OpenG2P platform. These include:
 
 * [Social Registry](modules/social-registry.md)
-* [Registration Toolkit](modules/registration-tool-kit.md)
+* [Registration Toolkit](modules/registration-tool-kit/)
 * [Program & Beneficiary Management System](modules/program-and-beneficiary-management-system/)
 * [Monitoring & Reporting](modules/monitoring-and-reporting.md)
 * [G2P Cash Transfer Bridge](modules/g2p-cash-transfer-bridge.md)
