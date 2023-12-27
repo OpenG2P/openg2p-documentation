@@ -50,6 +50,4 @@ The architecture is being envisaged keeping in mind the principles laid out by D
 
 _Source: CDPI_
 
-### Timelines <a href="#_j327w3sskk15" id="_j327w3sskk15"></a>
-
-Refer to [OpenG2P Roadmap](https://docs.google.com/document/u/0/d/1PfqY6J2thWrCeJL6P\_Xg9udQg0yADI7iZUwwHI37yLk/edit).
+### &#x20;<a href="#_j327w3sskk15" id="_j327w3sskk15"></a>
