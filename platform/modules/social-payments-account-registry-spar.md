@@ -1,9 +1,10 @@
 # Social Payments Account Registry (SPAR)
 
-## Architecture
+## Concept
 
 The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Service Provider (FSP) account details like bank, mobile wallet etc. primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
 
+<figure><img src="../../.gitbook/assets/spar.jpg" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and will eventually evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI.
@@ -13,9 +14,7 @@ The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Conne
 
 * Account mapper compliant with the G2P Connect interface
 * Database of ID and Account Numbers. The IDs may be tokens like [PSUT in MOSIP.](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
-* Can host multiple IDs associated with the same account. Eg.&#x20;
-
-
+* Can host multiple IDs associated with the same account. Eg.
 
 | ID                                  | Account Number |
 | ----------------------------------- | -------------- |
@@ -36,7 +35,7 @@ Service to manage several mapping related tasks and provide APIs for users to co
 * Notification to users via email/sms
 * Onboarding of authenticators like e-Signet.
 
-### Onboarding&#x20;
+### Onboarding
 
 Onboarding of consumer apps (like OpenG2P)
 
@@ -50,21 +49,16 @@ Onboarding of consumer apps (like OpenG2P)
 
 ### Expiry handling
 
-* TBD&#x20;
+* TBD
 
-### Account validation&#x20;
+### Account validation
 
-A suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.&#x20;
+A suggested way to validate the user account number is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the account mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.
 
-Configuration: Treasury account details&#x20;
+Configuration: Treasury account details
 
 ## Self Service Portal
 
 * Front end service for Web based user interface to carry out above functions
 
-
-
-
-
 ##
-
