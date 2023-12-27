@@ -37,6 +37,7 @@
   * [Immediate Assistance On Demand](use-cases/use-cases/immediate-assistance-on-demand.md)
   * [Registration using Self Service Portal](use-cases/use-cases/registration-using-self-service-portal.md)
   * [Registration in Low Connectivity Areas](use-cases/use-cases/registration-in-low-connectivity-areas.md)
+  * [Service Provider Reimbursement](use-cases/use-cases/service-provider-reimbursement.md)
 
 ## 👨💻 DEVELOPER ZONE
 
