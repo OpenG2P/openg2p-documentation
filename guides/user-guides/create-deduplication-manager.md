@@ -34,7 +34,7 @@ The user must have the Program Manager role.
 
 <figure><img src="../../.gitbook/assets/deduplication-manager-types.png" alt=""><figcaption></figcaption></figure>
 
-7. Once the name is provided to the deduplication manager, Create and Edit buttons will appear to click on Create and Edit button to create a deduplication manager.
+7. Once the name is provided to the deduplication manager, Create and Edit buttons will appear to click on Create and Edit button to create a deduplication manager.&#x20;
 
 <figure><img src="../../.gitbook/assets/deduplication-manager-create-and-edit.png" alt=""><figcaption></figcaption></figure>
 

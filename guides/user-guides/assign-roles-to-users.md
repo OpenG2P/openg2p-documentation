@@ -2,23 +2,30 @@
 
 ## Description
 
-The guide here provides steps to create a new user and assign a role. This process is typically done by the Administrator.
+This document contains the step-by-step instruction to create a new user and assign a role. A person who has admin access can create a new user and assign a role.
 
 ## Pre-requisites
 
-The user should have an Administrator role.
+A user should have an admin access to create a new user and assign a role.
 
-## Steps
+## Procedure
 
-1. Navigate to _Settings_ using the menu bar.
+1. In the menu bar, click the icon ![](../../.gitbook/assets/image.png) and select _**Settings**_.&#x20;
+2. The _**Settings**_ screen is displayed
 
-<figure><img src="../../.gitbook/assets/settings-menu-bar.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Create a user.png" alt=""><figcaption><p>Choose Settings Screen</p></figcaption></figure>
 
-2. Click on _Users & Companies_ and then select _Users_ to reach user's list view page.
 
-<figure><img src="../../.gitbook/assets/user-and-companies.png" alt=""><figcaption></figcaption></figure>
 
-3. Click on the _Create_ button to reach user creation page.
+<figure><img src="../../.gitbook/assets/Settings screen.png" alt=""><figcaption><p>Settings Screen</p></figcaption></figure>
+
+2. Click the _**Users & Companies**_ tab and then select _**Users**_.
+
+
+
+<figure><img src="../../.gitbook/assets/Users - Dashboard.png" alt=""><figcaption></figcaption></figure>
+
+2. Click on the _Create_ button to reach user creation page.
 
 <figure><img src="../../.gitbook/assets/user-creation-page.png" alt=""><figcaption></figcaption></figure>
 

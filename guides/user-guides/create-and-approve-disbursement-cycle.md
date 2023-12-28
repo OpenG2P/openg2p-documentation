@@ -1,4 +1,4 @@
-# Create and Approve Program Cycle
+# Create and Approve Disbursement Cycle
 
 ## Description
 
@@ -24,7 +24,7 @@ The user should have a role which is configured in the _Approver Group_ under _C
 
 <figure><img src="../../.gitbook/assets/draft-cycle.png" alt=""><figcaption></figcaption></figure>
 
-4. Navigate inside the cycle using the arrow icon button beside the cycle name.
+4. Navigate inside the cycle using the arrow icon button beside the cycle name.&#x20;
 5. After clicking on _Copy Beneficiaries from Program_ button program beneficiaries will be copied into the cycle.
 
 <figure><img src="../../.gitbook/assets/cycle-detailed-view-page.png" alt=""><figcaption></figcaption></figure>
@@ -40,3 +40,4 @@ The user should have a role which is configured in the _Approver Group_ under _C
 8. Once more click on _Approve_ button to approve the cycle and the cycle status will be moved from _To Approve_ to _Approved._
 
 <figure><img src="../../.gitbook/assets/cycle-approved.png" alt=""><figcaption></figcaption></figure>
+

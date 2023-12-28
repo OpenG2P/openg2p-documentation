@@ -14,7 +14,7 @@ The user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on Configuration and then on Payment Hub EE Payment Manager.
+2. Click on Configuration and then on Payment Hub EE Payment Manager.&#x20;
 
 <figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
 
