@@ -85,13 +85,9 @@
   * [server-auth](developer-zone/modules/server-auth.md)
   * [openg2p-data](developer-zone/modules/openg2p-data.md)
   * [openg2p-esignet](developer-zone/modules/openg2p-esignet.md)
-  * [project](developer-zone/modules/project.md)
-  * [openg2p-deduplicationservice](developer-zone/modules/openg2p-deduplicationservice.md)
-  * [openg2p-verificationservice](developer-zone/modules/openg2p-verificationservice.md)
   * [openg2p-erp-docker](developer-zone/modules/openg2p-erp-docker.md)
   * [openg2p-erp-community-addon](developer-zone/modules/openg2p-erp-community-addon.md)
   * [openg2p-voucher](developer-zone/modules/openg2p-voucher.md)
-  * [openg2p-discussions](developer-zone/modules/openg2p-discussions.md)
 * [Testing](developer-zone/testing/README.md)
   * [Automation Framework](developer-zone/testing/automation-framework.md)
 

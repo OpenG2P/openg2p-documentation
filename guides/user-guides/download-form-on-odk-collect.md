@@ -7,7 +7,7 @@ This guide will help to download the program form on ODK Collect Application run
 ## Pre-requisites
 
 * The field agent should have ODK Collect Application installed.
-* The field agent should have[ form access](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/xkdlCOLME2p03rS8nG8u/\~/changes/174/guides/user-guides/provide-form-access-to-field-agent).
+* The field agent should have[ form access](https://app.gitbook.com/s/xkdlCOLME2p03rS8nG8u/guides/user-guides/provide-form-access-to-field-agent).
 
 ## Steps
 
@@ -32,4 +32,3 @@ This guide will help to download the program form on ODK Collect Application run
 <figure><img src="../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/odk-collect-program-home-page.png" alt=""><figcaption></figcaption></figure>
-
