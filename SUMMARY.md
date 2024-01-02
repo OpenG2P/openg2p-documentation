@@ -6,11 +6,11 @@
 
 * [Architecture](platform/architecture.md)
 * [Modules](platform/modules/README.md)
+  * [Program & Beneficiary Management System](platform/modules/program-and-beneficiary-management-system/README.md)
+    * [Self Service Portal](platform/modules/program-and-beneficiary-management-system/self-service-portal.md)
   * [Social Registry](platform/modules/social-registry.md)
   * [Registration Tool Kit](platform/modules/registration-tool-kit/README.md)
     * [ODK Collection App](platform/modules/registration-tool-kit/odk-collection-app.md)
-  * [Program & Beneficiary Management System](platform/modules/program-and-beneficiary-management-system/README.md)
-    * [Self Service Portal](platform/modules/program-and-beneficiary-management-system/self-service-portal.md)
   * [Social Payments Account Registry (SPAR)](platform/modules/social-payments-account-registry-spar.md)
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge.md)
   * [Monitoring and Reporting](platform/modules/monitoring-and-reporting.md)

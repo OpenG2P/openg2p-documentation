@@ -6,7 +6,6 @@
 
 ## Deployment architecture
 
-{% embed url="https://miro.com/app/board/uXjVN-o3ASY=/" %}
-Deployment architecture
+{% embed url="https://miro.com/app/board/uXjVN9jRsfU=/" %}
+Deployment Architecture
 {% endembed %}
-

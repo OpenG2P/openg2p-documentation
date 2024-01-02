@@ -15,20 +15,35 @@ The Program and Beneficiary Management System (PBMS) is the core module of OpenG
 
 ## Functionality and features
 
-* Pulling data from registries
-* Managing multiple programs
-* Program definition
+<table><thead><tr><th width="245"></th><th></th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>
+
+* Data sources
+  * Pulling data from registries
+* Program management
+  * Program definition
+  * Managing multiple programs
+* Beneficiary registry
+  * Data sharing of beneficiaries via standard interfaces
 * ID Authentication
 * Deduplication
 * Eligibility&#x20;
+  * Automatic computation of eligibility
+  * Proxy Means Test (PMT)
 * Entitlement&#x20;
-* Cash transfer
+* Disbursement
+  * Digital cash transfer via bank or mobile
+  * Voucher based disbursement
+  * Generation of Disbursement list
+* Voucher
+  * Digital vouchers for goods or services
+  * Voucher verification app
+  * Voucher reimbursement&#x20;
 * Accounting
-* RBAC
-
-## Data sources
-
-Pulling data from external registries
+  * Fund management&#x20;
+  * Reconciliation
+* Administration
+  * Role-based access control (RBAC)
+  * Multilevel approval&#x20;
 
 ## Interoperability &#x20;
 
