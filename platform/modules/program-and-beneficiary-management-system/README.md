@@ -15,35 +15,7 @@ The Program and Beneficiary Management System (PBMS) is the core module of OpenG
 
 ## Functionality and features
 
-<table><thead><tr><th width="245"></th><th></th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>
-
-* Data sources
-  * Pulling data from registries
-* Program management
-  * Program definition
-  * Managing multiple programs
-* Beneficiary registry
-  * Data sharing of beneficiaries via standard interfaces
-* ID Authentication
-* Deduplication
-* Eligibility&#x20;
-  * Automatic computation of eligibility
-  * Proxy Means Test (PMT)
-* Entitlement&#x20;
-* Disbursement
-  * Digital cash transfer via bank or mobile
-  * Voucher based disbursement
-  * Generation of Disbursement list
-* Voucher
-  * Digital vouchers for goods or services
-  * Voucher verification app
-  * Voucher reimbursement&#x20;
-* Accounting
-  * Fund management&#x20;
-  * Reconciliation
-* Administration
-  * Role-based access control (RBAC)
-  * Multilevel approval&#x20;
+<table><thead><tr><th width="201">Features</th><th>Functionality</th></tr></thead><tbody><tr><td>Data sources</td><td>Pulling data from registries</td></tr><tr><td>Program management</td><td><ul><li>Program definition</li><li>Managing multiple programs</li></ul></td></tr><tr><td>Beneficiary registry</td><td>Data sharing of beneficiaries via standard interfaces</td></tr><tr><td>ID Authentication</td><td></td></tr><tr><td>Deduplication</td><td></td></tr><tr><td>Eligibility</td><td><ul><li>Automatic computation of eligibility</li><li>Proxy Means Test (PMT)</li></ul></td></tr><tr><td>Entitlement </td><td></td></tr><tr><td>Disbursement</td><td><ul><li>Digital cash transfer via bank or mobile</li><li>Voucher based disbursement</li><li>Generation of disbursement list</li></ul></td></tr><tr><td>Voucher</td><td><ul><li>Digital vouchers for goods or services</li><li>Voucher verification app</li><li>Voucher reimbursement </li></ul></td></tr><tr><td>Accounting</td><td>Fund management Reconciliation</td></tr><tr><td>Administration</td><td><ul><li>Role-based access control (RBAC)</li><li>Multilevel approval </li></ul></td></tr></tbody></table>
 
 ## Interoperability &#x20;
 
