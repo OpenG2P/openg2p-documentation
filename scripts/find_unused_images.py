@@ -47,11 +47,18 @@ def filter_files(assets, extensions):
        
 all_assets = list_files(ASSETS)
 filtered_assets = filter_files(all_assets, ['.drawio'])
+# Create a shell script file to delete the unwanted files
+delete_file = 'delete-files.sh'
+df = open(delete_file, 'wt')
+df.write('#!/bin/sh\n')
 for asset in filtered_assets:
+    full_path = asset
     asset = os.path.basename(asset).strip()
     results = grep_text(ROOT, asset)
     if len(results) == 0:
         print(f'Not found: {asset}')
-
+        df.write(f'rm -f "{full_path}"\n')
+print(f'Created {delete_file}. Run `sh {delete_file}` on command prompt')
+df.close()
 
 
