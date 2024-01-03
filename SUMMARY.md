@@ -22,6 +22,7 @@
     * [ODK Collection App](platform/modules/registration-tool-kit/odk-collection-app.md)
   * [Social Payments Account Registry (SPAR)](platform/modules/social-payments-account-registry-spar.md)
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge.md)
+  * [File-based Payment Backend ](platform/modules/file-based-payment-backend.md)
   * [Monitoring and Reporting](platform/modules/monitoring-and-reporting.md)
 * [Privacy and Security](platform/privacy-and-security.md)
 * [Interoperability](platform/interoperability/README.md)
