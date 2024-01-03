@@ -31,6 +31,10 @@
 * [📄 Documents : S3 Bucket Integration](epics/documents-s3-bucket-integration.md)
 * [Demographic Deduplicator](epics/demographic-deduplicator.md)
 
+***
+
+* [Multi-Companies](multi-companies.md)
+
 ## Testing
 
 * [Automation Framework](testing/automation-framework.md)
