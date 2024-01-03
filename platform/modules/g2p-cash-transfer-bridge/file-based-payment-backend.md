@@ -10,7 +10,7 @@ TBD
 
 ## Architecture
 
-<figure><img src="../../../.gitbook/assets/gpb-file-backend-architecture.png" alt=""><figcaption><p>GPB File-based Payment Backend Architecture</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/gpb-file-backend-architecture.png" alt=""><figcaption></figcaption></figure>
 
 ## Concepts
 
