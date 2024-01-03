@@ -11,3 +11,15 @@ Monitoring the status of programs and registries is vital for program administra
 <figure><img src="../../.gitbook/assets/reporting-infra (1).png" alt=""><figcaption></figcaption></figure>
 
 Details of this infrastructure may be found [here](https://github.com/mosip/reporting).
+
+## New reporting infra
+
+{% hint style="info" %}
+**THIS IS WORK IN PROGRESS**
+
+1. Apache Superset (with Postgres) for data analysis and visualization
+2. Kibana + Elasticsearch for parsing log data and showing various sliced and diced data. (this replaces by OpenSearch)
+3. Grafana + Prometheus for real time resource monitoring
+
+Apache Superset is fully free (unlike Metabase) and seems to have a bigger community and features. It perhaps requires more development support than Metabase.
+{% endhint %}
