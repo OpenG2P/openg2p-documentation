@@ -18,7 +18,7 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-<figure><img src="../../.gitbook/assets/gpb-architecture.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/gpb-architecture.png" alt=""><figcaption></figcaption></figure>
 
 ## Design
 
@@ -43,7 +43,7 @@ The table is expected to contain millions of records and a history of past trans
 * What are the available payment backends right now:
   * Simple Mpesa Payment Backend
   * Mojaloop Payment Backend
-  * [File-based Payment Backend](g2p-payments-bridge.md)
+  * [File-based Payment Backend](../g2p-payments-bridge.md)
 
 ## Installation Guide
 

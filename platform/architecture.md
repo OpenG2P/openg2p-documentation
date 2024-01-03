@@ -14,7 +14,7 @@ The above diagram depicts the offerings of the OpenG2P platform. These include:
 * [Registration Toolkit](modules/registration-tool-kit/)
 * [Program & Beneficiary Management System](modules/program-and-beneficiary-management-system/)
 * [Monitoring & Reporting](modules/monitoring-and-reporting.md)
-* [G2P Cash Transfer Bridge](modules/g2p-cash-transfer-bridge.md)
+* [G2P Cash Transfer Bridge](modules/g2p-cash-transfer-bridge/)
 * [Social Payments Account Registry](modules/social-payments-account-registry-spar.md)
 
 All the modules are designed to be installed and used standalone.  However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
