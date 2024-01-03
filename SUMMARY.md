@@ -15,6 +15,8 @@
     * [Disbursement](platform/modules/program-and-beneficiary-management-system/disbursement-cycles.md)
     * [Self Service Portal](platform/modules/program-and-beneficiary-management-system/self-service-portal.md)
     * [Notifications](platform/modules/program-and-beneficiary-management-system/notifications.md)
+    * [RBAC](platform/modules/program-and-beneficiary-management-system/role-based-access-control.md)
+    * [i18n](platform/modules/program-and-beneficiary-management-system/internationalization-i18n.md)
   * [Social Registry](platform/modules/social-registry.md)
   * [Registration Tool Kit](platform/modules/registration-tool-kit/README.md)
     * [ODK Collection App](platform/modules/registration-tool-kit/odk-collection-app.md)
@@ -103,7 +105,7 @@
 * [Contributing](community/contributing-to-openg2p.md)
 * [Code of Conduct](community/code-of-conduct.md)
 
-## 📔 Guides
+## 📔 GUIDES
 
 * [User Guides](guides/user-guides/README.md)
   * [Install WireGuard Client on Desktop/Laptop](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
