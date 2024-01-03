@@ -17,8 +17,6 @@
   * [Social Payments Account Registry (SPAR)](epics/payments/social-payment-account-registry-spar.md)
   * [G2P Payments Orchestrator](epics/payments/g2p-payments-orchestrator.md)
   * [💰 OpenSPP Voucher Payment](epics/payments/voucher-based-payment.md)
-  * [G2P Payments Bridge](epics/payments/g2p-payments-bridge/README.md)
-    * [GPB: File-based Payment Backend](epics/payments/g2p-payments-bridge/g2p-payments-bridge.md)
 * [Ability To Assign Programs To Program Manager](epics/ability-to-assign-programs-to-program-manager.md)
 * [App: On demand assistance](epics/app-on-demand-assistance/README.md)
   * [Beneficiaries link in program list](epics/app-on-demand-assistance/beneficiaries-link-in-program-list.md)
