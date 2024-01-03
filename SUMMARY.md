@@ -1,6 +1,7 @@
 # Table of contents
 
 * [🏠 Home](README.md)
+  * [OpenG2P Key Manager Integration Guide](readme/openg2p-key-manager-integration-guide.md)
 
 ## 🖼 Epics
 
