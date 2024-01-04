@@ -100,7 +100,8 @@
   * [openg2p-voucher](developer-zone/repositories/openg2p-voucher.md)
 * [Testing](developer-zone/testing/README.md)
   * [Automation Framework](developer-zone/testing/automation-framework.md)
-* [Upcoming Features](developer-zone/upcoming-features.md)
+* [Upcoming Features](developer-zone/upcoming-features/README.md)
+  * [Multi-tenancy in PBMS](developer-zone/upcoming-features/multi-tenancy-in-pbms.md)
 
 ## 👩💻 COMMUNITY
 
