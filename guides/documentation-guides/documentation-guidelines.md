@@ -16,6 +16,14 @@ This guide provides basic guidelines for you to write neat documentation.
 * Use clear and crisp images - the images should not appear blurred when seen on full screen.
 * If you are adding image files, make sure all file names are lowercase with hyphens. E.g `architecture-diagram.png`.
 * The filename for images should follow the naming convention of every word in lower case, and words separated by hyphens i.e. view-all-programs.png.
+* For work-in-progress features/functions, you may mention the same under the title as shown below:
+
+<div align="left">
+
+<figure><img src="../../.gitbook/assets/work-in-progress.png" alt="" width="309"><figcaption></figcaption></figure>
+
+</div>
+
 * Check spelling and grammatical corrections using tools such as Grammarly.
 
 ## User guides
