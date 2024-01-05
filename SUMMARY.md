@@ -6,8 +6,6 @@
 
 * [Program and Beneficiary Management System 2.0](epics/program-management-2.0.md)
 * [Document Sharing Infra](epics/document-sharing-infra.md)
-* [🏥 Self Service Portal](epics/self-service-portal/README.md)
-  * [eSignet Login](epics/self-service-portal/esignet-login.md)
 * [Voucher](epics/voucher.md)
 * [📈 Platform Enhancements](epics/platform-enhancements/README.md)
   * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
