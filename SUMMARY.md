@@ -8,7 +8,6 @@
 * [Document Sharing Infra](epics/document-sharing-infra.md)
 * [🏥 Self Service Portal](epics/self-service-portal/README.md)
   * [eSignet Login](epics/self-service-portal/esignet-login.md)
-  * [Apply for a Program](epics/self-service-portal/apply-for-a-program.md)
 * [Voucher](epics/voucher.md)
 * [📈 Platform Enhancements](epics/platform-enhancements/README.md)
   * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
