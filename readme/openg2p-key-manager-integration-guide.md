@@ -53,15 +53,13 @@ Distribute public keys for use in secure communication channels within the OpenG
 
 Security Best Practices:
 
-### Key Rotation:
-
-
+### Key Rotation
 
 Regularly rotate cryptographic keys to mitigate the risk of compromise.
 
 Ensure a seamless transition during key rotation to avoid disruptions.
 
-### Access Control: 
+### Access Control 
 
 ### Implement strict access controls to limit access to the Key Manager.
 
