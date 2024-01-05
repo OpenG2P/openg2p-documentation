@@ -2,37 +2,50 @@
 
 ## Description
 
-This guide provides steps to create a custom group and add the users to this group. Users included in this group get the group's access rights and permissions.
+This guide provides step-by-step instruction to create a custom group and add the users to this group. Users get the group's access rights and permissions, those who are included in this group.
 
 ## Pre-requisites
 
-The user must have a Program Administrator role. See the [Create User and Assign Role](assign-roles-to-users.md) guide.
+A user must have an Administrator role.&#x20;
 
-## Steps
+## Procedure
 
-1. Navigate to _Settings_ using the menu bar.
+1. In the menu bar, click the icon ![](../../.gitbook/assets/image.png) and select _**Settings**_.
+2. The _**Settings**_ screen is displayed
+3. In the left menu bar, click the _**General Settings**_
+4. Scroll down to the _**Developer Tools**_ section, click the link _**Activate the developer mode**_
 
-<figure><img src="../../.gitbook/assets/settings-odoo role.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/settings-odoo role.PNG" alt=""><figcaption><p>Choose Settings Screen</p></figcaption></figure>
 
-2. Click on _Activate the developer mode._
+<figure><img src="../../.gitbook/assets/settings-develpoer mode.png" alt=""><figcaption><p>Settings Screen</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/settings-develpoer mode.png" alt=""><figcaption></figcaption></figure>
+5. The developer mode is activated
+6. In the _**Settings**_ screen, click _**User & Companies**_ and click the option _**Groups**_
+7. The _**Groups**_ screen is displayed. Click the _**Create**_ button.
 
-3. Click on the _Users and Companies_ menu and navigate to _Groups_.
+<figure><img src="../../.gitbook/assets/odoo-groups (1).png" alt=""><figcaption><p>User &#x26; Companies - Users</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/odoo-groups (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/odoo-create.PNG" alt=""><figcaption><p>Groups - screen</p></figcaption></figure>
 
-4. Click on _Create_.
-
-<figure><img src="../../.gitbook/assets/odoo-create.PNG" alt=""><figcaption></figcaption></figure>
-
-5. Select _Application_. In the figure below, _Openg2p Module Access_ was selected from the drop-down list. Add the Name.
+8. The _**Groups/New**_ screen is displayed.
 
 <figure><img src="../../.gitbook/assets/group-application.PNG" alt=""><figcaption></figcaption></figure>
 
-6. Tick the check box _Share Group_ if you want to allow users of this group to grant additional access to other users who might not be in the original group.
+In _**Groups/New**_ screen, the available features and their descriptions are:
+
+<table><thead><tr><th width="245">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Application</td><td><p>Select the appropriate option in the drop-down. </p><p>For example, here <em><strong>OpenG2P Module Access</strong></em> is selected in the drop-down</p></td></tr><tr><td>Name </td><td><p>Enter the role of the user </p><p>For example, the role of the user is entered as <em><strong>Administrator</strong></em></p></td></tr><tr><td>Share Group</td><td><p>Check the Share Group option. </p><p>Note: Check this option if you want to allow users of this group to grant additional access to other users who might not be in the original group.</p></td></tr></tbody></table>
+
+9. Click the _**Users**_ tab.&#x20;
 
 <figure><img src="../../.gitbook/assets/group-share-group.PNG" alt=""><figcaption></figcaption></figure>
+
+In _**Users tab**_, the available features and their descriptions are:
+
+| Feature | Description |
+| ------- | ----------- |
+| Name    |             |
+|         |             |
+|         |             |
 
 7. To add users to this group, click on _Add a Line._ A pop-up window appears to allow the selection of the users from a list. You can view and manage the users assigned to the group.
 
