@@ -1,8 +1,8 @@
 ---
-description: Work in progress
+description: WORK IN PROGRESS
 ---
 
-# ⚠ Multi-tenancy in PBMS
+# Multi-tenancy in PBMS
 
 ## Concept
 

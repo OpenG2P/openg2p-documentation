@@ -1,3 +1,7 @@
+---
+description: WORK IN PROGRESS
+---
+
 # Key Manager
 
 ## Introduction
@@ -25,21 +29,22 @@ The Key Manager in OpenG2P serves as a centralized entity responsible for the se
 ### Key generation and storage
 
 1. Utilize the Key Manager to generate strong cryptographic keys.
-1. Safely store keys, potentially leveraging Hardware Security Modules (HSMs) for added protection.
+2. Safely store keys, potentially leveraging Hardware Security Modules (HSMs) for added protection.
 
 ### Database encryption
 
 1. Employ keys from the Key Manager to encrypt sensitive data in databases.
-1. Ensure that only authorized entities with the appropriate keys can access and decrypt the data.
+2. Ensure that only authorized entities with the appropriate keys can access and decrypt the data.
 
-### Voucher generation security 
+### Voucher generation security
+
 1. Implement secure voucher generation processes using keys managed by the Key Manager.
-1. Protect against fraudulent activities by securing voucher generation operations.
+2. Protect against fraudulent activities by securing voucher generation operations.
 
 ### Private/public key pair handling
 
 1. Manage private keys securely to prevent unauthorized access.
-1. Distribute public keys for use in secure communication channels within the OpenG2P ecosystem.
+2. Distribute public keys for use in secure communication channels within the OpenG2P ecosystem.
 
 ## Security best practices
 
@@ -48,7 +53,7 @@ The Key Manager in OpenG2P serves as a centralized entity responsible for the se
 * Regularly rotate cryptographic keys to mitigate the risk of compromise.
 * Ensure a seamless transition during key rotation to avoid disruptions.
 
-### Access control 
+### Access control
 
 Define roles and permissions for users interacting with cryptographic keys.
 
@@ -64,4 +69,5 @@ Consider integrating with Hardware Security Modules for enhanced physical and lo
 ## Docker compose services
 
 ## Conclusion
+
 Integrating the Key Manager into OpenG2P provides a robust foundation for securing crucial databases and managing cryptographic keys. By following best practices and leveraging the capabilities of the Key Manager, OpenG2P ensures the confidentiality, integrity, and authenticity of sensitive information.

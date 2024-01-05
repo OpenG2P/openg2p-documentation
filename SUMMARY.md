@@ -102,7 +102,7 @@
   * [Automation Framework](developer-zone/testing/automation-framework.md)
 * [Upcoming Features](developer-zone/upcoming-features/README.md)
   * [Key Manager](developer-zone/upcoming-features/key-manager.md)
-  * [⚠ Multi-tenancy in PBMS](developer-zone/upcoming-features/multi-tenancy-in-pbms.md)
+  * [Multi-tenancy in PBMS](developer-zone/upcoming-features/multi-tenancy-in-pbms.md)
 
 ## 👩💻 COMMUNITY
 
