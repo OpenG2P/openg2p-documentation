@@ -1,2 +1,0 @@
-# GSMA Mobile Money
-
