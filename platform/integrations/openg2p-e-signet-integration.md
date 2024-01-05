@@ -12,3 +12,14 @@ Here, OpenG2P is a Relying Party and the Authentication System is MOSIP.  Learn 
 
 Refer to the guide [Integrate MOSIP e-Signet](../../guides/user-guides/integrate-mosip-e-signet.md).
 
+## eSignet Login
+
+[eSignet](https://docs.esignet.io) is a [OpenID Connect](https://openid.net/connect/) implementation which aims to offer a simple yet powerful mechanism for end users to identify themselves to avail of online services and also share their profile information.
+
+OpenG2P integrates with MOSIP IdP over eSignet for the Self Service portal registration and login. This enables any MOSIP Id holders can easily use the service of OpenG2P through the secure bio-metric and other means of authentication.&#x20;
+
+Following are the dependent modules in openG2P to integrate eSignet
+
+* server-auth
+* openg2p-auth
+
