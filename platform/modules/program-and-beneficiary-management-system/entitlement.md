@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Entitlement is the quantity of benefit that a beneficiary is entitled to receive. This is the money that a beneficiary will receive via either direct bank transfer, mobile wallet, cash at the counter, vouchers or other disbursement mechanisms. Entitlement is defined for each [cycle](disbursement-cycles.md).
+Entitlement is the quantity of benefit that a beneficiary is entitled to receive. This is the money that a beneficiary will receive via either direct bank transfer, mobile wallet, cash at the counter, vouchers or other disbursement mechanisms. Entitlement is defined for each [cycle](disbursement-cycles/).
 
 ## Entitlement Manager
 
@@ -14,15 +14,15 @@ Each Entitlement Manager has one or more approving authority roles. The approvin
 
 #### Create an Entitlement Manager type
 
-OpenG2P supports two types of Entitlement Managers: Default Entitlement Managers and Voucher Entitlement Managers. The Voucher Entitlement Manager configures an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template in addition to the configurations provided by the Default Entitlement Manager. To learn the steps to create an Entitlement Manager type, click [here](broken-reference).
+OpenG2P supports two types of Entitlement Managers: Default Entitlement Managers and Voucher Entitlement Managers. The Voucher Entitlement Manager configures an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template in addition to the configurations provided by the Default Entitlement Manager. To learn the steps to create an Entitlement Manager type, click [here](broken-reference/).
 
 #### Configure Entitlement Manager in a program
 
-In this step, the program administrators add the Entitlement Managers created in the second step to a program. To learn the steps to configure Entitlement Managers in a program, click [here](broken-reference).
+In this step, the program administrators add the Entitlement Managers created in the second step to a program. To learn the steps to configure Entitlement Managers in a program, click [here](broken-reference/).
 
 ## Entitlement details
 
-OpenG2P entitlement managers allow program administrators to configure entitlement details under these broad categories.&#x20;
+OpenG2P entitlement managers allow program administrators to configure entitlement details under these broad categories.
 
 #### Entitlement amount
 
@@ -36,7 +36,7 @@ The Entitlement Manager can have one or more stages of approval, and the program
 
 OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration. To understand the workflow for entitlement vouchers, click [here](../workflows/on-demand-assistance.md).
 
-The Entitlement Manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files. To learn the steps to configure an entitlement voucher, click [here](broken-reference).
+The Entitlement Manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files. To learn the steps to configure an entitlement voucher, click [here](broken-reference/).
 
 ## Approval process
 
@@ -56,11 +56,10 @@ To learn the steps for multi-stage approval, click [here](../guides/user-guides/
 
 [Create a Custom Group](../guides/user-guides/create-entitlement-manager-role.md)
 
-[Create Entitlement Manager Type](broken-reference)&#x20;
+[Create Entitlement Manager Type](broken-reference/)
 
-[Configure Entitlement Manager in the Program](broken-reference)
+[Configure Entitlement Manager in the Program](broken-reference/)
 
-[Configure Entitlement Voucher](broken-reference)
+[Configure Entitlement Voucher](broken-reference/)
 
 [Multi-Stage Approval](../guides/user-guides/multi-stage-approval.md)
-
