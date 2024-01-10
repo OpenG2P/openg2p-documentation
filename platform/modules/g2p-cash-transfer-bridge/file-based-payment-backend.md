@@ -10,7 +10,7 @@ TBD
 
 ## Architecture
 
-{% embed url="https://miro.com/app/board/uXjVN9ZDJgc=/" %}
+<figure><img src="../../../.gitbook/assets/file-based-payment-backend.jpg" alt=""><figcaption></figcaption></figure>
 
 ## Concepts
 
