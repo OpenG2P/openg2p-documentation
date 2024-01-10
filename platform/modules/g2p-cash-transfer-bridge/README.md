@@ -2,11 +2,11 @@
 
 ## Concept
 
-The G2P Cash Transfer Bridge (GPB) fits in the payment chain as shown below.
+The G2P Cash Transfer Bridge (GCTB) fits in the payment chain as shown below.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpb-payment-chain.png" alt=""><figcaption></figcaption></figure>
 
-The module is envisaged to exist as an independent module in bridging the gap between a G2P system and a bank to initiate large-scale G2P cash transfers. Being specific to G2P transfers, (and not P2G, P2P, P2M etc), the module promises to be low cost, simple in design, easy to install and highly performant as real-time fast transfers are not a requirement in most social benefit transfer scenarios. However, the volume of transfers is expected to be large.
+The module is envisaged to exist as an independent module in bridging the gap between a G2P system and a bank to initiate large-scale G2P cash transfers. Being specific to G2P transfers, (and not P2G, P2P, P2M, etc), the module promises to be low cost, simple in design, easy to install, and highly performant as real-time fast transfers are not a requirement in most social benefit transfer scenarios. However, the volume of transfers is expected to be large.
 
 The module will support the following functionalities at a high level
 
@@ -20,11 +20,11 @@ The module will support the following functionalities at a high level
 
 <figure><img src="../../../.gitbook/assets/gpb-architecture.png" alt=""><figcaption></figcaption></figure>
 
-## Design
+## Concepts
 
 ### Disbursement API Controller
 
-This functional block receives cash transfer requests from upstream systems like OpenG2P via the G2P Connect Disbursement APIs. The block parses the incoming request and writes in the DB. The Disbursement API is assumed to be Synchronous such that after DB write, 200 OK is returned to the caller. The disbursement request is expected to be split into batches by the upstream system depending on the system's optimum performance in terms of CPU and Memory.
+This functional block receives cash transfer requests from upstream systems like OpenG2P via the G2P Connect Disbursement APIs. The block parses the incoming request and writes in the DB. The Disbursement API is assumed to be Synchronous such that after DB writes, 200 OK is returned to the caller. The disbursement request is expected to be split into batches by the upstream system depending on the system's optimum performance in terms of CPU and Memory.
 
 When a Status API is called by the upstream system, this block reads the data from DB and returns the status of requested transactions. The output may need to be 'paginated' depending on the volume of data returned.
 
@@ -38,50 +38,45 @@ All the requests are persisted in a DB like Postgres along with the status of ea
 
 The table is expected to contain millions of records and a history of past transactions. Indexing of columns will be critical for performance. Besides, the previous records may be 'archived'. This could be achieved via horizontal partitioning. The management of DB in this regard needs to be worked out during implementation.
 
-### Payment Backends. (Describe what is payment backend and what it does)
+### Payment Backends
 
-* What are the available payment backends right now:
-  * Simple Mpesa Payment Backend
-  * Mojaloop Payment Backend
-  * [File-based Payment Backend](../g2p-payments-bridge.md)
+TODO - Describe what is a payment backend and what it does.
 
-## Installation Guide
+Currently available payment backends:
 
-### Installation on Kubernetes
+* Simple Mpesa Payment Backend
+  * Description - TODO
+* Mojaloop Payment Backend
+  * Description - TODO
+* [File-based Payment Backend](../g2p-payments-bridge.md)
 
-* Refer to Deployment guide for deployment instructions.
-  * Pre Installation Configuration
-  * Installation Steps
-  * Post Installation
+## Configuration & Deployment Guide
 
-### Installation Locally
+Configuration Guide - TODO Link
 
-* TBD
+[GCTB Kubernetes Deployment guide](../../../guides/deployment-guide/deployment-on-kubernetes/#g2p-cash-transfer-bridge-deployment)
+
+GCTB Local Installation Guide - TODO
 
 ## Usage Guide
 
-* Call Disburse api. Note down Txn id
-* Call Disburse Status API with Txn id
+GCTB API Usage Guide - TODO: (Call Disburse API. Note down Txn ID. Call Disburse Status API with Txn ID)
 
-## Detailed Description
+## Technical Concepts
 
-* Each Concept from the above Concepts Sections, if it has any technical concepts defined here.
-* ID Translation Service:
-  * It can talk to G2P Connect ID Account Mapper.
-* Multiplexer:
-  * has some n things. TBD.
-* Backend:
-  * TBD
+[Technical Concepts of GCTB](../../../developer-zone/repositories/g2p-cash-transfer-bridge.md)
 
 ## API Docs
 
 ### REST API
 
-Use Stoplight Integration for API docs.
+* Stoplight Link for [G2P Cash Transfer Bridge](https://openg2p.stoplight.io/docs/g2p-cash-transfer-bridge).
+* Swagger UI using [OpenAPI for GCTB](https://validator.swagger.io/?url=https://raw.githubusercontent.com/OpenG2P/g2p-cash-transfer-bridge/develop/api-docs/generated/openapi.json).
+* Swagger UI for [G2P-Connect Disbursement](https://validator.swagger.io/?url=https://raw.githubusercontent.com/g2p-connect/specs/draft/release/yaml/disburse\_core\_api\_v1.0.0.yaml) (which GCTB implements.)
 
 ### Status codes
 
-Mapping of status codes returned by the bank and as expected by upstream G2P systems need to be worked out. At this point of time, the following codes are defined by G2P Connect:
+Mapping of status codes returned by the bank and as expected by upstream G2P systems need to be worked out. At the moment, the following codes are defined by G2P Connect:
 
 ```
 rjct.reference_id.invalid
@@ -94,4 +89,6 @@ rjct.schedule_ts.invalid
 rjct.currency_code.invalid 
 ```
 
-## Available Payment Backends
+## Source Code
+
+* GCTB Source Code - [https://github.com/OpenG2P/g2p-cash-transfer-bridge](https://github.com/OpenG2P/g2p-cash-transfer-bridge).
