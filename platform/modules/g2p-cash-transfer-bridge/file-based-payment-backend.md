@@ -10,7 +10,7 @@ TBD
 
 ## Architecture
 
-<figure><img src="../../../.gitbook/assets/gpb-file-backend-architecture.png" alt=""><figcaption></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVN9ZDJgc=/" %}
 
 ## Concepts
 

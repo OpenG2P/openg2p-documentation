@@ -18,7 +18,9 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-<figure><img src="../../../.gitbook/assets/gpb-architecture.png" alt=""><figcaption></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVN9az5KU=/" %}
+G2P cash transfer bridge - architecture
+{% endembed %}
 
 ## Concepts
 
