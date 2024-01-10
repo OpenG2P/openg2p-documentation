@@ -22,4 +22,4 @@ Encryption of data is achieved with production-grade Key Manager module. Learn m
 
 ## Secure deployment
 
-OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](deployment/)
+OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](../deployment/)

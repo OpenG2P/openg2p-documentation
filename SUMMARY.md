@@ -21,6 +21,7 @@
       * [Voucher](platform/modules/program-and-beneficiary-management-system/disbursement-cycles/voucher.md)
     * [Self Service Portal](platform/modules/program-and-beneficiary-management-system/self-service-portal.md)
     * [Document Management](platform/modules/program-and-beneficiary-management-system/document-management.md)
+    * [Multi-tenancy](platform/modules/program-and-beneficiary-management-system/multi-tenancy-in-pbms.md)
     * [Notifications](platform/modules/program-and-beneficiary-management-system/notifications.md)
     * [Accounting](platform/modules/program-and-beneficiary-management-system/accounting.md)
     * [Administration](platform/modules/program-and-beneficiary-management-system/administration/README.md)
@@ -34,7 +35,8 @@
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge/README.md)
     * [File-based Payment Backend](platform/modules/g2p-cash-transfer-bridge/file-based-payment-backend.md)
   * [Monitoring and Reporting](platform/modules/monitoring-and-reporting.md)
-* [Privacy and Security](platform/privacy-and-security.md)
+* [Privacy and Security](platform/privacy-and-security/README.md)
+  * [Key Manager](platform/privacy-and-security/key-manager.md)
 * [Interoperability](platform/interoperability/README.md)
   * [G2P Connect](platform/interoperability/g2p-connect.md)
 * [Integrations](platform/integrations/README.md)
@@ -109,9 +111,6 @@
   * [openg2p-esignet](developer-zone/repositories/openg2p-esignet.md)
 * [Testing](developer-zone/testing/README.md)
   * [Automation Framework](developer-zone/testing/automation-framework.md)
-* [Upcoming Features](developer-zone/upcoming-features/README.md)
-  * [Key Manager](developer-zone/upcoming-features/key-manager.md)
-  * [Multi-tenancy in PBMS](developer-zone/upcoming-features/multi-tenancy-in-pbms.md)
 
 ## 👩💻 COMMUNITY
 

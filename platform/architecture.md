@@ -23,7 +23,7 @@ All the modules are designed to be installed and used standalone.  However, the 
 
 **Interoperability** of components  across DPGs is being established by implementing interfaces defined by emerging standards like G2P Connect. [Lean more >>](interoperability/).
 
-The platform design and deployment embodies **privacy and security** of user data. [Learn more >>.](privacy-and-security.md)
+The platform design and deployment embodies **privacy and security** of user data. [Learn more >>.](privacy-and-security/)
 
 Inclusion is fundamental to OpenG2P's thought process. Learn more >>.
 
