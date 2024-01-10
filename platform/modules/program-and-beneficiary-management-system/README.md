@@ -36,6 +36,16 @@ The underlying database is Postgres.
 
 ## Privacy and security of data
 
+TBD
+
+## User login and authorization
+
+Users of PBMS system can login via following login providers
+
+1. Odoo&#x20;
+2. Keycloak&#x20;
+3. National ID (integration via eSignet)
+
 ## Configuration
 
 PBMS is highly configurable and several functionality and parameters can be enabled/disabled for your application.  Refer to configuration of each functionality under the respective topics.

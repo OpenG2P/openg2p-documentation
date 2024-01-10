@@ -6,7 +6,7 @@ The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) clust
 
 ## Prerequisites
 
-* K8s cluster is set up as given [here](cluster-setup.md).
+* K8s cluster is set up as given [here](k8s-infrastructure-setup/cluster-setup.md).
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 
@@ -35,7 +35,7 @@ MINIO_HOSTNAME=minio.openg2p.sandbox.net \
     ./install.sh
     ```
 
-### OpenG2P
+### PBMS
 
 * Prerequisites:
   * PostgreSQL \[REQUIRED]
@@ -57,7 +57,7 @@ MINIO_HOSTNAME=minio.openg2p.sandbox.net \
         OPENG2P_ODOO_IMAGE_TAG=<docker image tag> \
             ./install.sh
         ```
-* Post installation: Refer to [Post Install Configuration](../post-install-instructions.md)
+* Post installation: Refer to [Post Install Configuration](pbms-deployment/post-install-instructions.md)
 
 ### ODK
 

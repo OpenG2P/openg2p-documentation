@@ -1,6 +1,8 @@
 # Packaging OpenG2P Docker
 
-This page contains steps to be performed for packaging different components and addons, of OpenG2P and similar, into a docker image.
+## Purpose
+
+This page contains steps to be performed for packaging different components and add-ons, of PBMS into a docker image. These instructions should be helpful for System Integrators who would be adding custom Odoo add-ons and creating a package.
 
 ## Instructions
 
