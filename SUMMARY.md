@@ -121,7 +121,6 @@
   * [Install WireGuard Client on Desktop/Laptop](guides/user-guides/install-wireguard-client-on-desktop-laptop.md)
   * [Install WireGuard Client on Android Device](guides/user-guides/install-wireguard-app-and-activate-tunnel.md)
   * [Create User and Assign Role](guides/user-guides/assign-roles-to-users.md)
-  * [Create a Custom Group](guides/user-guides/create-entitlement-manager-role.md)
   * [Create Program](guides/user-guides/create-a-program.md)
   * [Create Self-Service Portal Form](guides/user-guides/create-portal-form.md)
   * [Map Self-Service Portal Form](guides/user-guides/map-self-service-portal-form.md)
