@@ -73,6 +73,7 @@
     * [G2P Registry: Base](developer-zone/repositories/openg2p-registry/openg2p-module-doc-template.md)
     * [G2P Registry: Rest API](developer-zone/repositories/openg2p-registry/g2p-registry-rest-api.md)
   * [openg2p-program](developer-zone/repositories/openg2p-program/README.md)
+    * [g2p\_program\_reimbursement](developer-zone/repositories/openg2p-program/g2p\_program\_reimbursement.md)
     * [g2p\_entitlement\_in\_kind](developer-zone/repositories/openg2p-program/g2p-entitlement-in-kind.md)
     * [G2P SelfServicePortal](developer-zone/repositories/openg2p-program/g2p-selfserviceportal.md)
     * [OpenG2P Program Payment: G2P Connect Payment Manager](developer-zone/repositories/openg2p-program/openg2p-program-payment-g2p-connect-payment-manager.md)
