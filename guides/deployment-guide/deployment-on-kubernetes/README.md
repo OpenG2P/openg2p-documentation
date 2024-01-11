@@ -2,11 +2,26 @@
 
 ## Introduction
 
-The guide here provides instructions to deploy OpenG2P on Kubernetes (K8s) cluster.
+The guide here provides instructions to deploy OpenG2P components on Kubernetes (K8s) cluster (Refer to [Deployment Architecture](../../../platform/deployment/deployment-architecture.md)).  The following components are installed:
+
+| Module/Component                                                | Comments                                                                                 |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| <p></p><p>Kubernetes cluster</p><p>Rancher</p><p>NFS server</p> | Required for all components as this is the common infrastructure used by all.            |
+| PostgreSQL                                                      | Required for all components. A single server instance may be used housing all databases. |
+| MinIO                                                           | Required for PBMS and GCTB only                                                          |
+| Keycloak                                                        | Required for PBMS, Social Registry                                                       |
+| MOSIP Key Manager                                               | Required for PBMS, Social Registry                                                       |
+| ODK Central                                                     | Required for Registration Toolkit                                                        |
+| e-Signet                                                        | Required for SPAR and optionally for PBMS                                                |
+| Kafka                                                           | Required for Monitoring & Reporting                                                      |
+| Elasticsearch                                                   | Required for Monitoring & Reporting                                                      |
+| OpenG2P PBMS                                                    | Helm chart that installs Odoo, SMTP server                                               |
+| OpenG2P SPAR                                                    | Helm chart that installs ID Mapper, Self Service Portal, SPAR Service                    |
+| OpenG2P GCTB                                                    | Helm chart                                                                               |
 
 ## Prerequisites
 
-* K8s cluster is set up as given [here](k8s-infrastructure-setup/cluster-setup.md).
+* K8s infrastructure is set up as given [here](k8s-infrastructure-setup/).
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 
