@@ -21,7 +21,7 @@ All the modules are designed to be installed and used standalone.  However, the 
 
 ## Guiding principles
 
-**Interoperability** of components  across DPGs is being established by implementing interfaces defined by emerging standards like G2P Connect. [Lean more >>](interoperability/).
+**Interoperability** of components  across DPGs is being established by implementing interfaces defined by emerging standards like G2P Connect. [Lean more >>](interoperability.md).
 
 The platform design and deployment embodies **privacy and security** of user data. [Learn more >>.](privacy-and-security/)
 

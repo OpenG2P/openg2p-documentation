@@ -8,9 +8,9 @@ description: WORK IN PROGRESS
 
 To allow multiple departments/organisations to use the same instance of OpenG2P while maintaining separation of data, control and access, the multi-company feature in Odoo is being explored that allows users to manage and operate multiple companies within a single Odoo instance. A user can be logged in to multiple companies at once. This allows the user to access information from multiple companies and create or edit records in a multi-company environment.
 
-## Multi-Companies feature in OpenG2P
+## Multi-companies feature in Odoo
 
-The companies feature in OpenG2P can be used by users to associate with multiple companies. This functionality allows users in OpenG2P to establish connections with and operate across multiple companies, providing a flexible and wide-ranging approach to managing various private matters within the system.
+The companies feature in Odoo can be used by users to associate with multiple companies. This functionality allows users in OpenG2P to establish connections with and operate across multiple companies, providing a flexible and wide-ranging approach to managing various private matters within the system.
 
 \
 The purpose of incorporating multiple companies feature within a single platform is to facilitate the maintenance of distinct data sets. Users can segregate registry data by selecting a specific company from the drop-down menu. For instance, if the user selects the companies for any individual /group that particular individual/ group will be visible only in that particular company. If the user does not choose any specific company, the registry data will be reflected across all companies.
@@ -18,7 +18,7 @@ The purpose of incorporating multiple companies feature within a single platform
 \
 The program data can be organized in alignment with the registry by incorporating a "companies" field on the program creation page. In this field, users have the option to select a specific company from the drop-down menu, determining the visibility of the program within that chosen company. This feature enables users to associate programs with specific companies and manage program data according to company preferences.
 
-## How to Manage Companies
+## How to manage companies
 
 Multiple companies can be created from the Settings menu. Users can create multiple companies, irrespective of the debug mode. The user can go to settings and under user and companies, select the companies option to create a new one.
 
