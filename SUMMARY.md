@@ -9,7 +9,7 @@
   * [Program & Beneficiary Management System](platform/modules/program-and-beneficiary-management-system/README.md)
     * [Program Management](platform/modules/program-and-beneficiary-management-system/program-management.md)
     * [Beneficiary Registry](platform/modules/program-and-beneficiary-management-system/beneficiary-registry.md)
-    * [ID Authentication](platform/modules/program-and-beneficiary-management-system/id-authentication.md)
+    * [ID Verification](platform/modules/program-and-beneficiary-management-system/id-verification.md)
     * [Eligibility](platform/modules/program-and-beneficiary-management-system/eligibility/README.md)
       * [Proxy Means Test](platform/modules/program-and-beneficiary-management-system/eligibility/proxy-means-test.md)
     * [Deduplication](platform/modules/program-and-beneficiary-management-system/deduplication.md)
