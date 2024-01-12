@@ -37,9 +37,7 @@ Program administrators configure eligibility criteria to enroll the eligible reg
 
 The OpenG2P registry allows multiple entries for the same registrant. Hence once the registrants are enrolled in the program as beneficiaries, they should be deduplicated. OpenG2P Deduplication Managers can deduplicate the beneficiaries based on foundational/functional IDs, and phone numbers.
 
-### Program cycles
 
-Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles. Using OpenG2P Program Manager and Cycle Manager, the program administrators can create multiple cycles and disburse benefits.
 
 ### Entitlements
 

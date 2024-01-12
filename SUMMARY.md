@@ -8,6 +8,7 @@
 * [Modules](platform/modules/README.md)
   * [Program & Beneficiary Management System](platform/modules/program-and-beneficiary-management-system/README.md)
     * [Program Management](platform/modules/program-and-beneficiary-management-system/program-management.md)
+    * [Beneficiary management](platform/modules/program-and-beneficiary-management-system/beneficiary-management.md)
     * [Beneficiary Registry](platform/modules/program-and-beneficiary-management-system/beneficiary-registry.md)
     * [ID Verification](platform/modules/program-and-beneficiary-management-system/id-verification.md)
     * [Eligibility](platform/modules/program-and-beneficiary-management-system/eligibility/README.md)
