@@ -2,56 +2,30 @@
 
 ## Introduction
 
-OpenG2P platform's program management module is built to solve the challenges faced by program administrators in their day-to-day operations.&#x20;
+OpenG2P platform's program management enables program managers to define and manage multiple programs. The program managers can
 
-Some of the common challenges are:
+* Define and manage multiple programs
+* Manage program lifecycle&#x20;
+* Target both individual and groups&#x20;
+* Define program disbursement cycles
 
-* Error of exclusion
-* Implementing a progressive approach
-* Categorical targeting
-* Deciding the entitlement amount
-* &#x20;Monopoly in enrolment and entitlement
-* Timely notifications
+## Program lifecycle
 
-### Error of exclusion
+\<diagram>
 
-The error of exclusion usually happens during registrants' enrollment. For example, a first come first serve approach is easy to monitor and audit, but it may favour registrants with better awareness, approach, and access. Furthermore, beneficiaries' income, household size and composition, address, etc. can change over time, but they may not be deemed eligible due to the lack of regular updates.
-
-### Implementing a progressive approach
-
-A progressive approach works towards the betterment of beneficiaries in the long term. One example is an unemployment assistance program encompassing training, skill development, and job assistance instead of handing out cash benefits to unemployed registrants. This approach is challenging to implement as multiple programs should be monitored in parallel.
-
-### Categorical targeting
-
-Often, program administrators need to target populations from a specific geographic location, people with debilitating disabilities, or people above/below a certain age. Administrators need filtering criteria to glean this information from existing registry records instead of conducting another costly and time-consuming registration drive.
-
-### Deciding the entitlement amount
-
-Depending upon the beneficiaries' profile, the benefit amount may vary. Determining eligibility and entitlement often requires different information. For example, a program for child nutrition may enroll two families based on total income but may allot entitlement benefits based on the number of children.
-
-### Monopoly in enrolment and entitlement
-
-Program enrolment and entitlement decisions can be monopolized by a single entity, and hence it is a good practice to digitize and distribute these decisions in a program.
-
-### Timely notifications
-
-Not notifying beneficiaries about their enrolment and entitlement can leave them confused, and undermines credibility and transparency. This step is often neglected in administrative-driven systems.
-
-## Entity relationships in a program
+## Program configurations
 
 A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, and entitlement. The diagram below shows the relationships of these managers with the program.
 
 \<image to be incorporated>
 
-## OpenG2P program management interface
+## Multiple programs
 
-OpenG2P platform has a backend office application for program administrators. The platform allows multiple programs to run in parallel. These programs enroll the registrants from the same registry database. Its program management module offers a rich set of functions for enrolment, eligibility criteria, program cycles, entitlement, and notifications.
+* Define and configure multiple programs
+* Data source for these programs
+* Control of each of the programs -- role base access control
 
-## OpenG2P program management process
-
-The figure below shows a high-level representation of the enrollment management process.
-
-### \<image to be incorporated>
+## Program disbursement cycles
 
 ### Eligibility criteria
 
