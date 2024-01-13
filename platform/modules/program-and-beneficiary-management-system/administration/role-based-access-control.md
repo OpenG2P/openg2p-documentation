@@ -2,7 +2,7 @@
 
 ## Introduction
 
-OpenG2P platform defines role-based access control (RBAC) to authorize users of the OpenG2P platform to access views and menus according to their roles. RBAC also prevents unauthorized access to the OpenG2P system and safeguards beneficiary data from malicious actors.
+OpenG2P platform defines role-based access control (RBAC) to authorize its users. The user can access the views and menus of the OpenG2P platform based on their roles. RBAC also prevents unauthorized access to the OpenG2P system and safeguards beneficiary data from malicious actors.
 
 ### User types
 
@@ -14,7 +14,9 @@ OpenG2P platform has three types of users:
 
 ### Pre-defined groups
 
-In the OpenG2P platform, a role is implemented by defining a group, and the users playing the role are added to the group. Each user can be added to multiple groups. OpenG2P provides a large variety of pre-defined groups (roles). The users can be directly added to these groups (roles). To learn the steps to assign a user to a pre-defined group, click [here](../../guides/user-guides/assign-roles-to-users.md).
+In the OpenG2P platform, a role is implemented by defining a group, and the users playing the role are added to the group. Each user can be added to multiple groups. OpenG2P provides a large variety of pre-defined groups (roles). The users can be directly added to these groups (roles).&#x20;
+
+To learn the steps to assign a user to a pre-defined group, click [here](../../guides/user-guides/assign-roles-to-users.md).
 
 <figure><img src="../../.gitbook/assets/pre-defined-groups%20(1).PNG" alt=""><figcaption></figcaption></figure>
 
@@ -22,7 +24,7 @@ In the OpenG2P platform, a role is implemented by defining a group, and the user
 OpenG2P pre-defined group name start with the prefix OpenG2P. All the other groups are provided by underlying Odoo platform.
 {% endhint %}
 
-These are the commonly used roles pre-defined via groups in OpenG2P:
+The commonly used roles pre-defined via groups in OpenG2P are:
 
 * **Administrator:** The users in this group are system administrators and superusers who assign user access to other users in the OpenG2P platform. These users must install the Odoo platform on their machines, which will be used to provide access.
 * **Registrar:** Every user who needs access to the registry views and menus should be assigned to this group.
@@ -43,13 +45,17 @@ The administrators can also create custom groups from scratch or inherit from pr
 
 To learn the steps to create a custom group, click [here](../../guides/user-guides/create-entitlement-manager-role.md).
 
+\<image to be incorporated>
+
 <figure><img src="../../.gitbook/assets/inherited-groups.PNG" alt=""><figcaption></figcaption></figure>
 
 The figure below shows the access rights for a group (role) that requires access to payment accounts.
 
+\<image to be incorporated>
+
 <figure><img src="../../.gitbook/assets/rbac-access-rights.PNG" alt=""><figcaption></figcaption></figure>
 
-## How-to Guides
+## Related links
 
 [Create User and Assign Role](../../guides/user-guides/assign-roles-to-users.md)
 

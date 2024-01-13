@@ -14,9 +14,11 @@ OpenG2P supports three types of Eligibility Managers.
 * ID document Eligibility Manager
 * Phone number Eligibility Manager
 
+\<Define the functionality of each type of Eligibility Manager>
+
 ## Create Eligibility Manager
 
-In the OpenG2P program, there are two steps to configure eligibility criteria.&#x20;
+In the OpenG2P program, the two steps process to configure eligibility criteria are:&#x20;
 
 1. Program administrators must create Eligibility Manager(s) from the three types of Eligibility Manager supported by OpenG2P
 2. After Eligibility Manager is created, Program administrators add Eligibility Manager to a program

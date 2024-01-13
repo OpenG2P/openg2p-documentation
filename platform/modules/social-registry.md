@@ -1,3 +1,7 @@
+---
+description: Work in progress
+---
+
 # Social Registry
 
 ## Introduction

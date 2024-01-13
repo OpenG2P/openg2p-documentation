@@ -8,7 +8,9 @@ The app also has an integrated QR code scanning application to scan the ID card 
 
 ## ODK
 
-ODK is an open-source toolkit that uses offline forms to collect data. ODK Collect is the client-side app, and ODK Central is the server-side app. Learn more about ODK [here](https://docs.getodk.org/).
+ODK is an open-source toolkit that uses offline forms to collect data. ODK Collect is the client-side app, and ODK Central is the server-side app.
+
+Learn more about ODK [here](https://docs.getodk.org/).
 
 ## Registration process
 

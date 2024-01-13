@@ -7,7 +7,7 @@ Proxy Means Test (PMT) is a method widely used by governments and international 
 {% hint style="info" %}
 ## World Bank Formula
 
-One of the prominent formulas utilized in PMT calculations is the World Bank Formula, a significant contribution to poverty assessment and social assistance allocation. The formula's precision lies in its capacity to accurately identify the most vulnerable households. By incorporating multiple characteristics, it mitigates the risks of misclassifications and ensures resources reach those in genuine need. The formula is calculated using these steps:
+One of the prominent formulas utilized in PMT calculations is the World Bank (WB) Formula, a significant contribution to poverty assessment and social assistance allocation. The formula's precision lies in its capacity to accurately identify the most vulnerable households. By incorporating multiple characteristics, it mitigates the risks of misclassifications and ensures resources reach those in genuine need. The formula is calculated using these steps:
 
 #### Regression model
 
@@ -22,13 +22,15 @@ The regression analysis generates coefficients for each independent variable. Ea
 A proxy score is calculated for each household using the formula and indicates the household's relative income level. The proxy score is divided into different income brackets, and a corresponding threshold is established for each bracket. Households falling below a certain threshold are identified as eligible for social assistance or other targeted intervention
 {% endhint %}
 
-##
-
 ## WB PMT formula configuration
 
 Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](../../guides/user-guides/configure-proxy-mean-test.md).
 
+\<link is broken, hyperlink to configure computed fields>
+
 The platform supports extensive yet easy configurations for calculating proxy scores from these computed fields. The figure below shows the configuration of observable characteristics and corresponding coefficients (weightage).
+
+\<image to be incorporated>
 
 <figure><img src="../../.gitbook/assets/pmt_configuration%20(1).png" alt=""><figcaption></figcaption></figure>
 
@@ -45,6 +47,8 @@ The WB PMT score is calculated from the weighted sum of these fields.
 
 The PMT score can be used either stand alone or in conjunction with other eligibility criteria as shown in the figure below.
 
+\<image to be incorporated>
+
 <figure><img src="../../.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
 
 #### Advantages of using PMT with WB formula
@@ -56,7 +60,7 @@ The implementation of the Proxy Means Test with the World Bank Formula offers se
 3. Data-driven Decision-making: The World Bank Formula's statistical foundation encourages evidence-based decision-making, enhancing accountability and transparency in poverty alleviation efforts.
 4. Adaptability: PMT's reliance on observable characteristics makes it adaptable to diverse contexts, accommodating variations in economies and cultures.
 
-## How-To Guides
+## Related link
 
 [Configure Proxy Means Test](../../guides/user-guides/configure-proxy-mean-test.md)
 
