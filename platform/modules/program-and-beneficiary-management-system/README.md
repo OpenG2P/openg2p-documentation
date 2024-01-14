@@ -34,6 +34,8 @@ PBMS is based on Odoo which is an open source ERP software.  PBPM extends module
 
 The underlying database is Postgres.
 
+\<high level diagram on tech architecture>
+
 ## Privacy and security of data
 
 TBD
