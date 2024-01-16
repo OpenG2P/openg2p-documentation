@@ -66,7 +66,58 @@ Define roles and permissions for users interacting with cryptographic keys.
 
 Consider integrating with Hardware Security Modules for enhanced physical and logical key protection.
 
-## Docker compose services
+## Integration process&#x20;
+
+The integration process involves making calls to the KeyManager service deployed in the Kubernetes cluster of OpenG2P. Keycloak provides an access token, which is used as a header for each API request. The primary functionalities are encapsulated within the `g2p_encryption` module.
+
+**Key Components:**
+
+1. **Keycloak Access Token:**
+   * Obtained from Keycloak authentication.
+   * Serves as an authorization header for API requests
+2. **KeyManager Service:**
+   * Deployed in the Kubernetes cluster of OpenG2P.
+   * Exposes various API endpoints for cryptographic operations.
+3. **g2p\_encryption Module:**
+   * Central module handling cryptographic functionalities.
+   * Initiates API calls to the KeyManager service.**Process Steps:**
+
+**Process Steps:**
+
+1. **Obtain Keycloak Access Token:**
+   * Authentication with Keycloak to acquire an access token.
+2. **Initialize g2p\_encryption Module:**
+   * Set up an instance of the `g2p_encryption` module within the OpenG2P environment.
+3. **API Requests to KeyManager:**
+   * Utilize the access token as a header for API requests.
+   * Make calls to various KeyManager API endpoints for cryptographic operations.
+4. **KeyManager API Endpoints:**
+   * The KeyManager service, deployed in the Kubernetes cluster, exposes endpoints for tasks like JWT signing and certificate retrieval.
+5. **Integration with Odoo:**
+   * The `g2p_encryption` module acts as a bridge between KeyManager and Odoo.
+   * Provides an interface for Odoo to perform secure operations using the services offered by KeyManager.
+
+**Advantages:**
+
+* **Centralized Cryptographic Operations:**
+  * All cryptographic operations are centralized within the `g2p_encryption` module, promoting modular and maintainable code.
+* **Secure Communication:**
+  * Utilizing Keycloak access tokens ensures secure communication between OpenG2P and KeyManager.
+* **Scalability:**
+  * Kubernetes deployment facilitates scalability and efficient management of the KeyManager service.
+
+**Future Considerations:**
+
+* **Error Handling:**
+  * Implement robust error handling mechanisms to gracefully manage exceptions during API calls.
+* **Logging and Monitoring:**
+  * Incorporate logging and monitoring features for tracking API requests and identifying potential issues.
+
+
+
+## Documentation
+
+Refer the following links for deeper understanding of the API's structure [https://docs.mosip.io/1.1.5/apis/kernel-apis](https://docs.mosip.io/1.1.5/apis/kernel-apis) and [https://mosip.github.io/documentation/1.2.0/kernel-keymanager-service.html](https://mosip.github.io/documentation/1.2.0/kernel-keymanager-service.html)
 
 ## Conclusion
 
