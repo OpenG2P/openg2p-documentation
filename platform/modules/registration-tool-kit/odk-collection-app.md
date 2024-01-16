@@ -22,7 +22,7 @@ The three steps involved in the registration process using the ODK Collect App a
 
 #### ODK Central Configuration
 
-A program administrator/manager performs the configuration.  The program administrator/manager must do these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
+A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
 * Program creation - To learn the steps, click [here](../../../guides/user-guides/create-a-program.md).
 * Create ODK form in ODK Central - To learn the steps, click [here](../../../guides/user-guides/create-odk-form.md).
@@ -52,7 +52,7 @@ Based on the business scenario, a program administrator must create an [ODK MTS 
 **Business Scenario 1:**
 
 1. A program administrator creates an ODK MTS Connector for individual/group to map the ODK forms available in the ODK Central.
-2. The ODK MTS Connector regularly queries the ODK Central for submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them.
+2. The ODK MTS Connector regularly queries the ODK Central for the submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them.
 3. The ODK MTS Connector then calls OpenG2P Rest APIs to populate the OpenG2P registry with the individual/group KYC data.&#x20;
 
 &#x20;      _Note: The OpenG2P registry accepts the individual/group KYC data only in JSON format._
@@ -68,13 +68,11 @@ Based on the business scenario, a program administrator must create an [ODK MTS 
 
 To learn the steps to create an ODK MTS Connector, click [here](../../../guides/user-guides/create-mts-connector/create-odk-mts-connector.md).
 
-
-
 ## Demo video
 
 {% embed url="https://youtu.be/0jjkq4SoONM" %}
 
-## How-To Guides
+## Related links
 
 * [Create Program](../../../guides/user-guides/create-a-program.md)
 * [Create ODK Form](../../../guides/user-guides/create-odk-form.md)
