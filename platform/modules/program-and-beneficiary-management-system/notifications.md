@@ -22,28 +22,28 @@ OpenG2P uses the in-built [Qweb Templates](https://www.odoo.com/documentation/16
 
 \<image to be incorporated>
 
-<figure><img src="../.gitbook/assets/notification-template.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/notification-template.png" alt=""><figcaption></figcaption></figure>
 
 The two steps to configure the notifications are:
 
 1. The program administrator must create at least one Notification Manager for each Notification Manager type required.&#x20;
 
-To learn more about this step, click [here](../guides/user-guides/create-notification-manager-types/).
+To learn more about this step, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-notification-manager-types/README.md).
 
 2. After the Notification Manager is created, the Program administrator adds the Notification Manager to the program.&#x20;
 
-To learn more about this step, click [here](../guides/user-guides/configure-notification-manager.md).
+To learn more about this step, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-notification-manager.md).
 
 ## Send notifications
 
 Sending the notifications is a one-click operation. Based on the state of the program - enrolment, entitlement, payment, etc. - the corresponding notification is sent by the Notification Manager types configured for the program.
 
-To learn more about this step, click [here](../guides/user-guides/send-notifications-to-individual-registrants.md).
+To learn more about this step, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/send-notifications-to-individual-registrants.md).
 
 ## Related links
 
-[Create Notification Manager Types](../guides/user-guides/create-notification-manager-types/)
+[Create Notification Manager Types](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-notification-manager-types/README.md)
 
-[Create Notification Manager under Program](../guides/user-guides/configure-notification-manager.md)
+[Create Notification Manager under Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-notification-manager.md)
 
-[Send Notifications to Individual Registrants](../guides/user-guides/send-notifications-to-individual-registrants.md)
+[Send Notifications to Individual Registrants](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/send-notifications-to-individual-registrants.md)

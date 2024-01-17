@@ -22,12 +22,12 @@ The program data can be organized in alignment with the registry by incorporatin
 
 Multiple companies can be created from the Settings menu. Users can create multiple companies, irrespective of the debug mode. The user can go to settings and under user and companies, select the companies option to create a new one.
 
-<figure><img src="../../../developer-zone/upcoming-features/.gitbook/assets/image%20(45).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/developer-zone/upcoming-features/.gitbook/assets/image%20(45).png" alt=""><figcaption></figcaption></figure>
 
 Once the company is created, all the newly created companies are visible on the upper bar. All the allowed companies to the user are available here. The user can access these companies by selecting any one of them from the drop-down menu located on the header.
 
-<figure><img src="../../../developer-zone/upcoming-features/.gitbook/assets/image%20(50).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/developer-zone/upcoming-features/.gitbook/assets/image%20(50).png" alt=""><figcaption></figcaption></figure>
 
 The user has the ability to designate allowed and default companies. Only the selected companies will be visible in the portal, and the user can toggle exclusively between those designated companies.
 
-<figure><img src="../../../developer-zone/upcoming-features/.gitbook/assets/image%20(49).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/developer-zone/upcoming-features/.gitbook/assets/image%20(49).png" alt=""><figcaption></figcaption></figure>

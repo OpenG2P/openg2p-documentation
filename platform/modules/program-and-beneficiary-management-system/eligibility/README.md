@@ -39,6 +39,6 @@ The image represents eligibility criteria with two filters to check, if the,
 
 ## Related links
 
-[Create Eligibility Manager Types](../../guides/user-guides/create-eligibility-manager-1/)
+[Create Eligibility Manager Types](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-eligibility-manager-1/README.md)
 
-[Create an Eligibility Manager Under the Program](../../guides/user-guides/create-eligibility-manager-1/)
+[Create an Eligibility Manager Under the Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-eligibility-manager-1/README.md)

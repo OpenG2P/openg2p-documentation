@@ -6,5 +6,4 @@ There are 3 types of eligibility managers available that can be created and then
 
 1. [Default Eligibility Manager](create-default-eligibility-manager.md)
 2. [ID Document Eligibility Manager](copy-of-create-id-document-eligibility-manager.md)
-3. [Phone Number Eligibility Manager](../create-eligibility-manager-types/create-phone-number-eligibility-manager.md)
-
+3. [Phone Number Eligibility Manager](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/guides/user-guides/create-eligibility-manager-types/create-phone-number-eligibility-manager.md)

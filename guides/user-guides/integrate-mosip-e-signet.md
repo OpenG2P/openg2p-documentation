@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](../../integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider.
+This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/integrations/integration-with-mosip/integration-with-e-signet.md) as the authentication provider.
 
 ## Pre-requisites
 

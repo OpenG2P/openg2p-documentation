@@ -18,15 +18,15 @@ How does the integration work? The M-Pesa account is mapped to the person's phon
 
 This diagram here encapsulates the flow and components for an M-Pesa integration. It is assumed that MOSIP is the ID issuer here, and that the M-Pesa account is created at the time of issuance of ID, and is mapped to the person's phone number instantly.
 
-<figure><img src="../.gitbook/assets/mpesa.jpg" alt=""><figcaption><p>Flow to demonstrate M-Pesa integration with OpenG2P where it begins with MOSIP ID issuance</p></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/.gitbook/assets/mpesa.jpg" alt=""><figcaption><p>Flow to demonstrate M-Pesa integration with OpenG2P where it begins with MOSIP ID issuance</p></figcaption></figure>
 
-## Deployment&#x20;
+## Deployment
 
 Instructions to deploy M-Pesa integration:
 
 1. Download the kube-config file from the rancher of a particular environment
 2. Set kube-config to that particular environment in your local dev environment
-3. Clone this repo into your local environment - [https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa)&#x20;
+3. Clone this repo into your local environment - [https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/mpesa)
 4. Edit the `config.yaml` file with appropriate database location, username and password
 5. Edit the `virtualService.yaml` file with appropriate hostname.
 6. Run the below commands:

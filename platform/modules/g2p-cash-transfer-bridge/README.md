@@ -54,7 +54,7 @@ Currently available payment backends:
   * Description - TODO
 * Mojaloop Payment Backend
   * Description - TODO
-* [File-based Payment Backend](../g2p-payments-bridge.md)
+* [File-based Payment Backend](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md)
 
 ## Configuration & Deployment Guide
 

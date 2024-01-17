@@ -17,15 +17,15 @@ The three-step process to configure an Entitlement Manager in a program are:
 
 1. Each Entitlement Manager has one or more approving authority roles. The approving authority role is played by a group of users who can approve the entitlements. Hence the approving authority role is configured as a group in the OpenG2P platform.
 
-&#x20;       To learn the steps to configure an approving authority role, click [here](../guides/user-guides/create-entitlement-manager-role.md).
+&#x20;       To learn the steps to configure an approving authority role, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-entitlement-manager-role.md).
 
-2. Voucher Entitlement Managers configure an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template in addition to the configurations provided by the Default Entitlement Managers.
+2. Voucher Entitlement Managers configure an [entitlement voucher](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/eligibility-and-enrolment/payment-types/voucher.md) template in addition to the configurations provided by the Default Entitlement Managers.
 
-&#x20;       To learn the steps to create an Entitlement Manager type, click [here](broken-reference/).
+&#x20;       To learn the steps to create an Entitlement Manager type, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md).
 
 3. After the Entitlement Managers is created, Program administrators add the Entitlement Managers to a program.
 
-&#x20;       To learn the steps to configure Entitlement Managers in a program, click [here](broken-reference/).
+&#x20;       To learn the steps to configure Entitlement Managers in a program, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md).
 
 ## Entitlement details
 
@@ -41,15 +41,15 @@ These configurations include entitlement amounts, transfer fees, currency, amoun
 
 #### Approving authority
 
-The Entitlement Manager can have one or more stages of approval, and the Program administrators can assign one of the approving authorities for each stage of approval. [Immediate Individual Assistance On-Demand](../workflows/on-demand-assistance.md) workflow describes an example involving multi-stage approval.
+The Entitlement Manager can have one or more stages of approval, and the Program administrators can assign one of the approving authorities for each stage of approval. [Immediate Individual Assistance On-Demand](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/workflows/on-demand-assistance.md) workflow describes an example involving multi-stage approval.
 
 #### Entitlement voucher
 
-OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](../eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration. To understand the workflow for entitlement vouchers, click [here](../workflows/on-demand-assistance.md).
+OpenG2P provides an easy-to-use UI for creating an [entitlement voucher](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/eligibility-and-enrolment/payment-types/voucher.md) template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration. To understand the workflow for entitlement vouchers, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/workflows/on-demand-assistance.md).
 
 The Entitlement Manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files.&#x20;
 
-&#x20;To learn the steps to configure an entitlement voucher, click [here](broken-reference/).
+&#x20;To learn the steps to configure an entitlement voucher, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md).
 
 ## Approval process
 
@@ -57,7 +57,7 @@ The approval process can be single-stage or multi-stage based on the approval se
 
 \<image to be incorporated>
 
-<figure><img src="../.gitbook/assets/approval-process.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/approval-process.png" alt=""><figcaption></figcaption></figure>
 
 The multi-stage approval typically follows this process:
 
@@ -65,16 +65,16 @@ The multi-stage approval typically follows this process:
 * Subsequent approving authorities will skip the process of enrolment. However, they also inspect and verify beneficiary documents, and add their assessments.
 * The last approving authority completes the approval process and generates an entitlement voucher.
 
-To learn the steps for multi-stage approval, click [here](../guides/user-guides/multi-stage-approval.md).
+To learn the steps for multi-stage approval, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/multi-stage-approval.md).
 
 ## Related links
 
-[Create a Custom Group](../guides/user-guides/create-entitlement-manager-role.md)
+[Create a Custom Group](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-entitlement-manager-role.md)
 
-[Create Entitlement Manager Type](broken-reference/)
+[Create Entitlement Manager Type](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md)
 
-[Configure Entitlement Manager in the Program](broken-reference/)
+[Configure Entitlement Manager in the Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md)
 
-[Configure Entitlement Voucher](broken-reference/)
+[Configure Entitlement Voucher](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/program-and-beneficiary-management-system/broken-reference/README.md)
 
-[Multi-Stage Approval](../guides/user-guides/multi-stage-approval.md)
+[Multi-Stage Approval](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/multi-stage-approval.md)

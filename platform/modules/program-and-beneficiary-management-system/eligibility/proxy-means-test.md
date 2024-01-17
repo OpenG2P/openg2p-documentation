@@ -24,7 +24,7 @@ A proxy score is calculated for each household using the formula and indicates t
 
 ## WB PMT formula configuration
 
-Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](../../guides/user-guides/configure-proxy-mean-test.md).
+Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-proxy-mean-test.md).
 
 \<link is broken, hyperlink to configure computed fields>
 
@@ -32,7 +32,7 @@ The platform supports extensive yet easy configurations for calculating proxy sc
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/pmt_configuration%20(1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/pmt_configuration%20(1).png" alt=""><figcaption></figcaption></figure>
 
 The WB PMT score is calculated from the weighted sum of these fields.
 
@@ -49,7 +49,7 @@ The PMT score can be used either stand alone or in conjunction with other eligib
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
 
 #### Advantages of using PMT with WB formula
 
@@ -62,6 +62,6 @@ The implementation of the Proxy Means Test with the World Bank Formula offers se
 
 ## Related link
 
-[Configure Proxy Means Test](../../guides/user-guides/configure-proxy-mean-test.md)
+[Configure Proxy Means Test](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-proxy-mean-test.md)
 
 ####

@@ -51,10 +51,10 @@ On the whole, these features provide flexibility for the Program administrators 
 
 ## Related links
 
-[Configure ID Types](../guides/user-guides/configure-id-types.md)
+[Configure ID Types](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-id-types.md)
 
-[Create Deduplication Manager Types](../guides/user-guides/create-deduplication-manager-types/)
+[Create Deduplication Manager Types](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-deduplication-manager-types/README.md)
 
-[Create Deduplication Manager under Program](../guides/user-guides/create-deduplication-manager.md)
+[Create Deduplication Manager under Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-deduplication-manager.md)
 
 ##

@@ -6,7 +6,7 @@ This guide provides steps for multiple stages of approving a beneficiary's entit
 
 ## Pre-requisites
 
-The user is a Program Administrator and has configured multiple stages of entitlement and assigned an entitlement manager for each stage. Learn more about creating multiple stages of entitlement [here](broken-reference/).
+The user is a Program Administrator and has configured multiple stages of entitlement and assigned an entitlement manager for each stage. Learn more about creating multiple stages of entitlement [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/guides/user-guides/broken-reference/README.md).
 
 ## Steps
 
@@ -66,7 +66,7 @@ Note: Only the entitlement manager for the first stage can verify eligibility, e
 
 <figure><img src="../../.gitbook/assets/approve-entitlement-multi-stage.png" alt=""><figcaption></figcaption></figure>
 
-12. All the steps above have to be repeated by each entitlement manager configured in the _Approval Settings_ in the _Entitlement Manager_. To learn more about _Approval Settings_, refer to the [Multi-Stage Configuration](broken-reference/) guide.
+12. All the steps above have to be repeated by each entitlement manager configured in the _Approval Settings_ in the _Entitlement Manager_. To learn more about _Approval Settings_, refer to the [Multi-Stage Configuration](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/guides/user-guides/broken-reference/README.md) guide.
 
 Note: The status of entitlement is set according to the approval stage.
 

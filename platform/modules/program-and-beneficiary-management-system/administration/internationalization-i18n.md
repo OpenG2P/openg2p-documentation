@@ -10,7 +10,7 @@ OpenG2P platform users can view the language locale codes, ISO codes, URL codes,
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/languages%20(1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/languages%20(1).PNG" alt=""><figcaption></figcaption></figure>
 
 ### Translation terms
 
@@ -18,7 +18,7 @@ The language-specific translations can be imported from a .csv, .po or .pot file
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/translated-terms.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/translated-terms.PNG" alt=""><figcaption></figcaption></figure>
 
 Platform users can also download a .pot file that contains all the missing translations. Once the translation terms are added, the file can be imported into the platform.
 
@@ -28,13 +28,13 @@ The platform can support multiple languages at the same time. Users can select t
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/language-preference.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/language-preference.png" alt=""><figcaption></figcaption></figure>
 
 If the language is active, then the platform shows the translated texts. The image below shows the menu and labels in Arabic. Some of the terms are in English, as the translation terms are not available for these terms.
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/arabic-language.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/arabic-language.PNG" alt=""><figcaption></figcaption></figure>
 
 ### Language support for website portals
 
@@ -44,10 +44,10 @@ The image below shows that English, French, and Tagalog are selected for the web
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/language-for-portal.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/language-for-portal.PNG" alt=""><figcaption></figcaption></figure>
 
 All the languages selected on this page will be available from the website. The image below shows that Filipino has been selected as the language.
 
 \<image to be incorporated>
 
-<figure><img src="../../.gitbook/assets/language-in-portal.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/language-in-portal.png" alt=""><figcaption></figcaption></figure>

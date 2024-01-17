@@ -37,7 +37,7 @@ This block will be like a cronjob that runs periodically and does the following
 * Create an output file specific to the format accepted by a bank.
 * Write the file in the File Storage
 * Update the status of all processed instructions as FILED.
-* Update status in the [File Outgoing](../g2p-payments-bridge.md#2.-file-outgoing) table as NEW.
+* Update status in the [File Outgoing](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#2.-file-outgoing) table as NEW.
 
 This functional block may be implemented as a script that is run as cronjob. The features will be implemented:
 
@@ -47,7 +47,7 @@ This functional block may be implemented as a script that is run as cronjob. The
 * Entire processing and updates in DB should happen atomically. In case there is a failure, the script should be able to discard the incomplete file and start all over again.
 * The batch size should be configurable
 * The file format will be specific to a bank. The script should be designed such that several file formats can be configured without having to make major changes in the code.
-* Configuration for bucket ID, location, and credentials for accessing [File Store](../g2p-payments-bridge.md#file-store).
+* Configuration for bucket ID, location, and credentials for accessing [File Store](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#file-store).
 
 ### File Store
 
@@ -61,7 +61,7 @@ This will typically be large S3-compliant storage (like MinIO or AWS S3) to stor
 The File Dispatcher is like a cronjob that does the following:
 
 * Picks an unprocessed (un-sent) file from the bucket and using bank interface transfers the file to the bank. This could be a mechanism like SFTP. This would be very bank-specific.
-* Update status in [File Outgoing](../g2p-payments-bridge.md#2.-file-outgoing) table in the DB as DISPATCHED.
+* Update status in [File Outgoing](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#2.-file-outgoing) table in the DB as DISPATCHED.
 
 Features:
 
@@ -73,7 +73,7 @@ Features:
 The File Fetcher is like a cronjob that does the following:
 
 * Fetch fresh files form bank's systems and stores them in Incoming bucket
-* Update status in [File Incoming](../g2p-payments-bridge.md#3.-file-incoming) table in the DB as NEW.
+* Update status in [File Incoming](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#3.-file-incoming) table in the DB as NEW.
 
 Features:
 
@@ -84,17 +84,17 @@ Features:
 
 This block will be like a cronjob that runs periodically and does the following
 
-* Read an unprocessed file from File Store -> Incoming bucket. The list of unprocessed files is obtained by reading the [File Incoming](../g2p-payments-bridge.md#3.-file-incoming) table.
+* Read an unprocessed file from File Store -> Incoming bucket. The list of unprocessed files is obtained by reading the [File Incoming](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#3.-file-incoming) table.
 * Parse the file to read the status of each transaction. Translate the status to a common standard code if required.
 * Update the status in DB as PAID or FAILED.
 * Update error code and error messages
-* Update the status in the [File Incoming ](../g2p-payments-bridge.md#3.-file-incoming)table as PROCESSED.
+* Update the status in the [File Incoming ](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#3.-file-incoming)table as PROCESSED.
 
 This functional block may be implemented as a script that is run as cronjob. The features will be implemented:
 
 * Full in-memory processing
 * Entire processing and updates in DB should happen atomically. In case there is a failure, the script should be able to discard the incomplete process and start all over again.
-* Configuration for bucket ID, location, and credentials for accessing [File Store](../g2p-payments-bridge.md#file-store).
+* Configuration for bucket ID, location, and credentials for accessing [File Store](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/g2p-payments-bridge.md#file-store).
 
 ## Performance and capacity
 

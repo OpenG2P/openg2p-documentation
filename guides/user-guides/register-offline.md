@@ -2,7 +2,7 @@
 
 ## Description
 
-This guide will provide the steps to register beneficiaries through an offline process.  [offline registration](../../secure-registry/registration-methods/offline-registration.md) is done by the Field Agent.
+This guide will provide the steps to register beneficiaries through an offline process. [offline registration](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/secure-registry/registration-methods/offline-registration.md) is done by the Field Agent.
 
 ## Pre-requisites
 
@@ -35,6 +35,3 @@ This guide will provide the steps to register beneficiaries through an offline p
 * If the Field Agent is online, the submitted entries will be sent to ODK Central and will be listed under _View Sent Form_ or else they will be saved in the Field Agents device in _Send Finalized Form Section._
 
 <figure><img src="../../.gitbook/assets/odk-form-save.png" alt=""><figcaption></figcaption></figure>
-
-
-

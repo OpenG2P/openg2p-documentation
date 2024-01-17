@@ -10,7 +10,7 @@ Once the eligibility criterion is configured in the program, the Program adminis
 
 Note:
 
-To learn the enrolment process, click here [Enrol Registrants into Program](../guides/user-guides/enrol-registrants-into-program.md).
+To learn the enrolment process, click here [Enrol Registrants into Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/enrol-registrants-into-program.md).
 
 \<link is broken, hyper link the enrol registrants into program>
 
@@ -18,7 +18,7 @@ To learn the enrolment process, click here [Enrol Registrants into Program](../g
 
 After enrollment, the status of all the eligible beneficiaries changes to enrolled. The status of ineligible beneficiaries changes to not eligible. Program administrators can view the status of both enrolled and non-eligible registrants.
 
-If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](../secure-registry/registration-methods/self-service-portal.md).
+If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/secure-registry/registration-methods/self-service-portal.md).
 
 \<link is not working, to be hyperlinked>
 
@@ -32,4 +32,4 @@ OpenG2P allows the Program administrators to change the eligibility criteria aft
 
 ## Related links
 
-[Enrol Registrants into the Program](../guides/user-guides/enrol-registrants-into-program.md)
+[Enrol Registrants into the Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/enrol-registrants-into-program.md)
