@@ -1,5 +1,5 @@
 ---
-description: Work in progress
+description: WORK IN PROGRESS
 ---
 
 # File-based Payment Backend

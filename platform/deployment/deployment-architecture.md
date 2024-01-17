@@ -6,6 +6,6 @@
 
 ## Deployment architecture
 
-{% embed url="https://miro.com/app/board/uXjVN9jRsfU=/" %}
-Deployment Architecture
-{% endembed %}
+
+
+<figure><img src="../../.gitbook/assets/deployment-architecture.jpg" alt=""><figcaption><p>Deployment architecture</p></figcaption></figure>
