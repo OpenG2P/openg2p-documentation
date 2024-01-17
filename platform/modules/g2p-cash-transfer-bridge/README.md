@@ -22,9 +22,9 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-{% embed url="https://miro.com/app/board/uXjVN9az5KU=/" %}
-G2P cash transfer bridge - architecture
-{% endembed %}
+
+
+<figure><img src="../../../.gitbook/assets/g2p-cash-transfer-bridge.jpg" alt=""><figcaption><p>G2P cash transfer bridge</p></figcaption></figure>
 
 ## Concepts
 
