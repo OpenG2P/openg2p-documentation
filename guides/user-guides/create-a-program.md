@@ -12,14 +12,14 @@ Note:
 
 Refer the [Create User and Assign Role](assign-roles-to-users.md) guide to know how to assign role for a User.
 
-## Steps
+## Procedure
 
 ## Programs
 
 1. In the menu bar, click the icon ![](../../.gitbook/assets/image.png) and select _**Programs**_.
 2. The _**Programs**_ screen is displayed.
 
-<figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the Program Screen</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the Programs screen</p></figcaption></figure>
 
 <figure><img src="../../.gitbook/assets/Program-screen.png" alt=""><figcaption><p>Programs screen</p></figcaption></figure>
 

@@ -2,7 +2,7 @@
 
 ## Description
 
-This document contains the step-by-step instruction to create a new user and assign a role. A person who has admin access can create a new user and assign a role.
+This document contains the step-by-step instructions to create a new user and assign a role. A person who has admin access can create a new user and assign a role.
 
 ## Pre-requisites
 
