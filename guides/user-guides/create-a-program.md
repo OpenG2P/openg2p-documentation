@@ -10,7 +10,7 @@ The user must have a Program Manager role to create a new program.
 
 Note:
 
-See [Create User and Assign Role](assign-roles-to-users.md) guide to know how to assign role for a User.
+Refer the [Create User and Assign Role](assign-roles-to-users.md) guide to know how to assign role for a User.
 
 ## Steps
 
