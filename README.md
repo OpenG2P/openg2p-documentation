@@ -1,4 +1,5 @@
 ---
+cover: .gitbook/assets/SPAR by OpenG2P.jpg
 coverY: 0
 layout:
   cover:
@@ -18,12 +19,6 @@ layout:
 
 # 🏠 Home
 
-<div align="center">
-
-<figure><img src=".gitbook/assets/Open G2P Horizontal Logo@2x.png" alt="" width="375"><figcaption></figcaption></figure>
-
-</div>
-
 [OpenG2P](https://openg2p.org) is an open-source platform that enables governments and humanitarian organizations to deliver critical social benefits directly to those who need them. It facilitates the building of secure, inclusive and efficient registries and digital cash transfer delivery systems
 
 OpenG2P is a Digital Public Good (DPG) recognized by the[ DPGA](https://digitalpublicgoods.net/) and a significant building block of a country's Digital Public Infrastructure ([DPI](https://docs.cdpi.dev/dpi/readme)). OpenG2P contributes to the G2P transfers DPI layer in a digital economy, while leveraging DPGs in other categories. Its modular and interoperable technology augments existing systems in countries, without discarding what works or starting from scratch.
@@ -34,6 +29,6 @@ OpenG2P offers several modules to digitize processes of the social benefit deliv
 
 OpenG2P is built on a bedrock of good practices and principles that drive our work towards empowering populations around the world through technology.
 
-<figure><img src=".gitbook/assets/guiding-principles.png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/guiding-principles.png" alt="" width="375"><figcaption><p>Guiding principles</p></figcaption></figure>
 
 The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under an MPL 2.0 licence. It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
