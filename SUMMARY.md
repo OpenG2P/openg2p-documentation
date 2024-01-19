@@ -113,6 +113,7 @@
   * [openg2p-data](developer-zone/repositories/openg2p-data.md)
   * [openg2p-esignet](developer-zone/repositories/openg2p-esignet.md)
 * [Testing](developer-zone/testing/README.md)
+  * [Test Workflow](developer-zone/testing/test-workflow.md)
   * [Automation Framework](developer-zone/testing/automation-framework.md)
 
 ## 👩💻 COMMUNITY
