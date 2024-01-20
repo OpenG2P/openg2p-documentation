@@ -31,7 +31,7 @@ This guide provides basic guidelines for you to write neat documentation.
 In addition to the above while writing user guides follow these conventions:
 
 * Use second-person pronouns i.e. you, your, etc. in the instructions/steps.
-* Use the italicized font for UI elements i.e. dashboard names, button labels, information fields, etc.
+* Use the bold and italicized font for UI elements i.e. dashboard names, button labels, information fields, etc.
 * Use the exact name and case for the UI elements as shown in the user interface.
 * Use quotes for a phrase/word if the phrase/word has to be represented as is.
 

@@ -2,15 +2,20 @@
 
 ## Description
 
-This guide provides steps to create and configure the eligibility manager inside the program.
+This guide provides step-by-step instructions to create and configure the eligibility manager under the program.
 
 ## Pre-requisites
 
-The user must have the Program Manager role.
+A user should have a Program Manager role to create a Eligibility Manager under program.
 
-## Steps
+Note:
 
-1. Navigate to _Programs_ using the menu bar.
+Refer _**Create User and Assign Role**_ user guide to know how to assign role for a User.
+
+## Procedure
+
+1. In the menu bar, click the icon ![](../../.gitbook/assets/image.png) and select _**Programs**_.
+2. The _**Programs**_ screen is displayed.
 
 <figure><img src="../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
