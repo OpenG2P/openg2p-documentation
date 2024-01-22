@@ -1,5 +1,4 @@
 ---
-cover: .gitbook/assets/SPAR by OpenG2P.jpg
 coverY: 0
 layout:
   cover:

@@ -77,6 +77,8 @@
     * [g2p\_entitlement\_voucher](developer-zone/repositories/openg2p-program/g2p\_entitlement\_voucher.md)
     * [g2p\_program\_assessment](developer-zone/repositories/openg2p-program/g2p\_program\_assessment.md)
     * [g2p\_program\_reimbursement](developer-zone/repositories/openg2p-program/g2p\_program\_reimbursement.md)
+    * [OpenG2P Programs: Cycleless](developer-zone/repositories/openg2p-program/openg2p-programs-cycleless.md)
+    * [OpenG2P Programs: Autoenrol](developer-zone/repositories/openg2p-program/openg2p-programs-autoenrol.md)
     * [g2p\_entitlement\_in\_kind](developer-zone/repositories/openg2p-program/g2p-entitlement-in-kind.md)
     * [G2P SelfServicePortal](developer-zone/repositories/openg2p-program/g2p-selfserviceportal.md)
     * [OpenG2P Program Payment: G2P Connect Payment Manager](developer-zone/repositories/openg2p-program/openg2p-program-payment-g2p-connect-payment-manager.md)
