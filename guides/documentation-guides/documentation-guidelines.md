@@ -41,9 +41,17 @@ Follow the below specification while creating diagrams in Miro
 
 <table><thead><tr><th width="116.5"></th><th></th></tr></thead><tbody><tr><td>Font </td><td>Opensans</td></tr><tr><td>Font Size</td><td>18px</td></tr><tr><td>Logos</td><td>Use the font available in the URL: <a href="https://drive.google.com/drive/folders/1LC9F1WXOKv9xPrC6dHLBFuUG5GOaiPvo?usp=drive_link">https://drive.google.com/drive/folders/1LC9F1WXOKv9xPrC6dHLBFuUG5GOaiPvo?usp=drive_link</a></td></tr><tr><td>Export image</td><td><ul><li>Size: Medium </li><li>Format: JPG</li></ul></td></tr></tbody></table>
 
+
+
 {% embed url="https://miro.com/app/board/uXjVN8_Q7nI=/" %}
 Diagram specification
 {% endembed %}
 
+## SPAR
 
+{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/" %}
+SPAR
+{% endembed %}
+
+##
 

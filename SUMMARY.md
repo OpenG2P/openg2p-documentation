@@ -35,7 +35,7 @@
   * [Social Payments Account Registry (SPAR)](platform/modules/social-payments-account-registry-spar.md)
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge/README.md)
     * [File-based Payment Backend](platform/modules/g2p-cash-transfer-bridge/file-based-payment-backend.md)
-  * [Monitoring and Reporting](platform/modules/monitoring-and-reporting.md)
+* [Monitoring and Reporting](platform/monitoring-and-reporting.md)
 * [Privacy and Security](platform/privacy-and-security/README.md)
   * [Key Manager](platform/privacy-and-security/key-manager.md)
 * [Interoperability](platform/interoperability.md)
