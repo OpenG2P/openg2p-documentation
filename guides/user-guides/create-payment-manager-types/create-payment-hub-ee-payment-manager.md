@@ -14,9 +14,9 @@ The user should have a Program Manager role.
 
 <figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on Configuration and then on Payment Hub EE Payment Manager.&#x20;
+2. Click on Configuration and then on Payment Hub EE Payment Manager.
 
-<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Click on _Create_ button which will navigate to the Payment Hub EE Payment Manager creation page.
 

@@ -21,7 +21,7 @@ Refer _**Create User and Assign Role**_ user guide to know how to assign role fo
 
 3. Click the _**Configuration**_ tab and then select the _**Default Eligibility Managers**._
 
-<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption><p>Program screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration (1).png" alt=""><figcaption><p>Program screen</p></figcaption></figure>
 
 4. _**Default Eligibility Managers**_ screen is displayed.
 
