@@ -6,24 +6,35 @@ description: Work in progress
 
 ## Introduction
 
-Monitoring the status of programs and registries is vital for program administrators. OpenG2P integrates a [reporting framework](https://github.com/mosip/reporting) that lets users create dashboards of their choice to visualise data. The framework uses open-source technology components to create a pipeline of data flowing from the databases to visualisation tools. A sample dashboard is given below:
+Monitoring the status of programs and registries is vital for program administrators. With OpenG2P's monitoring and logging tools, program administrators can&#x20;
+
+1. Monitor programs via visual dashboards
+2. Generate reports from the PBMS
+3. Monitor system health in real-time&#x20;
+
+The following tools are provided
+
+* Integration of [Apache Superset](https://superset.apache.org/) for visual pre-canned **dashboards**
+* Reporting Framework for real-time updates and **slicing and dicing of data**
+* Prometheus and Grafana for **system health** monitoring
+* Rancher, Fluentd, OpenSearch integration for **system logs** monitoring
+
+
 
 <figure><img src="../.gitbook/assets/reporting-dashboard.png" alt=""><figcaption><p>Dashboard view</p></figcaption></figure>
 
-## Reporting infra
+##
+
+## Apache Superset&#x20;
+
+## Prometheus and Grafana
+
+## Logs monitoring via Fluentd and OpenSearch
+
+## Real-time reporting infra
 
 <figure><img src="../.gitbook/assets/reporting-infra (1).png" alt=""><figcaption><p>Reporting infrastructure</p></figcaption></figure>
 
 Details of this infrastructure may be found [here](https://github.com/mosip/reporting).&#x20;
 
-## New reporting infra
-
-{% hint style="info" %}
-**THIS IS WORK IN PROGRESS**
-
-1. Apache Superset (with Postgres) for reporting, data analysis and visualization
-2. Kibana + Elasticsearch for parsing log data and showing various sliced and diced data. (this replaces by OpenSearch)
-3. Grafana + Prometheus for real time resource monitoring
-
-Apache Superset is fully free (unlike Metabase) and seems to have a bigger community and features. It perhaps requires more development support than Metabase.
-{% endhint %}
+##
