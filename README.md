@@ -1,5 +1,5 @@
 ---
-cover: .gitbook/assets/OpenG2P Docs landing page_NEW_23Jan2024.png
+cover: .gitbook/assets/landing-page-banner.png
 coverY: 0
 layout:
   cover:
