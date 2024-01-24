@@ -1,5 +1,5 @@
 ---
-cover: .gitbook/assets/landing-page-banner.jpg
+cover: .gitbook/assets/landing-page-banner.png
 coverY: 0
 layout:
   cover:
