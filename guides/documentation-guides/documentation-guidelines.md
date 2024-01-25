@@ -47,11 +47,7 @@ Follow the below specification while creating diagrams in Miro
 Diagram specification
 {% endembed %}
 
-## SPAR
-
-{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/" %}
-SPAR
-{% endembed %}
+##
 
 ##
 
