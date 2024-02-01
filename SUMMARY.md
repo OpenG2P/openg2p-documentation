@@ -74,6 +74,7 @@
     * [G2P Registry: Base](developer-zone/repositories/openg2p-registry/openg2p-module-doc-template.md)
     * [G2P Registry: Rest API](developer-zone/repositories/openg2p-registry/g2p-registry-rest-api.md)
   * [openg2p-program](developer-zone/repositories/openg2p-program/README.md)
+    * [OpenG2P Program Payment (Payment Hub EE)](developer-zone/repositories/openg2p-program/openg2p-program-payment-payment-hub-ee.md)
     * [G2P Programs: REST API](developer-zone/repositories/openg2p-program/g2p-programs-rest-api.md)
     * [G2P Program : Program Registrant Info Rest API](developer-zone/repositories/openg2p-program/g2p-program-program-registrant-info-rest-api.md)
     * [OpenG2P Entitlement: Differential](developer-zone/repositories/openg2p-program/openg2p-entitlement-differential.md)
