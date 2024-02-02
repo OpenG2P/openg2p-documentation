@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The guide here provides instructions to deploy OpenG2P components on Kubernetes (K8s) cluster (Refer to [Deployment Architecture](../../../platform/deployment/deployment-architecture.md)).  The following components are installed:
+The guide here provides instructions to deploy OpenG2P components on Kubernetes (K8s) cluster (Refer to [Deployment Architecture](../deployment-architecture.md)).  The following components are installed:
 
 | Module/Component                                                | Comments                                                                                 |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
