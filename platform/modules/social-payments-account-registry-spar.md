@@ -31,7 +31,7 @@ The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Conne
 
 ## Concepts
 
-### ID Account Mapper
+### ID account mapper
 
 * Account mapper compliant with the G2P Connect interface
 * Database of ID and Account Numbers. The IDs may be tokens like [PSUT in MOSIP.](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
@@ -44,7 +44,7 @@ The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Conne
 
 * If relationships between entries are supported in the DB, then the same can be used to show linkages between different IDs for a user. (TBD)
 
-### SPAR Service
+### SPAR service
 
 Service to manage several mapping-related tasks and provide APIs for users to connect and update their account numbers.
 
@@ -68,29 +68,27 @@ TODO - Configuration links.
 
 TODO - Technical Concept links.
 
-### SPAR Self-Service Portal UI
+### SPAR self-service portal UI
 
 * Front-end service for Web-based user interface to carry out above functions.
 
-## Technical Concepts
+## Technical concepts
 
 [Technical Concepts of SPAR](../../developer-zone/repositories/social-payments-account-registry.md)
 
-## Configuration & Deployment Guide
+## Configuration & deployment&#x20;
 
 Configuration Guide - TODO Link
 
 [SPAR Kubernetes Deployment Guide](../../deployment/openg2p-modules-deployment/spar-deployment/)
 
-## How-To Guides
+## User guides
 
 Self-Service Portal Usage Guide - TODO
 
-SPAR API Usage Guide - TODO
+SPAR API Usage - TODO
 
-## API Docs
-
-### SPAR Service REST API Docs
+## API docs
 
 * Stoplight Link for [Social Payments Account Registry](https://openg2p.stoplight.io/docs/social-payments-account-registry).
 * Swagger UI using [OpenAPI for SPAR](https://validator.swagger.io/?url=https://raw.githubusercontent.com/OpenG2P/social-payments-account-registry/develop/api-docs/generated/openapi.json).
@@ -98,7 +96,7 @@ SPAR API Usage Guide - TODO
 * Swagger UI for [G2P-Connect Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/g2p-connect/specs/draft/release/yaml/mapper\_core\_api\_v1.0.0.yaml).
 * Swagger UI for [Sunbird-RC's Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/Sunbird-RC/g2p-mapper-registry/main/services/mapper-service/swagger.yml) (Alternative impl of G2P Connect ID Mapper)
 
-## Source Code
+## Source code
 
 * Social Payments Account Registry Source Code - [https://github.com/OpenG2P/social-payments-account-registry](https://github.com/OpenG2P/social-payments-account-registry).
 * SPAR UI Components Source Code - [https://github.com/OpenG2P/spar-ui](https://github.com/OpenG2P/spar-ui).
@@ -107,7 +105,7 @@ SPAR API Usage Guide - TODO
 
 ## Roadmap
 
-### Components in SPAR Service planned for the future
+Components planned in the future:
 
 #### Onboarding
 
