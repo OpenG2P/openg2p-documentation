@@ -56,17 +56,9 @@ Service to manage several mapping-related tasks and provide APIs for users to co
 * Notification to users via email/SMS.
 * Onboarding of authenticators like e-Signet.
 
-#### Mojaloop Oracle
+#### SPAR with Mojaloop
 
-Along with implementing G2P Connect ID Mapper APIs, SPAR implements Mojaloop Oracle API as well (Mojaloop Participant API - sync). This means SPAR can be replaced with a Mojaloop Oracle. (Internally SPAR communicates with ID Account Mapper using G2P Connect Specs.)
-
-This is useful for integrating with Mojaloop Payment Switch.
-
-For example, in the case given [above](social-payments-account-registry-spar.md#id-account-mapper), we can query SPAR with the account number using Mojaloop Participant API, and it will return the ID of the selected DFSP.
-
-TODO - Configuration links.
-
-TODO - Technical Concept links.
+SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used as a Mojaloop Oracle.&#x20;
 
 ### SPAR self-service portal UI
 
