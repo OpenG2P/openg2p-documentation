@@ -1,16 +1,10 @@
----
-description: Work in progress
----
-
 # Social Payments Account Registry (SPAR)
 
 ## Introduction
 
 The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Address (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
 
-
-
-<figure><img src="../../.gitbook/assets/SPAR.jpg" alt=""><figcaption><p>Social payments account registry (SPAR)</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/?share_link_id=517502064408" %}
 
 {% hint style="info" %}
 The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and will eventually evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI.
