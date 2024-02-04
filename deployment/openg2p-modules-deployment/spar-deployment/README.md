@@ -1,0 +1,29 @@
+# SPAR Deployment
+
+## Introduction
+
+SPAR deployment comprises of mainly 3 microservices, SPAR Service (which serves the self-service APIs), SPAR G2P Connect ID Mapper (which SPAR Service will connect to), and Self Service Portal UI (which deals JS content for frontend.) The following script will install all three of them.
+
+## Prerequisites
+
+* The following utilities/tools must be present on the user's machine.
+  * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
+* [PostgreSQL](../#postgresql)
+* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [e-Signet guide](../../external-components-setup/e-signet-deployment.md).
+
+## Installation
+
+* Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/openg2p/openg2p-deployment) repo and navigate to [kubernetes/social-payments-account-registry](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/social-payments-account-registry) directory.
+* Configure the values.yaml in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
+*   Run:
+
+    ```bash
+    SANDBOX_HOSTNAME=openg2p.sandbox.net \
+        ./install.sh
+    ```
+
+## Post-installation
+
+After installation, SPAR Self Service portal will be accessible at https://spar.openg2p.sandbox.net, SPAR Service APIs will be accessible at https://spar.openg2p.sandbox.net/spar/v1, and SPAR ID Mapper APIs will be accessible at https://spar.openg2p.sandbox.net/mapper/v1, depending on the hostname given above.
+
+Follow [SPAR Post Installation](spar-post-installation-configuration.md) Guide to finish setup.

@@ -60,6 +60,34 @@
   * [Registration in Low Connectivity Areas](use-cases/use-cases/registration-in-low-connectivity-areas.md)
   * [Service Provider Reimbursement](use-cases/use-cases/service-provider-reimbursement.md)
 
+## 🗄 DEPLOYMENT
+
+* [Deployment Architecture](deployment/deployment-architecture.md)
+* [Infrastructure Setup](deployment/infrastructure-setup/README.md)
+  * [K8s Cluster Requirements](deployment/infrastructure-setup/k8s-cluster-requirements.md)
+  * [Wireguard Server Setup](deployment/infrastructure-setup/wireguard-server-setup.md)
+  * [Rancher Setup](deployment/infrastructure-setup/rancher.md)
+  * [NFS Server Setup](deployment/infrastructure-setup/nfs-server.md)
+  * [OpenG2P K8s Cluster Setup](deployment/infrastructure-setup/k8s-cluster.md)
+  * [Loadbalancer Setup](deployment/infrastructure-setup/loadbalancer-setup.md)
+* [External Components Setup](deployment/external-components-setup/README.md)
+  * [PostgreSQL Server Deployment](deployment/external-components-setup/postgresql-server-deployment.md)
+  * [Keycloak Deployment](deployment/external-components-setup/keycloak-deployment.md)
+  * [Minio Deployment](deployment/external-components-setup/minio-deployment.md)
+  * [ODK Central Deployment](deployment/external-components-setup/odk-central-deployment.md)
+  * [Kafka Deployment](deployment/external-components-setup/kafka-deployment.md)
+  * [Logging & OpenSearch Deployment](deployment/external-components-setup/logging-and-opensearch-deployment.md)
+  * [Keymanager Deployment](deployment/external-components-setup/keymanager-deployment.md)
+  * [e-Signet Deployment](deployment/external-components-setup/e-signet-deployment.md)
+* [OpenG2P Modules Deployment](deployment/openg2p-modules-deployment/README.md)
+  * [PBMS Deployment](deployment/openg2p-modules-deployment/pbms-deployment/README.md)
+    * [Post Install Configuration](deployment/openg2p-modules-deployment/pbms-deployment/post-install-instructions.md)
+  * [Social Registry Deployment](deployment/openg2p-modules-deployment/social-registry-deployment.md)
+  * [GCTB Deployment](deployment/openg2p-modules-deployment/gctb-deployment.md)
+  * [SPAR Deployment](deployment/openg2p-modules-deployment/spar-deployment/README.md)
+    * [SPAR Post Installation Configuration](deployment/openg2p-modules-deployment/spar-deployment/spar-post-installation-configuration.md)
+  * [Reporting](deployment/openg2p-modules-deployment/reporting.md)
+
 ## 👨💻 DEVELOPER ZONE
 
 * [Getting Started](developer-zone/getting-started-1/README.md)
@@ -188,22 +216,9 @@
   * [Documentation Guidelines](guides/documentation-guides/documentation-guidelines.md)
   * [OpenG2P Module Doc Template](guides/documentation-guides/openg2p-module-doc-template.md)
 * [Deployment Guides](guides/deployment-guide/README.md)
-  * [Deployment Architecture](guides/deployment-guide/deployment-architecture.md)
-  * [Deployment on Kubernetes](guides/deployment-guide/deployment-on-kubernetes/README.md)
-    * [K8s Infrastructure Setup](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/README.md)
-      * [K8s Cluster Requirements](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md)
-      * [K8s Cluster Setup](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/cluster-setup.md)
-      * [Rancher Server Setup](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/rancher-server-setup.md)
-      * [NFS Server Setup](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/nfs-server-setup.md)
-      * [SSL Certificates using Letsencrypt](guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/ssl-certificates-using-letsencrypt.md)
-    * [PostgreSQL Server](guides/deployment-guide/deployment-on-kubernetes/postgresql-server.md)
-    * [PBMS Deployment](guides/deployment-guide/deployment-on-kubernetes/pbms-deployment/README.md)
-      * [Post Install Configuration](guides/deployment-guide/deployment-on-kubernetes/pbms-deployment/post-install-instructions.md)
-    * [Social Registry Deployment](guides/deployment-guide/deployment-on-kubernetes/social-registry-deployment.md)
-    * [GCTB Deployment](guides/deployment-guide/deployment-on-kubernetes/gctb-deployment.md)
-    * [SPAR Deployment](guides/deployment-guide/deployment-on-kubernetes/spar-deployment.md)
   * [Giving Access to Users](guides/deployment-guide/access-to-deployed-setup.md)
   * [Packaging OpenG2P Docker](guides/deployment-guide/packaging-openg2p-docker.md)
+  * [SSL Certificates using Letsencrypt](guides/deployment-guide/ssl-certificates-using-letsencrypt.md)
 
 ## BLOG
 

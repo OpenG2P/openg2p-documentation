@@ -6,7 +6,7 @@ description: Work in progress
 
 ## Introduction
 
-The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Address (FA) like bank code, account details, mobile wallet number etc., primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
+The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Address (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating FSP account details after authentication.
 
 
 
@@ -23,7 +23,11 @@ The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Conne
 * One ID mapped to 1 FA
 * Multiple IDs may be added for the same user\*
 * G2P Connect APIs to query and update FA
-* Bulk upload by Admin or Financial Service Providers (FSPs) like bank after authentication
+* Bulk upload by Admin or Financial Service Providers (FSPs) like bank, or Govt Department after authentication
+* Notification to the user via SMS/email - Planned
+* Change log - TBD
+* Transaction log - Planned
+* Signature verification for clients (partners) - Planned, via integrations with Partnermanager & Keymanager with a common library in OpenG2P.
 
 ## Concepts
 
@@ -76,7 +80,7 @@ TODO - Technical Concept links.
 
 Configuration Guide - TODO Link
 
-[SPAR Kubernetes Deployment Guide](../../guides/deployment-guide/deployment-on-kubernetes/#social-payments-account-registry-deployment)
+[SPAR Kubernetes Deployment Guide](../../deployment/openg2p-modules-deployment/spar-deployment/)
 
 ## How-To Guides
 
@@ -88,16 +92,18 @@ SPAR API Usage Guide - TODO
 
 ### SPAR Service REST API Docs
 
-* Stoplight Link for [Social Payments Account Registry](https://openg2p.stoplight.io/docs/social-payments-account-regsitry).
+* Stoplight Link for [Social Payments Account Registry](https://openg2p.stoplight.io/docs/social-payments-account-registry).
 * Swagger UI using [OpenAPI for SPAR](https://validator.swagger.io/?url=https://raw.githubusercontent.com/OpenG2P/social-payments-account-registry/develop/api-docs/generated/openapi.json).
-* Swagger UI for [Sunbird-RC's Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/Sunbird-RC/g2p-mapper-registry/main/services/mapper-service/swagger.yml) (which is used by SPAR, by default unless configured otherwise)
-* Swagger UI for [G2P-Connect Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/g2p-connect/specs/draft/release/yaml/mapper\_core\_api\_v1.0.0.yaml) (which Sunbird-RC's Financial Address Mapper implements)
+* Swagger UI for [SPAR G2PConnect ID Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/OpenG2P/social-payments-account-registry/develop/spar-g2pconnect-id-mapper/api-docs/generated/openapi.json) (which is used by SPAR, by default unless configured otherwise)
+* Swagger UI for [G2P-Connect Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/g2p-connect/specs/draft/release/yaml/mapper\_core\_api\_v1.0.0.yaml).
+* Swagger UI for [Sunbird-RC's Financial Address Mapper](https://validator.swagger.io/?url=https://raw.githubusercontent.com/Sunbird-RC/g2p-mapper-registry/main/services/mapper-service/swagger.yml) (Alternative impl of G2P Connect ID Mapper)
 
 ## Source Code
 
 * Social Payments Account Registry Source Code - [https://github.com/OpenG2P/social-payments-account-registry](https://github.com/OpenG2P/social-payments-account-registry).
 * SPAR UI Components Source Code - [https://github.com/OpenG2P/spar-ui](https://github.com/OpenG2P/spar-ui).
-* Sunbird-RC's Financial Address Mapper Source code - [https://github.com/Sunbird-RC/g2p-mapper-registry](https://github.com/Sunbird-RC/g2p-mapper-registry). SPAR uses this ID Mapper implementation by default.
+* SPAR G2P Connect ID Mapper Source Code - [https://github.com/OpenG2P/social-payments-account-registry/tree/develop/spar-g2pconnect-id-mapper](https://github.com/OpenG2P/social-payments-account-registry/tree/develop/spar-g2pconnect-id-mapper).
+* Sunbird-RC's Financial Address Mapper Source code - [https://github.com/Sunbird-RC/g2p-mapper-registry](https://github.com/Sunbird-RC/g2p-mapper-registry). Alternative impl of ID Mapper, which can be switched with SPAR G2P Connect ID Mapper.
 
 ## Roadmap
 
@@ -112,7 +118,6 @@ Onboarding of consumer apps (like OpenG2P)
 * Linking of SPAR PSUT with Application PSUT.
 * Consent page for users to map token for a time period specifically for an app (like OpenG2P)
 * Automatic deletion of records based on expiry set
-* Notification to the user via SMS/email
 * Maintaining linkage status (reflected on the portal for the user)
 
 #### Expiry handling

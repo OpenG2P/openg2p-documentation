@@ -22,8 +22,6 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-
-
 <figure><img src="../../../.gitbook/assets/g2p-cash-transfer-bridge.jpg" alt=""><figcaption><p>G2P cash transfer bridge</p></figcaption></figure>
 
 ## Concepts
@@ -60,7 +58,7 @@ Currently available payment backends:
 
 Configuration Guide - TODO Link
 
-[GCTB Kubernetes Deployment guide](../../../guides/deployment-guide/deployment-on-kubernetes/#g2p-cash-transfer-bridge-deployment)
+[GCTB Kubernetes Deployment guide](../../../deployment/openg2p-modules-deployment/#g2p-cash-transfer-bridge-deployment)
 
 GCTB Local Installation Guide - TODO
 
