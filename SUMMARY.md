@@ -38,6 +38,7 @@
 * [Monitoring and Reporting](platform/monitoring-and-reporting.md)
 * [Privacy and Security](platform/privacy-and-security/README.md)
   * [Key Manager](platform/privacy-and-security/key-manager.md)
+  * [Key Manager Architecture](platform/privacy-and-security/key-manager-architecture.md)
 * [Interoperability](platform/interoperability.md)
 * [Integrations](platform/integrations/README.md)
   * [OpenG2P e-Signet Integration](platform/integrations/openg2p-e-signet-integration.md)

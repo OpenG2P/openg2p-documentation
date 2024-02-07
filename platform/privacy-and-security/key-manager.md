@@ -97,6 +97,10 @@ The integration process involves making calls to the KeyManager service deployed
 * **Scalability:**
   * Kubernetes deployment facilitates scalability and efficient management of the KeyManager service.
 
+## Code module
+
+The system employs a key manager to handle the encryption of registry data. All registry information is stored in an encrypted form, represented as a string. To access the original data, admin must utilize the "decrypt fields" option available in the settings. The key manager is responsible for generating, storing, and managing the encryption keys required for securing and decrypting the registry information. This approach enhances security by ensuring that sensitive data remains unreadable without the appropriate decryption process.&#x20;
+
 ### **Future Considerations:**
 
 * **Error handling:**
