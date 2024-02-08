@@ -10,35 +10,46 @@ In OpenG2P, Eligibility Manager is an independent Odoo module for configuring el
 
 OpenG2P supports three types of Eligibility Managers.
 
-* Default Eligibility Manager
-* ID document Eligibility Manager
-* Phone number Eligibility Manager
+| Eligibility Manager                                                                                                                                                                                                                                                                   | Description                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Default Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-default-eligibility-manager)                 | Default Eligibility Manager  is assigned to each program by default. The Program administrators run the Default Eligibility Manager if the registrants are to be filter based on his/her eligibility criteria, as it is mandatory to configure at least one Default Eligibility Manager. |
+| [ID Document Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager) | ID Document Eligibility Manager verifies the valid registrants based on his/her ID document. The Program administrators should configure the ID type that will be used to verify the eligibility of the registrants.                                                                     |
+| [Phone Number Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-phone-number-eligibility-manager)       | Phone number Eligibility Manager verifies the valid registrants based on his/her phone numbers. This Phone Number Eligibility Manager is often configured along with the ID Document Eligibility Manager.                                                                                |
 
-\<Define the functionality of each type of Eligibility Manager>
+## Configure Eligibility Manager
 
-## Create Eligibility Manager
+In the OpenG2P program, the process involved to configure eligibility manager are:&#x20;
 
-In the OpenG2P program, the two steps process to configure eligibility criteria are:&#x20;
-
-1. Program administrators must create Eligibility Manager(s) from the three types of Eligibility Manager supported by OpenG2P
-2. After Eligibility Manager is created, Program administrators add Eligibility Manager to a program
+1. Program administrators must configure Eligibility Manager(s) from the three types of Eligibility Manager supported by OpenG2P
+2. After Eligibility Manager is configured, Program administrators add Eligibility Manager to a program
 
 Note:
 
-* One Eligibility Manager can be associated with only one program.
-* A program can have multiple Eligibility Managers.
+* One Eligibility Manager can be associated with only one program
+* A program can have multiple Eligibility Managers
 
-## Eligibility filters
+### Eligibility criteria
 
-The image represents eligibility criteria with two filters to check, if the,
+Program administrators configure eligibility criteria to enroll the eligible registrants in the program. The filters used in configuring eligibility criteria are:
 
-1. registrant is part of exactly one program
-2. registrant is unemployed.
+| Filter           | Description                                                                                                                                                                                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain Filter    | OpenG2P supports a variety of domain filters to set criteria for age, gender, household size, composition, and location. Program administrators can use these filters to define eligibility criteria.                                                            |
+| Proxy Means Test | The Proxy Means Test (PMT) is considered the most effective approach to reduce the error of exclusion. PMT is available as a separate plug-in in the OpenG2P platform. Using this plug-in, Program administrators can configure the regression analysis formula. |
+| Computer fields  | Computed fields are a powerful tool for abstracting information from a set of fields. Program administrators can use these fields in PMT and domain filters to configure complex eligibility criteria.                                                           |
 
-\<image to be incorporated>
+For example, the image here shows eligibility criteria with two filters: first for checking that the registrant is part of exactly one program, and second for checking that the registrant is unemployed.
 
-## Related links
+<figure><img src="../../../../.gitbook/assets/eligibility-criteria-filters (1).PNG" alt=""><figcaption><p>Eligibility filters</p></figcaption></figure>
 
-[Create Eligibility Manager Types](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-eligibility-manager-1/README.md)
+## Related user guides
 
-[Create an Eligibility Manager Under the Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-eligibility-manager-1/README.md)
+[Create Eligibility Manager Types](../../../../guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/)
+
+[Create an Eligibility Manager Under the Program](../../../../guides/user-guides/eligibility-and-program-enrollment/program/create-eligibility-manager.md)
+
+[Create Default Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-default-eligibility-manager)
+
+[Create ID Document Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager)
+
+[Create Phone Number Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-phone-number-eligibility-manager)

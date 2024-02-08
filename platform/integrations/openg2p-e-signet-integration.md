@@ -14,7 +14,7 @@ Here, OpenG2P is a Relying Party and the Authentication System is MOSIP. Learn [
 
 ## Configure OpenG2P for e-Signet
 
-Refer to the guide [Integrate MOSIP e-Signet](../../guides/user-guides/integrate-mosip-e-signet.md).
+Refer to the guide [Integrate MOSIP e-Signet](../../guides/user-guides/authentication/integrate-mosip-e-signet.md).
 
 ## eSignet Login
 

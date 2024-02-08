@@ -4,7 +4,12 @@
 
 Deduplication refers to the process of removing duplicate entries in the program, thus avoiding double-dipping, and merging all the demographic fields associated with an individual/group into a single record.
 
-Each program in the OpenG2P platform should have at least one Deduplication Manager configured. A separate Deduplication Manager must be created and configured for a program.
+The OpenG2P registry allows multiple entries for the same registrant. Hence once the registrants are enrolled in the program as beneficiaries, they should be deduplicated. OpenG2P Deduplication Managers can deduplicate the beneficiaries based on foundational/functional IDs, and phone numbers.
+
+Note:&#x20;
+
+* Each program in the OpenG2P platform should have at least one Deduplication Manager configured
+* A separate Deduplication Manager must be created and configured for a program
 
 ## Deduplication Manager types
 

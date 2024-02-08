@@ -24,15 +24,11 @@ A proxy score is calculated for each household using the formula and indicates t
 
 ## WB PMT formula configuration
 
-Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-proxy-mean-test.md).
-
-\<link is broken, hyperlink to configure computed fields>
+Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/configuration/configure-proxy-mean-test).
 
 The platform supports extensive yet easy configurations for calculating proxy scores from these computed fields. The figure below shows the configuration of observable characteristics and corresponding coefficients (weightage).
 
-\<image to be incorporated>
-
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/pmt_configuration%20(1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/pmt_configuration (1).png" alt=""><figcaption><p>PMT configuration</p></figcaption></figure>
 
 The WB PMT score is calculated from the weighted sum of these fields.
 
@@ -47,11 +43,9 @@ The WB PMT score is calculated from the weighted sum of these fields.
 
 The PMT score can be used either stand alone or in conjunction with other eligibility criteria as shown in the figure below.
 
-\<image to be incorporated>
+<figure><img src="../../../../.gitbook/assets/eligibility-filters.png" alt=""><figcaption><p>Eligibility criteria</p></figcaption></figure>
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/eligibility-filters.png" alt=""><figcaption></figcaption></figure>
-
-#### Advantages of using PMT with WB formula
+### Advantages of using PMT with WB formula
 
 The implementation of the Proxy Means Test with the World Bank Formula offers several significant advantages:
 
@@ -60,8 +54,8 @@ The implementation of the Proxy Means Test with the World Bank Formula offers se
 3. Data-driven Decision-making: The World Bank Formula's statistical foundation encourages evidence-based decision-making, enhancing accountability and transparency in poverty alleviation efforts.
 4. Adaptability: PMT's reliance on observable characteristics makes it adaptable to diverse contexts, accommodating variations in economies and cultures.
 
-## Related link
+## Related user guides
 
-[Configure Proxy Means Test](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/configure-proxy-mean-test.md)
+[Configure Proxy Means Test](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/configuration/configure-proxy-mean-test)
 
 ####

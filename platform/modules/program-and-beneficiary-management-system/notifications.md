@@ -6,6 +6,8 @@ Notifications to beneficiaries and administrators are a must, especially when th
 
 OpenG2P provides configuration of email, SMS, and Fast2SMS notifications in a few simple steps. Depending on the implementation needs of a program, notifications can be triggered for specific events in the delivery chain.
 
+The beneficiaries can be notified (not shown in the diagram above) when they are entitled to benefits. OpenG2P platform provides Notification Managers that can be configured to send SMS, email, and Fast2SMS notifications to the beneficiaries. These notifications can be customized using templates. To learn more, click [here](notifications.md).
+
 The figure below shows example notifications configured for two events - enrolling in the program and sending OTP.
 
 \<image to be incorporated>

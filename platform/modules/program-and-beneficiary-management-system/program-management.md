@@ -2,7 +2,9 @@
 
 ## Introduction
 
-OpenG2P platform's program management enables program managers to define and manage multiple programs. The program managers can
+OpenG2P platform's program management is a sequence of processes encompassing program creation to deciding entitlement for the beneficiaries. Digitalization of these processes offers multiple benefits such as ease of administration, agility of operations, data empowerment and so on.
+
+OpenG2P platform's program management enables program managers to perform various activities.  The activities are:
 
 * Define and manage multiple programs
 * Manage program lifecycle&#x20;
@@ -11,40 +13,48 @@ OpenG2P platform's program management enables program managers to define and man
 
 ## Program lifecycle
 
-\<diagram>
+In Open G2P, a program is a scheme created to assist an individual/group to avail benefits given by  the government of their country. An Individual/group must undergo sequence of verification process to avail the benefits.&#x20;
 
-## Program configurations
+After the verification process is successful, an individual/group become eligible to enroll in the program and are referred to as beneficiaries. Once the program is configured to an individual/group, he/she can receive the benefits allotted from their government.&#x20;
 
-A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, and entitlement. The diagram below shows the relationships of these managers with the program.
+&#x20;For each program, there is a lifecycle. The program lifecycle comes to end for an individual/group after they receive the benefits delivered to them.  The benefits can be delivered in single cycle or multiple cycles depends on the program lifecycle.
 
-\<image to be incorporated>
+A program (scheme) comes to closure after the benefits reaches an individual/group. It can also be retrieved once the program lifecycle is activated.
 
-## Multiple programs
+## Configuring managers in a program
 
-* Define and configure multiple programs
-* Data source for these programs
-* Control of each of the programs -- role base access control
+A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, notification, cycle management, entitlement management and payment management.&#x20;
+
+In OpenG2P, in each programs' configuration tab, you can find the various managers, such as,
+
+[Eligibility Managers](eligibility/)
+
+[Deduplication Managers](deduplication.md)
+
+[Notification Managers](notifications.md)
+
+Program Manager
+
+Cycle Manager
+
+[Entitlement Manager](entitlement.md)
+
+Payment Manager
+
+## PMT Configuration
+
+\<TO DO>
+
+## Map Portal Form
+
+In OpenG2P, mapping a self-service portal form to a program is essential for streamlining the application process for beneficiaries. This functionality allows beneficiaries to access and complete the forms when applying for a specific program. The mapped forms become integral parts of the program, ensuring that all required information is collected efficiently and accurately, facilitating better management and processing of applications. This integration enhances the user experience for applicants and improves the administrative efficiency of program management.
+
+## Managing multiple programs
+
+OpenG2P platform has a backend office application for program administrators. The platform allows multiple programs to run in parallel. These programs enroll the registrants from the same registry database. Its program management module offers a rich set of functions for enrolment, eligibility criteria, program cycles, entitlement, and notifications.
 
 ## Program disbursement cycles
 
-### Eligibility criteria
+OpenG2P platform allows the Program Manager, the Cycle Manager, the Program Administrators to create multiple cycles and disburse benefits. Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles.
 
-Program administrators configure eligibility criteria to enroll the eligible registrants in the program. OpenG2P Eligibility Managers provide these functions:
-
-<table><thead><tr><th width="194">Function</th><th>Description</th></tr></thead><tbody><tr><td>Domain filters</td><td>OpenG2P supports a variety of domain filters to set criteria for age, gender, household size, composition, and location. Program administrators can use these filters to define eligibility criteria.</td></tr><tr><td>Proxy Means Test</td><td>The Proxy Means Test (PMT) is considered the most effective approach to reduce the error of exclusion. PMT is available as a separate plug-in in the OpenG2P platform. Using this plug-in, Program administrators can configure the regression analysis formula.</td></tr><tr><td>Computed fields</td><td>Computed fields are a powerful tool for abstracting information from a set of fields. Program administrators can use these fields in PMT and domain filters to configure complex eligibility criteria.</td></tr></tbody></table>
-
-### Deduplication criteria
-
-The OpenG2P registry allows multiple entries for the same registrant. Hence once the registrants are enrolled in the program as beneficiaries, they should be deduplicated. OpenG2P Deduplication Managers can deduplicate the beneficiaries based on foundational/functional IDs, and phone numbers.
-
-
-
-### Entitlements
-
-Program administrators can use OpenG2P Entitlement Manager to configure all the aspects related to beneficiary entitlement. OpenG2P Entitlement Manager provides these configurations:
-
-<table><thead><tr><th width="230">Configuration</th><th>Description</th></tr></thead><tbody><tr><td>Entitlement amount</td><td>Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.</td></tr><tr><td>Entitlement vouchers</td><td>An entitlement voucher authorizes the intended beneficiary to claim the benefits at the service provider facility. The voucher has customized QR codes embedded. The QR code provides a digital signature that makes the voucher tamper-proof and establishes the authenticity of the voucher.</td></tr><tr><td>Multi-stage approvals</td><td>Program administrators can configure multiple stages and assign a role for each stage to avoid concentration of power and errors in deciding the entitlement amount</td></tr></tbody></table>
-
-### Notifications
-
-The beneficiaries can be notified (not shown in the diagram above) when they are entitled to benefits. OpenG2P platform provides Notification Managers that can be configured to send SMS, email, and Fast2SMS notifications to the beneficiaries. These notifications can be customized using templates. To learn more, click [here](notifications.md).
+To know about Program disbursement cycles, [click here](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/platform/modules/program-and-beneficiary-management-system/program-disbursement-cycles)

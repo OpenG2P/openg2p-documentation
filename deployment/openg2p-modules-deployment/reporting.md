@@ -12,7 +12,7 @@ WIP
 
 ### Prerequisites
 
-* [PostgreSQL](../external-components-setup/postgresql-server-deployment.md)
+* [PostgreSQL](../../guides/deployment-guide/deployment-on-kubernetes/postgresql-server.md)
 * [Keycloak](../external-components-setup/keycloak-deployment.md) for Authentication and Sign-in to OpenSearch Dashboards
 
 ### Installation
@@ -37,7 +37,7 @@ WIP
 
 ### Prerequisites
 
-* [PostgreSQL](../external-components-setup/postgresql-server-deployment.md)
+* [PostgreSQL](../../guides/deployment-guide/deployment-on-kubernetes/postgresql-server.md)
 * [Kafka](../external-components-setup/kafka-deployment.md)
 * [Keycloak](../external-components-setup/keycloak-deployment.md) for Authentication and Sign-in to OpenSearch Dashboards
 * [OpenSearch](../external-components-setup/logging-and-opensearch-deployment.md)
