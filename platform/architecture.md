@@ -24,5 +24,5 @@ All the modules are designed to be installed and used standalone.  However, the 
 
 The platform design and deployment embodies **privacy and security** of user data. [Learn more >>.](privacy-and-security/)
 
-Inclusion is fundamental to OpenG2P's thought process. Learn more >>.
+
 

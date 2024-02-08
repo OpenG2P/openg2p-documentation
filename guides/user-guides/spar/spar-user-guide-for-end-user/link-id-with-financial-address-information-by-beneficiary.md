@@ -1,12 +1,12 @@
-# SPAR - User Guide for End-user
+# Link ID with Financial Address information by Beneficiary
 
 ## Introduction
 
-This document contains step-by-step instructions to login self-service portal offered by SPAR and map his/her national ID with their respective bank account/mpesa account.
+This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR and map his/her national ID with their respective bank account/mpesa account.
 
 ## Prerequisite
 
-* The user must have knowledge to access [SPAR](../../../../deployment/openg2p-modules-deployment/spar-deployment/) via internet which is available in public portal
+* The user must have knowledge to access [SPAR](../../../../deployment/openg2p-modules-deployment/spar-deployment/) which is available in public portal via internet
 * The user must have his/her National ID,  bank account details and email ID
 
 ## Procedure
@@ -19,18 +19,18 @@ This document contains step-by-step instructions to login self-service portal of
 There are two options available to login self-service portal.
 
 * Login with your email or phone number&#x20;
-* [Login with your National ID](spar-user-guide-for-end-user.md#login-with-national-id)
+* [Login with your National ID](link-id-with-financial-address-information-by-beneficiary.md#login-with-national-id)
 
 ### Login with National ID
 
 3. Click the _**SIGNIN WITH NATIONAL ID**_ button.
-4. Login with e-Signet page is displayed.
+4. Login with eSignet page is displayed.
 
-<figure><img src="../../../../.gitbook/assets/e-signet-login.png" alt=""><figcaption><p>e-Signet login page</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/e-signet-login.png" alt=""><figcaption><p>eSignet login page.</p></figcaption></figure>
 
 You can select your preferred mode of login.
 
-* [Login with OTP](spar-user-guide-for-end-user.md#login-with-otp)
+* [Login with OTP](link-id-with-financial-address-information-by-beneficiary.md#login-with-otp)
 * Login with Biometrics
 * Login with Inji Mobile App
 * Login with Inji Mobile App1
@@ -40,7 +40,7 @@ You can select your preferred mode of login.
 5. Click the _**Login with OTP**_ button.
 6. _**Login with OTP**_ page pops up.
 
-<figure><img src="../../../../.gitbook/assets/login-otp.png" alt=""><figcaption><p>Login with OTP</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/login-otp.png" alt=""><figcaption><p>Login with OTP.</p></figcaption></figure>
 
 7. Enter the _**VID**_ number and click the _**Get OTP**_ button.
 
@@ -48,11 +48,11 @@ You receive the OTP number in your registered phone number.
 
 8. Enter the OTP number and click the _**Verify**_ button.
 
-<figure><img src="../../../../.gitbook/assets/login-otp-verify.png" alt=""><figcaption><p>OTP verification</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/login-otp-verify.png" alt=""><figcaption><p>OTP verification.</p></figcaption></figure>
 
 It redirects to the \<Geo-specific portal> Home page_**.**_
 
-<figure><img src="../../../../.gitbook/assets/NSPAP - Home page.png" alt=""><figcaption><p>Home page.</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/NSPAP - Home page (1).png" alt=""><figcaption><p>Home page.</p></figcaption></figure>
 
 In _**Home**_ page, the features and their descriptions are:
 
@@ -70,16 +70,16 @@ In _**Home**_ page, the features and their descriptions are:
 
 10. A drop-down field lists the type of the available account. The valid values are:
 
-* [Bank Account](spar-user-guide-for-end-user.md#bank-account)
+* [Bank Account](link-id-with-financial-address-information-by-beneficiary.md#bank-account)
 * Wallet&#x20;
-* [MPesa](spar-user-guide-for-end-user.md#mpesa)
+* [MPesa](link-id-with-financial-address-information-by-beneficiary.md#mpesa)
 
 #### Bank Account
 
 11. Select the _**Bank Account**_ in the drop-down.
 12. Select  your _**Bank**_ in the drop-down.
 
-<figure><img src="../../../../.gitbook/assets/update-details-2.png" alt=""><figcaption><p>Bank Name</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/update-details-2.png" alt=""><figcaption><p>Bank Name.</p></figcaption></figure>
 
 13. Select your **Bank Branch** in the drop-down.
 
@@ -102,11 +102,11 @@ Your National ID is successfully mapped to the bank account and the success noti
 
 17. Select _**MPesa**_ in the drop-down.
 
-<figure><img src="../../../../.gitbook/assets/update-details-mpesa.png" alt=""><figcaption><p>MPesa</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/update-details-mpesa.png" alt=""><figcaption><p>MPesa.</p></figcaption></figure>
 
 18. Enter your _**Email**_ address and click the _**Submit**_ button.
 
-<figure><img src="../../../../.gitbook/assets/e-mail address-mpesa.png" alt=""><figcaption><p>Email address</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/e-mail address-mpesa.png" alt=""><figcaption><p>Email address.</p></figcaption></figure>
 
 Your National ID is successfully mapped to the Mpesa account and the success notification message pops up.
 
