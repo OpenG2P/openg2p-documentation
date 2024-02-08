@@ -4,7 +4,7 @@
 
 Wireguard is the recommended VPN to get private channel access to your OpenG2P clusters and resources. Wireguard is a fast secure & open-source VPN, with P2P traffic encryption.
 
-The rest of the document talks about setting up a Wireguard bastion host (Wireguard server) to enable a private channel to your network.
+The document talks about setting up a Wireguard bastion host (Wireguard server) to enable a private channel to the Kubernetes cluster.
 
 ## Prerequisites
 

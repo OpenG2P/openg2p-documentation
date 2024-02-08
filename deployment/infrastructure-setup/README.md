@@ -1,5 +1,7 @@
 # Infrastructure Setup
 
+Following components need to be installed in the sequence given below to set up the infrastructure that houses OpenG2P modules.
+
 | Infra                                   | Comments                                                                                                               |
 | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | [Wireguard](wireguard-server-setup.md)  | Only one per all the environments                                                                                      |

@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # Social Payments Account Registry (SPAR)
 
 ## Introduction
@@ -9,10 +5,6 @@ description: Work in progress
 The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and Financial Address (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating Financial Service Providers (FSPs) account details after authentication.
 
 <figure><img src="../../.gitbook/assets/SPAR (1).jpg" alt=""><figcaption><p>Social payments account registry (SPAR)</p></figcaption></figure>
-
-{% hint style="info" %}
-The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Connect/specs/blob/draft/api/g2p-mapper.yaml) and will eventually evolve into [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) as envisaged by CDPI.
-{% endhint %}
 
 ## Functionality and features
 
@@ -29,9 +21,9 @@ The SPAR is compliant with [G2P Connect interfaces](https://github.com/G2P-Conne
 
 ## Concepts
 
-### ID account mapper
+### ID Account Mapper
 
-* Account mapper compliant with the G2P Connect interface
+* ID Account Mapper compliant with the G2P Connect interface
 * Database of ID and Account Numbers. The IDs may be tokens like [PSUT in MOSIP.](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
 * Can host multiple IDs associated with the same account. Eg.
 
@@ -48,7 +40,7 @@ Service to manage several mapping-related tasks and provide APIs for users to co
 
 #### Authentication
 
-* Authentication page leading to the e-Signet interface.
+* Authentication page leading to the eSignet interface.
 * Display the current Financial Address of the user.
 * Option to add/update the account number and account details.
 * Notification to users via email/SMS.

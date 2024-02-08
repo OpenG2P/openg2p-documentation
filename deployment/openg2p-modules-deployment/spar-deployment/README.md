@@ -2,7 +2,11 @@
 
 ## Introduction
 
-SPAR deployment comprises of mainly 3 microservices, SPAR Service (which serves the self-service APIs), SPAR G2P Connect ID Mapper (which SPAR Service will connect to), and Self Service Portal UI (which deals JS content for frontend.) The following script will install all three of them.
+SPAR deployment comprises deploying the following services on [Kubernetes cluster infrastructure](../../infrastructure-setup/).
+
+* SPAR Service&#x20;
+* SPAR ID Mapper&#x20;
+* Self Service Portal &#x20;
 
 ## Prerequisites
 

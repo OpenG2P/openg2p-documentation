@@ -4,7 +4,7 @@
 
 
 
-Onboard SPAR on eSignet:
+Onboard SPAR on e-Signet:
 
 * Create OIDC Client for SPAR in e-Signet. Follow the method suggested by the ID Provider.
   * If using mock e-Signet, use this API to create OIDC client [https://esignet.dev.openg2p.net/v1/esignet/swagger-ui/index.html#/client-management-controller/createOAuthClient](https://esignet.dev.openg2p.net/v1/esignet/swagger-ui/index.html#/client-management-controller/createOAuthClient).

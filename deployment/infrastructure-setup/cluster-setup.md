@@ -105,9 +105,9 @@ This section assumes an NFS Server has already been set up and operational for p
 
 ### Longhorn setup
 
-Recommended to use NFS provisioner. Ignore this section if using NFS.
+This installation only applies if Longhorn is used as storage.  This may be skipped if you are using NFS.
 
-Use this to install Longhorn. [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
+&#x20;[Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
 ### Istio setup
 
