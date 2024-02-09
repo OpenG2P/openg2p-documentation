@@ -2,7 +2,9 @@
 
 ## Introduction
 
-The Social Payments Account Registry (SPAR) maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. The SPAR offers a user-facing portal for adding/updating Financial Service Providers (FSPs) account details after authentication.
+The Social Payments Account Registry (SPAR) is an extension of the ID Account Mapper that maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. SPAR implements the functionality of an ID Account Mapper with additional feature of offering a self service portal for a beneficiary to add/update FA himself/herself. While in countries like India, the ID Account Mapper is updated by a bank (after authenticating a beneficiary), this may not be  immediately feasible as all FSPs need to integrate with ID Account Mapper. In such situations, social welfare department can install SPAR and offer self service update, or via an agent. Of course, one important assumption is that some kind of online ID authentication mechanism is available in the country via APIs. For example, in MOSIP adopting countries both biometric and OTP based authentication is available.&#x20;
+
+SPAR may be housed centrally in a country as a building block of the digital public infrastructure. Alternatively, a social welfare department can house it and enable other departments to use the same for cash disbursements.
 
 {% embed url="https://miro.com/app/board/uXjVNDnhJUg=/" %}
 SPAR architecture diagram.
