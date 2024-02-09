@@ -23,6 +23,8 @@ Some of the key benefits of using a SR are:
 * Import of data from others sources
 * Offline update using ODK Central
 
+
+
 ## Functionality and features
 
 * Registry of human demographic data
@@ -47,17 +49,21 @@ Some of the key benefits of using a SR are:
 
 Change log can be build using the Odoo OCA package [Audit Log](https://github.com/OCA/server-tools/tree/16.0/auditlog). This would be set of changes in any field(s) for the registry.
 
-### Multiple Version
+### Multiple versions of data
 
-Version might come in following scenarios
+Multiple version of a person's record might come in the following scenarios
 
 * Change in field value
-* New updated record comes in for the person which would be termed as a named version (typically surveys)
+* New updated record coming in for the person which would be termed as a named version (typically surveys)
 * Feedback call from the connected applications
 
-While creating multiple records, a marking of default (latest or greatest) record should be possible where in registrar or admin can mark as a bulk or individually.
+**Proposed solution:** Utilizing Elasticsearch as the backbone, we aim to implement a robust solution for managing multiple versions efficiently. Below are the key technology components and strategies discussed:
 
-We may use materialized view of PostgreSQL to keep the default(latest or greatest) records available for a quick fetch.
+* **Debezium configuration:** Debezium will be configured to capture real-time changes from the database's Write-Ahead Logs (WALs), ensuring that any modifications or additions to the data are promptly recorded.
+* **Elasticsearch setup:** Elasticsearch will serve as the primary destination for streaming the captured changes. Leveraging its indexing capabilities, Elasticsearch will efficiently organize and store the data, facilitating quick retrieval and analysis.
+* **Indexing strategy:** An indexing strategy will be devised to optimize the storage and retrieval of captured data. This strategy will accommodate multiple versions of records, ensuring that historical data remains accessible and searchable.
+* **Authorization implementation:** Authorization mechanisms will be implemented within Elasticsearch. This will control access to the API endpoints, ensuring that only authorized users can interact with the data.&#x20;
+* **API Endpoints configuration:** API endpoints will be configured in Elasticsearch to expose the captured data to authorized users. These endpoints will provide seamless access to multiple versions of records, enabling users to retrieve and analyze data as needed. Client should be in a position to fetch based on named version or any other parameter like timeframe.
 
 ### Relationships between people
 
