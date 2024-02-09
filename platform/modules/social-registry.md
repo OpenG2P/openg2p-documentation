@@ -10,6 +10,7 @@ Some of the key benefits of using a SR are:
 * Share data with other departments and organizations in a standardized manner thus avoiding multiple collection of data
 * Provide control to individual persons of their data empowering them
 * Attestation
+* Visualization and analysis of social data
 
 ## Registry update mechanisms
 
