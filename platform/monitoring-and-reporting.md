@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # Monitoring and Reporting
 
 ## Introduction

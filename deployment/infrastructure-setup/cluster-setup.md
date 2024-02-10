@@ -8,8 +8,8 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 ## Prerequisites
 
-* Hardware that meets [K8s Cluster Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md).
-* The following tools are installed on all the nodes and the client machine.
+* [Hardware Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md)
+* The following tools are installed on all the nodes and the client machine:
   * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 
 ## Firewall Requirements
@@ -18,9 +18,9 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 <table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
-* For example; this is how you can use `ufw` to set up the firewall on each cluster node.
-  * SSH into each node, and change to superuser.
-  *   Run the following command for each rule in the above table.
+* For example, this is how you can use `ufw` to set up the firewall on each cluster node.
+  * SSH into each node, and change to superuser
+  *   Run the following command for each rule in the above table
 
       ```
       ufw allow from <from-ip-range-allowed> to any port <port/range> proto <tcp/udp>
@@ -41,7 +41,7 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 ## Installation on AWS cloud
 
-If you are using AWS only to get EC2 nodes, and you want to set up the K8s cluster manually, move to the [On-premises Setup](cluster-setup.md#on-premises-cluster-on-prem).
+If you are using AWS only to get EC2 nodes, and you want to set up the K8s cluster manually, move to the [On-premises Setup](cluster-setup.md#installation-on-premises-on-prem).
 
 ## Installation on-premises (on-prem)
 
@@ -49,20 +49,20 @@ If you are using AWS only to get EC2 nodes, and you want to set up the K8s clust
 
 The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluster.
 
-* Decide the number of K8s Control plane nodes(server nodes) and worker nodes(agent nodes).
+* Decide the number of K8s Control plane nodes(server nodes) and worker nodes(agent nodes)
   * Choose an odd number of control-plane nodes. For example, for a 3-node k8s cluster, choose 1 control-plane node and 2 worker nodes. For a 7-node k8s cluster, choose 3 control-plane nodes and 4 worker nodes.
 * The following setup has to be done on each node on the cluster:
-  * SSH into the node.
+  * SSH into the node
   *   Create the rke2 config directory:
 
       ```
       mkdir -p /etc/rancher/rke2
       ```
   * Create a `config.yaml` file in the above directory, using one of the following config file templates:
-    * For the first control-plane node, use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template).
-    * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template).
-    * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template).
-  * Edit the above `config.yaml` file with the appropriate names, IPs, and tokens.
+    * For the first control-plane node, use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template)
+    * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template)
+    * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template)
+  * Edit the above `config.yaml` file with the appropriate names, IPs, and tokens
   *   Run this to download rke2.
 
       ```
@@ -89,19 +89,19 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   * ```
     kubectl get nodes
     ```
-* Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha).
+* Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha)
 
 ### Cluster import into Rancher
 
 This section assumes a Rancher server has already been set up and operational. [Rancher Server Setup](rancher.md) in case not already done.
 
-* Navigate to Cluster Management section in Rancher.
-* Click on `Import Existing` cluster. And follow the steps to import the new OpenG2P cluster.
-* After importing, download kubeconfig for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from user's machine (client), without SSH.
+* Navigate to Cluster Management section in Rancher
+* Click on `Import Existing` cluster. And follow the steps to import the new OpenG2P cluster
+* After importing, download kubeconfig for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from user's machine (client), without SSH
 
 ### NFS provisioner setup
 
-This section assumes an NFS Server has already been set up and operational for providing storage volumes to this K8s cluster, with requirements as given in [NFS Server Setup](nfs-server.md)This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in [NFS Server Setup](nfs-server.md). This NFS server is used to provide persistent storage volumes to this K8s cluster.
+This section assumes an NFS Server has already been set up and operational for providing storage volumes to this K8s cluster, with requirements as given in [NFS Server Setup](nfs-server.md). This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in [NFS Server Setup](nfs-server.md). This NFS server is used to provide persistent storage volumes to this K8s cluster.
 
 ### Longhorn setup
 
@@ -124,7 +124,7 @@ This installation only applies if Longhorn is used as storage.  This may be skip
         ```
         kubectl apply -f istio-operator-external-lb.yaml
         ```
-    * Configure the operator.yaml with any further configuration.
+    * Configure the operator.yaml with any further configuration
 *   Gather Wildcard TLS certificate and key and run;
 
     ```
@@ -138,7 +138,7 @@ This installation only applies if Longhorn is used as storage.  This may be skip
     kubectl apply -f istio-gateway.yaml
     ```
 
-    *   If using external loadbalancer/external TLS termination, use the `istio-gateway-no-tls.yaml` file.
+    *   If using external loadbalancer/external TLS termination, use the `istio-gateway-no-tls.yaml` file
 
         ```
         kubectl apply -f istio-gateway-no-tls.yaml
@@ -146,8 +146,8 @@ This installation only applies if Longhorn is used as storage.  This may be skip
 
 ### Adding new nodes
 
-* From [kubernetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/rke2) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
-* Configure the the config.yaml with relevant values.
+* From [kubernetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rke2) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
+* Configure the the config.yaml with relevant values
 *   Run this to download rke2.
 
     ```

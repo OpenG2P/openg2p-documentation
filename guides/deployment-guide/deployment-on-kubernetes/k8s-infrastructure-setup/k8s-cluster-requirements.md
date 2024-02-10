@@ -1,6 +1,8 @@
 # Hardware Requirements
 
-##
+## Introduction
+
+The hardware requirements pertain to the kubernetes based infrastructure required to house OpenG2P modules. The number of VMs and configuration are subjected to scaled down if only specific modules are being installed.
 
 ## For sandbox&#x20;
 
@@ -20,8 +22,8 @@
 
 ## Networking requirements
 
-* All the machines in the same network.
-* Public IP assigned to the Wireguard machine.
+* All the machines in the same network
+* Public IP assigned to the Wireguard machine
 
 ## DNS requirements
 

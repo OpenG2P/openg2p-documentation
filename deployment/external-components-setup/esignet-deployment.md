@@ -1,12 +1,12 @@
-# e-Signet Deployment
+# eSignet Deployment
 
 ## Introduction
 
-This doc provides instructions on installing e-Signet on the OpenG2P cluster.
+This doc provides instructions on installing eSignet on the OpenG2P cluster.
 
-This is only required for sandbox/pilot environments. Or when e-Signet is not present or is not provided by the ID Provider. If an e-Signet instance is already available, OpenG2P Modules can just connect to that instance.
+This is only required for sandbox/pilot environments. Or when eSignet is not present or is not provided by the ID Provider. If an eSignet instance is already available, OpenG2P Modules can just connect to that instance.
 
-This doc only provides instructions to install e-Signet with Mock ID System (for integration with real ID system, refer to [e-Signet docs](https://docs.esignet.io)).
+This doc only provides instructions to install eSignet with Mock ID System (for integration with real ID system, refer to [eSignet docs](https://docs.esignet.io)).
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ This doc only provides instructions to install e-Signet with Mock ID System (for
 
 ## Post-installation
 
-After installation is successful, e-Signet can be accessed at https://esignet.openg2p.sandbox.net, depending on the hostname given above.
+After installation is successful, eSignet can be accessed at https://esignet.openg2p.sandbox.net, depending on the hostname given above.
 
 To seed more data of beneficiaries into the mock ID system APIs, use the APIs available at https://esignet.openg2p.sandbox.net/v1/mock-identity-system/swagger-ui/index.html.&#x20;
 

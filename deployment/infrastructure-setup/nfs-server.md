@@ -6,16 +6,16 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
 
 ## Prerequisites
 
-* One Virtual machine running on the same network as the rest of the nodes, and is accessible by them. For recommended configuration of the VM refer to [Cluster Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md).
-* Use this [Storage size estimator](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md#storage-requirements-for-pilot-environments) to decide storage requirements.
+* One Virtual machine running on the same network as the rest of the nodes, and is accessible by them. For recommended configuration of the VM refer to [Hardware Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md).
+* Use this [Storage size estimator](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md#storage-requirements-for-pilot-environments) to decide storage requirements
 
 ## Installation
 
-* Download/copy this install script from [https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh](https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh) into the NFS Server VM.
-* Edit the script to change the local path for NFS Storage, under the variable `nfsStorage`.
+* Download/copy this install script from [https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh](https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh) into the NFS Server VM
+* Edit the script to change the local path for NFS Storage, under the variable `nfsStorage`
 *   Run this (with root privileges):
 
     ```
     ./install-nfs-server.sh
     ```
-* Make sure to edit the firewall rules of this VM to enable incoming traffic to the NFS server port `tcp 2049` and disable incoming traffic on all other ports (excluding SSH).
+* Make sure to edit the firewall rules of this VM to enable incoming traffic to the NFS server port `tcp 2049` and disable incoming traffic on all other ports (excluding SSH)

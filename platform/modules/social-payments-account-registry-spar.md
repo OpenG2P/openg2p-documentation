@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Social Payments Account Registry (SPAR) is an extension of the ID Account Mapper that maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. SPAR implements the functionality of an ID Account Mapper with additional feature of offering a self service portal for a beneficiary to add/update FA himself/herself. While in countries like India, the ID Account Mapper is updated by a bank (after authenticating a beneficiary), this may not be  immediately feasible as all FSPs need to integrate with ID Account Mapper. In such situations, social welfare department can install SPAR and offer self service update, or via an agent. Of course, one important assumption is that some kind of online ID authentication mechanism is available in the country via APIs. For example, in MOSIP adopting countries both biometric and OTP based authentication is available.&#x20;
+The Social Payments Account Registry (SPAR) is an extension of the ID Account Mapper that maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. SPAR implements the functionality of an ID Account Mapper with additional feature of offering a self service portal for a beneficiary to add/update his/her FA. While in countries like India, the ID Account Mapper is updated by a bank (after authenticating a beneficiary), this may not be  immediately feasible as all FSPs need to integrate with ID Account Mapper. In such situations, social welfare department can install SPAR and offer self service update, or via an agent. Of course, one important assumption is that some kind of online ID authentication mechanism is available in the country via APIs. For example, in MOSIP adopting countries both biometric and OTP based authentication is available.&#x20;
 
 SPAR may be housed centrally in a country as a building block of the digital public infrastructure. Alternatively, a social welfare department can house it and enable other departments to use the same for cash disbursements.
 
@@ -16,7 +16,7 @@ SPAR architecture diagram.
 * User login via National ID (using [eSignet](https://docs.esignet.io/))
 * One ID mapped to 1 FA
 * Multiple IDs may be added for the same user\*
-* G2P Connect APIs to query and update FA
+* [G2P Connect APIs](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-specs) to query and update FA
 * Bulk upload by Admin or FSPs like bank, or Govt Department after authentication
 * Notification to the user via SMS/email - Planned
 * Change log - TBD
@@ -27,7 +27,7 @@ SPAR architecture diagram.
 
 ### ID Account Mapper
 
-* [ID Account Mapper](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture) compliant with the G2P Connect interface
+* ID Account Mapper compliant with the [G2P Connect interface](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture)
 * Database of ID and FA. The IDs may be tokens like [PSUT in MOSIP](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
 * Can host multiple IDs associated with the same account. Eg.,
 
@@ -70,7 +70,7 @@ Configuration Guide - TODO Link
 
 ## User guides
 
-[Self-Service Portal Usage Guide](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/168/guides/user-guides/spar/spar-user-guide-for-end-user/link-id-with-financial-address-information-by-beneficiary) - TODO
+[Self-Service Portal Usage Guide](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/168/guides/user-guides/spar/spar-user-guide-for-end-user/link-id-with-financial-address-information-by-beneficiary)
 
 SPAR API Usage - TODO
 
@@ -91,6 +91,7 @@ SPAR API Usage - TODO
 
 ## Roadmap
 
-Components planned in the future:
+Components under development:
 
-<table><thead><tr><th width="192">Feature</th><th>Description</th></tr></thead><tbody><tr><td><h4>Onboarding</h4></td><td>Onboarding of consumer apps (like OpenG2P)</td></tr><tr><td><h4>ID linking</h4></td><td><ul><li>Linking of SPAR PSUT with Application PSUT.</li><li>Consent page for users to map token for a time period specifically for an app (like OpenG2P)</li><li>Automatic deletion of records based on expiry set</li><li>Maintaining linkage status (reflected on the portal for the user)</li></ul></td></tr><tr><td><h4>Expiry handling</h4></td><td>TBD</td></tr><tr><td><h4>Account validation</h4></td><td><p>A suggested way to validate the user FA is to initiate a small cash transfer from the treasury account to the person's account. Upon successful transfer (as communicated by the bank) consider the ID Account Mapper entry valid. This could take several minutes to hours as it depending on the response from the bank.</p><p>Configuration: Treasury account details</p></td></tr></tbody></table>
+<table><thead><tr><th width="192">Feature</th><th>Description</th></tr></thead><tbody><tr><td><h4>Onboarding</h4></td><td>Onboarding of consumer apps (like OpenG2P)</td></tr><tr><td><h4>ID linking</h4></td><td><ul><li>Linking of SPAR PSUT with Application PSUT.</li><li>Consent page for users to map token for a time period specifically for an app (like OpenG2P)</li><li>Automatic deletion of records based on expiry set</li><li>Maintaining linkage status (reflected on the portal for the user)</li></ul></td></tr><tr><td><h4>Expiry handling</h4></td><td>TBD</td></tr><tr><td><h4>Account validation</h4></td><td>SPAR does not keep any status of account validation.  Primarily, the financial account validation must be performed at the upstream system like OpenG2P etc. The suggested way in which the upstream system can do the validation is by performing a small amount or a zero amount transfer if supported by banks. And the upstream system can maintain the status and inform the user appropriately so that he/she or the bank can update it accordingly.</td></tr></tbody></table>
+

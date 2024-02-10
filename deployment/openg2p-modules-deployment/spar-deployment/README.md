@@ -1,19 +1,34 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # SPAR Deployment
 
 ## Introduction
 
 SPAR deployment comprises deploying the following services on [Kubernetes cluster infrastructure](../../infrastructure-setup/).
 
-* SPAR Service&#x20;
-* SPAR ID Mapper&#x20;
-* Self Service Portal &#x20;
+* [SPAR Service](../../../platform/modules/social-payments-account-registry-spar.md#spar-service)&#x20;
+* [SPAR ID Account Mapper](../../../platform/modules/social-payments-account-registry-spar.md#id-account-mapper)&#x20;
+* [SPAR Self Service Portal](../../../platform/modules/social-payments-account-registry-spar.md#spar-self-service-portal) &#x20;
 
 ## Prerequisites
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](../#postgresql)
-* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [e-Signet guide](../../external-components-setup/e-signet-deployment.md).
+* This module requires kubernetes infrastructure to be setup. For details, [click here](../../infrastructure-setup/)
+* [PostgreSQL](../../../guides/deployment-guide/deployment-on-kubernetes/postgresql-server.md)
+* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [eSignet guide](../../external-components-setup/esignet-deployment.md).
 
 ## Installation
 

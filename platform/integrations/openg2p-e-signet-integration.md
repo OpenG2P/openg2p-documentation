@@ -1,7 +1,3 @@
----
-coverY: 0
----
-
 # OpenG2P e-Signet Integration
 
 ## Introduction

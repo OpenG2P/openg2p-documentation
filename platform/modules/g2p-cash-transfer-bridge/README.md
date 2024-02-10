@@ -1,7 +1,3 @@
----
-description: Work in progress
----
-
 # G2P Cash Transfer Bridge
 
 ## Concept

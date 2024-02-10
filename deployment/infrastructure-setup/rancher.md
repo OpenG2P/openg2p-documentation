@@ -6,19 +6,19 @@ Rancher is used to manage multiple clusters. Being a critical component of clust
 
 ## Prerequisites
 
-* One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Cluster Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md).
+* One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md)
 
 ## Installation using Kubernetes
 
 ### Kubernetes cluster setup
 
-* SSH into the node.
+* SSH into the node
 *   Create the rke2 config directory:
 
     ```
     mkdir -p /etc/rancher/rke2
     ```
-* Create a `config.yaml` file in the above directory, using this config file template; [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template).
+* Create a `config.yaml` file in the above directory, using this config file template; [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template)
 *   Edit the above config.yaml file with the appropriate names and IPs. IMPORTANT: Remove the section for disabling ingress-nginx in this config file.
 
     ```
@@ -66,11 +66,11 @@ It is recommended to set up a double-node cluster for high availability. However
 
 ### Longhorn Setup
 
-* Install[ Longhorn as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/).
+* Install[ Longhorn as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
 ### Keycloak setup
 
-* From [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/1.1.0/kubernetes/rancher) folder, run the following to install Keycloak (hostname to be edited in the below command).
+* From [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) folder, run the following to install Keycloak (hostname to be edited in the below command)
 * ```bash
   helm repo add bitnami https://charts.bitnami.com/bitnami
   helm repo update

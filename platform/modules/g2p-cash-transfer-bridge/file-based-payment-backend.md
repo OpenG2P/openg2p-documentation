@@ -1,7 +1,3 @@
----
-description: WORK IN PROGRESS
----
-
 # File-based Payment Backend
 
 ## Introduction

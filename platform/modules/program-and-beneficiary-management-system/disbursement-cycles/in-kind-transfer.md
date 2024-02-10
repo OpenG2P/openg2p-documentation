@@ -1,7 +1,3 @@
----
-description: (Work in progress)
----
-
 # In-kind Transfer
 
 ## Introduction

@@ -1,5 +1,4 @@
 ---
-description: '! working Inprogress'
 layout:
   title:
     visible: true
