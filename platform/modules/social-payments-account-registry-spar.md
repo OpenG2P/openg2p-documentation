@@ -2,7 +2,9 @@
 
 ## Introduction
 
-The Social Payments Account Registry (SPAR) is an extension of the ID Account Mapper that maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. SPAR implements the functionality of an ID Account Mapper with additional feature of offering a self service portal for a beneficiary to add/update his/her FA. While in countries like India, the ID Account Mapper is updated by a bank (after authenticating a beneficiary), this may not be  immediately feasible as all FSPs need to integrate with ID Account Mapper. In such situations, social welfare department can install SPAR and offer self service update, or via an agent. Of course, one important assumption is that some kind of online ID authentication mechanism is available in the country via APIs. For example, in MOSIP adopting countries both biometric and OTP based authentication is available.&#x20;
+The Social Payments Account Registry (SPAR) is an extension of the ID Account Mapper that maintains a mapping of a user ID and [Financial Address](https://docs.cdpi.dev/technical-notes/digital-payment-networks/financial-address) (FA) like bank code, account details, mobile wallet number, etc., primarily aimed at cash transfers in a social benefit delivery system. SPAR implements the functionality of an ID Account Mapper with additional feature of offering a self service portal for a beneficiary to add/update his/her FA. While in countries like India, the ID Account Mapper is updated by a bank (after authenticating a beneficiary), this may not be  immediately feasible in many countries as all FSPs need to integrate with ID Account Mapper. In such situations, social welfare department can install SPAR and offer self service update, or via an agent. Of course, one important assumption is that some kind of online ID authentication mechanism is available in the country via APIs. For example, in MOSIP adopting countries both biometric and OTP based authentication is available.&#x20;
+
+SPAR is power **inclusion** tool as it gives end users ability to choose how they would like to receive the benefits. &#x20;
 
 SPAR may be housed centrally in a country as a building block of the digital public infrastructure. Alternatively, a social welfare department can house it and enable other departments to use the same for cash disbursements.
 
@@ -12,16 +14,17 @@ SPAR architecture diagram.
 
 ## Functionality and features
 
+* Mapping of ID to FA.
+* Many-to-one and one-to-one mapping of ID to FA.
 * Self Service Portal for update of account information
-* User login via National ID (using [eSignet](https://docs.esignet.io/))
-* One ID mapped to 1 FA
-* Multiple IDs may be added for the same user\*
+* Login via National ID (using [eSignet](https://docs.esignet.io/))
+* Multiple IDs may be added for the same user
 * [G2P Connect APIs](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-specs) to query and update FA
 * Bulk upload by Admin or FSPs like bank, or Govt Department after authentication
-* Notification to the user via SMS/email - Planned
-* Change log - TBD
-* Transaction log - Planned
-* Signature verification for clients (partners) - Planned, via integrations with Partnermanager & Keymanager with a common library in OpenG2P.
+* Notification to the user via SMS/email (TBD)
+* Change log  (TBD)
+* Transaction log  (TBD)
+* Signature verification for clients (partners)  via integrations with MOSIOP's Partnermanager & Keymanager (TBD)
 
 ## Concepts
 
