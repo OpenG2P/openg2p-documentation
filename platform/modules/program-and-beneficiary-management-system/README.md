@@ -25,6 +25,10 @@ Refer to [Architecture](../../architecture.md) for PBMS high level architecture 
 
 PBMS provides methods to pull data from OpenG2P's [Social Registry](../social-registry.md) and other registries that are compliant with the G2P Connect API specifications.  The data is stored in internal cache DB and used to create beneficiary data. This cached data may be updated by administrators by pulling fresh data from the external registeries when desired.
 
+## Data flow
+
+{% embed url="https://miro.com/app/board/uXjVN3lF5oc=/?share_link_id=763340453780" %}
+
 ## Interoperability &#x20;
 
 * G2P Connect interfaces
