@@ -37,6 +37,7 @@
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge/README.md)
     * [File-based Payment Backend](platform/modules/g2p-cash-transfer-bridge/file-based-payment-backend.md)
 * [Monitoring and Reporting](platform/monitoring-and-reporting.md)
+* [Logging](platform/logging.md)
 * [Privacy and Security](platform/privacy-and-security/README.md)
   * [Key Manager](platform/privacy-and-security/key-manager.md)
   * [Key Manager Architecture](platform/privacy-and-security/key-manager-architecture.md)
