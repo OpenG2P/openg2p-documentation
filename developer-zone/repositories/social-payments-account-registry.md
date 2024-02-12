@@ -2,11 +2,11 @@
 
 ## Introduction
 
-TODO
+This repository on Github contains source code of the SPAR.
 
-## Technical Concepts
+## Technical concepts
 
-### SPAR Service
+### SPAR service
 
 This table contains a description of the technical components of SPAR Service.
 
