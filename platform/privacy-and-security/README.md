@@ -20,6 +20,15 @@ OpenG2P is a robust and versatile platform built upon the Odoo framework, provid
 
 Encryption of data is achieved with production-grade Key Manager module. Learn more >>
 
+## Secure Input Handling
+
+Input security is handled in the following ways:
+
+* Input validation
+* Memory safe programming language (Python)
+* Type safe programming using Python Pydantic&#x20;
+* ORM capabilities to avoid SQL Injection threats&#x20;
+
 ## Secure deployment
 
 OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](broken-reference)
