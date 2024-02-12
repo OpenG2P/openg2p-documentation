@@ -10,4 +10,4 @@ All trademarks are the property of their respective holders. Other products and 
 
 This documentation work is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
-<figure><img src="../.gitbook/assets/creative-commons-logo.svg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/creative-commons-logo.svg" alt=""><figcaption></figcaption></figure>

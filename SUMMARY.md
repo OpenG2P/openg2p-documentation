@@ -52,7 +52,8 @@
 * [Releases](platform/releases/README.md)
   * [1.1.0](platform/releases/1.1.0/README.md)
     * [Release Notes](platform/releases/1.1.0/release-notes.md)
-* [License](platform/license.md)
+* [License](platform/license/README.md)
+  * [OpenG2P Support Policy](platform/license/openg2p-support-policy.md)
 * [FAQ](platform/faq.md)
 
 ## ⛎ USE CASES
