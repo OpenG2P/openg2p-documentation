@@ -15,24 +15,28 @@ The following tools are provided
 * Prometheus and Grafana for **system health** monitoring
 * Rancher, Fluentd, OpenSearch integration for **system logs** monitoring
 
-
-
-<figure><img src="../.gitbook/assets/reporting-dashboard.png" alt=""><figcaption><p>Dashboard view</p></figcaption></figure>
-
 ## Apache Superset&#x20;
 
 Apache Superset offers SQL query based datasets and charts for visualisation of data. OpenG2P offers pre-configured dashboards for visualisation. Refer to the [deployment instructions](../deployment/openg2p-modules-deployment/reporting.md).
 
 <figure><img src="../.gitbook/assets/apache-superset-dashboard.png" alt=""><figcaption></figcaption></figure>
 
-## Prometheus and Grafana
 
-## Logs monitoring via Fluentd and OpenSearch
 
-## Real-time reporting infra
+## Reporting framework
+
+<figure><img src="../.gitbook/assets/reporting-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 <figure><img src="../.gitbook/assets/reporting-infra (1).png" alt=""><figcaption><p>Reporting infrastructure</p></figcaption></figure>
 
 Details of this infrastructure may be found [here](https://github.com/mosip/reporting).&#x20;
 
-##
+## Prometheus and Grafana
+
+<figure><img src="../.gitbook/assets/prometheus-grafana.png" alt=""><figcaption></figcaption></figure>
+
+## Logs monitoring via Fluentd and OpenSearch
+
+<figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
+
+Refer to [Logging architecture](monitoring-and-reporting.md#https-github.com-mosip-k8s-infra-tree-main-loggingintroduction) for technical details.
