@@ -47,7 +47,7 @@ Service to manage several mapping-related tasks and provide APIs for users to co
 
 #### Authentication
 
-* Authentication page leading to the eSignet interface
+* Authentication through eSignet via the [OIDC interface](https://openid.net/developers/how-connect-works/)
 * Display the current FA of the user
 * Option to add/update the FA and account details
 * Notification to users via email/SMS
@@ -55,7 +55,7 @@ Service to manage several mapping-related tasks and provide APIs for users to co
 
 #### SPAR with Mojaloop
 
-SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used as a Mojaloop Oracle.&#x20;
+SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used as a [Mojaloop Oracle](https://docs.mojaloop.io/legacy/api/als-oracle-api-specification.html).&#x20;
 
 ### SPAR Self Service Portal
 
