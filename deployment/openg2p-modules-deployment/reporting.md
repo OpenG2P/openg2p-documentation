@@ -6,9 +6,7 @@ There are two models of generating Reporting and visualizing dashboards in OpenG
 
 TODO
 
-## Installation using Superset
-
-WIP
+## Installation of Apache Superset
 
 ### Prerequisites
 
@@ -27,13 +25,11 @@ WIP
 
 ### Post-installation
 
-After installation is successful, Superset can be accessed at https://superset.openg2p.sandbox.net, depending on the hostname given above.
+After installation is successful, Superset can be accessed at [https://superset.openg2p.sandbox.net](https://superset.openg2p.sandbox.net), depending on the hostname given above.
 
-Follow instructions given here to install sample [dashboards](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/superset/dashboards).
+Follow the instructions given here to install pre-configured [dashboards](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/superset/dashboards).
 
-## Installation using Reporting Framework
-
-WIP
+## Installation of Reporting Framework
 
 ### Prerequisites
 
@@ -54,4 +50,4 @@ WIP
 
 ### Post-installation
 
-* Import Sample Dashboards from [dashboards](https://github.com/openg2p/openg2p-reporting/tree/develop/dashboards) folder into OpenSearch Dashboards through UI.
+* Import Sample Dashboards from the [dashboards](https://github.com/openg2p/openg2p-reporting/tree/develop/dashboards) folder into OpenSearch Dashboards through UI.
