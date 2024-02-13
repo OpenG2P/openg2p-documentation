@@ -17,7 +17,7 @@ The following tools are provided
 
 ## Apache Superset&#x20;
 
-Apache Superset offers SQL query based datasets and charts for visualisation of data. OpenG2P offers pre-configured dashboards for visualisation. Refer to the [deployment instructions](../deployment/openg2p-modules-deployment/reporting.md).
+Apache Superset offers SQL query based datasets and charts for visualisation of data. OpenG2P offers pre-configured dashboards for visualisation. Refer to the [deployment instructions](../deployment/openg2p-modules-deployment/reporting-deployment.md).
 
 <figure><img src="../.gitbook/assets/apache-superset-dashboard.png" alt=""><figcaption></figcaption></figure>
 

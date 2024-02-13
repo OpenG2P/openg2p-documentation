@@ -90,7 +90,7 @@
   * [GCTB Deployment](deployment/openg2p-modules-deployment/gctb-deployment.md)
   * [SPAR Deployment](deployment/openg2p-modules-deployment/spar-deployment/README.md)
     * [SPAR Post Installation Configuration](deployment/openg2p-modules-deployment/spar-deployment/spar-post-installation-configuration.md)
-  * [Reporting](deployment/openg2p-modules-deployment/reporting.md)
+  * [Reporting Deployment](deployment/openg2p-modules-deployment/reporting-deployment.md)
 
 ## 👨💻 DEVELOPER ZONE
 
