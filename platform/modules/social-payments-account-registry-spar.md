@@ -71,6 +71,12 @@ Configuration Guide - TODO Link
 
 [SPAR Kubernetes Deployment Guide](../../deployment/openg2p-modules-deployment/spar-deployment/)
 
+## Monitoring & Reporting
+
+SPAR uses the Apache Superset for visualisation of data. Refer to [Monitoring and Reporting](../monitoring-and-reporting.md) for deployment and loading pre-configured dashboards.
+
+<figure><img src="../../.gitbook/assets/spar-dashboard.png" alt=""><figcaption></figcaption></figure>
+
 ## User guides
 
 [Self-Service Portal Usage Guide](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/168/guides/user-guides/spar/spar-user-guide-for-end-user/link-id-with-financial-address-information-by-beneficiary)
