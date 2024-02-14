@@ -1,3 +1,8 @@
+---
+cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
+coverY: 0
+---
+
 # Social Payments Account Registry (SPAR)
 
 ## Introduction

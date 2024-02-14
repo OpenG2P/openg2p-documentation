@@ -1,3 +1,8 @@
+---
+cover: ../../../.gitbook/assets/SPAR banner-on-light-background.png
+coverY: 0
+---
+
 # Self Update ID with Financial Address information
 
 ## Introduction

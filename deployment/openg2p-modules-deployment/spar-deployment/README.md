@@ -1,5 +1,10 @@
 ---
+cover: ../../../.gitbook/assets/SPAR banner-on-light-background.png
+coverY: 0
 layout:
+  cover:
+    visible: true
+    size: hero
   title:
     visible: true
   description:

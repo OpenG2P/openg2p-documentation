@@ -4,7 +4,7 @@
 
 OpenG2P PBMS is based on Odoo.
 
-If you want to customize the Odoo addons in your OpenG2P PBMS, create a custom-packaged PBMS docker, using [Packaging Instructions](../../../guides/deployment-guide/packaging-openg2p-docker.md). \[Optional]
+If you want to customize the Odoo addons in your OpenG2P PBMS, create a custom-packaged PBMS docker, using [Packaging Instructions](../../deployment-guide/packaging-openg2p-docker.md). \[Optional]
 
 ## Prerequisites
 

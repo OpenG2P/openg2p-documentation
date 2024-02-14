@@ -1,3 +1,8 @@
+---
+cover: ../../../.gitbook/assets/SPAR banner-on-light-background.png
+coverY: 0
+---
+
 # Admin Guide to Link ID with Financial Address information
 
 ## Introduction
@@ -17,20 +22,19 @@ This document contains step-by-step instructions for the administrator to link I
 The administrator must follow the following sequence process:
 
 1. The administrator must clone the repository [https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts](https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts)
-2. Download the script.
-3. Click the python script file _**link\_mapper.py**_. The script is displayed.
+2. Click the python script file _**link\_mapper.py**_. The script is displayed.
 
 <figure><img src="../../../.gitbook/assets/python-script.png" alt=""><figcaption><p>Python script</p></figcaption></figure>
 
 In the script, the _**mapper\_link\_api\_url**_  and the _**csv\_path**_ must be verified and updated.
 
-4. Double the script _**mapper\_link\_api**_ to run the script.
-5. After the administrator runs the script, the response is triggered in a cmd prompt which shows that the National IDs are linked to the FA of the beneficiaries.
+3. Double click the script file _**link\_mapper.py**_ to run the script.
+4. After the administrator runs the script, the response is triggered in a cmd prompt which shows that the National IDs are linked to the FA of the beneficiaries.
 
 <figure><img src="../../../.gitbook/assets/Sample-response-message .png" alt=""><figcaption><p>Sample response message.</p></figcaption></figure>
 
-6. &#x20;Press Enter to exit from the cmd prompt.&#x20;
+5. Press Enter to exit from the cmd prompt.&#x20;
 
 _**Note:**_
 
-Administrator can use a JASON formatter to format the response triggered in cmd format and infer the response.
+Administrator can use a JSON formatter to format the response triggered in cmd format and to infer the response.
