@@ -24,13 +24,13 @@ The three steps involved in the registration process using the ODK Collect App a
 
 A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
-* Program creation - To learn the steps, click [here](../../../user-guides/user-guides/eligibility-and-program-enrollment/program/create-a-program.md).
-* Create ODK form in ODK Central - To learn the steps, click [here](../../../user-guides/user-guides/registration/odk/create-odk-form.md).
-* Provide ODK form access to the field registration agent- To learn the steps, click [here](../../../user-guides/user-guides/registration/odk/provide-form-access-to-field-agent.md).
+* Program creation - To learn the steps, click [here](../../../user-guides/eligibility-and-program-enrollment/program/create-a-program.md).
+* Create ODK form in ODK Central - To learn the steps, click [here](../../../user-guides/registration/odk/create-odk-form.md).
+* Provide ODK form access to the field registration agent- To learn the steps, click [here](../../../user-guides/registration/odk/provide-form-access-to-field-agent.md).
 
 #### Field registration
 
-The field registration agent downloads the ODK form using the ODK Collect App. To learn the steps, click [here](../../../user-guides/user-guides/registration/odk/download-form-on-odk-collect.md).
+The field registration agent downloads the ODK form using the ODK Collect App. To learn the steps, click [here](../../../user-guides/registration/odk/download-form-on-odk-collect.md).
 
 After downloading the app, the agent visits the field and follows these steps for registration:
 
@@ -66,7 +66,7 @@ Based on the business scenario, a program administrator must create an [ODK MTS 
 
 &#x20;      _Note: The OpenG2P registry accepts the individual/group KYC data only in JSON format._
 
-To learn the steps to create an ODK MTS Connector, click [here](../../../user-guides/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
+To learn the steps to create an ODK MTS Connector, click [here](../../../user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
 
 ## Demo video
 
@@ -74,8 +74,8 @@ To learn the steps to create an ODK MTS Connector, click [here](../../../user-gu
 
 ## Related links
 
-* [Create Program](../../../user-guides/user-guides/eligibility-and-program-enrollment/program/create-a-program.md)
-* [Create ODK Form](../../../user-guides/user-guides/registration/odk/create-odk-form.md)
-* [Provide ODK Form Access to Field Agent](../../../user-guides/user-guides/registration/odk/provide-form-access-to-field-agent.md)
-* [Download Form on ODK Collect](../../../user-guides/user-guides/registration/odk/download-form-on-odk-collect.md)
-* [Create ODK MTS Connector](../../../user-guides/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)
+* [Create Program](../../../user-guides/eligibility-and-program-enrollment/program/create-a-program.md)
+* [Create ODK Form](../../../user-guides/registration/odk/create-odk-form.md)
+* [Provide ODK Form Access to Field Agent](../../../user-guides/registration/odk/provide-form-access-to-field-agent.md)
+* [Download Form on ODK Collect](../../../user-guides/registration/odk/download-form-on-odk-collect.md)
+* [Create ODK MTS Connector](../../../user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)

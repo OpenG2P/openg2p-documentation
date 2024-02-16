@@ -10,26 +10,22 @@ Once the eligibility criterion is configured in the program, the Program adminis
 
 Note:
 
-To learn the enrolment process, click here [Enrol Registrants into Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/enrol-registrants-into-program.md).
-
-\<link is broken, hyper link the enrol registrants into program>
+To learn the enrolment process, click here [Enrol Registrants into Program](../../../user-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md).
 
 ## Registrant status
 
 After enrollment, the status of all the eligible beneficiaries changes to enrolled. The status of ineligible beneficiaries changes to not eligible. Program administrators can view the status of both enrolled and non-eligible registrants.
 
-If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/secure-registry/registration-methods/self-service-portal.md).
-
-\<link is not working, to be hyperlinked>
+If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](self-service-portal.md).
 
 ## Eligibility criteria change
 
-OpenG2P allows the Program administrators to change the eligibility criteria after enrolling the registrants. In such a case, the Program administrators can re-run the eligibility check on the enrolled beneficiaries once again and the beneficiaries not meeting the new eligibility criteria will be listed as not eligible.
+OpenG2P allows the Program administrators to change the eligibility criteria after enrolling the registrants. In such a case, the Program administrators can re-run the eligibility check on the enrolled beneficiaries and list the eligible and the not eligible beneficiaries based on the new eligibility criteria.
 
 ## Demo
 
 {% embed url="https://www.youtube.com/watch?v=5NOfSTehmtU" %}
 
-## Related links
+## Related user guide
 
-[Enrol Registrants into the Program](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/enrol-registrants-into-program.md)
+[Enrol Registrants into the Program](../../../user-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md)

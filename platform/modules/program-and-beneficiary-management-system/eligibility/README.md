@@ -44,9 +44,9 @@ For example, the image here shows eligibility criteria with two filters: first f
 
 ## Related user guides
 
-[Create Eligibility Manager Types](../../../../user-guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/)
+[Create Eligibility Manager Types](../../../../user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/)
 
-[Create an Eligibility Manager Under the Program](../../../../user-guides/user-guides/eligibility-and-program-enrollment/program/create-eligibility-manager.md)
+[Create an Eligibility Manager Under the Program](../../../../user-guides/eligibility-and-program-enrollment/program/create-eligibility-manager.md)
 
 [Create Default Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-default-eligibility-manager)
 

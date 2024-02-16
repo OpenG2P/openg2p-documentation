@@ -11,39 +11,36 @@ OpenG2P platform's program management enables program managers to perform variou
 * Target both individual and groups&#x20;
 * Define program disbursement cycles
 
-## Program lifecycle
+## OpenG2P Program Management
+
+In OpenG2P, program management comprises of certain process to make programs and its benefits to reach the eligible individual/groups. A program manager must perform the configuration, activation  and so on to manage the program efficiently.  A program has the phases such as,
+
+| Process                                                                      | Description                                                                                                                                                                                    |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Program lifecycle](program-management.md#program-lifecycle)                 | <ul><li>Program creation</li><li>Program activation</li><li>Program closure</li></ul>                                                                                                          |
+| [Configuration of Managers](program-management.md#configuration-of-managers) |  A program manager configures the relevant managers required for a program                                                                                                                     |
+| [PMT configuration](program-management.md#pmt-configuration)                 | A program manger configures Proxy Means Test (PMT) to validate the eligible individual/groups to enrol into a program                                                                          |
+| [Map portal form](program-management.md#map-portal-form)                     | In self-service portal form, the individual/groups provides the required information to eligible for a program. Mapping of  the self-service portal form becomes integral parts of a program   |
+
+### Program lifecycle
 
 In Open G2P, a program is a scheme created to assist an individual/group to avail benefits given by  the government of their country. An Individual/group must undergo sequence of verification process to avail the benefits.&#x20;
 
-After the verification process is successful, an individual/group become eligible to enroll in the program and are referred to as beneficiaries. Once the program is configured to an individual/group, he/she can receive the benefits allotted from their government.&#x20;
+After the verification process is successful, an individual/group become eligible to enroll in the program and are referred to as beneficiaries. Once the program is activated to an individual/group, he/she can receive the allotted benefits.
 
 &#x20;For each program, there is a lifecycle. The program lifecycle comes to end for an individual/group after they receive the benefits delivered to them.  The benefits can be delivered in single cycle or multiple cycles depends on the program lifecycle.
 
 A program (scheme) comes to closure after the benefits reaches an individual/group. It can also be retrieved once the program lifecycle is activated.
 
-## Configuring managers in a program
+## Configuration of Managers
 
-A program is composed of various managers, each of which configures the parameters for a specific program management process such as eligibility determination, deduplication, notification, cycle management, entitlement management and payment management.&#x20;
+A program is composed of various managers, each of which configures the parameters for a specific program such as eligibility determination, deduplication, notification, cycle management, entitlement management and payment management.&#x20;
 
-In OpenG2P, in each programs' configuration tab, you can find the various managers, such as,
-
-[Eligibility Managers](eligibility/)
-
-[Deduplication Managers](deduplication.md)
-
-[Notification Managers](notifications.md)
-
-Program Manager
-
-Cycle Manager
-
-[Entitlement Manager](entitlement.md)
-
-Payment Manager
+In OpenG2P, in each programs' configuration tab, you can find the various managers, such as, [Eligibility Managers](eligibility/), [Deduplication Managers](deduplication.md), [Notification Managers](notifications.md), Program Manager, Cycle Manager, [Entitlement Manager](entitlement.md), and Payment Manager.
 
 ## PMT Configuration
 
-\<TO DO>
+In OpenG2P, a program manager configures the PMT to validate the income and poverty status of individual/groups using data on basic household materials, to enrol his/her to a program.
 
 ## Map Portal Form
 
@@ -55,6 +52,6 @@ OpenG2P platform has a backend office application for program administrators. Th
 
 ## Program disbursement cycles
 
-OpenG2P platform allows the Program Manager, the Cycle Manager, the Program Administrators to create multiple cycles and disburse benefits. Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles.
+OpenG2P platform allows the Program Manager, the Cycle Manager, the Program Manager to create multiple cycles and disburse benefits. Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles.
 
 To know about Program disbursement cycles, [click here](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/platform/modules/program-and-beneficiary-management-system/program-disbursement-cycles)
