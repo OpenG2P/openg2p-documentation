@@ -68,7 +68,7 @@ SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used
 
 ## Technical concepts
 
-[Technical Concepts of SPAR](../../developer-zone/repositories/social-payments-account-registry.md)
+[Technical Concepts of SPAR](../../developer-zone/repositories/social-payments-account-registry/)
 
 ## Configuration & deployment&#x20;
 
