@@ -66,6 +66,12 @@ SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used
 
 * Front-end service for Web-based user interface to carry out above functions
 
+
+
+## Cash transfer using SPAR
+
+{% embed url="https://miro.com/app/board/uXjVNreQJsM=/" %}
+
 ## Technical concepts
 
 [Technical Concepts of SPAR](../../developer-zone/repositories/social-payments-account-registry/)
