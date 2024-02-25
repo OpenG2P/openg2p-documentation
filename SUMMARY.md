@@ -36,6 +36,7 @@
   * [Social Payments Account Registry (SPAR)](platform/modules/social-payments-account-registry-spar.md)
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge/README.md)
     * [File-based Payment Backend](platform/modules/g2p-cash-transfer-bridge/file-based-payment-backend.md)
+  * [4Sure Verifier App](platform/modules/4sure-verifier-app.md)
 * [Monitoring and Reporting](platform/monitoring-and-reporting.md)
 * [Logging](platform/logging.md)
 * [Privacy and Security](platform/privacy-and-security/README.md)
@@ -48,7 +49,7 @@
   * [OpenG2P Mojaloop Integration](platform/integrations/openg2p-mojaloop-integration.md)
 * [Technology Stack](platform/technology-stack.md)
 * [Reference](platform/reference/README.md)
-  * [↔ API](platform/reference/api.md)
+  * [↔️ API](platform/reference/api.md)
 * [Releases](platform/releases/README.md)
   * [1.1.0](platform/releases/1.1.0/README.md)
     * [Release Notes](platform/releases/1.1.0/release-notes.md)
@@ -64,7 +65,7 @@
   * [Registration in Low Connectivity Areas](use-cases/use-cases/registration-in-low-connectivity-areas.md)
   * [Service Provider Reimbursement](use-cases/use-cases/service-provider-reimbursement.md)
 
-## 🗄 DEPLOYMENT
+## 🗄️ DEPLOYMENT
 
 * [Deployment Architecture](deployment/deployment-architecture.md)
 * [Infrastructure Setup](deployment/infrastructure-setup/README.md)
@@ -98,7 +99,7 @@
   * [Install WireGuard Client on Desktop/Laptop](deployment/deployment-guide/install-wireguard-client-on-desktop-laptop.md)
   * [Install WireGuard Client on Android Device](deployment/deployment-guide/install-wireguard-app-and-activate-tunnel.md)
 
-## 👨💻 DEVELOPER ZONE
+## 👨‍💻 DEVELOPER ZONE
 
 * [Getting Started](developer-zone/getting-started-1/README.md)
   * [Installing OpenG2P On Linux](developer-zone/getting-started-1/installing-openg2p-on-linux.md)
@@ -170,7 +171,7 @@
   * [Test Workflow](developer-zone/testing/test-workflow.md)
   * [Automation Framework](developer-zone/testing/automation-framework.md)
 
-## 👩💻 COMMUNITY
+## 👩‍💻 COMMUNITY
 
 * [Contributing](community/contributing-to-openg2p.md)
 * [Code of Conduct](community/code-of-conduct.md)
