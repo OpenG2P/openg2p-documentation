@@ -18,7 +18,7 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-<figure><img src="../../../.gitbook/assets/g2p-cash-transfer-bridge.jpg" alt=""><figcaption><p>G2P cash transfer bridge</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/g2p-cash-transfer-bridge-architecture.jpg" alt=""><figcaption></figcaption></figure>
 
 ## Concepts
 

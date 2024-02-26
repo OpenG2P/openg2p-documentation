@@ -6,7 +6,7 @@ TBD
 
 ## Architecture
 
-<figure><img src="../../../.gitbook/assets/file-based-payment-backend.jpg" alt=""><figcaption><p>File-based payment backend</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/File-based- payment-backend.jpg" alt=""><figcaption><p>File-based payment backend</p></figcaption></figure>
 
 ## Concepts
 

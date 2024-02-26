@@ -6,7 +6,7 @@ The 4Sure App is designed to streamline the process of verifying digital credent
 
 ## Architecture
 
-<figure><img src="../../.gitbook/assets/4sure-architecture.jpg" alt=""><figcaption><p>4Sure architecture </p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4sure-architecture.jpg" alt=""><figcaption><p>4Sure-architecture</p></figcaption></figure>
 
 ## Feature and functionality
 
@@ -19,9 +19,7 @@ The 4Sure App is designed to streamline the process of verifying digital credent
 
 ## Workflow
 
-
-
-<figure><img src="../../.gitbook/assets/4sure-work-flow.jpg" alt=""><figcaption><p>4Sure workflow</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4Sure-app-workFlow.jpg" alt=""><figcaption><p>4Sure App workflow</p></figcaption></figure>
 
 * **Start 4Sure App**: The workflow begins with the user opening the ODK Collect App, which then triggers the initiation of the 4Sure App
 * **Display QR Code**: Upon initiation, the 4Sure App displays a QR code. This code is meant to be scanned by another device to establish a connection for secure data transmission
