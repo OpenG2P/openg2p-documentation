@@ -2,36 +2,56 @@
 
 ## Description
 
-This guide will provide the steps to register beneficiaries through an offline process. [offline registration](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/secure-registry/registration-methods/offline-registration.md) is done by the Field Agent.
+This document provides information on various mode in an application to collect registrants details in areas without internet connectivity . A field agent does the [offline registration](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/secure-registry/registration-methods/offline-registration.md) using ODK Collect App. Registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
 
 ## Pre-requisites
 
-* The agent should have ODK collect and Smart Scanner Application Installed
-* Agents should have form access.
-* Agents should have downloaded the program form on his/her device.
-* Beneficiaries should have their National ID card with them.
-* ODK MTS Connector which is mapped to the form should be in Running status.
+* A agent must have ODK Collect App in his/her device
+* Registrants must have their relevant documents to submit during registration process. Depends on on a program, the submission of the documents vary.&#x20;
 
-## Steps
+## Procedure
 
-1. Open the program form from the ODK Collect application.
+The agent uses the android mobile to fill the details of the registrants.
 
-<figure><img src="../../../.gitbook/assets/odk-collect-program-home-page.png" alt=""><figcaption></figcaption></figure>
+1. Tap the _**ODK Collect App**_ icon in the mobile device.
 
-2. Click on _Fill Blank Form_ to fill in all form fields with beneficiary data.
+<figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/odk-program-form-view.png" alt=""><figcaption></figcaption></figure>
+You can find the downloaded program form.
 
-3. At some point, the form will have the _Launch_ button. Click on the _Launch_ button to scan the QR code on the National ID of the Beneficiary.
+2. Tap the _**Start new form**_ button.&#x20;
 
-<figure><img src="../../../.gitbook/assets/odk-form-launch.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption><p>Start new form</p></figcaption></figure>
 
-4. Once the scanning is done beneficiary data will be auto-populated as per the form fields configuration.
+3. _**Start new form**_ screen is displayed, tap the program form.
 
-<figure><img src="../../../.gitbook/assets/odk-form-after-launch.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (6).png" alt=""><figcaption><p>History of the safety net program</p></figcaption></figure>
 
-5. After filling in all the mandatory fields click on the _Save and Submit_ button.
+The relevant program form is displayed. For example: Here the program form is downloaded for the Safety Net Program.
 
-* If the Field Agent is online, the submitted entries will be sent to ODK Central and will be listed under _View Sent Form_ or else they will be saved in the Field Agents device in _Send Finalized Form Section._
+4. Select the appropriate option in the _**Consent Details**_ screen and tap the _**Next**_ button.
 
-<figure><img src="../../../.gitbook/assets/odk-form-save.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+
+The _**Safety Net Program form**_ is displayed.
+
+5. Enter the details of the registrants in the form. You must fill all the mandatory fields in the form.&#x20;
+
+<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
+
+6. Choose the appropriate option in the _**Disability status**_.
+7. Choose the appropriate option in the _**Immigration status**_.
+8. Take a picture or choose the image to upload the _**Proof of income**_, _**Proof of address**_, _**Proof of identity**_.
+9. Choose the appropriate option in the _**Notification preference**_.
+
+<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Safety net program form</p></figcaption></figure>
+
+6. Click the _**Go To Start**_ button to go to start page of the program form.
+7. Click the _**Go To End**_ button to go to end page of the program form.
+8. Click the _**Back**_ button to go to previous page.
+9. Click the _**Next**_ button to go to next page.
+10. Tap the _**Send**_ button to finish the registration process or tap the _**Save as draft**_ button to save the form.
+
+<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+
+When the field agent moves to the area with internet connectivity, the submitted entries will be sent to ODK Central and will be listed under _**View Sent Form**_ or the form will be saved in the field agents device in the _**Send Finalized** Form Section._
