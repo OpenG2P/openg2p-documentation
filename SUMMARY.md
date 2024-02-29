@@ -33,7 +33,7 @@
   * [Social Registry](platform/modules/social-registry.md)
   * [Registration Tool Kit](platform/modules/registration-tool-kit/README.md)
     * [ODK Collection App](platform/modules/registration-tool-kit/odk-collection-app.md)
-  * [Social Payments Account Registry (SPAR)](platform/modules/social-payments-account-registry-spar.md)
+  * [SPAR](platform/modules/social-payments-account-registry-spar.md)
   * [G2P Cash Transfer Bridge](platform/modules/g2p-cash-transfer-bridge/README.md)
     * [File-based Payment Backend](platform/modules/g2p-cash-transfer-bridge/file-based-payment-backend.md)
   * [4Sure Verifier App](platform/modules/4sure-verifier-app.md)

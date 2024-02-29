@@ -1,9 +1,10 @@
 ---
+description: Social Payments Accounts Registry
 cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
 ---
 
-# Social Payments Account Registry (SPAR)
+# SPAR
 
 ## Introduction
 
@@ -13,64 +14,81 @@ SPAR is powerful **inclusion** tool as it gives end users ability to choose how 
 
 SPAR may be housed centrally in a country as a building block of the Digital Public Infrastructure (DPI). Alternatively, a social welfare department can house it and enable other departments to use the same for cash disbursements.
 
+The following picture represents how SPAR fits into the overall OpenG2P Project Landscape
+
+<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR in the OpenG2P Landscape</p></figcaption></figure>
+
+The Government Department administers its benefit program in the OpenG2P PBMS platform. The PBMS platform manages benefit programs, beneficiaries under the programs, disbursement cycles and entitlements (rules & definitions).
+
+At the end of every disbursement cycle of a given benefit program, the PBMS platform produces a list that contains all the beneficiaries and their individual disbursements. The beneficiaries in that list are identified by a Beneficiary ID. This ID might be a National ID, that uniquely identifies a beneficiary in the country or depending on the National ID implementation in the country can also be a proxy or a token that has been issued by the National ID Registry.
+
+This List has to be presented to the Sponsor Bank, where the Government Department has its Money Account (Financial Account) that contains the funds required to fund these disbursements.
+
+The Sponsor Bank in turn has to present this List to the National Clearing System. The National Clearing List will in turn split this list into multiple lists that will be presented to multiple destination banks in the country.
+
+Somewhere in this G2P Disbursement Chain, the Beneficiary ID needs to be translated to the Beneficiary's Financial Address&#x20;
+
+1. Beneficiary Account Number + Bank/Branch Address - in case of Bank Accounts
+2. Beneficiary Mobile Number + Mobile Service Provider - in case of Wallets
+
+This mapping between the Beneficiary ID and his Financial Address is maintained by SPAR. SPAR provides a lookup referral service by which any participant in the G2P chain can perform a lookup into SPAR and obtain the financial address for a given beneficiary ID. The three blue dotted arrows (1, 2 & 3) in the above picture represents this lookup.&#x20;
+
+Depending on the implementation, we can decide which layer in the G2P chain performs this lookup and enriches the disbursement list that was originally produced by the PBMS  system.
+
+The following figure provides a Functional Architecture of the SPAR Subsystem.
+
 {% embed url="https://miro.com/app/board/uXjVNDnhJUg=/" %}
-SPAR architecture diagram.
+SPAR Functional Architecture
 {% endembed %}
+
+The SPAR subsystem consists of 2 functional components
+
+* ID-Account Mapper
+* Self-Service-Portal
+
+The ID-Account Mapper contains the actual mapping between beneficiary IDs and their respective accounts.
+
+The Self-Service-Portal provides a Self Service to the beneficiaries who can log in into SPAR and update their own account information into the registry. The Self Service portal facilitates an easy to use interface like searching for a beneficiary's bank, his branch, her mobile service provider so that the beneficiary is able to provide the full financial address, where he/she wishes to receive the cash credits for the benefit programs.
 
 ## Functionality and features
 
-* Mapping of ID to FA.
-* Many-to-one and one-to-one mapping of ID to FA.
-* Self Service Portal for update of account information
-* Login via National ID (using [eSignet](https://docs.esignet.io/))
-* Multiple IDs may be added for the same user
-* [G2P Connect APIs](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-specs) to query and update FA
-* Bulk upload by Admin or FSPs like bank, or Govt Department after authentication
-* Notification to the user via SMS/email (TBD)
-* Change log  (TBD)
-* Transaction log  (TBD)
-* Signature verification for clients (partners)  via integrations with MOSIOP's Partnermanager & Keymanager (TBD)
+* **ID-Account Mapper**
+  * Mapping of ID to FA.
+  * Many-to-one and one-to-one mapping of ID to FA.
+  * Multiple IDs may be added for the same user
+  * Bulk upload by Admin or FSPs like bank, or Govt Department after authentication
+  * [G2P Connect Compliant APIs](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-specs) to query and update Financial Address
+  * Signature verification for clients (partners)  via integrations with MOSIOP's Partnermanager & Keymanager (TBD)
+* **Self Service Portal**
+  * Login via National ID (using [eSignet](https://docs.esignet.io/))
+  * Easy to use User Interface - Search for Banks, Search for Branches, Search for Mobile Service Providers to facilitate definition of the complete Financial Address of a Beneficiary
 
 ## Concepts
 
 ### ID Account Mapper
 
-* ID Account Mapper compliant with the [G2P Connect interface](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-architecture)
 * Database of ID and FA. The IDs may be tokens like [PSUT in MOSIP](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
-* Can host multiple IDs associated with the same account. Eg.,
+* Can host multiple IDs associated with the same account. Eg.
 
-| ID                                  | Account Number |
-| ----------------------------------- | -------------- |
-| 234AFBC@mosip.openg2p               | 45678756456    |
-| DBCF34A@mosip.socialaccountregistry | 45678756456    |
+| ID                                  | Account Number       |
+| ----------------------------------- | -------------------- |
+| 234AFBC@mosip.openg2p               | 45678756456@ABC-Bank |
+| DBCF34A@mosip.socialaccountregistry | 45678756456@ABC-Bank |
 
 * If relationships between entries are supported in the DB, then the same can be used to show linkages between different IDs for a user (TBD)
 
-### SPAR Service
+### Self Service Portal
 
-Service to manage several mapping-related tasks and provide APIs for users to connect and update their FA.
+Service to enable beneficiaries login into SPAR and update their respective Financial Address (Account Details).
+
+To enable this, the self service portal provides the following features via. its authentication services.
 
 #### Authentication
 
 * Authentication through eSignet via the [OIDC interface](https://openid.net/developers/how-connect-works/)
-* Display the current FA of the user
-* Option to add/update the FA and account details
+* Display the current FA of the beneficiary (logged-in user)
+* Option to modify the Financial Address
 * Notification to users via email/SMS
-* Onboarding of authenticators like eSignet
-
-#### SPAR with Mojaloop
-
-SPAR implements Mojaloop Participant API (Oracle) as well. Thus SPAR can be used as a [Mojaloop Oracle](https://docs.mojaloop.io/legacy/api/als-oracle-api-specification.html).&#x20;
-
-### SPAR Self Service Portal
-
-* Front-end service for Web-based user interface to carry out above functions
-
-
-
-## Cash transfer using SPAR
-
-{% embed url="https://miro.com/app/board/uXjVNreQJsM=/" %}
 
 ## Technical concepts
 
