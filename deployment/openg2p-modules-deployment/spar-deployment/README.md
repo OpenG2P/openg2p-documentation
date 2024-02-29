@@ -23,9 +23,9 @@ layout:
 
 SPAR deployment comprises deploying the following services on [Kubernetes cluster infrastructure](../../infrastructure-setup/).
 
-* [SPAR Service](../../../platform/modules/social-payments-account-registry-spar.md#spar-service)&#x20;
-* [SPAR ID Account Mapper](../../../platform/modules/social-payments-account-registry-spar.md#id-account-mapper)&#x20;
-* [SPAR Self Service Portal](../../../platform/modules/social-payments-account-registry-spar.md#spar-self-service-portal) &#x20;
+* [SPAR Service](../../../platform/modules/social-payments-account-registry-spar/#spar-service)&#x20;
+* [SPAR ID Account Mapper](../../../platform/modules/social-payments-account-registry-spar/#id-account-mapper)&#x20;
+* [SPAR Self Service Portal](../../../platform/modules/social-payments-account-registry-spar/#spar-self-service-portal) &#x20;
 
 ## Prerequisites
 
