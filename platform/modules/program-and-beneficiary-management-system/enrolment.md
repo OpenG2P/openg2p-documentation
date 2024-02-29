@@ -10,7 +10,7 @@ Once the eligibility criterion is configured in the program, the Program adminis
 
 Note:
 
-To learn the enrolment process, click here [Enrol Registrants into Program](../../../user-guides/platform-guides/registration/eligibility-and-program-enrollment/enrol-registrants-into-program.md).
+To learn the enrolment process, click here [Enrol Registrants into Program](../../../user-guides/platform-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md).
 
 ## Registrant status
 
@@ -28,4 +28,4 @@ OpenG2P allows the Program administrators to change the eligibility criteria aft
 
 ## Related user guide
 
-[Enrol Registrants into the Program](../../../user-guides/platform-guides/registration/eligibility-and-program-enrollment/enrol-registrants-into-program.md)
+[Enrol Registrants into the Program](../../../user-guides/platform-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md)
