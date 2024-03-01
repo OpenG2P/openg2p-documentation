@@ -1,6 +1,6 @@
 ---
 description: Social Payments Accounts Registry
-cover: ../../../.gitbook/assets/SPAR banner-on-light-background.png
+cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
 ---
 
@@ -31,19 +31,19 @@ The Self-Service-Portal provides a Self Service to the beneficiaries who can log
 
 ## Technical concepts
 
-[Technical Concepts of SPAR](../../../developer-zone/repositories/social-payments-account-registry.md)
+[Technical Concepts of SPAR](../../developer-zone/repositories/social-payments-account-registry.md)
 
 ## Configuration & deployment&#x20;
 
 Configuration Guide - TODO Link
 
-[SPAR Kubernetes Deployment Guide](../../../deployment/openg2p-modules-deployment/spar-deployment/)
+[SPAR Kubernetes Deployment Guide](../../deployment/openg2p-modules-deployment/spar-deployment/)
 
 ## Monitoring & Reporting
 
-SPAR uses the Apache Superset for visualisation of data. Refer to [Monitoring and Reporting](../../monitoring-and-reporting.md) for deployment and loading pre-configured dashboards.
+SPAR uses the Apache Superset for visualisation of data. Refer to [Monitoring and Reporting](../monitoring-and-reporting.md) for deployment and loading pre-configured dashboards.
 
-<figure><img src="../../../.gitbook/assets/spar-dashboard.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/spar-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 ## User guides
 
