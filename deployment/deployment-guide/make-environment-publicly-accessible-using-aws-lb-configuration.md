@@ -10,7 +10,7 @@ The below steps are the process to create a new Target Groups and LB on AWS
 
 * Creating Target Group for **openg2p-external-http**
 * Creating Target Group for **openg2p-external-httpsredirect**
-* Creating a record
+* Creating a Target Group for **PostgreSQL**
 * Creating External **Network Load Balancer**
 
 ### Creating Target Group for **openg2p-external-http**
