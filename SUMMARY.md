@@ -98,6 +98,7 @@
   * [SSL Certificates using Letsencrypt](deployment/deployment-guide/ssl-certificates-using-letsencrypt.md)
   * [Install WireGuard Client on Desktop/Laptop](deployment/deployment-guide/install-wireguard-client-on-desktop-laptop.md)
   * [Install WireGuard Client on Android Device](deployment/deployment-guide/install-wireguard-app-and-activate-tunnel.md)
+  * [Make Environment Publicly Accessible using AWS LB Configuration](deployment/deployment-guide/make-environment-publicly-accessible-using-aws-lb-configuration.md)
 
 ## 👨‍💻 DEVELOPER ZONE
 
