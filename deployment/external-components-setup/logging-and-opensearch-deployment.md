@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Logs from different components present on the cluster will be pulled into OpenSearch to display dashboards and compute reports. Fluentd is used to pull capture logs and put into OpenSearch.
+Logs from different components present on the cluster will be pulled into OpenSearch to display dashboards and compute reports. Fluentd is used to pull captured logs and put into OpenSearch.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     SANDBOX_HOSTNAME="openg2p.sandbox.net" \
         ./install.sh
     ```
-* After installation is successful, OpenSearch Dashboards will be accessible at https://opensearch.openg2p.sandbox.net, depending on the hostname given above.
+* After installation is successful, OpenSearch dashboards will be accessible at https://opensearch.openg2p.sandbox.net, depending on the hostname given above.
 
 ### Install Rancher Logging (Fluentd)
 
@@ -37,12 +37,12 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     ./opensearch-ism-script.sh
     ```
 
-### Configure Rancher FluentD
+### Configure Rancher Fluentd
 
 *   Run this to create _ClusterOutput_ (This is responsible for redirecting all logs to OpenSearch.)
 
     ```
-    kubectl apply -f clusterflow-opensearch.yaml
+    kubectl apply -f clusteroutput-opensearch.yaml
     ```
 *   Run this to create a _ClusterFlow_ (This is responsible for filtering OpenG2P service logs, from the logs of all pods.)
 
