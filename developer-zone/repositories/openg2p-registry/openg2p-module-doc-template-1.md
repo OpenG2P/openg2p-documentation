@@ -6,65 +6,63 @@ description: The title should have the exact module name, e.g. g2p_notifications
 
 ### Module name
 
-g2p\_notifications\_voucher
+g2p\_registry\_individual
 
 ### Module title
 
-G2P Notifications: Voucher
+G2P Registry: Individual
 
 ### Technology base
 
-\<Odoo/Springboot/FastAPI>
+Odoo
 
 ### Functionality
 
-* Is it an extension of an existing module?
-* What does this model do/support as functionality?
-* What are the limitations and features/functions not supported?
-* Is it overriding any existing functionality?
+* **Create and Manage Individual Records:**
+  * Users can create detailed records for individuals participating in G2P programs.
+  * Efficiently manage and update individual information through customizable forms.
+* **Access Control:**
+  * Implements fine-grained access control using the "security/ir.model.access.csv" file.
+  * Defines specific access rules to safeguard individual records and related data.
+* **Tailored User Interface:**
+  * Utilizes the "views/individuals\_view.xml" file to provide custom views for displaying individual records.
+  * Enhances the user interface for a more intuitive and streamlined experience.
+* **Representation of Gender Information:**
+  * Introduces specialized views for managing gender-related information.
+  * Improves the visualization and management of gender-specific data.
 
 ### Design notes
 
-* What are salient design features?
-* Why were certain design decisions taken in a particular way?
-* Design patterns used.
-* Algorithms used.
-* Anything a developer should know about the design of this module.
-* Any scope for improvement and further design work that is pending.
+* NA
 
 ### Relationships with other entities
 
-```mermaid
-graph TD
-G2PNotificationsVoucher --->|sends SMS via| SMSServer
-G2PNotificationsVoucher --->|sends Email via| EmailServer
-```
+**Dependencies**
 
-### Dependencies
-
-* Any external libraries used. List them.
-* `g2p_entitlement_voucher`
-* `g2p_notifications_base`
+* Module dependencies
+  * base
+  * mail
+  * contacts
+  * g2p\_registry\_base
 
 ### User interface
 
-* Any new screens created/modified (with screenshots)
-* Any new menu items created.
-* Any new actions created.
+* NA
 
 ### Configuration
 
-* Any system configurations and parameters that apply to this module.
-* Any configurations required for using this module. (List)
-
-### Error codes
-
-* What are the error codes/exceptions thrown by this module.
+* Configure individual record settings based on program requirements.
+* Review and adjust security settings to align with organizational policies.
 
 ### Source code
 
-[https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher](https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher)
+[https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_individual](https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_individual)
 
 ### Installation
+
+* Ensure that the module dependencies ("base," "mail," "contacts," "g2p\_registry\_base") are installed.
+* Install the "G2P Registry: Individual" module from the Odoo Apps interface.
+
+
 
 ###
