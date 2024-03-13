@@ -2,33 +2,57 @@
 
 ## Description
 
-This guide will help to download the program form on ODK Collect Application running on an Android tablet or phone.
+This document provides instructions to download a program form on ODK Collect App installed on an Android tablet or phone.
 
 ## Pre-requisites
 
-* The field agent should have ODK Collect Application installed.
-* The field agent should have[ form access](https://app.gitbook.com/s/xkdlCOLME2p03rS8nG8u/guides/user-guides/provide-form-access-to-field-agent).
+* The field agent must have ODK Collect App installed in his/her mobile device.
+* The field agent must have[ form access](https://app.gitbook.com/s/xkdlCOLME2p03rS8nG8u/guides/user-guides/provide-form-access-to-field-agent).
+* The user who helps the field agent to download a program form in his/her mobile device must have an Administrator role in ODK Central
 
-## Steps
+## Procedure
 
-1. The Administrator logs into ODK Central and navigates to the _App Users_ under the program name.
+1. Login to the **ODK Central.**
+2. Click the relevant project link to upload a form.
+
+For example, here, the project is considered as Safety Net Program.
+
+3. Click the project (Safety Net Program) link listed below the **Projects**.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-under-project (1).png" alt=""><figcaption></figcaption></figure>
+
+The project (Safety Net Program) overview page is displayed.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program - Form</p></figcaption></figure>
+
+4. Click the _App Users_ tab.
+
+The App Users screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/odk-app-users.png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _See Code_ to get the _Client Configuration QR_ _code_.
+5. Click the **See Code** link in _**Configure Client**_ column, the _**Client Configuration QR code**_ pops up.
 
 <figure><img src="../../../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
 
-3. Open the ODK Collect application in the field agent device.
+6. Tap the ODK Collect App in the field agent device.
 
-<figure><img src="../../../../.gitbook/assets/odk-collect-app.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (4).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
-4. Click on _Add Project_ to scan the configuration QR code.
+You can find the configuration modes.
 
-<figure><img src="../../../../.gitbook/assets/odk-collect-project-scan.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image.png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
-5. After scanning the _Client Configuration QR_ _code_ all the given access program forms will be downloaded to the field agent's device.
+7. Tap the _**Configure with QR code**_ button.
 
-<figure><img src="../../../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
+Add project screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/odk-collect-program-home-page.png" alt=""><figcaption></figcaption></figure>
+8. Scan the _**QR code**_ of a relevant program form from the ODK Central.
+
+<figure><img src="../../../../.gitbook/assets/image (1).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
+
+The relevant program form is configured/downloaded in the agent's mobile device.
+
+<figure><img src="../../../../.gitbook/assets/image (15).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
+
+This completes the process to download a form in ODK Collect App from ODK Central.

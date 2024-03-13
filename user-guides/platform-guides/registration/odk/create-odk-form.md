@@ -1,36 +1,40 @@
-# Create ODK Form
+# Create a Project for a Program
 
 ## Description
 
-This guide provides steps to create a new ODK form for a program.
+This document provides instruction to create a new project for a program using ODK Central.
 
 ## Pre-requisites
 
-* [ODK Central](https://docs.getodk.org/central-intro/) should be deployed and available.
-* The user should have an Administrator role in ODK Central. See [Create User and Assign Role](../../eligibility-and-program-enrollment/settings/assign-roles-to-users.md) guide.
+* [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
+* The user must have valid credentials to login **ODK Central**
+* The user must have an Administrator role in **ODK Central**. See [Create User and Assign Role](../../eligibility-and-program-enrollment/settings/assign-roles-to-users.md) guide.
 
-## Steps
+## Procedure
 
-1. Login to ODK Central.
-2. Click on the +_New_ button to create a new project
+1. Login to **ODK Central**.
+2. In Projects, click the **+**_**New**_ button to create a new project.
 
-<figure><img src="../../../../.gitbook/assets/odk-central.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/project-new-button.png" alt=""><figcaption></figcaption></figure>
 
-2. Provide the project name same as the program name for which creating the form.
+3. _**Create Project**_ screen pops up.
 
-<figure><img src="../../../../.gitbook/assets/project-name.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (17).png" alt=""><figcaption><p>Create Project screen</p></figcaption></figure>
 
-3. Once the project is created and listed on the ODK home page, click on the project name.
-4. Click on the +_New_ button on the project overview page to create a new form.
+4. Enter the name of a new project of a program in the _**Name**_ field.
+5. Click the _**Create**_ button to create a new project in a program.
+6. Click the _**Cancel**_ button to exit from the _**Create Project**_ screen.
 
-<figure><img src="../../../../.gitbook/assets/project-overview-page.png" alt=""><figcaption></figcaption></figure>
+**Note:**
 
-5. Choose a file which has form values and upload it.
+Provide the project name same as the program name for which the form is created.
 
-<figure><img src="../../../../.gitbook/assets/form-upload.png" alt=""><figcaption></figcaption></figure>
+For example, here a new project is created as Safety Net Program.
 
-6. Once the form file is uploaded it will be in draft status. Click on _Publish_ _Draft_ to publish the form.
+<figure><img src="../../../../.gitbook/assets/safety-net-program (1).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
-<figure><img src="../../../../.gitbook/assets/publishing-draft.png" alt=""><figcaption></figcaption></figure>
+You can find the newly created project Safety Net Program listed in the _**ODK Central**_ home screen
 
-7. Once the draft is published it will be listed under the project overview.
+<figure><img src="../../../../.gitbook/assets/safety-net-program-under-project.png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
+
+This completes the creation of new project for a program using ODK Central.

@@ -2,28 +2,65 @@
 
 ## Description
 
-This guide will help to provide the form access to the field agent. which helps the agent to download the program form.
+This document guides to provide the form access to the field agent which helps them to download the program form from **ODK Central**.
 
 ## Pre-requisites
 
-The access provider should have the Administrator role in ODK Central.
+The access provider must have Administrator role in **ODK Central**.
 
-## Steps
+## Procedure
 
-1. Login to ODK central with a user having an Administrator role.
-2. Click on the program name in _Projects_ on which the agent access is to be provided.
+1. Login to **ODK Central**.
+2. Click the relevant project link listed below the _**Projects**_ on which the access is to be provided to the agent.
 
-<figure><img src="../../../../.gitbook/assets/odk-central.png" alt=""><figcaption></figcaption></figure>
+For example, here, the project is considered as Safety Net Program&#x20;
 
-3. Navigate to _App Users_ below the program name.
+3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../../.gitbook/assets/odk-app-users.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/safety-net-program-under-project (1).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
 
-4. Click on the +_Create App User_ button to add a field agent to the program.
-5. Provide the name of the field agent on the popup window and click on _Create_ button. Agent name will be listed under the App user list.
+The project (Safety Net Program) overview page is displayed.
 
-<figure><img src="../../../../.gitbook/assets/create-app-user.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
-6. Navigate to _Form Access_ and select the forms for which access is to be given. Click on the _Save_ button.
+4. Click the **App Users** tab
 
-<figure><img src="../../../../.gitbook/assets/form-access.png" alt=""><figcaption></figcaption></figure>
+The _**App Users**_ screen is displayed.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-appuser.png" alt=""><figcaption><p>Safety Net Program - App User</p></figcaption></figure>
+
+5. Click the _**+Create App User**_ button to add a field agent to the program.
+
+_**Create App User**_ screen pops up.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-create-app-user.png" alt=""><figcaption><p>Create App User</p></figcaption></figure>
+
+6. Enter  the name of the field agent on the popup window.
+7. Click the **Create** button.&#x20;
+
+_**Create App User**_ screen with QR code is displayed. Read the instruction given in the Create App User screen.
+
+8. Click the _**Done**_ button.&#x20;
+
+<figure><img src="../../../../.gitbook/assets/Create-app-user-QR-code.png" alt=""><figcaption><p>Successfully created App User</p></figcaption></figure>
+
+A message pops up on the successful creation of App user.
+
+9. The agent name is listed in the App user list.
+
+For example, here the app user is created as XXXX.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-create-app-user-added.png" alt=""><figcaption><p>App User added</p></figcaption></figure>
+
+10. Click the _**Form Access**_ tab.
+
+_**Form Access**_ screen is displayed.
+
+11. Check the user against the form for which access is to be given for the user.
+12. Click the _**Save**_ button.
+
+A message pops up which confirms the form access to the selected user.
+
+<figure><img src="../../../../.gitbook/assets/safety-net-program-form-access (1).png" alt=""><figcaption><p>Safety Net Program - Form Access</p></figcaption></figure>
+
+This completes the process of providing form access to the field agent.
