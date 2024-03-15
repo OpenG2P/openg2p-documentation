@@ -19,7 +19,7 @@ The steps below outline the process for creating new Target Groups and Load Bala
 * Creating Target Group for **external-http**
 * Creating Target Group for **external-httpsredirect**
 * Creating a Target Group for **PostgreSQL**
-* Creating External **Network Load Balancer**
+* Creating external network **Load Balancer**
 
 ### Creating Target Group for **external-http**
 
@@ -45,7 +45,7 @@ The steps below outline the process for creating new Target Groups and Load Bala
 For PostgreSQL, there is no need to create a Target Group (TG). Instead, create a record with the name internal.sandbox-name and map the Internal NLB DNS name of the environment to it.\
 
 
-### Creating External **Network Load Balancer**
+### Creating external n**etwork Load Balancer**
 
 1. Create NLB with name - `openg2p-<envname>-external`
 2. Select VPC -`general-vpc`  do map for `ap-south-1a, 1b, 1c`
