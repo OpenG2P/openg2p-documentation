@@ -31,7 +31,7 @@ Add project screen is displayed.
 
 The relevant program form is configured/downloaded in the agent's mobile device.
 
-<figure><img src="../../../../.gitbook/assets/image (15).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (15) (1).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
 
 The agent performs the below activity after the program form is configured in his/her mobile device.
 
