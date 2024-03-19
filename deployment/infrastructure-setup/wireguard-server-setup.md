@@ -8,7 +8,7 @@ The document talks about setting up a Wireguard bastion host (Wireguard server) 
 
 ## Prerequisites
 
-* One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md).
+* One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](k8s-cluster-requirements.md).
 * Docker installed on the VM
 
 ## Installation

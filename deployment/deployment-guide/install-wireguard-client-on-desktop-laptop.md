@@ -1,4 +1,4 @@
-# Installation Guide
+# Install WireGuard Client on Desktop/Laptop
 
 ## Description <a href="#description" id="description"></a>
 

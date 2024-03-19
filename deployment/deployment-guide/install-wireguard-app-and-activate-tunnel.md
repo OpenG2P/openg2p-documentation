@@ -8,8 +8,8 @@ The guide here provides steps to install WireGuard app on Android device and to 
 
 The pre-requisites to install WireGuard on Android device are:
 
-1. A user must have an Android Phone.&#x20;
-2. Before proceeding with the installation, obtain the WireGuard conf file from a System Administrator.&#x20;
+1. A user must have an Android Phone.
+2. Before proceeding with the installation, obtain the WireGuard conf file from a System Administrator.
 
 ## Procedure
 
@@ -28,7 +28,7 @@ The steps to install WireGuard in an Android device are:
 
 <figure><img src="../../.gitbook/assets/import-from-file.png" alt=""><figcaption></figcaption></figure>
 
-4. Tap the WireGuard conf file provided by the system administrator.&#x20;
+4. Tap the WireGuard conf file provided by the system administrator.
 5. On successful tunnel creation, the tunnel name will appear at the top of the app.
 
 <figure><img src="../../.gitbook/assets/inactive-wireguard-tunnel.png" alt=""><figcaption></figcaption></figure>
