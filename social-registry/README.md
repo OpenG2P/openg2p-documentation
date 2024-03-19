@@ -14,8 +14,6 @@ layout:
 
 # Social Registry
 
-## Introduction
-
 Social Registry (SR) is an independent module offered by OpenG2P to enable creating registries of individuals and groups of people with demographic data with advanced features that makes the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
 
 Some of the key benefits of using a SR are:
