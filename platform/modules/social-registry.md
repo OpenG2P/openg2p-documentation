@@ -1,6 +1,18 @@
-# Social Registry
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Social Registry
 
 Social Registry (SR) is an independent module offered by OpenG2P to enable creating registries of individuals and groups of people with demographic data with advanced features that makes the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
 
@@ -19,8 +31,6 @@ Some of the key benefits of using a SR are:
 * Bulk update using CSV
 * Import of data from others sources
 * Offline update using ODK Central
-
-
 
 ## Functionality and features
 
@@ -117,6 +127,16 @@ We should be able to download a CSV from the registry, apply bulk attestation, a
   * attested by
   * attestation datetime
   * comments
+
+## Search (WIP)&#x20;
+
+SR may contain several million records  (say, 20 million) capturing demographic fields of individuals. The number of demographic fields may be large, say 60-70 columns in the database. We need a quicker search based on various columns. The following methods are proposed for faster search of large data in the social registry.
+
+1. Indexing: Index columns based on the most frequent queries.
+2. Opensearch: Use Reporting infrastructure to make all the data available in OpenSearch.&#x20;
+3. Citus: Consider splitting DB into multiple databases using [Citus](https://www.citusdata.com/). This is an infrastructure layer.
+
+Indexing should be the first approach, but if the number of columns are large, indexing with bloat the DB.  In addition to indexing, we must make data available in OpenSearch. The data shunted into OpenSearch would not contain PII data. Any query on SR would first be routed to OpenSearch, and a list of IDs obtained. Then given a list of IDs, further query on the DB may be performed to fetch the results. The OpenSearch framework will also help us generate reports and real time stats.  One issue with this approach is to make sure data is not missing in OpenSearch. Some reconciliation will have to be done periodically to ensure that all IDs present in DB are available in OpenSearch.
 
 ## API
 
