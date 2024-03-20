@@ -14,7 +14,7 @@ layout:
 
 # Social Registry
 
-Social Registry (SR) is an independent module offered by OpenG2P to enable creating registries of individuals and groups of people with demographic data with advanced features that makes the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
+Social Registry (SR) is an independent module offered by OpenG2P to enable creating **registries** of individuals and groups of people with demographic data with advanced features that makes the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
 
 Some of the key benefits of using a SR are:
 
@@ -24,33 +24,11 @@ Some of the key benefits of using a SR are:
 * Attestation
 * Visualization and analysis of social data
 
-## Registry update mechanisms
-
-* Individual login and update
-* Admin login and update
-* Bulk update using CSV
-* Import of data from others sources
-* Offline update using ODK Central
-
-
+{% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?share_link_id=305024808834" %}
 
 ## Functionality and features
 
-* Registry of human demographic data
-* Should be a trusted source of truth
-  * Attestation
-  * Verifiable Credentials: should be able to issue VC
-* Person should have control over his/her data – person should be able to update the data (self service)
-* Relationships between people
-* Groups and Households
-* Privacy & security of data (using MOSIP encryption modules)
-* Should be possible to share this data with others (DPI)
-  * Compliant to standards like DCI/G2P Connect/GovStack
-* Should be possible to add fields in the registry
-* Timestamped data
-* Change log
-* Multiple versions of person record
-* Reporting (Statistics)
+<table><thead><tr><th width="268">Feature</th><th width="348">Description </th><th>Status</th><th data-type="number"></th></tr></thead><tbody><tr><td>Multiple data population mechanisms  </td><td><ul><li>CSV</li><li>APIs</li><li>GraphQL</li><li>Self Service for Beneficiary</li><li>Admin logins</li><li>Operators uploading data</li><li>Pulling data from external sources</li><li>ODK (agent, offline)</li></ul></td><td></td><td>null</td></tr><tr><td>Data share</td><td><ul><li>CSV</li><li>APIs</li><li>GraphQL</li></ul></td><td></td><td>null</td></tr><tr><td>Groups and Individuals</td><td><ul><li>Group or individual registry with relationships </li></ul></td><td></td><td>null</td></tr><tr><td>Privacy and security</td><td><ul><li>Encryption of PII</li></ul></td><td></td><td>null</td></tr><tr><td>Single sign-on</td><td><ul><li>Admin login to console, reporting etc. </li><li>Keycloak</li></ul></td><td></td><td>null</td></tr><tr><td>Search</td><td><ul><li>Fast data search based on parameters of registrants.</li></ul></td><td></td><td>null</td></tr><tr><td>Multi lingual</td><td></td><td></td><td>null</td></tr><tr><td>Self Service Portal</td><td></td><td></td><td>null</td></tr><tr><td>Reporting</td><td><ul><li>Dashboards</li><li>Real-time data monitoring</li></ul></td><td></td><td>null</td></tr><tr><td>Logging</td><td><ul><li>Change logs</li><li>Audit logs</li><li>System logs</li></ul></td><td></td><td>null</td></tr><tr><td>Verifiable Credentials Issuance</td><td><ul><li>Mobile wallet</li><li>Paper (QR code)</li></ul></td><td></td><td>null</td></tr><tr><td>Domain specific registries </td><td></td><td></td><td>null</td></tr></tbody></table>
 
 ## Design
 
