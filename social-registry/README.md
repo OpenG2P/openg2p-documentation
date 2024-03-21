@@ -14,15 +14,9 @@ layout:
 
 # Social Registry
 
-Social Registry (SR) is an independent module offered by OpenG2P to enable creating **registries** of individuals and groups of people with demographic data with advanced features that makes the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
+Social Registry (SR) is an independent module offered by OpenG2P to enable the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
 
-Some of the key benefits of using a SR are:
-
-* Issue Verifiable Credentials (VCs) to registrants
-* Share data with other departments and organizations in a standardized manner thus avoiding multiple collection of data
-* Provide control to individual persons of their data empowering them
-* Attestation
-* Visualization and analysis of social data
+The registry can host demographic data of both individuals and groups (family/household) and this data is privacy protected.  SR offers the unique feature of issuing digitally signed credentials - Verifiable Credentials - to the beneficiaries.
 
 {% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?share_link_id=305024808834" %}
 
