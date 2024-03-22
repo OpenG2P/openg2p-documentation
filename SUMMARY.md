@@ -235,6 +235,7 @@
     * [SPAR Post Installation Configuration](social-payments-account-registry-spar/spar-deployment/spar-post-installation-configuration.md)
   * [Functionality](social-payments-account-registry-spar/functionality/README.md)
     * [Functional Overview](social-payments-account-registry-spar/functionality/functional-overview.md)
+    * [Technical Overview](social-payments-account-registry-spar/functionality/technical-overview.md)
   * [Privacy & Security](social-payments-account-registry-spar/privacy-and-security.md)
   * [Interoperability](social-payments-account-registry-spar/interoperability.md)
 * [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/README.md)
