@@ -221,6 +221,7 @@
       * [Support for Ethiopian Calendar](social-registry/development/upcoming-features/support-for-ethiopian-calendar.md)
       * [Self Service Portal for Registrants](social-registry/development/upcoming-features/self-service-portal-for-registrants.md)
       * [Search - OpenSearch](social-registry/development/upcoming-features/search-opensearch.md)
+      * [Audit Log - Advanced](social-registry/development/upcoming-features/audit-log-advanced.md)
       * [Attestation](social-registry/development/upcoming-features/attestation.md)
       * [Consent](social-registry/development/upcoming-features/consent.md)
     * [Developer Install](social-registry/development/developer-install.md)
