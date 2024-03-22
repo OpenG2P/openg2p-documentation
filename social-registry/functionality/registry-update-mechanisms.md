@@ -3,7 +3,7 @@
 Social Registry (SR) may be updated in several ways:
 
 * CSV
-* [APIs](api.md)
+* [APIs](api/)
 * Login based direct data entry
 * Operators uploading data
 * ODK (Android, agent, offline)
