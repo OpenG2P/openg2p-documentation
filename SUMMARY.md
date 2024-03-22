@@ -194,7 +194,7 @@
 * [Social Registry](social-registry/README.md)
   * [Functionality](social-registry/functionality/README.md)
     * [Registry Update Mechanisms](social-registry/functionality/registry-update-mechanisms.md)
-    * [API](social-registry/functionality/api/README.md)
+    * [API](social-registry/functionality/api.md)
       * [Search APIs](social-registry/functionality/api/search-apis.md)
       * [CRUD APIs](social-registry/functionality/api/crud-apis.md)
     * [Self Service Portal](social-registry/functionality/self-service-portal.md)
