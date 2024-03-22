@@ -1,0 +1,15 @@
+# API
+
+SR enables APIs to [search](search.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.
+
+## API documentation
+
+TBD
+
+\<pointer to Stoplight>
+
+## Source code
+
+\<pointer to repositories>&#x20;
+
+TBD
