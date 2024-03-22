@@ -1,6 +1,6 @@
 ---
 description: Gives a Functional Overview of the SPAR module
-cover: ../.gitbook/assets/SPAR banner-on-light-background.png
+cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
 ---
 
