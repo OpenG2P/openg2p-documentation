@@ -237,7 +237,7 @@
   * [Interoperability](social-payments-account-registry-spar/interoperability.md)
   * [Monitoring & Reporting](social-payments-account-registry-spar/monitoring-and-reporting.md)
   * [Development](social-payments-account-registry-spar/development.md)
-  * [Page](social-payments-account-registry-spar/page.md)
+  * [Deployment](social-payments-account-registry-spar/deployment.md)
   * [Technology Stack](social-payments-account-registry-spar/technology-stack.md)
   * [User Guides](social-payments-account-registry-spar/user-guides.md)
   * [Releases](social-payments-account-registry-spar/releases.md)
