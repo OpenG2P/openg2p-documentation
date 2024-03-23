@@ -202,6 +202,8 @@
       * [Download Form on ODK Collect](user-guides/platform-guides/registration/odk/download-form-on-odk-collect.md)
       * [Delete a Form](user-guides/platform-guides/registration/odk/delete-a-form.md)
       * [Register Offline](user-guides/platform-guides/registration/odk/register-offline.md)
+    * [ODK Importer](user-guides/platform-guides/registration/odk-importer/README.md)
+      * [Customize the ODK Importer Configuration based on the ODK Form Fields](user-guides/platform-guides/registration/odk-importer/customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md)
   * [Authentication](user-guides/platform-guides/authentication/README.md)
     * [Integrate with MOSIP e-Signet](user-guides/platform-guides/authentication/integrate-mosip-e-signet.md)
   * [Deduplication](user-guides/platform-guides/deduplication/README.md)
