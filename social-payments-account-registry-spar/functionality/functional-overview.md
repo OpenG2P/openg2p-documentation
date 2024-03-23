@@ -49,7 +49,7 @@ The following figure provides a Functional Architecture of the SPAR Subsystem.
 * Database of ID and FA. The IDs may be tokens like [PSUT in MOSIP](https://docs.mosip.io/1.2.0/id-lifecycle-management/identifiers#token-id-psut-partner-specific-user-token)
 * Can host multiple IDs associated with the same account. Eg.
 
-<table><thead><tr><th width="368.5">ID</th><th>Account Number</th></tr></thead><tbody><tr><td>234AFBC@mosip.openg2p</td><td>45678756456@ABC-Bank</td></tr><tr><td>DBCF34A@mosip.socialaccountregistry</td><td>45678756456@ABC-Bank</td></tr></tbody></table>
+<table><thead><tr><th width="382.5">ID</th><th>Account Number</th></tr></thead><tbody><tr><td>234AFBC@mosip.openg2p</td><td>45678756456@ABC-Bank</td></tr><tr><td>DBCF34A@mosip.socialaccountregistry</td><td>45678756456@ABC-Bank</td></tr></tbody></table>
 
 * If relationships between entries are supported in the DB, then the same can be used to show linkages between different IDs for a user (TBD)
 
