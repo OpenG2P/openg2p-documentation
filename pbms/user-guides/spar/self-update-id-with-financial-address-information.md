@@ -11,7 +11,7 @@ This document contains step-by-step instructions for the beneficiaries to login 
 
 ## Prerequisite
 
-* The user must have knowledge to access [SPAR](../../../social-payments-account-registry-spar/spar-deployment/) which is available in public portal via internet
+* The user must have knowledge to access [SPAR](broken-reference) which is available in public portal via internet
 * The user must have his/her National ID,  bank account details and email ID
 
 ## Procedure
