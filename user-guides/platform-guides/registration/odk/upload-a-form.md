@@ -23,7 +23,7 @@ For example, here, the project is considered as Safety Net Program
 
 4. The project (Safety Net Program) overview page is displayed.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program (1).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/safety-net-program.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
 5. In the Forms, click the _**+New..**_ button.
 6. _**Create Form**_ screen pops up.
@@ -32,7 +32,7 @@ For example, here, the project is considered as Safety Net Program
 
 7. Navigate and choose a form file from the location where it is stored.&#x20;
 
-<figure><img src="../../../../.gitbook/assets/image (18).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (16).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
 Note:&#x20;
 

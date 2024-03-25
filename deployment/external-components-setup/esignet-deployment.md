@@ -12,7 +12,7 @@ This doc only provides instructions to install eSignet with Mock ID System (for 
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](postgresql-server-deployment.md)
+* [PostgreSQL](postgresql-server.md)
 * [Keycloak](keycloak-deployment.md) for API Authentication
 * [Keymanager](keymanager-deployment.md)
 

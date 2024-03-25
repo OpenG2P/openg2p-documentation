@@ -25,7 +25,7 @@ Apache Superset offers SQL query based datasets and charts for visualisation of 
 
 ## Real-time reporting framework
 
-<figure><img src="../.gitbook/assets/reporting-dashboard (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/reporting-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 Details of this infrastructure may be found [here](https://github.com/mosip/reporting).&#x20;
 

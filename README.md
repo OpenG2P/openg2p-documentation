@@ -17,7 +17,7 @@ layout:
     visible: true
 ---
 
-# Overview
+# 🏠 Home
 
 [OpenG2P](https://openg2p.org) is an open-source platform that enables governments and humanitarian organisations to deliver critical social benefits directly to those who need them. It facilitates the building of secure, inclusive and efficient registries and digital cash transfer delivery systems.
 
@@ -32,14 +32,3 @@ OpenG2P is built on a bedrock of good practices and principles that drive our wo
 <figure><img src=".gitbook/assets/guiding-principles.png" alt="" width="375"><figcaption><p>Guiding principles</p></figcaption></figure>
 
 The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under an MPL 2.0 licence. It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
-
-## Functional architecture
-
-OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. Using the OpenG2P platform, governments can digitalise the benefit delivery end-to-end and gain significantly in terms of efficiency, ease of administration, speed, cost, and convenience for the beneficiaries. The platform is built for inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline.
-
-All the modules are designed to be installed and used standalone.  However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
-
-{% embed url="https://miro.com/app/board/uXjVNGpmGPw=/" %}
-
-
-

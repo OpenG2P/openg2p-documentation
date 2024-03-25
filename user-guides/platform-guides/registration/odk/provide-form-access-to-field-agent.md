@@ -61,6 +61,6 @@ _**Form Access**_ screen is displayed.
 
 A message pops up which confirms the form access to the selected user.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program-form-access (1).png" alt=""><figcaption><p>Safety Net Program - Form Access</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/safety-net-program-form-access.png" alt=""><figcaption><p>Safety Net Program - Form Access</p></figcaption></figure>
 
 This completes the process of providing form access to the field agent.
