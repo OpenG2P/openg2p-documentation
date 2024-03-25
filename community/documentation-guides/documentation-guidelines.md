@@ -1,7 +1,5 @@
 # Documentation Guidelines
 
-## Introduction
-
 This guide provides basic guidelines for you to write neat documentation.
 
 ## General conventions
