@@ -55,8 +55,4 @@ The JSON messages flowing through the system need to be standardised for process
 
 The GPO uses open source technologies with very permissible license terms:
 
-| Tool                                               | License    | Comments        |
-| -------------------------------------------------- | ---------- | --------------- |
-| [Nussknacker](https://github.com/TouK/nussknacker) | Apache 2.0 |                 |
-| Apache Kafka                                       | Apache 2.0 |                 |
-| Payment Connectors                                 | GPLv2      | If Java is used |
+<table><thead><tr><th width="232.33333333333331">Tool</th><th>License </th><th>Comments</th></tr></thead><tbody><tr><td><a href="https://github.com/TouK/nussknacker">Nussknacker</a></td><td>Apache 2.0</td><td></td></tr><tr><td>Apache Kafka</td><td>Apache 2.0</td><td></td></tr><tr><td>Payment Connectors</td><td>GPLv2 </td><td>If Java is used</td></tr></tbody></table>

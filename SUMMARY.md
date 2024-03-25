@@ -2,10 +2,11 @@
 
 * [🏠 Home](README.md)
 
-## 🖼 Epics
+## 🖼️ Epics
 
 * [Program and Beneficiary Management System 2.0](epics/program-management-2.0.md)
 * [Document Sharing Infra](epics/document-sharing-infra.md)
+* [VC Integration with IBR](epics/vc-integration-with-ibr.md)
 * [Voucher](epics/voucher.md)
 * [📈 Platform Enhancements](epics/platform-enhancements/README.md)
   * [Program Data & Eligibility Engine](epics/platform-enhancements/program-data-and-eligibility-engine.md)
@@ -22,3 +23,9 @@
   * [Copy registrant (individual) view to beneficiary view](epics/app-on-demand-assistance/copy-registrant-individual-view-to-beneficiary-view.md)
 * [📄 Documents : S3 Bucket Integration](epics/documents-s3-bucket-integration.md)
 * [Demographic Deduplicator](epics/demographic-deduplicator.md)
+* [Feature Documentation Template](epics/feature-documentation-template.md)
+
+***
+
+* [Superset](superset.md)
+* [\*️ 4Sure Verifier App](4sure-verifier-app.md)
