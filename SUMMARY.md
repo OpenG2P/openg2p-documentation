@@ -239,6 +239,7 @@
   * [Interoperability](social-payments-account-registry-spar/interoperability.md)
   * [Monitoring & Reporting](social-payments-account-registry-spar/monitoring-and-reporting.md)
   * [Development](social-payments-account-registry-spar/development/README.md)
+    * [Jira Board](social-payments-account-registry-spar/development/jira-board.md)
     * [Repositories](social-payments-account-registry-spar/development/repositories.md)
   * [Deployment](social-payments-account-registry-spar/deployment.md)
   * [Technology Stack](social-payments-account-registry-spar/technology-stack.md)
