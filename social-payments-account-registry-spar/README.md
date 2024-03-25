@@ -62,8 +62,6 @@ The following figure provides a Functional Architecture of the SPAR Subsystem.
 
 <figure><img src="../.gitbook/assets/Gitbook-SPAR-Functional-Architecture.jpg" alt=""><figcaption><p>SPAR Functional Architecture</p></figcaption></figure>
 
-###
-
 ## Technical Overview
 
 The following picture provides a technical architecture of SPAR
@@ -77,4 +75,5 @@ The SPAR subsystem consists of the following technology components
 * **openg2p-spar-self-service**
   * **openg2p-spar-self-service-api** -- This is a FastAPI based python **microservice** that provides REST APIs to the UI layer. This microservice facilitates maintenance of financial address to a beneficiary by providing search APIs for banks, branches and wallet providers, so that a beneficiary can provide his/her complete financial address in the registry. This microservices uses a Postgresql persistence layer.
   * **openg2p-spar-mapper-interface-lib** -- This is python **library** that specifies interface APIs to connect to an account-mapper service.
-  * **openg2p-spar-mapper-connector-lib** -- This is a **library** that provides an OpenG2P implementation of the mapper-interface. This connector enables the self-service microservice to connect to the openg2p-spar-mapper-fastapi microservice using REST APIs. In an implementation, if there is a requirement to use some other account-mapper, we will need to provide another connector library. That connector library also needs to implement the openg2p-spar-mapper-interface-lib.
+  * **openg2p-spar-mapper-connector-lib** -- This is a **library** that provides an OpenG2P implementation of the mapper-interface. This connector library enables the self-service microservice to connect to the openg2p-spar-mapper-fastapi microservice using REST APIs.&#x20;
+  * In an implementation, if there is a requirement to use some other account-mapper, we will need to provide another connector library. That new connector library also needs to implement the openg2p-spar-mapper-interface-lib, so that there is no change to be made in the openg2p-spar-self-service-api. The new connector library should be wired into the openg2p-spar-self-service-api in the application initializer.
