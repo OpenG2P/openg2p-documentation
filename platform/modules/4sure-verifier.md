@@ -110,7 +110,7 @@ The Face Match SDK is a sophisticated component that leverages Tensorflow and Go
 
 ## Workflow
 
-<figure><img src="../../.gitbook/assets/4sure-work-flow (1).jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4sure-work-flow.jpg" alt=""><figcaption></figcaption></figure>
 
 ## User guides
 

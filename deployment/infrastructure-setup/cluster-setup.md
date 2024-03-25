@@ -8,7 +8,7 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 ## Prerequisites
 
-* [Hardware Requirements](../../guides/deployment-guide/deployment-on-kubernetes/k8s-infrastructure-setup/k8s-cluster-requirements.md)
+* [Hardware Requirements](k8s-cluster-requirements.md)
 * The following tools are installed on all the nodes and the client machine:
   * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 

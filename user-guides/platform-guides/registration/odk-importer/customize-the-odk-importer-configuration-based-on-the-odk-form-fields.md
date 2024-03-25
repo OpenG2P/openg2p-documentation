@@ -19,7 +19,7 @@ Every ODK form must have its own ODK importer.
 
 <figure><img src="../../../../.gitbook/assets/openg2p_application.png" alt=""><figcaption><p>OpenG2P application</p></figcaption></figure>
 
-2. In the menu bar, click the icon ![](<../../../../.gitbook/assets/image (8).png>) and select _**ODK**._
+2. In the menu bar, click the icon ![](<../../../../.gitbook/assets/image (2).png>) and select _**ODK**._
 
 <figure><img src="../../../../.gitbook/assets/menu-odk-importer.png" alt=""><figcaption><p>ODK </p></figcaption></figure>
 

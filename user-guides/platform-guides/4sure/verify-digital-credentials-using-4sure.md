@@ -16,7 +16,7 @@ This document provides step-by-step instructions to verify digital credentials u
 
 The 4Sure app screen is displayed.&#x20;
 
-<figure><img src="../../../.gitbook/assets/image (6).png" alt=""><figcaption><p>4Sure </p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (23).png" alt=""><figcaption><p>4Sure </p></figcaption></figure>
 
 In the e-Cards screen, you can find options to add National ID card and Beneficiary ID card.
 

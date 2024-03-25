@@ -15,11 +15,11 @@ This document provides details of the activities, the field agent performs, afte
 
 1. Tap the _**ODK Collect App**_ icon in the agent's mobile device.
 
-<figure><img src="../../../../.gitbook/assets/image (4).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image.png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
 You can find the configuration modes.
 
-<figure><img src="../../../../.gitbook/assets/image.png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (10).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
 7. Tap the _**Configure with QR code**_ button.
 
@@ -27,11 +27,11 @@ Add project screen is displayed.
 
 8. Scan the _**QR code**_ of a relevant program form from the ODK Central.
 
-<figure><img src="../../../../.gitbook/assets/image (1).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (11).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
 
 The relevant program form is configured/downloaded in the agent's mobile device.
 
-<figure><img src="../../../../.gitbook/assets/image (15) (1).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (13).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
 
 The agent performs the below activity after the program form is configured in his/her mobile device.
 

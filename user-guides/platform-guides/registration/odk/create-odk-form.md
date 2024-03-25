@@ -19,7 +19,7 @@ This document provides instruction to create a new project for a program using O
 
 3. _**Create Project**_ screen pops up.
 
-<figure><img src="../../../../.gitbook/assets/image (17).png" alt=""><figcaption><p>Create Project screen</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (15).png" alt=""><figcaption><p>Create Project screen</p></figcaption></figure>
 
 4. Enter the name of a new project of a program in the _**Name**_ field.
 5. Click the _**Create**_ button to create a new project in a program.
@@ -31,7 +31,7 @@ Provide the project name same as the program name for which the form is created.
 
 For example, here a new project is created as Safety Net Program.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program (1).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/safety-net-program.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
 You can find the newly created project Safety Net Program listed in the _**ODK Central**_ home screen
 
