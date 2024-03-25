@@ -1,7 +1,3 @@
----
-description: (WIP)
----
-
 # Loadbalancer Setup
 
 ## Introduction
