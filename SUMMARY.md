@@ -25,6 +25,7 @@
     * [Administration](pbms/features/administration/README.md)
       * [RBAC](pbms/features/administration/role-based-access-control.md)
       * [i18n](pbms/features/administration/internationalization-i18n.md)
+    * [On Demand Assistance](pbms/features/on-demand-assistance.md)
   * [Interoperability](pbms/interoperability.md)
   * [Privacy and Security](pbms/privacy-and-security.md)
   * [Monitoring & Reporting](pbms/monitoring-and-reporting/README.md)
