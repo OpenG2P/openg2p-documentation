@@ -1,21 +1,35 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Download Form on ODK Collect
 
 ## Description
 
-This document provides instructions to download a program form on ODK Collect App installed on an Android tablet or phone.
+This document provides instructions to download a program form on the ODK Collect App installed on an Android tablet or phone.
 
 ## Pre-requisites
 
-* The field agent must have ODK Collect App installed in his/her mobile device.
+* The field agent must have ODK Collect App installed on his/her mobile device.
 * The field agent must have[ form access](https://app.gitbook.com/s/xkdlCOLME2p03rS8nG8u/guides/user-guides/provide-form-access-to-field-agent).
-* The user who helps the field agent to download a program form in his/her mobile device must have an Administrator role in ODK Central
+* The user who helps the field agent to download a program form on his/her mobile device must have an Administrator role in ODK Central
 
 ## Procedure
 
-1. Login to the **ODK Central.**
-2. Click the relevant project link to upload a form.
+1. &#x20;Login to the **ODK Central.**
+2. &#x20;Click the relevant project link to upload a form.
 
-For example, here, the project is considered as Safety Net Program.
+For example, here, the project is considered as a Safety Net Program.
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
@@ -37,11 +51,11 @@ The App Users screen is displayed.
 
 6. Tap the ODK Collect App in the field agent device.
 
-<figure><img src="../../../../.gitbook/assets/image (4).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/ODK-collect-app-icon.png" alt=""><figcaption><p>ODK  collect app</p></figcaption></figure>
 
 You can find the configuration modes.
 
-<figure><img src="../../../../.gitbook/assets/image (21).png" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/configure-QR-code.png" alt=""><figcaption><p>Configure QR code</p></figcaption></figure>
 
 7. Tap the _**Configure with QR code**_ button.
 
