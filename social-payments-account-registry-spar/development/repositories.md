@@ -4,9 +4,15 @@ description: The SPAR subsystem consists of the following repos
 
 # Repositories
 
-[**openg2p-spar-mapper-api**](repositories.md#openg2p-spar-mapper-api)
+|                                                                               |                                                           |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [openg2p-spar-mapper-api](https://github.com/OpenG2P/openg2p-spar-mapper-api) | This repo provides the source code the ID-Account Mapper. |
+|                                                                               |                                                           |
+|                                                                               |                                                           |
 
-This repo provides the source code the ID-Account Mapper. It's an independent micro service developed using the FastAPI framework.
+
+
+
 
 This service implements the [G2PConnect APIs for Account Mapper.](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html)
 
