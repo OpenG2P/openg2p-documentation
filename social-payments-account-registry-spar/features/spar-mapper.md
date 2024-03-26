@@ -31,9 +31,33 @@ layout:
   * resolve - given a beneficiary Id, query to retrieve the Financial Address
 * Signature verification for clients (partners)  via integrations with MOSIP's Partnermanager & Keymanager - **TBD**
 
-#### The Mapper can be visualized in a tabular depiction as follows
+#### The Mapper can be visualized in a tabular depiction as follows - (More Clarity on Structure of ID required)
 
 <table><thead><tr><th width="352.5">ID</th><th>Account Number</th></tr></thead><tbody><tr><td>234AFBC@mosip.openg2p</td><td>45678756456@branchOne@bankOne</td></tr><tr><td>DBCF34A@mosip.socialaccountregistry</td><td>9957585955@mpesa.ke</td></tr></tbody></table>
 
 #### Usage in the G2P transfer chain
 
+<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR in the G2P landscape</p></figcaption></figure>
+
+Refer to this picture - SPAR in the G2P landscape
+
+The PBMS (Program and Beneficiary Management System) is the place where a government department (or a social welfare organization) manages the benefit programs. These programs will identify and target beneficiaries based on eligibility rules. Based on the beneficiary profiles and other attributes, the PBMS will calculate entitlements.
+
+Each program, depending on the nature of the program will have disbursement cycles such as weekly, fortnightly, monthly and so on.
+
+At the end of each disbursement cycle for a benefit program, the PBMS will draw up a list of beneficiaries and their entitlements.&#x20;
+
+Whenever any beneficiary is coopted or enrolled into a benefit program, we recommend that the PBMS platform (aka MIS platform) only works with the Beneficiary ID.
+
+This Beneficiary ID can be anyone of the following
+
+1. In case of a nation having a comprehensive foundational identity program, this national ID should be used
+2.  In the absence of a comprehensive foundational identity program, the department can choose to allocate a unique ID to every beneficiary and use that unique ID to identify the beneficiary.&#x20;
+
+    Even in such a scenario, we recommend that the Beneficiary ID be allocated by a Social Registry System, that is decoupled from the PBMS System. In this scenario, an individual is registered into the Social Registry System and is allocated a unique ID (let's call it Social Registry ID). Now if the individual is coopted into a benefit program, the PBMS system only keeps the individual's Social Registry ID.
+
+    This is explained in the figure below
+
+
+
+&#x20;
