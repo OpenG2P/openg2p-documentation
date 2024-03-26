@@ -1,5 +1,5 @@
 ---
-description: For internal use
+description: (WIP)
 ---
 
 # Make Environment Publicly Accessible using AWS LB Configuration
@@ -8,9 +8,7 @@ description: For internal use
 
 This document provides step-by-step instructions to make environment publicly accessible without wire guard configuration. Generally, all environments are privately accessible using wire guard configuration.
 
-**Note**
-
-The naming conventions may vary depending on the environment.
+**Note:** The naming conventions may vary depending on the environment, and this documentation will be applicable when using an AWS load balancer.
 
 ## **Create a new Target Groups and LB on AWS**
 
@@ -45,7 +43,7 @@ The steps below outline the process for creating new Target Groups and Load Bala
 For PostgreSQL, there is no need to create a Target Group (TG). Instead, create a record with the name internal.sandbox-name and map the Internal NLB DNS name of the environment to it.\
 
 
-### Creating external n**etwork Load Balancer**
+### Creating external N**etwork Load Balancer**
 
 1. Create NLB with name - `openg2p-<envname>-external`
 2. Select VPC -`general-vpc`  do map for `ap-south-1a, 1b, 1c`
