@@ -1,3 +1,7 @@
+---
+description: work in progress
+---
+
 # 4sure
 
 ## Introduction
@@ -6,22 +10,26 @@ The 4Sure App is designed to streamline the process of verifying digital credent
 
 ## 4Sure integration workflow <a href="#inji-integration-workflow-with-ble-verifier-sdk-and-face-match-sdk" id="inji-integration-workflow-with-ble-verifier-sdk-and-face-match-sdk"></a>
 
-<figure><img src="../../../.gitbook/assets/4Sure-integration-workflow.jpg" alt=""><figcaption><p>4Sure App Integration</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVNiDGa9k=/?share_link_id=58760876422" %}
+4Sure Integration Workflow
+{% endembed %}
 
-## BLE Verifier SDK
+## BLE Verifier SDK <a href="#inji-integration-workflow-with-ble-verifier-sdk-and-face-match-sdk" id="inji-integration-workflow-with-ble-verifier-sdk-and-face-match-sdk"></a>
 
 ### Types of states supported
 
 * Idle
 * Advertising
 * Connected
-* Secure Connection Established
+* Secure connection established
 * Requested
 * Received
 * Error
 * Disconnected
 
-<figure><img src="../../../.gitbook/assets/4Sure-Ble-SDK-state-diagram.jpg" alt=""><figcaption><p>State diagram</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVNiNT99s=/?share_link_id=207892821227" %}
+4Sure BLE-SDK State diagram
+{% endembed %}
 
 {% hint style="info" %}
 If either the sender or receiver decides to cancel the transfer at any stage, the state will transition to Disconnected and become Idle as a result.
@@ -29,7 +37,7 @@ If either the sender or receiver decides to cancel the transfer at any stage, th
 
 {% embed url="https://github.com/mosip/ble-verifier-sdk" %}
 
-## Face Match SDK
+## Face match SDK
 
 This React Native package from the biometric-technologies enhances our app's biometric authentication capabilities through facial recognition. 4Sure utilizes the SDK's functions to capture a user's face and compare it with a stored image.&#x20;
 
@@ -60,5 +68,5 @@ BiometricSDK.captureFace()
 
 ## Open source integrations
 
-<table><thead><tr><th>Library</th><th>License</th><th data-hidden></th></tr></thead><tbody><tr><td><a href="https://github.com/mosip/ble-verifier-sdk">mosip/ble-verifier-sdk</a></td><td>MIT License</td><td></td></tr><tr><td><a href="https://github.com/mrousavy/react-native-vision-camera">mrousavy/react-native-vision-camera</a></td><td>MIT License</td><td></td></tr><tr><td><a href="https://github.com/biometric-technologies/biometric-sdk-react-native">biometric-technologies/biometric-sdk-react-native</a></td><td>MIT License</td><td></td></tr></tbody></table>
+<table><thead><tr><th>Library</th><th>License</th><th data-hidden></th></tr></thead><tbody><tr><td><a href="https://github.com/mosip/ble-verifier-sdk">mosip/ble-verifier-sdk</a></td><td>MIT License</td><td></td></tr><tr><td><a href="https://github.com/teslamotors/react-native-camera-kit">teslamotors/react-native-camera-kit</a></td><td>MIT License</td><td></td></tr><tr><td><a href="https://github.com/biometric-technologies/biometric-sdk-react-native">biometric-technologies/biometric-sdk-react-native</a></td><td>MIT License</td><td></td></tr></tbody></table>
 
