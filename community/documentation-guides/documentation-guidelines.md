@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Documentation Guidelines
 
 This guide provides basic guidelines for you to write neat documentation.
@@ -42,3 +56,45 @@ Follow the below specification while creating diagrams in Miro
 {% embed url="https://miro.com/app/board/uXjVN8_Q7nI=/" %}
 Diagram specification
 {% endembed %}
+
+## Embed the Miro diagram URL in the documentation
+
+1. Open the board in Miro.
+
+<figure><img src="../../.gitbook/assets/miro-board.png" alt=""><figcaption><p>Miro board</p></figcaption></figure>
+
+The board is displayed. For example, here the board displayed is for the Role of Program Manager
+
+2. Click the _**Share**_ button on the board.
+
+<figure><img src="../../.gitbook/assets/share-button-miro.png" alt=""><figcaption><p>Board</p></figcaption></figure>
+
+_**Invite**_ tab screen is displayed.
+
+<figure><img src="../../.gitbook/assets/view-option-miro.png" alt=""><figcaption></figcaption></figure>
+
+3. Choose the _**Can view**_ option in the drop-down as shown in the above image.
+4. Click the _**Copy board link**_ button.
+5. A message pops up that the link for this board copied.
+6. Paste the board URL in your notepad.
+
+<figure><img src="../../.gitbook/assets/board-url-copied.png" alt=""><figcaption></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/url-link-miro.png" alt=""><figcaption></figcaption></figure>
+
+7. Click the _**Embed**_ tab.
+
+_**Embed**_ tab screen is displayed.
+
+8. Click the _**Set start area**_.
+
+<figure><img src="../../.gitbook/assets/set-area-miro.png" alt=""><figcaption></figcaption></figure>
+
+8. Set and keep the image within the frame and click the _**Done**_ button.
+
+<figure><img src="../../.gitbook/assets/set-frame-click-done-miro.png" alt=""><figcaption></figcaption></figure>
+
+After the frame is set, you use the board URL (for example, here, you can refer the step 6) to embed the Miro diagram in GitBook.
+
+
+

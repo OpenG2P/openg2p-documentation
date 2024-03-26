@@ -1,5 +1,5 @@
 ---
-description: work in progress
+description: Alpha version
 layout:
   title:
     visible: true
@@ -14,8 +14,6 @@ layout:
 ---
 
 # 4Sure Verifier
-
-## Introduction
 
 The 4Sure App securely verifies identities offline. It simplifies the verification process by transferring information from a digital wallet like INJI using Bluetooth technology and uses facial recognition to ensure the person's identity matches their credentials. The application is seamlessly integrated with the MOSIP Platform for National ID, enhancing its functionality and usability and is designed to facilitate various features like facial authentication and identity verification, all without the need for an internet connection.
 

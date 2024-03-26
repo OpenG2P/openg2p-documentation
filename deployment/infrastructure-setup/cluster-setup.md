@@ -9,12 +9,12 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 ## Prerequisites
 
 * [Hardware Requirements](k8s-cluster-requirements.md)
-* The following tools are installed on all the nodes and the client machine:
+* The following tools are installed on all the nodes and the client machine.
   * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 
 ## Firewall Requirements
 
-* Set up firewall rules on each node according to the following table. The exact method to set up the firewall rules will vary from cloud to cloud and on-prem. (For example on AWS, EC2 security groups can be used. For on-prem cluster, ufw can be used. Etc.)
+* Set up firewall rules on each node according to the following table. The exact method to set up the firewall rules will vary from cloud to cloud and on-prem. (For example on AWS, EC2 security groups can be used. For on-prem cluster, ufw can be used and so on)
 
 <table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
@@ -49,11 +49,11 @@ If you are using AWS only to get EC2 nodes, and you want to set up the K8s clust
 
 The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluster.
 
-* Decide the number of K8s Control plane nodes(server nodes) and worker nodes(agent nodes)
+* Decide the number of K8s control-plane nodes (server nodes) and worker nodes (agent nodes).
   * Choose an odd number of control-plane nodes. For example, for a 3-node k8s cluster, choose 1 control-plane node and 2 worker nodes. For a 7-node k8s cluster, choose 3 control-plane nodes and 4 worker nodes.
-* The following setup has to be done on each node on the cluster:
+* The following setup has to be done on each node on the cluster.
   * SSH into the node
-  *   Create the rke2 config directory:
+  *   Create the rke2 config directory
 
       ```
       mkdir -p /etc/rancher/rke2

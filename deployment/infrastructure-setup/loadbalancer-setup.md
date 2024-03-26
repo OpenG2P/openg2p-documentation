@@ -54,7 +54,7 @@ Note: The naming conventions may vary depending on the environment.
    * VPC - Select the VPC in which the instances are located
    * Health check protocol : Path : Port (**Overide**) - `HTTP : /healthz/ready : 30521`
 
-### Creating  **Network Load Balancer** <a href="#creating-external-network-load-balancer" id="creating-external-network-load-balancer"></a>
+### Creating **Network Load Balancer** <a href="#creating-external-network-load-balancer" id="creating-external-network-load-balancer"></a>
 
 1. In the EC2 dashboard, click the "Load Balancers" tab and then click "Create Load Balancer" and Choose Load Balancer Type as **Network Load Balancer.**
 2. Configure Load Balancer Settings
@@ -79,16 +79,16 @@ Note: The naming conventions may vary depending on the environment.
 
 In an on-premises environment, we have two methods for load balancing:
 
-* Utilizing Istio as a Load Balancer
-* Utilizing NGINX External Load Balancer
+* Utilising Istio as a Load Balancer
+* Utilising NGINX External Load Balancer
 
-### &#x20;Utilizing Istio as a Load Balancer
+### &#x20;Utilising Istio as a Load Balancer
 
 1. When opting to use Istio as the load balancer, it will handle all load balancing tasks for the cluster. To install and set up Istio, please refer to the documentation provided [here](https://docs.openg2p.org/v/latest/deployment/infrastructure-setup/cluster-setup#istio-setup).
 2. For the creation of a Wildcard TLS certificate, please refer to the documentation provided [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
 3. Do mapping on AWS Route53
 
-### Utilizing NGINX External Load Balancer
+### Utilising NGINX external Load Balancer
 
 1. When opting  to setup nginx as external Loadbalancer/Reverse Proxy into OpenG2P Cluster.\
    To install and set up NGINX, please refer to the documentation provided [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nginx).
