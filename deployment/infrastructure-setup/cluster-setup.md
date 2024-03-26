@@ -125,7 +125,8 @@ This installation only applies if Longhorn is used as storage.  This may be skip
         kubectl apply -f istio-operator-external-lb.yaml
         ```
     * Configure the operator.yaml with any further configuration
-*   Gather Wildcard TLS certificate and key and run;
+*   Gather Wildcard TLS certificate and key and run;\
+    Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt) &#x20;
 
     ```
     kubectl create secret tls tls-openg2p-ingress -n istio-system \
