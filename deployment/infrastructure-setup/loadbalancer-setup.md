@@ -1,3 +1,7 @@
+---
+description: (WIP)
+---
+
 # Loadbalancer Setup
 
 ## Introduction
@@ -65,10 +69,33 @@ Note: The naming conventions may vary depending on the environment.
          Note: Below default action, select the Target Groups already created from the above steps.
      * `TLS : 443 : openg2p-<envname>-http`
      * `TCP : 80 : openg2p-<envname>-httpsredirect`
-     *   Select `ACM certificate` as per environment domain name and create NLB.
+     *   Select `ACM certificate` as per environment domain name.
 
          Note: Click here to create ACM certificate, if required
    * Review the configuration settings and create the Load Balancer
+   * Do mapping on AWS Route53
 
-## Installation on-prem
+## Installation on on-prem
+
+In an on-premises environment, we have two methods for load balancing:
+
+* Utilizing Istio as a Load Balancer
+* Utilizing NGINX External Load Balancer
+
+### &#x20;Utilizing Istio as a Load Balancer
+
+1. When opting to use Istio as the load balancer, it will handle all load balancing tasks for the cluster. To install and set up Istio, please refer to the documentation provided [here](https://docs.openg2p.org/v/latest/deployment/infrastructure-setup/cluster-setup#istio-setup).
+2. For the creation of a Wildcard TLS certificate, please refer to the documentation provided [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
+3. Do mapping on AWS Route53
+
+### Utilizing NGINX External Load Balancer
+
+1. When opting  to setup nginx as external Loadbalancer/Reverse Proxy into OpenG2P Cluster.\
+   To install and set up NGINX, please refer to the documentation provided [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nginx).
+2. For the creation of a Wildcard TLS certificate, please refer to the documentation provided [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
+3. Do mapping on AWS Route53
+
+
+
+
 
