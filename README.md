@@ -6,6 +6,6 @@ Feel free to create your pages here, but ensure that the same are removed once t
 
 
 
-{% embed url="https://openg2p.atlassian.net/browse/SR-24" %}
+{% embed url="https://openg2p.atlassian.net/browse/SR-24" fullWidth="true" %}
 
 {% @figma/embed fileId="599cu2CiqLZc4Pgzb2oWex" nodeId="0:1" url="https://www.figma.com/file/599cu2CiqLZc4Pgzb2oWex/SPAR-UIs?mode=design&node-id=0:1&t=RYk3fDBjmdyq7igj-1&type=design" %}
