@@ -6,6 +6,8 @@ OpenG2P recognizes the critical importance of securing sensitive databases, incl
 
 ## Key Manager integration
 
+<img src="../.gitbook/assets/file.excalidraw.svg" alt="The workflow of keymanager" class="gitbook-drawing">
+
 ### Purpose
 
 The Key Manager in OpenG2P serves as a centralized entity responsible for the secure storage, generation, and distribution of cryptographic keys. Its primary functions include:
@@ -46,8 +48,6 @@ The Key Manager in OpenG2P serves as a centralized entity responsible for the se
 
 * Regularly rotate cryptographic keys to mitigate the risk of compromise.
 * Ensure a seamless transition during key rotation to avoid disruptions.
-
-
 
 ## HSM integration
 
@@ -107,6 +107,10 @@ The system employs a key manager to handle the encryption of registry data. All 
 ## Documentation
 
 Refer the following links for deeper understanding of the API's structure [Kernel api's](https://docs.mosip.io/1.1.5/apis/kernel-apis) and [Mosip api documentation](https://mosip.github.io/documentation/1.2.0/kernel-keymanager-service.html)
+
+## Source Code
+
+[openg2p-security](../pbms/development/repositories/openg2p-security.md)
 
 ## Conclusion
 

@@ -22,7 +22,7 @@ The registry can host demographic data of both individuals and groups (family/ho
 
 ## Functionality and features
 
-<table><thead><tr><th width="268">Feature</th><th width="348">Description </th><th>Status</th><th data-type="number"></th></tr></thead><tbody><tr><td>Registry population mechanisms  </td><td><ul><li>CSV</li><li><a href="features/api/">APIs</a></li><li>Login based direct data entry</li><li>Operators uploading data</li><li>ODK (Android, agent, offline)</li></ul></td><td></td><td>null</td></tr><tr><td>Data share</td><td><ul><li>CSV</li><li>APIs (G2P Connect, GraphQL, REST)</li></ul></td><td></td><td>null</td></tr><tr><td>Individuals and Groups</td><td><ul><li>Registry of individuals</li><li>Registry of household and families</li><li>Entities with group of people, like school, community</li></ul></td><td></td><td>null</td></tr><tr><td><a href="privacy-and-security.md">Privacy and security</a></td><td><ul><li>Encryption of PII</li></ul></td><td></td><td>null</td></tr><tr><td>Search</td><td><ul><li>Fast data search based on parameters of registrants.</li></ul></td><td></td><td>null</td></tr><tr><td><a href="features/languages-support.md">Languages support</a></td><td></td><td></td><td>null</td></tr><tr><td>Notifications</td><td><ul><li>SMS</li><li>Email</li></ul></td><td></td><td>null</td></tr><tr><td><a href="features/administration.md">Administration</a></td><td><ul><li>RBAC</li><li>Roles</li><li>Users</li></ul></td><td></td><td>null</td></tr><tr><td><a href="monitoring-and-reporting/">Reporting</a></td><td><ul><li>Dashboards</li><li>Real-time data monitoring</li></ul></td><td></td><td>null</td></tr><tr><td>Logging</td><td><ul><li>Change logs</li><li>Audit logs</li><li>System logs</li></ul></td><td></td><td>null</td></tr><tr><td>Verifiable Credentials Issuance</td><td><ul><li>Mobile wallet</li><li>Paper (QR code)</li></ul></td><td></td><td>null</td></tr><tr><td>Domain specific registries </td><td></td><td></td><td>null</td></tr></tbody></table>
+<table><thead><tr><th width="268">Feature</th><th width="348">Description </th></tr></thead><tbody><tr><td>Registry population mechanisms  </td><td><ul><li>CSV</li><li><a href="features/api/">APIs</a></li><li>Login based direct data entry</li><li>Operators uploading data</li><li>ODK (Android, agent, offline)</li></ul></td></tr><tr><td>Data share</td><td><ul><li>CSV</li><li>APIs (G2P Connect, GraphQL, REST)</li></ul></td></tr><tr><td>Individuals and Groups</td><td><ul><li>Registry of individuals</li><li>Registry of household and families</li><li>Entities with group of people, like school, community</li></ul></td></tr><tr><td><a href="privacy-and-security.md">Privacy and security</a></td><td><ul><li>Encryption of PII</li></ul></td></tr><tr><td>Search</td><td><ul><li>Fast data search based on parameters of registrants.</li></ul></td></tr><tr><td><a href="functionality/languages-support.md">Languages support</a></td><td></td></tr><tr><td>Notifications</td><td><ul><li>SMS</li><li>Email</li></ul></td></tr><tr><td><a href="features/administration.md">Administration</a></td><td><ul><li>RBAC</li><li>Roles</li><li>Users</li></ul></td></tr><tr><td><a href="monitoring-and-reporting/">Reporting</a></td><td><ul><li>Dashboards</li><li>Real-time data monitoring</li></ul></td></tr><tr><td>Logging</td><td><ul><li>Change logs</li><li>Audit logs</li><li>System logs</li></ul></td></tr><tr><td>Verifiable Credentials Issuance</td><td><ul><li>Mobile wallet</li><li>Paper (QR code)</li></ul></td></tr><tr><td>Domain specific registries </td><td></td></tr></tbody></table>
 
 ## Design
 
@@ -82,16 +82,7 @@ Current thought process is to set all possible relations with the above data str
 
 The `status` fields will come from business processes and real use cases.
 
-## User interface
-
-UI required for the following:
-
-* Person to log in, view and update records
-* Admin to view and attest fields with comments
-* Download of CSV for chosen fields of registry
-* Upload of attested CSV
-
-## Bulk attestation
+### Bulk attestation
 
 We should be able to download a CSV from the registry, apply bulk attestation, and upload back the CSV. The upload should trigger an update of registry, change log and attestation table
 
@@ -101,6 +92,15 @@ We should be able to download a CSV from the registry, apply bulk attestation, a
   * attested by
   * attestation datetime
   * comments
+
+## User interface
+
+UI required for the following:
+
+* Person to log in, view and update records
+* Admin to view and attest fields with comments
+* Download of CSV for chosen fields of registry
+* Upload of attested CSV
 
 ## API
 
