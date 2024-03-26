@@ -236,7 +236,7 @@
   * [User Guides](social-registry/user-guides.md)
   * [Releases](social-registry/releases.md)
 * [SPAR](social-payments-account-registry-spar/README.md)
-  * [Features](social-payments-account-registry-spar/features/README.md)
+  * [Features](social-payments-account-registry-spar/features.md)
     * [spar-mapper](social-payments-account-registry-spar/features/spar-mapper.md)
   * [Privacy & Security](social-payments-account-registry-spar/privacy-and-security.md)
   * [Interoperability](social-payments-account-registry-spar/interoperability.md)
