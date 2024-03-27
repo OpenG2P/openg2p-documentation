@@ -22,6 +22,7 @@
     * [Multi-tenancy](pbms/features/multi-tenancy-in-pbms.md)
     * [Notifications](pbms/features/notifications.md)
     * [Accounting](pbms/features/accounting.md)
+    * [Beneficiary Credential](pbms/features/beneficiary-credential.md)
     * [Administration](pbms/features/administration/README.md)
       * [RBAC](pbms/features/administration/role-based-access-control.md)
       * [i18n](pbms/features/administration/internationalization-i18n.md)
