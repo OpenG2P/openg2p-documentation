@@ -14,12 +14,14 @@ layout:
 
 # spar-mapper
 
+## Features
+
 * Maintains a mapping between Beneficiary ID and the Beneficiary's Financial Address
 * The Beneficiary ID can be anyone of the following
   * Beneficiary ID issued by a Country, that uniquely identifies the beneficiary
   * In the absence of a comprehensive National ID Program, the Beneficiary ID issued by the Department that administers a particular Social Program can be used
   * Any other ID, that is prevalent in the Country, that works reasonably to establish the identity of a beneficiary - e.g. Social Security Number, Income-Tax-ID, Passport ID etc. are examples that may be used
-  * A token issued by a Token Issuing Platform, that issues a Token against a Beneficiary ID
+  * A token issued by a Token Issuing Platform (Authentication Provider), that issues a Token against a Beneficiary ID (Login ID). This is explained in more detail in the Self-Service feature of SPAR
 * The Financial Address can be one of
   * Bank Account&#x20;
   * Mobile Wallet
@@ -35,7 +37,9 @@ layout:
 
 <table><thead><tr><th width="352.5">ID</th><th>Account Number</th></tr></thead><tbody><tr><td>234AFBC@mosip.openg2p</td><td>45678756456@branchOne@bankOne</td></tr><tr><td>DBCF34A@mosip.socialaccountregistry</td><td>9957585955@mpesa.ke</td></tr></tbody></table>
 
-#### Usage in the G2P transfer chain (Consumers of SPAR Mapper)
+## Usage in the G2P transfer chain&#x20;
+
+### Consumers of SPAR Mapper
 
 Refer to this picture - SPAR in the G2P landscape
 
