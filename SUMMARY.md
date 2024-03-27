@@ -272,7 +272,6 @@
   * [M-Pesa Integration](integrations/openg2p-m-pesa-integration.md)
   * [Mojaloop Integration](integrations/openg2p-mojaloop-integration.md)
 * [Deployment](deployment/README.md)
-  * [Deployment Architecture](deployment/deployment-architecture.md)
   * [Infrastructure Setup](deployment/infrastructure-setup/README.md)
     * [Hardware Requirements](deployment/infrastructure-setup/k8s-cluster-requirements.md)
     * [Wireguard Server Setup](deployment/infrastructure-setup/wireguard-server-setup.md)

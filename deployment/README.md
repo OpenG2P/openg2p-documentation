@@ -5,3 +5,5 @@ OpenG2P offers production-grade deployment scripts and utilities and is based on
 
 
 {% embed url="https://miro.com/app/board/uXjVN5LsWDw=/?share_link_id=356935336772" %}
+
+Rancher is used to manage multiple OpenG2P clusters. Rancher itself is installed on a Kubernetes cluster with redundancy as it is a critical gateway to manage the clusters.  The clusters may be directly managed by the command line utility `kubectl` as well.
