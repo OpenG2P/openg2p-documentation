@@ -71,4 +71,4 @@ Depending on the implementation, anyone of the following participant systems can
 3. The Sponsor Bank (the bank that services the Government Department) can do this lookup and enrich the disbursement list with FA information before sending the list to the Clearing network
 4. The Clearing Network (Switch) can do this lookup and then distribute the disbursement list amongst the various Destination Banks
 
-The SPAR Mapper implements all APIs as specified by G2P Connect to facilitate interoperability and participation by these participants.&#x20;
+The SPAR Mapper implements all APIs as specified by [G2P Connect](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html) to facilitate interoperability and participation by these participants.&#x20;
