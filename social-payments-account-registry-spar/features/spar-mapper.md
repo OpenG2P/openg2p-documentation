@@ -76,3 +76,11 @@ Depending on the implementation, anyone of the following participant systems can
 4. The Clearing Network (Switch) can do this lookup and then distribute the disbursement list amongst the various Destination Banks
 
 The SPAR Mapper implements all APIs as specified by [G2P Connect](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html) to facilitate interoperability and participation by these participants.&#x20;
+
+### Maintainers of SPAR Mapper
+
+Who and how do we update information in the SPAR Mapper?
+
+#### Option - 1 - Banks and Mobile Service Providers
+
+#### Option - 2 - Beneficiaries directly access the SPAR Self Service Portal
