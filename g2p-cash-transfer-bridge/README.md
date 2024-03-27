@@ -1,8 +1,12 @@
+---
+description: WORK IN PROGRESS
+---
+
 # G2P Cash Transfer Bridge
 
 ## Concept
 
-The G2P Cash Transfer Bridge (GCTB) fits in the payment chain as shown below.
+The G2P Cash Transfer Bridge (GCTB) fits in the cash transfer chain as shown below.
 
 <figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpb-payment-chain.png" alt=""><figcaption></figcaption></figure>
 
@@ -18,7 +22,9 @@ The module will support the following functionalities at a high level
 
 ## Architecture
 
-<figure><img src="../.gitbook/assets/g2p-cash-transfer-bridge-architecture.jpg" alt=""><figcaption></figcaption></figure>
+
+
+{% embed url="https://miro.com/app/board/uXjVN9az5KU=/?share_link_id=906818465799" %}
 
 ## Concepts
 

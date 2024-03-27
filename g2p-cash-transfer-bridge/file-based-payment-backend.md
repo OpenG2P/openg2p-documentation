@@ -1,12 +1,14 @@
+---
+description: WORK IN PROGRESS
+---
+
 # File-based Payment Backend
-
-## Introduction
-
-TBD
 
 ## Architecture
 
-<figure><img src="../.gitbook/assets/File-based- payment-backend.jpg" alt=""><figcaption><p>File-based payment backend</p></figcaption></figure>
+
+
+{% embed url="https://miro.com/app/board/uXjVN9ZDJgc=/?share_link_id=304995721325" %}
 
 ## Concepts
 
