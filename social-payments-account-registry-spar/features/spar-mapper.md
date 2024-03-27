@@ -52,12 +52,16 @@ Whenever any beneficiary is coopted or enrolled into a benefit program, we recom
 This Beneficiary ID can be anyone of the following
 
 1. In case of a nation having a comprehensive foundational identity program, this national ID should be used
-2.  In the absence of a comprehensive foundational identity program, the department can choose to allocate a unique ID to every beneficiary and use that unique ID to identify the beneficiary.&#x20;
+2. In the absence of a comprehensive foundational identity program, the department can choose to allocate a unique ID to every beneficiary and use that unique ID to identify the beneficiary OR the department can use any other locally prevalent ID such as Tax Identifier, Farmer Identifier that reasonably establishes the identity of an individual. Of course, in such cases, there should be a reasonably robust De-Duplication process to identify potential duplicates
 
-    Even in such a scenario, we recommend that the Beneficiary ID be allocated by a Social Registry System, that is decoupled from the PBMS System. In this scenario, an individual is registered into the Social Registry System and is allocated a unique ID (let's call it Social Registry ID). Now if the individual is coopted into a benefit program, the PBMS system only keeps the individual's Social Registry ID.
+Even in such a scenario, we recommend that the Beneficiary ID be allocated by a Social Registry System, that is decoupled from the PBMS System. In this scenario, an individual is registered into the Social Registry System and is allocated a unique ID (let's call it Social Registry ID). Now if the individual is coopted into a benefit program, the PBMS system only keeps the individual's Social Registry ID.
 
-    This is explained in the figure below
+This is explained in the figure below
 
+<figure><img src="../../.gitbook/assets/Gitbook-ID-in-OpenG2P.jpg" alt=""><figcaption><p>ID in OpenG2P Landscape</p></figcaption></figure>
 
+Thus, the PBMS produces only a list of Beneficiary IDs and their disbursement amounts. Now this beneficiary ID has to be translated into a Financial Address (either a Bank Account or a Mobile Wallet) so that the beneficiary's account/wallet can be credited appropriately.
 
-&#x20;
+For this, one of the following systems has to do a lookup into the SPAR Mapper using the beneficiary ID.&#x20;
+
+Depending on the implementation, anyone of the following participant systems can perform this lookup
