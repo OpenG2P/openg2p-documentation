@@ -45,7 +45,7 @@ The following figure provides a Functional Architecture of the SPAR Subsystem.
 
 The following picture provides a technical architecture of SPAR
 
-<figure><img src="../.gitbook/assets/Gitbook-SPAR-Technical-Architecture.jpg" alt=""><figcaption><p>SPAR Technical Architecture</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/Gitbook-SPAR-Technical-Architecture.jpg" alt=""><figcaption><p>SPAR - Technical Architecture</p></figcaption></figure>
 
 The SPAR subsystem consists of the following technology components
 
