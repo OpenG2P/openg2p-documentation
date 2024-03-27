@@ -12,5 +12,4 @@ description: The SPAR subsystem consists of the following repos
 | [openg2p-spar-mapper-test](https://github.com/OpenG2P/openg2p-spar-mapper-test)             | Functional and Load Test Artefacts (Test Scripts and Execution Plans) for ID-Account-Mapper. |
 | [openg2p-spar-self-service-test](https://github.com/OpenG2P/openg2p-spar-self-service-test) | Functional and Load Test Artefacts (Test Scripts and Execution Plans) for Self-Service       |
 
-
-
+You can find the **SPAR test plans** (functional and load testing) in this [Google Drive Folder. ](https://drive.google.com/drive/folders/1SzlkpSnl2E1y9hLOpH\_CeZkVvE9F8qt1)
