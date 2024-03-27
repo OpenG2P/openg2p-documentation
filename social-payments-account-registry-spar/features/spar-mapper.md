@@ -35,7 +35,7 @@ layout:
 
 <table><thead><tr><th width="352.5">ID</th><th>Account Number</th></tr></thead><tbody><tr><td>234AFBC@mosip.openg2p</td><td>45678756456@branchOne@bankOne</td></tr><tr><td>DBCF34A@mosip.socialaccountregistry</td><td>9957585955@mpesa.ke</td></tr></tbody></table>
 
-#### Usage in the G2P transfer chain
+#### Usage in the G2P transfer chain (Consumers of SPAR Mapper)
 
 <figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR in the G2P landscape</p></figcaption></figure>
 
@@ -64,4 +64,8 @@ Thus, the PBMS produces only a list of Beneficiary IDs and their disbursement am
 
 For this, one of the following systems has to do a lookup into the SPAR Mapper using the beneficiary ID.&#x20;
 
-Depending on the implementation, anyone of the following participant systems can perform this lookup
+Depending on the implementation, anyone of the following participant systems can perform this lookup. These have been identified as 1, 2 and 3 in the figure - SPAR in the G2P Landscape.
+
+1. The PBMS itself can perform a lookup and create the disbursement list with ID and Financial Address (FA) of the beneficiary
+2. The G2P-Cash-Bridge can do this lookup and enrich the disbursement list with the FA information
+3.
