@@ -21,5 +21,5 @@ Social Registry can issue credentials in the form of [Verifiable Credentials](ht
 
 ## Source code and configuration
 
-Link to [Configuration and source code](../../../pbms/development/repositories/openg2p-vci.md).
+Link to [Configuration and source code](../../../pbms/development/odoo-modules/openg2p-vci.md).
 
