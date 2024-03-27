@@ -130,7 +130,9 @@ The Face Match SDK is a sophisticated component that leverages [TensorFlow](http
 
 ## User guides
 
-TODO
+[Verify Digital Credentials using 4Sure Application](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/79/utilities-and-tools/user-guides/verify-digital-credentials-using-4sure-application)
+
+[Verify and Populate the form in ODK Collect using 4Sure Application](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/79/utilities-and-tools/user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application)
 
 ## Source code
 
