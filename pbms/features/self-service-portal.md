@@ -4,16 +4,16 @@ Self-Service Portal allows an individual registrant seeking assistance to regist
 
 The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
-Program management
+**Program management**
 
 * View the list of available programs
 * Apply for a new program
 * Upload supporting documents if required for a program
 * View the registrant's enrolled programs
 * Track the status of the application
-* Track the entitlement status for a program
+* Track the entitlement status of the program
 
-Profile management
+**Profile management**
 
 * Update personal information and demographic details
 * View all the demographic information submitted across programs
@@ -30,6 +30,14 @@ A program administrator must do these steps to allow registrants to apply for a 
 
 Registrant's ID verification takes place during the login. The registrant also provides consent to share demographic details with the Self-Service Portal. Upon successful ID verification, the Self-Service Portal can automatically populates the registrant's demographic details based on the consent provided during login. The registrant fills in the rest of the details and applies for a program. Learn more about self-registration [here](../user-guides/registration/self-register-online.md).
 
+
+
+**Features and its functionality(WIP)**
+
+<table><thead><tr><th>Features</th><th>Functionality</th><th data-hidden></th></tr></thead><tbody><tr><td>My Programs</td><td></td><td></td></tr><tr><td>All Programs</td><td></td><td></td></tr><tr><td>My Application</td><td></td><td></td></tr><tr><td>My Benefits</td><td></td><td></td></tr></tbody></table>
+
+##
+
 ## OpenID Connect integration
 
 The Self-Service Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [eSignet](https://docs.esignet.io/). To learn more about ID verification using e-Signet, click [here](broken-reference).
@@ -37,5 +45,11 @@ The Self-Service Portal allows integration with any OpenID Connect (OIDC) client
 ### OIDC integration
 
 The Self-Service Portal can integrate with any OIDC server to provide user login.
+
+
+
+**Jira Board(WIP)**
+
+**Link the US on the SSP**
 
 \<image and demo video to be integrated>
