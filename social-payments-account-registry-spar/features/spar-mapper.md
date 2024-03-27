@@ -64,8 +64,11 @@ Thus, the PBMS produces only a list of Beneficiary IDs and their disbursement am
 
 For this, one of the following systems has to do a lookup into the SPAR Mapper using the beneficiary ID.&#x20;
 
-Depending on the implementation, anyone of the following participant systems can perform this lookup. These have been identified as 1, 2 and 3 in the figure - SPAR in the G2P Landscape.
+Depending on the implementation, anyone of the following participant systems can perform this lookup. These have been identified as 1, 2, 3 and 4 in the figure - SPAR in the G2P Landscape.
 
 1. The PBMS itself can perform a lookup and create the disbursement list with ID and Financial Address (FA) of the beneficiary
 2. The G2P-Cash-Bridge can do this lookup and enrich the disbursement list with the FA information
-3.
+3. The Sponsor Bank (the bank that services the Government Department) can do this lookup and enrich the disbursement list with FA information before sending the list to the Clearing network
+4. The Clearing Network (Switch) can do this lookup and then distribute the disbursement list amongst the various Destination Banks
+
+The SPAR Mapper implements all APIs as specified by G2P Connect to facilitate interoperability and participation by these participants.&#x20;
