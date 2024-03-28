@@ -1,7 +1,15 @@
 # Interoperability
 
-At the very onset OpenG2P team has been cognizant of the importance of working with DPGs and other external components without having to develop proprietary and custom methods of connecting to other systems. Interoperability is a fundamental design principle in OpenG2P's thought process. We have been an active participant in interoperability efforts like G2P Connect, DCI, and GovStack. Specifically, the following interoperability efforts are in progress:
+At the very onset OpenG2P team has been cognizant of the importance of working with DPGs and other external components without having to develop proprietary and custom methods of connecting to other systems. Interoperability is a fundamental design principle in OpenG2P's thought process. We have been an active participant in interoperability efforts like G2P Connect, DCI, and GovStack. Specifically, the following **open standards** interfaces have been implemented:
 
-1. G2P Connect ID Mapper APIs in [SPAR](social-payments-account-registry-spar/).
-2. G2P Connect Disbursement APIs in [PBMS](pbms/) and [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/).
-3. G2P Connect Registry APIs in [PBMS ](pbms/)and [Social Registry.](social-registry/)
+
+
+| Open Standard                                                                                                      | Application                                                             |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| [G2P Connect ID Mapper APIs](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html)      | [SPAR](social-payments-account-registry-spar/)                          |
+| [G2P Connect Disbursement APIs](https://g2p-connect.github.io/specs/release/html/disburse\_core\_api\_v1.0.0.html) |  [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/),  [PBMS ](pbms/) |
+| [G2P Connect Registry APIs](https://g2p-connect.github.io/specs/release/html/registry\_core\_api\_v1.0.0.html)     |  [PBMS](pbms/), [Social Registry](social-registry/)                     |
+| [Verifiable Credentials ](https://www.w3.org/TR/vc-data-model/)                                                    | e-Voucher and e-Card                                                    |
+| [S3 APIs](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html)                                            | Document store                                                          |
+| [⁠CWT](https://datatracker.ietf.org/doc/html/rfc8392)                                                              | QR Code Scan of ID                                                      |
+| [⁠OpenID](https://auth0.com/docs/authenticate/protocols/openid-connect-protocol)                                   | Authentication                                                          |
