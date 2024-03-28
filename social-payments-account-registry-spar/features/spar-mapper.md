@@ -25,7 +25,7 @@ layout:
 * The Financial Address can be one of
   * Bank Account&#x20;
   * Mobile Wallet
-* Many IDs to One FA, One ID to One FA --????? **TBD**
+* An ID is linked to one Account (financial address). There can be only one mapping for an ID.
 * [G2P Connect Compliant APIs](https://g2pconnect.cdpi.dev/protocol/interfaces/beneficiary-management/mapper-specs) - to
   * link - link a Beneficiary ID and Financial Address
   * unlink - unlink the existing mapping (delete the existing mapping)
