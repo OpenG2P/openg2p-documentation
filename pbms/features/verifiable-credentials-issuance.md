@@ -6,3 +6,11 @@
 * Share e-card to avail services
 * Tamper proof
 
+
+
+<div align="center">
+
+<figure><img src="../../.gitbook/assets/beneficiary-e-card.jpg" alt="" width="188"><figcaption></figcaption></figure>
+
+</div>
+
