@@ -108,6 +108,8 @@
         * [Download Form on ODK Collect](pbms/user-guides/registration/odk/download-form-on-odk-collect.md)
         * [Delete a Form](pbms/user-guides/registration/odk/delete-a-form.md)
         * [Register Offline](pbms/user-guides/registration/odk/register-offline.md)
+      * [ODK Importer](pbms/user-guides/registration/odk-importer/README.md)
+        * [Customize the ODK Importer Configuration based on the ODK Form Fields](pbms/user-guides/registration/odk-importer/customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md)
     * [Authentication](pbms/user-guides/authentication/README.md)
       * [Integrate with MOSIP e-Signet](pbms/user-guides/authentication/integrate-mosip-e-signet.md)
     * [Deduplication](pbms/user-guides/deduplication/README.md)
