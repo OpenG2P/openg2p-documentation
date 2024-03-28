@@ -16,7 +16,7 @@
     * [Disbursement](pbms/features/disbursement-cycles/README.md)
       * [In-kind Transfer](pbms/features/disbursement-cycles/in-kind-transfer.md)
       * [Digital Cash Transfer](pbms/features/disbursement-cycles/digital-cash-transfer.md)
-      * [Voucher](pbms/features/disbursement-cycles/voucher.md)
+      * [e-Voucher](pbms/features/disbursement-cycles/e-voucher.md)
     * [Self Service Portal](pbms/features/self-service-portal.md)
     * [Document Management](pbms/features/document-management.md)
     * [Multi-tenancy](pbms/features/multi-tenancy-in-pbms.md)
