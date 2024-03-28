@@ -83,4 +83,10 @@ Who and how do we update information in the SPAR Mapper?
 
 #### Option - 1 - Banks and Mobile Service Providers
 
+In this option, beneficiaries have to instruct their banks (or mobile wallet service providers for walllets) that they wish to receive the G2P benefit transfers in a specific account (or wallet). The Banks (or mobile wallet service providers) in turn update the SPAR Mapper, based on these instructions received from the beneficiaries. The banks update the SPAR Mapper using the standard [G2PConnect APIs](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html) published by the Mapper.&#x20;
+
+In this, all the participant banks (and mobile wallet service providers) have to develop this technology infrastructure to update the Mapper and implement this process in their branches.
+
 #### Option - 2 - Beneficiaries directly access the SPAR Self Service Portal
+
+In this option, Beneficiaries access the Self Service Portal of SPAR Mapper and update their Account Number (or Wallet ID) against their ID. The Self Service Portal provides flexibility to the beneficiaries to modify this anytime.
