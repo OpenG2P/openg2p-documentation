@@ -240,6 +240,7 @@
     * [User Guides](utilities-and-tools/4sure-verifier/user-guides/README.md)
       * [Verify Digital Credentials using 4Sure Application](utilities-and-tools/4sure-verifier/user-guides/verify-digital-credentials-using-4sure-application.md)
       * [Verify and Populate the form in ODK Collect using 4Sure Application](utilities-and-tools/4sure-verifier/user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application.md)
+    * [4Sure Test Summary](utilities-and-tools/4sure-verifier/4sure-test-summary.md)
   * [Smartscanner](utilities-and-tools/smartscanner.md)
   * [Registration Tool Kit](utilities-and-tools/registration-tool-kit.md)
 * [Monitoring and Reporting](monitoring-and-reporting/README.md)
