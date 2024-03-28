@@ -1,4 +1,18 @@
-# Tech Guide
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# Tech Guides
 
 #### Persistent Entities in openg2p-spar-mapper-api
 
