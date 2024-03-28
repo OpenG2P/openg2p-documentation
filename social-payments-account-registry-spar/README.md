@@ -39,7 +39,7 @@ The Self-Service Portal provides a Self-Service to the beneficiaries who can log
 
 The following figure provides a Functional Architecture of the SPAR Subsystem.
 
-<figure><img src="../.gitbook/assets/Gitbook-SPAR-Functional-Architecture.jpg" alt=""><figcaption><p>SPAR Functional Architecture</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/?share_link_id=24912538335" %}
 
 ## Technical Overview
 
