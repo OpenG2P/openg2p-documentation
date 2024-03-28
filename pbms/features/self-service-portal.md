@@ -48,8 +48,13 @@ The Self-Service Portal can integrate with any OIDC server to provide user login
 
 
 
-**Jira Board(WIP)**
+**Jira Board(WIP)**\
+Link the US on the SSP
 
-**Link the US on the SSP**
+\
+\
+
+
+{% embed url="https://openg2p.atlassian.net/jira/software/c/projects/G2P/issues/?filter=allissues&jql=project+=+%22G2P%22+and+type+=+Story+and+parent+=+G2P-1156+ORDER+BY+created+DESC" %}
 
 \<image and demo video to be integrated>
