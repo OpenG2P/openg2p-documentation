@@ -226,7 +226,7 @@
     * [Jira Board](social-payments-account-registry-spar/development/jira-board.md)
     * [Repositories](social-payments-account-registry-spar/development/repositories.md)
   * [Deployment](social-payments-account-registry-spar/deployment.md)
-  * [Technology Stack](social-payments-account-registry-spar/technology-stack.md)
+  * [Tech Guide](social-payments-account-registry-spar/tech-guide.md)
   * [User Guides](social-payments-account-registry-spar/user-guides/README.md)
     * [Self Update ID with Financial Address information](social-payments-account-registry-spar/user-guides/self-update-id-with-financial-address-information.md)
     * [Admin Guide to Link ID with Financial Address information](social-payments-account-registry-spar/user-guides/admin-guide-to-link-id-with-financial-address-information.md)
