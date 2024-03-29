@@ -9,7 +9,7 @@ The Program and Beneficiary Management System (PBMS) is the core module of OpenG
 * Manage **multiple** programs in one system
 * **Share** beneficiary data with other systems/departments in an interoperable fashion
 * Define eligibility and entitlement rules like [Proxy Means Test](features/eligibility/proxy-means-test.md) (**PMT)** to automatically create eligible beneficiaries
-* Enable [**digital cash transfer**](../g2p-cash-transfer-bridge/) by seamlessly connecting to payment systems
+* Enable **digital cash transfer** by seamlessly connecting to payment systems
 * Offer [**self-service portal**](features/self-service-portal.md) to residents
 * Send [**notifications**](features/notifications.md) to beneficiaries via SMS and email
 * Issue digitally signed [**vouchers**](features/disbursement-cycles/e-voucher.md) to beneficiaries
