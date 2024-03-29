@@ -22,7 +22,7 @@ The hardware requirements pertain to the Kubernetes-based infrastructure require
 
 ## For pilot and limited rollout
 
-<table><thead><tr><th width="160">Purpose</th><th width="71" align="center">vCPUs</th><th width="86" align="center">RAM </th><th width="84">Storage</th><th width="81" align="center"># of VMs</th><th width="290">Notes</th></tr></thead><tbody><tr><td>K8s Cluster nodes</td><td align="center">8</td><td align="center">32 GB</td><td>128 GB</td><td align="center">3</td><td>One VM for Wireguard is sufficient for all the environments/setups in your network. This is used to facilitate VPN access to the pilot environments</td></tr><tr><td>Wireguard</td><td align="center">4</td><td align="center">16 GB </td><td>64 GB</td><td align="center">1</td><td></td></tr><tr><td></td><td align="center"></td><td align="center"></td><td></td><td align="center"></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="175">Purpose</th><th width="85" align="center">vCPUs</th><th width="75" align="center">RAM </th><th width="99">Storage</th><th width="81" align="center"># of VMs</th><th>Notes</th></tr></thead><tbody><tr><td>K8s Cluster nodes</td><td align="center">8</td><td align="center">32 GB</td><td>128 GB</td><td align="center">3</td><td>One VM for Wireguard is sufficient for all the environments/setups in your network. This is used to facilitate VPN access to the pilot environments</td></tr><tr><td>Wireguard</td><td align="center">4</td><td align="center">16 GB </td><td>64 GB</td><td align="center">1</td><td></td></tr><tr><td></td><td align="center"></td><td align="center"></td><td></td><td align="center"></td><td></td></tr></tbody></table>
 
 ## For pilot and limited rollout
 
