@@ -22,9 +22,7 @@ The hardware requirements pertain to the Kubernetes-based infrastructure require
 
 ## Trial table (ignore)
 
-
-
-<table><thead><tr><th width="152">Purpose</th><th width="262">Configuration</th><th>Notes</th></tr></thead><tbody><tr><td>Kubernetes nodes</td><td>8 vCPU/32 GB RAM/128 GB storage</td><td>Required for master, etc, work loads of Kubernetes cluster</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="152">Purpose</th><th width="262">Configuration</th><th width="373">Notes</th></tr></thead><tbody><tr><td>Kubernetes nodes</td><td>8 vCPU/32 GB RAM/128 GB storage</td><td>Required for master, etc, work loads of Kubernetes cluster</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
 
 ## For pilot and limited rollout
 
