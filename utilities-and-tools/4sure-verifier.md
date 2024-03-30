@@ -120,7 +120,7 @@ The Face Match SDK is a sophisticated component that leverages [TensorFlow](http
 
 ## Technical concepts
 
-[See technical documentation of 4Sure](../../pbms/development/repositories/4sure.md)
+[See technical documentation of 4Sure](../pbms/development/repositories/4sure.md)
 
 ## Workflow
 
