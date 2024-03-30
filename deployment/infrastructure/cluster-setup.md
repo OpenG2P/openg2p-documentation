@@ -1,6 +1,18 @@
-# OpenG2P K8s Cluster Setup
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Kubernetes Cluster
 
 OpenG2P modules and components are recommended to be run on Kubernetes (K8s), because of ease-of-use, management, and security features that K8s provides.
 
@@ -8,7 +20,7 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 ## Prerequisites
 
-* [Hardware Requirements](k8s-cluster-requirements.md)
+* [Hardware Requirements](../k8s-cluster-requirements.md)
 * The following tools are installed on all the nodes and the client machine.
   * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 

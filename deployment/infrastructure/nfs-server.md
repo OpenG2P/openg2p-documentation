@@ -1,15 +1,29 @@
-# NFS Server Setup
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# NFS Server
 
 NFS-based storage is recommended for providing persistent storage volumes to Kubernetes Clusters and backing up data of sandbox/pilot environments.
 
-## Prerequisites
-
-* One Virtual machine running on the same network as the rest of the nodes, and is accessible by them. For recommended configuration of the VM refer to [Hardware Requirements](k8s-cluster-requirements.md).
-* Use this [Storage size estimator](k8s-cluster-requirements.md#storage-requirements-for-pilot-environments) to decide storage requirements
-
 ## Installation
+
+#### Prerequisites
+
+* Use this [Storage size estimator](../k8s-cluster-requirements.md#storage-requirements-for-pilot-environments) to decide storage requirements
+* One Virtual machine running on the same network as the rest of the nodes, and is accessible by them. For recommended configuration of the VM refer to [Hardware Requirements](../k8s-cluster-requirements.md)
+
+#### Install
 
 * Download/copy this install script from [https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh](https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh) into the NFS Server VM
 * Edit the script to change the local path for NFS Storage, under the variable `nfsStorage`

@@ -1,6 +1,18 @@
-# Loadbalancer Setup
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Loadbalancer
 
 Load balancing in Kubernetes (K8s) is essential to ensure high availability, scalability, and reliability of applications running within the cluster. It involves distributing incoming network traffic across multiple pods or nodes to optimise resource utilisation and prevent any single point of failure.
 

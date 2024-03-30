@@ -1,14 +1,26 @@
-# Rancher Setup
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Rancher
 
 Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
 
-## Prerequisites
-
-* One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](k8s-cluster-requirements.md)
-
 ## Installation using Kubernetes
+
+### Prerequisites
+
+One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](../k8s-cluster-requirements.md)
 
 ### Kubernetes cluster setup
 
