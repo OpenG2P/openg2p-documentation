@@ -20,11 +20,11 @@ The hardware requirements pertain to the Kubernetes-based infrastructure require
 
 <table><thead><tr><th width="150">Purpose</th><th width="100" align="center">vCPUs</th><th width="105" align="center">RAM</th><th align="center">Storage (SSD)</th><th width="104" align="right"># of VMs</th><th>OS</th></tr></thead><tbody><tr><td>Cluster nodes</td><td align="center">8</td><td align="center">32 GB</td><td align="center">128 GB</td><td align="right"><p></p><p></p></td><td>Ubuntu Server 20.04</td></tr><tr><td>Wireguard</td><td align="center">4</td><td align="center">16 GB</td><td align="center">64 GB</td><td align="right">1</td><td>Ubuntu Server 20.04</td></tr></tbody></table>
 
-##
+## Trial table (ignore)
 
 
 
-<table><thead><tr><th width="176">Purpose</th><th width="76">vCPUs</th><th width="78">RAM</th><th width="93">Storage</th><th width="64">VMs</th><th>Notes</th></tr></thead><tbody><tr><td>K8s Cluster nodes</td><td>8</td><td>32 GB</td><td>128 GB</td><td>3</td><td>All nodes of Kubernetes cluster with master, etc and work loads</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="152">Purpose</th><th width="262">Configuration</th><th>Notes</th></tr></thead><tbody><tr><td>Kubernetes nodes</td><td>8 vCPU/32 GB RAM/128 GB storage</td><td>Required for master, etc, work loads of Kubernetes cluster</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
 
 ## For pilot and limited rollout
 
