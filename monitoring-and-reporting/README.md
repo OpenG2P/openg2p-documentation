@@ -37,4 +37,4 @@ Details of this infrastructure may be found [here](https://github.com/mosip/repo
 
 <figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
 
-For deployment of logging infrastructure refer to [Logging & OpenSearch Deployment](../deployment/external-components-setup/logging-and-opensearch-deployment.md).
+For deployment of logging infrastructure refer to [Logging & OpenSearch Deployment](../deployment/external-components/logging-and-opensearch.md).

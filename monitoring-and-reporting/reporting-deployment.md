@@ -10,8 +10,8 @@ TODO
 
 ### Prerequisites
 
-* [PostgreSQL](../deployment/external-components-setup/postgresql-server-deployment.md)
-* [Keycloak](../deployment/external-components-setup/keycloak-deployment.md) for Authentication and Sign-in to OpenSearch Dashboards
+* [PostgreSQL](../deployment/external-components/postgresql-server.md)
+* [Keycloak](../deployment/external-components/keycloak.md) for Authentication and Sign-in to OpenSearch Dashboards
 
 ### Installation
 
@@ -35,10 +35,10 @@ Follow the instructions given here to install pre-configured [dashboards](https:
 
 ### Prerequisites
 
-* [PostgreSQL](../deployment/external-components-setup/postgresql-server-deployment.md)
-* [Kafka](../deployment/external-components-setup/kafka-deployment.md)
-* [Keycloak](../deployment/external-components-setup/keycloak-deployment.md) for Authentication and Sign-in to OpenSearch Dashboards
-* [OpenSearch](../deployment/external-components-setup/logging-and-opensearch-deployment.md)
+* [PostgreSQL](../deployment/external-components/postgresql-server.md)
+* [Kafka](../deployment/external-components/kafka-deployment.md)
+* [Keycloak](../deployment/external-components/keycloak.md) for Authentication and Sign-in to OpenSearch Dashboards
+* [OpenSearch](../deployment/external-components/logging-and-opensearch.md)
 
 ### Installation
 

@@ -1,6 +1,8 @@
-# Logging & OpenSearch Deployment
+---
+description: Logging & OpenSearch Deployment
+---
 
-## Introduction
+# Logging & OpenSearch
 
 Logs from different components present on the cluster will be pulled into OpenSearch to display dashboards and compute reports. Fluentd is used to pull captured logs and put into OpenSearch.
 
@@ -8,7 +10,7 @@ Logs from different components present on the cluster will be pulled into OpenSe
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [Keycloak](keycloak-deployment.md) for Authentication and Sign-in to UI
+* [Keycloak](keycloak.md) for Authentication and Sign-in to UI
 
 ## Installation
 

@@ -1,6 +1,8 @@
-# PostgreSQL Server Deployment
+---
+description: PostgreSQL Server Deployment
+---
 
-## Introduction
+# PostgreSQL Server
 
 This guide provides instructions to install PostgreSQL Server on the Kubernetes cluster. However, if you already have PostgreSQL server installed, or are using Cloud hosted Postgres, then you may skip the server installation. The instructions to initialize OpenG2P component databases are provided as part of the component installation instructions.
 

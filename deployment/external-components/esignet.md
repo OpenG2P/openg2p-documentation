@@ -1,6 +1,8 @@
-# eSignet Deployment
+---
+description: eSignet Deployment
+---
 
-## Introduction
+# eSignet
 
 This doc provides instructions on installing eSignet on the OpenG2P cluster.
 
@@ -12,9 +14,9 @@ This doc only provides instructions to install eSignet with Mock ID System (for 
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](postgresql-server-deployment.md)
-* [Keycloak](keycloak-deployment.md) for API Authentication
-* [Keymanager](keymanager-deployment.md)
+* [PostgreSQL](postgresql-server.md)
+* [Keycloak](keycloak.md) for API Authentication
+* [Keymanager](keymanager.md)
 
 ## Installation
 

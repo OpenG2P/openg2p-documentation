@@ -1,6 +1,8 @@
-# Minio Deployment
+---
+description: Minio Deployment
+---
 
-## Introduction
+# Minio
 
 MinIO is used by some components of OpenG2P store documents.
 
@@ -8,7 +10,7 @@ MinIO is used by some components of OpenG2P store documents.
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [Keycloak](keycloak-deployment.md) for Authentication and Sign-in to UI
+* [Keycloak](keycloak.md) for Authentication and Sign-in to UI
 
 ## Installation
 

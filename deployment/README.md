@@ -1,4 +1,5 @@
 ---
+description: OpenG2P Deployment
 layout:
   title:
     visible: true
@@ -20,14 +21,14 @@ OpenG2P offers production-grade deployment scripts and utilities based on repute
 
 Rancher is used to manage multiple Kubernetes clusters. Rancher may be installed on a separate node with Docker or a Kubernetes cluster (preferable) with redundancy as it is a critical gateway to manage the clusters. &#x20;
 
-The base infrastructure for all module deployments is given [here](infrastructure/).  Individual module deployment instructions may be found in the documentation of respective modules.
+The base infrastructure consists of the components listed below.  Individual module deployment instructions may be found in the documentation of respective modules.
 
-Following components need to be installed in the sequence given below to set up the infrastructure that houses OpenG2P modules.
+The following components need to be installed in the sequence given below to set up the base infrastructure that houses OpenG2P modules.
 
-| Infra Components                                       | Comments                                                                                                               |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| [Wireguard bastion](infrastructure/wireguard-bastion/) | Only one per all the environments                                                                                      |
-| [Rancher](infrastructure/rancher.md)                   | Only one per all the environments                                                                                      |
-| [NFS Server](infrastructure/nfs-server.md)             | One for each environment like sandbox, pilot, staging, production                                                      |
-| [Kuberenetes cluster](infrastructure/cluster-setup.md) | One for each environment                                                                                               |
-| [Loadbalancer](infrastructure/loadbalancer.md)         | One for each environment. For non cloud-native Kubernetes clusters either create a VM with Nginx or create a cloud LB. |
+| Infra Components                                            | Comments                                                                                                               |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [Wireguard bastion](base-infrastructure/wireguard-bastion/) | Only one per all the environments                                                                                      |
+| [Rancher](base-infrastructure/rancher.md)                   | Only one per all the environments                                                                                      |
+| [NFS Server](base-infrastructure/nfs-server.md)             | One for each environment like sandbox, pilot, staging, production                                                      |
+| [Kuberenetes cluster](base-infrastructure/cluster-setup.md) | One for each environment                                                                                               |
+| [Loadbalancer](base-infrastructure/loadbalancer.md)         | One for each environment. For non cloud-native Kubernetes clusters either create a VM with Nginx or create a cloud LB. |

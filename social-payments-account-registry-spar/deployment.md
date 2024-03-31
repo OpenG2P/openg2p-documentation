@@ -10,9 +10,9 @@ The instructions here pertain to the deployment of all SPAR components on the Ku
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* This module requires kubernetes infrastructure to be setup. For details, [click here](../deployment/infrastructure/)
-* [PostgreSQL](../deployment/external-components-setup/postgresql-server-deployment.md)
-* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [eSignet guide](../deployment/external-components-setup/esignet-deployment.md).
+* This module requires kubernetes infrastructure to be setup. For details, [click here](broken-reference)
+* [PostgreSQL](../deployment/external-components/postgresql-server.md)
+* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [eSignet guide](../deployment/external-components/esignet.md).
 
 ## Installation
 
