@@ -16,7 +16,7 @@ The instructions here pertain to the deployment of all SPAR components on the Ku
 
 ## Installation
 
-* Clone the https://github.com/openg2p/openg2p-spar-deployment repo and navigate to `scripts` directory.
+* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo and navigate to `scripts` directory.
 * Configure the `values.yaml` in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
 *   Run:
 
