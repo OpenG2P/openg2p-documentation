@@ -29,4 +29,13 @@ The instructions here pertain to the deployment of all SPAR components on the Ku
 
 After installation, SPAR Self Service portal will be accessible at https://spar.openg2p.sandbox.net, SPAR Service APIs will be accessible at https://spar.openg2p.sandbox.net/spar/v1, and SPAR ID Mapper APIs will be accessible at https://spar.openg2p.sandbox.net/mapper/v1, depending on the hostname given above.
 
-Follow [SPAR Post Installation](broken-reference) Guide to finish setup.
+### Onboard SPAR on eSignet
+
+* Create OIDC Client for SPAR in eSignet. Follow the method suggested by the ID Provider.
+  * If using mock eSignet, use this API to create OIDC client.
+* During OIDC client creation, you will be asked for (or given) a client ID and private key JWK as client secret.
+* Edit the SPAR DB, `login_provider` table and modify the `authorization_parameters` row of the first entry, with:
+  * appropriate URLs for `authorize_endpoint` , `token_endpoint` , `validate_endpoint`, `jwks_endpoint`, and `redirect_uri` fields.
+  * above client ID under the `client_id` field.
+  * and above private key jwk under the `client_assertion_jwk` field.
+* Seed/edit metadata of banks, wallets, branches, etc for the SPAR self-service portal in database. TODO: Elaborate.
