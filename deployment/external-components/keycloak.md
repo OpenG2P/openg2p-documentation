@@ -12,7 +12,7 @@ Keycloak is used in OpenG2P to provide single sign-on to some of the apps.
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](postgresql-server.md)
+* [PostgreSQL](postgresql.md)
 
 ## Installation
 

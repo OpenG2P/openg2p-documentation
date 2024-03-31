@@ -1,6 +1,8 @@
-# ODK Central Deployment
+---
+description: ODK Central Deployment
+---
 
-## Introduction
+# ODK Central
 
 ODK is used mainly by the Registration Toolkit to collect data offline and online.
 
@@ -8,7 +10,7 @@ ODK is used mainly by the Registration Toolkit to collect data offline and onlin
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](postgresql-server.md)
+* [PostgreSQL](postgresql.md)
 
 ## Installation
 

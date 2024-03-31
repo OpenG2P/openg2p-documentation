@@ -10,7 +10,7 @@ MOSIP's Keymanager component is used by some OpenG2P modules (like PBMS and soci
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [PostgreSQL](postgresql-server.md)
+* [PostgreSQL](postgresql.md)
 * [Keycloak](keycloak.md) for API Authentication
 * HSM. By default, Softhsm will be installed, unless real HSM is available.
 
