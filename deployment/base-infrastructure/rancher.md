@@ -16,6 +16,10 @@ layout:
 
 Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
 
+{% hint style="info" %}
+For simplicity of deployment and to conserve compute resources Rancher may be installed on a node with just the Docker. However, Kubernetes based deployment is preferred for above reasons
+{% endhint %}
+
 ## Installation using Kubernetes
 
 ### Prerequisites
