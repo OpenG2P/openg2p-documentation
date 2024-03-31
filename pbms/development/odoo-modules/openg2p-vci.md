@@ -2,8 +2,6 @@
 
 ## Introduction
 
-Source Code: [https://github.com/openg2p/openg2p-vci](https://github.com/openg2p/openg2p-vci)
-
 This repository contains Odoo modules that help PBMS/Registry to issue [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) (VC). This repo also provides default VC templates for both Registry and PBMS. This repo also adds [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1\_0.html) APIs to both Registry and PBMS.
 
 ## Odoo modules
@@ -13,6 +11,8 @@ This repository contains  the following modules:
 ### G2P OpenID VCI
 
 Module Name: g2p\_openid\_vci
+
+Source Code: [https://github.com/openg2p/openg2p-vci](https://github.com/openg2p/openg2p-vci)
 
 * This module adds `g2p.openid.vci.issuers` model, called "VC Issuer". Following are the main fields in this VC Issuer model.
   * `issuer_type` selection field decides the functionality of this VC Issuer. If issuer\_type is `Registry` , it is issuing Registry Credentials.
@@ -38,6 +38,8 @@ Module Name: g2p\_openid\_vci
 
 Module Name: g2p\_openid\_vci\_programs
 
+Source Code: [https://github.com/openg2p/openg2p-vci-beneficiary](https://github.com/openg2p/openg2p-vci-beneficiary)
+
 * This extends the "G2P OpenID VCI" module, by adding a new issuer type called `Beneficiary`. This effectively adds ability to issue VC for beneficiaries that are part of a program in PBMS.
 * This adds a parameter to attach a Program to an Issuer. With this each Program in PBMS is an issuer.
 * For example, if three programs are running on PBMS, 3 different issuers can be created with issuer\_type as "Beneficiary" and different programs.
@@ -52,6 +54,8 @@ Module Name: g2p\_openid\_vci\_programs
 ### G2P OpenID VCI: Rest API
 
 Module Name: g2p\_openid\_vci\_rest\_api
+
+Source Code: [https://github.com/openg2p/openg2p-vci](https://github.com/openg2p/openg2p-vci)
 
 * This module exposes the following [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1\_0.html) REST APIs.
   * `/api/v1/vci/credential` API - the main credential request API. This first gets the issuer based on scope, credential type, and supported format. Then verifies verifies and validates auth JWT based on issuer config. Then retrieves registrant data based on issuer config and auth JWT sub. And then issues credential based on credential format.
