@@ -4,11 +4,7 @@ description: SPAR Deployment
 
 # Deployment
 
-SPAR deployment comprises deploying the following services on [Kubernetes cluster infrastructure](../deployment/infrastructure/).
-
-* [SPAR Service](./#spar-service)&#x20;
-* [SPAR ID Account Mapper](./#id-account-mapper)&#x20;
-* [SPAR Self Service Portal](./#spar-self-service-portal) &#x20;
+The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster.
 
 ## Prerequisites
 
@@ -20,8 +16,8 @@ SPAR deployment comprises deploying the following services on [Kubernetes cluste
 
 ## Installation
 
-* Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/openg2p/openg2p-deployment) repo and navigate to [kubernetes/social-payments-account-registry](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/social-payments-account-registry) directory.
-* Configure the values.yaml in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
+* Clone the https://github.com/openg2p/openg2p-spar-deployment repo and navigate to `scripts` directory.
+* Configure the `values.yaml` in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
 *   Run:
 
     ```bash
