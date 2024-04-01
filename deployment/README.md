@@ -21,12 +21,8 @@ OpenG2P offers production-grade deployment scripts and utilities based on repute
 
 All modules reside in the OpenG2P Cluster shown above.  Rancher (housed in Rancher cluster) is used to manage multiple Kubernetes clusters. &#x20;
 
-The base infrastructure consists of the components listed below.  Individual module deployment instructions may be found in the documentation of respective modules. The components need to be installed in the sequence given below.&#x20;
+## Deployment stack
 
-| Base Infrastructure Components                              | Comments                                                                                                               |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| [Wireguard bastion](base-infrastructure/wireguard-bastion/) | Only one per all the environments                                                                                      |
-| [Rancher](base-infrastructure/rancher.md)                   | Only one per all the environments                                                                                      |
-| [NFS Server](base-infrastructure/nfs-server.md)             | One for each environment like sandbox, pilot, staging, production                                                      |
-| [Kuberenetes cluster](base-infrastructure/cluster-setup.md) | One for each environment                                                                                               |
-| [Loadbalancer](base-infrastructure/loadbalancer.md)         | One for each environment. For non cloud-native Kubernetes clusters either create a VM with Nginx or create a cloud LB. |
+The figure below depicts how all components are stacked
+
+{% embed url="https://miro.com/app/board/uXjVKaaGd40=/?share_link_id=118505524008" %}
