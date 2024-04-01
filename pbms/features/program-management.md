@@ -58,7 +58,7 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 ## Map Portal Form
 
-In OpenG2P, mapping a self-service portal form to a program is essential for streamlining the application process for beneficiaries. This functionality allows beneficiaries to access and complete the forms when applying for a specific program. The mapped forms become integral parts of the program, ensuring that all required information is collected efficiently and accurately, facilitating better management and processing of applications. This integration enhances the user experience for applicants and improves the administrative efficiency of program management.
+In OpenG2P, mapping a self-service portal form to a program is essential for streamlining the application process for beneficiaries. This functionality is allows beneficiaries to access and complete the forms when applying for a specific program from self service portal. The mapped forms become integral parts of the program, ensuring that all required information is collected efficiently and accurately, facilitating better management and processing of applications. This integration enhances the user experience for applicants and improves the administrative efficiency of program management.
 
 ## Managing multiple programs
 
