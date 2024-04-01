@@ -43,7 +43,7 @@ layout:
 
 Refer to this picture - SPAR in the G2P landscape
 
-<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR in the G2P landscape</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR Subsystem in the OpenG2P landscape</p></figcaption></figure>
 
 The PBMS (Program and Beneficiary Management System) is the place where a government department (or a social welfare organization) manages the benefit programs. These programs will identify and target beneficiaries based on eligibility rules. Based on the beneficiary profiles and other attributes, the PBMS will calculate entitlements.
 
