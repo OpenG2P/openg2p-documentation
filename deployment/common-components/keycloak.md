@@ -4,9 +4,7 @@ description: Keycloak Deployment
 
 # Keycloak
 
-## Introduction
-
-Keycloak is used in OpenG2P to provide single sign-on to some of the apps.
+[Keycloak](https://www.keycloak.org/) is used to provide single sign-on to some of the apps.&#x20;
 
 ## Prerequisites
 

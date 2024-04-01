@@ -4,7 +4,7 @@ description: Kafka Deployment
 
 # Kafka
 
-## Introduction
+
 
 Skip this if the [realtime reporting framework](https://github.com/openg2p/openg2p-reporting) is not being used.
 

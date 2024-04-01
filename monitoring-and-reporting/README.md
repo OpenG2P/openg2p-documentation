@@ -1,6 +1,18 @@
-# Monitoring and Reporting
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Monitoring and Reporting
 
 Monitoring the status of programs and registries is vital for program administrators. With OpenG2P's monitoring and logging tools, program administrators can&#x20;
 
