@@ -1,5 +1,9 @@
 # Beneficiary Registry
 
+## Introduction
+
+The concept of a beneficiary registry involves maintaining a database or record system that contains information about individuals or entities who are beneficiaries of a particular program, service, or assistance. This registry typically includes details such as the beneficiary's identity, eligibility criteria, participation in programs, entitlements, and any benefits received.
+
 The Beneficiary Registry (BR) resides in PBMS and contains the following&#x20;
 
 * Beneficiary to Program mapping
