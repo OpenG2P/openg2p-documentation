@@ -1,10 +1,10 @@
 ---
-description: Deployment of External Components
+description: Deployment of Common Components
 ---
 
-# External Components
+# Common Components
 
-OpenG2P utilizes several components that are not built by OpenG2P but are available in open source. These components may not be required for all modules. See the matrix below.
+Several open-source components form the base infrastructure layer utilized by the OpenG2P modules. These components need to be installed before installing OpenG2P modules.  All components may not be required for all modules. See the matrix below on applicability.
 
 | Component                                         | Required for                                                               |
 | ------------------------------------------------- | -------------------------------------------------------------------------- |
