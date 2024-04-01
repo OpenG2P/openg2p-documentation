@@ -29,6 +29,7 @@
     * [ODK Importer](pbms/features/odk-importer/README.md)
       * [User Guides](pbms/features/odk-importer/user-guides/README.md)
         * [Customize the ODK Importer Configuration based on the ODK Form Fields](pbms/features/odk-importer/user-guides/customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md)
+    * [Audit Logs](pbms/features/audit-logs.md)
   * [Interoperability](pbms/interoperability.md)
   * [Privacy and Security](pbms/privacy-and-security.md)
   * [Monitoring & Reporting](pbms/monitoring-and-reporting/README.md)

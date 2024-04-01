@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Self Service Portal
 
 Self-Service Portal allows an individual registrant seeking assistance to register from any place and any device with internet connectivity. The individual registrant logs in using a foundational or functional ID and then applies for a program. For self-registration, an OTP or QR code is typically used in addition to a unique ID number to log in. For assisted registration, to do biometric authentication, the assisting officer uses a biometric device connected to a machine which has access to the Self-Service Portal.

@@ -1,7 +1,3 @@
----
-coverY: 0
----
-
 # Privacy and Security
 
 OpenG2P is a robust and versatile platform built upon the Odoo framework, providing governments and organisations with a comprehensive solution for delivering benefits efficiently. As OpenG2P handles sensitive beneficiary information including personally identifiable information (PII), maintaining the highest standards of security is paramount.
