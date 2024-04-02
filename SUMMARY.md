@@ -248,6 +248,7 @@
   * [Smartscanner](utilities-and-tools/smartscanner.md)
   * [Registration Tool Kit](utilities-and-tools/registration-tool-kit.md)
 * [Monitoring and Reporting](monitoring-and-reporting/README.md)
+  * [Logging](monitoring-and-reporting/logging.md)
   * [Reporting Deployment](monitoring-and-reporting/reporting-deployment.md)
 * [Privacy and Security](privacy-and-security/README.md)
   * [Key Manager](privacy-and-security/key-manager.md)

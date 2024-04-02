@@ -22,10 +22,10 @@ Monitoring the status of programs and registries is vital for program administra
 
 The following tools are provided
 
-* [Apache Superset](https://superset.apache.org/) for visual pre-configured **dashboards**
-* Reporting Framework for real-time updates and **slicing and dicing of data**
-* Prometheus and Grafana for **system health** monitoring
-* Rancher, Fluentd, OpenSearch integration for **system logs** monitoring
+* [Apache Superset](https://superset.apache.org/) for visual pre-configured **dashboards.** [Learn more >>](./#apache-superset)
+* Reporting Framework for real-time updates and **slicing and dicing of data.**&#x20;
+* Prometheus and Grafana for **system health** monitoring.&#x20;
+* Rancher, Fluentd, OpenSearch integration for **system logs** monitoring. [Learn more >>](logging.md)
 
 ## Apache Superset&#x20;
 
@@ -43,10 +43,4 @@ Details of this infrastructure may be found [here](https://github.com/mosip/repo
 
 <figure><img src="../.gitbook/assets/prometheus-grafana.png" alt=""><figcaption></figcaption></figure>
 
-## Logs monitoring&#x20;
-
-**Fluentd** and **OpenSearch** are used to collect, parse, display and search logs generated across all components. See the logging pipeline below (TBD):
-
-Refer to [Common Components Deployment](../deployment/common-components/) for installing Fluentd and OpenSearch.
-
-<figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
+##
