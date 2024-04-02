@@ -14,8 +14,6 @@ layout:
 
 # Create Phone Number Eligibility Manager
 
-## Description
-
 This guide provides the step-by-step instructions to create a Phone Number Eligibility Manager
 
 ## Pre-requisites

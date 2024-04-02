@@ -14,8 +14,6 @@ layout:
 
 # Beneficiary Management
 
-## Introduction
-
 * Identifying beneficiaries
 * Enrolling beneficiaries
 * Maintaining beneficiary list
@@ -24,3 +22,4 @@ layout:
 * Disbursements
 * Beneficiary lifecycle -- exits
 * Notifications to beneficiaries
+

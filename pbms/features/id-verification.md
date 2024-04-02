@@ -14,8 +14,6 @@ layout:
 
 # ID Verification
 
-## Introduction
-
 OpenG2P registration interfaces can be integrated with [OpenID Connect](https://openid.net/developers/how-connect-works/) (OIDC) clients and ID authentication systems to authenticate registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients of authentication systems for foundational/functional ID.
 
 ### Authenticate Registrant using OpenID Connect

@@ -1,6 +1,18 @@
-# Enrolment
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Enrolment
 
 Enrolment is the process of creating a beneficiary list of individuals/groups by querying the registry and applying eligibility criteria. OpenG2P provides convenient filters and plugins to make the entire process frictionless, convenient and time-saving.
 
@@ -8,15 +20,11 @@ Enrolment is the process of creating a beneficiary list of individuals/groups by
 
 Once the eligibility criterion is configured in the program, the Program administrators can enroll the registrants with a single click of a button. Registrants are enrolled in the program based on the eligibility criteria. Once enrolled in the program, the registrants will be designated as beneficiaries.&#x20;
 
-Note:
-
-To learn the enrolment process, click here [Enrol Registrants into Program](../user-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md).
-
 ## Registrant status
 
 After enrollment, the status of all the eligible beneficiaries changes to enrolled. The status of ineligible beneficiaries changes to not eligible. Program administrators can view the status of both enrolled and non-eligible registrants.
 
-If the registrants have enrolled into the program using the Self-Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self-Service Portal](self-service-portal.md).
+If the registrants have enrolled into the program using the Self Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self Service Portal](../self-service-portal.md).
 
 ## Eligibility criteria change
 
@@ -28,4 +36,4 @@ OpenG2P allows the Program administrators to change the eligibility criteria aft
 
 ## Related user guide
 
-[Enrol Registrants into the Program](../user-guides/eligibility-and-program-enrollment/enrol-registrants-into-program.md)
+[Enrol Registrants into the Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/enrolment/user-guides/enrol-registrants-into-program)

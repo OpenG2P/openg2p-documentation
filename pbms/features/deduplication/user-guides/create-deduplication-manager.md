@@ -1,6 +1,18 @@
-# Create Deduplication Manager under Program
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Description
+# Create Deduplication Manager under Program
 
 This guide provides steps to create and configure the deduplication manager inside the program.
 

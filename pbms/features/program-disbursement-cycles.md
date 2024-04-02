@@ -14,8 +14,6 @@ layout:
 
 # Program Disbursement Cycles
 
-## Introduction
-
 Program disbursement cycles refer to the systematic schedule according to which funds or benefits  are distributed in a program. The disbursement refers to the payment typically done according to a predetermined schedule or criteria.&#x20;
 
 A program must have allocated funds and posted  before disbursement schedule can be divided into multiple cycles, each with its own distinct start and end dates.  These cycles are established and activated based on the requirement to allocate the funds within the program. This allows for the systematic release of funds over time.

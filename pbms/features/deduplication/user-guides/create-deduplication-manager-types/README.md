@@ -1,6 +1,18 @@
-# Create Deduplication Manager Types
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Description
+# Create Deduplication Manager Types
 
 There are 2 types of deduplication managers available that can be created and then can be configured to the program accordingly.
 

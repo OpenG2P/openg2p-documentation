@@ -14,8 +14,6 @@ layout:
 
 # Create Default Eligibility Manager
 
-## Description
-
 This guide provides the step-by-step instructions to create a Default Eligibility Manager
 
 ## Pre-requisites

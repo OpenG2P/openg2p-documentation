@@ -1,6 +1,18 @@
-# Deduplication
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Deduplication
 
 Deduplication refers to the process of removing duplicate entries in the program, thus avoiding double-dipping, and merging all the demographic fields associated with an individual/group into a single record.
 
@@ -34,11 +46,11 @@ Deduplication of registrants is a one-click operation once Deduplication Manager
 
 For example, number of duplicate entries are recorded, as shown in the below image.
 
-<figure><img src="../../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption><p>Duplicate entry</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption><p>Duplicate entry</p></figcaption></figure>
 
 ## Deduplicating individuals
 
-The Deduplication Manager also supports deduplication for the scenario in which the program manager or the approving authorities approve the [entitlement ](entitlement.md)of a single individual. The demographics of the individual will be deduplicated against that of every enrolled beneficiary.
+The Deduplication Manager also supports deduplication for the scenario in which the program manager or the approving authorities approve the [entitlement ](../entitlement/)of a single individual. The demographics of the individual will be deduplicated against that of every enrolled beneficiary.
 
 If the program supports multiple entitlements for the same individual, then this deduplication can be skipped. It is assumed that in such a case, there are other mechanisms to ensure that double-dipping is prevented.
 
@@ -46,10 +58,10 @@ On the whole, these features provide flexibility for the program manager to impl
 
 ## Related user guides
 
-[Configure ID Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/196/user-guides/user-guides/eligibility-and-program-enrollment/configuration/configure-id-types/\~/page)
+[Deduplicate Registrants](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/deduplicate-registrants)
 
-[Create Deduplication Manager Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/196/user-guides/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-deduplication-manager-types/\~/page)
+[Create Deduplication Manager Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/create-deduplication-manager-types/\~/page)
 
-[Create Deduplication Manager under Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/196/user-guides/user-guides/eligibility-and-program-enrollment/program/create-deduplication-manager/\~/page)
+[Create Deduplication Manager under Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/create-deduplication-manager/\~/page)
 
 ##

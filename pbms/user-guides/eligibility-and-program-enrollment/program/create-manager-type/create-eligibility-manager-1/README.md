@@ -14,8 +14,6 @@ layout:
 
 # Create Eligibility Manager Types
 
-## Description
-
 OpenG2P supports three types of Eligibility Managers.
 
 1. [Default Eligibility Manager](create-default-eligibility-manager.md)
