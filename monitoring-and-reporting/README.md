@@ -45,8 +45,12 @@ Details of this infrastructure may be found [here](https://github.com/mosip/repo
 
 <figure><img src="../.gitbook/assets/prometheus-grafana.png" alt=""><figcaption></figcaption></figure>
 
-## Logs monitoring via Fluentd and OpenSearch
+## Logs monitoring&#x20;
+
+**Fluentd** and **OpenSearch** are used to collect, parse, display and search logs generated across all components. See the logging pipeline below (TBD):
+
+Refer to [Common Components Deployment](../deployment/common-components/) for installing Fluentd and OpenSearch.
 
 <figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
 
-For deployment of logging infrastructure refer to [Logging & OpenSearch Deployment](../deployment/common-components/logging-and-opensearch.md).
+For deployment of logging infrastructure refer to [Logging & OpenSearch Deployment](../deployment/common-components/opensearch.md).

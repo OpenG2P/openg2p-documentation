@@ -38,7 +38,7 @@ Follow the instructions given here to install pre-configured [dashboards](https:
 * [PostgreSQL](../deployment/common-components/postgresql.md)
 * [Kafka](../deployment/common-components/kafka.md)
 * [Keycloak](../deployment/common-components/keycloak.md) for Authentication and Sign-in to OpenSearch Dashboards
-* [OpenSearch](../deployment/common-components/logging-and-opensearch.md)
+* [OpenSearch](../deployment/common-components/opensearch.md)
 
 ### Installation
 

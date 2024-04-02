@@ -271,7 +271,7 @@
     * [ODK Central](deployment/common-components/odk-central.md)
     * [Kafka](deployment/common-components/kafka.md)
     * [Fluentd](deployment/common-components/fluentd.md)
-    * [Logging & OpenSearch](deployment/common-components/logging-and-opensearch.md)
+    * [OpenSearch](deployment/common-components/opensearch.md)
     * [Keymanager](deployment/common-components/keymanager.md)
     * [eSignet](deployment/common-components/esignet.md)
   * [Additional Guides](deployment/deployment-guide/README.md)

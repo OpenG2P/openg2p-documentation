@@ -1,10 +1,10 @@
 ---
-description: Logging & OpenSearch Deployment
+description: OpenSearch Deployment
 ---
 
-# Logging & OpenSearch
+# OpenSearch
 
-Logs from different components present on the cluster will be pulled into OpenSearch to display dashboards and compute reports. Fluentd is used to pull captured logs and put into OpenSearch.
+Logs captured by [Fluentd](fluentd.md) from different components are pushed to [OpenSearch](https://opensearch.org/) for search, display and reports.&#x20;
 
 ## Prerequisites
 
@@ -26,11 +26,6 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     ```
 * After installation is successful, OpenSearch dashboards will be accessible at https://opensearch.openg2p.sandbox.net, depending on the hostname given above.
 
-### Install Rancher Logging (Fluentd)
-
-1. On Rancher UI, navigate to Apps (or Apps & Marketplace) -> Charts
-2. Search and install Logging from the list, with default values.
-
 ### Add _Index State Policy_ on OpenSearch
 
 *   Run this to add ISM Policy (This is responsible for automatically deleting logstash indices after 3 days. Configure the minimum age to delete indices, in the same script below.)
@@ -38,23 +33,6 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     ```
     ./opensearch-ism-script.sh
     ```
-
-### Configure Rancher Fluentd
-
-*   Run this to create _ClusterOutput_ (This is responsible for redirecting all logs to OpenSearch.)
-
-    ```
-    kubectl apply -f clusteroutput-opensearch.yaml
-    ```
-*   Run this to create a _ClusterFlow_ (This is responsible for filtering OpenG2P service logs, from the logs of all pods.)
-
-    ```
-    kubectl apply -f clusterflow-all.yaml
-    ```
-
-### Filters
-
-Note the filters applied in [clusterflow-all.yaml](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/logging/clusterflow-all.yaml). You may update the same for your install if required, and rerun the apply command.
 
 ### Dashboards
 
