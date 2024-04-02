@@ -24,7 +24,7 @@ layout:
 
 <figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L2.jpg" alt=""><figcaption><p>Partner Onboarding for OpenG2P API</p></figcaption></figure>
 
-API Call by Partner
+#### API Call by Partner
 
 <figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-01.jpg" alt=""><figcaption><p>OpenG2P API call from Partner Organization / Partner System</p></figcaption></figure>
 
