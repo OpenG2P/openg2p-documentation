@@ -38,6 +38,10 @@ The document talks about setting up a **Wireguard bastion host** (Wireguard serv
     ```
 * Make sure to edit the firewall rules of this VM to enable incoming traffic on the above UDP port (Default 51820) and disable incoming traffic on all other ports (excluding SSH)
 
+## Access to users
+
+Refer to this&#x20;
+
 ## Wireguard client
 
 To access systems behind Wireguard bastion, you need to install Wireguard client on your machine. Install the client as follows:
