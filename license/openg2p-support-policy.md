@@ -20,9 +20,9 @@ Support is a critical aspect of adopting any software.  OpenG2P offers support t
 
 While all versions typically go through the testing phases, specific stable versions are designated as Long-Term Support (LTS) versions. These versions are supported for many years and their rollover happens based on the introduction of the next LTS evolution. Countries are encouraged to base their systems on LTS versions to benefit from the long-term support they get.
 
-All support for MOSIP is provided under the terms of licensing given [here](./) with no express warranties or guarantees.
+All support for OpenG2P is provided under the terms of licensing given [here](./) with no express warranties or guarantees.
 
-Release versions will have an associated support type/status, and this will be mentioned on the [release page](../pbms/releases/) in the documentation.
+Release versions will have an associated support type/status, and this will be mentioned on the [release page](../releases.md) in the documentation.
 
 ## Patches and upgrades
 
