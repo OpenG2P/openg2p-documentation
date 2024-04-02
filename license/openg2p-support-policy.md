@@ -22,7 +22,7 @@ While all versions typically go through the testing phases, specific stable vers
 
 All support for OpenG2P is provided under the terms of licensing given [here](./) with no express warranties or guarantees.
 
-Release versions will have an associated support type/status, and this will be mentioned on the [release page](../releases.md) in the documentation.
+Release versions will have an associated support type/status, and this will be mentioned on the [release page](../releases/) in the documentation.
 
 ## Patches and upgrades
 
