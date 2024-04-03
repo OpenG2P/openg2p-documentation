@@ -54,7 +54,7 @@ In OpenG2P, in each programs' configuration tab, you can find the various manage
 
 ## PMT Configuration
 
-In OpenG2P, a program manager configures the PMT to validate the income and poverty status of individual/groups using data on basic household materials, to enrol his/her to a program.
+In OpenG2P, a program manager configures the PMT to validate the income and poverty status of individual/groups using data on basic household materials, to enroll his/her to a program.
 
 ## Map Portal Form
 

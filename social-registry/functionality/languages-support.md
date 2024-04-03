@@ -7,9 +7,7 @@ Languages set as per the user choice will make them feel valued and  help to inc
 
 On social registry, user can login to the application go to top right corner, then choose preferences,  select the language of user choice. \
 Once the language is updated with newly saved language, application changes as per preferred language.\
-
-
-* Admin console can be configured for multiple languages by providing translated text files (POT)\
+\
 
 
 \
