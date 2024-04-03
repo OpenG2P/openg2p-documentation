@@ -46,11 +46,11 @@ Deduplication of registrants is a one-click operation once Deduplication Manager
 
 For example, number of duplicate entries are recorded, as shown in the below image.
 
-<figure><img src="../../../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption><p>Duplicate entry</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/deduplicate-beneficiaries.png" alt=""><figcaption><p>Duplicate entry</p></figcaption></figure>
 
 ## Deduplicating individuals
 
-The Deduplication Manager also supports deduplication for the scenario in which the program manager or the approving authorities approve the [entitlement ](../entitlement/)of a single individual. The demographics of the individual will be deduplicated against that of every enrolled beneficiary.
+The Deduplication Manager also supports deduplication for the scenario in which the program manager or the approving authorities approve the [entitlement ](entitlement/)of a single individual. The demographics of the individual will be deduplicated against that of every enrolled beneficiary.
 
 If the program supports multiple entitlements for the same individual, then this deduplication can be skipped. It is assumed that in such a case, there are other mechanisms to ensure that double-dipping is prevented.
 

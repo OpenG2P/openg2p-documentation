@@ -10,7 +10,7 @@ The user should have a Program Administrator role.
 
 The beneficiary's notification preference should be selected.
 
-The notification configurations need to be completed. See the guide, [Create Notification Manager Types.](../eligibility-and-program-enrollment/program/create-manager-type/create-notification-manager-types/)
+The notification configurations need to be completed. See the guide, [Create Notification Manager Types.](../../features/program-management/user-guides/create-manager-type/create-notification-manager-types/)
 
 ## Steps
 

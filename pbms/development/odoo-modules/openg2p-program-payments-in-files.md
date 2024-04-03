@@ -56,7 +56,7 @@ NA
 
 NA
 
-### Source cod
+### Source code
 
 [https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_files](https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_files)
 

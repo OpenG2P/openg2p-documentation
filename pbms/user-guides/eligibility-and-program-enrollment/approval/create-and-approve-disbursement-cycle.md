@@ -6,7 +6,7 @@ This guide will provide the steps to create and approve the disbursement cycle u
 
 ## Pre-requisites
 
-The user should have a role which is configured in the _Approver Group_ under _Configure the Cycle Manager_ while [creating program](../program/create-a-program.md).
+The user should have a role which is configured in the _Approver Group_ under _Configure the Cycle Manager_ while [creating program](../../../features/program-management/user-guides/create-a-program.md).
 
 ## Steps
 

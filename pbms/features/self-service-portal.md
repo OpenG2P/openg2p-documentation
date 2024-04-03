@@ -43,9 +43,9 @@ Depending on the program implementation, the registrant can seek assistance to a
 
 A program administrator must do these steps to allow registrants to apply for a program:
 
-* Create a program: To learn the steps, click [here](../user-guides/eligibility-and-program-enrollment/program/create-a-program.md).
+* Create a program: To learn the steps, click [here](program-management/user-guides/create-a-program.md).
 * Create a Self-Service Portal form: To learn the steps, click [here](../user-guides/eligibility-and-program-enrollment/website/create-portal-form.md).
-* Map Self-Service Portal form: To learn the steps, click [here](../user-guides/eligibility-and-program-enrollment/program/map-self-service-portal-form.md).
+* Map Self-Service Portal form: To learn the steps, click [here](program-management/user-guides/map-self-service-portal-form.md).
 
 Registrant's ID verification takes place during the login. The registrant also provides consent to share demographic details with the Self-Service Portal. Upon successful ID verification, the Self-Service Portal can automatically populates the registrant's demographic details based on the consent provided during login. The registrant fills in the rest of the details and applies for a program. Learn more about self-registration [here](../user-guides/registration/self-register-online.md).
 

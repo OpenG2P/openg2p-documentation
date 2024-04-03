@@ -38,7 +38,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../../../.gitbook/assets/created-and-edit-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 
-8. Another dialogue box appears. Configure the entitlement manager details as described in the [Create Entitlement Manager Type](create-entitlement-manager-type/) guide.
+8. Another dialogue box appears. Configure the entitlement manager details as described in the [Create Entitlement Manager Type](../../entitlement/user-guides/create-entitlement-manager-type/) guide.
 
 <figure><img src="../../../../.gitbook/assets/default-entitlement-manager.png" alt=""><figcaption></figcaption></figure>
 

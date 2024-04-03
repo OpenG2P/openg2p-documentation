@@ -34,7 +34,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../../../.gitbook/assets/payment-method.png" alt=""><figcaption></figcaption></figure>
 
-7. If a payment manager is already created ([Create Payment Manager](../program/create-manager-type/create-payment-manager-types/)), search and select the same or else once the name is provided to the program manager, _Create and Edit_ buttons will appear. Click on _Create and Edit_ to create a payment manager.
+7. If a payment manager is already created ([Create Payment Manager](create-manager-type/create-payment-manager-types/)), search and select the same or else once the name is provided to the program manager, _Create and Edit_ buttons will appear. Click on _Create and Edit_ to create a payment manager.
 
 <figure><img src="../../../../.gitbook/assets/payment-manager-name.png" alt=""><figcaption></figcaption></figure>
 

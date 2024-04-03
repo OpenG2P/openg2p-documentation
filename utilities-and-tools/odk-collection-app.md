@@ -24,7 +24,7 @@ The three steps involved in the registration process using the ODK Collect App a
 
 A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
-* Program creation - To learn the steps, click [here](../pbms/user-guides/eligibility-and-program-enrollment/program/create-a-program.md).
+* Program creation - To learn the steps, click [here](../pbms/features/program-management/user-guides/create-a-program.md).
 * Create ODK form in ODK Central - To learn the steps, click [here](../pbms/user-guides/registration/odk/create-odk-form.md).
 * Provide ODK form access to the field registration agent- To learn the steps, click [here](../pbms/user-guides/registration/odk/provide-form-access-to-field-agent.md).
 
@@ -74,7 +74,7 @@ To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-gui
 
 ## Related links
 
-* [Create Program](../pbms/user-guides/eligibility-and-program-enrollment/program/create-a-program.md)
+* [Create Program](../pbms/features/program-management/user-guides/create-a-program.md)
 * [Create ODK Form](../pbms/user-guides/registration/odk/create-odk-form.md)
 * [Provide ODK Form Access to Field Agent](../pbms/user-guides/registration/odk/provide-form-access-to-field-agent.md)
 * [Download Form on ODK Collect](../pbms/user-guides/registration/odk/download-form-on-odk-collect.md)
