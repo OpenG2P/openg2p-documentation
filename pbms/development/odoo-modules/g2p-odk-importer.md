@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # G2P ODK Importer
 
 ### Module name
@@ -28,20 +42,18 @@ The **ODK Importer** module facilitates the import of records from Open Data Kit
 * The module is designed to integrate smoothly with ODK Central for efficient data transfer.
 * Emphasis is placed on robust error handling and status monitoring to ensure reliable import processes.
 
-
-
 ### Dependencies
 
-* **pyjq**: Python library for JSON querying.
+* **Pyjq**: Python library for JSON querying.
 * **Base**: Core module providing fundamental functionality.
 * **Web**: Module for web interface components.
 * **Queue Job**: Dependency for managing asynchronous jobs.
 
 ### User interface
 
-Menu Added
+Menu added
 
-* **Submenu**: ODK -> Configuration&#x20;
+* **Submenu**: ODK -> Configuration.&#x20;
 
 ### Configuration
 
@@ -62,11 +74,55 @@ The module requires configuration of the following parameters:
 3. Schedule imports or manually trigger imports using the provided actions.
 4. Monitor import job status and logs for any errors or warnings.
 
-Example of Household Data JSON Formatter:
+### **Handling JSON formatter using Pyjq**
 
-\[Example JSON formatter configuration]
+#### **Explanation**
 
-`{ "name":.enumerator_details.data_enumerator_name, "region":.enumerator_details.region, "hh_history_with_relief_pro": .household_info.household_history, "no_of_pregnant_women": .household_info.no_of_visibly_pregnant, "no_of_breastfeeding_women": .household_info.no_of_breastfeeding_women, "no_of_younger_children": .household_info.no_of_children, "no_of_malnourished_children": .household_info.no_of_malnourished_childrens, "no_of_chronically_ill_individuals": .household_info.no_of_chronically_ill_individuals, "is_the_hh_head_disable": .household_info.head_persion_with_disability , "no_of_disable_hh_members": .household_info.no_of_pwd, "is_hh_head_above_60": .household_info.is_household_head_age_above_60 , "is_female_a_hh_head": .household_info.is_female_headed_household, "is_child_a_hh_head": .household_info.is_child_headed_household, "is_the_hh_under_the_status_of_IDP": .household_info.is_household_under_status_of_idp, "is_the_hh_a_returnee_hh": .household_info.household_returnee, "condition_of_constructed_house": .household_info.house_constructed, "no_of_rooms_rented_out": .household_info.no_of_rooms_rented_in_house, "no_of_rooms_rented_in_by_hh": .household_info.no_of_rooms_in_house, "transport_related_costs": .household_info.transport_related_costs, "size_of_owned_farmland": .household_info.size_of_farmland_owned_by_household, "size_of_rented_farmland": .household_info.size_of_farmland_rented_or_ploughed, "no_of_hh_members_engaged_in_mining": .household_info.no_of_members_engaged_in_mining, "hh_involved_in_other_natural_sources_of_income": .household_info.income_generating_activities, "no_of_ox_owned_by_hh": .household_info.no_of_oxen_owned, "no_of_cattle_owned_by_hh": .household_info.no_of_cattle_owned, "no_of_ship_or_goats_owned_by_hh": .household_info.no_of_sheep_or_goats_owned, "no_of_camels_owned_by_hh": .household_info.no_of_camels_or_equine_owned, "no_of_chickens_owned_by_hh": .household_info.no_of_chickens_owned, "is_hh_involved_in_any_trade": .household_info.is_involved_in_trade, "no_of_beehives_owned_by_hh": .household_info.no_of_beehives_owned, "hh_own_a_three_leg_motor_bike": .household_info.own_bike_three_leg, "hh_own_a_two_leg_motor_bike": .household_info.own_bike_two_leg, "hh_earn_from_renting_construction_tools": .household_info.earn_from_renting_tool, "hh_own_cart": .household_info.own_cart, "hh_have_a_member_living_abroad": .household_info.member_living_abroad, "hh_have_a_member_living_in_urban_and_provides_finanical_support": .household_info.member_living_in_city, "involved_in_any_manufacturing_activity": .household_info.involved_in_manufacturing_activities, "sum_amount_of_liquid_cash": .household_info.total_asset, "hh_qualify_for_loan": .household_info.qualify_for_loan_or_credit, "no_of_unskilled_members": .household_info.no_of_able_men_educated_or_skilled, "no_of_skilled_members": .household_info.no_of_able_female_or_men_educated_or_skilled, "how_long_the_hh_use_the_inkind_assistance": .household_info.assistance_recieved_in_last_three_years, "group_membership_ids": .household_info.household_members }`
+* Each key in the JSON formatter script corresponds to a database column name.
+* Pyjq expressions are utilized to query and manipulate JSON data extracted from ODK forms.
+* ODK form field keys are mapped to database column names, ensuring accurate data mapping.
+* Optional fields are denoted with a question mark (?), indicating potential null or undefined values.
+
+#### **Usage guidelines**
+
+**Understanding database schema**
+
+* Familiarize yourself with the database schema of the OpenG2P system to identify appropriate database column names.
+
+**Mapping ODK form fields**
+
+* Map each ODK form field to the corresponding database column by specifying key-value pairs in the JSON formatter script.
+
+**Usage**
+
+* Technical users can configure the JSON formatter script by defining mappings between Excel sheet columns and ODK form fields using Pyjq expressions.
+
+**Example JSON formatter script**
+
+```json
+{
+    "name": .vc_details.full_name,
+    "gender": .vc_details.gender,
+    "age": .vc_details.age,
+    "address": .vc_details.address,
+    "email": .personal_details.email
+}
+```
+
+**Explanation**
+
+* `"name": .vc_details.full_name`: Extracts the full name of the individual from the "vc\_details" section of the ODK form.
+* `"gender": .vc_details.gender`: Extracts the gender of the individual from the same section.
+* `"age": .vc_details.age`: Extracts the age of the individual from the same section.
+* `"address": .vc_details.address`: Extracts the address of the individual from the same section.
+* "email": .personal\_details.email: Extracts the email address of the individual from the "personal\_details" section.
+
+**Accessing nested fields**
+
+When navigating through nested structures, the dot (.) allows traversal from one level to another. For example:
+
+* `.vc_details.full_name`: Accesses the full\_name field within the vc\_details section of the JSON data.
+* `.vc_details.address.city`: Accesses the city field within the address subfield of the vc\_details section.
 
 ### Error codes
 
@@ -79,5 +135,3 @@ NA
 ### Installation
 
 Standard odoo package installation
-
-###
