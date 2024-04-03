@@ -30,8 +30,8 @@ layout:
 
 #### JWT Schematic
 
-<figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-02.jpg" alt=""><figcaption><p>JWT Schematic</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - JWT Schematic</p></figcaption></figure>
 
 #### Validation of JWT using MOSIP Key Manager
 
-<figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>JWT Validation using MOSIP Key Manager</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-02.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager</p></figcaption></figure>
