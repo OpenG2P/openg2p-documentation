@@ -39,28 +39,26 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 ## **Technical concepts**
 
-[https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/development/odoo-modules](../../development/odoo-modules/)
+
 
 ## Installation and deployment
 
-[https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/deployment](../../deployment/)
+
 
 ## User guides
 
-[Create Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-a-program/\~/page)
+[Create Program](user-guides/create-a-program.md)
 
-[Create Eligibility Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-eligibility-manager/\~/page)
+[Create Eligibility Manager](user-guides/create-eligibility-manager.md)
 
-[Configure Program Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/configure-program-manager-in-program/\~/page)
+[Configure Program Manager](user-guides/configure-program-manager-in-program.md)
 
-[Create Notification Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/configure-notification-manager/\~/page)
+[Create Notification Manager](user-guides/configure-notification-manager.md)
 
-[Create Entitlement Voucher Template](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-entitlement-voucher-template)
+[Create Entitlement Voucher Template](user-guides/create-entitlement-voucher-template.md)
 
-[Map Self-Service Portal Form](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/map-self-service-portal-form/\~/page)
+[Map Self-Service Portal Form](user-guides/map-self-service-portal-form.md)
 
-[Create Deduplication Manager](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-deduplication-manager/\~/page)
+[Create Deduplication Manager](user-guides/create-deduplication-manager.md)
 
-[Create Deduplication Manger Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-deduplication-manager-types/\~/page)
-
-[Create Manager Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/143/pbms/features/program-management/user-guides/create-manager-type/\~/page)
+[Create Manager Types](user-guides/create-manager-type/)

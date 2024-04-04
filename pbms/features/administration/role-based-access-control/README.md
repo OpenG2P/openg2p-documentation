@@ -30,10 +30,6 @@ OpenG2P platform has three types of users:
 
 In the OpenG2P platform, a role is implemented by defining a group, and the users playing the role are added to the group. Each user can be added to multiple groups. OpenG2P provides a large variety of pre-defined groups (roles). The users can be directly added to these groups (roles).&#x20;
 
-To learn the steps to assign a user to a pre-defined group, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/assign-roles-to-users.md).
-
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/pre-defined-groups%20(1).PNG" alt=""><figcaption></figcaption></figure>
-
 {% hint style="info" %}
 OpenG2P pre-defined group name start with the prefix OpenG2P. All the other groups are provided by underlying Odoo platform.
 {% endhint %}
