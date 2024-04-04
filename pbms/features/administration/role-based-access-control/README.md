@@ -65,4 +65,4 @@ The figure below shows the access rights for a group (role) that requires access
 
 ## Related links
 
-[Create User and Assign Role](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/199/pbms/features/administration/role-based-access-control/user-guides/assign-roles-to-users)
+[Create User and Assign Role](user-guides/assign-roles-to-users.md)
