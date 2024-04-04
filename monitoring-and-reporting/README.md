@@ -16,8 +16,8 @@ layout:
 
 Monitoring the status of programs and registries is vital for program administrators. With OpenG2P's monitoring and logging tools, program administrators can&#x20;
 
-1. Monitor programs via visual dashboards
-2. Generate reports from the PBMS
+1. Monitor programs via visual dashboards&#x20;
+2. Generate reports
 3. Monitor system health in real-time&#x20;
 
 The following tools are provided
@@ -27,15 +27,7 @@ The following tools are provided
 * Prometheus and Grafana for **system health** monitoring.&#x20;
 * Rancher, Fluentd, OpenSearch integration for **system logs** monitoring. [Learn more >>](logging.md)
 
-## Apache Superset&#x20;
-
-Apache Superset offers SQL query based datasets and charts for visualisation of data. OpenG2P offers pre-configured dashboards for visualisation. Refer to the [deployment instructions](reporting-deployment.md).
-
-<figure><img src="../.gitbook/assets/apache-superset-dashboard.png" alt=""><figcaption></figcaption></figure>
-
-## Real-time reporting framework
-
-<figure><img src="../.gitbook/assets/reporting-dashboard.png" alt=""><figcaption></figcaption></figure>
+##
 
 Details of this infrastructure may be found [here](https://github.com/mosip/reporting).&#x20;
 
