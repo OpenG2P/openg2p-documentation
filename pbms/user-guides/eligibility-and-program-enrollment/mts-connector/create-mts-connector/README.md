@@ -11,4 +11,4 @@ There are two types of MTS Connectors differentiated based on input types
 
 ## Pre-requisites
 
-The user must have a Program Manager role. See [Create User and Assign Role](../../settings/assign-roles-to-users.md) guide.
+The user must have a Program Manager role. See [Create User and Assign Role](../../../../features/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.

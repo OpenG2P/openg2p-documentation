@@ -18,7 +18,7 @@ This guide will help enrol registrants into a program, who are registered throug
 
 ## Pre-requisites
 
-* The user must have a Program Manager role. See [Create User and Assign Role](../../../user-guides/eligibility-and-program-enrollment/settings/assign-roles-to-users.md) guide.
+* The user must have a Program Manager role. See [Create User and Assign Role](../../administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.
 * There should be registrants with respect to the program
 
 ## Steps

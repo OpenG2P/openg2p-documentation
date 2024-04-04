@@ -8,7 +8,7 @@ This document provides instruction to create a new project for a program using O
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * The user must have valid credentials to login **ODK Central**
-* The user must have an Administrator role in **ODK Central**. See [Create User and Assign Role](../../eligibility-and-program-enrollment/settings/assign-roles-to-users.md) guide.
+* The user must have an Administrator role in **ODK Central**. See [Create User and Assign Role](../../../features/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.
 
 ## Procedure
 

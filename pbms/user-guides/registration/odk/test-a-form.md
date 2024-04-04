@@ -8,7 +8,7 @@ This document provides instructions to test a form available in a project using 
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * A user must have valid credentials to login **ODK Central**
-* A user must have an Administrator role in ODK Central. See [Create User and Assign Role](../../eligibility-and-program-enrollment/settings/assign-roles-to-users.md) guide
+* A user must have an Administrator role in ODK Central. See [Create User and Assign Role](../../../features/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide
 * A user must have ODK Collect App in his/her device
 
 ## Procedure

@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # RBAC
 
 ## Introduction
@@ -43,20 +57,12 @@ The excel below describes all the OpenG2P pre-configured groups and their access
 
 The administrators can also create custom groups from scratch or inherit from pre-defined groups. Inheriting from an existing group is the most effective way to create new groups as menus, views and access rights from the existing groups need not be redefined. After inheriting from existing groups, system administrators can add custom menus, views and access rights.
 
-To learn the steps to create a custom group, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-entitlement-manager-role.md).
-
 \<image to be incorporated>
-
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/inherited-groups.PNG" alt=""><figcaption></figcaption></figure>
 
 The figure below shows the access rights for a group (role) that requires access to payment accounts.
 
 \<image to be incorporated>
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/.gitbook/assets/rbac-access-rights.PNG" alt=""><figcaption></figcaption></figure>
-
 ## Related links
 
-[Create User and Assign Role](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/assign-roles-to-users.md)
-
-[Create a Custom Group](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/guides/user-guides/create-entitlement-manager-role.md)
+[Create User and Assign Role](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/199/pbms/features/administration/role-based-access-control/user-guides/assign-roles-to-users)
