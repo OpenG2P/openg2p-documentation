@@ -39,6 +39,7 @@
           * [Create Default Eligibility Manager](pbms/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-default-eligibility-manager.md)
           * [Create ID Document Eligibility Manager](pbms/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager.md)
           * [Create Phone Number Eligibility Manager](pbms/user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-phone-number-eligibility-manager.md)
+        * [Configure Proxy Means Test](pbms/features/eligibility/user-guides/configure-proxy-means-test.md)
     * [Deduplication](pbms/features/deduplication.md)
       * [User Guides](pbms/features/deduplication/user-guides/README.md)
         * [Deduplicate Registrants](pbms/features/deduplication/user-guides/deduplicate-registrants.md)
