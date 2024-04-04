@@ -22,14 +22,10 @@ Monitoring the status of programs and registries is vital for program administra
 
 The following tools are provided
 
-* [Apache Superset](https://superset.apache.org/) for visual pre-configured **dashboards.** [Learn more >>](./#apache-superset)
-* Reporting Framework for real-time updates and **slicing and dicing of data.**&#x20;
-* Prometheus and Grafana for **system health** monitoring.&#x20;
-* Rancher, Fluentd, OpenSearch integration for **system logs** monitoring. [Learn more >>](logging.md)
-
-##
-
-Details of this infrastructure may be found [here](https://github.com/mosip/reporting).&#x20;
+* [Apache Superset](https://superset.apache.org/) for visual pre-configured **dashboards.**&#x20;
+* [Reporting Framework](reporting-framework.md) for real-time updates and **slicing and dicing of data.**&#x20;
+* [Prometheus and Grafana](./#prometheus-and-grafana) for **system health** monitoring.&#x20;
+* [Logging pipeline](logging.md) for **system logs** monitoring.
 
 ## Prometheus and Grafana
 

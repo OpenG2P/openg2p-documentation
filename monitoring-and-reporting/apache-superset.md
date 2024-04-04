@@ -9,3 +9,5 @@ Apache Superset offers SQL query based datasets and charts for visualisation of 
 <figure><img src="../.gitbook/assets/apache-superset-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 ## Installation
+
+Refer to the [deployment guide](../deployment/common-components/apache-superset.md).
