@@ -14,7 +14,7 @@ This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](https:
 6. Biometric auth devices (already onboarded on MOSIP) are available for authentication
 7. Email and SMS are enabled on MOSIP IDA for OTP authentication
 8. MOSIP Partner Management Services (PMS) Portal or APIs must be accessible to both MOSIP Partner Admin and OpenG2P Admin
-9. MOSIP Partner Specific User Token (PSUT) ID type is configured. See [Configure ID Types](../eligibility-and-program-enrollment/configuration/configure-id-types.md).
+9. MOSIP Partner Specific User Token (PSUT) ID type is configured. See [Configure ID Types](../../../social-registry/user-guides/configure-id-types.md).
 
 ## Steps
 

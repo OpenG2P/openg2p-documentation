@@ -27,11 +27,11 @@ Note:&#x20;
 
 OpenG2P platform supports three types of Deduplication Managers.
 
-| Deduplication Manager              | Description                                                                                                                                                                                                                                |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Default Deduplication Manager      | This Deduplication Manager is assigned to each program by default. The program maanger runs the Deduplication Manager if they are sure of unique registration entries, as it is mandatory to configure at least one Deduplication Manager. |
-| ID Deduplication Manager           | ID Deduplication Manager deduplicates the registrants based on the their ID. The program manager should configure the ID type that will be used for deduplication.                                                                         |
-| Phone number Deduplication Manager | Phone number Deduplication Manager deduplicates the registrants based on their phone numbers. This Deduplication Manager is often configured along with the ID Deduplication Manager.                                                      |
+| Deduplication Manager                                                                                                                   | Description                                                                                                                                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Default Deduplication Manager                                                                                                           | This Deduplication Manager is assigned to each program by default. The program manager runs the Deduplication Manager if they are sure of unique registration entries, as it is mandatory to configure at least one Deduplication Manager. |
+| [ID Deduplication Manager](deduplication/user-guides/create-deduplication-manager-types/create-id-deduplication-manager.md)             | ID Deduplication Manager deduplicates the registrants based on the their ID. The program manager should configure the ID type that will be used for deduplication.                                                                         |
+| [Phone number Deduplication Manager](deduplication/user-guides/create-deduplication-manager-types/create-phone-number-deduplication.md) | Phone number Deduplication Manager deduplicates the registrants based on their phone numbers. This Deduplication Manager is often configured along with the ID Deduplication Manager.                                                      |
 
 ## Deduplication Manager configuration
 
@@ -58,10 +58,8 @@ On the whole, these features provide flexibility for the program manager to impl
 
 ## Related user guides
 
-[Deduplicate Registrants](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/deduplicate-registrants)
+[Deduplicate Registrants](deduplication/user-guides/deduplicate-registrants.md)
 
-[Create Deduplication Manager Types](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/create-deduplication-manager-types/\~/page)
+[Create Deduplication Manager Types](deduplication/user-guides/create-deduplication-manager-types/)
 
-[Create Deduplication Manager under Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/deduplication/user-guides/create-deduplication-manager/\~/page)
-
-##
+[Create Deduplication Manager under Program](program-management/user-guides/create-deduplication-manager.md)
