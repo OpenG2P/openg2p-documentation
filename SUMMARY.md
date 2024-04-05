@@ -256,6 +256,7 @@
   * [Apache Superset](monitoring-and-reporting/apache-superset.md)
   * [Reporting Framework](monitoring-and-reporting/reporting-framework.md)
   * [Logging](monitoring-and-reporting/logging.md)
+  * [System Health](monitoring-and-reporting/system-health.md)
 * [Privacy and Security](privacy-and-security/README.md)
   * [Key Manager](privacy-and-security/key-manager.md)
 * [Interoperability](interoperability.md)
