@@ -272,7 +272,7 @@
     * [Rancher](deployment/base-infrastructure/rancher.md)
     * [NFS Server](deployment/base-infrastructure/nfs-server.md)
     * [Kubernetes Cluster](deployment/base-infrastructure/cluster-setup.md)
-    * [Loadbalancer](deployment/base-infrastructure/loadbalancer.md)
+    * [Load Balancer](deployment/base-infrastructure/load-balancer.md)
   * [Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
