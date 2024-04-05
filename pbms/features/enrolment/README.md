@@ -36,4 +36,4 @@ OpenG2P allows the Program administrators to change the eligibility criteria aft
 
 ## Related user guide
 
-[Enrol Registrants into the Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/enrolment/user-guides/enrol-registrants-into-program)
+[Enrol Registrants into the Program](user-guides/enrol-registrants-into-program.md)

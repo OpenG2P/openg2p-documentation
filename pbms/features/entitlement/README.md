@@ -32,7 +32,7 @@ OpenG2P supports two types of Entitlement Managers.
 The process involved to configure an Entitlement Manager in a program are:
 
 1. Each Entitlement Manager has one or more approving authority roles. The approving authority role is played by a group of users who can approve the entitlements. Hence the approving authority role is configured as a group in the OpenG2P platform.
-2. Voucher Entitlement Managers configure an [Entitlement Voucher Template](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/create-entitlement-voucher-template) in addition to the configurations provided by the Default Entitlement Managers.
+2. Voucher Entitlement Managers configure an [Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md) in addition to the configurations provided by the Default Entitlement Managers.
 3. After the Entitlement Managers is created, Program administrators add the Entitlement Managers to a program.
 
 ## Entitlement details
@@ -53,7 +53,9 @@ The Entitlement Manager can have one or more stages of approval, and the Program
 
 #### Entitlement voucher
 
-OpenG2P provides an easy-to-use UI for creating an [Entitlement Voucher Template](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/create-entitlement-voucher-template) along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration. To understand the workflow for entitlement vouchers, click [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/platform/modules/workflows/on-demand-assistance.md).
+OpenG2P provides an easy-to-use UI for creating an [Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md) along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.&#x20;
+
+To understand the workflow for entitlement vouchers, [click here](../../../use-cases/case-studies/immediate-assistance-on-demand.md).
 
 The Entitlement Manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files.&#x20;
 
@@ -73,12 +75,12 @@ The multi-stage approval typically follows this process:
 
 ## Related links
 
-[Create Entitlement Manager Type](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/create-entitlement-manager-type)
+[Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
 
-[Configure Entitlement Manager in the Program](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/create-entitlement-manager-type-1)
+[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
 
 Configure Entitlement Voucher
 
-[Create Entitlement Voucher Template](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/create-entitlement-voucher-template)
+[Create Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md)
 
-[Multi-Stage Approval](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/176/pbms/features/entitlement/user-guides/multi-stage-approval)
+[Multi-Stage Approval](user-guides/multi-stage-approval.md)

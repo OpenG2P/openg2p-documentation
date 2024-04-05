@@ -1,3 +1,18 @@
+---
+description: Work in progress
+layout:
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Verifiable Credentials Issuance
 
 * Digital signed credentials in [VC](https://www.w3.org/TR/vc-data-model/) format

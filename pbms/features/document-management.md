@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Document Management
 
 OpenG2P platform allows multiple options for managing registrant documents, evidence documents, entitlement vouchers, accounts payable files, etc. Program administrators can later view these documents from the program view for assessment and verification. These are the currently supported document management options:

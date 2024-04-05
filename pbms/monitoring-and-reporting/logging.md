@@ -25,5 +25,3 @@ For FastAPI modules, audit logs are implemented using [MOSIP's Auditmanager Serv
 ## Change logs
 
 For PBMS, change logs are implemented using [Odoo's Audit Log](https://github.com/OCA/server-tools/tree/16.0/auditlog) package. Rules are added against the models to record field level changes.
-
-##
