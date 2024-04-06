@@ -14,7 +14,7 @@ layout:
 
 # 4Sure Test Summary
 
-This document summarises the test strategy, deliverables, and results recorded while testing the [4Sure](../4sure-verifier.md) application.
+This document summarises the test strategy, deliverables, and results recorded while testing the [4Sure](./) application.
 
 ## Test objective
 

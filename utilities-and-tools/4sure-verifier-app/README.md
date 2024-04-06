@@ -13,11 +13,11 @@ layout:
     visible: true
 ---
 
-# 4Sure Verifier
+# 4Sure Verifier App
 
-The 4Sure App securely verifies identities offline. It simplifies the verification process by transferring information from a digital wallet like INJI using Bluetooth technology and uses facial recognition to ensure the person's identity matches their credentials. The application is seamlessly integrated with the MOSIP Platform for National ID, enhancing its functionality and usability and is designed to facilitate various features like facial authentication and identity verification, all without the need for an internet connection.
+The 4Sure is an Android-based App that securely verifies digital identities offline. It simplifies the verification process by transferring information from a digital wallet like [Inji](https://docs.mosip.io/inji) using Bluetooth technology and uses facial matching to ensure the person's identity matches their credentials. The application is seamlessly integrated with the MOSIP Platform for National ID, enhancing its functionality and usability and is designed to facilitate various features like facial authentication and identity verification, all without the need for an internet connection.
 
-The application features a user-friendly interface that guides agents through the authentication process step-by-step. It provides clear instructions for scanning and capturing live photos and displays the scanned certificates once they are shared by beneficiaries. Some of the features provided by 4Sure are:
+The application features a user-friendly interface that guides users (like field agents) through the authentication process step-by-step. It provides clear instructions for scanning and capturing live photos and displays the scanned certificates once they are shared by beneficiaries. Some of the features provided by 4Sure are:
 
 * Offline identity verification
 * Secure information transfer from digital wallets
@@ -120,7 +120,7 @@ The Face Match SDK is a sophisticated component that leverages [TensorFlow](http
 
 ## Technical concepts
 
-[See technical documentation of 4Sure](../pbms/development/repositories/4sure.md)
+[See technical documentation of 4Sure](../../pbms/development/repositories/4sure.md)
 
 ## Workflow
 
