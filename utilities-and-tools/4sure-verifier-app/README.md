@@ -29,6 +29,10 @@ The application features a user-friendly interface that guides users (like field
 
 <table><thead><tr><th width="225">Feature </th><th>Functionality</th></tr></thead><tbody><tr><td><strong>Secure transfer of credentials</strong></td><td>Utilises BLE technology for the secure and encrypted transfer of digital credentials</td></tr><tr><td><strong>National ID  integration</strong></td><td>Fully integrated with the MOSIP platform, ensuring compatibility and interoperability with a wide range of identity solutions</td></tr><tr><td><strong>User-friendly interface</strong></td><td>Designed with a focus on ease of use, ensuring accessibility for users of varying technical proficiencies</td></tr><tr><td><strong>Face verification</strong></td><td><p>Incorporates a robust face verification SDK to enhance identity authentication, adding an extra layer of security and trustworthiness to </p><p>the verification process</p></td></tr><tr><td><strong>Authentication process</strong></td><td><p></p><p>The 4Sure application uses a two-step authentication process to verify individuals. First, the national ID of the individual is scanned and then authenticated by capturing it with a live photo. And then, the beneficiary ID is scanned or entered to complete the authentication process.</p></td></tr><tr><td><strong>VC matching</strong></td><td><p></p><p>The application compares the national ID and beneficiary ID provided by the individual to ensure they match. This matching process is done by verifying the UIN which helps to authenticate the individual's identity and verify their VC details.</p></td></tr><tr><td><strong>Offline authentication</strong></td><td><p> </p><p>One of the key features of the 4Sure application is its ability to perform authentication processes offline. This ensures that users can verify their identity even in areas where there is no connectivity.</p></td></tr><tr><td><strong>Integration</strong></td><td><p></p><p>The 4Sure application can be integrated with other systems or applications to enhance its functionality. For example, it can be integrated with ODK to collect the authenticated data of the beneficiaries, Such as the national ID and beneficiary ID data are passed to ODK central and from there moved to the social registry and programs.</p></td></tr><tr><td><strong>Facial authentication</strong></td><td>The application provides facial recognition technology to authenticate individuals, providing a secure and efficient method for verifying identity. Users can simply capture a live photo, which is then compared against the images present on the national ID.</td></tr><tr><td><strong>Identity verification</strong></td><td><p></p><p>With MOSIP integration, the application enables comprehensive identity verification processes. Users can scan and upload IDs such as National ID and Beneficiary ID, which are verified against each other for accuracy and validity.</p></td></tr><tr><td><strong>Security features</strong></td><td><p></p><p>The 4Sure application includes security features to protect the authenticity of the verification process. These features may include encryption of VC details, secure storage of verification certificates, and secure transmission of data.</p></td></tr></tbody></table>
 
+{% embed url="https://miro.com/app/board/uXjVNlxHQLA=/?share_link_id=927928050558" %}
+Beneficiary e-Card Offline Verification&#x20;
+{% endembed %}
+
 ## **Operational modes**
 
 ### **Standalone mode**
@@ -130,9 +134,9 @@ The Face Match SDK is a sophisticated component that leverages [TensorFlow](http
 
 ## User guides
 
-[Verify Digital Credentials using 4Sure Application](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/79/utilities-and-tools/user-guides/verify-digital-credentials-using-4sure-application)
+[Verify Digital Credentials using 4Sure Application](user-guides/verify-digital-credentials-using-4sure-application.md)
 
-[Verify and Populate the form in ODK Collect using 4Sure Application](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/79/utilities-and-tools/user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application)
+[Verify and Populate the form in ODK Collect using 4Sure Application](user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application.md)
 
 ## Source code
 
