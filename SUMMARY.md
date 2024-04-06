@@ -66,7 +66,6 @@
     * [Multi-tenancy](pbms/features/multi-tenancy-in-pbms.md)
     * [Notifications](pbms/features/notifications.md)
     * [Accounting](pbms/features/accounting.md)
-    * [Verifiable Credentials Issuance](pbms/features/verifiable-credentials-issuance.md)
     * [Administration](pbms/features/administration/README.md)
       * [RBAC](pbms/features/administration/role-based-access-control/README.md)
         * [User Guides](pbms/features/administration/role-based-access-control/user-guides/README.md)
