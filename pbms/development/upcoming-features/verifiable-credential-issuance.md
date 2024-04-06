@@ -12,7 +12,7 @@ PBMS Beneficiary Registry (BR) can issue beneficiary credentials (e-cards) in th
 
 {% embed url="https://miro.com/app/board/uXjVKe3Q2Vo=/?share_link_id=906399345811" %}
 
-## Functionality and features
+## Feature and functionality
 
 | Feature                                                                                                         | Description                                                         |
 | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -40,7 +40,3 @@ VCI uses Odoo modules:
 * \<module names>
 
 ## User guides
-
-##
-
-##
