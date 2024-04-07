@@ -229,6 +229,7 @@
     * [Admin Guide to Link ID with Financial Address information](social-payments-account-registry-spar/user-guides/admin-guide-to-link-id-with-financial-address-information.md)
   * [Releases](social-payments-account-registry-spar/releases.md)
 * [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/README.md)
+  * [Features](g2p-cash-transfer-bridge/features.md)
   * [File-based Payment Backend](g2p-cash-transfer-bridge/file-based-payment-backend.md)
   * [GCTB Deployment](g2p-cash-transfer-bridge/gctb-deployment.md)
 * [Utilities and Tools](utilities-and-tools/README.md)

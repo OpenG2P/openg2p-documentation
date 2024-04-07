@@ -6,9 +6,9 @@ description: WORK IN PROGRESS
 
 ## Concept
 
-The G2P Cash Transfer Bridge (GCTB) fits in the cash transfer chain as shown below.
+The role of G2P-Cash-Transfer-Bridge subsystem in the G2P landscape is shown in this figure
 
-<figure><img src="https://github.com/OpenG2P/openg2p-documentation/raw/develop/.gitbook/assets/gpb-payment-chain.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Gitbook-G2PCB-Landscape.jpg" alt=""><figcaption><p>G2P-Cash-Bridge in the G2P lanscape</p></figcaption></figure>
 
 The module is envisaged to exist as an independent module in bridging the gap between a G2P system and a bank to initiate large-scale G2P cash transfers. Being specific to G2P transfers, (and not P2G, P2P, P2M, etc), the module promises to be low cost, simple in design, easy to install, and highly performant as real-time fast transfers are not a requirement in most social benefit transfer scenarios. However, the volume of transfers is expected to be large.
 
