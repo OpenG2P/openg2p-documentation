@@ -272,6 +272,7 @@
     * [NFS Server](deployment/base-infrastructure/nfs-server.md)
     * [Kubernetes Cluster](deployment/base-infrastructure/cluster-setup.md)
     * [Load Balancer](deployment/base-infrastructure/load-balancer.md)
+    * [Prometheus & Grafana](deployment/base-infrastructure/prometheus-and-grafana.md)
   * [Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
