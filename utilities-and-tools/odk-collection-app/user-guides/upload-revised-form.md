@@ -8,7 +8,7 @@ This document provides instructions to upload a revised form available in a proj
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * A user must have valid credentials to login **ODK Central**
-* A user must have an Administrator role in ODK Central. See [Create User and Assign Role](../../../features/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide
+* A user must have an Administrator role in ODK Central. See [Create User and Assign Role](../../../pbms/features/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide
 
 ## Procedure
 
@@ -19,11 +19,11 @@ For example, here, the project is considered as Safety Net Program.&#x20;
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../../.gitbook/assets/image (29).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (29).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
 
 The project (Safety Net Program) overview page is displayed.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program Form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program Form</p></figcaption></figure>
 
 4. Click the form available below the _**Forms**_.
 
@@ -31,7 +31,7 @@ For example, here the form selected is Safety Net Program Forms.
 
 The  Safety Net Program screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program-form.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/safety-net-program-form.png" alt=""><figcaption></figcaption></figure>
 
 In the _**Draft**_ section, you can find two tabs.&#x20;
 
@@ -44,7 +44,7 @@ In the **Status** tab, _**Your Current Draft**_ section displays the version his
 
 | Button                | Description                                                                                                                                                                                       |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../../.gitbook/assets/image (30).png" alt="" data-size="original"></p><p></p>              |
+| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/image (30).png" alt="" data-size="original"></p><p></p>                 |
 | Definition            | <p>Select the appropriate option to view/download the file.</p><p>The valid values are :</p><ul><li>View XML in browser</li><li>Download as X Form (.xml)</li><li>Download as XLSX Form</li></ul> |
 | Upload new Definition | Click the _**Upload new Definition**_ button, to upload the updated version of the draft file. The updated draft file overwrites the already existing draft file.                                 |
 
@@ -58,7 +58,7 @@ You can open the downloaded file and do the required changes such as delete, add
 
 A message pops up on successful upload on updated version of the draft file.
 
-<figure><img src="../../../../.gitbook/assets/image (26).png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (26).png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
 
 
 
