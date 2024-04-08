@@ -1,9 +1,10 @@
 ---
+description: Features of SPAR Mapper
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,7 +13,7 @@ layout:
     visible: true
 ---
 
-# spar-mapper
+# SPAR Mapper
 
 ## Features
 

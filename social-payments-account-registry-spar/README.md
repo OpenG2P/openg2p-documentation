@@ -28,8 +28,8 @@ SPAR may be housed centrally in a country as a building block of the Digital Pub
 
 The SPAR subsystem consists of 2 functional components
 
-* ID-Account Mapper
-* Self-Service-Portal
+* SPAR Mapper (ID-Account Mapper)
+* SPAR Self-Service-Portal
 
 The ID-Account Mapper contains the actual mapping between beneficiary IDs and their respective accounts.
 

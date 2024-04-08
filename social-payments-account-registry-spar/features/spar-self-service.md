@@ -1,9 +1,10 @@
 ---
+description: SPAR Self Service Portal and Backend
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,5 +13,5 @@ layout:
     visible: true
 ---
 
-# spar-self-service
+# Self Service Portal
 
