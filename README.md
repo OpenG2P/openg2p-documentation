@@ -41,5 +41,11 @@ All the modules are designed to be installed and used standalone.  However, the 
 
 {% embed url="https://miro.com/app/board/uXjVNGpmGPw=/" %}
 
+The following modules are offered:
 
+* [PBMS](pbms/) (Program and Beneficiary Management System)
+* [Social Registry](social-registry/)
+* [SPAR](social-payments-account-registry-spar/) (Social Payments Account Registry)
+* [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/)
+* [Utilities and tools](utilities-and-tools/)
 
