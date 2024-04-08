@@ -221,6 +221,7 @@
   * [Monitoring & Reporting](social-payments-account-registry-spar/monitoring-and-reporting.md)
   * [Development](social-payments-account-registry-spar/development/README.md)
     * [Jira Board](social-payments-account-registry-spar/development/jira-board.md)
+    * [Testing](social-payments-account-registry-spar/development/testing.md)
     * [Repositories](social-payments-account-registry-spar/development/repositories.md)
   * [Deployment](social-payments-account-registry-spar/deployment.md)
   * [Tech Guides](social-payments-account-registry-spar/tech-guides.md)
