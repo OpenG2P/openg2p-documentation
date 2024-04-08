@@ -1,4 +1,5 @@
 ---
+description: Deployment of Wireguard Bastion host
 layout:
   title:
     visible: true
