@@ -27,7 +27,7 @@ OpenG2P supports two types of Entitlement Managers.
 | Default Entitlement Managers | TBD         |
 | Voucher Entitlement Managers | TBD         |
 
-## Entitlement Manager Configuration
+## Entitlement Manager configuration
 
 The process involved to configure an Entitlement Manager in a program are:
 

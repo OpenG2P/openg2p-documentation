@@ -24,13 +24,13 @@ In OpenG2P, Eligibility Manager is an independent Odoo module for configuring el
 
 OpenG2P supports three types of Eligibility Managers.
 
-| Eligibility Manager                                                                                                                                                                                | Description                                                                                                                                                                                                                                                                        |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Default Eligibility Manager](../../user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-default-eligibility-manager.md)                 | Default Eligibility Manager  is assigned to each program by default. The program manager runs the Default Eligibility Manager if the registrants are to be filter based on his/her eligibility criteria, as it is mandatory to configure at least one Default Eligibility Manager. |
-| [ID Document Eligibility Manager](../../user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager.md) | ID Document Eligibility Manager verifies the valid registrants based on his/her ID document. The program manager should configure the ID type that will be used to verify the eligibility of the registrants.                                                                      |
-| [Phone Number Eligibility Manager](../../user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/create-phone-number-eligibility-manager.md)       | Phone number Eligibility Manager verifies the valid registrants based on his/her phone numbers. This Phone Number Eligibility Manager is often configured along with the ID Document Eligibility Manager.                                                                          |
+| Eligibility Manager                                                                                                           | Description                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Default Eligibility Manager](user-guides/create-eligibility-manager-1/create-default-eligibility-manager.md)                 | Default Eligibility Manager  is assigned to each program by default. The program manager runs the Default Eligibility Manager if the registrants are to be filter based on his/her eligibility criteria, as it is mandatory to configure at least one Default Eligibility Manager. |
+| [ID Document Eligibility Manager](user-guides/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager.md) | ID Document Eligibility Manager verifies the valid registrants based on his/her ID document. The program manager should configure the ID type that will be used to verify the eligibility of the registrants.                                                                      |
+| [Phone Number Eligibility Manager](user-guides/create-eligibility-manager-1/create-phone-number-eligibility-manager.md)       | Phone number Eligibility Manager verifies the valid registrants based on his/her phone numbers. This Phone Number Eligibility Manager is often configured along with the ID Document Eligibility Manager.                                                                          |
 
-## Eligibility Manager Configuration
+## Eligibility Manager configuration
 
 In the OpenG2P program, the process involved to configure eligibility manager are:&#x20;
 
@@ -58,4 +58,4 @@ For example, the image here shows eligibility criteria with two filters: first f
 
 ## Related user guides
 
-[Create Eligibility Manager Types](../../user-guides/eligibility-and-program-enrollment/program/create-manager-type/create-eligibility-manager-1/)
+[Create Eligibility Manager Types](user-guides/create-eligibility-manager-1/)

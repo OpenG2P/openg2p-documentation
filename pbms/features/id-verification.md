@@ -16,7 +16,7 @@ layout:
 
 OpenG2P registration interfaces can be integrated with [OpenID Connect](https://openid.net/developers/how-connect-works/) (OIDC) clients and ID authentication systems to authenticate registrants. OpenG2P employs different ID authentication mechanisms in its registration interfaces. While these are the preferred mechanisms, OpenG2P is not tied to these mechanisms and can integrate with other OIDC-compliant clients of authentication systems for foundational/functional ID.
 
-### Authenticate Registrant using OpenID Connect
+### Authenticate registrant using OpenID Connect
 
 OpenG2P's Self-Service Portal can be integrated with an OIDC Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system of any foundational or functional ID database to authenticate the registrants in the backend.
 
@@ -32,7 +32,7 @@ A few key points to note in this process are:
 
 To view the e-Signet authentication process in detail, click [here](https://docs.esignet.io/)
 
-### Authenticate Registrant using ID Authentication
+### Authenticate registrant using ID authentication
 
 OpenG2P integrates with MOSIP Token Seeder (MTS) using [MTS Connector](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder/mts-odk-importer) to authenticate registrants registered using the ODK Collect App. The Unique ID Number (UIN) and demographic details provided by registrants are verified by calling APIs of the [MOSIP ID Authentication](https://docs.mosip.io/1.2.0/id-authentication) (IDA) system. The MOSIP IDA responds with an Authentication Token upon successful verification. MTS is a standalone service offered by MOSIP.&#x20;
 

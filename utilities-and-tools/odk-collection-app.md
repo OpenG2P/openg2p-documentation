@@ -38,13 +38,13 @@ The three steps involved in the registration process using the ODK Collect App a
 
 A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
-* Program creation - To learn the steps, click [here](../../pbms/features/program-management/user-guides/create-a-program.md).
-* Create ODK form in ODK Central - To learn the steps, click [here](user-guides/create-odk-form.md).
-* Provide ODK form access to the field registration agent- To learn the steps, click [here](user-guides/provide-form-access-to-field-agent.md).
+* Program creation - To learn the steps, click [here](../pbms/features/program-management/user-guides/create-a-program.md).
+* Create ODK form in ODK Central - To learn the steps, click [here](odk-collection-app/user-guides/create-odk-form.md).
+* Provide ODK form access to the field registration agent- To learn the steps, click [here](odk-collection-app/user-guides/provide-form-access-to-field-agent.md).
 
 #### Field registration
 
-The field registration agent downloads the ODK form using the ODK Collect App. To learn the steps, click [here](user-guides/download-form-on-odk-collect.md).
+The field registration agent downloads the ODK form using the ODK Collect App. To learn the steps, click [here](odk-collection-app/user-guides/download-form-on-odk-collect.md).
 
 After downloading the app, the agent visits the field and follows these steps for registration:
 
@@ -80,7 +80,7 @@ Based on the business scenario, a program administrator must create an [ODK MTS 
 
 &#x20;      _Note: The OpenG2P registry accepts the individual/group KYC data only in JSON format._
 
-To learn the steps to create an ODK MTS Connector, click [here](../../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
+To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
 
 ## Demo video
 
@@ -88,8 +88,8 @@ To learn the steps to create an ODK MTS Connector, click [here](../../pbms/user-
 
 ## Related links
 
-* [Create Program](../../pbms/features/program-management/user-guides/create-a-program.md)
-* [Create ODK Form](user-guides/create-a-form.md)
-* [Provide ODK Form Access to Field Agent](user-guides/provide-form-access-to-field-agent.md)
-* [Download Form on ODK Collect](user-guides/download-form-on-odk-collect.md)
-* [Create ODK MTS Connector](../../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)
+* [Create Program](../pbms/features/program-management/user-guides/create-a-program.md)
+* [Create ODK Form](odk-collection-app/user-guides/create-a-form.md)
+* [Provide ODK Form Access to Field Agent](odk-collection-app/user-guides/provide-form-access-to-field-agent.md)
+* [Download Form on ODK Collect](odk-collection-app/user-guides/download-form-on-odk-collect.md)
+* [Create ODK MTS Connector](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)
