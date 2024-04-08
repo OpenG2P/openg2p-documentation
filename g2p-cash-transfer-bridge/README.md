@@ -8,17 +8,17 @@ description: WORK IN PROGRESS
 
 The role of G2P-Cash-Transfer-Bridge subsystem in the G2P landscape is shown in this figure
 
-<figure><img src="../.gitbook/assets/Gitbook-G2PCB-Landscape.jpg" alt=""><figcaption><p>G2P-Cash-Bridge in the G2P lanscape</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/Gitbook-G2PCB-Landscape.jpg" alt=""><figcaption><p>G2P-Cash-Bridge in the G2P landscape</p></figcaption></figure>
 
-The module is envisaged to exist as an independent module in bridging the gap between a G2P system and a bank to initiate large-scale G2P cash transfers. Being specific to G2P transfers, (and not P2G, P2P, P2M, etc), the module promises to be low cost, simple in design, easy to install, and highly performant as real-time fast transfers are not a requirement in most social benefit transfer scenarios. However, the volume of transfers is expected to be large.
+The G2P-Cash-Bridge subsystem bridges the PBMS module with the Sponsor Bank to effect large scale / high volume beneficiary transfers. Being a G2P system (not a P2G, P2P, P2M, etc), the platform does not desire to offer high performance and real time transfers, since these features are not typically required in a G2P transfer chain. Rather, the platform is designed to operate asynchronously and emphasises on high volumes, ease of use, low cost of operations and efficient reconciliation.
 
 The module will support the following functionalities at a high level
 
-1. Upstream interface layer compliant with G2P Connect or any other standard
-2. Downstream interface layer to connect to bank with specific/proprietary interfaces
-3. Query ID Account Mapper to fetch individual bank account information (optional)
-4. History of past transactions
-5. Reporting
+1. Ingestion of Benefit Transfers from upstream MIS/PBMS systems (compliant to G2PConnect and similar standards) - with extensibility to create custom interfaces with upstream MIS/PBMS systems.
+2. Handoff to Downstream Sponsor Banks (with G2PConnect and similar standards) with extensibility to create custom interfaces with Sponsor Banks
+3. Ingestion from Downstream Sponsor Banks of Reconciliation information (success/failure with appropriate reason codes) against every disbursement transaction
+4. A lookup to resolve / fetch the Financial Address using the Beneficiary ID using a G2P-Connect standard API interface)
+5. Reporting - History / Search on Disbursement Transactions based on Benefit Programs, Date/Month/Year of Disbursement, Beneficiary ID etc.
 
 ## Architecture
 
