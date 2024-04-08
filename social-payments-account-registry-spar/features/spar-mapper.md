@@ -1,5 +1,5 @@
 ---
-description: Features of SPAR Mapper
+description: aka ID Account Mapper
 layout:
   title:
     visible: true

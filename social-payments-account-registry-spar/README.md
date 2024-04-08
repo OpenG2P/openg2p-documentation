@@ -29,11 +29,11 @@ SPAR may be housed centrally in a country as a building block of the Digital Pub
 The SPAR subsystem consists of 2 functional components
 
 * SPAR Mapper (ID-Account Mapper)
-* SPAR Self-Service-Portal
+* SPAR Self-Service
 
-The ID-Account Mapper contains the actual mapping between beneficiary IDs and their respective accounts.
+The SPAR Mapper (aka ID-Account Mapper) contains the actual mapping between beneficiary IDs and their respective accounts.
 
-The Self-Service Portal provides a Self-Service to the beneficiaries who can log in to SPAR and update their account information in the registry. The self-service portal facilitates an easy-to-use interface like searching for a beneficiary's bank, its branch, or a mobile service provider so that the beneficiary can provide the full financial address, where he/she wishes to receive the cash credits for the benefit programs.
+The SPAR Self-Service  provides a Self-Service feature to the beneficiaries who can log in to SPAR and update their account information in the registry. The self-service portal facilitates an easy-to-use interface like searching for a beneficiary's bank, its branch, or a mobile service provider so that the beneficiary can provide the full financial address, where he/she wishes to receive the cash credits for the benefit programs.
 
 ## Functional Overview
 

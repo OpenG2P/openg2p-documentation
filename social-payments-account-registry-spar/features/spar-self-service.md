@@ -1,5 +1,5 @@
 ---
-description: SPAR Self Service Portal and Backend
+description: Providing Self Service features for the beneficiaries
 layout:
   title:
     visible: true
@@ -13,5 +13,6 @@ layout:
     visible: true
 ---
 
-# Self Service Portal
+# SPAR Self Service
 
+WIP
