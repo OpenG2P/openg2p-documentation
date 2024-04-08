@@ -1,2 +1,0 @@
-# Eligibility and Program Enrollment
-

@@ -1,2 +1,0 @@
-# openg2p-testing
-
