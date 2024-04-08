@@ -302,7 +302,6 @@
 * [Releases](releases/README.md)
   * [1.1.0](releases/1.1.0/README.md)
     * [Release Notes](releases/1.1.0/release-notes.md)
-* [FAQ](faq.md)
 * [License](license/README.md)
   * [OpenG2P Support Policy](license/openg2p-support-policy.md)
 * [Community](community/README.md)
