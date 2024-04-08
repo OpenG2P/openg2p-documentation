@@ -14,9 +14,9 @@ The G2P-Cash-Bridge subsystem bridges the PBMS module with the Sponsor Bank to e
 
 The module will support the following functionalities at a high level
 
-1. Ingestion of Benefit Transfers from upstream MIS/PBMS systems (compliant to G2PConnect and similar standards) - with extensibility to create custom interfaces with upstream MIS/PBMS systems.
-2. Handoff to Downstream Sponsor Banks (with G2PConnect and similar standards) with extensibility to create custom interfaces with Sponsor Banks
-3. Ingestion from Downstream Sponsor Banks of Reconciliation information (success/failure with appropriate reason codes) against every disbursement transaction
+1. Ingestion (API as well as File based) of Benefit Transfers from upstream MIS/PBMS systems (compliant to G2PConnect and similar standards) - with extensibility to create custom interfaces with upstream MIS/PBMS systems.
+2. Handoff (API as well as File based) to Downstream Sponsor Banks (with G2PConnect and similar standards) with extensibility to create custom interfaces with Sponsor Banks
+3. Ingestion (API as well as File based) from Downstream Sponsor Banks of Reconciliation information (success/failure with appropriate reason codes) against every disbursement transaction
 4. A lookup to resolve / fetch the Financial Address using the Beneficiary ID using a G2P-Connect standard API interface)
 5. Reporting - History / Search on Disbursement Transactions based on Benefit Programs, Date/Month/Year of Disbursement, Beneficiary ID etc.
 
