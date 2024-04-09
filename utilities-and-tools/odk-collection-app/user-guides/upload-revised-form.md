@@ -19,7 +19,7 @@ For example, here, the project is considered as Safety Net Program.&#x20;
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../.gitbook/assets/image (29).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (22).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
 
 The project (Safety Net Program) overview page is displayed.
 
@@ -44,7 +44,7 @@ In the **Status** tab, _**Your Current Draft**_ section displays the version his
 
 | Button                | Description                                                                                                                                                                                       |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/image (30) (1).png" alt="" data-size="original"></p><p></p>             |
+| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/image (23).png" alt="" data-size="original"></p><p></p>                 |
 | Definition            | <p>Select the appropriate option to view/download the file.</p><p>The valid values are :</p><ul><li>View XML in browser</li><li>Download as X Form (.xml)</li><li>Download as XLSX Form</li></ul> |
 | Upload new Definition | Click the _**Upload new Definition**_ button, to upload the updated version of the draft file. The updated draft file overwrites the already existing draft file.                                 |
 
@@ -58,7 +58,7 @@ You can open the downloaded file and do the required changes such as delete, add
 
 A message pops up on successful upload on updated version of the draft file.
 
-<figure><img src="../../../.gitbook/assets/image (26).png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (19).png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
 
 
 

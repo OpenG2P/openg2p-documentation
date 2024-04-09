@@ -52,6 +52,6 @@ Add project screen is displayed.
 
 The form is configured in the _**ODK Collect App**_.
 
-<figure><img src="../../../.gitbook/assets/image (24).png" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (17).png" alt="" width="375"><figcaption></figcaption></figure>
 
 This completes the testing of the uploaded form.

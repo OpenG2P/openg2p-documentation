@@ -33,29 +33,29 @@ For example, here, the project is considered as a Safety Net Program.
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program-under-project (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/safety-net-program-under-project (1).png" alt=""><figcaption></figcaption></figure>
 
 The project (Safety Net Program) overview page is displayed.
 
-<figure><img src="../../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program - Form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program - Form</p></figcaption></figure>
 
 4. Click the _App Users_ tab.
 
 The App Users screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/odk-app-users.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/odk-app-users.png" alt=""><figcaption></figcaption></figure>
 
 5. Click the **See Code** link in _**Configure Client**_ column, the _**Client Configuration QR code**_ pops up.
 
-<figure><img src="../../../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/client-configuration-code.png" alt=""><figcaption></figcaption></figure>
 
 6. Tap the ODK Collect App in the field agent device.
 
-<figure><img src="../../../../.gitbook/assets/ODK-collect-app-icon.png" alt=""><figcaption><p>ODK  collect app</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ODK-collect-app-icon.png" alt=""><figcaption><p>ODK  collect app</p></figcaption></figure>
 
 You can find the configuration modes.
 
-<figure><img src="../../../../.gitbook/assets/configure-QR-code.png" alt=""><figcaption><p>Configure QR code</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configure-QR-code.png" alt=""><figcaption><p>Configure QR code</p></figcaption></figure>
 
 7. Tap the _**Configure with QR code**_ button.
 
@@ -63,10 +63,10 @@ Add project screen is displayed.
 
 8. Scan the _**QR code**_ of a relevant program form from the ODK Central.
 
-<figure><img src="../../../../.gitbook/assets/image (22).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (15).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
 
 The relevant program form is configured/downloaded in the agent's mobile device.
 
-<figure><img src="../../../../.gitbook/assets/image (25).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/image (18).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
 
 This completes the process to download a form in ODK Collect App from ODK Central.
