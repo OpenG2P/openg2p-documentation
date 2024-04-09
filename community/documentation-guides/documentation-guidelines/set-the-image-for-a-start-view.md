@@ -29,5 +29,11 @@ The image is displayed with an alterable frame.
 
 4. Click the _**Done**_ button.
 
-You can able to view the image within the frame in the documenation.
+You can able to view the image within the frame on the page where you have embedded the image in the GitBook documentation.&#x20;
+
+
+
+<figure><img src="../../../.gitbook/assets/image-within-frame.png" alt=""><figcaption></figcaption></figure>
+
+
 
