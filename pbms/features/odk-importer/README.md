@@ -27,7 +27,7 @@ The ODK Importer is a module built by OpenG2P. It is specifically designed to ta
 
 ## Process workflow
 
-{% embed url="https://miro.com/app/board/uXjVKcYGOyg=/" %}
+{% embed url="https://miro.com/app/board/uXjVKcYGOyg=/?share_link_id=96965246843" %}
 
 ## **Process & Data Flow**
 

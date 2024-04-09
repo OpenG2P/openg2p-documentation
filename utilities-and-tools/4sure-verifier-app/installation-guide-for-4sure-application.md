@@ -72,6 +72,6 @@ The installation begins and the message "Apps installed"  pops up.
 
 8. Click the _**Allow**_ option to allow the 4Sure app to find, connect to and determine the relative position of nearby devices.
 
-<figure><img src="../../.gitbook/assets/4Sure-home-page-11 (1).PNG" alt="" width="375"><figcaption><p>4Sure e-Cards screen</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4Sure-home-page-11 (1) (1).PNG" alt="" width="375"><figcaption><p>4Sure e-Cards screen</p></figcaption></figure>
 
 Now, you can use 4Sure app to begin the verification of the digital credentials of the beneficiaries.

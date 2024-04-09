@@ -16,7 +16,7 @@ layout:
 
 A program is a scheme created to assist an individual/group to avail benefits given by  the government of their country. An Individual/group must undergo sequence of verification process to avail the benefits.&#x20;
 
-<figure><img src="../../../.gitbook/assets/program-life-cycle.jpg" alt="" width="375"><figcaption><p>Program life cycle/Program workflow</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVKfrWPPg=/" %}
 
 * Create a program: A program manager or an administrator creates a program.
 * Configure managers: A program manager configures the relevant manger to a program, such as eligibility managers, deduplication manager, notification managers, program manager, cycle manager, entitlement manager and payment manager.

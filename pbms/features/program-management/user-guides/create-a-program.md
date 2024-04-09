@@ -86,7 +86,7 @@ In _**Set Program Settings**_ screen, you can find the below tabs.
 
 5. Click the _**Configure the Cycle Manager**_ tab, the fields available in the tab are displayed.
 
-<figure><img src="../../../../.gitbook/assets/Configure-the-cycle-manager (1).png" alt=""><figcaption><p>Configure the cycle manager</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/Configure-the-cycle-manager (1) (1).png" alt=""><figcaption><p>Configure the cycle manager</p></figcaption></figure>
 
 <table><thead><tr><th width="247">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Auto-approve Entitlements</td><td><p>Check the option if the auto-approve entitlements is required. </p><p><em>Note:</em></p><p><em>Set entitlements via rules, without any manual approvals.</em></p></td></tr><tr><td>Approver Group</td><td><p>Select the approver group in the drop-down.</p><p><em>Note:</em></p><p><em>The group name of the user who has permission to approve cycles. See</em> <a href="../../administration/role-based-access-control/user-guides/assign-roles-to-users.md"><em>Create User and Assign Role</em></a><em>.</em></p></td></tr><tr><td>One-time Distribution</td><td><p>Check the option if the distribution happens one-time </p><p>Note:</p><ul><li>If one-time distribution option is checked, the recurrence distribution option is not displayed.</li><li>If one-time distribution option is not checked, the recurrence distribution option is displayed.</li></ul></td></tr><tr><td>Recurrence </td><td><p>You can choose recurrence option, if the time period is repeated for a cycle</p><p>Enter the number and select the appropriate option in the drop-down. The valid values are: </p><ul><li>Days</li><li>Weeks</li><li>Months</li><li>Years</li></ul></td></tr><tr><td>Day of Month</td><td><p>Select the appropriate option in the drop-down. The valid values are: </p><ul><li><p>Date of month</p><ul><li>Enter the date of month if date of month option is selected in the drop-down</li></ul></li><li><p>Day of month</p><ul><li>Enter the day of month if day of month option is selected in the drop-down</li></ul></li></ul></td></tr></tbody></table>
 
@@ -123,7 +123,7 @@ In _**Set Program Settings**_ screen, you can find the below tabs.
 
 8. Click the _**Map Portal Form**_ tab, the fields available in the tab are displayed.
 
-<figure><img src="../../../../.gitbook/assets/Map-portal-form (1).png" alt=""><figcaption><p>Map portal form</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/Map-portal-form (1) (1).png" alt=""><figcaption><p>Map portal form</p></figcaption></figure>
 
 
 

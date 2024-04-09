@@ -28,7 +28,7 @@ The user must have a Program Manager role.
 
 2. Click on the program name for which configuration to be done.
 
-<figure><img src="../../../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (26) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Navigate to the _PMT_ _Configuration_ section on Program detailed view page.
 
