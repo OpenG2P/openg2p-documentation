@@ -10,9 +10,9 @@ The role of G2P-Cash-Transfer-Bridge subsystem in the G2P landscape is shown in 
 
 The G2P-Cash-Bridge subsystem bridges the PBMS module with the Sponsor Bank to effect large scale / high volume beneficiary transfers. Being a G2P system (not a P2G, P2P, P2M, etc), the platform does not desire to offer high performance and real time transfers, since these features are not typically required in a G2P transfer chain. Rather, the platform is designed to operate asynchronously and emphasises on high volumes, ease of use, low cost of operations and efficient reconciliation.
 
-
-
 ## Functional Overview
 
 ## Technical Overview
+
+<figure><img src="../.gitbook/assets/Gitbook-G2PCB-Tech-Architecture.jpg" alt=""><figcaption><p>G2P Cash Bridge - Technical Architecture</p></figcaption></figure>
 
