@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# Disbursement-Envelope
+# disbursement\_envelope
 
-Disbursement-Envelope represents a control object that **uniquely defines one instance of disbursement for one disbursement cycle for a benefit program**
+disbursement\_envelope represents a control object that **uniquely defines one instance of disbursement for one disbursement cycle for a benefit program**
 
 A benefit program - in one disbursement cycle - will create exactly one disbursement envelope.
 
@@ -45,15 +45,16 @@ The object (and corresponding persistent table) will have the following attribut
 
 ### create\_disbursement\_envelope
 
-Direction - Inward
-
-Invoked by - PBMS
-
-Mode - Synchronous
+| API Attributes |                        |
+| -------------- | ---------------------- |
+| Direction      | Inward                 |
+| Invoked by     | PBMS                   |
+| Mode           | Synchronous            |
+| Tables         | disbursement\_envelope |
 
 #### Business Logic
 
-Will result in persistence of 1 table (1 record for a disbursement\_envelope)
+Will result in persistence of 1 table - disbursement\_envelope (1 record for a disbursement\_envelope)
 
 disbursement\_envelope (with all attributes as mentioned above) with additional attributes as given below
 
