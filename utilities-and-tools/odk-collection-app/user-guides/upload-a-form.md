@@ -32,7 +32,7 @@ For example, here, the project is considered as Safety Net Program
 
 7. Navigate and choose a form file from the location where it is stored.&#x20;
 
-<figure><img src="../../../.gitbook/assets/image (21).png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/upload-form.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
 Note:&#x20;
 

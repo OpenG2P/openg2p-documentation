@@ -67,9 +67,7 @@ You can follow the steps given in the [Verify Digital Credentials using 4Sure Ap
 
 Once UIN matches on both the e-Cards, 4Sure App completes the verification process.
 
-
-
-<figure><img src="../../../.gitbook/assets/complete.PNG" alt="" width="375"><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/complete (1).PNG" alt="" width="375"><figcaption></figcaption></figure>
 
 7. Tap the _**SUBMIT**_ button.
 

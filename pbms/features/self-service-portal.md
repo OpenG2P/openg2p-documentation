@@ -15,11 +15,11 @@ layout:
 # Self Service Portal
 
 Self-Service Portal allows an individual registrant seeking assistance to register from any place and any device with internet connectivity. The individual registrant logs in using a foundational or functional ID and then applies for a program. \
-![](<../../.gitbook/assets/image (13).png>)\
+![](../../.gitbook/assets/nationalid-signin.png)\
 \
 For self-registration, an OTP or QR code is typically used in addition to a unique ID number to log in. For assisted registration, to do biometric authentication, the assisting officer uses a biometric device connected to a machine which has access to the Self-Service Portal.\
 \
-![](<../../.gitbook/assets/image (14).png>)
+![](../../.gitbook/assets/esignet-login.png)
 
 The Self-Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 

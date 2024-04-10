@@ -50,7 +50,7 @@ An alert message is displayed.
 
 The file starts downloading and the message "File downloaded" pops up.
 
-<figure><img src="../../.gitbook/assets/4Sure app downloaded.PNG" alt="" width="563"><figcaption><p>4Sure app downloaded</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4Sure-app-downloaded.PNG" alt="" width="563"><figcaption><p>4Sure app downloaded</p></figcaption></figure>
 
 5. Click the _**Open**_ button to finish the file download.
 

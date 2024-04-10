@@ -63,10 +63,10 @@ Add project screen is displayed.
 
 8. Scan the _**QR code**_ of a relevant program form from the ODK Central.
 
-<figure><img src="../../../.gitbook/assets/image (15).png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/qr-code-scan.png" alt=""><figcaption><p>Scan QR code</p></figcaption></figure>
 
 The relevant program form is configured/downloaded in the agent's mobile device.
 
-<figure><img src="../../../.gitbook/assets/image (18).png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/start-new-form-safety-net-program.png" alt=""><figcaption><p>Downloaded form</p></figcaption></figure>
 
 This completes the process to download a form in ODK Collect App from ODK Central.

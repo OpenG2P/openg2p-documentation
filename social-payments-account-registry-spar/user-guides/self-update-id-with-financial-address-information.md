@@ -61,11 +61,11 @@ It redirects to the \<Geo-specific portal> Home page_**.**_
 
 In _**Home**_ page, the features and their descriptions are:
 
-| Feature                                                                      | Description                                                                                                             |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| <img src="../../.gitbook/assets/image (11).png" alt="" data-size="original"> | It displays your name.                                                                                                  |
-| Update your Linked Financial Address                                         | This tab is used to update the bank details/wallet/mpesa and map your national ID with your bank/wallet/mpesa account.  |
-| Currently Linked Financial Address                                           | This tab populates the current list of linked financial address.                                                        |
+| Feature                                                                     | Description                                                                                                             |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| <img src="../../.gitbook/assets/user-name.png" alt="" data-size="original"> | It displays your name.                                                                                                  |
+| Update your Linked Financial Address                                        | This tab is used to update the bank details/wallet/mpesa and map your national ID with your bank/wallet/mpesa account.  |
+| Currently Linked Financial Address                                          | This tab populates the current list of linked financial address.                                                        |
 
 ### Update your Linked Financial Address
 

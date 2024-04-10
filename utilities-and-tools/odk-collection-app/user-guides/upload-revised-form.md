@@ -19,7 +19,7 @@ For example, here, the project is considered as Safety Net Program.&#x20;
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../.gitbook/assets/image (22).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/home-page-ODK-central.png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
 
 The project (Safety Net Program) overview page is displayed.
 
@@ -42,11 +42,11 @@ In the _**Draft**_ section, you can find two tabs.&#x20;
 
 In the **Status** tab, _**Your Current Draft**_ section displays the version history of the uploaded form. &#x20;
 
-| Button                | Description                                                                                                                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/image (23) (1).png" alt="" data-size="original"></p><p></p>             |
-| Definition            | <p>Select the appropriate option to view/download the file.</p><p>The valid values are :</p><ul><li>View XML in browser</li><li>Download as X Form (.xml)</li><li>Download as XLSX Form</li></ul> |
-| Upload new Definition | Click the _**Upload new Definition**_ button, to upload the updated version of the draft file. The updated draft file overwrites the already existing draft file.                                 |
+| Button                | Description                                                                                                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/safety-net-program-form (1).png" alt="" data-size="original"></p><p></p> |
+| Definition            | <p>Select the appropriate option to view/download the file.</p><p>The valid values are :</p><ul><li>View XML in browser</li><li>Download as X Form (.xml)</li><li>Download as XLSX Form</li></ul>  |
+| Upload new Definition | Click the _**Upload new Definition**_ button, to upload the updated version of the draft file. The updated draft file overwrites the already existing draft file.                                  |
 
 6. Click the _**Definition**_ button.
 7. Select the appropriate option to download the form.
@@ -58,7 +58,7 @@ You can open the downloaded file and do the required changes such as delete, add
 
 A message pops up on successful upload on updated version of the draft file.
 
-<figure><img src="../../../.gitbook/assets/image (19).png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/draft-check-listODK-Central.png" alt=""><figcaption><p>Revised form</p></figcaption></figure>
 
 
 

@@ -33,7 +33,7 @@ This document provides instruction to create a new project for a program using O
 
 3. _**Create Project**_ screen pops up.
 
-<figure><img src="../../../.gitbook/assets/image (20).png" alt=""><figcaption><p>Create Project screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/create-project-ODK-Central.png" alt=""><figcaption><p>Create Project screen</p></figcaption></figure>
 
 4. Enter the name of a new project of a program in the _**Name**_ field.
 5. Click the _**Create**_ button to create a new project in a program.
