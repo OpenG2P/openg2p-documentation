@@ -59,9 +59,9 @@ Diagram specification
 
 ## Embed a Miro image
 
-To learn how to embed a miro image in the GitBook, [click here](embed-the-miro-diagram.md)
+To learn how to embed a miro image in the GitBook, [click here](embed-a-miro-diagram.md)
 
-## Set the image within the frame in Miro
+## Set an image within the frame in Miro
 
-To learn how to set image within the frame in miro, [click here](set-the-image-for-a-start-view.md)
+To learn how to set an image within the frame in miro, [click here](set-an-image-for-a-start-view.md)
 
