@@ -245,6 +245,7 @@
       * [batch jobs](g2p-cash-transfer-bridge/development/design-specifications/batch-jobs/README.md)
         * [check\_funds\_with\_bank](g2p-cash-transfer-bridge/development/design-specifications/batch-jobs.md)
         * [block\_funds\_with\_bank](g2p-cash-transfer-bridge/development/design-specifications/batch-jobs/block\_funds\_with\_bank.md)
+        * [create\_disbursements](g2p-cash-transfer-bridge/development/design-specifications/batch-jobs/create\_disbursements.md)
   * [Deployment](g2p-cash-transfer-bridge/deployment.md)
   * [Tech Guides](g2p-cash-transfer-bridge/tech-guides.md)
   * [User Guides](g2p-cash-transfer-bridge/user-guides.md)
