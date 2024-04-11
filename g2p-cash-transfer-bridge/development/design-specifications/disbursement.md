@@ -25,3 +25,16 @@ disbursement represents a single disbursement transaction under a disbursement\_
 | beneficiary\_id            | The Beneficiary ID to whom this disbursement is being targeted                                                                     |
 | beneficiary\_name          | The name of the beneficiary as available in the PBMS / Social Registry records                                                     |
 | narrative                  | The text that will be available in the Account Statement of the beneficiary's account against this disbursement credit transaction |
+
+## APIs on disbursement
+
+create\_disbursement
+
+| API Attributes |              |
+| -------------- | ------------ |
+| Direction      | Inward       |
+| Invoked by     | PBMS         |
+| Mode           | Synchronous  |
+| Tables         | disbursement |
+
+cancel\_disbursement
