@@ -41,7 +41,7 @@ The document talks about setting up a **Wireguard bastion host** (Wireguard serv
 
 ## Access to users
 
-Refer to this&#x20;
+Refer to this [Wireguard Access to Users](wireguard-access-to-users.md)
 
 ## Wireguard client
 
