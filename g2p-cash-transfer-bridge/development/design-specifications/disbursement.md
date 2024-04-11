@@ -28,7 +28,7 @@ disbursement represents a single disbursement transaction under a disbursement\_
 
 ## APIs on disbursement
 
-create\_disbursement
+### create\_disbursement
 
 | API Attributes |              |
 | -------------- | ------------ |
@@ -37,4 +37,31 @@ create\_disbursement
 | Mode           | Synchronous  |
 | Tables         | disbursement |
 
-cancel\_disbursement
+#### Business Logic
+
+Results in persistence in disbursement table with following additional attributes
+
+| Attribute                       | Datatype                                                                                                                                                 |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| receipt\_time\_stamp            | Time stamp of receipt of disbursement                                                                                                                    |
+| cancellation\_status            | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                                                |
+| cancellation\_time\_stamp       | Time stamp of receipt of cancellation request                                                                                                            |
+| shipment\_to\_bank\_status      | <p>Enum<br>PENDING<br>PROCESSED</p>                                                                                                                      |
+| shipment\_to\_bank\_time\_stamp | Time stamp of shipment to Sponsor bank                                                                                                                   |
+| reply\_status\_from\_bank       | <p>Enum<br>SUCCESS<br>FAILURE</p>                                                                                                                        |
+| reply\_from\_bank\_time\_stamp  | Time stamp of receipt of reply from Sponsor bank                                                                                                         |
+| failure\_error\_code            | Error code from the downstream G2P chain participants (Sponsor bank, Payment switch, Destination banks) in case of a FAILURE (reply\_status\_from\_bank) |
+| failure\_error\_message         | Error message describing the failure\_error\_code                                                                                                        |
+
+### cancel\_disbursement
+
+| API Attributes |              |
+| -------------- | ------------ |
+| Direction      | Inward       |
+| Invoked by     | PBMS         |
+| Mode           | Synchronous  |
+| Tables         | disbursement |
+
+Will update disbursement.cancellation\_status to CANCELLED
+
+Cancellation is possible before the disbursement\_envelope.disbursement\_schedule\_date
