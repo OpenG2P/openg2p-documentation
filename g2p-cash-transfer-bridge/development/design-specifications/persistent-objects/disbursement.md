@@ -42,7 +42,9 @@ disbursement represents a single disbursement transaction under a disbursement\_
 
 #### Business Logic
 
-Results in persistence in disbursement table with following additional attributes
+Results in persistence in disbursement table
+
+Additional record inserted in "disbursement\_batch\_status" table with the following attributes
 
 | Attribute                       | Datatype                                                                                                                                                 |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
