@@ -295,6 +295,7 @@
     * [Kafka](deployment/common-components/kafka.md)
     * [Apache Superset](deployment/common-components/apache-superset.md)
     * [Fluentd](deployment/common-components/fluentd.md)
+    * [Debezium](deployment/common-components/debezium.md)
     * [OpenSearch](deployment/common-components/opensearch.md)
     * [Keymanager](deployment/common-components/keymanager.md)
     * [eSignet](deployment/common-components/esignet.md)
