@@ -24,7 +24,7 @@ A user should have an admin access to create a new user and assign a role.
 
 ## Procedure
 
-1. In the menu bar, click the icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Settings**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Settings**_.
 2. The _**Settings**_ screen is displayed
 
 <figure><img src="../../../../../.gitbook/assets/Create a user.png" alt=""><figcaption><p>Choose Settings Screen</p></figcaption></figure>

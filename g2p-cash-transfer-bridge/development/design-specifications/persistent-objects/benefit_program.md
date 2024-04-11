@@ -29,4 +29,4 @@ The design assumes that every benefit program has exactly one financial account 
 | funding\_sub\_org\_code    | If there are sub departments under the Organization/Department, the short code of the sub org                   |
 | funding\_sub\_org\_name    | Name of the Sub Organization corresponding to the sub org short code                                            |
 | fsp\_institution\_code     | Financial Service Provider - Institution - where the account is maintained - The account that funds the program |
-| fsp\_account\_number       |                                                                                                                 |
+| fsp\_account\_number       | Complete account number (financial address) with Bank Code,  Branch Code, any other identifier as required      |

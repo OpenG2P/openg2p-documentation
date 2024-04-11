@@ -22,11 +22,11 @@ A user should have a Program Manager role to create a Default Eligibility Manage
 
 Note:
 
-Refer _**Create User and Assign Role**_ user guide to know how to assign role for a User.
+Refer [_**Create User and Assign Role**_](../../../administration/role-based-access-control/user-guides/assign-roles-to-users.md) user guide to know how to assign role for a User.
 
 ## Procedure
 
-1. In the menu bar, click the icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
 2. The _**Programs**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the programs module</p></figcaption></figure>

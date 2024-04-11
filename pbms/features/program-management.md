@@ -51,7 +51,7 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 [Create Eligibility Manager](program-management/user-guides/create-eligibility-manager.md)
 
-[Configure Program Manager](../user-guides/eligibility-and-program-enrollment/program/configure-program-manager-in-program.md)
+[Configure Program Manager](program-management/user-guides/configure-program-manager-in-program.md)
 
 [Create Notification Manager](notifications/user-guides/configure-notification-manager.md)
 

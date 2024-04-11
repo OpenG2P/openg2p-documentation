@@ -26,7 +26,7 @@ Refer _**Create User and Assign Role**_ user guide to know how to assign role fo
 
 ## Procedure
 
-1. In the menu bar, click the icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
 2. The _**Programs**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the programs module </p></figcaption></figure>

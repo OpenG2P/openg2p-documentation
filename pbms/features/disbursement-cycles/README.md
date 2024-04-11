@@ -26,6 +26,6 @@ While the Program Manager manages all the cycles, each cycle is managed by a Cyc
 
 ## Related links
 
-[Configure Program Manager in Program](../../user-guides/eligibility-and-program-enrollment/program/configure-program-manager-in-program.md)
+[Configure Program Manager in Program](../program-management/user-guides/configure-program-manager-in-program.md)
 
 [Create and Approve Program Cycle](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/145/pbms/features/disbursement-cycles/user-guides/create-and-approve-disbursement-cycle)
