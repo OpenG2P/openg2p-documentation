@@ -239,6 +239,8 @@
     * [Design Specifications](g2p-cash-transfer-bridge/development/design-specifications/README.md)
       * [disbursement\_envelope](g2p-cash-transfer-bridge/development/design-specifications/disbursement\_envelope.md)
       * [disbursement](g2p-cash-transfer-bridge/development/design-specifications/disbursement.md)
+      * [benefit\_program](g2p-cash-transfer-bridge/development/design-specifications/benefit\_program.md)
+      * [batch jobs](g2p-cash-transfer-bridge/development/design-specifications/batch-jobs.md)
   * [Deployment](g2p-cash-transfer-bridge/deployment.md)
   * [Tech Guides](g2p-cash-transfer-bridge/tech-guides.md)
   * [User Guides](g2p-cash-transfer-bridge/user-guides.md)

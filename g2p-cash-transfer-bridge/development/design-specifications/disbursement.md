@@ -20,11 +20,14 @@ disbursement represents a single disbursement transaction under a disbursement\_
 
 | Attribute                  | Datatype                                                                                                                           |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| disbursement\_envelope\_id | The envelope under which this disbursement is being effected                                                                       |
-| disbursement\_id           | Unique identifier for each disbursement transaction                                                                                |
+| disbursement\_envelope\_id | <p>The envelope under which this disbursement is being effected<br>Non Unique Index</p>                                            |
+| disbursement\_id           | Unique identifier for each disbursement transaction - Primary Key                                                                  |
 | beneficiary\_id            | The Beneficiary ID to whom this disbursement is being targeted                                                                     |
 | beneficiary\_name          | The name of the beneficiary as available in the PBMS / Social Registry records                                                     |
 | narrative                  | The text that will be available in the Account Statement of the beneficiary's account against this disbursement credit transaction |
+| receipt\_time\_stamp       | Time stamp of receipt of disbursement                                                                                              |
+| cancellation\_status       | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                          |
+| cancellation\_time\_stamp  | Time stamp of receipt of cancellation request                                                                                      |
 
 ## APIs on disbursement
 
@@ -43,9 +46,8 @@ Results in persistence in disbursement table with following additional attribute
 
 | Attribute                       | Datatype                                                                                                                                                 |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| receipt\_time\_stamp            | Time stamp of receipt of disbursement                                                                                                                    |
-| cancellation\_status            | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                                                |
-| cancellation\_time\_stamp       | Time stamp of receipt of cancellation request                                                                                                            |
+| disbursement\_id                | Unique identifier for each disbursement transaction                                                                                                      |
+| disbursement\_envelope\_id      | The envelope under which this disbursement is being effected                                                                                             |
 | shipment\_to\_bank\_status      | <p>Enum<br>PENDING<br>PROCESSED</p>                                                                                                                      |
 | shipment\_to\_bank\_time\_stamp | Time stamp of shipment to Sponsor bank                                                                                                                   |
 | reply\_status\_from\_bank       | <p>Enum<br>SUCCESS<br>FAILURE</p>                                                                                                                        |
