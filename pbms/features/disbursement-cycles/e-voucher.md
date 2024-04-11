@@ -49,4 +49,8 @@ OpenG2P provides a reference implementation for beneficiary registration, ensuri
 8. The cash manager sends the PDF digitally to the payment switch.
 9. The payment switch transfers the reimbursement amount per service provider account details in the PDF.
 
+
+
+To follow the steps to create voucher [click here](../entitlement/user-guides/create-entitlement-manager-type/create-voucher-entitlement-manager.md)
+
 &#x20;
