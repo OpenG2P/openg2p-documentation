@@ -10,7 +10,7 @@ The program cycle should be created for a program.
 
 ## Steps
 
-1. Navigate to the program for which [cycle creation and approval](../../features/disbursement-cycles/user-guides/create-and-approve-disbursement-cycle.md) are done.
+1. Navigate to the program for which [cycle creation and approval](../eligibility-and-program-enrollment/approval/create-and-approve-disbursement-cycle.md) are done.
 
 <figure><img src="../../../.gitbook/assets/cycle-approved.png" alt=""><figcaption></figcaption></figure>
 

@@ -83,4 +83,4 @@ Configure Entitlement Voucher
 
 [Create Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md)
 
-[Multi-Stage Approval](user-guides/multi-stage-approval.md)
+[Multi-Stage Approval](../../user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)

@@ -26,7 +26,7 @@ A program manager configures the relevant managers required for a program.
 
 A program is composed of various managers, each of which configures the parameters for a specific program such as eligibility determination, deduplication, notification, cycle management, entitlement management and payment management.&#x20;
 
-In OpenG2P, in each programs' configuration tab, you can find the various managers, such as, [Eligibility Managers](../eligibility/), [Deduplication Managers](../deduplication/), [Notification Managers](../notifications.md), Program Manager, Cycle Manager, [Entitlement Manager](../entitlement/), and Payment Manager.
+In OpenG2P, in each programs' configuration tab, you can find the various managers, such as, [Eligibility Managers](../eligibility/), [Deduplication Managers](../deduplication.md), [Notification Managers](../notifications.md), Program Manager, Cycle Manager, [Entitlement Manager](../entitlement/), and Payment Manager.
 
 | Manager                             | Description                                                                                                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
