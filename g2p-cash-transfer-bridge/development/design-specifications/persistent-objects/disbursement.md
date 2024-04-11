@@ -55,6 +55,10 @@ Results in persistence in disbursement table with following additional attribute
 | failure\_error\_code            | Error code from the downstream G2P chain participants (Sponsor bank, Payment switch, Destination banks) in case of a FAILURE (reply\_status\_from\_bank) |
 | failure\_error\_message         | Error message describing the failure\_error\_code                                                                                                        |
 
+<mark style="color:blue;">Bulk Insert should be used to persist the disbursements</mark>
+
+<mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
+
 ### cancel\_disbursement
 
 | API Attributes |              |
