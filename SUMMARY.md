@@ -26,7 +26,7 @@
             * [Create Cash Payment Manager](pbms/features/program-management/user-guides/create-manager-type/create-payment-manager-types/create-cash-payment-manager.md)
             * [Create File Payment Manager](pbms/features/program-management/user-guides/create-manager-type/create-payment-manager-types/create-file-payment-manager.md)
         * [Configure Proxy Means Test](pbms/features/program-management/user-guides/configure-proxy-mean-test.md)
-        * [Configure Entitlement Manager under Program](pbms/features/program-management/user-guides/create-entitlement-manager-type-1.md)
+        * [Configure Entitlement Manager under Program](pbms/user-guides/eligibility-and-program-enrollment/configuration/create-entitlement-manager-type-1.md)
         * [Configure Payment Manager in Program](pbms/features/program-management/user-guides/create-payment-manager.md)
     * [Program Disbursement Cycles](pbms/features/program-disbursement-cycles.md)
     * [Beneficiary Management](pbms/features/beneficiary-management.md)

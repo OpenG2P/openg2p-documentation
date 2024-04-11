@@ -77,7 +77,7 @@ The multi-stage approval typically follows this process:
 
 [Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
 
-[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
+[Configure Entitlement Manager in the Program](../../user-guides/eligibility-and-program-enrollment/configuration/create-entitlement-manager-type-1.md)
 
 Configure Entitlement Voucher
 
