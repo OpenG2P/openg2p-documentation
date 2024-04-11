@@ -37,7 +37,7 @@ G2P: Proxy Means Test
 
 ### Configuration
 
-* To create the [PMT Parameters](../../features/program-management/user-guides/configure-proxy-mean-test.md#steps-to-add-computed-fields) turn on the developer mode.
+* To create the [PMT Parameters](../../../features/program-management/user-guides/configure-proxy-mean-test.md#steps-to-add-computed-fields) turn on the developer mode.
 
 ### Error codes
 
