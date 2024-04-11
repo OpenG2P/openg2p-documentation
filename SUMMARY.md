@@ -194,7 +194,7 @@
     * [Upcoming Features](social-registry/development/upcoming-features/README.md)
       * [Registry Update Mechanisms](social-registry/development/upcoming-features/registry-update-mechanisms.md)
       * [Verifiable Credentials Issuance](social-registry/development/upcoming-features/verifiable-credentials-issuance.md)
-      * [Score Computation](social-registry/development/upcoming-features/score-computation.md)
+      * [Benefit Targeting Methods](social-registry/development/upcoming-features/score-computation.md)
       * [Change Log](social-registry/development/upcoming-features/change-log.md)
       * [Domain Specific Registries](social-registry/development/upcoming-features/domain-specific-registries.md)
       * [Single Sign-On](social-registry/development/upcoming-features/single-sign-on.md)
