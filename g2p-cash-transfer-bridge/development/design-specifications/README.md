@@ -26,7 +26,7 @@ layout:
 
 ### Outward APIs - to Sponsor bank
 
-<mark style="color:blue;">**checkFundsAvailability**</mark> - is the first step in the lifecycle processing of a disbursement\_envelope. Once the disbursement\_envelope is ready for processing, the system checks for available funds in the bank account with the Sponsor bank. Since we will need specific connectors for connecting to banks, these APIs have been abstracted to an interface and bank specific connectors that implement these interfaces. This API is triggered by a batch job - 'check\_funds\_with\_bank'
+<mark style="color:blue;">**check\_funds\_with\_bank**</mark> - is the first step in the lifecycle processing of a disbursement\_envelope. Once the disbursement\_envelope is ready for processing, the system checks for available funds in the bank account with the Sponsor bank. Since we will need specific connectors for connecting to banks, these APIs have been abstracted to an interface and bank specific connectors that implement these interfaces. This API is triggered by a batch job - 'check\_funds\_with\_bank'
 
 <mark style="color:blue;">**block\_funds\_wih\_bank**</mark> - is the second step in the disbursement\_envelope's lifecycle. Once the first step confirms availability of funds, the system invokes this API to block the funds in the funding account. If the block is successful, the sponsor bank will return a reference number for that block. All subsequent disbursements will result in release of funds under this block reference number.
 

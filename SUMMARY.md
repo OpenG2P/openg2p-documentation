@@ -250,7 +250,7 @@
       * [IN APIs from Bank](g2p-cash-transfer-bridge/development/design/in-apis-from-bank/README.md)
         * [update\_status\_of\_disbursements](g2p-cash-transfer-bridge/development/design/in-apis-from-bank/update\_status\_of\_disbursements.md)
       * [Helper Tables](g2p-cash-transfer-bridge/development/design/helper-tables/README.md)
-        * [benefit\_program](g2p-cash-transfer-bridge/development/design/helper-tables/benefit\_program.md)
+        * [benefit\_program](g2p-cash-transfer-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [Config Attributes](g2p-cash-transfer-bridge/development/design/config-attributes.md)
       * [Interfaces](g2p-cash-transfer-bridge/development/design/interfaces.md)
   * [Deployment](g2p-cash-transfer-bridge/deployment.md)
