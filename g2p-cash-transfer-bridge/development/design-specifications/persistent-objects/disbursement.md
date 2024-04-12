@@ -54,8 +54,10 @@ Additional record inserted in "disbursement\_batch\_status" table with the follo
 | shipment\_to\_bank\_time\_stamp | Time stamp of shipment to Sponsor bank                                                                                                                   |
 | reply\_status\_from\_bank       | <p>Enum<br>SUCCESS<br>FAILURE</p>                                                                                                                        |
 | reply\_from\_bank\_time\_stamp  | Time stamp of receipt of reply from Sponsor bank                                                                                                         |
-| failure\_error\_code            | Error code from the downstream G2P chain participants (Sponsor bank, Payment switch, Destination banks) in case of a FAILURE (reply\_status\_from\_bank) |
-| failure\_error\_message         | Error message describing the failure\_error\_code                                                                                                        |
+| reply\_failure\_error\_code     | Error code from the downstream G2P chain participants (Sponsor bank, Payment switch, Destination banks) in case of a FAILURE (reply\_status\_from\_bank) |
+| reply\_failure\_error\_message  | Error message describing the failure\_error\_code                                                                                                        |
+| reply\_success\_fsp\_code       | If the disbursement is a success, the fsp (the financial service provider / destination bank) code - where the account was credited                      |
+| reply\_success\_fa              | The full Financial Address (including account number, branch code / mobile number) where the disbursement was credited                                   |
 
 <mark style="color:blue;">Bulk Insert should be used to persist the disbursements</mark>
 
