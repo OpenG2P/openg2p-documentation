@@ -18,14 +18,14 @@ The following configuration elements are visualized that influence business logi
 
 g2p\_cash\_bridge
 
-|                                                               |   |
-| ------------------------------------------------------------- | - |
-| <mark style="color:blue;">**inward\_apis\_from\_pbms**</mark> |   |
-| number\_of\_disbursements\_in\_a\_batch                       |   |
-| <mark style="color:blue;">**outward\_apis\_to\_banks**</mark> |   |
-| number\_of\_disbursements\_in\_a\_batch                       |   |
-| <mark style="color:blue;">**inward\_apis\_from\_pbms**</mark> |   |
-| number\_of\_disbursements\_in\_a\_batch                       |   |
+|                                                                |     |
+| -------------------------------------------------------------- | --- |
+| <mark style="color:blue;">**inward\_apis\_from\_pbms**</mark>  |     |
+| max\_no\_of\_disbursements\_in\_a\_batch                       | 500 |
+| <mark style="color:blue;">**outward\_apis\_to\_banks**</mark>  |     |
+| max\_no\_of\_disbursements\_in\_a\_batch                       | 500 |
+| <mark style="color:blue;">**inward\_apis\_from\_banks**</mark> |     |
+| max\_no\_of\_disbursements\_in\_a\_batch                       | 500 |
 
 .
 
