@@ -20,9 +20,9 @@ layout:
 
 ### Inward APIs - from PBMS
 
-create\_disbursement\_envelope - creates a disbursement envelope object and persists this object in the table - 'disbursement\_envelope'. As an object, a disbursement\_envelope, represents an instance of a wrapper object, an envelope of sorts, that contains all the disbursements that need to be effected for a benefit program for a disbursement cycle. Depending on the nature of the benefit program, a disbursement\_envelope can potentially contain 100s of 1000s of disbursements. Each envelope is identified by a unique disbursement\_envelope\_id.
+<mark style="color:blue;">**create\_disbursement\_envelope**</mark> - creates a disbursement envelope object and persists this object in the table - 'disbursement\_envelope'. As an object, a disbursement\_envelope, represents an instance of a wrapper object, an envelope of sorts, that contains all the disbursements that need to be effected for a benefit program for a disbursement cycle. Depending on the nature of the benefit program, a disbursement\_envelope can potentially contain 100s of 1000s of disbursements. Each envelope is identified by a unique disbursement\_envelope\_id.
 
-create\_disbursements - creates a disbursement object and persists this object in the table - 'disbursement'. As an object, a disbursement represents a single disbursement transaction under a disbursement\_envelope. Each disbursement is identified by a unique disbursement\_id.
+<mark style="color:blue;">**create\_disbursements**</mark> - creates a disbursement object and persists this object in the table - 'disbursement'. As an object, a disbursement represents a single disbursement transaction under a disbursement\_envelope. Each disbursement is identified by a unique disbursement\_id.
 
 ### Outward APIs - to Sponsor bank
 
