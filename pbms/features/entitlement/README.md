@@ -32,7 +32,7 @@ OpenG2P supports two types of Entitlement Managers.
 The process involved to configure an Entitlement Manager in a program are:
 
 1. Each Entitlement Manager has one or more approving authority roles. The approving authority role is played by a group of users who can approve the entitlements. Hence the approving authority role is configured as a group in the OpenG2P platform.
-2. Voucher Entitlement Managers configure an [Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md) in addition to the configurations provided by the Default Entitlement Managers.
+2. Voucher Entitlement Managers configure an Entitlement Voucher Template in addition to the configurations provided by the Default Entitlement Managers.
 3. After the Entitlement Managers is created, Program administrators add the Entitlement Managers to a program.
 
 ## Entitlement details
@@ -53,7 +53,7 @@ The Entitlement Manager can have one or more stages of approval, and the Program
 
 #### Entitlement voucher
 
-OpenG2P provides an easy-to-use UI for creating an [Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md) along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.&#x20;
+OpenG2P provides an easy-to-use UI for creating an Entitlement Voucher Template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.&#x20;
 
 To understand the workflow for entitlement vouchers, [click here](../../../use-cases/case-studies/immediate-assistance-on-demand.md).
 

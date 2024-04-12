@@ -18,7 +18,7 @@ OpenG2P registration interfaces can be integrated with [OpenID Connect](https://
 
 ### Authenticate registrant using OpenID Connect
 
-OpenG2P's Self-Service Portal can be integrated with an OIDC Client such as e-Signet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system of any foundational or functional ID database to authenticate the registrants in the backend.
+OpenG2P's Self-Service Portal can be integrated with an OIDC Client such as eSignet to build a trustworthy authentication interface. The OIDC Client utilizes an authentication system of any foundational or functional ID database to authenticate the registrants in the backend.
 
 <figure><img src="https://github.com/smita-g2p/openg2p-documentation/raw/c68b3e6da99fe077e2cbe5d5fc166b3e3487fbce/.gitbook/assets/authentication-using-esignet.png" alt=""><figcaption><p>OIDC client</p></figcaption></figure>
 
@@ -30,7 +30,7 @@ A few key points to note in this process are:
 * The Self-Service Portal gets access to the registrant's details after it receives the Access Token from the authentication system
 * UIN, challenge, and consent are shared in separate transactions
 
-To view the e-Signet authentication process in detail, click [here](https://docs.esignet.io/)
+To view the eSignet authentication process in detail, click [here](https://docs.esignet.io/)
 
 ### Authenticate registrant using ID authentication
 

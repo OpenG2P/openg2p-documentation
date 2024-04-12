@@ -241,7 +241,7 @@
       * [IN APIs from PBMS](g2p-cash-transfer-bridge/development/design-specifications/persistent-objects/README.md)
         * [create\_disbursement\_envelope](g2p-cash-transfer-bridge/development/design-specifications/inward-apis-from-pbms/create\_disbursement\_envelope.md)
         * [cancel\_disbursement\_envelope](g2p-cash-transfer-bridge/development/design-specifications/inward-apis-from-pbms/cancel\_disbursement\_envelope.md)
-        * [create\_disbursements](g2p-cash-transfer-bridge/development/design/in-apis-from-pbms/create\_disbursements.md)
+        * [create\_disbursements](g2p-cash-transfer-bridge/development/design-specifications/persistent-objects/disbursement.md)
         * [cancel\_disbursements](g2p-cash-transfer-bridge/development/design/in-apis-from-pbms/cancel\_disbursements.md)
         * [benefit\_program](g2p-cash-transfer-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [OUT APIs - to Bank](g2p-cash-transfer-bridge/development/design/out-apis-to-bank/README.md)
