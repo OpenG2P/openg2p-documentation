@@ -24,7 +24,7 @@ Users can configure multiple document stores from a single view. The diagram bel
 
 \<image to be incorporated>
 
-All the users of the OpenG2P platform such as System Administrators, Program Administrators, Finance Officers, and Social workers can upload/edit/delete these documents based on their [role-based access](broken-reference).
+All the users of the OpenG2P platform such as System Administrators, Program Administrators, Finance Officers, and Social workers can upload/edit/delete these documents based on their [role-based access](administration/role-based-access-control/).
 
 ### Document files
 
