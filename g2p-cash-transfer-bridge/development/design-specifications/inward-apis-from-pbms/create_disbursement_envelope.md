@@ -12,7 +12,14 @@ layout:
     visible: true
 ---
 
-# disbursement\_envelope
+# create\_disbursement\_envelope
+
+| API Attributes |                                                                    |
+| -------------- | ------------------------------------------------------------------ |
+| Direction      | Inward                                                             |
+| Invoked by     | PBMS                                                               |
+| Mode           | Synchronous                                                        |
+| Tables         | <p>disbursement_envelope<br>disbursement_envelope_batch_status</p> |
 
 disbursement\_envelope represents a control object that **uniquely defines one instance of disbursement for one disbursement cycle for a benefit program**
 
@@ -23,6 +30,8 @@ This envelope will represent the control object under which all individual disbu
 The object (and corresponding persistent table) will have the following attributes
 
 ## Object Design
+
+### disbursement\_envelope
 
 | Attribute                    | Datatype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -39,24 +48,7 @@ The object (and corresponding persistent table) will have the following attribut
 | cancellation\_status         | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | cancellation\_time\_stamp    | The timestamp when the cancellation request was received                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
-## APIs on disbursement\_envelope
-
-### create\_disbursement\_envelope
-
-| API Attributes |                        |
-| -------------- | ---------------------- |
-| Direction      | Inward                 |
-| Invoked by     | PBMS                   |
-| Mode           | Synchronous            |
-| Tables         | disbursement\_envelope |
-
-#### Business Logic
-
-Will result in persistence of 1 table - disbursement\_envelope (1 record for a disbursement\_envelope).&#x20;
-
-In addition, this API will also persist 1 record in the table - disbursement\_envelope\_batch\_status with the following attributes
-
-**disbursement\_envelope\_batch\_status**
+### **disbursement\_envelope\_batch\_status**
 
 | Attribute                             | Datatype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -75,17 +67,7 @@ In addition, this API will also persist 1 record in the table - disbursement\_en
 | number\_of\_disbursements\_successful | Updated by "success" feedback from Sponsor Bank                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | number\_of\_disbursements\_failed     | Updated by "failure" feedback from Sponsor Bank                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
-### cancel\_disbursement\_envelope
+### Business Logic
 
-| API Attributes |                        |
-| -------------- | ---------------------- |
-| Direction      | Inward                 |
-| Invoked by     | PBMS                   |
-| Mode           | Synchronous            |
-| Tables         | disbursement\_envelope |
+Will result in persistence of 1 record each in the tables - disbursement\_envelope and disbursement\_envelope\_batch\_status
 
-Using this API, the PBMS can cancel a disbursement\_envelope. With this API, the disbursement\_envelope.cancellation\_status will be set to "CANCELLED".
-
-Once cancelled, no further processing of the envelope will be done.
-
-Cancellation will be allowed only prior to the "disbursement\_schedule\_date".
