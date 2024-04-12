@@ -12,5 +12,5 @@ layout:
     visible: true
 ---
 
-# Inward APIs from PBMS
+# IN APIs from PBMS
 

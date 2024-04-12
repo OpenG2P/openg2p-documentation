@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Design Specifications
+# Design
 
 ### Flow of information
 

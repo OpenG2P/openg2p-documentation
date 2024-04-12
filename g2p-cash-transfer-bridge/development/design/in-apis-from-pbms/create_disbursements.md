@@ -12,11 +12,20 @@ layout:
     visible: true
 ---
 
-# disbursement
+# create\_disbursements
 
-disbursement represents a single disbursement transaction under a disbursement\_envelope. A disbursement\_envelope will contain many hundreds/thousands of disbursements. Each such disbursement will be denoted by a unique disbursement\_id
+| API Attributes |                                                  |
+| -------------- | ------------------------------------------------ |
+| Direction      | Inward                                           |
+| Invoked by     | PBMS                                             |
+| Mode           | Synchronous                                      |
+| Tables         | <p>disbursement<br>disbursement_batch_status</p> |
+
+A disbursement represents a single disbursement transaction under a disbursement\_envelope. A disbursement\_envelope will contain many hundreds/thousands of disbursements. Each such disbursement will be denoted by a unique disbursement\_id
 
 ## Object design
+
+### disbursement
 
 | Attribute                  | Datatype                                                                                                                           |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -29,26 +38,11 @@ disbursement represents a single disbursement transaction under a disbursement\_
 | cancellation\_status       | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                          |
 | cancellation\_time\_stamp  | Time stamp of receipt of cancellation request                                                                                      |
 
-## APIs on disbursement
-
-### create\_disbursement
-
-| API Attributes |              |
-| -------------- | ------------ |
-| Direction      | Inward       |
-| Invoked by     | PBMS         |
-| Mode           | Synchronous  |
-| Tables         | disbursement |
-
-#### Business Logic
-
-Results in persistence in disbursement table
-
-Additional record inserted in "disbursement\_batch\_status" table with the following attributes
+### disbursement\_batch\_status
 
 | Attribute                       | Datatype                                                                                                                                                 |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| disbursement\_id                | Unique identifier for each disbursement transaction                                                                                                      |
+| disbursement\_id                | Unique identifier for each disbursement transaction - Primary Key                                                                                        |
 | disbursement\_envelope\_id      | The envelope under which this disbursement is being effected                                                                                             |
 | shipment\_to\_bank\_status      | <p>Enum<br>PENDING<br>PROCESSED</p>                                                                                                                      |
 | shipment\_to\_bank\_time\_stamp | Time stamp of shipment to Sponsor bank                                                                                                                   |
@@ -59,23 +53,10 @@ Additional record inserted in "disbursement\_batch\_status" table with the follo
 | reply\_success\_fsp\_code       | If the disbursement is a success, the fsp (the financial service provider / destination bank) code - where the account was credited                      |
 | reply\_success\_fa              | The full Financial Address (including account number, branch code / mobile number) where the disbursement was credited                                   |
 
+#### Business Logic
+
+Results in persistence of 1 record each in the tables - disbursement and disbursement\_batch\_status.
+
 <mark style="color:blue;">Bulk Insert should be used to persist the disbursements</mark>
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
-
-### cancel\_disbursement
-
-| API Attributes |              |
-| -------------- | ------------ |
-| Direction      | Inward       |
-| Invoked by     | PBMS         |
-| Mode           | Synchronous  |
-| Tables         | disbursement |
-
-Will update disbursement.cancellation\_status to CANCELLED
-
-Cancellation is possible before the disbursement\_envelope.disbursement\_schedule\_date
-
-<mark style="color:blue;">Bulk Update should be used</mark>
-
-<mark style="color:blue;">Transaction control should ALL or NONE - i.e. either all disbursements should be updated or none should be updated.</mark>
