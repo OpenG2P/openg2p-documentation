@@ -16,7 +16,13 @@ layout:
 
 This is a configuration table that stores account details (with sponsor banks) for a benefit program.&#x20;
 
-The design assumes that every benefit program has exactly one financial account with a sponsor bank. The design also caters for multiple programs sharing a single financial account.
+The design assumes that every benefit program has exactly one financial account with a sponsor bank.&#x20;
+
+The design caters for the following thought process multiple programs sharing a single financial account.
+
+1. Multiple programs exist and share the same funding account
+2. Multiple programs exist with each program using a dedicated funding account in the same FSP (financial service provider / Bank)
+3. Multiple programs exist with programs using different funding accounts across different FSPs
 
 
 
