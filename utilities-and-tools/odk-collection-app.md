@@ -14,8 +14,6 @@ layout:
 
 # ODK
 
-## Introduction
-
 OpenG2P platform uses the ODK Collect App to collect and manage the registrant information. The app can be used offline to carry out field registrations in areas without Internet connectivity. The registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
 
 The app also has an integrated QR code scanning application to scan the ID card of the registrant. The scanning application automatically populates the KYC data of the registrant in the ODK form and verifies the digital signature to establish the card's authenticity.
