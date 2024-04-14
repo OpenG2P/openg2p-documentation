@@ -24,7 +24,7 @@ For simplicity of deployment and to conserve compute resources Rancher may be in
 
 ### Prerequisites
 
-One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](../k8s-cluster-requirements.md)
+One Virtual machine running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Hardware Requirements](../hardware-requirements.md)
 
 ### Kubernetes cluster setup
 
