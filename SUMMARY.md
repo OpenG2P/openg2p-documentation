@@ -232,7 +232,7 @@
     * [Self Update ID with Financial Address information](social-payments-account-registry-spar/user-guides/self-update-id-with-financial-address-information.md)
     * [Admin Guide to Link ID with Financial Address information](social-payments-account-registry-spar/user-guides/admin-guide-to-link-id-with-financial-address-information.md)
   * [Releases](social-payments-account-registry-spar/releases.md)
-* [G2P Cash Transfer Bridge](g2p-cash-transfer-bridge/README.md)
+* [G2P Bridge](g2p-cash-transfer-bridge/README.md)
   * [Features](g2p-cash-transfer-bridge/features.md)
   * [Privacy & Security](g2p-cash-transfer-bridge/privacy-and-security.md)
   * [Interoperability](g2p-cash-transfer-bridge/interoperability.md)
