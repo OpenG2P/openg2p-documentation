@@ -16,7 +16,7 @@ layout:
 
 ### Flow of information
 
-<figure><img src="../../../.gitbook/assets/Gitbook-G2PCB-Flow.jpg" alt=""><figcaption><p>Flow of information in the G2P Cash Bridge subsystem</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-G2PCB-Flow.jpg" alt=""><figcaption><p>Flow of information in the G2P Bridge subsystem</p></figcaption></figure>
 
 ### Inward APIs - from PBMS
 
@@ -42,7 +42,5 @@ this API has been designed for an asynchronous mode. This API only expects an ac
 ### Inward APIs - from Sponsor bank
 
 <mark style="color:blue;">**update\_status\_of\_disbursements**</mark> - As and when the sponsor bank receives status from the destination banks, the sponsor bank invokes this api and updates the status of the disbursement transactions.
-
-
 
 Detailed notes on Objects and Tables - follows in the next few sections

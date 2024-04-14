@@ -28,6 +28,4 @@ g2p\_cash\_bridge
 | <mark style="color:blue;">**inward\_apis\_from\_banks**</mark> |     |
 | max\_no\_of\_disbursements\_in\_a\_batch                       | 500 |
 
-.
-
 inward\_apis\_from\_banks.number\_of\_disbursements\_in\_a\_batch

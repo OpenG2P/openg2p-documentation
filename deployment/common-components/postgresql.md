@@ -2,7 +2,7 @@
 description: PostgreSQL Server Deployment
 ---
 
-# PostgreSQL Server
+# PostgreSQL
 
 This guide provides instructions to install PostgreSQL Server on the Kubernetes cluster. However, if you already have PostgreSQL server installed, or are using Cloud hosted Postgres, then you may skip the server installation. The instructions to initialize OpenG2P component databases are provided as part of the component installation instructions.
 
@@ -10,7 +10,7 @@ This guide provides instructions to install PostgreSQL Server on the Kubernetes 
 
 Module/component-wise listing of databases is given below
 
-<table><thead><tr><th width="349">Module/Component</th><th>Database Name</th></tr></thead><tbody><tr><td>PBMS</td><td><code>openg2pdb</code></td></tr><tr><td>Keycloak</td><td><code>keycloakdb</code></td></tr><tr><td>ODK</td><td><code>odkdb</code></td></tr><tr><td>SPAR</td><td><code>spardb</code></td></tr><tr><td>G2P Cash Transfer Bridge</td><td><code>gctbdb</code></td></tr><tr><td>MOSIP Key Manager</td><td><code>mosip_keymgr</code></td></tr></tbody></table>
+<table><thead><tr><th width="349">Module/Component</th><th>Database Name</th></tr></thead><tbody><tr><td>PBMS</td><td><code>openg2pdb</code></td></tr><tr><td>Keycloak</td><td><code>keycloakdb</code></td></tr><tr><td>ODK</td><td><code>odkdb</code></td></tr><tr><td>SPAR</td><td><code>spardb</code></td></tr><tr><td>G2P Bridge</td><td><code>gctbdb</code></td></tr><tr><td>MOSIP Key Manager</td><td><code>mosip_keymgr</code></td></tr></tbody></table>
 
 ## Prerequisites
 
