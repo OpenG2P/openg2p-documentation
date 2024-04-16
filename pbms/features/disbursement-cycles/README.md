@@ -24,7 +24,7 @@ The Program Manager is a software module in the OpenG2P platform. It manages the
 
 While the Program Manager manages all the cycles, each cycle is managed by a Cycle Manager. Cycle Manager provides many convenient single-click actions to enable Program administrators to quickly create new cycles, copy beneficiaries from the program, and prepare and approve entitlements.&#x20;
 
-## Related links
+## User guides
 
 [Configure Program Manager in Program](../program-management/user-guides/configure-program-manager-in-program.md)
 

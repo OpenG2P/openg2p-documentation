@@ -55,7 +55,7 @@ The submitted forms are uploaded to ODK Central once the agent moves to an area 
 
 #### Create ODK MTS Connector
 
-Based on the business scenario, a program administrator must create an [ODK MTS Connector](broken-reference) for individual/group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
+Based on the business scenario, a program administrator must create an ODK MTS Connector for individual/group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
 
 **Business Scenario 1:** The verification process is not required on the individual/group information captured using ODK forms.
 
