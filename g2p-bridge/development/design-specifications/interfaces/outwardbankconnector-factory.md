@@ -1,4 +1,18 @@
-# Out Bank Connector Factory
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# OutwardBankConnector Factory
 
 This Factory will written a OutwardBankConnector Class Instance
 
