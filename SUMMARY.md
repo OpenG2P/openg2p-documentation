@@ -254,6 +254,8 @@
         * [create\_disbursements](g2p-bridge/development/design/out-apis-to-bank/create\_disbursements.md)
       * [IN APIs from Bank](g2p-bridge/development/design/in-apis-from-bank/README.md)
         * [update\_status\_of\_disbursements](g2p-bridge/development/design/in-apis-from-bank/update\_status\_of\_disbursements.md)
+      * [OUT files to Bank](g2p-bridge/development/design-specifications/out-files-to-bank.md)
+      * [IN files from Bank](g2p-bridge/development/design-specifications/in-files-from-bank.md)
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
         * [benefit\_program](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [Config Attributes](g2p-bridge/development/design/config-attributes.md)
