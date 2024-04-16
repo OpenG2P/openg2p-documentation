@@ -25,4 +25,7 @@ Using this API, the PBMS can cancel a disbursement\_envelope. With this API, the
 
 Once cancelled, no further processing of the envelope will be done.
 
-Cancellation will be allowed only prior to the "disbursement\_schedule\_date".
+### Validations & Exceptions
+
+1. Cancellation will be allowed only prior to the "disbursement\_schedule\_date".
+
