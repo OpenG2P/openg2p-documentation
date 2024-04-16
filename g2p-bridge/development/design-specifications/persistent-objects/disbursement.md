@@ -33,6 +33,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 | disbursement\_id           | Unique identifier for each disbursement transaction - Primary Key                                                                  |
 | beneficiary\_id            | The Beneficiary ID to whom this disbursement is being targeted                                                                     |
 | beneficiary\_name          | The name of the beneficiary as available in the PBMS / Social Registry records                                                     |
+| disbursement\_amount       | The disbursement amount (in the currency specified in the envelope) for this cycle of the program                                  |
 | narrative                  | The text that will be available in the Account Statement of the beneficiary's account against this disbursement credit transaction |
 | receipt\_time\_stamp       | Time stamp of receipt of disbursement                                                                                              |
 | cancellation\_status       | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                          |
@@ -60,3 +61,11 @@ Results in persistence of 1 record each in the tables - disbursement and disburs
 <mark style="color:blue;">Bulk Insert should be used to persist the disbursements</mark>
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
+
+#### Validations & Exceptions
+
+1. Ideally, disbursements should arrive before disbursement\_schedule\_date. However, system will not check this condition. System will anyway process an envelope, only when all the disbursements have arrived.
+2. disbursement\_amount - valid non zero number
+3. the total number of disbursements should not exceed the number specified in the envelope
+4. the total\_disbursement\_amount should not exceed the number specified in the envelope
+
