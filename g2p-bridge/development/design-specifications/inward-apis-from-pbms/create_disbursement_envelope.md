@@ -71,3 +71,21 @@ The object (and corresponding persistent table) will have the following attribut
 
 Will result in persistence of 1 record each in the tables - disbursement\_envelope and disbursement\_envelope\_batch\_status
 
+### Validations & Exceptions
+
+1. disbursement\_schedule\_date should be greater than today + disbursement\_sla\_days (configuration)
+2. disbursement\_currency\_code should be equal to benefit\_program.disbursement\_currency\_code
+3. disbursement\_envelope\_id should be unique
+4. benefit\_program\_mnemonic should exist in benefit\_program
+5. number\_of\_beneficiaries - valid non zero integer
+6. number\_of\_disbursements - should be greater or equal to number\_of\_beneficiaries
+7. total\_disbursement\_amount - valid non zero number
+
+
+
+
+
+
+
+
+
