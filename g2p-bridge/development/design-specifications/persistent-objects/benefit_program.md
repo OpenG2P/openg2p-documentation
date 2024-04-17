@@ -26,13 +26,14 @@ The design caters for the following thought process
 
 
 
-| Attribute                      | Description                                                                                                     |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| benefit\_program\_mnemonic     | Uniquely identifies a benefit program. Is Primary Key.                                                          |
-| benefit\_program\_name         | Describes the benefit program                                                                                   |
-| funding\_org\_code             | The Government department or Social Welfare organization that administers this program - Short Code             |
-| funding\_org\_name             | Name of the Organization corresponding to the short code                                                        |
-| funding\_sub\_org\_code        | If there are sub departments under the Organization/Department, the short code of the sub org                   |
-| funding\_sub\_org\_name        | Name of the Sub Organization corresponding to the sub org short code                                            |
-| sponsor\_bank\_code            | Financial Service Provider - Institution - where the account is maintained - The account that funds the program |
-| sponsor\_bank\_account\_number | Complete account number (financial address) with Bank Code,  Branch Code, any other identifier as required      |
+| Attribute                        | Description                                                                                                                                                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| benefit\_program\_mnemonic       | Uniquely identifies a benefit program. Is Primary Key.                                                                                                                                                          |
+| benefit\_program\_name           | Describes the benefit program                                                                                                                                                                                   |
+| funding\_org\_code               | The Government department or Social Welfare organization that administers this program - Short Code                                                                                                             |
+| funding\_org\_name               | Name of the Organization corresponding to the short code                                                                                                                                                        |
+| funding\_sub\_org\_code          | If there are sub departments under the Organization/Department, the short code of the sub org                                                                                                                   |
+| funding\_sub\_org\_name          | Name of the Sub Organization corresponding to the sub org short code                                                                                                                                            |
+| sponsor\_bank\_code              | Financial Service Provider - Institution - where the account is maintained - The account that funds the program                                                                                                 |
+| sponsor\_bank\_account\_number   | Complete account number (financial address) with Bank Code,  Branch Code, any other identifier as required                                                                                                      |
+| id\_mapper\_resolution\_required | <p>TRUE / FALSE<br>Specifies whether Beneficiary ID will travel to Sponsor Bank<br>OR<br>Beneficiary ID will be translated to Account Number (Financial Address) and then travel downstream to Sponsor Bank</p> |
