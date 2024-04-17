@@ -27,7 +27,7 @@ The steps to set up a WireGuard client on an **Ubuntu machine** are:
 
 1. After successfully installing WireGuard, navigate to the directory `/etc/wireguard` using the terminal.
 2. Next, create a file named `<anyname>.conf`, add the WireGuard configuration file to it, and save the file.\
-   ![](../../../.gitbook/assets/image.png)
+   ![](<../../../.gitbook/assets/image (1).png>)
 3.  &#x20;**Activate** WireGuard using the commands below.
 
     ```

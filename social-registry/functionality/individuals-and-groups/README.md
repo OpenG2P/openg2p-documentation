@@ -23,3 +23,8 @@ Social Registry can house
 ## Individual&#x20;
 
 ## Group
+
+## User guides
+
+[Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
+
