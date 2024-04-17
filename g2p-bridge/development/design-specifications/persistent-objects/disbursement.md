@@ -53,6 +53,11 @@ A disbursement represents a single disbursement transaction under a disbursement
 | reply\_failure\_error\_message  | Error message describing the failure\_error\_code                                                                                                        |
 | reply\_success\_fsp\_code       | If the disbursement is a success, the fsp (the financial service provider / destination bank) code - where the account was credited                      |
 | reply\_success\_fa              | The full Financial Address (including account number, branch code / mobile number) where the disbursement was credited                                   |
+| mapper\_resolved\_fa            | The FA resolved from ID-Account-Mapper                                                                                                                   |
+| mapper\_resolved\_phone\_number | The phone number resolved from ID-Account-Mapper                                                                                                         |
+| mapper\_resolved\_name          | The name of the beneficiary resolved from ID-Account-Mapper                                                                                              |
+| mapper\_resolved\_timestamp     | The timestamp - when ID-Account was resolved                                                                                                             |
+| mapper\_resolved\_retries       | Retry Count - for ID-Account-Mapper resolution                                                                                                           |
 
 #### Business Logic
 
