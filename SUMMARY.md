@@ -126,6 +126,7 @@
       * [OpenG2P Programs Autoenrol](pbms/development/repositories/openg2p-program/openg2p-programs-autoenrol.md)
       * [G2P ODK Importer](pbms/development/repositories/openg2p-importers/g2p-odk-importer.md)
       * [openg2p-vci](pbms/development/repositories/openg2p-vci.md)
+      * [G2P Service Provider Beneficiary Management](pbms/development/odoo-modules/g2p-service-provider-beneficiary-management.md)
     * [Installing On Linux](pbms/development/installing-openg2p-on-linux.md)
     * [Repositories](pbms/development/repositories/README.md)
       * [openg2p-fastapi-common](pbms/development/repositories/openg2p-fastapi-common/README.md)
