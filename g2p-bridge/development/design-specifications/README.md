@@ -16,7 +16,7 @@ layout:
 
 ### Flow of information
 
-<figure><img src="../../../.gitbook/assets/Gitbook-G2PCB-Flow.jpg" alt=""><figcaption><p>Flow of information in the G2P Bridge subsystem</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-G2PB-Flow.jpg" alt=""><figcaption></figcaption></figure>
 
 ### Inward APIs - from PBMS
 
