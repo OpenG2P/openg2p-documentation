@@ -24,6 +24,10 @@ Social Registry can house
 
 ## Group
 
+
+
+#### Enumerator
+
 ## User guides
 
 [Create an Individual Registrant](user-guides/create-an-individual-registrant.md)

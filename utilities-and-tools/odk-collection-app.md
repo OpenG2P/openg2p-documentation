@@ -80,6 +80,12 @@ Based on the business scenario, a program administrator must create an ODK MTS C
 
 To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
 
+
+
+## ODK Language Support
+
+## ODK Geographic
+
 ## Demo video
 
 {% embed url="https://youtu.be/0jjkq4SoONM" %}
