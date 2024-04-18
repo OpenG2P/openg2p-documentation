@@ -30,7 +30,11 @@ Social Registry can house
 
 ## User guides
 
-[Create an Individual Registrant](individuals-and-groups/user-guides/create-an-individual-registrant.md)
+[Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
 
 Create a Group Registrant
+
+Create a Group Registrant
+
+Configure In-Kind Entitlement Manager
 

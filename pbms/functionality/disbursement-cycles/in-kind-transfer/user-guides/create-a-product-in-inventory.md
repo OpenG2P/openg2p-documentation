@@ -4,11 +4,12 @@ description: In-kind transfer
 
 # Create a Product in Inventory
 
-OpenG2P supports the in-kind distribution of food and nonfood items, such as shelter materials, hygiene kits, and cooking items. The in-kind transfer process begins with adding food and nonfood items into the inventory module. This document provides instructions to add an in-kind product to the Inventory module.
+This document provides instructions to add an in-kind product to the Inventory module.
 
 ## Prerequisites
 
-The user must have access to OpenG2P systems.
+* The user must have access to OpenG2P systems.
+* The user must have Program Manager role.
 
 ## Procedures
 
