@@ -4,7 +4,7 @@ description: Registry
 
 # Create an Individual Registrant
 
-Registry is an independent module offered by OpenG2P to enable the creation of **registries** of individuals and groups of people with demographic data. This document provides instructions to create registry of an individual by a Program Manager. Assuming that Program Manager received the individual data via offline mode.
+This document provides instructions to create registry for an individual by a Program Manager.&#x20;
 
 ## Prerequisites
 
