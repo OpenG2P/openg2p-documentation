@@ -18,7 +18,7 @@ layout:
 
 This document provides instruction to create a new project for a program using ODK Central.
 
-## Pre-requisites
+## Prerequisites
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * The user must have valid credentials to login **ODK Central**

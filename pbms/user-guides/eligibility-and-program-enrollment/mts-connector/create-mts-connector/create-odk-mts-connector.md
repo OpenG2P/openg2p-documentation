@@ -18,7 +18,7 @@ layout:
 
 This Guide will help to create the [ODK MTS Connector](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/integrations/integration-with-mosip/mts-connector.md).
 
-## Pre-requisites
+## Prerequisites
 
 * The user must have a Program Manager role.
 * ODK form should be available.

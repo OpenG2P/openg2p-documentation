@@ -18,7 +18,7 @@ layout:
 
 This document provides instructions to download a program form on the ODK Collect App installed on an Android tablet or phone.
 
-## Pre-requisites
+## Prerequisites
 
 * The field agent must have ODK Collect App installed on his/her mobile device.
 * The field agent must have[ form access](https://app.gitbook.com/s/xkdlCOLME2p03rS8nG8u/guides/user-guides/provide-form-access-to-field-agent).

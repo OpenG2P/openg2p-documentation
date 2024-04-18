@@ -18,7 +18,7 @@ layout:
 
 This document provides instructions on how to create a form for a program.
 
-## Pre-requisites
+## Prerequisites
 
 * A person must have installed any tool that has spreadsheet features in his/her machine
 * A person must have basic knowledge of working with spreadsheets and Extended Mark-up Language (XML)

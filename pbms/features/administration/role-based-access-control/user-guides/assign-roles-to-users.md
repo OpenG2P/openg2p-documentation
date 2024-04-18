@@ -18,7 +18,7 @@ layout:
 
 This document contains the step-by-step instructions to create a new user and assign a role. A person who has admin access can create a new user and assign a role.
 
-## Pre-requisites
+## Prerequisites
 
 A user should have an admin access to create a new user and assign a role.
 

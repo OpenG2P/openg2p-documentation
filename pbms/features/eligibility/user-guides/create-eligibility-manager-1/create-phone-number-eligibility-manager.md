@@ -16,7 +16,7 @@ layout:
 
 This guide provides the step-by-step instructions to create a Phone Number Eligibility Manager
 
-## Pre-requisites
+## Prerequisites
 
 A user should have a Program Manager role to create a Phone Number Eligibility Manager.
 

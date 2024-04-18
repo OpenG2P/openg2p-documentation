@@ -18,7 +18,7 @@ layout:
 
 Create Program screen helps to create a new program. This document provides step-by-step instructions to create a new program.  The Program Manager has the rights to create a new program and administer create program screen.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have a Program Manager role to create a new program.
 

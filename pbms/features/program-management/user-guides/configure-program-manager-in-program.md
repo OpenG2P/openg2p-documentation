@@ -4,7 +4,7 @@
 
 This guide provides steps to add program managers to the program. The program manager is responsible for creating and assessing the cycles for the program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

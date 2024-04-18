@@ -16,7 +16,7 @@ layout:
 
 This guide provides the steps to identify duplicate registrants in the program. The registrants are deduplicated based on the Deduplication Managers configured in the program.
 
-## Pre-requisites <a href="#pre-requisites" id="pre-requisites"></a>
+## Prerequisites <a href="#prerequisites" id="prerequisites"></a>
 
 The user should have a Program Administrator role.
 

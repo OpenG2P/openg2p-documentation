@@ -16,7 +16,7 @@ layout:
 
 This guide provides steps to create an ID Deduplication manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user should be assigned to the Program Manager role.
 

@@ -4,7 +4,7 @@
 
 This guide provides steps to create an ID type. The ID type is the name of the registrant ID and is listed in the _ID Type_ dropdown in the _IDs_ tab of the _Registry_ configuration.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

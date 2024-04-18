@@ -18,7 +18,7 @@ layout:
 
 This document guides to provide the form access to the field agent which helps them to download the program form from **ODK Central**.
 
-## Pre-requisites
+## Prerequisites
 
 The access provider must have Administrator role in **ODK Central**.
 

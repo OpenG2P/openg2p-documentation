@@ -4,7 +4,7 @@
 
 This guide provides the steps for Program Administrators to make payments to reimburse the service providers who have provided cash benefits and services to beneficiaries.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

@@ -4,9 +4,9 @@
 
 The guide here provides steps to install WireGuard app on Android device and to activate the tunnel. This app allows users to create an encrypted VPN for secure communication.
 
-## Pre-requisites
+## Prerequisites
 
-The pre-requisites to install WireGuard on Android device are:
+The prerequisites to install WireGuard on Android device are:
 
 1. A user must have an Android Phone.
 2. Before proceeding with the installation, obtain the WireGuard conf file from a System Administrator.

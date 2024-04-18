@@ -4,7 +4,7 @@
 
 This guide provides the steps to prepare payment after approving the cycle of a program.
 
-## Pre-requisites
+## Prerequisites
 
 The program cycle should be created for a program.
 

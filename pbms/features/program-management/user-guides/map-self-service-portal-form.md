@@ -18,7 +18,7 @@ layout:
 
 This guide provides steps to map the portal form for an existing program. This form will be used by the beneficiary on _Self-Service Portal_ to apply for the program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](create-a-program.md) guide.
 

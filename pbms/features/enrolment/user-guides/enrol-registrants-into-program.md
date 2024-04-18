@@ -16,7 +16,7 @@ layout:
 
 This guide will help enrol registrants into a program, who are registered through offline registration and online self-registration process.
 
-## Pre-requisites
+## Prerequisites
 
 * The user must have a Program Manager role. See [Create User and Assign Role](../../administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.
 * There should be registrants with respect to the program

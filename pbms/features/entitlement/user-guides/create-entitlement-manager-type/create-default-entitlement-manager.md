@@ -4,7 +4,7 @@
 
 This guide provides steps to create the default entitlement manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

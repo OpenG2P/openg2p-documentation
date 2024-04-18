@@ -4,7 +4,7 @@
 
 This guide provides steps to configure the payment manager in a program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

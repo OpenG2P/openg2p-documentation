@@ -4,7 +4,7 @@
 
 This guide provides steps for the Website Editor to create a general intake sheet. This intake sheet is filled by the applicant while applying for a program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have a Website Editor role.
 

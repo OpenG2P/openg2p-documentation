@@ -4,13 +4,13 @@ description: (WIP)
 
 # Install WireGuard Client on Machine
 
-## Description <a href="#pre-requisites" id="pre-requisites"></a>
+## Description <a href="#prerequisites" id="prerequisites"></a>
 
 The guide here provides steps to install WireGuard app on machine and to activate the tunnel. This app allows users to create an encrypted VPN for secure communication.
 
-## Pre-requisites <a href="#pre-requisites" id="pre-requisites"></a>
+## Prerequisites <a href="#prerequisites" id="prerequisites"></a>
 
-The pre-requisites to install WireGuard on Machine:
+The prerequisites to install WireGuard on Machine:
 
 1. Download WireGaurd Client [here](https://www.wireguard.com/install/).
 2. Before proceeding with the installation, obtain the WireGuard conf file from a System Administrator.

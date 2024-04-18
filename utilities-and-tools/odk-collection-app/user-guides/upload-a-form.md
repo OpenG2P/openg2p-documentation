@@ -4,7 +4,7 @@
 
 This document provides instructions to upload a form for a project in a program using ODK Central.
 
-## Pre-requisites
+## Prerequisites
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * The user must have valid credentials to login **ODK Central**

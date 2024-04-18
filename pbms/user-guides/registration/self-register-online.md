@@ -4,7 +4,7 @@
 
 This document provides step-by-step instructions for beneficiaries to self-register via beneficiary portal.
 
-## Pre-requisites
+## Prerequisites
 
 * The user must have valid credentials (Email ID and password)
 * The user must have must have the MOSIP-issued national ID

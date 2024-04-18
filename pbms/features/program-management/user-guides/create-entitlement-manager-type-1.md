@@ -4,7 +4,7 @@
 
 This guide provides steps to configure an entitlement manager in the program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

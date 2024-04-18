@@ -4,7 +4,7 @@
 
 The guide here provides steps to install the SmartScanner app. This app allows users to scan the QR code in the entitlement voucher.
 
-## Pre-requisites <a href="#pre-requisites" id="pre-requisites"></a>
+## Prerequisites <a href="#prerequisites" id="prerequisites"></a>
 
 The user must possess an Android Phone with [WireGuard tunnel](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/yo3DQVnJdJ1Ym7dquuyV/guides/how-to-guides/install-wireguard-app-and-activate-tunnel) activated.
 

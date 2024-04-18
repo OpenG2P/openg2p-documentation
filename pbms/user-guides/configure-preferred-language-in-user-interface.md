@@ -17,7 +17,7 @@ layout:
 
 This document details the steps to configure the preferred geo-specific language.  This helps the user to understand and to do their activities with ease.
 
-## Pre-requisites
+## Prerequisites
 
 A user must have valid credentials to access the Social Registry&#x20;
 

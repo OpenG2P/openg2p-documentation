@@ -16,7 +16,7 @@ layout:
 
 This document provides instructions to install the 4Sure application on an Android mobile
 
-## Pre-requisites
+## Prerequisites
 
 A user must have a mobile device with 64-bit architecture or 32-bit arm device.
 

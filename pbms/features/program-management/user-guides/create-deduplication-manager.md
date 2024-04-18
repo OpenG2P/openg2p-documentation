@@ -16,7 +16,7 @@ layout:
 
 This guide provides steps to create and configure the deduplication manager inside the program.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Manager role.
 

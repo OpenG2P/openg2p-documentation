@@ -4,7 +4,7 @@
 
 This guide provides steps to create and configure the notification manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Manager role.
 

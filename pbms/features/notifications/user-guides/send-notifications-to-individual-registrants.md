@@ -4,7 +4,7 @@
 
 This guide will assist the user in informing the registrants and beneficiaries about the status of their application at various stages.
 
-## Pre-requisites
+## Prerequisites
 
 The user should have a Program Administrator role.
 

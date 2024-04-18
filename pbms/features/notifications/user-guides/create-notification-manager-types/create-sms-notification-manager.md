@@ -18,7 +18,7 @@ layout:
 
 This guide will provide the steps to create an SMS Notification Manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user should have a Program Administrator role assigned.
 

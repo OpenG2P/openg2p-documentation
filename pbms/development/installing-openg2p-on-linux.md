@@ -4,7 +4,7 @@
 
 Developers can run the entire OpenG2P package on their machines. The guide here provides steps to install OpenG2P on a laptop/desktop running Linux.
 
-## Pre-requisites
+## Prerequisites
 
 * A Linux server
 * Python3

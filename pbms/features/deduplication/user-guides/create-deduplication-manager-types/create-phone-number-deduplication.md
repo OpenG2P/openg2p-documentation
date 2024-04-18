@@ -16,7 +16,7 @@ layout:
 
 This guide provides steps to create a Phone Number Deduplication manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user should be assigned to the Program Manager role.
 

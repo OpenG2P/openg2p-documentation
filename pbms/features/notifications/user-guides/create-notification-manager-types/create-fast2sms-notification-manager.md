@@ -18,7 +18,7 @@ layout:
 
 This guide will provide the steps to create a Fast2SMS notification manager.
 
-## Pre-requisites
+## Prerequisites
 
 ## Steps
 

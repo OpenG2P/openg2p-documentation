@@ -18,7 +18,7 @@ layout:
 
 This guide provides the steps to configure the Cash Payment Manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user should have a Program Administrator role.
 

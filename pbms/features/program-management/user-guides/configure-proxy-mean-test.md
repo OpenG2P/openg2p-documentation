@@ -4,7 +4,7 @@
 
 The guide provides steps to enable and configure the Proxy Means Test.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have a Program Manager role.
 

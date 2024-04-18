@@ -18,7 +18,7 @@ layout:
 
 This guide provides steps to create an entitlement voucher template. The user can use this file to configure a voucher entitlement manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user must have the Program Administrator role.
 

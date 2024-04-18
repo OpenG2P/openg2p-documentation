@@ -18,7 +18,7 @@ layout:
 
 This guide provides the steps to create Payment Hub EE Payment Manager.
 
-## Pre-requisites
+## Prerequisites
 
 The user should have a Program Manager role.
 

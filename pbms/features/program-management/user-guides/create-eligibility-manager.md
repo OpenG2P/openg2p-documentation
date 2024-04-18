@@ -4,7 +4,7 @@
 
 This guide provides step-by-step instructions to create and configure the Eligibility Manager under the program.
 
-## Pre-requisites
+## Prerequisites
 
 A user should have a Program Manager role to create a Eligibility Manager under program.
 

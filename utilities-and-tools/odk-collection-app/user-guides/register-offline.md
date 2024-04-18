@@ -4,7 +4,7 @@
 
 This document provides details of the activities, the field agent performs, after a program form is configured in ODK Collect App in his/her mobile device, to collect registrants details in areas without internet connectivity . A field agent does the [offline registration](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/secure-registry/registration-methods/offline-registration.md) using ODK Collect App. Registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
 
-## Pre-requisites
+## Prerequisites
 
 * A agent must have ODK Collect App in his/her device
 * A agent must have form access

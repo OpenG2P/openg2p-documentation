@@ -4,7 +4,7 @@
 
 This document provides instructions to upload a revised form available in a project using ODK Central.
 
-## Pre-requisites
+## Prerequisites
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * A user must have valid credentials to login **ODK Central**

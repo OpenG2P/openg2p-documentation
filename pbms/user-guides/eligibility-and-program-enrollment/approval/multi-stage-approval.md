@@ -4,7 +4,7 @@
 
 This guide provides steps for multiple stages of approving a beneficiary's entitlement. Each stage is assigned one entitlement manager to carry out the necessary approvals. The steps in this guide have to be carried out by each entitlement manager in the order of the stages.
 
-## Pre-requisites
+## Prerequisites
 
 The user is a Program Administrator and has configured multiple stages of entitlement and assigned an entitlement manager for each stage. Learn more about creating multiple stages of entitlement [here](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/guides/user-guides/broken-reference/README.md).
 
