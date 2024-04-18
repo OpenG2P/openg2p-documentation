@@ -89,6 +89,7 @@
       * [Beneficiary Exit Process](pbms/development/upcoming-features/beneficiary-exit-process.md)
       * [Verifiable Credential Issuance](pbms/development/upcoming-features/verifiable-credential-issuance.md)
       * [Deduplication](pbms/development/upcoming-features/deduplication.md)
+      * [Manual In-kind Entitlement](pbms/development/upcoming-features/manual-in-kind-entitlement.md)
     * [Odoo Modules](pbms/development/odoo-modules/README.md)
       * [OpenG2P Registry MTS Connector](pbms/development/odoo-modules/openg2p-registry-mts-connector.md)
       * [openg2p-documents](pbms/development/odoo-modules/openg2p-documents.md)
