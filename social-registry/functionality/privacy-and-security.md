@@ -24,7 +24,7 @@ Input security is handled in the following ways:
 
 * Social Registry fields can be encrypted and stored. Or the registry data can be anonymized.
 * Social Registry uses [MOSIP Keymanager](https://docs.mosip.io/1.2.0/modules/keymanager) module for cryptography APIs. Keymanager uses HSM to store keys and perform operations like encrypting, signing, etc. so that the real keys are stored in HSM.
-* Know more about [Privacy and Security in OpenG2P](../privacy-and-security/). And about [Keymanager integration](../privacy-and-security/key-manager.md).
-* Link to [Configuration and source code](../pbms/development/repositories/openg2p-security.md).
+* Know more about [Privacy and Security in OpenG2P](../../privacy-and-security/). And about [Keymanager integration](../../privacy-and-security/key-manager.md).
+* Link to [Configuration and source code](../../pbms/development/repositories/openg2p-security.md).
 
-<figure><img src="../.gitbook/assets/Registry Keymanager (1) (1).jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Registry Keymanager (1) (1).jpg" alt=""><figcaption></figcaption></figure>

@@ -14,7 +14,7 @@ This is a simple method where the Python logging module is used to write event l
 
 ### Changed field records in OpenSearch
 
-Reporting infrastructure may be harnessed to record all changes in DB fields and shunted them to OpenSearch for indexing, searching and querying.  See details on reporting infrastructure [here](../../monitoring-and-reporting/).
+Reporting infrastructure may be harnessed to record all changes in DB fields and shunted them to OpenSearch for indexing, searching and querying.  See details on reporting infrastructure [here](../../functionality/monitoring-and-reporting/).
 
 ### Design
 
