@@ -1,9 +1,10 @@
 ---
+description: Work In Progress
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -14,15 +15,28 @@ layout:
 
 # ODK
 
-OpenG2P platform uses the ODK Collect App to collect and manage the registrant information. The app can be used offline to carry out field registrations in areas without Internet connectivity. The registrant details are uploaded to ODK Central once the agent moves to an area with internet connectivity.
+## Introduction
 
-The app also has an integrated QR code scanning application to scan the ID card of the registrant. The scanning application automatically populates the KYC data of the registrant in the ODK form and verifies the digital signature to establish the card's authenticity.
-
-## ODK
-
-ODK is an open-source toolkit that uses offline forms to collect data. ODK Collect is the client-side app, and ODK Central is the server-side app.
+ODK (Open Data Kit) is an open-source toolkit that helps organizations collect, manage, and use data, particularly in areas with limited internet connectivity. It enables users to create custom data collection forms on mobile devices and collect data offline. .ODK Collect is the client-side app, and ODK Central is the server-side app.
 
 Learn more about ODK [here](https://docs.getodk.org/).
+
+OpenG2P uses the ODK Collect App to collect and manage registrant information. The app works offline, allowing field registrations in areas without Internet. Details are uploaded to ODK Central when the agent has internet access.
+
+The app also has an integrated QR code scanning application to scan the ID card of the registrant. The scanning application automatically populates the KYC data of the registrant in the ODK form and verifies the digital signature to establish the card's authenticity.\
+
+
+### Features of ODK and its use in the OpenG2P platform
+
+1. **Offline Data Collection:** ODK Collect allows users to collect data offline, which is crucial for field registrations in areas without internet connectivity.
+2. **Custom Forms:** Users can create custom data collection forms tailored to their specific needs, enhancing the flexibility and adaptability of the platform.
+3. **Integration with ODK Central:** The data collected using ODK Collect is stored and managed on ODK Central and allows organizations to access and analyze the data easily, even if it was collected offline.
+4. **QR Code Scanning:** QR code scanning in ODK Collect allows users to quickly capture information from ID cards or other sources by scanning QR codes.
+5. **Digital Signature Verification:** ODK Collect verifies the digital signature of scanned ID cards, ensuring the authenticity of the information provided.
+6. Language support
+7. Calendar
+8. Capture the location details\
+
 
 ## Registration process
 
@@ -32,15 +46,15 @@ The three steps involved in the registration process using the ODK Collect App a
 * Field Registration
 * Use [**ODK Importer**](../pbms/features/odk-importer/) or [**MTS Connector**](../pbms/development/odoo-modules/mts-connector.md)
 
-#### ODK Central Configuration
+### ODK Central Configuration
 
 A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
 * Program creation - To learn the steps, click [here](../pbms/features/program-management/user-guides/create-a-program.md).
-* Create ODK form in ODK Central - To learn the steps, click [here](odk-collection-app/user-guides/create-odk-form.md).
-* Provide ODK form access to the field registration agent- To learn the steps, click [here](odk-collection-app/user-guides/provide-form-access-to-field-agent.md).
+* Create ODK form in ODK Central.: To learn the steps, click [here](odk-collection-app/user-guides/create-odk-form.md).
+* Provide ODK form access to the field registration agent. To learn the steps, click [here](odk-collection-app/user-guides/provide-form-access-to-field-agent.md).
 
-#### Field registration
+### Field registration
 
 The field registration agent downloads the ODK form using the ODK Collect App. To learn the steps, click [here](odk-collection-app/user-guides/download-form-on-odk-collect.md).
 
@@ -48,35 +62,30 @@ After downloading the app, the agent visits the field and follows these steps fo
 
 * Captures the registrant's consent and records it
 * Scans the ID card of the registrant to populate his/her KYC data
-* Records further information such as household size, income, and home size
+* Record further information such as household size, income, and home size
 * Submits the registrant's information
 
 The submitted forms are uploaded to ODK Central once the agent moves to an area with internet connectivity.
 
-#### Create ODK MTS Connector
+### Create ODK MTS Connector
 
-Based on the business scenario, a program administrator must create an ODK MTS Connector for individual/group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
+### ODK Importer
 
-**Business Scenario 1:** The verification process is not required on the individual/group information captured using ODK forms.
+ODK  and OpenG2P are connected through the ODK Importer module, which is specifically designed to import ODK forms of beneficiaries into OpenG2P Systems. The ODK Importer streamlines data transfer from ODK forms directly into OpenG2P Systems, eliminating manual data entry and improving data accuracy and efficiency in data management.
 
-**Business Scenario 2:** The verification process is required on the individual/group information captured using ODK forms.
+the ODK Importer module acts as a bridge between ODK forms and OpenG2P Systems, facilitating the integration and efficient management of data collected through ODK in the OpenG2P platform.
 
-**Business Scenario 1:**
+Based on the business scenario, a program administrator must create an [ODK MTS Connector](broken-reference) for each individual /group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
 
-1. A program administrator creates an ODK MTS Connector for individual/group to map the ODK forms available in the ODK Central.
-2. The ODK MTS Connector regularly queries the ODK Central for the submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them.
-3. The ODK MTS Connector then calls OpenG2P Rest APIs to populate the OpenG2P registry with the individual/group KYC data.&#x20;
+A program administrator must create an [ODK MTS Connector](broken-reference) to map the ODK forms in ODK Central to the OpenG2P registry. MTS Connector is the glue that holds ODK Central, MTS, and OpenG2P Registry together.&#x20;
 
-&#x20;      _Note: The OpenG2P registry accepts the individual/group KYC data only in JSON format._
 
-**Business Scenario 2:**
 
-1. A program administrator creates an ODK MTS Connector for individual/group to map the ODK forms available in the ODK Central.
-2. The ODK MTS Connector regularly queries the ODK Central for submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them and sent to MTS (MOSIP Token Seeder).
-3. MTS outputs an authentication token for each individual/group KYC data after performing ID verification. The authentication token is the proof of the registrant's authentication by the MOSIP ID Authentication system.
-4. Post authentication, the MTS Connector maps the registrant information from the submitted form and the authentication token in the JSON format accepted by OpenG2P. The ODK MTS connector then calls OpenG2P Rest APIs to populate the OpenG2P registry with the registrant’s information in JSON object.&#x20;
 
-&#x20;      _Note: The OpenG2P registry accepts the individual/group KYC data only in JSON format._
+
+<table><thead><tr><th width="234">No Verification </th><th> Verification </th></tr></thead><tbody><tr><td>A program administrator creates an ODK MTS Connector for individual/group to map the ODK forms available in the ODK Central.</td><td>A program administrator creates an ODK MTS Connector for individual/group to map the ODK forms available in the ODK Central</td></tr><tr><td>The ODK MTS Connector regularly queries the ODK Central for the submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them</td><td>The ODK MTS Connector regularly queries the ODK Central for submitted forms. Whenever forms are available, the MTS Connector maps the individual/group KYC data from them and sends to MTS (MOSIP Token Seeder).</td></tr><tr><td> </td><td>MTS outputs an authentication token for each individual/ group's KYC data after performing ID verification. The authentication token is the proof of the registrant's authentication by the MOSIP ID Authentication system</td></tr><tr><td>The ODK MTS Connector then calls OpenG2P Rest APIs to populate the OpenG2P registry with the individual/group KYC data.</td><td>Post-authentication, the MTS Connector maps the registrant information from the submitted form and the authentication token in the JSON format accepted by OpenG2P. The ODK MTS connector then calls OpenG2P Rest APIs to populate the OpenG2P registry with the registrant’s information in JSON object</td></tr></tbody></table>
+
+&#x20;  _Note: The OpenG2P registry accepts the individual or group KYC data only in JSON format._
 
 To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
 
@@ -85,6 +94,8 @@ To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-gui
 ## ODK Language Support
 
 ## ODK Geographic
+
+
 
 ## Demo video
 

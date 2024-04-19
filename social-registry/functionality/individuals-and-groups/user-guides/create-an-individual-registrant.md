@@ -4,7 +4,7 @@ description: Registry
 
 # Create an Individual Registrant
 
-his document provides instructions to create registry for an individual in [Registry](../) module
+his document provides instructions to create registry for an individual in [Registry](../../../../pbms/features/beneficiary-registry.md) module
 
 ## Prerequisites
 
