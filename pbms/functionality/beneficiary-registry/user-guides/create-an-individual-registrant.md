@@ -4,11 +4,11 @@ description: Registry
 
 # Create an Individual Registrant
 
-This document provides instructions to create registry for an individual by a Program Manager.&#x20;
+his document provides instructions to create registry for an individual in [Registry](../) module
 
 ## Prerequisites
 
-* The user must have Program Manager role.
+* The user must have Registrator and Administrator right access.
 * The user must have access to the Registry module in OpenG2P systems.
 
 ## Procedure
@@ -64,4 +64,8 @@ The fields and their descriptions are given below:
 7. Click the _**Save**_ button.
 8. Click the _**Discard**_ button to exit the screen.&#x20;
 
-This completes the creation of registry for an individual by a Program Manager.
+The newly created registry for an individual gets added in individual list.
+
+<figure><img src="../../../../.gitbook/assets/individual-screen.png" alt=""><figcaption></figcaption></figure>
+
+&#x20;This completes the creation of registry for an individual in _**Registry**_ module.

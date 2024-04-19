@@ -24,15 +24,15 @@ BR resides in PBMS and contains the following&#x20;
 
 BR may be queried to know about all the programs that a beneficiary is enrolled into.  Further, information on the amount of assistance (cash, in-kind) along with disbursement status may be queried.
 
-Note that BR is different from [Social Registry ](../../social-registry/)(SR). The following are the differences:
+Note that BR is different from [Social Registry ](../../../social-registry/)(SR). The following are the differences:
 
 | Beneficiary Registry                                                                                          | Social Registry                                                                                                                                   |
 | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Contains data specific to beneficiaries of programs, entitlements and disbursement status                     | Contains demographic data of individuals and groups not necessarily linked to specific programs. The data may be consumed by several applications |
 | Data is accessed and managed by Program Managers                                                              | Data is accessed and managed by Admins responsible for social registry management                                                                 |
-| Resides inside [PBMS](../)                                                                                    | Independent registry with its own storage and control. See [Functional Architecture](../../#functional-architecture).                             |
+| Resides inside [PBMS](../../)                                                                                 | Independent registry with its own storage and control. See [Functional Architecture](../../../#functional-architecture).                          |
 | Source code: [https://github.com/OpenG2P/openg2p-registry](https://github.com/OpenG2P/openg2p-registry)       | Source code: [https://github.com/OpenG2P/openg2p-social-registry](https://github.com/OpenG2P/openg2p-social-registry)                             |
-| Populated by pulling data from SR                                                                             | Populated by several mechanisms as given [here](../../social-registry/features/registry-update-mechanisms.md).                                    |
+| Populated by pulling data from SR                                                                             | Populated by several mechanisms as given [here](../../../social-registry/features/registry-update-mechanisms.md).                                 |
 | Does not contain PII data\*. Minimal demographic data (only that is required for eligibility and entitlement) | Contains PII data and other demographic data                                                                                                      |
 
 {% hint style="info" %}
