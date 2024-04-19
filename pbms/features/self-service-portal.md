@@ -57,7 +57,7 @@ Registrant's ID verification takes place during the login. The registrant also p
 
 ## OpenID Connect integration
 
-The Self-Service Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [eSignet](https://docs.esignet.io/). To learn more about ID verification using eSignet, click [here](broken-reference).
+The Self-Service Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [eSignet](https://docs.esignet.io/). To learn more about OpenID Connect integration, click [here](https://openid.net/developers/how-connect-works/).
 
 ### OIDC integration
 
