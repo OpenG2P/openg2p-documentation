@@ -51,7 +51,7 @@ The three steps involved in the registration process using the ODK Collect App a
 A program administrator/manager performs the configuration.  The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
 * Program creation - To learn the steps, click [here](../pbms/features/program-management/user-guides/create-a-program.md).
-* Create ODK form in ODK Central.: To learn the steps, click [here](odk-collection-app/user-guides/create-odk-form.md).
+* Create ODK form in ODK Central.: To learn the steps, click [here](odk-collection-app/user-guides/create-a-form.md).
 * Provide ODK form access to the field registration agent. To learn the steps, click [here](odk-collection-app/user-guides/provide-form-access-to-field-agent.md).
 
 ### Field registration
@@ -75,9 +75,9 @@ ODK  and OpenG2P are connected through the ODK Importer module, which is specifi
 
 the ODK Importer module acts as a bridge between ODK forms and OpenG2P Systems, facilitating the integration and efficient management of data collected through ODK in the OpenG2P platform.
 
-Based on the business scenario, a program administrator must create an [ODK MTS Connector](broken-reference) for each individual /group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
+Based on the business scenario, a program administrator must create an ODK [MTS Connector](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder/mts-odk-importer) for each individual /group to map the ODK forms available in the  ODK Central to the OpenG2P registry.&#x20;
 
-A program administrator must create an [ODK MTS Connector](broken-reference) to map the ODK forms in ODK Central to the OpenG2P registry. MTS Connector is the glue that holds ODK Central, MTS, and OpenG2P Registry together.&#x20;
+A program administrator must create an ODK MTS Connector to map the ODK forms in ODK Central to the OpenG2P registry. MTS Connector is the glue that holds ODK Central, MTS, and OpenG2P Registry together.&#x20;
 
 
 
