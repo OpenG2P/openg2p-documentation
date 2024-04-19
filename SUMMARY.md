@@ -54,6 +54,7 @@
       * [In-kind Transfer](pbms/functionality/disbursement-cycles/in-kind-transfer/README.md)
         * [User Guides](pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/README.md)
           * [Create a Product in Inventory](pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/create-a-product-in-inventory.md)
+          * [Configure In-Kind Entitlement Manager](pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/configure-in-kind-entitlement-manager.md)
       * [Digital Cash Transfer](pbms/features/disbursement-cycles/digital-cash-transfer.md)
       * [e-Voucher](pbms/features/disbursement-cycles/e-voucher.md)
       * [User Guides](pbms/features/disbursement-cycles/user-guides/README.md)
