@@ -16,4 +16,4 @@ Refer to the [deployment guide](../deployment/common-components/apache-superset.
 
 For geo spatial visualisation add a new GeoJSON file into Apache Superset as per the procedure given here:
 
-[https://ruky.me/2023/03/11/how-to-correctly-load-your-country-in-to-apache-superset/](https://ruky.me/2023/03/11/how-to-correctly-load-your-country-in-to-apache-superset/)
+{% embed url="https://ruky.me/2023/03/11/how-to-correctly-load-your-country-in-to-apache-superset/" %}
