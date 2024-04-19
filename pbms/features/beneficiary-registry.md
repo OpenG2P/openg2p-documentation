@@ -30,7 +30,7 @@ Note that BR is different from [Social Registry ](../../social-registry/)(SR). T
 | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Contains data specific to beneficiaries of programs, entitlements and disbursement status                     | Contains demographic data of individuals and groups not necessarily linked to specific programs. The data may be consumed by several applications |
 | Data is accessed and managed by Program Managers                                                              | Data is accessed and managed by Admins responsible for social registry management                                                                 |
-| Resides inside [PBMS](../)                                                                                    | Independent registry with its own storage and control                                                                                             |
+| Resides inside [PBMS](../)                                                                                    | Independent registry with its own storage and control. See [Functional Architecture](../../#functional-architecture).                             |
 | Source code: [https://github.com/OpenG2P/openg2p-registry](https://github.com/OpenG2P/openg2p-registry)       | Source code: [https://github.com/OpenG2P/openg2p-social-registry](https://github.com/OpenG2P/openg2p-social-registry)                             |
 | Populated by pulling data from SR                                                                             | Populated by several mechanisms as given [here](../../social-registry/features/registry-update-mechanisms.md).                                    |
 | Does not contain PII data\*. Minimal demographic data (only that is required for eligibility and entitlement) | Contains PII data and other demographic data                                                                                                      |
@@ -39,11 +39,11 @@ Note that BR is different from [Social Registry ](../../social-registry/)(SR). T
 \* It is advised not to populate PII data into the BR. However, the platform does not restrict such a usage.&#x20;
 {% endhint %}
 
-## Pulling data from SR
+## Pulling data from SR into BR
 
 TBD
 
-## Data share
+## Sharing BR data
 
 Beneficiary program data can be shared to external systems via APIs.
 
