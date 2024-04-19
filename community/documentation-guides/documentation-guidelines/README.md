@@ -65,3 +65,22 @@ To learn how to embed a miro image in the GitBook, [click here](embed-a-miro-dia
 
 To learn how to set an image within the frame in miro, [click here](set-an-image-for-a-start-view.md)
 
+## Avoid repetition
+
+Do not repeat the content from concept documentation to any other type of documentation and vice versa. Instead, provide the relevant link.
+
+Do not repeat the similar content inside the documentation.  Instead, provide the relevant link.
+
+## Usage of consistency in words
+
+| Use           | Do not use     |
+| ------------- | -------------- |
+| Prerequisites | Pre-requisites |
+| eSignet       | e-Signet       |
+
+
+
+
+
+
+
