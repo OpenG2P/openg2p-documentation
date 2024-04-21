@@ -28,7 +28,7 @@ This document provides instructions to set up a K8s Cluster on which OpenG2P Mod
 
 * Set up firewall rules on each node according to the following table. The exact method to set up the firewall rules will vary from cloud to cloud and on-prem. (For example on AWS, EC2 security groups can be used. For on-prem cluster, ufw can be used and so on)
 
-<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>9796</td><td>Cluster nodes over internal network. </td><td>Prometheus metrics</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
 
 * For example, this is how you can use `ufw` to set up the firewall on each cluster node.
   * SSH into each node, and change to superuser
@@ -117,9 +117,9 @@ This section assumes an NFS Server has already been set up and operational for p
 
 ### Longhorn setup
 
-This installation only applies if Longhorn is used as storage.  This may be skipped if you are using NFS.
+This installation only applies if Longhorn is used as storage. This may be skipped if you are using NFS.
 
-&#x20;[Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
+[Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
 ### Istio setup
 
@@ -138,7 +138,7 @@ This installation only applies if Longhorn is used as storage.  This may be skip
         ```
     * Configure the operator.yaml with any further configuration
 *   Gather Wildcard TLS certificate and key and run;\
-    Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt) &#x20;
+    Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
 
     ```
     kubectl create secret tls tls-openg2p-ingress -n istio-system \
