@@ -48,5 +48,5 @@ The following domain names and mappings will be required. Examples:
 
 ## Certificate requirements
 
-One wildcard certificate is required at least, depending on the above domain names used. This can also be generated using Letsencrypt.
+One wildcard certificate is required at least, depending on the above domain names used. This can also be generated using Letsencrypt.  See guide [here](deployment-guide/ssl-certificates-using-letsencrypt.md).
 

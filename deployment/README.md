@@ -15,7 +15,7 @@ layout:
 
 # Deployment
 
-OpenG2P offers production-grade deployment scripts and utilities based on reputed open-source components like Kubernetes, Rancher etc. The deployment infra may be used for sandbox, pilot or full-scale rollout. All modules are available as Dockers and Kubernetes is used as the orchestration platform. The deployment architecture is depicted below
+OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md) and utilities based on reputed open-source components like Kubernetes, Rancher etc. The deployment infra may be used for sandbox, pilot or full-scale rollout. All modules are available as Dockers and Kubernetes is used as the orchestration platform. The deployment architecture is depicted below
 
 {% embed url="https://miro.com/app/board/uXjVN5LsWDw=/?share_link_id=356935336772" %}
 Deployment Architecture
