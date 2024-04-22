@@ -185,6 +185,7 @@
     * [Individuals and Groups](social-registry/functionality/individuals-and-groups/README.md)
       * [User Guides](<social-registry/functionality/individuals-and-groups/user-guides/README (1).md>)
         * [Create an Individual Registrant](<social-registry/functionality/individuals-and-groups/user-guides/create-an-individual-registrant (1).md>)
+        * [Create a Group and Add Individual Registrants to the Group](social-registry/functionality/individuals-and-groups/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
     * [Registry Update Mechanisms](social-registry/features/registry-update-mechanisms.md)
     * [Notifications](social-registry/features/notifications.md)
     * [Administration](social-registry/features/administration.md)

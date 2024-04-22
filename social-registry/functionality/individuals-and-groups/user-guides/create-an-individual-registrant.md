@@ -8,7 +8,7 @@ his document provides instructions to create registry for an individual in [Regi
 
 ## Prerequisites
 
-* The user must have Registrator and Administrator right access.
+* The user must have Registrator and Administrator role.
 * The user must have access to the Registry module in OpenG2P systems.
 
 ## Procedure

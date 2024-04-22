@@ -16,7 +16,7 @@ The user must have valid credentials to login to Social Registry.
 
 Social Registry application is displayed.
 
-<figure><img src="../../../../.gitbook/assets/home-page-sr.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="broken-reference" alt=""><figcaption></figcaption></figure>
 
 2. Click the user profile at the top right corner of the application.
 

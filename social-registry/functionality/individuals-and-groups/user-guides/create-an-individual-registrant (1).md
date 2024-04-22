@@ -8,7 +8,7 @@ This document provides instructions to create an Individual Registrant in the So
 
 ## Prerequisites
 
-* The user must have Registrar and Administrator right access.
+* The user must have Registrar and Administrator role.
 * The user must have access to the Social Registry module.
 
 ## Procedure
