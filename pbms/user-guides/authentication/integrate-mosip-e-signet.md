@@ -14,7 +14,7 @@ This guide provides steps to integrate [OpenG2P with e-Signet with MOSIP](https:
 6. Biometric auth devices (already onboarded on MOSIP) are available for authentication
 7. Email and SMS are enabled on MOSIP IDA for OTP authentication
 8. MOSIP Partner Management Services (PMS) Portal or APIs must be accessible to both MOSIP Partner Admin and OpenG2P Admin
-9. MOSIP Partner Specific User Token (PSUT) ID type is configured. See [Configure ID Types](../../../social-registry/user-guides/configure-id-types.md).
+9. MOSIP Partner Specific User Token (PSUT) ID type is configured. See [Configure ID Types](../../functionality/beneficiary-registry/user-guides/configuration/configure-id-types.md).
 
 ## Steps
 
@@ -95,8 +95,6 @@ These steps are executed by OpenG2P Admin on the OpenG2P Admin interface.
 
 2. Create a new OIDC Provider with the following details:
 
-
-
 | Parameter                                | Value                                                                                                                                    |                                                                                                                                               |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Client ID                                | The output of the [previous section](integrate-mosip-e-signet.md#configure-openg2p-as-relying-party-on-e-signet).                        |                                                                                                                                               |
@@ -115,4 +113,3 @@ These steps are executed by OpenG2P Admin on the OpenG2P Admin interface.
 | Partner Creation Validate Response       | `name:name email:email phone:phone_number birthdate:birthdate gender:gender address:address`                                             |                                                                                                                                               |
 | Default Group User Creation              | `User types / Portal`                                                                                                                    | Specifies all users signing up through this OIDC Provider (e-Signet) are only going to be portal users                                        |
 | Login Attribute Mapping On User Creation | `email`                                                                                                                                  | To allow users to sign in with their email and password after initial signup with e-Signet.                                                   |
-

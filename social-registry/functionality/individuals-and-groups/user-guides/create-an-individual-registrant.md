@@ -1,15 +1,15 @@
 ---
-description: Registry
+description: Beneficiary Registry
 ---
 
 # Create an Individual Registrant
 
-his document provides instructions to create registry for an individual in [Registry](../../../../pbms/features/beneficiary-registry.md) module
+This document provides instructions to create registrant for an individual in Beneficiary Registry module.&#x20;
 
 ## Prerequisites
 
 * The user must have Registrator and Administrator role.
-* The user must have access to the Registry module in OpenG2P systems.
+* The user must have access to the Beneficiary Registry module in OpenG2P systems.
 
 ## Procedure
 
@@ -35,7 +35,7 @@ _**Individual/New**_ screen is displayed.
 
 The fields and their descriptions are given below:
 
-<table><thead><tr><th width="374">Field</th><th>Description</th></tr></thead><tbody><tr><td>Family Name</td><td>Enter the family name of the individual. It is a mandatory field.</td></tr><tr><td>Given Name</td><td>Enter the given name of the individual. It is a mandatory field.</td></tr><tr><td>Additional Name</td><td>Enter the additional name of the individual. It is a optional field.</td></tr><tr><td><img src="../../../../.gitbook/assets/camera-icon.png" alt="" data-size="original"></td><td>Incorporate the individual photo.</td></tr><tr><td>Tags</td><td>Select the appropriate tag from the drop-down.</td></tr><tr><td>Registration Date</td><td>Auto-populates the current date </td></tr><tr><td>Mode of Payment</td><td><p>Select the appropriate mode of payment from the drop-down. The available options are: </p><ul><li>Cash</li><li>Voucher</li><li>Digital</li></ul></td></tr><tr><td>Is Encrypted</td><td>Check the box, if the individual requires encryption</td></tr></tbody></table>
+<table><thead><tr><th width="276">Field</th><th>Description</th></tr></thead><tbody><tr><td>Family Name</td><td>Enter the family name of the individual. It is a mandatory field.</td></tr><tr><td>Given Name</td><td>Enter the given name of the individual. It is a mandatory field.</td></tr><tr><td>Additional Name</td><td>Enter the additional name of the individual. It is a optional field.</td></tr><tr><td><img src="../../../../.gitbook/assets/camera-icon.png" alt="" data-size="original"></td><td>Add the individual photo.</td></tr><tr><td>Tags</td><td>Select the appropriate tag from the drop-down.</td></tr><tr><td>Registration Date</td><td>Displays the current date by default</td></tr><tr><td>Mode of Payment</td><td><p>Select the appropriate mode of payment from the drop-down. The available options are: </p><ul><li>Cash</li><li>Voucher</li><li>Digital</li></ul></td></tr><tr><td>Is Encrypted</td><td>Check the box, if the individual requires encryption</td></tr></tbody></table>
 
 
 
@@ -64,8 +64,8 @@ The fields and their descriptions are given below:
 7. Click the _**Save**_ button.
 8. Click the _**Discard**_ button to exit the screen.&#x20;
 
-The newly created registry for an individual gets added in individual list.
+The newly created individual registrant gets added in the individual list.
 
 <figure><img src="../../../../.gitbook/assets/individual-screen.png" alt=""><figcaption></figcaption></figure>
 
-&#x20;This completes the creation of registry for an individual in _**Registry**_ module.
+This completes the creation of an individual registrant in a Beneficiary Registry module.

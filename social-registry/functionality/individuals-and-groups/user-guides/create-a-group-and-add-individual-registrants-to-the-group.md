@@ -28,13 +28,13 @@ _**Groups New**_ screen is displayed.
 
 The fields and their descriptions are given below:
 
-| Field                                                                               | Description                                                 |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Enter name of the group                                                             | <p>Enter the name of the new group<br>(Mandatory field)</p> |
-| Tags                                                                                | Select the tag from the drop-down                           |
-| <img src="../../../../.gitbook/assets/camera-icon.png" alt="" data-size="original"> | Add the group member's photo                                |
-| Registration Date                                                                   | Displays the current date by default                        |
-| Kind                                                                                | Select the Kind from the drop-down                          |
+| Field                                                                               | Description                                               |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Enter name of the group                                                             | Enter the name of the new group. It is a mandatory field. |
+| Tags                                                                                | Select the tag from the drop-down                         |
+| <img src="../../../../.gitbook/assets/camera-icon.png" alt="" data-size="original"> | Add the group member's photo                              |
+| Registration Date                                                                   | Displays the current date by default                      |
+| Kind                                                                                | Select the Kind from the drop-down                        |
 
 4. Click the _**Members**_ tab.
 5. Click the _**Add a line.**_
@@ -71,7 +71,7 @@ It auto-populates the other fields as shown below.
 
 _**Search: Member Name**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/search-member-name.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/search-member-name (1).png" alt=""><figcaption></figcaption></figure>
 
 You can search and find the name of the individual registrants in the search field (or) directly click the individual registrant in the member name list. It gets added or auto-populated in the Groups screen.
 
