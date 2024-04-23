@@ -124,7 +124,7 @@ db_password = your_database_password
 ## Installation of OpenG2P package
 
 1. Create a `custom-addons` folder inside the `odoo15` folder to keep all the extra modules.
-2.  Clone all the OpenG2P modules:
+2.  Clone all the [OpenG2P modules](repositories/):
 
     ```bash
     git clone <repo_url>
@@ -135,4 +135,4 @@ db_password = your_database_password
     cd /opt/odoo/custom-addons/<module_directory>
     pip3 install -r requirements.txt
     ```
-4. Add addons directory path to the _odoo15.conf_ file.
+4. Add addons directory path to the _odoo.conf_ file in **addons\_path** parameter, mentioned in [point 7](installing-openg2p-on-linux.md#id-7.-configure-odoo).
