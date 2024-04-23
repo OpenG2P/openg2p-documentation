@@ -1,4 +1,18 @@
-# Create Voucher Entitlement Manager
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Create Voucher Entitlement Manager
 
 ## Description
 

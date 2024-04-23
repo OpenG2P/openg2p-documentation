@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Deduplication Manager Types
+# 📔 Create Deduplication Manager Types
 
 There are 2 types of deduplication managers available that can be created and then can be configured to the program accordingly.
 

@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Deduplication Manager under Program
+# 📔 Create Deduplication Manager under Program
 
 This guide provides steps to create and configure the deduplication manager inside the program.
 

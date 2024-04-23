@@ -1,4 +1,18 @@
-# Configure Entitlement Manager under Program
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Configure Entitlement Manager under Program
 
 ## Description
 

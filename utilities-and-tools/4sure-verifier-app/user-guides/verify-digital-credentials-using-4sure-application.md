@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Verify Digital Credentials using 4Sure Application
+# 📔 Verify Digital Credentials using 4Sure Application
 
 ## Description
 

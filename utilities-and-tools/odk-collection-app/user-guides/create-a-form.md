@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create a Form
+# 📔 Create a Form
 
 ## Description
 
@@ -29,9 +29,9 @@ You can create a form for a program using any tool that has spreadsheet features
 
 * Spreadsheet - for example, Microsoft Excel, Google sheet, and so on
 
-&#x20;      Note:
+Note:
 
-&#x20;      For example, here Microsoft Excel is used to create a form for a program.
+For example, here Microsoft Excel is used to create a form for a program.
 
 * XML
 
@@ -43,7 +43,7 @@ You can use the existing template in XLS format to create a form for a program.
 
 The template to create a form for a program is displayed.
 
-<figure><img src="../../../../.gitbook/assets/template-form.png" alt=""><figcaption><p>Template form</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/template-form.png" alt=""><figcaption><p>Template form</p></figcaption></figure>
 
 The columns and their descriptions are given below.
 
@@ -54,20 +54,20 @@ The columns and their descriptions are given below.
 | type           | This column contains the data type of the field value. For example, the data type can be integer, text, list, image and so on.                                                                                                                                                                                                       |
 | name           | The name represents the variable name of the field mapped in back-end                                                                                                                                                                                                                                                                |
 | label::English | <p>The label is the field name appears in the user interface (front-end).</p><p>Note:</p><p>You can the added the column, if the field name to be displayed/translated in another languages in front-end. By default, the column name is label::English.</p><p>For example, you can add label::French, label::Germany and so on.</p> |
-| required       | In this column, enter Yes, if  the field value is mandatory.                                                                                                                                                                                                                                                                         |
+| required       | In this column, enter Yes, if the field value is mandatory.                                                                                                                                                                                                                                                                          |
 | read-only      | Enter yes, if it is read-only field.                                                                                                                                                                                                                                                                                                 |
 | calculation    | Enter the formula to calculate the field value, if required.                                                                                                                                                                                                                                                                         |
 | default        | Enter yes, if any default value to be displayed in the field.                                                                                                                                                                                                                                                                        |
-| relevant       | This column  determines whether a question to be displayed to a user or not. It allows you define branching or skip logic in your forms.                                                                                                                                                                                             |
+| relevant       | This column determines whether a question to be displayed to a user or not. It allows you define branching or skip logic in your forms.                                                                                                                                                                                              |
 | appearance     | Enter the element of the field. For example, the field element can be field-list, field-drop-down, horizontal and so on                                                                                                                                                                                                              |
 
 #### Choices worksheet
 
-This worksheet contains the data based on the field element.&#x20;
+This worksheet contains the data based on the field element.
 
 For example, here the below image represents the field which has value in list format.
 
-<figure><img src="../../../../.gitbook/assets/form-template-choice.png" alt=""><figcaption><p>Choices worksheet</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/form-template-choice.png" alt=""><figcaption><p>Choices worksheet</p></figcaption></figure>
 
 The column and their descriptions are given below:
 
@@ -81,7 +81,7 @@ The column and their descriptions are given below:
 
 This worksheet contains the history of the form. It contains the title, form id, public key, submission url, instance name, and the version of the form.
 
-<figure><img src="../../../../.gitbook/assets/form-template-settings.png" alt=""><figcaption><p>Setting worksheet</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/form-template-settings.png" alt=""><figcaption><p>Setting worksheet</p></figcaption></figure>
 
 The columns and their descriptions are given below.
 
@@ -99,4 +99,3 @@ The columns and their descriptions are given below.
 You can create a form using XML.
 
 [Click here](https://docs.getodk.org/xlsform/), to learn about create a form using XML.
-

@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create ID Deduplication Manager
+# 📔 Create ID Deduplication Manager
 
 This guide provides steps to create an ID Deduplication manager.
 

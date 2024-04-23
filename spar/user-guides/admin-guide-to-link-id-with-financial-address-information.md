@@ -1,9 +1,23 @@
 ---
-cover: ../../../.gitbook/assets/SPAR banner-on-light-background.png
+cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
+layout:
+  cover:
+    visible: true
+    size: full
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Admin Guide to Link ID with Financial Address information
+# 📔 Admin Guide to Link ID with Financial Address information
 
 ## Introduction
 
@@ -13,7 +27,7 @@ This document contains step-by-step instructions for the administrator to link I
 
 * Administrator must have a .csv file which contains the bulk FA data of the beneficiaries in the required format. To know the format of the .csv file, refer the [sample\_data.csv](https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts) file available in the cloned repository. In .csv file, the mandatory columns are National ID and Account number. The optional columns are Name and Phone.&#x20;
 
-<figure><img src="../../../.gitbook/assets/sample-csv-file.png" alt=""><figcaption><p>sample_data.csv</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/sample-csv-file.png" alt=""><figcaption><p>sample_data.csv</p></figcaption></figure>
 
 * The administrator system must have python and its modules cryptography, requests installed
 
@@ -24,14 +38,14 @@ The administrator must follow the following sequence process:
 1. The administrator must clone the repository [https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts](https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts)
 2. Click the python script file _**link\_mapper.py**_. The script is displayed.
 
-<figure><img src="../../../.gitbook/assets/python-script.png" alt=""><figcaption><p>Python script</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/python-script.png" alt=""><figcaption><p>Python script</p></figcaption></figure>
 
 In the script, the _**mapper\_link\_api\_url**_  and the _**csv\_path**_ must be verified and updated.
 
 3. Double click the script file _**link\_mapper.py**_ to run the script.
 4. After the administrator runs the script, the response is triggered in a cmd prompt which shows that the National IDs are linked to the FA of the beneficiaries.
 
-<figure><img src="../../../.gitbook/assets/Sample-response-message .png" alt=""><figcaption><p>Sample response message.</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Sample-response-message .png" alt=""><figcaption><p>Sample response message.</p></figcaption></figure>
 
 5. Press Enter to exit from the cmd prompt.&#x20;
 

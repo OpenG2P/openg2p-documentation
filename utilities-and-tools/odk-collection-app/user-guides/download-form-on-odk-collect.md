@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Download Form on ODK Collect
+# 📔 Download a Form on ODK Collect
 
 ## Description
 
@@ -26,8 +26,8 @@ This document provides instructions to download a program form on the ODK Collec
 
 ## Procedure
 
-1. &#x20;Login to the **ODK Central.**
-2. &#x20;Click the relevant project link to upload a form.
+1. Login to the **ODK Central.**
+2. Click the relevant project link to upload a form.
 
 For example, here, the project is considered as a Safety Net Program.
 
@@ -51,7 +51,7 @@ The App Users screen is displayed.
 
 6. Tap the ODK Collect App in the field agent device.
 
-<figure><img src="../../../.gitbook/assets/ODK-collect-app-icon.png" alt=""><figcaption><p>ODK  collect app</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/ODK-collect-app-icon.png" alt=""><figcaption><p>ODK collect app</p></figcaption></figure>
 
 You can find the configuration modes.
 

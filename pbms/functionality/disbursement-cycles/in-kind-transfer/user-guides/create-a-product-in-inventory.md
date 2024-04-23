@@ -1,8 +1,18 @@
 ---
-description: In-kind transfer
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Create a Product in Inventory
+# 📔 Create a Product in Inventory
 
 This document provides instructions to add an in-kind product to the Inventory module.
 

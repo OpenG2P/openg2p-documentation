@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Verify and Populate the form in ODK Collect using 4Sure Application
+# 📔 Verify and Populate the form in ODK Collect using 4Sure Application
 
 ## Description
 

@@ -1,4 +1,19 @@
-# Configure Program Manager under Program
+---
+description: Program
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Configure Program Manager under Program
 
 ## Description
 

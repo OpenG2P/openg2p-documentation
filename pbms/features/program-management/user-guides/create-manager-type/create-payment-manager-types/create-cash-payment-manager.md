@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Cash Payment Manager
+# 📔 Create Cash Payment Manager
 
 ## Description
 

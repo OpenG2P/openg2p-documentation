@@ -1,4 +1,18 @@
-# Test a Form
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Test a Form
 
 ## Description
 
@@ -16,7 +30,7 @@ This document provides instructions to test a form available in a project using 
 1. Login to the **ODK Central**
 2. Click the relevant project link.
 
-For example, here, the project is considered as Demo project&#x20;
+For example, here, the project is considered as Demo project
 
 3. Click the project (Demo) link listed below the **Projects**.
 
@@ -30,18 +44,18 @@ For example, here, the project is considered as Demo project&#x20;
 
 For example, here the form selected is AbhiBus Forms.
 
-The  AbhiBus Forms screen is displayed.
+The AbhiBus Forms screen is displayed.
 
 <figure><img src="../../../.gitbook/assets/publish-1.png" alt=""><figcaption><p>Forms screen</p></figcaption></figure>
 
 6. Click the _**test**_ link available in the _**Draft Checklist**_ below the option _**Test the form by creating a Submission**_
 
-The _**Draft Testing**_ screen is displayed.&#x20;
+The _**Draft Testing**_ screen is displayed.
 
 <figure><img src="../../../.gitbook/assets/draft-testing-1.png" alt=""><figcaption><p>Draft Testing screen</p></figcaption></figure>
 
-7. Click _**+New**_ button to preview the uploaded form.&#x20;
-8. Click the _**Testing**_ tab in the _**Draft**_ section.&#x20;
+7. Click _**+New**_ button to preview the uploaded form.
+8. Click the _**Testing**_ tab in the _**Draft**_ section.
 9. _**Testing**_ tab displays the QR code.
 10. Tab the _**ODK Collect App**_ in his/her mobile.
 11. Tap the _**Configure with QR code**_ button.

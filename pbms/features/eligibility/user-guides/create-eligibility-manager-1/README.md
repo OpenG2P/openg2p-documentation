@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Eligibility Manager Types
+# 📔 Create Eligibility Manager Types
 
 OpenG2P supports three types of Eligibility Managers.
 

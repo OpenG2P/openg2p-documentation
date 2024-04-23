@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Enrol Registrants into Program
+# 📔 Enrol Registrants into Program
 
 This guide will help enrol registrants into a program, who are registered through offline registration and online self-registration process.
 

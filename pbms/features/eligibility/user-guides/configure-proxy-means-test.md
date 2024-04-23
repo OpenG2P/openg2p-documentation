@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Configure Proxy Means Test
+# 📔 Configure Proxy Means Test
 
 This document provides step-by-step instructions to enable and configure the Proxy Means Test (PMT).
 
@@ -30,7 +30,7 @@ Refer [_**Create User and Assign Role**_](../../administration/role-based-access
 
 <figure><img src="../../../../.gitbook/assets/menu-program.png" alt=""><figcaption></figcaption></figure>
 
-The programs screen is displayed.
+Programs screen is displayed.
 
 2. Click on the program name to configure PMT.
 

@@ -1,8 +1,18 @@
 ---
-description: Beneficiary Registry
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Create an Individual Registrant
+# 📔 Create an Individual Registrant
 
 This document provides instructions to create registrant for an individual in Beneficiary Registry module.&#x20;
 

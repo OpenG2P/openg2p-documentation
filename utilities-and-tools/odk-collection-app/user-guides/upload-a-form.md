@@ -1,4 +1,18 @@
-# Upload a Form
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Upload a Form
 
 ## Description
 
@@ -30,15 +44,15 @@ For example, here, the project is considered as Safety Net Program
 
 <figure><img src="../../../.gitbook/assets/create-form.png" alt=""><figcaption><p>Create form</p></figcaption></figure>
 
-7. Navigate and choose a form file from the location where it is stored.&#x20;
+7. Navigate and choose a form file from the location where it is stored.
 
 <figure><img src="../../../.gitbook/assets/upload-form.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
-Note:&#x20;
+Note:
 
 You must read the information and upload the type of file accepted as given in the _**Create Form**_ screen.
 
-8. Click the _**Upload**_ button.&#x20;
+8. Click the _**Upload**_ button.
 
 A message pop ups on successful upload of the form. Once the form file is uploaded, the status of the form is in draft.
 

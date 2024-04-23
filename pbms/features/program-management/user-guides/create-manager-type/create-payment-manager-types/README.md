@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Payment Manager Types
+# 📔 Create Payment Manager Types
 
 ## Description
 

@@ -1,4 +1,18 @@
-# Delete a Form
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Delete a Form
 
 ## Description
 
@@ -29,7 +43,7 @@ The project (Safety Net Program) overview page is displayed.
 
 For example, here the form selected is Safety Net Program Forms.
 
-The  Safety Net Program form screen is displayed.
+The Safety Net Program form screen is displayed.
 
 <figure><img src="../../../.gitbook/assets/safety-net-program-delete.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 

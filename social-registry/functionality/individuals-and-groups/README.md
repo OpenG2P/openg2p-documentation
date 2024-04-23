@@ -32,9 +32,7 @@ Social Registry can house
 
 [Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
 
-Create a Group Registrant
+[Create a Group and Add Individual Registrants to the Group](../../../pbms/functionality/beneficiary-registry/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
 
-Create a Group Registrant
 
-Configure In-Kind Entitlement Manager
 

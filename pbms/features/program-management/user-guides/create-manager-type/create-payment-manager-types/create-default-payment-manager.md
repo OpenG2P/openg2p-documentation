@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Default Payment Manager
+# 📔 Create Default Payment Manager
 
 ## Description
 

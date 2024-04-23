@@ -1,4 +1,18 @@
-# Create and Approve Program Cycle
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Create and Approve Program Cycle
 
 ## Description
 

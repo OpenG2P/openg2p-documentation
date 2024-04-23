@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Provide Form Access to Field Agent
+# 📔 Provide Form Access to Field Agent
 
 ## Description
 
@@ -27,7 +27,7 @@ The access provider must have Administrator role in **ODK Central**.
 1. Login to **ODK Central**.
 2. Click the relevant project link listed below the _**Projects**_ on which the access is to be provided to the agent.
 
-For example, here, the project is considered as Safety Net Program&#x20;
+For example, here, the project is considered as Safety Net Program
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
@@ -49,12 +49,12 @@ _**Create App User**_ screen pops up.
 
 <figure><img src="../../../.gitbook/assets/safety-net-program-create-app-user.png" alt=""><figcaption><p>Create App User</p></figcaption></figure>
 
-6. Enter  the name of the field agent on the popup window.
-7. Click the **Create** button.&#x20;
+6. Enter the name of the field agent on the popup window.
+7. Click the **Create** button.
 
 _**Create App User**_ screen with QR code is displayed. Read the instruction given in the Create App User screen.
 
-8. Click the _**Done**_ button.&#x20;
+8. Click the _**Done**_ button.
 
 <figure><img src="../../../.gitbook/assets/Create-app-user-QR-code.png" alt=""><figcaption><p>Successfully created App User</p></figcaption></figure>
 

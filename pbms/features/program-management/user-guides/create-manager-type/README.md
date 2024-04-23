@@ -1,4 +1,18 @@
-# Create Manager Type
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Create Manager Type
 
 The Manager types are:
 

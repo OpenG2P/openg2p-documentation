@@ -1,8 +1,18 @@
 ---
-description: Beneficiary Registry
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Create a Group and Add Individual Registrants to the Group
+# 📔 Create a Group and Add Individual Registrants to the Group
 
 This document provides instructions to create a group and add individual registrants to the group in the Beneficiary Registry module.&#x20;
 

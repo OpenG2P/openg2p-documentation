@@ -27,6 +27,6 @@ OpenG2P supports the in-kind distribution of food and nonfood items, such as she
 
 [Create a Product in Inventory](user-guides/create-a-product-in-inventory.md)
 
-[Configure In-Kind Entitlement Manager](../../../../utilities-and-tools/odk-collection-app/user-guides/configure-in-kind-entitlement-manager.md)
+[Configure In-Kind Entitlement Manager](broken-reference)
 
 [Create and Approve Program Cycle](user-guides/create-and-approve-disbursement-cycle.md)

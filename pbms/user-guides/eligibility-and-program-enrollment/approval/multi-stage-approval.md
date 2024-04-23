@@ -1,4 +1,18 @@
-# Multi-Stage Approval
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Multi-Stage Approval
 
 ## Description
 

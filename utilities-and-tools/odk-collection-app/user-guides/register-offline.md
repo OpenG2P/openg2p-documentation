@@ -1,4 +1,18 @@
-# Register Offline
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Register Offline
 
 ## Description
 
@@ -35,7 +49,7 @@ The relevant program form is configured/downloaded in the agent's mobile device.
 
 The agent performs the below activity after the program form is configured in his/her mobile device.
 
-* Taps the ODK Collect App in his/her mobile. The configured program form is displayed. Initially a program form is in draft mode.&#x20;
-* The agent starts to fill the registrants details and uploads the relevant documents to a program form.  At the end of the program form he/she taps the _**Send**_ button to finish the registration process or taps the _**Save as draft**_ button to save the form.
+* Taps the ODK Collect App in his/her mobile. The configured program form is displayed. Initially a program form is in draft mode.
+* The agent starts to fill the registrants details and uploads the relevant documents to a program form. At the end of the program form he/she taps the _**Send**_ button to finish the registration process or taps the _**Save as draft**_ button to save the form.
 
 When the field agent moves to the area with internet connectivity, the submitted entries will be sent to ODK Central and will be listed under _**View Sent Form**_ or the form will be saved in the field agents device in the _**Send Finalized** Form Section._

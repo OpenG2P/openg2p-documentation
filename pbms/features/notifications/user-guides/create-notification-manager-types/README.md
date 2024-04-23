@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Notification Manager Types
+# 📔 Create Notification Manager Types
 
 ## Description
 

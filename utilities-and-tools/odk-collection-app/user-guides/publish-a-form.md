@@ -1,4 +1,18 @@
-# Publish a Form
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
+# 📔 Publish a Form
 
 ## Description
 
@@ -15,7 +29,7 @@ This document provides instructions to publish a form available in a project usi
 1. Login to the **ODK Central**
 2. Click the relevant project link.
 
-For example, here, the project is considered as Safety Net Program.&#x20;
+For example, here, the project is considered as Safety Net Program.
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
@@ -25,15 +39,15 @@ For example, here, the project is considered as Safety Net Program.&#x20;
 
 <figure><img src="../../../.gitbook/assets/safety-net-program-form-under-project.png" alt=""><figcaption><p>Safety Net Program</p></figcaption></figure>
 
-&#x20;5\.  Click the form available below the _**Forms**_.
+5\. Click the form available below the _**Forms**_.
 
 For example, here the form selected is Safety Net Program.
 
-The  Safety Net Program Forms screen is displayed.
+The Safety Net Program Forms screen is displayed.
 
 <figure><img src="../../../.gitbook/assets/safety-net-program-form.png" alt=""><figcaption></figcaption></figure>
 
-In the _**Draft**_ section, you can find two tabs.&#x20;
+In the _**Draft**_ section, you can find two tabs.
 
 * Status
 * Testing
@@ -48,11 +62,11 @@ _**P**_**ublish Draft** screen pop-ups. Read the instruction and click the _**Pr
 
 <figure><img src="../../../.gitbook/assets/publish-draft.png" alt=""><figcaption><p>Publish Draft</p></figcaption></figure>
 
-Note:&#x20;
+Note:
 
 If you have not tested the form for submission before publishing, the below screen pops up. Take the required necessary action and click the _**Proceed**_ button.
 
-<figure><img src="../../../.gitbook/assets/test-form.png" alt=""><figcaption><p>Publish Draft </p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/test-form.png" alt=""><figcaption><p>Publish Draft</p></figcaption></figure>
 
 7. Again _**Publish Draft**_ screen pops up. Read the instruction and change the version number of the form in the version field.
 8. Click the _**Proceed**_ button.
@@ -69,4 +83,3 @@ If you have not tested the form for submission before publishing, the below scre
 <figure><img src="../../../.gitbook/assets/safety-net-program-form-published-1.9-versions.png" alt=""><figcaption><p>Safety Net Program - Version</p></figcaption></figure>
 
 This completes the process of publish a form in _**ODK Central**_.
-

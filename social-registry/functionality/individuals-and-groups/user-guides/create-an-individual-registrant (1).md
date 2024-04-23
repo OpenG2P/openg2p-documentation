@@ -2,7 +2,7 @@
 description: Social Registry
 ---
 
-# Create an Individual Registrant
+# 📔 Create an Individual Registrant
 
 This document provides instructions to create an Individual Registrant in the Social Registry module.
 

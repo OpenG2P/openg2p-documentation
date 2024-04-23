@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Deduplicate Registrants
+# 📔 Deduplicate Registrants
 
 This guide provides the steps to identify duplicate registrants in the program. The registrants are deduplicated based on the Deduplication Managers configured in the program.
 

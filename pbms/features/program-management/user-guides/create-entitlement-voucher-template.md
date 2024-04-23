@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Entitlement Voucher Template
+# 📔 Create Entitlement Voucher Template
 
 ## Description
 

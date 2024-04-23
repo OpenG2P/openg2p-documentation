@@ -2,7 +2,7 @@
 description: Social Registry
 ---
 
-# Set Language Preference
+# 📔 Set Language Preference
 
 Social Registry (SR) has the option to load the application in multiple languages. Each user logging into the application can set the languages according to his/her preferences.  This document provides instructions for the user to set their preferred language in the application. Once the preferred language is updated, the default language is changed to the preferred language in the user interface.
 

@@ -1,9 +1,23 @@
 ---
 cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
+layout:
+  cover:
+    visible: true
+    size: full
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Self Update ID with Financial Address information
+# 📔 Self Update ID with Financial Address information
 
 ## Introduction
 

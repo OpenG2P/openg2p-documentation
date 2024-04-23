@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Create Payment Hub EE Payment Manager
+# 📔 Create Payment Hub EE Payment Manager
 
 ## Description
 
