@@ -30,9 +30,9 @@ Social Registry can house
 
 ## User guides
 
-[Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
+[Create an Individual Registrant](../../../pbms/functionality/beneficiary-management/user-guides/create-an-individual-registrant.md)
 
-[Create a Group and Add Individual Registrants to the Group](../../../pbms/functionality/beneficiary-registry/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
+[Create a Group and Add Individual Registrants to the Group](../../../pbms/functionality/beneficiary-management/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
 
 
 

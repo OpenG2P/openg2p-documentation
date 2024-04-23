@@ -33,7 +33,7 @@ Components of Program disbursement cycles
 1. **Duration**: Each cycle has a specific start and end date, defining the period during which disbursements are made.
 2. **Frequency**: Disbursements can be made on a regular basis, such as monthly, quarterly, or annually, depending on the program's design.
 3. **Amount**: The amount to be disbursed in each cycle is predetermined and may vary based on the program's rules and the recipient's eligibility.
-4. **Beneficiary**: Manage the list of beneficiaries eligible for the current cycle, including adding new beneficiaries, updating beneficiary information, and removing ineligible beneficiaries. To know more click [here](beneficiary-management.md)
+4. **Beneficiary**: Manage the list of beneficiaries eligible for the current cycle, including adding new beneficiaries, updating beneficiary information, and removing ineligible beneficiaries. To know more click [here](../functionality/beneficiary-management/)
 5. **Status:** The status [of ](#user-content-fn-1)[^1]the cycle, including whether it has been started, in progress, or completed, is tracked and updated.
 
 Create cycle: To learn steps click here
