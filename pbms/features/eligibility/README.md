@@ -58,4 +58,6 @@ For example, the image here shows eligibility criteria with two filters: first f
 
 ## Related user guides
 
-[Create Eligibility Manager Types](user-guides/create-eligibility-manager-1/)
+:notebook\_with\_decorative\_cover:[Create Eligibility Manager Types](user-guides/create-eligibility-manager-1/)
+
+:notebook\_with\_decorative\_cover:[Configure Proxy Means Test](user-guides/configure-proxy-means-test.md)

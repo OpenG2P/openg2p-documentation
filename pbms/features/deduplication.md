@@ -58,8 +58,8 @@ On the whole, these features provide flexibility for the program manager to impl
 
 ## Related user guides
 
-[Deduplicate Registrants](deduplication/user-guides/deduplicate-registrants.md)
+:notebook\_with\_decorative\_cover:[Deduplicate Registrants](deduplication/user-guides/deduplicate-registrants.md)
 
-[Create Deduplication Manager Types](deduplication/user-guides/create-deduplication-manager-types/)
+:notebook\_with\_decorative\_cover:[Create Deduplication Manager Types](deduplication/user-guides/create-deduplication-manager-types/)
 
-[Create Deduplication Manager under Program](program-management/user-guides/create-deduplication-manager.md)
+:notebook\_with\_decorative\_cover:[Create Deduplication Manager under Program](program-management/user-guides/create-deduplication-manager.md)

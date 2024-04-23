@@ -5,7 +5,7 @@ Social Registry (SR) has the option to load the application in multiple language
 * Setting languages as per the user choice will make them feel valued.&#x20;
 * Help to increase customer satisfaction when support is given through native languages.
 
-## User guides
+## Related user guides
 
-[Set Language Preference](user-guides/set-language-preference.md)
+:notebook\_with\_decorative\_cover:[Set Language Preference](user-guides/set-language-preference.md)
 

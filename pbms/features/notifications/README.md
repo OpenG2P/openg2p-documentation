@@ -45,7 +45,7 @@ The two steps to configure the notifications are:
 
 Sending the notifications is a one-click operation. Based on the state of the program - enrolment, entitlement, payment, etc. - the corresponding notification is sent by the Notification Manager types configured for the program.
 
-## Related links
+## Related user guides
 
 :notebook\_with\_decorative\_cover:[Create Notification Manager Types](user-guides/create-notification-manager-types/)
 

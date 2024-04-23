@@ -73,14 +73,14 @@ The multi-stage approval typically follows this process:
 
 <table><thead><tr><th width="230">Configuration</th><th>Description</th></tr></thead><tbody><tr><td>Entitlement amount</td><td>Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.</td></tr><tr><td>Entitlement vouchers</td><td>An entitlement voucher authorizes the intended beneficiary to claim the benefits at the service provider facility. The voucher has customized QR codes embedded. The QR code provides a digital signature that makes the voucher tamper-proof and establishes the authenticity of the voucher.</td></tr><tr><td>Multi-stage approvals</td><td>Program administrators can configure multiple stages and assign a role for each stage to avoid concentration of power and errors in deciding the entitlement amount</td></tr></tbody></table>
 
-## Related links
+## Related user guides
 
-[Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
+:notebook\_with\_decorative\_cover:[Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
 
-[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
+:notebook\_with\_decorative\_cover:[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
 
-Configure Entitlement Voucher
+:notebook\_with\_decorative\_cover:Configure Entitlement Voucher
 
-[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
+:notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
-[Multi-Stage Approval](../../user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)
+:notebook\_with\_decorative\_cover:[Multi-Stage Approval](../../user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)

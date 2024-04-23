@@ -101,10 +101,14 @@ To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-gui
 
 {% embed url="https://youtu.be/0jjkq4SoONM" %}
 
-## Related links
+## Related user guides
 
-* [Create Program](../pbms/features/program-management/user-guides/create-a-program.md)
-* [Create ODK Form](odk-collection-app/user-guides/create-a-form.md)
-* [Provide ODK Form Access to Field Agent](odk-collection-app/user-guides/provide-form-access-to-field-agent.md)
-* [Download Form on ODK Collect](odk-collection-app/user-guides/download-form-on-odk-collect.md)
-* [Create ODK MTS Connector](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)
+:notebook\_with\_decorative\_cover:[Create Program](../pbms/features/program-management/user-guides/create-a-program.md)
+
+:notebook\_with\_decorative\_cover:[Create ODK Form](odk-collection-app/user-guides/create-a-form.md)
+
+:notebook\_with\_decorative\_cover:[Provide ODK Form Access to Field Agent](odk-collection-app/user-guides/provide-form-access-to-field-agent.md)
+
+:notebook\_with\_decorative\_cover:[Download Form on ODK Collect](odk-collection-app/user-guides/download-form-on-odk-collect.md)
+
+:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)

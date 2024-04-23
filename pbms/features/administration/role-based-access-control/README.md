@@ -59,6 +59,6 @@ The figure below shows the access rights for a group (role) that requires access
 
 \<image to be incorporated>
 
-## Related links
+## Related user guides
 
-[Create User and Assign Role](user-guides/assign-roles-to-users.md)
+:notebook\_with\_decorative\_cover:[Create User and Assign Role](user-guides/assign-roles-to-users.md)

@@ -68,6 +68,6 @@ The implementation of the Proxy Means Test with the World Bank Formula offers se
 
 ## Related user guides
 
-[Configure Proxy Means Test](user-guides/configure-proxy-means-test.md)
+:notebook\_with\_decorative\_cover:[Configure Proxy Means Test](user-guides/configure-proxy-means-test.md)
 
 ####

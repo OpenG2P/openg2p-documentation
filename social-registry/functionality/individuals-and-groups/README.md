@@ -28,7 +28,7 @@ Social Registry can house
 
 #### Enumerator
 
-## User guides
+## Related user guides
 
 :notebook\_with\_decorative\_cover:[Create an Individual Registrant](../../../pbms/functionality/beneficiary-management/user-guides/create-an-individual-registrant.md)
 

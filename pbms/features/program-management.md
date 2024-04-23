@@ -45,20 +45,20 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 
 
-## User guides
+## Related user guides
 
-[Create Program](program-management/user-guides/create-a-program.md)
+:notebook\_with\_decorative\_cover:[Create Program](program-management/user-guides/create-a-program.md)
 
-[Create Eligibility Manager](program-management/user-guides/create-eligibility-manager.md)
+:notebook\_with\_decorative\_cover:[Create Eligibility Manager](program-management/user-guides/create-eligibility-manager.md)
 
-[Configure Program Manager](program-management/user-guides/configure-program-manager-in-program.md)
+:notebook\_with\_decorative\_cover:[Configure Program Manager](program-management/user-guides/configure-program-manager-in-program.md)
 
-[Create Notification Manager](notifications/user-guides/configure-notification-manager.md)
+:notebook\_with\_decorative\_cover:[Create Notification Manager](notifications/user-guides/configure-notification-manager.md)
 
-[Create Entitlement Voucher Template](../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
+:notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
-[Map Self-Service Portal Form](program-management/user-guides/map-self-service-portal-form.md)
+:notebook\_with\_decorative\_cover:[Map Self-Service Portal Form](program-management/user-guides/map-self-service-portal-form.md)
 
-[Create Deduplication Manager](program-management/user-guides/create-deduplication-manager.md)
+:notebook\_with\_decorative\_cover:[Create Deduplication Manager](program-management/user-guides/create-deduplication-manager.md)
 
-[Create Manager Types](program-management/user-guides/create-manager-type/)
+:notebook\_with\_decorative\_cover:[Create Manager Types](program-management/user-guides/create-manager-type/)

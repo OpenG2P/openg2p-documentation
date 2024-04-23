@@ -23,10 +23,10 @@ OpenG2P supports the in-kind distribution of food and nonfood items, such as she
 3. **Planning and Execution:** OpenG2P provides tools for planning distribution activities, such as determining the quantity and type of items to be distributed to each beneficiary. The platform also supports the execution of distribution activities, including the recording of items distributed and the tracking of beneficiaries.
 4. **Inventory Management:** OpenG2P includes features for managing inventory, such as tracking stock levels, monitoring expiration dates, and managing replenishment orders. This ensures that distribution centers have an adequate supply of items for distribution.
 
-## User guides
+## Related user guides
 
-[Create a Product in Inventory](user-guides/create-a-product-in-inventory.md)
+:notebook\_with\_decorative\_cover:[Create a Product in Inventory](user-guides/create-a-product-in-inventory.md)
 
-[Configure In-Kind Entitlement Manager](broken-reference)
+:notebook\_with\_decorative\_cover:[Configure In-Kind Entitlement Manager](user-guides/configure-in-kind-entitlement-manager.md)
 
-[Create and Approve Program Cycle](user-guides/create-and-approve-disbursement-cycle.md)
+:notebook\_with\_decorative\_cover:[Create and Approve Program Cycle](user-guides/create-and-approve-disbursement-cycle.md)

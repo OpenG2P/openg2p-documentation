@@ -68,6 +68,6 @@ The ODK Importer module requires configuration to establish a connection with OD
 
 Odoo installation
 
-## User guides
+## Related user guides
 
-[Customize the ODK Importer Configuration based on the ODK Form](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/54/pbms/features/odk-importer/user-guides/customize-the-odk-importer-configuration-based-on-the-odk-form-fields)
+:notebook\_with\_decorative\_cover:[Customize the ODK Importer Configuration based on the ODK Form](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/\~/changes/54/pbms/features/odk-importer/user-guides/customize-the-odk-importer-configuration-based-on-the-odk-form-fields)
