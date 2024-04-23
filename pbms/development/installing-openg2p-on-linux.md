@@ -1,6 +1,8 @@
-# Installing On Linux
+---
+description: Installation of PBMS on developer machine
+---
 
-## Description
+# Developer Install On Linux
 
 Developers can run the entire OpenG2P package on their machines. The guide here provides steps to install OpenG2P on a laptop/desktop running Linux.
 

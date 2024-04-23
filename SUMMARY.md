@@ -131,7 +131,7 @@
       * [G2P ODK Importer](pbms/development/repositories/openg2p-importers/g2p-odk-importer.md)
       * [openg2p-vci](pbms/development/repositories/openg2p-vci.md)
       * [G2P Service Provider Beneficiary Management](pbms/development/odoo-modules/g2p-service-provider-beneficiary-management.md)
-    * [Installing On Linux](pbms/development/installing-openg2p-on-linux.md)
+    * [Developer Install On Linux](pbms/development/installing-openg2p-on-linux.md)
     * [Repositories](pbms/development/repositories/README.md)
       * [openg2p-fastapi-common](pbms/development/repositories/openg2p-fastapi-common/README.md)
         * [OpenG2P FastAPI Common](pbms/development/repositories/openg2p-fastapi-common/openg2p-fastapi-common.md)
