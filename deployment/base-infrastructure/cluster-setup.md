@@ -57,7 +57,7 @@ If you are using AWS only to get EC2 nodes, and you want to set up the K8s clust
 
 ## Installation on-premises (on-prem)
 
-### k8s cluster setup
+### k8s cluster
 
 The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluster.
 
@@ -111,19 +111,19 @@ This section assumes a Rancher server has already been set up and operational. [
 * Click on `Import Existing` cluster. And follow the steps to import the new OpenG2P cluster
 * After importing, download kubeconfig for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from user's machine (client), without SSH
 
-### NFS provisioner setup
+### NFS provisioner&#x20;
 
-This section assumes an NFS Server has already been set up and operational for providing storage volumes to this K8s cluster, with requirements as given in [NFS Server Setup](nfs-server.md). This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in [NFS Server Setup](nfs-server.md). This NFS server is used to provide persistent storage volumes to this K8s cluster.
+This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in [NFS Server](nfs-server.md). The NFS server is used to provide persistent storage volumes to K8s cluster.
 
-### Longhorn setup
+### Longhorn&#x20;
 
 This installation only applies if Longhorn is used as storage. This may be skipped if you are using NFS.
 
 [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
-### Istio setup
+### Istio&#x20;
 
-* The following setup can be done from the client machine. This install Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
+* The following setup can be done from the client machine. This installs Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
 *   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, configure the istio-operator.yaml, and run;
 
     ```
