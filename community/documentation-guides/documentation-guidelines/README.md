@@ -78,7 +78,9 @@ Do not repeat the similar content inside the documentation.  Instead, provide th
 | Prerequisites | Pre-requisites |
 | eSignet       | e-Signet       |
 
+## Usage of Symbols
 
+<table><thead><tr><th width="147">Document</th><th>Symbol</th></tr></thead><tbody><tr><td>User guide</td><td><p>Use the symbol in the title of the user guide.</p><ul><li>Type book in the emoji and select the encircled symbol </li><li><img src="../../../.gitbook/assets/emoji-symbol-user-guide.png" alt="" data-size="original"></li><li><img src="../../../.gitbook/assets/user-guide-symbol.png" alt="" data-size="original"></li></ul></td></tr></tbody></table>
 
 
 
