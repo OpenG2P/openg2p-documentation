@@ -47,8 +47,8 @@ Sending the notifications is a one-click operation. Based on the state of the pr
 
 ## Related links
 
-[Create Notification Manager Types](user-guides/create-notification-manager-types/)
+:notebook\_with\_decorative\_cover:[Create Notification Manager Types](user-guides/create-notification-manager-types/)
 
-[Create Notification Manager under Program](user-guides/configure-notification-manager.md)
+:notebook\_with\_decorative\_cover:[Create Notification Manager under Program](user-guides/configure-notification-manager.md)
 
-[Send Notifications to Individual Registrants](user-guides/send-notifications-to-individual-registrants.md)
+:notebook\_with\_decorative\_cover:[Send Notifications to Individual Registrants](user-guides/send-notifications-to-individual-registrants.md)
