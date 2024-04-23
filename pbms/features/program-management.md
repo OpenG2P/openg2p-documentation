@@ -55,7 +55,7 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 [Create Notification Manager](notifications/user-guides/configure-notification-manager.md)
 
-[Create Entitlement Voucher Template](program-management/user-guides/create-entitlement-voucher-template.md)
+[Create Entitlement Voucher Template](../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
 [Map Self-Service Portal Form](program-management/user-guides/map-self-service-portal-form.md)
 

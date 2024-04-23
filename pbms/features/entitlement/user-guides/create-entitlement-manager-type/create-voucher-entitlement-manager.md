@@ -54,7 +54,7 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../../../../.gitbook/assets/voucher-dropdown.png" alt=""><figcaption></figcaption></figure>
 
-6. Click the _Voucher File Config_ and select the voucher file from the drop-down list. To learn the steps to create a voucher file, follow the guide [Create Entitlement Voucher Template](../../../program-management/user-guides/create-entitlement-voucher-template.md).
+6. Click the _Voucher File Config_ and select the voucher file from the drop-down list. To learn the steps to create a voucher file, follow the guide [Create Entitlement Voucher Template](../../../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md).
 
 <figure><img src="../../../../../.gitbook/assets/voucher-file-conf.PNG" alt=""><figcaption></figcaption></figure>
 

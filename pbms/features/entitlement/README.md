@@ -81,6 +81,6 @@ The multi-stage approval typically follows this process:
 
 Configure Entitlement Voucher
 
-[Create Entitlement Voucher Template](../program-management/user-guides/create-entitlement-voucher-template.md)
+[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
 [Multi-Stage Approval](../../user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)
