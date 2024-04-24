@@ -68,7 +68,7 @@ The API - get\_level\_values (parent = 1, level\_id = 2) - will yield the UI a d
 
 The API - get\_login\_providers - will provide the list of configured login\_providers. The UI can then redirect itself to the redirect\_url specified for that login\_provider for the necessary authentication.
 
-strategy
+#### strategy
 
 This table contains the construction and deconstruction strategies to be used for id\_value and fa\_value - that will be eventually stored in the mapper.&#x20;
 
