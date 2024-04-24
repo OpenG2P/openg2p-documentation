@@ -66,7 +66,7 @@ The API - get\_level\_values (parent = 1, level\_id = 2) - will yield the UI a d
 
 <table><thead><tr><th width="66">id</th><th width="102">name</th><th width="181">login_button_image_url</th><th width="245">authorization_parameters</th><th>strategy_id</th></tr></thead><tbody><tr><td>1</td><td>E-Signet</td><td>The Image that can be shown on the UI for E-Signet</td><td></td><td>1</td></tr><tr><td>2</td><td>Keycloak</td><td></td><td></td><td>2</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
 
-
+The API - get\_login\_providers - will provide the list of configured login\_providers. The UI can then redirect itself to the redirect\_url specified for that login\_provider for the necessary authentication.
 
 ### APIs
 
