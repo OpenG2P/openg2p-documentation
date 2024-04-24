@@ -54,13 +54,13 @@ The self-service-ui uses the api - "get\_levels (parent)" to paint the UI fields
 
 For facilitating capture of a Bank Account, we can visualize the following dfsp\_level\_values configuration
 
-<table><thead><tr><th width="66">id</th><th width="220">name</th><th width="177">code</th><th>parent</th><th>level_id</th></tr></thead><tbody><tr><td>1</td><td>Bank One</td><td>Bank-001</td><td>0</td><td>1</td></tr><tr><td>2</td><td>Bank Two</td><td>Bank-002</td><td>0</td><td>1</td></tr><tr><td>3</td><td>Bank Three</td><td>Bank-003</td><td>0</td><td>1</td></tr></tbody></table>
+<table><thead><tr><th width="66">id</th><th width="220">name</th><th width="177">code</th><th>parent</th><th>level_id</th></tr></thead><tbody><tr><td>1</td><td>Bank One</td><td>Bank001</td><td>0</td><td>1</td></tr><tr><td>2</td><td>Bank Two</td><td>Bank002</td><td>0</td><td>1</td></tr><tr><td>3</td><td>Bank Three</td><td>Bank003</td><td>0</td><td>1</td></tr></tbody></table>
 
 The API - get\_level\_values (parent = 0, level\_id = 1) - will yield the UI a drop down of these 3 banks.
 
 &#x20;
 
-<table><thead><tr><th width="66">id</th><th width="228">name</th><th width="183">code</th><th width="88">parent</th><th>level_id</th></tr></thead><tbody><tr><td>1</td><td>Branch 001</td><td>HDFC0001</td><td>1</td><td>2</td></tr><tr><td>2</td><td>Branch 002</td><td>HDFC0002</td><td>1</td><td>2</td></tr><tr><td>3</td><td>Branch 003</td><td>HDFC0003</td><td>1</td><td>2</td></tr></tbody></table>
+<table><thead><tr><th width="66">id</th><th width="141">name</th><th width="258">code</th><th width="97">parent</th><th>level_id</th></tr></thead><tbody><tr><td>1</td><td>Branch 001</td><td>Branch001-Bank001</td><td>1</td><td>2</td></tr><tr><td>2</td><td>Branch 002</td><td>Branch002-Bank001</td><td>1</td><td>2</td></tr><tr><td>3</td><td>Branch 003</td><td>Branch003-Bank001</td><td>1</td><td>2</td></tr></tbody></table>
 
 The API - get\_level\_values (parent = 1, level\_id = 2) - will yield the UI a drop down of these 3 branches for Bank One
 
