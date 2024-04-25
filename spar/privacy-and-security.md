@@ -24,6 +24,8 @@ layout:
 
 ### Transport Security using a Secure Tunnel
 
+Security of the payload during transmission (in both cases mentioned above) is handled using the https (SSL) implementation, using PKI.
+
 <figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L1.jpg" alt=""><figcaption><p>OpenG2P - SSL and TLS</p></figcaption></figure>
 
 ### There are two usages
