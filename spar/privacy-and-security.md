@@ -28,7 +28,13 @@ Security of the payload during transmission (in both cases mentioned above) is h
 
 <figure><img src="../.gitbook/assets/Gitbook-OpenG2P-API-Security-L1.jpg" alt=""><figcaption><p>OpenG2P - SSL and TLS</p></figcaption></figure>
 
-### There are two usages
+### Authentication
+
+#### Case 1 - Authentication of Beneficiaries (Browser Client Application) consuming self-service-apis
+
+#### Case 2 - Authentication of Partner Systems consuming mapper-apis
+
+(the self-service application that consumes mapper-apis - In this case, the self-service application is treated like a partner system consuming mapper apis)
 
 ### Partner Authorization
 
