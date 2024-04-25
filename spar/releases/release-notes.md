@@ -21,16 +21,28 @@ layout:
 
 ## Summary
 
-* What is this release about?
+SPAR Release 1.0.0 represents a fully functional **ID-Account Mapper** (one of the components of the DPI building blocks) as articulated by the [CDPI literature.](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/cohort-1-daas-offerings/id-account-mapper) In addition to the ID Account Mapper, the SPAR Release 1.0.0 also includes a Self Service module, using which, beneficiaries can login themselves into the SPAR Self Service system and maintain (link, unlink & modify)  a mapping between their IDs and their Financial Address (Bank Accounts, Mobile Wallets).
 
 ## Features of this release
 
-* ID Mapper&#x20;
-* Standardized interfaces for querying (G2P Connect)
-* Self service portal
-* Support for various kinds of FA - mobile money, banks&#x20;
-* Standalone building block of DPI
-* Integration with eSignet&#x20;
+The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-self-service-api & openg2p-spar-self-service-ui. The features provided by these components are listed below
+
+#### openg2p-spar-mapper-api
+
+1. link, unlink, update and resolve REST APIs as specified by the G2PConnect specifications
+
+#### openg2p-spar-self-service-api
+
+1. Static persistence for Banks & Wallet Service Providers to facilitate self service maintenance of Account (Financial Address) in the Mapper
+2. link, unlink, update and resolve REST APIs from a self service perspective - Consumed by the UI layer
+3. link, unlink, update and resolve - Integration with mapper-api using G2PConnect APIs - Consuming the Mapper APIs
+4. Integration with OIDC-OAuth2.0 based Login Providers with a Functional (or Foundational National ID)
+
+#### openg2p-spar-self-service-ui
+
+1. A simple user-friendly UI to facilitate beneficiaries query the ID-Account-Mapper using their ID and displaying Financial Address (Account information) against the ID
+2. UI layer to facilitate construction of Financial Address (based on the construction strategy) using the Bank Codes, Branch Codes, Wallet Service Provider Codes etc.
+3. Login using OIDC/OAuth2.0 based Login Providers like E-Signet, Keycloak etc. &#x20;
 
 ## Release contents
 
