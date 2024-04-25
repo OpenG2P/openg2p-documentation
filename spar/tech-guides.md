@@ -78,10 +78,15 @@ The strategy ID is mapped to the dfsp\_levels for FA Strategy.
 
 Many Banks (and possibly all Banks) may use the same FA Strategy. Similarly, all mobile wallet providers may use a single FA Strategy (different from Banks).
 
-| id | strategy\_type - ENUM | construct\_strategy | deconstruct\_strategy |
-| -- | --------------------- | ------------------- | --------------------- |
-| 1  | ID                    |                     |                       |
-| 2  | FA                    |                     |                       |
+Some examples of construction and de-construction strategies are as follows
+
+ID - Construction Strategy --
+
+ID - Deconstruction Strategy --
+
+FA - Construction Strategy --
+
+FA - Deconstruction Strategy --
 
 ### APIs
 
