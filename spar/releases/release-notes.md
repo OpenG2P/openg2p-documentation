@@ -46,20 +46,25 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ## Release contents
 
-* Packaged Dockers:
-  * openg2p-spar-mapper-api-1.0.0
-  * openg2p-spar-self-service-api-1.0.0
-  * openg2p-spar-self-service-ui-1.0.0
-* Deployment components:
-  * Helm charts &#x20;
-    * Chart source code&#x20;
-    * Published&#x20;
-  * Deployment scripts (pointer to repository)
-* Documentation (external link)
+### Packaged Dockers
+
+<table><thead><tr><th width="274">Image</th><th>Version &#x26; Link</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td>v1.0.0 Image</td></tr><tr><td>openg2p-spar-self-service-api</td><td>v1.0.0 Image</td></tr><tr><td>openg2p-spar-self-service-ui</td><td>v1.0.0 Image</td></tr></tbody></table>
+
+### Helm Charts&#x20;
+
+1. [Source Code](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/charts)
+2. Published Charts
+   1. openg2p-spar-mapper-api
+   2. openg2p-spar-self-service-api
+   3. openg2p-spar-self-service-ui
+
+### Deployment
+
+* [Deployment scripts](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/deployment)
 
 ## Source code
 
-<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenG2P/openg2p-program/tree/v1.1.0">openg2p-program</a></td><td align="center">v1.0.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-registry/tree/v1.1.0">openg2p-registry</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-self-service-portal/tree/v1.1.0">openg2p-self-service-portal</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-auth/tree/v1.1.0">openg2p-auth</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-theme/tree/v1.1.0">openg2p-theme</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-notifications/tree/v1.1.0">openg2p-notifications</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-documents/tree/v1.1.0">openg2p-documents</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/odoo-json-field/tree/v1.1.0">odoo-json-field</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-mts/tree/v1.1.0">openg2p-mts</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-security/tree/v1.1.0">openg2p-security</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-packaging">openg2p-packaging</a></td><td align="center">Latest 'main'</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-helm/tree/v1.1.0">openg2p-helm</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-deployment/tree/v1.1.0">openg2p-deployment</a></td><td align="center">v1.1.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-voucher-scanner-app/releases/tag/v0.5.0">openg2p-voucher-scanner-app</a></td><td align="center">v0.5.0</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-reporting/tree/v1.1.0">openg2p-reporting</a></td><td align="center">v1.1.0</td></tr></tbody></table>
+<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-api</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-deployment</td><td align="center">v1.1.0</td></tr></tbody></table>
 
 ## Build and deploy
 
@@ -77,11 +82,9 @@ Test Case Tracker
 
 ## Limitations and known issues
 
-* Bugs
-* Limited scale testing
-* Security of CSV upload (see [Roadmap](../roadmap.md))
+1. Release 1.0.0 has been tested with Limited scale. Extensive load testing and performance benchmarks are planned for Release 1.0.1. Jira backlogs for the same can be found here.
+2. REST API security for Mapper APIs (openg2p-spar-mapper-api) - As&#x20;
 
 For a detailed list of issues and feature development, refer here.
 
 To file issues, contribute and discuss, refer to the [Contributing](../../community/contributing-to-openg2p.md) guide.&#x20;
-
