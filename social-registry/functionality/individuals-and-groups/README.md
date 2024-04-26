@@ -26,17 +26,15 @@ Social Registry can house
 
 
 
-#### Enumerator
+#### Enumerator&#x20;
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Create an Individual Registrant](../../../pbms/functionality/beneficiary-management/user-guides/create-an-individual-registrant.md)
+:notebook\_with\_decorative\_cover:[Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
 
 :notebook\_with\_decorative\_cover:[Create a Group and Add Individual Registrants to the Group](../../../pbms/functionality/beneficiary-management/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
 
-
-
-
+:notebook\_with\_decorative\_cover:Configuration
 
 
 

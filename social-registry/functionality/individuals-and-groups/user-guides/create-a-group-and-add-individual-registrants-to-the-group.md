@@ -51,7 +51,7 @@ Method 2: Select the _**Search More...**_ option in the drop-down and add indivi
 
 6. Select the individual registrant name from the _**Member Name**_ drop-down.
 
-<figure><img src="../../../../.gitbook/assets/individual-members-SR.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/individual-members-sr.png" alt=""><figcaption></figcaption></figure>
 
 It auto-populates the other fields as shown below.
 

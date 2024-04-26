@@ -1,4 +1,5 @@
 ---
+description: Registry
 layout:
   title:
     visible: true
