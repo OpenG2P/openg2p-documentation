@@ -25,9 +25,9 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
 
 #### Install
 
-* Download/copy this install script from [https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh](https://github.com/mosip/k8s-infra/blob/main/nfs/install-nfs-server.sh) into the NFS Server VM
-* Edit the script to change the local path for NFS Storage, under the variable `nfsStorage`
-*   Run this (with root privileges):
+* Download/copy this install script from [https://github.com/OpenG2P/openg2p-deployment/blob/main/nfs-server/install-nfs-server.sh](https://github.com/OpenG2P/openg2p-deployment/blob/main/nfs-server/install-nfs-server.sh) into the NFS server machine.
+* (Optional) Edit the script to change the local path for NFS storage, under the variable `nfsStorage.`Make a note of this path as it will be required during the installation of the [NFS client provisioner.](cluster-setup.md#nfs-client-provisioner)
+*   Run the script with root privileges.&#x20;
 
     ```
     ./install-nfs-server.sh

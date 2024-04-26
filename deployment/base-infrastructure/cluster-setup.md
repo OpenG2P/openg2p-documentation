@@ -131,9 +131,14 @@ This section assumes a Rancher server has already been set up and operational. [
 * Click on `Import Existing` cluster. And follow the steps to import the new OpenG2P cluster
 * After importing, download kubeconfig for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from user's machine (client), without SSH
 
-### NFS provisioner&#x20;
+### NFS client provisioner&#x20;
 
-This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in [NFS Server](nfs-server.md). The NFS server is used to provide persistent storage volumes to K8s cluster.
+This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in NFS server.  NFS client provisioner runs on the cluster and connects seamlessly to NFS Server. To install NFS client provisioner on cluster
+
+* Login to each of node and run `apt install nfs-common` on all the nodes.
+* On your machine run [https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh)
+* Provide the internal IP address of NFS server (the IP must be accessible from Kubernetes nodes).
+* Provide the path on which NFS was installed (noted during NFS Server installation)
 
 ### Longhorn&#x20;
 
