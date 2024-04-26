@@ -32,4 +32,5 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
     ```
     ./install-nfs-server.sh
     ```
+* Give any name for the "environment" when asked. If NFS is specific to an environment you may specify that name.
 * Make sure to edit the firewall rules of this VM to enable incoming traffic to the NFS server port `tcp 2049` and disable incoming traffic on all other ports (excluding SSH)
