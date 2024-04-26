@@ -72,8 +72,8 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
       ```
   * Create a `config.yaml` file in the above directory, using one of the following config file templates:
     * For the first control-plane node, use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template)
-    * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.subsequent.template)
-    * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template)
+    * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.subsequent.template). (Make sure the token defined in the first node's control plane is used here too.)
+    * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template).  (Make sure the token defined in the first node's control plane is used here too.)
   * Edit the above `config.yaml` file with the appropriate names, IPs, and tokens
   *   Run this to download rke2.
 
