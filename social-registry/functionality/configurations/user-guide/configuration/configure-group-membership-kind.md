@@ -42,7 +42,7 @@ _**Group membership kind**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/group-membership-config-newfield.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [Group Membership Kind](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#group-membership-kind) in the _**Kind**_ field.
+5. Enter the relevant [Group Membership Kind](../../#group-membership-kind) in the _**Kind**_ field.
 6. Check the _**Unique**_ check box for the value that is considered as Head of the group.
 
 For example, here, enter the value as Family members and by default the Head value is checked.

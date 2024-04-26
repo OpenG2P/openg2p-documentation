@@ -42,7 +42,7 @@ _**Gender Types**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/gender-type-new-field.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [Gender Types](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#gender-types) in the _**Code**_ field.
+5. Enter the relevant [Gender Types](../../#gender-types) in the _**Code**_ field.
 6. Enter the value of the code in the _**Value**_ field.
 
 <figure><img src="../../../../../.gitbook/assets/gender-type-fill-field.png" alt=""><figcaption></figcaption></figure>

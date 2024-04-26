@@ -42,7 +42,7 @@ _**Group Types**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/group-type-config-new-field.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [Group Types](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#group-types) in the _**Kind**_ field.
+5. Enter the relevant [Group Types](../../#group-types) in the _**Kind**_ field.
 
 For example, here, enter the Kind as Village.
 

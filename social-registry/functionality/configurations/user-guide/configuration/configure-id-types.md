@@ -42,7 +42,7 @@ _**ID Types**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/id-types-empty-field-SR.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [ID Types](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#id-types) in the _**Name**_ field.
+5. Enter the relevant [ID Types](../../#id-types) in the _**Name**_ field.
 6. In the _**ID Type Validation**_ field, enter the Regexp to valid the ID types value.
 
 For example, here, enter the ID Type as Beneficiary ID.&#x20;

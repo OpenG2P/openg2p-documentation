@@ -42,7 +42,7 @@ _**District Configuration**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/dist-config-new-field.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [District Configuration](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#district-configuration) in the _**Name**_ field.
+5. Enter the relevant [District Configuration](../../#district-configuration) in the _**Name**_ field.
 6. Choose the state name in the _**State**_ drop-down field.
 
 <figure><img src="../../../../../.gitbook/assets/district-configuration-new-sr.png" alt=""><figcaption></figcaption></figure>

@@ -50,3 +50,8 @@ Group Types define the association among a group of registrants. Some common exa
 ### Group Membership Kind
 
 The Group Membership Kind establishes the role of an individual in a group. For example, the individual could be a member or head of the group. This field is especially useful for programs that disburse the benefits to only the head of the group but also record the list of other members in the group.&#x20;
+
+## Related user guides
+
+:notebook\_with\_decorative\_cover:[Configurations](user-guide/configuration/)
+

@@ -42,7 +42,7 @@ _**Relationship**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/relationship-config-new-field-sr.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [Relationships](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#relationships) in the _**Name**_ field.
+5. Enter the relevant [Relationships](../../#relationships) in the _**Name**_ field.
 6. Enter the _**Name**_, _**Inverse name**_, _**Bi-dir...**_ in the associated field.
 7. Select the appropriate value from the drop-down for _**Source partner type**_ and _**Destination partner type**_ in the associated field.
 

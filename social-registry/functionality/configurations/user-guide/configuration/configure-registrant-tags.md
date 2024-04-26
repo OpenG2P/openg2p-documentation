@@ -42,7 +42,7 @@ _**Registrant Tags**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/registrant-tags-empty-field-sr.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [registrant tags](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations.md#registrant-tags) in the _**Tags**_ field.
+5. Enter the relevant [Registrant Tags](../../#registrant-tags) in the _**Tags**_ field.
 
 For example, here, enter the registrant tag as 'employed'.
 
