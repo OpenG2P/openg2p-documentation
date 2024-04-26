@@ -41,7 +41,7 @@ The exact method to set up the firewall rules will vary from cloud to cloud and 
 * On your machine install `ansible`
 * Make sure you have SSH access to all nodes of the cluster
 * Create `hosts.ini` file. Sample given [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/ansible).
-* Copy [`ports.yaml`](https://github.com/OpenG2P/openg2p-deployment/blob/main/ansible/ports.yaml) file for any changes w.r.t to above table.
+* Copy [`ports.yaml`](https://github.com/OpenG2P/openg2p-deployment/blob/main/ansible/ports.yaml) file and inspect for any changes w.r.t to above table.
 * Run
 
 ```shell-session
