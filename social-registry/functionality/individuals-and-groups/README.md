@@ -34,7 +34,7 @@ Social Registry can house
 
 :notebook\_with\_decorative\_cover:[Create a Group and Add Individual Registrants to the Group](../../../pbms/functionality/beneficiary-management/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
 
-:notebook\_with\_decorative\_cover:Configuration
+:notebook\_with\_decorative\_cover:[Configuration](user-guides/configuration/)
 
 
 
