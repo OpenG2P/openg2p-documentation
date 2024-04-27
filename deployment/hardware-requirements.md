@@ -39,12 +39,23 @@ OS for all nodes:  **Ubuntu 20.04 Server**
 
 ## DNS requirements
 
-The following domain names and mappings will be required. Examples:
+The following domain names and mappings will be required.  The suggested domain name convention is as follows
 
-| Requirement Description                                                        | Domain Name (examples)                                                                                                                                       | Mapped to                                                                                                                                                      |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Top level domain that points to the sandbox.                                   | <p></p><ul><li>openg2p.<em>&#x3C;your domain></em></li><li>uat.<em>&#x3C;your domain></em></li><li>pilot.openg2p.<em>&#x3C;your domain></em></li></ul>       | "A" Record mapped to Load Balancer IP (For sandox, where loadbalancer is not present, this can be mapped directly nodes of the K8s Cluster, at least 3 nodes). |
-| Wildcard subdomain for accessing individual components within OpenG2P sandbox. | <p></p><ul><li>*.openg2p.<em>&#x3C;your domain></em></li><li>*.uat.<em>&#x3C;your domain></em></li><li>*.pilot.openg2p.<em>&#x3C;your domain></em></li></ul> | "CNAME" Record mapped to the domain of the above "A" record. (This is a wildcard DNS mapping)                                                                  |
+\<module>.\<environment>.\<organisation>.\<tld>
+
+Example:&#x20;
+
+* spar.dev.openg2p.org
+* socialregistry.uat.openg2p.org
+
+### Domain mapping
+
+| Requirement Description      | Domain Name (examples)                                                                      | Mapped to                                                                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain mapping to sandbox    | <ul><li>dev.openg2p.net</li><li>uat.openg2p.net</li><li>staging.openg2p.org</li></ul>       | "A" Record mapped to Load Balancer IP (For sandbox, where LB is not used, this can be mapped directly tonodes of the K8s cluster, at least 3 nodes). |
+| Wild card mapping to modules | <ul><li>*.dev.openg2p.net</li><li>*.uat.openg2p.net</li><li>*.staging.openg2p.org</li></ul> | "CNAME" Record mapped to the domain of the above "A" record. (This is a wildcard DNS mapping)                                                        |
+
+The domain name mapping needs to be done on your domain service provider.  For example on AWS this is configured on Route 53.
 
 ## Certificate requirements
 
