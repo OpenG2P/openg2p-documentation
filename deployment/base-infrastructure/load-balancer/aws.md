@@ -4,9 +4,7 @@ description: Installation of load balancer on AWS
 
 # AWS
 
-Follow the steps below to create a load balancer on AWS.
-
-Note: The naming conventions may vary depending on the environment.
+This is a guide to create a Network Load Balancer on AWS Cloud
 
 ### Create Target Group for **http** <a href="#creating-target-group-for-openg2p-external-http" id="creating-target-group-for-openg2p-external-http"></a>
 

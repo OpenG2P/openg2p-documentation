@@ -335,7 +335,6 @@
     * [Kubernetes Cluster](deployment/base-infrastructure/cluster-setup.md)
     * [Load Balancer](deployment/base-infrastructure/load-balancer/README.md)
       * [AWS](deployment/base-infrastructure/load-balancer/aws.md)
-      * [Istio](deployment/base-infrastructure/load-balancer/istio.md)
       * [Nginx](deployment/base-infrastructure/load-balancer/nginx.md)
     * [Prometheus & Grafana](deployment/base-infrastructure/prometheus-and-grafana.md)
   * [Common Components](deployment/common-components/README.md)
