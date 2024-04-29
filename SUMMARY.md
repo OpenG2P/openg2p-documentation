@@ -341,6 +341,7 @@
     * [Rancher](deployment/base-infrastructure/rancher.md)
     * [Kubernetes Cluster](deployment/base-infrastructure/cluster-setup/README.md)
       * [Firewall](deployment/base-infrastructure/cluster-setup/firewall.md)
+      * [Adding Notes to Cluster](deployment/base-infrastructure/cluster-setup/adding-notes-to-cluster.md)
     * [Load Balancer](deployment/base-infrastructure/load-balancer/README.md)
       * [AWS](deployment/base-infrastructure/load-balancer/aws.md)
       * [Nginx](deployment/base-infrastructure/load-balancer/nginx.md)

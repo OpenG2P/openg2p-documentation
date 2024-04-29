@@ -32,6 +32,7 @@ Broadly, the steps to install are as follows:
 4. [Install NFS client on the cluster](./#nfs-client-provisioner)
 5. [Install Istio on cluster](./#istio)
 6. [Import cluster into Rancher](./#cluster-import-to-rancher)
+7. Provide access to users
 
 ## Virtual machines provisioning
 
@@ -153,20 +154,10 @@ This step assumes that a [Rancher server ](../rancher.md)has already been set up
 * Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
 * After importing, download `kubeconfig` file for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from the user's machine (client), without SSH
 
-## Adding new nodes
+## Cluster access to users
 
-To add more nodes to the cluster
+Users may be given access to the cluster using [Rancher's RBAC](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac).&#x20;
 
-* From [kubernetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rke2) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
-* Configure the the config.yaml with relevant values
-*   Run this to download rke2.
-
-    ```
-    curl -sfL https://get.rke2.io | sh -
-    ```
-*   Run this to start rke2 node:
-
-    ```
-    systemctl enable rke2-server
-    systemctl start rke2-server
-    ```
+{% hint style="info" %}
+Rancher provides "Project" feature. This feature is not a standard Kubernetes feature and hence it is recommended to not use it for OpenG2P deployments.
+{% endhint %}
