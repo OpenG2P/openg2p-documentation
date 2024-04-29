@@ -29,9 +29,9 @@ Broadly, the steps to install are as follows:
 1. [Provision virtual machines ](./#provision-virtual-machines)
 2. [Set firewall rules](./#firewall-setup)
 3. [Set up the K8s cluster](./#cluster-installation) using Rancher's tool [RKE2](https://docs.rke2.io/).
-4. [Import cluster into Rancher](./#cluster-import-to-rancher)
-5. Install NFS client on the cluster
-6. [Install Istio on cluster](./#istio)
+4. [Install NFS client on the cluster](./#nfs-client-provisioner)
+5. [Install Istio on cluster](./#istio)
+6. [Import cluster into Rancher](./#cluster-import-to-rancher)
 
 ## Virtual machines provisioning
 
@@ -40,6 +40,10 @@ Provision for virtual machines (VMs) as per configuration mentioned in [Hardware
 Install the following tools on all machines including the one you are using to connect to the VMs.
 
 * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
+
+{% hint style="danger" %}
+If you have SSH access to the VMs, and root privileges, you are the Super Admin. Make sure very limited access is given to the machines.&#x20;
+{% endhint %}
 
 ## Firewall setup
 
@@ -82,22 +86,13 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
         systemctl start rke2-agent
         ```
 * To export KUBECONFIG, run (only on control-plane nodes):
-  * ```
-    echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
-    source ~/.bashrc
-    ```
-  * ```
-    kubectl get nodes
-    ```
+* ```
+  > echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
+  > source ~/.bashrc
+  > kubectl get nodes    
+  ```
+* Download the Kubeconfig file `rke2.yaml` and keep it securely **shared with only** Super Admins. Rename it so that it can be identified with the cluster. This file is will be used if cluster control via Rancher is unavailable.
 * Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha)
-
-## Cluster import to Rancher
-
-This step assumes that a [Rancher server ](../rancher.md)has already been set up and operational.
-
-* Navigate to the _Cluster Management_ section in Rancher
-* Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
-* After importing, download `kubeconfig` file for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from the user's machine (client), without SSH
 
 ## NFS client provisioner&#x20;
 
@@ -149,6 +144,14 @@ This installation only applies if Longhorn is used as storage. This may be skipp
         ```
         kubectl apply -f istio-gateway-no-tls.yaml
         ```
+
+## Cluster import to Rancher
+
+This step assumes that a [Rancher server ](../rancher.md)has already been set up and operational.
+
+* Navigate to the _Cluster Management_ section in Rancher
+* Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
+* After importing, download `kubeconfig` file for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from the user's machine (client), without SSH
 
 ## Adding new nodes
 

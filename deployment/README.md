@@ -34,3 +34,9 @@ The figure below depicts how all components are stacked
 {% embed url="https://miro.com/app/board/uXjVKaaGd40=/?share_link_id=118505524008" %}
 Deployment Stack
 {% endembed %}
+
+For deployment, set up the following in the sequence given below:
+
+* [Base infrastructure](base-infrastructure/)
+* [Common components](common-components/)
+* OpenG2P specific modules _(instructions available in module-specific deployment pages)_

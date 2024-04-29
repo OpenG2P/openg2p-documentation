@@ -36,9 +36,9 @@ helm package charts/<chart name>
 ```
 
 * You will see packaged `.tgz` files created in the current directory.
-* Clone [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm) repo and switch to `gh-pages` branch. Copy the above `.tgz` files to root folder of the repo (where you will see several `.tgz` files.&#x20;
+* Clone [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm) repo and switch to `gh-pages` branch. Copy the above `.tgz` files to root folder of the repo (where you will see several `.tgz` files).&#x20;
 * Make sure you have direct check-in permissions to the `openg2p-helm` repo.
-* Run
+* Run&#x20;
 
 ```
 ./publish.sh
