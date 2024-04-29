@@ -12,7 +12,7 @@ Prometheus and Grafana provide powerful [system health](../../monitoring-and-rep
 
 <figure><img src="../../.gitbook/assets/monitoring-install.png" alt=""><figcaption></figcaption></figure>
 
-4. After installation, click on the _Monitoring_ menu on the left to reach the below page.  Click on _Prometheus Targets_ and make sure all scrape URLs have the status "Up".  If not, check if the ports indicated on the URL are accessible across nodes. For information on ports to be opened on nodes refer [Firewall Requirements](cluster-setup.md#firewall-requirements).
+4. After installation, click on the _Monitoring_ menu on the left to reach the below page.  Click on _Prometheus Targets_ and make sure all scrape URLs have the status "Up".  If not, check if the ports indicated on the URL are accessible across nodes. For information on ports to be opened on nodes refer [Firewall Requirements](cluster-setup/#firewall-requirements).
 
 
 

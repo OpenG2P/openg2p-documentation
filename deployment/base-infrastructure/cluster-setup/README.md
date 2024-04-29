@@ -1,4 +1,5 @@
 ---
+description: Kubernetes cluster setup guide
 layout:
   title:
     visible: true
@@ -14,70 +15,37 @@ layout:
 
 # Kubernetes Cluster
 
-OpenG2P modules and components are recommended to be run on Kubernetes (K8s), because of ease-of-use, management, and security features that K8s provides.
+OpenG2P modules and components are recommended to be run on [Kubernetes](https://kubernetes.io/) (K8s), because of ease-of-use, management, and security features that K8s provides.
 
-This document provides instructions to set up a K8s Cluster on which OpenG2P Modules and other components can be installed.
+K8s cluster may be installed on the following infrastructures:
 
-## Prerequisites
+* **Cloud-native** (like EKS on AWS, or AKS on Azure)
+* Non-cloud native, or **on-prem** (resources provisioned on a cloud or local data centre).
 
-* [Hardware Requirements](../hardware-requirements.md)
-* The following tools are installed on all the nodes and the client machine.
-  * `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
+Here we provide instructions to set up K8s cluster **on-prem**.
 
-## Firewall Requirements
+Broadly, the steps to install are as follows:
 
-### Firewall rules
+1. [Provision virtual machines ](./#provision-virtual-machines)
+2. [Set firewall rules](./#firewall-setup)
+3. [Set up the K8s cluster](./#cluster-installation) using Rancher's tool [RKE2](https://docs.rke2.io/).
+4. [Import cluster into Rancher](./#cluster-import-to-rancher)
+5. Install NFS client on the cluster
+6. [Install Istio on cluster](./#istio)
 
-Set up firewall rules on each node according to the following table.&#x20;
+## Virtual machines provisioning
 
-<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Should be accessible by only</th><th>Description</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td></td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>443</td><td></td><td>Postgres ports</td></tr><tr><td>TCP</td><td>5432</td><td></td><td>Postgres port</td></tr><tr><td>TCP</td><td>9345</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>TCP</td><td>6443</td><td>RKE2 agent nodes</td><td>Kubernetes API</td></tr><tr><td>UDP</td><td>8472</td><td>RKE2 server and agent nodes</td><td>Required only for Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>RKE2 server and agent nodes</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>RKE2 server nodes</td><td>etcd client port</td></tr><tr><td>TCP</td><td>2380</td><td>RKE2 server nodes</td><td>etcd peer port</td></tr><tr><td>TCP</td><td>9796</td><td>Cluster nodes over internal network. </td><td>Prometheus metrics</td></tr><tr><td>TCP</td><td>30000:32767</td><td>RKE2 server and agent nodes</td><td>NodePort port range</td></tr></tbody></table>
+Provision for virtual machines (VMs) as per configuration mentioned in [Hardware Requirements](../../hardware-requirements.md). Make sure you have root privileges to the machines and have secure access to them.
 
-### Firewall setup&#x20;
+Install the following tools on all machines including the one you are using to connect to the VMs.
 
-The exact method to set up the firewall rules will vary from cloud to cloud and on-prem. (For example on AWS, EC2 security groups can be used. For on-prem cluster, ufw can be used and so on)
+* `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq`
 
-#### Using Ansible
+## Firewall setup
 
-* On your machine install `ansible`
-* Make sure you have SSH access to all nodes of the cluster
-* Create `hosts.ini` file. Sample given [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/ansible).
-* Copy [`ports.yaml`](https://github.com/OpenG2P/openg2p-deployment/blob/main/ansible/ports.yaml) file and inspect for any changes w.r.t to above table.
-* Run
+Refer guide [here](firewall.md).
 
-```shell-session
-ansible-playbook -i hosts.ini ports.yaml
-```
-
-#### Manual
-
-* You can use `ufw` to set up the firewall on each cluster node.
-  * SSH into each node, and change to superuser
-  *   Run the following command for each rule in the above table
-
-      ```
-      ufw allow from <from-ip-range-allowed> to any port <port/range> proto <tcp/udp>
-      ```
-  *   Example:
-
-      ```
-      ufw allow from any to any port 22 proto tcp
-      ufw allow from 10.3.4.0/24 to any port 9345 proto tcp
-      ```
-  *   Enable ufw:
-
-      ```
-      ufw enable
-      ufw default deny incoming
-      ```
-* Additional Reference: [RKE2 Networking Requirements](https://docs.rke2.io/install/requirements#networking)
-
-## Installation on AWS cloud
-
-If you are using AWS only to get EC2 nodes, and you want to set up the K8s cluster manually, move to the [On-premises Setup](cluster-setup.md#installation-on-premises-on-prem).
-
-## Installation on-premises (on-prem)
-
-### k8s cluster
+## Cluster installation
 
 The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluster.
 
@@ -123,22 +91,22 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
     ```
 * Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha)
 
-### Cluster import into Rancher
+## Cluster import to Rancher
 
-This section assumes a Rancher server has already been set up and operational. [Rancher Server Setup](rancher.md) in case not already done.
+This step assumes that a [Rancher server ](../rancher.md)has already been set up and operational.
 
-* Navigate to Cluster Management section in Rancher
-* Click on `Import Existing` cluster. And follow the steps to import the new OpenG2P cluster
-* After importing, download kubeconfig for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from user's machine (client), without SSH
+* Navigate to the _Cluster Management_ section in Rancher
+* Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
+* After importing, download `kubeconfig` file for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from the user's machine (client), without SSH
 
-### NFS client provisioner&#x20;
+## NFS client provisioner&#x20;
 
-This section assumes an NFS server has already been set up and operational, which meets the requirements, as given in NFS server.  NFS client provisioner runs on the cluster and connects seamlessly to NFS Server. To install NFS client provisioner on cluster
+This section assumes an[ NFS server](../nfs-server.md) has already been set up.  The NFS client provisioner runs on the cluster and connects seamlessly to the NFS server.  Install NFS client provisioner on the cluster as follows:
 
-* Login to each of node and run `apt install nfs-common` on all the nodes.
+* Log in to each node and run `apt install nfs-common`.
 * On your machine run [https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh)
-* Provide the internal IP address of NFS server (the IP must be accessible from Kubernetes nodes).
-* Provide the path on which NFS was installed (noted during NFS Server installation)
+* Provide the internal IP address of the NFS server (the IP must be accessible from Kubernetes nodes).
+* Provide the path on which NFS was mounted on the NFS server (noted during NFS Server installation)
 
 ### Longhorn&#x20;
 
@@ -146,7 +114,7 @@ This installation only applies if Longhorn is used as storage. This may be skipp
 
 [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
-### Istio&#x20;
+## Istio&#x20;
 
 * The following setup can be done from the client machine. This installs Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
 *   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, configure the istio-operator.yaml, and run;
@@ -182,7 +150,9 @@ This installation only applies if Longhorn is used as storage. This may be skipp
         kubectl apply -f istio-gateway-no-tls.yaml
         ```
 
-### Adding new nodes
+## Adding new nodes
+
+To add more nodes to the cluster
 
 * From [kubernetes/rke2](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rke2) directory, take either the `rke2-server.conf.subsequent.template` or `rke2-agent.conf.template` based on whether the new node is control plane node or Worker node. Copy this file to `/etc/rancher/rke2/config.yaml` in the new node.
 * Configure the the config.yaml with relevant values

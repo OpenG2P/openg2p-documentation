@@ -22,4 +22,4 @@ For a sandbox, to conserve resources LB may be skipped. See figure below.
 
 {% embed url="https://miro.com/app/board/uXjVKOxj1TU=/" %}
 
-<table><thead><tr><th width="203">Setup</th><th>LB type</th></tr></thead><tbody><tr><td>Sandbox</td><td>LB not required. Direct connection to nodes and traffic distribution via <a href="../cluster-setup.md#istio">Istio</a> Ingress Gateway.</td></tr><tr><td>Pilot/Production </td><td><a href="aws.md">Cloud LB</a> or <a href="nginx.md">Nginx </a></td></tr></tbody></table>
+<table><thead><tr><th width="203">Setup</th><th>LB type</th></tr></thead><tbody><tr><td>Sandbox</td><td>LB not required. Direct connection to nodes and traffic distribution via <a href="../cluster-setup/#istio">Istio</a> Ingress Gateway.</td></tr><tr><td>Pilot/Production </td><td><a href="aws.md">Cloud LB</a> or <a href="nginx.md">Nginx </a></td></tr></tbody></table>
