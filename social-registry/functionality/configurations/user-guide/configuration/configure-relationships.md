@@ -42,8 +42,8 @@ _**Relationship**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/relationship-config-new-field-sr.png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the relevant [Relationships](../../#relationships) in the _**Name**_ field.
-6. Enter the _**Name**_, _**Inverse name**_, _**Bi-dir...**_ in the associated field.
+5. Enter the relevant [Relationship](../../#relationships) value in the associated fields.
+6. Enter the _**Name**_, _**Inverse name**_, _**Bi-dir...**_ in the associated field. Inverse name is a mandatory field.
 7. Select the appropriate value from the drop-down for _**Source partner type**_ and _**Destination partner type**_ in the associated field.
 
 <figure><img src="../../../../../.gitbook/assets/config-rel-fill-SR.png" alt=""><figcaption></figcaption></figure>

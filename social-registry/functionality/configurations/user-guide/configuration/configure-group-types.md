@@ -44,7 +44,7 @@ _**Group Types**_ screen is displayed.
 
 5. Enter the relevant [Group Types](../../#group-types) in the _**Kind**_ field.
 
-For example, here, enter the Kind as Village.
+For example, here, enter the School in Kind field.
 
 <figure><img src="../../../../../.gitbook/assets/group-type-fill-field-sr.png" alt=""><figcaption></figcaption></figure>
 
@@ -53,7 +53,7 @@ For example, here, enter the Kind as Village.
 
 The newly created group type is added to the group types list.
 
-<figure><img src="../../../../../.gitbook/assets/group-type-fill-field-sr.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/group-type-list-sr.png" alt=""><figcaption></figcaption></figure>
 
 8. Repeat the steps 4, 5, and 6 to add the relevant group type.
 

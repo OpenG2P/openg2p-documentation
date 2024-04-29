@@ -4,7 +4,7 @@ description: Social Registry
 
 # 📔 Create an Individual Registrant
 
-This document provides instructions to create an Individual Registrant in the Social Registry module.
+This document provides instructions to create an Individual Registrant in the _**Social Registry**_ module.
 
 ## Prerequisites
 
@@ -71,4 +71,4 @@ The newly created individual registrant gets added in the existing individual li
 
 <figure><img src="../../../../.gitbook/assets/individual-page-social-registry.png" alt=""><figcaption></figcaption></figure>
 
-This completes the creation of individual registrant in Social Registry module.
+This completes the creation of individual registrant in _**Social Registry**_ module.
