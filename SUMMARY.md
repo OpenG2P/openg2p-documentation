@@ -63,6 +63,7 @@
           * [📔 Create Voucher Entitlement Manager](pbms/features/entitlement/user-guides/create-entitlement-manager-type/create-voucher-entitlement-manager.md)
         * [📔 Create Entitlement Voucher Template](pbms/functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
     * [Disbursement](pbms/features/disbursement-cycles/README.md)
+      * [Payment Batches](pbms/functionality/disbursement-cycles/payment-batches.md)
       * [In-kind Transfer](pbms/functionality/disbursement-cycles/in-kind-transfer/README.md)
         * [📔 User Guides](pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/README.md)
           * [📔 Create a Product in Inventory](pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/create-a-product-in-inventory.md)
