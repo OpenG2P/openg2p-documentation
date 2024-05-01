@@ -62,16 +62,32 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 * [Deployment scripts](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/deployment)
 
-## Source code
+### Source code
 
 <table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-deployment</td><td align="center">v1.0.0</td></tr></tbody></table>
 
-## Build and deploy
+### Build and deployment guides
 
 * To build and run this release as a developer refer to the guide [here](broken-reference).
 * To deploy this release on Kubernetes refer to the guide [here](broken-reference).
 
-## Test report
+### API Documentation
+
+APIs are available in Stoplight at the following links
+
+[openg2p-spar-self-service-api](https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api)
+
+[openg2p-spar-mapper-api](https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper)
+
+### Unit Testing Coverage Reports
+
+[openg2p-spar-mapper-api](https://app.codecov.io/github/OpenG2P/openg2p-spar-mapper-api)
+
+[openg2p-spar-self-service](https://app.codecov.io/github/OpenG2P/openg2p-spar-self-service)
+
+[openg2p-g2pconnect-common](https://app.codecov.io/github/OpenG2P/openg2p-g2pconnect-common)
+
+### Test report
 
 * Testing methodology: Manual
 * Test results
