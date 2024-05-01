@@ -89,18 +89,11 @@ APIs are available in Stoplight at the following links
 
 ### Test report
 
-* Testing methodology: Manual
-* Test results
 
-{% embed url="https://docs.google.com/spreadsheets/d/1IfBrCoYBotCzyd-yQz-kCGlZrXll4qncZMIdH9XqS1A/edit#gid=0" %}
-Test Case Tracker
-{% endembed %}
 
 ## Limitations and known issues
 
 1. Release 1.0.0 has been tested with Limited scale. Extensive load testing and performance benchmarks are planned for Release 1.0.1. Jira backlogs for the same can be found here.
-2. REST API security for Mapper APIs (openg2p-spar-mapper-api) - As&#x20;
+2. REST API security for Mapper APIs (openg2p-spar-mapper-api) - While the self-service-apis are secured using Auth tokens (from OIDC-OAuth2.0 Login Providers), the mapper-apis will need a JWS Token based authorization for partner systems. This has been described [here](https://docs.openg2p.org/spar/privacy-and-security).
 
-For a detailed list of issues and feature development, refer here.
-
-To file issues, contribute and discuss, refer to the [Contributing](../../community/contributing-to-openg2p.md) guide.&#x20;
+&#x20;
