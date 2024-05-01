@@ -48,7 +48,7 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ### Packaged Dockers
 
-<table><thead><tr><th width="276">Image</th><th>Dockerhub Link</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-api/tags">openg2p-spar-mapper-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-api/tags">openg2p-spar-self-service-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-ui</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-ui">openg2p-spar-self-service-ui:1.0.0</a></td></tr></tbody></table>
+<table><thead><tr><th width="276">Image</th><th>Docker Hub Link</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-api/tags">openg2p-spar-mapper-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-api/tags">openg2p-spar-self-service-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-ui</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-ui">openg2p-spar-self-service-ui:1.0.0</a></td></tr></tbody></table>
 
 ### Helm Charts&#x20;
 
@@ -64,7 +64,7 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ## Source code
 
-<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-api</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td align="center">v1.1.0</td></tr><tr><td>openg2p-spar-deployment</td><td align="center">v1.1.0</td></tr></tbody></table>
+<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-deployment</td><td align="center">v1.0.0</td></tr></tbody></table>
 
 ## Build and deploy
 
