@@ -42,7 +42,7 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 1. A simple user-friendly UI to facilitate beneficiaries query the ID-Account-Mapper using their ID and displaying Financial Address (Account information) against the ID
 2. UI layer to facilitate construction of Financial Address (based on the construction strategy) using the Bank Codes, Branch Codes, Wallet Service Provider Codes etc.
-3. Login using OIDC/OAuth2.0 based Login Providers like E-Signet, Keycloak etc. &#x20;
+3. Login using OIDC-OAuth2.0 based Login Providers like E-Signet, Keycloak etc. &#x20;
 
 ## Release contents
 
