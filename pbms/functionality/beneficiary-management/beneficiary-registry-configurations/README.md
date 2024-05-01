@@ -46,5 +46,5 @@ The Group Membership Kind establishes the role of an individual in a group. For 
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Configuration](user-guides/configuration/)
+:notebook\_with\_decorative\_cover:[Configuration](user-guides/)
 

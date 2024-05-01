@@ -66,8 +66,3 @@ BR is an Odoo based module. Source is available here: [https://github.com/OpenG2
 :notebook\_with\_decorative\_cover:[Create an Individual Registrant](user-guides/create-an-individual-registrant.md)
 
 :notebook\_with\_decorative\_cover:[Create a Group and Add Individual Registrants to the Group](user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
-
-:notebook\_with\_decorative\_cover:[Configuration](../beneficiary-registry-configurations/user-guides/configuration/)
-
-
-

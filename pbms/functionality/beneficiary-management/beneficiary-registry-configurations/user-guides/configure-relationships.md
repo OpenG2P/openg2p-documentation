@@ -23,38 +23,38 @@ This document provides instructions to configure relationships in the _**Benefic
 
 ## Procedure
 
-1. Click the main menu icon ![](../../../../../../.gitbook/assets/main-menu.png) and select _**Registry**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Registry**_.
 
-<figure><img src="../../../../../../.gitbook/assets/main-menu-registry.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/main-menu-registry.png" alt=""><figcaption></figcaption></figure>
 
 _**Registry**_ screen is displayed.
 
-<figure><img src="../../../../../../.gitbook/assets/registry.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/registry.png" alt=""><figcaption></figcaption></figure>
 
 2. Click the _**Configuration**_ in the menu bar and then select _**Relationships**_.
 
-<figure><img src="../../../../../../.gitbook/assets/relationship-config-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/relationship-config-br.png" alt=""><figcaption></figcaption></figure>
 
 _**Relationship**_ screen is displayed.
 
-<figure><img src="../../../../../../.gitbook/assets/relationship-config-screen-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/relationship-config-screen-br.png" alt=""><figcaption></figcaption></figure>
 
 3. Click the _**Create**_ button. It enables an empty field.
 
-<figure><img src="../../../../../../.gitbook/assets/relationship-config-new-field-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/relationship-config-new-field-br.png" alt=""><figcaption></figcaption></figure>
 
-4. Enter the relevant [Relationship](../../#relationships) value in the associated fields.
+4. Enter the relevant [Relationship](../#relationships) value in the associated fields.
 5. Enter the _**Name**_, _**Inverse name**_, _**Bi-directional**_ in the associated field. Inverse name is a mandatory field.&#x20;
 6. Select the appropriate value from the drop-down for _**Source partner type**_ and _**Destination partner type**_ in the associated field.
 
-<figure><img src="../../../../../../.gitbook/assets/relationship-config-fill-field-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/relationship-config-fill-field-br.png" alt=""><figcaption></figcaption></figure>
 
 7. Click the _**Save**_ button to save the relationships configuration.
 8. Click the _**Discard**_ button to exit from the screen.
 
 The newly created relationships is added to the relationship list.
 
-<figure><img src="../../../../../../.gitbook/assets/relationship-config-list-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/relationship-config-list-br.png" alt=""><figcaption></figcaption></figure>
 
 9. Repeat the steps 3, 4, 5 and 6 to add the relevant relationship.
 

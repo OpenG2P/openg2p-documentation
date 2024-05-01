@@ -2,7 +2,7 @@
 description: Social Registry
 ---
 
-# Create a Group and Add Individual Registrants to the Group
+# 📔 Create a Group and Add Individual Registrants to the Group
 
 This document provides instructions to create a group and add individual registrants to the group in _**Social Registry**_ module.&#x20;
 
