@@ -89,7 +89,7 @@ APIs are available in Stoplight at the following links
 
 ### Test report
 
-
+The Release 1.0.0 Test Report can be found here
 
 ## Limitations and known issues
 
