@@ -64,7 +64,7 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ### Source code
 
-<table><thead><tr><th width="297.3333333333333">Github repository</th><th width="153" align="center">Version/Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-api</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td align="center">v1.0.0</td></tr><tr><td>openg2p-spar-deployment</td><td align="center">v1.0.0</td></tr></tbody></table>
+<table><thead><tr><th width="278.02886750555143">Github repository</th><th width="241">Description</th><th width="153">Git Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td>Fast API based microservice for ID Account Mapper</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service</td><td>Fast API based microservice for Self Service functionality</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td>React JS based UI layer for Self Service functionality</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td>Postman Test scripts for Mapper API</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td>Postman Test scripts for Self Service API</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-deployment</td><td>Helm charts and deployment scripts for SPAR</td><td>v1.0.0</td></tr></tbody></table>
 
 ### Build and deployment guides
 
