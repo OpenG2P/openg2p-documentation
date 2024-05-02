@@ -75,9 +75,9 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 APIs are available in Stoplight at the following links
 
-[openg2p-spar-self-service-api](https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api)
+[SPAR Mapper API](https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper)
 
-[openg2p-spar-mapper-api](https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper)
+[SPAR Self Service API](https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api)
 
 ### Unit Testing Coverage Reports
 
