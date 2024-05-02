@@ -257,7 +257,7 @@
     * [Repositories](spar/development/repositories.md)
   * [Deployment](spar/deployment.md)
   * [Tech Guides](spar/tech-guides.md)
-  * [📔 User Guides](spar/user-guides/README.md)
+  * [User Guides](spar/user-guides/README.md)
     * [📔 Self Update ID with Financial Address information](spar/user-guides/self-update-id-with-financial-address-information.md)
     * [📔 Admin Guide to Link ID with Financial Address information](spar/user-guides/admin-guide-to-link-id-with-financial-address-information.md)
   * [Releases](spar/releases/README.md)

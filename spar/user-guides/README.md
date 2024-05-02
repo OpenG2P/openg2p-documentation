@@ -1,5 +1,9 @@
 ---
+coverY: 0
 layout:
+  cover:
+    visible: true
+    size: full
   title:
     visible: true
   description:
@@ -12,5 +16,5 @@ layout:
     visible: true
 ---
 
-# 📔 User Guides
+# User Guides
 

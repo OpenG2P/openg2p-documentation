@@ -91,6 +91,8 @@ APIs are available in Stoplight at the following links
 
 The Release 1.0.0 Test Report can be found here
 
+{% embed url="https://docs.google.com/spreadsheets/d/1tX9Vzp2N2XQEmpLjkzShAykEh9ZDA5zUc6SNbZxV1s8/edit?usp=drive_link" %}
+
 ## Limitations and known issues
 
 1. Release 1.0.0 has been tested with Limited scale. Load testing and performance benchmarks are planned for Release 1.0.1.&#x20;
