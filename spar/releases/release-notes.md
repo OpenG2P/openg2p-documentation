@@ -87,6 +87,10 @@ APIs are available in Stoplight at the following links
 
 [openg2p-g2pconnect-common](https://app.codecov.io/github/OpenG2P/openg2p-g2pconnect-common)
 
+### Test Plans
+
+All test plans relating to Release 1.0.0 can be found [here](https://drive.google.com/drive/folders/1fofKFfn7yMeDvsIVq-0btJOYaq4vC7VA?usp=drive\_link)
+
 ### Test report
 
 The Release 1.0.0 Test Report can be found [here](https://docs.google.com/spreadsheets/d/1tX9Vzp2N2XQEmpLjkzShAykEh9ZDA5zUc6SNbZxV1s8/edit?usp=drive\_link)
