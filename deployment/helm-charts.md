@@ -51,21 +51,11 @@ helm package charts/<chart name>
 
 ## Helm chart versions
 
-<mark style="color:red;">WORK IN PROGRESS</mark>
+The chart version is mentioned as `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  For version numbers we adhere to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html) with "Simple 1-1 versioning" convention as described [here](https://codefresh.io/docs/docs/ci-cd-guides/helm-best-practices/#simple-1-1-versioning).  Here, chart version is kept same as docker version (app version). &#x20;
 
-The chart version is mentioned as `version` attribute of the `Chart.yaml` file.  For version numbers Semantic Versioning 2.0 is followed.  The below conventions are followed:
+<table><thead><tr><th width="166">Chart State</th><th width="245">Chart version</th><th>Docker version (app version)</th></tr></thead><tbody><tr><td><strong>Released</strong></td><td>Same as docker version (app version)</td><td>Same as chart version</td></tr><tr><td><strong>Development</strong></td><td><code>0.0.0-develop</code></td><td><code>develop</code></td></tr></tbody></table>
 
-Released charts:
+> Since chart version matches docker version (app version) it is recommended that `appVersion` attribute is removed from `Chart.yaml` as it is redundant.&#x20;
 
-Chart version:&#x20;
 
-Branch
-
-<table><thead><tr><th width="166">Chart State</th><th width="361">Chart version</th><th></th></tr></thead><tbody><tr><td>Released</td><td>Chart number == <code>appVersion</code> == released docker version</td><td> it is recommended that <code>appVersion</code> attribute is removed from <code>Chart.yaml</code> as it is redundant. </td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
-
-For **released** charts:
-
-Chart number == `appVersion` == released docker version
-
-Because of above convention, it is recommended that `appVersion` attribute is removed from `Chart.yaml` as it is redundant.&#x20;
 
