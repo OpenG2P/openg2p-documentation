@@ -1,10 +1,5 @@
 ---
-cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
-coverY: 0
 layout:
-  cover:
-    visible: true
-    size: full
   title:
     visible: true
   description:
@@ -17,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📔 Admin Guide to Link ID with Financial Address information
+# Admin Guide to Link ID with Financial Address information
 
 ## Introduction
 
