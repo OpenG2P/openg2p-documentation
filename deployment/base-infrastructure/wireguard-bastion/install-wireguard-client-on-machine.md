@@ -45,4 +45,16 @@ The steps to set up a WireGuard client on an **Ubuntu machine** are:
     sudo systemctl status wg-quick@wge2e
     ```
 
+<!---->
+
+1. After successfully installing WireGuard, navigate to the directory `/etc/wireguard` using the terminal.
+2. Next, create a file named `<name>.conf`, add the WireGuard configuration file to it, and save the file.
+3.  **Activate** WireGuard using the commands below.
+
+    ```
+    sudo systemctl enable wg-quick@<name> 
+    sudo systemctl start wg-quick@<name>
+    sudo systemctl status wg-quick@<name>
+    ```
+
 > Ensure that the listening port is unique for each WireGuard configuration file when using multiple instances.

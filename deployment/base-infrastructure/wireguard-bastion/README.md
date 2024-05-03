@@ -47,6 +47,5 @@ Refer to this [Wireguard Access to Users](wireguard-access-to-users.md)
 
 To access systems behind Wireguard bastion, you need to install Wireguard client on your machine. Install the client as follows:
 
-* [Install on Desktop](https://github.com/mosip/documentation/blob/1.2.0/docs/wireguard-client-installation-guide.md)
+* [Install on Desktop](install-wireguard-client-on-machine.md)
 * [Install on Android](install-wireguard-app-and-activate-tunnel.md)
-
