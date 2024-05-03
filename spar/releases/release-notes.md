@@ -1,5 +1,5 @@
 ---
-description: Release Notes. WORK IN PROGRESS
+description: SPAR Release Notes for 1.0.0
 layout:
   title:
     visible: true
@@ -17,7 +17,7 @@ layout:
 
 ### Release version: 1.0.0
 
-### Release date: 30th April 2024
+### Release date: 3rd May 2024
 
 ## Summary
 
