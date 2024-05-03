@@ -1,5 +1,10 @@
 ---
+cover: ../../.gitbook/assets/SPAR banner-on-light-background.png
+coverY: 0
 layout:
+  cover:
+    visible: true
+    size: full
   title:
     visible: true
   description:
@@ -12,33 +17,26 @@ layout:
     visible: true
 ---
 
-# Self Update ID with Financial Address information
+# 📔 Self Update ID with Financial Address information
 
-## Introduction
+This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR (Social Payments Account Registry) and map his/her national ID with their respective bank account, mobile wallet account, and email wallet account.
 
-This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR and map his/her national ID with their respective bank account/mpesa account.
+## Prerequisites
 
-## Prerequisite
-
-* The user must have knowledge to access [SPAR](broken-reference) which is available in public portal via internet
-* The user must have his/her National ID,  bank account details and email ID
+* The user must have access to [SPAR](https://spar.explore.openg2p.net/selfservice/en/login) which is available in public portal via internet
+* The user must have his/her National ID,  bank account, mobile wallet, and email ID details.
 
 ## Procedure
 
-1. Open the SPAR URL on your browser,  for example, https://spar.openg2p.sandbox.net
-2. \<Geo-specific portal> page is displayed.
+1. Open the SPAR URL on your browser
 
-<figure><img src="../../.gitbook/assets/login-page (1).png" alt=""><figcaption><p>Name of the portal.</p></figcaption></figure>
+_**SPAR**_ self-service portal  screen is displayed.
 
-There are two options available to login self-service portal.
+<figure><img src="../../.gitbook/assets/spar-landing-single-login.png" alt=""><figcaption></figcaption></figure>
 
-* Login with your email or phone number&#x20;
-* [Login with your National ID](self-update-id-with-financial-address-information.md#login-with-national-id)
+2. Click the _**Proceed with National ID**_ button.
 
-### Login with National ID
-
-3. Click the _**SIGNIN WITH NATIONAL ID**_ button.
-4. Login with eSignet page is displayed.
+_**Login with e-Signet**_ screen is displayed.
 
 <figure><img src="../../.gitbook/assets/e-signet-login.png" alt=""><figcaption><p>eSignet login page.</p></figcaption></figure>
 
@@ -49,10 +47,11 @@ You can select your preferred mode of login.
 * Login with Inji Mobile App
 * Login with Inji Mobile App1
 
-#### Login with OTP
+### Login with OTP
 
 5. Click the _**Login with OTP**_ button.
-6. _**Login with OTP**_ page pops up.
+
+_**Login with OTP**_ screen is displayed.
 
 <figure><img src="../../.gitbook/assets/login-otp.png" alt=""><figcaption><p>Login with OTP.</p></figcaption></figure>
 
@@ -64,68 +63,79 @@ You receive the OTP number in your registered phone number.
 
 <figure><img src="../../.gitbook/assets/login-otp-verify.png" alt=""><figcaption><p>OTP verification.</p></figcaption></figure>
 
-It redirects to the \<Geo-specific portal> Home page_**.**_
+_**SPAR**_ home screen is displayed.
 
-<figure><img src="../../.gitbook/assets/NSPAP - Home page (1).png" alt=""><figcaption><p>Home page.</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/spar-home-screen.png" alt=""><figcaption></figcaption></figure>
 
-In _**Home**_ page, the features and their descriptions are:
 
-| Feature                                                                     | Description                                                                                                             |
-| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| <img src="../../.gitbook/assets/user-name.png" alt="" data-size="original"> | It displays your name.                                                                                                  |
-| Update your Linked Financial Address                                        | This tab is used to update the bank details/wallet/mpesa and map your national ID with your bank/wallet/mpesa account.  |
-| Currently Linked Financial Address                                          | This tab populates the current list of linked financial address.                                                        |
 
-### Update your Linked Financial Address
+In _**SPAR**_ home screen, the features and their descriptions are given below:
 
-9. Click the _**UPDATE DETAILS**_ button.
+| Feature                                                                         | Description                                                                                                      |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| <img src="../../.gitbook/assets/username-spar.png" alt="" data-size="original"> | Displays your name.                                                                                              |
+| Language drop-down                                                              | Select your preferred language from the drop-down. Your preferred language gets reflected in the user interface. |
+| UPDATE YOUR ACCOUNT DETAILS                                                     | Click to update your account details.                                                                            |
 
-<figure><img src="../../.gitbook/assets/update-details.png" alt=""><figcaption><p>Bank Account.</p></figcaption></figure>
+_**Update your account information**_ screen is displayed.
 
-10. A drop-down field lists the type of the available account. The valid values are:
+<figure><img src="../../.gitbook/assets/account-info-screen-spar.png" alt=""><figcaption></figcaption></figure>
 
-* [Bank Account](self-update-id-with-financial-address-information.md#bank-account)
-* Wallet&#x20;
-* [MPesa](self-update-id-with-financial-address-information.md#mpesa)
+You can find three different modes to update your account details. &#x20;
 
-#### Bank Account
+* Bank
+* Mobile Wallet
+* Email Wallet
 
-11. Select the _**Bank Account**_ in the drop-down.
-12. Select  your _**Bank**_ in the drop-down.
+#### Update your account details via Bank
 
-<figure><img src="../../.gitbook/assets/update-details-2.png" alt=""><figcaption><p>Bank Name.</p></figcaption></figure>
+9. Click the _**Bank**_ Type.
 
-13. Select your **Bank Branch** in the drop-down.
+You can fill the valid bank details in the respective fields.
 
-<figure><img src="../../.gitbook/assets/update-details-3 (1).png" alt=""><figcaption><p>Bank Branch.</p></figcaption></figure>
+| Field         | Description                                        |
+| ------------- | -------------------------------------------------- |
+| Select Bank   | Select  your bank in the drop-down.                |
+| Select Branch | Select your bank's branch in the drop-down.        |
+| Type Account  | Enter the 10 digits of your bank's account number. |
+| Submit        | Click the _**Submit**_ button                      |
 
-14. Enter the _**Account number**_ and then click _**Submit**_.
+<figure><img src="../../.gitbook/assets/update-acct-info-spar.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/update-details-4.png" alt=""><figcaption><p>Account Number.</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/confirmation-msg-bank-SPAR.png" alt=""><figcaption></figcaption></figure>
 
-Your National ID is successfully mapped to the bank account and the success notification message pops up.
+A success message confirms that your account information is updated successfully via bank. Your National ID is successfully mapped to the bank account.
 
-<figure><img src="../../.gitbook/assets/update-details-5.png" alt=""><figcaption><p>A success notification message.</p></figcaption></figure>
+#### Update your account details via Mobile Wallet
 
-15. Click the _**GET CURRENT FINANCIAL ADDRESS**_ button.
-16. The currently linked _**FA**_ (Financial Address) is displayed.
+10. Click the _**Mobile Wallet**_ Type.
 
-<figure><img src="../../.gitbook/assets/update-details-6.png" alt=""><figcaption><p>Display financial address - Bank Account.</p></figcaption></figure>
+You can fill the valid mobile wallet information in the respective fields.
 
-#### Mpesa
+| Field                | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| Select Mobile Wallet | Select your mobile wallet in the drop-down.       |
+| Type Mobile Number   | Enter the 10 digits of your mobile wallet number. |
+| Submit               | Click the _**Submit**_ button                     |
 
-17. Select _**MPesa**_ in the drop-down.
+<figure><img src="../../.gitbook/assets/update-mobile-info-spar.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/update-details-mpesa.png" alt=""><figcaption><p>MPesa.</p></figcaption></figure>
+A success message confirms that your account information is updated successfully via mobile wallet. Your National ID is successfully mapped to the bank account.
 
-18. Enter your _**Email**_ address and click the _**Submit**_ button.
+#### Update your account details via Email Wallet
 
-<figure><img src="../../.gitbook/assets/e-mail address-mpesa.png" alt=""><figcaption><p>Email address.</p></figcaption></figure>
+11. Click the _**Email Wallet**_ Type.
 
-Your National ID is successfully mapped to the Mpesa account and the success notification message pops up.
+You can fill the valid email wallet information in the respective fields.
 
-19. Click the _**GET CURRENT FINANCIAL ADDRESS**_ button.
-20. &#x20;The currently linked _**FA**_ (Financial Address) is displayed.
+| Field               | Description                                 |
+| ------------------- | ------------------------------------------- |
+| Select Email Wallet | Select your email wallet in the drop-down.  |
+| Type Email address  | Enter the valid email address.              |
+| Submit              | Click the _**Submit**_ button               |
 
-<figure><img src="../../.gitbook/assets/current-list-mpesa.png" alt=""><figcaption><p>Display financial address - MPesa.</p></figcaption></figure>
 
+
+<figure><img src="../../.gitbook/assets/update-email-info-spar.png" alt=""><figcaption></figcaption></figure>
+
+A success message confirms that your account information is updated successfully via email wallet. Your National ID is successfully mapped to the bank account.
