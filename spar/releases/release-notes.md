@@ -46,58 +46,14 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ## Release contents
 
-### Packaged Dockers
+<table><thead><tr><th width="276">Release item</th><th>Links </th></tr></thead><tbody><tr><td><strong>SPAR source code</strong> </td><td><ul><li>openg2p-spar-mapper-api:v1.0.0</li><li>openg2p-spar-self-service:v1.0.0</li><li>openg2p-spar-self-service-ui:v1.0.0</li><li>openg2p-spar-mapper-test:v1.0.0</li><li>openg2p-spar-self-service-test:v1.0.0</li></ul></td></tr><tr><td><strong>Packaged dockers</strong></td><td><ul><li><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-api/tags">openg2p-spar-mapper-api:1.0.0</a></li><li><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-api/tags">openg2p-spar-self-service-api:1.0.0</a></li><li><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-ui">openg2p-spar-self-service-ui:1.0.0</a></li></ul></td></tr><tr><td><strong>Deployment</strong></td><td><ul><li><a href="https://github.com/OpenG2P/openg2p-spar-deployment/tree/1.0.0/charts">Helm charts</a></li><li><a href="https://github.com/OpenG2P/openg2p-spar-deployment/tree/1.0.0/deployment">Deployment scripts</a></li><li>Deployment documentation</li></ul></td></tr><tr><td><strong>Testing</strong></td><td><ul><li><p>Test coverage reports</p><ul><li><a href="https://app.codecov.io/github/OpenG2P/openg2p-spar-mapper-api">openg2p-spar-mapper-api</a></li><li><a href="https://app.codecov.io/github/OpenG2P/openg2p-spar-self-service">openg2p-spar-self-service</a></li><li><a href="https://app.codecov.io/github/OpenG2P/openg2p-g2pconnect-common">openg2p-g2pconnect-common</a></li></ul></li><li><a href="https://drive.google.com/drive/folders/1fofKFfn7yMeDvsIVq-0btJOYaq4vC7VA">Test plans</a></li><li><a href="https://docs.google.com/spreadsheets/d/1tX9Vzp2N2XQEmpLjkzShAykEh9ZDA5zUc6SNbZxV1s8/edit#gid=0">Test reports</a></li></ul></td></tr><tr><td><strong>Documentation</strong></td><td><ul><li>SPAR concepts</li><li>User guides</li><li>Developer install</li><li>Deployment guides</li><li><p>API reference</p><ul><li><a href="https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper">SPAR Mapper API</a></li><li><a href="https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api">SPAR Self Service API</a></li></ul></li></ul></td></tr></tbody></table>
 
-<table><thead><tr><th width="276">Image</th><th>Docker Hub Link</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-api/tags">openg2p-spar-mapper-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-api</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-api/tags">openg2p-spar-self-service-api:1.0.0</a></td></tr><tr><td>openg2p-spar-self-service-ui</td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-self-service-ui">openg2p-spar-self-service-ui:1.0.0</a></td></tr></tbody></table>
-
-### Helm Charts&#x20;
-
-1. [Source Code](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/charts)
-2. Published Charts
-   1. openg2p-spar-mapper-api
-   2. openg2p-spar-self-service-api
-   3. openg2p-spar-self-service-ui
-
-### Deployment
-
-* [Deployment scripts](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/deployment)
-
-### Source code
-
-<table><thead><tr><th width="278.02886750555143">Github repository</th><th width="241">Description</th><th width="153">Git Tag</th></tr></thead><tbody><tr><td>openg2p-spar-mapper-api</td><td>Fast API based microservice for ID Account Mapper</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service</td><td>Fast API based microservice for Self Service functionality</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service-ui</td><td>React JS based UI layer for Self Service functionality</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-mapper-test</td><td>Postman Test scripts for Mapper API</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-self-service-test</td><td>Postman Test scripts for Self Service API</td><td>v1.0.0</td></tr><tr><td>openg2p-spar-deployment</td><td>Helm charts and deployment scripts for SPAR</td><td>v1.0.0</td></tr></tbody></table>
-
-### Build and deployment guides
+## Build and deploy
 
 * To build and run this release as a developer refer to the guide [here](broken-reference).
 * To deploy this release on Kubernetes refer to the guide [here](broken-reference).
 
-### API Documentation
-
-APIs are available in Stoplight at the following links
-
-[SPAR Mapper API](https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper)
-
-[SPAR Self Service API](https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api)
-
-### Unit Testing Coverage Reports
-
-[openg2p-spar-mapper-api](https://app.codecov.io/github/OpenG2P/openg2p-spar-mapper-api)
-
-[openg2p-spar-self-service](https://app.codecov.io/github/OpenG2P/openg2p-spar-self-service)
-
-[openg2p-g2pconnect-common](https://app.codecov.io/github/OpenG2P/openg2p-g2pconnect-common)
-
-### Test Plans
-
-All test plans relating to Release 1.0.0 can be found [here](https://drive.google.com/drive/folders/1fofKFfn7yMeDvsIVq-0btJOYaq4vC7VA?usp=drive\_link)
-
-### Test report
-
-The Release 1.0.0 Test Report can be found [here](https://docs.google.com/spreadsheets/d/1tX9Vzp2N2XQEmpLjkzShAykEh9ZDA5zUc6SNbZxV1s8/edit?usp=drive\_link)
-
-{% embed url="https://docs.google.com/spreadsheets/d/1tX9Vzp2N2XQEmpLjkzShAykEh9ZDA5zUc6SNbZxV1s8/edit?usp=drive_link" %}
-
-## Limitations and known issues
+### Limitations and known issues
 
 1. Release 1.0.0 has been tested with Limited scale. Load testing and performance benchmarks are planned for Release 1.0.1.&#x20;
 2. REST API security for Mapper APIs (openg2p-spar-mapper-api) - While the self-service-apis are secured using Auth tokens (from OIDC-OAuth2.0 Login Providers), the mapper-apis will need a JWS Token based authorization for partner systems. This has been described [here](https://docs.openg2p.org/spar/privacy-and-security).

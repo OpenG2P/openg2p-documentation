@@ -48,7 +48,7 @@ For a Email Address based Wallet, we can have the following dfsp\_level configur
 
 The self-service-ui uses the api - "get\_levels (parent)" to paint the UI fields to capture the input for these attributes - parent = 0, will provide the first level for the FA hierarchy
 
-<figure><img src="../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Self Service UI - showing capture of FA information</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Self Service UI - showing capture of FA information</p></figcaption></figure>
 
 #### dfsp\_level\_values
 
@@ -90,11 +90,7 @@ FA - Deconstruction Strategy --
 
 ### APIs
 
-APIs are available in Stoplight at the following links
-
-[openg2p-spar-self-service-api](https://openg2p.stoplight.io/docs/openg2p-spar-self-service-api/b0fb6beb9cd7e-spar-self-service-api)
-
-[openg2p-spar-mapper-api](https://openg2p.stoplight.io/docs/openg2p-spar-mapper-api/b0fb6beb9cd7e-open-g2-p-spar-account-mapper)
+Refer [API Reference](api-reference.md).
 
 
 
