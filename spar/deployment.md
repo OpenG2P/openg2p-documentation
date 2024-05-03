@@ -4,7 +4,9 @@ description: SPAR Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster.
+The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster.&#x20;
+
+SPAR can be deployed in the foll
 
 ## Prerequisites
 
