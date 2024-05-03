@@ -36,6 +36,8 @@ This is handled by the Self Service API - integration with an OIDC - OAuth2.0 Lo
 
 The Login Provider authorizes the beneficiary and provides the ID and Access tokens. The subsequent browser requests from the user, then carry these tokens to get access to the APIs.
 
+There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mark style="color:blue;">**oauth**</mark>, in the self-service-api, that fulfil these functionalities.
+
 #### Case 2 - Authentication of Partner Systems consuming mapper-apis
 
 (the self-service application that consumes mapper-apis - In this case, the self-service application is treated like a partner system consuming mapper apis)
