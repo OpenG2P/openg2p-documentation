@@ -32,6 +32,10 @@ Security of the payload during transmission (in both cases mentioned above) is h
 
 #### Case 1 - Authentication of Beneficiaries (Browser Client Application) consuming self-service-apis
 
+This is handled by the Self Service API - integration with an OIDC - OAuth2.0 Login Provider. The beneficiary logs in, into the SPAR Self Service portal, using his/her National ID.
+
+The Login Provider authorizes the beneficiary and provides the ID and Access tokens. The subsequent browser requests from the user, then carry these tokens to get access to the APIs.
+
 #### Case 2 - Authentication of Partner Systems consuming mapper-apis
 
 (the self-service application that consumes mapper-apis - In this case, the self-service application is treated like a partner system consuming mapper apis)
