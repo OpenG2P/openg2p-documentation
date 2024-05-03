@@ -1,5 +1,5 @@
 ---
-description: Social Payments Accounts Registry
+description: Social Payments Account Registry
 cover: ../.gitbook/assets/SPAR banner-on-light-background.png
 coverY: 0
 layout:
