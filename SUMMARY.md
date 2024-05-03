@@ -335,7 +335,7 @@
     * [Wireguard Bastion](deployment/base-infrastructure/wireguard-bastion/README.md)
       * [Install WireGuard Client on Android Device](deployment/base-infrastructure/wireguard-bastion/install-wireguard-app-and-activate-tunnel.md)
       * [Wireguard Access to Users](deployment/base-infrastructure/wireguard-bastion/wireguard-access-to-users.md)
-      * [Install WireGuard Client on Machine](deployment/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
+      * [Install WireGuard Client on Desktop](deployment/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
     * [NFS Server](deployment/base-infrastructure/nfs-server.md)
     * [Rancher](deployment/base-infrastructure/rancher.md)
     * [Kubernetes Cluster](deployment/base-infrastructure/cluster-setup/README.md)
