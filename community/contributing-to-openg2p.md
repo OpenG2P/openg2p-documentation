@@ -1,6 +1,8 @@
-# Contributing
+---
+description: Contributing to OpenG2P
+---
 
-## Introduction
+# Contributing
 
 OpenG2P is a collaborative effort of several contributors. We welcome contributions to the OpenG2P Project.
 
@@ -34,6 +36,8 @@ To contribute code to the OpenG2P project, follow the steps given below:
 The documentation of the project is available as `.md` files in the [Documentation repository](https://github.com/openg2p/openg2p-documentation). To highlight a correction or request for additional documentation, raise a GitHub Issue on the repository. To contribute to the documentation follow the steps given under [Code contributions](contributing-to-openg2p.md#code-contributions).
 
 ## Versioning of modules
+
+For Helm chart versioning, refer [here](../deployment/helm-charts.md#helm-chart-versions).
 
 For Odoo modules, follow the [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning). To indicate the maturity of a version (like alpha/beta etc.) use `development_status` field in the `__manifest__.py` file as described [here](https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/oca\_module\_lifecycle\_development\_status.rst).
 
