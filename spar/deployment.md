@@ -48,7 +48,8 @@ The following Unix utilities must be present on your machine.
 
     ```bash
     SPAR_HOSTNAME=spar.openg2p.sandbox.net \
-        ./install.sh
+      NS=openg2p \
+      ./install.sh
     ```
 
 ## Post-installation
