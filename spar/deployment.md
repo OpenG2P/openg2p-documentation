@@ -38,8 +38,6 @@ Before you deploy SPAR, make sure the following are available:
 
 ## Installation using the command line
 
-The following Unix utilities must be present on your machine.
-
 * Install following utilities on your machine:
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 * Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest.  Navigate to `scripts` directory.
