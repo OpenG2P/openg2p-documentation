@@ -9,7 +9,14 @@ The instructions here pertain to the deployment of all SPAR components on the Ku
 * Using Rancher UI&#x20;
 * Using command line
 
-## Installation from Rancher UI
+Before you deploy SPAR, make sure the following are available:
+
+* [Base infrastructure](../deployment/base-infrastructure/)
+* [eSignet](../deployment/common-components/esignet.md) (required only if SPAR Self Service API is being installed)
+* Cluster Owner permission on your cluster
+* Namespace in which you would be installing SPAR is created on the cluster
+
+## Installation using Rancher UI
 
 Make sure you have the Cluster Owner permission to your Kubernetes cluster&#x20;
 
