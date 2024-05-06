@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📔 Admin Guide to Link ID with Financial Address information
+# Admin Guide to Link ID with Financial Address information
 
 ## Introduction
 

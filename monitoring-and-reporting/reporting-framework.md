@@ -37,7 +37,7 @@ The salient features of the framework are the following:
 * [PostgreSQL](../deployment/common-components/postgresql.md)
 * [Kafka](../deployment/common-components/kafka.md)
 * [Keycloak](../deployment/common-components/keycloak.md)&#x20;
-* [OpenSearch](../deployment/common-components/opensearch.md)
+* [OpenSearch](../deployment/base-infrastructure/fluentd-and-opensearch/opensearch.md)
 
 ### Installation
 
