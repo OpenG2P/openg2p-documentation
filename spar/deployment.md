@@ -4,7 +4,7 @@ description: SPAR Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using Helm charts. The Helm charts may be installed with the following methods:
+The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using[ Helm charts](../deployment/helm-charts.md). The Helm charts may be installed with the following methods:
 
 * Using Rancher UI&#x20;
 * Using command line
@@ -18,13 +18,11 @@ Before you deploy SPAR, make sure the following are available:
 
 ## Installation using Rancher UI
 
-Make sure you have the Cluster Owner permission to your Kubernetes cluster&#x20;
-
-1. Logging to Rancher admin console
-2. Select your cluster
+1. Log in to Rancher admin console.
+2. Select your cluster.
 3. Under _Apps -> Repositories_ click on _Create_ to add a repository.
-4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on _Create_.
-5. &#x20;Navigate to _Apps->Charts_ page. You should see OpenG2P SPAR Helm chart
+4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
+5. &#x20;Navigate to _Apps->Charts_ page on Rancher. You should see OpenG2P SPAR Helm chart listed.
 
 <div align="left">
 
@@ -32,11 +30,11 @@ Make sure you have the Cluster Owner permission to your Kubernetes cluster&#x20;
 
 </div>
 
-6. Click on the helm chart, select the version to be installed and click on _Install_.
+6. Click on the Helm chart, select the version to be installed and click _Install_.
 7. Select the namespace in which you would like the chart to be installed (you will need to create a namespace upfront if it does not already exist) and select the checkbox _Customise Helm options before install._
 8. Provide _Global Hostname_ of the installation. Refer to [DNS requirements](../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
-9. Select the components to be installed and the eSignet base URL. The latter is required only if you are installing SPAR Self Service API. &#x20;
-10. Click on _Next_ and then _Install_.  &#x20;
+9. Select the components to be installed and the eSignet base URL. The latter is required only if you are installing [SPAR Self Service](features/spar-self-service.md). &#x20;
+10. Click _Next_ and then _Install_.  &#x20;
 
 ## Installation using the command line
 
