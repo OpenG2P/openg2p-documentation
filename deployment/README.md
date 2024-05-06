@@ -24,7 +24,7 @@ Deployment Architecture
 The modules reside in the OpenG2P Cluster shown above.  Rancher (housed in the Rancher cluster) is used to manage multiple Kubernetes clusters.
 
 {% hint style="info" %}
-You may have more than one cluster, for example, dev, production etc. Each Rancher can be used to manage all these clusters.
+A single cluster may suffice for an organisation. Different environments like dev, qa, staging may be installed on the same cluster under different namespaces.  If required, a separate cluster may be installed for production.
 {% endhint %}
 
 ## Deployment stack
