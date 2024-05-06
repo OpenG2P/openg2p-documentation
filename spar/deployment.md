@@ -40,8 +40,7 @@ Before you deploy SPAR, make sure the following are available:
 
 * Install following utilities on your machine:
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest.  Navigate to `scripts` directory.
-* Configure the `values.yaml` in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
+* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest.  Navigate to `deployment` directory.
 *   Run.&#x20;
 
     ```bash
