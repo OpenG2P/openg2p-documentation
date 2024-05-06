@@ -15,7 +15,9 @@ layout:
 
 # Privacy & Security
 
-### SPAR APIs are consumed by two categories of clients
+### Authentication & Authorization
+
+SPAR APIs are consumed by two categories of clients
 
 1. Beneficiaries logging on to the Self-Service-Portal (through the Self-Service-Client) and consuming the APIs provided by openg2p-self-service-api
 2. Partner systems consuming the Mapper APIs provided by openg2p-spar-mapper-api. These partner systems can be Banks, National Clearing, PBMS/MIS Systems - systems in the G2P chain, using the lookup (resolve) API of Mapper. \
