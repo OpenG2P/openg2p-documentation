@@ -49,9 +49,13 @@ Before you deploy SPAR, make sure the following are available:
       ./install.sh
     ```
 
-## Post-installation
+## Access links
 
-After installation, SPAR Self Service portal will be accessible at https://spar.openg2p.sandbox.net, SPAR Service APIs will be accessible at https://spar.openg2p.sandbox.net/spar/v1, and SPAR Mapper APIs will be accessible at https://spar.openg2p.sandbox.net/mapper/v1, depending on the hostname given above.
+After installation, SPAR is accessible over following URLs based on the `SPAR_HOSTNAME` given above:
+
+* SPAR Self Service UI:  _https://spar.openg2p.sandbox.net_
+* SPAR Self Service API: _https://spar.openg2p.sandbox.net/spar/v1_
+* SPAR Mapper: _https://spar.openg2p.sandbox.net/mapper/v1_
 
 ## Onboard SPAR on eSignet
 
