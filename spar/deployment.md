@@ -38,26 +38,22 @@ Before you deploy SPAR, make sure the following are available:
 
 ## Installation using the command line
 
-* The following utilities/tools must be present on the user's machine.
+The following Unix utilities must be present on your machine.
+
+* Install following utilities on your machine:
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* This module requires kubernetes infrastructure to be setup. For details, [click here](broken-reference)
-* [PostgreSQL](../deployment/common-components/postgresql.md)
-* SPAR Self Service Portal needs an e-Signet instance to allow login through national ID. To install eSignet on the OpenG2P K8s cluster with mock ID system, use the [eSignet guide](../deployment/common-components/esignet.md).
-
-### Installation
-
-* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo and navigate to `scripts` directory.
+* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest.  Navigate to `scripts` directory.
 * Configure the `values.yaml` in this folder according to the components needed. Go over the comments to check what can be added/edited/removed.
-*   Run:
+*   Run.&#x20;
 
     ```bash
-    SANDBOX_HOSTNAME=openg2p.sandbox.net \
+    SPAR_HOSTNAME=spar.openg2p.sandbox.net \
         ./install.sh
     ```
 
 ## Post-installation
 
-After installation, SPAR Self Service portal will be accessible at https://spar.openg2p.sandbox.net, SPAR Service APIs will be accessible at https://spar.openg2p.sandbox.net/spar/v1, and SPAR ID Mapper APIs will be accessible at https://spar.openg2p.sandbox.net/mapper/v1, depending on the hostname given above.
+After installation, SPAR Self Service portal will be accessible at https://spar.openg2p.sandbox.net, SPAR Service APIs will be accessible at https://spar.openg2p.sandbox.net/spar/v1, and SPAR Mapper APIs will be accessible at https://spar.openg2p.sandbox.net/mapper/v1, depending on the hostname given above.
 
 ## Onboard SPAR on eSignet
 
