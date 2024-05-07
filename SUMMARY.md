@@ -60,6 +60,7 @@
           * [📔 Create Default Entitlement Manager](pbms/features/entitlement/user-guides/create-entitlement-manager-type/create-default-entitlement-manager.md)
           * [📔 Create Voucher Entitlement Manager](pbms/features/entitlement/user-guides/create-entitlement-manager-type/create-voucher-entitlement-manager.md)
         * [📔 Create Entitlement Voucher Template](pbms/functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
+        * [📔 Configure the Payments File with QR Code](pbms/functionality/entitlement/user-guides/configure-the-payments-file-with-qr-code.md)
     * [Disbursement](pbms/features/disbursement-cycles/README.md)
       * [Payment Batches](pbms/functionality/disbursement-cycles/payment-batches.md)
       * [In-kind Transfer](pbms/functionality/disbursement-cycles/in-kind-transfer/README.md)
