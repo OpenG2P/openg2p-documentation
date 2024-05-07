@@ -206,7 +206,7 @@
         * [📔 Configure Group Membership Kind](social-registry/functionality/configurations/user-guide/configure-group-membership-kind.md)
     * [Registry Update Mechanisms](social-registry/features/registry-update-mechanisms.md)
     * [Notifications](social-registry/features/notifications.md)
-    * [Administration](social-registry/features/administration.md)
+    * [Administration / User Management](social-registry/features/administration.md)
     * [Geographic](social-registry/functionality/geographic.md)
     * [ID Verification](social-registry/features/id-verification.md)
     * [Data Share](social-registry/features/data-share.md)
