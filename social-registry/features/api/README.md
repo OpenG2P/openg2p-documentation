@@ -4,12 +4,11 @@ SR enables APIs to [search](../../functionality/search.md) and do CRUD operation
 
 ## API documentation
 
-TBD
-
-\<pointer to Stoplight>
+[openg2p-social-registry-api](https://openg2p.stoplight.io/docs/openg2p-social-registry/yh3dm5ylwbwq7-g2-p-connect-registry-sync)
 
 ## Source code
 
-\<pointer to repositories>&#x20;
+[openg2p-social-registry-search-apis](https://github.com/OpenG2P/openg2p-social-registry/tree/17.0-develop/g2p\_registry\_g2p\_connect\_rest\_api)
 
-TBD
+[openg2p-crud-apis](https://github.com/OpenG2P/openg2p-registry/tree/17.0-develop/g2p\_registry\_rest\_api)
+

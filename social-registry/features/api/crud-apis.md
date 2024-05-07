@@ -4,31 +4,27 @@ description: WORK IN PROGRESS
 
 # CRUD APIs
 
-The APIs are divided into 3 parts:
+The CRUD operations for both Individual and Group APIs are organized as follows:
 
-1. Individual
-2. Group
-3. Common APIs
+**Individual APIs**
 
-## Individual
+* **Create**: Allows the creation of a new individual entity.
+* **Read**: Enables the fetching of details about an individual entity.
+* **Update**: Supports modifying existing individual entities.
 
-1. Get
-   1. Get by id
-   2. Get by NAME, ID\_TYPE, ID\_VALUE
-2. Create
+**Group APIs**
 
-## Group
+* **Create**: Facilitates the creation of a new group.
+* **Read**: Provides the capability to obtain details about a specific group or list of groups.
+* **Update**: Allows the modification of existing groups.
 
-1. Get
-   1. Get by id
-   2. Get by NAME, ID\_TYPE, ID\_VALUE
-2. Create
-   1. Create Group
+{% hint style="danger" %}
+Delete API is not supported. To delete a registrant, please contact the administrator.
+{% endhint %}
 
-## Common APIs
 
-1. Update ID
-   1. Search for registrant by id
-   2. Update id
-2. Add relationship
-3. Map individual with group
+
+APIs are available in Stoplight at the following links
+
+[openg2p-crud-apis](https://openg2p.stoplight.io/docs/openg2p-social-registry/branches/main/m2g8egugf4nrf-open-g2-p-crud-ap-is)
+
