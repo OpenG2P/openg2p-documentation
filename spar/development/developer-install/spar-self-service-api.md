@@ -1,2 +1,0 @@
-# spar-self-service-api
-

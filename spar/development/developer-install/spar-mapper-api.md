@@ -1,2 +1,0 @@
-# spar-mapper-api
-
