@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Self Update ID with Financial Address information
+# Link FA (Self Service)
 
 This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR (Social Payments Account Registry) and map his/her national ID with their respective bank account, mobile wallet account, and email wallet account.
 
@@ -82,9 +82,9 @@ You can find three different modes to update your account details. &#x20;
 * Mobile Wallet
 * Email Wallet
 
-#### Update your account details via Bank
-
-9. Click the _**Bank**_ Type.
+{% tabs %}
+{% tab title="Bank" %}
+1. Click the _**Bank**_ Type.
 
 You can fill the valid bank details in the respective fields.
 
@@ -95,31 +95,25 @@ You can fill the valid bank details in the respective fields.
 | Type Account  | Enter the 10 digits of your bank's account number. |
 | Submit        | Click the _**Submit**_ button                      |
 
-<figure><img src="../../.gitbook/assets/update-acct-info-spar.png" alt=""><figcaption></figcaption></figure>
-
 <figure><img src="../../.gitbook/assets/confirmation-msg-bank-SPAR.png" alt=""><figcaption></figcaption></figure>
 
 A success message confirms that your account information is updated successfully via bank. Your National ID is successfully mapped to the bank account.
+{% endtab %}
 
-#### Update your account details via Mobile Wallet
-
-10. Click the _**Mobile Wallet**_ Type.
+{% tab title="Mobile Wallet" %}
+1. Click the _**Mobile Wallet**_ Type.
 
 You can fill the valid mobile wallet information in the respective fields.
 
-| Field                | Description                                       |
-| -------------------- | ------------------------------------------------- |
-| Select Mobile Wallet | Select your mobile wallet in the drop-down.       |
-| Type Mobile Number   | Enter the 10 digits of your mobile wallet number. |
-| Submit               | Click the _**Submit**_ button                     |
+<table><thead><tr><th width="334">Field</th><th>Description</th></tr></thead><tbody><tr><td>Select Mobile Wallet</td><td>Select your mobile wallet in the drop-down. </td></tr><tr><td>Type Mobile Number</td><td>Enter the 10 digits of your mobile wallet number.</td></tr><tr><td>Submit</td><td>Click the <em><strong>Submit</strong></em> button</td></tr></tbody></table>
 
 <figure><img src="../../.gitbook/assets/update-mobile-info-spar.png" alt=""><figcaption></figcaption></figure>
 
 A success message confirms that your account information is updated successfully via mobile wallet. Your National ID is successfully mapped to the bank account.
+{% endtab %}
 
-#### Update your account details via Email Wallet
-
-11. Click the _**Email Wallet**_ Type.
+{% tab title="Email Wallet" %}
+1. Click the _**Email Wallet**_ Type.
 
 You can fill the valid email wallet information in the respective fields.
 
@@ -129,8 +123,8 @@ You can fill the valid email wallet information in the respective fields.
 | Type Email address  | Enter the valid email address.              |
 | Submit              | Click the _**Submit**_ button               |
 
-
-
 <figure><img src="../../.gitbook/assets/update-email-info-spar.png" alt=""><figcaption></figcaption></figure>
 
 A success message confirms that your account information is updated successfully via email wallet. Your National ID is successfully mapped to the bank account.
+{% endtab %}
+{% endtabs %}
