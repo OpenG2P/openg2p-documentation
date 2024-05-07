@@ -15,7 +15,7 @@ layout:
 
 # Privacy & Security
 
-### Authentication & Authorization
+### Authentication & authorization
 
 SPAR APIs are consumed by two categories of clients
 
@@ -24,7 +24,7 @@ SPAR APIs are consumed by two categories of clients
    \
    The openg2p-spar-self-service-api (of point 1) which serves the self-service-ui, in turn has to consume the mapper APIs. In this context, the openg2p-spar-self-service-api will behave like a partner system&#x20;
 
-### Transport Security using a Secure Tunnel
+### Transport security using a secure tunnel
 
 Security of the payload during transmission (in both cases mentioned above) is handled using the https (SSL) implementation, using PKI.
 
@@ -44,13 +44,13 @@ There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mar
 
 (the self-service application that consumes mapper-apis - In this case, the self-service application is treated like a partner system consuming mapper apis)
 
-### Partner Authorization
+### Partner authorization
 
 #### Onboarding a Partner to consume an OpenG2P API
 
 <figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L2.jpg" alt=""><figcaption><p>Partner Onboarding for OpenG2P API</p></figcaption></figure>
 
-#### API Call by Partner
+#### API call by Partner
 
 <figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-01.jpg" alt=""><figcaption><p>OpenG2P API call from Partner Organization / Partner System</p></figcaption></figure>
 

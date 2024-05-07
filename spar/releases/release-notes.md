@@ -21,7 +21,7 @@ layout:
 
 ## Summary
 
-SPAR Release 1.0.0 represents a fully functional **ID-Account Mapper** (one of the components of the DPI building blocks) as articulated by the [CDPI literature.](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/cohort-1-daas-offerings/id-account-mapper) In addition to the ID Account Mapper, the SPAR Release 1.0.0 also includes a Self Service module, using which, beneficiaries can login themselves into the SPAR Self Service system and maintain (link, unlink & modify)  a mapping between their IDs and their Financial Address (Bank Accounts, Mobile Wallets).
+SPAR Release 1.0.0 represents a fully functional **ID Account Mapper** (one of the components of the DPI building blocks) as articulated by the [CDPI literature.](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/cohort-1-daas-offerings/id-account-mapper) In addition to the ID Account Mapper, the SPAR Release 1.0.0 also includes a Self Service module, using which, beneficiaries can login themselves into the SPAR Self Service system and maintain (link, unlink & modify)  a mapping between their IDs and their Financial Address (Bank Accounts, Mobile Wallets).
 
 ## Features of this release
 
@@ -50,9 +50,9 @@ The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-
 
 ## Deploy
 
-To deploy this release on Kubernetes refer to [deployment guide](../deployment.md).
+To deploy this release on Kubernetes refer to the [deployment guide](../deployment.md).
 
-### Limitations and known issues
+## Limitations and known issues
 
 1. Release 1.0.0 has been tested with Limited scale. Load testing and performance benchmarks are planned for Release 1.0.1.&#x20;
 2. REST API security for Mapper APIs (openg2p-spar-mapper-api) - While the self-service-apis are secured using Auth tokens (from OIDC-OAuth2.0 Login Providers), the mapper-apis will need a JWS Token based authorization for partner systems. This has been described [here](https://docs.openg2p.org/spar/privacy-and-security).
