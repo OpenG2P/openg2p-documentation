@@ -16,7 +16,7 @@ This document provides step-by-step instructions to make environment publicly ac
 2. Click the "Create Target Group" button to create a new Target Group.
 3. Configure Target Group
    * Choose target type - `IP addresses`
-   * Target Group name - `openg2p-<envname>-``external-http`
+   * Target Group name - `openg2p-<envname>-external-http`
    * Protocol : Port - `TCP : 30080`
    * VPC - Select the VPC in which the instances are located
    * Health check protocol : Path : Port (**Traffic Port**) - `HTTP : /healthz/ready : 30521`
@@ -40,7 +40,7 @@ This document provides step-by-step instructions to make environment publicly ac
 
 1. For PostgreSQL, there is no need to create a Target Group (TG). Instead, create a record with the name **internal.sandbox-name** and map the Internal NLB DNS name of the environment to it in AWS Route53.
 
-### Create External **Network Load Balancer** <a href="#creating-external-network-load-balancer" id="creating-external-network-load-balancer"></a>
+### Create external n**etwork Load Balancer** <a href="#creating-external-network-load-balancer" id="creating-external-network-load-balancer"></a>
 
 1. In the EC2 dashboard, click the "Load Balancers" tab and then click "Create Load Balancer" and Choose Load Balancer Type as **Network Load Balancer.**
 2. Configure Load Balancer Settings
