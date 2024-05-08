@@ -4,15 +4,15 @@ description: SPAR Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using[ Helm charts](../../deployment/helm-charts.md). The Helm charts may be installed with the following methods:
+The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using[ Helm charts](../deployment/helm-charts.md). The Helm charts may be installed with the following methods:
 
 * Using Rancher UI&#x20;
 * Using command line
 
 Before you deploy SPAR, make sure the following are available:
 
-* [Base infrastructure](../../deployment/base-infrastructure/)
-* [eSignet](../../deployment/common-components/esignet.md) (required only if SPAR Self Service API is being installed)
+* [Base infrastructure](../deployment/base-infrastructure/)
+* [eSignet](../deployment/common-components/esignet.md) (required only if SPAR Self Service API is being installed)
 * Cluster Owner permission on your cluster
 * Namespace in which you would be installing SPAR is created on the cluster
 
@@ -26,13 +26,13 @@ Before you deploy SPAR, make sure the following are available:
 
 <div align="left">
 
-<figure><img src="../../.gitbook/assets/spar-chart-on-rancher.png" alt="" width="302"><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/spar-chart-on-rancher.png" alt="" width="302"><figcaption></figcaption></figure>
 
 </div>
 
 6. Click on the Helm chart, select the version to be installed and click _Install_.
 7. Select the namespace in which you would like the chart to be installed (you will need to create a namespace upfront if it does not already exist) and select the checkbox _Customise Helm options before install._
-8. Provide _Global Hostname_ of the installation. Refer to [DNS requirements](../../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
+8. Provide _Global Hostname_ of the installation. Refer to [DNS requirements](../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
 9. Select the components to be installed and the eSignet base URL. The latter is required only if you are installing [SPAR Self Service](features/spar-self-service.md). &#x20;
 10. Click _Next_ and then _Install_.  &#x20;
 
@@ -67,3 +67,7 @@ After installation, SPAR is accessible over following URLs based on the `SPAR_HO
   * above client ID under the `client_id` field.
   * and above private key jwk under the `client_assertion_jwk` field.
 * Seed/edit metadata of banks, wallets, branches, etc for the SPAR self-service portal in database. TODO: Elaborate.
+
+## Sanity testing
+
+TBD
