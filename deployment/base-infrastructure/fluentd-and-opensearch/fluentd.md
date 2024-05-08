@@ -35,4 +35,5 @@ description: Fluentd Install
 
 ### Filters
 
-Note the filters applied in [clusterflow-all.yaml](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/logging/clusterflow-all.yaml). You may update the same for your install if required, and rerun the apply command.
+The filters applied in [clusterflow-all.yaml](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/logging/clusterflow-all.yaml). You may update the same for your install if required, and rerun the apply command.&#x20;
+

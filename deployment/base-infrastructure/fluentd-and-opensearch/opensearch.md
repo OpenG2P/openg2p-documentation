@@ -34,14 +34,14 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     ./opensearch-ism-script.sh
     ```
 
-### Dashboards
+### Dashboards&#x20;
 
-* TODO
+_TBD_
+
+#### Access control on dashboards:
+
+_TBD_
 
 ### TraceId
 
-* TODO
-
-### Troubleshooting
-
-* TODO
+_TBD_
