@@ -50,7 +50,8 @@ It is highly recommended to set up a double-node cluster for high availability. 
       --set ingress.tls.source=tls-rancher-ingress
     ```
 
-    * Configure/Create TLS secret accordingly.
+    * Configure/Create TLS secret accordingly.\
+      Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
 
     ```bash
     kubectl create secret tls tls-rancher-ingress -n cattle-system \
