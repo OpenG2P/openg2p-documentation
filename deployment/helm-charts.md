@@ -55,6 +55,10 @@ To have your charts available in Rancher Apps and be able to install from Ranche
 
 To publish a chart on Rancher Apps in step 3 above, copy the chart zip to  `/rancher` folder of the repo.  Run `./index.sh.`This will generate and `index.yaml` file in the folder. This file will be read by Rancher to display in the catalogue (refer [Installation using Rancher UI](../spar/deployment.md#installation-using-rancher-ui) on how to add this repository).&#x20;
 
+{% hint style="info" %}
+If in [annotations](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher/create-apps#chartyaml-annotations) for the chart fixed name and namespace of the Helm chart is specified, then only one instance of the application will be installed and further attempts to install will only update the application. Example, Monitoring app on Rancher.
+{% endhint %}
+
 ## Helm chart versions
 
 The chart version is mentioned as `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  For version numbers we adhere to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html) with "Simple 1-1 versioning" convention as described [here](https://codefresh.io/docs/docs/ci-cd-guides/helm-best-practices/#simple-1-1-versioning).  Here, chart version is kept same as docker version (app version). &#x20;
