@@ -11,15 +11,19 @@ description: >-
 
 ### Prerequisites
 
-* Linux/Ubuntu Machine
-* Python3
+* Any machine running Linux (e.g., Ubuntu), macOS, or Windows
+* Python3.10 or later
 * Git
 * PostgreSQL
 * virtualenv
-* [eSignet Configuration](../../../deployment/common-components/esignet.md)
-* [SPAR Mapper API](spar-mapper-api-installation.md)
+* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../deployment/common-components/esignet.md) for setup instructions.
+*   **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api-installation.md).
+
+
 
 #### Python Dependencies
+
+The following dependencies are managed in the installation steps below.
 
 ```sh
 annotated-types==0.6.0
@@ -84,6 +88,8 @@ websockets==12.0
 
 ### Steps to Install
 
+#### Install from source
+
 * Clone the repository
 
 ```sh
@@ -117,12 +123,45 @@ pip install greenlet &&
 pip install -e .
 ```
 
-* Configure database credentials in the \`.env\` file
+* Configure database credentials and other environment variables in the \`.env\` file
   * [See Configuration section below](spar-self-service-api-installation.md#configuration)
 * &#x20;Run migrations to set up the database:
 
 ```sh
 python main.py migrate
+```
+
+### Seeding the database (Optional)
+
+This will seed the database with default values. Make sure to update the eSignet configuration in the db as per your installation.
+
+#### PostgreSQL DB Setup:
+
+Create a new role/user called "sparuser" and create a new database called "spardb", with "sparuser" as the owner.No need to run this step if Postgres was installed through openg2p's deployment script.
+
+```plsql
+CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'xxxxxx';
+CREATE DATABASE spardb WITH OWNER = sparuser CONNECTION LIMIT = -1;  
+```
+
+#### Then run:
+
+```sh
+cd db_scripts &&
+DB_HOST="openg2p.sandbox.net" \
+DB_USER_PASSWORD="xxxxxx" \
+./deploy.sh && cd ..
+```
+
+#### The following optional Env vars can also be passed:
+
+```
+- `VERSION="1.0.0"` Do not set this if you want latest version.
+- `DB_PORT="5432"` Default is 5432.
+- `DB_NAME="mydb"` Default is spardb.
+- `DB_USER="myuser"` Default is sparuser.
+- `DEPLOY_DML="false"` Default is true. If false, will not run DML scripts.
+- `LOG_DB_QUERY="true"` Default is false. Logs all Db queries.
 ```
 
 ### Quick Start
@@ -142,24 +181,27 @@ python main.py run
 
 Set the following environment variables to configure the \`spar-mapper-api\`:
 
-```xml
+```markup
+# Database credentials for spar-mapper-api (Update these values as per your installation/setup)
 SPAR_SELFSERVICE_DB_DBNAME=openg2p_spar_db
 SPAR_SELFSERVIC_DB_HOSTNAME='localhost'
 SPAR_SELFSERVIC_DB_USERNAME='sparuser'
 
+# Auth (Update these values as per your installation/setup)
 SPAR_SELFSERVICE_AUTH_DEFAULT_ISSUERS=[ "https://esignet.dev.sandbox.net/v1/esignet", "https://keycloak.dev.sandbox.net/realms/sandbox" ]
 SPAR_SELFSERVICE_AUTH_DEFAULT_JWKS_URLS=[ "https://esignet.dev.sandbox.net/v1/esignet/oauth/.well-known/jwks.json", "https://keycloak.dev.sandbox.net/realms/sandbox/protocol/openid-connect/certs" ]
 
+# SPAR Mapper API Endpoints (change only if required)
+SPAR_SELFSERVICE_MAPPER_API_URL="http://localhost:8007/sync"
 SPAR_SELFSERVICE_MAPPER_LINK_PATH="/link"
 SPAR_SELFSERVICE_MAPPER_UNLINK_PATH="/unlink"
 SPAR_SELFSERVICE_MAPPER_RESOLVE_PATH="/resolve"
 SPAR_SELFSERVICE_MAPPER_UPDATE_PATH="/update"
-SPAR_SELFSERVICE_MAPPER_API_URL="http://localhost:8007/sync"
 ```
 
 #### Authentication
 
-The `spar-self-service-api` supports authentication via eSignet. Refer to the official documentation for eSignet [here](../../../deployment/common-components/esignet.md) for setup instructions.
+The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](../../../deployment/common-components/esignet.md) for setup instructions.
 
 ### Testing
 

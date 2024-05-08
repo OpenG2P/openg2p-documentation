@@ -11,13 +11,15 @@ description: >-
 
 ### Prerequisites
 
-* Linux/Ubuntu Machine
-* Python3
+* Any machine running Linux (e.g., Ubuntu), macOS, or Windows
+* Python3.10 or later
 * Git
 * PostgreSQL
 * virtualenv
 
 #### Python Dependencies
+
+The following dependencies are managed in the installation steps below.
 
 ```sh
 annotated-types==0.6.0
@@ -111,7 +113,7 @@ pip install greenlet &&
 pip install -e .
 ```
 
-* Configure database credentials in the \`.env\` file
+* Configure database credentials and other environment variables in the \`.env\` file
   * [See Configuration section below](spar-mapper-api-installation.md#configuration)
 * &#x20;Run migrations to set up the database:
 
@@ -137,7 +139,10 @@ python main.py run
 Set the following environment variables to configure the \`spar-mapper-api\`:
 
 ```xml
-SPAR_MAPPER_PORT='8007'
+# Application Port
+SPAR_MAPPER_PORT='8007' 
+
+# Database credentials
 SPAR_MAPPER_DB_HOSTNAME='localhost'
 SPAR_MAPPER_DB_USERNAME='sparuser'
 SPAR_MAPPER_DB_DBNAME='spardb'
