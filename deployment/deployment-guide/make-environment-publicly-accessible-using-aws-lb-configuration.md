@@ -1,5 +1,5 @@
 ---
-description: (WIP)
+description: Documentation to create public load balancer
 ---
 
 # Make Environment Publicly Accessible using AWS LB Configuration
@@ -10,48 +10,53 @@ This document provides step-by-step instructions to make environment publicly ac
 
 **Note:** The naming conventions may vary depending on the environment, and this documentation will be applicable when using an AWS load balancer.
 
-## **Create a new Target Groups and LB on AWS**
+### Create Target Group for external-**http** <a href="#creating-target-group-for-openg2p-external-http" id="creating-target-group-for-openg2p-external-http"></a>
 
-The steps below outline the process for creating new Target Groups and Load Balancers (LB) on AWS.
+1. In the EC2 dashboard, under the "Load Balancing" section, select "Target Groups" from the menu.
+2. Click the "Create Target Group" button to create a new Target Group.
+3. Configure Target Group
+   * Choose target type - `IP addresses`
+   * Target Group name - `openg2p-<envname>-``external-http`
+   * Protocol : Port - `TCP : 30080`
+   * VPC - Select the VPC in which the instances are located
+   * Health check protocol : Path : Port (**Traffic Port**) - `HTTP : /healthz/ready : 30521`
+4. Register Targets
+   * After configuring the Target Group, click the "Next" button
+   * Select the targets (instances) to register with the Target Group
+   * Click the "Add to registered" button to add the selected targets to the Target Group
+5. Review the configuration settings for the Target Group. After verification, click the "Create Target Group" button to create the Target Group.
+6. Once the Target Group is created, make a note of the Amazon Resource Name (ARN) of the newly created Target Group. This ARN is required when you configure Load Balancers or other services that use the Target Group.
 
-* Creating Target Group for **external-http**
-* Creating Target Group for **external-httpsredirect**
-* Creating a Target Group for **PostgreSQL**
-* Creating external network **Load Balancer**
+### Create Target Group for external-**httpsredirect** <a href="#creating-target-group-for-openg2p-external-httpsredirect" id="creating-target-group-for-openg2p-external-httpsredirect"></a>
 
-### Creating Target Group for **external-http**
+1. To create a Target Group for "external-httpsredirect," follow the same steps mentioned above. Only for the "**Configure Target Group**" section, use the following configurations.
+   * Choose target type - `IP addresses`
+   * Target Group name - `openg2p-<envname>-ext-httpsredirect`
+   * Protocol : Port - `TCP : 30081`
+   * VPC - Select the VPC in which the instances are located.
+   * Health check protocol : Path : Port (**Overide**) - `HTTP : /healthz/ready : 30521`
 
-1. Choose a target type - `IP addresses`
-2. Target Group name - `openg2p-<envname>-external-http`
-3. Protocol : Port  -  `TCP : 30080`
-4. VPC  - `general-vpc`
-5. Health check protocol : Path : Port (**Traffic Port**)- `HTTP : /healthz/ready : 30521`
-6. Next, navigate to "Register Targets", verify the network settings, add the internal IP addresses of the cluster instances, and create the target group.\
+### Create a Target Group for PostgreSQL <a href="#creating-a-target-group-for-postgresql" id="creating-a-target-group-for-postgresql"></a>
 
+1. For PostgreSQL, there is no need to create a Target Group (TG). Instead, create a record with the name **internal.sandbox-name** and map the Internal NLB DNS name of the environment to it in AWS Route53.
 
-### Creating Target Group for **external-httpsredirect**
+### Create External **Network Load Balancer** <a href="#creating-external-network-load-balancer" id="creating-external-network-load-balancer"></a>
 
-1. Choose a target type - `IP addresses`
-2. Target Group name - `openg2p-<envname>-ext-httpsredirect`
-3. Protocol : Port  -  `TCP : 30081`
-4. VPC  - `general-vpc`
-5. Health check protocol : Path : Port (**Overide**) - `HTTP : /healthz/ready : 30521`
-6. Next, navigate to "Register Targets", verify the network settings, add the internal IP addresses of the cluster instances, and create the target group.
+1. In the EC2 dashboard, click the "Load Balancers" tab and then click "Create Load Balancer" and Choose Load Balancer Type as **Network Load Balancer.**
+2. Configure Load Balancer Settings
+   * Create NLB with name - `openg2p-<envname>-external`
+   * Select VPC - Select the VPC and region in which the instances are located
+   *   Select Security Group - Select the Security Group in which the instances are located
 
-### Creating Target Group for PostgreSQL
+       &#x20;**Note**:  Click here to create Security Group, if required
+   * Configure Routing - Define Target Groups to route traffic to specific instances
+     *   Listeners and routing **Protocol : Port : Default action**
 
-For PostgreSQL, there is no need to create a Target Group (TG). Instead, create a record with the name internal.sandbox-name and map the Internal NLB DNS name of the environment to it.\
+         **Note**: Below default action, select the Target Groups already created from the above steps.
+     * `TLS : 443 : openg2p-<envname>-external-http`
+     * `TCP : 80 : openg2p-<envname>-ext-httpsredirect`
+     *   Select `ACM certificate` as per environment domain name.
 
-
-### Creating external N**etwork Load Balancer**
-
-1. Create NLB with name - `openg2p-<envname>-external`
-2. Select VPC -`general-vpc`  do map for `ap-south-1a, 1b, 1c`
-3. Select Security Group - `default-nginx-node`&#x20;
-4. Listeners and routing **Protocol : Port : Default action**&#x20;
-   * `TLS : 443 :  openg2p-<envname>-external-http`
-   * `TCP : 80 : openg2p-<envname>-ext-httpsredirect`
-5. Select an `ACM certificate` corresponding to the environment's domain name and create an NLB.
-6. Make sure the Load balancer created and active.
-7.  Map the Load Balancer DNS name to your environment domain name on Route 53.
-
+         **Note**: Click [here](create-acm-certificate-on-aws.md) to create ACM certificate, if required.
+   * Review the configuration settings and create the Load Balancer
+   * Do mapping on AWS Route53
