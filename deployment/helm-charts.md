@@ -34,20 +34,26 @@ All charts are published to this public website: [https://openg2p.github.io/open
 
 &#x20;Charts may be published manually with the procedure given below:
 
-* &#x20;Create Helm packaged zip files by executing the following command in the folder that contains your charts source code.
+1. &#x20;Create Helm packaged zip files by executing the following command in the folder that contains your charts source code.
 
 ```
 helm package charts/<chart name>
 ```
 
-* You will see packaged `.tgz` files created in the current directory.
-* Clone [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm) repo and switch to `gh-pages` branch. Copy the above `.tgz` files to root folder of the repo (where you will see several `.tgz` files).&#x20;
-* Make sure you have direct check-in permissions to the `openg2p-helm` repo.
-* Run&#x20;
+2. You will see packaged `.tgz` files created in the current directory.
+3. Clone [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm) repo and switch to `gh-pages` branch. Copy the above `.tgz` files to root folder of the repo (where you will see several `.tgz` files).&#x20;
+4. Make sure you have direct check-in permissions to the `openg2p-helm` repo.
+5. Run&#x20;
 
 ```
 ./publish.sh
 ```
+
+## Publish Helm charts as Rancher apps
+
+To have your charts available in Rancher Apps and be able to install from Rancher UI follow guide given [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher/create-apps).  See [example](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/charts/spar) of Helm chart configured for Rancher.
+
+To publish a chart on Rancher Apps in step 3 above, copy the chart zip to  `/rancher` folder of the repo.  Run `./index.sh.`This will generate and `index.yaml` file in the folder. This file will be read by Rancher to display in the catalogue (refer [Installation using Rancher UI](../spar/deployment.md#installation-using-rancher-ui) on how to add this repository).&#x20;
 
 ## Helm chart versions
 
