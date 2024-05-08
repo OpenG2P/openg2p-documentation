@@ -1,8 +1,8 @@
 ---
-description: Developer guide
+description: Developer Installation for SPAR Self Service UI
 ---
 
-# Spar Self Service UI developer Guide
+# SPAR Self Service UI
 
 ### Introduction
 
