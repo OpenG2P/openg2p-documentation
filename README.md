@@ -45,6 +45,6 @@ The following modules are offered:
 
 * [PBMS](pbms/) (Program and Beneficiary Management System)
 * [Social Registry](social-registry/)
-* [SPAR](g2p-bridge/spar/) (Social Payments Account Registry)
+* [SPAR](spar/) (Social Payments Account Registry)
 * [G2P Bridge](g2p-bridge/)
 * [Utilities and tools](utilities-and-tools/)

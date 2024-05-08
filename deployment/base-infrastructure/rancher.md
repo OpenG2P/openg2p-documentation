@@ -33,7 +33,7 @@ To deploy Rancher carry out the following steps:
 Follow steps 1-5 in the guide given [here](cluster-setup/).
 
 {% hint style="info" %}
-It is highly recommended to set up a double-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources.
+It is highly recommended to set up a 3-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources.
 {% endhint %}
 
 ## Rancher installation

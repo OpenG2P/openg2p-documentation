@@ -92,7 +92,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   > source ~/.bashrc
   > kubectl get nodes    
   ```
-* Download the Kubeconfig file `rke2.yaml` and keep it securely **shared with only** Super Admins. Rename it so that it can be identified with the cluster. This file is will be used if cluster control via Rancher is unavailable.
+* Download the Kubeconfig file `rke2.yaml` and keep it <mark style="color:red;">securely</mark> <mark style="color:red;"></mark><mark style="color:red;">**shared with only**</mark> <mark style="color:red;"></mark><mark style="color:red;">Super Admins</mark>. Rename it so that it can be identified with the cluster. This file will be used if cluster control via Rancher is unavailable.
 * Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha)
 
 ## NFS client provisioner&#x20;

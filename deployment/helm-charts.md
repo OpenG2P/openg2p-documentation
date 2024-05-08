@@ -20,10 +20,10 @@ For deployment on Kubernetes OpenG2P provides Helm charts for all its components
 
 Charts may be found here:
 
-| Module                      | Location                                                                                                   |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [SPAR](../g2p-bridge/spar/) | [https://github.com/OpenG2P/openg2p-spar-deployment/](https://github.com/OpenG2P/openg2p-spar-deployment/) |
-| All modules (except SPAR)   | [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm)                         |
+| Module                    | Location                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [SPAR](../spar/)          | [https://github.com/OpenG2P/openg2p-spar-deployment/](https://github.com/OpenG2P/openg2p-spar-deployment/) |
+| All modules (except SPAR) | [https://github.com/OpenG2P/openg2p-helm](https://github.com/OpenG2P/openg2p-helm)                         |
 
 ## Published repository
 
