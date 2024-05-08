@@ -17,7 +17,7 @@ description: >-
 * PostgreSQL
 * virtualenv
 * **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../deployment/common-components/esignet.md) for setup instructions.
-*   **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api-installation.md).
+*   **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api.md).
 
 
 
@@ -124,7 +124,7 @@ pip install -e .
 ```
 
 * Configure database credentials and other environment variables in the \`.env\` file
-  * [See Configuration section below](spar-self-service-api-installation.md#configuration)
+  * [See Configuration section below](spar-self-service-api.md#configuration)
 * &#x20;Run migrations to set up the database:
 
 ```sh

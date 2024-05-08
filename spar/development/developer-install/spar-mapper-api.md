@@ -114,7 +114,7 @@ pip install -e .
 ```
 
 * Configure database credentials and other environment variables in the \`.env\` file
-  * [See Configuration section below](spar-mapper-api-installation.md#configuration)
+  * [See Configuration section below](spar-mapper-api.md#configuration)
 * &#x20;Run migrations to set up the database:
 
 ```sh
