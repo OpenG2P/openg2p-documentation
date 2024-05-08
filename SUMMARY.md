@@ -368,6 +368,7 @@
     * [Make Environment Publicly Accessible using AWS LB Configuration](deployment/deployment-guide/make-environment-publicly-accessible-using-aws-lb-configuration.md)
     * [Create ACM Certificate on AWS](deployment/deployment-guide/create-acm-certificate-on-aws.md)
     * [Create Security Group on AWS](deployment/deployment-guide/create-security-group-on-aws.md)
+    * [Domain mapping on AWS Route53](deployment/deployment-guide/domain-mapping-on-aws-route53.md)
   * [Hardware Requirements](deployment/hardware-requirements.md)
   * [Helm Charts](deployment/helm-charts.md)
 * [Use Cases](use-cases/README.md)
