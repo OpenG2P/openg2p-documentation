@@ -24,10 +24,10 @@ Logging Pipeline
 
 ## Dashboards
 
-Several dashboards can be created using OpenSearch Dashboards. Some default dashboards are provided OpenG2P that may be customized
+Several dashboards can be created using [OpenSearch Dashboards](https://opensearch.org/docs/latest/dashboards/). Some default dashboards are provided by OpenG2P and may be customized.
 
 <figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 ## Installation
 
-Refer to [Common Components Deployment](../deployment/common-components/) for installing Fluentd and OpenSearch.
+Refer to [Deployment->Fluentd & Opensearch](../deployment/base-infrastructure/fluentd-and-opensearch/).
