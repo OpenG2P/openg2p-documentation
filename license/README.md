@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# License
+# 🪪 License
 
 International Institute of Information Technology, Bangalore, (IIIT-B) hosts OpenG2P. Code developed by IIITB is licensed under the terms of [Mozilla Public License 2.0](https://www.mozilla.org/en-US/MPL/2.0/). Some of the modules offered by OpenG2P utilise the Odoo Platform (Community Edition) under the [GNU (Lesser) General Public License.](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 

@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Social Registry
+# 👨‍👩‍👧‍👦 Social Registry
 
 Social Registry (SR) is an independent module offered by OpenG2P to enable the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country.&#x20;
 

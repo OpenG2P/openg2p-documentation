@@ -2,7 +2,7 @@
 description: WORK IN PROGRESS
 ---
 
-# G2P Bridge
+# 💰 G2P Bridge
 
 The role of G2P Bridge subsystem in the G2P landscape is shown in this figure
 

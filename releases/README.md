@@ -1,2 +1,2 @@
-# Releases
+# 📜 Releases
 

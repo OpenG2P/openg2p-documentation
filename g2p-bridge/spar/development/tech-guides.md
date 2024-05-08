@@ -48,7 +48,7 @@ For a Email Address based Wallet, we can have the following dfsp\_level configur
 
 The self-service-ui uses the api - "get\_levels (parent)" to paint the UI fields to capture the input for these attributes - parent = 0, will provide the first level for the FA hierarchy
 
-<figure><img src="../../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Self Service UI - showing capture of FA information</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Self Service UI - showing capture of FA information</p></figcaption></figure>
 
 #### dfsp\_level\_values
 

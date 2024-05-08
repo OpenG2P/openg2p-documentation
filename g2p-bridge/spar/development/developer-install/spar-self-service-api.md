@@ -5,7 +5,7 @@ description: >-
   Payments Account and Registry (SPAR) system.
 ---
 
-# SPAR Self Service API Installation
+# SPAR Self Service API
 
 ## Installation
 
@@ -16,7 +16,7 @@ description: >-
 * Git
 * PostgreSQL
 * virtualenv
-* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../deployment/common-components/esignet.md) for setup instructions.
+* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../../deployment/common-components/esignet.md) for setup instructions.
 *   **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api.md).
 
 
@@ -201,7 +201,7 @@ SPAR_SELFSERVICE_MAPPER_UPDATE_PATH="/update"
 
 #### Authentication
 
-The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](../../../deployment/common-components/esignet.md) for setup instructions.
+The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](../../../../deployment/common-components/esignet.md) for setup instructions.
 
 ### Testing
 

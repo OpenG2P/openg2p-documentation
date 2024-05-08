@@ -44,7 +44,7 @@ layout:
 
 Refer to this picture - SPAR in the G2P landscape
 
-<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR Subsystem in the OpenG2P landscape</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR Subsystem in the OpenG2P landscape</p></figcaption></figure>
 
 The PBMS (Program and Beneficiary Management System) is the place where a government department (or a social welfare organization) manages the benefit programs. These programs will identify and target beneficiaries based on eligibility rules. Based on the beneficiary profiles and other attributes, the PBMS will calculate entitlements.
 
@@ -63,7 +63,7 @@ Even in such a scenario, we recommend that the Beneficiary ID be allocated by a 
 
 This is explained in the figure below
 
-<figure><img src="../../.gitbook/assets/Gitbook-ID-in-OpenG2P.jpg" alt=""><figcaption><p>ID in OpenG2P Landscape</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-ID-in-OpenG2P.jpg" alt=""><figcaption><p>ID in OpenG2P Landscape</p></figcaption></figure>
 
 Thus, the PBMS produces only a list of Beneficiary IDs and their disbursement amounts. Now this beneficiary ID has to be translated into a Financial Address (either a Bank Account or a Mobile Wallet) so that the beneficiary's account/wallet can be credited appropriately.
 

@@ -28,7 +28,7 @@ SPAR APIs are consumed by two categories of clients
 
 Security of the payload during transmission (in both cases mentioned above) is handled using the https (SSL) implementation, using PKI.
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L1.jpg" alt=""><figcaption><p>OpenG2P - SSL and TLS</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L1.jpg" alt=""><figcaption><p>OpenG2P - SSL and TLS</p></figcaption></figure>
 
 ### Authentication
 
@@ -48,16 +48,16 @@ There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mar
 
 #### Onboarding a Partner to consume an OpenG2P API
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L2.jpg" alt=""><figcaption><p>Partner Onboarding for OpenG2P API</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L2.jpg" alt=""><figcaption><p>Partner Onboarding for OpenG2P API</p></figcaption></figure>
 
 #### API call by Partner
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-01.jpg" alt=""><figcaption><p>OpenG2P API call from Partner Organization / Partner System</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-01.jpg" alt=""><figcaption><p>OpenG2P API call from Partner Organization / Partner System</p></figcaption></figure>
 
 #### JWT Schematic
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - JWT Schematic</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - JWT Schematic</p></figcaption></figure>
 
 #### Validation of JWT using MOSIP Key Manager
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-02.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-02.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager</p></figcaption></figure>
