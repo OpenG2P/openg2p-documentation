@@ -2,7 +2,7 @@
 description: OpenG2P Interoperability
 ---
 
-# 🔗 Interoperability
+# Interoperability
 
 At the very onset OpenG2P team has been cognizant of the importance of working with DPGs and other external components with standard interfaces avoiding the need to develop proprietary and custom methods of connecting to other systems. Interoperability is a fundamental design principle in OpenG2P's thought process. We have been an active participant in interoperability efforts like G2P Connect, DCI, and GovStack. Specifically, the following **open standards** interfaces have been implemented:
 

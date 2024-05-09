@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📊 Monitoring and Reporting
+# Monitoring and Reporting
 
 Monitoring the status of programs and registries is vital for program administrators. With OpenG2P's monitoring and logging tools, program administrators can&#x20;
 

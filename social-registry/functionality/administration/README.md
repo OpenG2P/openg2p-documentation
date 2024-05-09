@@ -19,4 +19,4 @@ Each role in the Social Registry system plays a critical part in ensuring the ac
 
 The figure below shows below some of the roles or access levels that can be assigned to users
 
-<figure><img src="../../.gitbook/assets/access-setting.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/access-setting.PNG" alt=""><figcaption></figcaption></figure>

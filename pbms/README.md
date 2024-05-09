@@ -2,7 +2,7 @@
 description: Program and Beneficiary Management System
 ---
 
-# 💻 PBMS
+# PBMS
 
 The Program and Beneficiary Management System (PBMS) is the core module of OpenG2P enabling the management of multiple programs and beneficiaries. The PBMS is based on [Odoo ERP/MIS](https://www.odoo.com/) and leverages Odoo's strength of easily extending modules to implement new functionality. It offers user-friendly interfaces to create and administer social benefit programs. Some of the key benefits for a country or an organisation using PBMS are:
 
