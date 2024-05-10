@@ -29,6 +29,10 @@ ODK is used mainly by the Registration Toolkit to collect data offline and onlin
     openg2p/odk-central-enketo:v2023.1.0
     ```
 
+## Database
+
+Default database created in Postgresql is `odkdb`.
+
 ## Post-installation
 
 After installation is successful, ODK Central will be accessible at https://odk.openg2p.sandbox.net, depending on the hostname given above.

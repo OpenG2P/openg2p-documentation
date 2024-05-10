@@ -4,22 +4,13 @@ description: PostgreSQL Server Deployment
 
 # PostgreSQL
 
-This guide provides instructions to install PostgreSQL Server on the Kubernetes cluster. However, if you already have PostgreSQL server installed, or are using Cloud hosted Postgres, then you may skip the server installation. The instructions to initialize OpenG2P component databases are provided as part of the component installation instructions.
+Postgresql server is required for all the modules. **The Helm charts of respective modules install a unique Postgresql server for each module** - this is to have a clean separation and management of modules. However, in a production setup, you may install only one Postgresql server  (in master-slave configuration) or use a Cloud-native database like Amazon RDS or Azure Postgres Service.&#x20;
 
-## Databases
+The procedure below installs an instance of Postgresql using Helm charts if you wish to install Postgresql separately.
 
-Module/component-wise listing of databases is given below
-
-<table><thead><tr><th width="349">Module/Component</th><th>Database Name</th></tr></thead><tbody><tr><td>PBMS</td><td><code>openg2pdb</code></td></tr><tr><td>Keycloak</td><td><code>keycloakdb</code></td></tr><tr><td>ODK</td><td><code>odkdb</code></td></tr><tr><td>SPAR</td><td><code>spardb</code></td></tr><tr><td>G2P Bridge</td><td><code>gctbdb</code></td></tr><tr><td>MOSIP Key Manager</td><td><code>mosip_keymgr</code></td></tr></tbody></table>
-
-## Prerequisites
-
-* The following utilities/tools must be present on the user's machine.
+* Prerequisites:  the following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-
-## Installation
-
-* Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/openg2p/openg2p-deployment) repo and navigate to [kubernetes/postgresql](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/postgresql) directory.
+* Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/openg2p/openg2p-deployment) repo and navigate to the [kubernetes/postgresql](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/postgresql) directory.
 *   Run:
 
     ```bash

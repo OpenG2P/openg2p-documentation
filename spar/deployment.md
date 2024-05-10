@@ -4,10 +4,12 @@ description: SPAR Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using[ Helm charts](../deployment/helm-charts.md). The Helm charts may be installed with the following methods:
+The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using[ Helm charts](../deployment/helm-charts.md).  The charts install SPAR components along with the Postgresql server specific to SPAR. All the components are installed in the same namespace. The deployment may be achieved by the following methods:
 
 * Using Rancher UI&#x20;
 * Using command line
+
+## Prerequisites
 
 Before you deploy SPAR, make sure the following are available:
 
@@ -38,7 +40,7 @@ Before you deploy SPAR, make sure the following are available:
 
 ## Installation using the command line
 
-* Install following utilities on your machine:
+* Install the following utilities on your machine:
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 * Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest.  Navigate to `deployment` directory.
 *   Run.&#x20;
@@ -56,6 +58,10 @@ After installation, SPAR is accessible over following URLs based on the `SPAR_HO
 * SPAR Self Service UI:  _https://spar.openg2p.sandbox.net_
 * SPAR Self Service API: _https://spar.openg2p.sandbox.net/spar/v1_
 * SPAR Mapper: _https://spar.openg2p.sandbox.net/mapper/v1_
+
+## Database
+
+Postgresql is installed as part of the above procedure in the same namespace. The default database created is `spardb.`
 
 ## Onboard SPAR on eSignet
 

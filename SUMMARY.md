@@ -373,6 +373,7 @@
     * [Domain mapping on AWS Route53](deployment/deployment-guide/domain-mapping-on-aws-route53.md)
   * [Hardware Requirements](deployment/hardware-requirements.md)
   * [Helm Charts](deployment/helm-charts.md)
+  * [Production](deployment/production.md)
 * [Use Cases](use-cases/README.md)
   * [Technology for Inclusion](use-cases/technology-for-inclusion/README.md)
     * [Registration in Low Connectivity Areas](use-cases/technology-for-inclusion/registration-in-low-connectivity-areas.md)

@@ -4,11 +4,12 @@ description: Deployment of Common Components
 
 # Common Components
 
-Several open-source components are installed over the base infrastructure layer that is utilized by the OpenG2P modules. These components need to be installed before installing OpenG2P modules.  All components may not be required for all modules. See the table below on applicability.
+Several open-source components are installed over the base infrastructure layer that is utilized by the OpenG2P modules. These components are shared by modules.  As such, multiple instances of these components are not necessary for sandbox installations.  However, in production setups, more than one instance may be deployed based on the choice of implementer.&#x20;
+
+All components may not be required for all modules. See the table below on applicability.
 
 | Component                                                                 | Required for                                                                             |
 | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [PostgreSQL](postgresql.md)                                               | All modules. (A single server instance may house all databases.)                         |
 | [Keycloak](keycloak.md)                                                   | [PBMS](../../pbms/), Social Registry                                                     |
 | [MinIO](minio.md)                                                         | PBMS, [G2P Bridge](../../g2p-bridge/)                                                    |
 | [ODK Central](odk-central.md)                                             | [Registration Toolkit](../../utilities-and-tools/registration-tool-kit.md)               |
