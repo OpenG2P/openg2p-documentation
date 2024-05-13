@@ -4,7 +4,9 @@ description: Deployment of Prometheus & Grafana
 
 # Prometheus & Grafana
 
-Prometheus and Grafana provide powerful [system health](../../monitoring-and-reporting/system-health.md) monitoring tools along with visualisation.  Deploy both the above tools using Rancher's admin console.
+Prometheus and Grafana provide powerful [system health](../../monitoring-and-reporting/system-health.md) monitoring tools along with visualisation.   Both tools are required to be installed **only once** on the cluster as metrics from across namespaces are collected and displayed.
+
+Deploy the same using Rancher's admin console:
 
 1. Login into the Rancher admin console
 2. Select your cluster

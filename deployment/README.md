@@ -15,28 +15,22 @@ layout:
 
 # Deployment
 
-OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md) and utilities based on reputed open-source components like Kubernetes, Rancher etc. The deployment infra may be used for sandbox, pilot or full-scale rollout. All modules are available as Dockers and Kubernetes is used as the orchestration platform. The deployment architecture is depicted below
+OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md) and utilities based on reputed open-source components like Kubernetes, Rancher etc. The deployment infra may be used for sandbox, pilot or full-scale rollout. All modules are available as Dockers and Kubernetes is used as the orchestration platform. The deployment architecture is depicted below.
 
 {% embed url="https://miro.com/app/board/uXjVN5LsWDw=/?share_link_id=356935336772" %}
 Deployment Architecture
 {% endembed %}
 
-The modules reside in the OpenG2P Cluster shown above.  Rancher (housed in the Rancher cluster) is used to manage multiple Kubernetes clusters.
+Essentially, for an organisation you will need two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces.  The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
-{% hint style="info" %}
-A single cluster may suffice for an organisation. Different environments like dev, qa, staging may be installed on the same cluster under different namespaces.  If required, a separate cluster may be installed for production.
-{% endhint %}
+1. Multiple Wireguard servers enabling separate channels for access
+2. Access control at  the application level where login to dashboards, portals is controlled via authentication and authorization defined in Keycloak.
 
-## Deployment stack
+Note that a single organisation-wide Keycloak instance would suffice (installed in the Rancher cluster) with a proper definition of roles.
 
-The figure below depicts how all components are stacked
-
-{% embed url="https://miro.com/app/board/uXjVKaaGd40=/?share_link_id=118505524008" %}
-Deployment Stack
-{% endembed %}
+The above is a recommended architecture that also optimises resource usage. However, for pilots or production, you may create a dedicated cluster and a separate instance of Rancher, Keycloak etc. These choices are left to the implementers.
 
 For deployment, set up the following in the sequence given below:
 
 * [Base infrastructure](base-infrastructure/)
-* [Common components](common-components/)
 * OpenG2P specific modules _(instructions available in module-specific deployment pages)_
