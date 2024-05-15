@@ -225,6 +225,7 @@
       * [System Logs](social-registry/functionality/monitoring-and-reporting/system-logs.md)
   * [Development](social-registry/development/README.md)
     * [Upcoming Features](social-registry/development/upcoming-features/README.md)
+      * [Registry Deduplication](social-registry/development/upcoming-features/registry-deduplication.md)
       * [Registry Update Mechanisms](social-registry/development/upcoming-features/registry-update-mechanisms.md)
       * [Verifiable Credentials Issuance](social-registry/development/upcoming-features/verifiable-credentials-issuance.md)
       * [Benefit Targeting Methods](social-registry/development/upcoming-features/score-computation.md)
