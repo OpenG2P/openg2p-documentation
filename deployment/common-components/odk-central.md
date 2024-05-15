@@ -46,3 +46,8 @@ To create the first user, do this (Subsequent users can be created through UI.):
     kubectl exec -it <service-pod> -- odk-cmd -u <email> user-promote
     ```
 
+## Access control
+
+If ODK Central instance is shared across projects and users, access may be controlled using the Projects feature.
+
+TBD

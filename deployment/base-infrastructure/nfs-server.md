@@ -38,3 +38,7 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
 ## Backups
 
 If your NFS holds critical data, there should be some mechanism to backup the same.  On AWS you may use the 'snapshot' feature to schedule periodic (daily/weekly) backups of the VM running NFS. &#x20;
+
+{% hint style="info" %}
+The Persistent Volumes (PV) of Kubernetes create folders of corresponding names in the NFS storage. The folders are not deleted even if you delete the PV from the cluster. Hence, it is recommended that a cleanup exercise is carried out to free up space. To identify folders with their respective applications see the notes [here](cluster-setup/#backups).
+{% endhint %}

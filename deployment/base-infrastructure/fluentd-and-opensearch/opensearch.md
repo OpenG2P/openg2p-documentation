@@ -34,6 +34,12 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
     ./opensearch-ism-script.sh
     ```
 
+## Multi-tenancy
+
+Use OpenSearch's Multi-tenancy feature to have access control on the OpenSearch data.
+
+TBD
+
 ### Dashboards&#x20;
 
 _TBD_
