@@ -112,39 +112,7 @@ This installation only applies if Longhorn is used as storage. This may be skipp
 
 ## Istio&#x20;
 
-* The following setup can be done from the client machine. This installs Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
-*   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, configure the istio-operator.yaml, and run;
-
-    ```
-    istioctl operator init
-    kubectl apply -f istio-operator.yaml
-    ```
-
-    *   If an external Loadbalancer is being used, then use the `istio-operator-external-lb.yaml` file.
-
-        ```
-        kubectl apply -f istio-operator-external-lb.yaml
-        ```
-    * Configure the operator.yaml with any further configuration
-*   Gather Wildcard TLS certificate and key and run;\
-    Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
-
-    ```
-    kubectl create secret tls tls-openg2p-ingress -n istio-system \
-        --cert=<CERTIFICATE PATH> \
-        --key=<KEY PATH>
-    ```
-*   Create istio gateway for all hosts using this command:
-
-    ```
-    kubectl apply -f istio-gateway.yaml
-    ```
-
-    *   If using external loadbalancer/external TLS termination, use the `istio-gateway-no-tls.yaml` file
-
-        ```
-        kubectl apply -f istio-gateway-no-tls.yaml
-        ```
+Refer guide [here](istio.md).
 
 ## Cluster import to Rancher
 
