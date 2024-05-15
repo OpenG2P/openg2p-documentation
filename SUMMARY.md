@@ -352,6 +352,7 @@
       * [Firewall](deployment/base-infrastructure/cluster-setup/firewall.md)
       * [Adding Nodes to Cluster](deployment/base-infrastructure/cluster-setup/adding-nodes-to-cluster.md)
       * [Istio](deployment/base-infrastructure/cluster-setup/istio.md)
+      * [Deleting Nodes from Cluster](deployment/base-infrastructure/cluster-setup/deleting-nodes-from-cluster.md)
     * [Load Balancer](deployment/base-infrastructure/load-balancer/README.md)
       * [AWS](deployment/base-infrastructure/load-balancer/aws.md)
       * [Nginx](deployment/base-infrastructure/load-balancer/nginx.md)
