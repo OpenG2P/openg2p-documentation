@@ -12,7 +12,7 @@ The guide here provides some useful hints for production deployment. However, th
 * Cloud native
 * Production configuration
 
-## Common components
+## High availability
 
-Multiple instances of components
+Replication of pods for high-availability.
 
