@@ -1,27 +1,37 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Lock and Unlock
 
 \
 Lock&#x20;
 ----------
 
-On social registry,  lock  feature will give more prevention to data from being multiple edits.  When the records are loaded on SR, it provides only 1 time limit to edit the data. If the records are edited once, then the particular records will be locked. \
-
+On Social Registry (SR), the lock feature is pivotal in preventing data from being multiple edits.  When the records are loaded on SR, the limit is set to edit the data only once. If the records are edited once, then the particular records will be locked.&#x20;
 
 ## Unlock
 
-The records on social registry which have been edited once, can be unlocked for the next edit only after record being unlocked. To unlock the records user on social registry has to send the request for edit to super admin with a reason for editing the record.\
+The locked records are unlocked for the next edit only. In order to re-edit the record, The user must send a request to Super Admin to unlock the record with a valid reason.\
 \
-Super admin can validate the request sent by user to edit the record., upon validating the request it can be either approved or rejected.\
-\
-Approved request record will be unlocked for the user to edit, unapproved or rejected record will be locked.\
+Super Admin validates the user request to unlock the record. After validating, he/she approves/rejects the request to edit the record.
 
+Once the Super Admin approves the request, the user can edit the record. The rejected request remains locked.
 
 ## Notification
 
-On social registry, Push notification and email can be sent to the user if the records needs to be corrected. This will included message on what information of a record to be corrected
+On Social Registry, if there are corrections in the records, then a super admin user will send a push and an email notification to the user.  The user is notified about the information of a record that needs correction.
 
-Log\
+## Log
 
-
-
-The logs to capture  the information of change in status of the records, user requesting for unlock, edit details, notification sent for the records, approval and rejection of request
+The log captures  the information of change in status of the records, user requesting for unlock, edit details, notification sent for the records, approval/rejection of a request.
