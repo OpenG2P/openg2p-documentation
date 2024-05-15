@@ -26,7 +26,7 @@ A user must have access to the Service Provider portal.
 
 _**Login**_ screen is displayed.
 
-<figure><img src="../.gitbook/assets/login-screen-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/login-screen-spp.png" alt=""><figcaption></figcaption></figure>
 
 2. Enter the valid _**Email ID or Phone**_ number.
 3. Enter the valid _**Password**_.
@@ -35,13 +35,13 @@ _**Login**_ screen is displayed.
 
 Service Provider portal _**Household Dashboard**_ screen is displayed.
 
-<figure><img src="../.gitbook/assets/dashboard-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/dashboard-spp.png" alt=""><figcaption></figcaption></figure>
 
-| Field                                                                       | Description                                                                                                                                                                |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Search field                                                                | Enter the data to search and retrieve the information.                                                                                                                     |
-| Language preference                                                         | Select the preferred language from the drop-down.                                                                                                                          |
-| <img src="../.gitbook/assets/profile-icon.png" alt="" data-size="original"> | <p>Select the appropriate option from the drop-down.  </p><ul><li>My Profile - To view your profile</li><li>Logout - To logout from the service provider portal </li></ul> |
+| Field                                                                                | Description                                                                                                                                                                |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search field                                                                         | Enter the data to search and retrieve the information.                                                                                                                     |
+| Language preference                                                                  | Select the preferred language from the drop-down.                                                                                                                          |
+| <img src="../../../../.gitbook/assets/profile-icon.png" alt="" data-size="original"> | <p>Select the appropriate option from the drop-down.  </p><ul><li>My Profile - To view your profile</li><li>Logout - To logout from the service provider portal </li></ul> |
 
 The Household list contains the below information. It displays the number of records available in the household list. You can use the search field option to retrieve the specific household list.
 
@@ -62,13 +62,13 @@ The Household list contains the below information. It displays the number of rec
 
 _**Create New Household**_ screen is displayed.
 
-<figure><img src="../.gitbook/assets/create-new-household-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/create-new-household-spp.png" alt=""><figcaption></figcaption></figure>
 
 The fields and their descriptions of each tab are given below.
 
 {% tabs %}
 {% tab title="Household Head Details" %}
-<figure><img src="../.gitbook/assets/householdheaddetails-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/householdheaddetails-spp.png" alt=""><figcaption></figcaption></figure>
 
 | Field               | Description                                                                                     |
 | ------------------- | ----------------------------------------------------------------------------------------------- |
@@ -78,7 +78,7 @@ The fields and their descriptions of each tab are given below.
 {% endtab %}
 
 {% tab title="Administrative Location Details" %}
-<figure><img src="../.gitbook/assets/administrative-location-details-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/administrative-location-details-spp.png" alt=""><figcaption></figcaption></figure>
 
 | Field     | Description             |
 | --------- | ----------------------- |
@@ -95,7 +95,7 @@ The fields with \* mark are the mandatory fields.
 {% endtab %}
 
 {% tab title="Member Details" %}
-<figure><img src="../.gitbook/assets/members-details-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/members-details-spp.png" alt=""><figcaption></figcaption></figure>
 
 Click the Add Member button. [Add new members](create-new-household.md#add-new-members) screen is displayed.
 {% endtab %}
@@ -105,7 +105,7 @@ Enter the required information in the respective fields. You must fill all the m
 {% endtab %}
 
 {% tab title="Enumerator Details" %}
-<figure><img src="../.gitbook/assets/enumerator-details-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/enumerator-details-spp.png" alt=""><figcaption></figcaption></figure>
 
 | Field                | Description                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------ |
@@ -123,7 +123,7 @@ The newly added household data is displayed in the household dashboard screen.
 
 ### Add new members
 
-<figure><img src="../.gitbook/assets/add-new-members-spp.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/add-new-members-spp.png" alt=""><figcaption></figcaption></figure>
 
 | Field                            | Description                                                       |
 | -------------------------------- | ----------------------------------------------------------------- |

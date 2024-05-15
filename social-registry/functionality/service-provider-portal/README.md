@@ -17,3 +17,8 @@ Service provider portal is an external application portal where service provider
 | Form                                         | The survey question on ODK form as per the program are present on portal as well in neatly distributed section like Group details, group member details, Location details, enumerator details and specific data for the program                                                                                                                                                                                             |
 | Status                                       | Records on the portal has Active, Inactive, Locked.                                                                                                                                                                                                                                                                                                                                                                         |
 | Access                                       | It allow to view and mange the records only to the region and kebele where service provider is assigned and responsible. Once he login to the portal, this shows only the records which belong to his/her limits                                                                                                                                                                                                            |
+
+## Related user guides
+
+:notebook\_with\_decorative\_cover:[Create New Household](user-guides/create-new-household.md)
+
