@@ -30,3 +30,9 @@ Once OpenG2P PBMS is installed, do the following:
 
 * Navigate to OpenG2P Documents (From OpenG2P Menu) -> Document Store.
 * Configure URL and password for this backend service (Like `http://minio.minio:9000`). Password and account-id/username can be obtained from the secrets in minio namespace.
+
+## Access control
+
+MinIO's RBAC may be used to grant access to users.
+
+TBD
