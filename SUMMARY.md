@@ -187,6 +187,7 @@
         * [Submit Reimbursement Using the Service Provider Portal](pbms/user-guides/cash-transfer/reimbursement/submit-reimbursement-using-the-service-provider-portal.md)
         * [Reimburse the service provider](pbms/user-guides/cash-transfer/reimbursement/reimburse-service-provider.md)
     * [Accounting and Reporting](pbms/user-guides/accounting-and-reporting.md)
+  * [📔 Create New Household](pbms/create-new-household.md)
   * [Releases](pbms/releases.md)
 * [Social Registry](social-registry/README.md)
   * [Features](social-registry/functionality/README.md)
