@@ -20,7 +20,6 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
 
 #### Prerequisites
 
-* Use this [Storage size estimator](../hardware-requirements.md#storage-requirements-for-pilot-environments) to decide storage requirements
 * One Virtual machine running on the same network as the rest of the nodes, and is accessible by them. For recommended configuration of the VM refer to [Hardware Requirements](../hardware-requirements.md)
 
 #### Install
