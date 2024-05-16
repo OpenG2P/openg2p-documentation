@@ -48,7 +48,7 @@ DB POD - CPU, Memory, CPU Throttling, Load Average - Readings + Charts
 
 **Test Case**
 
-<mark style="color:purple;">**8 Users, 1000 Requests per API**</mark>
+<mark style="color:purple;">**8 concurrent users, 1000 requests per API, 1 second ramp up time per user**</mark>
 
 **During the Test**
 
