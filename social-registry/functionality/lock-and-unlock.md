@@ -22,7 +22,7 @@ On Social Registry (SR), the lock feature is pivotal in preventing data from bei
 
 ## Unlock
 
-The locked records are unlocked for the next edit only. In order to re-edit the record, The user must send a request to Super Admin to unlock the record with a valid reason.\
+The locked records are unlocked for the next edit only. In order to re-edit the record, the user must send a request to Super Admin to unlock the record with a valid reason.\
 \
 Super Admin validates the user request to unlock the record. After validating, he/she approves/rejects the request to edit the record.
 
@@ -30,7 +30,7 @@ Once the Super Admin approves the request, the user can edit the record. The rej
 
 ## Notification
 
-On Social Registry, if there are corrections in the records, then a super admin user will send a push and an email notification to the user.  The user is notified about the information of a record that needs correction.
+On Social Registry, if there are corrections in the records, then a Super Admin user will send a push and an email notification to the user.  The user is notified about the information of a record that needs correction.
 
 ## Log
 
