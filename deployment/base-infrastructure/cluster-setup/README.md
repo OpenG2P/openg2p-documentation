@@ -101,12 +101,22 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
 
 ## NFS client provisioner&#x20;
 
-This section assumes an[ NFS server](../nfs-server.md) has already been set up.  The NFS client provisioner runs on the cluster and connects seamlessly to the NFS server.  Install NFS client provisioner on the cluster as follows:
+This section assumes an[ NFS server](../nfs-server.md) has already been set up.  Install NFS client provisioner on the cluster as follows:
 
-* Log in to each node and run `apt install nfs-common`.
-* On your machine run [https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nfs-client/install-nfs-client-provisioner.sh)
-* Provide the internal IP address of the NFS server (the IP must be accessible from Kubernetes nodes).
-* Provide the path on which NFS was mounted on the NFS server (noted during NFS Server installation)
+* Clone [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment).
+*   From [kubernetes/nfs-client](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nfs-client) directory, run: (Make sure to replace the `<NFS Node Internal IP>` and `<cluster name>` parameters appropriately below)
+
+    ```bash
+    NFS_SERVER=<NFS Node Internal IP> \
+    NFS_PATH=/srv/nfs/<cluster_name> \
+        ./install-nfs-csi-driver.sh
+    ```
+
+{% hint style="info" %}
+In StorageClass, when the `reclaimPolicy` is set to `Retain` it implies that, when a PVC is deleted the PV will not get deleted. And when a PV is deleted the relevant directory in NFS is also not deleted.
+
+When `reclaimPolicy` is set to `Delete`, and if a PVC is deleted, both the PV and the relevant directory in the NFS get deleted.
+{% endhint %}
 
 ### Longhorn&#x20;
 
@@ -114,7 +124,7 @@ This installation only applies if Longhorn is used as storage. This may be skipp
 
 [Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
 
-## Istio&#x20;
+## Istio
 
 Refer guide [here](istio.md).
 

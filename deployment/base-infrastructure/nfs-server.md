@@ -25,13 +25,11 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
 #### Install
 
 * Download/copy this install script from [https://github.com/OpenG2P/openg2p-deployment/blob/main/nfs-server/install-nfs-server.sh](https://github.com/OpenG2P/openg2p-deployment/blob/main/nfs-server/install-nfs-server.sh) into the NFS server machine.
-* (Optional) Edit the script to change the local path for NFS storage, under the variable `nfsStorage.`Make a note of this path as it will be required during the installation of the [NFS client provisioner.](cluster-setup/#nfs-client-provisioner)
 *   Run the script with root privileges.&#x20;
 
     ```
     ./install-nfs-server.sh
     ```
-* Give any name for the "environment" when asked. If NFS is specific to an environment you may specify that name.
 * Make sure to edit the firewall rules of this VM to enable incoming traffic to the NFS server port `tcp 2049` and disable incoming traffic on all other ports (excluding SSH)
 
 ## Backups
