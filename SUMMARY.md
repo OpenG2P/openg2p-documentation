@@ -263,7 +263,7 @@
     * [Link FA (Admin)](spar/user-guides/admin-guide-to-link-id-with-financial-address-information.md)
   * [Development](spar/development/README.md)
     * [Jira Board](spar/development/jira-board.md)
-    * [Testing](spar/development/testing/README.md)
+    * [Testing](spar/development/testing.md)
       * [Unit Testing](spar/development/testing/unit-testing.md)
       * [Functional Testing](spar/development/testing/functional-testing.md)
       * [Load Testing](spar/development/testing/load-testing.md)
