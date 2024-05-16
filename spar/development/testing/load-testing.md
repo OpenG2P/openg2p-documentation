@@ -38,17 +38,17 @@ The methodology is detailed for every API
 
 Link for the Test Script - github
 
-#### Test Conditions
-
-<mark style="color:purple;">**8 Users, 1000 Requests per API**</mark>
-
-#### Test Results
-
 **Before firing the Test**
 
 Mapper POD - CPU, Memory, CPU Throttling, Load Average - Readings + Charts
 
 DB POD - CPU, Memory, CPU Throttling, Load Average - Readings + Charts
+
+
+
+**Test Case**
+
+<mark style="color:purple;">**8 Users, 1000 Requests per API**</mark>
 
 **During the Test**
 
