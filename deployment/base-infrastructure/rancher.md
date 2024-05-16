@@ -32,7 +32,7 @@ To deploy Rancher carry out the following steps:
 
 Follow steps 1-4 in the guide given [here](cluster-setup/).
 
-*   During step 3 of the K8s Setup, remember to delete these lines from the final RKE2 `config.yaml` file while creating it. This will allow RKE2 to install the Nginx Ingress Controller rather than using Istio.
+*   In step 3 of the K8s setup, delete these lines from the final RKE2 `config.yaml` file. This will allow RKE2 to install the Nginx Ingress Controller instead of Istio. (On this cluster Istio is not necessary as there are very few components to manage).
 
     ```
     node-label: "shouldInstallIstioIngress=true"

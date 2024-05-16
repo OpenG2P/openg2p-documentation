@@ -113,9 +113,9 @@ This section assumes an[ NFS server](../nfs-server.md) has already been set up. 
     ```
 
 {% hint style="info" %}
-In StorageClass, when the `reclaimPolicy` is set to `Retain` it implies that, when a PVC is deleted the PV will not get deleted. And when a PV is deleted the relevant directory in NFS is also not deleted.
+In StorageClass, when the `reclaimPolicy` is set to `Retain`it implies that when a PVC is deleted the PV will not get deleted. And even if PV is deleted the relevant folder in NFS is not deleted.
 
-When `reclaimPolicy` is set to `Delete`, and if a PVC is deleted, both the PV and the relevant directory in the NFS get deleted.
+When `reclaimPolicy` is set to `Delete,`if a PVC is deleted, both the PV and the relevant folder in the NFS get deleted.
 {% endhint %}
 
 ### Longhorn&#x20;
