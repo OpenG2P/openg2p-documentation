@@ -6,11 +6,23 @@ description: Firewall setup for Kubernetes cluster nodes
 
 To set up the Kubernetes cluster, you need to open a few ports on all nodes as mentioned below.&#x20;
 
-## Firewall rules
+## Firewall rules for Kubernetes node
 
 Set up firewall rules on each node according to the following table.&#x20;
 
 <table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Access</th><th>Purpose</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td>Public/Internet</td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td>Public/Internet</td><td>HTTP</td></tr><tr><td>TCP</td><td>443</td><td>Public/Internet</td><td>HTTPS</td></tr><tr><td>TCP</td><td>5432</td><td>Intranet</td><td>Postgres</td></tr><tr><td>TCP</td><td>9345</td><td>Intranet</td><td>RKE</td></tr><tr><td>TCP</td><td>6443</td><td>Intranet</td><td>K8s API</td></tr><tr><td>UDP</td><td>8472</td><td>Intranet</td><td>K8s Flannel VXLAN</td></tr><tr><td>TCP</td><td>10250</td><td>Intranet</td><td>kubelet</td></tr><tr><td>TCP</td><td>2379</td><td>Intranet</td><td>etcd client</td></tr><tr><td>TCP</td><td>2380</td><td>Intranet</td><td>etcd peer </td></tr><tr><td>TCP</td><td>9796</td><td>Intranet</td><td>Prometheus </td></tr><tr><td>TCP</td><td>30000:32767</td><td>Intranet</td><td>K8s NodePort </td></tr></tbody></table>
+
+## Firewall rules for Load Balancer
+
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Access</th><th>Purpose</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td>Public/Internet</td><td>SSH</td></tr><tr><td>TCP</td><td>80</td><td>Public/Internet</td><td>HTTP</td></tr><tr><td>TCP</td><td>443</td><td>Public/Internet</td><td>HTTPS</td></tr><tr><td>TCP</td><td>5432</td><td>Intranet</td><td>Postgres</td></tr></tbody></table>
+
+## Firewall rules for Wireguard
+
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Access</th><th>Purpose</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td>Public/Internet</td><td>SSH</td></tr><tr><td>UDP</td><td>51820-5182n</td><td>Public/Internet</td><td>Multiple Wireguard servers</td></tr></tbody></table>
+
+## Firewall rules for NFS
+
+<table><thead><tr><th width="126">Protocol</th><th width="144">Port</th><th width="272">Access</th><th>Purpose</th></tr></thead><tbody><tr><td>TCP</td><td>22</td><td>Public/Internet</td><td>SSH</td></tr><tr><td>TCP</td><td>2049</td><td>Intranet</td><td>NFS server</td></tr></tbody></table>
 
 ### Firewall setup&#x20;
 
