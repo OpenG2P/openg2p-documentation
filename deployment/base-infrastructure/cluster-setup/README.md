@@ -54,8 +54,7 @@ Refer guide [here](firewall.md).
 
 The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluster.
 
-* Decide the number of K8s control-plane nodes (server nodes) and worker nodes (agent nodes).
-  * Choose an odd number of control-plane nodes. For example, for a 3-node k8s cluster, choose 1 control-plane node and 2 worker nodes. For a 7-node k8s cluster, choose 3 control-plane nodes and 4 worker nodes.
+* Decide on the number of **control-planes** (RKE2 server).  For high availability the minimum of nodes running control-plane should 3. If your cluster is < 3 nodes,  run only 1 control-plane (odd number). Refer [RKE2 docs](https://docs.rke2.io/install/ha). The rest of the nodes are Kubernetes **workers** (RKE2 agent).
 * The following setup has to be done on each node on the cluster.
   * SSH into the node
   *   Create the rke2 config directory
@@ -68,34 +67,34 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
     * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.subsequent.template). (Make sure the token defined in the first node's control plane is used here too.)
     * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template).  (Make sure the token defined in the first node's control plane is used here too.)
   * Edit the above `config.yaml` file with the appropriate names, IPs, and tokens
-  *   Run the following to set the RKE2 version. (Refer to [RKE2 Releases](https://github.com/rancher/rke2/releases))
+  *   Run the following to set the RKE2 version after referring to [RKE2 Releases](https://github.com/rancher/rke2/releases).
 
-      ```
+      ```bash
       export INSTALL_RKE2_VERSION="v1.30.0+rke2r1"
       ```
   *   Run this to download rke2.
 
-      ```
+      ```bash
       curl -sfL https://get.rke2.io | sh -
       ```
   * Run this to start rke2:
     *   On the control-plane node, run:
 
-        ```
+        ```bash
         systemctl enable rke2-server
         systemctl start rke2-server
         ```
     *   On the worker node, run:
 
-        ```
+        ```bash
         systemctl enable rke2-agent
         systemctl start rke2-agent
         ```
 * To export KUBECONFIG, run (only on control-plane nodes):
-* ```
-  > echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
-  > source ~/.bashrc
-  > kubectl get nodes    
+* ```bash
+  echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
+  source ~/.bashrc
+  kubectl get nodes    
   ```
 * Download the Kubeconfig file `rke2.yaml` and keep it <mark style="color:red;">securely</mark> <mark style="color:red;"></mark><mark style="color:red;">**shared with only**</mark> <mark style="color:red;"></mark><mark style="color:red;">Super Admins</mark>. Rename it so that it can be identified with the cluster. This file will be used if cluster control via Rancher is unavailable.
 * Additional Reference: [RKE2 High Availability Installation](https://docs.rke2.io/install/ha)
