@@ -56,14 +56,14 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
 
 * Decide on the number of **control-planes** (RKE2 server).  For high availability the minimum of nodes running control-plane should 3. If your cluster is < 3 nodes,  run only 1 control-plane (odd number). Refer [RKE2 docs](https://docs.rke2.io/install/ha). The rest of the nodes are Kubernetes **workers** (RKE2 agent).
 * The following setup has to be done on each node on the cluster.
-  * SSH into the node
+  * SSH into the node.  Execute all the below commands as root user.
   *   Create the rke2 config directory
 
       ```
       mkdir -p /etc/rancher/rke2
       ```
   * Create a `config.yaml` file in the above directory, using one of the following config file templates:
-    * For the first control-plane node, use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template)
+    * For the first control-plane node, use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template). The token can be any arbitrary string.
     * For subsequent control-plane nodes, use [rke2-server.conf.subsequent.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.subsequent.template). (Make sure the token defined in the first node's control plane is used here too.)
     * For worker nodes, use [rke2-agent.conf.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-agent.conf.template).  (Make sure the token defined in the first node's control plane is used here too.)
   * Edit the above `config.yaml` file with the appropriate names, IPs, and tokens
