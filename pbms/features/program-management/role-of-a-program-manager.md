@@ -56,4 +56,4 @@ Program disbursement cycle is the process of disbursing the entitlement within a
 
 OpenG2P platform allows the program manager, the cycle manager to create multiple cycles and the disbursement manager to process the entitlements to reach the beneficiaries. Social benefit delivery programs for unemployment benefits, pensions, and scholarships are cyclic in nature and disburse payments in multiple cycles.
 
-To know about Program disbursement cycles, [click here](../program-disbursement-cycles.md)
+To know about Program disbursement cycles, [click here](../../functionality/program-disbursement-cycles/)

@@ -24,7 +24,7 @@ Once the eligibility criterion is configured in the program, the Program adminis
 
 After enrollment, the status of all the eligible beneficiaries changes to enrolled. The status of ineligible beneficiaries changes to not eligible. Program administrators can view the status of both enrolled and non-eligible registrants.
 
-If the registrants have enrolled into the program using the Self Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self Service Portal](../self-service-portal.md).
+If the registrants have enrolled into the program using the Self Service Portal, then they can track their enrolment status from the portal. Learn more about the [Self Service Portal](../../functionality/self-service-portal/).
 
 ## Eligibility criteria change
 
