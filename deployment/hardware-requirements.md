@@ -1,9 +1,10 @@
 ---
+description: Various resources required for deployment
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -20,7 +21,7 @@ The resource requirements pertain to the provisioning of resources for Kubernete
 
 ### For sandbox&#x20;
 
-<table><thead><tr><th width="150">Purpose</th><th width="212" align="center">Configuration</th><th width="79" align="center">VMs</th><th>Notes</th></tr></thead><tbody><tr><td>Rancher cluster</td><td align="center">4vCPU/16 GB RAM/128 GB storage</td><td align="center">1</td><td>For high-availability<a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli"> 3 nodes are recommended</a></td></tr><tr><td>OpenG2P cluster</td><td align="center">8 vCPU/32 GB RAM/128 GB storage</td><td align="center"><p></p><p>2</p></td><td>Start with 2 nodes and if required add another one</td></tr><tr><td><a href="base-infrastructure/wireguard-bastion/">Wireguard Bastion</a></td><td align="center">2vCPU/4 GB RAM/32 GB storage</td><td align="center">1</td><td></td></tr><tr><td>NFS Server</td><td align="center">2 vCPU/8 GB RAM/128 GB storage</td><td align="center">1</td><td>Used for persistence both Rancher and OpenG2P clusters. The actual size of storage will depend on usage.</td></tr></tbody></table>
+<table><thead><tr><th width="150">Purpose</th><th width="212" align="center">Configuration</th><th width="79" align="center">VMs</th><th>Notes</th></tr></thead><tbody><tr><td><a href="base-infrastructure/rancher.md">Rancher cluster</a></td><td align="center">4vCPU/16 GB RAM/128 GB storage</td><td align="center">1</td><td>For high-availability<a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli"> 3 nodes are recommended</a></td></tr><tr><td><a href="base-infrastructure/openg2p-cluster/">OpenG2P cluster</a></td><td align="center">8 vCPU/32 GB RAM/128 GB storage</td><td align="center"><p></p><p>2</p></td><td>Start with 2 nodes and if required add another one</td></tr><tr><td><a href="base-infrastructure/wireguard-bastion/">Wireguard Bastion</a></td><td align="center">2vCPU/4 GB RAM/32 GB storage</td><td align="center">1</td><td></td></tr><tr><td><a href="base-infrastructure/nfs-server.md">NFS Server</a></td><td align="center">2 vCPU/8 GB RAM/128 GB storage</td><td align="center">1</td><td>Used for persistence both Rancher and OpenG2P clusters. The actual size of storage will depend on usage.</td></tr></tbody></table>
 
 OS for all nodes:  **Ubuntu 22.04 Server**
 
