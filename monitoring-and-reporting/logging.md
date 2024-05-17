@@ -30,4 +30,4 @@ Several dashboards can be created using [OpenSearch Dashboards](https://opensear
 
 ## Installation
 
-Refer to [Deployment->Fluentd & Opensearch](../deployment/base-infrastructure/fluentd-and-opensearch/).
+Refer to [Deployment->Fluentd & Opensearch](../deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch/).

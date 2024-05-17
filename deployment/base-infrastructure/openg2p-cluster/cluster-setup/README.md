@@ -1,10 +1,10 @@
 ---
-description: Kubernetes cluster setup guide
+description: Kubernetes installation guide
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -13,7 +13,7 @@ layout:
     visible: true
 ---
 
-# Kubernetes Cluster
+# Kubernetes
 
 OpenG2P modules and components are recommended to be run on [Kubernetes](https://kubernetes.io/) (K8s), because of ease-of-use, management, and security features that K8s provides.
 
@@ -36,7 +36,7 @@ Broadly, the steps to install are as follows:
 
 ## Virtual machines provisioning
 
-Provision for virtual machines (VMs) as per configuration mentioned in [Hardware Requirements](../../hardware-requirements.md). Make sure you have root privileges to the machines and have secure access to them.
+Provision for virtual machines (VMs) as per configuration mentioned in [Hardware Requirements](../../../hardware-requirements.md). Make sure you have root privileges to the machines and have secure access to them.
 
 Install the following tools on all machines including the one you are using to connect to the VMs.
 
@@ -101,7 +101,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
 
 ## NFS client provisioner&#x20;
 
-This section assumes an[ NFS server](../nfs-server.md) has already been set up.  Install NFS client provisioner on the cluster as follows:
+This section assumes an[ NFS server](../../nfs-server.md) has already been set up.  Install NFS client provisioner on the cluster as follows:
 
 * Clone [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment).
 *   From [kubernetes/nfs-client](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nfs-client) directory, run: (Make sure to replace the `<NFS Node Internal IP>` and `<cluster name>` parameters appropriately below)
@@ -130,7 +130,7 @@ Refer guide [here](istio.md).
 
 ## Cluster import to Rancher
 
-This step assumes that a [Rancher server ](../rancher.md)has already been set up and operational.
+This step assumes that a [Rancher server ](../../rancher.md)has already been set up and operational.
 
 * Navigate to the _Cluster Management_ section in Rancher
 * Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
@@ -148,4 +148,4 @@ Rancher provides "Project" feature. This feature is not a standard Kubernetes fe
 
 Your cluster may hold critical data that needs to be backed up.  The following minimal backups are highly recommended:
 
-<table><thead><tr><th width="221">Backup item</th><th>Recommendations</th></tr></thead><tbody><tr><td>NFS data</td><td>Refer <a href="../nfs-server.md#backups">here</a>.</td></tr><tr><td>Persistent Volumes (PVs)</td><td>The PVs on NFS are stored as folders that are hard to associate with original application/pod. Download the YAML of critical PVs - like Postgres, Minio etc and keep it safely. This will be required in case a cluster has to be recreated, in which case, the corresponding PVs may be mounted back from the storage provided the name of the PV is known. On Rancher the PV YAMLs are available under <em>Storage -> PersistentVolumes</em> of a cluster.  Alternatively, you may  download PVs using command line utility <code>kubectl</code>.</td></tr></tbody></table>
+<table><thead><tr><th width="221">Backup item</th><th>Recommendations</th></tr></thead><tbody><tr><td>NFS data</td><td>Refer <a href="../../nfs-server.md#backups">here</a>.</td></tr><tr><td>Persistent Volumes (PVs)</td><td>The PVs on NFS are stored as folders that are hard to associate with original application/pod. Download the YAML of critical PVs - like Postgres, Minio etc and keep it safely. This will be required in case a cluster has to be recreated, in which case, the corresponding PVs may be mounted back from the storage provided the name of the PV is known. On Rancher the PV YAMLs are available under <em>Storage -> PersistentVolumes</em> of a cluster.  Alternatively, you may  download PVs using command line utility <code>kubectl</code>.</td></tr></tbody></table>

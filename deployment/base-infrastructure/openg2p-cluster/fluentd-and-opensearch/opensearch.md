@@ -10,7 +10,7 @@ Logs captured by [Fluentd](fluentd.md) from different components are pushed to [
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [Keycloak](../../common-components/keycloak.md) for Authentication and Sign-in to UI
+* [Keycloak](../../../common-components/keycloak.md) for Authentication and Sign-in to UI
 
 ## Installation
 

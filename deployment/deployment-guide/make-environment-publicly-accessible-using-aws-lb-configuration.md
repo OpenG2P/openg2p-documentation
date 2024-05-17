@@ -57,6 +57,6 @@ This document provides step-by-step instructions to make environment publicly ac
      * `TCP : 80 : openg2p-<envname>-ext-httpsredirect`
      *   Select `ACM certificate` as per environment domain name.
 
-         **Note**: Click [here](create-acm-certificate-on-aws.md) to create ACM certificate, if required.
+         **Note**: Click [here](aws-guides/create-acm-certificate-on-aws.md) to create ACM certificate, if required.
    * Review the configuration settings and create the Load Balancer
    * Do mapping on AWS Route53

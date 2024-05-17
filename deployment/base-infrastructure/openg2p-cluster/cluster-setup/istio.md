@@ -44,7 +44,7 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
 
 ## Multiple ingress gateways
 
-For access control to specific namespaces or pods in the cluster multiple ingress gateways may be required.  See [deployment architecture](../../). The rules in the gateway allow traffic from load balancers to be filtered at the gateway.  A combination of rules on the gateway and "reception" rules on Istio virtual services of individual pods are employed to achieve this. &#x20;
+For access control to specific namespaces or pods in the cluster multiple ingress gateways may be required.  See [deployment architecture](../../../). The rules in the gateway allow traffic from load balancers to be filtered at the gateway.  A combination of rules on the gateway and "reception" rules on Istio virtual services of individual pods are employed to achieve this. &#x20;
 
 Typically, for every load balancer, there will be one ingress gateway  in a one-to-one relationship.
 

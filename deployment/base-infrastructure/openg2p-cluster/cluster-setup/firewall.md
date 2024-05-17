@@ -1,5 +1,5 @@
 ---
-description: Firewall setup for Kubernetes cluster nodes
+description: Firewall setup for various components
 ---
 
 # Firewall
