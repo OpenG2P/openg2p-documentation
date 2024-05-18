@@ -15,7 +15,7 @@ layout:
 
 # Rancher Cluster
 
-Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure.
+Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure. The guide here provides instructions to install both Rancher server and Keycloak which is required for system administration of clusters.&#x20;
 
 {% hint style="info" %}
 To conserve resources Rancher may be run on a single node cluster, however, there is risk with this approach. Ideally, at least 2 nodes must be used

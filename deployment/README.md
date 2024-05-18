@@ -21,12 +21,12 @@ OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md
 Deployment Architecture
 {% endembed %}
 
-Essentially, for an organisation you will need two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces.  The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
+Essentially, for an organisation you will need two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces. The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
 1. Multiple Wireguard servers enabling separate channels for access
 2. Access control at  the application level where login to dashboards, portals is controlled via authentication and authorization defined in Keycloak.
 
-Note that a single organisation-wide Keycloak instance would suffice (installed in the Rancher cluster) with a proper definition of roles.
+The Keycloak inside Rancher cluster provides access control to system administrators to access Rancher and cluster.&#x20;
 
 The above is a recommended architecture that also optimises resource usage. However, for pilots or production, you may create a dedicated cluster and a separate instance of Rancher, Keycloak etc. These choices are left to the implementers.
 
