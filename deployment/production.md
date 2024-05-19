@@ -16,3 +16,11 @@ The guide here provides some useful hints for production deployment. However, th
 
 Replication of pods for high-availability.
 
+## Security
+
+* Creation of [access channels](deployment-guide/security/access-channel.md).
+
+## Provisioning of VMs
+
+* On cloud assign VMs across subnets for greater resilience to failures.
+
