@@ -22,7 +22,7 @@ A program must have allocated funds and posted  before disbursement schedule can
 
 Program funds refer to the total allocated amount for a particular program, intended to be distributed among the beneficiaries. Initially, the funds allocated to the program need to be added. The allocation of funds depends on the program's requirements and guidelines
 
-Create program fund: To learn steps, [click here](../functionality/program-management/user-guides/create-program-fund.md)
+Create program fund: To learn steps, [click here](../functionality/program-disbursement-cycles/user-guides/create-program-fund.md)
 
 ### Cycles
 
