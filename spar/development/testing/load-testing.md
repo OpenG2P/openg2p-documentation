@@ -98,3 +98,8 @@ The CPU for the Mapper POD showed a 100% throttle at this stage
 
 <figure><img src="../../../.gitbook/assets/DuringTest-4x2000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
 
+The table below summarizes these measurements
+
+1000 records per request
+
+<table><thead><tr><th>Users</th><th width="77">CPU</th><th width="77">Mem</th><th width="76">RPS</th><th width="103">Avg Resp </th><th width="107">95% Resp</th><th>99% Resp</th></tr></thead><tbody><tr><td>1</td><td>0.856</td><td>550</td><td>4.5</td><td>211</td><td>280</td><td>330</td></tr><tr><td>2</td><td>1.63</td><td>588</td><td>8.8</td><td>229</td><td>310</td><td>360</td></tr><tr><td>3</td><td>1.98</td><td>588</td><td>9.8</td><td>303</td><td>400</td><td>450</td></tr><tr><td>4</td><td>2</td><td>589</td><td>10</td><td>412</td><td>570</td><td>630</td></tr><tr><td>8</td><td>2</td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
