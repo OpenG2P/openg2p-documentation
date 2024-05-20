@@ -44,14 +44,16 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
 
 ## Multiple ingress gateways
 
-For access control to specific namespaces or pods in the cluster multiple ingress gateways may be required.  See [deployment architecture](../../../). The rules in the gateway allow traffic from load balancers to be filtered at the gateway.  A combination of rules on the gateway and "reception" rules on Istio virtual services of individual pods are employed to achieve this. &#x20;
+By default the installation scripts enable two Istio Ingress gateways -  **public** and **private**. The public gateway is disabled by default. You may enable the same while opening up services to the public by following the steps given [below](istio.md#enabling-public-gateway).  To create more private gateways, refer [here](istio.md#creating-private-gateways).
 
-Typically, for every load balancer, there will be one ingress gateway  in a one-to-one relationship.
+{% hint style="warning" %}
+Having only one private gateway implies that all users can open URLs in all namespaces. Access control to services may be accomplished by authentication/authorization of the respective services via Keycloak
+{% endhint %}
 
-### Ingress gateway configuration
+### Enabling public gateway
 
-TBD
+TBD.
 
-### Virtual service configuration
+### Creating private gateways
 
-TBD
+TBD.
