@@ -62,6 +62,10 @@ The following readings were taken 30 minutes after starting the test. The readin
 
 The Locust dashboard at the 30 minute showed the following readings
 
+<figure><img src="../../../.gitbook/assets/DuringTest-8x1000-Locust-Dashboard.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
+
+<figure><img src="../../../.gitbook/assets/DuringTest-8x1000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
+
 <mark style="color:purple;">**< 8 Users, > 1000 Requests per API**</mark>
 
 
