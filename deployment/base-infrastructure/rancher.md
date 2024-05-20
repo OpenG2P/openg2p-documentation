@@ -31,15 +31,7 @@ To deploy Rancher carry out the following steps:
 
 ## K8s cluster installation
 
-Follow steps 1-4 in the guide given [here](openg2p-cluster/cluster-setup/).
-
-*   In step 3 of the K8s setup, delete these lines from the final RKE2 `config.yaml` file. This will allow RKE2 to install the Nginx Ingress Controller instead of Istio. (On this cluster Istio is not necessary as there are very few components to manage).
-
-    ```
-    node-label: "shouldInstallIstioIngress=true"
-    disable:
-      - rke2-ingress-nginx
-    ```
+Follow steps 1-5 in the guide given [here](openg2p-cluster/cluster-setup/).
 
 {% hint style="info" %}
 It is highly recommended to set up a 3-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources.
