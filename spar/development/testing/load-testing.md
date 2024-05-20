@@ -30,11 +30,11 @@ Test Tool
 
 The methodology is detailed for every API
 
-### Resolve API
+## Resolve API
 
 10 Million ID-FA Records were created, starting from id value as 1 to id value as 10,000,000. The script to create these records can be found here.
 
-#### Test Script description
+### Test Script description
 
 The test script allows you to adjust the number of records that are submitted in each Resolve Request. All the IDs that are sent in the Resolve request are randomly generated integers (values between 1 and 10,000,000).&#x20;
 
@@ -42,7 +42,7 @@ This script is then submitted using Locust API requests, where we can specify th
 
 The Test script can be found here.
 
-**Before firing the Test**
+### **Readings before test**
 
 The following readings were recorded prior to starting the test.
 
@@ -52,9 +52,9 @@ Mapper POD - CPU, Memory, CPU Throttling, Load Average - Readings + Charts
 
 DB POD - CPU, Memory, CPU Throttling, Load Average - Readings + Charts
 
-**Test Case**
+### **Test scenarios**
 
-<mark style="color:purple;">**8 concurrent users, 1000 requests per API, 1 second ramp up time per user**</mark>
+#### <mark style="color:green;">**8 concurrent users, 1000 requests per API, 1 second ramp up time per user**</mark>
 
 The following readings were taken 30 minutes after starting the test. The readings were taken while the test was still running.
 
