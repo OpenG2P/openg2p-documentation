@@ -41,9 +41,7 @@ The document talks about setting up a **Wireguard bastion host** (Wireguard serv
 
 ## Multiple Wireguard servers
 
-Multiple Wireguard bastions are required to separate groups of users accessing applications on the cluster. For example, a sandbox runs inside a namespace, and you may wish to grant access to applications only within a namespace. This can be achieved by running an instance of a Wireguard server that routes traffic to one or more load balancers. See [deployment architecture](../../). The "access group" is a set of users who are given keys to access cluster apps via a particular Wireguard server.&#x20;
-
-You may install multiple Wireguard servers on the same VM, by repeating the above procedure with a different Wireguard server name, client IPs subnet mask, subnet mask of load balancer and port.
+Multiple Wireguard servers are required to enable separate [access channels](../../deployment-guide/security/access-channel.md). You may install multiple Wireguard servers on the same VM, by repeating the above procedure with a different Wireguard server name, client IPs subnet mask, subnet mask of load balancer and port.
 
 ## Access to users
 
