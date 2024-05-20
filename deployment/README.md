@@ -34,3 +34,7 @@ For deployment, set up the following in the sequence given below:
 
 * [Base infrastructure](base-infrastructure/)
 * OpenG2P specific modules _(instructions available in module-specific deployment pages)_
+
+{% hint style="info" %}
+This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the last few years.  The V4 is a modification of MOSIP's V3 deployment architecture essentially housing multiple environments within the same organisation-wide cluster.
+{% endhint %}
