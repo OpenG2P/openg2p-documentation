@@ -86,7 +86,7 @@ A program administrator must create an ODK MTS Connector to map the ODK forms in
 
 &#x20;  _Note: The OpenG2P registry accepts the individual or group KYC data only in JSON format._
 
-To learn the steps to create an ODK MTS Connector, click [here](../pbms/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md).
+To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
 
 
 
@@ -110,4 +110,4 @@ To learn the steps to create an ODK MTS Connector, click [here](../pbms/function
 
 :notebook\_with\_decorative\_cover:[Download Form on ODK Collect](odk-collection-app/user-guides/download-form-on-odk-collect.md)
 
-:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../pbms/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md)
+:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)

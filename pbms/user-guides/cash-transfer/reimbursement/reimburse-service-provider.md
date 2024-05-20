@@ -1,4 +1,4 @@
-# 📔 Reimburse the service provider
+# Reimburse the service provider
 
 ## Description
 

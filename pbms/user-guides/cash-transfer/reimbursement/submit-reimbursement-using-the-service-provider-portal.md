@@ -1,4 +1,4 @@
-# 📔 Submit Reimbursement Using the Service Provider Portal
+# Submit Reimbursement Using the Service Provider Portal
 
 ## Description
 
@@ -6,7 +6,7 @@ The guide here provides steps to submit reimbursement using Service Provider Por
 
 ## Prerequisites
 
-The Service Provider Portal user has login access to the portal using MOSIP ID/National ID. The user should be able to scan the QR code from the entitlement voucher using [SmartScanner App](../../../../utilities-and-tools/smartscanner/user-guides/install-smartscanner-app.md).
+The Service Provider Portal user has login access to the portal using MOSIP ID/National ID. The user should be able to scan the QR code from the entitlement voucher using [SmartScanner App](broken-reference).
 
 ## Steps
 
@@ -23,7 +23,7 @@ The Service Provider Portal user has login access to the portal using MOSIP ID/N
 
 <figure><img src="../../../../.gitbook/assets/reimbursemnt-form.png" alt=""><figcaption></figcaption></figure>
 
-5. The beneficiary details are available by scanning the QR code on the entitlement voucher (also called Guarantee Letter) using the [SmartScanner app](../../../../utilities-and-tools/smartscanner/user-guides/install-smartscanner-app.md). The scan should show details similar to the format in the image below.
+5. The beneficiary details are available by scanning the QR code on the entitlement voucher (also called Guarantee Letter) using the [SmartScanner app](broken-reference). The scan should show details similar to the format in the image below.
 
 <figure><img src="../../../../.gitbook/assets/entitlement-voucher-qr-scan (1).png" alt=""><figcaption></figcaption></figure>
 

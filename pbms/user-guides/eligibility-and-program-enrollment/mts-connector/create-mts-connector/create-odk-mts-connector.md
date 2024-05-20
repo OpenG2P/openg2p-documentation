@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📔 Create ODK MTS Connector
+# Create ODK MTS Connector
 
 ## Description
 

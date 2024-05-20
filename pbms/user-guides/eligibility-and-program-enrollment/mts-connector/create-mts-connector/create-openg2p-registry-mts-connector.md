@@ -1,4 +1,4 @@
-# 📔 Create OpenG2P Registry MTS Connector
+# Create OpenG2P Registry MTS Connector
 
 ## Description
 

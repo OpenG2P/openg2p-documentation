@@ -1,4 +1,4 @@
-# 📔 Create MTS Connector
+# Create MTS Connector
 
 ## Description
 

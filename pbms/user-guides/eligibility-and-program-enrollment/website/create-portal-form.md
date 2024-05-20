@@ -1,4 +1,4 @@
-# 📔 Create Self-Service Portal Form
+# Create Self-Service Portal Form
 
 ## Description
 
