@@ -8,39 +8,33 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
 
 ## Installation
 
-* The following setup can be done from the client machine. This installs Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
-*   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, configure the istio-operator.yaml, and run;
+### Operator Setup
 
-    ```
+* The following setup can be done from the client machine. This installs Istio Operator, Istio Service Mesh, Istio Ingressgateway components.
+*   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, run;
+
+    ```bash
     istioctl operator init
     kubectl apply -f istio-operator.yaml
     ```
 
-    *   If an external Loadbalancer is being used, then use the `istio-operator-external-lb.yaml` file.
+### Namespace Setup
 
-        ```
-        kubectl apply -f istio-operator-external-lb.yaml
-        ```
-    * Configure the operator.yaml with any further configuration
-*   Gather Wildcard TLS certificate and key and run;\
-    Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
+(Skip this section for Rancher cluster)
 
-    ```
-    kubectl create secret tls tls-openg2p-ingress -n istio-system \
-        --cert=<CERTIFICATE PATH> \
-        --key=<KEY PATH>
-    ```
-*   Create istio gateway for all hosts using this command:
+Once the above Operator setup is done, gateways need to be set up on each namespace. This assumes that the namespace (and relevant Rancher project) are created.
+
+*   Edit and run this to define the variables:
 
     ```
-    kubectl apply -f istio-gateway.yaml
+    export NS=prod
+    export WILDCARD_HOSTNAME='*.prod.openg2p.net'
     ```
+*   Run this apply gateways
 
-    *   If using external loadbalancer/external TLS termination, use the `istio-gateway-no-tls.yaml` file
-
-        ```
-        kubectl apply -f istio-gateway-no-tls.yaml
-        ```
+    ```bash
+    envsubst < istio-gateway.yaml | kubectl apply -f -
+    ```
 
 ## Multiple ingress gateways
 

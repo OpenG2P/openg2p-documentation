@@ -11,7 +11,7 @@ Below are the steps to add more nodes to the Kubernetes cluster.
 *   Run the following to set the RKE2 version. Make sure this version is the same across all the nodes. (Refer to [RKE2 Releases](https://github.com/rancher/rke2/releases). Use `rke2 --version` on an existing node to get the version.)
 
     ```
-    export INSTALL_RKE2_VERSION="v1.30.0+rke2r1"
+    export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
     ```
 *   Run the below command to download RKE2.
 

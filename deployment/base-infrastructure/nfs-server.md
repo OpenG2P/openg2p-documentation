@@ -31,6 +31,13 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
     ./install-nfs-server.sh
     ```
 * Make sure to edit the firewall rules of this VM to enable incoming traffic to the NFS server port `tcp 2049` and disable incoming traffic on all other ports (excluding SSH)
+*   For every sandbox/namespace, create a new folder in `/srv/nfs` folder on the NFS node. Example:
+
+    ```
+    sudo mkdir /srv/nfs/rancher
+    sudo mkdir /srv/nfs/prod
+    sudo mkdir /srv/nfs/staging
+    ```
 
 ## Backups
 

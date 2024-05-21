@@ -70,7 +70,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   *   Run the following to set the RKE2 version after referring to [RKE2 Releases](https://github.com/rancher/rke2/releases).
 
       ```bash
-      export INSTALL_RKE2_VERSION="v1.30.0+rke2r1"
+      export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
       ```
   *   Run this to download rke2.
 
@@ -118,7 +118,7 @@ In StorageClass, when the `reclaimPolicy` is set to `Retain`it implies that when
 When `reclaimPolicy` is set to `Delete,`if a PVC is deleted, both the PV and the relevant folder in the NFS get deleted.
 {% endhint %}
 
-### Longhorn&#x20;
+## Longhorn&#x20;
 
 This installation only applies if Longhorn is used as storage. This may be skipped if you are using NFS.
 

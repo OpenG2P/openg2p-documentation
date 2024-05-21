@@ -31,49 +31,21 @@ To deploy Rancher carry out the following steps:
 
 ## K8s cluster installation
 
-Follow steps 1-5 in the guide given [here](openg2p-cluster/cluster-setup/).
-
 {% hint style="info" %}
 It is highly recommended to set up a 3-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources.
 {% endhint %}
 
-## Rancher installation
+Follow steps 1-5 in the guide given [here](openg2p-cluster/cluster-setup/).
 
-*   To install Rancher use this (hostname to be edited in the below command):
+## Rancher & Keycloak installation
 
-    ```bash
-    helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
-    helm repo update
-    helm install rancher rancher-latest/rancher \
-      --namespace cattle-system \
-      --create-namespace \
-      --set hostname=rancher.openg2p.org \
-      --set ingress.tls.source=tls-rancher-ingress
-    ```
-
-    * Configure/Create TLS secret accordingly.\
-      Note: To create TLS certificates refer [here](https://docs.openg2p.org/v/latest/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
+*   Clone [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment), and from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) directory run the following: (Edit Hostnames according to need)&#x20;
 
     ```bash
-    kubectl create secret tls tls-rancher-ingress -n cattle-system \
-        --cert=path/to/cert/file \
-        --key=path/to/key/file
+    RANCHER_HOSTNAME=rancher.openg2p.org \
+    KEYCLOAK_HOSTNAME=keycloak.openg2p.org \
+        ./install.sh
     ```
-
-## Keycloak installation
-
-* From [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) folder, run the following to install Keycloak (hostname to be edited in the below command)
-* ```bash
-  helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm repo update
-  helm install keycloak bitnami/keycloak \
-    -n keycloak \
-    --create-namespace \
-    --version "7.1.18" \
-    --set ingress.hostname=keycloak.openg2p.org \
-    --set ingress.extraTls[0].hosts[0]=keycloak.openg2p.org \
-    -f keycloak-values.yaml
-  ```
 
 ## Keycloak-Rancher integration
 
