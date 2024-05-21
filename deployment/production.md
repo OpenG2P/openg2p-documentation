@@ -24,3 +24,6 @@ Replication of pods for high-availability.
 
 * On cloud assign VMs across subnets for greater resilience to failures.
 
+## CEPH Storage
+
+If the Kubernetes clusters are used for other critical applications with large data that is critical, CEPH storage may be considered. CEPH is a highly scalable and distributed data storage which provides high performance, reliability and scalability.  The storage system is installed on a separate cluster and Kubernetes communicates the same via CSI drivers that are available. CEPH automatically replicates data across multiple nodes, ensuring data redundancy and protection against node failures. However,  CEPH is very complex to set up and manage as compared to say NFS.  It has a steep learning curve. Further, it requires high resources (CPU, memory, network).
