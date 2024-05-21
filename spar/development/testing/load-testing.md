@@ -102,3 +102,5 @@ The CPU for the Mapper POD showed a 100% throttle at this stage
 The table below summarizes these measurements
 
 {% embed url="https://docs.google.com/spreadsheets/d/1OBBCjhRD7ClKqm5UPTC_5LQFzAbGIN0O3W-TMIjmZIg/edit?usp=drive_link" %}
+Resolve API - Measurements
+{% endembed %}
