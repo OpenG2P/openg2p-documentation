@@ -50,30 +50,33 @@ It is recommended to set up at least two channels, one for System Administrators
     ```bash
     docker logs -f wireguard_sys_admins
     ```
+
+### Limit user access
+
 * Limit each wireguard server to allow access to only the required Load Balancer/Nginx: (The following uses `wireguard_app_users` server example. Repeat this for all servers)
-  *   Comment out these lines in `/etc/wireguard_app_users/rules.sh` . (This allows everyone to access all IPs):
+*   Comment out these lines in `/etc/wireguard_app_users/rules.sh` . (This allows everyone to access all IPs):
 
-      ```bash
-      iptables -A FORWARD -i wg0 -j ACCEPT
-      iptables -A FORWARD -o wg0 -j ACCEPT
-      ```
-  *   Add the following lines under the above lines in `/etc/wireguard_app_users/rules.sh` , repeat for all IPs of LB/Nginx:
+    ```bash
+    iptables -A FORWARD -i wg0 -j ACCEPT
+    iptables -A FORWARD -o wg0 -j ACCEPT
+    ```
+*   Add the following lines under the above lines in `/etc/wireguard_app_users/rules.sh` , repeat for all IPs of LB/Nginx:
 
-      ```bash
-      iptables -A FORWARD -i wg0 -d <First Internal IP of LB/Nginx> -j ACCEPT
-      iptables -A FORWARD -o wg0 -s <First Internal IP of LB/Nginx> -j ACCEPT
+    ```bash
+    iptables -A FORWARD -i wg0 -d <First Internal IP of LB/Nginx> -j ACCEPT
+    iptables -A FORWARD -o wg0 -s <First Internal IP of LB/Nginx> -j ACCEPT
 
-      iptables -A FORWARD -i wg0 -d <Second Internal IP of LB/Nginx> -j ACCEPT
-      iptables -A FORWARD -o wg0 -s <Second Internal IP of LB/Nginx> -j ACCEPT
-      ```
-  *   Restart the server
+    iptables -A FORWARD -i wg0 -d <Second Internal IP of LB/Nginx> -j ACCEPT
+    iptables -A FORWARD -o wg0 -s <Second Internal IP of LB/Nginx> -j ACCEPT
+    ```
+*   Restart the server
 
-      ```bash
-      docker restart wireguard_app_users
-      ```
-  * Repeat the above for all the wireguard servers/channels.
-  * For System Admin channel, limit access to only Rancher LB/Nginx.\
-    For Other Channels, limit access to the relevant LBs/Nginxs.
+    ```bash
+    docker restart wireguard_app_users
+    ```
+* Repeat the above for all the wireguard servers/channels.
+* For System Admin channel, limit access to only Rancher LB/Nginx.\
+  For Other Channels, limit access to the relevant LBs/Nginxs.
 
 ## Access to users
 

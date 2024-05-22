@@ -18,6 +18,15 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
     kubectl apply -f istio-operator.yaml
     ```
 
+    * Wait for `istiod` and `ingressgateway` pods to start.
+*   Or, for Rancher cluster, run:
+
+    ```bash
+    kubectl apply -f istio-operator-no-ingress.yaml
+    ```
+
+    * Wait for `istiod` to start and `ingressgateway` pods to get deleted if any.
+
 ### Namespace Setup
 
 (Skip this section for Rancher cluster)
