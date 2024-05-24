@@ -4,7 +4,7 @@ description: Guide to delete nodes from existing Kubernetes cluster
 
 # Deleting Nodes from Cluster
 
-To delete  nodes from Kubernetes cluster:
+The steps to delete nodes from Kubernetes cluster are:
 
 * Before you delete the node, make sure the **PodDisruptionBudget** is set to "**0**" on deleting node.  Click [here](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) for more information.&#x20;
 *   To drain the node from the cluster, run the command below.&#x20;
@@ -18,3 +18,4 @@ To delete  nodes from Kubernetes cluster:
     kubectl delete node <nodename>
     ```
 * After deleting the node, check your Kubernetes cluster to ensure the node has been deleted.
+* Make sure the node IP is removed from the LoadBalancer/NGINX to avoid intermittent issues in the environment. &#x20;
