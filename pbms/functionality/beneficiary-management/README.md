@@ -14,7 +14,7 @@ layout:
 
 # Beneficiary Management
 
-**Beneficiary management** refers to the process of identifying, selecting, and managing individuals or groups who are eligible to receive benefits from a program or an organization. It ensures that the benefits are delivered correctly and on time to eligible recipients.
+Beneficiary management refers to the process of identifying, selecting, and managing individuals or groups who are eligible to receive benefits from a program or an organization. It ensures that the benefits are delivered correctly and on time to eligible recipients.
 
 This process involves various activities, such as verifying eligibility criteria, registering beneficiaries, deduplicating process, enrolling the beneficiary into the program, and ensuring that benefits are delivered to the right recipients on time.&#x20;
 
@@ -25,6 +25,9 @@ The beneficiary management process involves several components. They are:
 2. **Enrolling beneficiaries**:  The applicants who are eligible for the program are identified and enrolled into the program.
 3. **Maintaining beneficiary list:** The list of all enrolled beneficiaries is maintained appropriately. This includes updating information for existing beneficiaries, adding new beneficiaries, and removing beneficiaries who are no longer eligible for the program.
 4. **Deciding on entitlements**: Program managers need to determine the benefits or entitlements that each beneficiary is eligible to receive. This involves assessing their individual needs and circumstances to determine the appropriate level of support or the entitlements are set as per the program configurations.
-5. **Disbursements**: This step involves distributing the benefits to the beneficiaries. Disbursements can be made through various means, such as direct payments, vouchers, or in-kind support, according to the program's configuration.
+5. [**Disbursement**](../../features/disbursement-cycles/): This step involves distributing the benefits to the beneficiaries. Disbursements can be made through various means, such as direct payments, vouchers, or in-kind support, according to the program's configuration.
 6. **Beneficiary lifecycle -- exits**: Managing the lifecycle of beneficiaries includes every aspect from checking eligibility, verifying them, enrolling them in the program, creating entitlements, to distributing the benefits. It also includes handling cases where beneficiaries are no longer eligible for the program.
-7. **Notifications to beneficiaries**: Beneficiaries receive notifications regarding their verification status, eligibility, enrollment, payments, and any program changes. These notifications are sent through their chosen notification preference, which are configured accordingly. To learn more, [click here](../../features/notifications/).
+7. [**Notifications**](../../features/notifications/) **to beneficiaries**: Beneficiaries receive notifications regarding their verification status, eligibility, enrollment, payments, and any program changes. These notifications are sent through their chosen notification preference, which are configured accordingly.
+
+## Related user guides
+

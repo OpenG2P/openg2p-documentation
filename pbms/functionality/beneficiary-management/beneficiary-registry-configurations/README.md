@@ -6,7 +6,7 @@ OpenG2P platform provides configurations to define values (enumerations) for a f
 
 ### ID Types
 
-ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once defined, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the[ ID Deduplication Manager](../../../features/deduplication/user-guides/create-deduplication-manager-types/create-id-deduplication-manager.md) to select the ID Type for deduplicating registrants.
+ID Type is a reference name given by the OpenG2P platform user to refer to a registrant identity such as driver's license, MOSIP ID, Aadhar, etc. Users can define multiple ID Types. Once defined, users can select the ID Type from a dropdown list. Each registrant's ID Type has an ID Number (identifier) associated with it. Therefore, ID Type is also used by the ID Deduplication Manager to select the ID Type for deduplicating registrants.
 
 ### Registrant Tags
 
@@ -47,4 +47,6 @@ The Group Membership Kind establishes the role of an individual in a group. For 
 ## Related user guides
 
 :notebook\_with\_decorative\_cover:[Configuration](user-guides/)
+
+&#x20;:notebook\_with\_decorative\_cover:[ID Deduplication Manager](../../../features/deduplication/user-guides/create-deduplication-manager-types/create-id-deduplication-manager.md)
 
