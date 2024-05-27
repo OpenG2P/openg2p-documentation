@@ -11,7 +11,7 @@ This document describes a deployment model wherein the infrastructure and compon
 {% embed url="https://miro.com/app/board/uXjVKEY_ZNk=/?share_link_id=892398727661" %}
 
 {% hint style="danger" %}
-Do NOT use this model for production/pilots.
+Do NOT use this deployment model for production/pilots.
 {% endhint %}
 
 ## Installation
