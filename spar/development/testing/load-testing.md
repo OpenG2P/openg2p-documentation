@@ -19,7 +19,13 @@ layout:
 
 K8S Cluster
 
-POD Configurations
+### POD Configurations
+
+First round of measurements were done with a Single POD, with autoscaling suppressed. The mapper POD and the postgresql POD had the following configurations
+
+<figure><img src="../../../.gitbook/assets/PODConfig-MapperPOD.png" alt=""><figcaption><p>mapper-api POD configuration</p></figcaption></figure>
+
+<figure><img src="../../../.gitbook/assets/PODConfig-PostgresPOD.png" alt=""><figcaption><p>Postgresql POD configuration</p></figcaption></figure>
 
 DB Specific configurations
 
