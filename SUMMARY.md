@@ -383,6 +383,7 @@
       * [Make Environment Publicly Accessible using AWS LB Configuration](deployment/deployment-guide/aws/make-environment-publicly-accessible-using-aws-lb-configuration.md)
     * [Security](deployment/deployment-guide/security/README.md)
       * [Access Channel](deployment/deployment-guide/security/access-channel.md)
+    * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
   * [OpenG2P In a Box](deployment/openg2p-in-a-box.md)
 * [Use Cases](use-cases/README.md)
   * [Technology for Inclusion](use-cases/technology-for-inclusion/README.md)

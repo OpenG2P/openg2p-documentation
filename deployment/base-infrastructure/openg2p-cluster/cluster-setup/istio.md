@@ -26,6 +26,11 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
     ```
 
     * Wait for `istiod` to start and `ingressgateway` pods to get deleted if any.
+*   Run the following:
+
+    ```bash
+    kubectl apply -f istio-ef-spdy-upgrade.yaml
+    ```
 
 ### Namespace Setup
 
