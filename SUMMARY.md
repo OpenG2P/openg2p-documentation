@@ -24,6 +24,7 @@
     * [Program Disbursement Cycles](pbms/features/program-disbursement-cycles.md)
       * [📔 User Guides](pbms/functionality/program-disbursement-cycles/user-guides/README.md)
         * [📔 Create Program Fund](pbms/functionality/program-disbursement-cycles/user-guides/create-program-fund.md)
+        * [📔 Create Cycle Manager for a Program](pbms/functionality/program-disbursement-cycles/user-guides/create-cycle-manager-for-a-program.md)
     * [Beneficiary Management](pbms/functionality/beneficiary-management/README.md)
       * [Beneficiary Registry](pbms/functionality/beneficiary-management/beneficiary-registry/README.md)
         * [📔 User Guides](pbms/functionality/beneficiary-management/beneficiary-registry/user-guides/README.md)
