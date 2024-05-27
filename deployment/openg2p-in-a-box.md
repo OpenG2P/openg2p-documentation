@@ -28,7 +28,7 @@ To set up the base infrastructure, login to the machine and install the followin
 
 1. Set up [Firewall](base-infrastructure/openg2p-cluster/cluster-setup/firewall.md). Make sure to include [K8s Firewall](base-infrastructure/openg2p-cluster/cluster-setup/firewall.md#firewall-rules-for-kubernetes-node), [NFS Firewall](base-infrastructure/openg2p-cluster/cluster-setup/firewall.md#firewall-rules-for-nfs), [Wireguard Firewall](base-infrastructure/openg2p-cluster/cluster-setup/firewall.md#firewall-rules-for-wireguard), and [LB Firewall](base-infrastructure/openg2p-cluster/cluster-setup/firewall.md#firewall-rules-for-load-balancer), all in the same machine.
 2. Install [Kubernetes Cluster (RKE2 Server)](base-infrastructure/openg2p-cluster/cluster-setup/#cluster-installation).
-3. Install [Wireguard Bastion](base-infrastructure/wireguard-bastion/#installation), as given below. (This method doesn't require docker. Wireguard will run on Kubernetes):
+3. Install [Wireguard Bastion](base-infrastructure/wireguard-bastion/#installation) servers:
    *   Run this command for each wireguard server/channel:
 
        ```bash
