@@ -18,7 +18,7 @@ layout:
 OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md) and utilities based on reputed open-source components like Kubernetes, Rancher etc. This architecture is also referred to as **V4**\*. The deployment infra may be used for sandbox, pilot or full-scale rollout. All modules are available as Dockers and Kubernetes is used as the orchestration platform. The deployment architecture is depicted below.
 
 {% hint style="info" %}
-\* The V4 deployment architecture is an extension of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
+\* This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the past few years.  The V4 deployment architecture is an extension of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
 {% endhint %}
 
 ## Deployment architecture (V4)
@@ -40,7 +40,3 @@ For deployment, set up the following in the sequence given below:
 
 * [Base infrastructure](base-infrastructure/)
 * OpenG2P specific modules _(instructions available in module-specific deployment pages)_
-
-{% hint style="info" %}
-This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the last few years.  The V4 is a modification of MOSIP's V3 deployment architecture essentially housing multiple environments within the same organisation-wide cluster.
-{% endhint %}
