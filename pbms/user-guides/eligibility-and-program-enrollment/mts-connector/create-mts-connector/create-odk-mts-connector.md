@@ -16,7 +16,7 @@ layout:
 
 ## Description
 
-This Guide will help to create the [ODK MTS Connector](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/integrations/integration-with-mosip/mts-connector.md).
+This guide will help to create the [ODK MTS Connector](https://github.com/OpenG2P/openg2p-documentation/blob/1.2.1/integrations/integration-with-mosip/mts-connector.md).
 
 ## Prerequisites
 
