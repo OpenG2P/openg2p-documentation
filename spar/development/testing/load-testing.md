@@ -32,7 +32,7 @@ we can achieve the following throughput at almost **100% CPU utilization** of th
 
 ### K8S Cluster
 
-### POD Configurations
+### POD configurations
 
 First round of measurements were done with a Single POD, with autoscaling suppressed. The mapper POD and the postgresql POD had the following configurations
 
@@ -42,11 +42,11 @@ First round of measurements were done with a Single POD, with autoscaling suppre
 
 <figure><img src="../../../.gitbook/assets/PODConfig-PostgresPOD.png" alt=""><figcaption><p>Postgresql POD configuration</p></figcaption></figure>
 
-### DB Specific configurations
+### DB specific configurations
 
-### Test Server
+### Test server
 
-### Test Tools
+### Test tools
 
 Locust ([https://locust.io/](https://locust.io/)) - to generate API load
 
@@ -60,7 +60,7 @@ The methodology is detailed for every API
 
 10 Million ID-FA Records were created, starting from id value as 1 to id value as 10,000,000. The script to create these records can be found here.
 
-### Test Script description
+### Test script description
 
 The test script allows you to adjust the number of records that are submitted in each Resolve Request. All the IDs that are sent in the Resolve request are randomly generated integers (values between 1 and 10,000,000).&#x20;
 
