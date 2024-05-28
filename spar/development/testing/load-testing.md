@@ -17,6 +17,15 @@ layout:
 
 ## Benchmark summary
 
+With a single mapper POD (Limit - 2 CPU, 2 GB RAM) and single postgresql POD (Limit - 1 CPU, 2.5 GB RAM) and various combinations of&#x20;
+
+1. number of concurrent API requests
+2. payload size
+
+we can achieve the following throughput
+
+{% embed url="https://docs.google.com/spreadsheets/d/14aHrtX-bht44ulzwGex3eWj3WE9eVRx4lTCVWeZBy-w/edit?usp=drive_link" %}
+
 ## Setup
 
 K8S Cluster
