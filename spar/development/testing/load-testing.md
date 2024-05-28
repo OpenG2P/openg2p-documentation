@@ -46,11 +46,11 @@ First round of measurements were done with a Single POD, with autoscaling suppre
 
 ### Test Server
 
-### Test Tool
+### Test Tools
 
 Locust ([https://locust.io/](https://locust.io/)) - to generate API load
 
-Graphana charts & Prometheus - to monitor and measure POD resource utilizations
+Grafana charts & Prometheus - to monitor and measure POD resource utilizations
 
 ## Approach
 
