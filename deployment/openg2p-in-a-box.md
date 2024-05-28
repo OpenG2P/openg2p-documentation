@@ -4,7 +4,7 @@ description: Getting started with OpenG2P
 
 # OpenG2P In a Box
 
-This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a single node/VM/machine. This will help you to get started with OpenG2P and experience the functionality without having to meet all r[esource requirements](hardware-requirements.md) for a production-grade setup. Although the deployment has been made compact, the essence of the [deployment architecture ](./#deployment-architecture)is preserved so that upgrading the infra is easier when more hardware resources are available.
+This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a single node/VM/machine.  This will help you to get started with OpenG2P and experience the functionality without having to meet all r[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same.  The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
 
 ## Deployment architecture
 
@@ -140,3 +140,14 @@ To set up the base infrastructure, login to the machine and install the followin
 ### OpenG2P modules' installation
 
 [Install OpenG2P modules via Rancher](../spar/deployment.md#installation-using-rancher-ui). &#x20;
+
+{% hint style="info" %}
+**How is the "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
+
+* In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](base-infrastructure/load-balancer/nginx.md).
+* The SSL certificates are loaded on the Istio gateway while in V4 the certificates are loaded on the Nginx server.
+* The Wireguard bastion runs inside the Kubernetes cluster itself as a pod. This is not recommended in production where Wireguard must run on a separate node.
+* A single private[ access channel](deployment-guide/security/access-channel.md) is enabled (via Wireguard).  In production, you will typically need several channels for access control.
+* In-a-box **does not offer high availability** as the node is a single point of failure.&#x20;
+* NFS runs inside the box. In production, NFS must run on a separate node with its access control, allocated resources and backups.
+{% endhint %}
