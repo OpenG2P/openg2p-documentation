@@ -37,6 +37,7 @@ NFS-based storage is recommended for providing persistent storage volumes to Kub
     sudo mkdir /srv/nfs/rancher
     sudo mkdir /srv/nfs/prod
     sudo mkdir /srv/nfs/staging
+    sudo chmod -R 777 /srv/nfs
     ```
 
 ## Backups

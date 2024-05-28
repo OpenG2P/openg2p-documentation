@@ -90,7 +90,7 @@ To set up the base infrastructure, login to the machine and install the followin
     RANCHER_HOSTNAME=rancher.your.org \
     TLS=true \
     RANCHER_ISTIO_OPERATOR=false \
-        ./install.sh
+        ./install.sh --set replicas=1
     ```
 
     * Login to Rancher using the above hostname and bootstrap the `admin` user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.
@@ -100,7 +100,7 @@ To set up the base infrastructure, login to the machine and install the followin
     KEYCLOAK_HOSTNAME=keycloak.your.org \
     TLS=true \
     KEYCLOAK_ISTIO_OPERATOR=false \
-        ./install.sh
+        ./install.sh --set replicaCount=1
     ```
 11. [Integrate Rancher & Keycloak](base-infrastructure/rancher.md#rancher-keycloak-integration).
 12. Continue to use the same cluster (`local` cluster) for OpenG2P Modules also.
@@ -142,7 +142,7 @@ To set up the base infrastructure, login to the machine and install the followin
 [Install OpenG2P modules via Rancher](../spar/deployment.md#installation-using-rancher-ui). &#x20;
 
 {% hint style="info" %}
-**How is the "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
+**How is "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
 
 * In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](base-infrastructure/load-balancer/nginx.md).
 * The SSL certificates are loaded on the Istio gateway while in V4 the certificates are loaded on the Nginx server.
