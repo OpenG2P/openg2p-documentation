@@ -13,16 +13,16 @@ layout:
     visible: true
 ---
 
-# Load Testing
+# Performance Testing
 
-## Benchmark report
+## Benchmark summary &#x20;
 
 We conducted a series of measurements under varying combinations of&#x20;
 
-1. number of concurrent API requests
-2. payload size
+1. Number of concurrent API requests
+2. Payload size
 
-The combination at which we achieved maximum throughput at 100% utilization (one of CPU, Memory) in either of the two PODs (mapper and postgres) is given below. &#x20;
+The configuration that yielded maximum throughput at 100% utilization (either CPU or Memory) in one of the two PODs (mapper and Postgres) is detailed below.  Each API is reported under a separate sheet.
 
 {% embed url="https://docs.google.com/spreadsheets/d/14aHrtX-bht44ulzwGex3eWj3WE9eVRx4lTCVWeZBy-w/edit?usp=drive_link" %}
 1 mapper POD
@@ -38,9 +38,9 @@ First round of measurements were done with a Single POD, with autoscaling suppre
 
 <table><thead><tr><th width="133">POD</th><th>CPU reserve</th><th>CPU limit</th><th>Mem reserve </th><th>Mem limit</th></tr></thead><tbody><tr><td>mapper</td><td>0.250 cpu</td><td>2 cpu</td><td>1 GB</td><td>2 GB</td></tr><tr><td>postgresql</td><td>0.250 cpu</td><td>1 cpu</td><td>1 GB</td><td>2.5 GB</td></tr></tbody></table>
 
-<figure><img src="../../../.gitbook/assets/PODConfig-MapperPOD.png" alt=""><figcaption><p>mapper-api POD configuration</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/PODConfig-MapperPOD.png" alt=""><figcaption><p>mapper-api POD configuration</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/PODConfig-PostgresPOD.png" alt=""><figcaption><p>Postgresql POD configuration</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/PODConfig-PostgresPOD.png" alt=""><figcaption><p>Postgresql POD configuration</p></figcaption></figure>
 
 ### DB specific configurations
 
@@ -84,13 +84,13 @@ The following readings were taken 30 minutes after starting the test. The readin
 
 The Locust dashboard at the 30 minute showed the following readings
 
-<figure><img src="../../../.gitbook/assets/DuringTest-8x1000-Locust-Dashboard.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-8x1000-Locust-Dashboard.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/DuringTest-8x1000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-8x1000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
 
 The CPU for the Mapper POD showed a 100% throttle at this stage
 
-<figure><img src="../../../.gitbook/assets/DuringTest-8x1000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-8x1000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 8 concurrent users - 1000 records per API</p></figcaption></figure>
 
 #### <mark style="color:green;">**4 concurrent users, 1000 requests per API, 1 second ramp up time per user**</mark>
 
@@ -100,13 +100,13 @@ The following readings were taken 30 minutes after starting the test. The readin
 
 The Locust dashboard at the 30 minute showed the following readings
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x1000-Locust-Stats-2.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x1000-Locust-Stats-2.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x1000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x1000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
 
 The CPU for the Mapper POD showed a 100% throttle at this stage
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x1000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x1000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 4 concurrent users - 1000 records per API</p></figcaption></figure>
 
 #### <mark style="color:green;">**4 concurrent users, 2000 requests per API, 1 second ramp up time per user**</mark>
 
@@ -116,13 +116,13 @@ The following readings were taken 30 minutes after starting the test. The readin
 
 The Locust dashboard at the 30 minute showed the following readings
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x2000-Locust-Stats-2.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x2000-Locust-Stats-2.png" alt=""><figcaption><p>Locust Dashboard - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x2000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x2000-Locust-Charts.png" alt=""><figcaption><p>Locust Charts - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
 
 The CPU for the Mapper POD showed a 100% throttle at this stage
 
-<figure><img src="../../../.gitbook/assets/DuringTest-4x2000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/DuringTest-4x2000-CPU-Throttle-MapperPOD.png" alt=""><figcaption><p>CPU throttle - 30 minutes - 4 concurrent users - 2000 records per API</p></figcaption></figure>
 
 The table below summarizes these measurements
 
