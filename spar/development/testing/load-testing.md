@@ -17,12 +17,12 @@ layout:
 
 ## Benchmark report
 
-With a **single mapper POD** (Limit - 2 CPU, 2 GB RAM) and **single postgresql POD** (Limit - 1 CPU, 2.5 GB RAM) and various combinations of&#x20;
+We conducted a series of measurements under varying combinations of&#x20;
 
 1. number of concurrent API requests
 2. payload size
 
-we can achieve the following throughput at almost **100% CPU utilization** of the mapper POD
+The combination at which we achieved maximum throughput at 100% utilization (one of CPU, Memory, Network, Disk I/O) in either of the two PODs (mapper and postgres) is given below. &#x20;
 
 {% embed url="https://docs.google.com/spreadsheets/d/14aHrtX-bht44ulzwGex3eWj3WE9eVRx4lTCVWeZBy-w/edit?usp=drive_link" %}
 1 mapper POD
