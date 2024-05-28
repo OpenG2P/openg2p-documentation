@@ -15,6 +15,8 @@ layout:
 
 # Load Testing
 
+## Benchmark summary
+
 ## Setup
 
 K8S Cluster
@@ -22,6 +24,8 @@ K8S Cluster
 ### POD Configurations
 
 First round of measurements were done with a Single POD, with autoscaling suppressed. The mapper POD and the postgresql POD had the following configurations
+
+<table><thead><tr><th width="133">POD</th><th>CPU reserve</th><th>CPU limit</th><th>Mem reserve </th><th>Mem limit</th></tr></thead><tbody><tr><td>mapper</td><td>0.250 cpu</td><td>2 cpu</td><td>1 GB</td><td>2 GB</td></tr><tr><td>postgresql</td><td>0.250 cpu</td><td>1 cpu</td><td>1 GB</td><td>2.5 GB</td></tr></tbody></table>
 
 <figure><img src="../../../.gitbook/assets/PODConfig-MapperPOD.png" alt=""><figcaption><p>mapper-api POD configuration</p></figcaption></figure>
 
