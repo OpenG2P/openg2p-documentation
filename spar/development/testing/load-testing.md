@@ -30,7 +30,7 @@ we can achieve the following throughput at almost **100% CPU utilization** of th
 
 ## Setup
 
-K8S Cluster
+### K8S Cluster
 
 ### POD Configurations
 
@@ -42,11 +42,15 @@ First round of measurements were done with a Single POD, with autoscaling suppre
 
 <figure><img src="../../../.gitbook/assets/PODConfig-PostgresPOD.png" alt=""><figcaption><p>Postgresql POD configuration</p></figcaption></figure>
 
-DB Specific configurations
+### DB Specific configurations
 
-Test Server
+### Test Server
 
-Test Tool
+### Test Tool
+
+Locust ([https://locust.io/](https://locust.io/)) - to generate API load
+
+Graphana charts & Prometheus - to monitor and measure POD resource utilizations
 
 ## Approach
 
