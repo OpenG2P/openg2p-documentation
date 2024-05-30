@@ -43,8 +43,6 @@ All the modules are designed to be installed and used standalone. However, the f
 
 ## Solutions/Modules offered by OpenG2P
 
-The list solutions/modules of OpenG2P are:
-
 * [PBMS](pbms/) (Program and Beneficiary Management System)
 * [Social Registry](social-registry/)
 * [SPAR](spar/) (Social Payments Account Registry)
