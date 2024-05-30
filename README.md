@@ -43,6 +43,8 @@ All the modules are designed to be installed and used standalone. However, the f
 
 The following modules are offered:
 
+The modules of Openg2P systems are:
+
 * [PBMS](pbms/) (Program and Beneficiary Management System)
 * [Social Registry](social-registry/)
 * [SPAR](spar/) (Social Payments Account Registry)
