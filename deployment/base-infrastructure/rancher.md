@@ -15,27 +15,26 @@ layout:
 
 # Rancher Cluster
 
-Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure. The guide here provides instructions to install both Rancher server and Keycloak which is required for system administration of clusters.&#x20;
+Rancher is used to manage multiple clusters. Being a critical component of cluster administration it is highly recommended that Rancher itself runs on a Kubernetes cluster with sufficient replication for high availability and avoiding a single point of failure. This cluster is called Rancher Cluster or Observation Cluster as it is used to observe other clusters.&#x20;
 
-{% hint style="info" %}
-To conserve resources Rancher may be run on a single node cluster, however, there is risk with this approach. Ideally, at least 2 nodes must be used
-{% endhint %}
+The guide here provides instructions to install both the Rancher server and Keycloak which is required for system administration of clusters.&#x20;
 
 To deploy Rancher carry out the following steps:
 
-1. Make sure [NFS server](nfs-server.md) is already installed.
-2. Install Kubernetes (K8s) cluster&#x20;
-3. Install Rancher
-4. Install Keycloak
-5. Integrate Keycloak with Rancher
+1. Provision resources as given [here](../hardware-requirements.md).
+2. Make sure [NFS server](nfs-server.md) is already installed.
+3. Install Kubernetes (K8s) cluster&#x20;
+4. Install Rancher
+5. Install Keycloak
+6. Integrate Keycloak with Rancher
 
 ## K8s cluster installation
 
-{% hint style="info" %}
-It is highly recommended to set up a 3-node cluster for high availability. However, for the non-production environments, you may create a single node cluster to conserve resources.
-{% endhint %}
-
 Follow steps 1-5 in the guide given [here](openg2p-cluster/cluster-setup/).
+
+{% hint style="info" %}
+For high availability and resilience of this cluster, read the [production guide](../production.md).
+{% endhint %}
 
 ## Nginx/Loadbalancer Setup
 
