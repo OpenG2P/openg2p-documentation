@@ -14,15 +14,26 @@ The guide here provides some useful hints for production deployment. However, th
 
 ## High availability
 
-Replication of pods for high-availability.
+### Pod replication
+
+* Replication of pods for high-availability.
+
+### Node replication
+
+* Provisioning of VMs across different underlying hardware and subnets for resilience.  does
+* Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
+
+## Backups
+
+### ETCD&#x20;
+
+Backup of `etcd` of all clusters for recovery in case of complete failure.
+
+### NFS&#x20;
 
 ## Security
 
 * Creation of [access channels](deployment-guide/security/access-channel.md).
-
-## Provisioning of VMs
-
-* On cloud assign VMs across subnets for greater resilience to failures.
 
 ## CEPH Storage
 
