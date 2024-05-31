@@ -47,4 +47,8 @@ All the modules are designed to be installed and used standalone. However, the f
 * [Social Registry](social-registry/)
 * [SPAR](spar/) (Social Payments Account Registry)
 * [G2P Bridge](g2p-bridge/)
-* [Utilities and tools](utilities-and-tools/)
+* [Utilities and tools](utilities-and-tools/)'
+
+## Getting started
+
+To run OpenG2P suite and experience all that it offers, a good start point is [**OpenG2P In a Box**](deployment/openg2p-in-a-box.md).&#x20;
