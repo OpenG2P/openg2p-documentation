@@ -31,6 +31,10 @@ Backup of `etcd` of all clusters for recovery in case of complete failure.
 
 ### NFS&#x20;
 
+### Cluster access key
+
+Downloading of user's cluster access key to be able to operate OpenG2P cluster directly using `kubectl` in case Rancher is not accessible. Sys Admins may download this key using Rancher console and keep them safely and protected with them.
+
 ## Security
 
 * Creation of [access channels](deployment-guide/security/access-channel.md).
