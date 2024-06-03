@@ -34,3 +34,4 @@ The Wireguard conf file MUST NOT be shared with any other users for security rea
     > peer1 : <peer name>
     ```
 6. Share the conf file with the peer/user securely. Example: `peer1/peer1.conf`
+7. Create a local Git repo to maintain versions of `assigned.txt.`  Use `git init` command to initiate a local repo.  Check in any changes to this file.
