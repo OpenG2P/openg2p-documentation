@@ -203,7 +203,7 @@
         * [📔 Configure Group Membership Kind](social-registry/functionality/configurations/user-guide/configure-group-membership-kind.md)
     * [Service Provider Portal](social-registry/functionality/service-provider-portal/README.md)
       * [📔 User Guides](social-registry/functionality/service-provider-portal/user-guides/README.md)
-        * [📔 Create a New Household](social-registry/functionality/service-provider-portal/user-guides/create-a-new-household.md)
+        * [📔 Create a New Household](social-registry/functionality/service-provider-portal/user-guides/create-new-household.md)
         * [📔 Create a New Individual in Service Provider Portal](social-registry/functionality/service-provider-portal/user-guides/create-a-new-individual-in-service-provider-portal.md)
     * [Notifications](social-registry/features/notifications.md)
     * [Administration / User Management](social-registry/functionality/administration/README.md)
