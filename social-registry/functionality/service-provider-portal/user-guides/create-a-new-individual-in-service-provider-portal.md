@@ -156,6 +156,8 @@ Enter the required information in the respective fields. You must fill all the m
 {% tab title="Consent" %}
 1. Click the _**Consent**_ tab.
 
+<figure><img src="../../../../.gitbook/assets/consent-spp.png" alt=""><figcaption></figcaption></figure>
+
 _**Enumerator Consent**_
 
 1. The Enumerator selects the appropriate value in the drop-down. He/she agrees and confirms whether the collected information is true or false. The valid values are:
@@ -173,3 +175,5 @@ _**Enumerator Consent**_
 8. Click the _**Cancel**_ button to exit from the screen.
 
 The newly created individual data is displayed in the individual list.
+
+<figure><img src="../../../../.gitbook/assets/individual-dashboard-spp.png" alt=""><figcaption></figcaption></figure>
