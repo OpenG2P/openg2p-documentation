@@ -31,6 +31,7 @@
         * [📔 User Guides](pbms/functionality/beneficiary-management/beneficiary-registry/user-guides/README.md)
           * [📔 Create an Individual Registrant](pbms/functionality/beneficiary-management/beneficiary-registry/user-guides/create-an-individual-registrant.md)
           * [📔 Create a Group and Add Individual Registrants to the Group](pbms/functionality/beneficiary-management/beneficiary-registry/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
+          * [📔 Assign a Program to a Group](pbms/functionality/beneficiary-management/beneficiary-registry/user-guides/assign-a-program-to-a-group.md)
       * [Beneficiary Registry Configurations](pbms/functionality/beneficiary-management/beneficiary-registry-configurations/README.md)
         * [📔 User Guides](pbms/functionality/beneficiary-management/beneficiary-registry-configurations/user-guides/README.md)
           * [📔 Configure ID Types](pbms/functionality/beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md)
