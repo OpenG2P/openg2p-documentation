@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📔 Create New Household
+# 📔 Create a New Household
 
 This document provides instructions to create new household in Service Provider portal.
 
@@ -80,14 +80,14 @@ The fields and their descriptions of each tab are given below.
 {% tab title="Administrative Location Details" %}
 <figure><img src="../../../../.gitbook/assets/administrative-location-details-spp.png" alt=""><figcaption></figcaption></figure>
 
-| Field     | Description             |
-| --------- | ----------------------- |
-| Region\*  | Enter the region name.  |
-| Zone\*    | Enter the zone name.    |
-| Woreda\*  | Enter the woreda name.  |
-| Kebele\*  | Enter the kebele name.  |
-| Gote\*    | Enter the gote name.    |
-| Village\* | Enter the village name. |
+| Field     | Description                                       |
+| --------- | ------------------------------------------------- |
+| Region\*  | Select the appropriate region from the drop-down. |
+| Zone\*    | Enter the zone name.                              |
+| Woreda\*  | Enter the woreda name.                            |
+| Kebele\*  | Enter the kebele name.                            |
+| Gote\*    | Enter the gote name.                              |
+| Village\* | Enter the village name.                           |
 
 Note:
 
@@ -97,7 +97,7 @@ The fields with \* mark are the mandatory fields.
 {% tab title="Member Details" %}
 <figure><img src="../../../../.gitbook/assets/members-details-spp.png" alt=""><figcaption></figcaption></figure>
 
-Click the Add Member button. [Add new members](create-new-household.md#add-new-members) screen is displayed.
+Click the Add Member button. [Add new members](create-a-new-household.md#add-new-members) screen is displayed.
 {% endtab %}
 
 {% tab title="Household Data" %}

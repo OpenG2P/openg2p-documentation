@@ -20,5 +20,5 @@ Service provider portal is an external application portal where service provider
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Create New Household](user-guides/create-new-household.md)
+:notebook\_with\_decorative\_cover:[Create New Household](user-guides/create-a-new-household.md)
 
