@@ -25,7 +25,7 @@ This guide provides instructions to configure the payments file with QR Code.
 
 1. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
 
-<figure><img src="../../../../.gitbook/assets/menu-program.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/menu-program (1).png" alt=""><figcaption></figcaption></figure>
 
 _**Programs**_ screen is displayed.
 
@@ -152,3 +152,4 @@ In the html code, search for the image source and update the QR code name that m
 **Sample file with QR code**
 
 <figure><img src="../../../../.gitbook/assets/voucher.png" alt=""><figcaption></figcaption></figure>
+

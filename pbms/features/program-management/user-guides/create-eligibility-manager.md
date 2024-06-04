@@ -40,7 +40,7 @@ Note:
 
 By default, in the _**Program**_ field, you can find the selected program name.
 
-<figure><img src="../../../../.gitbook/assets/program-list.png" alt=""><figcaption><p>Program list</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/program-list (1).png" alt=""><figcaption><p>Program list</p></figcaption></figure>
 
 <figure><img src="../../../../.gitbook/assets/sample-program-screen.png" alt=""><figcaption><p>Sample program screen</p></figcaption></figure>
 

@@ -22,6 +22,7 @@
         * [📔 Configure Entitlement Manager under Program](pbms/features/program-management/user-guides/create-entitlement-manager-type-1.md)
         * [📔 Configure Payment Manager in Program](pbms/features/program-management/user-guides/create-payment-manager.md)
         * [📔 Configure Default Program Manager](pbms/functionality/program-management/user-guides/configure-default-program-manager.md)
+        * [📔 Archive, Delete, End, and Re-activate a Program](pbms/functionality/program-management/user-guides/archive-delete-end-and-re-activate-a-program.md)
     * [Program Disbursement Cycles](pbms/features/program-disbursement-cycles.md)
       * [📔 User Guides](pbms/functionality/program-disbursement-cycles/user-guides/README.md)
         * [📔 Create Program Fund](pbms/functionality/program-disbursement-cycles/user-guides/create-program-fund.md)
