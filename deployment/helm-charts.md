@@ -28,12 +28,9 @@ Charts may be found here:
 
 ## Published repository
 
-All charts are published to this public website: [https://openg2p.github.io/openg2p-helm](https://openg2p.github.io/openg2p-helm). This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-helm/blob/main/.github/workflows/push\_trigger.yml). The publishing process involves the following steps:
+All charts are published to this public website: [https://openg2p.github.io/openg2p-helm](https://openg2p.github.io/openg2p-helm). This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-deployment/blob/main/.github/workflows/push\_trigger.yml).
 
-1. Create Helm packaged zip files.
-2. Check-in the packaged zip in `gh-pages` branch of openg2p-helm repository.
-
-&#x20;Charts may be published manually with the procedure given below:
+Charts may be published manually with the procedure given below:
 
 1. &#x20;Create Helm packaged zip files by executing the following command in the folder that contains your charts source code.
 
@@ -52,7 +49,18 @@ helm package charts/<chart name>
 
 ## Publish Helm charts as Rancher apps
 
-To have your charts available in Rancher Apps and be able to install from Rancher UI follow guide given [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher/create-apps).  See [example](https://github.com/OpenG2P/openg2p-spar-deployment/tree/develop/charts/spar) of Helm chart configured for Rancher.
+To have your charts available in Rancher Apps and be able to install from Rancher UI follow guide given [here](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher/create-apps).  See [example](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts/openg2p-social-registry) of Helm chart configured for Rancher.
+
+### Automatic publishing
+
+To have your chart published automatically to be available in Rancher, add the following annotation to `Chart.yaml` in your helm chart.
+
+```yaml
+annotations:
+  openg2p.org/add-to-rancher: ""
+```
+
+### Manual publishing
 
 To publish a chart on Rancher Apps in step 3 above, copy the chart zip to  `/rancher` folder of the repo.  Run `./index.sh.`This will generate and `index.yaml` file in the folder. This file will be read by Rancher to display in the catalogue (refer [Installation using Rancher UI](../spar/deployment.md#installation-using-rancher-ui) on how to add this repository).&#x20;
 
