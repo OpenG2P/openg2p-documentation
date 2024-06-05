@@ -39,6 +39,11 @@ Downloading of user's cluster access key to be able to operate OpenG2P cluster d
 
 * Creation of [access channels](deployment-guide/security/access-channel.md).
 
+## OpenSearch
+
+* Enable data nodes in OpenSearch so that backups can be taken of the data node.
+* The data node maybe enabled while installing OpenSearch. _(TBD)._
+
 ## CEPH Storage
 
 If the Kubernetes clusters are used for other critical applications with large data that is critical, CEPH storage may be considered. CEPH is a highly scalable and distributed data storage which provides high performance, reliability and scalability.  The storage system is installed on a separate cluster and Kubernetes communicates the same via CSI drivers that are available. CEPH automatically replicates data across multiple nodes, ensuring data redundancy and protection against node failures. However,  CEPH is very complex to set up and manage as compared to say NFS.  It has a steep learning curve. Further, it requires high resources (CPU, memory, network).
