@@ -14,7 +14,7 @@ layout:
 
 # 📔 Assign a Program to a Group
 
-&#x20;document provides instructions to assign a program to a group
+&#x20;This document provides instructions to assign a program to a group
 
 ## Prerequisites
 
