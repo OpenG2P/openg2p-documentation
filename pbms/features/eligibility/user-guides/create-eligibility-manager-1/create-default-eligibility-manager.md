@@ -12,13 +12,13 @@ layout:
     visible: true
 ---
 
-# 📔 Create Default Eligibility Manager
+# 📔 Configure Default Eligibility Manager
 
-This guide provides the step-by-step instructions to create a Default Eligibility Manager
+This guide provides the step-by-step instructions to configure a Default Eligibility Manager
 
 ## Prerequisites
 
-A user should have a Program Manager role to create a Default Eligibility Manager.
+A user should have a Program Manager role to configure a Default Eligibility Manager.
 
 Note:
 
@@ -33,7 +33,7 @@ Refer [_**Create User and Assign Role**_](../../../administration/role-based-acc
 
 3. Click the _**Configuration**_ tab and then select the _**Default Eligibility Managers**._
 
-<figure><img src="../../../../../.gitbook/assets/configuration (1).png" alt=""><figcaption><p>Program screen</p></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/configure-default-eligibility-managers.png" alt=""><figcaption></figcaption></figure>
 
 4. _**Default Eligibility Managers**_ screen is displayed.
 
