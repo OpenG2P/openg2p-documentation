@@ -26,11 +26,11 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
     ```
 
     * Wait for `istiod` to start and `ingressgateway` pods to get deleted if any.
-*   Run the following:
+    *   Run the following:
 
-    ```bash
-    kubectl apply -f istio-ef-spdy-upgrade.yaml
-    ```
+        ```bash
+        kubectl apply -f istio-ef-spdy-upgrade.yaml
+        ```
 
 ### Namespace Setup
 
@@ -41,8 +41,8 @@ Once the above Operator setup is done, gateways need to be set up on each namesp
 *   Edit and run this to define the variables:
 
     ```
-    export NS=prod
-    export WILDCARD_HOSTNAME='*.prod.openg2p.net'
+    export NS=dev
+    export WILDCARD_HOSTNAME='*.dev.your.org'
     ```
 *   Run this apply gateways
 

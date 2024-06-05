@@ -4,7 +4,9 @@ description: OpenSearch Deployment
 
 # OpenSearch
 
-Logs captured by [Fluentd](fluentd.md) from different components are pushed to [OpenSearch](https://opensearch.org/) for search, display and reports.&#x20;
+Logs captured by [Fluentd](fluentd.md) from different components are pushed to [OpenSearch](https://opensearch.org/) for search, display, and reports.&#x20;
+
+It is recommended to install one instance of OpenSearch in each of your namespaces (NS). The following guide installs OpenSearch on a `dev` NS. Change it accordingly when installing on different NS.
 
 ## Prerequisites
 
@@ -21,24 +23,23 @@ Clone the [https://github.com/openg2p/openg2p-deployment](https://github.com/ope
 *   Run this to install OpenSearch and related components.
 
     ```bash
-    SANDBOX_HOSTNAME="openg2p.sandbox.net" \
-        ./install.sh
+    OPENSEARCH_HOSTNAME="opnesearch.dev.your.org" \
+    OPENSEARCH_CLIENT_ID="openg2p-opensearch-dev" \
+    OPENSEARCH_CLIENT_SECRET="" \
+    KEYCLOAK_ISSUER_URL="https://keycloak.your.org/realms/master" \
+    NS="dev" \
+        ./opensearch-install.sh
     ```
-* After installation is successful, OpenSearch dashboards will be accessible at https://opensearch.openg2p.sandbox.net, depending on the hostname given above.
+* After successful installation, OpenSearch dashboards can be accessed using the hostname given above.
 
 ### Add _Index State Policy_ on OpenSearch
 
-*   Run this to add ISM Policy (This is responsible for automatically deleting logstash indices after 3 days. Configure the minimum age to delete indices, in the same script below.)
+*   Run this to add [ISM](https://opensearch.org/docs/latest/im-plugin/ism/index/) Policy (This is responsible for automatically deleting `logstash` indices after 3 days. Configure the minimum age to delete indices, in the same script below.)
 
+    ```bash
+    NS="dev" \
+        ./opensearch-ism-script.sh
     ```
-    ./opensearch-ism-script.sh
-    ```
-
-## Multi-tenancy
-
-Use OpenSearch's Multi-tenancy feature to have access control on the OpenSearch data.
-
-TBD
 
 ### Dashboards&#x20;
 

@@ -36,6 +36,8 @@ This section applies only to one Server. Repeat this section for every server to
 
 ### Installation
 
+(TODO: Change this section; add a choice between `stream` & `http`.)
+
 * Navigate to `/etc/nginx/sites-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/server.sample.conf](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf) file as a template.
   * Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
   * When configuring upstream servers, the node port of Istio Ingressgateway will need to be configured. So it is important to understand the ports and figure out which ports connect to which Ingressgateway and for what purpose.
