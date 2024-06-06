@@ -368,7 +368,7 @@
     * [Load Balancer](deployment/base-infrastructure/load-balancer/README.md)
       * [Nginx](deployment/base-infrastructure/load-balancer/nginx.md)
       * [AWS](deployment/base-infrastructure/load-balancer/aws.md)
-  * [Common Components](deployment/common-components/README.md)
+  * [DEPRECATED - Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
     * [Minio](deployment/common-components/minio.md)
