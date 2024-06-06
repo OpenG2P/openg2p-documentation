@@ -1,5 +1,5 @@
 ---
-description: Documentation to create public load balancer
+description: Guide to create public load balancer
 ---
 
 # Make Environment Publicly Accessible using AWS LB Configuration
@@ -48,7 +48,7 @@ This document provides step-by-step instructions to make environment publicly ac
    * Select VPC - Select the VPC and region in which the instances are located
    *   Select Security Group - Select the Security Group in which the instances are located
 
-       &#x20;**Note**:  Click here to create Security Group, if required
+       &#x20;**Note**:  Click [here](create-security-group-on-aws.md) to create Security Group, if required
    * Configure Routing - Define Target Groups to route traffic to specific instances
      *   Listeners and routing **Protocol : Port : Default action**
 
