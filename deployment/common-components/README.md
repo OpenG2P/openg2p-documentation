@@ -2,7 +2,11 @@
 description: Deployment of Common Components
 ---
 
-# Common Components
+# DEPRECATED - Common Components
+
+{% hint style="danger" %}
+All common components are now installed as part of OpenG2P's modules' installation.  This page along with all sub-pages referring to common components installation is DEPRECATED.
+{% endhint %}
 
 Several open-source components are installed over the base infrastructure layer that is utilized by the OpenG2P modules. These components are shared by modules.  As such, multiple instances of these components are not necessary for sandbox installations.  However, in production setups, more than one instance may be deployed based on the choice of implementer.&#x20;
 
