@@ -36,13 +36,13 @@ This is only a one-time installation. Whenever you want to add new servers to th
 
 * Once nginx server is installed, it will create sites for HTTP redirection. To use streams for TCP connections instead of sites, you need to manually create the `streams-available` and `streams-enabled` directories inside the nginx directory.
 * Navigate to `/etc/nginx/streams-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/streams.sample.conf ](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/streams.sample.conf)file as a template.
+  * Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
+  * When configuring upstream servers, you need to configure the node port of the Istio IngressGateway. Therefore, it is important to understand the ports and determine which ports connect to which IngressGateway and for what purpose.
 
-{% hint style="info" %}
+Notes:
+
 Creation of the `<sandbox name>.conf` section applies only to one server. Repeat this section for every server to be added.
-{% endhint %}
 
-* Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
-* When configuring upstream servers, you need to configure the node port of the Istio IngressGateway. Therefore, it is important to understand the ports and determine which ports connect to which IngressGateway and for what purpose.
 *   Run this to enable the server that is just added.
 
     ```bash
