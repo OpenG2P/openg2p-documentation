@@ -26,25 +26,29 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
 
 This is only a one-time installation. Whenever you want to add new servers to this Nginx, follow [Install Servers to Nginx Section](nginx.md#install-servers-to-nginx).
 
-## Install Servers to Nginx
+## Install servers to Nginx
 
-This section applies only to one Server. Repeat this section for every server to be added.
+### Prerequisites
 
-### Pre-requisites
-
-* [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (required to terminate HTTPS connects at Nginx)
+* [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (required to terminate HTTPS connects at Nginx and this certificate can be created only once for all the other servers you are going to configure later...)
 
 ### Installation
 
-(TODO: Change this section; add a choice between `stream` & `http`.)
+* Once nginx server is installed, it will create sites for HTTP redirection. To use streams for TCP connections instead of sites, you need to manually create the `streams-available` and `streams-enabled` directories inside the nginx directory.
+* Navigate to `/etc/nginx/streams-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using kubernetes/nginx/streams.sample.conf file as a template.\
+  **Notes:**
 
-* Navigate to `/etc/nginx/sites-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/server.sample.conf](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf) file as a template.
-  * Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
-  * When configuring upstream servers, the node port of Istio Ingressgateway will need to be configured. So it is important to understand the ports and figure out which ports connect to which Ingressgateway and for what purpose.
+Creation of the `<sandbox name>.conf` section applies only to one server. Repeat this section for every server to be added.
+
+* Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
+* When configuring upstream servers, you need to configure the node port of the Istio IngressGateway. Therefore, it is important to understand the ports and determine which ports connect to which IngressGateway and for what purpose.
+
+<!---->
+
 *   Run this to enable the server that is just added.
 
     ```bash
-    sudo ln -s /etc/nginx/sites-available/<sandbox name>.conf /etc/nginx/sites-enabled/
+    sudo ln -s /etc/nginx/streams-available/<sandbox name>.conf /etc/nginx/streams-enabled/
     ```
 *   Test nginx conf for errors:
 
@@ -59,4 +63,4 @@ This section applies only to one Server. Repeat this section for every server to
 
 ### Post-installation
 
-Map the hostnames to Nginx IPs on your DNS service (Map the hostnames to Nginx IPs on your DNS service (Route53 on AWS)
+Map the hostnames to Nginx IPs on your DNS service, such as Route53 on AWS.
