@@ -54,6 +54,25 @@ This is only a one-time installation. Whenever you want to add new servers to th
     ```bash
     sudo systemctl restart nginx
     ```
+* Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
+* When configuring upstream servers, you need to configure the node port of the Istio IngressGateway. Therefore, it is important to understand the ports and determine which ports connect to which IngressGateway and for what purpose.
+* Use a new Listen IP Address for every server. It is recommended to add a new Network Interface in the same VM which is part of the same network.
+* When configuring upstream servers, you need to configure the node port of the Istio IngressGateway. Therefore, it is important to understand the ports and determine which ports connect to which IngressGateway and for what purpose.
+*   Run this to enable the server that is just added.
+
+    ```bash
+    sudo ln -s /etc/nginx/streams-available/<sandbox name>.conf /etc/nginx/streams-enabled/
+    ```
+*   Test nginx conf for errors:
+
+    ```bash
+    sudo nginx -t
+    ```
+*   Restart nginx
+
+    ```bash
+    sudo systemctl restart nginx
+    ```
 
 ### Post-installation
 

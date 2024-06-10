@@ -1,5 +1,5 @@
 ---
-description: Additonal Deployment Guides
+description: Additional Deployment Guides
 ---
 
 # Additional Guides

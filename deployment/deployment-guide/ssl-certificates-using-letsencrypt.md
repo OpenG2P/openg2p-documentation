@@ -1,6 +1,24 @@
-# SSL Certificates using Letsencrypt
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Generate certificates
+# Generate SSL Certificates using Letsencrypt
+
+This document guides you to generate and renew SSL certificates using letsencrypt. &#x20;
+
+## Procedure
+
+The steps to generate SSL certificates are given below.
 
 * Install letsencrypt and certbot.
 
@@ -14,8 +32,10 @@ sudo apt install certbot
 sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg2p.sandbox.net -d openg2p.sandbox.net
 ```
 
-* The above command will ask for `_acme-challenge`, since the chosen challenge is of type DNS. Create the `_acme-challenge` TXT DNS record accordingly, and continue with the above prompt to certs generation.
-* The generated certs should be present in `/etc/letsencrypt` directory.
+
+
+* Since the preferred challenge is DNS type, the above command asks for `_acme-challenge.` Create the `_acme-challenge` TXT DNS record accordingly, and continue with the above prompt to generate certs.
+* The generated certs must be present in `/etc/letsencrypt` directory.
 
 ## Renew certificates
 
@@ -25,7 +45,7 @@ sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg
 sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg2p.sandbox.net -d openg2p.sandbox.net
 ```
 
-* The above command will generate new pair of certificates. The DNS challenge needs to be performed again, as prompted.
+* The above command generates a new pair of certificates. The DNS challenge needs to be performed again, as prompted.
 * Run the following to upload new certs back to Kubernetes Cluster. Adjust the certs path in the below command.
 
 ```bash
