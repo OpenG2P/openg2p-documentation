@@ -21,9 +21,9 @@ The naming conventions may vary depending on the environment and this documentat
    * VPC - Select the VPC in which the instances are located
    * Health check protocol : Path : Port (**Traffic Port**) - `HTTP : /healthz/ready : 30521`
 4. Register Targets
-   * After configuring the Target Group, click the _**Next**_ button
-   * Select the targets (instances) to register with the Target Group
-   * Click the _**Add to registered**_ button to add the selected targets to the Target Group
+   * After configuring the Target Group, click the _**Next**_ button.
+   * Select the targets (instances) to register with the Target Group.
+   * Click the _**Add to registered**_ button to add the selected targets to the Target Group.
 5. Review the configuration settings for the Target Group. After verification, click the _**Create Target Group**_ button to create the Target Group.
 6. Once the Target Group is created, make a note of the Amazon Resource Name (ARN) of the newly created Target Group. This ARN is required when you configure Load Balancers or other services that use the Target Group.
 
@@ -50,19 +50,25 @@ The naming conventions may vary depending on the environment and this documentat
     * Select VPC - Select the VPC and region in which the instances are located
     *   Select Security Group - Select the Security Group in which the instances are located
 
-        &#x20;**Note**:
+        &#x20;Notes:
 
     &#x20;      Click [here](create-security-group-on-aws.md) to create Security Group, if required
 
-    * Configure Routing - Define Target Groups to route traffic to specific instances
-      *   Listeners and routing **Protocol : Port : Default action**
+    *   Configure Routing - Define Target Groups to route traffic to specific instances
 
-          **Note**: Below the default action, select the Target Groups already created from the above steps.
-      * `TLS : 443 : openg2p-<envname>-external-http`
-      * `TCP : 80 : openg2p-<envname>-ext-httpsredirect`
-      *   Select `ACM certificate` as per environment domain name.
+        *   Listeners and routing **Protocol : Port : Default action**
 
-          **Note**: Click [here](create-acm-certificate-on-aws.md) to create ACM certificate, if required.
-    * Review the configuration settings and create the Load Balancer
-    * Do mapping on AWS Route53
+            Notes:   &#x20;
+
+        &#x20;      Below the default action, select the Target Groups already created from the above steps.
+
+        * `TLS : 443 : openg2p-<envname>-external-http`
+        * `TCP : 80 : openg2p-<envname>-ext-httpsredirect`
+        *   Select `ACM certificate` as per environment domain name.
+
+            Notes:&#x20;
+
+        &#x20;      Click [here](create-acm-certificate-on-aws.md) to create ACM certificate, if required.
+    * Review the configuration settings and create the Load Balancer.
+    * Do mapping on AWS Route53.
 

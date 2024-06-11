@@ -20,7 +20,7 @@ This page contains steps for packaging different components and add-ons, of PBMS
 
 The steps to package OpenG2P docker are given below.
 
-* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to the [packaging](https://github.com/OpenG2P/openg2p-packaging/tree/develop/packaging) directory
+* Clone the [https://github.com/OpenG2P/openg2p-packaging](https://github.com/OpenG2P/openg2p-packaging) and go to the [packaging](https://github.com/OpenG2P/openg2p-packaging/tree/develop/packaging) directory.
 * Create a text file, for example`my-package.txt.` This signifies a package. This file should include all OpenG2P modules (repositories) to be packaged into a new docker. Each line describes one repository to include, and the structure of each line looks like this.
 
 ```
@@ -28,7 +28,7 @@ repo_name = git://<github branch name>//<github url to pull from>
 repo2_name = file://<path of the package in local system>
 ```
 
-*   Any underscore in the repository name will be converted to a hyphen during installation. For example:
+*   Any underscore in the repository name will be converted to a hyphen during installation. For example,
 
     ```
     repo_name = git://<github branch name>//<github url to pull from>
@@ -36,7 +36,7 @@ repo2_name = file://<path of the package in local system>
 
     This is internally converted to `repo-name`.
 * The above configuration can be made via environment variables also.
-  *   Any variable with the prefix `G2P_PACKAGE_my_package_` will be considered as a repository to install i.e., `G2P_PACKAGE_<package_name>_<repo_name>`. For example;
+  *   Any variable with the prefix `G2P_PACKAGE_my_package_` will be considered as a repository to install i.e., `G2P_PACKAGE_<package_name>_<repo_name>`. For example,
 
       ```
       G2P_PACKAGE_my_package_repo3_name=git://<github branch name>//<github url to pull from>
@@ -47,12 +47,12 @@ repo2_name = file://<path of the package in local system>
     * Environment variable.
     * `my-package.txt`
   * Use the `.env` to overload packages from `my-package.txt`
-*   Run the following to download all packages:
+*   Run the following to download all packages.
 
     ```
     ./package.sh my-package.txt
     ```
-*   After downloading packages, run the following to build docker image:
+*   After downloading packages, run the following to build docker image.
 
     ```
     docker build . -t <docker image name>
