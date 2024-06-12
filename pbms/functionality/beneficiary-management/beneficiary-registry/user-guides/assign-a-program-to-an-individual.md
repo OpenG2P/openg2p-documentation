@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# 📔 Assign a Program to a Group
+# 📔 Assign a Program to an Individual
 
-This document provides instructions to assign a program to a group
+This document provides instructions to assign a program to an individual.
 
 ## Prerequisites
 
@@ -31,29 +31,33 @@ _**Registry**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/registry-group.png" alt=""><figcaption></figcaption></figure>
 
-The group names are listed below the _**Name**_ column.
+2. Click the _**Individuals**_ in the menu bar.&#x20;
 
-2. Click the group name which has to be assigned to a program.
+_**Individuals**_ screen is displayed.
 
-For example, here the group name "Family Group" is selected.
+<figure><img src="../../../../../.gitbook/assets/individual-screen (1).png" alt=""><figcaption></figcaption></figure>
 
-_**Groups/Family Group**_ screen is displayed.
+The individuals names are listed below the _**Name**_ column.
 
-<figure><img src="../../../../../.gitbook/assets/groups-sample group.png" alt=""><figcaption></figcaption></figure>
+3. Click the individual name which has to be assigned to a program.
 
-3. Click the _**Action**_ button and select  _**Add to Program**_.
+For example, here the individual name "Ross, Hai" is selected.
 
-<figure><img src="../../../../../.gitbook/assets/action-add-to-program.png" alt=""><figcaption></figcaption></figure>
+_**Individuals/ROSS, HAI**_ screen is displayed.
+
+<figure><img src="../../../../../.gitbook/assets/individuals-action.png" alt=""><figcaption></figcaption></figure>
+
+4. Click the _**Action**_ button and select  _**Add to Program**_.
 
 _**Add to Program**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/add-to-program.png" alt=""><figcaption></figcaption></figure>
 
-4. Select the appropriate program from the drop-down.
+5. Select the appropriate program from the drop-down.
 
 or
 
-5. Select the _**Search More.**_
+6. Select the _**Search More.**_
 
 <figure><img src="../../../../../.gitbook/assets/add-to-program-search-more.png" alt=""><figcaption></figcaption></figure>
 
@@ -61,15 +65,15 @@ _**Search: Program**_ screen is displayed.
 
 <figure><img src="../../../../../.gitbook/assets/search-program.png" alt=""><figcaption></figcaption></figure>
 
-6. Search for the appropriate program or click the program below the _**Name**_ column.
+7. Search for the appropriate program or click the program below the _**Name**_ column.
 
 The program name is displayed in the _**Program**_ drop-down.
 
 <figure><img src="../../../../../.gitbook/assets/program-name.png" alt=""><figcaption></figcaption></figure>
 
-7. Click the _**Assign**_ button to assign the program to a group.
-8. Click the _**Cancel**_ button to exit from the screen.
+8. Click the _**Assign**_ button to assign the program to an individual.
+9. Click the _**Cancel**_ button to exit from the screen.
 
-For example, you can find the newly assigned program listed in the _**Program**_ tab in the _**Family Group**_ screen.
+For example, you can find the newly assigned program listed in the _**Program**_ tab in the Individuals/Ross, Hai screen.
 
-<figure><img src="../../../../../.gitbook/assets/assigned-program-group.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/individual-program-assign.png" alt=""><figcaption></figcaption></figure>
