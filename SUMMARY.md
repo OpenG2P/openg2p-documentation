@@ -199,6 +199,7 @@
     * [Enumerator](social-registry/functionality/enumerator.md)
     * [Dynamic Updates](social-registry/features/registry-update-mechanisms.md)
     * [Social Registry ID creation](social-registry/functionality/social-registry-id-creation.md)
+    * [Document upload](social-registry/functionality/document-upload.md)
     * [Configurations](social-registry/functionality/configurations/README.md)
       * [📔 User Guide](social-registry/functionality/configurations/user-guide/README.md)
         * [📔 Configure ID Types](social-registry/functionality/configurations/user-guide/configure-id-types.md)
