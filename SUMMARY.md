@@ -58,6 +58,7 @@
       * [📔 User Guides](pbms/features/deduplication/user-guides/README.md)
         * [📔 Deduplicate Registrants](pbms/features/deduplication/user-guides/deduplicate-registrants.md)
         * [📔 Create Deduplication Manager Types](pbms/features/deduplication/user-guides/create-deduplication-manager-types/README.md)
+          * [📔 Configure Default Deduplication Manager](pbms/functionality/deduplication/user-guides/create-deduplication-manager-types/configure-default-deduplication-manager.md)
           * [📔 Create ID Deduplication Manager](pbms/features/deduplication/user-guides/create-deduplication-manager-types/create-id-deduplication-manager.md)
           * [📔 Create Phone Number Deduplication](pbms/features/deduplication/user-guides/create-deduplication-manager-types/create-phone-number-deduplication.md)
     * [Enrolment](pbms/features/enrolment/README.md)
