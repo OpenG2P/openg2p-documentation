@@ -22,5 +22,5 @@ All components may not be required for all modules. See the table below on appli
 | [MOSIP Key Manager](keymanager.md)                                                        | PBMS, Social Registry, [SPAR](../../spar/)                                               |
 | [e-Signet](esignet.md)                                                                    | SPAR, PBMS, Social Registry                                                              |
 | [Apache Superset](apache-superset.md)                                                     | [Reporting dashboards](../../monitoring-and-reporting/apache-superset.md)                |
-| [Fluentd](../base-infrastructure/openg2p-cluster/fluentd-and-opensearch/fluentd.md)       | [Logging](../../pbms/monitoring-and-reporting/logging.md)                                |
+| [Fluentd](broken-reference)                                                               | [Logging](../../pbms/monitoring-and-reporting/logging.md)                                |
 | [Debezium](debezium.md)                                                                   | [Reporting Framework](../../monitoring-and-reporting/reporting-framework.md)             |
