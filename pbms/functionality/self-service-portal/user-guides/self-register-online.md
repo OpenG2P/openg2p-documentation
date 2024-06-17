@@ -6,16 +6,16 @@ This document provides step-by-step instructions for beneficiaries to self-regis
 
 ## Prerequisites
 
-* The user must have valid credentials (Email ID and password)
-* The user must have must have the MOSIP-issued national ID
+* The user must have valid credentials (Email ID and password).
+* The user must have must have the MOSIP-issued national ID.
 
 ## Procedure
 
-1. Open the beneficiary URL on your browser, for example, https://selfservice.qa.openg2p.net/selfservice/login
+1. Open the beneficiary URL on your browser, for example, https://selfservice.sandbox.your.org
 
 Note:
 
-The beneficiary must _**Sign Up**_ to register his/her details. After registration, the beneficiary can login using the login credentials.
+You must modify the URL  https://selfservice.sandbox.your.org based on your installation hostname. The beneficiary must _**Sign Up**_ to register his/her details. After registration, the beneficiary can login using the login credentials.
 
 2. _**Beneficiary portal**_ page is displayed.
 
