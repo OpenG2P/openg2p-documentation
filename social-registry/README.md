@@ -18,8 +18,10 @@ Social Registry (SR) is an independent module offered by OpenG2P to enable the c
 
 The registry can host demographic data of both individuals and groups (family/household) and this data is privacy protected.  SR offers the unique feature of issuing digitally signed credentials - Verifiable Credentials - to the beneficiaries.
 
+## Functional architecture
+
 {% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?share_link_id=305024808834" %}
-Social Registry Architecture
+Social Registry Functional Architecture
 {% endembed %}
 
 ## Features
