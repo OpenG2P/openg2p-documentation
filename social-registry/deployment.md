@@ -23,7 +23,8 @@ Before you deploy, make sure the following are available:
 2. Select your cluster.
 3. Under _Apps -> Repositories_ click on _Create_ to add a repository.
 4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
-5. &#x20;Navigate to _Apps->Charts_ page on Rancher. You should see OpenG2P Social Registry Helm chart listed.
+5. To display prerelease versions of OpenG2P, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under _Preferences_ under _Helm Charts_.
+6. &#x20;Navigate to _Apps->Charts_ page on Rancher. You should see OpenG2P Social Registry Helm chart listed.
 
 <div align="left">
 
