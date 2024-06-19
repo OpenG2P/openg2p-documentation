@@ -283,6 +283,7 @@
     * [Tech Guides](spar/development/tech-guides.md)
   * [Releases](spar/releases/README.md)
     * [1.0.0](spar/releases/release-notes.md)
+    * [1.1.0 - WIP](spar/releases/release-notes-1.md)
   * [Roadmap](spar/roadmap.md)
 * [G2P Bridge](g2p-bridge/README.md)
   * [Features](g2p-bridge/features/README.md)
