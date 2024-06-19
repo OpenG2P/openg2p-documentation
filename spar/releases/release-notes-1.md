@@ -28,24 +28,10 @@ SPAR Release 1.1.0 consists of the following items
 
 ## Features of this release
 
-The SPAR subsystem has 3 components, viz. openg2p-spar-mapper-api, openg2p-spar-self-service-api & openg2p-spar-self-service-ui. The features provided by these components are listed below
-
 #### openg2p-spar-mapper-api
 
-1. link, unlink, update and resolve REST APIs as specified by the G2PConnect specifications
-
-#### openg2p-spar-self-service-api
-
-1. Static persistence for Banks & Wallet Service Providers to facilitate self service maintenance of Account (Financial Address) in the Mapper
-2. link, unlink, update and resolve REST APIs from a self service perspective - Consumed by the UI layer
-3. link, unlink, update and resolve - Integration with mapper-api using G2PConnect APIs - Consuming the Mapper APIs
-4. Integration with OIDC-OAuth2.0 based Login Providers with a Functional (or Foundational National ID)
-
-#### openg2p-spar-self-service-ui
-
-1. A simple user-friendly UI to facilitate beneficiaries query the ID-Account-Mapper using their ID and displaying Financial Address (Account information) against the ID
-2. UI layer to facilitate construction of Financial Address (based on the construction strategy) using the Bank Codes, Branch Codes, Wallet Service Provider Codes etc.
-3. Login using OIDC-OAuth2.0 based Login Providers like E-Signet, Keycloak etc. &#x20;
+1. **Performance benchmarking and measurement -** As part of this release, we conducted a detailed performance benchmarking and measurement exercise for the openg2p-spar-mapper-api microservice. The detailed approach, the list of experiments, and the results have been documented in the [Performance Benchmarking Report.](https://docs.openg2p.org/spar/development/testing/performance-testing)
+2. **API security enhancement -** The APIs provided by the mapper service are designed to be used by one or more of the participants' partner systems in the openg2p benefit transfer chain. In this release, we have added a JWT security layer to these APIs to enhance security. The detailed approach for implementing this feature can be found in the [Security Layer Documentation](https://docs.openg2p.org/spar/features/privacy-and-security).
 
 ## Release contents
 
