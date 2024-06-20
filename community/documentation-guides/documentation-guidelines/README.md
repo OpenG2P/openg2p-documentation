@@ -53,6 +53,8 @@ Follow the below specification while creating diagrams in Miro
 
 <table><thead><tr><th width="116.5"></th><th></th></tr></thead><tbody><tr><td>Font </td><td>Opensans</td></tr><tr><td>Font Size</td><td>18px</td></tr><tr><td>Logos</td><td>Use the font available in the URL: <a href="https://drive.google.com/drive/folders/1LC9F1WXOKv9xPrC6dHLBFuUG5GOaiPvo?usp=drive_link">https://drive.google.com/drive/folders/1LC9F1WXOKv9xPrC6dHLBFuUG5GOaiPvo?usp=drive_link</a></td></tr><tr><td>Zoom</td><td>Default board zoom - 100%.  At this zoom level the diagram must fit in a normal screen.</td></tr><tr><td>Export image</td><td><ul><li>Size: Medium </li><li>Format: JPG</li></ul></td></tr></tbody></table>
 
+
+
 {% embed url="https://miro.com/app/board/uXjVN8_Q7nI=/" %}
 Diagram specification
 {% endembed %}
@@ -82,7 +84,6 @@ Do not repeat the similar content inside the documentation.  Instead, provide th
 
 <table><thead><tr><th width="147">Document</th><th>Symbol</th></tr></thead><tbody><tr><td>User guide</td><td><ul><li>Click the emoji that appears before the title of the user guide.</li><li>Type book in the search field and select the encircled symbol </li></ul><p><img src="../../../.gitbook/assets/emoji-symbol-user-guide.png" alt="" data-size="original"></p><p>The symbol is displayed before the title of the user guide.</p><p><img src="../../../.gitbook/assets/user-guide-symbol.png" alt="" data-size="original"></p></td></tr><tr><td>Concept </td><td><ul><li>Enter '/' before the title of the user guide that appear at the end of the concept documentation. </li></ul><p>The below options are displayed.</p><p><img src="../../../.gitbook/assets/options-emoji.png" alt=""></p><ul><li>Click the <em><strong>Emoji</strong></em></li><li>Type book in the search field</li><li>Choose the option "<em><strong>:notebook_with_decorative _cover</strong></em>"</li></ul><p><img src="../../../.gitbook/assets/userguide-symbol.png" alt="" data-size="original"></p><p></p><p>The symbol is displayed before the title of the user guide.</p><p></p><p><img src="../../../.gitbook/assets/concept-user-guide-image.png" alt="" data-size="original"></p></td></tr></tbody></table>
 
+## Rules to add link
 
-
-
-
+<table><thead><tr><th width="390">Use</th><th>Do not use</th></tr></thead><tbody><tr><td><p>For external end-users, to hyperlink the URLs to access the OpenG2P system, </p><ul><li>Use a generic URL to hyperlink. For example, the end-users organisation specific URLs after their installation of OpenG2P system.</li></ul></td><td><p>For external end-users, to hyperlink the URLs to access the OpenG2P system, </p><ul><li>Do not hyperlink the internal URLs. For example, the environment-specific URLs such as test, dev, QA, stage, and so on.</li></ul></td></tr><tr><td>eSignet</td><td>e-Signet</td></tr></tbody></table>
