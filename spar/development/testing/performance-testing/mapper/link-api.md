@@ -16,21 +16,60 @@ layout:
 
 ## Approach
 
-10 million id-account mapping records will be created in each run. These 10 million records can be created in multiple threads - 8, 10, 12 etc.  Each thread submits the payload to the link API. The payload consists of "n" number of records. "n" is called the payload size. We can configure the value of "n". In our experiments, we have used 1,000, 2,000, 5,000 and 10,000 as the payload size.&#x20;
+**Objective:** Create 10 million ID-account mapping records in each run using multiple threads.
 
-For example, if run with 8 threads and a payload size of 1,000
+**Configuration Details:**
 
-**Thread 1**&#x20;
+* **Total number of records to be linked:** 10 million
+* **Number of threads:** 8, 10, 12, etc.
+* **Payload size:** Configurable; used sizes are 1,000, 2,000, 5,000, and 10,000 records.
 
-* Thread 1 will be allocated 10 M divided by 8 = 1.25 M records
-* Invocation 1 -> Payload will contain 1 to 1000 records
-* Invocation 2 -> Payload will contain 1001 to 2000 records ....and so on
-* Number of invocations in Thread 1 = 1.25M / 1000 = 1250 invocations
-* The 1,250th invocation will contain records 1,249,001 to 1,250,000
+**Process:**
 
-Similarly, Thread 2 will do 1,250 invocations with 1000 records per invocation. Thread 2 will process records 1,250,001 to 2,500,000.
+1. Each thread submits payloads to the link API.
+2. Payload size (`n`) determines the number of records in each submission.
 
-Thread 3 ...and so on....
+**Example Configuration:**
+
+* **Threads:** 8
+* **Payload Size:** 1,000
+
+**Thread Allocation and Invocations:**
+
+* Each thread processes (10 million / number of threads) records.
+* **For 8 threads:**
+  * Each thread processes 10 million / 8 = 1.25 million = 1.25 million records.
+  * **Payload Size:** 1,000 records.
+
+**Thread 1:**
+
+* **Total Records:** 1.25 million
+* **Number of Invocations:** 1.25 million / 1,000 = 1,250 invocations
+  * **Invocation 1:** Records 1 to 1,000
+  * **Invocation 2:** Records 1,001 to 2,000
+  * ...
+  * **Invocation 1,250:** Records 1,249,001 to 1,250,000
+
+**Thread 2:**
+
+* **Total Records:** 1.25 million
+* **Number of Invocations:** 1,250
+  * **Invocation 1:** Records 1,250,001 to 1,251,000
+  * **Invocation 2:** Records 1,251,001 to 1,252,000
+  * ...
+
+**Subsequent Threads:**
+
+* **Thread 3:** Records 2,500,001 to 3,750,000 (1,250 invocations)
+* **Thread 4:** Records 3,750,001 to 5,000,000 (1,250 invocations)
+* ...
+* **Thread 8:** Records 8,750,001 to 10,000,000 (1,250 invocations)
+
+**Summary:**
+
+* Each thread processes 1.25 million records.
+* The number of invocations per thread is determined by the payload size.
+* Example run with 8 threads and a payload size of 1,000 results in 1,250 invocations per thread.
 
 ## Test Script
 
