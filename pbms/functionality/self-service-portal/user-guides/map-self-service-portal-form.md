@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# 📔 Map Self-Service Portal Form
+# 📔 Map Self Service Portal Form
 
 ## Description
 
@@ -20,7 +20,7 @@ This guide provides steps to map the portal form for an existing program. This f
 
 ## Prerequisites
 
-The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](create-a-program.md) guide.
+The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](../../../features/program-management/user-guides/create-a-program.md) guide.
 
 ## Steps
 

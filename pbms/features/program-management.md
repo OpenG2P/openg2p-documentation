@@ -57,7 +57,7 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 :notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
-:notebook\_with\_decorative\_cover:[Map Self-Service Portal Form](program-management/user-guides/map-self-service-portal-form.md)
+:notebook\_with\_decorative\_cover:[Map Self-Service Portal Form](../functionality/self-service-portal/user-guides/map-self-service-portal-form.md)
 
 :notebook\_with\_decorative\_cover:[Create Deduplication Manager](program-management/user-guides/create-deduplication-manager.md)
 
