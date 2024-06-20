@@ -73,7 +73,7 @@ layout:
 
 ## Test Script
 
-The test script can be found here. The table - id\_fa\_mapping - needs to be truncated before each run. The following values are configurable and need to be modified suitably.
+The test script can be found [here](https://github.com/OpenG2P/openg2p-spar-mapper-test/tree/1.1.0/load-test). The table - id\_fa\_mapping - needs to be truncated before each run. The following values are configurable and need to be modified suitably.
 
 total\_number\_of\_records = 10,000,000
 
