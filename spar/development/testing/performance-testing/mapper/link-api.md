@@ -73,18 +73,18 @@ layout:
 
 ## Test Script
 
-The test script can be found here.
+The test script can be found here. The table - id\_fa\_mapping - needs to be truncated before each run. The following values are configurable and need to be modified suitably.
 
-The following values have to be adjusted before each run.
+total\_number\_of\_records = 10,000,000
 
-Total number of records = 10,000,000 (10 Million)
+number\_of\_threads = 8
 
-Payload size = 1,000, 2,000, 5,000, 10,000 (number of records per API submission)
+payload\_size = 1,000
 
-Number of threads = 1, 4, 8, 10, 12, 14
+
 
 ## Readings before test
 
 ## Test scenarios
 
-<mark style="color:green;">**8 concurrent users, 1000 requests per API, 1 second ramp up time per user**</mark>
+<mark style="color:green;">**threads = 8, payload size = 1,000, 1 second ramp up time per thread**</mark>
