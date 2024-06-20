@@ -41,7 +41,7 @@ layout:
   * Each thread processes 10 million / 8 = 1.25 million = 1.25 million records.
   * **Payload Size:** 1,000 records.
 
-**Thread 1:**
+<mark style="color:orange;">**Thread 1:**</mark>
 
 * **Total Records:** 1.25 million
 * **Number of Invocations:** 1.25 million / 1,000 = 1,250 invocations
@@ -50,7 +50,7 @@ layout:
   * ...
   * **Invocation 1,250:** Records 1,249,001 to 1,250,000
 
-**Thread 2:**
+<mark style="color:orange;">**Thread 2:**</mark>
 
 * **Total Records:** 1.25 million
 * **Number of Invocations:** 1,250
@@ -60,10 +60,10 @@ layout:
 
 **Subsequent Threads:**
 
-* **Thread 3:** Records 2,500,001 to 3,750,000 (1,250 invocations)
-* **Thread 4:** Records 3,750,001 to 5,000,000 (1,250 invocations)
+* <mark style="color:orange;">**Thread 3**</mark>**:** Records 2,500,001 to 3,750,000 (1,250 invocations)
+* <mark style="color:orange;">**Thread 4**</mark>**:** Records 3,750,001 to 5,000,000 (1,250 invocations)
 * ...
-* **Thread 8:** Records 8,750,001 to 10,000,000 (1,250 invocations)
+* <mark style="color:orange;">**Thread 8**</mark>**:** Records 8,750,001 to 10,000,000 (1,250 invocations)
 
 **Summary:**
 
