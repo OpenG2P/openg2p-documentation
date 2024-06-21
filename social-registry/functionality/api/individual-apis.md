@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Social Registry - Individual APIs
+# Individual APIs
 
 OpenG2P Social Registry APIs are CRUD APIs that allow the end-user to create, read, and update the Individual registry data.
 
