@@ -422,6 +422,7 @@
       * [Embed a Miro diagram](community/documentation-guides/documentation-guidelines/embed-a-miro-diagram.md)
       * [Set an Image for a Start View](community/documentation-guides/documentation-guidelines/set-an-image-for-a-start-view.md)
     * [OpenG2P Module Doc Template](community/documentation-guides/openg2p-module-doc-template.md)
+  * [Versioning](community/versioning.md)
 * [Blogs](blogs/README.md)
   * [OpenG2P and SDG Goals](blogs/openg2p-and-sdg-goals.md)
   * [OpenG2P - A Building Block for DPI](blogs/openg2p-a-building-block-for-dpi.md)
