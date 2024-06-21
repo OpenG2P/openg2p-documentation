@@ -76,5 +76,15 @@ The Helm chart version is mentioned under the `version` attribute in the `Chart.
 
 > Since chart version matches `appVersion` it is recommended that the `appVersion` attribute is removed from `Chart.yaml` as it is redundant.
 
+## Helm chart size limitation
+
+{% hint style="warning" %}
+**Helm chart size limitation**
+
+Due to 1 MB limit of Kubernetes ETCD secrets,  we have split a large chart into parts. This split is purely to address this limitation. See some discussions here on this topic:
+
+[https://azure.github.io/azure-service-operator/design/adr-2023-02-helm-chart-size-limitations/](https://azure.github.io/azure-service-operator/design/adr-2023-02-helm-chart-size-limitations/)
+{% endhint %}
+
 
 
