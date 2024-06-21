@@ -2,8 +2,11 @@
 description: Work in progress
 ---
 
-# Document upload
+# Document Upload
 
-On SR, adding or uploading the document will be supporting feature. While we collect the demographic information of the registrant and any program which requires the proof of the status, document upload feature  bring authentication for the data collected.\
-\
-&#x20;Demographic information collected through tool kit can also collect the document and uploads it on SR. Document upload is currently supports the files type pdf, jpeg, doc, png and etc
+Social Registry has a supporting feature that adds and uploads documents. You can use this feature in scenarios such as
+
+* While collecting the demographic information of the registrant.
+* The document received via the _**Document Upload**_ feature authenticates the data collected for any program that requires proof of the status. Currently, this feature supports file types such as PDF, .jpeg, .doc, .png, and so on.
+
+The tool kit collects demographic information, adds the relevant documents for authentication purposes, and uploads them in the Social Registry.
