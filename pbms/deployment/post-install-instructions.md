@@ -1,6 +1,4 @@
-# Post Install Configuration
-
-## Post-install configuration
+# Odoo Post Install Configuration
 
 * Once the Odoo server is up, log in as admin. And enter `debug mode` on odoo.
 * Go to _Settings_ -> _Technical_ -> _System Parameters_.

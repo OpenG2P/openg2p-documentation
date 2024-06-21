@@ -186,7 +186,7 @@
     * [Logging](pbms/monitoring-and-reporting/logging.md)
   * [Deployment](pbms/deployment/README.md)
     * [i18n](pbms/deployment/i18n.md)
-    * [Post Install Configuration](pbms/deployment/post-install-instructions.md)
+    * [Odoo Post Install Configuration](pbms/deployment/post-install-instructions.md)
   * [Technology Stack](pbms/technology-stack.md)
   * [Releases](pbms/releases.md)
 * [Social Registry](social-registry/README.md)

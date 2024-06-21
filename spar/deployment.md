@@ -24,7 +24,8 @@ Before you deploy SPAR, make sure the following are available:
 2. Select your cluster.
 3. Under _Apps -> Repositories_ click on _Create_ to add a repository.
 4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
-5. &#x20;Navigate to _Apps->Charts_ page on Rancher. You should see OpenG2P SPAR Helm chart listed.
+5. Select the namespace in which you would like to install SPAR, from the namespace filter on the top-right.
+6. &#x20;Navigate to _Apps->Charts_ page on Rancher. You should see OpenG2P SPAR Helm chart listed.
 
 <div align="left">
 
@@ -32,11 +33,15 @@ Before you deploy SPAR, make sure the following are available:
 
 </div>
 
-6. Click on the Helm chart, select the version to be installed and click _Install_.
-7. Select the namespace in which you would like the chart to be installed (you will need to create a namespace upfront if it does not already exist) and select the checkbox _Customise Helm options before install._
-8. Provide _Global Hostname_ of the installation. Refer to [DNS requirements](../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
-9. Select the components to be installed and the eSignet base URL. The latter is required only if you are installing [SPAR Self Service](features/spar-self-service.md). &#x20;
-10. Click _Next_ and then _Install_.  &#x20;
+6. Click on the Helm chart, select the version to be installed, and click _Install_.
+7. On the next screen, choose a name for installation, like `spar`. Select the checkbox _Customise Helm options before install_, and click _Next_.
+8. Go through each app's configuration page, and configure accordingly:
+   1. Choose to install all requirements (on the main _Questions_ page) unless not needed specifically.
+   2. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Namespace Setup](../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `spar.dev.openg2p.org` and `odk.dev.openg2p.org` , etc. Refer to [DNS requirements](../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
+   3. _Keycloak Base Url_ is your organization-wide Keycloak URL, which is now done along with Rancher Installation. If not Installed along with Rancher, refer to Keycloak Installation.
+   4. Create a Keycloak client in your main Keycloak, wherever OIDC Client details are asked. Refer to [Keycloak Client Creation](../deployment/deployment-guide/keycloak-client-creation.md) guide.
+9. Click Next and you should be taken to the _Helm Options_ page. Make sure to disable `wait` flag on the _Helm Options_ page. Click on Install.
+10. Click _Next_ and then _Install_.
 
 ## Installation using the command line
 
@@ -61,7 +66,7 @@ After installation, SPAR is accessible over following URLs based on the `SPAR_HO
 
 ## Database
 
-Postgresql is installed as part of the above procedure in the same namespace. The default database created is `spardb.`
+Postgresql is installed as part of the above procedure in the same namespace. The default database created is `spardb` .
 
 ## Onboard SPAR on eSignet
 
