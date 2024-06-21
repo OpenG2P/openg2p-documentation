@@ -225,7 +225,7 @@
         * [📔 Set Language Preference](social-registry/functionality/languages-support/user-guides/set-language-preference.md)
     * [API](social-registry/features/api/README.md)
       * [Search APIs](social-registry/features/api/search-apis.md)
-      * [CRUD APIs](social-registry/features/api/crud-apis.md)
+      * [Social Registry - Individual APIs](social-registry/functionality/api/social-registry-individual-apis.md)
     * [Self Service Portal](social-registry/features/self-service-portal.md)
     * [Search](social-registry/functionality/search.md)
     * [Audit Log](social-registry/features/audit-log.md)

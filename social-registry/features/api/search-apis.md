@@ -14,18 +14,69 @@ layout:
 
 # Search APIs
 
-The search APIs has implemented the [G2P Connect Registry Core APIs](https://g2p-connect.github.io/specs/release/html/registry\_core\_api\_v1.0.0.html) specification. These APIs are designed to offer comprehensive searching capabilities across the registry, utilizing advanced query options for precise results. The API facilitates querying across all registrants within the social registry. It leverages **GraphQL** to handle complex queries efficiently, ensuring that only the requisite data for a specific query is retrieved.
+The Search APIs have implemented the [G2P Connect Registry Core APIs](https://g2p-connect.github.io/specs/release/html/registry\_core\_api\_v1.0.0.html) specification. These APIs are designed to offer comprehensive searching capabilities across individual and group registries. It utilizes advanced query options for precise results. The API facilitates querying across all Social Registry (SR) registrants. It leverages **GraphQL** to handle complex queries efficiently. It retrieves only the requisite data for a specific query.
 
-## Query Type
+## Authentication
 
-The `search api` utilizes **GraphQL** for its queries, significantly enhancing the efficiency and flexibility of data retrieval. When crafting a GraphQL query for the API, you must consider the following parameters:
+OpenG2P Social Registry Search API is secured by OAuth 2.0. It uses Client Credentials Grant Type, i.e., Client ID and Secret to allow the end-user to access the Social Registry database.
 
-* **Query Filters**: Define specific criteria to filter the data you are requesting. These filters can be based on various attributes of the registrants in the social registry, such as age, location, or status.
-* **Fields Selection**: GraphQL allows you to specify exactly which fields of data you wish to receive in response to your query. This means you can tailor the response to include only the data that is relevant to your needs, making the API response more lightweight and focused.
-* **Pagination Parameters**: For queries that could return large datasets, it's essential to implement pagination. GraphQL supports pagination parameter like `limit` (the number of records to return).
-* **Sort Order**: You can specify the order in which you want the records to be returned, such as ascending or descending based on a specific field.
+### Key request parameters - authorization
 
-**Example GraphQL Query:**
+Once you receive the Client ID and Secret, the next step is to call OAuth 2.0 endpoint to authenticate.
+
+The key parameters are:
+
+<table><thead><tr><th width="380">Name</th><th>Value</th></tr></thead><tbody><tr><td>Method</td><td><code>POST</code></td></tr><tr><td>Authorization type</td><td>Bearer Token</td></tr><tr><td>Auth URI</td><td>http://keycloak.keycloak/realms/openg2p/protocol/openid-connect/token</td></tr></tbody></table>
+
+### Body request parameters
+
+| Name           | Value                  |
+| -------------- | ---------------------- |
+| client\_id     | \<client\_id>          |
+| client\_secret | \<client\_secret>      |
+| grant\_type    | \<client\_credentials> |
+
+### Sample cURL request
+
+<pre><code><strong>curl --location 'https://keycloak.keycloak/realms/openg2p/protocol/openid-connect/token'
+</strong>--header 'Content-Type: application/x-www-form-urlencoded'
+--data-urlencode 'client_id=&#x3C;client_id>'
+--data-urlencode 'client_secret=&#x3C;client_secret>'
+--data-urlencode 'grant_type=client_credentials'
+</code></pre>
+
+On receiving the request, OpenG2P authorization system validates the parameters in the request. If the parameters are valid, it generates your access token and returns it in the response.
+
+### Sample response
+
+```json
+{
+    "access_token": "",
+    "expires_in": 0,
+    "refresh_expires_in": 0,
+    "token_type": "",
+    "not-before-policy": 0,
+    "scope": ""
+}
+```
+
+### HTTP status code
+
+<table><thead><tr><th width="145">HTTP Code</th><th>Description</th></tr></thead><tbody><tr><td>200</td><td>The API call is successful.</td></tr><tr><td>400</td><td>Bad Request. The request is invalid, usually due to missing or incorrect parameters.</td></tr><tr><td>401</td><td>Unauthorized.  Authentication failed due to an invalid Client ID or Secret.</td></tr></tbody></table>
+
+## Query type
+
+The `search api` utilizes **GraphQL** query parameters. The query parameter enhances the search efficiency and eases the data retrieval.  You must consider the following parameters when crafting a GraphQL query parameters.
+
+• **Query Filters:** When sending a request, you can define specific criteria to filter the data. You can filter based on various parameters such as age, location, or status of the registrants in the SR.
+
+• **Fields Selection**: GraphQL allows you to specify the fields you need to receive in response based on your query. This means you can tailor the response to include only the relevant data that fulfills your needs. This makes the API response more lightweight and accurate.
+
+• **Pagination Parameters**: For queries that return large data, it is mandatory to break into several pages through pagination. GraphQL uses the query parameter to set the limit to return the number of records per page.
+
+• **Sort Order**: You can specify the order to organize the data that you need to receive in response. You can sort ascending or descending based on a specific field.
+
+**Sample GraphQL query**
 
 ```graphql
 {
@@ -38,8 +89,10 @@ The `search api` utilizes **GraphQL** for its queries, significantly enhancing t
 }
 ```
 
-This example query would return the `name`, `age`, `gender` and `address` of the first 10 registrants who are 18 years or older and located in New York, sorted by their name in ascending order.
+For example, the query returns the name, age, gender, and address of the first 10 registrants of age >=18 years, residing in New York, and the names are sorted in ascending order.
 
-APIs are available in Stoplight at the following links
+## API specification
+
+The Search APIs are available in Stoplight at the following link
 
 [openg2p-social-registry-search-apis](https://openg2p.stoplight.io/docs/openg2p-social-registry/branches/main/yh3dm5ylwbwq7-g2-p-connect-registry-sync)

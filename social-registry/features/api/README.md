@@ -1,8 +1,22 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # API
 
 SR enables APIs to [search](../../functionality/search.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.&#x20;
 
-## API documentation
+## API specification
 
 [openg2p-social-registry-api](https://openg2p.stoplight.io/docs/openg2p-social-registry/yh3dm5ylwbwq7-g2-p-connect-registry-sync)
 
