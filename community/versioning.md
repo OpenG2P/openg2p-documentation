@@ -4,20 +4,20 @@ description: Version and branch conventions followed in OpenG2P
 
 # Versioning
 
-In general, OpenG2P follows  [Semantic Versioning](https://semver.org/). However,  there are exceptions concerning Oodo modules which follow [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning). &#x20;
+In general, OpenG2P follows  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). However,  there are exceptions concerning Oodo modules which follow [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning). &#x20;
 
 
 
 | Artifacts        | Versioning                                                                                                                                                                                                                                                                                                                                                   |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Non-Odoo modules |  [Semantic Versioning](https://semver.org/)                                                                                                                                                                                                                                                                                                                  |
+| Non-Odoo modules |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                                                                                                                                                                                                                                              |
 | Odoo modules     | [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning).  To indicate the maturity of a version (like alpha/beta etc.) use `development_status` field in the `__manifest__.py` file as described [here](https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/oca\_module\_lifecycle\_development\_status.rst). |
-| Dockers          |  [Semantic Versioning](https://semver.org/)                                                                                                                                                                                                                                                                                                                  |
-| Helm Charts      |  [Semantic Versioning](https://semver.org/). See more details [here](../deployment/helm-charts.md#helm-chart-versions).                                                                                                                                                                                                                                      |
+| Dockers          |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                                                                                                                                                                                                                                              |
+| Helm Charts      |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). See more details [here](../deployment/helm-charts.md#helm-chart-versions).                                                                                                                                                                                                                  |
 
-## Prerelease versions
+## Pre-release versions
 
-Prelease versions maybe appended with a tag like "rc1", "rc2" etc. For example "1.2.0-rc1".  Such a tag will be reflected in all the artifacts -- Odoo, Dockers, Helm Charts etc.
+Pre-release versions maybe appended with a tag like "rc1", "rc2" etc. For example "1.2.0-rc1".  Such a tag will be reflected in all the artifacts -- Odoo, Dockers, Helm Charts etc.
 
 ## Git branch and tag
 
