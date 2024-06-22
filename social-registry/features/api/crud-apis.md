@@ -350,6 +350,6 @@ Validation error
 
 ## API specification
 
-The Individual APIs are available in Stoplight at the following link
+The Individual APIs are available in Stoplight at the following link.
 
 [openg2p-crud-apis](https://openg2p.stoplight.io/docs/openg2p-social-registry/branches/main/m2g8egugf4nrf-open-g2-p-crud-ap-is)

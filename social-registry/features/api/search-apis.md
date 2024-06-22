@@ -93,6 +93,6 @@ For example, the query returns the name, age, gender, and address of the first 1
 
 ## API specification
 
-The Search APIs are available in Stoplight at the following link
+The Search APIs are available in Stoplight at the following link.
 
 [openg2p-social-registry-search-apis](https://openg2p.stoplight.io/docs/openg2p-social-registry/branches/main/yh3dm5ylwbwq7-g2-p-connect-registry-sync)
