@@ -30,25 +30,6 @@ The salient features of the framework are the following:
 \* As a highly recommended practice PII data is not shunted to the search indexes_,_ however, the framework does not impose any restriction as such.
 {% endhint %}
 
-## Installation&#x20;
+## Installation
 
-### Prerequisites
-
-* [PostgreSQL](../deployment/common-components/postgresql.md)
-* [Kafka](../deployment/common-components/kafka.md)
-* [Keycloak](../deployment/common-components/keycloak.md)&#x20;
-* [OpenSearch](../deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch/opensearch.md)
-
-### Installation
-
-* Clone the [https://github.com/openg2p/openg2p-reporting](https://github.com/openg2p/openg2p-reporting) repository, and navigate to [scripts](https://github.com/openg2p/openg2p-reporting/tree/develop/scripts) folder.
-*   Run:
-
-    ```bash
-    SANDBOX_HOSTNAME=openg2p.sandbox.net \
-        ./install.sh
-    ```
-
-### Post-installation
-
-* Import Sample Dashboards from the [dashboards](https://github.com/openg2p/openg2p-reporting/tree/develop/dashboards) folder into OpenSearch Dashboards through UI.
+Reporting framework is installed as part of modules' installation.&#x20;

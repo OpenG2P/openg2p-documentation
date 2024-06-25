@@ -32,7 +32,7 @@ Essentially, for an organisation, you will need two clusters - one for [Rancher]
 1. Multiple Wireguard servers enabling separate [access channels](deployment-guide/security/access-channel.md).
 2. Access control at the application level where login to dashboards, and portals is controlled via authentication and authorisation defined in Keycloak.
 
-The Keycloak inside Rancher cluster provides access control to system administrators to access Rancher and cluster.&#x20;
+The Keycloak inside the Rancher cluster provides **organisation-wide authorization** and offers single sign-on to all resources.&#x20;
 
 The above is a recommended architecture that also optimises resource usage.&#x20;
 

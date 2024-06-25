@@ -83,8 +83,7 @@ The Helm chart version is mentioned under the `version` attribute in the `Chart.
 
 Due to 1 MB limit of Kubernetes ETCD secrets,  we have split a large chart into parts. This split is purely to address this limitation. See some discussions here on this topic:
 
+[https://github.com/helm/helm/issues/11493](https://github.com/helm/helm/issues/11493)
+
 [https://azure.github.io/azure-service-operator/design/adr-2023-02-helm-chart-size-limitations/](https://azure.github.io/azure-service-operator/design/adr-2023-02-helm-chart-size-limitations/)
 {% endhint %}
-
-
-
