@@ -39,7 +39,8 @@ Before you deploy, make sure the following are available:
 9. Go through each app's configuration page, and configure the following:
    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
    2. _Keycloak Base Url_ is your organization-wide Keycloak URL.  (Refer to [Keycloak installation](../../deployment/base-infrastructure/rancher.md#keycloak-installation)).
-   3. Create a Keycloak client, wherever OIDC Client details are asked. Refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+   3. Create a Keycloak client,&#x20;
+   4. &#x20;OIDC Client details are asked. Refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
 10. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
 11. Navigate back to _Apps->Charts_ page on Rancher. Choose "Part 2" Helm chart. Select the same version as for "Part 1", and click _Install_.
 12. On the next screen, give the same installation name as for "Part 1" but with suffix `-p2` , like `social-registry-p2`. Select the same namespace as "Part 1". Select the checkbox _Customise Helm options before install_, and click _Next_.
@@ -60,17 +61,18 @@ Before you deploy, make sure the following are available:
 
 ## Post Installation
 
-* To access OpenSearch Dashboards, create a Keycloak client role under the OpenSearch Keycloak client, with the name `admin` and assign it to users.
-* To access Superset, create a Keycloak client role under the Superset Keycloak client, with the name `Admin` and assign it to users.
-* To access Minio Console, create a Keycloak client role under the Minio Keycloak client, with the name `consoleAdmin` and assign it to users.
-* To access Kafka UI to monitor Reporting, create a Keycloak client role under the Reporting Kafka Keycloak client, with the name `Admin` and assign it to users.
+### Keycloak
+
+#### Assigning roles to users
+
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admin/#con-client-roles\_server\_administration\_guide) for the following components and assign them to users:
+
+<table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for logging</td><td><code>admin</code></td></tr><tr><td>OpenSearch Dashboards for Reporting </td><td> <code>admin</code></td></tr><tr><td>Apache Superset</td><td><code>Admin</code></td></tr><tr><td>Minio Console</td><td> <code>consoleAdmin</code></td></tr><tr><td>Kafka UI for Reporting</td><td><code>Admin</code></td></tr></tbody></table>
+
+#### Assigning roles to clients
+
 * For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
+
+### Odoo
+
 * Proceed with Odoo post-install configuration, similar to [PBMS Odoo Post Install Configuration](../../pbms/deployment/post-install-instructions.md).
-
-## Database
-
-Postgresql is installed as part of the above procedure in the same namespace. The default database created is `socialregistrydb` .
-
-## Sanity testing
-
-TBD

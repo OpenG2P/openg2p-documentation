@@ -18,3 +18,6 @@ Social Registry and all its dependencies are installed using a single\* [Helm ch
 \\\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../deployment/helm-charts.md#helm-chart-size-limitation)
 {% endhint %}
 
+## Database
+
+Postgresql is installed as part of the above chart in the same namespace. The default database created is `socialregistrydb`.
