@@ -55,4 +55,4 @@ Before you deploy, make sure the following are available:
 * To access Minio Console, create a Keycloak client role under the Minio Keycloak client, with the name `consoleAdmin` and assign it to users.
 * To access Kafka UI to monitor Reporting, create a Keycloak client role under the Reporting Kafka Keycloak client, with the name `Admin` and assign it to users.
 * For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
-* Proceed with [Odoo Post Install Configuration](post-install-instructions.md).
+* Proceed with [Odoo Post Install Configuration](../../deployment/deployment-guide/odoo-post-install-configuration.md).

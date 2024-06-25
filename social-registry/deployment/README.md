@@ -75,4 +75,4 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admi
 
 ### Odoo
 
-* Proceed with Odoo post-install configuration, similar to [PBMS Odoo Post Install Configuration](../../pbms/deployment/post-install-instructions.md).
+* Follow with [Odoo post-install guide](../../deployment/deployment-guide/odoo-post-install-configuration.md) to activate Odoo modules.
