@@ -15,7 +15,7 @@ Social Registry and all its dependencies are installed using a single\* [Helm ch
 * Reporting (Reporting Framework + Reporting Init)
 
 {% hint style="info" %}
-\\\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../deployment/helm-charts.md#helm-chart-size-limitation)
+\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../deployment/helm-charts.md#helm-chart-size-limitation)
 {% endhint %}
 
 ## Database
