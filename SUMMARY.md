@@ -188,6 +188,8 @@
     * [i18n](pbms/deployment/i18n.md)
   * [Technology Stack](pbms/technology-stack.md)
   * [Releases](pbms/releases.md)
+  * [Installation Guides](pbms/installation-guides/README.md)
+    * [Install Modules Applicable for PBMS](pbms/installation-guides/install-modules-applicable-for-pbms.md)
 * [Social Registry](social-registry/README.md)
   * [Features](social-registry/functionality/README.md)
     * [Individuals and Groups](social-registry/functionality/individuals-and-groups/README.md)
