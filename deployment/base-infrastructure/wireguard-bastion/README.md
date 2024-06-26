@@ -63,6 +63,8 @@ It is recommended to set up at least two channels, one for System Administrators
 *   Add the following lines under the above lines in `/etc/wireguard_app_users/rules.sh` , repeat for all IPs of LB/Nginx:
 
     ```bash
+    iptables -P FORWARD DROP
+
     iptables -A FORWARD -i wg0 -d <First Internal IP of LB/Nginx> -j ACCEPT
     iptables -A FORWARD -o wg0 -s <First Internal IP of LB/Nginx> -j ACCEPT
 
