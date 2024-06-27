@@ -394,6 +394,7 @@
       * [Access Channel](deployment/deployment-guide/security/access-channel.md)
     * [Odoo Post Install Configuration](deployment/deployment-guide/odoo-post-install-configuration.md)
     * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
+    * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)
   * [DEPRECATED - Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
