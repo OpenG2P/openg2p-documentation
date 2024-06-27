@@ -15,6 +15,7 @@ Before you deploy, make sure the following are available:
 
 * [Base infrastructure](../../deployment/base-infrastructure/)&#x20;
 * [Domain name requirements](../../deployment/hardware-requirements.md#dns)
+* SS certificate for the domain
 * Cluster Owner permission on your cluster
 * Namespace in which you would be installing the module, along with [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
 
