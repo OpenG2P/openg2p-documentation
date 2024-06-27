@@ -35,4 +35,9 @@ The steps to create a Keycloak client are given below.
 6. Select the client that you created in the _**Client Scopes**._
 7. Select the _**From Predefined Mappers**_ from the _**Add Mapper**_ drop-down.
 8. In the _**Add Predefined Mapper**_ screen, check all the mappers below the _**Name**_ column, and click the _**Add**_ button.
-9. After the successful creation of the client, you can use this client for the OpenG2P module installation from the Rancher UI.
+9. After adding predefined mappers, search for client from filter and select _**client roles**_ and update the below changes and save.
+   * Client ID: `select your Client ID from the drop-down`
+   * Token Claim Name:  `client_roles`
+   * Add to ID token: `ON`
+   * Add to userinfo: `ON`&#x20;
+10. After the successful creation of the client, you can use this client for the OpenG2P module installation from the Rancher UI.
