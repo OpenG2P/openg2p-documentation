@@ -212,6 +212,7 @@
         * [📔 Create a New Household](social-registry/functionality/service-provider-portal/user-guides/create-new-household.md)
         * [📔 Create a New Individual in Service Provider Portal](social-registry/functionality/service-provider-portal/user-guides/create-a-new-individual-in-service-provider-portal.md)
         * [📔 Create a New Service Provider](social-registry/functionality/service-provider-portal/user-guides/create-a-new-service-provider.md)
+        * [📔 Configure Service Provider Portal User to Limit Accessing Location](social-registry/functionality/service-provider-portal/user-guides/configure-service-provider-portal-user-to-limit-accessing-location.md)
     * [Notifications](social-registry/features/notifications.md)
     * [Administration / User Management](social-registry/functionality/administration/README.md)
       * [📔 User Guide](social-registry/functionality/administration/user-guide/README.md)
