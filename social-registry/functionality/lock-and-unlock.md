@@ -1,9 +1,10 @@
 ---
+description: WIP
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -14,24 +15,33 @@ layout:
 
 # Lock and Unlock
 
-\
-Lock&#x20;
-----------
+In Social Registry (SR) huge volumes of data are recorded. There is a need to set a limit to prevent the data from being edited multiple times. If the limit is set, it improves the accuracy of the data. The Social Registry has the Lock, Unlock, and Update features which play a pivotal role in maintaining the efficiency of the recorded data.  \
 
-On Social Registry (SR), the lock feature is pivotal in preventing data from being multiple edits.  When the records are loaded on SR, the limit is set to edit the data only once. If the records are edited once, then the particular records will be locked.&#x20;
+
+## Lock&#x20;
+
+The Lock feature prevents data from being edited multiple times. When the records are loaded on SR and SPP, the limit is set to edit the data only once. If the records are edited once, the Lock feature disables the record from being edited again.
 
 ## Unlock
 
-The locked records are unlocked for the next edit only. In order to re-edit the record, the user must send a request to Super Admin to unlock the record with a valid reason.\
-\
-Super Admin validates the user request to unlock the record. After validating, he/she approves/rejects the request to edit the record.
+The Super Admin performs the below activities to unlock/lock the record.
 
-Once the Super Admin approves the request, the user can edit the record. The rejected request remains locked.
+* If there is a need to edit/update the record, the user must send a request with a valid reason to Super Admin.
+* The Super Admin validates the reason. If the reason is valid, he/she approves the request.&#x20;
+* Once the Super Admin approves the request, the user can edit/update the records.
+* If the Super Admin rejects the request, the record remains locked.
+
+
 
 ## Notification
 
-On Social Registry, if there are corrections in the records, then a Super Admin user will send a push and an email notification to the user.  The user is notified about the information of a record that needs correction.
+If there are corrections in the records, then a Super Admin user will send a push and an email notification to the user.  The email contains the information on the record that needs to be edited/updated.&#x20;
 
 ## Log
 
-The log captures  the information of change in status of the records, user requesting for unlock, edit details, notification sent for the records, approval/rejection of a request.
+The Log feature captures the status of the records such as the information on the&#x20;
+
+* records the user has requested for unlock.
+* edited record details.
+* notifications sent for a record.
+* approved/rejected record requests.
