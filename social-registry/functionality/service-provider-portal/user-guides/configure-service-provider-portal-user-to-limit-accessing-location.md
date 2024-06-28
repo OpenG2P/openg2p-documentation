@@ -43,7 +43,7 @@ For example, the user Sample Service Provider is selected.
 
 Sample Service Provider screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/service-provider-screen.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/service-provider-screen (1).png" alt=""><figcaption></figcaption></figure>
 
 5. Click the _**Add a line**_ in the Region column in the _**Service Provider Woreda Permissions**_ section.
 6. Select the appropriate region from the drop-down in the _**Region**_ column.

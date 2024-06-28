@@ -54,7 +54,7 @@ _**Social Registry**_ screen is displayed.
 
 _**Service Provider**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/service-provider-screen (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/service-provider-screen.png" alt=""><figcaption></figcaption></figure>
 
 7. Click the _**New**_ button.
 
@@ -165,4 +165,4 @@ _**Service Provider User1**_ screen is displayed.
 
 The service provider is removed from the service provider screen.
 
-<figure><img src="../../../../.gitbook/assets/service-provider-screen (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/service-provider-screen.png" alt=""><figcaption></figcaption></figure>
