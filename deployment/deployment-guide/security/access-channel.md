@@ -14,9 +14,11 @@ layout:
 
 # Access Channel
 
-An access channel is a tuple of Wireguard, Load Balancer, and Ingress gateway.  The [deployment architecture](../../) depicts public, sys admin, and application user access channels. A channel provides a group of users access to certain resources of the infrastructure and this can be controlled. &#x20;
+An access channel is a tuple of Wireguard, Load Balancer, and Ingress gateway.  A channel provides **access to resources** of the infrastructure and this can be controlled. The group of users who have access to these channels is determined by the users assigned to Wireguard server. All users who have access to a Wireguard server have access to all channels that the Wireguard server is connected to.   For example, in the diagram below Application Users have access to both OpenG2P Cluster and Keycloak.
 
-For example, only system administrators must be able to access the Rancher portal (or) Only a certain set of users must be able to access the sandbox inside the OpenG2P cluster (namespace).
+
+
+{% embed url="https://miro.com/app/board/uXjVN5LsWDw=" %}
 
 The public channel is open to all on the Internet - this is typically used for end users (like beneficiaries) for example, accessing self-service portals.
 
