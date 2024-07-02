@@ -15,8 +15,10 @@ Before you deploy SPAR, make sure the following are available:
 
 * [Base infrastructure](../deployment/base-infrastructure/)
 * [eSignet](../deployment/common-components/esignet.md) (required only if SPAR Self Service API is being installed)
+* [Domain name requirements](../deployment/hardware-requirements.md#dns)
+* SS certificate for the domain
 * Cluster Owner permission on your cluster
-* Namespace in which you would be installing SPAR is created on the cluster
+* Namespace in which you would be installing the module, along with [Istio namespace setup](../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
 
 ## Installation using Rancher UI
 
