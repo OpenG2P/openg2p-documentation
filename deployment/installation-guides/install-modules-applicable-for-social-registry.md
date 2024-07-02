@@ -31,7 +31,11 @@ Apps screen is displayed.
 
 You can find all the modules applicable to Social Registry in the right pane.
 
-4. Choose the module, click the _**Activate**_ button to install the module based on your project requirements.&#x20;
+4. Choose the module, click the _**Activate/Install**_ button to install the module based on your project requirements.&#x20;
+
+{% hint style="info" %}
+In Odoo 15.0, click the _**Install**_ button, and in Odoo 17.0, click the _**Activate**_ button to install the module based on your project requirements.&#x20;
+{% endhint %}
 
 Or
 
@@ -43,6 +47,9 @@ You can enter the module name in the _**Search**_ field to choose the module to 
 
 <table><thead><tr><th width="206">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Module Info</td><td>It contains the information of the module.</td></tr><tr><td>Learn More</td><td>It navigates to the OpenG2P website page.</td></tr></tbody></table>
 
-After the successful installation, you will find the _**Upgrade**_ button instead of the _**Activate**_ button.
+{% hint style="info" %}
+* In Odoo 15.0, after the successful installation, the status of the module is changed from Install to Installed.&#x20;
+* In Odoo 17.0,  the _**Activate**_ button will not be available after the successful installation of the module.
+{% endhint %}
 
 Similarly, you can activate the other modules for Social Registry based on your project requirements.
