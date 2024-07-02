@@ -18,7 +18,9 @@ Before you deploy, make sure the following are available:
   * Domain points to the Nginx network interface (IP)
 * SS certificate for the domain
 * Nginx&#x20;
-  * A vhost (server) conf file is created under `sites-enabled` on Nginx on the above network interface that includes SSL certificates of the domain.  Example:
+  * A vhost (server) conf file is created under `sites-enabled` on Nginx on the above network interface that includes SSL certificates of the domain. &#x20;
+
+Example:
 
 ```
 upstream DevIngressUpstream {
