@@ -74,7 +74,7 @@ Downloading of user's cluster access key to be able to operate OpenG2P cluster d
 
 ## Security
 
-* Creation of [access channels](deployment-guide/security/access-channel.md).
+* Creation of [private access channels](deployment-guide/security/private-access-channel.md).
 
 ## OpenSearch
 

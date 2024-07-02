@@ -392,7 +392,7 @@
       * [Domain mapping on AWS Route53](deployment/deployment-guide/aws/domain-mapping-on-aws-route53.md)
       * [Make Environment Publicly Accessible using AWS LB Configuration](deployment/deployment-guide/aws/make-environment-publicly-accessible-using-aws-lb-configuration.md)
     * [Security](deployment/deployment-guide/security/README.md)
-      * [Access Channel](deployment/deployment-guide/security/access-channel.md)
+      * [Private Access Channel](deployment/deployment-guide/security/private-access-channel.md)
     * [Odoo Post Install Configuration](deployment/deployment-guide/odoo-post-install-configuration.md)
     * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
     * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)
