@@ -9,10 +9,11 @@ The guide here provides some useful hints for production deployment. However, th
 ## Postgresql&#x20;
 
 * Number of instances
-* Cloud native
+* Cloud native if available
 * Production configuration
+* Master / Slave configuration
 
-## High availability
+## High availability of services
 
 ### Pod replication
 
@@ -32,7 +33,7 @@ Backup the etcd data of all clusters to ensure recovery in case of a complete fa
 
 You can take a snapshot manually while RKE2 is running with the `etcd-snapshot` subcommand. For example: `rke2 etcd-snapshot save --name pre-upgrade-snapshot`.
 
-### Restoring a Snapshot to Existing Nodes
+### Restoring a snapshot to existing nodes
 
 When RKE2 is restored from backup, the old data directory will be moved to /var/lib/rancher/rke2/server/db/etcd-old-%date%/. RKE2 will then attempt to restore the snapshot by creating a new data directory and start etcd with a new RKE2 cluster with one etcd member.
 
@@ -49,9 +50,9 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
 5. Start the rke2-server service on other server nodes with the following command:\
    `systemctl start rke2-server`
 
-### Restoring a Snapshot to New Nodes
+### Restoring a snapshot to new nodes
 
-**Note:**For all versions of rke2 v.1.20.9 and prior, you will need to back up and restore certificates first due to a known issue in which bootstrap data might not save on restore (Steps 1 - 3 below assume this scenario). See [note](https://docs.rke2.io/backup\_restore#other-notes-on-restoring-a-snapshot) below for an additional version-specific restore caveat on restore.
+**Note:** For all versions of rke2 v.1.20.9 and prior, you will need to back up and restore certificates first due to a known issue in which bootstrap data might not save on restore (Steps 1 - 3 below assume this scenario). See [note](https://docs.rke2.io/backup\_restore#other-notes-on-restoring-a-snapshot) below for an additional version-specific restore caveat on restore.
 
 1. Back up the following: `/var/lib/rancher/rke2/server/cred`, `/var/lib/rancher/rke2/server/tls`, `/var/lib/rancher/rke2/server/token`, `/etc/rancher`
 2. Restore the certs in Step 1 above to the first new server node.
@@ -75,6 +76,10 @@ Downloading of user's cluster access key to be able to operate OpenG2P cluster d
 ## Security
 
 * Creation of [private access channels](deployment-guide/security/private-access-channel.md).
+
+## Nginx
+
+You may need to set Nginx load balancers in HA mode by having a Nginx cluster (available with Nginx Plus, but it comes with commercial terms).  HA for Nginx is critical if user-facing portal traffic lands on the same.  For back-office administration tasks, HA may not be critical.
 
 ## OpenSearch
 
