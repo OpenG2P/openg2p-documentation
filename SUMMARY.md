@@ -395,6 +395,7 @@
       * [Private Access Channel](deployment/deployment-guide/security/private-access-channel.md)
     * [Odoo Post Install Configuration](deployment/deployment-guide/odoo-post-install-configuration.md)
     * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
+    * [Troubleshooting: "fsnotify watcher" warning](deployment/deployment-guide/troubleshooting-fsnotify-watcher-warning.md)
     * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)
   * [Installation Guides](deployment/installation-guides/README.md)
     * [Install Modules Applicable for PBMS](deployment/installation-guides/install-modules-applicable-for-pbms.md)
