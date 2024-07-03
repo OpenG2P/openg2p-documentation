@@ -1,6 +1,6 @@
 ---
 description: >-
-  Guide to fix "fsnotify watcher: too many open files" error while installing
+  Guide to fix "fsnotify watcher: too many open files" warning while installing
   Helm.
 ---
 
