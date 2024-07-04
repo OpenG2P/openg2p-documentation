@@ -53,7 +53,7 @@ image:
     tag: 17.0-develop-social-registry
 ```
 
-10. To pull docker from a private repository on Docker Hub, create a secret in your namespace a
+10. To pull docker from a private repository on Docker Hub, follow guide [here](../../deployment/deployment-guide/pulling-docker-from-private-repository-on-docker-hub.md).
 11. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
 12. Navigate back to _Apps->Charts_ page on Rancher. Choose "Part 2" Helm chart. Select the same version as for "Part 1", and click _Install_.
 13. On the next screen, give the same installation name as for "Part 1" but with suffix `-p2` , like `social-registry-p2`. Select the same namespace as "Part 1". Select the checkbox _Customise Helm options before install_, and click _Next_.
