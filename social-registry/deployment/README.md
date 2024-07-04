@@ -19,51 +19,7 @@ Before you deploy, make sure the following are available:
 * SS certificate for the domain
 * Nginx&#x20;
   * A vhost (server) conf file is created under `sites-enabled` on Nginx on the above network interface that includes SSL certificates of the domain. &#x20;
-
-Example:
-
-```
-upstream DevIngressUpstream {
-    server 172.51.1.245:30080;
-    server 172.51.30.118:30080;
-    server 172.51.11.36:30080;
-    server 172.51.15.35:30080;
-    server 172.51.12.12:30080;
-}
-
-upstream DevIngressUpstreamRedirect {
-    server 172.51.1.245:30081;
-    server 172.51.30.118:30081;
-    server 172.51.11.36:30081;
-    server 172.51.15.35:30081;
-    server 172.51.12.12:30081;
-}
-
-server{
-    listen 172.51.3.97:443 ssl;
-
-    server_name dev.openg2p.org *.dev.openg2p.org;
-
-    ssl_certificate /etc/letsencrypt/live/dev.openg2p.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/dev.openg2p.org/privkey.pem;
-
-    location / {
-        proxy_pass                      http://DevIngressUpstream;
-        proxy_http_version              1.1;
-        proxy_set_header                Upgrade $http_upgrade;
-        proxy_set_header                Connection "upgrade";
-        proxy_set_header                Host $host;
-        proxy_set_header                Referer $http_referer;
-        proxy_set_header                X-Real-IP $remote_addr;
-        proxy_set_header                X-Forwarded-Host $host;
-        proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header                X-Forwarded-Proto $scheme;
-        proxy_pass_request_headers      on;
-    }
-}
-
-```
-
+  * [Sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf)
 * Cluster Owner permission on your cluster
 * Namespace is created
 * Gateways are setup for the domain as given here [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
