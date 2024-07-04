@@ -147,7 +147,7 @@ To set up the base infrastructure, login to the machine and install the followin
 * In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](base-infrastructure/load-balancer/nginx.md).
 * The SSL certificates are loaded on the Istio gateway while in V4 the certificates are loaded on the Nginx server.
 * The Wireguard bastion runs inside the Kubernetes cluster itself as a pod. This is not recommended in production where Wireguard must run on a separate node.
-* A single private[ access channel](deployment-guide/security/private-access-channel.md) is enabled (via Wireguard).  In production, you will typically need several channels for access control.
+* A single private[ access channel](deployment-guide/private-access-channel.md) is enabled (via Wireguard).  In production, you will typically need several channels for access control.
 * In-a-box **does not offer high availability** as the node is a single point of failure.&#x20;
 * NFS runs inside the box. In production, NFS must run on a separate node with its access control, allocated resources and backups.
 {% endhint %}

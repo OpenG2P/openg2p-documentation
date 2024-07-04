@@ -29,7 +29,7 @@ V4 Deployment Architecture
 
 Essentially, for an organisation, you will need two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces. The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
-1. Multiple Wireguard servers enabling separate [access channels](deployment-guide/security/private-access-channel.md).
+1. Multiple Wireguard servers enabling separate [access channels](deployment-guide/private-access-channel.md).
 2. Access control at the application level where login to dashboards, and portals is controlled via authentication and authorisation defined in Keycloak.
 
 The Keycloak inside the Rancher cluster provides **organisation-wide authorization** and offers single sign-on to all resources.&#x20;
