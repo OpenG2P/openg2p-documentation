@@ -54,6 +54,12 @@ Example:&#x20;
 
 The domain name mapping needs to be done on your domain service provider.  For example, on AWS this is configured on Route 53.
 
+### Local DNS
+
+If your DNS is not publicly available the same has to be accessed with Wireguard. &#x20;
+
+TBD - configuration
+
 ## Certificates
 
 At least one wildcard certificate is required depending on the above domain names used. This can also be generated using Letsencrypt.  See guide [here](deployment-guide/ssl-certificates-using-letsencrypt.md).
