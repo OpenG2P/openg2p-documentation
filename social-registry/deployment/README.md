@@ -13,15 +13,12 @@ The instructions here pertain to the deployment of all Social Registry and assoc
 
 Before you deploy, make sure the following are available:
 
-* [Base infrastructure](../../deployment/base-infrastructure/)&#x20;
-* [Domain name requirements](../../deployment/hardware-requirements.md#dns)
-  * Domain points to the Nginx network interface (IP)
-* SS certificate for the domain
-* Nginx&#x20;
-  * A vhost (server) conf file is created under `sites-enabled` on Nginx on the above network interface that includes SSL certificates of the domain. &#x20;
-  * [Sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf)
-* Cluster Owner permission on your cluster
-* Namespace is created
+* [Base infrastructure](../../deployment/base-infrastructure/) along with domain name and certificates for Rancher and Keycloak
+* [Domain names and certificates](domain-names-and-certificates.md) specific to Social Registry.
+* Nginx server configuration
+  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
+* Namespace is created (On Rancher a namespace is created under a Project).
+* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission on the namespace of OpenG2P cluster.&#x20;
 * Gateways are setup for the domain as given here [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
 
 ## Installation using Rancher UI

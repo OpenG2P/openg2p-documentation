@@ -34,9 +34,9 @@ OS for all nodes:  **Ubuntu 22.04 Server**
 * All the machines in the same network
 * Public IP assigned to the Wireguard machine
 
-## DNS&#x20;
+## Domain names&#x20;
 
-The domain names and mappings are required.  The suggested domain name convention is as follows:
+To access resources on cluster,  domain names and mappings are required.  The suggested domain name convention is as follows:
 
 \<module>.\<environment>.\<organisation>.\<tld>
 

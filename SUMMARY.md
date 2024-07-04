@@ -255,6 +255,7 @@
     * [Developer Install](social-registry/development/developer-install.md)
     * [Repositories](social-registry/development/repositories.md)
   * [Deployment](social-registry/deployment/README.md)
+    * [Domain names and Certificates](social-registry/deployment/domain-names-and-certificates.md)
     * [Helm Charts](social-registry/deployment/helm-charts.md)
   * [Technology Stack](social-registry/technology-stack.md)
   * [Releases](social-registry/releases.md)
