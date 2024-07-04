@@ -394,6 +394,7 @@
       * [Make Environment Publicly Accessible using AWS LB Configuration](deployment/deployment-guide/aws/make-environment-publicly-accessible-using-aws-lb-configuration.md)
     * [Private Access Channel](deployment/deployment-guide/private-access-channel.md)
     * [Odoo Post Install Configuration](deployment/deployment-guide/odoo-post-install-configuration.md)
+    * [Pulling Docker from Private Repository on Docker Hub](deployment/deployment-guide/pulling-docker-from-private-repository-on-docker-hub.md)
     * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
     * [Troubleshooting: "fsnotify watcher" warning](deployment/deployment-guide/troubleshooting-fsnotify-watcher-warning.md)
     * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)

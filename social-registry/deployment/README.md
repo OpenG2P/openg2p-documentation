@@ -44,11 +44,21 @@ Before you deploy, make sure the following are available:
    2. _Keycloak Base Url_ is your organization-wide Keycloak URL.  (Refer to [Keycloak installation](../../deployment/base-infrastructure/rancher.md#keycloak-installation)).
    3. Create a Keycloak client,&#x20;
    4. &#x20;OIDC Client details are asked. Refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-10. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
-11. Navigate back to _Apps->Charts_ page on Rancher. Choose "Part 2" Helm chart. Select the same version as for "Part 1", and click _Install_.
-12. On the next screen, give the same installation name as for "Part 1" but with suffix `-p2` , like `social-registry-p2`. Select the same namespace as "Part 1". Select the checkbox _Customise Helm options before install_, and click _Next_.
-13. Repeat steps 9 & 10.&#x20;
-14. Wait for all pods to get into _Running_ state. This may take several minutes.
+   5. To change the docker image from the default image, click on _Edit YAML_ table and update the following section in Helm:
+
+```yaml
+image:
+    pullPolicy: Always
+    repository: openg2p/openg2p-social-registry-odoo-package
+    tag: 17.0-develop-social-registry
+```
+
+10. To pull docker from a private repository on Docker Hub, create a secret in your namespace a
+11. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
+12. Navigate back to _Apps->Charts_ page on Rancher. Choose "Part 2" Helm chart. Select the same version as for "Part 1", and click _Install_.
+13. On the next screen, give the same installation name as for "Part 1" but with suffix `-p2` , like `social-registry-p2`. Select the same namespace as "Part 1". Select the checkbox _Customise Helm options before install_, and click _Next_.
+14. Repeat steps 9 & 10.&#x20;
+15. Wait for all pods to get into _Running_ state. This may take several minutes.
 
 <div align="center">
 
