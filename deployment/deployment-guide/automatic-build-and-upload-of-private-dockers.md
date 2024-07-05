@@ -6,8 +6,8 @@ description: Guide to build and upload on Docker hub from private Github reposit
 
 ## Docker Hub
 
-1. Create a private repository on Docker Hub
-2. Make sure a 'bot' user is created on Docker Hub that has read/write access to this repository.
+1. Create a private repository on Docker Hub for all dockers that will be uploaded.
+2. Make sure a 'bot' user is created on Docker Hub that has read/write access to these repositories
 3. Create an access token for this user. (Refer Docker Hub docs)
 
 ## Creation of Github actions
@@ -18,7 +18,6 @@ description: Guide to build and upload on Docker hub from private Github reposit
 ```
 .github/
 ├── docker_packages
-├── docker_packaging
 └── workflows
 ```
 
@@ -29,20 +28,26 @@ description: Guide to build and upload on Docker hub from private Github reposit
 git submodule add https://github.com/openg2p/openg2p-packaging .github/docker_packaging
 ```
 
-This will clone `openg2p-packaging` repo into the `docker_packaging` folder.
+This will clone `openg2p-packaging` repo into the `docker_packaging` folder. The folder structure will look like
 
-5. Copy `docker_build.yml`  and modify the following for your repo:
+<pre><code>.github/
+├── docker_packages
+<strong>|── docker_packaging
+</strong>└── workflows
+</code></pre>
+
+5. Inside `workflows` folder copy [`docker_build.yml`](https://github.com/OpenG2P/openg2p-packaging/blob/main/samples/docker-build.yml)  and modify the following for your repo:
    1. Set `SERVICE_NAME` to name of your Docker Hub repository&#x20;
    2. Replace `openg2p-myrepo` with your repo name
 6. Check in all the above.
 
 ## Enabling Github actions
 
-1. Under your private repo _Settings->Actions->General,_ enable "**Allow all actions and reusable workflows**"
-2. Under _Secrets and variables->Actions_ create the following secrets:
+1. Under _Secrets and variables->Actions_ create the following secrets:
    * DOCKER\_HUB\_ACTOR: Docker Hub user id that has permission to read/write the above registry
    * DOCKER\_HUB\_ORGANIZATION: Organization under which your private repo resides
    * DOCKER\_HUB\_TOKEN: Access token for this user
+2. Under your private repo _Settings->Actions->General,_ enable "**Allow all actions and reusable workflows**"
 
 ## Run
 
