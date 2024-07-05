@@ -46,7 +46,7 @@ This will clone `openg2p-packaging` repo into the `docker_packaging` folder. The
 1. Under _Secrets and variables->Actions_ create the following secrets:
    * DOCKER\_HUB\_ACTOR: Docker Hub user id that has permission to read/write the above registry
    * DOCKER\_HUB\_ORGANIZATION: Organization under which your private repo resides
-   * DOCKER\_HUB\_TOKEN: Access token for this user
+   * DOCKER\_HUB\_TOKEN: Access token for this user on Docker Hub
 2. Under your private repo _Settings->Actions->General,_ enable "**Allow all actions and reusable workflows**"
 
 ## Run
