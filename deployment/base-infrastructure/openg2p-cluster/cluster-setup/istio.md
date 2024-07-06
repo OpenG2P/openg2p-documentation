@@ -22,15 +22,8 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
 *   Or, for Rancher cluster, run:
 
     ```bash
-    kubectl apply -f istio-operator-no-ingress.yaml
+    kubectl apply -f istio-ef-spdy-upgrade.yaml
     ```
-
-    * Wait for `istiod` to start and `ingressgateway` pods to get deleted if any.
-    *   Run the following:
-
-        ```bash
-        kubectl apply -f istio-ef-spdy-upgrade.yaml
-        ```
 
 ### Namespace Setup
 
@@ -49,19 +42,3 @@ Set up an Istio gateway on each namespace for a domain. This assumes that the na
     ```bash
     envsubst < istio-gateway.yaml | kubectl apply -f -
     ```
-
-## Multiple ingress gateways
-
-By default the installation scripts enable two Istio Ingress gateways -  **public** and **private**. The public gateway is disabled by default. You may enable the same while opening up services to the public by following the steps given [below](istio.md#enabling-public-gateway).  To create more private gateways, refer [here](istio.md#creating-private-gateways).
-
-{% hint style="warning" %}
-Having only one private gateway implies that all users can open URLs in all namespaces. Access control to services may be accomplished by authentication/authorization of the respective services via Keycloak
-{% endhint %}
-
-### Enabling public gateway
-
-TBD.
-
-### Creating private gateways
-
-TBD.

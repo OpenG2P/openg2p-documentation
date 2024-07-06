@@ -89,7 +89,6 @@ To set up the base infrastructure, login to the machine and install the followin
     ```bash
     RANCHER_HOSTNAME=rancher.your.org \
     TLS=true \
-    RANCHER_ISTIO_OPERATOR=false \
         ./install.sh --set replicas=1
     ```
 
@@ -99,7 +98,6 @@ To set up the base infrastructure, login to the machine and install the followin
     ```bash
     KEYCLOAK_HOSTNAME=keycloak.your.org \
     TLS=true \
-    KEYCLOAK_ISTIO_OPERATOR=false \
         ./install.sh --set replicaCount=1
     ```
 11. [Integrate Rancher & Keycloak](base-infrastructure/rancher.md#rancher-keycloak-integration).
