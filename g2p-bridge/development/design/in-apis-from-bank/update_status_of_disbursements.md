@@ -12,14 +12,20 @@ layout:
     visible: true
 ---
 
-# update\_status\_of\_disbursements
+# upload\_mt940
 
-| API Attributes |                             |
-| -------------- | --------------------------- |
-| Direction      | Inward                      |
-| Invoked by     | Sponsor bank                |
-| Mode           | Synchronous                 |
-| Tables         | disbursement\_batch\_status |
+MT940 is a structured account statement. The sponsor bank will send this statement (for the benefit program funding account) everyday.&#x20;
+
+The exact mechanics of how this statement will be delivered to the government department will vary across implementations, viz. FTP, SMTP, API invoked by the bank etc.
+
+Depending on the physical delivery mechanism, the implementation can create an integration layer and use this API to upload the MT940 message.
+
+| API Attributes |                                               |
+| -------------- | --------------------------------------------- |
+| Direction      | Inward                                        |
+| Invoked by     | Sponsor bank, Implementation Integration work |
+| Mode           | Synchronous                                   |
+| Tables         | benefit\_program\_account\_statement          |
 
 The sponsor bank invokes this API after it gets back the status of the disbursement from the destination bank through the national clearing / payment switch.
 
