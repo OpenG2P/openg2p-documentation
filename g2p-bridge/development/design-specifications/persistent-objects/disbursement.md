@@ -51,15 +51,17 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr><tr><td>mapper_resolved_timestamp</td><td></td></tr><tr><td>mapper_resolution_retries</td><td></td></tr></tbody></table>
 
-### Table - handled by the Bank Shipment Celery Beat Producer&#x20;
+### <mark style="color:blue;">Table - handled by the Bank Shipment Celery Beat Producer</mark>&#x20;
 
 ### disbursement\_bank\_shipment\_batch\_status
 
 <table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td>Unique Index</td></tr><tr><td>shipment_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>shipment_timestamp</td><td></td></tr><tr><td>ack_status</td><td></td></tr><tr><td>ack_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">shipment_to_bank_retries</mark></td><td></td></tr></tbody></table>
 
-### Table - handled by the Bank Shipment Celery Worker (Task)
+### <mark style="color:blue;">Table - handled by the Bank Shipment Celery Worker (Task)</mark>
 
-<table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>shipment_to_bank_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td></td></tr><tr><td>recon_statement_id</td><td></td></tr><tr><td>bank_statement_number</td><td></td></tr><tr><td>corresponding_entry_sequence</td><td></td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_bank_statement_number</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td></td></tr></tbody></table>
+### disbursement\_recon\_from\_bank
+
+<table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>shipment_to_bank_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>bank_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>corresponding_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_bank_statement_number</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td></td></tr></tbody></table>
 
 #### Business Logic
 
