@@ -51,7 +51,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>NOT_APPLICABLE<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_retries</mark></td><td></td></tr></tbody></table>
 
-disbursement\_mapper\_resolution\_details
+### **disbursement\_mapper\_resolution\_details**
 
 <table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr><tr><td>mapper_resolved_timestamp</td><td></td></tr><tr><td>mapper_resolution_retries</td><td></td></tr></tbody></table>
 
@@ -63,20 +63,18 @@ Results in persistence of 1 record each in the tables - disbursement and disburs
 
 1. disbursements
 2. disbursement\_batch\_control
-3. disbursement\_bank\_shipment\_status
-4. disbursement\_mapper\_resolution\_status
+3. disbursement\_bank\_shipment\_batch\_status
+4. disbursement\_mapper\_resolution\_batch\_status
 
 <mark style="color:blue;">Bulk Insert should be used to persist the tables</mark>
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
 
-Once all the tables are inserted/committed, a celery task needs to be dispatched.
+Once all the tables are inserted/committed, a celery task for mapper resolution needs to be dispatched
 
-
+This is because id-mapper resolution is an independent activity and has no dependency on other disbursements. The resolution for each beneficiary id can be done without waiting for all the disbursements in the envelope to arrive from PBMS.
 
 Once "disbursements" and "disbursement\_batch\_status" - tables are persisted, the List\[Disbursements] payload should be handed off to RabbitMQ (via Celery Producer) to a Celery Worker (Task) - called - "IdMapperResolveTask".
-
-However, this delegation to the "IdMapperResolveTask" is only required - if ID-Account Resolution is required.
 
 This attribute - whether - id & account resolution is required or not - is maintained in a configuration table - "benefit\_program\_configurations". There is a record for every "benefit\_program\_mnemonic" in this table.
 
