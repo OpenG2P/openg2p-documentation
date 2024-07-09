@@ -1,5 +1,7 @@
 ---
-description: Triggered by Batch job
+description: >-
+  Triggered by Celery Worker. Worker invoked through Rabbit MQ by
+  "create_disbursements" API
 ---
 
 # resolve
