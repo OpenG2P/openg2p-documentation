@@ -55,16 +55,13 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr><tr><td>mapper_resolved_timestamp</td><td></td></tr><tr><td>mapper_resolution_retries</td><td></td></tr></tbody></table>
 
-disbursement\_bank\_shipment\_details
-
 #### Business Logic
 
-Results in persistence of 1 record each in the tables - disbursement and disbursement\_batch\_status.
+Persist in the following tables
 
 1. disbursements
-2. disbursement\_batch\_control
-3. disbursement\_bank\_shipment\_batch\_status
-4. disbursement\_mapper\_resolution\_batch\_status
+2. disbursement\_batch\_control (only for mapper\_batch\_id, the bank\_shipment\_batch\_id will be populated by the Celery bank shipment beat producer)
+3. disbursement\_mapper\_resolution\_batch\_status
 
 <mark style="color:blue;">Bulk Insert should be used to persist the tables</mark>
 
