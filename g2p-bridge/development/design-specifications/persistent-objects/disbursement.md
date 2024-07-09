@@ -49,15 +49,18 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### disbursement\_mapper\_resolution\_status
 
-| Attribute                        | Description |
-| -------------------------------- | ----------- |
-| disbursement\_id                 |             |
-| beneficiary\_id                  |             |
-| mapper\_resolved\_fa             |             |
-| mapper\_resolved\_phone\_number  |             |
-| mapper\_resolved\_email\_address |             |
-| mapper\_resolved\_name           |             |
-| mapper\_resolved\_timestamp      |             |
+| Attribute                        | Description                         |
+| -------------------------------- | ----------------------------------- |
+| mapper\_resolution\_batch\_id    | Unique Index                        |
+| mapper\_resolution\_status       | <p>Enum<br>PENDING<br>PROCESSED</p> |
+| disbursement\_id                 |                                     |
+| beneficiary\_id                  |                                     |
+| mapper\_resolved\_fa             |                                     |
+| mapper\_resolved\_phone\_number  |                                     |
+| mapper\_resolved\_email\_address |                                     |
+| mapper\_resolved\_name           |                                     |
+| mapper\_resolved\_timestamp      |                                     |
+| mapper\_resolution\_retries      |                                     |
 
 
 
