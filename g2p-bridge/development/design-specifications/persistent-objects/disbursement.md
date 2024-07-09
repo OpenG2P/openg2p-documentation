@@ -41,26 +41,15 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### disbursement\_batch\_control
 
-<table><thead><tr><th width="314">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>disbursement_id</td><td>Unique identifier for each disbursement transaction - Primary Key</td></tr><tr><td>disbursement_envelope_id</td><td>The envelope under which this disbursement is being effected</td></tr><tr><td>beneficiary_id</td><td></td></tr><tr><td>shipment_to_bank_batch_id</td><td>Uniquely represents the shipment bundle into which this disbursement is included.<br>Typically, the payment instruction API into the sponsor bank will be a bulk API, containing many disbursements. Depending on the number of disbursements, there will be many batches into the sponsor bank. This <strong>shipment_to_bank_batch_id</strong> facilitates identification of the exact shipment batch. <br><mark style="color:blue;">The shipment_batch_id is created by the sponsor_bank_dispatch_producer (celery beat producer)</mark></td></tr><tr><td>mapper_resolution_batch_id</td><td>Unique batch id - that represents batch control for ID-Mapper resolution<br>Multiple beneficiary ids will be sent to the  mapper resolve API in a single invocation<br>This batch id - represents that batch.<br>All records that are in a single batch_id - will be sent to the mapper resolution in a single API call</td></tr></tbody></table>
+<table><thead><tr><th width="314">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>disbursement_id</td><td>Unique identifier for each disbursement transaction<br><strong>Unique Index</strong></td></tr><tr><td>disbursement_envelope_id</td><td>The envelope under which this disbursement is being effected<br><strong>Non Unique Index</strong></td></tr><tr><td>beneficiary_id</td><td><strong>Non Unique Index</strong></td></tr><tr><td>shipment_to_bank_batch_id</td><td>Uniquely represents the shipment bundle into which this disbursement is included.<br>Typically, the payment instruction API into the sponsor bank will be a bulk API, containing many disbursements. Depending on the number of disbursements, there will be many batches into the sponsor bank. This <strong>shipment_to_bank_batch_id</strong> facilitates identification of the exact shipment batch. <br><mark style="color:blue;">The shipment_batch_id is created by the sponsor_bank_dispatch_producer (celery beat producer)</mark><br><strong>Unique Index</strong></td></tr><tr><td>mapper_resolution_batch_id</td><td>Unique batch id - that represents batch control for ID-Mapper resolution<br>Multiple beneficiary ids will be sent to the  mapper resolve API in a single invocation<br>This batch id - represents that batch.<br>All records that are in a single batch_id - will be sent to the mapper resolution in a single API call<br><mark style="color:blue;">The mapper_resolution_batch_id - is created during "create_disbursements" inward API from PBMS. All disbursements received in a single API from PBMS are batched together with a single resolution batch id</mark><br><strong>Unique Index</strong></td></tr></tbody></table>
 
-### disbursement\_bank\_shipment\_batch\_status
+### disbursement\_bank\_shipment\_status
 
-<table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td></td></tr><tr><td>shipment_to_bank_status</td><td></td></tr><tr><td>shipment_to_bank_timestamp</td><td></td></tr><tr><td>shipment_to_bank_ack_status</td><td></td></tr><tr><td>shipment_to_bank_ack_timestamp</td><td></td></tr><tr><td>shipment_to_bank_retries</td><td></td></tr></tbody></table>
+<table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td>Unique Index</td></tr><tr><td>shipment_to_bank_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>shipment_to_bank_timestamp</td><td></td></tr><tr><td>shipment_to_bank_ack_status</td><td></td></tr><tr><td>shipment_to_bank_ack_timestamp</td><td></td></tr><tr><td>shipment_to_bank_retries</td><td></td></tr></tbody></table>
 
 ### disbursement\_mapper\_resolution\_status
 
-| Attribute                        | Description                         |
-| -------------------------------- | ----------------------------------- |
-| mapper\_resolution\_batch\_id    | Unique Index                        |
-| mapper\_resolution\_status       | <p>Enum<br>PENDING<br>PROCESSED</p> |
-| disbursement\_id                 |                                     |
-| beneficiary\_id                  |                                     |
-| mapper\_resolved\_fa             |                                     |
-| mapper\_resolved\_phone\_number  |                                     |
-| mapper\_resolved\_email\_address |                                     |
-| mapper\_resolved\_name           |                                     |
-| mapper\_resolved\_timestamp      |                                     |
-| mapper\_resolution\_retries      |                                     |
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>mapper_resolution_status</td><td>Enum<br>NOT_APPLICABLE<br>PENDING<br>PROCESSED</td></tr><tr><td>disbursement_id</td><td></td></tr><tr><td>beneficiary_id</td><td></td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr><tr><td>mapper_resolved_timestamp</td><td></td></tr><tr><td>mapper_resolution_retries</td><td></td></tr></tbody></table>
 
 
 
@@ -68,9 +57,18 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 Results in persistence of 1 record each in the tables - disbursement and disbursement\_batch\_status.
 
-<mark style="color:blue;">Bulk Insert should be used to persist the disbursements</mark>
+1. disbursements
+2. disbursement\_batch\_control
+3. disbursement\_bank\_shipment\_status
+4. disbursement\_mapper\_resolution\_status
+
+<mark style="color:blue;">Bulk Insert should be used to persist the tables</mark>
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
+
+Once all the tables are inserted/committed, a celery task needs to be dispatched.
+
+
 
 Once "disbursements" and "disbursement\_batch\_status" - tables are persisted, the List\[Disbursements] payload should be handed off to RabbitMQ (via Celery Producer) to a Celery Worker (Task) - called - "IdMapperResolveTask".
 
