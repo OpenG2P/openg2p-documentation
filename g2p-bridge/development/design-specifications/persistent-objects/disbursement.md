@@ -67,6 +67,14 @@ Results in persistence of 1 record each in the tables - disbursement and disburs
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
 
+Once "disbursements" and "disbursement\_batch\_status" - tables are persisted, the List\[Disbursements] payload should be handed off to RabbitMQ (via Celery Producer) to a Celery Worker (Task) - called - "IdMapperResolveTask".
+
+However, this delegation to the "IdMapperResolveTask" is only required - if ID-Account Resolution is required.
+
+This attribute - whether - id & account resolution is required or not - is maintained in a configuration table - "benefit\_program\_configurations". There is a record for every "benefit\_program\_mnemonic" in this table.
+
+This "IdMapperResolveTask" - will resolve the Financial Address (Account Number and Financial Institution details) for all the Beneficiary IDs in the payload and update the disbursement table.&#x20;
+
 #### Validations & Exceptions
 
 1. Ideally, disbursements should arrive before disbursement\_schedule\_date. However, system will not check this condition. System will anyway process an envelope, only when all the disbursements have arrived.
