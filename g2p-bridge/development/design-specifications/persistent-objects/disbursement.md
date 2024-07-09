@@ -30,7 +30,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 | Attribute                  | Datatype                                                                                                                           |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | disbursement\_envelope\_id | <p>The envelope under which this disbursement is being effected<br>Non Unique Index</p>                                            |
-| disbursement\_id           | Unique identifier for each disbursement transaction - Primary Key                                                                  |
+| disbursement\_id           | Unique identifier for each disbursement transaction - **Primary Key**                                                              |
 | beneficiary\_id            | The Beneficiary ID to whom this disbursement is being targeted                                                                     |
 | beneficiary\_name          | The name of the beneficiary as available in the PBMS / Social Registry records                                                     |
 | disbursement\_amount       | The disbursement amount (in the currency specified in the envelope) for this cycle of the program                                  |
@@ -39,17 +39,27 @@ A disbursement represents a single disbursement transaction under a disbursement
 | cancellation\_status       | <p>Enum<br>NOT_CANCELLED<br>CANCELLED</p>                                                                                          |
 | cancellation\_time\_stamp  | Time stamp of receipt of cancellation request                                                                                      |
 
-### disbursement\_batch\_status
+### disbursement\_batch\_control
 
-| Attribute                       | Datatype                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| disbursement\_id                | Unique identifier for each disbursement transaction - Primary Key                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| disbursement\_envelope\_id      | The envelope under which this disbursement is being effected                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| shipment\_to\_bank\_batch\_id   | <p>Uniquely represents the shipment bundle into which this disbursement is included.<br>Typically, the payment instruction API into the sponsor bank will be a bulk API, containing many disbursements. Depending on the number of disbursements, there will be many batches into the sponsor bank. This <strong>shipment_to_bank_batch_id</strong> facilitates identification of the exact shipment batch. <br><mark style="color:blue;">The shipment_batch_id is created by the sponsor_bank_dispatch_producer (celery beat producer)</mark></p> |
-| mapper\_resolved\_fa            | The FA resolved from ID-Account-Mapper                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| mapper\_resolved\_phone\_number | The phone number resolved from ID-Account-Mapper                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| mapper\_resolved\_name          | The name of the beneficiary resolved from ID-Account-Mapper                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| mapper\_resolved\_timestamp     | The timestamp - when ID-Account was resolved                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+<table><thead><tr><th width="314">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>disbursement_id</td><td>Unique identifier for each disbursement transaction - Primary Key</td></tr><tr><td>disbursement_envelope_id</td><td>The envelope under which this disbursement is being effected</td></tr><tr><td>beneficiary_id</td><td></td></tr><tr><td>shipment_to_bank_batch_id</td><td>Uniquely represents the shipment bundle into which this disbursement is included.<br>Typically, the payment instruction API into the sponsor bank will be a bulk API, containing many disbursements. Depending on the number of disbursements, there will be many batches into the sponsor bank. This <strong>shipment_to_bank_batch_id</strong> facilitates identification of the exact shipment batch. <br><mark style="color:blue;">The shipment_batch_id is created by the sponsor_bank_dispatch_producer (celery beat producer)</mark></td></tr><tr><td>mapper_resolution_batch_id</td><td>Unique batch id - that represents batch control for ID-Mapper resolution<br>Multiple beneficiary ids will be sent to the  mapper resolve API in a single invocation<br>This batch id - represents that batch.<br>All records that are in a single batch_id - will be sent to the mapper resolution in a single API call</td></tr></tbody></table>
+
+### disbursement\_bank\_shipment\_batch\_status
+
+<table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td></td></tr><tr><td>shipment_to_bank_status</td><td></td></tr><tr><td>shipment_to_bank_timestamp</td><td></td></tr><tr><td>shipment_to_bank_ack_status</td><td></td></tr><tr><td>shipment_to_bank_ack_timestamp</td><td></td></tr><tr><td>shipment_to_bank_retries</td><td></td></tr></tbody></table>
+
+### disbursement\_mapper\_resolution\_status
+
+| Attribute                        | Description |
+| -------------------------------- | ----------- |
+| disbursement\_id                 |             |
+| beneficiary\_id                  |             |
+| mapper\_resolved\_fa             |             |
+| mapper\_resolved\_phone\_number  |             |
+| mapper\_resolved\_email\_address |             |
+| mapper\_resolved\_name           |             |
+| mapper\_resolved\_timestamp      |             |
+
+
 
 #### Business Logic
 
