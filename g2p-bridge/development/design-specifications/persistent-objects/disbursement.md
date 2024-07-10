@@ -69,7 +69,7 @@ Persist in the following tables
 
 1. disbursements
 2. disbursement\_batch\_control (only for mapper\_batch\_id, the bank\_shipment\_batch\_id will be populated by the Celery bank shipment beat producer)
-3. Dispatch a Task to the Mapper Resolution Celery Worker (Task) - with this mapper\_resolution\_batch\_id and LIST\[Disbursements]
+3. Dispatch a Task to the Mapper Resolution Celery Worker (Task) - with this mapper\_resolution\_batch\_id
 4. The mapper resolution - itself - is dependent on the disbursement\_envelope.id\_mapper\_resolution\_required attribute (true/false)
 
 <mark style="color:blue;">Bulk Insert should be used to persist the tables - wherever multiple records are applicable</mark>
