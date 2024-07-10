@@ -14,7 +14,7 @@ description: >-
 4. Create Payload for Mapper - Resolve API - with List of Beneficiary IDs
 5. Invoke Mapper - Resolve API, send the list of beneficiary IDs, receive Financial Address
 6. Use the Map of \<beneficiary\_id, disbursement\_id> to insert into the table disbursement\_mapper\_resolution\_details
-7. Update the table - disbursement\_mapper\_resolution\_batch\_status
+7. Insert into table - disbursement\_mapper\_resolution\_batch\_status
 
 <mark style="color:blue;">**SUCCESS (from Mapper Resolution API invoke)**</mark>
 

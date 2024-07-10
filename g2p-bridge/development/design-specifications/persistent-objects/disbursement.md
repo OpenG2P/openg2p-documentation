@@ -45,7 +45,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### disbursement\_mapper\_resolution\_batch\_status
 
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>NOT_APPLICABLE<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_retries</mark></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_retries</mark></td><td></td></tr></tbody></table>
 
 ### **disbursement\_mapper\_resolution\_details**
 
