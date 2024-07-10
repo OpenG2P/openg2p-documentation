@@ -45,7 +45,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### mapper\_resolution\_batch\_status
 
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_retries</mark></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
 
 ### **mapper\_resolution\_details**
 
@@ -55,7 +55,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### bank\_shipment\_batch\_status
 
-<table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td>Unique Index</td></tr><tr><td>shipment_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>shipment_timestamp</td><td></td></tr><tr><td>ack_status</td><td></td></tr><tr><td>ack_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">shipment_to_bank_retries</mark></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>shipment_to_bank_batch_id</strong></td><td>Unique Index</td></tr><tr><td>shipment_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>shipment_timestamp</td><td></td></tr><tr><td>ack_status</td><td></td></tr><tr><td>ack_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">shipment_to_bank_attempts</mark></td><td></td></tr></tbody></table>
 
 ### <mark style="color:blue;">Table - handled by the Bank Shipment Celery Worker (Task)</mark>
 
