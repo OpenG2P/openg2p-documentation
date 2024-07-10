@@ -49,7 +49,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### **disbursement\_mapper\_resolution\_details**
 
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr><tr><td>mapper_resolved_timestamp</td><td></td></tr><tr><td>mapper_resolution_retries</td><td></td></tr></tbody></table>
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
 
 ### <mark style="color:blue;">Table - handled by the Bank Shipment Celery Beat Producer</mark>&#x20;
 
