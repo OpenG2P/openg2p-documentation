@@ -50,7 +50,7 @@ resolution\_retries
 
 mapper\_resolution\_batch\_id
 
-resolution\_status = PENDING
+resolution\_status = PENDING (Existing value was NOT\_APPLICABLE)
 
 resolution\_time\_stamp = BLANK
 
@@ -58,4 +58,4 @@ resolution\_error\_code\_latest = Error Code as received from API
 
 resolution\_retries = increment by 1
 
-In case of FAILURE from mapper, the worker retries to invoke the mapper for a specified number of retries (environment variable - MAPPER\_NUMBER\_OF\_RETRIES)
+<mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>
