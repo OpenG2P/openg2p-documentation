@@ -14,12 +14,12 @@ layout:
 
 # create\_disbursements
 
-| API Attributes |                                                  |
-| -------------- | ------------------------------------------------ |
-| Direction      | Inward                                           |
-| Invoked by     | PBMS                                             |
-| Mode           | Synchronous                                      |
-| Tables         | <p>disbursement<br>disbursement_batch_status</p> |
+| API Attributes |                                                   |
+| -------------- | ------------------------------------------------- |
+| Direction      | Inward                                            |
+| Invoked by     | PBMS                                              |
+| Mode           | Synchronous                                       |
+| Tables         | <p>disbursement<br>disbursement_batch_control</p> |
 
 A disbursement represents a single disbursement transaction under a disbursement\_envelope. A disbursement\_envelope will contain many hundreds/thousands of disbursements. Each such disbursement will be denoted by a unique disbursement\_id
 
