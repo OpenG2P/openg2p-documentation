@@ -50,7 +50,7 @@ resolution\_retries
 
 mapper\_resolution\_batch\_id
 
-resolution\_status = PENDING (Existing value was NOT\_APPLICABLE)
+resolution\_status = PENDING (Existing value was NOT\_APPLICABLE, as inserted by create\_disbursements API)
 
 resolution\_time\_stamp = BLANK
 
