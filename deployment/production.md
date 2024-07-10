@@ -6,6 +6,16 @@ description: 'Production Deployment Guide: WORK IN PROGRESS'
 
 The guide here provides some useful hints for production deployment. However, this guide is not intended to be a comprehensive production deployment handbook. Production deployments vary and implementers of OpenG2P (like System Integrators) have a choice of production configurations, orchestration platforms and components. We also encourage our partners to update this guide based on their learning in the field.
 
+## RBAC
+
+Carefully assign roles to Rancher users. Pre-defined role templates are available on Rancher. Follow [this guide](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles).  Specifically, protect the following action on resources:
+
+* Deletion of deployments/statefulsets
+* Viewing of secrets - at all levels - Cluster, Namespace
+* Deletion of configmaps, secrets
+* Access to DB via port forwarding
+* Logging into DB pods
+
 ## Postgresql&#x20;
 
 * Number of instances
