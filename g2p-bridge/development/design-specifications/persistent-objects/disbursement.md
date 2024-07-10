@@ -63,27 +63,19 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>shipment_to_bank_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>bank_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>corresponding_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_bank_statement_number</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td></td></tr></tbody></table>
 
-#### Business Logic
+### create\_disbursements - Business Logic
 
 Persist in the following tables
 
 1. disbursements
 2. disbursement\_batch\_control (only for mapper\_batch\_id, the bank\_shipment\_batch\_id will be populated by the Celery bank shipment beat producer)
-3. disbursement\_mapper\_resolution\_batch\_status
+3. disbursement\_mapper\_resolution\_batch\_status - with resolution\_status = NOT\_APPLICABLE (this so that the Mapper Resolution Celery Beat Producer - does not pick up this record)
+4. Dispatch a Task to the Mapper Resolution Celery Worker (Task) - with this mapper\_resolution\_batch\_id and LIST\[Disbursements]
+5. The mapper resolution - itself - is dependent on the disbursement\_envelope.id\_mapper\_resolution\_required attribute (true/false)
 
-<mark style="color:blue;">Bulk Insert should be used to persist the tables</mark>
+<mark style="color:blue;">Bulk Insert should be used to persist the tables - wherever multiple records are applicable</mark>
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
-
-Once all the tables are inserted/committed, a celery task for mapper resolution needs to be dispatched
-
-This is because id-mapper resolution is an independent activity and has no dependency on other disbursements. The resolution for each beneficiary id can be done without waiting for all the disbursements in the envelope to arrive from PBMS.
-
-Once "disbursements" and "disbursement\_batch\_status" - tables are persisted, the List\[Disbursements] payload should be handed off to RabbitMQ (via Celery Producer) to a Celery Worker (Task) - called - "IdMapperResolveTask".
-
-This attribute - whether - id & account resolution is required or not - is maintained in a configuration table - "benefit\_program\_configurations". There is a record for every "benefit\_program\_mnemonic" in this table.
-
-This "IdMapperResolveTask" - will resolve the Financial Address (Account Number and Financial Institution details) for all the Beneficiary IDs in the payload and update the disbursement table.&#x20;
 
 #### Validations & Exceptions
 
