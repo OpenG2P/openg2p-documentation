@@ -400,6 +400,7 @@
     * [Keycloak Client Creation](deployment/deployment-guide/keycloak-client-creation.md)
     * [Troubleshooting: "fsnotify watcher" warning](deployment/deployment-guide/troubleshooting-fsnotify-watcher-warning.md)
     * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)
+    * [Access a Database Outside the Cluster](deployment/deployment-guide/access-a-database-outside-the-cluster.md)
   * [DEPRECATED - Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
