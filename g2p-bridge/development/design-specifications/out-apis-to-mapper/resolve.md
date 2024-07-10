@@ -32,7 +32,7 @@ disbursement\_batch\_status.mapper\_resolved\_phone\_number
 
 disbursement\_batch\_status.mapper\_resolved\_name
 
-**Update table - disbursement\_mapper\_resolution\_batch\_status**
+**Insert into table - disbursement\_mapper\_resolution\_batch\_status**
 
 mapper\_resolution\_batch\_id
 
@@ -46,11 +46,11 @@ resolution\_retries
 
 <mark style="color:blue;">**FAILURE (from mapper resolution API invoke)**</mark>
 
-**Update table - disbursement\_mapper\_resolution\_batch\_status**
+**Insert into table - disbursement\_mapper\_resolution\_batch\_status**
 
 mapper\_resolution\_batch\_id
 
-resolution\_status = PENDING (Existing value was NOT\_APPLICABLE, as inserted by create\_disbursements API)
+resolution\_status = PENDING
 
 resolution\_time\_stamp = BLANK
 
