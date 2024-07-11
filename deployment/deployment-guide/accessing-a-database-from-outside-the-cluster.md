@@ -1,10 +1,10 @@
 ---
-description: >-
-  This guide contains instructions on how to connect to a database outside the
-  cluster
+description: Post-deployment guide
 ---
 
-# Access a Database Outside the Cluster
+# Accessing a Database From Outside the Cluster
+
+This guide contains instructions on how to connect to a database from outside the cluster using `kubectl` port forwarding method.
 
 ## Prerequisites
 
