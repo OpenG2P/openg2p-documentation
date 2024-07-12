@@ -419,7 +419,7 @@
     * [Registration in Low Connectivity Areas](use-cases/technology-for-inclusion/registration-in-low-connectivity-areas.md)
     * [Registration using Self Service Portal](use-cases/technology-for-inclusion/registration-using-self-service-portal.md)
   * [Case Studies](use-cases/case-studies/README.md)
-    * [Immediate Assistance On Demand](use-cases/case-studies/immediate-assistance-on-demand.md)
+    * [Immediate Assistance on Demand](use-cases/case-studies/immediate-assistance-on-demand.md)
   * [Work flows](use-cases/solutioning/README.md)
     * [Service Provider Reimbursement](use-cases/solutioning/service-provider-reimbursement.md)
 * [Releases](releases/README.md)
