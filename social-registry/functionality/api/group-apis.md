@@ -40,7 +40,7 @@ The Group APIs use a session-based authentication mechanism provided by Odoo. Th
 
 Subsequent API requests must include the session ID in the header to maintain the authenticated session.
 
-### Session Authentication Endpoint
+### Session authentication endpoint
 
 | Name   | Value                                           |
 | ------ | ----------------------------------------------- |
@@ -52,7 +52,7 @@ Subsequent API requests must include the session ID in the header to maintain th
 | Parameter Name | Description                          | Mandatory/Optional | Data Type |
 | -------------- | ------------------------------------ | ------------------ | --------- |
 | jsonrpc        | The version of the JSON-RPC protocol | Mandatory          | String    |
-| db             | The name of the databaes             | Mandatory          | String    |
+| db             | The name of the database             | Mandatory          | String    |
 | login          | The user's login name                | Mandatory          | String    |
 | password       | The user's password                  | Mandatory          | String    |
 
@@ -86,8 +86,6 @@ curl --location --request GET '<openg2p.sandox.net>/web/session/authenticate' \
 }
 ```
 
-##
-
 ## Create group registry
 
 This endpoint allows the end-user to create a new group.
@@ -100,7 +98,7 @@ This endpoint allows the end-user to create a new group.
 | URI    | `<openg2p.sandbox.net>/api/v1/registry/group` |
 | Cookie | session\_id=\<session\_id>                    |
 
-### Body parameters
+### Request body parameters
 
 <table><thead><tr><th width="177">Parameter Name</th><th width="205">Description</th><th width="187">Mandatory/Optional</th><th>Data Type</th></tr></thead><tbody><tr><td>name </td><td>The name of a group</td><td>Mandatory</td><td>String</td></tr><tr><td>ids</td><td>It contains the list of ID details of a group</td><td></td><td>array</td></tr><tr><td>id_type</td><td>The type of the ID of a group</td><td>Mandatory</td><td>String</td></tr><tr><td>value</td><td>The value of the ID of a group</td><td>Mandatory</td><td>String</td></tr><tr><td>expiry_date</td><td>The date of expiry of a group registry</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>registration_date</td><td>The date on which a group is registered</td><td>Optional</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>phone_numbers</td><td>It contains the list of contact details of a group</td><td></td><td>array</td></tr><tr><td>phone_no</td><td>The contact number of a group</td><td>Mandatory</td><td>String</td></tr><tr><td>date_collected</td><td>The date on which a group data is collected</td><td>Optional</td><td>String</td></tr><tr><td>email</td><td>The email ID of a group</td><td>Optional</td><td>String</td></tr><tr><td>address</td><td>The address of a group</td><td>Optional</td><td>String</td></tr><tr><td>bank_ids</td><td>It contains the list of bank details of a group</td><td></td><td>array</td></tr><tr><td>bank_name</td><td>The bank name of a group</td><td>Optional </td><td>String</td></tr><tr><td>acc_number</td><td>The account number of a group</td><td>Optional</td><td>String</td></tr><tr><td>is_group</td><td>It defines whether the member belongs to group or not</td><td>Mandatory</td><td><p>Boolean </p><p>True </p><p>False </p><p></p><p>Note: </p><p>The default values is true.</p></td></tr><tr><td>members</td><td>It contains the details of a member belongs to a group</td><td></td><td>array</td></tr><tr><td>name</td><td>The name of a member</td><td>Mandatory</td><td>String</td></tr><tr><td>given_name</td><td>The given name of a member</td><td>Optional</td><td>String</td></tr><tr><td>addl_name</td><td>The additional name of a member</td><td>Optional</td><td>String</td></tr><tr><td>family_name</td><td>The family name of a member</td><td>Optional</td><td>String</td></tr><tr><td>ids</td><td>It contains the ID details of a member belongs to a group</td><td></td><td>array</td></tr><tr><td>id_type</td><td>The type of the ID of a member</td><td>Mandatory</td><td>String</td></tr><tr><td>value</td><td>The value of the ID of a member</td><td>Mandatory</td><td>String</td></tr><tr><td>expiry_date</td><td>The date of expiry of a member registry</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>registration_date</td><td>The registration date of a member</td><td>Optional</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>phone_numbers</td><td>It contains the contact details of a member</td><td></td><td>array</td></tr><tr><td>email</td><td>The email id of a member</td><td>Mandatory</td><td></td></tr><tr><td>address</td><td>The address of a member</td><td>Mandatory</td><td></td></tr><tr><td>gender</td><td>The gender of a member</td><td>Mandatory</td><td>String</td></tr><tr><td>birthdate</td><td>The date of birth of a member</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>birth_place</td><td>The place of birth of a member</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>is_group</td><td>It defines whether the member belongs to group or not</td><td>Optional</td><td><p>Boolean </p><p>True </p><p>False </p><p></p><p>Note: </p><p>The default values is true.</p></td></tr><tr><td>kind</td><td>It contains list of the name of the kind allocated to a member</td><td></td><td>array</td></tr><tr><td>name</td><td>The name of the kind allocated to a member</td><td>Mandatory</td><td>String</td></tr><tr><td>bank_ids</td><td>It contains the list of bank details of a member</td><td></td><td>array</td></tr><tr><td>bank_name</td><td>The bank name of a member</td><td>Optional</td><td>String</td></tr><tr><td>acc_number</td><td>The account number of a member</td><td>Optional</td><td>String</td></tr><tr><td>kind</td><td>It contains the name of the kind allocated to a group</td><td>Mandatory</td><td></td></tr><tr><td>is_partial_group</td><td></td><td>Mandatory</td><td></td></tr></tbody></table>
 

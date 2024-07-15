@@ -40,7 +40,7 @@ The Individual APIs use a session-based authentication mechanism provided by Odo
 
 Subsequent API requests must include the session ID in the header to maintain the authenticated session.
 
-### Session Authentication Endpoint
+### Session authentication endpoint
 
 | Name   | Value                                           |
 | ------ | ----------------------------------------------- |
@@ -52,7 +52,7 @@ Subsequent API requests must include the session ID in the header to maintain th
 | Parameter Name | Description                          | Mandatory/Optional | Data Type |
 | -------------- | ------------------------------------ | ------------------ | --------- |
 | jsonrpc        | The version of the JSON-RPC protocol | Mandatory          | String    |
-| db             | The name of the databaes             | Mandatory          | String    |
+| db             | The name of the database             | Mandatory          | String    |
 | login          | The user's login name                | Mandatory          | String    |
 | password       | The user's password                  | Mandatory          | String    |
 
@@ -100,7 +100,7 @@ This endpoint allows the end-user to create a new individual.
 | URI    | `<openg2p.sandbox.net>/api/v1/registry/individual` |
 | Cookie | session\_id=\<session\_id>                         |
 
-### Body parameters
+### Request body parameters
 
 <table><thead><tr><th width="177">Parameter Name</th><th width="205">Description</th><th width="187">Mandatory/Optional</th><th>Data Type</th></tr></thead><tbody><tr><td>name </td><td>The name of an individual</td><td>Mandatory</td><td>String</td></tr><tr><td>id_type</td><td>The type of the ID</td><td>Mandatory</td><td>String</td></tr><tr><td>value</td><td>The value of the ID</td><td>Mandatory</td><td>String</td></tr><tr><td>expiry_date</td><td>The date of expiry of an individual registry</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>registration_date</td><td>The date of an individual registration</td><td>Optional</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>phone_no</td><td>The contact number of an individual </td><td>Mandatory</td><td>String</td></tr><tr><td>date_collected</td><td>The date on which an individual data is collected</td><td>Optional</td><td>String</td></tr><tr><td>email</td><td>The email ID of an individual</td><td>Optional</td><td>String</td></tr><tr><td>address</td><td>The address of an individual</td><td>Optional</td><td>String</td></tr><tr><td>bank_name</td><td>The bank name of an individual</td><td>Optional </td><td>String</td></tr><tr><td>acc_number</td><td>The account number of an individual</td><td>Optional</td><td>String</td></tr><tr><td>given_name</td><td>The given name of an individual</td><td>Mandatory</td><td>String</td></tr><tr><td>addl_name</td><td>The additional name of an individual</td><td>Mandatory</td><td>String</td></tr><tr><td>family_name</td><td>The family name of an individual</td><td>Mandatory</td><td>String</td></tr><tr><td>gender</td><td>The gender of an individual</td><td>Mandatory</td><td>String</td></tr><tr><td>birthdate</td><td>The date of birth of an individual</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>birth_place</td><td>The place of birth of an individual</td><td>Mandatory</td><td><p>Date </p><p>Format: YYYY-MM-DD</p></td></tr><tr><td>is_group</td><td>It defines whether the individual belongs to a group or not</td><td>Mandatory</td><td><p>Boolean </p><p>True </p><p>False</p><p></p><p>Note: </p><p>The default values is false.</p></td></tr></tbody></table>
 
