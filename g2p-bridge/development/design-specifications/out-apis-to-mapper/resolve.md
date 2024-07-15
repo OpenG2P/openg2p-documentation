@@ -6,6 +6,15 @@ description: >-
 
 # resolve
 
+### Trigger
+
+1. API invoked by mapper\_resolution\_worker (Celery worker task)
+2. Worker invoked by
+   1. create\_disbursements (IN API call from PBMS)
+   2. mapper\_resolution\_beat\_producer (Celery beat producer)
+
+Worker invoked by&#x20;
+
 ### Object design
 
 ### mapper\_resolution\_batch\_status
@@ -37,7 +46,7 @@ description: >-
 
 <mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>
 
-**Mapper Resolution Celery Beat Producer**
+### **Mapper Resolution Celery Beat Producer**
 
 1. Come up on configured Time Intervals
 2. Pick up all "PENDING" records from mapper\_resolution\_batch\_status
