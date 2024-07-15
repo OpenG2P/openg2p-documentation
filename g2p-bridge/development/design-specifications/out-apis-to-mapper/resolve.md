@@ -1,21 +1,27 @@
 ---
-description: >-
-  Triggered by Celery Worker. Worker invoked through Rabbit MQ by
-  "create_disbursements" API
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
 # resolve
 
-### Trigger
+## Trigger
 
-1. API invoked by mapper\_resolution\_worker (Celery worker task)
+1. resolve API invoked by mapper\_resolution\_worker (Celery worker task)
 2. Worker invoked by
    1. create\_disbursements (IN API call from PBMS)
    2. mapper\_resolution\_beat\_producer (Celery beat producer)
 
-Worker invoked by&#x20;
-
-### Object design
+## Object design
 
 ### mapper\_resolution\_batch\_status
 
@@ -25,7 +31,7 @@ Worker invoked by&#x20;
 
 <table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
 
-**Business logic**
+### **Business logic**
 
 1. **Payload received** - disbursement\_mapper\_resolution\_batch\_id
 2. get a list of disbursement\_id, beneficiary\_id from disbursement\_batch\_control
@@ -46,7 +52,7 @@ Worker invoked by&#x20;
 
 <mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>
 
-### **Mapper Resolution Celery Beat Producer**
+#### **Mapper Resolution Celery Beat Producer**
 
 1. Come up on configured Time Intervals
 2. Pick up all "PENDING" records from mapper\_resolution\_batch\_status

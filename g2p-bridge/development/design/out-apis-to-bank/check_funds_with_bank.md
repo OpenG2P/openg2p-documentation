@@ -15,6 +15,12 @@ layout:
 
 # check\_funds\_with\_bank
 
+### Trigger
+
+* check\_funds\_with\_bank API invoked by bank\_check\_funds\_worker (Celery worker task)
+* Worker invoked by
+  1. bank\_check\_funds\_beat\_producer (Celery beat producer)
+
 ### driver condition
 
 <table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>retries</td><td>yes. subject to a configurable limit specified by  configuration yml</td></tr><tr><td>driving table</td><td>disbursement_envelope_batch_status</td></tr><tr><td>eligible envelopes</td><td><p><mark style="color:blue;">envelope</mark>.<mark style="color:blue;">disbursement_schedule_date &#x3C; today</mark><br><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">envelope.cancellation_status = 'NOT_CANCELLED'</mark></p><p><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">envelope.number_of_disbursements = batch_status.number_of_disbursements_received</mark></p><p><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">envelope.total_disbursement_amount = batch_status.total_disbursement_amount_received</mark></p><p><mark style="color:red;">AND</mark></p><p>(<br><mark style="color:blue;">( funds_available_status = "pending_check"</mark> <mark style="color:purple;">AND</mark> <mark style="color:blue;">funds_available_retries &#x3C; retry_limit)</mark><br><mark style="color:orange;">OR</mark> <br><mark style="color:blue;">( funds_available_status = 'not_available"</mark> <mark style="color:purple;">AND</mark> <mark style="color:blue;">funds_available_retries &#x3C; retry_limit)</mark><br>) </p></td></tr></tbody></table>
