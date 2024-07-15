@@ -30,11 +30,11 @@ The key parameters are:
 
 ### Body request parameters
 
-| Name           | Value                  |
-| -------------- | ---------------------- |
-| client\_id     | \<client\_id>          |
-| client\_secret | \<client\_secret>      |
-| grant\_type    | \<client\_credentials> |
+| Name           | Value               |
+| -------------- | ------------------- |
+| client\_id     | \<client\_id>       |
+| client\_secret | \<client\_secret>   |
+| grant\_type    | client\_credentials |
 
 ### Sample cURL request
 
@@ -72,7 +72,7 @@ The `search api` utilizes **GraphQL** query parameters. The query parameter enha
 
 • **Fields Selection**: GraphQL allows you to specify the fields you need to receive in response based on your query. This means you can tailor the response to include only the relevant data that fulfills your needs. This makes the API response more lightweight and accurate.
 
-• **Pagination Parameters**: For queries that return large data, it is mandatory to break into several pages through pagination. GraphQL uses the query parameter to set the limit to return the number of records per page.
+• **Pagination Parameters**: For queries that return large data, it is mandatory to break into several pages through pagination. GraphQL uses the query parameter to set the limit  and offset to return the number of records per page.
 
 • **Sort Order**: You can specify the order to organize the data that you need to receive in response. You can sort ascending or descending based on a specific field.
 
@@ -80,7 +80,7 @@ The `search api` utilizes **GraphQL** query parameters. The query parameter enha
 
 ```graphql
 {
-  getregistrants(address: "New York", age_gte: 18, sort: "name_ASC", limit: 10) {
+  getregistrants(address: "New York", sort: "id DESC", limit: 20, offset: 20) {
     name,
     age,
     gender,
@@ -89,7 +89,7 @@ The `search api` utilizes **GraphQL** query parameters. The query parameter enha
 }
 ```
 
-For example, the query returns the name, age, gender, and address of the first 10 registrants of age >=18 years, residing in New York, and the names are sorted in ascending order.
+For example, the query returns the name, age, gender, and address of next page 20 registrants who are residing in New York, and the ids are sorted in descending order.
 
 ## API specification
 

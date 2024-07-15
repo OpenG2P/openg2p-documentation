@@ -36,15 +36,57 @@ The API request and response values used in the below sections are only an examp
 
 ## Authentication
 
-A basic authentication mechanism secures OpenG2P Social Registry CRUD API.  It uses login credentials, i.e., User name and Password to allow the end-user to access the Social Registry database.
+The Group APIs use a session-based authentication mechanism provided by Odoo. This involves initiating a session using login credentials. The end-user must authenticate by calling the `/web/session/authenticate` endpoint with the appropriate parameters in the request body. Successfully authenticated sessions generate a session ID, which is then used to authenticate subsequent API requests.
 
-### Key request parameters - basic authentication
+Subsequent API requests must include the session ID in the header to maintain the authenticated session.
 
-| Name     | Value                  |
-| -------- | ---------------------- |
-| URL      | \<openg2p.sandbox.net> |
-| UserName | \*\*\*\*\*\*\*         |
-| Password | \*\*\*\*\*\*\*         |
+### Session Authentication Endpoint
+
+| Name   | Value                                           |
+| ------ | ----------------------------------------------- |
+| Method | GET                                             |
+| URL    | \<openg2p.sandbox.net>/web/session/authenticate |
+
+### Body parameters
+
+| Parameter Name | Description                          | Mandatory/Optional | Data Type |
+| -------------- | ------------------------------------ | ------------------ | --------- |
+| jsonrpc        | The version of the JSON-RPC protocol | Mandatory          | String    |
+| db             | The name of the databaes             | Mandatory          | String    |
+| login          | The user's login name                | Mandatory          | String    |
+| password       | The user's password                  | Mandatory          | String    |
+
+### **Sample cURL request**
+
+```
+curl --location --request GET '<openg2p.sandox.net>/web/session/authenticate' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: frontend_lang=en_US; session_id=c7b75ddb25f94ced204b78e6d7ea115c4a7c0f7e' \
+--data '{
+    "jsonrpc": "2.0", 
+    "params": {
+        "db": <db-name>, 
+        "login": <login>, 
+        "password": <password>
+    }
+}
+'
+```
+
+### Sample request
+
+```json
+{
+    "jsonrpc": "2.0", 
+    "params": {
+        "db": <db-name>, 
+        "login": <login>, 
+        "password": <password>
+    }
+}
+```
+
+##
 
 ## Create group registry
 
@@ -56,6 +98,7 @@ This endpoint allows the end-user to create a new group.
 | ------ | --------------------------------------------- |
 | Method | `POST`                                        |
 | URI    | `<openg2p.sandbox.net>/api/v1/registry/group` |
+| Cookie | session\_id=\<session\_id>                    |
 
 ### Body parameters
 
@@ -69,6 +112,7 @@ curl --request POST
 --header 'Accept: application/json'
 --header 'Accept-Language: '
 --header 'Content-Type: application/json'
+--header 'session_id=<session_id>'
 --data '{ "name": "string", "ids": [ { "id_type": "string", "value": "string", "expiry_date": "2019-08-24" } ], "registration_date": "2019-08-24", "phone_numbers": [ { "phone_no": "string", "date_collected": "2019-08-24" } ], "email": "string", "address": "string", "bank_ids": [ { "bank_name": "string", "acc_number": "string" } ], "is_group": true, "members": [ { "name": "string", "given_name": "string", "addl_name": "string", "family_name": "string", "ids": [ { "id_type": "string", "value": "string", "expiry_date": "2019-08-24" } ], "registration_date": "2019-08-24", "phone_numbers": [ { "phone_no": "string", "date_collected": "2019-08-24" } ], "email": "string", "address": "string", "gender": "string", "birthdate": "2019-08-24", "birth_place": "string", "is_group": false, "kind": [ { "name": "string" } ], "bank_ids": [ { "bank_name": "string", "acc_number": "string" } ] } ], "kind": "string", "is_partial_group": true }'
 ```
 
@@ -217,6 +261,7 @@ This endpoint allows the end-user to retrieve the group registry data based on a
 | ------ | --------------------------------------------------- |
 | Method | `GET`                                               |
 | URI    | `<openg2p.sandbox.net>/api/v1/registry/group/{_id}` |
+| Cookie | session\_id=\<session\_id>                          |
 
 <table><thead><tr><th width="177">Parameter Name</th><th width="205">Description</th><th width="217">Mandatory/Optional</th><th>Data Type</th></tr></thead><tbody><tr><td>id</td><td>The ID of a group</td><td>Mandatory</td><td><p>Number </p><p>Example: 124567</p></td></tr></tbody></table>
 
@@ -227,6 +272,7 @@ curl --request GET
 --url https://openg2p.stoplight.io/api/v1/registry/group/_id
 --header 'Accept: application/json'
 --header 'Accept-Language: '
+--header 'session_id=<session_id>'
 ```
 
 ### **Sample response**
@@ -302,6 +348,7 @@ This endpoint allows the end-user to search the group based on a specific ID or 
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Method | `GET`                                                                                                                                                            |
 | URI    | <p><code>&#x3C;openg2p.sandbox.net>/api/v1/registry/group/{_id}</code></p><p>(or)</p><p><code>&#x3C;openg2p.sandbox.net>/api/v1/registry/group/{name}</code></p> |
+| Cookie | session\_id=\<session\_id>                                                                                                                                       |
 
 <table><thead><tr><th width="177">Parameter Name</th><th width="205">Description</th><th width="217">Mandatory/Optional</th><th>Data Type</th></tr></thead><tbody><tr><td>id</td><td>The ID of the individual</td><td>Optional</td><td><p>Number </p><p>Example: 4356789</p></td></tr><tr><td>name</td><td>The name of the individual</td><td>Optional</td><td><p>String </p><p>Example: John Miller</p></td></tr></tbody></table>
 
@@ -312,6 +359,7 @@ curl --request GET
 --url https://openg2p.stoplight.io/api/v1/registry/group
 --header 'Accept: application/json'
 --header 'Accept-Language: '
+--header 'session_id=<session_id>'
 ```
 
 ### **Sample response**
