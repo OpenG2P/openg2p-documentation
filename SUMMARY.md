@@ -220,6 +220,7 @@
         * [📔 Configure Service Provider Portal User to Limit Accessing Location](social-registry/functionality/service-provider-portal/user-guides/configure-service-provider-portal-user-to-limit-accessing-location.md)
     * [Notifications](social-registry/features/notifications.md)
     * [Administration / User Management](social-registry/functionality/administration/README.md)
+      * [User Roles](social-registry/functionality/administration/user-roles.md)
       * [📔 User Guide](social-registry/functionality/administration/user-guide/README.md)
         * [📔 Create User and Assign Role](social-registry/functionality/administration/user-guide/create-user-and-assign-role.md)
     * [Geographic](social-registry/functionality/geographic.md)
