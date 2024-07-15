@@ -40,23 +40,23 @@ layout:
 5. BankConnectorInterface - There will be a connector (implementation of the BankConnectorInterface) for every Sponsor Bank
 6. Invoke - Check Funds API
 
-**If SUCCESS and FUNDS\_AVAILABLE, update the following**
+<mark style="color:blue;">**SUCCESS and FUNDS\_AVAILABLE, update the following**</mark>
 
 1. disbursement\_envelope\_batch\_status.funds\_available\_with\_bank = funds\_available
 2. disbursement\_envelope\_batch\_status.funds\_available\_latest\_timestamp = now()
 3. disbursement\_envelope\_batch\_status.funds\_available\_latest\_error\_code = null
-4. disbursement\_envelope\_batch\_status.funds\_available\_retries = +1
+4. disbursement\_envelope\_batch\_status.funds\_available\_attempts+ = 1
 
-**If SUCCESS and FUNDS\_UNAVAILABLE, update the following**
+<mark style="color:blue;">**SUCCESS and FUNDS\_UNAVAILABLE, update the following**</mark>
 
 1. disbursement\_envelope\_batch\_status.funds\_available\_with\_bank = funds\_not\_available
 2. disbursement\_envelope\_batch\_status.funds\_available\_latest\_timestamp = now()
 3. disbursement\_envelope\_batch\_status.funds\_available\_latest\_error\_code = null
-4. disbursement\_envelope\_batch\_status.funds\_available\_retries = +1
+4. disbursement\_envelope\_batch\_status.funds\_available\_attempts+ = 1
 
-**If FAILURE, update the following**
+<mark style="color:blue;">**FAILURE, update the following**</mark>
 
 1. disbursement\_envelope\_batch\_status.funds\_available\_with\_bank = pending\_check
 2. disbursement\_envelope\_batch\_status.funds\_available\_latest\_timestamp = now()
 3. disbursement\_envelope\_batch\_status.funds\_available\_latest\_error\_code = error\_code
-4. disbursement\_envelope\_batch\_status.funds\_available\_retries = +1
+4. disbursement\_envelope\_batch\_status.funds\_available\_attempts+ = 1
