@@ -6,6 +6,16 @@ description: >-
 
 # resolve
 
+## Object design
+
+### mapper\_resolution\_batch\_status
+
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><p></p><p><strong>mapper_resolution_batch_id</strong></p></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
+
+### **mapper\_resolution\_details**
+
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
+
 **Business logic**
 
 1. **Payload received** - disbursement\_mapper\_resolution\_batch\_id
@@ -20,42 +30,14 @@ description: >-
 
 **Insert into table disbursement\_mapper\_resolution\_details**
 
-mapper\_resolution\_batch\_id
-
-disbursement\_id
-
-beneficiary\_id
-
-disbursement\_batch\_status.mapper\_resolved\_fa
-
-disbursement\_batch\_status.mapper\_resolved\_phone\_number
-
-disbursement\_batch\_status.mapper\_resolved\_name
-
 **Insert into table - disbursement\_mapper\_resolution\_batch\_status**
 
-mapper\_resolution\_batch\_id
-
-resolution\_status = PROCESSED
-
-resolution\_time\_stamp
-
-resolution\_error\_code\_latest
-
-resolution\_retries
+resolution\_status = PROCESSED, resolution\_attempts+ = 1
 
 <mark style="color:blue;">**FAILURE (from mapper resolution API invoke)**</mark>
 
 **Insert into table - disbursement\_mapper\_resolution\_batch\_status**
 
-mapper\_resolution\_batch\_id
-
-resolution\_status = PENDING
-
-resolution\_time\_stamp = BLANK
-
-resolution\_error\_code\_latest = Error Code as received from API
-
-resolution\_retries = increment by 1
+resolution\_status = PENDING, latest\_error\_code, resolution\_attempts+ = 1
 
 <mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>

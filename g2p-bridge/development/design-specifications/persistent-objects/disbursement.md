@@ -43,14 +43,6 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="314">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>disbursement_id</td><td>Unique identifier for each disbursement transaction<br><strong>Unique Index</strong></td></tr><tr><td>disbursement_envelope_id</td><td>The envelope under which this disbursement is being effected<br><strong>Non Unique Index</strong></td></tr><tr><td>beneficiary_id</td><td><strong>Non Unique Index</strong></td></tr><tr><td>shipment_to_bank_batch_id</td><td>Uniquely represents the shipment bundle into which this disbursement is included.<br>Typically, the payment instruction API into the sponsor bank will be a bulk API, containing many disbursements. Depending on the number of disbursements, there will be many batches into the sponsor bank. This <strong>shipment_to_bank_batch_id</strong> facilitates identification of the exact shipment batch. <br><mark style="color:blue;">The shipment_batch_id is created by the sponsor_bank_dispatch_producer (celery beat producer)</mark><br><strong>Unique Index</strong></td></tr><tr><td>mapper_resolution_batch_id</td><td>Unique batch id - that represents batch control for ID-Mapper resolution<br>Multiple beneficiary ids will be sent to the  mapper resolve API in a single invocation<br>This batch id - represents that batch.<br>All records that are in a single batch_id - will be sent to the mapper resolution in a single API call<br><mark style="color:blue;">The mapper_resolution_batch_id - is created during "create_disbursements" inward API from PBMS. All disbursements received in a single API from PBMS are batched together with a single resolution batch id</mark><br><strong>Unique Index</strong></td></tr></tbody></table>
 
-### mapper\_resolution\_batch\_status
-
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>mapper_resolution_batch_id</strong></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
-
-### **mapper\_resolution\_details**
-
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
-
 ### <mark style="color:blue;">Table - handled by the Bank Shipment Celery Beat Producer</mark>&#x20;
 
 ### bank\_shipment\_batch\_status
