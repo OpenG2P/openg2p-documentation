@@ -6,7 +6,7 @@ description: >-
 
 # resolve
 
-## Object design
+### Object design
 
 ### mapper\_resolution\_batch\_status
 
@@ -23,21 +23,29 @@ description: >-
 3. Create a Map of \<beneficiary\_id, disbursement\_id>
 4. Create Payload for Mapper - Resolve API - with List of Beneficiary IDs
 5. Invoke Mapper - Resolve API, send the list of beneficiary IDs, receive Financial Address
-6. Use the Map of \<beneficiary\_id, disbursement\_id> to insert into the table disbursement\_mapper\_resolution\_details
+6.
 7. Insert into table - disbursement\_mapper\_resolution\_batch\_status
 
 <mark style="color:blue;">**SUCCESS (from Mapper Resolution API invoke)**</mark>
 
-**Insert into table disbursement\_mapper\_resolution\_details**
-
-**Insert into table - disbursement\_mapper\_resolution\_batch\_status**
-
-resolution\_status = PROCESSED, resolution\_attempts+ = 1
+1. Use the Map of \<beneficiary\_id, disbursement\_id> to insert into the table disbursement\_mapper\_resolution\_details
+2. Insert into table - mapper\_resolution\_batch\_status (resolution\_status = PROCESSED, resolution\_attempts+ = 1)
 
 <mark style="color:blue;">**FAILURE (from mapper resolution API invoke)**</mark>
 
-**Insert into table - disbursement\_mapper\_resolution\_batch\_status**
-
-resolution\_status = PENDING, latest\_error\_code, resolution\_attempts+ = 1
+1. Insert into table - mapper\_resolution\_batch\_status (resolution\_status = PENDING, latest\_error\_code, resolution\_attempts+ = 1)
 
 <mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>
+
+**Mapper Resolution Celery Beat Producer**
+
+1. Come up on configured Time Intervals
+2. Pick up all "PENDING" records from mapper\_resolution\_batch\_status
+3. Dispatch a Task to Resolution Worker Task with Payload = mapper\_resolution\_batch\_id
+
+
+
+
+
+
+
