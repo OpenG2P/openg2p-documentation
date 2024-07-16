@@ -21,7 +21,9 @@ layout:
 * Worker invoked by
   1. bank\_block\_funds\_beat\_producer (Celery beat producer)
 
-### bank\_block\_funds\_beat\_producer
+## bank\_block\_funds\_beat\_producer
+
+### Business logic
 
 <table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>attempts</td><td>yes. subject to a configurable limit specified by configuration yml</td></tr><tr><td>driving table</td><td>disbursement_envelope_batch_status</td></tr><tr><td>eligible envelopes</td><td><p><mark style="color:blue;">disbursement_schedule_date &#x3C;= today</mark></p><p><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">cancellation_status = 'NOT_CANCELLED'</mark></p><p><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">number_of_disbursements = number_of_disbursements_received</mark><br><mark style="color:red;">AND</mark></p><p><mark style="color:blue;">funds_available_status = 'FUNDS_AVAILABLE'</mark></p><p><mark style="color:red;">AND</mark></p><p>(<br><mark style="color:blue;">( funds_block_status = "PENDING_CHECK"</mark> <mark style="color:purple;">AND</mark> <mark style="color:blue;">funds_block_retries &#x3C; retry_limit)</mark><br><mark style="color:orange;">OR</mark><br><mark style="color:blue;">(funds_block_status = 'FUNDS_BLOCK_FAILURE"</mark> <mark style="color:purple;">AND</mark> <mark style="color:blue;">funds_block_retries &#x3C; retry_limit)</mark><br>) </p></td></tr></tbody></table>
 
@@ -29,7 +31,7 @@ layout:
 2. Delegate a task to bank\_block\_funds\_worker
 3. Payload - disbursement\_envelope\_id
 
-bank\_block\_funds\_worker
+## bank\_block\_funds\_worker
 
 1. Payload - disbursement\_envelope\_id
 2. get the details of the disbursement\_envelope - total funds needed for this envelope
