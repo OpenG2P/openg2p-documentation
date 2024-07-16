@@ -20,14 +20,37 @@ The exact mechanics of how this statement will be delivered to the government de
 
 Depending on the physical delivery mechanism, the implementation can create an integration layer and use this API to upload the MT940 message.
 
-| API Attributes |                                               |
-| -------------- | --------------------------------------------- |
-| Direction      | Inward                                        |
-| Invoked by     | Sponsor bank, Implementation Integration work |
-| Mode           | Synchronous                                   |
-| Tables         | benefit\_program\_account\_statement          |
+| API Attributes |                                                                   |
+| -------------- | ----------------------------------------------------------------- |
+| Direction      | Inward                                                            |
+| Invoked by     | Sponsor bank, Implementation Integration work                     |
+| Mode           | Synchronous                                                       |
+| Tables         | <p>benefit_program_account_statement<br>account_statement_lob</p> |
 
 Object design
+
+benefit\_program\_account\_statement
+
+| Attribute                       | Description                         |
+| ------------------------------- | ----------------------------------- |
+| statement\_id                   | Unique ID                           |
+| statement\_date                 |                                     |
+| account\_number                 |                                     |
+| statement\_number               |                                     |
+| statement\_upload\_timestamp    |                                     |
+| statement\_process\_status      | <p>Enum<br>PENDING<br>PROCESSED</p> |
+| statement\_process\_timestamp   |                                     |
+| statement\_process\_error\_code |                                     |
+| statement\_process\_attempts    |                                     |
+
+account\_statement\_lob
+
+| Attribute      | Description                                            |
+| -------------- | ------------------------------------------------------ |
+| statement\_id  |                                                        |
+| statement\_lob | <p>TEXT type<br>Stores the MT940 Statement as TEXT</p> |
+
+
 
 ### disbursement\_recon\_from\_bank
 
