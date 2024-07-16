@@ -34,3 +34,32 @@ layout:
       1. Delegate task to disburse\_funds\_from\_bank\_worker
       2. Payload -- bank\_disbursement\_batch\_id
 
+## disburse\_funds\_from\_bank\_worker
+
+1. Payload -- bank\_disbursement\_batch\_id
+2. Get the benefit\_program\_configuration (for remitting account details)
+3. For this bank\_disbursement\_batch\_id, get the disbursement\_envelope\_id from bank\_disbursement\_batch\_status
+4. Get the records - disbursement\_envelope & disbursement\_envelope\_batch\_status
+5. For this bank\_disbursement\_batch\_id, create a List\<disbursement\_id> from disbursement\_batch\_control
+6. create List\<Disbursement> with select from disbursements for this List\<disbursement\_id>
+7. get the instance of BankConnector (implementing BankConnectorInterface) from BankConnectorFactory
+8. BankConnectorInterface - There will be a connector (implementation of the BankConnectorInterface) for every Sponsor Bank
+9. Invoke - Disburse API
+
+<mark style="color:blue;">**SUCCESS**</mark>
+
+update bank\_disbursement\_batch\_status
+
+1. disbursement\_status = 'PROCESSED'
+2. disbursement\_timestamp = now()
+
+<mark style="color:blue;">**FAILURE**</mark>
+
+update bank\_disbursement\_batch\_status
+
+1. disbursement\_status = 'PENDING'
+2. disbursement\_timestamp = now()
+3. latest\_error\_code = as received from sponsor bank API response
+4. disbursement\_attempts+ = 1
+
+&#x20;
