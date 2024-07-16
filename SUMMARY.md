@@ -317,7 +317,7 @@
       * [OUT APIs to Bank](g2p-bridge/development/design/out-apis-to-bank/README.md)
         * [check\_funds\_with\_bank](g2p-bridge/development/design/out-apis-to-bank/check\_funds\_with\_bank.md)
         * [block\_funds\_with\_bank](g2p-bridge/development/design/out-apis-to-bank/block\_funds\_with\_bank.md)
-        * [create\_disbursements](g2p-bridge/development/design/out-apis-to-bank/create\_disbursements.md)
+        * [disburse\_funds\_from\_bank](g2p-bridge/development/design/out-apis-to-bank/create\_disbursements.md)
       * [IN APIs from Bank](g2p-bridge/development/design/in-apis-from-bank/README.md)
         * [upload\_mt940](g2p-bridge/development/design/in-apis-from-bank/update\_status\_of\_disbursements.md)
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
