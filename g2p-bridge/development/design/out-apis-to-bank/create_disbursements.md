@@ -52,6 +52,7 @@ update bank\_disbursement\_batch\_status
 
 1. disbursement\_status = 'PROCESSED'
 2. disbursement\_timestamp = now()
+3. disbursement\_attempts+ = 1
 
 <mark style="color:blue;">**FAILURE**</mark>
 
