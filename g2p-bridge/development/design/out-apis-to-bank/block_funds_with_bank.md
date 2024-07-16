@@ -19,9 +19,9 @@ layout:
 
 * block\_funds\_with\_bank API invoked by bank\_block\_funds\_worker (Celery worker task)
 * Worker invoked by
-  1. bank\_block\_funds\_beat\_producer (Celery beat producer)
+  1. block\_funds\_with\_bank\_beat\_producer (Celery beat producer)
 
-## bank\_block\_funds\_beat\_producer
+## block\_funds\_with\_bank\_beat\_producer
 
 ### Business logic
 
@@ -31,7 +31,7 @@ layout:
 2. Delegate a task to bank\_block\_funds\_worker
 3. Payload - disbursement\_envelope\_id
 
-## bank\_block\_funds\_worker
+## block\_funds\_with\_bank\_worker
 
 1. Payload - disbursement\_envelope\_id
 2. get the details of the disbursement\_envelope - total funds needed for this envelope
