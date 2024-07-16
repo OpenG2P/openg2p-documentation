@@ -33,7 +33,7 @@ benefit\_program\_account\_statement
 
 | Attribute                       | Description                         |
 | ------------------------------- | ----------------------------------- |
-| statement\_id                   | Unique ID                           |
+| **statement\_id**               | **Unique ID**                       |
 | statement\_date                 |                                     |
 | account\_number                 |                                     |
 | statement\_number               |                                     |
