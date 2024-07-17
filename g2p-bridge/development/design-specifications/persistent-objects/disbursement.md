@@ -47,15 +47,20 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 <table><thead><tr><th width="311">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>bank_disbursement_batch_id</strong></td><td>Unique Index</td></tr><tr><td>disbursement_envelope_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>disbursement_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">disbursement_attempts</mark></td><td></td></tr></tbody></table>
 
+### mapper\_resolution\_batch\_status
+
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><p></p><p><strong>mapper_resolution_batch_id</strong></p></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
+
 ### create\_disbursements - Business Logic
 
 Persist in the following tables
 
 1. disbursements
-2. disbursement\_batch\_control & bank\_disbursement\_batch\_status&#x20;
-3. Every API invocation - will result in 1 record each in disbursement\_batch\_control and bank\_disbursement\_batch\_status
-4. Dispatch a Task to the Mapper Resolution Celery Worker (Task) - with this mapper\_resolution\_batch\_id
-5. The mapper resolution - itself - is dependent on the disbursement\_envelope.id\_mapper\_resolution\_required attribute (true/false)
+2. disbursement\_batch\_control
+3. bank\_disbursement\_batch\_status&#x20;
+4. mapper\_resolution\_batch\_status
+5. Every API invocation - will result in 1 record each in disbursement\_batch\_control & bank\_disbursement\_batch\_status & mapper\_resolution\_batch\_status
+6. The mapper resolution - itself - is dependent on the disbursement\_envelope.id\_mapper\_resolution\_required attribute (true/false)
 
 <mark style="color:blue;">Bulk Insert should be used to persist the tables - wherever multiple records are applicable</mark>
 
