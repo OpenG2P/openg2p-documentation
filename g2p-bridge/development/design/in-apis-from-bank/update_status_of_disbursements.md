@@ -96,17 +96,35 @@ Depending on the physical delivery mechanism, the implementation can create an i
 5. Update these attributes in the table - account\_statement
 6. Now loop through the transaction section of the MT940&#x20;
 7. Each Transaction consists of two lines (tags) - :61: & :86: (Statement and Narrative)
-8. :61: is known as the Statement line and has the following structure
-   1. <mark style="color:purple;">:61:1507020702D115945,00F014NARRATIVE//0207150143062089CRLF1234567890</mark>
-      1. <mark style="color:purple;">150702 -- 6 digits -- Transaction Value Date in YYMMDD format</mark>
-      2. <mark style="color:purple;">0702 -- 4 digits -- Transaction Booking Date in MMDD format</mark>
-      3. <mark style="color:purple;">C/D -- 1 digit -- Credit or Debit indicator</mark>
-      4. <mark style="color:purple;">115945,00 -- Transaction Amount -- Maximum 19 characters</mark>
-      5. F014 -- Transaction Code -- Should be a standard transaction code - 1 for Credit and another 1 for Debit
-      6. NARRATIVE -- Transaction Narrative -- Should be the Beneficiary Name -- This should be as sent by the g2p-bridge to the Sponsor Bank
-      7. // Reference Separator
-      8. <mark style="color:purple;">0207150143062089CRLF1234567890 -- Transaction Reference Number issued by the Bank for this transaction</mark>
-9. <mark style="color:purple;">:86: is known as the Narrative Line - It can have 6 lines of 65 characters each. g2p-bridge should send as many details about the Benefit Program and Beneficiary in the Disbursement payload to ensure that the narrative text is as rich as possible</mark>
+8.  :61: is known as the Statement line and has the following structure
+
+    <mark style="color:purple;">:61:1507020702D115945,00F014NARRATIVE//0207150143062089CRLF1234567890</mark>
+
+    1. <mark style="color:purple;">150702 -- 6 digits -- Transaction Value Date in YYMMDD format</mark>
+    2. <mark style="color:purple;">0702 -- 4 digits -- Transaction Booking Date in MMDD format</mark>
+    3. <mark style="color:purple;">C/D -- 1 digit -- Credit or Debit indicator</mark>
+    4. <mark style="color:purple;">115945,00 -- Transaction Amount -- Maximum 19 characters</mark>
+    5. <mark style="color:purple;">F014 -- Transaction Code -- Should be a standard transaction code - 1 for Credit and another 1 for Debit</mark>
+    6. <mark style="color:purple;">NARRATIVE -- Transaction Narrative -- Should be the Beneficiary Name -- This should be as sent by the g2p-bridge to the Sponsor Bank</mark>
+    7. <mark style="color:purple;">// Reference Separator</mark>
+    8. <mark style="color:purple;">0207150143062089CRLF1234567890 -- Transaction Reference Number issued by the Bank for this transaction</mark>
+9. :86: is known as the Narrative Line - It can have 6 lines of 65 characters each. g2p-bridge should send as many details about the Benefit Program and Beneficiary in the Disbursement payload to ensure that the narrative text is as rich as possible
+10. Create a List of Transactions for a Statement based on the Statement lines. The Statement Pydantic model should contain the following attributes
+    1. Transaction Value Date
+    2. Transaction Book Date
+    3. Transaction Amount
+    4. Debit-Credit Indicator
+    5. Beneficiary Name -- NARRATIVE field (after the Reference Separator //)
+    6. XX
+11. Loop through the transactions. For each transaction
+    1. Based on the Transaction Book Date -- go back 2 days (book date minus 2)
+    2. This 2 (can be a configuration)
+    3. get the benefit program based on the sponsor bank account number (benefit\_program\_configuration)
+    4. for this benefit program, get a. list of all disbursements from Book Date minus 2
+    5. the idea is that - based on an SLA -- the book date represents when the bank would have processed the disbursements after g2p-bridge dispatched them to the bank
+    6. every disbursement should ideally have a corresponding Debit entry in the account statement
+    7. match the transaction amount and the beneficiary details and the program details (how the narrative is formed has to be discussed)
+    8. update the table - disbursement\_
 
 
 
