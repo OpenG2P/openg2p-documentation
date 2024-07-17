@@ -47,12 +47,6 @@ layout:
 
 1. Update table - mapper\_resolution\_batch\_status (resolution\_status = PENDING, latest\_error\_code, resolution\_attempts+ = 1)
 
-<mark style="color:orange;">**These PENDING records will be picked up the Mapper Resolution Celery Beat Producer**</mark>
-
-####
-
-
-
 
 
 
