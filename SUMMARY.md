@@ -322,7 +322,7 @@
       * [IN APIs from Bank](g2p-bridge/development/design/in-apis-from-bank/README.md)
         * [upload\_mt940](g2p-bridge/development/design/in-apis-from-bank/update\_status\_of\_disbursements.md)
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
-        * [benefit\_program](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
+        * [benefit\_program\_configuration](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [Config Attributes](g2p-bridge/development/design/config-attributes.md)
       * [Interfaces](g2p-bridge/development/design/interfaces.md)
         * [OutwardBankConnector Factory](g2p-bridge/development/design-specifications/interfaces/outwardbankconnector-factory.md)
