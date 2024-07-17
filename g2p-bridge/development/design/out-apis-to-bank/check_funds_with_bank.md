@@ -17,7 +17,7 @@ layout:
 
 ## Trigger
 
-* check\_funds\_with\_bank API invoked by bank\_check\_funds\_worker (Celery worker task)
+* check\_funds\_with\_bank API invoked by check\_funds\_with\_bank\_worker (Celery worker task)
 * Worker invoked by
   1. check\_funds\_with\_bank\_beat\_producer (Celery beat producer)
 
