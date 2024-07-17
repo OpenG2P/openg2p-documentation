@@ -64,12 +64,14 @@ Depending on the physical delivery mechanism, the implementation can create an i
 2. For each account statement, delegates a task to mt940\_processor\_worker
 3. Payload -- statement\_id
 
-mt940\_processor\_worker
+### mt940\_processor\_worker
 
 1. Payload -- statement\_id
 2. Picks up the record from account\_statement
 3. Picks up the lob from account\_statement\_lob
-4. Parse the mt940 (header, body and trailer)
+4. Parse the mt940 - header and retrieve the following
+   1. sponsor bank account number
+   2. statement\_number
 
 
 
