@@ -24,21 +24,21 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     sudo systemctl restart nginx
     ```
 
-This is only a one-time installation. Whenever you want to add new servers to this Nginx, follow [Install Servers to Nginx Section](nginx.md#install-servers-to-nginx).
+This is only a one-time installation. Whenever you want to add new servers to this Nginx, follow the [Install Servers to Nginx Section](nginx.md#install-servers-to-nginx).
 
 ## Install servers to Nginx
 
 ### Prerequisites
 
-* [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (required to terminate HTTPS connects at Nginx and this certificate can be created only once for all the other servers you can configure later).
+* [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
 
 ### Installation
 
-* Once nginx server is installed, it will create sites for HTTP redirection. To use streams for TCP connections instead of sites, you need to manually create the `streams-available` and `streams-enabled` directories inside the nginx directory.
-* Navigate to `/etc/nginx/streams-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/streams.sample.conf ](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/streams.sample.conf)file as a template.
+* Once nginx server is installed, it will create `sites-enabled` and `sites-available` directories inside /etc/nginx directory.
+* Navigate to `/etc/nginx/sites-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/sites.sample.conf ](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf)file as a template.
 
 {% hint style="info" %}
-Creation of the `<sandbox name>.conf` section applies only to one server. Repeat this section for every server to be added.
+Creation of the `<sandbox name>.conf` file applies only to one server in the nginx node. Repeat this section for every server to be added.
 {% endhint %}
 
 * Use a new Listen IP Address for every server. It is recommended to add a new network interface in the same VM which is part of the same network.
@@ -46,7 +46,7 @@ Creation of the `<sandbox name>.conf` section applies only to one server. Repeat
 *   Run this to enable the server that is added now.
 
     ```bash
-    sudo ln -s /etc/nginx/streams-available/<sandbox name>.conf /etc/nginx/streams-enabled/
+    sudo ln -s /etc/nginx/sites-available/<sandbox name>.conf /etc/nginx/sites-enabled/
     ```
 *   Test nginx conf for errors.
 
