@@ -66,19 +66,19 @@ Depending on the physical delivery mechanism, the implementation can create an i
 4. Parse the mt940 - header and trailer and retrieve the following
    1.  sponsor bank account number - Tag :25: of MT940 - Header Section
 
-       E.g. - <mark style="color:purple;">**:25:032000136465**</mark>
+       E.g. - <mark style="color:purple;">:25:032000136465</mark>
    2.  reference\_number - Tag :20: of MT940 - Header Section
 
-       E.g. - <mark style="color:purple;">**:20:CSCT032000136465**</mark>
+       E.g. - <mark style="color:purple;">:20:CSCT032000136465</mark>
    3.  statement\_number - Tag :28C: of MT940 - Header Section
 
-       E.g. - <mark style="color:purple;">**:28C:00001/001**</mark> (section before slash "/" is statement number)
+       E.g. - <mark style="color:purple;">:28C:00001/001</mark> (section before slash "/" is statement number)
    4.  sequence\_number - Tag :28C: of MT940 - Header Section
 
        E.g. - :28C:00001/001 (section after slash "/" is sequence number)
    5.  opening\_balance - Tag :60F: of MT940 - Header Section
 
-       E.g. - <mark style="color:purple;">**:60F:C171120AUD98838,27**</mark>
+       E.g. - <mark style="color:purple;">:60F:C171120AUD98838,27</mark>
 
        C or D -- stands for Credit Balance or Debit Balance
 
@@ -87,12 +87,26 @@ Depending on the physical delivery mechanism, the implementation can create an i
        AUD -- Australian Dollar - Currency of the Account
 
        98838,27 -- Ninety Eight Thousand Eight Hundred Thirty Eight AUD and Twenty Seven Cents - The comma is to be treated as decimal
-   6.
-   7. closing\_balance - Tag :62F: of MT940 - Trailer Section
-      1. closing\_available\_balance - Tag :64: of MT940 - Trailer Section
+   6.  closing\_balance - Tag :62F: of MT940 - Trailer Section
+
+       Similar to Tag 60F
+   7.  closing\_available\_balance - Tag :64: of MT940 - Trailer Section
+
+       Similar to Tag 60F and 62F
 5. Update these attributes in the table - account\_statement
 6. Now loop through the transaction section of the MT940&#x20;
 7. Each Transaction consists of two lines (tags) - :61: & :86: (Statement and Narrative)
+8. :61: is known as the Statement line and has the following structure
+   1. <mark style="color:purple;">:61:1507020702D115945,00F014NARRATIVE//0207150143062089CRLF1234567890</mark>
+      1. <mark style="color:purple;">150702 -- 6 digits -- Transaction Value Date in YYMMDD format</mark>
+      2. <mark style="color:purple;">0702 -- 4 digits -- Transaction Booking Date in MMDD format</mark>
+      3. <mark style="color:purple;">C/D -- 1 digit -- Credit or Debit indicator</mark>
+      4. <mark style="color:purple;">115945,00 -- Transaction Amount -- Maximum 19 characters</mark>
+      5. F014 -- Transaction Code -- Should be a standard transaction code - 1 for Credit and another 1 for Debit
+      6. NARRATIVE -- Transaction Narrative -- Should be the Beneficiary Name -- This should be as sent by the g2p-bridge to the Sponsor Bank
+      7. // Reference Separator
+      8. <mark style="color:purple;">0207150143062089CRLF1234567890 -- Transaction Reference Number issued by the Bank for this transaction</mark>
+9. <mark style="color:purple;">:86: is known as the Narrative Line - It can have 6 lines of 65 characters each. g2p-bridge should send as many details about the Benefit Program and Beneficiary in the Disbursement payload to ensure that the narrative text is as rich as possible</mark>
 
 
 
