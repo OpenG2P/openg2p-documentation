@@ -19,15 +19,12 @@ layout:
 1. resolve API invoked by mapper\_resolution\_worker (Celery worker task)
 2. Worker invoked by mapper\_resolution\_beat\_producer (Celery beat producer)
 
-## **mapper\_resolution\_details**
-
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
-
 ## **mapper\_resolution\_beat\_producer**
 
-1. Come up on configured Time Intervals
-2. Pick up all "PENDING" records from mapper\_resolution\_batch\_status
-3. Dispatch a Task to Resolution Worker Task with Payload = mapper\_resolution\_batch\_id
+<table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>attempts</td><td>yes. subject to a configurable limit specified by  configuration yml</td></tr><tr><td><mark style="color:purple;">driving table</mark></td><td><mark style="color:purple;">mapper_resolution_batch_status</mark></td></tr><tr><td>eligible records</td><td><mark style="color:blue;">resolution_status = 'PENDING'</mark></td></tr></tbody></table>
+
+1. Pick up all "PENDING" records from mapper\_resolution\_batch\_status
+2. Dispatch a Task to Resolution Worker Task with Payload = mapper\_resolution\_batch\_id
 
 ## mapper\_resolution\_worker
 
@@ -47,7 +44,9 @@ layout:
 
 1. Update table - mapper\_resolution\_batch\_status (resolution\_status = PENDING, latest\_error\_code, resolution\_attempts+ = 1)
 
+## **mapper\_resolution\_details**
 
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>mapper_resolution_batch_id</td><td>Non Unique Index</td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>beneficiary_id</td><td>Non Unique Index</td></tr><tr><td>mapper_resolved_fa</td><td></td></tr><tr><td>mapper_resolved_phone_number</td><td></td></tr><tr><td>mapper_resolved_email_address</td><td></td></tr><tr><td>mapper_resolved_name</td><td></td></tr></tbody></table>
 
 
 

@@ -49,7 +49,7 @@ A disbursement represents a single disbursement transaction under a disbursement
 
 ### mapper\_resolution\_batch\_status
 
-<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><p></p><p><strong>mapper_resolution_batch_id</strong></p></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>WORK_IN_PROGRESS<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="316">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><p></p><p><strong>mapper_resolution_batch_id</strong></p></td><td>Unique Index</td></tr><tr><td>resolution_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>resolution_timestamp</td><td></td></tr><tr><td><mark style="color:red;">latest_error_code</mark></td><td></td></tr><tr><td><mark style="color:red;">resolution_attempts</mark></td><td></td></tr></tbody></table>
 
 ### create\_disbursements - Business Logic
 
