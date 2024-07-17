@@ -31,17 +31,7 @@ Depending on the physical delivery mechanism, the implementation can create an i
 
 ### account\_statement
 
-| Attribute                       | Description                         |
-| ------------------------------- | ----------------------------------- |
-| **statement\_id**               | **Unique ID**                       |
-| statement\_date                 |                                     |
-| account\_number                 |                                     |
-| statement\_number               |                                     |
-| statement\_upload\_timestamp    |                                     |
-| statement\_process\_status      | <p>Enum<br>PENDING<br>PROCESSED</p> |
-| statement\_process\_timestamp   |                                     |
-| statement\_process\_error\_code |                                     |
-| statement\_process\_attempts    |                                     |
+<table><thead><tr><th width="287">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>statement_id</strong></td><td><strong>Unique ID</strong></td></tr><tr><td>statement_date</td><td>Tag :60F: of MT940 - Header Section</td></tr><tr><td>account_number</td><td>Tag :25: of MT940 - Header Section</td></tr><tr><td>reference_number</td><td>Tag :20: of MT940 - Header Section</td></tr><tr><td>statement_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>sequence_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>opening_balance</td><td>Tag :60F: of MT940 - Header Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>closing_balance</td><td>Tag :62F: of MT940 - Trailer Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>closing_available_balance</td><td>Tag :64: of MT940 - Trailer Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>statement_upload_timestamp</td><td></td></tr><tr><td>statement_process_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>statement_process_timestamp</td><td></td></tr><tr><td>statement_process_error_code</td><td></td></tr><tr><td>statement_process_attempts</td><td></td></tr></tbody></table>
 
 ### account\_statement\_lob
 
@@ -58,20 +48,51 @@ Depending on the physical delivery mechanism, the implementation can create an i
 
 ### mt940\_processor\_beat\_producer
 
-<table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>attempts</td><td>yes. subject to a configurable limit specified by  configuration yml</td></tr><tr><td><mark style="color:purple;">driving table</mark></td><td><mark style="color:purple;">account_statement</mark></td></tr><tr><td>eligible envelopes</td><td><mark style="color:blue;">statement_process_status = 'UNPROCESSED'</mark></td></tr></tbody></table>
+<table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>attempts</td><td>yes. subject to a configurable limit specified by  configuration yml</td></tr><tr><td><mark style="color:purple;">driving table</mark></td><td><mark style="color:purple;">account_statement</mark></td></tr><tr><td>eligible envelopes</td><td><mark style="color:blue;">statement_process_status = 'PENDING'</mark></td></tr></tbody></table>
 
 1. Picks up all eligible account\_statement\_records
 2. For each account statement, delegates a task to mt940\_processor\_worker
 3. Payload -- statement\_id
+
+### mt940 - statement format
+
+<figure><img src="../../../../.gitbook/assets/MT940-Account-Statement-Format.png" alt=""><figcaption><p>MT940 - Account Statement - Detailed - Structure</p></figcaption></figure>
 
 ### mt940\_processor\_worker
 
 1. Payload -- statement\_id
 2. Picks up the record from account\_statement
 3. Picks up the lob from account\_statement\_lob
-4. Parse the mt940 - header and retrieve the following
-   1. sponsor bank account number
-   2. statement\_number
+4. Parse the mt940 - header and trailer and retrieve the following
+   1.  sponsor bank account number - Tag :25: of MT940 - Header Section
+
+       E.g. - <mark style="color:purple;">**:25:032000136465**</mark>
+   2.  reference\_number - Tag :20: of MT940 - Header Section
+
+       E.g. - <mark style="color:purple;">**:20:CSCT032000136465**</mark>
+   3.  statement\_number - Tag :28C: of MT940 - Header Section
+
+       E.g. - <mark style="color:purple;">**:28C:00001/001**</mark> (section before slash "/" is statement number)
+   4.  sequence\_number - Tag :28C: of MT940 - Header Section
+
+       E.g. - :28C:00001/001 (section after slash "/" is sequence number)
+   5.  opening\_balance - Tag :60F: of MT940 - Header Section
+
+       E.g. - <mark style="color:purple;">**:60F:C171120AUD98838,27**</mark>
+
+       C or D -- stands for Credit Balance or Debit Balance
+
+       171120 -- 6 characters - Statement Date in YYMMDD format
+
+       AUD -- Australian Dollar - Currency of the Account
+
+       98838,27 -- Ninety Eight Thousand Eight Hundred Thirty Eight AUD and Twenty Seven Cents - The comma is to be treated as decimal
+   6.
+   7. closing\_balance - Tag :62F: of MT940 - Trailer Section
+      1. closing\_available\_balance - Tag :64: of MT940 - Trailer Section
+5. Update these attributes in the table - account\_statement
+6. Now loop through the transaction section of the MT940&#x20;
+7. Each Transaction consists of two lines (tags) - :61: & :86: (Statement and Narrative)
 
 
 
