@@ -63,6 +63,7 @@
     * [Enrolment](pbms/features/enrolment/README.md)
       * [📔 User Guides](pbms/features/enrolment/user-guides/README.md)
         * [📔 Enrol Registrants into Program](pbms/features/enrolment/user-guides/enrol-registrants-into-program.md)
+        * [📔 Auto-Enroll New Registrants into a Program](pbms/functionality/enrolment/user-guides/auto-enroll-new-registrants-into-a-program.md)
     * [Entitlement](pbms/features/entitlement/README.md)
       * [📔 User Guides](pbms/features/entitlement/user-guides/README.md)
         * [📔 Multi-Stage Approval](pbms/user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)
