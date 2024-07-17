@@ -27,9 +27,9 @@ Depending on the physical delivery mechanism, the implementation can create an i
 | Mode           | Synchronous                                                       |
 | Tables         | <p>benefit_program_account_statement<br>account_statement_lob</p> |
 
-Object design
+## Object design
 
-benefit\_program\_account\_statement
+### account\_statement
 
 | Attribute                       | Description                         |
 | ------------------------------- | ----------------------------------- |
@@ -43,12 +43,35 @@ benefit\_program\_account\_statement
 | statement\_process\_error\_code |                                     |
 | statement\_process\_attempts    |                                     |
 
-account\_statement\_lob
+### account\_statement\_lob
 
 | Attribute      | Description                                            |
 | -------------- | ------------------------------------------------------ |
 | statement\_id  |                                                        |
 | statement\_lob | <p>TEXT type<br>Stores the MT940 Statement as TEXT</p> |
+
+### Business logic
+
+1. Persist the Account Statement in the two tables - account\_statement & account\_statement\_lob
+2. In the table - account\_statement, only the following columns are populated - statement\_id, statement\_upload\_timestamp and statment\_process\_status = UNPROCESSED
+3. In the table - account\_statement\_lob, the entire text is persisted with the statement\_id
+
+### mt940\_processor\_beat\_producer
+
+<table><thead><tr><th width="235"></th><th></th></tr></thead><tbody><tr><td>frequency</td><td>hourly (specified by configuration yml)</td></tr><tr><td>attempts</td><td>yes. subject to a configurable limit specified by  configuration yml</td></tr><tr><td><mark style="color:purple;">driving table</mark></td><td><mark style="color:purple;">account_statement</mark></td></tr><tr><td>eligible envelopes</td><td><mark style="color:blue;">statement_process_status = 'UNPROCESSED'</mark></td></tr></tbody></table>
+
+1. Picks up all eligible account\_statement\_records
+2. For each account statement, delegates a task to mt940\_processor\_worker
+3. Payload -- statement\_id
+
+mt940\_processor\_worker
+
+1. Payload -- statement\_id
+2. Picks up the record from account\_statement
+3. Picks up the lob from account\_statement\_lob
+4. Parse the mt940 (header, body and trailer)
+
+
 
 
 
