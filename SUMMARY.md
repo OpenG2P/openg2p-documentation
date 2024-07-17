@@ -188,6 +188,8 @@
   * [Deployment](pbms/deployment/README.md)
     * [i18n](pbms/deployment/i18n.md)
     * [Installation of Odoo Modules](pbms/deployment/installation-of-odoo-modules.md)
+    * [Domain names and Certificates](pbms/deployment/domain-names-and-certificates.md)
+    * [Helm Charts](pbms/deployment/helm-charts.md)
   * [Technology Stack](pbms/technology-stack.md)
   * [Releases](pbms/releases.md)
 * [Social Registry](social-registry/README.md)

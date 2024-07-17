@@ -1,6 +1,10 @@
+---
+description: PBMS Deployment
+---
+
 # Deployment
 
-The instructions here pertain to the deployment of all PBMS and associated components on the Kubernetes cluster using[ Helm charts](../../deployment/helm-charts.md).   All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+This document contains instructions for all the deployment of PBMS modules and their related components on the Kubernetes cluster using[ Helm charts](../../deployment/helm-charts.md). All the components are installed in the same namespace. The methods used to achieve the deployment are:
 
 * Using Rancher UI&#x20;
 * Using command line
@@ -9,20 +13,23 @@ The instructions here pertain to the deployment of all PBMS and associated compo
 
 Before you deploy, make sure the following are available:
 
-* If you want to customize the Odoo addons in your OpenG2P PBMS, create a custom-packaged PBMS docker, using [Packaging Instructions](../../deployment/deployment-guide/packaging-openg2p-docker.md). \[Optional]
-* [Base infrastructure](../../deployment/base-infrastructure/)
-* Cluster Owner permission on your cluster
-* Namespace in which you would be installing the module, along with [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
+* [Base infrastructure](https://docs.openg2p.org/deployment/base-infrastructure) including the domain name and certificates from Rancher and Keycloak.&#x20;
+* PBMS's [Domain names and certificates](https://docs.openg2p.org/social-registry/deployment/domain-names-and-certificates).&#x20;
+* Nginx server configuration
+  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
+* Rancher must have a Namespace created under a Project.
+* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission to use the OpenG2P cluster's namespace.
+* Gateways are setup for the domain as given here [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup).&#x20;
 
 ## Installation using Rancher UI
 
 1. Log in to Rancher admin console.
 2. Select your cluster.
-3. Under _Apps -> Repositories_ click on _Create_ to add a repository.
-4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
-5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under _Preferences_ under _Helm Charts_.
-7. Navigate to _Apps->Charts_ page on Rancher. You should see "OpenG2P PBMS" Helm charts listed.
+3. Under _**Apps -> Repositories**_ click the _**Create**_ to add a repository.
+4. Provide _**Name**_ as "openg2p" and target HTTPS _**Index URL**_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on _**Create**_.
+5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.&#x20;
+6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on _**Include Prerelease Versions**_ under _**Preferences**_ below the _**Helm Charts**_.
+7. Navigate to **Apps->Charts** page on Rancher. You can find the _**OpenG2P PBMS**_ is listed in the dashboard.
 
 <div align="left">
 
@@ -30,29 +37,48 @@ Before you deploy, make sure the following are available:
 
 </div>
 
-7. Click on "Part 1" Helm chart, select the version to be installed, and click _Install_.
-8. On the next screen, choose a name for installation, like `pbms`. Select the checkbox _Customise Helm options before install_, and click _Next_.
-9. Go through each app's configuration page, and configure accordingly:
-   1. Choose to install all requirements (on the main _Questions_ page) unless not needed specifically.
-   2. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Namespace Setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `pbms.dev.openg2p.org` and `odk.dev.openg2p.org` , etc. Refer to [DNS requirements](../../deployment/hardware-requirements.md#dns-requirements) for mapping the hostname.
-   3. _Keycloak Base Url_ is your organization-wide Keycloak URL, which is now done along with Rancher Installation. If not Installed along with Rancher, refer to Keycloak Installation.
-   4. Create a Keycloak client in your main Keycloak, wherever OIDC Client details are asked. Refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-10. Click Next and you should be taken to the _Helm Options_ page. Make sure to disable `wait` flag on the _Helm Options_ page. Click on Install.
-11. Navigate back to _Apps->Charts_ page on Rancher. And this time choose "Part 2" Helm chart. Select the same version as "Part 1", and click _Install_.
-12. On the next screen, give the same installation name as on "Part 1" but with suffix `-p2` , like `pbms-p2`. Select the checkbox _Customise Helm options before install_, and click _Next_.
-13. Repeat the same as Step 9 & 10. Please note that the apps and configurations differ between "Part 1" and "Part 2".
+7. Click the _**Part 1**_ Helm chart, select the version you want to install, and click on _**Install**_.
+8. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then the click on _**Next**_.
+9.  Navigate to each app's configuration page, and configure the following:
+
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `pbms.dev.openg2p.org` and `odk-pbms.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
+    2. Your organization-wide Keycloak URL is _Keycloak Base Url_ . (Refer to [Keycloak installation](https://docs.openg2p.org/deployment/base-infrastructure/rancher#keycloak-installation)).
+    3. Create a Keycloak client.
+    4. Provide the OIDC Client details. Refer to [Keycloak Client Creation](https://docs.openg2p.org/deployment/deployment-guide/keycloak-client-creation) guide.
+    5. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
+    6. Navigate back to _**Apps->Charts**_ page on Rancher. Choose _**Part 2**_ Helm chart. Select the same version as for _**Part 1**_, and click on _**Install**_.
+    7. On the next screen, give the same installation name as for _**Part 1**_ but with suffix `-p2` , like `pbms-p2`. Select the same namespace as _**Part 1**_. Check the option _**Customise Helm**_ before the installation, and click on _**Next**_.
+    8. Follow the step 9 for other application installation.
+    9. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
+
+    <img src="https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2F3034178245-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJZcdob2emEcLMvLyIxqT%252Fuploads%252F4hoWPrmmdc5vJdS02WWz%252Fpod-running.png%3Falt%3Dmedia%26token%3Df5dc7bd5-671a-4c39-b861-d865bd258884&#x26;width=768&#x26;dpr=4&#x26;quality=100&#x26;sign=8d13255d&#x26;sv=1" alt="" data-size="original">
 
 ## Installation using the command line
 
-* Install the following utilities on your machine:
+* Install the following utilities on your machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
 * TBD
 
-## Post Installation
+## Post installation
 
-* To access OpenSearch Dashboards, create a Keycloak client role under the OpenSearch Keycloak client, with the name `admin` and assign it to users.
-* To access Superset, create a Keycloak client role under the Superset Keycloak client, with the name `Admin` and assign it to users.
-* To access Minio Console, create a Keycloak client role under the Minio Keycloak client, with the name `consoleAdmin` and assign it to users.
-* To access Kafka UI to monitor Reporting, create a Keycloak client role under the Reporting Kafka Keycloak client, with the name `Admin` and assign it to users.
-* For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
-* Proceed with [Odoo Post Install Configuration](../../deployment/deployment-guide/odoo-post-install-configuration.md).
+### Keycloak
+
+**Assigning roles to users**
+
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admin/#con-client-roles\_server\_administration\_guide) for the following components and assign them to users.
+
+| Component                           | Role name      |
+| ----------------------------------- | -------------- |
+| OpenSearch Dashboards for logging   | `admin`        |
+| OpenSearch Dashboards for Reporting | `admin`        |
+| Apache Superset                     | `Admin`        |
+| Minio Console                       | `consoleAdmin` |
+| Kafka UI for Reporting              | `Admin`        |
+
+**Assigning roles to clients**
+
+* Create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign it as a service account role to the PBMS Keycloak client in order for PBMS to be able to access Keymanager APIs.
+
+#### Odoo <a href="#odoo" id="odoo"></a>
+
+* Refer the [Odoo post-install guide](https://docs.openg2p.org/deployment/deployment-guide/odoo-post-install-configuration) to activate Odoo modules.
