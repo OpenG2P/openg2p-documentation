@@ -4,17 +4,17 @@ description: PBMS Deployment
 
 # Deployment
 
-This document contains instructions for all the deployment of PBMS modules and their related components on the Kubernetes cluster using[ Helm charts](../../deployment/helm-charts.md). All the components are installed in the same namespace. The methods used to achieve the deployment are:
+This document contains instructions for all the deployment of PBMS modules and their related components on the Kubernetes cluster using [Helm charts](https://docs.openg2p.org/pbms/deployment/helm-charts). All the components are installed in the same namespace. The methods used to achieve the deployment are:
 
-* Using Rancher UI&#x20;
-* Using command line
+* [Using Rancher UI ](./#installation-using-rancher-ui)
+* [Using command line](./#installation-using-the-command-line)
 
 ## Prerequisites
 
 Before you deploy, make sure the following are available:
 
 * [Base infrastructure](https://docs.openg2p.org/deployment/base-infrastructure) including the domain name and certificates from Rancher and Keycloak.&#x20;
-* PBMS's [Domain names and certificates](https://docs.openg2p.org/social-registry/deployment/domain-names-and-certificates).&#x20;
+* PBMS's [Domain names and certificates](https://docs.openg2p.org/pbms/deployment/domain-names-and-certificates).&#x20;
 * Nginx server configuration
   * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
 * Rancher must have a Namespace created under a Project.
@@ -38,7 +38,7 @@ Before you deploy, make sure the following are available:
 </div>
 
 7. Click the _**Part 1**_ Helm chart, select the version you want to install, and click on _**Install**_.
-8. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then the click on _**Next**_.
+8. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then click on _**Next**_.
 9.  Navigate to each app's configuration page, and configure the following:
 
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `pbms.dev.openg2p.org` and `odk-pbms.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
