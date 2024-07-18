@@ -22,7 +22,7 @@ Suggested convention:
 | Apache Superset     | superset-pbms.dev.openg2p.org             |
 | Kafka dashboard     | kafka-reporting-pbms.dev.openg2p.org      |
 
-All the above domains point to Nginx IP corresponding to server (virtual host) that routes to Istio Ingress gateway server on [OpenG2P Cluste](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster)r.
+All the above domains point to Nginx IP corresponding to server (virtual host) that routes to Istio Ingress gateway server on [OpenG2P Cluster](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster).
 
 ### Certificates <a href="#certificates" id="certificates"></a>
 

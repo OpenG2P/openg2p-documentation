@@ -21,13 +21,13 @@ This document provides instructions on installing modules applicable to PBMS fro
 1. Use the link [https://pbms.explore.openg2p.org/](https://pbms.explore.openg2p.org/web/login) and login with valid credentials to access the PBMS module.
 2. Click the main menu icon ![](../../.gitbook/assets/main-menu.png) and select _**Apps**_.
 
-<figure><img src="https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2F3034178245-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJZcdob2emEcLMvLyIxqT%252Fuploads%252FrdoT2KQF0SFDEpXafrnK%252Fsocial-registry-menu.png%3Falt%3Dmedia%26token%3De816d62d-a4a9-4bac-9227-4073a73382fc&#x26;width=768&#x26;dpr=4&#x26;quality=100&#x26;sign=44939fd8&#x26;sv=1" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/pbmsexplore1.png" alt=""><figcaption></figcaption></figure>
 
 Apps screen is displayed.
 
 3. Click the _**G2P**_ from the _**CATEGORIES**_ menu in the left pane.
 
-<figure><img src="https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2F3034178245-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJZcdob2emEcLMvLyIxqT%252Fuploads%252FxoWNGTR7fb52ywV8QFkK%252Fsocial-registry-modules.png%3Falt%3Dmedia%26token%3Dca09efa9-b396-40ed-9dbc-bd84b10c98ba&#x26;width=768&#x26;dpr=4&#x26;quality=100&#x26;sign=23b454ce&#x26;sv=1" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/pbmsexplore2.png" alt=""><figcaption></figcaption></figure>
 
 You can find all the modules applicable for PBMS in the right pane.
 

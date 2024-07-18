@@ -4,7 +4,7 @@ description: PBMS Master Helm Chart
 
 # Helm Charts
 
-PBMS and all its dependencies are installed using a single\* [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts). Following dependent components are installed with the option to deselect them:
+PBMS and all its dependencies are installed using a single\* [Helm chart](https://github.com/OpenG2P/openg2p-pbms-deployment/tree/develop/charts).  The following dependent components are installed with the option to deselect them:
 
 * PBMS Odoo Package (Odoo + PostgreSQL)
 * Mail SMTP server
@@ -14,7 +14,7 @@ PBMS and all its dependencies are installed using a single\* [Helm chart](https:
 * OpenSearch
 * Reporting (Reporting Framework + Reporting Init)
 
-\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](https://docs.openg2p.org/deployment/helm-charts#helm-chart-size-limitation)
+\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more](https://docs.openg2p.org/deployment/helm-charts#helm-chart-size-limitation)
 
 ### Database <a href="#database" id="database"></a>
 
