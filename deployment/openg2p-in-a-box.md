@@ -137,7 +137,7 @@ To set up the base infrastructure, login to the machine and install the followin
 
 ### OpenG2P modules' installation
 
-[Install OpenG2P modules via Rancher](../spar/deployment.md#installation-using-rancher-ui). &#x20;
+[Install OpenG2P modules via Rancher](../spar/deployment/#installation-using-rancher-ui). &#x20;
 
 {% hint style="info" %}
 **How is "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
