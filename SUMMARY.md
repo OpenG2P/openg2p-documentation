@@ -277,7 +277,7 @@
     * [Interoperability](spar/features/interoperability.md)
     * [Monitoring & Reporting](spar/features/monitoring-and-reporting.md)
   * [Deployment](spar/deployment/README.md)
-    * [Domain names and Certificates](spar/deployment/domain-names-and-certificates.md)
+    * [Domain Names and Certificates](spar/deployment/domain-names-and-certificates.md)
     * [Helm Charts](spar/deployment/helm-charts.md)
   * [📔 User Guides](spar/user-guides/README.md)
     * [📔 Link FA (Self Service)](spar/user-guides/self-update-id-with-financial-address-information.md)
