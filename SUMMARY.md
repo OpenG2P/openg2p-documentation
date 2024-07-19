@@ -53,6 +53,7 @@
           * [📔 Create ID Document Eligibility Manager](pbms/features/eligibility/user-guides/create-eligibility-manager-1/copy-of-create-id-document-eligibility-manager.md)
           * [📔 Create Phone Number Eligibility Manager](pbms/features/eligibility/user-guides/create-eligibility-manager-1/create-phone-number-eligibility-manager.md)
         * [📔 Configure Proxy Means Test](pbms/features/eligibility/user-guides/configure-proxy-means-test.md)
+        * [📔 Verify Eligibility of Registrants in a Cycle](pbms/functionality/eligibility/user-guides/verify-eligibility-of-registrants-in-a-cycle.md)
     * [Deduplication](pbms/features/deduplication.md)
       * [📔 User Guides](pbms/features/deduplication/user-guides/README.md)
         * [📔 Deduplicate Registrants](pbms/features/deduplication/user-guides/deduplicate-registrants.md)
