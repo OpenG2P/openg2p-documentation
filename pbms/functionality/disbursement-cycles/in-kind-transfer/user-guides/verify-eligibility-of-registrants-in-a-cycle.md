@@ -18,7 +18,7 @@ This document provides instructions on verify eligibility of registrants in a cy
 
 ## Prerequisites
 
-* The user must have a [Program Manager](../../../features/program-management/role-of-a-program-manager.md) role.
+* The user must have a [Program Manager](../../../../features/program-management/role-of-a-program-manager.md) role.
 * A program must have a Cycle with enrolled registrants.
 
 Notes:
@@ -36,7 +36,7 @@ Verify Eligibility feature is used after the beneficiaries are enrolled in a Cyc
 
 For example, the program _**Needy**_ has a Cycle 1 with enrolled registrants.
 
-<figure><img src="../../../../.gitbook/assets/program-cycle.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/program-cycle.png" alt=""><figcaption></figcaption></figure>
 
 In the Programs Needy screen, add a new criterion in the _**Configuration**_ tab to enroll the eligible registrants among the currently enrolled registrants in _**Cycle 1**_ based on the added new criterion.&#x20;
 
@@ -49,14 +49,14 @@ For example, a new criteria _**Phone Numbers > Country**_ is added in the Eligib
 
 Programs > Needy > Cycle 1 screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/cycle 1-screen.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/cycle 1-screen.png" alt=""><figcaption></figcaption></figure>
 
 4. Click the _**Verify Eligibility**_ button.
 5. Click the _**Beneficiaries**_ tab.
 
 Programs > Needy > Cycle 1 > Cycle Members screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/cycle-member.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/cycle-member.png" alt=""><figcaption></figcaption></figure>
 
 You can find beneficiaries are enrolled based on the appended criteria.&#x20;
 
