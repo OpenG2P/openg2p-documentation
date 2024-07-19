@@ -33,7 +33,7 @@ Refer the [Create User and Assign Role](../../administration/role-based-access-c
 1. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
 2. The _**Programs**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the Programs screen</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose Programs in the menu</p></figcaption></figure>
 
 <figure><img src="../../../../.gitbook/assets/Program-screen.png" alt=""><figcaption><p>Programs screen</p></figcaption></figure>
 
