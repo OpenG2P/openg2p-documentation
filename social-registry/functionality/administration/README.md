@@ -1,8 +1,6 @@
 # Administration / User Management
 
-## Introduction
-
-In the Social Registry, user management is typically handled through an administrative interface that allows administrators to create, modify, and deactivate user accounts. The specific process may vary depending on the system's design and configuration, but generally, the following steps are involved:
+In the Social Registry, user management is typically handled through an administrative interface that allows administrators to create, modify, and deactivate user accounts. The specific process may vary depending on the system's design and configuration, but generally, the following process are involved:
 
 1. **User Creation:** Administrators can create new user accounts by entering basic information such as username, password, and email address. They may also assign roles and permissions to the new user.
 2. **Role Assignment:** Users are assigned roles based on their responsibilities within the system. Roles determine the permissions and access rights that users have within the system.
