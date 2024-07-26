@@ -24,9 +24,9 @@ Using this feature, as a user, he/she can
 * view a list of beneficiaries who are entitled to program's benefits.&#x20;
 * easily manage and verify the approved entitlements.&#x20;
 
-## Feature and Functionality
+## Feature and functionality
 
 | Feature                                                      | Functionality                                                                                                                                                                                  |
 | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <p>Selecting and managing export fields<br><br><br>:<br></p> | With the help of this feature, users may choose and organize the specific fields they want to include in their reports, making it possible for them to customize and print the data as needed. |
-| Button Activation                                            | The Print/Export button is enabled following the approval of the entitlements, and it will then continue to function, allowing the users to effectively print or export the data.              |
+| <p>Selecting and managing export fields<br><br><br>:<br></p> | With the help of this feature, users may choose and organise the specific fields they want to include in their reports, making it possible for them to customize and print the data as needed. |
+| Button activation                                            | The Print/Export button is enabled following the approval of the entitlements, and it will then continue to function, allowing the users to effectively print or export the data.              |
