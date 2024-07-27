@@ -4,7 +4,31 @@ description: WORK IN PROGRESS
 
 # Fayda ID Integration
 
+## User stories
+
 {% @jira/embed url="https://openg2p.atlassian.net/browse/OE-133" %}
+
+In Social Registry (SR), the registrants' data are dynamically populated. The Social Registry uses ODK as one way to import registrants' data. There is a requirement to update the registrants' information with Fayda ID\* along with their Registration ID. A component `FaydaIdConnector` configured in ODK importer plays a pivotal role in updating the registrants' data with the Fayda ID.
+
+The ODK importer's specified FaydaIdConnector handles the following functions.&#x20;
+
+* Responsible for the automatic retrieval and synchronization of registration ID data.
+* Initiates the periodic task that retrieves a list of registration IDs by authenticating with an _**OpenG2P API**_ first, and then uses that list to call the _**Fayda number API**_ _to update the additional information._
+
+After that, data from the response is processed and transformed to update the relevant records with Fayda ID in OpenG2P system.
+
+## Advantages of FaydaIdConnector&#x20;
+
+Using the FaydaIdConnector setup in the ODK importer has the following advantages:
+
+* The service is designed that guarantee dependable and consistent data updates because of its sophisticated error handling, logging systems, and continuous operation desgin.&#x20;
+*
+
+
+
+
+
+The `FaydaIdConnector` is a pivotal component within the system, responsible for the automated retrieval and synchronization of registration ID data. It initiates a periodic task that first authenticates with an openg2p API to fetch a list of registration IDs, which are then used to call the Fayda number API for additional information. This data is processed and transformed to update the relevant records in the openg2p. The service is designed to operate continuously, with robust error handling and logging mechanisms, ensuring reliable and consistent data updates. By automating these processes, the `FaydaIdConnector` enhances data accuracy and operational efficiency, making it an essential feature for maintaining up-to-date registration information.
 
 ## **API-1: Fetch  Registration IDs**
 
@@ -140,5 +164,76 @@ Example
 
 * Returns an array of objects indicating the status of each update.
 
+## Source code -&#x20;
+
+* [https://github.com/OpenG2P/openg2p-eth-nidp](https://github.com/OpenG2P/openg2p-eth-nidp)
+* [https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_rest\_api](https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_rest\_api)
+
+## Fayda Number API -&#x20;
+
+* [http://192.168.25.56:8080/getData](http://192.168.25.56:8080/getData)
+
+#### Response example -
 
 
+
+```
+{
+  "id": "openg2p",
+  "responseTime": "2024-07-23T15:09:18.680",
+  "version": "v1",
+  "response": [
+    {
+      "registrationId": "10002100750003920240717075107",
+      "status": "PROCESSED",
+      "message": "Registration has processed successfully.",
+      "data": {
+        "fullName": [
+          {
+            "language": "eng",
+            "value": "Kersi King"
+          },
+          {
+            "language": "amh",
+            "value": "Kersi King"
+          }
+        ],
+        "dateOfBirth": "1971/07/07",
+        "fin": "935894120487",
+        "photo": "base64 encoded string,
+        "gender": [
+          {
+            "language": "eng",
+            "value": "Male"
+          },
+          {
+            "language": "amh",
+            "value": "الذكر"
+          }
+        ],
+        "residenceStatus": [
+          {
+            "language": "eng",
+            "value": "Foreigner"
+          },
+          {
+            "language": "amh",
+            "value": "أجنبي"
+          }
+        ]
+      }
+    }
+  ],
+  "error": null
+}
+
+```
+
+## **Error Handling -**
+
+* **HTTP Errors**: Handling and logging of HTTP errors during API calls.
+* **General Exceptions**: Logging and raising exceptions in the `job_runner` method.
+
+## &#x20;**Logging -**
+
+* **Logging Levels**: Different levels of logs (info, debug, error) and their purposes.
