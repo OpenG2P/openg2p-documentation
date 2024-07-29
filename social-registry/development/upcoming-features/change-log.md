@@ -2,7 +2,7 @@
 description: WORK IN PROGRESS
 ---
 
-# Record Update History
+# Record Change History
 
 Changes to specific fields by admin/operators/end-users must be logged in the system for query and auditing.  Admins must see the information associated with a registrant for previous dates.  Admins must also be able to generate reports of aggregate data for an earlier period.  For example, the total number of farmers with more than 10 acres of land as of Dec 2023.
 
@@ -21,6 +21,7 @@ Change log is not the same as [Audit Logs](../../features/audit-log.md) or [Syst
 * The change log table is not editable under any circumstances.
 * Privacy:  The change log contains all the information of the registry and hence needs to be given very limited access along with data security similar to the registry primary data. See [Privacy and Security](../../functionality/privacy-and-security.md).
 * This data is accessible via standard registry query [APIs](../../features/api/).
+* What if the record gets deleted (TBD).
 
 ## Available solutions
 
