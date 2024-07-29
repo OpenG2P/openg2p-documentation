@@ -14,11 +14,11 @@ layout:
 
 # 📔 Create a New Household
 
-This document provides instructions to create new household in Service Provider portal.
+This document provides instructions to create new household in the Registration Portal.
 
 ## Prerequisites
 
-A user must have access to the Service Provider portal.
+A user must have access to the Registration Portal.
 
 ## Procedure
 
@@ -33,7 +33,7 @@ _**Login**_ screen is displayed.
 4. Click the _**Reset Password**_ to reset the password.
 5. Click the _**Login**_ button.
 
-Service Provider portal _**Household Dashboard**_ screen is displayed.
+Registration portal _**Household Dashboard**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/dashboard-spp.png" alt=""><figcaption></figcaption></figure>
 
@@ -54,7 +54,7 @@ The Household list contains the below information. It displays the number of rec
 | Last Updated   | Displays the last updated date.                                                                                                                        |
 | Enumerator     | Displays the name of the person who has collected the household data.                                                                                  |
 | Status         | <p>Displays the status of the household list. </p><ul><li>Green status - Active household list</li><li>Grey status - Inactive household list</li></ul> |
-| Action         | Click the Update button to edit the household entry.                                                                                                   |
+| Action         | Click the _**Update**_ button to edit the household entry.                                                                                             |
 
 ## Create new household
 
@@ -97,7 +97,7 @@ The fields with \* mark are the mandatory fields.
 {% tab title="Member Details" %}
 <figure><img src="../../../../.gitbook/assets/members-details-spp.png" alt=""><figcaption></figcaption></figure>
 
-Click the Add Member button. [Add new members](create-new-household.md#add-new-members) screen is displayed.
+Click the Add Member button. [Add new members](create-a-new-household.md#add-new-members) screen is displayed.
 {% endtab %}
 
 {% tab title="Household Data" %}

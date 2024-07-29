@@ -12,13 +12,13 @@ layout:
     visible: true
 ---
 
-# 📔 Create a New Individual in Service Provider Portal
+# 📔 Create a New Individual in Registration Portal
 
-This document provides instructions to create a new individual in service provider portal.
+This document provides instructions to create a new individual in Registration portal.
 
 ## Prerequisites
 
-A user must have access to the Service Provider portal.
+A user must have access to the Registration portal.
 
 ## Procedure
 
@@ -33,7 +33,7 @@ _**Login**_ screen is displayed.
 4. Click the _**Reset Password**_ to reset the password.
 5. Click the _**Login**_ button.
 
-Service Provider Portal _**Individual Dashboard**_ screen is displayed.
+Registration Portal _**Individual Dashboard**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/individual-dashboard-sp.png" alt=""><figcaption></figcaption></figure>
 
@@ -52,7 +52,7 @@ The Individual list contains the below information. It displays the number of re
 | Kebele       | Displays the kebele name.                                              |
 | Last Updated | Displays the last updated date.                                        |
 | Enumerator   | Displays the name of the person who has collected the individual data. |
-| Status       | Click the Update button to edit the individual's data.                 |
+| Status       | Click the _**Update**_ button to edit the individual's data.           |
 
 ## Create a new individual
 
@@ -125,6 +125,8 @@ _**Birth Place Location**_
 
 <figure><img src="../../../../.gitbook/assets/geo-birth-spp.png" alt=""><figcaption></figcaption></figure>
 
+
+
 <table><thead><tr><th width="249">Field</th><th>Description</th></tr></thead><tbody><tr><td>Region*</td><td>Select the appropriate region from the drop-down</td></tr><tr><td>Zone*</td><td>Select the appropriate zone from the drop-down.</td></tr><tr><td>Woreda*</td><td>Enter the appropriate woreda from the drop-down</td></tr><tr><td>Kebele*</td><td>Enter the kebele name.</td></tr><tr><td>Postal Code</td><td>Enter the postal code.</td></tr></tbody></table>
 
 Note:
@@ -134,6 +136,8 @@ The fields with \* mark are the mandatory fields.
 _**Current Location**_
 
 <figure><img src="../../../../.gitbook/assets/geo-current-spp.png" alt=""><figcaption></figcaption></figure>
+
+
 
 | Field       | Description                                         |
 | ----------- | --------------------------------------------------- |

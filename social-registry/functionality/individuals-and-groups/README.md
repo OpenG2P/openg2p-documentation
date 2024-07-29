@@ -16,7 +16,7 @@ layout:
 
 ## Individual&#x20;
 
-"Individuals" refer to single persons, each with their own set of demographic data, such as name, date of birth, gender, and other relevant information. The SR can maintain a registry of these individual records, allowing for the management and retrieval of information about each person.
+_**Individuals**_ refer to single persons, each with their own set of demographic data, such as name, date of birth, gender, and other relevant information.  The SR can maintain a registry of these individual records, allowing for the management and retrieval of information about each person.
 
 The figure below displays the individual creation page, allowing users to input personal information.
 
@@ -24,7 +24,7 @@ The figure below displays the individual creation page, allowing users to input 
 
 ## Group
 
-"Groups" in the Social Registry context typically refer to collections of individuals who are related or connected in some way. This could include households, families, communities, or other entities that consist of multiple people.
+_**Groups**_ in the Social Registry (SR) context typically refer to collections of individuals who are related or connected in some way. This could include households, families, communities, or other entities that consist of multiple people.
 
 The figure below displays the household creation page, allowing users to input details about the members and their relationship with the household head.
 

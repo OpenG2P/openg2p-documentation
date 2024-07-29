@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# 📔 Create a New Service Provider
+# 📔 Create a New Registrant
 
-This document provides instructions to create a new service provider and grand portal access to the service provider in the Social Registry module.
+This document provides instructions to create a new registrant and grand portal access to the registrant in the Social Registry module.
 
 ## Prerequisites
 
@@ -23,13 +23,13 @@ This document provides instructions to create a new service provider and grand p
 
 ## Table of Contents
 
-[Create a new service provider](create-a-new-service-provider.md#create-a-new-service-provider)
+[Create a new registrant](create-a-new-registrant.md#create-a-new-service-provider)
 
-[Grand access to a service provider](create-a-new-service-provider.md#grant-portal-access-to-a-service-provider)
+[Grand access to a registrant](create-a-new-registrant.md#grant-portal-access-to-a-service-provider)
 
-[Delete a service provider user](create-a-new-service-provider.md#delete-a-service-provider-user)
+[Delete a registrant user](create-a-new-registrant.md#delete-a-service-provider-user)
 
-[Delete a service provider](create-a-new-service-provider.md#delete-a-service-provider)
+[Delete a service provider](create-a-new-registrant.md#delete-a-service-provider)
 
 ## Procedure
 
@@ -50,19 +50,19 @@ _**Social Registry**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/social-registry-screen.png" alt=""><figcaption></figcaption></figure>
 
-6. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Service Provider.
+6. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Registrant.
 
-_**Service Provider**_ screen is displayed.
+_**Registrant**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-screen.png" alt=""><figcaption></figcaption></figure>
 
 7. Click the _**New**_ button.
 
-_**Service Provider New**_ screen is displayed.
+_**Registrant New**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-new.png" alt=""><figcaption></figcaption></figure>
 
-8. Enter the _**Service Provider**_ name.
+8. Enter the _**Registrant**_ name.
 9. Enter the _**Address**_ details.
 10. Enter the _**Phone**_ number.
 11. Enter the _**Mobile**_ number.
@@ -77,17 +77,17 @@ _**Service Provider New**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-data.png" alt=""><figcaption></figcaption></figure>
 
-You can find the newly created service provider in the service provider dashboard.
+You can find the newly created registrant in the registrant dashboard.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-list.png" alt=""><figcaption></figcaption></figure>
 
-### Grant portal access to a service provider
+### Grant portal access to a registrant
 
-14. Click the service provider that requires a grand portal access
+14. Click the registrant that requires a grand portal access
 
-For example, here, the service provider User1 is selected.
+For example, here, the Registrant User1 is selected.
 
-_**Service Provider User1**_ screen is displayed.
+_**Registrant User1**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-new-user.png" alt=""><figcaption></figcaption></figure>
 
@@ -101,13 +101,13 @@ _**Portal Access Management**_ screen is displayed.
 
 15. Click the _**Grant Access**_ button.
 
-The user is enabled to access the service provider portal.
+The user is enabled to access the registrant portal.
 
 <figure><img src="../../../../.gitbook/assets/grand-access-enabled.png" alt=""><figcaption></figcaption></figure>
 
 17. Click the _**Close**_ button to exit from the screen.
 
-### Delete a service provider user
+### Delete a registrant user
 
 18. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Settings**_.
 
@@ -136,21 +136,21 @@ User1 screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/confirm-delete-sp.png" alt=""><figcaption></figcaption></figure>
 
-The user is removed from the service provider user list.
+The user is removed from the registrant user list.
 
-### Delete a service provider
+### Delete a Registrant
 
-22. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Service Provider.
+22. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Registrant.
 
-_**Service Provider**_ screen is displayed.
+Registrant screen is displayed.
 
-23. Click the service provider that has to removed&#x20;
+23. Click the registrant that has to removed&#x20;
 
 <figure><img src="../../../../.gitbook/assets/service-provider-list.png" alt=""><figcaption></figcaption></figure>
 
-For example, here, the service provider User1 is selected.
+For example, here, the registrant User1 is selected.
 
-_**Service Provider User1**_ screen is displayed.
+_**Registrant User1**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-new-user.png" alt=""><figcaption></figcaption></figure>
 
@@ -158,11 +158,11 @@ _**Service Provider User1**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/delete-service-provider.png" alt=""><figcaption></figcaption></figure>
 
-20. &#x20;Click the _**Delete**_ button in the _**Bye-bye, record!**_ dialogue box screen to delete the service provider
-21. Click the _**No, keep it**_ button to retain the service provider.
+20. &#x20;Click the _**Delete**_ button in the _**Bye-bye, record!**_ dialogue box screen to delete the registrant.
+21. Click the _**No, keep it**_ button to retain the registrant.
 
 <figure><img src="../../../../.gitbook/assets/confirm-delete-sp.png" alt=""><figcaption></figcaption></figure>
 
-The service provider is removed from the service provider screen.
+The registrant is removed from the registrant screen.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-screen.png" alt=""><figcaption></figcaption></figure>

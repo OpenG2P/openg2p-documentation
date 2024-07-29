@@ -12,13 +12,13 @@ layout:
     visible: true
 ---
 
-# 📔 Configure Service Provider Portal User to Limit Accessing Location
+# 📔 Configure Registration Portal User to Limit Accessing Location
 
-This document contains step-by-step instructions to configure service provider portal user to access only the limited locations in the service provider portal where they have recorded the details from the individual/group registrants.&#x20;
+This document contains step-by-step instructions to configure registration portal user to access only the limited locations in the registration portal where they have recorded the details from the individual/group registrants.&#x20;
 
 ## Prerequisites
 
-* A user must have access to the Social Registry and Service Provider portal.
+* A user must have access to the Social Registry and Registration Portal.
 
 ## Procedure
 
@@ -31,21 +31,21 @@ _**Social Registry**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/social-registry-screen.png" alt=""><figcaption></figcaption></figure>
 
-3. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Service Provider.
+3. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Registrant.
 
-_**Service Provider**_ screen is displayed.
+_**Registrant**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider.png" alt=""><figcaption></figcaption></figure>
 
-4. Click the _**Service Provider**_ user to provide permission to access only the limited location in the Service Provider Portal.
+4. Click the _**Registrant**_ user to provide permission to access only the limited location in the Registration Portal.
 
-For example, the user Sample Service Provider is selected.
+For example, the user Sample Registrant is selected.
 
-Sample Service Provider screen is displayed.
+Sample Registrant screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider-screen (1).png" alt=""><figcaption></figcaption></figure>
 
-5. Click the _**Add a line**_ in the Region column in the _**Service Provider Woreda Permissions**_ section.
+5. Click the _**Add a line**_ in the Region column in the _**Registrant Woreda Permissions**_ section.
 6. Select the appropriate region from the drop-down in the _**Region**_ column.
 
 For example, the region Tigray is selected.
@@ -61,9 +61,9 @@ For example, the woreda Zana is selected.
 <figure><img src="../../../../.gitbook/assets/sp-permission.png" alt=""><figcaption></figcaption></figure>
 
 9. Click the icon<img src="../../../../.gitbook/assets/Actions.png" alt="" data-size="original">, and select the _**Grant portal access**_.
-10. Check the grant portal access status of the Service Provider user.
+10. Check the grant portal access status of the Registrant user.
 
-For example, the user Sample Service Provider has grant portal access.
+For example, the user Sample Registrant has grant portal access.
 
 <figure><img src="../../../../.gitbook/assets/spp-pam.png" alt=""><figcaption></figcaption></figure>
 
@@ -71,13 +71,13 @@ For example, the user Sample Service Provider has grant portal access.
 11. Click the icon<img src="../../../../.gitbook/assets/icon-save-manually.png" alt="" data-size="original">to save manually and exit from the screen.&#x20;
 12. Click the <img src="../../../../.gitbook/assets/discard-changes-icon.png" alt="" data-size="original">icon to discard and exit from the screen without saving the data.
 
-### Service Provider Portal
+### Registration Portal
 
-13. Log in to Service Provider Portal. For example, log in as the user Sample Service Provider.
+13. Log in to Registration Portal. For example, log in as the user Sample Registrant.
 
-Sample Service Provider dashboard screen is displayed.
+Sample Registrant dashboard screen is displayed.
 
-In the respective Region, Zone, and Woreda drop-downs, only the permitted locations are listed for the user Sample Service Provider.
+In the respective Region, Zone, and Woreda drop-downs, only the permitted locations are listed for the user Sample Registrant.
 
 **Region drop-down**
 
@@ -118,4 +118,4 @@ The sequence must be followed to select the location.&#x20;
 * Second, select the zone from the Zone drop-down. It enables the _**Woreda**_ drop-down.
 * Third, select the Woreda from the Woreda drop-down.
 
-This completes the process of configuring the service provider portal user to access the limited location in the service provider portal.
+This completes the process of configuring the registrant user to access the limited location in the Registration Portal.
