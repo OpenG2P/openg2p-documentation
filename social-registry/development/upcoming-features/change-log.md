@@ -2,36 +2,56 @@
 description: WORK IN PROGRESS
 ---
 
-# Change Log
+# Record Update History
 
 Changes to specific fields by admin/operators/end-users must be logged in the system for query and auditing.  Admins must see the information associated with a registrant for previous dates.  Admins must also be able to generate reports of aggregate data for an earlier period.  For example, the total number of farmers with more than 10 acres of land as of Dec 2023.
 
-## Logging methods
+{% hint style="info" %}
+Change log is not the same as [Audit Logs](../../features/audit-log.md) or [System Log](../../../monitoring-and-reporting/logging.md). &#x20;
+{% endhint %}
 
-### Log files
+## Functionality
 
-This is a simple method where the Python logging module is used to write event logs in JSON format in log files directly.  These log files are shunted to OpenSearch for indexing, searching and querying. See System Logs under Monitoring and Reporting for further details on this data pipeline.
+* All the changes to records in the social registry are recorded along with datetime stamp of the change, nature of change, and author of the change. A record is defined as a row in `res.partner` table.
+* The changes are viewable via a user interface of Odoo. &#x20;
+* The viewers of this data are registrars, program admins, agents, and counsellors.
+* The changes are searchable based on fields like Reference ID, name etc.
+* Ability to generate aggregated reports on one or more fields covering a time period.
+* Access control mechanism for authorized users to access this data.
+* The change log table is not editable under any circumstances.
+* Privacy:  The change log contains all the information of the registry and hence needs to be given very limited access along with data security similar to the registry primary data. See [Privacy and Security](../../functionality/privacy-and-security.md).
+* This data is accessible via standard registry query [APIs](../../features/api/).
 
-### Changed field records in OpenSearch
+## Available solutions
 
-Reporting infrastructure may be harnessed to record all changes in DB fields and shunted them to OpenSearch for indexing, searching and querying.  See details on reporting infrastructure [here](../../functionality/monitoring-and-reporting/).
+OCA offers a module called "Audit Log" that does some similar but is licensed as AGPL. Further, it does not provide all the desired features.
 
-### Design
+## User stories
 
-Change log can be build using the Odoo OCA package [Audit Log](https://github.com/OCA/server-tools/tree/16.0/auditlog). This would be set of changes in any field(s) for the registry.
+### Update
 
-### Multiple versions of data
+1. A user edits a record via the available [update mechanisms](../../features/registry-update-mechanisms.md) of the Social Registry. The change is automatically stored in the backend silently without any special indication to the user more than the usual update flow.
 
-Multiple version of a person's record might come in the following scenarios
+### View
 
-* Change in field value
-* New updated record coming in for the person which would be termed as a named version (typically surveys)
-* Feedback call from the connected applications
+1. Against each record, there is a button, say, _History_ to view the history of changes to this record.
+2. User clicks on _History._ User sees a table of all changes related to the record, paginated, default order by descending timestamp. &#x20;
+3. User can change the sort using the `Sort by` button
+4. If the data list is large user can search through records (TBD)
+5.
 
-**Proposed solution:** Utilizing Elasticsearch as the backbone, we aim to implement a robust solution for managing multiple versions efficiently. Below are the key technology components and strategies discussed:
+## Design
 
-* **Debezium configuration:** Debezium will be configured to capture real-time changes from the database's Write-Ahead Logs (WALs), ensuring that any modifications or additions to the data are promptly recorded.
-* **Elasticsearch setup:** Elasticsearch will serve as the primary destination for streaming the captured changes. Leveraging its indexing capabilities, Elasticsearch will efficiently organize and store the data, facilitating quick retrieval and analysis.
-* **Indexing strategy:** An indexing strategy will be devised to optimize the storage and retrieval of captured data. This strategy will accommodate multiple versions of records, ensuring that historical data remains accessible and searchable.
-* **Authorization implementation:** Authorization mechanisms will be implemented within Elasticsearch. This will control access to the API endpoints, ensuring that only authorized users can interact with the data.&#x20;
-* **API Endpoints configuration:** API endpoints will be configured in Elasticsearch to expose the captured data to authorized users. These endpoints will provide seamless access to multiple versions of records, enabling users to retrieve and analyze data as needed. Client should be in a position to fetch based on named version or any other parameter like timeframe.
+### Database
+
+A separate history table in the database is
+
+### Reports
+
+* Reporting framework is leveraged for generating reports on the change logs.
+
+### User interface
+
+## Test design
+
+## Source code
