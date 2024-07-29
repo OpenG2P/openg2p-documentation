@@ -203,6 +203,7 @@
       * [📔 User Guides](<social-registry/functionality/individuals-and-groups/user-guides/README (1).md>)
         * [📔 Create an Individual Registrant](<social-registry/functionality/individuals-and-groups/user-guides/create-an-individual-registrant (1).md>)
         * [📔 Create a Group and Add Individual Registrants to the Group](social-registry/functionality/individuals-and-groups/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
+        * [📔 Import CSV file to Social Registry](social-registry/functionality/individuals-and-groups/user-guides/import-csv-file-to-social-registry.md)
     * [Deduplication](social-registry/functionality/deduplication/README.md)
       * [📔 User Guides](social-registry/functionality/deduplication/user-guides/README.md)
         * [📔 Configure ID Deduplication](social-registry/functionality/deduplication/user-guides/configure-id-deduplication.md)
