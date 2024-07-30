@@ -416,6 +416,7 @@
     * [Troubleshooting: "fsnotify watcher" warning](deployment/deployment-guide/troubleshooting-fsnotify-watcher-warning.md)
     * [Uninstalling Applications from Rancher UI](deployment/deployment-guide/uninstalling-applications-from-rancher-ui.md)
     * [Access a Database from Outside the Cluster](deployment/deployment-guide/access-a-database-from-outside-the-cluster.md)
+    * [Configuring  External Database to OpenG2P Environment](deployment/deployment-guide/configuring-external-database-to-openg2p-environment.md)
   * [DEPRECATED - Common Components](deployment/common-components/README.md)
     * [PostgreSQL](deployment/common-components/postgresql.md)
     * [Keycloak](deployment/common-components/keycloak.md)
