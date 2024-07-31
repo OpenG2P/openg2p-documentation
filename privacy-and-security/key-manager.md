@@ -6,7 +6,7 @@ OpenG2P recognizes the critical importance of securing sensitive databases, incl
 
 ## Key Manager integration
 
-<img src="../.gitbook/assets/file.excalidraw.svg" alt="The workflow of keymanager" class="gitbook-drawing">
+<img src="../.gitbook/assets/file.excalidraw (4).svg" alt="The workflow of keymanager" class="gitbook-drawing">
 
 ### Purpose
 

@@ -44,7 +44,7 @@ In the Programs Needy screen, add a new criterion in the _**Configuration**_ tab
 
 For example, a new criteria _**Phone Numbers > Country**_ is added in the Eligibility Manager in the _**Configuration tab**_.
 
-\<image to be incorporated>
+<figure><img src="../../../../../.gitbook/assets/append-rule.png" alt=""><figcaption></figcaption></figure>
 
 2. Click the _**Save**_ button.
 3. Click the _**Cycles**_ tab and Open cycle form.
