@@ -40,6 +40,8 @@ For example, the program _**Needy**_ has a Cycle 1 with enrolled registrants.
 
 In the Programs Needy screen, add a new criterion in the _**Configuration**_ tab to enroll the eligible registrants among the currently enrolled registrants in _**Cycle 1**_ based on the added new criterion.&#x20;
 
+<figure><img src="../../../../../.gitbook/assets/program-screen (1).png" alt=""><figcaption></figcaption></figure>
+
 For example, a new criteria _**Phone Numbers > Country**_ is added in the Eligibility Manager in the _**Configuration tab**_.
 
 \<image to be incorporated>

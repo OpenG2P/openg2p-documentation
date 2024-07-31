@@ -31,11 +31,14 @@ The _**Programs**_ screen is displayed.
 <figure><img src="../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose the Programs screen</p></figcaption></figure>
 
 2. Select a program from the program list.
-3. Click the program _**Needy**_ from the program list.
+
+For example, here program Needy is considered.
+
+2. Click the program _**Needy**_ from the program list.
 
 _**Needy Programs**_ screen is displayed.
 
-\<image to be incorporated>
+<figure><img src="../../../../.gitbook/assets/program-screen (1).png" alt=""><figcaption></figcaption></figure>
 
 4. Click the _**Configuration**_ tab.
 

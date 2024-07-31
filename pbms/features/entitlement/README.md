@@ -43,15 +43,15 @@ OpenG2P Entitlement Managers allow Program administrators to configure entitleme
 2. Approving authority
 3. Entitlement voucher
 
-#### Entitlement amount
+### Entitlement amount
 
 These configurations include entitlement amounts, transfer fees, currency, amount per person for a group, and the maximum number of individuals in a group. These configurations allow Program administrators to set rules for entitlement amounts for individuals and groups.
 
-#### Approving authority
+### Approving authority
 
 The Entitlement Manager can have one or more stages of approval, and the Program administrators can assign one of the approving authorities for each stage of approval. Immediate Individual Assistance On-Demand workflow describes an example involving multi-stage approval.
 
-#### Entitlement voucher
+### Entitlement voucher
 
 OpenG2P provides an easy-to-use UI for creating an Entitlement Voucher Template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.&#x20;
 
@@ -73,13 +73,24 @@ The multi-stage approval typically follows this process:
 
 <table><thead><tr><th width="230">Configuration</th><th>Description</th></tr></thead><tbody><tr><td>Entitlement amount</td><td>Program administrators can configure entitlement amount, currency, and transfer fee. Further, the entitlement amount for each individual in a group and the maximum number of individuals in the group can be configured.</td></tr><tr><td>Entitlement vouchers</td><td>An entitlement voucher authorizes the intended beneficiary to claim the benefits at the service provider facility. The voucher has customized QR codes embedded. The QR code provides a digital signature that makes the voucher tamper-proof and establishes the authenticity of the voucher.</td></tr><tr><td>Multi-stage approvals</td><td>Program administrators can configure multiple stages and assign a role for each stage to avoid concentration of power and errors in deciding the entitlement amount</td></tr></tbody></table>
 
+## Export beneficiaries approved entitlements
+
+In PBMS, registered applicants are entitled to the program's benefits for which they are enrolled as eligible beneficiaries. The PBMS module is required to compile and maintain reports on the entitled beneficiaries due to the enormous number of eligible beneficiaries receiving entitlements.&#x20;
+
+In order to provide the users with a comprehensive list of all the approved entitlements, the feature Export is used. The Export feature in Odoo makes it simple for the users to effectively print or export data in CSV/XLS format. It will only be accessible following the approval of entitlements, and it will then continue to function.
+
+Using this feature, the Program Manager can
+
+* View a list of beneficiaries who are entitled to the program's benefits.&#x20;
+* Easily manage and verify the approved entitlements.&#x20;
+
+To know more on export beneficiaries approved entitlements, click here.
+
 ## Related user guides
 
 :notebook\_with\_decorative\_cover:[Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
 
 :notebook\_with\_decorative\_cover:[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
-
-:notebook\_with\_decorative\_cover:Configure Entitlement Voucher
 
 :notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 

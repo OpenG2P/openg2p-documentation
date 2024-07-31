@@ -30,6 +30,8 @@ Verify Eligibility feature is used after the beneficiaries are enrolled and if t
 * If the enrolled beneficiaries must be reassessed based on the ad hoc criterion.
 * If the program manager adds a criterion that was overlooked during beneficiary enrollment.
 
+For example, here the program Needy is considered.
+
 ## Procedure
 
 1. Verify the program has enrolled registrants.
@@ -37,7 +39,7 @@ Verify Eligibility feature is used after the beneficiaries are enrolled and if t
 
 Programs Needy screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/added-new-registrants.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/program-screen (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Add the new criterion in the _**Configuration**_ tab to enroll the eligible registrants among the currently enrolled registrants based on the added new criterion.&#x20;
 
