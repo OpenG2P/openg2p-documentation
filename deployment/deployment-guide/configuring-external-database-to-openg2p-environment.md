@@ -102,4 +102,12 @@ description: >-
       &#x20;      `DB_PASSWORD: <password for ODK DB>`\
       &#x20; `postgresql:` \
       &#x20;    `enabled: false`
+   4. Add the below parameters in the last section of reportingInit.\
+      envVars: \
+      &#x20;     DB\_NAME: socialregistrydb \
+      &#x20;     DB\_HOST: `<IP address of External DB>` \
+      &#x20;     DB\_USER: socialregistryuser\
+      envVarsFrom: \
+      &#x20;      DB\_PASS: `<password for SR DB>`\
+
 2. Make sure the SR and ODK connected to the external databases and verify the tables by logging into the external database.
