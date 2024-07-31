@@ -84,7 +84,7 @@ Using this feature, the Program Manager can
 * View a list of beneficiaries who are entitled to the program's benefits.&#x20;
 * Easily manage and verify the approved entitlements.&#x20;
 
-To know more on export beneficiaries approved entitlements, click here.
+To know more on export beneficiaries approved entitlements, [click here](../../functionality/entitlement/user-guides/export-beneficiaries-approved-entitlement.md).
 
 ## Related user guides
 
@@ -95,3 +95,6 @@ To know more on export beneficiaries approved entitlements, click here.
 :notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 
 :notebook\_with\_decorative\_cover:[Multi-Stage Approval](../../user-guides/eligibility-and-program-enrollment/approval/multi-stage-approval.md)
+
+:notebook\_with\_decorative\_cover:[Export Beneficiaries Approved Entitlements](../../functionality/entitlement/user-guides/export-beneficiaries-approved-entitlement.md)
+

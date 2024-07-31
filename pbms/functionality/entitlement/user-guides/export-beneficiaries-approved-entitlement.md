@@ -68,4 +68,4 @@ You can find the exported file in the chosen format in the download folder in yo
 
 <figure><img src="../../../../.gitbook/assets/downloads-folder.png" alt=""><figcaption></figcaption></figure>
 
-This completes the proess of exporting the beneficiaries approved entitlements.
+This completes the process of exporting the beneficiaries approved entitlements.
