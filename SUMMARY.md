@@ -76,6 +76,7 @@
         * [📔 Create Entitlement Voucher Template](pbms/functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
         * [📔 Configure the Payments File with QR Code](pbms/functionality/entitlement/user-guides/configure-the-payments-file-with-qr-code.md)
         * [📔 Configure Default Cycle Managers](pbms/functionality/entitlement/user-guides/configure-default-cycle-managers.md)
+        * [📔 Export Beneficiaries Approved Entitlement](pbms/functionality/entitlement/user-guides/export-beneficiaries-approved-entitlement.md)
     * [Disbursement](pbms/features/disbursement-cycles/README.md)
       * [Payment Batches](pbms/functionality/disbursement-cycles/payment-batches.md)
       * [In-kind Transfer](pbms/functionality/disbursement-cycles/in-kind-transfer/README.md)

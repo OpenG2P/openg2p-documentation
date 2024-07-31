@@ -34,6 +34,10 @@ For example, here the program Needy is considered.
 
 ## Procedure
 
+For example, here the program Needy is selected.
+
+## Procedure
+
 1. Verify the program has enrolled registrants.
 2. Click the program _**Needy**_.
 
