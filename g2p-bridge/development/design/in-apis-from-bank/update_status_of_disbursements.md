@@ -76,23 +76,6 @@ Depending on the physical delivery mechanism, the implementation can create an i
    4.  sequence\_number - Tag :28C: of MT940 - Header Section
 
        E.g. - :28C:00001/001 (section after slash "/" is sequence number)
-   5.  opening\_balance - Tag :60F: of MT940 - Header Section
-
-       E.g. - <mark style="color:purple;">:60F:C171120AUD98838,27</mark>
-
-       C or D -- stands for Credit Balance or Debit Balance
-
-       171120 -- 6 characters - Statement Date in YYMMDD format
-
-       AUD -- Australian Dollar - Currency of the Account
-
-       98838,27 -- Ninety Eight Thousand Eight Hundred Thirty Eight AUD and Twenty Seven Cents - The comma is to be treated as decimal
-   6.  closing\_balance - Tag :62F: of MT940 - Trailer Section
-
-       Similar to Tag 60F
-   7.  closing\_available\_balance - Tag :64: of MT940 - Trailer Section
-
-       Similar to Tag 60F and 62F
 5. Update these attributes in the table - account\_statement
 6. Now loop through the transaction section of the MT940&#x20;
 7. Each Transaction consists of two lines (tags) - :61: & :86: (Statement and Narrative)
@@ -102,37 +85,27 @@ Depending on the physical delivery mechanism, the implementation can create an i
 
     1. <mark style="color:purple;">150702 -- 6 digits -- Transaction Value Date in YYMMDD format</mark>
     2. <mark style="color:purple;">0702 -- 4 digits -- Transaction Booking Date in MMDD format</mark>
-    3. <mark style="color:purple;">C/D -- 1 digit -- Credit or Debit indicator</mark>
+    3. <mark style="color:purple;">C/D/RC/RD -- 2 digits -- Credit, Debit, Reversal-Credit, Reversal-Debit</mark>
     4. <mark style="color:purple;">115945,00 -- Transaction Amount -- Maximum 19 characters</mark>
     5. <mark style="color:purple;">F014 -- Transaction Code -- Should be a standard transaction code - 1 for Credit and another 1 for Debit</mark>
     6. <mark style="color:purple;">NARRATIVE -- Transaction Narrative -- Should be the Beneficiary Name -- This should be as sent by the g2p-bridge to the Sponsor Bank</mark>
     7. <mark style="color:purple;">// Reference Separator</mark>
     8. <mark style="color:purple;">0207150143062089CRLF1234567890 -- Transaction Reference Number issued by the Bank for this transaction</mark>
 9. :86: is known as the Narrative Line - It can have 6 lines of 65 characters each. g2p-bridge should send as many details about the Benefit Program and Beneficiary in the Disbursement payload to ensure that the narrative text is as rich as possible
-10. Create a List of Transactions for a Statement based on the Statement lines. The Statement Pydantic model should contain the following attributes
-    1. Transaction Value Date
-    2. Transaction Book Date
-    3. Transaction Amount
-    4. Debit-Credit Indicator
-    5. Beneficiary Name -- NARRATIVE field (after the Reference Separator //)
-    6. XX
-11. Loop through the transactions. For each transaction
-    1. Based on the Transaction Book Date -- go back 2 days (book date minus 2)
-    2. This 2 (can be a configuration)
-    3. get the benefit program based on the sponsor bank account number (benefit\_program\_configuration)
-    4. for this benefit program, get a. list of all disbursements from Book Date minus 2
-    5. the idea is that - based on an SLA -- the book date represents when the bank would have processed the disbursements after g2p-bridge dispatched them to the bank
-    6. every disbursement should ideally have a corresponding Debit entry in the account statement
-    7. match the transaction amount and the beneficiary details and the program details (how the narrative is formed has to be discussed)
-    8. update the table - disbursement\_
+10. For each MT940 Transaction - retrieve the "disbursement\_id" from the transaction
+11. The "disbursement\_id" should ideally be the Customer Reference Number. However, this depends on the Sponsor Bank banking platform
+12. The Sponsor Bank may send the "disbursement\_id" in any of these fields - customer\_reference, bank\_reference (unlikely, but possible) and one of the six narrative lines (tag 86)
+13. So extracting the "disbursement\_id" from the mt940 transaction - should be abstracted out to an interface - with an adapter implementation for different sponsor banks.
+14. For "D" transactions, insert a new record for the "disbursement\_id" in the table - disbursement\_recon\_from\_bank
+15. For "RD" transactions, updated the existing record in - disbursement\_recon\_from\_bank
+16. Log errors into disbursement\_recon\_errors\_from\_bank. The following error conditions are logged into this table
+    1. I get a "D" transaction, but I don't get a valid "disbursement\_id" - INVALID\_DISBURSEMENT
+    2. I get a "D" transaction, but the "disbursement\_id" is already present in the table - disbursement\_recon\_from\_bank - DUPLICATE\_DISBURSEMENT
+    3. I get a "RD" transaction, but the "disbursement\_id" is not present in the table - disbursement\_recon\_from\_bank - INVALID\_REVERSAL
 
+disbursement\_recon\_from\_bank
 
-
-
-
-### disbursement\_recon\_from\_bank
-
-<table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>bank_disbursement_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>bank_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>corresponding_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>bank_reference_number</td><td>Bank's unique reference number for the transaction. Every disbursement will have a unique reference assigned by the bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_bank_statement_number</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td></td></tr></tbody></table>
+<table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>bank_disbursement_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>recon_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>recon_statement_sequence</td><td></td></tr><tr><td>recon_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>bank_reference_number</td><td>Bank's unique reference number for the transaction. Every disbursement will have a unique reference assigned by the bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_statement_number</td><td></td></tr><tr><td>reversal_statement_sequence</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td>As found in MT940 statement. This reason may be found in any of the six lines of Narrative.<br>Implementation will differ across sponsor banks<br>Will depdend on an Bank specific adapter implementation to extract the "reversal_reason" from the Narratives</td></tr></tbody></table>
 
 The sponsor bank invokes this API after it gets back the status of the disbursement from the destination bank through the national clearing / payment switch.
 
