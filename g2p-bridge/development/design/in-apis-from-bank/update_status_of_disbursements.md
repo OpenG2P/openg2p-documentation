@@ -103,34 +103,6 @@ Depending on the physical delivery mechanism, the implementation can create an i
     2. I get a "D" transaction, but the "disbursement\_id" is already present in the table - disbursement\_recon\_from\_bank - DUPLICATE\_DISBURSEMENT
     3. I get a "RD" transaction, but the "disbursement\_id" is not present in the table - disbursement\_recon\_from\_bank - INVALID\_REVERSAL
 
-disbursement\_recon\_from\_bank
+### disbursement\_recon\_from\_bank
 
 <table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>bank_disbursement_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>recon_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>recon_statement_sequence</td><td></td></tr><tr><td>recon_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>bank_reference_number</td><td>Bank's unique reference number for the transaction. Every disbursement will have a unique reference assigned by the bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_statement_number</td><td></td></tr><tr><td>reversal_statement_sequence</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td>As found in MT940 statement. This reason may be found in any of the six lines of Narrative.<br>Implementation will differ across sponsor banks<br>Will depdend on an Bank specific adapter implementation to extract the "reversal_reason" from the Narratives</td></tr></tbody></table>
-
-The sponsor bank invokes this API after it gets back the status of the disbursement from the destination bank through the national clearing / payment switch.
-
-This API (as the name suggests) updates the status of the disbursment.
-
-There are two possibilities - the disbursement either is successful or is a failure.
-
-<mark style="color:blue;">**SUCCESS**</mark>
-
-Update the following attributes in disbursement\_batch\_status
-
-| Attribute                      | Datatype                                                                                                                            |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| reply\_status\_from\_bank      | <mark style="color:green;">**SUCCESS**</mark>                                                                                       |
-| reply\_from\_bank\_time\_stamp | Time stamp of receipt of reply from Sponsor bank                                                                                    |
-| reply\_success\_fsp\_code      | If the disbursement is a success, the fsp (the financial service provider / destination bank) code - where the account was credited |
-| reply\_success\_fa             | The full Financial Address (including account number, branch code / mobile number) where the disbursement was credited              |
-
-<mark style="color:blue;">**FAILURE**</mark>
-
-Update the following attributes in disbursement\_batch\_status
-
-| Attribute                      | Datatype                                                                                                                                                 |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| reply\_status\_from\_bank      | <mark style="color:red;">**FAILURE**</mark>                                                                                                              |
-| reply\_from\_bank\_time\_stamp | Time stamp of receipt of reply from Sponsor bank                                                                                                         |
-| reply\_failure\_error\_code    | Error code from the downstream G2P chain participants (Sponsor bank, Payment switch, Destination banks) in case of a FAILURE (reply\_status\_from\_bank) |
-| reply\_failure\_error\_message | Error message describing the failure\_error\_code                                                                                                        |
