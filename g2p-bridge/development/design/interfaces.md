@@ -16,44 +16,44 @@ layout:
 
 
 
-<figure><img src="../../../.gitbook/assets/Gitbook-G2PB-Tech-Architecture.jpg" alt=""><figcaption><p>openg2p-g2cb - Technical architecture</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Gitbook-G2PB-Tech-Architecture.jpg" alt=""><figcaption><p>openg2p-g2p-bridge - Technical architecture</p></figcaption></figure>
 
-Refer to the Technical architecture. As shown in the figure, all outward APIs towards a Sponsor bank is abstracted through an interface - openg2p-g2cb-out-bank-interface-lib.
+Refer to the Technical architecture. As shown in the figure, all outward APIs towards a Sponsor bank are abstracted through an interface. This interface is in the library project - **openg2p-g2p-bridge-bank-connectors**
 
-This interface library (<mark style="color:blue;">**OutwardBankInterface**</mark>) provides for the following method signatures
+There is also an implementation of the interface (openg2p-g2p-bridge-example-bank-connector), that provides a reference implementation. This connector connects to a simulator application. The simulator application (openg2p-g2p-bridge-example-bank-api) simulates a Sponsor bank.
 
-### check\_funds\_with\_bank
+The interface defines the following APIs
 
-| Arguments          | Type   |
-| ------------------ | ------ |
-| financial\_address | string |
+### check\_available\_funds
+
+| Arguments         | Type   |
+| ----------------- | ------ |
+| account\_number   | string |
+| account\_currency | string |
+| funds\_required   | number |
 
 returns
 
-| attributes         | Type   |
-| ------------------ | ------ |
-| financial\_address | string |
-| account\_balance   | number |
-| currency           | string |
+| attributes | Type |
+| ---------- | ---- |
+|            |      |
 
 ### block\_funds\_with\_bank
 
-| Arguments                         | Type   |
-| --------------------------------- | ------ |
-| financial\_address                | string |
-| amount\_to\_be\_blocked           | number |
-| currency                          | string |
-| block\_request\_reference\_number | string |
+| Arguments               | Type   |
+| ----------------------- | ------ |
+| account\_number         | string |
+| account\_currency       | string |
+| amount\_to\_be\_blocked | number |
 
 returns
 
-| Attributes                | Type               |
-| ------------------------- | ------------------ |
-| financial\_address        | string             |
-| block\_result             | SUCCESS or FAILURE |
-| block\_error\_code        | string             |
-| block\_error\_message     | string             |
-| block\_request\_reference | string             |
-| block\_result\_reference  | string             |
+| Attributes               | Type               |
+| ------------------------ | ------------------ |
+| financial\_address       | string             |
+| block\_result            | SUCCESS or FAILURE |
+| block\_error\_code       | string             |
+| block\_error\_message    | string             |
+| block\_result\_reference | string             |
 
 ### create\_disbursements
