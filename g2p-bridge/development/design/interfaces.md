@@ -57,6 +57,10 @@ returns
 
 ### disburse\_funds
 
+It will take a collection of the following structure (payment structure)
+
+This API will only acknowledge receipt of a payment instruction. The actual payment will be effected by the bank asynchronously&#x20;
+
 | Arguments                             | Description |
 | ------------------------------------- | ----------- |
 | remitter\_account\_number             |             |
