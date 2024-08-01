@@ -50,10 +50,25 @@ returns
 
 | Attributes               | Type               |
 | ------------------------ | ------------------ |
-| financial\_address       | string             |
 | block\_result            | SUCCESS or FAILURE |
 | block\_error\_code       | string             |
 | block\_error\_message    | string             |
 | block\_result\_reference | string             |
 
-### create\_disbursements
+### disburse\_funds
+
+| Arguments                             | Description |
+| ------------------------------------- | ----------- |
+| remitter\_account\_number             |             |
+| remitter\_account\_currency           |             |
+| amount                                |             |
+| beneficiary\_account\_number          |             |
+| beneficiary\_account\_currency        |             |
+| beneficiary\_account\_type            |             |
+| beneficiary\_account\_bank            |             |
+| beneficiary\_account\_branch          |             |
+| beneficiary\_mobile\_number           |             |
+| beneficiary\_mobile\_wallet\_provider |             |
+| beneficiary\_email\_address           |             |
+| beneficiary\_email\_wallet\_provider  |             |
+
