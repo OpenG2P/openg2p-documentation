@@ -67,6 +67,9 @@ Depending on the physical delivery mechanism, the implementation can create an i
    1.  sponsor bank account number - Tag :25: of MT940 - Header Section
 
        E.g. - <mark style="color:purple;">:25:032000136465</mark>
+
+       Validate the Bank Account - against "benefit\_program\_configuration". This account number should exist\
+       If the account number does not exist, mark the MT940 Statement as "ERROR" - No further processing
    2.  reference\_number - Tag :20: of MT940 - Header Section
 
        E.g. - <mark style="color:purple;">:20:CSCT032000136465</mark>
@@ -103,6 +106,10 @@ Depending on the physical delivery mechanism, the implementation can create an i
     2. I get a "D" transaction, but the "disbursement\_id" is already present in the table - disbursement\_recon\_from\_bank - DUPLICATE\_DISBURSEMENT
     3. I get a "RD" transaction, but the "disbursement\_id" is not present in the table - disbursement\_recon\_from\_bank - INVALID\_REVERSAL
 
-### disbursement\_recon\_from\_bank
+### disbursement\_recon
 
 <table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>bank_disbursement_batch_id</td><td></td></tr><tr><td>disbursement_id</td><td>Unique Index</td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>recon_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>recon_statement_sequence</td><td></td></tr><tr><td>recon_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>bank_reference_number</td><td>Bank's unique reference number for the transaction. Every disbursement will have a unique reference assigned by the bank.</td></tr><tr><td>reversal_found</td><td></td></tr><tr><td>reversal_statement_id</td><td></td></tr><tr><td>reversal_statement_number</td><td></td></tr><tr><td>reversal_statement_sequence</td><td></td></tr><tr><td>reversal_entry_sequence</td><td></td></tr><tr><td>reversal_reason</td><td>As found in MT940 statement. This reason may be found in any of the six lines of Narrative.<br>Implementation will differ across sponsor banks<br>Will depdend on an Bank specific adapter implementation to extract the "reversal_reason" from the Narratives</td></tr></tbody></table>
+
+### disbursement\_recon\_error
+
+<table><thead><tr><th width="312">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>bank_disbursement_batch_id</td><td></td></tr><tr><td>recon_statement_id</td><td>This is the Unique ID that is given to each MT940 that is uploaded into the platform</td></tr><tr><td>recon_statement_number</td><td>This is the Statement Number that is found in the MT940 header - field 28C</td></tr><tr><td>recon_statement_sequence</td><td></td></tr><tr><td>recon_entry_sequence</td><td>This is the sequence number of the entry in this statement - the entry that corresponds to this disbursement. This entry will be reflected as a "Debit" in the Program Account with the Sponsor Bank.</td></tr><tr><td>bank_reference_number</td><td>Bank's unique reference number for the transaction. Every disbursement will have a unique reference assigned by the bank.</td></tr><tr><td>disbursement_id</td><td></td></tr><tr><td>error_reason</td><td>INVALID_DISBURSEMENT<br>DUPLICATE_DISBURSEMENT<br>INVALID_REVERSAL</td></tr></tbody></table>

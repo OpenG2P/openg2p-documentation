@@ -338,7 +338,7 @@
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
         * [benefit\_program\_configuration](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [Config Attributes](g2p-bridge/development/design/config-attributes.md)
-      * [Interfaces](g2p-bridge/development/design-specifications/interfaces.md)
+      * [Interfaces](g2p-bridge/development/design/interfaces.md)
     * [File-based Payment Backend](g2p-bridge/development/file-based-payment-backend.md)
   * [Tech Guides](g2p-bridge/tech-guides.md)
   * [📔 User Guides](g2p-bridge/user-guides/README.md)
