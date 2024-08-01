@@ -31,7 +31,7 @@ Depending on the physical delivery mechanism, the implementation can create an i
 
 ### account\_statement
 
-<table><thead><tr><th width="287">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>statement_id</strong></td><td><strong>Unique ID</strong></td></tr><tr><td>statement_date</td><td>Tag :60F: of MT940 - Header Section</td></tr><tr><td>account_number</td><td>Tag :25: of MT940 - Header Section</td></tr><tr><td>reference_number</td><td>Tag :20: of MT940 - Header Section</td></tr><tr><td>statement_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>sequence_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>opening_balance</td><td>Tag :60F: of MT940 - Header Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>opening_balance_date</td><td>Tag :60F: of MT940 - Header Section</td></tr><tr><td>closing_balance</td><td>Tag :62F: of MT940 - Trailer Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>closing_balance_date</td><td>Tag :62F: of MT940 - Trailer Section</td></tr><tr><td>closing_available_balance</td><td>Tag :64: of MT940 - Trailer Section<br>Positive Number -- Stands for Credit Balance<br>Negative Number -- Stands for Debit Balance</td></tr><tr><td>closing_available_balance_date</td><td>Tag :64: of MT940 - Trailer Section</td></tr><tr><td>statement_upload_timestamp</td><td></td></tr><tr><td>statement_process_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>statement_process_timestamp</td><td></td></tr><tr><td>statement_process_error_code</td><td></td></tr><tr><td>statement_process_attempts</td><td></td></tr></tbody></table>
+<table><thead><tr><th width="287">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>statement_id</strong></td><td><strong>Unique ID</strong></td></tr><tr><td>statement_date</td><td>Tag :60F: of MT940 - Header Section</td></tr><tr><td>account_number</td><td>Tag :25: of MT940 - Header Section</td></tr><tr><td>reference_number</td><td>Tag :20: of MT940 - Header Section</td></tr><tr><td>statement_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>sequence_number</td><td>Tag :28C: of MT940 - Header Section</td></tr><tr><td>statement_upload_timestamp</td><td></td></tr><tr><td>statement_process_status</td><td>Enum<br>PENDING<br>PROCESSED</td></tr><tr><td>statement_process_timestamp</td><td></td></tr><tr><td>statement_process_error_code</td><td></td></tr><tr><td>statement_process_attempts</td><td></td></tr></tbody></table>
 
 ### account\_statement\_lob
 
@@ -43,7 +43,7 @@ Depending on the physical delivery mechanism, the implementation can create an i
 ### Business logic
 
 1. Persist the Account Statement in the two tables - account\_statement & account\_statement\_lob
-2. In the table - account\_statement, only the following columns are populated - statement\_id, statement\_upload\_timestamp and statment\_process\_status = UNPROCESSED
+2. In the table - account\_statement, only the following columns are populated - statement\_id, statement\_upload\_timestamp and statment\_process\_status = PENDING
 3. In the table - account\_statement\_lob, the entire text is persisted with the statement\_id
 
 ### mt940\_processor\_beat\_producer
