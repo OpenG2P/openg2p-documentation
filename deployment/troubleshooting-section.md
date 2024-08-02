@@ -1,0 +1,7 @@
+---
+description: This guide gives you solutions for the issues faced in the environment.
+---
+
+# Troubleshooting Section
+
+<table><thead><tr><th width="106">Issue ID</th><th width="201">Issue Description	</th><th width="235">Root Cause</th><th>Solution</th></tr></thead><tbody><tr><td>001</td><td>Sometimes PostgreSQL databases might fail due to this error.<br><code>could not write lock file "postmaster.pid": No space left on the device</code> </td><td>This is due to <code>Disk space full on NFS node</code> or <code>PVC is full.</code></td><td>Login to the NFS node and clear the logs using below commands to clear the storage.<br>*<strong>sudo rm -f /var/log/</strong><em><strong>.gz /var/log/</strong></em><strong>.1 /var/log/</strong><em><strong>.old</strong></em> <br><em><strong>*sudo rm -f /var/log/</strong></em><strong>/</strong><em><strong>gz /var/log/</strong></em><strong>/</strong><em><strong>.1 /var/log/</strong></em><strong>/*.old</strong><br><strong>*sudo truncate -s 0 /var/log/syslog</strong></td></tr><tr><td>002</td><td><p>PostgreSQL database not starting due to replication checkpoint error.</p><p><code>PANIC: replication checkpoint has wrong magic 1865248117 instead of 307747550</code><br></p></td><td>Some times database files might corrupt and shows the error and it will fail to connect with the services.<br></td><td>Rename or take backup of this file <code>pg_logical/replorigin_checkpoint</code> from postgres PVC, and restarting postgres server will work. </td></tr></tbody></table>

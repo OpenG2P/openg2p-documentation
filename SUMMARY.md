@@ -432,6 +432,7 @@
     * [Debezium](deployment/common-components/debezium.md)
     * [Keymanager](deployment/common-components/keymanager.md)
     * [eSignet](deployment/common-components/esignet.md)
+  * [Troubleshooting Section](deployment/troubleshooting-section.md)
 * [Use Cases](use-cases/README.md)
   * [Technology for Inclusion](use-cases/technology-for-inclusion/README.md)
     * [Registration in Low Connectivity Areas](use-cases/technology-for-inclusion/registration-in-low-connectivity-areas.md)
