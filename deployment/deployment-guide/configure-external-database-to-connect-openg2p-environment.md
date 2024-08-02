@@ -1,49 +1,59 @@
 ---
-description: >-
-  Document on how to setup and install external database for OpenG2P
-  environments
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Configuring  External Database to OpenG2P Environment
+# Configure External Database to Connect OpenG2P Environment
+
+This document provides instructions to setup and install external database for OpenG2P environments.
 
 ## Prerequisites <a href="#prerequisites" id="prerequisites"></a>
 
-1. Make sure the hardware requirement to setup the external database.
+* Make sure you have the hardware required for the external database setup.
 
 ## Installation and configuration
 
-1. Login to the external database node&#x20;
-2.  Install PostgreSQL using below commands
+1. Log in to the external database node.&#x20;
+2.  Install PostgreSQL using below commands.
 
     <pre class="language-bash"><code class="lang-bash"><strong>sudo apt update
     </strong><strong>sudo apt install postgresql
     </strong></code></pre>
-3.  After installation of postgresql check the status by using below command
+3.  After the installation of postgreSQL, use the below command to check the status.
 
     <pre class="language-bash"><code class="lang-bash"><strong>service postgresql status
     </strong></code></pre>
-4.  Once done with the installation login to the default database  `postgres` with  default user `postgres`  follow the below command to login to default database.
+4.  Use the command below to log into the default postgres database using the default user, postgres, following a successful installation.&#x20;
 
     <pre class="language-bash"><code class="lang-bash"><strong>sudo -u postgres psql
     </strong></code></pre>
-5. After logged in you can check the connection to the database and list of databases and users and tables information using below commands.\
+5. After you logged in, use the command below to confirm the database connection and details on the list of databases, users, and tables.\
    `\conninfo` - To check the connection\
    `\l` -  list databases\
    `\du` - list users\
    `\d` - list tables - press q to exit\
    `\q -`  exit from the database
-6. Since the default “postgres” user does not have a password, you should set it yourself using below command.\
-   `\password postgres` - to set the password it will ask for the password give random password like this - `xwfJhfI9tK`\
-   Note : It won't allow @ or # or - in the passwords.
-7. Once you setup the password for postgres user exit from the database and you have to do some configurations on the server level. Follow the below steps for the same.
-   1.  Open postgresql.conf file, find the below parameter uncomment it and set it to listen on all IP addresses and increase the connections:
+6. You should use the command below to set one for yourself, as the default _**postgres**_ user does not have a password.\
+   `\password postgres` - to set the password, the password must have the combination of lowercase, uppercase, number. For example, `xwfJhfI9tK`\
+   Note :  The password must not have the special characters @, #, or -.
+7. After setting up the postgres password, the user must exit from the database and run the command below to perform some server-level configurations.
+   1.  Access the postgresql.conf file, locate the parameter below, uncomment it, set it to listen on all IP addresses, and configure it to increase the number of connections.
 
        ```bash
        vim /etc/postgresql/14/main/postgresql.conf
        listen_addresses = '*'
        max_connections = 500
        ```
-   2.  Open pg\_hba.conf file and allow TCP/IP connections (host) to all databases (all) for all users (all) with any IPv4 address (0.0.0.0/0) using an scram-sha-256 encrypted password for authentication and save the file.
+   2.  Acess pg\_hba.conf file and allow TCP/IP connections (host) to all databases (all) for all users (all) with any IPv4 address (0.0.0.0/0) using an scram-sha-256 encrypted password for authentication and save the file.
 
        ```bash
        vim /etc/postgresql/14/main/pg_hba.conf
@@ -55,17 +65,17 @@ description: >-
        ```bash
        sudo systemctl restart postgresql
        ```
-   4.  And make sure your system is listening to the 5432 port that is reserved for PostgreSQL.
+   4.  Make sure your system is listening to the 5432 port that is reserved for PostgreSQL.
 
        ```bash
        ss -nlt | grep 5432
        ```
-8.  Now login back to the postgresdb using the command below. Provide the password that you have configured for postgres db.
+8.  Use the command below to log back into postgresdb now. Provide the postgres database, the password that you have configured.
 
     ```bash
     psql -U postgres -h localhost
     ```
-9.  Creat the databases for socialregistry and odk using below commands and put a random password in the command.
+9.  Use the command below to create the socialregistry and ODK databases, use a random password in each command.
 
     <pre class="language-bash"><code class="lang-bash"><strong>CREATE ROLE socialregistryuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '&#x3C;**provide password**>';
     </strong><strong>CREATE DATABASE socialregistrydb WITH OWNER = socialregistryuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;
@@ -73,7 +83,7 @@ description: >-
     </strong><strong>CREATE ROLE odkuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '&#x3C;**provide password**>';
     </strong><strong>CREATE DATABASE odkdb WITH OWNER = odkuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;
     </strong></code></pre>
-10. Try to connect to both the databases and verify.
+10. Try onnecting to both the databases and verify.
 
     <pre class="language-bash"><code class="lang-bash"><strong>psql -U socialregistryuser -h localhost -d socialregistrydb
     </strong><strong>psql -U odkuser -h localhost -d odkdb
@@ -81,7 +91,7 @@ description: >-
 
 ## Configure external databases in the social registry deployment from the rancher-ui
 
-1. Go to the rancher-ui and start installing socialregistry and update the below parametes as shown below in the **Edit YAML** and install the services.
+1. Access the rancher-ui to start installing the socialregistry and update the below parametes as shown below in the **Edit YAML** and install the services.
    1. Make the default postgresql **enabled** equals to **false.**
    2. Add the below parameters in the last section of postgresql.\
       `externalDatabase:` \
