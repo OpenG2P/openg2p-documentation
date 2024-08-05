@@ -247,7 +247,6 @@
       * [Search APIs](social-registry/features/api/search-apis.md)
       * [Individual APIs](social-registry/features/api/crud-apis.md)
       * [Group APIs](social-registry/functionality/api/group-apis.md)
-    * [Self Service Portal](social-registry/functionality/self-service-portal-1.md)
     * [Search](social-registry/functionality/search.md)
     * [Audit Logs](social-registry/features/audit-log.md)
     * [Privacy and Security](social-registry/functionality/privacy-and-security.md)
