@@ -137,6 +137,7 @@
       * [Deduplication](pbms/development/upcoming-features/deduplication.md)
       * [Manual In-kind Entitlement](pbms/development/upcoming-features/manual-in-kind-entitlement.md)
     * [Odoo Modules](pbms/development/odoo-modules/README.md)
+      * [G2P Enumerator](pbms/development/odoo-modules/g2p-enumerator.md)
       * [OpenG2P Registry MTS Connector](pbms/development/odoo-modules/openg2p-registry-mts-connector.md)
       * [openg2p-documents](pbms/development/odoo-modules/openg2p-documents.md)
       * [MTS Connector](pbms/development/odoo-modules/mts-connector.md)
