@@ -131,6 +131,7 @@
   * [Privacy and Security](pbms/privacy-and-security.md)
   * [Development](pbms/development/README.md)
     * [Upcoming Features](pbms/development/upcoming-features/README.md)
+      * [Print Disbursement Summary](pbms/development/upcoming-features/print-disbursement-summary.md)
       * [Periodic Biometric Authentication for Beneficiaries](pbms/development/upcoming-features/periodic-biometric-authentication-for-beneficiaries.md)
       * [Beneficiary Exit Process](pbms/development/upcoming-features/beneficiary-exit-process.md)
       * [Verifiable Credential Issuance](pbms/development/upcoming-features/verifiable-credential-issuance.md)
