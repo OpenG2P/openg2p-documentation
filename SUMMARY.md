@@ -237,7 +237,7 @@
       * [📔 User Guide](social-registry/functionality/administration/user-guide/README.md)
         * [📔 Create User and Assign Role](social-registry/functionality/administration/user-guide/create-user-and-assign-role.md)
     * [Geographic](social-registry/functionality/geographic.md)
-    * [MOSIP ID Verification and Tokenization](social-registry/features/id-verification.md)
+    * [MOSIP ID Validation and Tokenization](social-registry/features/id-verification.md)
     * [Data Share](social-registry/features/data-share.md)
     * [Languages Support](social-registry/functionality/languages-support/README.md)
       * [📔 User Guides](social-registry/functionality/languages-support/user-guides/README.md)

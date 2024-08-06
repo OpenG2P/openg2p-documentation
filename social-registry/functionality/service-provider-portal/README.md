@@ -4,9 +4,19 @@ description: Work In Progress
 
 # Registration Portal
 
-Registration portal is an external application portal where registrant can add or update the  registrant demographic information of the individual and registrants.
+### Introduction
 
+Registration portal is an external application portal where the registrant can add or update the registrant's demographic information of the individual and registrants.
 
+This document provides technical guidelines for developing a Registration Portal, consisting of three modules:
+
+1. Base Module
+2. Registration Module
+3. Odk mapper Module
+
+Each module has specific functionalities that integrate to create a comprehensive registration portal.
+
+### Functionality and features
 
 | Features                                     | Functionality                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -16,7 +26,9 @@ Registration portal is an external application portal where registrant can add o
 | Update                                       | Update action on list view, will allow the registrant to edit the record.                                                                                                                                                                                                                                                                                                                                                     |
 | Form                                         | The survey question on ODK form as per the program are present on portal as well in neatly distributed section like group details, group member details, location details, enumerator details and specific data for the program.                                                                                                                                                                                              |
 | Status                                       | Records on the portal will be locked or  unlocked.                                                                                                                                                                                                                                                                                                                                                                            |
-| Access Limit                                 | It allows to view and mange the records only to the region and woreda where registrant is assigned and responsible. Once he/she login to the portal, this shows only the records which belong to his/her limits.                                                                                                                                                                                                              |
+| Access Limit                                 | It allows to view and manage the records only to the region and woreda where the registrant is assigned and responsible. Once he/she login to the portal, this shows only the records that belong to his/her limits.                                                                                                                                                                                                          |
+
+###
 
 ## Related user guides
 
