@@ -18,7 +18,7 @@ The Social Registry may contain IDs along with demographic information collected
 
 This feature offers the following functionality:
 
-* Verify MOSIP ID information at the backend in an offline manner by connecting to APIs of the ID system (using [MTS connector](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder/mts-odk-importer)).
+* Validate MOSIP ID information at the backend in an offline manner by connecting to APIs of the ID system (using [MTS connector](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder/mts-odk-importer)).
 * Bulk ID validation.
 * Tokenize the ID and populate it in Social Registry.
 
