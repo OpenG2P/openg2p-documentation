@@ -36,9 +36,28 @@ The Self Service Portal for a Social Registry is a digital platform designed to 
 
 * **API Based design**
 * **Form.IO for managing form and rendering**
+* **OIDC for user login**
+* **Common code base for Beneficiary portal and Social Registry Self Service Portal**
 
-## Feature in upgraded version
+## Release plan
 
-The enhanced version of  Self Service Portal for a Social Registry will have the following feature.
+The following deliverables for the Self Service Portal for Social Registry module are planned for development and release at the appropriate phases.
 
-<table><thead><tr><th width="201">Feature</th><th>Functionality</th><th>Process</th></tr></thead><tbody><tr><td><strong>Manage Financial Data</strong></td><td>In addition to giving beneficiaries access to social services, the Social Registry's Self Service Portal makes it easy to maintain and update their financial data, guaranteeing prompt and effective payment processing. SPAR plays a crucial role in processing payments that require accurate and current financial details for successful transfer of payments.</td><td>Beneficiary data is collected using ODK forms and imported into the Social Registry, enabling individuals to update their current financial details whenever it is convenient for them.</td></tr></tbody></table>
+<table><thead><tr><th width="117">Phase</th><th>Deliverable</th><th>Status</th></tr></thead><tbody><tr><td>Phase 1</td><td><ul><li>Login with OIDC</li><li>Update Profile</li><li>Add/Update Household members</li><li>Reference UI</li></ul></td><td>Work in progress</td></tr><tr><td>Phase 2</td><td><ul><li>Survey and Program forms</li><li>Notifications and Alerts</li><li>Document management</li><li>Liveliness check</li></ul></td><td></td></tr><tr><td>Phase 3</td><td><ul><li>Discovery service</li></ul></td><td></td></tr></tbody></table>
+
+## Phases
+
+Development for Social Registry Self Service Portal would be carried out in phases.&#x20;
+
+1. **Phase 1**&#x20;
+   * Login with OIDC
+   * Update Profile
+   * Add/Update Household members
+   * Reference UI
+2. **Phase 2**&#x20;
+   * Survey and Program forms
+   * Notifications and Alerts
+   * Document management
+   * Liveliness check
+3. **Phase 3**
+   * Discovery service

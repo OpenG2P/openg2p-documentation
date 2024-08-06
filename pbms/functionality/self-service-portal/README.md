@@ -52,7 +52,7 @@ A program administrator must do these steps to allow registrants to apply for a 
 
 Registrant's ID is verified during login. The Self Service Portal seeks consent to share demographic details from the registrant. Upon successful ID verification, the Self Service Portal automatically populates the registrant's demographic details based on the consent provided during login. The registrant fills in the rest of the details and applies for a program.
 
-## **Features and functionality (WIP)**
+## **Features and functionality**
 
 <table><thead><tr><th width="145">Feature</th><th>Functionality</th><th data-hidden></th></tr></thead><tbody><tr><td>My Programs</td><td><ul><li>The list shows only the programs which contain the registered and enrolled registrants.</li><li>It also shows the enrolled status of the registrants with the program.</li><li>Total funds awaited indicate the amount the user is eligible to receive for the programs when entitlements are approved for the program cycle. </li><li>Total funds received indicate the payment made and the amount received by the beneficiary/registrant.</li></ul></td><td></td></tr><tr><td>All Programs</td><td><ul><li>It shows the active and available programs, where the registrant can apply/reapply for the relevant program.<br></li></ul></td><td></td></tr><tr><td>My Application</td><td><ul><li>It shows the list of programs that the user has applied for. </li><li>The generated application ID is shown against each application with the applied date. </li></ul></td><td></td></tr><tr><td>My Benefits</td><td><ul><li>The list shows only the programs that contain the applied and enrolled user. </li><li>It will show the entitlement reference number with the approved entitlement date</li><li>It also shows the approved entitlement and funds received on each approved entitlement.</li></ul></td><td></td></tr></tbody></table>
 
@@ -78,7 +78,7 @@ The Self Service Portal can integrate with any OIDC server to provide user login
 
 
 
-**Jira Board(WIP)**\
+**Jira Board**\
 Link the US on the SSP\
 
 
