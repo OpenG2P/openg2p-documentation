@@ -32,4 +32,10 @@ The salient features of the framework are the following:
 
 ## Installation
 
-Reporting framework is installed as part of modules' installation.&#x20;
+Reporting framework is installed as part of modules' installation via the Helm chart that installs the modules.
+
+## Post installation check
+
+To ensure that all connectors are working login into Kafka UI (domain name is set during installation) and check the connectors' status.  Example:
+
+<figure><img src="../.gitbook/assets/kafka-ui-kafka-connect.png" alt=""><figcaption></figcaption></figure>
