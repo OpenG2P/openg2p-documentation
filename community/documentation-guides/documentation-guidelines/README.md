@@ -47,6 +47,10 @@ In addition to the above while writing user guides follow these conventions:
 * Use the exact name and case for the UI elements as shown in the user interface.
 * Use quotes for a phrase/word if the phrase/word has to be represented as is.
 
+## Guidelines for brainstorming session
+
+[Click here](https://docs.google.com/document/d/1REDNjnYmXb-FD7iG9uuwFKDjraquMey9qwTw19TY2gI/edit#heading=h.6aopj63ftioi) to find out more about the concepts that should be brought up, discussed, and decided upon during a brainstorming session and documentation.
+
 ## Specification for diagram
 
 Follow the below specification while creating diagrams in Miro
@@ -87,3 +91,4 @@ Do not repeat the similar content inside the documentation.  Instead, provide th
 ## Rules to add link
 
 <table><thead><tr><th width="390">Use</th><th>Do not use</th></tr></thead><tbody><tr><td><p>For external end-users, to hyperlink the URLs to access the OpenG2P system, </p><ul><li>Use a generic URL to hyperlink. For example, the end-users organisation specific URLs after their installation of OpenG2P system.</li></ul></td><td><p>For external end-users, to hyperlink the URLs to access the OpenG2P system, </p><ul><li>Do not hyperlink the internal URLs. For example, the environment-specific URLs such as test, dev, QA, stage, and so on.</li></ul></td></tr></tbody></table>
+
