@@ -1,11 +1,24 @@
 ---
-description: >-
-  This page provides comprehensive documentation for the installation of
-  spar-self-service-api, a  service designed for data mapping within the Social
-  Payments Account and Registry (SPAR) system.
+coverY: 0
+layout:
+  cover:
+    visible: false
+    size: full
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
 # SPAR Self Service API
+
+This page provides comprehensive documentation for the installation of SPAR Self Service API, a service designed for data mapping within the Social Payments Account and Registry (SPAR) system.
 
 ## Installation
 
@@ -16,12 +29,10 @@ description: >-
 * Git
 * PostgreSQL
 * virtualenv
-* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../../deployment/common-components/esignet.md) for setup instructions.
-*   **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api.md).
+* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](../../../deployment/common-components/esignet.md) for setup instructions.
+* **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api.md).
 
-
-
-#### Python Dependencies
+#### Python dependencies
 
 The following dependencies are managed in the installation steps below.
 
@@ -86,35 +97,35 @@ watchfiles==0.21.0
 websockets==12.0
 ```
 
-### Steps to Install
+### Steps to install
 
 #### Install from source
 
-* Clone the repository
+* Clone the repository.
 
 ```sh
 git clone https://github.com/OpenG2P/openg2p-spar-self-service
 ```
 
-* Navigate to the project root
+* Navigate to the project root.
 
 ```sh
 cd openg2p-spar-self-service
 ```
 
-* Create a virtual environment with Python 3
+* Create a virtual environment with Python 3.
 
 ```sh
 virtualenv venv --python=python3
 ```
 
-* Activate the virtual environment
+* Activate the virtual environment.
 
 ```sh
 source venv/bin/activate
 ```
 
-* Install the necessary dependencies
+* Install the necessary dependencies.
 
 ```sh
 pip install -r ../test-requirements.txt &&
@@ -123,28 +134,28 @@ pip install greenlet &&
 pip install -e .
 ```
 
-* Configure database credentials and other environment variables in the \`.env\` file
+* Configure database credentials and other environment variables in the _**.env**_ file.
   * [See Configuration section below](spar-self-service-api.md#configuration)
-* &#x20;Run migrations to set up the database:
+* &#x20;Run migrations to set up the database.
 
 ```sh
 python main.py migrate
 ```
 
-### Seeding the database (Optional)
+### Seeding the database (optional)
 
-This will seed the database with default values. Make sure to update the eSignet configuration in the db as per your installation.
+This will seed the database with default values. Make sure to update the eSignet configuration in the DB as per your installation.
 
-#### PostgreSQL DB Setup:
+#### PostgreSQL DB Setup
 
-Create a new role/user called "sparuser" and create a new database called "spardb", with "sparuser" as the owner.No need to run this step if Postgres was installed through openg2p's deployment script.
+Create a new role/user called _**sparuser**_ and create a new database called _**spardb**_, with _**sparuser**_ as the owner. No need to run this step, if Postgres was installed through OpenG2P's deployment script.
 
 ```plsql
 CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'xxxxxx';
 CREATE DATABASE spardb WITH OWNER = sparuser CONNECTION LIMIT = -1;  
 ```
 
-#### Then run:
+#### Then run the script.
 
 ```sh
 cd db_scripts &&
@@ -153,7 +164,7 @@ DB_USER_PASSWORD="xxxxxx" \
 ./deploy.sh && cd ..
 ```
 
-#### The following optional Env vars can also be passed:
+#### The following optional Env vars can also be passed.
 
 ```
 - `VERSION="1.0.0"` Do not set this if you want latest version.
@@ -164,22 +175,22 @@ DB_USER_PASSWORD="xxxxxx" \
 - `LOG_DB_QUERY="true"` Default is false. Logs all Db queries.
 ```
 
-### Quick Start
+### Quick start
 
-* Start the development server
+* Start the development server.
 
 ```sh
 python main.py run
 ```
 
-* Access Swagger API Documentation
+* Access Swagger API Documentation.
   * [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### Configuration
 
-#### Environment Variables
+#### Environment variables
 
-Set the following environment variables to configure the \`spar-mapper-api\`:
+Set the following environment variables to configure the _**spar-mapper-api**_.
 
 ```markup
 # Database credentials for spar-mapper-api (Update these values as per your installation/setup)
@@ -201,11 +212,22 @@ SPAR_SELFSERVICE_MAPPER_UPDATE_PATH="/update"
 
 #### Authentication
 
-The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](../../../../deployment/common-components/esignet.md) for setup instructions.
+The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](../../../deployment/common-components/esignet.md) for setup instructions.
+
+#### Setting up redirection
+
+To integrate the SPAR Self-Service UI with any login provider, you need to add the `redirect_uri` in the authorization\_parameter column.
+
+```
+"redirect_uri": "http://selfservice.qa.openg2p.net/api/selfservice/oauth2/callback"
+```
+
+* This URL needs to be updated in the `login_providers` table, specifically in the `authorization_parameters` column for the eSignet record.
+* Make sure to replace `selfservice.qa.openg2p.net` with the appropriate domain that matches your eSignet configuration.
 
 ### Testing
 
-To run unit tests with `pytest`:
+Run the unit tests with `pytest.`
 
 ```sh
 pytest -s
@@ -214,44 +236,3 @@ pytest -s
 ### Contributing
 
 Contribution guidelines are available [here](https://github.com/OpenG2P/openg2p-spar-mapper-api/blob/develop/CONTRIBUTING.md).
-
-\
-
-
-\
-\
-
-
-\
-\
-
-
-\
-\
-
-
-\
-\
-\
-\
-
-
-\
-\
-
-
-\
-\
-\
-\
-\
-
-
-\
-\
-\
-\
-\
-\
-\
-&#x20;
