@@ -342,6 +342,7 @@
       * [Config Attributes](g2p-bridge/development/design/config-attributes.md)
       * [Interfaces](g2p-bridge/development/design/interfaces.md)
       * [Physical organization](g2p-bridge/development/design-specifications/physical-organization.md)
+      * [Example Bank](g2p-bridge/development/design-specifications/example-bank.md)
   * [Tech Guides](g2p-bridge/tech-guides.md)
   * [📔 User Guides](g2p-bridge/user-guides/README.md)
     * [📔 Configure G2P Connect Payment Manager](g2p-bridge/user-guides/configure-g2p-connect-payment-manager.md)
