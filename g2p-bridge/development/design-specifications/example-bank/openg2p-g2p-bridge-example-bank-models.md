@@ -14,6 +14,8 @@ layout:
 
 # openg2p-g2p-bridge-example-bank-models
 
+This is a library project - that contains all the sqlalchemy models and pydantic schemas - that are required to provide the required features of a Sponsor Bank.
+
 Persistent Objects - Design
 
 **account**
