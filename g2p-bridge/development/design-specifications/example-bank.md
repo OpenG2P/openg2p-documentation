@@ -1,5 +1,5 @@
 ---
-description: Sponsor Bank Simulator
+description: openg2p-g2p-bridge-example-bank (bank simulator)
 ---
 
 # Example Bank
