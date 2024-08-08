@@ -22,57 +22,64 @@ There is also an implementation of the interface (openg2p-g2p-bridge-example-ban
 
 The interface defines the following APIs
 
-### check\_available\_funds
+### check\_funds
 
-| Arguments         | Type   |
-| ----------------- | ------ |
-| account\_number   | string |
-| account\_currency | string |
-| funds\_required   | number |
-
-returns
-
-| attributes | Type |
-| ---------- | ---- |
-|            |      |
-
-### block\_funds\_with\_bank
-
-| Arguments               | Type   |
-| ----------------------- | ------ |
-| account\_number         | string |
-| account\_currency       | string |
-| amount\_to\_be\_blocked | number |
+| Arguments       | Type   |
+| --------------- | ------ |
+| account\_number | string |
+| currency        | string |
+| amount          | number |
 
 returns
 
-| Attributes               | Type               |
-| ------------------------ | ------------------ |
-| block\_result            | SUCCESS or FAILURE |
-| block\_error\_code       | string             |
-| block\_error\_message    | string             |
-| block\_result\_reference | string             |
+| attributes             | Type                                          |
+| ---------------------- | --------------------------------------------- |
+| funds available status | <p>FUNDS_AVAILABLE<br>FUNDS_NOT_AVAILABLE</p> |
 
-### disburse\_funds
+### block\_funds
+
+| Arguments       | Description                                                                            |
+| --------------- | -------------------------------------------------------------------------------------- |
+| account\_number | The program funding account with the sponsor bank                                      |
+| currency        | The currency of the funding account                                                    |
+| amount          | The total envelope amount - required for complete disbursal in that disbursement cycle |
+
+returns
+
+| Attributes               | Description                            |
+| ------------------------ | -------------------------------------- |
+| block\_result            | SUCCESS or FAILURE                     |
+| block\_error\_code       | Error in case of FAILURE               |
+| block\_result\_reference | The block reference in case of SUCCESS |
+
+### initiate\_payment
 
 It will take a collection of the following structure (payment structure)
 
 This API will only acknowledge receipt of a payment instruction. The actual payment will be effected by the bank asynchronously&#x20;
 
-| Arguments                             | Description |
-| ------------------------------------- | ----------- |
-| remitter\_account\_number             |             |
-| remitter\_account\_currency           |             |
-| amount                                |             |
-| beneficiary\_account\_number          |             |
-| beneficiary\_account\_currency        |             |
-| beneficiary\_account\_type            |             |
-| beneficiary\_account\_bank            |             |
-| beneficiary\_account\_branch          |             |
-| beneficiary\_mobile\_number           |             |
-| beneficiary\_mobile\_wallet\_provider |             |
-| beneficiary\_email\_address           |             |
-| beneficiary\_email\_wallet\_provider  |             |
+| Arguments                             | Description                                                                                                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| disbursement\_id                      | This is the unique disbursement id - that identifies a single disbursement inside an envelope                                                                         |
+| remitting\_account                    | This is the account in the Sponsor bank - from where the funds are remitted to the beneficiaries                                                                      |
+| remitting\_account\_currency          | The currency of the funding account                                                                                                                                   |
+| payment\_amount                       | The disbursement amount                                                                                                                                               |
+| funds\_blocked\_reference\_number     | The block\_reference\_number - that identifies the amount\_block placed in the bank (funds earmarked for this envelope)                                               |
+| beneficiary\_id                       | The beneficiary ID that uniquely identifies the beneficiary in that benefit program - this ID should come from the upstream MIS/PBMS systems                          |
+| beneficiary\_name                     | The name of the beneficiary                                                                                                                                           |
+| beneficiary\_account                  | The account number of the Beneficiary - in the destination financial service provider                                                                                 |
+| beneficiary\_account\_currency        | This should ideally be the same as the funding account currency - typically the local currency of the nation                                                          |
+| beneficiary\_account\_type            | <p>BANK_ACCOUNT<br>MOBILE_WALLET<br>EMAIL_WALLET</p>                                                                                                                  |
+| beneficiary\_bank\_code               | The Bank code (destination bank) in which the beneficiary account is serviced (applicable for BANK\_ACCOUNT)                                                          |
+| beneficiary\_branch\_code             | The branch code (of the destination bank) in which the beneficiary account is serviced (applicable for BANK\_ACCOUNT)                                                 |
+| beneficiary\_mobile\_wallet\_provider | The code that identifies the service provider for the mobile wallet (applicable for MOBILE\_WALLET)                                                                   |
+| beneficiary\_phone\_no                | The mobile number where the beneficiary will be credited (applicable for MOBILE\_WALLET)                                                                              |
+| beneficiary\_email                    | The email address where the beneficiary will be credited (applicable for EMAIL\_WALLET)                                                                               |
+| beneficiary\_email\_wallet\_provider  | The code that identifies the service provider for the email wallet (applicable for EMAIL\_WALLET)                                                                     |
+| disbursement\_narrative               | Any narrative about the disbursement that will help in reconciliation with the account statement of the funding account                                               |
+| benefit\_program\_mnemonic            | The program identifier - This can be used as a narrative by the destination bank - so that the beneficiary is able to identify disbursements from the benefit program |
+| cycle\_code\_mnemonic                 | The cycle identifier - that can be potentially used as a narrative by the destination bank - useful for the beneficiary to identify disbursement payments             |
+| payment\_date                         | The date on which the disbursement needs to be effected                                                                                                               |
 
 returns
 
