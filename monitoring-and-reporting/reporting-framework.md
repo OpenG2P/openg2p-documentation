@@ -58,9 +58,9 @@ To ensure that all Kafka connectors are working login into Kafka UI (domain name
 
 * Pick the URL provided during the installation of the Helm chart of the module (like SR, PBMS)
 * Add Keycloak roles to the user who is accessing the dashboard (as given [here](../social-registry/deployment/#post-installation)).
-* Confirm that the number of records indexed matches the number of rows in the DB (_guide TBD_). This check confirms that the reporting pipeline is working fine.
+* Confirm that the number of indexed records in OpenSearch matches the number of rows in the DB (_guide TBD_). This check confirms that the reporting pipeline is working fine.
 
-## Create dashboards
+## Creating dashboards
 
 * On OpenSearch Dashboard, create an Index Pattern and create dashboards. [Learn more>>](https://opensearch.org/docs/latest/dashboards/dashboard/index/)
 * If you have relational queries across tables, the connectors need to be written in a certain way. Refer to this guide. _(TBD)_
