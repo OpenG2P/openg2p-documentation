@@ -101,7 +101,7 @@ Depending on the physical delivery mechanism, the implementation can create an i
 13. So extracting the "disbursement\_id" from the mt940 transaction - should be abstracted out to an interface - with an adapter implementation for different sponsor banks.
 14. For "D" transactions, insert a new record for the "disbursement\_id" in the table - disbursement\_recon\_from\_bank
 15. For "RD" transactions, updated the existing record in - disbursement\_recon\_from\_bank
-16. Log errors into disbursement\_recon\_errors\_from\_bank. The following error conditions are logged into this table
+16. Log errors into disbursement\_error\_recons. The following error conditions are logged into this table
     1. I get a "D" transaction, but I don't get a valid "disbursement\_id" - INVALID\_DISBURSEMENT
     2. I get a "D" transaction, but the "disbursement\_id" is already present in the table - disbursement\_recon\_from\_bank - DUPLICATE\_DISBURSEMENT
     3. I get a "RD" transaction, but the "disbursement\_id" is not present in the table - disbursement\_recon\_from\_bank - INVALID\_REVERSAL
