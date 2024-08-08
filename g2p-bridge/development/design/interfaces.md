@@ -22,7 +22,7 @@ There is also an implementation of the interface (openg2p-g2p-bridge-example-ban
 
 The interface defines the following APIs
 
-### check\_funds
+### 1. check\_funds
 
 | Arguments       | Type   |
 | --------------- | ------ |
@@ -36,7 +36,7 @@ returns
 | ---------------------- | --------------------------------------------- |
 | funds available status | <p>FUNDS_AVAILABLE<br>FUNDS_NOT_AVAILABLE</p> |
 
-### block\_funds
+### 2. block\_funds
 
 | Arguments       | Description                                                                            |
 | --------------- | -------------------------------------------------------------------------------------- |
@@ -52,7 +52,7 @@ returns
 | block\_error\_code       | Error in case of FAILURE               |
 | block\_result\_reference | The block reference in case of SUCCESS |
 
-### initiate\_payment
+### 3. initiate\_payment
 
 It will take a collection of the following structure (payment structure)
 
@@ -86,6 +86,44 @@ returns
 | Attribute | Description        |
 | --------- | ------------------ |
 | response  | SUCCESS or FAILURE |
+
+### 4. retrieve\_disbursement\_id
+
+| Arguments               | Description                                                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| bank\_reference         | <p>This is the reference number of the payment - that has been assigned by the sponsor bank. <br>The part that follows the "//" in field 61</p>                                                                                 |
+| customer\_reference     | <p>This is the reference number (unique for every remittance/disbursement) that has been provided by the g2p-bridge application. <br>In our case - it is the disbursement_id<br>The part that precedes the "//" in field 61</p> |
+| narratives \[0] to \[5] | The 6 lines of narratives - 0 to 5 - Field 86 of the Account Statement                                                                                                                                                          |
+
+returns
+
+| Attribute        | Description                                                                                                                                                                                                                                                                                                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| disbursement\_id | <p>Depending on the sponsor bank - we need to extract this disbursement id from one of the three attributes<br><br>In most cases - it should be the customer_reference - because that is the customer_reference (disbursement_id) <br><br>The interface abstraction exists to take care of those outlier cases - where the sponsor bank has implemented it differently</p> |
+
+### 5. retrieve\_beneficiary\_name
+
+| Arguments               | Description                                                            |
+| ----------------------- | ---------------------------------------------------------------------- |
+| narratives \[0] to \[5] | The 6 lines of narratives - 0 to 5 - Field 86 of the Account Statement |
+
+returns
+
+| Attribute         | Description                                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------------------- |
+| beneficiary\_name | Depending on the sponsor bank - we need to extract the beneficiary name from one of the narratives fields |
+
+### 6. retrieve\_reversal\_reason
+
+| Arguments               | Description                                                            |
+| ----------------------- | ---------------------------------------------------------------------- |
+| narratives \[0] to \[5] | The 6 lines of narratives - 0 to 5 - Field 86 of the Account Statement |
+
+returns
+
+| Attribute         | Description                                                                                                                                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| retrieval\_reason | <p>For reversal transactions <br><br>(where the initial debit to the funding account was subsequently reversed - after a transaction was returned from the destination bank with an error)<br><br>the reason for reversal has to be extracted from one of the narratives fields.</p> |
 
 ### Bank Connector Factory
 
