@@ -12,20 +12,6 @@ This Example Bank should not be deployed in production. The functionality provid
 
 The Example Bank repository has 3 projects
 
-openg2p-g2p-bridge-example-bank-api
-
-
-
-
-
-
-
-
-
-
-
-
-
-openg2p-g2p-bridge-example-bank-celery
-
-openg2p-g2p-bridge-example-bank-models
+1. openg2p-g2p-bridge-example-bank-api
+2. openg2p-g2p-bridge-example-bank-celery
+3. openg2p-g2p-bridge-example-bank-models
