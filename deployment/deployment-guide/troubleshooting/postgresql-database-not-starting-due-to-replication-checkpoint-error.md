@@ -1,20 +1,30 @@
 ---
-description: >-
-  Guide to fix PostgreSQL "replication checkpoint" error when the file
-  corrupted.
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# PostgreSQL database not starting due to replication checkpoint error.
+# PostgreSQL Database not Starting due to Replication Checkpoint Error
 
-### **Common reasons for the error**
+This guide is to fix PostgreSQL **replication checkpoint** error when the file is corrupted.
+
+## **Common reasons for the error**
 
 1. **Hardware Issues:** Disk failures or other hardware malfunctions.
 2. **Software Issues:** Improper shutdowns, crashes, or incomplete write operations.
 
-### Solution&#x20;
+## Solution&#x20;
 
 1. Connect to NFS node where the PostgreSQL data is stored.
-2.  Navigate to PostgreSQL PVC
+2.  Navigate to PostgreSQL PVC.
 
     ```bash
     cd /path/to/your/postgres/pvc/data/pg_logical/
