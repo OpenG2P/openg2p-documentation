@@ -1,27 +1,18 @@
 ---
-description: Sponsor Bank Simulator
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
 ---
 
-# Example Bank
-
-The G2P Bridge subsystem baseline - includes a separate repository - openg2p-g2p-bridge-example-bank.
-
-This repository provides a Bank simulator - that provides implementation of APIs that should be provided by the Sponsor bank.
-
-This Example Bank should not be deployed in production. The functionality provided by this Example Bank - should be provided by the Sponsor Bank (where the bank account that funds the benefit program is serviced)
-
-The Example Bank repository has 3 projects
-
-openg2p-g2p-bridge-example-bank-api
-
-This a FastAPI based microservice and provides the following REST APIs
-
-1. check\_funds
-2. block\_funds
-3. initiate\_payment
-4. generate\_account\_statement
-
-The first 3 APIs, viz. check\_funds, block\_funds and initiate\_payment - will be invoked by the g2p-bridge subsystem, through the example\_bank\_connector (BankInterface).
+# openg2p-g2p-bridge-example-bank-models
 
 Persistent Objects - Design
 
@@ -45,13 +36,3 @@ Persistent Objects - Design
 | currency             | The currency in which the account operates                                                                                                                                                                                                                                                                                                                                |
 | amount               | <p>The amount that has been blocked under this block_reference_no.<br><br>The g2p-bridge subsystem requests an amount block for the total envelope amount. <br><br>This amount reflects that total envelope amount in this scenario</p>                                                                                                                                   |
 | amount\_released     | <p>The amount released - (partial) against this amount_block<br><br>In the g2p-bridge scenario, every disbursement diminishes (releases) the amount block partially<br><br>Once all the disbursements are effected, the amount released will equal to the amount blocked. When this happens, the column - blocked_amount in the account table - will become zero.<br></p> |
-
-
-
-
-
-
-
-openg2p-g2p-bridge-example-bank-celery
-
-openg2p-g2p-bridge-example-bank-models
