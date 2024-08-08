@@ -1,9 +1,10 @@
 ---
+description: openg2p-g2p-bridge-example-bank-celery
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,5 +13,5 @@ layout:
     visible: true
 ---
 
-# openg2p-g2p-bridge-example-bank-celery
+# example-bank-celery
 

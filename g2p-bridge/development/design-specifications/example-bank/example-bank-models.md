@@ -1,9 +1,10 @@
 ---
+description: openg2p-g2p-bridge-example-bank-models
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,7 +13,7 @@ layout:
     visible: true
 ---
 
-# openg2p-g2p-bridge-example-bank-models
+# example-bank-models
 
 This is a library project - that contains all the sqlalchemy models and pydantic schemas - that are required to provide the required features of a Sponsor Bank.
 

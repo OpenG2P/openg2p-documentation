@@ -1,9 +1,10 @@
 ---
+description: openg2p-g2p-bridge-example-bank-api
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,7 +13,7 @@ layout:
     visible: true
 ---
 
-# openg2p-g2p-bridge-example-bank-api
+# example-bank-api
 
 This a FastAPI based microservice and provides the following REST APIs
 
