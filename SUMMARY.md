@@ -328,6 +328,7 @@
         * [create\_disbursements](g2p-bridge/development/design-specifications/persistent-objects/disbursement.md)
         * [cancel\_disbursements](g2p-bridge/development/design/in-apis-from-pbms/cancel\_disbursements.md)
         * [get\_disbursement\_envelope\_status](g2p-bridge/development/design-specifications/persistent-objects/get\_disbursement\_envelope\_status.md)
+        * [get\_disbursement\_status](g2p-bridge/development/design-specifications/persistent-objects/get\_disbursement\_status.md)
       * [OUT APIs to Mapper](g2p-bridge/development/design-specifications/out-apis-to-mapper/README.md)
         * [resolve](g2p-bridge/development/design-specifications/out-apis-to-mapper/resolve.md)
       * [OUT APIs to Bank](g2p-bridge/development/design/out-apis-to-bank/README.md)
