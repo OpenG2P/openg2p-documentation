@@ -20,6 +20,8 @@ Refer to the Technical architecture. As shown in the figure, all outward APIs to
 
 There is also an implementation of the interface (openg2p-g2p-bridge-example-bank-connector), that provides a reference implementation. This connector connects to a simulator application. The simulator application (openg2p-g2p-bridge-example-bank-api) simulates a Sponsor bank.
 
+The interface, the connector factory and the example-bank-connector - together are packaged into a separate git repository - <mark style="color:blue;">**openg2p-g2p-bridge-example-bank**</mark>
+
 The interface defines the following APIs
 
 ### 1. check\_funds
@@ -134,3 +136,7 @@ This BankConnector class will implement the BankConnector Interface
 The Factory will return the Connector based on the "benefit\_program.sponsor\_bank\_code"
 
 <mark style="color:blue;">def get\_bank\_connector (sponsor\_bank\_code : string) -> BankConnectorInterface</mark>
+
+### Example Bank Connector
+
+The git baseline includes a connector that connects with the Example Bank (a bank simulator application). The Example Bank Connector - implements all the methods specified by the BankInterface&#x20;
