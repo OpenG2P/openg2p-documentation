@@ -34,14 +34,19 @@ This document provides instructions to setup and install external database for O
     </strong></code></pre>
 4.  Use the command below to log into the default postgres database using the default user, postgres, following a successful installation.&#x20;
 
-    <pre class="language-bash"><code class="lang-bash"><strong>sudo -u postgres psql
-    </strong></code></pre>
-5. After you logged in, use the command below to confirm the database connection and details on the list of databases, users, and tables.\
-   `\conninfo` - To check the connection\
-   `\l` -  list databases\
-   `\du` - list users\
-   `\d` - list tables - press q to exit\
-   `\q -`  exit from the database
+    ```bash
+    sudo -u postgres psql
+    ```
+5. After you logged in, use the command below to confirm the database connection and details on the list of databases, users, and tables.
+
+| Command   | Description                   |
+| --------- | ----------------------------- |
+| \conninfo | To check the connection       |
+| \l        | List databases                |
+| \du       | List users                    |
+| \d        | List tables (press q to exit) |
+| \q        | Exit from the database        |
+
 6. You should use the command below to set one for yourself, as the default _**postgres**_ user does not have a password.\
    `\password postgres` - to set the password, the password must have the combination of lowercase, uppercase, number. For example, `xwfJhfI9tK`\
    Note :  The password must not have the special characters @, #, or -.
@@ -89,35 +94,44 @@ This document provides instructions to setup and install external database for O
     </strong><strong>psql -U odkuser -h localhost -d odkdb
     </strong></code></pre>
 
-## Configure external databases in the social registry deployment from the rancher-ui
+### Configure external databases while doing deployment from the Rancher UI.
 
-1. Access the rancher-ui to start installing the socialregistry and update the below parametes as shown below in the **Edit YAML** and install the services.
+1. Access the rancher-ui to start installing the SocialRegistry/PBMS and update the below parametes as shown below in the **Edit YAML** and install the services.
    1. Make the default postgresql **enabled** equals to **false.**
-   2. Add the below parameters in the last section of postgresql.\
-      `externalDatabase:` \
-      &#x20;   `create: false` \
-      &#x20;   `database: socialregistrydb` \
-      &#x20;   `host: <IP address of External DB>`\
-      &#x20;   `password: <password for SR DB>`\
-      &#x20;   `port: 5432` \
-      &#x20;   `user: socialregistryuser`
-   3. Add the below parameters in the last section of ODK.\
-      `odk-central:` \
-      &#x20;  `backend:` \
-      &#x20;    `envVars:`\
-      &#x20;      `DB_HOST: <IP address of External DB>`\
-      &#x20;      `DB_NAME: odkdb`\
-      &#x20;      `DB_USER: odkuser`\
-      &#x20;      `envVarsFrom:` \
-      &#x20;      `DB_PASSWORD: <password for ODK DB>`\
-      &#x20; `postgresql:` \
-      &#x20;    `enabled: false`
-   4. Add the below parameters in the last section of reportingInit.\
-      envVars: \
-      &#x20;     DB\_NAME: socialregistrydb \
-      &#x20;     DB\_HOST: `<IP address of External DB>` \
-      &#x20;     DB\_USER: socialregistryuser\
-      envVarsFrom: \
-      &#x20;      DB\_PASS: `<password for SR DB>`\
+   2.  Add the below parameters in the last section of postgresql.
 
+       ```yaml
+       externalDatabase:
+         create: false
+         database: socialregistrydb/pbmsdb
+         host: <IP address of External DB>
+         password: <password for SR DB>
+         port: 5432
+         user: socialregistryuser/pbmsuser
+       ```
+   3.  Add the below parameters in the last section of ODK.
+
+       ```yaml
+       odk-central:
+         backend:
+           envVars:
+             DB_HOST: <IP address of External DB>
+             DB_NAME: odkdb
+             DB_USER: odkuser
+             envVarsFrom:
+               DB_PASSWORD: <password for ODK DB>
+         postgresql:
+           enabled: false
+       ```
+   4.  Add the below parameters in the last section of reportingInit.
+
+       ```yaml
+       envVars:
+         DB_NAME: socialregistrydb/pbmsdb
+         DB_HOSTNAME: `<IP address of External DB>`
+         DB_USER: socialregistryuser/pbmsuser
+       envVarsFrom:
+         DB_PASS: `<password for SR DB>`
+       ```
 2. Make sure the SR and ODK connected to the external databases and verify the tables by logging into the external database.
+3. And for more information on high availability PostgreSQL clusters setup, refer [here](https://www.servermania.com/kb/articles/setup-postgresql-cluster).
