@@ -429,7 +429,7 @@
     * [Configure IPSec VPN Gateway to connect to external Systems using Strongswan](deployment/deployment-guide/configure-ipsec-vpn-strongswan.md)
     * [Troubleshooting](deployment/deployment-guide/troubleshooting/README.md)
       * [PostgreSQL Database not Starting due to Replication Checkpoint Error](deployment/deployment-guide/troubleshooting/postgresql-database-not-starting-due-to-replication-checkpoint-error..md)
-      * ["No Space Left on the Device" Warning](deployment/deployment-guide/troubleshooting/no-space-left-on-the-device-warning.md)
+      * [No Space Left on the Device Warning](deployment/deployment-guide/troubleshooting/no-space-left-on-the-device-warning.md)
 * [Use Cases](use-cases/README.md)
   * [Technology for Inclusion](use-cases/technology-for-inclusion/README.md)
     * [Registration in Low Connectivity Areas](use-cases/technology-for-inclusion/registration-in-low-connectivity-areas.md)
