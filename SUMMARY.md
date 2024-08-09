@@ -339,7 +339,7 @@
         * [upload\_mt940](g2p-bridge/development/design/in-apis-from-bank/update\_status\_of\_disbursements.md)
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
         * [benefit\_program\_configuration](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
-      * [Config Attributes](g2p-bridge/development/design/config-attributes.md)
+      * [Configuration parameters](g2p-bridge/development/design/config-attributes.md)
       * [Interfaces](g2p-bridge/development/design/interfaces.md)
       * [Physical organization](g2p-bridge/development/design-specifications/physical-organization.md)
       * [Example Bank](g2p-bridge/development/design-specifications/example-bank.md)
