@@ -132,6 +132,10 @@ The Face Match SDK is a sophisticated component that leverages [TensorFlow](http
 4Sure App Workflow
 {% endembed %}
 
+## Related User Stories
+
+{% @jira/embed url="https://openg2p.atlassian.net/browse/FS-60" %}
+
 ## Related user guides
 
 :notebook\_with\_decorative\_cover:[Verify Digital Credentials using 4Sure Application](4sure-verifier-app/user-guides/verify-digital-credentials-using-4sure-application.md)
