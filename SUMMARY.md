@@ -261,7 +261,6 @@
       * [Domain Specific Registries](social-registry/development/upcoming-features/domain-specific-registries.md)
       * [Single Sign-On](social-registry/development/upcoming-features/single-sign-on.md)
       * [Tokenisation](social-registry/development/upcoming-features/tokenisation.md)
-      * [Landing Page](social-registry/development/upcoming-features/landing-page.md)
       * [Search - OpenSearch](social-registry/development/upcoming-features/search-opensearch.md)
       * [Audit Log - Advanced](social-registry/development/upcoming-features/audit-log-advanced.md)
       * [Attestation](social-registry/development/upcoming-features/attestation.md)
