@@ -14,7 +14,7 @@ layout:
 
 # PostgreSQL Database not Starting due to Replication Checkpoint Error
 
-This guide is to fix PostgreSQL **replication checkpoint** error when the file is corrupted.
+This guide explains how to resolve PostgreSQL **replication checkpoint** error when the file is corrupted.
 
 ## **Common reasons for the error**
 
