@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Redistribute Pods across Nodes by Restarting Deployment/StatefulSets
+# Restart Deployment or StatefulSets to Redistribute Pods across Nodes
 
 The document explains how to redistribute pods across nodes by restarting deployment or StatefulSets.
 
