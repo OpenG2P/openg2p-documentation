@@ -32,35 +32,15 @@ The salient features of the framework are the following:
 
 ## Installation
 
-Reporting framework is installed as part of modules' installation via the Helm chart that installs the respective module.  Note that during installation you need to specify the Github location and branch for both the Debezium and Kafka connectors.  For example: [https://github.com/OpenG2P/openg2p-reporting/tree/develop/scripts/social-registry](https://github.com/OpenG2P/openg2p-reporting/tree/develop/scripts/social-registry)
-
-If you would like to update these connectors for your dashboards, update the files on Github.
-
-## Post installation check
-
-To ensure that all Kafka connectors are working login into Kafka UI (domain name is set during installation) and check the connectors' status. &#x20;
-
-<figure><img src="../.gitbook/assets/kafka-ui-kafka-connect.png" alt=""><figcaption></figcaption></figure>
-
-
-
-
-
-## Configuring the pipeline for specific dashboards
-
-### Debezium connector
-
-* Inspect the Debezium connector for fields that are shunted to OpenSearch. See example connector: [https://github.com/OpenG2P/openg2p-reporting/blob/develop/scripts/social-registry/debezium-connectors/default.json](https://github.com/OpenG2P/openg2p-reporting/blob/develop/scripts/social-registry/debezium-connectors/default.json)
-* Carefully inspect the `column.exclude.list`  field -- make sure you add the fields from Social Registry that must NOT be indexed. Specifically, PII fields like name, address, phone number etc. As a general rule, fields that are not required for dashboards must be excluded explicitly.&#x20;
-* To see trend data and changes in values of fields based on time, the old data should be preserved. Refer to this guide. (_TBD_)
+Refer to [Installation Guide and Post Installation Check](user-guides/installation-and-troubleshooting.md).
 
 ## Accessing OpenSearch dashboards
 
 * Pick the URL provided during the installation of the Helm chart of the module (like SR, PBMS)
-* Add Keycloak roles to the user who is accessing the dashboard (as given [here](../social-registry/deployment/#post-installation)).
+* Add Keycloak roles to the user who is accessing the dashboard (as given [here](user-guides/installation-and-troubleshooting.md#assigning-roles-to-users)).
 * Confirm that the number of indexed records in OpenSearch matches the number of rows in the DB (_guide TBD_). This check confirms that the reporting pipeline is working fine.
 
 ## Creating dashboards
 
-* On OpenSearch Dashboard, create an Index Pattern and create dashboards. [Learn more>>](https://opensearch.org/docs/latest/dashboards/dashboard/index/)
-* If you have relational queries across tables, the connectors need to be written in a certain way. Refer to this guide. _(TBD)_
+* [Create connectors](user-guides/connector-creation-guide.md).
+* [Create Dashboards](user-guides/dashboards-creation-guide.md).
