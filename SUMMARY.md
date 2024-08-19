@@ -270,6 +270,7 @@
       * [SPAR Update for offline enumerations](social-registry/development/upcoming-features/spar-update-for-offline-enumerations.md)
       * [Self Service Registration Portal](social-registry/development/upcoming-features/self-service-registration-portal.md)
       * [Enumerator ID](social-registry/development/upcoming-features/enumerator-id.md)
+      * [Unique Reference ID](social-registry/development/upcoming-features/unique-reference-id.md)
     * [Developer Install](social-registry/development/developer-install.md)
     * [Repositories](social-registry/development/repositories.md)
   * [Deployment](social-registry/deployment/README.md)
