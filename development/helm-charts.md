@@ -70,7 +70,7 @@ If in [annotations](https://ranchermanager.docs.rancher.com/how-to-guides/new-us
 
 ## Helm chart versions
 
-The Helm chart version is mentioned under the `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  For version numbers, we adhere to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html) with ["Simple 1-1 versioning"](https://codefresh.io/docs/docs/ci-cd-guides/helm-best-practices/#simple-1-1-versioning).  Here, the chart version is kept the same as the Docker version (also referred as `appVersion` in Chart.yml.). &#x20;
+The Helm chart version is mentioned under the `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  For version numbers, we adhere to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html).  Any 3 digit version like `1.2.1` is deemed to be "frozen" version.&#x20;
 
 <table><thead><tr><th width="166">Chart State</th><th width="245">Chart version</th><th>Docker version (appVersion)</th></tr></thead><tbody><tr><td><strong>Release/Prerelease</strong></td><td>Matches Docker version</td><td>Matches Chart version</td></tr><tr><td><strong>Development</strong></td><td><code>0.0.0-develop</code></td><td><code>develop</code></td></tr></tbody></table>
 

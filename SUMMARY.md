@@ -438,7 +438,7 @@
     * [Restart Deployment or StatefulSets to Redistribute Pods across Nodes](deployment/deployment-guide/redistribute-pods-across-nodes-by-restarting-deployment-statefulsets.md)
     * [Rerun Jobs in Kubernetes Cluster](deployment/deployment-guide/rerun-jobs-in-kubernetes-cluster.md)
 * [Development](development/README.md)
-  * [Module Packaging](development/module-packaging.md)
+  * [Packaging](development/packaging.md)
   * [Helm Charts](development/helm-charts.md)
   * [Versioning](development/versioning.md)
   * [Documentation Guides](development/documentation-guides/README.md)
