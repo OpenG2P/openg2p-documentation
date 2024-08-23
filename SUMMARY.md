@@ -417,7 +417,7 @@
   * [Additional Guides](deployment/deployment-guide/README.md)
     * [Automatic Build and Upload of Private Dockers](deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)
     * [Generate SSL Certificates using Letsencrypt](deployment/deployment-guide/ssl-certificates-using-letsencrypt.md)
-    * [Packaging OpenG2P Docker](deployment/deployment-guide/packaging-openg2p-docker.md)
+    * [Packaging Odoo based Docker](deployment/deployment-guide/packaging-openg2p-docker.md)
     * [AWS](deployment/deployment-guide/aws/README.md)
       * [Create ACM Certificate on AWS](deployment/deployment-guide/aws/create-acm-certificate-on-aws.md)
       * [Create Security Group on AWS](deployment/deployment-guide/aws/create-security-group-on-aws.md)

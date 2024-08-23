@@ -14,7 +14,9 @@ layout:
 
 # Helm Charts
 
-For deployment on Kubernetes OpenG2P provides Helm charts for all its components. Instructions to install a module/component using Helm are provided in the respective deployment guides.&#x20;
+For deployment on Kubernetes OpenG2P provides Helm charts for all its components. For ease of deployment and near single-click installation all the component Helm charts are collated into a package level Helm chart.  See more details on packaging [here](packaging.md).
+
+&#x20;Instructions to install the packaged Helm charts are provided in the respective deployment guides of the modules.
 
 ## Source code&#x20;
 
@@ -25,6 +27,7 @@ Charts may be found here:
 | [Social Registry](../social-registry/) | [https://github.com/OpenG2P/openg2p-social-registry-deployment/](https://github.com/OpenG2P/openg2p-social-registry-deployment/) |
 | [PBMS](../pbms/)                       | [https://github.com/OpenG2P/openg2p-pbms-deployment](https://github.com/OpenG2P/openg2p-pbms-deployment)                         |
 | [SPAR](../spar/)                       | [https://github.com/OpenG2P/openg2p-spar-deployment/](https://github.com/OpenG2P/openg2p-spar-deployment/)                       |
+| [G2P Bridge](../g2p-bridge/)           | [https://github.com/openG2P/openg2p-g2p-bridge-deployment](https://github.com/openG2P/openg2p-g2p-bridge-deployment)             |
 
 ## Published repository
 

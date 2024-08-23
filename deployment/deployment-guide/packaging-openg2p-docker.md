@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# Packaging OpenG2P Docker
+# Packaging Odoo based Docker
 
-This page contains steps for packaging different components and add-ons, of PBMS into a docker image. These instructions must be helpful for System Integrators to add custom Odoo add-ons and create a package.
+This page contains steps for packaging different components and add-ons, of a module into a docker image. These instructions must be helpful for System Integrators to add custom Odoo add-ons and create a package.
 
 ## Procedure
 
@@ -65,7 +65,7 @@ repo2_name = file://<path of the package in local system>
 
 Notes:
 
-* The above uses bitnami's odoo image as base.
+* The above uses Bitnami's Odoo image as base.
 * This script also pulls in any OCA dependencies configured, in `oca_dependencies.txt` inside each package. Use this environment variable to change the version of OCA dependencies to be pulled, `OCA_DEPENDENCY_VERSION` (defaults to `15.0`).
 * This also installs any python requirements configured in `requirements.txt` inside each package.
 * Reference packages can be found in packages directory inside packaging directory.
