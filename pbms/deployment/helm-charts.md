@@ -13,8 +13,13 @@ PBMS and all its dependencies are installed using a single\* [Helm chart](https:
 * Keymanager
 * OpenSearch
 * Reporting (Reporting Framework + Reporting Init)
+* Superset
+* eSignet
 
-\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more](https://docs.openg2p.org/deployment/helm-charts#helm-chart-size-limitation)
+{% hint style="info" %}
+The chart has been split into parts to address the Kubernetes ETCD limitation. \
+[Learn more](https://docs.openg2p.org/deployment/helm-charts#helm-chart-size-limitation)<mark style="color:blue;">>></mark>
+{% endhint %}
 
 ### Database <a href="#database" id="database"></a>
 
