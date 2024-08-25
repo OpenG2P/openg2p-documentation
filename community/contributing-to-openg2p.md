@@ -37,6 +37,6 @@ The documentation of the project is available as `.md` files in the [Documentati
 
 ## Versioning of modules
 
-Refer to the [Versioning guide](../development/versioning.md).
+Refer to the [Versioning guide](../deployment/versioning.md).
 
 ##
