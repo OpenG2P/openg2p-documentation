@@ -83,6 +83,10 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
 
 Downloading of user's cluster access key to be able to operate OpenG2P cluster directly using `kubectl` in case Rancher is not accessible. Sys Admins may download this key using Rancher console and keep them safely and protected with them.
 
+## Data cleanup
+
+Make sure any test or stray data in Postgres, OpenSearch or any other persistence is cleaned up completely before rollout.  In case of a fresh version install from scratch, make sure PVCs, and PVs from previous versions are deleted.
+
 ## Security
 
 * Creation of [private access channels](deployment-guide/private-access-channel.md).
