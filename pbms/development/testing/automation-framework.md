@@ -1,12 +1,12 @@
 # Automation Framework
 
-## &#x20;1. Introduction
+## Introduction
 
-### 1.1 Overview
+### Overview
 
 The purpose of data-driven testing with Selenium automation is to enhance the efficiency, effectiveness, and coverage of your testing efforts by systematically testing your application with multiple sets of input data.
 
-### 1.2 Purpose
+### Purpose
 
 Below points are the purposes for using a data-driven testing framework
 
@@ -19,10 +19,9 @@ Below points are the purposes for using a data-driven testing framework
 7. Parameterization
 8. Maintaining Test Data Separately
 9. Consistency and Reproducibility
-10. Compliance and Regulation Testing\
+10. Compliance and Regulation Testing
 
-
-### 1.3 Technologies and Tools&#x20;
+### Technologies and tools&#x20;
 
 1. Selenium WebDriver - This provides a programming interface to interact with web elements and automate tasks in web applications
 2. Java -&#x20;
@@ -33,13 +32,9 @@ Below points are the purposes for using a data-driven testing framework
 7. Webdriver Manager - WebDriverManager can automatically download and manage WebDriver dependencies for different browsers such as Chrome, Firefox, Safari, and Edge.
 8. ReportNG -&#x20;
 
+## Prerequisites
 
-
-
-
-## 2. Prerequisites
-
-### 2.1 Test Framework Setup
+### Test framework setup
 
 Step 1: Set Up a Maven Project
 
@@ -111,38 +106,30 @@ Step 5: Implement Data Provider
 
 Step 6: Execute Tests
 
-
-
-### 2.2 Test Data Preparation
+### Test data preparation
 
 * The test data file format should be XLS or XLSX.
 * There should be a sheet with test data for each method and the sheet name should match the name of the method.
 * Each column name of the sheet should have a unique.
-* Any number of data can be passed\
+* Any number of data can be passed
 
+## Test case design
 
-## 3. Test Case Design
-
-
-
-### 3.1 Test Scenarios
+### Test scenarios
 
 * Each Page should have its own test class and each scenario should have its own method.
 * All Sanity and Regression scenarios are to be covered.
 * Both scenarios can be run separately.
 * Negative scenarios are also covered
 
-### 3.2 Test Steps
+### &#x20;Test steps
 
 * Provide both valid and invalid test data in the XLSX / XLS file
 * Provide only the required number of test data to avoid a longer run time.
 
-\
+## Data-Driven testing implementation
 
-
-## 4. Data-Driven Testing Implementation
-
-### 4.1 Test Data Loading
+### Test data loading
 
 *   XLX or XLSX files should be stored in &#x20;
 
@@ -154,7 +141,7 @@ Step 6: Execute Tests
 * Mapping between the `ReadXLSData` class and the `testdata` should be done
 * Column Names of the sheets to be passed in the methods signature placeholder as parameters to fetch the data from the data provider.
 
-### 4.2 Test Execution
+### Test execution
 
 * Set up test Environment
 * Create Test class
@@ -162,61 +149,47 @@ Step 6: Execute Tests
 * Run test classes
 * Analyze test results &#x20;
 
+## Reporting and logging
 
-
-## 5. Reporting and Logging
-
-### 5.1 Test Result Reporting
+### Test result reporting
 
 * TestNG is used as a report provider
 * Every class name is to be mentioned in the `testng.xml` file to be a part of a report
 * Should be able to generate HTML emailable report by running the `testng.xm`l file.
-* An `emailable-report.html` and `testing-failed.xml` reports to be generated in the test-output file
+* An `emailable-report.html` and `testing-failed.xml` reports to be generated in the test-output file.
 
-
-
-### 5.2 Logging
+### Logging
 
 * log4j has been used as a logging tool
 * This will provide the log for each test method that fails during the test suite execution
 * Finding the exact error in the test suite execution will be easy
 
-\
+## Test environment configuration
 
-
-## 6. Test Environment Configuration
-
-### 6.1 Driver Configuration
+### Driver configuration
 
 * Driver configuration will be handled by the `Webdriver Manager` .
 * Webdriver Manager will manage the download, setup, and maintenance of the drivers required by Selenium WebDriver.
 
-### 6.2 Test Environment Parameters
+### Test environment parameters
 
 * Users need to provide the browser name (Case insensitive) and URL of the environment in `configfiles > config.properties.`
 
+## Maintenance and updates
 
-
-## 7. Maintenance and Updates
-
-### 7.1 Test Data Updates
+### Test data updates
 
 1. Identify the need for updates, considering application changes, data quality, and new scenarios.
 2. Update data in its source (e.g., Excel, database) to reflect current requirements and formats.
 3. Ensure data validity by including boundary and edge cases.
 4. Consider versioning data for tracking changes over time.
 
-### 7.2 Codebase Maintenance
+### Codebase maintenance 
 
+### Conclusion
 
+### Summary
 
-\
-
-
-9.Conclusion
-
-9.1 Summary
-
-9.2 Future Improvements
+### Future improvements
 
 \

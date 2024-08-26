@@ -32,7 +32,7 @@ Components of program disbursement cycles
 2. **Frequency**: Disbursements can be made on a regular basis, such as monthly, quarterly, or annually, depending on the program's design.
 3. **Amount**: The amount to be disbursed in each cycle is predetermined and may vary based on the program's rules and the recipient's eligibility.
 4. **Beneficiary**: Manage the list of beneficiaries eligible for the current cycle, including adding new beneficiaries, updating beneficiary information, and removing ineligible beneficiaries. To know more click [here](../functionality/beneficiary-management/)
-5. **Status:** The status [of ](#user-content-fn-1)[^1]the cycle, including whether it has been started, in progress, or completed, is tracked and updated.
+5. **Status:** The status of the cycle, including whether it has been started, in progress, or completed, is tracked and updated.
 
 ### Cycle Manager
 
@@ -48,8 +48,6 @@ In the OpenG2P platform, the Cycle Managers provide capabilities to oversee and 
 
 :notebook\_with\_decorative\_cover:[Create Program Fund](../functionality/program-disbursement-cycles/user-guides/create-program-fund.md)
 
-:notebook\_with\_decorative\_cover:Create Cycle Manager for a Program
+:notebook\_with\_decorative\_cover:[Create Cycle Manager for a Program](../functionality/program-disbursement-cycles/user-guides/create-cycle-manager-for-a-program.md)
 
 :notebook\_with\_decorative\_cover:Configure Cycle Manager
-
-[^1]: 

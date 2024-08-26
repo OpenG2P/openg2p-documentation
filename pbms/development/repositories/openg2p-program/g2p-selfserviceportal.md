@@ -1,6 +1,6 @@
 # G2P SelfServicePortal
 
-### Technology **Stack**
+### Technology s**tack**
 
 * Utilizes Next.js as the primary framework for the front-end.
 * Tailwind CSS is employed for styling and responsive design.
@@ -51,9 +51,9 @@ Supported Functionality:
 
 ### Source code
 
-{% embed url="https://github.com/OpenG2P/openg2p-portal.git" %}
+{% @github-files/github-code-block url="https://github.com/OpenG2P/openg2p-portal.git" %}
 
-### Environment Setup: Next.js and FastAPI Integration
+### Environment setup: Next.js and FastAPI Integration
 
 #### Prerequisites:
 

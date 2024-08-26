@@ -76,5 +76,3 @@ NA
 [https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_rest\_api](https://github.com/OpenG2P/openg2p-registry/tree/15.0-develop/g2p\_registry\_rest\_api)
 
 ### Installation
-
-###

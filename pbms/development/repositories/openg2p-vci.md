@@ -1,4 +1,4 @@
-# openg2p-vci
+# OpenG2P VCI
 
 ## Introduction
 
@@ -104,4 +104,4 @@ This section describes procedure for developing custom VC Issuers with custom fu
 
 * VC Issuer Program/Beneficiary specific configs:
 
-<table><thead><tr><th width="224">Name</th><th width="175">Property Name</th><th>Description</th></tr></thead><tbody><tr><td>Program</td><td>program_id</td><td>Program for which we are issuing the Beneficiary VC.</td></tr></tbody></table>
+<table><thead><tr><th width="224">Name</th><th width="175">Property name</th><th>Description</th></tr></thead><tbody><tr><td>Program</td><td>program_id</td><td>Program for which we are issuing the Beneficiary VC.</td></tr></tbody></table>

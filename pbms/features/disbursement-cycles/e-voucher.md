@@ -12,8 +12,8 @@ Initially, a voucher entitlement is generated for the individual or group. This 
 
 * Configure e-Voucher Manger: This feature allows administrators to set up and configure the e-voucher management system according to the program's requirements.
 * Generate Voucher Entitlement: Enables the generation of e-voucher entitlements for individuals or groups eligible for benefits.
-* Distribute E-Vouchers: Facilitates the distribution of e-vouchers to beneficiaries, ensuring they receive their entitlements promptly.
-* Scan E-Voucher: The service provider uses an ID verification app to scan the e-voucher, confirming the entitlement and enabling the provision of benefits.
+* Distribute e-Vouchers: Facilitates the distribution of e-vouchers to beneficiaries, ensuring they receive their entitlements promptly.
+* Scan e-Voucher: The service provider uses an ID verification app to scan the e-voucher, confirming the entitlement and enabling the provision of benefits.
 * Provide Benefits: After scanning the e-voucher, the service provider provides the benefits to the individual, ensuring they receive the intended support.
 * Reimbursement: The service provider is later reimbursed for the benefits provided, based on the services granted and in compliance with program guidelines.
 

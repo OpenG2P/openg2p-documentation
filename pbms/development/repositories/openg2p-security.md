@@ -2,7 +2,7 @@
 
 ## Introduction <a href="#introduction" id="introduction"></a>
 
-Source Code: [https://github.com/openg2p/openg2p-security](https://github.com/openg2p/openg2p-security)
+Source code: [https://github.com/openg2p/openg2p-security](https://github.com/openg2p/openg2p-security)
 
 This repository contains Odoo modules that help PBMS/Registry to perform cryptography operations like encrypt, decrypt, sign, verify, etc. and interface with external encryption modules like [Keymanager](https://github.com/mosip/keymanager). This also enables the registry to encrypt and store data or to decrypt the data on demand.
 
@@ -93,8 +93,6 @@ Module Name: g2p\_registry\_encryption
 <table><thead><tr><th width="200">Name</th><th width="151">Property name</th><th width="136">ENV Variable</th><th>Description</th></tr></thead><tbody><tr><td>Keymanager API Base URL</td><td>keymanager_api_base_url</td><td>KEYMANAGER_API_BASE_URL</td><td>Base URL to access Keymanager APIs. Defaults to k8s cluster local Keymanager URL, <code>http://keymanagar.keymanager/v1/keymanager</code>.</td></tr><tr><td>Keymanager Auth URL</td><td>keymanager_auth_url</td><td>KEYMANAGER_AUTH_URL</td><td>Auth URL to get auth for Keymanager APIs. Defaults to k8s local Keycloak token URL, <code>http://keycloak.keycloak/realms/openg2p/protocol/openid-connect/token</code>.</td></tr><tr><td>Keymanager Auth Client ID</td><td>keymanager_auth_client_id</td><td>KEYMANAGER_AUTH_CLIENT_ID</td><td>Keymanager Keycloak client ID. Defaults to <code>openg2p-admin-client</code>.</td></tr><tr><td>Keymanager Auth Client Secret</td><td>keymanager_auth_client_secret</td><td>KEYMANAGER_AUTH_CLIENT_SECRET</td><td>Keymanager Keycloak client secret.</td></tr><tr><td>Keymanager Auth Grant Type</td><td>keymanager_auth_grant_type</td><td>KEYMANAGER_AUTH_GRANT_TYPE</td><td>Defaults to <code>client_secret</code>.</td></tr><tr><td>Keymanager Encrypt Application ID</td><td>keymanager_encrypt_application_id</td><td></td><td>Defaults to <code>REGISTRATION</code>.</td></tr><tr><td>Keymanager Encrypt Reference ID</td><td>keymanager_encrypt_reference_id</td><td></td><td>Defaults to <code>ENCRYPT</code>.</td></tr><tr><td>Keymanager Sign Application ID</td><td>keymanager_sign_application_id</td><td></td><td>Defaults to <code>ID_REPO</code>.</td></tr><tr><td>Keymanager Sign Reference ID</td><td>keymanager_sign_reference_id</td><td></td><td></td></tr></tbody></table>
 
 * For Registry Encryption, the following config can be configured on the Encryption Providers page:
-
-
 
 | Name                                 | Property name                     | Description                                                                                                                                                                                                                                                                               |
 | ------------------------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

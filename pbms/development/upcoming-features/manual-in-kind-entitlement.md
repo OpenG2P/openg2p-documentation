@@ -2,7 +2,7 @@
 description: WORK IN PROGRESS
 ---
 
-# Manual In-kind Entitlement
+# Manual In-Kind Entitlement
 
 The manual in-kind entitlement feature in PBMS enables the generation of manual **in-kind** entitlements during registrant processing. This functionality ensures that benefits are provided based on the specific requirements or needs of each registrant in real time. Manual entitlements can be created for both individuals and groups.
 
@@ -16,4 +16,4 @@ The manual in-kind entitlement feature in PBMS enables the generation of manual 
 
 ## Technical documentation
 
-## User guides
+## Related user guides

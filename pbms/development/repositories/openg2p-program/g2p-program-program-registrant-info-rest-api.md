@@ -53,5 +53,3 @@ NA
 ### Installation
 
 Standard Odoo package installation
-
-###

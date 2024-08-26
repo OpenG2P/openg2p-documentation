@@ -10,13 +10,15 @@ description: WORK IN PROGRESS
 
 {% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-2182" %}
 
-#### Module: g2p\_service\_provider\_beneficiary\_management
+### Module name&#x20;
 
-**Purpose:**
+#### g2p\_service\_provider\_beneficiary\_management
+
+### **Purpose**
 
 The "g2p\_service\_provider\_beneficiary\_management" module is designed to manage beneficiaries within a specific region, facilitating user interactions for both individuals and groups.
 
-**Features:**
+### **Features**
 
 **Beneficiary Creation and Update:**
 

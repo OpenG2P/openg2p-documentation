@@ -14,49 +14,53 @@ odoo
 
 ### Functionality
 
-Overview: The G2P Formio module provides the functionality to create and manage dynamic forms within the OpenG2P ecosystem. It allows users to design forms tailored to specific requirements.
+**Overview**
 
-Extension of Existing Module: g2p\_formio is an extension of the Form.io module, enhancing its capabilities within the OpenG2P platform.
+The G2P Formio module provides the functionality to create and manage dynamic forms within the OpenG2P ecosystem. It allows users to design forms tailored to specific requirements.
 
-Supported Functionality:
+**Extension of existing module**
+
+g2p\_formio is an extension of the Form.io module, enhancing its capabilities within the OpenG2P platform.
+
+**Supported functionality**
 
 * Design and configuration of dynamic data collection forms.
 * Support for various form field types (e.g., text, checkboxes, radio buttons).
 * Version control for forms.
 * Integration with other OpenG2P modules for data processing
 
-Limitations:
+**Limitations**
 
 * Real-time collaboration on form design is not supported.
 * Complex logic and calculations within forms may require custom development.
 
 ### Design notes
 
-Salient Design Features
+**Salient design features**
 
 * User-friendly form design interface.
 * Extensible architecture to support future form field types.
 * Versioning system to track changes in form design.
 
-Design Decisions
+**Design decisions**
 
 * The module uses a web-based form builder interface for ease of use.
 * Data storage follows OpenG2P database conventions.
 * Versioning is implemented using a revision history table.
 
-Design Patterns and Algorithms
+**Design patterns and algorithms**
 
 * Frontend utilizes a component-based design pattern.
 * Backend employs CRUD (Create, Read, Update, Delete) operations for form management.
 
-Developer Notes
+**Developer Notes**
 
 Developers should be aware of the following:
 
 * The module relies on established OpenG2P data models for integration.
 * Extending form functionality may require understanding the underlying architecture.
 
-Scope for Improvement
+**Scope for Improvement**
 
 Future improvements may include:
 
@@ -92,8 +96,4 @@ Actions: The module provides actions for-
 
 No specific system-wide configurations are required for this module.
 
-### Source Code
-
-
-
-###
+### Source code

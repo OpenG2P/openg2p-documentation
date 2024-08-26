@@ -39,9 +39,9 @@ The following end points have been covered in our load test.
    2. xyz
    3. abc...
 
-## Approach to Testing
+## Approach to testing
 
-## Testing Measurements and outcome
+## Testing measurements and outcome
 
-## Recommended Deployment
+## Recommended deployment
 

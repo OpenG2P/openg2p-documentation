@@ -36,7 +36,7 @@ A proxy score is calculated for each household using the formula and indicates t
 
 ## WB PMT formula configuration
 
-Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/CwMntokukpQZjoCcqMwL/\~/changes/151/guides/user-guides/eligibility-and-program-enrollment/configuration/configure-proxy-mean-test).
+Proxy Means Test plug-in can be conveniently installed in the OpenG2P platform. The observable characteristics are referred to as computed fields in the OpenG2P platform. To learn the steps to configure computed fields, click [here](user-guides/configure-proxy-means-test.md).
 
 The platform supports extensive yet easy configurations for calculating proxy scores from these computed fields. The figure below shows the configuration of observable characteristics and corresponding coefficients (weightage).
 

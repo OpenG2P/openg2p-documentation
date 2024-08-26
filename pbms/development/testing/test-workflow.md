@@ -6,8 +6,6 @@
 
 The "Test Workflow" automates the sanity test for every new push or pull on the specified branch and generates the report and deploys the report on GitHub pages. This workflow is designed to ensure a streamlined and consistent testing pipeline.  which further can be integrated with the build and deploy workflow to complete the CI/CD pipeline.&#x20;
 
-
-
 ## Purpose
 
 Here are the primary objectives and benefits of using this workflow:
@@ -19,17 +17,11 @@ Here are the primary objectives and benefits of using this workflow:
 * Deploys the Allure report to GitHub Pages, making it accessible and shareable.
 * Provides the flexibility for the teams to manually trigger the workflow when needed, offering control over when certain processes are executed.
 
-
-
-
-
 ## Functionality
 
 The workflow performs the following key tasks:
 
-
-
-### **Build and Test:**
+### **Build and test**
 
 * Sets up the latest version of Ubuntu as the execution environment.
 * Configures Java Development Kit (JDK) version 17.
@@ -39,16 +31,12 @@ The workflow performs the following key tasks:
 * Builds the Java project using Maven, skipping tests initially.
 * Runs sanity tests using the command `mvn clean test` which runs the sanity test suite.
 
-
-
-### **Notification**:
+### **Notification**
 
 * Sends a Slack notification on successful workflow execution, providing information about the actor and commit ID.
 * Sends a Slack notification on workflow failure, including details about the actor, commit ID, and the failed step.
 
-
-
-### **Generate and Deploy Allure Report**:
+### **Generate and deploy Allure report**
 
 * Installs Allure to generate detailed test reports.
 * Generates an Allure report for the test results.
@@ -62,15 +50,13 @@ The workflow is triggered in the following ways:
 * **Pull Request to 'develop' Branch**: It also runs when a pull request is opened or updated against the 'develop' branch.
 * **Manual Workflow Dispatch**: Developers or DevOps teams can manually trigger the workflow using GitHub Actions' workflow dispatch feature.
 
+## Configuration and secrets
 
-
-## Configuration and Secrets
-
-### Configuration File
+### Configuration file
 
 The workflow is defined in a YAML file (`.github/workflows/ui-sanity.yml`). Developers can customize this file to adjust build and test configurations.
 
-### Required Secrets
+### Required secrets
 
 Ensure the following secrets are configured in the GitHub repository settings:
 
@@ -84,6 +70,6 @@ Ensure the following secrets are configured in the GitHub repository settings:
 * **GitHub Pages Deployment**: Developers need to ensure the presence of a GitHub token (`GIT_TOKEN`) with the necessary permissions for deploying the Allure report to GitHub Pages.
 * **Slack Notifications**: Customize the Slack notifications as needed. Ensure the Slack webhook (`SLACK_INCOMING_WEBHOOK`) is valid and accessible.
 
-## Future Improvements
+## Future improvements
 
 To integrate with build and deploy workflows to accomplish the complete CI/CD pipeline.

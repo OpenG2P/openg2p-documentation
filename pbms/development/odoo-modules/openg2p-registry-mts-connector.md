@@ -35,7 +35,7 @@ module dependencies:
 
 ### User interface
 
-<figure><img src="../../../../.gitbook/assets/spaces_4EyCrLbFom7vj7UcMIUZ_uploads_git-blob-db52d2d1e7849707e6275cfaaf7548016a971514_openg2p-registry-mts-connector.webp" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/spaces_4EyCrLbFom7vj7UcMIUZ_uploads_git-blob-db52d2d1e7849707e6275cfaaf7548016a971514_openg2p-registry-mts-connector.webp" alt=""><figcaption></figcaption></figure>
 
 ### Configuration
 
@@ -81,6 +81,6 @@ In OpenG2P, the user can configure for following fields to setup an interface wi
 
 **Callback auth password**: Password to access callback api
 
-### Source Code
+### Source code
 
 [https://github.com/OpenG2P/openg2p-mts/tree/15.0-develop/g2p\_mts](https://github.com/OpenG2P/openg2p-mts/tree/15.0-develop/g2p\_mts)

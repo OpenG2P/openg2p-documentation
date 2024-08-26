@@ -68,5 +68,3 @@ NA
 ### Installation
 
 Standard odoo package installation
-
-###

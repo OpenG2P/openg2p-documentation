@@ -16,7 +16,7 @@ Odoo and Soap API
 
 The `g2p_notifications_wiserv` module does not override or modify any existing core functionality within Odoo 15. Instead, it extends the capabilities of Odoo by seamlessly integrating with the Wiserv SMS API. This integration allows users to efficiently send SMS notifications for OTPs, enrollment, and voucher generation.
 
-**Key Functionality:**
+#### **Key Functionality**
 
 1. **OTP** : The module seamlessly delivers One-Time Passwords (OTP) to users via the Wiserv SMS API.
 2. **Enrollment Notifications**: This feature enables the sending of enrollment notifications to users through SMS.

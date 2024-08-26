@@ -35,7 +35,7 @@ The 4Sure App is designed to streamline the process of verifying digital credent
 If either the sender or receiver decides to cancel the transfer at any stage, the state will transition to Disconnected and become Idle as a result.
 {% endhint %}
 
-{% embed url="https://github.com/mosip/ble-verifier-sdk" %}
+{% @github-files/github-code-block url="https://github.com/mosip/ble-verifier-sdk" %}
 
 ## Face match SDK
 
@@ -64,7 +64,7 @@ BiometricSDK.captureFace()
 
 ```
 
-{% embed url="https://github.com/biometric-technologies/biometric-sdk-react-native" %}
+{% @github-files/github-code-block url="https://github.com/biometric-technologies/biometric-sdk-react-native" %}
 
 ## Open source integrations
 

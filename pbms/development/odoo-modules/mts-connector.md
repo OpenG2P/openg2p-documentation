@@ -36,7 +36,7 @@ This module relies on the following external libraries and modules:
 
 ### User interface
 
-<figure><img src="../../../../.gitbook/assets/mts-connector.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/mts-connector.png" alt=""><figcaption></figcaption></figure>
 
 ### Configuration
 
@@ -86,6 +86,6 @@ In OpenG2P, the user can configure for following fields to setup an interface wi
 
 **Callback auth password**: Password to access callback api
 
-### Source Code
+### Source code
 
 [https://github.com/OpenG2P/openg2p-mts/tree/15.0-develop/mts\_connector](https://github.com/OpenG2P/openg2p-mts/tree/15.0-develop/mts\_connector)

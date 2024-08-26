@@ -57,5 +57,3 @@ No specific configuration is required for this module. The REST API functionalit
 [https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher](https://github.com/OpenG2P/openg2p-notifications/tree/15.0-1.1.0/g2p\_notifications\_voucher)
 
 ### Installation
-
-###

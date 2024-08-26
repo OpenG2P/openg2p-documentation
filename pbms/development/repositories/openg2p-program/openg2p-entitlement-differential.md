@@ -16,7 +16,7 @@ Odoo
 
 The OpenG2P Entitlement: Differential module extends the existing cash entitlement manager in OpenG2P to support differential entitlements. Differential entitlements allow for the entitlement amount to vary based on certain criteria, such as the beneficiary's location or household size. The module enables inflation adjustments for cash entitlements and applies additional filtering criteria for beneficiaries eligible for entitlements.
 
-**Key Features:**
+#### **Key features**
 
 1. **Inflation Adjustment:** Define an inflation rate and enable inflation adjustment for entitlement amounts during program cycles.
 2. **Differential Entitlements:** Calculate entitlement amounts differentially for beneficiaries based on specified criteria.
@@ -50,7 +50,7 @@ Access the module through the submenu: `Program -> Configuration -> Cash Entitle
 5. (Optional) Enter a Maximum Multiplier for the entitlement item, specifying the maximum value.
 6. In the Entitlement Validation Group field, select a validation group from the dropdown list for validation.
 
-**Note:**
+**Notes:**
 
 * The Maximum Amount field limits the total entitlement amount.
 * The Evaluate One Item checkbox evaluates only one entitlement item at a time.

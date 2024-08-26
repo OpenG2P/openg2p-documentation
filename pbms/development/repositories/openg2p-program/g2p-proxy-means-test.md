@@ -48,5 +48,3 @@ NA
 [https://github.com/OpenG2P/openg2p-program/tree/15.0-1.1.0/g2p\_proxy\_means\_test](https://github.com/OpenG2P/openg2p-program/tree/15.0-1.1.0/g2p\_proxy\_means\_test)
 
 ### Installation
-
-###

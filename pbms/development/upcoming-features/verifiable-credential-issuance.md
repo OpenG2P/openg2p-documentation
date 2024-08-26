@@ -39,4 +39,4 @@ VCI uses Odoo modules:
 
 * \<module names>
 
-## User guides
+## Related user guides
