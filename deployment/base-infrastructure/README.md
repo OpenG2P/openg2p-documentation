@@ -8,6 +8,6 @@ The base infrastructure consists of the components listed below.  Individual mod
 
 * [Wireguard bastion](wireguard-bastion/)
 * [NFS server](nfs-server.md)
-* [Rancher cluster ](rancher.md)
+* [Rancher cluster ](rancher.md)(observation cluster)
 * [OpenG2P cluster](openg2p-cluster/)
 * [Load Balancer](load-balancer/)
