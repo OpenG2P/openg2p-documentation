@@ -35,13 +35,13 @@ The SPAR Mapper contains the actual mapping between beneficiary IDs and their re
 
 The SPAR Self-Service  provides beneficiaries the ability to log in to SPAR and update their account information in the registry. The self-service portal facilitates an easy-to-use interface like searching for a beneficiary's bank, its branch, or a mobile service provider so that the beneficiary can provide the full financial address, where he/she wishes to receive the cash credits for the benefit programs.
 
-## Functional Overview
+## Functional overview
 
 The following figure provides a Functional Architecture of the SPAR Subsystem.
 
 {% embed url="https://miro.com/app/board/uXjVNDnhJUg=/?share_link_id=24912538335" %}
 
-## Technical Overview
+## Technical overview
 
 The following picture provides a technical architecture of SPAR
 

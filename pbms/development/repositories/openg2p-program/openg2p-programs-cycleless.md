@@ -1,4 +1,4 @@
-# OpenG2P Programs Cycleless
+# OpenG2P Programs: Cycleless
 
 ### Module name
 
@@ -26,8 +26,6 @@ Module Dependencies
 
 ### Design notes
 
-*
-
 ### User interface
 
 Program ->  Configuration -> Program Manager
@@ -42,4 +40,4 @@ Enable "Is Cycleless" while configuring program manager makes respective program
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

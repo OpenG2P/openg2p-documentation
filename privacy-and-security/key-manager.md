@@ -57,7 +57,7 @@ Consider integrating with Hardware Security Modules for enhanced physical and lo
 
 The integration process involves making calls to the KeyManager service deployed in the Kubernetes cluster of OpenG2P. Keycloak provides an access token, which is used as a header for each API request. The primary functionalities are encapsulated within the `g2p_encryption` module.
 
-### **Key Components:**
+### **Key components**
 
 1. **Keycloak  access token:**
    * Obtained from keycloak authentication.
@@ -69,7 +69,7 @@ The integration process involves making calls to the KeyManager service deployed
    * Central module handling cryptographic functionalities.
    * Initiates API calls to the KeyManager service.**Process Steps:**
 
-### **Process steps:**
+### **Process steps**
 
 1. **Obtain keycloak access token:**
    * Authentication with keycloak to acquire an access token.
@@ -84,7 +84,7 @@ The integration process involves making calls to the KeyManager service deployed
    * The `g2p_encryption` module acts as a bridge between KeyManager and odoo.
    * Provides an interface for odoo to perform secure operations using the services offered by KeyManager.
 
-### **Advantages:**
+### **Advantages**
 
 * **Centralized cryptographic operations:**
   * All cryptographic operations are centralized within the `g2p_encryption` module, promoting modular and maintainable code.
@@ -97,7 +97,7 @@ The integration process involves making calls to the KeyManager service deployed
 
 The system employs a key manager to handle the encryption of registry data. All registry information is stored in an encrypted form, represented as a string. To access the original data, admin must utilize the "decrypt fields" option available in the settings. The key manager is responsible for generating, storing, and managing the encryption keys required for securing and decrypting the registry information. This approach enhances security by ensuring that sensitive data remains unreadable without the appropriate decryption process.&#x20;
 
-### **Future Considerations:**
+### **Future considerations**
 
 * **Error handling:**
   * Implement robust error handling mechanisms to gracefully manage exceptions during API calls.
@@ -108,7 +108,7 @@ The system employs a key manager to handle the encryption of registry data. All 
 
 Refer the following links for deeper understanding of the API's structure [Kernel api's](https://docs.mosip.io/1.1.5/apis/kernel-apis) and [Mosip api documentation](https://mosip.github.io/documentation/1.2.0/kernel-keymanager-service.html)
 
-## Source Code
+## Source code
 
 [openg2p-security](../pbms/development/repositories/openg2p-security.md)
 

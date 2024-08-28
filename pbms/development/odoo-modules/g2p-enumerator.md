@@ -38,7 +38,7 @@ odoo
 
 #### User interface <a href="#user-interface" id="user-interface"></a>
 
-* The enumerator details are integrated into the user interface by adding a new page inside the group form view. This page, labeled "**Enumerator Details**," includes fields for **enumerator name, ID, data collection date, and location data (latitude, longitude, altitude, accuracy**).
+* The enumerator details are integrated into the user interface by adding a new page inside the group form view. This page, labeled **Enumerator Details**, includes fields for **enumerator name, ID, data collection date, and location data (latitude, longitude, altitude, accuracy**).
 
 #### Configuration <a href="#configuration" id="configuration"></a>
 
@@ -50,7 +50,5 @@ https://github.com/OpenG2P/openg2p-registry/tree/17.0-develop/g2p\_enumerator​
 
 #### Installation <a href="#installation" id="installation"></a>
 
-* Ensure that the module dependencies ("base," "mail," "contacts," "g2p\_registry\_base") are installed
-* Install the "G2P Registry: Group" module from the Odoo Apps interface
-
-#### ​ <a href="#undefined" id="undefined"></a>
+* Ensure that the module dependencies (**base**, **mail**, **contacts**, **g2p\_registry\_base**) are installed
+* Install the **G2P Registry: Group** module from the Odoo Apps interface​

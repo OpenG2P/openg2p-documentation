@@ -5,7 +5,7 @@ description: >-
   Social Payments Account and Registry (SPAR) system.
 ---
 
-# SPAR Mapper API Installation
+# SPAR Mapper API
 
 ## Installation
 
@@ -79,7 +79,7 @@ watchfiles==0.21.0
 websockets==12.0
 ```
 
-### Steps to Install
+### Steps to install
 
 * Clone the repository
 
@@ -121,7 +121,7 @@ pip install -e .
 python main.py migrate
 ```
 
-### Quick Start
+### Quick start
 
 * Start the development server
 
@@ -159,44 +159,3 @@ pytest -s
 ### Contributing
 
 Contribution guidelines are available [here](https://github.com/OpenG2P/openg2p-spar-mapper-api/blob/develop/CONTRIBUTING.md).
-
-\
-
-
-\
-\
-
-
-\
-\
-
-
-\
-\
-
-
-\
-\
-\
-\
-
-
-\
-\
-
-
-\
-\
-\
-\
-\
-
-
-\
-\
-\
-\
-\
-\
-\
-&#x20;

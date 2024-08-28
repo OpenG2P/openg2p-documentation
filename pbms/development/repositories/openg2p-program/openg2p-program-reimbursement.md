@@ -1,4 +1,4 @@
-# OpenG2P Program Reimbursement
+# OpenG2P Programs: Reimbursement
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_program\_reimbursement
 
 ### Module title
 
-OpenG2P Program : Reimbursement
+OpenG2P Programs: Reimbursement
 
 ### Technology base
 
@@ -31,8 +31,6 @@ The main functionality of this module is to redeem the voucher generate by any p
 * **Assign to Program Wizard:** The module includes an assignment wizard (`assign_to_program_wizard.xml`) to streamline the process of assigning beneficiaries to reimbursement programs.
 * **Create Program Wizard:** A creation wizard (`create_program_wizard.xml`) facilitates the easy setup of new reimbursement programs.
 * **Create Entitlement Wizard:** An entitlement creation wizard (`create_entitlement_wizard.xml`) simplifies the process of generating new entitlements within reimbursement cycles.
-
-
 
 ### Relationships with other entities
 

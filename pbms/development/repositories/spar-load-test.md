@@ -26,7 +26,7 @@ Apart from these two JMX files, the repository also contains the following files
 2. **script-generate-requestbody-mapper-apis.py** - Once we have the data into ther id\_fa\_mapping table, the mapper resolve API, which retrieves the financial address for a given beneficiary Id, takes a list of beneficiary id in its request body. This script reads the data from the id\_fa\_mapping table and generates the array containing the beneficiary ids. You have to take this array object and use it in the request body of the spar-mapper/resolve API. This API will then retrieve the financial addreess (account address or account details) for these beneficiary ids. The spar-mapper.jmx file currently already contains 1000 beneficiary ids. You have to use these python files, if you wish to conduct tests with different load scenarios.
 3. sample-data.csv - This file is the output of "script-generate-id-fa-mapper.py". As mentioned above, currently this csv file contains 1000 records for id\_fa\_mapping.
 
-## End Points covered in load test
+## End points covered in load test
 
 The following end points have been covered in our load test.
 

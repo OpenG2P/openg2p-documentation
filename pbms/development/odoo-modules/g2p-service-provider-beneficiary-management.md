@@ -20,28 +20,25 @@ The "g2p\_service\_provider\_beneficiary\_management" module is designed to mana
 
 ### **Features**
 
-**Beneficiary Creation and Update:**
+**Beneficiary Creation and Update**
 
 * Users can create new beneficiary profiles for groups within their assigned region.
 * Update existing beneficiary information such as contact details, household data, demographics, and eligibility criteria.
 
-**Group Management:**
+**Group Management**
 
 * Allow users to maintain lists of beneficiary groups within a region.
 * Add new groups and update group information, including members, contact information, and group demographics.
 * Household Data (demographic data) should be static form in the portal and inside the group view, there should one more button for adding individual(as members).
 
-**EDRMC Integration:**
+**EDRMC Integration**
 
 Once the EDRMC package is installed, all household data specific to EDRMC form will be accessible. The beneficiary management system will inherit the base of the service provider portal.
 
-**Details covered in the EDRMC form:**
+The details covered in the EDRMC form are:
 
 1. **Household Head Details**
 2. **Location Details**
 3. **Household Data Questions**
 
 Additionally, there will be a separate form for family members.
-
-
-

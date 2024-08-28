@@ -24,10 +24,10 @@ The design of this module emphasizes efficient integration with REST API functio
 
 This module establishes crucial relationships with two primary entities:
 
-1. **g2p\_registry\_rest\_api:**
+1. **g2p\_registry\_rest\_api**
    * Leverages existing REST API functionalities related to registry management.
    * Enhances interoperability by integrating seamlessly with the registry system through RESTful web services.
-2. **g2p\_programs:**
+2. **g2p\_programs**
    * Builds upon the core functionalities of the g2p\_programs module.
    * Extends capabilities related to group and individual memberships with program-specific information managed by g2p\_programs.
 

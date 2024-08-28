@@ -1,4 +1,4 @@
-# G2P Registry:Bank Details
+# G2P Registry: Bank Details
 
 ### Module name
 
@@ -14,15 +14,13 @@ G2P Registry: Bank Details
 
 ### Functionality
 
-
-
-* **Secure Storage:**    &#x20;
+* **Secure Storage**
   * Provides a structured framework for storing and managing bank details.
   * Ensures the confidentiality and security of financial information.
-* **Comprehensive Integration:**
+* **Comprehensive Integration**
   * Integrates seamlessly with the "g2p\_registry\_individual" and "g2p\_registry\_group" modules.
   * Allows users to associate bank details with specific individuals and groups.
-* **Python Library Integration:**
+* **Python Library Integration**
   * Utilizes the "schwifty" Python library for enhanced functionality.
   * Enables the validation and processing of bank-related information.
 
@@ -34,7 +32,7 @@ NA
 
 **Dependencies**
 
-Module dependencies -&#x20;
+Module dependencies
 
 * base
 * mail
@@ -42,7 +40,7 @@ Module dependencies -&#x20;
 * g2p\_registry\_group
 * g2p\_registry\_individual
 
-External Python Dependency-&#x20;
+External Python Dependency
 
 * schwifty
 

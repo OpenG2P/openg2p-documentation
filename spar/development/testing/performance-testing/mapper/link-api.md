@@ -71,7 +71,7 @@ layout:
 * The number of invocations per thread is determined by the payload size.
 * Example run with 8 threads and a payload size of 1,000 results in 1,250 invocations per thread.
 
-## Test Script
+## Test script
 
 The test script can be found [here](https://github.com/OpenG2P/openg2p-spar-mapper-test/tree/1.1.0/load-test). The table - id\_fa\_mapping - needs to be truncated before each run. The following values are configurable and need to be modified suitably.
 

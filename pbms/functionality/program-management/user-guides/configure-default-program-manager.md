@@ -52,7 +52,7 @@ The fields and their descriptions are given below.
 | Is Cycleless        | Check the option, if required.                                                         |
 | Copy pervious cycle | Check the option to repeat the pervious cycle configuration.                           |
 
-3. Click the _**Save**_ button to save the data and exit from the screen
+3. Click the _**Save**_ button to save the data and exit from the screen.
 4. Click the _**Discard**_ button to exit from the screen without saving the data.
 
 <figure><img src="../../../../.gitbook/assets/program-managers-new-data.png" alt=""><figcaption></figcaption></figure>

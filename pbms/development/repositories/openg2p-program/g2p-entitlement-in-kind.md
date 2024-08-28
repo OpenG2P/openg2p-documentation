@@ -1,4 +1,4 @@
-# OpenG2P Entitlement In-kind
+# OpenG2P Entitlement: In-Kind
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_entitlement\_in\_kind
 
 ### Module title
 
-OpenG2P Entitlement In-kind
+OpenG2P Entitlement: In-kind
 
 ### Technology base
 
@@ -46,9 +46,9 @@ Module Dependencies
 
 ### Configuration
 
-To set up In-kind Entitlement Managers, navigate to the "Programs" submenu and then access "Configuration". Within the "In-Kind Entitlement Manager", you can configure the following fields:
+To set up In-kind Entitlement Managers, navigate to the "Programs" submenu and then access "Configuration". Within the "In-Kind Entitlement Manager", you can configure the following fields.
 
-**Fields available inside the entitlement manager:**
+**Fields available inside the entitlement manager are:**
 
 1. **Name:** This field is used to specify the name of the manager.
 2. **Program:** Choose a specific program from the available options.

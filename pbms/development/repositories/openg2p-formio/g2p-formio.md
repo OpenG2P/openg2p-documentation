@@ -53,7 +53,7 @@ g2p\_formio is an extension of the Form.io module, enhancing its capabilities wi
 * Frontend utilizes a component-based design pattern.
 * Backend employs CRUD (Create, Read, Update, Delete) operations for form management.
 
-**Developer Notes**
+**Developer notes**
 
 Developers should be aware of the following:
 

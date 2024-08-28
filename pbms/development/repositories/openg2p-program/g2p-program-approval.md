@@ -1,4 +1,4 @@
-# G2P Program Approval
+# OpenG2P Program: Approval
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_program\_approval
 
 ### Module title
 
-G2P Program Approval
+OpenG2P Program: Approval
 
 ### Technology base
 
@@ -21,8 +21,6 @@ Odoo
 
 ### Design notes
 
-
-
 ### Relationships with other entities
 
 None
@@ -35,11 +33,7 @@ Module Dependencies
 
 ### User interface
 
-
-
 ### Configuration
-
-
 
 ### Source code
 

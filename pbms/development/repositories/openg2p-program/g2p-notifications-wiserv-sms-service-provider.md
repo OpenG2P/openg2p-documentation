@@ -18,7 +18,7 @@ The `g2p_notifications_wiserv` module does not override or modify any existing c
 
 #### **Key Functionality**
 
-1. **OTP** : The module seamlessly delivers One-Time Passwords (OTP) to users via the Wiserv SMS API.
+1. **OTP**: The module seamlessly delivers One-Time Passwords (OTP) to users via the Wiserv SMS API.
 2. **Enrollment Notifications**: This feature enables the sending of enrollment notifications to users through SMS.
 3. **Voucher Generation**: The module empowers users to generate vouchers through the Wiserv SMS API.
 

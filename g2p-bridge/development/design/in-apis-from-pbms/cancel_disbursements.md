@@ -32,6 +32,6 @@ Will also decrement the following attributes in disbursement\_envelope\_batch\_s
 
 <mark style="color:blue;">Transaction control should ALL or NONE - i.e. either all disbursements should be updated or none should be updated.</mark>
 
-### Validations & Exceptions
+### Validations & exceptions
 
 1. Cancellation is only possible before the disbursement\_envelope.disbursement\_schedule\_date

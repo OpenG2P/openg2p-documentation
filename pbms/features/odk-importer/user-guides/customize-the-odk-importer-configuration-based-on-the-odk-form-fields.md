@@ -12,20 +12,20 @@ layout:
     visible: true
 ---
 
-# 📔 Customize the ODK Importer Configuration based on the ODK Form Fields
+# 📔 Customise the ODK Importer Configuration based on the ODK Form Fields
 
 ## Description
 
-This document provides step-by-step instructions to customize the ODK Importer configuration based on the ODK form fields to cater to the needs of the stake holders.
+This document provides step-by-step instructions to customise the ODK Importer configuration based on the ODK form fields to cater to the needs of the stakeholders.
 
-**Note**
+Note:
 
 Every ODK form must have its own ODK importer.
 
 ## Prerequisites
 
 * A user must have Administrator role to access ODK Central in OpenG2P systems.
-* A user must know the pyjq syntax to customize the value in the JSON Formatter fields.
+* A user must know the pyjq syntax to customise the value in the JSON Formatter fields.
 
 ## Procedure
 

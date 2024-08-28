@@ -1,4 +1,4 @@
-# G2P Registry:Membership
+# G2P Registry: Membership
 
 ### Module name
 
@@ -14,19 +14,19 @@ G2P Registry: Membership
 
 ### Functionality
 
-* **Efficient Membership Management:**
+* **Efficient Membership Management**
   * Allows users to associate individuals with specific groups effortlessly.
   * Provides a streamlined interface for managing and updating group memberships.
-* **Fine-grained Access Control:**
+* **Fine-grained Access Control**
   * Implements access control mechanisms defined in the "security/ir.model.access.csv" file.
   * Ensures that only authorized users can manage group memberships.
-* **Configurable Membership Rules:**
+* **Configurable Membership Rules**
   * Defines rules for group membership through the "security/registrant\_rule.xml" file.
   * Enables the customization of membership criteria based on specific requirements.
-* **User-friendly Interface:**
+* **User-friendly Interface**
   * Utilizes custom views such as "views/groups\_view.xml" and "views/individuals\_view.xml" for an enhanced user experience.
   * Introduces "views/group\_membership\_view.xml" for dedicated management of group memberships.
-* **Asynchronous Processing:**
+* **Asynchronous Processing**
   * Integrates with the "queue\_job" module for efficient and asynchronous processing of tasks.
   * Enhances the module's performance by leveraging background job execution.
 
@@ -38,7 +38,7 @@ NA
 
 **Dependencies**
 
-Module dependencies -&#x20;
+Module dependencies
 
 * base
 * mail
@@ -55,10 +55,8 @@ NA
 
 ### Configuration
 
-* Configure access control settings and registrant rules based on program requirements
+* Configure access control settings and registrant rules based on program requirements.
 * Utilize the provided views for managing group memberships efficiently.
-
-
 
 ### Source code
 

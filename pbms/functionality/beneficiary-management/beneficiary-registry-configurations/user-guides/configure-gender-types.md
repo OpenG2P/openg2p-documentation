@@ -23,36 +23,36 @@ This document provides instructions to configure gender types in the _**Benefici
 
 ## Procedure
 
-1. Click the main menu icon ![](../../../../../../.gitbook/assets/main-menu.png) and select _**Registry**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Registry**_.
 
-<figure><img src="../../../../../../.gitbook/assets/main-menu-registry.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/main-menu-registry.png" alt=""><figcaption></figcaption></figure>
 
 _**Registry**_ screen is displayed.
 
-<figure><img src="../../../../../../.gitbook/assets/registry.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/registry.png" alt=""><figcaption></figcaption></figure>
 
 2. Click the _**Configuration**_ in the menu bar and then select _**Gender Types**_.
 
-<figure><img src="../../../../../../.gitbook/assets/gender-config-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/gender-config-br.png" alt=""><figcaption></figcaption></figure>
 
 _**Gender Types**_ screen is displayed.
 
-<figure><img src="../../../../../../.gitbook/assets/gender-type-screen-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/gender-type-screen-br.png" alt=""><figcaption></figcaption></figure>
 
-3. Click the _**Create**_ button. It enables an empty field.\<image>
+3. Click the _**Create**_ button. It enables an empty field.
 
-<figure><img src="../../../../../../.gitbook/assets/gender-type-new-field-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/gender-type-new-field-br.png" alt=""><figcaption></figcaption></figure>
 
 For example, here, enter the Male in the _**Code**_ field and Male in the _**Value**_ field.
 
-<figure><img src="../../../../../../.gitbook/assets/gender-type-fill-field-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/gender-type-fill-field-br.png" alt=""><figcaption></figcaption></figure>
 
 4. Click the _**Save**_ button to save the gender types.
 5. Click the _**Discard**_ button to exit from the screen.
 
 The newly created gender types is added to the gender types list.
 
-<figure><img src="../../../../../../.gitbook/assets/gender-type-list-br.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/gender-type-list-br.png" alt=""><figcaption></figcaption></figure>
 
 8. Repeat the steps 3 and 4 to add the relevant gender types.
 

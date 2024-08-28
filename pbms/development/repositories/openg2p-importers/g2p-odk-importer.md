@@ -134,4 +134,4 @@ NA
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

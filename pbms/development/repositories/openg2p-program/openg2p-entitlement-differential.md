@@ -63,4 +63,4 @@ Access the module through the submenu: `Program -> Configuration -> Cash Entitle
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

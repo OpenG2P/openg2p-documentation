@@ -1,7 +1,5 @@
 # Automation Framework
 
-## Introduction
-
 ### Overview
 
 The purpose of data-driven testing with Selenium automation is to enhance the efficiency, effectiveness, and coverage of your testing efforts by systematically testing your application with multiple sets of input data.
@@ -184,12 +182,10 @@ Step 6: Execute Tests
 3. Ensure data validity by including boundary and edge cases.
 4. Consider versioning data for tracking changes over time.
 
-### Codebase maintenance 
+### Codebase maintenance
 
 ### Conclusion
 
 ### Summary
 
 ### Future improvements
-
-\

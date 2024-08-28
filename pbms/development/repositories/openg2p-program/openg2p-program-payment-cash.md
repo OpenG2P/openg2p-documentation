@@ -1,4 +1,4 @@
-# OpenG2P Program Payment Cash
+# OpenG2P Program Payment: Cash
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_payment\_cash
 
 ### Module title
 
-OpenG2P Program Payment : Cash
+OpenG2P Program Payment: Cash
 
 ### Technology base
 
@@ -26,8 +26,6 @@ Module Dependencies
 * g2p\_payment\_files
 
 ### Design notes
-
-*
 
 ### User interface
 

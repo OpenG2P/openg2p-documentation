@@ -15,8 +15,8 @@ Odoo
 ### Functionality
 
 * Developed for educational and demonstration purposes to illustrate how to extend the OpenG2P Registry REST API.
-* Showcases the integration of the "extendable-pydantic" and "pydantic" Python libraries.
-* Requires the "g2p\_registry\_rest\_api" module for leveraging and extending the existing REST API infrastructure.
+* Showcases the integration of the _**extendable-pydantic**_ and _**pydantic**_ Python libraries.
+* Requires the _**g2p\_registry\_rest\_api**_ module for leveraging and extending the existing REST API infrastructure.
 
 ### Design notes
 
@@ -32,7 +32,7 @@ Odoo
     * g2p\_registry\_rest\_api
 
 
-* External Python Dependencies -
+* External Python Dependencies
   * extendable-pydantic
   * pydantic==1.10.10
 
@@ -51,4 +51,4 @@ NA
 ### Installation
 
 * Ensure that the required modules and external Python dependencies are installed.
-* nstall the "G2P Registry: Rest API Extension Demo" module from the Odoo Apps interface.
+* Install the "G2P Registry: Rest API Extension Demo" module from the Odoo Apps interface.

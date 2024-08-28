@@ -1,4 +1,4 @@
-# OpenG2P Programs Autoenrol
+# OpenG2P Programs: Autoenrol
 
 ### Module name
 
@@ -17,9 +17,7 @@ Odoo
 The main functionality of this module is to automatically enroll registrant into program if the domain condition is satisfied.
 
 * Enable autoenrol for particular program with specific condition
-* Then all registrants who are eligible for that program are automatically enrolled into that program as per autoenrol condition.
-
-&#x20;&#x20;
+* Then all registrants who are eligible for that program are automatically enrolled into that program as per autoenrol condition. &#x20;
 
 ### Relationships with other entities
 
@@ -32,8 +30,6 @@ Module Dependencies
 * g2p\_programs
 
 ### Design notes
-
-*
 
 ### User interface
 

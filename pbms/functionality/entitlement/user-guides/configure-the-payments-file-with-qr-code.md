@@ -73,13 +73,14 @@ The fields and their descriptions are given below:
 | Qrcode Version       | Enter the Qrcode version, if required. It is an optional field.                                                                                                                                                                        |
 | Qrcode Error Correct | <p></p><p>Select the appropriate option from the drop-down. The available options are: </p><ul><li>ERROR_CORRECT_M </li><li>ERROR_CORRECT_L </li><li>ERROR_CORRECT_H</li><li> ERROR_CORRECT_Q</li></ul><p>It is an optional field.</p> |
 | Qrcode Box Size      | Enter the size of the Qrcode box. Default size is 10. It is an optional field.                                                                                                                                                         |
-| Qrcode Border        | Enter the number of border for the Qrcode. Default border count is 4. It is an optional field.                                                                                                                                         |
+| Qrcode Border        | Enter the number of border for the QR code. Default border count is 4. It is an optional field.                                                                                                                                        |
 
 Based on the requirement you can configure QR code with different data types.
 
-* Configure QR code with the data type - string
-* Configure QR code with the data type - JSON
-* Configure QR code with the data type - JWT
+* Configure QR code with the data types:&#x20;
+  * string
+  * JSON
+  * JWT
 
 {% tabs %}
 {% tab title="String" %}
@@ -152,4 +153,3 @@ In the html code, search for the image source and update the QR code name that m
 **Sample file with QR code**
 
 <figure><img src="../../../../.gitbook/assets/voucher.png" alt=""><figcaption></figcaption></figure>
-

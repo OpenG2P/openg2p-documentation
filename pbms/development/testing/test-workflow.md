@@ -1,7 +1,5 @@
 # Test Workflow
 
-
-
 ## Overview
 
 The "Test Workflow" automates the sanity test for every new push or pull on the specified branch and generates the report and deploys the report on GitHub pages. This workflow is designed to ensure a streamlined and consistent testing pipeline.  which further can be integrated with the build and deploy workflow to complete the CI/CD pipeline.&#x20;
@@ -42,7 +40,7 @@ The workflow performs the following key tasks:
 * Generates an Allure report for the test results.
 * Deploys the generated Allure report to GitHub Pages which can be accessed for result analysis.
 
-### How It Works
+### How it works
 
 The workflow is triggered in the following ways:
 

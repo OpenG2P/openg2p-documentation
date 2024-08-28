@@ -1,4 +1,4 @@
-# OpenG2P Program Assessment
+# OpenG2P Program: Assessment
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_program\_assessment
 
 ### Module title
 
-OpenG2P Program : assessment
+OpenG2P Program: assessment
 
 ### Technology base
 
@@ -40,12 +40,7 @@ Odoo
 1. **Notification System**: The module includes a notification system to inform users about assessment results, membership status changes, and other relevant updates.
 2. **Logging Mechanisms**: Extensive logging ensures that any changes, rejections, or failures in the assessment and entitlement processes are recorded for auditing and debugging purposes.
 
-\
-
-
 ### Design notes
-
-*
 
 ### Relationships with other entities
 
@@ -58,13 +53,9 @@ Module Dependencies
 * g2p\_program
 * mail
 
-User interface
-
-
+### User interface
 
 ### Configuration
-
-
 
 ### Source code
 

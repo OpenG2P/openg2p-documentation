@@ -47,9 +47,8 @@ By default, in the _**Program**_ field, you can find the selected program name.
 4. Enter the _**Description**_ of the program.
 5. Choose one of the \_**Target Type**\_s. The values are
 
-Group
-
-Individual
+* Group
+* Individual
 
 6. Click the _**Configuration**_ tab.
 
@@ -75,7 +74,7 @@ In _**Add: Eligibility Managers**_ screen, the features and their descriptions a
 
 <figure><img src="../../../../.gitbook/assets/add-eligibility-managers-1.png" alt=""><figcaption><p>Add: Eligibility Managers</p></figcaption></figure>
 
-The feature and their description is:
+The feature and its description is:
 
 <table><thead><tr><th width="211">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Manager</td><td><p>Select the Manager from the drop-down. The three available managers are:</p><ul><li>Default Eligibility</li><li>ID Document Eligibility</li><li>Phone Number Eligibility</li></ul></td></tr></tbody></table>
 
@@ -103,7 +102,7 @@ In the Create: Manager screen, the features and their descriptions are:
 
 9. Click the _**Save**_ button to save the data.
 10. Click the _**Discard**_ button to exit the screen.
-11. The added new Eligibility Manager is listed in the Configuration tab list.
+11. The added new Eligibility Manager is listed in the _**Configuration**_ tab list.
 
 <figure><img src="../../../../.gitbook/assets/eligibility-configuration-manager-list.png" alt=""><figcaption><p>List of Eligibility Managers</p></figcaption></figure>
 
@@ -111,7 +110,7 @@ In the Create: Manager screen, the features and their descriptions are:
 
 ### Configuration tab - List Eligibility Manager
 
-In the Add Eligibility Manager screen, you can find the list of Eligibility Manager.
+In the _**Add Eligibility Manager**_ screen, you can find the list of Eligibility Manager.
 
 <figure><img src="../../../../.gitbook/assets/eligibility-manager-list.png" alt=""><figcaption><p>Eligibility Manager list</p></figcaption></figure>
 
@@ -126,7 +125,7 @@ In the Add Eligibility Manager screen, you can find the list of Eligibility Mana
 
 ### Delete - Eligibility Manager
 
-In the Add Eligibility Manager, you can find the list of Eligibility Manager.
+In the _**Add Eligibility Managers**_ screen, you can find the list of Eligibility Manager.
 
 1. Check the required Manager in the list, it enables the _**Select, Action**_ button. It also shows the number of entries selected.
 

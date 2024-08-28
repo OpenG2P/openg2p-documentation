@@ -89,6 +89,6 @@ Following is a list of some of the other transformations available on the OpenSe
 <table><thead><tr><th width="210">Field name</th><th width="138">Field title</th><th>Description</th><th width="100">Default Value</th></tr></thead><tbody><tr><td>ts.order</td><td>Timestamp order</td><td>List of comma-separated fields to select output from. The output will be selected based on whichever field in the order is not null first. Nested fields are supported.</td><td></td></tr><tr><td>output.field</td><td>Output Field</td><td>Name of the output field into which the selected timestamp is put.</td><td><p></p><pre class="language-json"><code class="lang-json">@ts_generated
 </code></pre></td></tr></tbody></table>
 
-## Source Code
+## Source code
 
 [https://github.com/OpenG2P/openg2p-reporting/tree/develop/opensearch-kafka-connector](https://github.com/OpenG2P/openg2p-reporting/tree/develop/opensearch-kafka-connector)

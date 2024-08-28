@@ -1,7 +1,3 @@
----
-description: The title should have the exact module name, e.g. g2p_notifications_voucher
----
-
 # G2P Registry: Individual
 
 ### Module name
@@ -18,16 +14,16 @@ Odoo
 
 ### Functionality
 
-* **Create and Manage Individual Records:**
+* **Create and Manage Individual Records**
   * Users can create detailed records for individuals participating in G2P programs.
   * Efficiently manage and update individual information through customizable forms.
-* **Access Control:**
+* **Access Control**
   * Implements fine-grained access control using the "security/ir.model.access.csv" file.
   * Defines specific access rules to safeguard individual records and related data.
-* **Tailored User Interface:**
+* **Tailored User Interface**
   * Utilizes the "views/individuals\_view.xml" file to provide custom views for displaying individual records.
   * Enhances the user interface for a more intuitive and streamlined experience.
-* **Representation of Gender Information:**
+* **Representation of Gender Information**
   * Introduces specialized views for managing gender-related information.
   * Improves the visualization and management of gender-specific data.
 
@@ -62,7 +58,3 @@ Odoo
 
 * Ensure that the module dependencies ("base," "mail," "contacts," "g2p\_registry\_base") are installed.
 * Install the "G2P Registry: Individual" module from the Odoo Apps interface.
-
-
-
-###

@@ -18,11 +18,11 @@ The "OpenG2P Program: Documents" module enhances the document management capabil
 
 #### Key Features
 
-1. **Association with Program Memberships:**
+1. **Association with Program Memberships**
    * Documents can be associated with specific program memberships.
-2. **Association with Entitlements:**
+2. **Association with Entitlements**
    * Supports the association of documents with entitlements.
-3. **Preview Functionality:**
+3. **Preview Functionality**
    * The module introduces a preview feature for documents.
 
 ### Design notes
@@ -61,4 +61,4 @@ NA
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

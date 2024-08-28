@@ -1,4 +1,4 @@
-# G2P Program Payment Manager: Payment Interoperability Layer
+# G2P Program Payment (Payment Interoperability Layer)
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_payment\_interop\_layer
 
 ### Module title
 
-G2P Program Payment Manager: Payment Interoperability Layer
+G2P Program Payment (Payment Interoperability Layer)
 
 ### Technology base
 
@@ -49,11 +49,11 @@ Menu Added
 
 To configure the Payment Interoperability Layer module with the specified settings, please follow the given instructions:
 
-1. **Payment Endpoint URL:**
+1. **Payment Endpoint URL**
    * Open the Payment Interoperability Layer module configuration.
    * Locate the "Payment Endpoint URL" field.
    * Update the field with the desired Payment Endpoint URL.
-2. **Payee ID Field:**
+2. **Payee ID Field**
    * Within the Payment Interoperability Layer module configuration, find the "Payee ID Field."
    * Modify the configuration to set the Payee ID field as required.
 
@@ -67,4 +67,4 @@ NA
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

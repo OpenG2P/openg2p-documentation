@@ -14,7 +14,7 @@ layout:
 
 # 📔 Create ID Document Eligibility Manager
 
-This guide provides the step-by-step instructions to create a ID Document Eligibility Manager
+This guide provides the step-by-step instructions to create a ID Document Eligibility Manager.
 
 ## Prerequisites
 

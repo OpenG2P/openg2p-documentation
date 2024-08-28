@@ -59,7 +59,7 @@ Current Modes of Authentication
 3. How will the privacy of data handled at rest and in flight?
 4. Any encryption required&#x20;
 
-### Required Features
+### Required features
 
 * Notifying User
 * Frequency of authentication- 2 or 6 months (configurable)
@@ -107,6 +107,6 @@ Scalability - how do we handle scale?
 5. Git Branch name
 6. Task breakdown (pointer to Jira)
 
-### Solution - Long Term
+### Solution - long term
 
 Odoo-based system might not scale. Hence develop and separate Portal (API + UI) which handles agents login and facilitates, beneficiary authentication.

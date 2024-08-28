@@ -1,4 +1,4 @@
-# G2P Registry: Group
+# G2P Registry: Groups
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_registry\_group
 
 ### Module title
 
-G2P Registry: Group
+G2P Registry: Groups
 
 ### Technology base
 
@@ -40,14 +40,12 @@ NA
 
 **Dependencies**
 
-Module dependencies -&#x20;
+Module dependencies&#x20;
 
 * base
 * mail
 * contacts
-*   g2p\_registry\_base
-
-
+* g2p\_registry\_base
 
 ### User interface
 

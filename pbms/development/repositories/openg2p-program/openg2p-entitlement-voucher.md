@@ -1,4 +1,4 @@
-# OpenG2P Entitlement Voucher
+# OpenG2P Entitlement: Voucher
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_entitlement\_voucher
 
 ### Module title
 
-OpenG2P Entitlement Voucher
+OpenG2P Entitlement: Voucher
 
 ### Technology base
 
@@ -19,8 +19,6 @@ Odoo
 * Enhanced management of entitlements with a focus on voucher-related processes.
 
 ### Design notes
-
-*
 
 ### Relationships with other entities
 
@@ -50,11 +48,11 @@ To utilize voucher functionality, configure the entitlement manager under the pr
 
 Once the entitlement is prepared and approved, the following options become available:
 
-* **Generate Voucher Button:**
+* **Generate Voucher Button**
   * Configuration-Dependent: The availability of this button depends on the auto-generation setting in the entitlement manager configuration.
   * Auto-Generation: If configured to auto-generate vouchers, the voucher is automatically generated upon approval.
   * Manual Generation: If configured for manual generation, click this button to initiate voucher creation.
-* **Print Voucher Button:**
+* **Print Voucher Button**
   * Appears after the voucher is generated.
   * Click to print the voucher document.
 

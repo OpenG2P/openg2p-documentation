@@ -21,7 +21,7 @@ This document provides instructions to add an in-kind product to the Inventory m
 * The user must have access to OpenG2P systems.
 * The user must have Program Manager role.
 
-## Procedures
+## Procedure
 
 1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Inventory**_.
 

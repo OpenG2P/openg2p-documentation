@@ -1,4 +1,4 @@
-# OpenG2P Program Registrant Info
+# G2P Program: Registrant Info
 
 ### Module name
 
@@ -6,7 +6,7 @@ g2p\_program\_registrant\_info
 
 ### Module title
 
-OpenG2P Program : Registrant Info
+G2P Program: Registrant Info
 
 ### Technology base
 
@@ -28,8 +28,6 @@ Module Dependencies
 
 ### Design notes
 
-*
-
 ### User interface
 
 Program ->  Application Info
@@ -48,4 +46,4 @@ No specific configuration is required for this module.&#x20;
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

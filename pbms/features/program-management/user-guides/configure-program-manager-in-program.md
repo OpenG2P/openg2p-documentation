@@ -13,7 +13,7 @@ layout:
     visible: true
 ---
 
-# 📔 Configure Program Manager under Program
+# 📔 Create Program Manager for a Program
 
 ## Description
 
@@ -33,11 +33,11 @@ The user must have the Program Administrator role.
 
 <figure><img src="../../../../.gitbook/assets/all-program-multiapproval (8).PNG" alt=""><figcaption></figcaption></figure>
 
-3. Click on the _Configuration_ section on the program detailed view page.
+3. Click on the _**Configuration**_ section on the program detailed view page.
 
 <figure><img src="../../../../.gitbook/assets/configure-entitlement-voucher-configuration (4).png" alt=""><figcaption></figcaption></figure>
 
-4. Click on the _Add a line_ in the _Program Managers_ section.
+4. Click on the _**Add a line**_ in the _Program Managers_ section.
 
 <figure><img src="../../../../.gitbook/assets/program-manager-addline (5).png" alt=""><figcaption></figcaption></figure>
 

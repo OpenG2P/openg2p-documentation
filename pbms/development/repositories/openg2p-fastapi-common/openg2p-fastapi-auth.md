@@ -4,7 +4,7 @@
 
 This is a Python package that provides additional support, particularly Authentication and Authorization, to the [OpenG2P FastAPI Common](openg2p-fastapi-common.md) Library. This page describes different concepts within the library and instructions on how to use it.
 
-## Technical Concepts
+## Technical concepts
 
 This package/library contains API Authentication and Authorization helpers for Rest API Services that are bootstrapped by the [OpenG2P FastAPI Common](openg2p-fastapi-common.md) Library. Details:
 
@@ -28,7 +28,7 @@ This section describes instructions for installing the package. Primarily intend
     pip install -e <path-to-cloned-common-repo>/openg2p-fastapi-auth
     ```
 
-## Usage Guide
+## Usage guide
 
 This section describes instructions for using the package/library. Primarily intended for developers using this module to build their own projects.
 
@@ -38,6 +38,6 @@ TODO
 
 TODO
 
-## Source Code
+## Source code
 
 * OpenG2P FastAPI Common Module Source Code - [https://github.com/OpenG2P/openg2p-fastapi-common/tree/develop/openg2p-fastapi-auth](https://github.com/OpenG2P/openg2p-fastapi-common/tree/develop/openg2p-fastapi-auth)

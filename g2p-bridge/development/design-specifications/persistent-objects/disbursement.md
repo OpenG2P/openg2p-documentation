@@ -66,10 +66,9 @@ Persist in the following tables
 
 <mark style="color:blue;">Transaction Control - should be ALL or NONE, i.e. either everything should be inserted or none should be inserted.</mark>
 
-#### Validations & Exceptions
+#### Validations & exceptions
 
 1. Ideally, disbursements should arrive before disbursement\_schedule\_date. However, system will not check this condition. System will anyway process an envelope, only when all the disbursements have arrived.
 2. disbursement\_amount - valid non zero number
 3. the total number of disbursements should not exceed the number specified in the envelope
 4. the total\_disbursement\_amount should not exceed the number specified in the envelope
-

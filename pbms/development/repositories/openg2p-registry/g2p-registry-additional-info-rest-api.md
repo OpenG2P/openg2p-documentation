@@ -16,8 +16,8 @@ Odoo
 
 * Establishes a dedicated REST API for handling additional information within the OpenG2P Registry.
 * Enables external applications to interact with and update additional information for registrants.
-* Relies on the "g2p\_registry\_rest\_api" module for REST API infrastructure.
-* Integrates with the "g2p\_registry\_addl\_info" module for core additional information functionalities.
+* Relies on the _**g2p\_registry\_rest\_api**_ module for REST API infrastructure.
+* Integrates with the _**g2p\_registry\_addl\_info**_ module for core additional information functionalities.
 
 ### Design notes
 

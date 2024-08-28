@@ -10,18 +10,18 @@ Initially, a voucher entitlement is generated for the individual or group. This 
 
 ### Functions
 
-* Configure e-Voucher Manger: This feature allows administrators to set up and configure the e-voucher management system according to the program's requirements.
-* Generate Voucher Entitlement: Enables the generation of e-voucher entitlements for individuals or groups eligible for benefits.
-* Distribute e-Vouchers: Facilitates the distribution of e-vouchers to beneficiaries, ensuring they receive their entitlements promptly.
-* Scan e-Voucher: The service provider uses an ID verification app to scan the e-voucher, confirming the entitlement and enabling the provision of benefits.
-* Provide Benefits: After scanning the e-voucher, the service provider provides the benefits to the individual, ensuring they receive the intended support.
-* Reimbursement: The service provider is later reimbursed for the benefits provided, based on the services granted and in compliance with program guidelines.
+* **Configure e-Voucher Manager:** This feature allows administrators to set up and configure the e-voucher management system according to the program's requirements.
+* **Generate Voucher Entitlement:** Enables the generation of e-voucher entitlements for individuals or groups eligible for benefits.
+* **Distribute e-Vouchers:** Facilitates the distribution of e-Vouchers to beneficiaries, ensuring they receive their entitlements promptly.
+* **Scan e-Voucher:** The service provider uses an ID verification app to scan the e-voucher, confirming the entitlement and enabling the provision of benefits.
+* **Provide Benefits:** After scanning the e-voucher, the service provider provides the benefits to the individual, ensuring they receive the intended support.
+* **Reimbursement:** The service provider is later reimbursed for the benefits provided, based on the services granted and in compliance with program guidelines.
 
 ## Voucher verification app
 
 The Smart Scanner app is a useful tool for scanning QR codes and managing voucher codes on your Android mobile device. This app is particularly useful for individuals or groups that need to process vouchers to avail themselves of the benefits.
 
-### **Key features:**
+### **Key features**
 
 * **QR Code Scanning:** Smart Scanner allows users to scan QR codes quickly and accurately using their device's camera. This feature is essential for accessing information or redeeming vouchers linked to QR codes.
 * **Voucher Code Management:** Users can manage voucher codes efficiently within the app. This includes generating new codes, organizing codes into categories, and tracking the redemption status of each code.

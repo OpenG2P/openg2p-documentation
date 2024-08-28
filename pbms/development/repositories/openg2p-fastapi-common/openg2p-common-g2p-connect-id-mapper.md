@@ -4,7 +4,7 @@
 
 TODO
 
-## Technical Concepts
+## Technical concepts
 
 TODO
 
@@ -12,7 +12,7 @@ TODO
 
 TODO
 
-## Usage Guide
+## Usage guide
 
 TODO
 
@@ -20,6 +20,6 @@ TODO
 
 TODO
 
-## Source Code
+## Source code
 
 TODO

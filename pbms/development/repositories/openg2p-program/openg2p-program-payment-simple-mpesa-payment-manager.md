@@ -1,4 +1,4 @@
-# OpenG2P Program Payment Simple Mpesa Payment Manager
+# OpenG2P Program Payment: Simple Mpesa Payment Manager
 
 ### Module name
 
@@ -32,8 +32,6 @@ Odoo
 
 ### &#x20;Design notes
 
-*
-
 ### User interface
 
 **menu** -> configuration -> Simple Mpesa Payment Managers
@@ -56,4 +54,4 @@ program -> configuration -> payment manager -> Simple Mpesa Payment Manager
 
 ### Installation
 
-Standard odoo package installation
+Standard Odoo package installation

@@ -14,20 +14,20 @@ odoo
 
 ### Functionality
 
-* Generates MOSIP token against the OpenG2P registry by calling [MTS](broken-reference).
-* Uses `callback` delivery type of MTS
-* Completely asynchronous execution
-* OpenG2P can schedule a daily job to fetch the delta for the day
-* A manual import feature will also be provided
-* Removes VID if MOSIP Auth Token is generated
+* Generates MOSIP token against the OpenG2P registry by calling [MTS](https://docs.mosip.io/1.2.0/integrations/mosip-token-seeder).
+* Uses `callback` delivery type of MTS.
+* Completely asynchronous execution.
+* OpenG2P can schedule a daily job to fetch the delta for the day.
+* A manual import feature will also be provided.
+* Removes VID if MOSIP Auth Token is generated.
 
 ### Design notes
 
-## NA
+NA
 
 ### Dependencies
 
-module dependencies:
+Module dependencies:
 
 * mts\_connector
 * g2p\_registry\_individual
@@ -43,11 +43,11 @@ module dependencies:
 
 In OpenG2P, the user can configure for following fields to setup an interface with MTS through OMC.
 
-**Name**: A string to identify the connector
+**Name**: A string to identify the connector.
 
-**URL to reach MTS**: URL for MTS API
+**URL to reach MTS**: URL for MTS API.
 
-**MTS Input type**: OMC option could be proceeded by selecting "_OpenG2P Registry_".
+**MTS Input type**: OMC option could be proceeded by selecting _**OpenG2P Registry**_.
 
 **Mapping**: MTS Field mapping as required by the API. Please refer MTS Documentation. Format of Mapping would be JSON.
 
@@ -55,11 +55,11 @@ In OpenG2P, the user can configure for following fields to setup an interface wi
 
 **Output Format**: Output format is a [JQ ](https://stedolan.github.io/jq/)string which will be used by MTS to format its output to suite the caller's requirement.
 
-**Delivery Type**: Currently supporting only "Callback". Callback feature can be used to make MTS do a submission of results onto an API within Odoo. The output formatting will help in making the desired input for the api.
+**Delivery Type**: Currently supporting only _**Callback**_. Callback feature can be used to make MTS do a submission of results onto an API within Odoo. The output formatting will help in making the desired input for the api.
 
 **Job Type**: MTS-C provide both recurring and one time execution. Recurring can be configured to do continuous pull from the ODK over MTS.
 
-**MOSIP Language**: Mosip language setup. Default is "_eng_".
+**MOSIP Language**: Mosip language setup. Default is _**eng**_.
 
 **Interval in minutes**: Interval at which the MTS-C job runs.
 
@@ -77,9 +77,9 @@ In OpenG2P, the user can configure for following fields to setup an interface wi
 
 **Callback Auth Database**: DB instance used by Odoo.
 
-**Callback auth username**: Username to access callback api
+**Callback auth username**: Username to access callback api.
 
-**Callback auth password**: Password to access callback api
+**Callback auth password**: Password to access callback api.
 
 ### Source code
 
