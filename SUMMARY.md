@@ -111,7 +111,7 @@
       * [RBAC](pbms/features/administration/role-based-access-control/README.md)
         * [📔 User Guides](pbms/features/administration/role-based-access-control/user-guides/README.md)
           * [📔 Create User and Assign Role](pbms/features/administration/role-based-access-control/user-guides/assign-roles-to-users.md)
-          * [Configure Keycloak Authentication Provider for User login](pbms/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-login.md)
+          * [📔 Configure Keycloak Authentication Provider for User login](pbms/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-login.md)
       * [i18n](pbms/features/administration/internationalization-i18n.md)
     * [ODK Importer](pbms/features/odk-importer/README.md)
       * [📔 User Guides](pbms/features/odk-importer/user-guides/README.md)

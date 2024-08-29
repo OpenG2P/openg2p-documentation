@@ -53,11 +53,11 @@ The excel below describes all the OpenG2P pre-configured groups and their access
 
 The administrators can also create custom groups from scratch or inherit from pre-defined groups. Inheriting from an existing group is the most effective way to create new groups as menus, views and access rights from the existing groups need not be redefined. After inheriting from existing groups, system administrators can add custom menus, views and access rights.
 
-\<image to be incorporated>
+<figure><img src="../../../../.gitbook/assets/inherited-groups.PNG" alt=""><figcaption></figcaption></figure>
 
 The figure below shows the access rights for a group (role) that requires access to payment accounts.
 
-\<image to be incorporated>
+<figure><img src="../../../../.gitbook/assets/rbac-access-rights.PNG" alt=""><figcaption></figcaption></figure>
 
 ## Related user guides
 

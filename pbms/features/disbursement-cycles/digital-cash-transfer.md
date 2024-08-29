@@ -27,7 +27,7 @@ Expansion of social protection programs from 2020 onwards
   * 1.1% of GDP in low-income countries vs. 16.4% in high-income countries
 {% endhint %}
 
-OpenG2P platform implements both these functions to provide ease of payment administration and a human-centric approach to benefit disbursements. The platform's Payments module consists of several functions to efficiently execute digital and mobile payments to the beneficiaries and report the status. Payments are generally executed in [cycles](https://github.com/OpenG2P/openg2p-documentation/blob/1.2/eligibility-and-enrolment/broken-reference/README.md) and [batches](broken-reference).
+OpenG2P platform implements both these functions to provide ease of payment administration and a human-centric approach to benefit disbursements. The platform's Payments module consists of several functions to efficiently execute digital and mobile payments to the beneficiaries and report the status. Payments are generally executed in [cycles](https://github.com/OpenG2P/openg2p-documentation/blob/1.2/eligibility-and-enrolment/broken-reference/README.md) and [batches](../../functionality/disbursement-cycles/payment-batches.md).
 
 OpenG2P platform can be used to disburse payments for various use cases:
 
@@ -37,6 +37,6 @@ OpenG2P platform can be used to disburse payments for various use cases:
 * Child allowances
 * School financing
 
-As technology demonstrations, OpenG2P offers payment connectors for [Mojaloop](https://mojaloop.io/) and[ Mifos Payment Hub](https://payments.mifos.org/) with the flexibility to create custom connectors specific to the [payment rails](broken-reference) of a country.
+As technology demonstrations, OpenG2P offers payment connectors for [Mojaloop](https://mojaloop.io/) and[Mifos Payment Hub](https://payments.mifos.org/) with the flexibility to create custom connectors specific to the [payment rails](broken-reference) of a country.
 
 \<demo to be incorporated>

@@ -84,4 +84,6 @@ Link the US on the SSP\
 
 {% embed url="https://openg2p.atlassian.net/jira/software/c/projects/G2P/issues/?filter=allissues&jql=project+=+%22G2P%22+and+type+=+Story+and+parent+=+G2P-1156+ORDER+BY+created+DESC" %}
 
-\<image and demo video to be integrated>
+## Registration demo
+
+{% embed url="https://youtu.be/DZweP3qKkn8" %}

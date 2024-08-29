@@ -1,4 +1,4 @@
-# Configure Keycloak Authentication Provider for User login
+# 📔 Configure Keycloak Authentication Provider for User login
 
 1. Create a Keycloak client for PBMS/SR as given in [Keycloak Client Creation](../../../../../deployment/deployment-guide/keycloak-client-creation.md) guide.
 2. Install the [OIDC Authentication Base](../../../../development/odoo-modules/authentication-oidc-base.md) module.&#x20;
