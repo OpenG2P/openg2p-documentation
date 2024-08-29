@@ -28,7 +28,7 @@ Charts may be found here:
 
 ## Published repository
 
-All charts are published to this public website: [https://openg2p.github.io/openg2p-helm](https://openg2p.github.io/openg2p-helm). This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-deployment/blob/main/.github/workflows/push\_trigger.yml).
+All charts are published to this public website: https://openg2p.github.io/openg2p-helm. This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-deployment/blob/main/.github/workflows/push\_trigger.yml).
 
 Charts may be published manually with the procedure given below:
 
