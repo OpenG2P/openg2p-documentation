@@ -18,6 +18,11 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     ```bash
     sudo rm /etc/nginx/sites-enabled/default
     ```
+*   Set `client_max_body_size` to `50m` :
+
+    ```bash
+    client_max_body_size 50m;
+    ```
 *   Restart nginx.
 
     ```bash

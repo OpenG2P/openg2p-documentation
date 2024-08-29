@@ -93,7 +93,9 @@ Make sure any test or stray data in Postgres, OpenSearch or any other persistenc
 
 ## Nginx
 
-You may need to set Nginx load balancers in HA mode by having a Nginx cluster (available with Nginx Plus, but it comes with commercial terms).  HA for Nginx is critical if user-facing portal traffic lands on the same.  For back-office administration tasks, HA may not be critical.
+You may need to set Nginx load balancers in HA mode by having a Nginx cluster (available with Nginx Plus, but it comes with commercial terms). HA for Nginx is critical if user-facing portal traffic lands on the same.  For back-office administration tasks, HA may not be critical.
+
+You must adjust the max request body size according to the number of files/data being uploaded. The general limit is set at 50MiB per request. This can updated by modifying the `client_max_body_size` parameter in nginx.conf.
 
 ## OpenSearch
 
