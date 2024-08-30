@@ -1,51 +1,36 @@
-# Authentication OIDC: Base
+# OpenID Connect Authentication
 
 ### Module name
 
 g2p\_auth\_oidc
 
-### Description
+### Module title
 
-* This module lets users log in to Odoo using external [OIDC](https://openid.net/specs/openid-connect-core-1\_0.html) authentication providers.
-* This module inherits from the Odoo [OAuth2 Authentication](https://github.com/odoo/odoo/tree/17.0/addons/auth\_oauth) module and adds support for OIDC flows and additional features described here.
-* This module is a general-purpose Odoo module, not tied to any other G2P modules.
+OpenID Connect Authentication
+
+### Technology base
+
+[Odoo](https://www.odoo.com/)
+
+### Functionality
+
+The functionality of OpenID Connect (OIDC) Authentication module is&#x20;
+
+* It allows users log in to Odoo using external [OIDC](https://openid.net/specs/openid-connect-core-1\_0.html) authentication providers.
+* It inherits from the Odoo [OAuth2 Authentication](https://github.com/odoo/odoo/tree/17.0/addons/auth\_oauth) module and adds support for OIDC flows and additional features described here.
+* It is a general-purpose Odoo module, not tied to any other G2P modules.
 
 ### Alternatives
 
-OCA offers an [OIDC Authentication](https://github.com/OCA/server-auth/tree/17.0/auth\_oidc) module that provides functionality similar to this but doesn't contain all of the features described here. This module is not related to the OCA module. This module is also NOT compatible (not supposed to be used together) with the OCA module.
+OCA (Odoo Community Association) offers an [OIDC Authentication](https://github.com/OCA/server-auth/tree/17.0/auth\_oidc) module that provides functionality similar to this but doesn't contain all of the features described here. This module is not related to the OCA module. This module is also NOT compatible (not supposed to be used together) with the OCA module.
 
 ### Features
 
-* OIDC Flows:
-  * Supports Auth Code flow and Implicit flow.
-* Supports Access token and ID token validation
-* [Client Authentication](https://openid.net/specs/openid-connect-core-1\_0.html#ClientAuthentication):
-  * Supports client\_secret\_post, client\_secret\_basic, private\_key\_jwt.
-  * If using private\_key\_jwt, allows overriding Audience claim in client Assertion JWT, otherwise defaults to Token Endpoint. (Helps during testing and development)
-* [Userinfo responses](https://openid.net/specs/openid-connect-core-1\_0.html#UserInfoResponse):
-  * Userinfo response content-types supported:&#x20;
-    * "application/json"
-    * "application/jwt" - TODO perform signature validation
-  * Supports mapping of Userinfo Response to fields of Odoo `res.user` (same as `res.partner`) table.
-* Signup handling (If the user that logged in through the auth provider is not already present in Odoo, how are such users handled):
-  * Modes of Signup configurable:
-    * Always allow signups through this auth provider.
-    * Follow the system default signup settings. (This usually involves enabling signup at the system level and configuring a template for new users to be created. Part of [auth\_signup](https://github.com/odoo/odoo/tree/17.0/addons/auth\_signup) Odoo base module. TODO: Update docs.)
-    * Do not allow signups through this auth provider at all.
-  * If user signups are always allowed for an auth provider, allow configuring default groups to be assigned to the new user.
-* Sync groups from the Authentication Provider with groups of the Odoo user.
-  * Supports groups sync on:
-    * every login
-    * only when user groups are reset
-    * never
-  * Matches Odoo user groups with the same name as the group from the auth provider.
-* Supports update of Odoo user data with auth provider Userinfo, on login, when reset is requested.
-* Allows provision for showing an Icon for the auth provider on the login page.
-* Supports passing additional parameters to Authorize Endpoint. Allows to configure additional parameters as JSON.
+<table><thead><tr><th width="219">Feature</th><th>Descripton</th></tr></thead><tbody><tr><td>OIDC Flows</td><td>Supports Auth Code flow and Implicit flow</td></tr><tr><td>Tokenisation</td><td>Supports Access token and ID token validation</td></tr><tr><td><a href="https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication">Client Authentication</a></td><td><ul><li>Supports client_secret_post, client_secret_basic, private_key_jwt.</li><li>If using private_key_jwt, allows overriding Audience claim in client Assertion JWT, otherwise defaults to Token Endpoint. (Helps during testing and development)</li></ul></td></tr><tr><td><a href="https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse">Userinfo Responses</a></td><td><ul><li><p>Userinfo response content-types supported: </p><ul><li>"application/json"</li><li>"application/jwt" - TODO perform signature validation</li></ul></li><li>Supports mapping of Userinfo Response to fields of Odoo <code>res.user</code> (same as <code>res.partner</code>) table.</li></ul></td></tr><tr><td>Signup Handling</td><td><p>The mechanism involved in handling the users who logged in through the auth provider is not already present in Odoo.-</p><ul><li><p>Modes of Signup configurable:</p><ul><li>Always allow signups through this auth provider.</li><li>Follow the system default signup settings. (This usually involves enabling signup at the system level and configuring a template for new users to be created. Part of <a href="https://github.com/odoo/odoo/tree/17.0/addons/auth_signup">auth_signup</a> Odoo base module. TODO: Update docs.)</li><li>Do not allow signups through this auth provider at all.</li></ul></li><li>If user signups are always allowed for an auth provider, allow configuring default groups to be assigned to the new user.</li></ul></td></tr><tr><td>Group Synchronisation</td><td><p>Sync groups from the Authentication Provider with groups of the Odoo user.</p><ul><li><p>Supports groups sync on:</p><ul><li>every login</li><li>only when user groups are reset</li><li>never</li></ul></li><li>Matches Odoo user groups with the same name as the group from the auth provider.</li></ul></td></tr><tr><td>User Data Update</td><td>Supports update of Odoo user data with auth provider Userinfo, on login, when reset is requested.</td></tr><tr><td>An Icon on Login Page</td><td>Allows provision for showing an Icon for the auth provider on the login page.</td></tr><tr><td>Additional Parameters</td><td>Supports passing additional parameters to Authorize Endpoint. Allows to configure additional parameters as JSON.</td></tr></tbody></table>
 
 ### Guides
 
-* [Configure Keycloak Auth Provider for User Login](../../functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-login.md)
+To learn more on _**Configure Keycloak Auth Provider for User Login**_, click [here](https://docs.openg2p.org/pbms/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-login).
 
 ### Configuration
 

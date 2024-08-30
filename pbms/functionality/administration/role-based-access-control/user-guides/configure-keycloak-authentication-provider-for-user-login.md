@@ -1,7 +1,7 @@
 # 📔 Configure Keycloak Authentication Provider for User login
 
 1. Create a Keycloak client for PBMS/SR as given in [Keycloak Client Creation](../../../../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-2. Install the [OIDC Authentication Base](../../../../development/odoo-modules/authentication-oidc-base.md) module.&#x20;
+2. Install the [OpenID Connect Authentication](../../../../development/odoo-modules/openid-connect-authentication.md) module.&#x20;
 3. Create a new OAuth Provider in Odoo with the following values: (OAuth providers can be created from Odoo Settings (debug mode) -> Users & Companies -> OAuth Providers, or Odoo Settings -> General Settings -> Search for OAuth -> OAuth Providers)
    1. Provider name: Keycloak for PBMS Login
    2. Auth Flow: OIDC Authorization Code flow

@@ -4,7 +4,7 @@
    1. Create a public key private key JWKS pair and use the public key JWK during eSignet client creation and keep the private key JWK.
    2. Allowed redirect uris of the client should contain `https://socialregistry.your.org/auth_oauth/g2p_registry_id/confirm` .
 2. Create two ID Types on the Registry: `NATIONAL ID` and `NATIONAL ID TOKEN`.
-3. Install the [Authentication OIDC: Base](../../../development/odoo-modules/authentication-oidc-base.md), and [Authentication OIDC: Reg ID](../../../development/odoo-modules/authentication-oidc-reg-id.md) module.
+3. Install the [Authentication OIDC: Base](../../../development/odoo-modules/openid-connect-authentication.md), and [Authentication OIDC: Reg ID](../../../development/odoo-modules/authentication-oidc-reg-id.md) module.
 4. Create a new OAuth Provider in Odoo with the following values: (OAuth providers can be created from Odoo Settings (debug mode) -> Users & Companies -> OAuth Providers, or Odoo Settings -> General Settings -> Search for OAuth -> OAuth Providers)
    1. Provider name: eSignet for ID Auth
    2. Auth Flow: OIDC Authorization Code flow
