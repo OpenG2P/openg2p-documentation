@@ -82,14 +82,14 @@ Each `$` in the json file will be treated as an environment variable. Environmen
             "connection.password": "${OPENSEARCH_PASSWORD}",
             "tasks.max": "1",
             "topics": "${DB_PREFIX_INDEX}.public.res_partner",
-            "key.ignore": "false",
+            "key.ignore": "true",
             "schema.ignore": "true",
             "key.converter": "org.apache.kafka.connect.json.JsonConverter",
             "value.converter": "org.apache.kafka.connect.json.JsonConverter",
             "key.converter.schemas.enable": "true",
             "value.converter.schemas.enable": "false",
 
-            "behavior.on.null.values": "delete",
+            "behavior.on.null.values": "ignore",
             "behavior.on.malformed.documents": "warn",
             "behavior.on.version.conflict": "warn",
 
@@ -115,7 +115,8 @@ Each `$` in the json file will be treated as an environment variable. Environmen
     ```json
     "topics": "${DB_PREFIX_INDEX}.public.g2p_program",
     ```
-* Setting `key.ignore` to true will make every change to an entry get indexed as a new entry in OpenSearch. This will be useful when trying to store the history of changes.
+* To stop capturing changes to records and to maintain only the the latest data of a record on OpenSearch, set `key.ignore` to false. With this config, whenever there is a change to a record on the registry, the same change will be applied to the data on OpenSearch (rather than creating a new entry for the change.).
+  * Also if you want the data to get deleted from OpenSearch, when the record is deleted on the Registry, set `behavior.on.null.values` to `delete`.
 * After the base file is configured, you can now add transformations to your connector at the end of the file (denoted by `...` in the above example). Each transformation (SMT) will apply some change to the data or a particular field from the table, before pushing the entry to OpenSearch.
 * Add the following transformations to your connector based on the data available in the table.
   *   For every Datetime field / Date field in the table add the following transform.

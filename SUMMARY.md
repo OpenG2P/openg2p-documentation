@@ -263,7 +263,7 @@
       * [Fayda ID Integration](social-registry/development/upcoming-features/fayda-id-integration.md)
       * [Verifiable Credentials Issuance](social-registry/development/upcoming-features/verifiable-credentials-issuance.md)
       * [Benefit Targeting Methods](social-registry/development/upcoming-features/score-computation.md)
-      * [Record Change History](social-registry/development/upcoming-features/change-log.md)
+      * [Record Revision History](social-registry/development/upcoming-features/record-revision-history.md)
       * [Domain Specific Registries](social-registry/development/upcoming-features/domain-specific-registries.md)
       * [Single Sign-On](social-registry/development/upcoming-features/single-sign-on.md)
       * [Tokenisation](social-registry/development/upcoming-features/tokenisation.md)
