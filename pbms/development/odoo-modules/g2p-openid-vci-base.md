@@ -27,7 +27,7 @@ G2P OpenID VCI: Base
 
 [Odoo](https://www.odoo.com/)
 
-This repository contains an Odoo module that helps PBMS/Registry to issue [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) (VC). It provides default VC templates for Registry and PBMS and adds [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1\_0.html) APIs to Social Registry and PBMS.
+This repository contains an Odoo module that helps PBMS/Social Registry (SR) to issue [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) (VC). It provides default VC templates for SR and PBMS and adds [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1\_0.html) APIs to SR and PBMS.
 
 ### Functionality
 
