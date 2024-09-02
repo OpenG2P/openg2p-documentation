@@ -27,7 +27,7 @@ A version of any artifact (like a Helm chart, docker, git repository etc.)  is c
 A 3 digit version is deemed frozen if it does not have any other suffixes like -`develop` or `-alpha` etc. Conversely, any version which is not 3 digit or has a suffix, cannot be considered a frozen version -- the version may have parts that are moving. &#x20;
 
 {% hint style="warning" %}
-EXCEPTION: In case of Odoo modules that have versions mentioned in the `__mainfest.py__` file, a version like `17.0.1.2.0` **cannot** be considered frozen due to high effort required in updating these versions for every tag. Instead, it is understood that version `17.0.1.2` is pertaining to branch `17.0-1.2` but may not be frozen.
+EXCEPTION: In case of Odoo modules that have versions mentioned in the `__mainfest.py__` file (that appear on Odoo UI while installing the module), a version like `17.0.1.2.0` **cannot** be considered frozen due to high effort required in updating these versions for every tag. Instead, it is understood that version `17.0.1.2.0` is pertaining to branch `17.0-1.2` but may not be frozen.
 {% endhint %}
 
 Here are some examples to illustrate the same:
