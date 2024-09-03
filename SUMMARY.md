@@ -173,7 +173,6 @@
       * [OpenG2P Program Payment: G2P Connect Payment Manager](pbms/development/repositories/openg2p-program/openg2p-program-payment-g2p-connect-payment-manager.md)
       * [OpenG2P Programs: Autoenrol](pbms/development/repositories/openg2p-program/openg2p-programs-autoenrol.md)
       * [G2P ODK Importer](pbms/development/repositories/openg2p-importers/g2p-odk-importer.md)
-      * [OpenG2P VCI](pbms/development/repositories/openg2p-vci.md)
       * [G2P Service Provider Beneficiary Management](pbms/development/odoo-modules/g2p-service-provider-beneficiary-management.md)
       * [OpenID Connect Authentication](pbms/development/odoo-modules/openid-connect-authentication.md)
       * [G2P Auth: OIDC - Reg ID](pbms/development/odoo-modules/authentication-oidc-reg-id.md)
