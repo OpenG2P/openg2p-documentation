@@ -62,6 +62,13 @@ The rest of the fields have the default values.
 
 If you have configured the _**Keycloak Authentication Provider**_ successfully, you can find the _**Log in Keycloak**_ button in the PBMS log in page.&#x20;
 
+Before log in using the option Keycloak in PBMS, ensure the following:
+
+* Create client roles on Keycloak application for the client. The client roles can be
+  * Administrator/Settings.
+  * OpenG2P Module Access/Administrator.
+  * OpenG2P Module Access/Registrar.
+
 <figure><img src="../../../../../.gitbook/assets/login-page.png" alt=""><figcaption></figcaption></figure>
 
 This completes the configuration of _**Keycloak Authentication Provider**_ in PBMS for user log in.
