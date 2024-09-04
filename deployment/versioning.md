@@ -8,13 +8,13 @@ In general, OpenG2P follows  [Semantic Versioning 2.0](https://semver.org/spec/v
 
 ## Versioning conventions for artifacts
 
-| Artifacts        | Versioning                                                                                                                                                                                                                                                                                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Helm Charts      |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). See more details [here](helm-charts.md#helm-chart-versions).                                                                                                                                                                                                                                |
-| Dockers          |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                                                                                                                                                                                                                                              |
-| Git repositories | As per guidelines given [here](versioning.md#git-repository-versioning).                                                                                                                                                                                                                                                                                     |
-| Odoo modules     | [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning).  To indicate the maturity of a version (like alpha/beta etc.) use `development_status` field in the `__manifest__.py` file as described [here](https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/oca\_module\_lifecycle\_development\_status.rst). |
-| Non-Odoo modules |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                                                                                                                                                                                                                                              |
+| Artifacts        | Versioning                                                                                                                    |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Helm Charts      |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). See more details [here](helm-charts.md#helm-chart-versions). |
+| Dockers          |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                               |
+| Git repositories | As per guidelines given [here](versioning.md#git-repository-versioning).                                                      |
+| Odoo modules     | [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning)                                               |
+| Non-Odoo modules |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                               |
 
 ## Git repository versioning
 
@@ -27,7 +27,7 @@ A version of any artifact (like a Helm chart, docker, git repository etc.)  is c
 A 3 digit version is deemed frozen if it does not have any other suffixes like -`develop` or `-alpha` etc. Conversely, any version which is not 3 digit or has a suffix, cannot be considered a frozen version -- the version may have parts that are moving. &#x20;
 
 {% hint style="warning" %}
-EXCEPTION: In case of Odoo modules that have versions mentioned in the `__mainfest.py__` file (that appear on Odoo UI while installing the module), a version like `17.0.1.2.0` **cannot** be considered frozen due to high effort required in updating these versions for every tag. Instead, it is understood that version `17.0.1.2.0` is pertaining to branch `17.0-1.2` but may not be frozen.
+EXCEPTION: In case of sub modules within a repository (Odoo modules in Odoo repositories, and FastAPI modules in other repositories), we are not maintaining the sub module version as it requires high maintenance effort to increment the version numbers in the manifest files of these modules.  The version number may indicate a version on the branch but it is advised to trace the exact code based on repository tag.
 {% endhint %}
 
 Here are some examples to illustrate the same:
