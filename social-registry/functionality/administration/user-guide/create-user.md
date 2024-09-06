@@ -12,14 +12,14 @@ layout:
     visible: true
 ---
 
-# 📔 Create User and Assign Role
+# 📔 Create User
 
-This document provides instructions to create user and assign role in the _**Social Registry**_ module.
+This document provides instructions to create user in the _**Social Registry**_ module.
 
 ## Prerequisites
 
-* The user must have Registrar and Administrator role.
 * The user must have access to the Social Registry module.
+* The user must have Registrar and Administrator role.
 
 ## Procedure
 
@@ -53,11 +53,12 @@ In _**Users New**_ screen, the available features and their descriptions are:
 
 The fields and their descriptions are given below:
 
-| Field          | Description                                                                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Website        | <p>Select the appropriate value from the drop-down. The available values are </p><ul><li>Restricted Editor</li><li>Editor and Designer</li></ul> |
-| Administration | <p>Select the appropriate value from the drop-down. The available values are </p><ul><li>Access Rights</li><li>Settings</li></ul>                |
-| Job Queue      | <p></p><p>Select the appropriate value from the drop-down. The available values are </p><ul><li>Job Queue Manager</li></ul>                      |
+| Field          | Description                                                                                                                                                                                                                                                                                                                                   |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Accounting     | <p><em><strong>Invoicing</strong></em></p><p>Select the appropriate value from the drop-down. The available values are</p><ul><li>Billing </li><li>Billing Administrator</li></ul><p><em><strong>Bank</strong></em></p><p>Select the appropriate value from the drop-down, The available value is </p><ul><li>Validate bank account</li></ul> |
+| Website        | <p>Select the appropriate value from the drop-down. The available values are </p><ul><li>Restricted Editor</li><li>Editor and Designer</li></ul>                                                                                                                                                                                              |
+| Administration | <p>Select the appropriate value from the drop-down. The available values are </p><ul><li>Access Rights</li><li>Settings</li></ul>                                                                                                                                                                                                             |
+| Other          | <p><em><strong>Job Queue</strong></em></p><p>Select the appropriate value from the drop-down. The available value is</p><ul><li>Job Queue Manager</li></ul><p><em><strong>Dashboard</strong></em></p><p>Select the appropriate value from the drop-down. The available value is</p><ul><li>Admin</li></ul>                                    |
 
 5. Click the _**Preferences**_ tab.
 
@@ -74,6 +75,24 @@ The fields and their descriptions are given below:
 
 <figure><img src="../../../../.gitbook/assets/user-new-filled-screen-sr.png" alt=""><figcaption></figcaption></figure>
 
+6. Click the _**Oauth**_ tab.
+
+<figure><img src="../../../../.gitbook/assets/oauth-tab-sr.png" alt=""><figcaption></figcaption></figure>
+
+The fields and their descriptions are given below:
+
+| Field              | Description                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OAuth Provider     | <ul><li>Select the appropriate value from the drop-down. </li></ul><p>(or)</p><ul><li>Search for the OAuth Provider using the Search more option from the drop-down. </li></ul> |
+| OAuth User ID      | Enter the OAuth user ID.                                                                                                                                                        |
+| OAuth Access Token | Check the _**OIDC Groups Rest**_ box or _**OIDC Userinfo Reset**_ box as per the requirement                                                                                    |
+
+7. Click the _**Account Security**_ tab.
+
+<figure><img src="../../../../.gitbook/assets/account-security-tab.png" alt=""><figcaption></figcaption></figure>
+
+8. Click the _**Invite to use 2FA**_ button to enable 2FA for a user.
+
 | Icon                                                                                         | Click to                                                                                                                                                                                                                                     |
 | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="../../../../.gitbook/assets/Actions.png" alt="" data-size="original">              | <p>Select the appropriate value. The available values are: </p><ul><li>Archive</li><li>Duplicate</li><li>Change Password</li><li>Disable two-factor authentication</li><li>Send Password Reset Instructions</li><li>Privacy Lookup</li></ul> |
@@ -83,3 +102,5 @@ The fields and their descriptions are given below:
 The newly created user is added to the user list.
 
 <figure><img src="../../../../.gitbook/assets/user-list-sr.png" alt=""><figcaption></figcaption></figure>
+
+Assign user role
