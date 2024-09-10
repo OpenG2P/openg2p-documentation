@@ -280,7 +280,7 @@
     * [Helm Charts](social-registry/deployment/helm-charts.md)
     * [Install Odoo Modules](social-registry/deployment/install-odoo-modules.md)
   * [Technology Stack](social-registry/technology-stack.md)
-  * [Versions](social-registry/releases.md)
+  * [Versions](social-registry/versions.md)
 * [SPAR](spar/README.md)
   * [Features](spar/features/README.md)
     * [SPAR Mapper](spar/features/spar-mapper.md)
