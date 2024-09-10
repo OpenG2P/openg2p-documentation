@@ -12,11 +12,9 @@ layout:
     visible: true
 ---
 
-# 📔 Customise the ODK Importer Configuration based on the ODK Form Fields
+# 📔 Configure and Import ODK Form
 
-## Description
-
-This document provides step-by-step instructions to customise the ODK Importer configuration based on the ODK form fields to cater to the needs of the stakeholders.
+This document provides step-by-step instructions for configuring the ODK central into the PBMS and importing the ODK form. After importing the ODK form, only the fields and their values customised using the JSON formatter are included in the individual/group registries of the PBMS.
 
 Note:
 
@@ -24,146 +22,115 @@ Every ODK form must have its own ODK importer.
 
 ## Prerequisites
 
-* A user must have Administrator role to access ODK Central in OpenG2P systems.
+* A user must have an Administrator role to access ODK Central in OpenG2P systems.
 * A user must know the pyjq syntax to customise the value in the JSON Formatter fields.
 
 ## Procedure
 
-1. Login to _**OpenG2P**_ systems.
+1. Click the main icon ![](../../../../.gitbook/assets/menu-icon.png) and select ODK.
 
-<figure><img src="../../../../.gitbook/assets/openg2p-application.png" alt=""><figcaption><p>OpenG2P application</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/pbms-odk-app.png" alt=""><figcaption></figcaption></figure>
 
-2. In the menu bar, click the icon ![](../../../../.gitbook/assets/menu-icon.png) and select ODK.
+_**ODK**_ screen is displayed. You can find two tabs.
 
-<figure><img src="../../../../.gitbook/assets/menu-odk-importer.png" alt=""><figcaption><p>ODK</p></figcaption></figure>
+* [ODK Import](customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#odk-import)
+* [Configuration](customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#odk-configuration)
 
-_**ODK configuration**_ screen is displayed.
+### ODK Import
 
-<figure><img src="../../../../.gitbook/assets/ODK-configuration.png" alt=""><figcaption><p>ODK Configuration</p></figcaption></figure>
+By default, ODK -> ODK Import page is displayed.
 
-3. Click the **Create** button.
+<figure><img src="../../../../.gitbook/assets/pbms-odk-screen.png" alt=""><figcaption></figcaption></figure>
 
-_**ODK Configuration/New**_ screen is displayed.
+2. Click the **New** button.
 
-<figure><img src="../../../../.gitbook/assets/ODK-configuration-ODKnew.png" alt=""><figcaption><p>ODK Configuration/New</p></figcaption></figure>
+_**ODK Import New**_ screen is displayed.
 
-4. Enter the valid values to access ODK Central in OpenG2P systems and customize the ODK Importer configuration based on the ODK Form Fields
+<figure><img src="../../../../.gitbook/assets/odk-import-new.png" alt=""><figcaption></figcaption></figure>
 
-| Field                                                                                                           | Description                                                                                                          |
-| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Start                                                                                                           | Click the _**Start**_ link to execute the schedule job to run periodically at fixed times, dates, or intervals.      |
-| Restart                                                                                                         | Click the _**Restart**_ link to re-execute the schedule job to run periodically at fixed times, dates, or intervals. |
-| Stop                                                                                                            | Click the **Stop** link to stop the execution of the  schedule job.                                                  |
-| _**ODK Central**_                                                                                               |                                                                                                                      |
-| Name                                                                                                            | Enter the name for the ODK importer.                                                                                 |
-| Base URL                                                                                                        | Enter the URL of the ODK Central.                                                                                    |
-| Username                                                                                                        | Enter the username which is used to login ODK Central                                                                |
-| Password                                                                                                        | Enter the password which is used to login ODK Central                                                                |
-| _**Project details**_                                                                                           |                                                                                                                      |
-| \*[Project](customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#project)                   | <p>Enter the project number. </p><p>For example, 5</p>                                                               |
-| \*\*[Form ID](customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#form-id)                 | <p>Enter the ID of the form.</p><p>For example, Household_data_collection </p>                                       |
-| _**Target settings**_                                                                                           |                                                                                                                      |
-| Target Registry                                                                                                 | <p>Select the appropriate option. The valid values are:</p><ul><li>Group</li><li>Individual</li></ul>                |
-| \*\*\*[JSON Formatter](customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#json-formatter) | Use the pyjq library to manipulate JSON, based on the required fields in OpenG2P system.                             |
-| _**Time interval**_                                                                                             |                                                                                                                      |
-| Interval in hours                                                                                               | Enter the time duration in hours to run the job automatically.                                                       |
-| _**Program details**_                                                                                           |                                                                                                                      |
-| ODK Program ID                                                                                                  | Enter the program ID                                                                                                 |
-| Save                                                                                                            | Click the _**Save**_ button to save the data                                                                         |
-| Discard                                                                                                         | Click the _**Discard**_ to clear the data                                                                            |
+The fields and their descriptions are given below.
+
+3. Customize the ODK Importer based on the ODK form fields
+
+<table><thead><tr><th width="226">Parameters</th><th>Description</th></tr></thead><tbody><tr><td><strong>ODK CONFIGURATION</strong></td><td></td></tr><tr><td><strong>ODK  Config</strong></td><td>The name of the ODK configuration</td></tr><tr><td><strong>TARGET SETTINGS</strong></td><td></td></tr><tr><td><strong>Target Registry</strong></td><td><p>Specifies whether imported records should be associated with individual or group registries within the PBMS.</p><p>Select the appropriate value from the drop-down. The valid values are:</p><ul><li>Individual</li><li>Groups</li></ul></td></tr><tr><td><strong>JSON Formatter</strong></td><td>Enables users to define a custom JSON formatter for transforming retrieved data before importing it into the PBMS. Refer to relevant documentation for details on utilizing the JSON formatter using <a href="https://pypi.org/project/pyjq/">PYJQ library</a>.</td></tr><tr><td><strong>TIME INTERVAL</strong></td><td></td></tr><tr><td><strong>Interval in Hours (Optional)</strong></td><td>Defines the interval (in hours) at which the import process should be automatically triggered. This allows for scheduled data updates.</td></tr><tr><td><strong>ODK Program (Optional)</strong></td><td>Map the registrant into the program using ODK Import.</td></tr><tr><td><a href="customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#test-connection"><strong>Test Connection</strong></a></td><td><ul><li>Verifies the established connection between the ODK Importer and ODK Central.</li><li>Ensures that the ODK Importer can effectively communicate with ODK Central, the server hosting the ODK forms.</li><li>Enables seamless data transfer between the two systems</li></ul></td></tr><tr><td><a href="customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md#import-records"><strong>Import Records</strong></a></td><td><ul><li>Tracks the progress of data import and identifies any errors that may occur during the process.</li><li>Provides users with real-time updates on the status of their data import, allowing them to quickly address any issues and ensure a smooth import process.</li></ul></td></tr><tr><td><strong>Start/Stop</strong></td><td><p> <em><strong>Start</strong></em> executes the scheduled job to run periodically at fixed times, dates, or intervals.</p><p><em><strong>Stop</strong></em> terminates the scheduled job.</p></td></tr></tbody></table>
+
+| Icon                                                                                         | Click to                                                                                                                                                                                                                                     |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="../../../../.gitbook/assets/Actions.png" alt="" data-size="original">              | <p>Select the appropriate value. The available values are: </p><ul><li>Archive</li><li>Duplicate</li><li>Change Password</li><li>Disable two-factor authentication</li><li>Send Password Reset Instructions</li><li>Privacy Lookup</li></ul> |
+| <img src="../../../../.gitbook/assets/icon-save-manually.png" alt="" data-size="original">   | Save manually the individual data and exit from the screen.                                                                                                                                                                                  |
+| <img src="../../../../.gitbook/assets/discard-changes-icon.png" alt="" data-size="original"> | Discard changes and exit from the screen.                                                                                                                                                                                                    |
+
+### Configuration
+
+4. Click the tab _**Configuration**_ in the menu bar.
+
+_**Configuration**_ screen is displayed.
+
+<figure><img src="../../../../.gitbook/assets/pbms-odk-config.png" alt=""><figcaption></figcaption></figure>
+
+5. Click the _**New**_ button.
+
+_**Configuration New**_ screen is displayed.
+
+<figure><img src="../../../../.gitbook/assets/odk-configuration-new.png" alt=""><figcaption></figcaption></figure>
+
+The fields and their descriptions are given below.
+
+6. Enter the valid values to access ODK Central in OpenG2P systems.
+
+| Field                   | Description                                                            |
+| ----------------------- | ---------------------------------------------------------------------- |
+| _**ODK Configuration**_ |                                                                        |
+| Name                    | Enter the name for the ODK importer.                                   |
+| Base URL                | Enter the URL of the ODK Central.                                      |
+| Username                | Enter the username which is used to login ODK Central                  |
+| Password                | Enter the password which is used to login ODK Central                  |
+| _**Project details**_   |                                                                        |
+| Project                 | <p>Enter the project number. </p><p>For example, 3</p>                 |
+| Form ID                 | <p>Enter the ID of the form.</p><p>For example, Safety-Net-Program</p> |
+
+**Sample ODK form URL**
+
+<figure><img src="../../../../.gitbook/assets/odk-form-url.png" alt=""><figcaption></figcaption></figure>
 
 ### Test Connection
 
 _**Test Connection**_ feature establishes the connection between _**ODK Central**_ and _**OpenG2P**_ systems.
 
-5. Click the _**Test Connection**_ button.
+7. Click the _**Test Connection**_ button.
 
 If the _**Test Connection**_ feature connects the _**ODK Central**_ and _**OpenG2P**_ systems successfully, a successful message pop ups.
 
-<figure><img src="../../../../.gitbook/assets/test-connection-successful.png" alt=""><figcaption><p>Test Connection - Successful</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/odk-import-test-connection.png" alt=""><figcaption></figcaption></figure>
 
 If the _**Test Connection**_ feature unable to connect the _**ODK Central**_ and _**OpenG2P**_ systems, an error  message pop ups.&#x20;
 
-6. Click the _**OK**_ button to exit the dialog box.
+<figure><img src="../../../../.gitbook/assets/odkimp-testconnect-fail.png" alt=""><figcaption></figcaption></figure>
 
-<figure><img src="../../../../.gitbook/assets/test-connection-failure.png" alt=""><figcaption><p>Test Connection - Failure</p></figcaption></figure>
+8. Click the _**OK**_ button to exit the dialog box.
 
 ### Import Records
 
 _**Import Records**_ feature imports and stores the records in Social Registry.
 
-7. Click the _**Import Records**_ button.
+9. Click the _**Import Records**_ button.
 
 If the ODK form is imported successfully, a success message pops up.
 
-<figure><img src="../../../../.gitbook/assets/import-success.png" alt=""><figcaption><p>Import Record - Successful</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/import-records.png" alt=""><figcaption></figcaption></figure>
 
-If there is no new ODK form submitted, then ODK form records will not be imported.
+If no new ODK forms are submitted, ODK form records will not be imported.
 
-<figure><img src="../../../../.gitbook/assets/import-record.png" alt=""><figcaption><p>Import Record - No new record found.</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/import-records-fail.png" alt=""><figcaption></figcaption></figure>
 
-A view of the ODK form recorded in Social Registry.
+You can find the configuration details in the _**ODK Configuration**_ screen and imported ODK forms' status in the _**ODK Import**_ screen.
 
-<figure><img src="../../../../.gitbook/assets/ODK-form-recorded.png" alt=""><figcaption><p>ODK Form recorded</p></figcaption></figure>
-
-The below image shows the specific ODK form record.
-
-<figure><img src="../../../../.gitbook/assets/ODK-form-specific-record.png" alt=""><figcaption><p>Specific ODK Form</p></figcaption></figure>
-
-The Household Data tab shows only the fields which are configured using pyjq JSON formatter in ODK importer. The fields are populated while the ODK form is imported to the Social Registry.
-
-<figure><img src="../../../../.gitbook/assets/populated-field.png" alt=""><figcaption><p>Populated fields</p></figcaption></figure>
-
-<figure><img src="../../../../.gitbook/assets/populated-field (2).png" alt=""><figcaption><p>Populated fields</p></figcaption></figure>
-
-You can find the created ODK form below the name column in _**ODK Configuration**_ screen.
-
-<figure><img src="../../../../.gitbook/assets/ODK-configuration.png" alt=""><figcaption></figcaption></figure>
-
-This completes process of importing a ODK form into Social registry by customizing the ODK Importer configuration based on the ODK Form Fields.
-
-***
-
-### Project
-
-Follow the below steps to know the project ID taken from ODK Central.
-
-1. Login to _**ODK Central**_.
-
-_**ODK Central**_ home page is displayed.
-
-<figure><img src="../../../../.gitbook/assets/ODK-central-home-page.png" alt=""><figcaption><p>ODK Central</p></figcaption></figure>
-
-Here, for example, click the Household data collection form below the program Test.
-
-The Household data collection form's  overview screen is displayed.
-
-<figure><img src="../../../../.gitbook/assets/ODK-central-home-form-overview.png" alt=""><figcaption><p>ODK Central - Project number</p></figcaption></figure>
-
-In the URL , the number which is after the project is the project Id (5) (highlighted in yellow).
-
-### Form ID
-
-Follow the below steps to know the form ID taken from ODK Central.
-
-1. Login to _**ODK Central**_.
-
-_**ODK Central**_ home page is displayed.
-
-<figure><img src="../../../../.gitbook/assets/ODK-central-home-page.png" alt=""><figcaption><p>ODK Central</p></figcaption></figure>
-
-Here, for example, click the Household data collection form below the program Test.
-
-The Household data collection form's overview form is displayed.
-
-<figure><img src="../../../../.gitbook/assets/ODK-central-home-form-overview-form.png" alt=""><figcaption><p>ODK Central - Form ID</p></figcaption></figure>
-
-In the URL , the word which is after the forms is the form Id (Household\_data\_collection) (highlighted in yellow).
+This completes the process of importing an ODK form from ODK Central into the PBMS.
 
 ### JSON Formatter
 
 Configure the required fields based on the ODK form field using pyjq JSON formatter.&#x20;
 
-For example, ODK importer configures the required fields from Household data collection form present in ODK central in JSON Formatter box.
+**Sample JSON Formatter**
 
 <figure><img src="../../../../.gitbook/assets/JSON-formatter-1.png" alt=""><figcaption><p>JSON Formatter</p></figcaption></figure>
