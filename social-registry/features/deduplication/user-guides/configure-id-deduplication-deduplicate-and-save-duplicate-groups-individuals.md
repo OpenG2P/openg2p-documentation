@@ -38,8 +38,8 @@ You can view the _**Groups**_ screen by default.
 
 Below the _**G2P Registry Deduplication Settings,**_ you can find two ID types.
 
-* [Group ID Types](configure-id-deduplication.md#group-id-types)
-* [Individual ID Types](configure-id-deduplication.md#individual-id-types)
+* [Group ID Types](configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md#group-id-types)
+* [Individual ID Types](configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md#individual-id-types)
 
 <figure><img src="../../../../.gitbook/assets/id-types (1).png" alt=""><figcaption></figcaption></figure>
 
@@ -76,7 +76,7 @@ For example, there are two duplicate Groups Needy 1 and Needy 2 with same Aadhar
 12. Click the _**Groups**_ tab in the menu bar.&#x20;
 13. Click the _**Deduplicate**_ button.
 
-A message popups with the number of duplicates found in the Group and the Group member based on the criteria defined in the [Group ID Types](configure-id-deduplication.md#group-id-types) section.
+A message popups with the number of duplicates found in the Group and the Group member based on the criteria defined in the [Group ID Types](configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md#group-id-types) section.
 
 14. Click the _**Duplicates**_ tab in the menu bar. Select the _**Groups**_.
 
@@ -110,7 +110,7 @@ For example, there are two individuals (Empower 1, Empower 2) with the same Test
 19. Click the _**Individuals**_ tab in the menu bar.&#x20;
 20. &#x20;Click the _**Deduplicate**_ button.
 
-A message popups with the number of duplicates found in the Individuals based on the criteria defined in the [Individual ID Types](configure-id-deduplication.md#individual-id-types) section.
+A message popups with the number of duplicates found in the Individuals based on the criteria defined in the [Individual ID Types](configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md#individual-id-types) section.
 
 21. Click the _**Duplicates**_ tab in the menu bar. Select the _**Individuals**_.
 

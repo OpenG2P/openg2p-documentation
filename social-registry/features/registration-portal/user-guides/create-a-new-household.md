@@ -97,7 +97,7 @@ The fields with \* mark are the mandatory fields.
 {% tab title="Member Details" %}
 <figure><img src="../../../../.gitbook/assets/members-details-spp.png" alt=""><figcaption></figcaption></figure>
 
-Click the Add Member button. [Add new members](create-new-household.md#add-new-members) screen is displayed.
+Click the Add Member button. [Add new members](create-a-new-household.md#add-new-members) screen is displayed.
 {% endtab %}
 
 {% tab title="Household Data" %}

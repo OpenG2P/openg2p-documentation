@@ -4,5 +4,5 @@ Data from Social Registry can be shared with external entities in the following 
 
 * CSV
 * [Search APIs](api/search-apis.md)&#x20;
-* [CRUD APIs](api/crud-apis.md)
+* [CRUD APIs](api/individual-apis.md)
 

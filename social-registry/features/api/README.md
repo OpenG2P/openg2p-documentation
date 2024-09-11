@@ -14,7 +14,7 @@ layout:
 
 # API
 
-SR enables APIs to [search](../../functionality/search.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.&#x20;
+SR enables APIs to [search](../search.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.&#x20;
 
 ## API specification
 

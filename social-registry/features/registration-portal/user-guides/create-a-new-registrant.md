@@ -23,13 +23,13 @@ This document provides instructions to create a new registrant and grand portal 
 
 ## Table of Contents
 
-[Create a new registrant](create-a-new-service-provider.md#create-a-new-service-provider)
+[Create a new registrant](create-a-new-registrant.md#create-a-new-service-provider)
 
-[Grand access to a registrant](create-a-new-service-provider.md#grant-portal-access-to-a-service-provider)
+[Grand access to a registrant](create-a-new-registrant.md#grant-portal-access-to-a-service-provider)
 
-[Delete a registrant user](create-a-new-service-provider.md#delete-a-service-provider-user)
+[Delete a registrant user](create-a-new-registrant.md#delete-a-service-provider-user)
 
-[Delete a service provider](create-a-new-service-provider.md#delete-a-service-provider)
+[Delete a service provider](create-a-new-registrant.md#delete-a-service-provider)
 
 ## Procedure
 

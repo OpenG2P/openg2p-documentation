@@ -42,4 +42,4 @@ To know more about Odoo merge and deduplication, [click here](https://hibou.io/d
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Configure ID Deduplication, Deduplicate, and Save Duplicate Groups/Individual](user-guides/configure-id-deduplication.md)
+:notebook\_with\_decorative\_cover:[Configure ID Deduplication, Deduplicate, and Save Duplicate Groups/Individual](user-guides/configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md)
