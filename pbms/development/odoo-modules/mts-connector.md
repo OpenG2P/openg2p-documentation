@@ -32,8 +32,6 @@ This module relies on the following external libraries and modules:
 * queue\_job
 * Python : pyjq
 
-
-
 ### User interface
 
 <figure><img src="../../../.gitbook/assets/mts-connector.png" alt=""><figcaption></figcaption></figure>
@@ -50,7 +48,7 @@ In OpenG2P, the user can configure for following fields to setup an interface wi
 
 **MTS Input type**: MTS-C connects over "_ODK_" which is the first option in this selection. OMC option could be proceeded by selecting "_OpenG2P Registry_".
 
-**Mapping**: MTS Field mapping as required by the API. Please refer [MTS Documentation\*\*.\*\* ](broken-reference)Format of Mapping would be JSON.
+**Mapping**: MTS Field mapping as required by the API. Please refer [MTS Documentation\*\*.\*\* ](../../functionality/mts-connector/)Format of Mapping would be JSON.
 
 **Output Type**: MTS-C only supports JSON output type of MTS.
 

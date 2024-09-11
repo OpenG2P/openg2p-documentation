@@ -37,7 +37,7 @@ G2P: Proxy Means Test
 
 ### Configuration
 
-* To create the [PMT Parameters](broken-reference) turn on the developer mode.
+* To create the [PMT Parameters](../../../features/eligibility/user-guides/configure-proxy-means-test.md) turn on the developer mode.
 
 ### Error codes
 
