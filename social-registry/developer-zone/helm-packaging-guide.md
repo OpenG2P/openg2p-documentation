@@ -1,10 +1,14 @@
 # 📘 Helm Packaging Guide
 
+## Concepts
 
+Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.
+
+The package hierarchy is depicted below.
 
 {% embed url="https://miro.com/app/board/uXjVKoUYG7g=/" %}
 
-
+## Steps
 
 ### Tagging Helm repo
 
@@ -24,3 +28,5 @@ The charts are located in [this](https://github.com/OpenG2P/openg2p-social-regis
 {% hint style="warning" %}
 The Github workflow triggers only if the branch already exists and changes are applied on the branch. So create the branch first on Github directly and push the Helm changes.
 {% endhint %}
+
+### Making package availabe on Rancher
