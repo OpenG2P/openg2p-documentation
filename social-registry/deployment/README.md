@@ -4,7 +4,7 @@ description: Social Registry Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all Social Registry and associated components on the Kubernetes cluster using [Helm charts](helm-charts.md).   All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+The instructions here pertain to the deployment of all Social Registry and associated components on the Kubernetes cluster using [Helm charts](broken-reference).   All the components are installed in the same namespace. The deployment may be achieved by the following methods:
 
 * [Using Rancher UI](./#installation-using-rancher-ui)&#x20;
 * [Using command line](./#installation-using-the-command-line)

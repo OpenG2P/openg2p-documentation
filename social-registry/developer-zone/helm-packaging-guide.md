@@ -2,6 +2,12 @@
 
 ## Concepts
 
+Social Registry and all its dependencies are installed using a single packaged [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts).  The contents of the package may be found in the [Docker package files](https://github.com/OpenG2P/openg2p-packaging/tree/main/packaging/packages/social-registry).  Learn more on Helm charts, versioning and packaging [here](../../deployment/helm-charts.md#helm-chart-versions).
+
+{% hint style="info" %}
+\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../deployment/helm-charts.md#helm-chart-size-limitation)
+{% endhint %}
+
 Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.
 
 The package hierarchy is depicted below.

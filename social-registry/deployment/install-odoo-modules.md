@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# Install Modules Applicable for Social Registry
+# Install Odoo Modules
 
-This document provides instructions on installing modules applicable to the Social Registry from the Odoo platform.
+After deployment of SR module, you still need to install the individual Odoo modules from inside the App.&#x20;
 
 ## Procedure
 

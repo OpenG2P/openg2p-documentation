@@ -273,7 +273,6 @@
   * [Versions](social-registry/versions.md)
   * [Deployment](social-registry/deployment/README.md)
     * [Domain names and Certificates](social-registry/deployment/domain-names-and-certificates.md)
-    * [Helm Charts](social-registry/deployment/helm-charts.md)
     * [Install Odoo Modules](social-registry/deployment/install-odoo-modules.md)
   * [Developer Zone](social-registry/developer-zone/README.md)
     * [Technology Stack](social-registry/developer-zone/technology-stack.md)
