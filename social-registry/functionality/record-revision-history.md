@@ -7,7 +7,7 @@ description: WORK IN PROGRESS
 Any changes/updates to records in the Registry have to be captured by the system.  Admins must be able to see the information associated with a registry record on previous dates. Admins must also be able to generate reports of aggregate data for an earlier period.  For example, the total number of farmers with more than 10 acres of land as of Dec 2023.
 
 {% hint style="info" %}
-Revision History is not the same as [Audit Logs](../../features/audit-log.md) or [System Log](../../../monitoring-and-reporting/logging.md). &#x20;
+Revision History is not the same as [Audit Logs](../features/audit-log.md) or [System Log](../../monitoring-and-reporting/logging.md). &#x20;
 {% endhint %}
 
 ## Functionality
@@ -20,20 +20,20 @@ Revision History is not the same as [Audit Logs](../../features/audit-log.md) or
 
 ## Design
 
-* The current design involves [Reporting Framework](../../../monitoring-and-reporting/reporting-framework/). Social Registry deployment is packaged with Reporting Framework installation, which is configured to capture all the changes to the registry records and send them to OpenSearch.
+* The current design involves [Reporting Framework](../../monitoring-and-reporting/reporting-framework/). Social Registry deployment is packaged with Reporting Framework installation, which is configured to capture all the changes to the registry records and send them to OpenSearch.
 * All changes to records get captured as separate documents under the OpenSearch Index including the timestamp of change.
 * This makes it easy to query for records or data at a particular point in time, while the main Social Registry continues to maintain the latest data.
 * Dashboards and Reports can be generated easily on OpenSearch Dashboards. A reference dashboard for revision history is available (TODO).
-* By default, all the fields and their changes are captured, but the [reporting framework configuration](../../../monitoring-and-reporting/reporting-framework/) allows not to capture PII data.
+* By default, all the fields and their changes are captured, but the [reporting framework configuration](../../monitoring-and-reporting/reporting-framework/) allows not to capture PII data.
 * Social Registry can generate a unique Registry ID for each record. That registry ID can be used to query for changes related to a particular record.
 * If you are using a customized social registry that involves multiple tables that store additional data, and are _related_ to the main _res\_partner_ table (via foreign key), then you are required to create separate OpenSearch connectors for all these tables.
-  * In the connector configuration of these adjunct tables, use the [DynamicNewField](../../../monitoring-and-reporting/reporting-framework/user-guides/connector-creation-guide.md) SMT to add the above-mentioned Registry ID field to these adjunct tables, so that changes to these adjunct tables can also be queried using the same registry ID.
+  * In the connector configuration of these adjunct tables, use the [DynamicNewField](../../monitoring-and-reporting/reporting-framework/user-guides/connector-creation-guide.md) SMT to add the above-mentioned Registry ID field to these adjunct tables, so that changes to these adjunct tables can also be queried using the same registry ID.
 * When a record is deleted from the Social Registry DB, there will be no change in revision history on OpenSearch.
-* Refer to [Reporting guides](../../../monitoring-and-reporting/reporting-framework/#creating-dashboards) for further configuration.
+* Refer to [Reporting guides](../../monitoring-and-reporting/reporting-framework/#creating-dashboards) for further configuration.
 
 ## User stories
 
-* Update a record in the Social Registry via any [update mechanism](../../features/registry-update-mechanisms.md), say through the UI (odoo-based), or the APIs, etc.
+* Update a record in the Social Registry via any [update mechanism](../features/registry-update-mechanisms.md), say through the UI (odoo-based), or the APIs, etc.
 * Check that the changes are reflected on OpenSearch with appropriate timestamp (TODO: elaborate.)
 
 ## Other Approaches

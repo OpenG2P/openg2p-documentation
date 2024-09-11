@@ -2,7 +2,7 @@
 description: Installation of Social Registry on developer machine
 ---
 
-# Install OpenG2P Package on Linux System
+# 📘 Developer Install of OpenG2P Package on Linux
 
 The guide provides steps to install the OpenG2P package on a laptop/desktop running on Linux system. Developers can run the entire OpenG2P package on their machines.&#x20;
 
@@ -255,5 +255,5 @@ db_password = your_database_password
     cd /opt/odoo/custom-addons/<module_directory>
     pip3 install -r requirements.txt
     ```
-4. Add addons directory path to the _odoo.conf_ file in **addons\_path** parameter, mentioned in [point 7](install-openg2p-package-on-linux-system.md#id-7.-configure-odoo).
+4. Add addons directory path to the _odoo.conf_ file in **addons\_path** parameter, mentioned in [point 7](developer-install-of-openg2p-package-on-linux.md#id-7.-configure-odoo).
 5. For the Social Registry to function properly, your add-ons should include the packages listed below.[https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/packages/social-registry/17.0-develop.txt](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/packages/social-registry/17.0-develop.txt)
