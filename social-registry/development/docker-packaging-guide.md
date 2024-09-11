@@ -6,13 +6,13 @@ description: How to create SR Docker Package
 
 ## Concepts
 
-### Package file and Github workflow
-
 Dockers are created via Github workflows by triggering the same manually when required. Dockers may be created manually as well if required. The contents of the Docker are listed in a [package file](https://github.com/OpenG2P/openg2p-packaging/tree/main/packaging/packages/) available in the [openg2p-packaging ](https://github.com/OpenG2P/openg2p-packaging)repo. This package file is read by the [package\_docker.yml](https://github.com/OpenG2P/openg2p-packaging/blob/main/.github/workflows/package\_docker.yml) workflow. This workflow creates the Docker and pushes it to the Docker Hub.  The name and tag of the Docker are specified as the first line in the package file followed by the base version of the Odoo that is used to create the Docker. See [example](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/packages/social-registry/1.3.1.txt).&#x20;
 
 The package may contain private repositories, in which case, the token to clone the repositories must be set in the respective repositories.
 
 Versions of all repositories that are used to create the Docker are specified in the package file. For Dockers that are "frozen" it is assumed that all versions of repositories are frozen as well (i.e. tagged).&#x20;
+
+## Steps
 
 ### Creating tokens to clone private repositories
 
