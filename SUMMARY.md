@@ -277,6 +277,7 @@
     * [Install Odoo Modules](social-registry/deployment/install-odoo-modules.md)
   * [Developer Zone](social-registry/developer-zone/README.md)
     * [Technology Stack](social-registry/developer-zone/technology-stack.md)
+    * [Repositories](social-registry/developer-zone/repositories.md)
     * [📘 Developer Install of OpenG2P Package on Linux](social-registry/developer-zone/developer-install-of-openg2p-package-on-linux.md)
     * [📘 Docker Packaging Guide](social-registry/developer-zone/docker-packaging-guide.md)
     * [📘 Helm Packaging Guide](social-registry/developer-zone/helm-packaging-guide.md)
