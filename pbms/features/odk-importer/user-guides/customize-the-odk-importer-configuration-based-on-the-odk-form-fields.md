@@ -95,11 +95,11 @@ The fields and their descriptions are given below.
 
 ### Test Connection
 
-_**Test Connection**_ feature establishes the connection between _**ODK Central**_ and _**OpenG2P**_ systems.
+_**Test Connection**_ feature establishes the connection between _**ODK Central**_ and _**PBMS**_.
 
 7. Click the _**Test Connection**_ button.
 
-If the _**Test Connection**_ feature connects the _**ODK Central**_ and _**OpenG2P**_ systems successfully, a successful message pop ups.
+If the _**Test Connection**_ feature connects the _**ODK Central**_ and _**PBMS**_ successfully, a successful message pop ups.
 
 <figure><img src="../../../../.gitbook/assets/odk-import-test-connection.png" alt=""><figcaption></figcaption></figure>
 
