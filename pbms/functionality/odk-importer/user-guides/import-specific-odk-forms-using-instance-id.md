@@ -12,11 +12,11 @@ layout:
     visible: true
 ---
 
-# 📔 Import Specific ODK Forms
+# 📔 Import Specific ODK Forms using Instance ID
 
 
 
-This document provides instructions for importing specific applicants/registrants' ODK forms hosted in ODK Central. It uses the unique [**Instance ID**](import-specific-odk-forms.md#instance-id) of the ODK forms to import them into the PBMS modules' relevant individual/group registries.
+This document provides instructions for importing specific applicants/registrants' ODK forms hosted in ODK Central. It uses the unique [**Instance ID**](import-specific-odk-forms-using-instance-id.md#instance-id) of the ODK forms to import them into the PBMS modules' relevant individual/group registries.
 
 ## Prerequisites
 
