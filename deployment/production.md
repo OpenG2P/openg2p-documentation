@@ -77,6 +77,12 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
    `systemctl start rke2-server`
 6. You can continue to add new server and worker nodes to cluster.
 
+### Backup of Persistent Volume information
+
+The mapping between PVCs and PV must be saved after the installation so in case the cluster goes down, or NFS has issues, one can recreate the pods with original data.  Download the YAML as shown below and keep it securely accessible to system administrators. &#x20;
+
+<figure><img src="../.gitbook/assets/rancher-pvc-download.png" alt=""><figcaption></figcaption></figure>
+
 ### NFS&#x20;
 
 ### Cluster access key
