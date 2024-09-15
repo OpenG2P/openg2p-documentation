@@ -264,7 +264,7 @@
     * [Record Revision History](social-registry/features/record-revision-history.md)
     * [Domain Specific Registries](social-registry/features/domain-specific-registries.md)
     * [Single Sign-On](social-registry/features/single-sign-on.md)
-    * [Tokenisation](social-registry/features/tokenisation.md)
+    * [Tokenisation](social-registry/development/upcoming-features/tokenisation.md)
     * [Search - OpenSearch](social-registry/features/search-opensearch.md)
     * [Audit Log - Advanced](social-registry/features/audit-log-advanced.md)
     * [Attestation](social-registry/features/attestation.md)
