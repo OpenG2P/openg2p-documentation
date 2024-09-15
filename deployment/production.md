@@ -1,5 +1,5 @@
 ---
-description: 'Production Deployment Guide: WORK IN PROGRESS'
+description: Production Deployment Guide
 ---
 
 # Production
@@ -18,7 +18,7 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 
 ## Postgresql&#x20;
 
-* Number of instances
+* Number of instances of Postgresql pods
 * Cloud native if available
 * Production configuration
 * Master / Slave configuration
@@ -31,7 +31,7 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 
 ### Node replication
 
-* Provisioning of VMs across different underlying hardware and subnets for resilience.  does
+* Provisioning of VMs across different underlying hardware and subnets for resilience.&#x20;
 * Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
 
 ## Backup and Restore
@@ -47,9 +47,9 @@ You can take a snapshot manually while RKE2 is running with the `etcd-snapshot` 
 
 When RKE2 is restored from backup, the old data directory will be moved to /var/lib/rancher/rke2/server/db/etcd-old-%date%/. RKE2 will then attempt to restore the snapshot by creating a new data directory and start etcd with a new RKE2 cluster with one etcd member.
 
-1. You must stop RKE2 service on all server nodes if it is enabled via systemd. Use the following command to do so:\
+1. You must stop RKE2 service on all server nodes if it is enabled via `systemd`. Use the following command to do so:\
    `systemctl stop rke2-server`
-2. Next, you will initiate the restore from snapshot on the first server node with the following commands:\
+2. Initiate the restore from the snapshot on the first server node with the following commands:\
    `rke2 server \`\
    &#x20;   `--cluster-reset \`\
    &#x20;   `--cluster-reset-restore-path=<PATH-TO-SNAPSHOT>`
