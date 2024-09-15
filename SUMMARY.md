@@ -117,6 +117,7 @@
       * [📔 User Guides](pbms/features/odk-importer/user-guides/README.md)
         * [📔 Configure and Import ODK Form](pbms/features/odk-importer/user-guides/customize-the-odk-importer-configuration-based-on-the-odk-form-fields.md)
         * [📔 Import Specific ODK Forms using ODK Instance ID](pbms/functionality/odk-importer/user-guides/import-specific-odk-forms-using-odk-instance-id.md)
+        * [📔 Import Social Registry Data into PBMS](pbms/functionality/odk-importer/user-guides/import-social-registry-data-into-pbms.md)
     * [MTS Connector](pbms/functionality/mts-connector/README.md)
       * [📔 User Guides](pbms/functionality/mts-connector/user-guides/README.md)
         * [📔 Create MTS Connector](pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/README.md)
