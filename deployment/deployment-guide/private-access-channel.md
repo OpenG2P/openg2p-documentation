@@ -18,7 +18,7 @@ A Private Access Channel (PAC) is a tuple of Wireguard, Load Balancer, and Ingre
 
 {% embed url="https://miro.com/app/board/uXjVK2_5XEQ=/?share_link_id=115753732631" %}
 
-Multiple Wireguard servers (bastions) can run on a single Virtual Machine (VM).  Similarly, multiple Nginx servers (vhosts) can run on a single Nginx instance.  Each network interface on Nginx has a unique IP. Each Nginx vhost forwards traffic to an Istio Ingress gateway server which further routes traffic to Kubernetes resources. Multiple Istio gateways can run on a single Istio Ingress gateway server. You&#x20;
+Multiple Wireguard servers (bastions) can run on a single Virtual Machine (VM).  Similarly, multiple Nginx servers (vhosts) can run on a single Nginx instance.  Each network interface on Nginx has a unique IP. Each Nginx vhost forwards traffic to an Istio Ingress gateway server which further routes traffic to Kubernetes resources.  On the Istio Ingress gateway server,  gateways (or filters) are defined for each wildcard domain specifying the rule to forward traffic to the respective namespace on the cluster. See the example above.
 
-In the above configuration, User Group 1 has access to both Ingress gateway servers while User Group 2 can only access resources associated with Ingress gateway server 2.
+In the above example, Users RG1 can access only RG1 domains.
 
