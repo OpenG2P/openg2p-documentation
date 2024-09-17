@@ -1,6 +1,18 @@
-# Configurations
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
 
-## Introduction
+# Configurations
 
 The Social Registry platform provides configurations to define values (enumerations) for a field. These fields are related to the registrant's identity and association with other registrants. Once defined, these values are available for selection in a drop-down list for that field. This is the list of currently available configurations:
 

@@ -18,7 +18,7 @@ In Social Registry (SR), the data are received and recorded in several ways. SR 
 
 ## Deduplication
 
-_**Deduplication**_ is the process that identifies and stores the duplicate entries of the recorded registrants' data in SR. It can manage duplicate records within separate registry groups and individual registries. The user must have an Administrator or Registrator role to access this functionality.
+_**Deduplication**_ is the process that identifies and stores the duplicate entries of the recorded registrants' data in SR. It can manage duplicate records within separate groups and individual registries. The user must have an Administrator or Registrator role to access this functionality.
 
 ## ID-based deduplication
 

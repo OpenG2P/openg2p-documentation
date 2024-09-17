@@ -7,7 +7,7 @@ description: WORK IN PROGRESS
 Any changes/updates to records in the Registry have to be captured by the system.  Admins must be able to see the information associated with a registry record on previous dates. Admins must also be able to generate reports of aggregate data for an earlier period.  For example, the total number of farmers with more than 10 acres of land as of Dec 2023.
 
 {% hint style="info" %}
-Revision History is not the same as [Audit Logs](../features/audit-log.md) or [System Log](../../monitoring-and-reporting/logging.md). &#x20;
+Revision History is not the same as [Audit Logs](logging/audit-log.md) or [System Log](../../monitoring-and-reporting/logging.md). &#x20;
 {% endhint %}
 
 ## Functionality
@@ -33,7 +33,7 @@ Revision History is not the same as [Audit Logs](../features/audit-log.md) or [S
 
 ## User stories
 
-* Update a record in the Social Registry via any [update mechanism](../features/registry-update-mechanisms.md), say through the UI (odoo-based), or the APIs, etc.
+* Update a record in the Social Registry via any [update mechanism](registry-update-mechanisms.md), say through the UI (odoo-based), or the APIs, etc.
 * Check that the changes are reflected on OpenSearch with appropriate timestamp (TODO: elaborate.)
 
 ## Other Approaches
