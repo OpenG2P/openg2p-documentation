@@ -12,9 +12,9 @@ layout:
     visible: true
 ---
 
-# 📔 Configure Registration Portal User to Limit Accessing Location
+# 📔 Configure Portal User to Limit Accessing Location
 
-This document contains step-by-step instructions to configure registration portal user to access only the limited locations in the registration portal where they have recorded the details from the individual/group registrants.&#x20;
+This document contains step-by-step instructions to configure portal user to access only the limited locations in the registration portal where they have recorded the details from the individual/group registrants.&#x20;
 
 ## Prerequisites
 
@@ -31,13 +31,13 @@ _**Social Registry**_ screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/social-registry-screen.png" alt=""><figcaption></figcaption></figure>
 
-3. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select Registrant.
+3. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select portal user.
 
-_**Registrant**_ screen is displayed.
+Portal user screen is displayed.
 
 <figure><img src="../../../../.gitbook/assets/service-provider.png" alt=""><figcaption></figcaption></figure>
 
-4. Click the _**Registrant**_ user to provide permission to access only the limited location in the Registration Portal.
+4. Click the portal user to provide permission to access only the limited location in the Registration Portal.
 
 For example, the user Sample Registrant is selected.
 
@@ -61,7 +61,7 @@ For example, the woreda Zana is selected.
 <figure><img src="../../../../.gitbook/assets/sp-permission.png" alt=""><figcaption></figcaption></figure>
 
 9. Click the icon<img src="../../../../.gitbook/assets/Actions.png" alt="" data-size="original">, and select the _**Grant portal access**_.
-10. Check the grant portal access status of the Registrant user.
+10. Check the grant portal access status of the portal user.
 
 For example, the user Sample Registrant has grant portal access.
 
