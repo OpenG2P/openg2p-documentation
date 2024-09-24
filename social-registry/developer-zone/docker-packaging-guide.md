@@ -39,7 +39,7 @@ Versions of all repositories that are used to create the Docker are specified in
 
 ### Creating Docker package
 
-1. Create a package file for the new version that you want to create. The name of the package file can be arbitrary but it is recommended that it reflects the Docker tag version.  E.g. `1.3.1.txt`.
+1. Create a package file for the new version that you want to create.  See [example](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/packages/social-registry/1.3.1.txt). The name of the package file can be arbitrary but it is recommended that it reflects the Docker tag version.  E.g. `1.3.1.txt`.
 2. <mark style="color:red;">IMPORTANT</mark>: Update the first line in the package file for the new version.  (This is critical otherwise previous tag will get overwritten on Docker Hub)
 3. Inspect the contents of the package file on which versions of repositories need to be packed in this Docker.
 4. Make sure the repositories are tagged with the versions matching in the package file.  See above section on tagging.
