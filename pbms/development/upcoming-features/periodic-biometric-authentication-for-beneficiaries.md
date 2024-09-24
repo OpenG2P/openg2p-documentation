@@ -15,98 +15,16 @@ layout:
 
 # Periodic Biometric Authentication for Beneficiaries
 
-## Concepts
+In Program and Beneficiary Management System (PBMS) huge amount of beneficiaries' data are recorded. It is necessary to confirm that the information provided about the beneficiaries' identities are accurate and that they are currently receiving benefits from the applicable programs. With the ID Authentication feature, PBMS can check if each beneficiary has validated themselves using biometrics  within a specified time frame, allowing it to periodically verify each beneficiary's current status.
 
-Periodic biometric authentications will be used to ensure legitimacy, validity and liveness of beneficiaries.&#x20;
+Only Registrars, Administrators, and Enumerators are authorised to use National IDs and biometrics or OTPs to authenticate applicants/registrants both in person and virtually.
 
-## Need of this feature&#x20;
+Note:
 
-This process aims to enhance security by verifying recipients' identities on a regular basis, preventing fraud, and ensuring the right people receive benefits.
+The ID Authentication feature avoids the need for self-authentication via self-service portals.
 
-## High level diagram 1
+## Authentication process
 
-<img src="../../../.gitbook/assets/file.excalidraw (1).svg" alt="" class="gitbook-drawing">
+The PBMS retrieves the most recent date of successful authentication from the Social Registry module, which stores this data. The system determines whether the authentication happened within the necessary time limit (for example, during the last six months) after retrieving the date.
 
-## High level diagram 2
-
-<img src="../../../.gitbook/assets/file.excalidraw (3).svg" alt="" class="gitbook-drawing">
-
-## To be discussed
-
-1. Who are the users using this functionality
-
-* User roles
-* What are various operations for each user role
-
-### Monitoring and reporting
-
-1. Are any reports required for the administrators?
-2. Any frequent monitoring required?
-
-Frequency of authentication - 2 or 6 months (configurable)
-
-Current Modes of Authentication
-
-* SSP
-* VC based authentication
-
-3. Can existing reporting framework be used for the same?
-
-### Privacy and security&#x20;
-
-1. Is the data stored PII?
-2. Any considerations related to data privacy?
-3. How will the privacy of data handled at rest and in flight?
-4. Any encryption required&#x20;
-
-### Required features
-
-* Notifying User
-* Frequency of authentication- 2 or 6 months (configurable)
-
-### Technical design
-
-1. Is it an Odoo module? Or fastapi or anything else
-2. Is the database involved
-
-* Tables
-* Fields
-* Insert/update
-
-Scalability - how do we handle scale?
-
-### Source code location
-
-* Repository name
-* Branch
-
-### Install/Deployment
-
-1. How will the feature/module deployed with the rest of software
-2. How will a developer install the feature
-
-### Dependencies
-
-1. Is the feature dependent on external libraries or projects?
-2. What are the licenses of the external software?
-
-### Test design
-
-1. What the important points related to testing that we must keep in mind
-2. Location of test case document
-3. Is there automation involved? &#x20;
-4. Plan for automation (if any)
-5. Is a scale testing required. How?
-
-### Development plan
-
-1. Are there phases in which the feature will be developed
-2. Release versioning
-3. Scope of various releases
-4. Rough timelines
-5. Git Branch name
-6. Task breakdown (pointer to Jira)
-
-### Solution - long term
-
-Odoo-based system might not scale. Hence develop and separate Portal (API + UI) which handles agents login and facilitates, beneficiary authentication.
+If the authentication is up-to-date, the beneficiary is considered "live," and their participation in the program is uninterrupted. The system initiates an action If the authentication date falls outside of the required period. Benefits may need to be temporarily suspended in this situation.
