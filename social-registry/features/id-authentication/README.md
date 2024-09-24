@@ -18,7 +18,7 @@ The ID Authentication feature avoids the need for self-authentication via self-s
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Configure eSignet Auth Provider for ID Authentication](user-guides/configure-esignet-auth-provider-for-id-authentication.md)
+:notebook\_with\_decorative\_cover:[Configure eSignet Auth Provider for ID Authentication](../../../pbms/functionality/id-verification/user-guides/configure-esignet-auth-provider-for-id-authentication.md)
 
 :notebook\_with\_decorative\_cover:[ID Authentication Process](user-guides/id-authentication-process.md)
 

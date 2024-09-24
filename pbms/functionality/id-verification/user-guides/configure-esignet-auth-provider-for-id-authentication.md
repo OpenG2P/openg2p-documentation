@@ -23,8 +23,8 @@ This document provides instructions on how to configure eSignet Authentication P
   *   Allowed redirect URIs of the client must contain
 
       `https://socialregistry.your.org/auth_oauth/g2p_registry_id/authenticate`
-* Create two ID types on the Registry such as `NATIONAL ID` and `NATIONAL ID TOKEN`. To configure ID types refer the [Configure ID Types](../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md) documentation.
-* Install the [OpenID Connect Authentication](../../../../pbms/development/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../../pbms/development/odoo-modules/authentication-oidc-reg-id.md) module.
+* Create two ID types on the Registry such as `NATIONAL ID` and `NATIONAL ID TOKEN`. To configure ID types refer the [Configure ID Types](../../beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md) documentation.
+* Install the [OpenID Connect Authentication](../../../development/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../development/odoo-modules/authentication-oidc-reg-id.md) module.
 
 ## Procedure
 
@@ -62,4 +62,4 @@ The rest of the fields have the default values.
 
 This completes the process of configuring the _**eSignet Authentication Provider**_ in SR.
 
-To know the process on authenticate an individual, refer [ID Authentication Process](id-authentication-process.md) documentation.
+To know the process on authenticate an individual, refer [ID Authentication Process](../../../../social-registry/features/id-authentication/user-guides/id-authentication-process.md) documentation.

@@ -14,11 +14,17 @@ layout:
 
 # API
 
-SR enables APIs to [search](../search.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.&#x20;
+SR enables APIs to [Search](search-apis.md) and do CRUD operations.  The search APIs implement GP2 Connect specification.&#x20;
 
 ## API specification
 
 [openg2p-social-registry-api](https://openg2p.stoplight.io/docs/openg2p-social-registry/yh3dm5ylwbwq7-g2-p-connect-registry-sync)
+
+## Types of APIs
+
+* [Search APIs](search-apis.md)
+* [Individual APIs](individual-apis.md)
+* [Group APIs](group-apis.md)
 
 ## Source code
 
