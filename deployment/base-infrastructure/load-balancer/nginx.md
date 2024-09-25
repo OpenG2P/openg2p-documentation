@@ -18,7 +18,7 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     ```bash
     sudo rm /etc/nginx/sites-enabled/default
     ```
-*   Set `client_max_body_size` to `50m` :
+*   Set `client_max_body_size` to `50m` on `/etc/nginx/nginx.conf`:
 
     ```bash
     client_max_body_size 50m;
@@ -38,6 +38,10 @@ This is only a one-time installation. Whenever you want to add new servers to th
 * [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
 
 ### Installation
+
+{% hint style="info" %}
+On AWS EC2, the number of network interfaces that can be created is limited depending on the node type. For example on `t3a.small` node, the maximum number of network interfaces is 2. Refer to [EC2 Network Specifications](https://docs.aws.amazon.com/ec2/latest/instancetypes/gp.html#gp\_network) for more info.
+{% endhint %}
 
 * Once nginx server is installed, it will create `sites-enabled` and `sites-available` directories inside /etc/nginx directory.
 * Navigate to `/etc/nginx/sites-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/sites.sample.conf ](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf)file as a template.

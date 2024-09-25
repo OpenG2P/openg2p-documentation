@@ -98,10 +98,8 @@ Each `$` in the json file will be treated as an environment variable. Environmen
             "transforms.keyExtId.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Key",
             "transforms.keyExtId.field": "id",
 
-            "transforms.valExt1.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Value",
-            "transforms.valExt1.field": "payload",
-            "transforms.valExt2.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Value",
-            "transforms.valExt2.field": "after",
+            "transforms.valExt1.type": "org.openg2p.reporting.kafka.connect.transforms.ExtractFieldAdv${dollar}Value",
+            "transforms.valExt1.field": "payload.source.ts_ms->source_ts_ms,payload.after",
 
             "transforms.tsconvert01.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
             "transforms.tsconvert01.field": "source_ts_ms",

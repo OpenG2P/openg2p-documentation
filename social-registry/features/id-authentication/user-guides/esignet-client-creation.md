@@ -14,58 +14,46 @@ layout:
 
 # 📔 eSignet Client Creation
 
-
-
 This document provides instructions on eSignet client creation.
 
-There are two methods for creating an eSignet client.
+## Prerequisites
 
-* [Using PMS API](esignet-client-creation.md#using-pms-api)
-* [Using eSignet API](esignet-client-creation.md#using-esignet-api)
+* Keycloak Client is created for eSignet. The `esignet_admin_access` client scope is assigned as a default scope. [More info>>](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/esignet#post-installation)
 
-## Using PMS API
+## Procedure
 
-This method is applicable if MOSIP Partner Management APIs are available. The MOSIP Partner Admin executes the below steps.
+1. Create a private key public key JWK pair. (https://mkjwk.org can be used).
+2.  Create an eSignet OIDC client using the following API. (Replace parameters with appropriate values in the below API)
 
-1. Create an eSignet OIDC client using PMS OIDC API.
-
-{% swagger src="../../../../.gitbook/assets/pms-api-docs.json" path="/oidc/client" method="post" %}
-[pms-api-docs.json](../../../../.gitbook/assets/pms-api-docs.json)
-{% endswagger %}
-
-* `authParnterId:` Partner ID in [this](esignet-client-creation.md#configure-openg2p-as-a-partner-on-mosip) step.
-* `policyId` : Policy ID in [this](esignet-client-creation.md#configure-openg2p-as-a-partner-on-mosip) step.
-* `publicKey:` Generate [JWK](https://openid.net/specs/draft-jones-json-web-key-03.html).
-* `logoUri`: URL of your logo accessible publicly.
-* `grantTypes` = `["authorization_code"]`
-* `clientAuthMethods`= `["private_key_jwt"]`
-* `redirectUris`: URLs of the form `https://<your web portal>/auth_oauth/signin`
-
-Note down the Client ID as an output of the above step.
-
-### Using eSignet API
-
-This method is applicable if MOSIP Partner Management APIs are **not** available.
-
-1. Create an eSignet OIDC client using the following API.
-
-POST /client-mgmt/oidc
-
-* `clientId:` Arbitrary string.
-* `clientName:` Arbitrary string.
-* `relyingParnterId:` Partner ID in [this](esignet-client-creation.md#configure-openg2p-as-a-partner-on-mosip) step.
-* `publicKey:` Generated [JWK](https://openid.net/specs/draft-jones-json-web-key-03.html).
-*   `authContextRefs`:&#x20;
-
+    ```bash
+    token=$(curl -s https://<keycloak hostname>/realms/master/protocol/openid-connect/token -d "client_id=<esignet keycloak client id>" -d "client_secret=<esignet keycloak client secret>" -d "grant_type=client_credentials" | jq -r '.access_token');
+    curl -v -s -H "Authorization: Bearer ${token}" -H "content-type: application/json" https://<esignet hostname>/v1/esignet/client-mgmt/oauth-client -d '{
+      "requestTime": "'$(date -u "+%Y-%m-%dT%T.%3NZ")'",
+      "request": {
+        "clientId": "<OIDC Client ID>",
+        "clientName": "<OIDC Client Name>",
+        "publicKey": <Public Key JWK>,
+        "relyingPartyId": "<relying party id. (For OpenG2P related clients, give openg2p-auth-partner)>",
+        "userClaims": [
+          "birthdate","address","gender","name","phone_number","picture","email", "individual_id"
+        ],
+        "authContextRefs": [
+          "mosip:idp:acr:biometrics","mosip:idp:acr:generated-code","mosip:idp:acr:linked-wallet"
+        ],
+        "logoUri": "<logo URL to be displayed on UI>",
+        "redirectUris": [
+          "<redirect URI List>"
+        ],
+        "grantTypes": [
+          "authorization_code"
+        ],
+        "clientAuthMethods": [
+          "private_key_jwt"
+        ],
+        "clientNameLangMap": {
+          "eng": "<OIDC Client Name>"
+        }
+      }
+    }'
     ```
-    ["mosip:idp:acr:biometrics","mosip:idp:acr:generated-code"]
-    ```
-*   `userClaims`:&#x20;
 
-    ```
-    ["birthdate","address","gender","name","phone_number","email","picture"]
-    ```
-* `logoUri`: URL of your logo accessible publicly.
-* `grantTypes` = `["authorization_code"]`
-* `clientAuthMethods`= `["private_key_jwt"]`
-* `redirectUris`: URLs of the form `https://<your web portal>/auth_oauth/signin`

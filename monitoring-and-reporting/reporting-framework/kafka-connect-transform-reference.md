@@ -1,6 +1,6 @@
 # Kafka Connect Transform Reference
 
-This document is the configuration reference guide for Kafka SMTs developed by OpenG2P, that can be used on [OpenSearch Sink Connectors](https://github.com/OpenG2P/openg2p-reporting).
+also supports the extraction of nested fieldsThis document is the configuration reference guide for Kafka SMTs developed by OpenG2P, that can be used on [OpenSearch Sink Connectors](https://github.com/OpenG2P/openg2p-reporting).
 
 Following is a list of some of the other transformations available on the OpenSearch Connectors, apart from the ones developed by OpenG2P:
 
@@ -26,6 +26,29 @@ Following is a list of some of the other transformations available on the OpenSe
 
 <table><thead><tr><th width="210">Field name</th><th width="138">Field title</th><th>Description</th><th width="100">Default Value</th></tr></thead><tbody><tr><td>query.type</td><td>Query Type</td><td><p>This is the type of query made to retrieve new field values.</p><p>Supported values:</p><ul><li><code>es</code> (Elasticsearch based).</li></ul></td><td>es</td></tr><tr><td>input.fields</td><td>Input Fields</td><td><p>List of comma-separated fields that will be considered as input fields in the current record.</p><p>Nested input fields are supported, like: (where profile is json that contains name and birthdate fields)</p><pre class="language-json"><code class="lang-json">profile.name,profile.birthdate
 </code></pre></td><td></td></tr><tr><td>output.fields</td><td>Output Fields</td><td>List of comma-separated fields to be added to this record.</td><td></td></tr><tr><td>input.default.values</td><td>Input Default Values</td><td>List of comma-separated values to give in place of the input fields when an input field is empty or null.<br>Length of this has to match that of <code>input.fields</code>.</td><td></td></tr><tr><td>es.index</td><td>ES Index</td><td>Elasticsearch(or OpenSearch) index to query for.</td><td></td></tr><tr><td>es.input.fields</td><td>ES Input Fields</td><td>List of comma-separated fields, to be queried on the ES index, each of which maps to the fields on <code>input.fields</code>.<br>Length of this has to match that of <code>input.fields</code>.</td><td></td></tr><tr><td>es.output.fields</td><td>ES Output Fields</td><td>List of comma-separated fields, to be retrieved from the ES query response document, each of which maps to the fields on <code>output.fields</code>. <br>Length of this has to match that of <code>output.fields</code>.</td><td></td></tr><tr><td>es.input.query.add.keyword</td><td>ES Input Query Add Keyword</td><td>Whether or not to add <code>.keyword</code> to the <code>es.input.fields</code> during the term query. Supported values: <code>true</code> / <code>false</code> .</td><td>false</td></tr><tr><td>es.security.enabled</td><td>ES Security Enabled</td><td>If this value is given as <code>true</code>, then Security is enabled on ES.</td><td></td></tr><tr><td>es.url</td><td>ES Url</td><td>Elasticsearch/OpenSearch base URL.</td><td></td></tr><tr><td>es.username</td><td>ES Username</td><td></td><td></td></tr><tr><td>es.password</td><td>ES Password</td><td></td><td></td></tr></tbody></table>
+
+### ExtractFieldAdv
+
+#### Class name:
+
+* `org.openg2p.reporting.kafka.connect.ExtractFieldAdv$Key` - Applies transform only to the _Key_ of Kafka Connect Record.
+* `org.openg2p.reporting.kafka.connect.ExtractFieldAdv$Value` - Applies transform only to the _Value_ of Kafka Connect Record.
+
+#### Description:
+
+* This transformation can be used to extract, merge, and/or rename fields in the record.
+* This also supports the extraction of nested fields.
+* For example:
+  * `"field": "payload",` : The `payload` field is extracted and the record is replaced with the extracted value.
+  * `"field": "payload.before",` : The `before` field inside `payload` field is extracted and the record is replaced with the extracted value.
+  * `"field": "source,payload.before,payload.after",` : The `source` field and the `before` and `after` fields inside the `payload` field are merged, and the record is replaced with the final merged value. Fields in `after` will be prioritized over fields in `before`, and `before` is prioritized over `source` and so on from the config list. Maps or arrays inside the above fields will be merged.
+  * `"field": "source.ts_ms->source_ts_ms,source.table->source_table",` : The `ts_ms` field in `source` will be extracted and renamed to `source_ts_ms`. The `table` field in `source` will be extracted and renamed to `source_table`. The final record contains only `source_ts_ms` and `source_table` fields.
+  * `"field": "source.ts_ms->source_ts_ms,payload.before,payload.after",` : The `source_ts_ms` field is added to the merged value of `before` and `after` fields (from `payload` ), and the record is replaced with the final merged value. If the `source_ts_ms` field is already present in `after` , it will be prioritised over the one from `source`.
+* This transformation extends from the `ExtractField` transform by Apache.[https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.ExtractField](https://kafka.apache.org/documentation/#org.apache.kafka.connect.transforms.ExtractField)
+
+#### Configuration:
+
+<table><thead><tr><th>Field name</th><th>Field title</th><th width="268">Description</th><th>Default value</th></tr></thead><tbody><tr><td>field</td><td>Field name to extract</td><td>Name of the field (or list of fields) to be extracted and merged.</td><td></td></tr><tr><td>array.merge.strategy</td><td>Array merge strategy</td><td><ul><li>Strategy to merge nested arrays.</li><li><p>Available values:</p><ul><li><code>concat</code> : Merge two arrays.</li><li><code>replace</code> : Replace array with new array.</li></ul></li></ul></td><td>concat</td></tr><tr><td>map.merge.strategy</td><td>Map merge strategy</td><td><ul><li>Strategy to merge nested maps.</li><li><p>Available values:</p><ul><li><code>deep</code> : Deep merge two maps.</li><li><code>replace</code> : Replace map with new map.</li></ul></li></ul></td><td>deep</td></tr></tbody></table>
 
 ### StringToJson
 
