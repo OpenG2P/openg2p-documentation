@@ -160,3 +160,7 @@ An intent call in the form would look like this:
     </input>
 </group>
 ```
+
+### Download APK
+
+{% embed url="https://drive.google.com/file/d/1NkIJkRY3goApFDJEMTRoWNQEGNTDhqIP/view?usp=sharing" %}
