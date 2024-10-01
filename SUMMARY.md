@@ -362,6 +362,8 @@
         * [example-bank-models](g2p-bridge/development/design-specifications/example-bank/openg2p-g2p-bridge-example-bank-models.md)
         * [example-bank-api](g2p-bridge/development/design-specifications/example-bank/openg2p-g2p-bridge-example-bank-api.md)
         * [example-bank-celery](g2p-bridge/development/design-specifications/example-bank/openg2p-g2p-bridge-example-bank-celery.md)
+    * [Unit Testing](g2p-bridge/development/unit-testing.md)
+    * [Functional Testing](g2p-bridge/development/functional-testing.md)
   * [Tech Guides](g2p-bridge/tech-guides.md)
   * [📔 User Guides](g2p-bridge/user-guides/README.md)
     * [📔 Configure G2P Connect Payment Manager](g2p-bridge/user-guides/configure-g2p-connect-payment-manager.md)
