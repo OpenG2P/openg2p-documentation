@@ -14,13 +14,13 @@ layout:
 
 # Functional Testing
 
-Testing scenarios
+## Testing scenarios
 
-From PBMS
+### From PBMS
 
-Independent of PBMS
+### Independent of PBMS
 
-Rest API
+#### Rest API
 
 1. Create envelope - Happy path
 2. Create envelope - with non-existent Program Mnemonic
@@ -39,7 +39,7 @@ Rest API
 15. Cancel Disbursements - Happy path
 16. Cancel Disbursements - Invalid disbursement ID in a batch - 1 is invalid whereas other disbursement IDs are valid
 
-Downstream Batch Testing - Single Scenario covering multiple use cases
+#### Downstream Batch Testing - Single Scenario covering multiple use cases
 
 1. Create 1 envelope with 1001 disbursements, totalling upto USD 502,503 - disbursement amounts as 1, 2, 3....upto 1002 - schedule date should be in the future
 2. Cancel 1 disbursement in this envelope, the disbursement with USD 1001
@@ -50,9 +50,13 @@ Downstream Batch Testing - Single Scenario covering multiple use cases
 7. Wait for 10 minutes
 8. Iteratively check all 1002 - disbursement\_status. Disbursement IDs - 1 to 1000 should show reconciled. Some of them should show reversed (about 30%) -- ID 1001 should show cancelled and ID 1002 - should show ??
 
-Negative conditions for MT940
+#### Negative conditions for MT940
 
-Mapper Resolution
+1. In Example Bank for the above Envelope add Wrong entries in accounting log
+2. Add duplicate Debit for Disbursement ID - 1 - DUPLICATE\_DEBIT
+3. Add a Debit for Disbursement ID - 1003 - INVALID\_DISBURSEMENT\_ID
+4. Add a Reversal Debit for Disbursement ID - 1002 (which had invalid beneficiary ID)
+5.  Generate Account Statement and upload into Bridge. Check for Reconciliation Errors. There should be these 3 entries that should show up in Recon Errors.
 
 
 
@@ -60,5 +64,13 @@ Mapper Resolution
 
 
 
-Create envelope - with non-existent Program Mnemonic
+
+
+
+
+
+
+
+
+
 
