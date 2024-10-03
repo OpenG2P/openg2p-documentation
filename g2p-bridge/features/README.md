@@ -30,8 +30,12 @@ Incoming APIs from MIS/PBMS systems
    **b.** cycle identification\
    **c.** number of beneficiaries\
    **d.** total disbursement amount in the envelope\
-   **e.** number of disbursments received from the upstream PBMS/MIS system\
+   **e.** number of disbursements received from the upstream PBMS/MIS system\
    **f.** number of disbursements shipped downstream to the Sponsor Bank\
    **g.** number of disbursements reconciled with the Sponsor Bank\
    **h.** number of disbursements reversed by the Sponsor Bank based on errors reported from further downstream destination banks&#x20;
+3. cancel a disbursent envelope\
+   After an envelope is created in the g2p-bridge subsystem, the upstream pbms/mis system can cancel an envelope.\
+   Once an envelope is cancelled, no further processing takes place in that envelope. \
+   A cancellation cannot be undone.
 
