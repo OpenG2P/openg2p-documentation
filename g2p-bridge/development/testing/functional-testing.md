@@ -41,14 +41,13 @@ layout:
 
 #### Downstream Batch Testing - Single Scenario covering multiple use cases
 
-1. Create 1 envelope with 1001 disbursements, totalling upto USD 502,503 - disbursement amounts as 1, 2, 3....upto 1002 - schedule date should be in the future
+1. Create 1 envelope with 1002 disbursements, totalling upto USD 502,503 - disbursement amounts as 1, 2, 3....upto 1002 - schedule date should be in the future. The disbursement with USD 1002 - should have an invalid Beneficiary ID - Beneficiary ID should not be present in mapper
 2. Cancel 1 disbursement in this envelope, the disbursement with USD 1001
-3. The USD 1002 - should have an invalid Beneficiary ID - Beneficiary ID should not be present in mapper
-4. Now check disbursement\_envelope\_status - it should show 1001 disbursements with amount as 500,500 + 1002 = 501,502
-5. Manually update the envelope schedule date to TODAY - so that the downstream batch picks up the envelope for shipment
-6. Give it 5 minutes - Now check disbursement\_envelope\_status - it should show 1000 disbursements as shipped (1 is cancelled, 1 is invalid beneficiary ID)
-7. Wait for 10 minutes
-8. Iteratively check all 1002 - disbursement\_status. Disbursement IDs - 1 to 1000 should show reconciled. Some of them should show reversed (about 30%) -- ID 1001 should show cancelled and ID 1002 - should show ??
+3. Now check disbursement\_envelope\_status - it should show 1001 disbursements with amount as 500,500 + 1002 = 501,502
+4. Manually update the envelope schedule date to TODAY - so that the downstream batch picks up the envelope for shipment
+5. Give it 5 minutes - Now check disbursement\_envelope\_status - it should show 1000 disbursements as shipped (1 is cancelled, 1 is invalid beneficiary ID)
+6. Wait for 10 minutes
+7. Iteratively check all 1002 - disbursement\_status. Disbursement IDs - 1 to 1000 should show reconciled. Some of them should show reversed (about 30%) -- ID 1001 should show cancelled and ID 1002 - should show ??
 
 #### Negative conditions for MT940
 
