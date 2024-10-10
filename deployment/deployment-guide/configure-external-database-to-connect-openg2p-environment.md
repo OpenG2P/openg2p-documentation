@@ -57,6 +57,7 @@ This document provides instructions to setup and install external database for O
        vim /etc/postgresql/14/main/postgresql.conf
        listen_addresses = '*'
        max_connections = 500
+       wal_level = logical
        ```
    2.  Acess pg\_hba.conf file and allow TCP/IP connections (host) to all databases (all) for all users (all) with any IPv4 address (0.0.0.0/0) using an scram-sha-256 encrypted password for authentication and save the file.
 
@@ -101,11 +102,18 @@ This document provides instructions to setup and install external database for O
    2.  Add the below parameters in the last section of postgresql.
 
        ```yaml
+       #Make the default postgresql enabled equals to false.
+       postgresql:
+         auth:
+           database: socialregistrydb/pbmsdb
+           username: socialregistryuser/pbmsuser
+         enabled: false
+       #Add the below parameters in the last section of default postgresql.
        externalDatabase:
          create: false
          database: socialregistrydb/pbmsdb
          host: <IP address of External DB>
-         password: <password for SR DB>
+         password: <password for DB>
          port: 5432
          user: socialregistryuser/pbmsuser
        ```
