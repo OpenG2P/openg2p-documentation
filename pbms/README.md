@@ -1,5 +1,5 @@
 ---
-description: Program and Beneficiary Management System
+description: GP2 MIS - Program and Beneficiary Management System
 ---
 
 # PBMS
