@@ -24,5 +24,21 @@ The registry can host demographic data of both individuals and groups (family/ho
 Social Registry Functional Architecture
 {% endembed %}
 
+## Salient features
+
+The salient features of OpenG2P Social Registry are the following:
+
+* Holds individual and household records with relationships
+* Share data with other systems via standard interfaces
+* Privacy controls on the data
+* Packaged for rapid deployment
+* Multiple update mechanisms&#x20;
+* Automatic computation of scores like PMT
+* Easy user interface for administration
+* Deduplication tools including fuzzy deduplication
+* Registration in areas with no connectivity
+* Issue unique ID to individuals
+* Issue Verifiable Credentials
+
 
 
