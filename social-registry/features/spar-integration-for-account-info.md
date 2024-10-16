@@ -1,9 +1,10 @@
 ---
+description: WORK IN PROGRESS
 layout:
   title:
     visible: true
   description:
-    visible: false
+    visible: true
   tableOfContents:
     visible: true
   outline:
@@ -12,7 +13,7 @@ layout:
     visible: true
 ---
 
-# SPAR Update for offline enumerations
+# SPAR Integration for Account Info
 
 ## Context
 

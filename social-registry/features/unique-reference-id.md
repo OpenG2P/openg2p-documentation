@@ -1,7 +1,3 @@
----
-description: Work In Progress
----
-
 # Unique Reference ID
 
 ### Description <a href="#description" id="description"></a>

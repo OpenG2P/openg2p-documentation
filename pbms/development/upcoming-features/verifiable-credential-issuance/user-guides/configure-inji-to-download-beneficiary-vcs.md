@@ -13,7 +13,7 @@ This guide contains the procedure to install and set up the backend required for
 
 (Only required for testing. Not required for production.)
 
-1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: mimoto-oidc
    * clientName: Inji Wallet
    * logoUrl:[https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)
@@ -22,7 +22,7 @@ This guide contains the procedure to install and set up the backend required for
 
 ### 2. Create OpenG2P Mimoto OIDC Client
 
-1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: `openg2p-mimoto-oidc`
    * clientName: `Inji Wallet`
    * logoUrl: [https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)

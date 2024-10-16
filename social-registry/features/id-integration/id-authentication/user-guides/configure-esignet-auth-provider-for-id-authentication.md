@@ -23,30 +23,30 @@ This document provides instructions on how to configure eSignet Authentication P
   *   Allowed redirect URIs of the client must contain
 
       `https://socialregistry.your.org/auth_oauth/g2p_registry_id/authenticate`
-* Create two ID types on the Registry such as `NATIONAL ID` and `NATIONAL ID TOKEN`. To configure ID types refer the [Configure ID Types](../../beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md) documentation.
-* Install the [OpenID Connect Authentication](../../../development/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../development/odoo-modules/authentication-oidc-reg-id.md) module.
+* Create two ID types on the Registry such as `NATIONAL ID` and `NATIONAL ID TOKEN`. To configure ID types refer the [Configure ID Types](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md) documentation.
+* Install the [OpenID Connect Authentication](../../../../../pbms/development/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../../../pbms/development/odoo-modules/authentication-oidc-reg-id.md) module.
 
 ## Procedure
 
-1. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Settings**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Settings**_.
 
-<figure><img src="../../../../.gitbook/assets/pbms-settings.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/pbms-settings.png" alt=""><figcaption></figcaption></figure>
 
 The _**Settings**_ screen is displayed.
 
 2. Select the tab _**Users & Companies**_, and click the option _**OAUTH Providers**_.
 
-<figure><img src="../../../../.gitbook/assets/pbms-settings-oauth.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/pbms-settings-oauth.png" alt=""><figcaption></figcaption></figure>
 
 _**Providers**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/providers-pbms.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/providers-pbms.png" alt=""><figcaption></figcaption></figure>
 
 3. Click the _**New**_ button.
 
 _**Providers New**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/providers-new-pbms.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/providers-new-pbms.png" alt=""><figcaption></figcaption></figure>
 
 4. Enter the values in the respective fields.
 
@@ -58,8 +58,8 @@ Note:
 
 The rest of the fields have the default values.
 
-5. Click the icon ![](../../../../.gitbook/assets/save-button.png) to save the changes.
+5. Click the icon ![](../../../../../.gitbook/assets/save-button.png) to save the changes.
 
 This completes the process of configuring the _**eSignet Authentication Provider**_ in SR.
 
-To know the process on authenticate an individual, refer [ID Authentication Process](../../../../social-registry/features/id-authentication/user-guides/id-authentication-process.md) documentation.
+To know the process on authenticate an individual, refer [ID Authentication Process](id-authentication-process.md) documentation.

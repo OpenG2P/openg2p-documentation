@@ -2,9 +2,9 @@
 description: WORK IN PROGRESS
 ---
 
-# Tokenisation
+# ID Validation and Tokenisation
 
-The tokenisation process involves using the [IDA](https://docs.mosip.io/1.2.0/id-authentication) (ID Authentication) system to verify the registrant's data. If the IDs such as registrant's ID (RID), virtual ID (VID), or unique identification number (UIN) are valid, then the IDA system generates a token. The generated token replaces the sensitive data, like RID, VID, or UIN, with non-sensitive data and it is recorded in the database or the individual/group registries of the Social Registry (SR) module.
+The tokenisation process involves using the ID Authentication system to verify the registrant's data. If the IDs such as registrant's ID (RID), virtual ID (VID), or unique identification number (UIN) are valid, then the IDA system generates a token. The generated token replaces the sensitive data, like RID, VID, or UIN, with non-sensitive data and it is recorded in the database or the individual/group registries of the Social Registry (SR) module.
 
 ## Functionality
 

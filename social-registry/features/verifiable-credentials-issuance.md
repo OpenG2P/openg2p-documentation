@@ -1,7 +1,3 @@
----
-description: WORK IN PROGRESS
----
-
 # Verifiable Credentials Issuance
 
 Social Registry can issue credentials in the form of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) (VC).  Upon authentication, these can be downloaded into the beneficiary's **digital wallet** or printed on paper as a **QR code.** These credentials indicate that the individual is the member of the Social Registry.  Credentials are sometimes also referred to as e-cards, Farmer Registry e-Card, etc.
@@ -15,7 +11,7 @@ Social Registry can issue credentials in the form of [Verifiable Credentials](ht
 
 ## High-level workflow
 
-<figure><img src="../../../.gitbook/assets/Social Registry VC Issunace.jpg" alt="" width="563"><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Social Registry VC Issunace.jpg" alt="" width="563"><figcaption></figcaption></figure>
 
 ## Source code and configuration
 

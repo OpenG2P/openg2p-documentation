@@ -14,7 +14,7 @@ layout:
 
 # Deduplication
 
-In Social Registry (SR), the data are received and recorded in several ways. SR is dynamically updated via APIs, Service Provider Portal, ODK, Login-based direct data entry, and so on. In order to maintain the data integrity in SR, a process is a must to ensure the uniqueness and accuracy of the recorded registrants' data. SR has a solution/feature named _**Deduplication**_.&#x20;
+In Social Registry (SR), the data are received and recorded in several ways. SR is dynamically updated via APIs, Service Provider Portal, ODK, Login-based direct data entry, etc. To maintain the data integrity in SR, a process is a must to ensure the uniqueness and accuracy of the recorded registrants' data. SR has a solution/feature named _**Deduplication**_.&#x20;
 
 ## Deduplication
 
@@ -22,7 +22,7 @@ _**Deduplication**_ is the process that identifies and stores the duplicate entr
 
 ## ID-based deduplication
 
-ID-based deduplication is a method that detects duplicates based on unique identifiers i.e., IDs assigned to each recorded registrant belong to an individual/group. This method ensures each ID is distinct and helps to maintain single entry for each recorded registrant. In this way, it eliminates redundancies and keeps the database more reliable, clean, and efficient.
+ID-based deduplication is a method that detects duplicates based on unique identifiers i.e., functional ID or National ID assigned to each recorded registrant belonging to an individual/group. This method ensures each ID is distinct and helps to maintain a single entry for each recorded registrant. In this way, it eliminates redundancies and keeps the database more reliable, clean, and efficient.
 
 To know more about Odoo merge and deduplication, [click here](https://hibou.io/docs/contacts-64/merging-deduplicating-contacts-in-odoo-12-13-331)
 

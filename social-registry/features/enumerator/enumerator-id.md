@@ -1,6 +1,6 @@
 # Enumerator ID
 
-Enumerators are created in the Social Registry (SR) using the Registration Portal. Enumerators are field employees or agents who assist in gathering information from registrants/applicants. Each time an Enumerator is added to the Registration Portal, a unique ID is automatically generated and assigned to them. The assigned ID is the Enumerator ID (EID) which serves as a unique identifier for each enumerator in the SR.
+When an [Enumerator](./) is added to the Registration Portal, a unique ID is automatically generated and assigned. This ID is the Enumerator ID (EID) which serves as a unique identifier for each enumerator in the SR.
 
 The Data Administrator and the System Administrator have the authority to create Enumerators in SR using the Registration Portal.
 

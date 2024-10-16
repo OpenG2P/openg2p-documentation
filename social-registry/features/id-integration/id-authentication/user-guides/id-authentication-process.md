@@ -13,18 +13,18 @@ This document provides instructions to perform ID authentication of an individua
 
 ## Procedure
 
-1. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Social**_ _**Registry**_.
+1. Click the main menu icon ![](../../../../../.gitbook/assets/main-menu.png) and select _**Social**_ _**Registry**_.
 
 _**Social Registry**_ screen is displayed
 
 2. Click the Individual tab in the menu bar.
 3. Select the individual to perform ID authentication.
 
-<figure><img src="../../../../.gitbook/assets/sr-individual.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/sr-individual.png" alt=""><figcaption></figcaption></figure>
 
 Individual screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/sr-individual-id.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/sr-individual-id.png" alt=""><figcaption></figcaption></figure>
 
 4. Select the IDs tab.
 5. Click the _**Authenticate**_ button.
