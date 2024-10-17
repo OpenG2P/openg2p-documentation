@@ -35,7 +35,7 @@ Versions of all repositories that are used to create the Docker are specified in
 
 ### Tagging the repositories
 
-1. Run the `tag.yml` workflow using Github Actions.  The workflow checks if there are any changes w.r.t. to previous version specified. If there are no changes the workflow fails with a message and new tag is not created.
+1. Run the "Tag the repo" (`tag.yml` ) workflow using Github Actions.  Make sure `OpenG2PBot` user on Github has 'Write' permission to the repository. The workflow checks if there are any changes w.r.t. to the previous version specified. If there are no changes the workflow fails with a message and a new tag is not created.
 
 ### Creating Docker package
 
