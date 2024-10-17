@@ -33,7 +33,7 @@ The three steps involved in the registration process using the ODK Collect App a
 
 * ODK Central Configuration
 * Field Registration
-* Use [**ODK Importer**](../pbms/features/odk-importer/) or [**MTS Connector**](../pbms/development/odoo-modules/mts-connector.md)
+* Use [**ODK Importer**](../pbms/features/odk-importer/) or [**MTS Connector**](../pbms/developer-zone/odoo-modules/mts-connector.md)
 
 ### ODK Central Configuration
 

@@ -110,7 +110,7 @@ Refer the following links for deeper understanding of the API's structure [Kerne
 
 ## Source code
 
-[openg2p-security](../pbms/development/repositories/openg2p-security.md)
+[openg2p-security](../pbms/developer-zone/repositories/openg2p-security.md)
 
 ## Conclusion
 

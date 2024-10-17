@@ -18,7 +18,7 @@ Each module outputs system logs for different levels:
 
 * INFO, ERROR, DEBUG, WARNING
 
-Logs from all modules are channelized and indexed for viewing on dashboards and triggering alerts.  Refer to [Logging](../../monitoring-and-reporting/logging.md) for further details.
+Logs from all modules are channelized and indexed for viewing on dashboards and triggering alerts.  Refer to [Logging](../../../monitoring-and-reporting/logging.md) for further details.
 
 ## Audit logs
 

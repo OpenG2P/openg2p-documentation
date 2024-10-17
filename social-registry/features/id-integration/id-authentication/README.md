@@ -14,7 +14,7 @@ The ID Authentication feature avoids the need for self-authentication via self-s
 
 ## Source code
 
-[G2P Auth: OIDC - Reg ID](../../../../pbms/development/odoo-modules/authentication-oidc-reg-id.md)
+[G2P Auth: OIDC - Reg ID](../../../../pbms/developer-zone/odoo-modules/authentication-oidc-reg-id.md)
 
 ## Related user guides
 

@@ -5,7 +5,7 @@ This guide contains the procedure to install and set up the backend required for
 ## Prerequisites
 
 * eSignet is available with the National ID system and is ready for authentication. If not available, a mock eSignet can be installed with PBMS.
-* [G2P OpenID VCI: Base](../../../odoo-modules/g2p-openid-vci-base.md), [G2P OpenID VCI: Programs](../../../odoo-modules/g2p-openid-vci-programs.md), [G2P OpenID VCI: Rest API](../../../odoo-modules/g2p-openid-vci-rest-api.md) odoo modules are installed on PBMS.
+* [G2P OpenID VCI: Base](../../../developer-zone/odoo-modules/g2p-openid-vci-base.md), [G2P OpenID VCI: Programs](../../../developer-zone/odoo-modules/g2p-openid-vci-programs.md), [G2P OpenID VCI: Rest API](../../../developer-zone/odoo-modules/g2p-openid-vci-rest-api.md) odoo modules are installed on PBMS.
 
 ## Procedure
 
@@ -13,7 +13,7 @@ This guide contains the procedure to install and set up the backend required for
 
 (Only required for testing. Not required for production.)
 
-1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: mimoto-oidc
    * clientName: Inji Wallet
    * logoUrl:[https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)
@@ -22,7 +22,7 @@ This guide contains the procedure to install and set up the backend required for
 
 ### 2. Create OpenG2P Mimoto OIDC Client
 
-1. Create an [eSignet OIDC client](../../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: `openg2p-mimoto-oidc`
    * clientName: `Inji Wallet`
    * logoUrl: [https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)

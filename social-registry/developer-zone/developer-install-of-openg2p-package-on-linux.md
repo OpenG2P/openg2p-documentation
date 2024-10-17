@@ -244,7 +244,7 @@ db_password = your_database_password
 ## Installation of OpenG2P package
 
 1. Create a `custom-addons` folder inside the `odoo` folder to keep all the extra modules.
-2.  Clone all the [OpenG2P modules](../../pbms/development/repositories/).
+2.  Clone all the [OpenG2P modules](../../pbms/developer-zone/repositories/).
 
     ```bash
     git clone <repo_url>

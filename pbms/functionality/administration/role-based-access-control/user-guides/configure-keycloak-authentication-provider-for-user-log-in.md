@@ -24,7 +24,7 @@ This document provides instructions on how to configure Keycloak Authentication 
 Note:
 
 * OAuth providers can be created from Odoo Settings (debug mode).
-* For configuration reference refer the [OpenID Connect Authentication](../../../../development/odoo-modules/openid-connect-authentication.md) documentation.
+* For configuration reference refer the [OpenID Connect Authentication](../../../../developer-zone/odoo-modules/openid-connect-authentication.md) documentation.
 
 ## Procedure
 

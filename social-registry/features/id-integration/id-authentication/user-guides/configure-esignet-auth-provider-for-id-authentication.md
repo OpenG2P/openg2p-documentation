@@ -24,7 +24,7 @@ This document provides instructions on how to configure eSignet Authentication P
 
       `https://socialregistry.your.org/auth_oauth/g2p_registry_id/authenticate`
 * Create two ID types on the Registry such as `NATIONAL ID` and `NATIONAL ID TOKEN`. To configure ID types refer the [Configure ID Types](../../../../../pbms/functionality/beneficiary-management/beneficiary-registry-configurations/user-guides/configure-id-types.md) documentation.
-* Install the [OpenID Connect Authentication](../../../../../pbms/development/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../../../pbms/development/odoo-modules/authentication-oidc-reg-id.md) module.
+* Install the [OpenID Connect Authentication](../../../../../pbms/developer-zone/odoo-modules/openid-connect-authentication.md) and [G2P Auth: OIDC - Reg ID](../../../../../pbms/developer-zone/odoo-modules/authentication-oidc-reg-id.md) module.
 
 ## Procedure
 
