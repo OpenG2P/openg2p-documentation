@@ -8,7 +8,7 @@ description: >-
 
 Migrating PostgreSQL from a Kubernetes cluster (running in Docker containers with NFS storage) to an external standalone instance is a strategic move for improving scalability, performance, and manageability in production. Below is a step-by-step guide to performing this transition with minimal disruption.
 
-### Steps for Migrating PostgreSQL to an External Instance:
+### Steps for migrating postgresql to an external instance:
 
 1.  **Pre-Migration Planning**:
 
@@ -92,7 +92,7 @@ Migrating PostgreSQL from a Kubernetes cluster (running in Docker containers wit
        \
 
 
-       <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption><p>odoo-conf.png</p></figcaption></figure>
 
 
 6. **Ensure Data Consistency** **after the migration.**
