@@ -55,11 +55,15 @@ layout:
 2. Add duplicate Debit for Disbursement ID - 1 - DUPLICATE\_DEBIT
 3. Add a Debit for Disbursement ID - 1003 - INVALID\_DISBURSEMENT\_ID
 4. Add a Reversal Debit for Disbursement ID - 1002 (which had invalid beneficiary ID)
-5.  Generate Account Statement and upload into Bridge. Check for Reconciliation Errors. There should be these 3 entries that should show up in Recon Errors.
+5. Generate Account Statement and upload into Bridge. Check for Reconciliation Errors. There should be these 3 entries that should show up in Recon Errors.
 
+#### Integration Testing with G2P MIS
 
-
-
+1. Vanilla happy path - Program has 100 beneficiaries, we enrol all 100 beneficiaries into a new cycle and disburse the payments. All 100 beneficiaries should have their IDs mapped in SPAR. Batch size = 100, so that all disbursements happen in a single batch
+2. Repeat scenario 1 with a reduced batch size of 10. You should see 10 batches between G2P MIS and G2P Bridge
+3. Repeat scenario 1 with 2 beneficiary IDs removed from SPAR. Check failure handling for the 2 missing beneficiaries
+4. Create a new cycle and enrol only 50 beneficiaries into the cycle. Disburse and reconcile the envelope numbers and the disbursement numbers.
+5. Check Envelope Summary for all scenarios and check PDF rendering from the pop up page.
 
 
 
