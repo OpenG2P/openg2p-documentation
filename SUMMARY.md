@@ -454,6 +454,7 @@
     * [Rerun Jobs in Kubernetes Cluster](deployment/deployment-guide/rerun-jobs-in-kubernetes-cluster.md)
     * [Finding URLs in the System](deployment/deployment-guide/finding-urls-in-the-system.md)
     * [Transitioning PostgreSQL From Docker on K8s to Standalone PostgreSQL](deployment/deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md)
+    * [Restore a PVC from an NFS Folder and Attach it to a Pod](deployment/deployment-guide/restore-a-pvc-from-an-nfs-folder-and-attach-it-to-a-pod.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [Documentation Guides](documentation-guides/README.md)
