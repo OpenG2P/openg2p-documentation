@@ -1,4 +1,4 @@
-# Dashboards Creation Guide
+# 📔 Dashboards Creation Guide
 
 This document contains instructions for the developers (or dashboard creators) to create dashboards to visualize data on OpenSearch.
 

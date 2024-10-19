@@ -1,4 +1,4 @@
-# Connector Creation Guide
+# 📔 Connector Creation Guide
 
 Creating Dashboards for Reporting involves the following steps:
 
@@ -42,7 +42,6 @@ Follow the [Installation guide](installation-and-troubleshooting.md) to install/
             "database.dbname": "${DB_NAME}",
             "topic.prefix": "${DB_PREFIX_INDEX}",
             "table.include.list": "",
-            "column.exclude.list": "",
             "heartbeat.interval.ms": "${DEFAULT_DEBEZIUM_CONNECTOR_HEARTBEAT_MS}",
             "decimal.handling.mode": "double"
         }
@@ -60,11 +59,6 @@ Each `$` in the json file will be treated as an environment variable. Environmen
     ```
 
     * This list needs to include relationship tables of the current table. For example: if you want to index `g2p_program_membership` but would also like to retrieve the name of the program in which the beneficiary belongs, then you have to add `g2p_program` as well.
-*   This will index all the columns into OpenSearch by default. Every column that you don't want to index into OpenSearch has to be explicitly mentioned in the `column.exclude.list`  (Accepts regex). For example PII fields like name, phone number, address, etc. As a general rule, fields that are not required for dashboards must be excluded explicitly.
-
-    ```json
-    "column.exclude.list": "public.res_partner.name,public.res_partner.phone,public.res_partner.address"
-    ```
 * Example debezium connector [https://github.com/OpenG2P/openg2p-reporting/blob/develop/scripts/social-registry/debezium-connectors/default.json](https://github.com/OpenG2P/openg2p-reporting/blob/develop/scripts/social-registry/debezium-connectors/default.json)&#x20;
 * [Debezium PostgreSQL Connector](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) Reference.
 
@@ -82,24 +76,24 @@ Each `$` in the json file will be treated as an environment variable. Environmen
             "connection.password": "${OPENSEARCH_PASSWORD}",
             "tasks.max": "1",
             "topics": "${DB_PREFIX_INDEX}.public.res_partner",
-            "key.ignore": "true",
+            "key.ignore": "false",
             "schema.ignore": "true",
             "key.converter": "org.apache.kafka.connect.json.JsonConverter",
             "value.converter": "org.apache.kafka.connect.json.JsonConverter",
             "key.converter.schemas.enable": "true",
             "value.converter.schemas.enable": "false",
 
-            "behavior.on.null.values": "ignore",
+            "behavior.on.null.values": "delete",
             "behavior.on.malformed.documents": "warn",
             "behavior.on.version.conflict": "warn",
 
-            "transforms": "keyExtId,valExt1,valExt2,tsconvert01,...",
+            "transforms": "keyExtId,valExt,tsconvert01,...",
 
             "transforms.keyExtId.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Key",
             "transforms.keyExtId.field": "id",
 
-            "transforms.valExt1.type": "org.openg2p.reporting.kafka.connect.transforms.ExtractFieldAdv${dollar}Value",
-            "transforms.valExt1.field": "payload.source.ts_ms->source_ts_ms,payload.after",
+            "transforms.valExt.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq${dollar}Value",
+            "transforms.valExt.expr": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
 
             "transforms.tsconvert01.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
             "transforms.tsconvert01.field": "source_ts_ms",
@@ -113,8 +107,6 @@ Each `$` in the json file will be treated as an environment variable. Environmen
     ```json
     "topics": "${DB_PREFIX_INDEX}.public.g2p_program",
     ```
-* To stop capturing changes to records and to maintain only the the latest data of a record on OpenSearch, set `key.ignore` to false. With this config, whenever there is a change to a record on the registry, the same change will be applied to the data on OpenSearch (rather than creating a new entry for the change.).
-  * Also if you want the data to get deleted from OpenSearch, when the record is deleted on the Registry, set `behavior.on.null.values` to `delete`.
 * After the base file is configured, you can now add transformations to your connector at the end of the file (denoted by `...` in the above example). Each transformation (SMT) will apply some change to the data or a particular field from the table, before pushing the entry to OpenSearch.
 * Add the following transformations to your connector based on the data available in the table.
   *   For every Datetime field / Date field in the table add the following transform.
@@ -156,10 +148,43 @@ Each `$` in the json file will be treated as an environment variable. Environmen
       "transforms.join02.es.username": "${OPENSEARCH_USERNAME}",
       "transforms.join02.es.password": "${OPENSEARCH_PASSWORD}",
       ```
+  *   If you want to add data/fields from one connector to another index on OpenSearch, use the DynamicNewFieldInsertBack transform. For example; NATIONAL IDs of registrants are saved in g2p\_reg\_id table. But if that field data is needed on res\_partner index (main registrant data table) the following can be done on the g2p\_reg\_id connector. (The following adds `reg_id_NATIONAL_ID` field into res\_partner index from g2p\_reg\_id connector into the document with ID from `partner_id` field) :
+
+      ```json
+      "transforms.insertBack1.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewFieldInsertBack${dollar}Value",
+      "transforms.insertBack1.id.expr": ".partner_id",
+      "transforms.insertBack1.condition": ".id_type_name == \"NATIONAL ID\"",
+      "transforms.insertBack1.value": "{reg_id_NATIONAL_ID: .value}",
+      "transforms.insertBack1.es.index": "${DB_PREFIX_INDEX}.public.res_partner",
+      "transforms.insertBack1.es.url": "${OPENSEARCH_URL}",
+      "transforms.insertBack1.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
+      "transforms.insertBack1.es.username": "${OPENSEARCH_USERNAME}",
+      "transforms.insertBack1.es.password": "${OPENSEARCH_PASSWORD}",
+      ```
+  *   If you wish to apply a [Jq filter](https://jqlang.github.io/jq/manual/) on the record, use ApplyJq transform. The current record will be replaced with the result after applying Jq. Example:
+
+      ```json
+      "transforms.jqApply1.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq{dollar}Value",
+      "transforms.jqApply1.expr": "{new_field: .payload.old_field, operation: .source.op}"
+      ```
+  *   The connector by default indexes all the fields from the DB into OpenSearch. If you want to exclude fields from getting indexed, they must be explicitly deleted using a transform like given below. For example PII fields like name, phone number, address, etc. As a general rule, fields that are not required for dashboards must be excluded explicitly.
+
+      ```json
+      "transforms.excludeFields.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq{dollar}Value",
+      "transforms.excludeFields.expr": "del(.name,.address)",
+      ```
+
+      * `column.exclude.list` property can also be used to remove specific columns from being indexed (Not preferred method). The disadvantage is that this excludes the fields from Kafka topics itself. If there are multiple OpenSearch Connectors, referring to the same topic, each with different data requirements, then this is not possible to control at the SINK connector side.
+  *   If you wish to change the name of the Index into which data is supposed to be inserted, use RenameTopic transform. The default index name before rename will be that of the topic name given in the `topics` config field. Example :
+
+      ```json
+      "transforms.renameTopic.type": "org.openg2p.reporting.kafka.connect.transforms.RenameTopic",
+      "transforms.renameTopic.topic": "res_partner_new"
+      ```
   *   After configuring all the transforms, add the names of all transforms, in the order in which they have to be applied, in the `transforms` field.
 
       ```json
-      "transforms": "keyExtId,valExt1,valExt2,tsconvert01,tsconvert02,tsSelect",
+      "transforms": "keyExtId,valExt1,valExt2,tsconvert01,tsconvert02,tsSelect,excludeFields,renameTopic",
       ```
 
 {% hint style="info" %}
@@ -170,6 +195,26 @@ Each `$` in the json file will be treated as an environment variable. Environmen
 * For more info on basic connector configuration, refer to [Apacha Kafka Connect](https://kafka.apache.org/documentation/#connect).
 * For detailed transform configuration, refer to [Apache Kafka Connect Transformations](https://kafka.apache.org/documentation/#connect\_transforms) doc.
 * For a list of all available SMTs and their configs, refer to [Reporting Kafka Connect Transforms](../kafka-connect-transform-reference.md).
+
+#### Capturing Change History
+
+*   If you also wish to record all the changes that are made to the records of a table, create a new OpenSearch connector for the same topic as given in [this section](connector-creation-guide.md#opensearch-connector-creation) and change the following properties.
+
+    ```json
+    {
+        "name": "res_partner_history_${DB_PREFIX_INDEX}",
+        "config": {
+            ...
+            "key.ignore": "true",
+            ...
+            "behavior.on.null.values": "ignore",
+            ...
+            "transforms.renameTopic.type": "org.openg2p.reporting.kafka.connect.transforms.RenameTopic",
+            "transforms.renameTopic.topic": "${DB_PREFIX_INDEX}.public.res_partner_history"
+        }
+    }
+    ```
+* With this configuration, you will have two OpenSearch connectors. One that tracks the latest data of a table. And one that tracks all the changes. Correspondingly you have two indexes on OpenSearch (one with `_history` and one with regular data).
 
 ## OpenSearch dashboard creation
 

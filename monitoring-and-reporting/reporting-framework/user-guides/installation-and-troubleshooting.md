@@ -1,4 +1,4 @@
-# Installation & Troubleshooting
+# 📔 Installation & Troubleshooting
 
 ## Installation
 
