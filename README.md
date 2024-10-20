@@ -19,6 +19,10 @@ layout:
 
 # Overview
 
+{% hint style="warning" %}
+**THIS VERSION OF DOCUMENTATION IS THE SNAPSHOT AS OF 19-OCT-2024.  FOR LATEST DOCS REFER TO THE "latest" VERSION.**
+{% endhint %}
+
 [OpenG2P](https://openg2p.org) is an open-source platform that enables governments and humanitarian organisations to deliver critical social benefits directly to those who need them. It facilitates the building of secure, inclusive and efficient registries, program management capabilities and digital cash transfer delivery systems.
 
 OpenG2P is a Digital Public Good (DPG) recognised by the[ DPGA](https://digitalpublicgoods.net/) and a significant building block of a country's Digital Public Infrastructure ([DPI](https://docs.cdpi.dev/dpi/readme)). OpenG2P contributes to the G2P transfers DPI layer in a digital economy, while leveraging DPGs in other categories. Its modular and interoperable technology augments existing systems in countries, without discarding what works or starting from scratch.
@@ -51,4 +55,4 @@ All the modules are designed to be installed and used standalone. However, the f
 
 ## Getting started
 
-To run OpenG2P suite and experience all that it offers, a good start point is [**OpenG2P In a Box**](deployment/openg2p-in-a-box.md).&#x20;
+To run OpenG2P suite and experience all that it offers, a good start point is [**OpenG2P In a Box**](deployment/openg2p-in-a-box.md).
