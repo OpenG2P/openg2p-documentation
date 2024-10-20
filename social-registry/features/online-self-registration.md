@@ -1,8 +1,4 @@
----
-description: Work in Progress
----
-
-# Self Service Registration Portal
+# Online Self Registration
 
 The Self Service Registration Portal for a Social Registry (SR-SSRP) is a digital platform designed to streamline and simplify the process of accessing and managing social services. It empowers citizens to interact with social services independently, reducing administrative burdens and improving service delivery.
 

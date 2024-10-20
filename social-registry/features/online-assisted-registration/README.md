@@ -1,8 +1,4 @@
----
-description: Work In Progress
----
-
-# Registration Portal
+# Online Assisted Registration
 
 ### Introduction
 
