@@ -6,10 +6,10 @@ description: How to create a Helm Package for Social Registry
 
 ## Concepts
 
-Social Registry and all its dependencies are installed using a single [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts). Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.  The contents of the Helm package may be found in the [`Chart.yaml`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/develop/charts/openg2p-social-registry/Chart.yaml) file\*.  Learn more on Helm charts, versioning and publishing [here](../../deployment/helm-charts.md#helm-chart-versions).
+Social Registry and all its dependencies are installed using a single [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts). Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.  The contents of the Helm package may be found in the [`Chart.yaml`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/develop/charts/openg2p-social-registry/Chart.yaml) file\*.  Learn more on Helm charts, versioning and publishing [here](../../../deployment/helm-charts.md#helm-chart-versions).
 
 {% hint style="info" %}
-\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../deployment/helm-charts.md#helm-chart-size-limitation)
+\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../../deployment/helm-charts.md#helm-chart-size-limitation)
 {% endhint %}
 
 The package hierarchy is depicted below.
@@ -31,7 +31,7 @@ The charts are located in [this](https://github.com/OpenG2P/openg2p-social-regis
 4. Check in the changes on this branch
 5. Create a tag following tagging conventions. E.g. `v1.3.1`. &#x20;
 6. The Github workflow action to package Helm and push on `openg2p-helm` repo's `gh-pages` branch should be triggered automatically and the chart published.
-7. Update the [Versions](../versions.md) page on this documentation.
+7. Update the [Versions](../../versions.md) page on this documentation.
 
 {% hint style="warning" %}
 The Github workflow triggers only if the branch already exists and changes are applied on the branch. So create the branch first on Github directly and push the Helm changes.

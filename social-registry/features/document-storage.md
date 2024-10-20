@@ -1,8 +1,4 @@
----
-description: WORK IN PROGRESS
----
-
-# Document Upload
+# Document Storage
 
 Social Registry has a supporting feature that adds and uploads documents. You can use this feature in scenarios such as
 

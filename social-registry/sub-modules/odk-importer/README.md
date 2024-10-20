@@ -1,7 +1,3 @@
----
-description: Work in Progress
----
-
 # ODK Importer
 
 The Social Registry (SR) gathers registrants'/applicants' data through various mechanisms, one of which includes ODK forms to import data housed within ODK Central.&#x20;

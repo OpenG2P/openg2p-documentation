@@ -1,6 +1,12 @@
 # Enumerator ID
 
-When an [Enumerator](./) is added to the Registration Portal, a unique ID is automatically generated and assigned. This ID is the Enumerator ID (EID) which serves as a unique identifier for each enumerator in the SR.
+**Enumerator** is a person responsible for collecting demographic data from individuals and groups to populate data in the registry. They are typically field workers who visit households, communities, or places to gather the necessary information. Once the data is collected and managed, organisations can access and analyse it. They play a critical role in data collection and management. They are also known as Field Agents.
+
+The activities performed by the Enumerator are given below:
+
+<table><thead><tr><th width="225">Activity</th><th>Description</th></tr></thead><tbody><tr><td><strong>Field work</strong></td><td>Requires to conduct field visits, door-to-door or specific locations visits, and collect data from respondents directly.</td></tr><tr><td><strong>Offline data collection</strong></td><td>Uses the ODK Collect application to collect data offline. This data is then managed on ODK Central, enables the organizations to access and analyze it easily, even if it was collected offline. </td></tr><tr><td><strong>Data management</strong></td><td>Involves in basic data management tasks, such as organizing collected data, checking for completeness and consistency, and entering data into databases or forms.</td></tr><tr><td><strong>Region-based data collection</strong></td><td>Assigns specific regions or areas for data collection, ensuring comprehensive coverage and efficient data gathering within designated geographical boundaries.</td></tr><tr><td><strong>Adding data</strong></td><td>Collects information present on the ODK forms. These information ranges from demographic data of individuals, groups of household to social and economic conditions. </td></tr></tbody></table>
+
+When an [Enumerator](broken-reference) is added to the Registration Portal, a unique ID is automatically generated and assigned. This ID is the **Enumerator ID (EID)** which serves as a unique identifier for each enumerator in the SR.
 
 The Data Administrator and the System Administrator have the authority to create Enumerators in SR using the Registration Portal.
 

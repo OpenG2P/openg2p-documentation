@@ -45,4 +45,4 @@ Versions of all repositories that are used to create the Docker are specified in
 4. Make sure the repositories are tagged with the versions matching in the package file.  See above section on tagging.
 5. Trigger Docker build and push using the Github Actions.  Provide the above file path as input w.r.t to `packages` folder.
 6. Verify that the new Docker has been pushed on Docker Hub.
-7. Update the details of this version on the [Versions](../versions.md) page.
+7. Update the details of this version on the [Versions](../../versions.md) page.
