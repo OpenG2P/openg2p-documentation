@@ -35,7 +35,7 @@ After the ODK configuration, the fields/parameters in the ODK form are mapped to
 
 Here is the sample ODK import configuration form.
 
-<figure><img src="../../../.gitbook/assets/odk-import-form (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/odk-import-form (1).png" alt=""><figcaption></figcaption></figure>
 
 ## Configuration
 
@@ -43,7 +43,7 @@ After the computation of required fields in SR, the SR module built on Odoo plat
 
 Here is the sample _**Configuration**_ screen.
 
-<figure><img src="../../../.gitbook/assets/odk-configuration.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/odk-configuration.png" alt=""><figcaption></figcaption></figure>
 
 ## **Source code**
 

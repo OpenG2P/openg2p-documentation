@@ -22,11 +22,11 @@ This document provides instructions for importing specific applicants/registrant
 
 ## Procedure
 
-1. Click the main icon ![](../../../../.gitbook/assets/menu-icon.png) and select _**Settings**_.
+1. Click the main icon ![](../../../../../.gitbook/assets/menu-icon.png) and select _**Settings**_.
 
 _**Settings**_ screen is displayed.&#x20;
 
-<figure><img src="../../../../.gitbook/assets/odk-import-settings-sr.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/odk-import-settings-sr.png" alt=""><figcaption></figcaption></figure>
 
 2. Select the _**General Settings**_ tab.
 3. Select the  _**ODK Import Settings**_ from the menu.
@@ -34,11 +34,11 @@ _**Settings**_ screen is displayed.&#x20;
 
 ### Occurrence of Instance ID field
 
-4. Use the main menu icon ![](../../../../.gitbook/assets/menu-icon.png) to navigate to ODK -> ODK Import.&#x20;
+4. Use the main menu icon ![](../../../../../.gitbook/assets/menu-icon.png) to navigate to ODK -> ODK Import.&#x20;
 5. Select the ODK Import from the current list.
 6. Find an additional field labeled _**InstanceID**_ that appears at the bottom of the displayed screen.
 
-<figure><img src="../../../../.gitbook/assets/instance-id-sr.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/instance-id-sr.png" alt=""><figcaption></figcaption></figure>
 
 7. Enter the _**Instance ID**_.
 8. Fill in the remaining fields following the [import record configuration](configure-and-import-odk-form.md) procedure.
@@ -55,16 +55,16 @@ The SR  module may be able to import duplicate applicant/registrants' ODK forms 
 
 For example, here Group sample form is selected.
 
-<figure><img src="../../../../.gitbook/assets/odk-central-form.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/odk-central-form.png" alt=""><figcaption></figcaption></figure>
 
 3. Select the Group Sample form in the _**Group Sample form**_ screen.
 
-<figure><img src="../../../../.gitbook/assets/odkform.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/odkform.png" alt=""><figcaption></figcaption></figure>
 
 4. Click the _**Submission**_ tab.
 
-<figure><img src="../../../../.gitbook/assets/odkform-submissiontab.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/odkform-submissiontab.png" alt=""><figcaption></figcaption></figure>
 
 5. Find the Instance ID in the current list of submitted ODK forms.
 
-<figure><img src="../../../../.gitbook/assets/odkform-instanceid.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/odkform-instanceid.png" alt=""><figcaption></figcaption></figure>
