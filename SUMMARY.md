@@ -3,7 +3,7 @@
 * [Overview](README.md)
 * [Social Registry](social-registry/README.md)
   * [Features](social-registry/features/README.md)
-    * [Individuals and Groups](social-registry/features/individuals-and-groups/README.md)
+    * [Individuals and Households](social-registry/features/individuals-and-groups/README.md)
       * [📔 User Guides](social-registry/features/individuals-and-groups/user-guides/README.md)
         * [📔 Create an Individual Registrant](social-registry/features/individuals-and-groups/user-guides/create-an-individual-registrant.md)
         * [📔 Create a Group and Add Individual Registrants to the Group](social-registry/features/individuals-and-groups/user-guides/create-a-group-and-add-individual-registrants-to-the-group.md)
