@@ -358,7 +358,7 @@
       * [Helper Tables](g2p-bridge/development/design/helper-tables/README.md)
         * [benefit\_program\_configuration](g2p-bridge/development/design-specifications/persistent-objects/benefit\_program.md)
       * [Configuration parameters](g2p-bridge/development/design/config-attributes.md)
-      * [Interfaces](g2p-bridge/development/design/interfaces.md)
+      * [Bank Connectors](g2p-bridge/development/design/interfaces.md)
       * [Physical Organization](g2p-bridge/development/design-specifications/physical-organization.md)
       * [Example Bank](g2p-bridge/development/design-specifications/example-bank.md)
         * [example-bank-models](g2p-bridge/development/design-specifications/example-bank/openg2p-g2p-bridge-example-bank-models.md)
