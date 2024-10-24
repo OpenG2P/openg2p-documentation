@@ -1,11 +1,11 @@
 ---
-description: Installation of G2P Bridge on developer machine
 icon: laptop-code
+description: Installation of G2P Bridge on developer machine
 ---
 
-# Developer Install on Linux
+# G2P Bridge
 
-Developers can set up and run the G2P Bridge on their local machines. This guide outlines the steps to install G2P Bridge on a Linux-based laptop or desktop.
+Developers can set up and run the G2P Bridge on their local machines. This guide outlines the steps to install G2P Bridge on a <mark style="color:purple;">**Linux-based**</mark> laptop or desktop.
 
 ## Prerequisites
 
