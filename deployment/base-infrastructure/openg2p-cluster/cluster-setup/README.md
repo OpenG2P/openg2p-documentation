@@ -118,7 +118,7 @@ In StorageClass, when the `reclaimPolicy` is set to `Retain`it implies that when
 When `reclaimPolicy` is set to `Delete,`if a PVC is deleted, both the PV and the relevant folder in the NFS get deleted.
 {% endhint %}
 
-## Longhorn&#x20;
+## Longhorn  (optional)
 
 This installation only applies if Longhorn is used as storage. This may be skipped if you are using NFS.
 
