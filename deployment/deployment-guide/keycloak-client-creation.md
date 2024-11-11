@@ -44,4 +44,6 @@ The steps to create a Keycloak client are given below.
     * Token Claim Name:  `client_roles`
     * Add to ID token: `ON`
     * Add to userinfo: `ON`&#x20;
-11. After the successful creation of the client, you can use this client for the OpenG2P module installation from the Rancher UI.
+11. Search and remove "realm roles" mapper from the added mappers list.
+12. Go on step bacand navigate to Client details -> Client Scopes. Remove "roles" scope.
+13. After the successful creation of the client, you can use this client for the OpenG2P module installation from the Rancher UI.
