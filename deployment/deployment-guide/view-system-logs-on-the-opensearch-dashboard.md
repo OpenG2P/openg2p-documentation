@@ -26,5 +26,5 @@ This guide will walk you through how to access, filter, and interpret system log
    *   And you can see the image below for all the operations above.\
 
 
-       <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p>Opensearch-dashboard.png</p></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption><p>Opensearch-dashboard.png</p></figcaption></figure>
    * This framework provides a streamlined way to monitor and analyze logs effectively. Use filters regularly to narrow down critical information like errors or warnings.
