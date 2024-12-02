@@ -16,7 +16,7 @@ layout:
 
 The g2p-bridge subsystem offers the following functional features
 
-Incoming APIs from MIS/PBMS systems
+## Incoming APIs from MIS/PBMS systems
 
 1.  <mark style="color:orange;">**creation of disbursement envelope**</mark>
 
@@ -38,4 +38,14 @@ Incoming APIs from MIS/PBMS systems
    After an envelope is created in the g2p-bridge subsystem, the upstream pbms/mis system can cancel an envelope.\
    Once an envelope is cancelled, no further processing takes place in that envelope. \
    A cancellation cannot be undone.
+
+## Outgoing APIs into Sponsor Bank
+
+1. <mark style="color:purple;">**check available balance**</mark>\
+   On the payment schedule date, if all the disbursements under an envelope have been received into the G2P-Bridge system, the G2P-Bridge will initiate the workflows related to downstream disbursement (payments) processing. The first step in this workflow is to ascertain availability of funds in the funding account (the account that is used to fund the disbursements. This account is the account that is serviced by the Sponsor Bank. The Sponsor Bank will debit this account for the proceeds of the disbursements).\
+   Once the Sponsor Bank confirms availability of funds, the G2P-Bridge will mark this step as complete and initiate the next step.
+2. block funds\
+   After receiving confirmation about availability of funds in the Program Funding Account, the G2P-Bridge initiates the 2nd step of Blocking Funds necessary for processing the Envelope. The G2P-Bridge sends a request to the Sponsor Bank to effect a hold on the account for the necessary amount. The G2P Bridge expects a SUCCESS response from the Bank along with a Block Transaction Reference Number. All further payments under this envelope will carry this Block Transaction Reference Number - so that the Sponsor Bank understands that funds have already been blocked for these payments.\
+   Since payments are individually processed, the Sponsor Bank is expected to release the necessary funds (for that Block Reference Number) as it processes each individual payment.&#x20;
+3. initiate payments
 
