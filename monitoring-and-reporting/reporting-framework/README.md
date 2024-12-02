@@ -27,7 +27,7 @@ The salient features of the framework are the following:
 <table><thead><tr><th width="323">Features</th><th>Benefits</th></tr></thead><tbody><tr><td>Searchable indexes in OpenSearch</td><td><ul><li><strong>No load on main DB</strong> esp when dataset is large and SQL queries get complex </li><li><strong>Real-time slicing and dicing</strong> of data with searchable indexes</li></ul></td></tr><tr><td>OpenSearch Dashboards</td><td><ul><li><strong>Ease</strong> of creation of dashboards and reports</li></ul></td></tr><tr><td>Authentication and authorisation using Keycloak  </td><td><ul><li><strong>Authorized access</strong> to dashboards</li><li><strong>Single sign-on</strong> with Keycloak</li></ul></td></tr><tr><td>PII data not available for search*</td><td><ul><li><strong>Privacy protection</strong></li></ul></td></tr></tbody></table>
 
 {% hint style="info" %}
-\* As a highly recommended practice PII data is not shunted to the search indexes_,_ however, the framework does not impose any restriction as such.
+\* As a highly recommended practice PII data is not shunted to the search indexe&#x73;_,_ however, the framework does not impose any restriction as such.
 {% endhint %}
 
 ## Installation

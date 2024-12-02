@@ -23,8 +23,8 @@ The steps to create a Keycloak client are given below.
 1. Log into Keycloak on the OpenG2P cluster.
 2. Select the _**Clients**_ from the left menu and click _**Create Client**_ to create the required client.
 3. Follow the below general settings while creating a client.
-   * Client type**:** `OpenID Connect`
-   * Client ID**:** `<any client Id>`  For example, openg2p-sr-odk-prod
+   * Client typ&#x65;**:** `OpenID Connect`
+   * Client I&#x44;**:** `<any client Id>`  For example, openg2p-sr-odk-prod
    * Name: `<any name>` For example, Social Registry ODK Prod
    * Always display in UI: `On`
    * Client authentication: `On`

@@ -2,7 +2,7 @@
 description: G2P Bridge
 ---
 
-# 📔 Configure G2P Connect Payment Manager
+# PBMS Configuration
 
 This document provides instructions to configure G2P Connect Payment Manager in the Program module.
 
