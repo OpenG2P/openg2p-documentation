@@ -50,9 +50,9 @@ The g2p-bridge subsystem offers the following functional features
 3. <mark style="color:purple;">**initiate payments**</mark>\
    This is the 3rd and final step in the Downstream processing of Disbursements. The G2P Bridge system will initiate payment requests in batches. This step has been designed on an Asynchronous paradigm, i.e. the G2P System does not expect a payment status response in terms of SUCCESS or FAILURE. The G2P System only expects an Acknowledgement SUCCESS from the Sponsor Bank. The Sponsor Bank in turn relays these payment messages into the country's payment network. Whether a particular payment was actually successful in crediting the intended beneficiary's account will be not known immediately because of the intermediary payment network. However, if the final credit in the destination bank is unsuccessful due to any reason, then the instruction will come back into the Sponsor Bank through the payment network and the Sponsor Bank will reverse the original transaction. This reversal will be visible in the Program Funding account as a reversal of Debit.
 
-Incoming APIs from Sponsor Bank&#x20;
+## Incoming APIs from Sponsor Bank&#x20;
 
-1. upload MT940 account statement\
+1. <mark style="color:green;">**upload MT940 account statement**</mark>\
    The G2P Bridge system expects a daily account statement in MT940 format for all the program funding accounts. The G2P Bridge parses these MT940 statements and marks the status for each disbursement. The G2P Bridge updates the following status attributes for every disbursement\
    \
    **remittance\_reference\_number** - The Bank's reference number for the transaction (Debit Program Account)\
