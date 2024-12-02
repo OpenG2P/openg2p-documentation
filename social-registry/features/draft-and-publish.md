@@ -85,9 +85,6 @@ The Draft and Publish functionality allows users to create, modify, and finalize
      * Additional fields extended by the `registrant` model.
 2. **`registrant` (Extension of `res.partner`)**
    * **Purpose:** Adds specific fields for registrants.
-   * **Key Fields:**
-     * `registration_number` (Char): Unique identifier for the registrant.
-     * `additional_info` (Text): Extended information specific to the registrant.
 3. **Transient Draft Model**
    * **Purpose:** Holds draft data during editing.
    * **Structure:**
@@ -121,7 +118,7 @@ The Draft and Publish functionality allows users to create, modify, and finalize
      * **If Rejected:** Metadata `status` changes back to "Draft," and the user is notified.
 5. **Publishing**
    * Approved draft data is transferred to `res.partner`.
-   * A unique identifier (`registration_number`) is generated.
+   * A unique id  is generated.
    * Draft data in transient model and metadata table are archived.
 
 ### **Access Control**
