@@ -379,7 +379,7 @@
   * [Tech Guides](g2p-bridge/tech-guides.md)
   * [User Guides](g2p-bridge/user-guides/README.md)
   * [Releases](g2p-bridge/releases/README.md)
-    * [1.0.0](g2p-bridge/releases/1.0.0.md)
+    * [1.0.1](g2p-bridge/releases/1.0.1.md)
 * [Utilities and Tools](utilities-and-tools/README.md)
   * [ODK](utilities-and-tools/odk-collection-app.md)
     * [📔 User Guides](utilities-and-tools/odk-collection-app/user-guides/README.md)
