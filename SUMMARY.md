@@ -328,7 +328,6 @@
   * [Roadmap](spar/roadmap.md)
 * [G2P Bridge](g2p-bridge/README.md)
   * [Features](g2p-bridge/features/README.md)
-    * [Digital Cash Transfer](g2p-bridge/features/digital-cash-transfer.md)
     * [Extensibility - Connect to Sponsor Banks](g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
     * [Account Mapper Resolution](g2p-bridge/features/account-mapper-resolution.md)
     * [Reconciliation with Sponsor Bank](g2p-bridge/features/reconciliation-with-sponsor-bank.md)

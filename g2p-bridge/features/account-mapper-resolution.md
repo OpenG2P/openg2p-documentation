@@ -20,7 +20,11 @@ Based on this, the G2P Bridge is designed to receive Beneficiary IDs from the up
 
 The following figure illustrates this flow
 
-<figure><img src="../../.gitbook/assets/Account-Mapper-Resolution.jpg" alt=""><figcaption><p>G2P Bridge - resolving financial address using beneficiary IDs</p></figcaption></figure>
+
+
+{% embed url="https://miro.com/app/board/uXjVLOFA-qw=/" %}
+G2P Bridge - interface with ID-Account Mapper
+{% endembed %}
 
 The G2P Bridge then passes this resolved financial address to the downstream Sponsor Bank for further processing by the Banking Network.&#x20;
 

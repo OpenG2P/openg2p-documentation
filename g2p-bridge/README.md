@@ -6,13 +6,17 @@ Being a G2P system (not a P2G, P2P, P2M, etc), the platform does not desire to o
 
 The following figure shows how the G2P Bridge subsystem fits into the overall G2P landscape
 
-<figure><img src="../.gitbook/assets/Gitbook-G2PB-Landscape.jpg" alt=""><figcaption><p>G2P Bridge in the G2P landscape</p></figcaption></figure>
 
 
-
-## Functional overview
+{% embed url="https://miro.com/app/board/uXjVKX-8Zq0=/" %}
+G2P Bridge in the G2P landscape
+{% endembed %}
 
 ## Technical overview
 
-<figure><img src="../.gitbook/assets/Gitbook-G2PB-Tech-Architecture.jpg" alt=""><figcaption><p>G2P Bridge - Technical Architecture</p></figcaption></figure>
+
+
+{% embed url="https://miro.com/app/board/uXjVKWoMWx0=/" %}
+Technial Architecture of G2P Bridge
+{% endembed %}
 

@@ -18,6 +18,8 @@ The G2P Bridge is designed to perform in high volume disbursement scenarios. To 
 
 The disbursement instructions from the upstream Program MIS / PBMS systems are received by the G2P Bridge via. a REST API. The "create\_disbursements" API is designed to receive multiple API invocations for a single "program-disbursement-cycle". Each invocation of the API brings a payload that contains a list of disbursements.
 
-<figure><img src="../../.gitbook/assets/Scaling-for-Volumes-1.jpg" alt=""><figcaption><p>create_disbursements in G2P Bridge (from upstream Program MIS systems)</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/Scaling-for-Volumes-2.jpg" alt=""><figcaption><p>Scaling the Worker PODs for volume</p></figcaption></figure>
+
+{% embed url="https://miro.com/app/board/uXjVLNhY0o8=/" %}
+G2P Bridge - Scale out the Workers for high volumes
+{% endembed %}

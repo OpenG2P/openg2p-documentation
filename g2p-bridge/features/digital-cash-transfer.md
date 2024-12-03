@@ -1,3 +1,0 @@
-# Digital Cash Transfer
-
-C
