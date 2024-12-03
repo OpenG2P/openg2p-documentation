@@ -13,6 +13,72 @@ Before deploying the Helm charts, ensure that the following prerequisites are me
 3. **Access to Docker Hub**: Ensure that Docker Hub can be accessed to pull the required container images.
 4. **Configured Values**: Update the `values.yaml` file with any custom settings needed for your deployment, including image versions, credentials, hostnames, etc.
 
+### Deployment Artefacts
+
+An overview of all necessary artifacts to deploy the G2P Bridge application, stored in designated repositories to ensure controlled access and ease of deployment.
+
+**1. Helm Chart for G2P Bridge**
+
+* **Purpose**: Deploys the complete G2P Bridge suite on Kubernetes, including the API, Celery Beat (for scheduled tasks), and Celery Workers (for background processing).
+* **Repository**: [G2P Bridge Deployment on GitHub](https://github.com/OpenG2P/openg2p-g2p-bridge-deployment)​
+* **Access and Installation**:
+  *   Add the GitHub Helm chart repository and install the `openg2p-g2p-bridge` chart, which includes all G2P Bridge components:\
+
+
+      ```bash
+      helm repo add openg2p https://github.com/OpenG2P/openg2p-g2p-bridge-deployment
+      helm repo update
+      helm install openg2p-g2p-bridge openg2p/openg2p-g2p-bridge --namespace your-namespace
+      ```
+  * **Environment Configuration**: Ensure the required environment variables are configured before installation. Refer to[ G2P Bridge Developer](https://docs.openg2p.org/g2p-bridge/development/developer-install/installing-openg2p-bridge-on-linux#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977) section to know more about environment configuration.
+
+**2. Docker Images**
+
+* **Purpose**: Provides containerized versions of each G2P Bridge component for consistent and repeatable deployments.
+* **Repository**: Docker Hub
+* **Available Images**:
+  * **API**: [openg2p-g2p-bridge-api](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-api)​
+  * **Celery Workers**: [openg2p-g2p-bridge-celery-workers](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-celery-workers)​
+  * **Celery Beat Producers**: [openg2p-g2p-bridge-celery-beat-producers](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-celery-beat-producers)​
+* **Usage**:
+  *   Each image can be pulled directly from Docker Hub:
+
+      ```bash
+      docker pull openg2p/openg2p-g2p-bridge-api:<version>
+      docker pull openg2p/openg2p-g2p-bridge-celery-workers:<version>
+      docker pull openg2p/openg2p-g2p-bridge-celery-beat-producers:<version>
+      ```
+
+
+  * Replace `<version>` with the specific tag or `latest` for the latest stable release.
+
+**2. Python Libraries**
+
+* **Purpose**: Provides essential libraries and dependencies for G2P Bridge services. These are available on PyPI and should be installed where necessary.
+* **Repository**: [PyPI (Python Package Index)](https://pypi.org/)​
+* **Available Libraries**:
+  * `openg2p-fastapi-common`: Common FastAPI components.
+  * `openg2p-fastapi-auth`: Authentication modules.
+  * `openg2p-g2pconnect-common-lib`: Core library for G2P Connect.
+  * `openg2p-g2p-bridge-models`: Database models.
+  * `openg2p-g2p-bridge-api`: API components.
+  * `openg2p-g2p-bridge-bank-connectors`: Bank connectors for financial integration.
+  * `openg2p-g2p-bridge-celery-beat-producers`: Schedulers for Celery tasks.
+  * `openg2p-g2p-bridge-celery-workers`: Workers for background processing.
+* **Installation**:
+  *   Install each required package using `pip`
+
+      ```
+      pip install openg2p-fastapi-commonpip install openg2p-fastapi-authpip install openg2p-g2pconnect-common-libpip install openg2p-g2p-bridge-modelspip install openg2p-g2p-bridge-apipip install openg2p-g2p-bridge-bank-connectorspip install openg2p-g2p-bridge-celery-beat-producerspip install openg2p-g2p-bridge-celery-workers
+      ```
+
+**3. Post-Installation Configuration**
+
+After deploying the G2P Bridge, the following database table must be configured to enable the benefit program features:
+
+* **Table**: `benefit_program_configurations`
+* **Purpose**: Stores configuration details for each benefit program, which are essential for the operation of the G2P Bridge.
+
 ### Deployment Steps
 
 #### 1. Clone the GitHub Repository

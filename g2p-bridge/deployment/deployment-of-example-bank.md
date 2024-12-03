@@ -13,6 +13,71 @@ Before deploying the Helm charts, ensure that the following prerequisites are me
 3. **Access to Docker Hub**: Ensure that Docker Hub can be accessed to pull the required container images.
 4. **Configured Values**: Update the `values.yaml` file with any custom settings needed for your deployment, including image versions, credentials, hostnames, etc.
 
+### Deployment Artefacts
+
+An overview of all necessary artifacts to deploy the G2P Bridge Example Bank application, stored in designated repositories to ensure controlled access and ease of deployment.
+
+**1. Helm Chart for G2P Bridge Example Bank**
+
+* **Purpose**: Deploys the complete G2P Bridge suite on Kubernetes, including the API, Celery Beat (for scheduled tasks), and Celery Workers (for background processing).
+* **Repository**: [G2P Bridge Example Bank Deployment on GitHub​](https://github.com/psnappz/openg2p-g2p-bridge-example-bank)
+* **Access and Installation**:
+  *   Add the GitHub Helm chart repository and install the `openg2p-g2p-bridge-example-bank` chart, which includes all Example Bank components:\
+
+
+      ```bash
+      helm repo add openg2p https://github.com/OpenG2P/openg2p-g2p-bridge-example-bank-deployment
+      helm repo update
+      helm install openg2p-example-bank openg2p/openg2p-g2p-bridge-example-bank --namespace your-namespace
+      ```
+  * **Environment Configuration**: Ensure the required environment variables are configured before installation. Refer to [Example Bank Developer](https://docs.openg2p.org/g2p-bridge/development/developer-install/example-bank#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977) section to know more about environment configuration.
+
+**2. Docker Images**
+
+* **Purpose**: Provides containerized versions of each G2P Bridge component for consistent and repeatable deployments.
+* **Repository**: Docker Hub
+* **Available Images**:
+  * **API**: [openg2p-g2p-bridge-example-bank-api​](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-example-bank-api)
+  * **Celery Workers**: openg2p-g2p-bridge-example-bank-celery-workers[^1][​](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-example-bank-celery)
+* **Usage**:
+  *   Each image can be pulled directly from Docker Hub:
+
+      ```bash
+      docker pull openg2p/openg2p-g2p-bridge-example-bank-api:<version>
+      docker pull openg2p/openg2p-g2p-bridge-example-bank-celery:<version>
+      ```
+  * Replace `<version>` with the specific tag or `latest` for the latest stable release.
+
+**2. Python Libraries**
+
+* **Purpose**: Provides essential libraries and dependencies for Example Bank services. These are available on PyPI and should be installed where necessary.
+* **Repository**: [PyPI (Python Package Index)](https://pypi.org/)​
+* **Available Libraries**:
+  * `openg2p-fastapi-common`: Common FastAPI components.
+  * `openg2p-fastapi-auth`: Authentication modules.
+  * `openg2p-g2pconnect-common-lib`: Core library for G2P Connect.
+  * `openg2p-g2p-bridge-example-bank-models`: Database models.
+  * `openg2p-g2p-bridge-example-bank-api`: API components.
+  * `openg2p-g2p-bridge-example-bank-celery`: Celery tasks.
+* **Installation**:
+  *   Install each required package using `pip`
+
+      ```
+      pip install openg2p-fastapi-common
+      pip install openg2p-fastapi-auth
+      pip install openg2p-g2pconnect-common-lib
+      pip install openg2p-g2p-bridge-example-bank-models
+      pip install openg2p-g2p-bridge-example-bank-api
+      pip install openg2p-g2p-bridge-example-bank-celery
+      ```
+
+**3. Post-Installation Configuration**
+
+After deploying the Example Bank, the following database table must be configured to enable the benefit program features:
+
+* **Table**: `accounts`
+* **Purpose**: Stores bank account details, which are essential for the operation of the G2P Bridge.
+
 ### Deployment Steps
 
 #### 1. Clone the GitHub Repository
@@ -76,3 +141,5 @@ $ helm uninstall openg2p-g2p-example-bank -n <namespace>
 ```
 
 This will delete all Kubernetes resources associated with the release.
+
+[^1]: 
