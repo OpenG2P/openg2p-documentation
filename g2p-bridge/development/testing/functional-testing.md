@@ -16,16 +16,24 @@ layout:
 
 ## Testing scenarios
 
-### From PBMS
+### From PBMS (Manual Testing)
+
+1. Vanilla happy path - Program has 100 beneficiaries, we enrol all 100 beneficiaries into a new cycle and disburse the payments. All 100 beneficiaries should have their IDs mapped in SPAR. Batch size = 100, so that all disbursements happen in a single batch
+2. Repeat scenario 1 with a reduced batch size of 10. You should see 10 batches between G2P MIS and G2P Bridge
+3. Repeat scenario 1 with 2 beneficiary IDs removed from SPAR. Check failure handling for the 2 missing beneficiaries
+4. Create a new cycle and enrol only 50 beneficiaries into the cycle. Disburse and reconcile the envelope numbers and the disbursement numbers.
+5. Check Envelope Summary for all scenarios and check PDF rendering from the pop up page.
+6. Check payment from PBMS - when SPAR services are not available for some time
+7. Check payment from PBMS - when Example Bank services are not available for some time
 
 ### Independent of PBMS
 
 #### Rest API
 
-1. Create envelope - Happy path
+1. Create envelope - Path without any errors.
 2. Create envelope - with non-existent Program Mnemonic
 3. Create envelope - with schedule date in the past
-4. Create Disbursements - Happy path
+4. Create Disbursements - Happy path - with appropriate inputs - no Errors
 5. Create Disbursements - with invalid envelope ID
 6. Create Disbursements - with cancelled envelope
 7. Create Disbursements - with no beneficiary ID
@@ -56,14 +64,6 @@ layout:
 3. Add a Debit for Disbursement ID - 1003 - INVALID\_DISBURSEMENT\_ID
 4. Add a Reversal Debit for Disbursement ID - 1002 (which had invalid beneficiary ID)
 5. Generate Account Statement and upload into Bridge. Check for Reconciliation Errors. There should be these 3 entries that should show up in Recon Errors.
-
-#### Integration Testing with G2P MIS
-
-1. Vanilla happy path - Program has 100 beneficiaries, we enrol all 100 beneficiaries into a new cycle and disburse the payments. All 100 beneficiaries should have their IDs mapped in SPAR. Batch size = 100, so that all disbursements happen in a single batch
-2. Repeat scenario 1 with a reduced batch size of 10. You should see 10 batches between G2P MIS and G2P Bridge
-3. Repeat scenario 1 with 2 beneficiary IDs removed from SPAR. Check failure handling for the 2 missing beneficiaries
-4. Create a new cycle and enrol only 50 beneficiaries into the cycle. Disburse and reconcile the envelope numbers and the disbursement numbers.
-5. Check Envelope Summary for all scenarios and check PDF rendering from the pop up page.
 
 
 
