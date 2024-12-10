@@ -28,7 +28,7 @@ Charts may be found here:
 
 ## Published repository
 
-All charts are published to this public website: https://openg2p.github.io/openg2p-helm. This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-deployment/blob/main/.github/workflows/push\_trigger.yml).
+All charts are published to this public website: https://openg2p.github.io/openg2p-helm. This website is automatically created by Github with contents on [`gh-pages`](https://github.com/OpenG2P/openg2p-helm/tree/gh-pages) branch of openg2p-helm repository. Charts are automatically published via Github action given [here](https://github.com/OpenG2P/openg2p-deployment/blob/main/.github/workflows/push_trigger.yml).
 
 Charts may be published manually with the procedure given below:
 
@@ -70,11 +70,12 @@ If in [annotations](https://ranchermanager.docs.rancher.com/how-to-guides/new-us
 
 ## Helm chart versions
 
-The Helm chart version is mentioned under the `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  For version numbers, we adhere to [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html) with ["Simple 1-1 versioning"](https://codefresh.io/docs/docs/ci-cd-guides/helm-best-practices/#simple-1-1-versioning).  Here, the chart version is kept the same as the Docker version (also referred as `appVersion` in Chart.yml.). &#x20;
+The Helm chart version is mentioned under the `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  Important to note that the version of Helm chart MAY NOT match the primary Docker version of the app inside the chart. However, generally, the major and minor versions would be same. For example, Helm chart version 1.4.2 of Social Registry may contain 1.4.0 of the Social Registry Odoo Docker. The chart version may have moved forward due to some other changes in the chart like change in dependencies, their version, or even any other minor fixes in the chart. &#x20;
 
-<table><thead><tr><th width="166">Chart State</th><th width="245">Chart version</th><th>Docker version (appVersion)</th></tr></thead><tbody><tr><td><strong>Release/Prerelease</strong></td><td>Matches Docker version</td><td>Matches Chart version</td></tr><tr><td><strong>Development</strong></td><td><code>0.0.0-develop</code></td><td><code>develop</code></td></tr></tbody></table>
+A 3 digit version of a chart is considered 'frozen'. See more details about versioning [here](versioning.md#frozen-versions).  Charts that are not frozen will have `-develop` tag. Examples:
 
-> Since chart version matches `appVersion` it is recommended that the `appVersion` attribute is removed from `Chart.yaml` as it is redundant.
+* &#x20;`1.4.0-develop`:  Non-frozen chart on 1.4  branch of the deployment repository.  \`
+* `0.0.0-develop`: Non-frozen chart on `develop`branch of deployment repository.
 
 ## Helm chart size limitation
 
