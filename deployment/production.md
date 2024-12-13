@@ -62,7 +62,7 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
 
 ### Restoring a snapshot to new nodes
 
-**Note:** For all versions of rke2 v.1.20.9 and prior, you will need to back up and restore certificates first due to a known issue in which bootstrap data might not save on restore (Steps 1 - 3 below assume this scenario). See [note](https://docs.rke2.io/backup\_restore#other-notes-on-restoring-a-snapshot) below for an additional version-specific restore caveat on restore.
+**Note:** For all versions of rke2 v.1.20.9 and prior, you will need to back up and restore certificates first due to a known issue in which bootstrap data might not save on restore (Steps 1 - 3 below assume this scenario). See [note](https://docs.rke2.io/backup_restore#other-notes-on-restoring-a-snapshot) below for an additional version-specific restore caveat on restore.
 
 1. Back up the following: `/var/lib/rancher/rke2/server/cred`, `/var/lib/rancher/rke2/server/tls`, `/var/lib/rancher/rke2/server/token`, `/etc/rancher`
 2. Restore the certs in Step 1 above to the first new server node.
@@ -88,6 +88,10 @@ The mapping between PVCs and PV must be saved after the installation so in case 
 ### Cluster access key
 
 Downloading of user's cluster access key to be able to operate OpenG2P cluster directly using `kubectl` in case Rancher is not accessible. Sys Admins may download this key using Rancher console and keep them safely and protected with them.
+
+## Image pull policy
+
+Generally, Helm charts have Docker image pull policy mentioned as `Always`. This is not advisable in production as the image will get updated if Docker images change for the same tag.  Set the `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` in the Helm chart and upgrade the Helm chart on production.
 
 ## Data cleanup
 
