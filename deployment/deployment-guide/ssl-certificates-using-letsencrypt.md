@@ -46,11 +46,8 @@ sudo certbot certonly --agree-tos --manual --preferred-challenges=dns -d *.openg
 ```
 
 * The above command generates a new pair of certificates. The DNS challenge needs to be performed again, as prompted.
-* Run the following to upload new certs back to Kubernetes Cluster. Adjust the certs path in the below command.
+* Restart Nginx&#x20;
 
 ```bash
-kubectl delete secret tls-openg2p-ingress -n istio-system
-kubectl create secret tls tls-openg2p-ingress -n istio-system \
-  --cert=/etc/letsencrypt/live/openg2p.sandbox.net-renewed/fullchain.pem \
-  --key=/etc/letsencrypt/live/openg2p.sandbox.net-renewed/privkey.pem
+sudo systemctl restart nginx
 ```
