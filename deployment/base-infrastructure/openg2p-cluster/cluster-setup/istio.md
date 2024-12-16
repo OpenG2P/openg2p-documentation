@@ -27,17 +27,18 @@ Istio is a power traffic mesh management tool. It also provides an ingress gatew
 
 ### Namespace Setup
 
-(Skip this section for Rancher cluster)
+> _Skip this section for Rancher cluster_
 
-Set up an Istio gateway on each namespace for a domain. This assumes that the namespace (and relevant Rancher project) are already created (you may use the Rancher console to create a namespace or via command line `kubectl`)
+Set up an Istio gateway on each namespace for a domain. This assumes that the namespace (and relevant Rancher project) are already created (use the Rancher console to create a namespace or via command line `kubectl):`
 
-*   Edit and run this to define the variables:
+*   One command line define these variables (example):
 
     ```
     export NS=dev
+    export HOSTNAME='dev.your.org'
     export WILDCARD_HOSTNAME='*.dev.your.org'
     ```
-*   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory,  run the following:
+*   Git clone https://github.com/openg2p/openg2p-deployment repo.  In [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory,  run the following:
 
     ```bash
     envsubst < istio-gateway.yaml | kubectl apply -f -
