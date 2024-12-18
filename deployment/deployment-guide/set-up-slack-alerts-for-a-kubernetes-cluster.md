@@ -25,10 +25,9 @@ Alerting is essential for monitoring modern systems, ensuring issues are detecte
    4. Select the Slack channel where you want alerts to appear.
    5. Copy the generated Webhook URL (e.g., `https://hooks.slack.com/services/...`).
 2. **Deploy alerting configuration to kuberenets cluster.**
-   1. Clone the repository to you local and updated the required changes mentioned below.\
-      [https://github.com/mosip/k8s-infra/tree/develop/alerting](https://github.com/mosip/k8s-infra/tree/develop/alerting)
+   1. Clone the [repository](https://github.com/OpenG2P/openg2p-deployment/tree/main/alerting) to you local and update the required changes mentioned below.
    2. Update **slack\_api\_url** and **channel** in **alertmanager.yaml**&#x20;
-   3.  Modify the `routes` and `receivers` in the Alertmanager configuration to customize which alerts are sent to Slack., as shown below and apply the changes.
+   3.  Modify the `routes` and `receivers` in the **alertmanager.yaml** configuration to customize which alerts are sent to Slack., as shown below.
 
        ```yaml
        routes:
@@ -36,14 +35,14 @@ Alerting is essential for monitoring modern systems, ensuring issues are detecte
            alertname: Watchdog
          receiver: 'null'
        ```
-   4. The monitoring package provided by Rancher includes various default alerting rules, which are often sufficient for most use cases. Sample custom alerts are available under the `custom-alerts` directory. Modify these as needed and apply them using `kubectl`
+   4. The monitoring package provided by Rancher includes various default alerting rules, which are often sufficient for most use cases. Sample custom alerts are available under the `custom-alerts` directory. Modify these as needed.
    5. Add cluster name in, `patch-cluster-name.yaml`
    6. Run **install.sh** to apply the configuration for alertmanager.
    7. And restart the alert-manager service on k8s-cluster.
    8.  Verify whether the alerts are firing from the Prometheus UI and check if Slack notifications are being received.\
 
 
-       <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p><em><strong>Prometheus dashboard</strong></em><br></p></figcaption></figure>
 
-       <figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p><em><strong>slack channel</strong></em></p></figcaption></figure>
 
