@@ -20,4 +20,4 @@ Repository on Docker Hub: &#x20;
 
 The new name of this Docker shall be used starting 1.4.1 version.
 
-<table><thead><tr><th width="114">Tag</th><th width="131">Created on</th><th>Description</th></tr></thead><tbody><tr><td>1.4.1</td><td>17 Dec 2024</td><td>Copy of openg2p-social-registry-odoo-package 1.4.1</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="114">Tag</th><th width="131">Created on</th><th>Description</th></tr></thead><tbody><tr><td>1.4.1</td><td>17 Dec 2024</td><td>Copy of <code>openg2p-social-registry-odoo-package</code> 1.4.1.  The docker has been renamed to <code>openg2p-social-registry-core</code>.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
