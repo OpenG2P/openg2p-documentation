@@ -475,6 +475,7 @@
     * [Restore a PVC from an NFS Folder and Attach it to a Pod](deployment/deployment-guide/restore-a-pvc-from-an-nfs-folder-and-attach-it-to-a-pod.md)
     * [View System Logs on the OpenSearch Dashboard](deployment/deployment-guide/view-system-logs-on-the-opensearch-dashboard.md)
     * [Set up Slack alerts for a Kubernetes cluster](deployment/deployment-guide/set-up-slack-alerts-for-a-kubernetes-cluster.md)
+    * [Importing Dashboards on the Superset UI for OpenG2P Applications](deployment/deployment-guide/importing-dashboards-on-the-superset-ui-for-openg2p-applications.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [Documentation Guides](documentation-guides/README.md)
