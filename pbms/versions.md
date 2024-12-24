@@ -6,7 +6,7 @@ description: PBMS versions
 
 ## PBMS Helm Package
 
-<table><thead><tr><th width="121">Version</th><th width="116">Created on</th><th>Contents</th></tr></thead><tbody><tr><td>1.2.0</td><td>18-Oct-2024</td><td>Update for Docker 1.2.0 of PBMS. Reporting versions changed to tagged versions.</td></tr></tbody></table>
+<table><thead><tr><th width="99">Version</th><th width="133">Created on</th><th>Contents</th></tr></thead><tbody><tr><td>1.2.0</td><td>18-Oct-2024</td><td>Update for Docker 1.2.0 of PBMS. Reporting versions changed to tagged versions.</td></tr><tr><td>1.2.2</td><td>22-Dec-2024</td><td>Update for Docker 1.2.2 of PBMS</td></tr></tbody></table>
 
 ## PBMS Docker
 
