@@ -224,6 +224,7 @@
     * [Print Disbursement Summary](pbms/functionality/print-disbursement-summary.md)
     * [Monitoring & Reporting](pbms/functionality/monitoring-and-reporting/README.md)
       * [Logging](pbms/functionality/monitoring-and-reporting/logging.md)
+    * [Priority List](pbms/functionality/priority-list.md)
   * [Versions](pbms/versions.md)
   * [Developer Zone](pbms/developer-zone/README.md)
     * [Odoo Modules](pbms/developer-zone/odoo-modules/README.md)
