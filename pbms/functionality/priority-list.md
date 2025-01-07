@@ -64,7 +64,7 @@ The priority list functionality is integrated into the program and cycle managem
 
 ## Work flow
 
-### Program creation process
+### Program creation
 
 Purpose: Set up foundational configurations for the program, including whether priority lists are used.
 
