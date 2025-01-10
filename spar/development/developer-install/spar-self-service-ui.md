@@ -42,9 +42,10 @@ npm install
 
 * **Configuration**: Configure Spar UI to connect with the Spar services. This typically involves setting environment variables&#x20;
 
-<pre class="language-shellscript"><code class="lang-shellscript"><strong>NEXT_PUBLIC_BASE_PATH="/spar/self-service-ui"
-</strong>NEXT_PUBLIC_BASE_API_PATH="/spar/self-service-api/"
-</code></pre>
+```shellscript
+NEXT_PUBLIC_BASE_PATH="/selfservice"
+NEXT_PUBLIC_BASE_API_PATH="/api/selfservice"
+```
 
 * **Nginx Configuration**: Configure Nginx to act as a reverse proxy for Spar services.&#x20;
 
@@ -64,49 +65,48 @@ sudo nano /etc/nginx/sites-available/spar.conf
 
 ```
 server {
-    listen 80;
-    server_name spar.openg2p.my;
-    location = / {
-        return 301 /spar/self-service-ui;
-    }
-        location /spar/self-service-ui {
-        proxy_pass                      http://localhost:3000;
-        proxy_http_version              1.1;
-        proxy_set_header                Upgrade $http_upgrade;
-        proxy_set_header                Connection "upgrade";
-        proxy_set_header                Host $host;
-        proxy_set_header                Referer $http_referer;
-        proxy_set_header                X-Real-IP $remote_addr;
-        proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header                X-Forwarded-Proto $scheme;
-        proxy_pass_request_headers      on;
-    }
-    location /spar/self-service-api/ {
-                proxy_pass                      http://localhost:8000/;
-                proxy_http_version              1.1;
-                proxy_set_header                Upgrade $http_upgrade;
-                proxy_set_header                Connection "upgrade";
-                proxy_set_header                Host $host;
-                proxy_set_header                Referer $http_referer;
-                proxy_set_header                X-Real-IP $remote_addr;
-                proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header                X-Forwarded-Proto $scheme;
-                proxy_pass_request_headers      on;
-    }
-    location /spar/mapper-api/ {
-                proxy_pass                      http://localhost:8007/;
-                proxy_http_version              1.1;
-                proxy_set_header                Upgrade $http_upgrade;
-                proxy_set_header                Connection "upgrade";
-                proxy_set_header                Host $host;
-                proxy_set_header                Referer $http_referer;
-                proxy_set_header                X-Real-IP $remote_addr;
-                proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header                X-Forwarded-Proto $scheme;
-                proxy_pass_request_headers      on;
-        }
+	listen 80;
+	server_name spar.openg2p.my;
+	location = / {
+    	        return 301 /selfservice;
+	}
+    	location /selfservice {
+    	        proxy_pass                  	http://localhost:3000;
+    	        proxy_http_version          	1.1;
+    	        proxy_set_header            	Upgrade $http_upgrade;
+    	        proxy_set_header            	Connection "upgrade";
+    	        proxy_set_header            	Host $host;
+    	        proxy_set_header            	Referer $http_referer;
+    	        proxy_set_header            	X-Real-IP $remote_addr;
+    	        proxy_set_header            	X-Forwarded-For $proxy_add_x_forwarded_for;
+    	        proxy_set_header            	X-Forwarded-Proto $scheme;
+    	        proxy_pass_request_headers  	on;
+	}
+	location /api/selfservice/ {
+            	proxy_pass                  	http://localhost:8000/;
+            	proxy_http_version          	1.1;
+            	proxy_set_header            	Upgrade $http_upgrade;
+            	proxy_set_header            	Connection "upgrade";
+            	proxy_set_header            	Host $host;
+            	proxy_set_header            	Referer $http_referer;
+            	proxy_set_header            	X-Real-IP $remote_addr;
+            	proxy_set_header            	X-Forwarded-For $proxy_add_x_forwarded_for;
+            	proxy_set_header            	X-Forwarded-Proto $scheme;
+            	proxy_pass_request_headers  	on;
+	}
+	location /api/mapper/ {
+            	proxy_pass                  	http://localhost:8007/;
+            	proxy_http_version          	1.1;
+            	proxy_set_header            	Upgrade $http_upgrade;
+            	proxy_set_header            	Connection "upgrade";
+            	proxy_set_header            	Host $host;
+            	proxy_set_header            	Referer $http_referer;
+            	proxy_set_header            	X-Real-IP $remote_addr;
+            	proxy_set_header            	X-Forwarded-For $proxy_add_x_forwarded_for;
+            	proxy_set_header            	X-Forwarded-Proto $scheme;
+            	proxy_pass_request_headers  	on;
+    	}
 }
-
 ```
 
 * **Enable Configuration**: Enable the Nginx configuration by creating a symbolic link to `sites-enabled`
@@ -130,7 +130,7 @@ sudo service nginx restart
 ```
 
 * **Start Spar Services**: Ensure that Spar-SelfService and Spar-Mapper services are up and running. Refer to the Mapper and Self service documentation.
-* **Run Spar UI**: Start the Spar UI application: This command starts the development server for Spar UI. Open a web browser and navigate to the specified URL (usually http://localhost:3000) or a specific domain as per nginx server ,to access the Spar UI interface.
+* **Run Spar UI**: Start the Spar UI application: This command starts the development server for Spar UI. Open a web browser and navigate to the specified URL (usually http://localhost:3000) or a specific domain as per nginx server (here http://spar.openg2p.my) to access the Spar UI interface.
 
 ```sh
 npm run dev

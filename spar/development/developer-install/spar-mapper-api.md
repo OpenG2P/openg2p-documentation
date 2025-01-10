@@ -21,7 +21,7 @@ description: >-
 
 The following dependencies are managed in the installation steps below.
 
-```sh
+```
 annotated-types==0.6.0
 anyio==3.7.1
 asyncio==3.4.3
@@ -81,16 +81,22 @@ websockets==12.0
 
 ### Steps to install
 
-* Clone the repository
+* Install dependencies
+
+```bash
+sudo apt install -y python3-pip python3-dev build-essential libpq-dev
+```
+
+* Clone the repository&#x20;
 
 ```sh
 git clone https://github.com/OpenG2P/openg2p-spar-mapper-api.git
 ```
 
-* Navigate to the project root
+* Navigate to the project root and switch to branch 1.0.0
 
 ```sh
-cd openg2p-spar-mapper-api
+cd openg2p-spar-mapper-api && git checkout 1.0.0
 ```
 
 * Create a virtual environment with Python 3
@@ -113,8 +119,27 @@ pip install greenlet &&
 pip install -e .
 ```
 
-* Configure database credentials and other environment variables in the \`.env\` file
-  * [See Configuration section below](spar-mapper-api.md#configuration)
+* Create a '.env' file and configure database
+  *   Set the following environment variables to configure the \`spar-mapper-api\`:
+
+      ```xml
+      # Application Port
+      SPAR_MAPPER_PORT='8007' 
+
+      # Database credentials
+      SPAR_MAPPER_DB_HOSTNAME='localhost'
+      SPAR_MAPPER_DB_USERNAME='sparuser'
+      SPAR_MAPPER_DB_PASSWORD='password'
+      SPAR_MAPPER_DB_DBNAME='spardb'
+      ```
+  *   Database setup
+
+      ```sql
+      CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'password';
+      CREATE DATABASE spardb WITH OWNER = sparuser CONNECTION LIMIT = -1;
+      ```
+
+
 * &#x20;Run migrations to set up the database:
 
 ```sh
@@ -131,22 +156,6 @@ python main.py run
 
 * Access Swagger API Documentation
   * [http://localhost:8007/docs](http://localhost:8007/docs)
-
-### Configuration
-
-#### Environment Variables
-
-Set the following environment variables to configure the \`spar-mapper-api\`:
-
-```xml
-# Application Port
-SPAR_MAPPER_PORT='8007' 
-
-# Database credentials
-SPAR_MAPPER_DB_HOSTNAME='localhost'
-SPAR_MAPPER_DB_USERNAME='sparuser'
-SPAR_MAPPER_DB_DBNAME='spardb'
-```
 
 ### Testing
 

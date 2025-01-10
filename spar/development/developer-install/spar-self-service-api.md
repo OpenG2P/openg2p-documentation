@@ -36,7 +36,7 @@ This page provides comprehensive documentation for the installation of SPAR Self
 
 The following dependencies are managed in the installation steps below.
 
-```sh
+```
 annotated-types==0.6.0
 anyio==3.7.1
 asyncio==3.4.3
@@ -101,6 +101,12 @@ websockets==12.0
 
 #### Install from source
 
+* Install dependencies
+
+```sh
+sudo apt install -y python3-pip python3-dev build-essential libpq-dev
+```
+
 * Clone the repository.
 
 ```sh
@@ -110,7 +116,7 @@ git clone https://github.com/OpenG2P/openg2p-spar-self-service
 * Navigate to the project root.
 
 ```sh
-cd openg2p-spar-self-service
+cd openg2p-spar-self-service && git checkout 1.0.0
 ```
 
 * Create a virtual environment with Python 3.
@@ -128,14 +134,49 @@ source venv/bin/activate
 * Install the necessary dependencies.
 
 ```sh
-pip install -r ../test-requirements.txt &&
+pip install -r test-requirements.txt &&
 pip install openg2p-spar-g2pconnect-mapper-connector-lib &&
-pip install greenlet && 
-pip install -e .
+pip install greenlet &&
+pip install -e openg2p-spar-g2pconnect-mapper-connector-lib &&
+pip install -e openg2p-spar-mapper-interface-lib &&
+pip install -e openg2p-spar-self-service-api
 ```
 
-* Configure database credentials and other environment variables in the _**.env**_ file.
-  * [See Configuration section below](spar-self-service-api.md#configuration)
+* Create a '.env' file and configure database credentials
+  *   Set the following environment variables to configure the _**spar-mapper-api**_.
+
+      ```markup
+      # Database credentials for spar-mapper-api (Update these values as per your installation/setup)
+      SPAR_SELFSERVICE_DB_DBNAME='spardb'
+      SPAR_SELFSERVIC_DB_HOSTNAME='localhost'
+      SPAR_SELFSERVIC_DB_USERNAME='sparuser'
+      SPAR_SELFSERVICE_DB_PASSWORD='password'
+
+      # Auth (Update these values as per your installation/setup)
+      SPAR_SELFSERVICE_AUTH_DEFAULT_ISSUERS=["https://esignet.dev.openg2p.org"]
+      SPAR_SELFSERVICE_AUTH_DEFAULT_JWKS_URLS=["https://esignet.dev.openg2p.org/.well-known/jwks.json"]
+
+      # SPAR Mapper API Endpoints (change only if required)
+      SPAR_SELFSERVICE_MAPPER_API_URL="http://localhost:8007/sync"
+      SPAR_SELFSERVICE_MAPPER_LINK_PATH="/link"
+      SPAR_SELFSERVICE_MAPPER_UNLINK_PATH="/unlink"
+      SPAR_SELFSERVICE_MAPPER_RESOLVE_PATH="/resolve"
+      SPAR_SELFSERVICE_MAPPER_UPDATE_PATH="/update"
+
+      SPAR_SELFSERVICE_OPENAPI_ROOT_PATH='/api/selfservice'
+
+      # Bypass auth verification for dev purposes
+      SPAR_SELFSERVICE_PORTAL_AUTH_DEFAULT_ID_TOKEN_VERIFY_AT_HASH="false"
+      SPAR_SELFSERVICE_AUTH_COOKIE_SECURE="false"
+      ```
+  *   Database setup (skip this step if database is already setup)
+
+      ```sql
+      CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'password';
+      CREATE DATABASE spardb WITH OWNER = sparuser CONNECTION LIMIT = -1;
+      ```
+
+
 * &#x20;Run migrations to set up the database.
 
 ```sh
@@ -144,23 +185,12 @@ python main.py migrate
 
 ### Seeding the database (optional)
 
-This will seed the database with default values. Make sure to update the eSignet configuration in the DB as per your installation.
-
-#### PostgreSQL DB Setup
-
-Create a new role/user called _**sparuser**_ and create a new database called _**spardb**_, with _**sparuser**_ as the owner. No need to run this step, if Postgres was installed through OpenG2P's deployment script.
-
-```plsql
-CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'xxxxxx';
-CREATE DATABASE spardb WITH OWNER = sparuser CONNECTION LIMIT = -1;  
-```
-
-#### Then run the script.
+This will seed the database with default values.
 
 ```sh
 cd db_scripts &&
-DB_HOST="openg2p.sandbox.net" \
-DB_USER_PASSWORD="xxxxxx" \
+DB_HOST="localhost" \
+DB_USER_PASSWORD="password" \
 ./deploy.sh && cd ..
 ```
 
@@ -175,6 +205,21 @@ DB_USER_PASSWORD="xxxxxx" \
 - `LOG_DB_QUERY="true"` Default is false. Logs all Db queries.
 ```
 
+### Authentication
+
+The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](broken-reference) for setup instructions.
+
+#### Setting up redirection
+
+To integrate the SPAR Self-Service UI with any login provider, you need to add the `redirect_uri` in the authorization\_parameter column.
+
+```
+"redirect_uri": "http://spar.openg2p.my/api/selfservice/oauth2/callback"
+```
+
+* This URL needs to be updated in the `login_providers` table, specifically in the `authorization_parameters` column for the eSignet record.
+* Make sure to replace `selfservice.qa.openg2p.net` with the appropriate domain that matches your eSignet configuration.
+
 ### Quick start
 
 * Start the development server.
@@ -185,45 +230,6 @@ python main.py run
 
 * Access Swagger API Documentation.
   * [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### Configuration
-
-#### Environment variables
-
-Set the following environment variables to configure the _**spar-mapper-api**_.
-
-```markup
-# Database credentials for spar-mapper-api (Update these values as per your installation/setup)
-SPAR_SELFSERVICE_DB_DBNAME=openg2p_spar_db
-SPAR_SELFSERVIC_DB_HOSTNAME='localhost'
-SPAR_SELFSERVIC_DB_USERNAME='sparuser'
-
-# Auth (Update these values as per your installation/setup)
-SPAR_SELFSERVICE_AUTH_DEFAULT_ISSUERS=[ "https://esignet.dev.sandbox.net/v1/esignet", "https://keycloak.dev.sandbox.net/realms/sandbox" ]
-SPAR_SELFSERVICE_AUTH_DEFAULT_JWKS_URLS=[ "https://esignet.dev.sandbox.net/v1/esignet/oauth/.well-known/jwks.json", "https://keycloak.dev.sandbox.net/realms/sandbox/protocol/openid-connect/certs" ]
-
-# SPAR Mapper API Endpoints (change only if required)
-SPAR_SELFSERVICE_MAPPER_API_URL="http://localhost:8007/sync"
-SPAR_SELFSERVICE_MAPPER_LINK_PATH="/link"
-SPAR_SELFSERVICE_MAPPER_UNLINK_PATH="/unlink"
-SPAR_SELFSERVICE_MAPPER_RESOLVE_PATH="/resolve"
-SPAR_SELFSERVICE_MAPPER_UPDATE_PATH="/update"
-```
-
-#### Authentication
-
-The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](broken-reference) for setup instructions.
-
-#### Setting up redirection
-
-To integrate the SPAR Self-Service UI with any login provider, you need to add the `redirect_uri` in the authorization\_parameter column.
-
-```
-"redirect_uri": "http://selfservice.qa.openg2p.net/api/selfservice/oauth2/callback"
-```
-
-* This URL needs to be updated in the `login_providers` table, specifically in the `authorization_parameters` column for the eSignet record.
-* Make sure to replace `selfservice.qa.openg2p.net` with the appropriate domain that matches your eSignet configuration.
 
 ### Testing
 
