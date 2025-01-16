@@ -28,6 +28,8 @@ OpenG2P registry is a single repository containing details of the registrants. T
 
 The purpose of the registry is to provide a single source of truth to the program administrators and managers. Program administrators can grant access to other program participants to act on this information.
 
+> Learn more about the concept of Integrated Beneficiary Registry [here](https://standards.spdci.org/standards/wip-integrated-beneficiary-registry-v1.0.0).
+
 ## Individuals and groups
 
 Individual registrant information is entered in a single row, whereas group details are stored in multiple rows in the form of relationships with the head or representative of the group.
