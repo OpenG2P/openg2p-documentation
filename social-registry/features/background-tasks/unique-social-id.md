@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Unique Social ID
 
 ### Description <a href="#description" id="description"></a>
@@ -8,7 +22,7 @@ OpenG2P's Social Registry supports the feature of generating randomized unique I
 
 ### Technical design
 
-* The ID generation is implemented in an asynchronous pattern
+* The ID generation is implemented as a Background Task
 * New Registrants are inserted into a table — g2p\_que\_background\_task - with&#x20;
   * status = PENDING
   * worker\_type = id\_generation\_request\_worker
