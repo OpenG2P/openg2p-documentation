@@ -74,11 +74,11 @@ sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1
 Cloning the odoo15 repository takes time because of the large file.
 {% endhint %}
 
-*   Make a new Odoo Python virtual environment.
+*   Create a new Python virtual environment for Odoo using Python 3.11
 
     ```bash
     cd /opt/odoo
-    python3 -m venv odoo-venv
+    python3.11 -m venv odoo-venv
     ```
 *   Turn on the virtual environment.
 
@@ -190,11 +190,11 @@ sudo apt-get install -y node-less
 Cloning the odoo17 repository takes time because of the large file.
 {% endhint %}
 
-*   Make a new Odoo Python virtual environment.
+*   Create a new Python virtual environment for Odoo using Python 3.11
 
     ```bash
     cd /opt/odoo
-    python3 -m venv odoo17-venv
+    python3.11 -m venv odoo17-venv
     ```
 *   Turn on the virtual environment.
 
