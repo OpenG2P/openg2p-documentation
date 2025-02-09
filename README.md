@@ -41,7 +41,7 @@ All the modules are designed to be installed and used standalone. However, the f
 
 {% embed url="https://miro.com/app/board/uXjVNGpmGPw=/" %}
 
-## Solutions/Modules offered by OpenG2P
+## Building blocks/modules offered by OpenG2P
 
 * [PBMS](pbms/) (Program and Beneficiary Management System)
 * [Social Registry](social-registry/)
