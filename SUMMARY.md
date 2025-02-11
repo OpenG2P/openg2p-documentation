@@ -484,7 +484,6 @@
 * [Documentation Guides](documentation-guides/README.md)
   * [Documentation Guidelines](documentation-guides/documentation-guidelines/README.md)
     * [Embed a Miro diagram](documentation-guides/documentation-guidelines/embed-a-miro-diagram.md)
-    * [Set an Image for a Start View](documentation-guides/documentation-guidelines/set-an-image-for-a-start-view.md)
   * [OpenG2P Module Doc Template](documentation-guides/openg2p-module-doc-template.md)
 * [Use Cases](use-cases/README.md)
   * [Technology for Inclusion](use-cases/technology-for-inclusion/README.md)

@@ -14,9 +14,8 @@ layout:
 
 # Embed a Miro diagram
 
-
-
 * Make sure the diagram on Miro has permissions for anyone to view the boards (this is available under Share)
+* Set a "Start view" for the diagram under Board --> Start view.  Make sure view box is just about the size of the digram.
 * Copy the board URL/link
 * In Gitbook, insert it using "Embed URL".
 * To skip the "See the board" button and view the diagram directly add the parameter `&embedAutoplay=true` to the end of the embed URL. Example:&#x20;
