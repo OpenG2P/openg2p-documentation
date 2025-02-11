@@ -41,6 +41,10 @@ All the modules are designed to be installed and used standalone. However, the f
 
 {% embed url="https://miro.com/app/board/uXjVNGpmGPw=/" %}
 
+##
+
+{% embed url="https://miro.com/app/board/uXjVNGpmGPw=/?embedAutoplay=true&share_link_id=788848203377" %}
+
 ## Building blocks/modules offered by OpenG2P
 
 * [PBMS](pbms/) (Program and Beneficiary Management System)
