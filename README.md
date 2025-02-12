@@ -39,7 +39,9 @@ OpenG2P has a flexible architecture that allows governments and social benefit d
 
 All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
 
-{% embed url="https://miro.com/app/board/uXjVNGpmGPw=/" %}
+
+
+{% embed url="https://miro.com/app/board/uXjVNGpmGPw=?embedAutoplay=true" %}
 
 ## Building blocks/modules offered by OpenG2P
 
