@@ -12,9 +12,9 @@ OpenG2P has built an ODK Importer module. It is specifically designed to tailor,
 
 <table><thead><tr><th width="213">Feature </th><th>Functionality</th></tr></thead><tbody><tr><td><strong>Data Import</strong></td><td><ul><li>Simplifies the process of entering data from the ODK forms' field into individual/group registries of the SR module, ensuring accuracy and effectiveness in data management.</li></ul></td></tr><tr><td><strong>Test Connection</strong></td><td><ul><li>Verifies the established connection between the ODK Importer and ODK Central.</li><li>Ensures that the ODK Importer can effectively communicate with ODK Central, the server hosting the ODK forms. </li><li>Enables seamless data transfer between the two systems.</li></ul></td></tr><tr><td><strong>Import Records</strong></td><td><ul><li>Tracks the progress of data import and identifies any errors that may occur during the process  </li><li>Provides users with real-time updates on the status of their data import, allowing them to quickly address any issues and ensure a smooth import process</li></ul><p>Note:</p><p>This feature is used when you want to retrieve data in bulk.</p></td></tr><tr><td><strong>Fetch Records</strong></td><td><ul><li>This feature enables users to retrieve a specific record from the ODK system using the unique ODK Instance ID. It works similarly to the standard import record process but offers more precision by allowing users to target a single record based on its unique identifier. </li><li>This is particularly useful when you need to retrieve specific record without importing the complete dataset.</li></ul><p>Note: </p><p>Make sure you have completed the Configuration procedure to use this feature. To learn more on this feature, refer Import Specific ODK Form.</p></td></tr><tr><td><strong>Automated Data Processing</strong></td><td><ul><li>Removes the risk of manual error, ensuring higher accuracy in data records.</li><li>Streamlines task, saves time and resources while enhancing overall operational efficiency.</li><li>Increases total operational efficiency, streamlines tasks, saves time and resources.</li></ul></td></tr><tr><td><strong>Automated Scheduler</strong></td><td><ul><li>Allows smooth updates that do not require operator intervention. This capability enables rapid and regular changes to data sets, improving data currency and relevancy</li><li>Automates the import process, improves workflow efficiency, and avoids delay in processing</li></ul></td></tr></tbody></table>
 
-## Process workflow
+## Functional view
 
-{% embed url="https://miro.com/app/board/uXjVKcYGOyg=/?share_link_id=96965246843" %}
+{% embed url="https://miro.com/app/board/uXjVKcYGOyg=/?embedAutoplay=true&share_link_id=268009247324" %}
 
 ## **Process & Data Flow**
 
@@ -47,7 +47,7 @@ Here is the sample _**Configuration**_ screen.
 
 ## **Source code**
 
-[https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer](https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer)
+[https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer](https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p_odk_importer)
 
 ## **Technical concepts**
 
