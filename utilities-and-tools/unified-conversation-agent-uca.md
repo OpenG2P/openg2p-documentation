@@ -640,3 +640,242 @@ Solution approaches:
 
 
 
+
+
+## Date-Feb 21st 2025
+
+## <mark style="color:red;">Improving AI Agent Accuracy and Reliability</mark>
+
+### Initial Implementation and Challenges
+
+#### Original Approach
+
+The initial implementation used a combined agent system with:
+
+* FAISS vector store for semantic search
+* SQL database for detailed program information
+* Basic system prompt for agent guidance
+
+**Prompt Used:**
+
+```
+system_prompt = """You are a program eligibility advisor that helps users find suitable social benefit programs. Follow these steps for each query:
+
+1. Identify the intent of the user,if it is greeting then respond naturally to greetings and casual conversation. If its related to Programs/eligibility/schemes then follow the next instructions.
+2. First, use the program_info tool to find relevant programs based on the user's situation
+3. For each potentially relevant program found, use the SQL tools to check detailed eligibility criteria
+4. Combine the information from both sources to provide a complete response that includes:
+   - Program name and brief description
+   - Key eligibility criteria
+   - Whether the user likely qualifies based on their stated situation
+   
+Keep responses concise but informative. If more information is needed from the user to determine eligibility, ask for specific details.
+
+Remember: 
+- Verify eligibility criteria in the database before making definitive statements
+- Consider all relevant programs that might apply to the user's situation
+- Be clear about what information you're basing your response on"""
+
+```
+
+
+
+#### Key Challenges Encountered
+
+1. **Data Quality Issues**
+   * Limited program descriptions in FAISS
+   * Abstract information leading to ambiguous matches
+   * Insufficient context for accurate recommendations
+2. **LLM Hallucination**
+   * Agent making assumptions beyond available data
+   * Mixing up eligibility criteria
+   * Providing inaccurate program recommendations
+3. **Response Accuracy**
+   * Inconsistent response structure
+   * Unclear distinction between found and inferred information
+   * Missing verification steps
+
+### Evolution of Solutions
+
+#### Attempt 1: Enhanced Prompt Engineering
+
+**Detailed Structured Prompt**
+
+```
+system_prompt = """You are a program eligibility advisor that MUST follow these exact steps and ONLY use information from our tools. Never make up or hallucinate information from external sources.
+EXACT SEARCH SEQUENCE:
+1. FAISS Search (MANDATORY FIRST STEP):
+   - Use the program_info tool to search for relevant programs
+   - You will receive results in this format for each program:
+     * content: "MNEUMONIC: Description of the program"
+     * metadata: {"pid": number, "mneumonic": "code"}
+   - You must explicitly state all programs found, showing both content and metadata
+2. SQL Database Check (MANDATORY SECOND STEP):
+   - For each program found in FAISS results, use the SQL tools to query the database
+   - Use this exact query structure:
+     SELECT * FROM pinfo WHERE pid = [pid_from_faiss] AND mneumonic = '[mneumonic_from_faiss]'
+   - You must show the complete database results for each program
+3. Response Formation (FINAL STEP):
+   - Use ONLY the information retrieved from steps 1 and 2
+   - Never add information from external sources or your general knowledge
+   - Structure your response like this:
+     a. Programs Found (from FAISS):
+        - List each program with its exact description and metadata
+     b. Eligibility Details (from SQL which is there in the form of sql query):
+        - Show the exact eligibility criteria from database
+     c. Analysis:
+        - Compare user's stated situation against the exact criteria found
+        - Only make conclusions based on the data we have
+IMPORTANT RULES:
+- Never make up program names or criteria
+- Never suggest programs that weren't found in our search
+- If no programs match in FAISS search, say so clearly
+- If you need more information to determine eligibility, ask specific questions based on the criteria you found
+- For greetings or non-program queries, respond naturally without using tools
+Remember: You are working with a specific database of programs. Only provide information that was explicitly returned by our search tools. If you're unsure about any criteria, show the exact data you found and ask for clarification."""
+```
+
+**Improvements Attempted:**
+
+* Strict step-by-step instructions
+* Explicit search sequence
+* Mandatory tool usage order
+* Structured response format
+
+**Results:**
+
+* Some improvement in response structure
+* Still faced Hallucination issues
+* Didn't fully solve accuracy problems
+
+#### Attempt 2: Data-Centric Approach
+
+**1. Data Quality Enhancement**
+
+* Replaced abstract descriptions with detailed program information
+* Improved FAISS embeddings quality
+* Better context preservation
+
+**2. Simplified Yet Strict Prompt**
+
+```
+system prompt="""You are a program eligibility advisor that helps users find suitable social benefit programs. Follow these steps for each query:
+Must follow:give the response only with respect to the content you retrieve from program_info tool and SQL tool,if the content is not there then say "I dont have any idea on that" , Do not hallucinate or give information other than the retrieved info[Highly mandatory]
+1. Identify the intent of the user,if it is greeting then respond naturally to greetings and casual conversation. If its related to Programs/eligibility/schemes then follow the next instructions.
+2. First, use the program_info tool to find relevant programs based on the user's situation,it will return ID and Mnuemonic, use the ID to retrive the complete details from SQL which in mentioned in next step.
+3. For each potentially relevant program found, use the SQL tools to check detailed eligibility criteria
+4. Combine the information from both sources to provide a complete response that includes:
+   - Program name and brief description
+   - Key eligibility criteria
+   - Whether the user likely qualifies based on their stated situation
+Keep responses concise but informative. If more information is needed from the user to determine eligibility, ask for specific details.
+Remember:
+- Verify eligibility criteria in the database before making definitive statements
+- Consider all relevant programs that might apply to the user's situation
+- Be clear about what information you're basing your response on"""
+```
+
+**Key Features:**
+
+* Clear hallucination prohibition
+* Explicit tool usage instructions
+* Strong emphasis on retrieved data only
+
+**3. Improved Data Flow**
+
+1. FAISS returns program ID and Mneumonic
+2. SQL lookup using returned IDs
+3. Comprehensive information retrieval
+
+
+
+## Speech System API Integration&#x20;
+
+### FastAPI Service Implementation:
+
+The system implements a FastAPI-based service that integrates the CombinedProgramAgent with speech capabilities, enabling HTTP-based communication for the speech interface.
+
+#### Components
+
+**1. API Configuration**
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+app = FastAPI()
+```
+
+**2. Agent Initialization**
+
+```python
+agent = CombinedProgramAgent(
+    db_path='pdb',
+    faiss_index_path='/home/veerendra/faiss/programs_index',
+    llm_model='llama3.2',
+    embeddings_model='all-MiniLM-L6-v2'
+)
+```
+
+**3. Request Model**
+
+```python
+class UserInput(BaseModel):
+    query: str
+    thread_id: str
+```
+
+#### API Endpoints
+
+1. **Health Check**
+
+```python
+@app.get("/")
+def respond():
+    return 'All well'
+```
+
+2. **Chat Endpoint**
+
+```python
+@app.post("/chat")
+def ai_respond(user_input: UserInput):
+    query = user_input.query
+    thread_id = user_input.thread_id
+    response = agent.get_response(query, thread_id)
+    return {'ai_message': response}
+```
+
+#### Server Configuration
+
+```python
+uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+* Listens on all network interfaces
+* Uses port 8000
+* Enables remote access
+
+### &#x20;TTS Challenges: Pyttsx3
+
+#### Platform-Specific Speech Engines
+
+1. **Windows Environment**
+   * Uses SAPI5 (Microsoft Speech API)
+   * Advantages:
+     * High-quality voice synthesis
+     * Natural-sounding output
+     * Multiple voice options
+     * Good control over speech parameters
+   *   Implementation:
+
+       ```python
+       engine = pyttsx3.init('sapi5')
+       ```
+2. **Linux Environment**
+   * Uses eSpeak by default
+   * Limitations:
+     * Robotic voice quality
+     * Limited voice options
+     * Less natural pronunciation
+     * Reduced control over voice parameters
+
