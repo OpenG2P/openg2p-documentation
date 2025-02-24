@@ -53,11 +53,7 @@ The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) 
 
 ## Functional architecture
 
-OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs.
+OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
 
-All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
-
-
-
-{% embed url="https://miro.com/app/board/uXjVNGpmGPw=?embedAutoplay=true" %}
+<figure><img src=".gitbook/assets/functional-view.png" alt=""><figcaption><p>Typically connection of modules to deliver cash digitally</p></figcaption></figure>
 
