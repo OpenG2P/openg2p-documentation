@@ -8,6 +8,8 @@ The following figure shows how the G2P Bridge subsystem fits into the overall G2
 
 
 
+{% embed url="https://miro.com/app/board/uXjVKX-8Zq0=/?embedAutoplay=true&share_link_id=992769892719" %}
+
 {% embed url="https://miro.com/app/board/uXjVKX-8Zq0=/" %}
 G2P Bridge in the G2P landscape
 {% endembed %}
