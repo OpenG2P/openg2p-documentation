@@ -27,6 +27,19 @@ Input security is handled in the following ways:
 * Type safe programming using Python Pydantic&#x20;
 * ORM capabilities to avoid SQL Injection threats&#x20;
 
+## Document Encryption
+
+The Document Encryption module in OpenG2P safeguards all documents uploaded to the registry through secure encryption. This functionality protects sensitive data using advanced encryption techniques, reliable key management, and stringent access controls. Key features include:
+
+* **Complete** **End-to-End Encryption:**
+  * Documents are automatically encrypted before being stored, whether in the database or an S3 bucket.
+  * Encryption is conditional based on registry settings, ensuring flexibility and compliance with system configurations.
+* **Key Management:**
+  * OpenG2P utilizes a secure and reliable Key Manager module to manage encryption keys efficiently.
+  * The Key Manager ensures keys are safely stored, periodically rotated, and accessed securely.
+* &#x20;**Secure** **Decryption**:
+  * Only authorized users with valid permissions can access and see decrypted documents.
+
 ## Secure deployment
 
 OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](broken-reference)
