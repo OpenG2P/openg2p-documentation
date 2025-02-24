@@ -47,11 +47,13 @@ OpenG2P is built on a bedrock of good practices and principles that drive our wo
 
 <figure><img src=".gitbook/assets/guiding-principles.png" alt="" width="375"><figcaption><p>Guiding principles</p></figcaption></figure>
 
+The platform is built for inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline.
+
 The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under [open-source licenses](license/). It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
 
 ## Functional architecture
 
-OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. Using the OpenG2P platform, governments can digitalise the benefit delivery end-to-end and gain significantly in terms of efficiency, ease of administration, speed, cost, and convenience for the beneficiaries. The platform is built for inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline.
+OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs.
 
 All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
 
@@ -59,14 +61,3 @@ All the modules are designed to be installed and used standalone. However, the f
 
 {% embed url="https://miro.com/app/board/uXjVNGpmGPw=?embedAutoplay=true" %}
 
-## Building blocks/modules offered by OpenG2P
-
-* [PBMS](pbms/) (Program and Beneficiary Management System)
-* [Social Registry](social-registry/)
-* [SPAR](spar/) (Social Payments Account Registry)
-* [G2P Bridge](g2p-bridge/)
-* [Utilities and tools](utilities-and-tools/)'
-
-## Getting started
-
-To run OpenG2P suite and experience all that it offers, a good start point is [**OpenG2P In a Box**](deployment/openg2p-in-a-box.md).&#x20;
