@@ -28,10 +28,6 @@ The registry is offered as ready-to-deploy package which can be configured for a
 Social Registry Functional Architecture
 {% endembed %}
 
-## Technical architecture
-
-{% embed url="https://miro.com/app/board/uXjVLM9EXEk=/?embedAutoplay=true&share_link_id=154004458038" %}
-
 ## Salient features
 
 Some of the key features offered by OpenG2P's Social Registry are as follows:
@@ -39,14 +35,25 @@ Some of the key features offered by OpenG2P's Social Registry are as follows:
 * [Holds both **individual and household** records with relationships. ](features/individuals-and-groups/)
 * [Ability to **share data** with other systems via standard interfaces.](features/data-share.md)
 * [**Privacy** controls on the data](features/privacy-and-security.md).
-* [Packaged for rapid deployment](features/rapid-deployment-framework.md)
-* [Dynamic registry: multiple update mechanisms](features/registry-update-mechanisms.md).
-* [Automatic computation of scores like PMT](features/score-computation.md).
+* [Packaged for **rapid deployment**](features/rapid-deployment-framework.md)
+* [**Dynamic registry**: multiple update mechanisms](features/registry-update-mechanisms.md).
+* [Automatic computation of scores like **PMT**](features/score-computation.md)**.**
 * Easy user interface for administration
-* Deduplication support.
-* [Registration in areas with no connectivity](features/offline-assisted-registration/).
-* [Issue unique ID to individuals](features/unique-social-id.md)
-* [Issue Verifiable Credentials](features/verifiable-credentials-issuance/)
+* [Deduplication support](features/deduplication/).
+* [**Offline registrations** in areas with no connectivity.](features/offline-assisted-registration/)
+* [Issuance of **unique ID** to individuals](features/unique-social-id.md).
+* [Issuance of **Verifiable Credentials**](features/verifiable-credentials-issuance/)**.**
 
+## Use cases
 
+<table data-view="cards"><thead><tr><th></th><th></th><th data-type="checkbox"></th><th><select></select></th><th data-type="rating" data-max="5"></th><th data-type="files"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><strong>Farmer Registry</strong></td><td></td><td>false</td><td></td><td>2</td><td></td><td><a href="../.gitbook/assets/framer-registry.png">framer-registry.png</a></td></tr><tr><td><strong>Urban Destitute</strong></td><td></td><td>false</td><td></td><td>null</td><td></td><td><a href="../.gitbook/assets/urban-destitute-registraiton.png">urban-destitute-registraiton.png</a></td></tr></tbody></table>
 
+* Farmer registry
+* Family registry
+* National social registry
+* Disaster relief registry
+* Urban destitute
+
+## Technical architecture
+
+{% embed url="https://miro.com/app/board/uXjVLM9EXEk=/?embedAutoplay=true&share_link_id=154004458038" %}
