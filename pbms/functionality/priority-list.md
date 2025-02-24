@@ -6,7 +6,7 @@ description: Work In Progress
 
 ## Overview
 
-In the context of OpenG2P, prioritization is a critical feature designed to ensure that the most eligible or vulnerable beneficiaries are addressed during disbursement cycles. Given the diverse socioeconomic and demographic contexts in which OpenG2P operates, the priority list serves as a dynamic tool that allows program managers to target beneficiaries based on predefined rules or ranking criteria.
+In the context of OpenG2P, prioritization is a critical feature designed to ensure that the most eligible or vulnerable beneficiaries are addressed during disbursement cycles. Given the diverse socioeconomic and demographic contexts in which OpenG2P operates, the priority list serves as a dynamic tool that allows program managers to target beneficiaries based on predefined rules and ranking criteria.
 
 The priority list functionality is integrated into the program and cycle management process, enabling flexibility while maintaining transparency and auditability. This document outlines the purpose, configuration, and workflow of the priority list feature, detailing its role in streamlining disbursement processes and ensuring efficient resource allocation.
 
@@ -14,42 +14,34 @@ The priority list functionality is integrated into the program and cycle managem
 
 ## Key concepts and definitions
 
-• **Priority list**: A ranked or filtered list of beneficiaries.
+• **Priority list**: A filtered and ranked list of beneficiaries.
 
-• **Rank-based criteria**: Ranking on scoring mechanisms like PMT, FSS, etc.
+• **Eligibility and Ranking**:&#x20;
 
-• **Inclusion limits**: Fixed rules for restricting beneficiaries in a priority list.
+* Beneficiaries are filtered based on selected eligibility domain and then ranked according to selected sorting order criteria
 
-
+• **Inclusion limits**: Fixed number of beneficiaries.
 
 ## Key Features
 
 **Program-level default configuration**
 
 * Define default priority rules at the program level to ensure consistency across disbursement cycles.
-* Configure ranking methods, inclusion limits, and approval requirements as part of the program setup.
+* Configure eligibility and ranking methods, inclusion limits as part of the program setup.
 
 **Cycle-specific overrides**
 
 * Modify the default priority configuration during cycle creation to address specific disbursement requirements.
 * Ensure flexibility while maintaining a clear audit trail of adjustments.
 
-**Rank-based prioritization**
+**Eligibility and Ranking**
 
-* Automatically rank beneficiaries based on predefined criteria such as PMT scores, vulnerability indices, or multi-criteria evaluations.
-* Supports weighted scoring for multi-dimensional prioritization.
+* Filter beneficiaries based on the cycle configuration, which includes conditions such as age, geography, and vulnerability index, then rank them using PMT, FSS, or multi-criteria evaluation.
 
 **Configurable inclusion limits**
 
-* Limit the number of beneficiaries included in a cycle based on:
+* Limit the number of beneficiaries included in a cycle based on:&#x20;
 * Fixed numbers.
-* Specific rank thresholds.
-* Financial caps for the cycle.
-
-**Approval workflow**
-
-* Enable optional manual approval of priority lists before beneficiaries are finalized for entitlement preparation.
-* Provides an additional layer of governance to ensure the correctness of the prioritization process.
 
 **Dynamic configuration during cycle creation**
 
@@ -76,14 +68,12 @@ Purpose: Set up foundational configurations for the program, including whether p
 
 2. **Configure default priority rules:**
 
-* Priority type:
-  * _Condition-based_: E.g., Age above 65, geography, vulnerability index.
-  * _Rank-based_: Assign ranks using PMT, FSS, or multi-criteria evaluation.
+* Eligibility:
+  * Beneficiaries are filtered based on conditions like age above 65, geography, and vulnerability index.
+* Ranking
+  * Assign ranks using PMT, FSS, or multi-criteria evaluation. Sorting can be applied in ascending or descending order, depending on program requirements.
 * Inclusion limit:
   * Fixed number of beneficiaries.
-  * Financial cap.
-  * Rank threshold.
-* Approval requirement: Is manual approval of the priority list required before entitlements?
 
 3. **Save program**  **configuration**:
 
@@ -106,17 +96,12 @@ Purpose: Execute the recurring process of creating a cycle, applying priority ru
 2. **Priority list creation**
 
 * Apply the priority logic to generate a list of eligible beneficiaries:
-* Condition-Based Priority: Filter based on static conditions (e.g., age, geography).
-* Rank-Based Priority: Rank beneficiaries using the selected scoring methods or criteria.
+* Eligibility: Filter based on static conditions (e.g., age, geography).
+* Ranking: Rank beneficiaries using the selected scoring methods or criteria.
 * Apply inclusion limits:
-* Select beneficiaries based on top N, financial cap, or rank threshold.
+* Select beneficiaries based on top N.
 
-3. **Approval of priority list (if required)**
-
-* Submit the priority list for review.
-* Ensure manual approval is completed before proceeding.
-
-4. **Beneficiary assignment to cycle**
+3. **Beneficiary assignment to cycle**
 
 * Copy approved beneficiaries to the cycle.
 * These beneficiaries proceed to the entitlement preparation stage.
