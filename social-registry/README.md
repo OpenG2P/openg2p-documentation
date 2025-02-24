@@ -22,33 +22,31 @@ The registry is offered as ready-to-deploy package which can be configured for a
 
 ## Functional architecture
 
-{% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?share_link_id=305024808834" %}
+
+
+{% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?embedAutoplay=true&share_link_id=891444726778" %}
 Social Registry Functional Architecture
 {% endembed %}
 
 ## Technical architecture
 
-
-
-{% embed url="https://miro.com/app/board/uXjVLM9EXEk=/" %}
-Social Registry Technical Architecture&#x20;
-{% endembed %}
+{% embed url="https://miro.com/app/board/uXjVLM9EXEk=/?embedAutoplay=true&share_link_id=154004458038" %}
 
 ## Salient features
 
-The salient features of OpenG2P Social Registry are the following:
+Some of the key features offered by OpenG2P's Social Registry are as follows:
 
-* Holds individual and household records with relationships
-* Share data with other systems via standard interfaces
-* Privacy controls on the data
-* Packaged for rapid deployment
-* Multiple update mechanisms&#x20;
-* Automatic computation of scores like PMT
+* [Holds both **individual and household** records with relationships. ](features/individuals-and-groups/)
+* [Ability to **share data** with other systems via standard interfaces.](features/data-share.md)
+* [**Privacy** controls on the data](features/privacy-and-security.md).
+* [Packaged for rapid deployment](features/rapid-deployment-framework.md)
+* [Dynamic registry: multiple update mechanisms](features/registry-update-mechanisms.md).
+* [Automatic computation of scores like PMT](features/score-computation.md).
 * Easy user interface for administration
-* Deduplication tools including fuzzy deduplication
-* Registration in areas with no connectivity
-* Issue unique ID to individuals
-* Issue Verifiable Credentials
+* Deduplication support.
+* [Registration in areas with no connectivity](features/offline-assisted-registration/).
+* [Issue unique ID to individuals](features/background-tasks/unique-social-id.md)
+* [Issue Verifiable Credentials](features/verifiable-credentials-issuance/)
 
 
 
