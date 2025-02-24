@@ -41,6 +41,12 @@ Beyond the modules mentioned above, OpenG2P provides reference designs that are 
 
 Supporting countries is deeply ingrained in the core values of OpenG2P's offerings. We actively participate in **local capacity building, support during customisation, long-term L3 support on the platform, and commercial ecosystem development**.
 
+## Functional architecture
+
+OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
+
+<figure><img src=".gitbook/assets/functional-view.png" alt=""><figcaption><p>Typically connection of modules to deliver cash digitally</p></figcaption></figure>
+
 ## Guiding principles
 
 OpenG2P is built on a bedrock of good practices and principles that drive our work towards empowering populations around the world through technology.
@@ -50,10 +56,3 @@ OpenG2P is built on a bedrock of good practices and principles that drive our wo
 The platform is built for inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline.
 
 The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under [open-source licenses](license/). It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
-
-## Functional architecture
-
-OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
-
-<figure><img src=".gitbook/assets/functional-view.png" alt=""><figcaption><p>Typically connection of modules to deliver cash digitally</p></figcaption></figure>
-
