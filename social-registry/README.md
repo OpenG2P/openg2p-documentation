@@ -46,7 +46,7 @@ Some of the key features offered by OpenG2P's Social Registry are as follows:
 
 ## Use cases
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-type="checkbox"></th><th><select></select></th><th data-type="rating" data-max="5"></th><th data-type="files"></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><strong>Farmer Registry</strong></td><td></td><td>false</td><td></td><td>2</td><td></td><td><a href="../.gitbook/assets/framer-registry.png">framer-registry.png</a></td></tr><tr><td><strong>Urban Destitute</strong></td><td></td><td>false</td><td></td><td>null</td><td></td><td><a href="../.gitbook/assets/urban-destitute-registraiton.png">urban-destitute-registraiton.png</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-cover data-type="files"></th></tr></thead><tbody><tr><td><strong>Farmer Registry</strong></td><td>Registry of farmers to provide crop assistance and other advisory.</td><td><a href="../.gitbook/assets/framer-registry.png">framer-registry.png</a></td></tr><tr><td><strong>Urban Destitute</strong></td><td>Shelter services for urban destitute</td><td><a href="../.gitbook/assets/urban-destitute-registraiton.png">urban-destitute-registraiton.png</a></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
 
 * Farmer registry
 * Family registry
