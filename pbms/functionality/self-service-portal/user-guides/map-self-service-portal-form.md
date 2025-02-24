@@ -12,54 +12,33 @@ layout:
     visible: true
 ---
 
-# 📔 Map Self Service Portal Form
+# 📔 Configure Login Providers for Beneficiary Portal
 
 ## Description
 
-This guide provides steps to map the portal form for an existing program. This form will be used by the beneficiary on _Self-Service Portal_ to apply for the program.
+This document provides step-by-step instructions for configuring **Login Providers** in **PBMS** to enable end-users to log in to the **Beneficiary Portal**.
 
 ## Prerequisites
 
-The user must have a _Program Manager_ role and the program has been created using the steps from the [Create Program](../../../features/program-management/user-guides/create-a-program.md) guide.
+1. A client must be successfully created on the respective login provider you want to configure.
+2. Install the **G2P Portal Auth** module.
 
 ## Steps
 
-1. Navigate to _Programs_ from the main menu.
+1. Enable **Debug Mode.** (Settings --> General Settings --> Developer Tools --> Activate the developer mode).
 
-<figure><img src="../../../../.gitbook/assets/home-page-openg2p (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (20).png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Configuration_.
+2. Go to the **OAuth Providers** section. (Settings --> Users & companies --> OAuth Providers)
 
-<figure><img src="../../../../.gitbook/assets/all-programs-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
 
-3. Select _Portal Pages_ from the dropdown.
+3. Create a new **Login Provider** and enter the required values in the respective fields.
 
-<figure><img src="../../../../.gitbook/assets/program-configuration.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure>
 
-4. Select the desired form and check the box _Is Portal Form._
+For example, the fields, their descriptions, and sample values are given below.
 
-<figure><img src="../../../../.gitbook/assets/is-portal-form.png" alt=""><figcaption></figcaption></figure>
+<table><thead><tr><th width="230">Feature</th><th width="281">Description</th><th>Value</th></tr></thead><tbody><tr><td>Provider name</td><td>Enter the provider name.</td><td>For example: Keycloak for Beneficiary Portal Login</td></tr><tr><td>Auth Flow</td><td>Select the option <em><strong>OpenID Connect Authorization Code Flow</strong></em> from the drop-down.</td><td></td></tr><tr><td>Client ID</td><td>The ID of the client.</td><td></td></tr><tr><td>Client Authentication Method</td><td>Select the Client Authentication method.</td><td></td></tr><tr><td>Allowed</td><td>check the box.</td><td></td></tr><tr><td>Allowed in Self Service Portal</td><td>Check the box to enable the option <em><strong>Allowed</strong></em>.</td><td></td></tr><tr><td>Allowed in Service Provider Portal</td><td>Uncheck the box.</td><td></td></tr><tr><td>G2P Portal Oauth Callback Url</td><td>Configure the beneficiary portal callback URL.</td><td>For example: <code>&#x3C;beneficiary-portal-url>/v1/selfservice/oauth2/callback</code></td></tr><tr><td>Login button label</td><td>Enter the label name for the Login button.</td><td><p>For example:  <code>Login with National ID.</code></p><p>Note: This text with the button name will appear on login page. </p></td></tr><tr><td>Image Icon URL</td><td>Enter the URL of an image for the Login button.</td><td></td></tr><tr><td>Authorization URL, Userinfo URL, Token Endpoint, JWKS URL</td><td>These are to be configured as available in the well-known config of Login Provider. </td><td></td></tr><tr><td>Extra Authorize Params</td><td>Depending upon the Provider, configure the extra parameters if needed.</td><td></td></tr><tr><td>Enable Pkce?</td><td>Check the box.</td><td></td></tr><tr><td>Verify Access Token Hash</td><td>Check the box to enable the option <em><strong>Verify Access Token</strong></em>.</td><td></td></tr><tr><td>Allow Signup</td><td>Select the option <em><strong>Denies user signup (invitation only)</strong></em> from the drop-down. </td><td></td></tr><tr><td>Sync User Groups</td><td>Select the option <em><strong>Never</strong></em> from the drop-down. </td><td></td></tr><tr><td>G2P Registrant ID Type</td><td>Configure the ID Type where the user token will be stored.</td><td></td></tr></tbody></table>
 
-5. The previous step will take you to the _Website Pages/Program Application_. Check the box _Is Portal Form_ and click on _Save_.
-
-<figure><img src="../../../../.gitbook/assets/program-is-portal-form.png" alt=""><figcaption></figcaption></figure>
-
-6. Navigate to _Programs_ from the main menu.
-
-<figure><img src="../../../../.gitbook/assets/home-page-openg2p (1).png" alt=""><figcaption></figcaption></figure>
-
-7. Click on the desired program.
-
-<figure><img src="../../../../.gitbook/assets/all-programs-openg2p.png" alt=""><figcaption></figcaption></figure>
-
-8. In the selected program view, select _Map Portal Form_ tab\_.\_
-
-<figure><img src="../../../../.gitbook/assets/map-portal-map.png" alt=""><figcaption></figcaption></figure>
-
-9. Check the box _Multiple Form Submissions_ and select the desired portal form from the _Program Form_ dropdown. Click on _Save_.
-
-<figure><img src="../../../../.gitbook/assets/map-portal-drop.png" alt=""><figcaption></figcaption></figure>
-
-10. The portal form is now mapped to the program.
-
-<figure><img src="../../../../.gitbook/assets/map-portal-result.png" alt=""><figcaption></figcaption></figure>
+The rest of the fields have the default values.

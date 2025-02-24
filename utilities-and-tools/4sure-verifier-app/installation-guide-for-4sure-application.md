@@ -28,7 +28,7 @@ A user must have a mobile device with 64-bit architecture or 32-bit arm device.
 
 Click the link [https://drive.google.com/file/d/1bY4h7UdNT5RCpskgjIHuW9YIBVwc1gSL/view?usp=sharing](https://drive.google.com/file/d/1bY4h7UdNT5RCpskgjIHuW9YIBVwc1gSL/view?usp=sharing), to begin the installation of the 4Sure app on the android mobile with 32-bit arm.
 
-_**Note:**_&#x20;
+_**Note:**_
 
 Here, the below procedure is to install 4Sure application on an android mobile with 32-bit arm.
 
@@ -56,13 +56,11 @@ The file starts downloading and the message "File downloaded" pops up.
 
 A message pops up to install 4Sure app.
 
-
-
 <figure><img src="../../.gitbook/assets/4Sure-begin-install-6.PNG" alt="" width="375"><figcaption></figcaption></figure>
 
 6. Click the _**Install**_ option.
 
-The installation begins and the message "Apps installed"  pops up.
+The installation begins and the message "Apps installed" pops up.
 
 <figure><img src="../../.gitbook/assets/4Sure-installing-7.PNG" alt=""><figcaption><p>4Sure app installed</p></figcaption></figure>
 
@@ -72,6 +70,6 @@ The installation begins and the message "Apps installed"  pops up.
 
 8. Click the _**Allow**_ option to allow the 4Sure app to find, connect to and determine the relative position of nearby devices.
 
-<figure><img src="../../.gitbook/assets/4Sure-home-page-11 (1) (1).PNG" alt="" width="375"><figcaption><p>4Sure e-Cards screen</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/4Sure-home-page-11 (1) (1) (1).PNG" alt="" width="375"><figcaption><p>4Sure e-Cards screen</p></figcaption></figure>
 
 Now, you can use 4Sure app to begin the verification of the digital credentials of the beneficiaries.

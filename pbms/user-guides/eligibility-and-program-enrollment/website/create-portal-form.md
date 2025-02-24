@@ -1,56 +1,31 @@
-# 📔 Create Self Service Portal Form
+# 📔 Create Form and Map with Program
 
 ## Description
 
-This guide provides steps for the Website Editor to create a general intake sheet. This intake sheet is filled by the applicant while applying for a program.
+This guide provides step-by-step instructions for creating a form using **FormIO** and map it with Program. The form will be filled out by applicants when applying for a program.
 
 ## Prerequisites
 
-The user must have a Website Editor role.
+Ensure that **OpenG2P Formio** module is installed.
 
 ## Steps
 
-1. Navigate to the _Website_ using the menu bar.
+1. Navigate to the _**Forms**_ section using the menu bar.
 
-<figure><img src="../../../../.gitbook/assets/website-openg2p.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
 
-2. Click on _Go to Website_ to navigate to the website home page.
+2. Create a **Form Builder** and select a _**formio.js version.**_ If a version is not available, download it from the **Configuration** section.
 
-<figure><img src="../../../../.gitbook/assets/go-to-website-openg2p (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
 
-3. Click on the + _New_ button to create a new form.
+3. Click the **Form Builder** button (located at the top center of the builder form view) to create a form using the drag-and-drop feature.
 
-<figure><img src="../../../../.gitbook/assets/custom-form (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
 
-4. Click on _Page_ to create a form.
+4. Go to the **Programs** menu.
 
-<figure><img src="../../../../.gitbook/assets/page-form.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (14).png" alt=""><figcaption></figcaption></figure>
 
-5. Enter the page title and click on _Create_ button under New Page pop-up window.
+5. Open the program where you have to map the form, navigate to the **Portal Form** section, and select the form you want to map.
 
-<figure><img src="../../../../.gitbook/assets/new-page.png" alt=""><figcaption></figcaption></figure>
-
-6. Drag and drop the _Form_ in the _Dynamic Content_ from the _BLOCKS_ section
-7. The _Edit_ tool appears. Click on the _Form's Fields_ to enable the _Style Section_.
-
-<figure><img src="../../../../.gitbook/assets/drag-and-drop.png" alt=""><figcaption></figcaption></figure>
-
-8. Select _Apply For Program_ and add more form fields using _+Field_ from the _STYLE_ section.
-
-<figure><img src="../../../../.gitbook/assets/add-fields-in-form.png" alt=""><figcaption></figcaption></figure>
-
-9. In the _Field_ section, select the type _Existing Fields_ and select the fields of choice.
-
-<figure><img src="../../../../.gitbook/assets/add-existing-fields-in-form.png" alt=""><figcaption></figcaption></figure>
-
-10. To add fields that are not available under Existing Fields, use the type _Custom Field_ and add desired fields.
-
-<figure><img src="../../../../.gitbook/assets/custom-form-custom.png" alt=""><figcaption></figcaption></figure>
-
-11. Click _Save_ to add the field to the portal form.
-
-<figure><img src="../../../../.gitbook/assets/custom-result.PNG" alt=""><figcaption></figcaption></figure>
-
-12. You can also create a form from an existing one on the portal by clicking the + sign on the menu and selecting the desired one.
-
-<figure><img src="../../../../.gitbook/assets/edit-existing-form.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>

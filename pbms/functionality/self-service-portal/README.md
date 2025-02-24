@@ -20,11 +20,11 @@ The Beneficiary Portal allows an individual registrant seeking assistance to reg
 
 ## Login process
 
-An OTP or QR code is typically used in addition to a unique ID number to log in for self-registration.  The assisting officer uses a biometric device connected to a machine with access to the Beneficiay Portal to do biometric authentication for assisted registration.
+An OTP or QR code is typically used in addition to a unique ID number to log in for self-registration.  The assisting officer uses a biometric device connected to a machine with access to the Beneficiary Portal to do biometric authentication for assisted registration.
 
 <figure><img src="../../../.gitbook/assets/esignet-login.png" alt=""><figcaption></figcaption></figure>
 
-The Beneficiay Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
+The Beneficiary Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
 ### **Program management**
 
@@ -47,10 +47,10 @@ Depending on the program implementation, the registrant can seek assistance to a
 A program administrator must do these steps to allow registrants to apply for a program:
 
 * Create a program.
-* Create a Self Service Portal form.
-* Map Self Service Portal form.
+* Create a Beneficiay Portal form.
+* Map Beneficiay Portal form.
 
-Registrant's ID is verified during login. The Self Service Portal seeks consent to share demographic details from the registrant. Upon successful ID verification, the Self Service Portal automatically populates the registrant's demographic details based on the consent provided during login. The registrant fills in the rest of the details and applies for a program.
+Registrant's ID is verified during login. The Beneficiary Portal seeks consent to share demographic details from the registrant. Upon successful ID verification, the Beneficiary Portal automatically populates the registrant's demographic details based on the consent provided during login. The registrant fills in the rest of the details and applies for a program.
 
 ## **Features and functionality**
 
@@ -58,21 +58,21 @@ Registrant's ID is verified during login. The Self Service Portal seeks consent 
 
 ## OpenID Connect integration
 
-The Self Service Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [eSignet](https://docs.esignet.io/).&#x20;
+The Beneficiary Portal allows integration with any OpenID Connect (OIDC) client. The portal has an existing integration with [eSignet](https://docs.esignet.io/) and Keycloak.&#x20;
 
 To learn more about OpenID Connect integration, click [here](https://openid.net/developers/how-connect-works/).
 
 ### OIDC integration
 
-The Self Service Portal can integrate with any OIDC server to provide user login.
+The Beneficiary Portal can integrate with any OIDC server to provide user login.
 
 ## Related user guides
 
 :notebook\_with\_decorative\_cover:[Create Program](../../features/program-management/user-guides/create-a-program.md)
 
-:notebook\_with\_decorative\_cover:[Create a Self Service Portal form](../../user-guides/eligibility-and-program-enrollment/website/create-portal-form.md)
+:notebook\_with\_decorative\_cover:[Create Form and Map with Program](../../user-guides/eligibility-and-program-enrollment/website/create-portal-form.md)
 
-:notebook\_with\_decorative\_cover:[Map Self Service Portal form](user-guides/map-self-service-portal-form.md)
+:notebook\_with\_decorative\_cover:[Configure Login Provider for Beneficiary Portal](user-guides/map-self-service-portal-form.md)
 
 :notebook\_with\_decorative\_cover:[Self Register Online](user-guides/self-register-online.md)
 

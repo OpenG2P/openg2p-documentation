@@ -40,7 +40,7 @@ _**Program Managers**_ screen is displayed.
 
 _**Program Managers/New**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/program-managers-new (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/program-managers-new (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 The fields and their descriptions are given below.
 

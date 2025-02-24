@@ -58,7 +58,7 @@ In the **Status** tab, _**Your Current Draft**_ section displays the version his
 
 | Button                | Description                                                                                                                                                                                       |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/safety-net-program-form (1).png" alt="" data-size="original"></p>       |
+| Preview               | <p>Click the <em><strong>Preview</strong></em> button to view the uploaded form.</p><p><img src="../../../.gitbook/assets/safety-net-program-form (1) (1).png" alt="" data-size="original"></p>   |
 | Definition            | <p>Select the appropriate option to view/download the file.</p><p>The valid values are :</p><ul><li>View XML in browser</li><li>Download as X Form (.xml)</li><li>Download as XLSX Form</li></ul> |
 | Upload new Definition | Click the _**Upload new Definition**_ button, to upload the updated version of the draft file. The updated draft file overwrites the already existing draft file.                                 |
 

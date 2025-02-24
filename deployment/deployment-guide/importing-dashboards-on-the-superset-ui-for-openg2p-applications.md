@@ -16,7 +16,7 @@ Superset provides a simple and intuitive interface to import dashboards, allowin
     2. Click on **Database Connections**.
     3. Select **Add Database** and provide the necessary details, then save it.
 
-    <figure><img src="../../.gitbook/assets/image (6).png" alt=""><figcaption><p>Add database</p></figcaption></figure>
+    <figure><img src="../../.gitbook/assets/image (6) (1).png" alt=""><figcaption><p>Add database</p></figcaption></figure>
 
 
 4. **Import the Dashboard:** From the main dashboard:
