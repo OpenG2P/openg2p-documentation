@@ -14,9 +14,18 @@ layout:
 
 # Beneficiary Management
 
-Beneficiary management refers to the process of identifying, selecting, and managing individuals or groups who are eligible to receive benefits from a program or an organization. It ensures that the benefits are delivered correctly and on time to eligible recipients.
+Beneficiary management refers to the process of identifying, selecting, and managing individuals or groups who are eligible to receive benefits from a program or an organization.&#x20;
 
-This process involves various activities, such as verifying eligibility criteria, registering beneficiaries, deduplicating process, enrolling the beneficiary into the program, and ensuring that benefits are delivered to the right recipients on time.&#x20;
+The primary functions offered here include
+
+* Identifying beneficiaries
+* Enrolling beneficiaries
+* Maintaining [**Beneficiary Registry**](beneficiary-registry/)
+* Deciding on entitlements
+* Disbursements
+* Notifications to beneficiaries
+
+The beneficiary management process involves various activities, such as verifying eligibility criteria, registering beneficiaries, deduplicating, enrolling the beneficiary into the program, and ensuring that benefits are delivered to the right recipients on time.&#x20;
 
 \
 The beneficiary management process involves several components. They are:
