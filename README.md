@@ -27,7 +27,7 @@ OpenG2P is a **Digital Public Good** (DPG) recognised by the[ DPGA](https://digi
 
 OpenG2P offers **open-source, rapidly deployable, building blocks (modules)** to digitise G2P service delivery, focussing on social benefit delivery. The modules are interoperable, scalable, and secure.&#x20;
 
-<figure><img src=".gitbook/assets/delivery-chain-and-building-blocks.png" alt=""><figcaption><p>The boxes in yellow depict the OpenG2P modules covering benefit delivery chain</p></figcaption></figure>
+<div align="left"><figure><img src=".gitbook/assets/delivery-chain.png" alt=""><figcaption><p>The boxes in yellow depict the OpenG2P modules covering benefit delivery chain</p></figcaption></figure></div>
 
 ### <mark style="color:purple;">Modules</mark>
 
