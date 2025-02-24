@@ -45,7 +45,7 @@ Some of the key features offered by OpenG2P's Social Registry are as follows:
 * Easy user interface for administration
 * Deduplication support.
 * [Registration in areas with no connectivity](features/offline-assisted-registration/).
-* [Issue unique ID to individuals](features/background-tasks/unique-social-id.md)
+* [Issue unique ID to individuals](features/unique-social-id.md)
 * [Issue Verifiable Credentials](features/verifiable-credentials-issuance/)
 
 

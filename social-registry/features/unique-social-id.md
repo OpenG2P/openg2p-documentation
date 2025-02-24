@@ -22,11 +22,11 @@ OpenG2P's Social Registry supports the feature of generating randomized unique I
 
 ### Technical design
 
-* The ID generation is implemented as a Background Task
-* New Registrants are inserted into a table — g2p\_que\_background\_task - with&#x20;
-  * status = PENDING
-  * worker\_type = id\_generation\_request\_worker
-  * worker\_payload = {"registrant\_id"="XXX"}
+* The ID generation is implemented as a [Background Task](../developer-zone/background-tasks.md).
+* New Registrants are inserted into a table — `g2p_que_background_task` - with&#x20;
+  * `status = PENDING`
+  * `worker_type = id_generation_request_worker`
+  * `worker_payload = {"registrant_id"="XXX"}`
 * The celery beat producer - a cron based beat producer - periodically scans this table for PENDING records and emits queue item (id) one by one
 * The celery worker - "ID\_GENERATION\_WORKER" listening on this beat - picks up these queue IDs - Each worker picks up one queue ID at a time
 * To scale, the celery worker POD can be spawned into multiple PODs

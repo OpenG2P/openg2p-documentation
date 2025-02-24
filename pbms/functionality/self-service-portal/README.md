@@ -12,19 +12,19 @@ layout:
     visible: true
 ---
 
-# Self Service Portal
+# Beneficiary Portal
 
-The Self Service Portal allows an individual registrant seeking assistance to register from any place and any device with internet connectivity. The individual registrant logs in using a foundational or functional ID and then applies for a program.&#x20;
+The Beneficiary Portal allows an individual registrant seeking assistance to register from any place and any device with internet connectivity. The individual registrant logs in using a foundational or functional ID and then applies for a program.&#x20;
 
 <figure><img src="../../../.gitbook/assets/nationalid-signin.png" alt=""><figcaption></figcaption></figure>
 
 ## Login process
 
-An OTP or QR code is typically used in addition to a unique ID number to log in for self-registration.  The assisting officer uses a biometric device connected to a machine with access to the Self Service Portal to do biometric authentication for assisted registration.
+An OTP or QR code is typically used in addition to a unique ID number to log in for self-registration.  The assisting officer uses a biometric device connected to a machine with access to the Beneficiay Portal to do biometric authentication for assisted registration.
 
 <figure><img src="../../../.gitbook/assets/esignet-login.png" alt=""><figcaption></figcaption></figure>
 
-The Self Service Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
+The Beneficiay Portal registration process assumes that an authentication service is available for ID verification. The portal allows an individual to perform the following functions:
 
 ### **Program management**
 
