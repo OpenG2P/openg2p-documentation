@@ -879,3 +879,132 @@ uvicorn.run(app, host="0.0.0.0", port=8000)
      * Less natural pronunciation
      * Reduced control over voice parameters
 
+
+
+### Ollama Installation and CUDA Permission Issues
+
+#### Error Overview
+
+When I ran the combined\_agent.py, the following error was encountered: attempting to use Ollama with CUDA acceleration,&#x20;
+
+```
+ollama._types.ResponseError: llama runner process has terminated: error:status: Permission denied [/usr/local/lib/ollama/cuda_v11/libggml-blas.so]
+```
+
+This error indicates a permission issue with the CUDA libraries that Ollama needs to access.
+
+#### Root Causes
+
+1. **Permission Problems**: The Ollama service user doesn't have proper permissions to access CUDA libraries
+2. **Ownership Issues**: CUDA library files have incorrect ownership
+3. **Installation Conflicts**: Mismatched CUDA versions between system drivers and Ollama requirements
+
+#### Resolution Steps
+
+The issue was resolved through a complete reinstallation of Ollama and proper permission configuration:
+
+1.  **Fix Immediate Permissions**
+
+    ```bash
+    sudo chown -R ollama:ollama /usr/local/lib/ollama/
+    ```
+2.  **Perform Clean Reinstallation**
+
+    ```bash
+    # Remove existing installation
+    sudo apt purge ollama
+
+    # Download latest version
+    curl -fsSL https://ollama.com/install.sh | sh
+    ```
+3.  **Verify CUDA Compatibility**
+
+    ```bash
+    # Check CUDA version supported by current drivers
+    nvidia-smi
+    ```
+4.  **Update NVIDIA Drivers (if needed)**
+
+    ```bash
+    sudo apt install nvidia-driver-535 nvidia-cuda-toolkit
+    sudo reboot
+    ```
+5.  **Restart and Verify Service**
+
+    ```bash
+    sudo systemctl restart ollama
+    sudo journalctl -u ollama.service -b  # Check for service er structure
+    ```
+
+
+
+
+
+### Transitioning from Llama3.2 to DeepSeek:&#x20;
+
+#### Limitations of Llama3.2
+
+When implementing the combined agent system with Llama3.2, we encountered several significant performance issues:
+
+1. **Inconsistent Tool Utilization**
+   * The model frequently failed to call the appropriate tools
+   * Sometimes ignored the FAISS vector search tool (program\_info)
+   * Other times skipped the SQL database tools
+   * Resulted in incomplete information gathering
+2. **Poor Intent Recognition**
+   * Failed to properly identify user intents
+   * Confused casual conversation with program inquiries
+   * Responded inappropriately to queries
+3. **Prompt Adherence Issues**
+   * Did not consistently follow the structured approach defined in prompts
+   * Skipped critical verification steps
+   * Provided responses without gathering necessary information
+4. **Reasoning Limitations**
+   * Struggled with complex multi-step reasoning
+   * Failed to integrate information from multiple sources
+   * Made conclusions without proper verification
+
+#### Motivation for DeepSeek Implementation
+
+Due to these limitations, we explored the DeepSeek model (deepseek-r1:8b) for the following reasons:
+
+1. **Advanced Capabilities**
+   * Larger parameter count (8B vs Llama3.2)
+   * Better reported performance on reasoning tasks
+   * Improved instruction-following capabilities
+   * Enhanced context understanding
+2. **Quality Improvements**
+   * More consistent reasoning patterns
+   * Better adherence to structured prompts
+   * Improved multi-step planning
+   * Higher accuracy in understanding complex queries
+3. **Integration Potential**
+   * Compatible with Ollama deployment
+   * Designed for assistant-like applications
+   * Support for complex reasoning chains
+
+### DeepSeek Model Compatibility Issues
+
+#### Error Overview
+
+When attempting to use the DeepSeek model with tools in the CombinedProgramAgent, the following error occurred:
+
+```
+ollama._types.ResponseError: registry.ollama.ai/library/deepseek-r1:8b does not support tools
+```
+
+This error indicates that the DeepSeek model, as implemented in Ollama, doesn't support the function calling/tools API that LangGraph and LangChain require for agent implementation.
+
+#### Technical Background
+
+1. **Tool-Using Capability**: Modern LLMs require specific capabilities to utilize tools/function calling:
+   * Standardized input/output formats
+   * Support for specific JSON schema interpretation
+   * Built-in capability to generate structured tool-use requests
+2. **DeepSeek Limitations**: The current DeepSeek implementation in Ollama:
+   * Lacks the necessary function-calling API
+   * Cannot parse or generate the required JSON structure
+   * Is not fine-tuned for tool-using applications
+
+
+
