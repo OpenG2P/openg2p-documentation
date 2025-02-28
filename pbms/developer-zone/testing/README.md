@@ -1,27 +1,24 @@
+---
+description: Testing at OpenG2P
+---
+
 # Testing
 
 ## Overview
 
-To ensure the reliability, security, and performance of OpenG2P, a structured testing approach was conducted, primarily focusing on Sanity Testing and Regression Testing.
+To ensure the reliability, security, and performance of the OpenG2P platform we follow a structured testing approach primarily focusing on [Sanity Testing](./#sanity-testing) and [Regression Testing](./#regression-testing).  Testing is conducted on versioned/tagged Dockers from the end-to-end (black box) perspective.  All test cases and planned and documented for manual execution (see the Excel sheet below).  The test results for a particular release are well documented [(example)](https://docs.openg2p.org/releases/1.1.0/release-notes#test-report).
 
-### Testing Approach
+### Sanity testing
 
-The testing approach for OpenG2P includes two primary methodologies:
+Sanity testing ensures that new builds, bug fixes, or minor changes in the OpenG2P system do not introduce new defects and that the core functionalities work as expected.
 
-1. Sanity Testing
-2. Regression Testing
-
-### Sanity Testing
-
-Objective: Sanity testing ensures that new builds, bug fixes, or minor changes in the OpenG2P system do not introduce new defects and that the core functionalities work as expected.
-
-#### Key Focus Areas:
+#### Key focus areas
 
 * Verification of critical workflows such as user authentication, beneficiary enrollment, and program management.
 * Quick validation of database integrity after updates.
 * Basic UI and API response checks to confirm stability.
 
-#### Execution:
+#### Execution
 
 * Performed on new releases or patches.
 * Limited scope, focusing only on recent changes and their direct impact.
@@ -29,9 +26,9 @@ Objective: Sanity testing ensures that new builds, bug fixes, or minor changes i
 
 ***
 
-### Regression Testing
+### Regression testing
 
-Objective: Regression testing ensures that existing functionalities continue to work correctly after system modifications, updates, or enhancements.
+Regression testing ensures that existing functionalities continue to work correctly after system modifications, updates, or enhancements.
 
 #### Key Focus Areas:
 
@@ -39,7 +36,7 @@ Objective: Regression testing ensures that existing functionalities continue to 
 * Testing of database transactions to ensure data consistency and security.
 * Verification of API integrations with third-party financial systems.
 
-#### Execution:
+#### Execution
 
 * Performed after major updates, feature additions, or bug fixes.
 * Manual test cases executed across various system modules.
@@ -48,15 +45,13 @@ Objective: Regression testing ensures that existing functionalities continue to 
 
 * Detailed test reports generated to track defect trends and system stability.
 
-[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385)
+[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385)&#x20;
 
-&#x20;
+## Testing process for a release
 
-## Testing process for release
+Release testing ensures that the final product is fully functional, secure, and meets the requirements before deployment.
 
-Objective: Release testing ensures that the final product is fully functional, secure, and meets the requirements before deployment.
-
-#### Key Focus Areas:
+#### Key focus areas:
 
 * Comprehensive validation of all functionalities under real-world conditions.
 * Final integration testing with all system components and external services.
@@ -64,19 +59,15 @@ Objective: Release testing ensures that the final product is fully functional, s
 * Performance and security testing under production-like environments.
 * Deployment testing to ensure smooth installation and rollback capabilities.
 
-#### Execution:
+#### Execution
 
 * Conducted in a staging environment that mimics production.
 * Test cases cover all aspects of system functionality, security, and usability.
-* Final approval is based on test results and stakeholder feedback.
+* Final approval is based on test results and stakeholder feedback.&#x20;
 
-&#x20;
-
-## How to write test case
+## How to write a test case
 
 Writing test cases for testing functionality involves defining clear, structured steps to validate that a feature or module of OpenG2P works as expected. Here’s a structured approach:
-
-1\. Test Case Structure
 
 Each test case should include the following fields:
 
