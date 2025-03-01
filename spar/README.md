@@ -39,13 +39,13 @@ The SPAR Self-Service  provides beneficiaries the ability to log in to SPAR and 
 
 The following figure provides a Functional Architecture of the SPAR Subsystem.
 
-{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/?share_link_id=24912538335" %}
+{% embed url="https://miro.com/app/board/uXjVNDnhJUg=/?embedAutoplay=true&share_link_id=700848931770" %}
 
 ## Technical overview
 
-The following picture provides a technical architecture of SPAR
+The following picture provides a technical architecture of SPAR.
 
-<figure><img src="../.gitbook/assets/Gitbook-SPAR-Technical-Architecture.jpg" alt=""><figcaption><p>SPAR - Technical Architecture</p></figcaption></figure>
+{% embed url="https://miro.com/app/board/uXjVNmpVpwg=/?embedAutoplay=true&share_link_id=979404557021" %}
 
 The SPAR subsystem consists of the following technology components
 
