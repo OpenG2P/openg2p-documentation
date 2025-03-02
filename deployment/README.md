@@ -23,9 +23,9 @@ OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md
 
 ## Deployment architecture (V4)
 
-{% embed url="https://miro.com/app/board/uXjVN5LsWDw=/?share_link_id=356935336772" %}
-V4 Deployment Architecture
-{% endembed %}
+
+
+{% embed url="https://miro.com/app/board/uXjVN5LsWDw=/?embedAutoplay=true&share_link_id=695574890958" %}
 
 Essentially, for an organisation, you will need two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces. The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
