@@ -18,17 +18,17 @@ layout:
 
 ## Logging pipeline
 
-{% embed url="https://miro.com/app/board/uXjVKZsLZhk=/?share_link_id=963470704519" %}
-Logging Pipeline
-{% endembed %}
+
+
+{% embed url="https://miro.com/app/board/uXjVKZsLZhk=/?embedAutoplay=true&share_link_id=265139863172" %}
 
 ## Log files
 
-This is a simple method where the Python logging module is used to write system event logs in JSON or other format  in log files directly.  These log files are shunted to OpenSearch for indexing, searching and querying. See System Logs under Monitoring and Reporting for further details on this data pipeline.
+This is a simple method where the Python logging module is used to write system event logs in JSON or other format in log files directly. These log files are shunted to OpenSearch for indexing, searching and querying.&#x20;
 
 ## Dashboards
 
-Several dashboards can be created using [OpenSearch Dashboards](https://opensearch.org/docs/latest/dashboards/). Some default dashboards are provided by OpenG2P and may be customized.
+Several dashboards can be created using [OpenSearch Dashboards](https://opensearch.org/docs/latest/dashboards/). Some default dashboards are provided by OpenG2P and may be customised.
 
 <figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
 

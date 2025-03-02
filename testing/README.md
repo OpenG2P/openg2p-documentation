@@ -6,7 +6,7 @@ description: Testing at OpenG2P
 
 ## Overview
 
-To ensure the reliability, security, and performance of the OpenG2P platform we follow a structured testing approach primarily focusing on [Sanity Testing](./#sanity-testing) and [Regression Testing](./#regression-testing).  Testing is conducted on versioned/tagged Dockers from the end-to-end (black box) perspective.  All test cases and planned and documented for manual execution (see the Excel sheet below).  The test results for a particular release are well documented [(example)](https://docs.openg2p.org/releases/1.1.0/release-notes#test-report).
+To ensure the reliability, security, and performance of the OpenG2P platform we follow a structured testing approach primarily focusing on [Sanity Testing](./#sanity-testing) and [Regression Testing](./#regression-testing).  Testing is conducted on versioned/tagged Dockers from the end-to-end (black box) perspective.  All test cases are planned and documented for manual execution (see the Excel sheet below).  The test results for a particular release are well documented [(example)](https://docs.openg2p.org/releases/1.1.0/release-notes#test-report).
 
 {% embed url="https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY" %}
 Test cases
@@ -55,7 +55,7 @@ Regression testing ensures that existing functionalities continue to work correc
 
 Release testing ensures that the final product is fully functional, secure, and meets the requirements before deployment.
 
-#### Key focus areas:
+#### Key focus areas
 
 * Comprehensive validation of all functionalities under real-world conditions.
 * Final integration testing with all system components and external services.
