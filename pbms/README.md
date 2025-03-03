@@ -26,7 +26,7 @@ The functional architecture of PBMS is shown below.
 
 ## Benefit disbursement process flow
 
-The visual below depicts the typical process flow from identifying beneficiaries to disbursement of benefits.  Notice that PBMS holds the [Beneficiary Registry](functionality/beneficiary-management/beneficiary-registry/). &#x20;
+The visual below depicts the typical process flow from identifying beneficiaries to disbursement of benefits.  The primary demographic data resides in the Social Registry (a separate module) while the processing of this data to generate a disbursement list is carried out in the PBMS.  Notice that the PBMS holds the [Beneficiary Registry](functionality/beneficiary-management/beneficiary-registry/). &#x20;
 
 
 
