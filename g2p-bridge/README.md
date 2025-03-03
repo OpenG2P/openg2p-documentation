@@ -16,7 +16,7 @@ layout:
 
 The G2P Bridge subsystem bridges the upstream Program Management (aka MIS systems) modules with the downstream Service Providers.&#x20;
 
-The G2P Bridge system is designed to cater to programs that offer Commodities as well as Services to their beneficiaries. The Bridge also caters to both physical as well as digital forms of these deliveries.
+The G2P Bridge system is designed to cater to programs that offer Commodities as well as Services to their beneficiaries, handling both digital as well as physical deliveries.
 
 **Digital Cash Transfers** to beneficiaries' bank accounts & mobile money wallets are treated as a degenerate case of digital transfer of commodities. In this case, the Bridge interfaces with the Sponsor Bank (the bank that services the program funding account) to initiate these beneficiary transfers. The sponsor bank in turn interfaces with the National Switch / Clearing network to effect these payments.
 
