@@ -40,7 +40,7 @@ The G2P Bridge is specifically built for high-volume, government-led disbursemen
 4. **Robust Reconciliation Mechanism** – Ensures accurate tracking and auditing.
 5. **Extensibility & Easy Integration** – Simplifies onboarding for banks and service providers.
 
-Rather than relying on costly real-time payment processing hubs, these principles allow the G2P Bridge to optimize deployment and operational expenses while maintaining reliability and efficiency.
+Rather than relying on expensive real-time payment processing capabilities, these principles allow the G2P Bridge to optimize deployment and operational expenses while maintaining reliability and efficiency.
 
 #### **Nationwide Deployment & Benefits**
 
