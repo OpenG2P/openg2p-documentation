@@ -14,23 +14,47 @@ layout:
 
 # G2P Bridge
 
-The G2P Bridge subsystem bridges the upstream Program Management (aka MIS systems) modules with the downstream Service Providers.&#x20;
+**G2P Bridge: A Digital Public Infrastructure (DPI) Component for Efficient Benefit Transfers**
 
-The G2P Bridge system is designed to cater to programs that offer Commodities as well as Services to their beneficiaries, handling both digital as well as physical deliveries.
+The **G2P Bridge** is a standalone, independent **Digital Public Infrastructure (DPI)** component designed to seamlessly connect upstream **Social Protection Systems** and other **Government-to-Person (G2P) bulk benefit systems** with downstream **Disbursement Service Providers (DSPs).**
 
-**Digital Cash Transfers** to beneficiaries' bank accounts & mobile money wallets are treated as a degenerate case of digital transfer of commodities. In this case, the Bridge interfaces with the Sponsor Bank (the bank that services the program funding account) to initiate these beneficiary transfers. The sponsor bank in turn interfaces with the National Switch / Clearing network to effect these payments.
+#### **Key Functionality**
+
+The G2P Bridge enables a standardized and efficient mechanism for dispatching disbursement instructions while ensuring reconciliation with actual deliveries made by Service Providers. It supports both digital and physical transfers of goods and services, making it a versatile solution for various beneficiary programs.
+
+**Disbursement Service Provider Examples:**
+
+* A **primary health center** administering government-provided vaccines.
+* A **commercial bank** managing beneficiaries’ savings accounts.
+* A **service provider** delivering food aid in disaster-affected areas.
+
+For **digital cash transfers**—such as payments to beneficiaries' bank accounts or mobile wallets—the G2P Bridge interfaces with the **Sponsor Bank** (which manages program funding) to initiate transfers. The Sponsor Bank then communicates with the **National Switch/Clearing network** to execute these payments.
+
+#### **Design Principles**
+
+The G2P Bridge is specifically built for high-volume, government-led disbursement programs and adheres to the following design principles:
+
+1. **Asynchronous Processing** – Ensures scalability and efficiency.
+2. **Batch Transaction Handling** – Facilitates large-scale disbursements effectively.
+3. **Cost-Effective Deployment & Maintenance** – Minimizes operational costs.
+4. **Robust Reconciliation Mechanism** – Ensures accurate tracking and auditing.
+5. **Extensibility & Easy Integration** – Simplifies onboarding for banks and service providers.
+
+Rather than relying on costly real-time payment processing hubs, these principles allow the G2P Bridge to optimize deployment and operational expenses while maintaining reliability and efficiency.
+
+#### **Nationwide Deployment & Benefits**
+
+As a **DPI component**, the G2P Bridge can serve multiple government departments, enabling them to utilize a **single nationwide infrastructure** for diverse benefit programs. A unified G2P Bridge system offers:
+
+* **Centralized execution of all benefit transfers** (Digital & Physical, Commodities & Services).
+* **Streamlined reconciliation and auditing** for transparency and accountability.
+* **Improved interoperability** across government programs and service providers.
+
+By leveraging the G2P Bridge, governments can enhance the efficiency, scalability, and affordability of benefit transfers while ensuring seamless service delivery to beneficiaries.
 
 {% embed url="https://miro.com/app/board/uXjVIXaOBI8=/?embedAutoplay=true&share_link_id=625316279070" %}
 G2P Bridge overview
 {% endembed %}
-
-Being a G2P system (not a P2G, P2P, P2M, etc), the platform does not desire to offer high performance and real time cash transfers, since these features are not typically required in a G2P transfer chain. Rather, the G2P Bridge emphasises on the following characteristics
-
-1. Operate on an asynchronous paradigm
-2. Handle high volume of transactions
-3. Ease of operation with low costs of maintenance and operations
-4. Efficient reconciliations
-5. Extensibility to allow easy integrations with Sponsor Banks and other Service Providers
 
 The following figure shows how the G2P Bridge digital cash transfer subsystem fits into the overall G2P landscape
 
