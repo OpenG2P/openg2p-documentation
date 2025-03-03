@@ -324,7 +324,6 @@
   * [Releases](spar/releases/README.md)
     * [1.0.0](spar/releases/release-notes.md)
     * [1.1.0](spar/releases/release-notes-1.md)
-  * [Roadmap](spar/roadmap.md)
 * [G2P Bridge](g2p-bridge/README.md)
   * [Features](g2p-bridge/features/README.md)
     * [Extensibility - Connect to Sponsor Banks](g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
