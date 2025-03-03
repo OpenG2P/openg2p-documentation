@@ -27,27 +27,25 @@ For **in-kind** benefits and services, G2P Bridge issues disbursement instructio
 
 * A primary health centre administering government-provided vaccines.
 * A commercial bank managing beneficiaries' savings accounts.
-* A service provider delivering food aid in disaster-affected areas.
+* A service provider delivering food aid in disaster-affected areas
 {% endhint %}
-
-###
 
 {% embed url="https://miro.com/app/board/uXjVIXaOBI8=/?embedAutoplay=true&share_link_id=746754524564" %}
 
-### **Nationwide deployment & benefits**
+## **Nationwide deployment & benefits**
 
 The G2P Bridge can serve multiple government departments, enabling them to utilize a **single nationwide infrastructure** for diverse benefit programs. A unified G2P Bridge system offers:
 
 * Centralized execution of all benefit transfers (digital & physical, commodities and services).
 * Streamlined reconciliation and auditing for transparency and accountability.
 * Improved interoperability across government programs and service providers.
-* Consolidate view of disbursements and reconciliation across progams.
+* Holisitic and consolidated view of all G2P transactions and their corresponding reconciliations from various upstream social protection systems.
+
+<figure><img src="../.gitbook/assets/G2P-Bridge-Dashboard.png" alt=""><figcaption></figcaption></figure>
 
 By leveraging the G2P Bridge, governments can enhance the efficiency, scalability, and affordability of benefit transfers while ensuring seamless service delivery to beneficiaries.
 
-
-
-#### **Design Principles**
+## **Design Principles**
 
 The G2P Bridge is specifically built for high-volume, government-led disbursement programs and adheres to the following design principles:
 
@@ -59,11 +57,7 @@ The G2P Bridge is specifically built for high-volume, government-led disbursemen
 
 Rather than relying on expensive real-time payment processing capabilities, these principles allow the G2P Bridge to optimize deployment and operational expenses while maintaining reliability and efficiency.
 
-{% embed url="https://miro.com/app/board/uXjVIXaOBI8=/?embedAutoplay=true&share_link_id=625316279070" %}
-G2P Bridge overview
-{% endembed %}
-
-## G2P Bridge in the digital Cash transfer landscape
+## G2P Bridge in the digital cash transfer landscape
 
 The following figure shows how the G2P Bridge digital cash transfer subsystem fits into the overall G2P landscape
 
@@ -77,8 +71,3 @@ G2P Bridge in the G2P landscape
 G2P Bridge - Technical Architecture
 {% endembed %}
 
-## G2P Bridge dashboards
-
-The following visuals illustrate how the G2P Bridge consolidates all G2P transactions and their corresponding reconciliations from various upstream social protection systems into a single, holistic view.
-
-<figure><img src="../.gitbook/assets/G2P-Bridge-Dashboard.png" alt=""><figcaption><p>G2P Bridge dashboards</p></figcaption></figure>
