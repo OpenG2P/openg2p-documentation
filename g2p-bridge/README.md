@@ -56,19 +56,22 @@ By leveraging the G2P Bridge, governments can enhance the efficiency, scalabilit
 G2P Bridge overview
 {% endembed %}
 
+## G2P Bridge in the digital Cash transfer landscape
+
 The following figure shows how the G2P Bridge digital cash transfer subsystem fits into the overall G2P landscape
-
-
 
 {% embed url="https://miro.com/app/board/uXjVKX-8Zq0=/?embedAutoplay=true&share_link_id=992769892719" %}
 G2P Bridge in the G2P landscape
 {% endembed %}
 
-## Technical overview
+## G2P Bridge technical overview
 
 {% embed url="https://miro.com/app/board/uXjVKWoMWx0=/?embedAutoplay=true&share_link_id=312099976717" %}
 G2P Bridge - Technical Architecture
 {% endembed %}
 
+## G2P Bridge dashboards
 
+The following visuals illustrate how the G2P Bridge consolidates all G2P transactions and their corresponding reconciliations from various upstream social protection systems into a single, holistic view.
 
+<figure><img src="../.gitbook/assets/G2P-Bridge-Dashboard.png" alt=""><figcaption><p>G2P Bridge dashboards</p></figcaption></figure>
