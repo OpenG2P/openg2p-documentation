@@ -30,7 +30,7 @@ This guide provides basic guidelines for you to write neat documentation.
 * The filename for images should follow the naming convention of every word in lower case, and words separated by hyphens i.e. view-all-programs.png.
 * For work-in-progress features/functions, you may mention the same under the title as shown below:
 
-<div align="left"><figure><img src="../../.gitbook/assets/work-in-progress.png" alt="" width="309"><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../.gitbook/assets/work-in-progress.png" alt="" width="309"><figcaption></figcaption></figure></div>
 
 * Check spelling and grammatical corrections using tools such as Grammarly.
 
@@ -78,7 +78,7 @@ Do not repeat the similar content inside the documentation.  Instead, provide th
 
 ## Usage of symbols
 
-<table><thead><tr><th width="147">Document</th><th>Symbol</th></tr></thead><tbody><tr><td>User guide</td><td><ul><li>Click the emoji that appears before the title of the user guide.</li><li>Type book in the search field and select the encircled symbol </li></ul><p><img src="../../.gitbook/assets/emoji-symbol-user-guide.png" alt="" data-size="original"></p><p>The symbol is displayed before the title of the user guide.</p><p><img src="../../.gitbook/assets/user-guide-symbol.png" alt="" data-size="original"></p></td></tr><tr><td>Concept </td><td><ul><li>Enter '/' before the title of the user guide that appear at the end of the concept documentation. </li></ul><p>The below options are displayed.</p><p><img src="../../.gitbook/assets/options-emoji.png" alt=""></p><ul><li>Click the <em><strong>Emoji</strong></em></li><li>Type book in the search field</li><li>Choose the option "<em><strong>:notebook_with_decorative _cover</strong></em>"</li></ul><p><img src="../../.gitbook/assets/userguide-symbol.png" alt="" data-size="original"></p><p></p><p>The symbol is displayed before the title of the user guide.</p><p></p><p><img src="../../.gitbook/assets/concept-user-guide-image.png" alt="" data-size="original"></p></td></tr></tbody></table>
+<table><thead><tr><th width="147">Document</th><th>Symbol</th></tr></thead><tbody><tr><td>User guide</td><td><ul><li>Click the emoji that appears before the title of the user guide.</li><li>Type book in the search field and select the encircled symbol </li></ul><p><img src="../../../.gitbook/assets/emoji-symbol-user-guide.png" alt="" data-size="original"></p><p>The symbol is displayed before the title of the user guide.</p><p><img src="../../../.gitbook/assets/user-guide-symbol.png" alt="" data-size="original"></p></td></tr><tr><td>Concept </td><td><ul><li>Enter '/' before the title of the user guide that appear at the end of the concept documentation. </li></ul><p>The below options are displayed.</p><p><img src="../../../.gitbook/assets/options-emoji.png" alt=""></p><ul><li>Click the <em><strong>Emoji</strong></em></li><li>Type book in the search field</li><li>Choose the option "<em><strong>:notebook_with_decorative _cover</strong></em>"</li></ul><p><img src="../../../.gitbook/assets/userguide-symbol.png" alt="" data-size="original"></p><p></p><p>The symbol is displayed before the title of the user guide.</p><p></p><p><img src="../../../.gitbook/assets/concept-user-guide-image.png" alt="" data-size="original"></p></td></tr></tbody></table>
 
 ## Rules to add link
 
