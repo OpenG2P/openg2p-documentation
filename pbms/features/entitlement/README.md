@@ -90,7 +90,7 @@ To know more on export beneficiaries approved entitlements, [click here](../../f
 
 :notebook\_with\_decorative\_cover:[Create Entitlement Manager Type](user-guides/create-entitlement-manager-type/)
 
-:notebook\_with\_decorative\_cover:[Configure Entitlement Manager in the Program](../program-management/user-guides/create-entitlement-manager-type-1.md)
+:notebook\_with\_decorative\_cover:[Configure Entitlement Manager in the Program](../../../guides/user-guides/pbms/create-entitlement-manager-type-1.md)
 
 :notebook\_with\_decorative\_cover:[Create Entitlement Voucher Template](../../functionality/entitlement/user-guides/create-entitlement-voucher-template.md)
 

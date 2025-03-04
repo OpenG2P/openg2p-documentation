@@ -16,6 +16,6 @@ layout:
 
 The Manager types are:
 
-[Create Notification Manger Types](../../../notifications/user-guides/create-notification-manager-types/)
+[Create Notification Manger Types](../../../../pbms/features/notifications/user-guides/create-notification-manager-types/)
 
 [Create Payment Manager Types](create-payment-manager-types/)

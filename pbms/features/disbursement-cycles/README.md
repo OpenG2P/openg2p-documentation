@@ -26,6 +26,6 @@ While the Program Manager manages all the cycles, each cycle is managed by a Cyc
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Configure Program Manager in Program](../program-management/user-guides/configure-program-manager-in-program.md)
+:notebook\_with\_decorative\_cover:[Configure Program Manager in Program](../../../guides/user-guides/pbms/configure-program-manager-in-program.md)
 
 :notebook\_with\_decorative\_cover:[Create and Approve Program Cycle](../../functionality/disbursement-cycles/in-kind-transfer/user-guides/create-and-approve-disbursement-cycle.md)

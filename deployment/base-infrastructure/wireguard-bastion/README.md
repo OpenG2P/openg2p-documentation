@@ -21,7 +21,7 @@ layout:
 
 Multiple WG servers will be required to provide a group of users access to certain resources. Multiple  WG server may run on the same Virtual Machine (VM).  A group of users who access to a particular WG server will have access to all [private access channels](../../deployment-guide/private-access-channel.md) that are connected to this WG server.
 
-It is recommended to set up at least two channels, one for System Administrators, and one for OpenG2P Application Users (like Program Managers, Service Providers, etc). Further channels can be created based on the need.
+It is recommended to set up at least two channels, one for System Administrators, and one for OpenG2P Application Users (like Program Managers, Service Providers, etc). Further channels may be created based on the need.
 
 ## Prerequisites
 

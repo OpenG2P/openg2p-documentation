@@ -68,7 +68,7 @@ The Beneficiary Portal can integrate with any OIDC server to provide user login.
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Create Program](../../features/program-management/user-guides/create-a-program.md)
+:notebook\_with\_decorative\_cover:[Create Program](../../../guides/user-guides/pbms/create-a-program.md)
 
 :notebook\_with\_decorative\_cover:[Create Form and Map with Program](../../user-guides/eligibility-and-program-enrollment/website/create-portal-form.md)
 

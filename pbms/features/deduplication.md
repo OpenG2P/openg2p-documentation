@@ -62,4 +62,4 @@ On the whole, these features provide flexibility for the program manager to impl
 
 :notebook\_with\_decorative\_cover:[Create Deduplication Manager Types](deduplication/user-guides/create-deduplication-manager-types/)
 
-:notebook\_with\_decorative\_cover:[Create Deduplication Manager under Program](program-management/user-guides/create-deduplication-manager.md)
+:notebook\_with\_decorative\_cover:[Create Deduplication Manager under Program](../../guides/user-guides/pbms/create-deduplication-manager.md)

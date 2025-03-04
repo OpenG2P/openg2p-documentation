@@ -47,11 +47,11 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Create Program](program-management/user-guides/create-a-program.md)
+:notebook\_with\_decorative\_cover:[Create Program](../../guides/user-guides/pbms/create-a-program.md)
 
-:notebook\_with\_decorative\_cover:[Create Eligibility Manager](program-management/user-guides/create-eligibility-manager.md)
+:notebook\_with\_decorative\_cover:[Create Eligibility Manager](../../guides/user-guides/pbms/create-eligibility-manager.md)
 
-:notebook\_with\_decorative\_cover:[Configure Program Manager](program-management/user-guides/configure-program-manager-in-program.md)
+:notebook\_with\_decorative\_cover:[Configure Program Manager](../../guides/user-guides/pbms/configure-program-manager-in-program.md)
 
 :notebook\_with\_decorative\_cover:[Create Notification Manager](notifications/user-guides/configure-notification-manager.md)
 
@@ -59,6 +59,6 @@ In OpenG2P, a program manager configures the PMT to validate the income and pove
 
 :notebook\_with\_decorative\_cover:[Map Self-Service Portal Form](../functionality/self-service-portal/user-guides/map-self-service-portal-form.md)
 
-:notebook\_with\_decorative\_cover:[Create Deduplication Manager](program-management/user-guides/create-deduplication-manager.md)
+:notebook\_with\_decorative\_cover:[Create Deduplication Manager](../../guides/user-guides/pbms/create-deduplication-manager.md)
 
-:notebook\_with\_decorative\_cover:[Create Manager Types](program-management/user-guides/create-manager-type/)
+:notebook\_with\_decorative\_cover:[Create Manager Types](../../guides/user-guides/pbms/create-manager-type/)
