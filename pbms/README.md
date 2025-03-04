@@ -22,7 +22,7 @@ The PBMS is based on [Odoo ERP/MIS](https://www.odoo.com/) and leverages Odoo's 
 
 The functional architecture of PBMS is shown below.
 
-{% embed url="https://miro.com/app/board/uXjVNGpmGPw=/?embedAutoplay=true&share_link_id=367874048494" %}
+<figure><img src="../.gitbook/assets/pbms-functional-architecture.png" alt=""><figcaption></figcaption></figure>
 
 ## Benefit disbursement process flow
 
