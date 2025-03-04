@@ -32,7 +32,7 @@ _**Social Registry**_ screen is displayed.
 
 3. Click the _**Configuration**_ in the menu bar and then select _**Gender Types**_.
 
-<figure><img src="../../../../.gitbook/assets/gender-config-sr (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/gender-config-sr (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 _**Gender Types**_ screen is displayed.
 

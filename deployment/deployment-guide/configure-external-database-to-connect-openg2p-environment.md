@@ -65,7 +65,7 @@ This document provides instructions to setup and install external database for O
        vim /etc/postgresql/14/main/pg_hba.conf
        ```
 
-       <figure><img src="../../.gitbook/assets/postgres1 (2) (2).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/postgres1 (2) (2) (2).png" alt=""><figcaption></figcaption></figure>
    3.  Restart PostgreSQL service to load configuration changes.
 
        ```bash

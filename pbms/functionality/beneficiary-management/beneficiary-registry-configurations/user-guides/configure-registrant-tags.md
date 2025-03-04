@@ -75,7 +75,7 @@ This completes the configuration of registrant tag in Beneficiary Registry modul
 
 _**Confirmation**_ dialog box is displayed.
 
-<figure><img src="../../../../../.gitbook/assets/config-reg-tags-confirmation (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/config-reg-tags-confirmation (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 11. Click the _**OK**_ button to remove the selected tag from the Registrant Tags list.
 12. Click the _**Cancel**_ button to retain the selected tag.

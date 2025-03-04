@@ -116,7 +116,7 @@ In the _**Add Eligibility Manager**_ screen, you can find the list of Eligibilit
 
 1. Check the required Manager in the list, it enables the _**Select, Action**_ button. It also shows the number of entries selected.
 
-<figure><img src="../../../../.gitbook/assets/eligibility-manager-list-1 (1) (1) (1).png" alt=""><figcaption><p>Selected Eligibility Manager list</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/eligibility-manager-list-1 (1) (1) (1) (1).png" alt=""><figcaption><p>Selected Eligibility Manager list</p></figcaption></figure>
 
 2. Click the _**Select**_ button.
 3. The selected Manager will be listed in the Eligibility Manager section below the _**Configuration**_ tab.
