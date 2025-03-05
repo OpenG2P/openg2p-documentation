@@ -4,6 +4,8 @@ description: OpenG2P's implementation of the Farmer Registry
 
 # Farmer Registry
 
+<figure><img src="../.gitbook/assets/framer-registry.png" alt=""><figcaption><p>Farmer Registration in Ethiopia</p></figcaption></figure>
+
 ## Requirement
 
 A country's Department of Agriculture requires a registry of farmers to support them better and plan agricultural policies and programs. The end objective is to provide the right assistance to farmers and improve their production and productivity, which in turn increases incomes for farmers and food security for everyone. The key requirements are as follows:
