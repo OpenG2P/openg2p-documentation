@@ -66,6 +66,7 @@
     * [Unique Social ID](social-registry/features/unique-social-id.md)
     * [Audit Logs](social-registry/features/audit-log.md)
     * [Rapid Deployment Framework](social-registry/features/rapid-deployment-framework.md)
+    * [Performance & Scale](social-registry/features/performance-and-scale.md)
     * [Draft and Publish](social-registry/features/draft-and-publish.md)
   * [Versions](social-registry/versions.md)
   * [Deployment](social-registry/deployment/README.md)
