@@ -103,3 +103,19 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 #### CPU Utilizations:
 
 <figure><img src="../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 2.435852958s</p></figcaption></figure>
+
+## DB Storage (Tables)
+
+<figure><img src="../../.gitbook/assets/SR-Scale-Postgres-DB-Storage-Tables.jpg" alt=""><figcaption></figcaption></figure>
+
+## DB Storage (Indexes)
+
+<figure><img src="../../.gitbook/assets/SR-Scale-Postgres-DB-Storage-Indexes.jpg" alt=""><figcaption></figcaption></figure>
+
+## Recommendations
+
+1. Leverage pg\_trgm extension and trigram indexes for text substring searches to improve postgres text searches&#x20;
+2. Odoo Search - Explore if we can insert custom queries for "unique\_id" lookups (implemented as child tables) instead of relying on Odoo’s generic ORM queries. If this is not possible, then it is recommended to add these columns (like unique\_id, aadhaar\_id) into the res\_partner table itself.
+3. The ID generation and De-duplication modules need to be implemented using a Celery Background Worker framework.&#x20;
+4. During data migration of large datasets, populate Open Search directly during Migration as in independent task, using Bulk Insertion into OpenSearch. Use Debezium only for production where data will flow in increments rather than bulk.
+
