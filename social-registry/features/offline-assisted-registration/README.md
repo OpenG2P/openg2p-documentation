@@ -6,7 +6,7 @@ description: Offline capabilities of Social Registry
 
 The OpenG2P Social Registry is designed to function effectively in environments with limited or no internet connectivity. While working closely with the countries we engage with, we identified that connectivity remains a significant challenge. Many regions, especially rural and underserved areas, face inconsistent or limited internet access, creating barriers to efficient social service delivery. To address this issue, OpenG2P has prioritized the development of strong offline capabilities, enabling registration and authentication of beneficiaries without requiring continuous online access. These capabilities ensure uninterrupted service delivery, inclusivity, operational efficiency, and data security, even in areas with minimal infrastructure.
 
-<div><figure><img src="../../../.gitbook/assets/offline-registrations.jpeg" alt=""><figcaption></figcaption></figure> <figure><img src="../../../.gitbook/assets/offline-registraions-2.jpg" alt=""><figcaption></figcaption></figure></div>
+<div><figure><img src="../../../.gitbook/assets/offline-registrations.jpeg" alt=""><figcaption><p>Offline registrations using OpenG2P (shot on field)</p></figcaption></figure> <figure><img src="../../../.gitbook/assets/offline-registraions-2.jpg" alt=""><figcaption></figcaption></figure></div>
 
 The following offline capabilities are offered:
 
