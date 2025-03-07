@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Performance & Scale
+# Performance Testing
 
 ## **Data Overview**
 
