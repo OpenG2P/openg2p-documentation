@@ -13,14 +13,14 @@ The Social Registry supports offline registration using **ODK (Open Data Kit)**,
 
 For a more detailed overview of ODK-based registration, refer to the ODK documentation.
 
-## 2. Downloading and sharing of Verifiable Credentials
+## 2. Offline Use of Verifiable Credentials (VC)
 
-To facilitate beneficiary authentication without requiring real-time internet access, OpenG2P enables the issuance and offline sharing of **Beneficiary Verifiable Credentials (VC)**. This includes:
+A key offline capability of OpenG2P is the ability to generate, store, and verify **Beneficiary Verifiable Credentials (VC)**&#x77;ithout requiring real-time internet access. This enables beneficiaries to prove their eligibility for programs and services without relying on a central online system. Key aspects include:
 
-* **Digital credential generation**: Beneficiaries receive a digital proof of program participation, which can be stored on their mobile device or printed as a QR code.
-* **Offline authentication**: Field officers or service providers can scan the QR code or use offline cryptographic verification techniques to authenticate the beneficiary’s enrollment in a program.
-* **Secure and portable credentials**: The credentials can be shared via peer-to-peer mechanisms such as Bluetooth or NFC, ensuring accessibility even in areas with no network coverage.
-* **Tamper-proof verification**: The credentials are cryptographically signed and verifiable against a trusted issuer, ensuring authenticity without requiring an online check.
+* **Digital credential issuance**: Beneficiaries are issued cryptographically secure verifiable credentials that can be stored on their mobile devices or printed as a QR code.
+* **Offline authentication**: Service providers, field officers, or other verifying entities can scan and validate the credentials entirely offline using cryptographic verification mechanisms.
+* **Secure and portable**: Verifiable credentials allow beneficiaries to carry proof of program participation in an easily accessible and shareable format.
+* **Decentralized verification**: Since the credentials are self-contained and cryptographically signed, they can be verified without needing to query a central server, making them ideal for low-connectivity environments.
 
 ## 3. Verifiable Credentials for Offline Registration
 
