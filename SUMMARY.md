@@ -283,6 +283,7 @@
     * [SPAR Self Service](spar/features/spar-self-service.md)
     * [Privacy & Security](spar/features/privacy-and-security.md)
     * [Interoperability](spar/features/interoperability.md)
+    * [Performance & Scale](spar/features/performance-and-scale.md)
     * [Monitoring & Reporting](spar/features/monitoring-and-reporting.md)
   * [Deployment](spar/deployment/README.md)
     * [Domain Names and Certificates](spar/deployment/domain-names-and-certificates.md)
