@@ -20,6 +20,6 @@ To enhance efficiency, the system utilizes an asynchronous background processing
 
 **Optimized Search and Data Synchronization**
 
-In addition to PostgreSQL, the registry maintains a synchronized copy of its records in **OpenSearch** for enhanced search performance. Updates to the registry are seamlessly streamed from PostgreSQL **Write-Ahead Logs (WAL)** into OpenSearch via **Kafka**, leveraging the **Debezium framework**. This approach ensures real-time data consistency while enabling faster and more efficient search capabilities compared to PostgreSQL.
+In addition to PostgreSQL, the registry maintains a synchronized copy of its records in **OpenSearch** for enhanced search performance. Updates to the registry are seamlessly streamed from PostgreSQL **Write-Ahead Logs (WAL)** into OpenSearch via **Kafka**, leveraging the [**OpenG2P reporting framework**](https://docs.openg2p.org/monitoring-and-reporting/reporting-framework). This approach ensures real-time data consistency while enabling faster and more efficient search capabilities compared to PostgreSQL.
 
 For in-depth insights into system performance and benchmarking, refer to the [**Performance Testing**](https://docs.openg2p.org/social-registry/developer-zone/performance-testing) section in the Developer Zone.
