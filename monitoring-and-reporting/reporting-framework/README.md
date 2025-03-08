@@ -16,9 +16,7 @@ layout:
 
 The Reporting Framework is an infrastructure to make database data available in searchable indexes for efficient slicing and dicing of data and real-time monitoring with visualization and reports. The framework utilizes open-source components to achieve this data pipeline and visualization capabilities.
 
-
-
-{% embed url="https://miro.com/app/board/uXjVKY0ZdOQ=/?share_link_id=736231944012" %}
+<figure><img src="../../.gitbook/assets/reporting-framework.jpg" alt=""><figcaption></figcaption></figure>
 
 Postgres WAL contains events on the database, specifically, changes to any table fields. These events are read by Debezium and pushed to Kafka Topics.  Using a connector the fields are further pushed into OpenSearch indexes. These indexes may be searched by APIs or consumed by OpenSearch Dashboards for visualization.&#x20;
 
