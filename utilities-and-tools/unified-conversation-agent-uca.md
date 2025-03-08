@@ -1008,3 +1008,199 @@ This error indicates that the DeepSeek model, as implemented in Ollama, doesn't 
 
 
 
+
+
+## Enhanced Agent Architecture and Tool Control
+
+
+
+This documentation analyzes the evolution of the CombinedProgramAgent system, focusing on architectural improvements that resolved critical limitations in the original implementation. The agent serves as a program eligibility advisor that utilizes vector search (FAISS) and structured database queries (SQL) to provide accurate program recommendations based on user inquiries.
+
+### Original Implementation Analysis
+
+#### Architecture Overview
+
+The original implementation featured:
+
+1. A standard LangChain ReAct agent architecture
+2. Direct integration of SQL and FAISS tools
+3. A basic system prompt guiding agent behavior
+
+
+
+#### Critical Limitations
+
+**1. Tool Sequencing Problems**
+
+The original implementation allowed the agent to use tools in any order, resulting in:
+
+```python
+# Original tool initialization - no sequencing enforcement
+sql_toolkit = SQLDatabaseToolkit(db=db, llm=self.llm)
+sql_tools = sql_toolkit.get_tools()
+
+# FAISS tool created but not prioritized
+faiss_tool = create_retriever_tool(
+    retriever,
+    "program_info",
+    "Search for program information and descriptions"
+)
+
+# Tools combined without hierarchy
+return sql_tools + [faiss_tool]
+```
+
+This approach gave equal priority to all tools, allowing the agent to:
+
+* Execute SQL queries without first identifying relevant programs through FAISS
+* Misunderstand the dependent relationship between tools
+* Produce incomplete or erroneous information
+
+**2. Hallucination Issues**
+
+The original system permitted hallucination through:
+
+1. Lack of strict data validation
+2. No explicit response verification
+3. Basic prompt structure without enforced boundaries:
+
+```python
+pythonCopysystem_prompt = """You are a program eligibility advisor...
+Must follow:give the response only with respect to the content you retrieve from program_info tool and SQL tool,
+if the content is not there then say "I dont have any idea on that" , Do not hallucinate...
+"""
+```
+
+Despite these instructions, the agent would often invent program details, combine real and fabricated information, or provide erroneous eligibility assessments.
+
+
+
+### Enhanced Implementation Analysis
+
+The updated implementation represents a significant architectural advancement with several sophisticated mechanisms:
+
+**1. Enforced Tool Sequencing**
+
+```python
+faiss_tool = create_retriever_tool(
+    retriever,
+    "program_search",
+    "MUST USE FIRST! Converts user needs to program IDs. Returns: [ID|Program Name|Brief Description]"
+)
+
+sql_tools = [
+    Tool.from_function(
+        func=self._wrap_sql_tool(tool),
+        name=tool.name,
+        description=f"REQUIRES PROGRAM ID FROM program_search. {tool.description} Input must include 'program_id:' followed by ID."
+    ) for tool in sql_toolkit.get_tools()
+]
+
+# FAISS tool intentionally positioned first
+return [faiss_tool] + sql_tools
+```
+
+This implementation enforces a strict tool hierarchy through:
+
+1. Clear "MUST USE FIRST" directive in the FAISS tool description
+2. SQL tools explicitly requiring input from the FAISS tool
+3. Order-dependent tool list structure
+
+**2. SQL Tool Wrapper Mechanism**
+
+```python
+def _wrap_sql_tool(self, tool: Tool):
+    def wrapped_tool(
+        query: str,
+        run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> str:
+        if "program_id:" not in query:
+            return "Error: Missing program_id. First use program_search to get valid IDs."
+        return tool._run(query, run_manager)
+    return wrapped_tool
+```
+
+This wrapper operates through:
+
+1. **Function Closure**: Creates a new function that encapsulates the original tool
+2. **Input Validation**: Checks for the presence of "program\_id:" in the query
+3. **Error Redirection**: Returns an explicit error message rather than executing the tool when validation fails
+4. **Transparent Execution**: Passes valid requests to the original tool with all necessary context
+
+The wrapper establishes a dependency chain that ensures:
+
+* FAISS search must be used first to get program IDs
+* SQL tools can only operate on previously identified programs
+* The agent receives immediate feedback when attempting to bypass the workflow
+
+**3. Response Validation System**
+
+The enhanced implementation introduces a sophisticated response validation mechanism:
+
+```python
+pythonCopydef _get_known_programs(self) -> Dict[str, str]:
+    try:
+        return {row['id']: row['name'] 
+                for row in self.db.run("SELECT id, name FROM programs")}
+    except:
+        return {}
+
+def _validate_response(self, response: str) -> str:
+    # Allow any response that doesn't mention programs (greetings/smalltalk)
+    if not any(prog.lower() in response.lower() for prog in self.known_programs.values()):
+        return response
+        
+    # Program-related responses must contain known program names
+    if any(prog.lower() in response.lower() for prog in self.known_programs.values()):
+        return response
+        
+    return "I need more details to properly check program eligibility. Please share your situation."
+```
+
+This validation system:
+
+1. Builds a repository of known program names from the database
+2. Applies different validation rules based on response content
+3. Allows conversational responses without program references to pass unchanged
+4. Verifies that program-related responses only mention known programs
+5. Provides a fallback response for potential hallucinations
+
+**4. Improved System Prompt**
+
+The updated system prompt incorporates several advanced features:
+
+```python
+pythonCopysystem_prompt = """You are a program eligibility advisor. Follow these STRICT RULES:
+
+1. INPUT CLASSIFICATION:
+   - If the user message is a greeting or small talk (e.g., "hello", "hi", "how are you?"):
+     * Respond politely but briefly
+     * DO NOT USE ANY TOOLS
+     * Keep response under 15 words
+   - For program-related queries:
+     * MUST follow the workflow below
+
+2. PROGRAM WORKFLOW:
+   a. Use program_search FIRST
+   b. For each found ID: Use SQL tools with 'program_id:<ID>'
+   c. Compare user details to SQL criteria
+
+3. RESPONSE RULES:
+   - Program responses MUST follow format:
+     [Program Name] (ID: <id>)
+     - Eligibility: <quoted criteria>
+     - Match: <Yes/Partial/No> because <comparison>
+   - No programs found: "No matching programs found"
+
+PROHIBITIONS:
+- Inventing programs/criteria
+- Using SQL without program_search first
+- Speculating beyond retrieved data"""
+```
+
+Key improvements include:
+
+1. Explicit greeting identification with examples
+2. Clear prohibition on tool usage for greetings
+3. Mandatory response format for standardization
+4. Specific prohibition clauses
