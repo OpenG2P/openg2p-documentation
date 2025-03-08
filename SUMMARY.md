@@ -398,7 +398,6 @@
       * [📔 Connector Creation Guide](monitoring-and-reporting/reporting-framework/user-guides/connector-creation-guide.md)
       * [📔 Dashboards Creation Guide](monitoring-and-reporting/reporting-framework/user-guides/dashboards-creation-guide.md)
       * [📔 Installation & Troubleshooting](monitoring-and-reporting/reporting-framework/user-guides/installation-and-troubleshooting.md)
-      * [Page 1](monitoring-and-reporting/reporting-framework/user-guides/page-1.md)
     * [Kafka Connect Transform Reference](monitoring-and-reporting/reporting-framework/kafka-connect-transform-reference.md)
   * [System Logging](monitoring-and-reporting/logging.md)
   * [System Health](monitoring-and-reporting/system-health.md)
