@@ -4,27 +4,27 @@ The OpenG2P Farmer Registry is designed to streamline the identification, regist
 
 This document serves as a reference for understanding the implementation details, components, and setup process for the Farmer Registry solution.
 
-## Use Case&#x20;
+## Use case&#x20;
 
 As outlined in the OpenG2P documentation, the primary use case for the Farmer Registry is to enable a country’s Department of Agriculture to:&#x20;
 
-**Register Farmers**: Capture and maintain a centralized database of farmers, including demographics, agricultural activities, and service requirements.
+**Register farmers**: Capture and maintain a centralized database of farmers, including demographics, agricultural activities, and service requirements.
 
-**Target Support**: Enable agriculture programs to provide relevant support based on farmers’ needs.&#x20;
+**Target support**: Enable agriculture programs to provide relevant support based on farmers’ needs.&#x20;
 
-**Decision Support**: Empower policymakers with real-time data for informed decision-making.&#x20;
+**Decision support**: Empower policymakers with real-time data for informed decision-making.&#x20;
 
-**Data Exchange**: Ensure seamless integration with other systems and data sources
+**Data exchange**: Ensure seamless integration with other systems and data sources
 
-## What We Did
+## What we did
 
 The Farmer Registry was built to provide a digital-first approach to farmer identification and management. Key objectives achieved include:
 
-* **Structured Registration**: A comprehensive registration system that captures essential farmer details such as personal information, land ownership, and farming activities.
-* **ID Authentication**: The system supports biometric or OTP-based authentication to validate farmers.
-* **ODK-Based Data Collection**: Offline and online data capture capabilities using ODK (Open Data Kit) for field-level data collection.
-* **Configurable Deduplication**: Ensures unique farmer records through configurable deduplication based on IDs or biometric data.
-* **Registration Portal:** An intuitive interface for the enrollment agents to enumerate farmer and their household data.
+* **Structured registration**: A comprehensive registration system that captures essential farmer details such as personal information, land ownership, and farming activities.
+* **ID authentication**: The system supports biometric or OTP-based authentication to validate farmers.
+* **ODK-based data collection**: Offline and online data capture capabilities using ODK (Open Data Kit) for field-level data collection.
+* **Configurable deduplication**: Ensures unique farmer records through configurable deduplication based on IDs or biometric data.
+* **Registration portal:** An intuitive interface for the enrollment agents to enumerate farmer and their household data.
 * **Interoperability**: Designed to integrate with other systems like payment gateways, subsidy management, and agriculture extension services.
 
 ## Components&#x20;
@@ -42,39 +42,39 @@ Included The Farmer Registry solution comprises the following components, as ref
 The entire source code for the reference design can be found in the GitHub [repository](https://github.com/OpenG2P/openg2p-reference-designs/tree/develop/farmer-registry)\
 
 
-## How to Set Up
+## How to setup
 
 Follow the developer installation guide provided for setting up OpenG2P on Linux: [Developer Install Guide](https://docs.openg2p.org/social-registry/developer-zone/developer-install/developer-install-of-openg2p-package-on-linux).
 
 Once the OpenG2P setup is completed, proceed with the following steps specific to the Farmer Registry:
 
-1.  **Navigate to the OpenG2P Addons Directory**
+1.  **Navigate to the OpenG2P addons directory**
 
     ```
     cd ~/odoo/custom-addons/
     ```
-2.  **Clone the Farmer Registry Repository**
+2.  **Clone the farmer registry repository**
 
     ```
     git clone https://github.com/OpenG2P/openg2p-reference-designs.git
     ```
-3.  **Adjust Odoo Configuration**
+3.  **Adjust Odoo configuration**
 
     * Update the `odoo.conf` file to include the Farmer Registry module path:
 
     ```
     addons_path = /home/odoo/odoo/addons,/home/odoo/custom-addons/openg2p-reference-designs/farmer-registry
     ```
-4.  **Restart Odoo**
+4.  **Restart odoo**
 
     ```
     sudo systemctl restart odoo
     ```
-5. **Activate the Farmer Registry Module**
+5. **Activate the farmer registry module**
    * Log into Odoo and navigate to **Apps**.
    * Enable Developer Mode.
    * Search for `Farmer Registry` and install the module.
-6. **Configure Farmer Registry Settings**
+6. **Configure farmer registry settings**
    * Set up deduplication rules and ODK integration under module settings.
 
 
