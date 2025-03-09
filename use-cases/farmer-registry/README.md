@@ -4,7 +4,7 @@ description: OpenG2P's implementation of the Farmer Registry
 
 # Farmer Registry
 
-<figure><img src="../.gitbook/assets/framer-registry.png" alt=""><figcaption><p>Farmer Registration in Ethiopia</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/framer-registry.png" alt=""><figcaption><p>Farmer Registration in Ethiopia</p></figcaption></figure>
 
 ## Requirement
 
@@ -24,7 +24,7 @@ The Farmer Registry is a comprehensive solution to capture, manage, share and an
 * Integration with National ID
 * Integration with external databases to consolidate farmer and land data
 
-<figure><img src="../.gitbook/assets/Agriculture Systems Integration (1).jpg" alt=""><figcaption><p>Farmer Registry Data Flow </p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Agriculture Systems Integration (1).jpg" alt=""><figcaption><p>Farmer Registry Data Flow </p></figcaption></figure>
 
 The Farmer Registry key functions include **Data Collection, Data Validation and Enrichment, Data Sharing, and Analytics and Reporting**. OpenG2P provides features that include offline assisted registration via the ODK application, online assisted registration, and a dynamic registry that allows data to be updated through multiple channels.
 
@@ -97,3 +97,6 @@ _Data Sharing_: Data stored in the registry can be easily shared in a standardiz
 ## Deployment
 
 ## Reference Design
+
+Pleas click [here](farmer-registry-reference-design.md) to know more about the referece design for Farmer Registry
+
