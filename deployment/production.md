@@ -77,7 +77,24 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
    `systemctl start rke2-server`
 6. You can continue to add new server and worker nodes to cluster.
 
-### Backup of Persistent Volume information
+### Cluster reset <a href="#cluster-reset" id="cluster-reset"></a>
+
+RKE2 provides a feature to reset the cluster to a single-member cluster using the `--cluster-reset` flag. When this flag is passed to the RKE2 server, it resets the cluster while preserving the existing data directory. The etcd data directory is located at `/var/lib/rancher/rke2/server/db/etcd`. This flag can be used in the event of quorum loss in the cluster.
+
+To use the reset flag, you must first stop the RKE2 service if it is enabled via systemd:
+
+```bash
+# Stop the RKE2 server service
+systemctl stop rke2-server
+
+# Perform a cluster reset
+rke2 server --cluster-reset
+
+```
+
+A message in the logs states that RKE2 can be restarted without the flags. Start RKE2 again, and it should initialize as a single-member cluster.
+
+### Backup of persistent volume information
 
 The mapping between PVCs and PV must be saved after the installation so in case the cluster goes down, or NFS has issues, one can recreate the pods with original data.  Download the YAML as shown below and keep it securely accessible to system administrators. &#x20;
 
