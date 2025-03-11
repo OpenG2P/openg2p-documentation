@@ -1,5 +1,4 @@
 ---
-icon: laptop-code
 description: Installation of G2P Bridge on a developer machine
 ---
 

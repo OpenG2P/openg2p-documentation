@@ -15,9 +15,10 @@ A country's Department of Agriculture requires a registry of farmers to support 
 3. Decision Support: Empowering policymakers with real-time data for better decision-making in agricultural programs and public expenditure.
 4. Data exchange: Ensuring seamless integration with other systems and data sources to enhance functionality and scalability
 
-## OpenG2P Solution and Architecture
+## OpenG2P solution and architecture
 
-The Farmer Registry is a comprehensive solution to capture, manage, share and analyze farmer data efficiently. It contains:
+The Farmer Registry is a comprehensive solution to capture, manage, share and analyze farmer data efficiently to provide a digital-first approach to farmer identification and management. It contains:\
+
 
 * Implementation of an offline ODK-based data collection system integrated with OpenG2P
 * Implementation of an online Registration Portal
@@ -32,11 +33,22 @@ The Farmer Registry key functions include **Data Collection, Data Validation and
 
 OpenG2P supports the **Data Sharing** function by sharing data from the registry in a standardized manner. Analytics and Reporting includes reporting and dashboards using Apache Superset and the Reporting Framework, real-time system health monitoring, and revision history to track changes and generate reports.
 
-## Key Processes and Features
+## Solution approach
+
+Key objectives achieved include:
+
+* **Structured registration**: A comprehensive registration system that captures essential farmer details such as personal information, land ownership, and farming activities.
+* **ID authentication**: The system supports biometric or OTP-based authentication to validate farmers.
+* **ODK-based data collection**: Offline and online data capture capabilities using ODK (Open Data Kit) for field-level data collection.
+* **Configurable deduplication**: Ensures unique farmer records through configurable deduplication based on IDs or biometric data.
+* **Registration portal:** An intuitive interface for the enrollment agents to enumerate farmer and their household data.
+* **Interoperability**: Designed to integrate with other systems like subsidy management, and agriculture extension services.
+
+## Key processes and features
 
 <details>
 
-<summary>Data Collection</summary>
+<summary>Data collection</summary>
 
 * _Offline assisted registration_: Offline assisted enumeration enables us to reach remote farmers who may not have internet connectivity. Data is collected by a field enumerator using the ODK application on tablets and stored in ODK Central, and then imported into the farmer registry. The enumerator's login details are also stored within the registry, to monitor the data collection.
 
@@ -50,7 +62,7 @@ OpenG2P supports the **Data Sharing** function by sharing data from the registry
 
 <details>
 
-<summary>Data Validation and Enrichment</summary>
+<summary>Data validation and enrichment</summary>
 
 * _Farmer ID generation_: Unique Farmer ID is generated to ensure accurate and efficient tracking, as well as to enhance data consistency and integration with other systems. The ID is generated using MOSIP's sophisticated ID generator which applies multiple rules before assigning an ID, and the generation process is managed through a background task system that handles status updates, retries, and eventual confirmation of ID utilisation.
 
@@ -68,7 +80,7 @@ OpenG2P supports the **Data Sharing** function by sharing data from the registry
 
 <details>
 
-<summary>Data Sharing</summary>
+<summary>Data sharing</summary>
 
 _Data Sharing_: Data stored in the registry can be easily shared in a standardized manner, making the information reusable by third parties for farmer and agricultural insights.
 
@@ -76,7 +88,7 @@ _Data Sharing_: Data stored in the registry can be easily shared in a standardiz
 
 <details>
 
-<summary>Analytics and Reporting</summary>
+<summary>Analytics and reporting</summary>
 
 * _Reporting and Dashboards_: OpenG2P's monitoring and logging tools allow program administrators to track the progress of the registry, and keep an eye on system health. They can do this through:
   1. Visual dashboards for monitoring using Apache Superset
@@ -87,16 +99,14 @@ _Data Sharing_: Data stored in the registry can be easily shared in a standardiz
 
 </details>
 
-## Data Model
+## Data model
 
 * Basic details of the farmer and household - name, location, ID, education, etc
 * Land area, parcel ID, geo-location, ownership details &#x20;
 * Data on crop, livestock, inputs, access to finance&#x20;
 * Membership and role in farmer organizations
 
-## Deployment
+## Reference design
 
-## Reference Design
-
-Pleas click [here](farmer-registry-reference-design.md) to know more about the referece design for Farmer Registry
+Please click [here](reference-design-farmer-registry.md) to know more about the reference design for Farmer Registry
 

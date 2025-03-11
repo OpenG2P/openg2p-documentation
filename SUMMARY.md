@@ -492,7 +492,7 @@
     * [OpenG2P Module Doc Template](guides/documentation-guides/openg2p-module-doc-template.md)
 * [Use Cases](use-cases/README.md)
   * [Farmer Registry](use-cases/farmer-registry/README.md)
-    * [Farmer Registry: Reference Design](use-cases/farmer-registry/farmer-registry-reference-design.md)
+    * [Reference Design - Farmer Registry](use-cases/farmer-registry/reference-design-farmer-registry.md)
 * [Releases](releases/README.md)
   * [1.1.0](releases/1.1.0/README.md)
     * [Release Notes](releases/1.1.0/release-notes.md)
