@@ -111,5 +111,3 @@ Once the OpenG2P setup is completed, proceed with the following steps specific t
    * Search for `Farmer Registry` and install the module.
 6. Configure farmer registry settings
    * Set up deduplication rules and ODK integration under module settings.
-
-## Deployment
