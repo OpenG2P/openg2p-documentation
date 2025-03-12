@@ -8,8 +8,10 @@ description: Testing at OpenG2P
 
 To ensure the reliability, security, and performance of the OpenG2P platform we follow a structured testing approach primarily focusing on [Sanity Testing](./#sanity-testing) and [Regression Testing](./#regression-testing).  Testing is conducted on versioned/tagged Dockers from the end-to-end (black box) perspective.  All test cases are planned and documented for manual execution (see the Excel sheet below).  The test results for a particular release are well documented [(example)](https://docs.openg2p.org/releases/1.1.0/release-notes#test-report).
 
-{% embed url="https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY" %}
-Test cases
+
+
+{% embed url="https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?preview=&usp=sharing" %}
+Test Cases
 {% endembed %}
 
 ### Sanity testing
@@ -45,11 +47,11 @@ Regression testing ensures that existing functionalities continue to work correc
 * Performed after major updates, feature additions, or bug fixes.
 * Manual test cases executed across various system modules.
 
-[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385)
+[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=850128442#gid=850128442](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=850128442#gid=850128442)
 
 * Detailed test reports generated to track defect trends and system stability.
 
-[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385)&#x20;
+[https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf\_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385](https://docs.google.com/spreadsheets/d/1wDvw2GdXGKBEchBPIUslTeIaJWf_cEG9G9EK8PyuAAY/edit?gid=1675241385#gid=1675241385)
 
 ## Testing process for a release
 
