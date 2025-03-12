@@ -108,5 +108,5 @@ _Data Sharing_: Data stored in the registry can be easily shared in a standardiz
 
 ## Reference design
 
-Please click [here](reference-design-farmer-registry.md) to know more about the reference design for Farmer Registry
+Reference design for Farmer Registry is available [here](reference-design-farmer-registry.md).
 

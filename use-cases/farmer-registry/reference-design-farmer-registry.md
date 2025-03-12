@@ -1,10 +1,14 @@
-# Reference Design - Farmer Registry
+# Reference Design: Farmer Registry
 
 The OpenG2P Farmer Registry is designed to streamline the identification, registration, and verification of farmers in a structured and scalable manner. It aligns with the use case documented in [OpenG2P Farmer Registry Use Case](https://docs.openg2p.org/use-cases/farmer-registry) and provides a reference implementation based on OpenG2P principles. This reference design can be a base to start off your farmer registry implementation and further you may modify as per your farmer registry specification.&#x20;
 
 ## Use case&#x20;
 
 Refer [Farmer Registry](./)
+
+## Source code
+
+The entire source code for the reference design can be found in the GitHub [repository](https://github.com/OpenG2P/openg2p-reference-designs/tree/develop/farmer-registry).
 
 ## Components&#x20;
 
@@ -15,10 +19,6 @@ Included The Farmer Registry solution comprises the following components, as ref
 * `g2p_farmer_service_provider_portal`: Portal for service providers to manage farmer and household in their respective administrative area.
 * `g2p_lock_unlock`: Functionality for locking and unlocking farmer records.
 * `g2p_odk_importer_farmer`: Component for importing data collected via ODK (Open Data Kit).
-
-## Source code
-
-The entire source code for the reference design can be found in the GitHub [repository](https://github.com/OpenG2P/openg2p-reference-designs/tree/develop/farmer-registry)
 
 ## How to setup
 
