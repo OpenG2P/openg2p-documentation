@@ -463,6 +463,7 @@
     * [Set up Slack alerts for a Kubernetes cluster](deployment/deployment-guide/set-up-slack-alerts-for-a-kubernetes-cluster.md)
     * [Importing Dashboards on the Superset UI for OpenG2P Applications](deployment/deployment-guide/importing-dashboards-on-the-superset-ui-for-openg2p-applications.md)
     * [Scaling Down an Environment to Optimize Resource Usage](deployment/deployment-guide/scaling-down-an-environment-to-optimize-resource-usage.md)
+    * [Kubernetes Cluster Deployment Guide](deployment/deployment-guide/kubernetes-cluster-deployment-guide.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [📒 Guides](guides/README.md)

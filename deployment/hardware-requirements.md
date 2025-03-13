@@ -27,7 +27,7 @@ For high availability and greater resilience refer to the [production guide](pro
 
 > **Note:**\
 > OS for all nodes:  **Ubuntu 22.04 Server**\
-> Avoid setting up a cluster with a single master and worker node, as recovery from failures can be difficult, especially with services like etcd.
+> For best practices in creating a Kubernetes cluster for development, testing, and production, refer to the document [here](https://docs.openg2p.org/deployment/deployment-guide/kubernetes-cluster-deployment-guide).
 
 ## Networking&#x20;
 
