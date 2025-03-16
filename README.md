@@ -45,7 +45,7 @@ Supporting countries is deeply ingrained in the core values of OpenG2P's offerin
 
 OpenG2P has a flexible architecture that allows governments and social benefit delivery systems to choose modules per their needs. All the modules are designed to be installed and used standalone. However, the full power of OpenG2P can be harnessed if all the modules are used in conjunction with each other.
 
-<figure><img src=".gitbook/assets/functional-view.png" alt=""><figcaption><p>Typically connection of modules to deliver cash digitally</p></figcaption></figure>
+<figure><img src=".gitbook/assets/openg2p-functional-view.png" alt=""><figcaption><p>Typically connection of modules to deliver cash digitally</p></figcaption></figure>
 
 ## Guiding principles
 
