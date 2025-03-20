@@ -59,7 +59,7 @@ This will help you obtain and renew SSL certificates from Let’s Encrypt using 
 Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
 
 * You need an AWS account with Route 53 hosted zones configured.
-*   Create an IAM user with the following permissions:\
+*   Create an IAM user with the following permissions and have Route53FullAccess role:\
 
 
     ```json
@@ -86,6 +86,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
     ```bash
     sudo apt update
     sudo apt install certbot python3
+    sudo apt-get install python3-certbot-dns-route53
     certbot plugins
     ```
 
@@ -98,7 +99,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
       ```bash
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       unzip awscliv2.zip
-      sudo ./aws/install.sh
+      sudo ./aws/install
       aws --version
       ```
 

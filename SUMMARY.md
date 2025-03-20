@@ -464,6 +464,7 @@
     * [Importing Dashboards on the Superset UI for OpenG2P Applications](deployment/deployment-guide/importing-dashboards-on-the-superset-ui-for-openg2p-applications.md)
     * [Scaling Down an Environment to Optimize Resource Usage](deployment/deployment-guide/scaling-down-an-environment-to-optimize-resource-usage.md)
     * [Kubernetes Master Nodes](deployment/deployment-guide/kubernetes-master-nodes.md)
+    * [Enabling Keycloak User Self-Registration](deployment/deployment-guide/enabling-keycloak-user-self-registration.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [📒 Guides](guides/README.md)
