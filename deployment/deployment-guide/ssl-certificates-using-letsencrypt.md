@@ -87,7 +87,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
     sudo apt update
     sudo apt install certbot python3
     sudo apt-get install python3-certbot-dns-route53
-    certbot plugins
+    certbot plugins #To list all the certbot plugins
     ```
 
 
@@ -100,21 +100,20 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       unzip awscliv2.zip
       sudo ./aws/install
-      aws --version
+      aws --version #To check the AWS CLI version
       ```
 
 
   *   [ ] Certbot requires access to your AWS credentials to interact with Route 53. Run the command `aws configure`as **root user** to set up your AWS credentials, which will prompt you for your AWS IAM user's access key, secret key, and default region. Then verify your AWS CLI configuration by running\
 
 
-      ```bash
-      cat .aws/credentails or config
-      aws sts get-caller-identity
-      aws route53 list-hosted-zones    
-      ```
+      <pre class="language-bash"><code class="lang-bash">cat .aws/credentails or config
+      <strong>aws sts get-caller-identity #To check AWS authentication for user
+      </strong>aws route53 list-hosted-zones #To list all the hosted zones avail on your AWS
+      </code></pre>
 
 
-*   Use Certbot with the Route 53 plugin to request a certificate—replace example.com with your domain. Once the certificate is generated, it will inform you that it will automatically renew when nearing expiry and that a systemd timer (certbot.timer) and service (certbot.service) are created in the /lib/systemd/system directory for automatic renewals.\
+*   Use Certbot with the Route 53 plugin to request a certificate replace openg2p.sandbox.org with your domain. Once the certificate is generated, it will inform you that it will automatically renew when nearing expiry and systemd timer (certbot.timer) and service (certbot.service) are created in the /lib/systemd/system directory for automatic renewals.\
 
 
     ```bash

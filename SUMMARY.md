@@ -465,6 +465,7 @@
     * [Scaling Down an Environment to Optimize Resource Usage](deployment/deployment-guide/scaling-down-an-environment-to-optimize-resource-usage.md)
     * [Kubernetes Master Nodes](deployment/deployment-guide/kubernetes-master-nodes.md)
     * [Enabling Keycloak User Self-Registration](deployment/deployment-guide/enabling-keycloak-user-self-registration.md)
+    * [Automating Cache Cleanup on K8s Cluster Nodes with Cron Job](deployment/deployment-guide/automating-cache-cleanup-on-k8s-cluster-nodes-with-cron-job.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [📒 Guides](guides/README.md)
