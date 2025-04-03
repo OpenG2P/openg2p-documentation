@@ -14,7 +14,7 @@ Currently, we use the [Ingressgateway](https://istio.io/latest/docs/tasks/traffi
 * We can use advanced deployment strategies like canary deployments and A/B testing, where Istio can route higher percentage of traffic to specific service versions.
 * We can enable security features like mTLS encryption for service-to-service traffic. Istio can also provide an authentication & authorization layer for services.
 * We can also define policies related to access control & rate limiting. One can define which services are allowed to access other services or limit the rate of requests accepted by a service.
-* More importantly Istio provides comprehensive observability features. We can visualize & monitor service-to-service traffic real-time, with tools like Kiali, which would help identify performance bottlenecks and diagnose issues.
+* More importantly Istio provides comprehensive observability features. We can visualize & monitor service-to-service traffic real-time, with tools like [Kiali](https://istio.io/latest/docs/ops/integrations/kiali/), which would help identify performance bottlenecks and diagnose issues.
 
 
 {% endhint %}
