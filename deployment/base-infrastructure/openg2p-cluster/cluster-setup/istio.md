@@ -5,7 +5,7 @@ description: Istio Setup
 # Istio
 
 [Istio](https://istio.io/) is a service mesh that provides a way to connect, secure, control, and observe microservices. It is a powerful mesh management tool.  It also provides an ingress gateway for the Kubernetes cluster. \
-Currently, we use the [Ingressgateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/) component of Istio which enables routing external traffic into Kubernetes services. But Istio can be configured to do much more. See note below.
+Currently, we use the [Ingressgateway](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/) component of Istio which enables routing external traffic into Kubernetes services. Istio can be configured to do much more. See note below.
 
 {% hint style="info" %}
 **Why Istio? What are the benefits of using Istio in OpenG2P setup?**&#x20;
