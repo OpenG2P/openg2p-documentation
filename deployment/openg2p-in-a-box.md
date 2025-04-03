@@ -8,7 +8,7 @@ This document describes a deployment model wherein the infrastructure and compon
 
 ## Deployment architecture
 
-{% embed url="https://miro.com/app/board/uXjVKEY_ZNk=/?share_link_id=892398727661" %}
+{% embed url="https://miro.com/app/board/uXjVKEY_ZNk=/?embedAutoplay=true&share_link_id=129465054105" %}
 
 {% hint style="danger" %}
 Do NOT use this deployment model for production/pilots.
