@@ -7,7 +7,6 @@ description: Data Share
 Data sharing across systems is a foundational pillar of any robust digital public infrastructure (DPI). An effective data sharing mechanism typically includes these key capabilities:
 
 * Precise sharing of only the relevant and requested data segments
-* Consent
 * Enforceable data access policies that govern both the data and its consumers
 * Strong authentication and authorization controls
 * Multiple data sharing channels such as events, APIs, and file transfers
