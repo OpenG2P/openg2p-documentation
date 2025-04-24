@@ -28,7 +28,7 @@ sudo apt upgrade -y
 #### 2. Install dependencies
 
 ```bash
-sudo apt install -y python3-pip python3-dev build-essential
+sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 ```
 
 3\. Install and configure PostgreSQL
