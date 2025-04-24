@@ -38,8 +38,10 @@ sudo apt install -y python3-pip python3-dev build-essential
     ```bash
     sudo apt install -y postgresql
     sudo su - postgres
+    psql 
     CREATE ROLE bridgeuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD 'password';
     CREATE DATABASE bridgedb WITH OWNER = bridgeuser CONNECTION LIMIT = -1;
+    exit
     exit
     ```
 
