@@ -66,6 +66,7 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    limit_req_zone $binary_remote_addr zone=explore:10m rate=100r/s;
     ```
 
     Add the following headers under **SSL settings** on nginx.conf.
@@ -97,22 +98,16 @@ On AWS EC2, the number of network interfaces that can be created is limited depe
 
 * Once nginx server is installed, it will create `sites-enabled` and `sites-available` directories inside /etc/nginx directory.
 * Navigate to `/etc/nginx/sites-available` directory and create a file called `<sandbox name>.conf` (Example: `prod-openg2p.conf`) by using [kubernetes/nginx/sites.sample.conf ](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf)file as a template.
-*   Set `session_id` under location block in each server conf file.
+* Set `session_id` ,`rate limiting` directive's under location block in each server conf file if needed.
 
-    ```bash
-    proxy_cookie_flags session_id samesite=lax secure;
-    ```
-*   Set rate limiting for each server by adding below directive's.
-
-    ```bash
-    http {
-        limit_req_zone $binary_remote_addr zone=<env name>:10m rate=100r/s;
-        server {
-            location / {
-                limit_req zone=<env name>;
-                ...
-    }
-    ```
+```bash
+{
+        location / {
+            limit_req           zone=<sandbox_name>;
+            proxy_cookie_flags  session_id samesite=lax secure;
+            ...
+}
+```
 
 {% hint style="info" %}
 Creation of the `<sandbox name>.conf` file applies only to one server in the nginx node. Repeat this section for every server to be added.
