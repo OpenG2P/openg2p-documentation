@@ -67,6 +67,7 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     limit_req_zone $binary_remote_addr zone=explore:10m rate=100r/s;
+    add_header X-Content-Type-Options "nosniff" always;
     ```
 
     Add the following headers under **SSL settings** on nginx.conf.

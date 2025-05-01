@@ -31,11 +31,7 @@ Before you deploy, make sure the following are available:
 6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under _Preferences_ under _Helm Charts_.
 7. Navigate to _Apps->Charts_ page on Rancher. You should see "OpenG2P Social Registry" Helm charts listed.
 
-<div align="left">
-
-<figure><img src="../../.gitbook/assets/social-registry-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure>
-
-</div>
+<div align="left"><figure><img src="../../.gitbook/assets/social-registry-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
 7. Click on "Part 1" Helm chart, select the version to be installed, and click _Install_.
 8. On the next screen, choose a name for installation, like `social-registry`. Select the checkbox _Customise Helm options before install_, and click _Next_.
@@ -60,11 +56,7 @@ image:
 14. Repeat steps 9 & 10.&#x20;
 15. Wait for all pods to get into _Running_ state. This may take several minutes.
 
-<div align="center">
-
-<figure><img src="../../.gitbook/assets/pod-running.png" alt="" width="147"><figcaption></figcaption></figure>
-
-</div>
+<div align="center"><figure><img src="../../.gitbook/assets/pod-running.png" alt="" width="147"><figcaption></figcaption></figure></div>
 
 ## Installation using the command line
 
@@ -78,7 +70,7 @@ image:
 
 #### Assigning roles to users
 
-Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admin/#con-client-roles\_server\_administration\_guide) for the following components and assign them to users:
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users:
 
 <table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for logging</td><td><code>admin</code></td></tr><tr><td>OpenSearch Dashboards for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a> </td><td> <code>admin</code></td></tr><tr><td>Kafka UI for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a></td><td><code>Admin</code></td></tr><tr><td>Apache Superset</td><td><code>Admin</code></td></tr><tr><td>Minio Console</td><td> <code>consoleAdmin</code></td></tr></tbody></table>
 
@@ -89,3 +81,4 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admi
 ### Odoo
 
 * Follow with [Odoo post-install guide](../../deployment/deployment-guide/odoo-post-install-configuration.md) to activate Odoo modules.
+* If you want to add content
