@@ -26,7 +26,7 @@
         * [📔 Configure ID Deduplication, Deduplicate, and Save Duplicate Groups/Individuals](social-registry/features/deduplication/user-guides/configure-id-deduplication-deduplicate-and-save-duplicate-groups-individuals.md)
       * [Deduplicator Service](social-registry/features/deduplication/deduplicator-service.md)
     * [Locking of Records](social-registry/features/locking-of-records.md)
-    * [Dynamic Registry](social-registry/features/registry-update-mechanisms.md)
+    * [Dynamic Registry](social-registry/features/dynamic-registry.md)
     * [Document Storage](social-registry/features/document-storage.md)
     * [Configurability](social-registry/features/configurability/README.md)
       * [📔 User Guide](social-registry/features/configurability/user-guide/README.md)

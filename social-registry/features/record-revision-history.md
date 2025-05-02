@@ -33,7 +33,7 @@ Revision History is not the same as [Audit Logs](audit-log.md) or [System Log](.
 
 ## User stories
 
-* Update a record in the Social Registry via any [update mechanism](registry-update-mechanisms.md), say through the UI (odoo-based), or the APIs, etc.
+* Update a record in the Social Registry via any [update mechanism](dynamic-registry.md), say through the UI (odoo-based), or the APIs, etc.
 * Check that the changes are reflected on OpenSearch with appropriate timestamp (TODO: elaborate.)
 
 ## Other Approaches
@@ -46,7 +46,7 @@ Revision History is not the same as [Audit Logs](audit-log.md) or [System Log](.
   * This also makes it very difficult to query the changes or look at a version of a record at a particular point in time.
   * Very difficult to generate reports.
   * Changes are only captured when updates are made through Odoo, but not captured when there are direct DB changes.
-* Smile-SA offers a module called [Audit Trail](https://github.com/Smile-SA/odoo\_addons/tree/16.0/smile\_audit) (LGPL-3 License).
+* Smile-SA offers a module called [Audit Trail](https://github.com/Smile-SA/odoo_addons/tree/16.0/smile_audit) (LGPL-3 License).
   * This allows capturing changes to any Odoo table based on configured rules.
   * All changes to a particular record can viewed on Odoo by opening the "Revision History" under the record.
   * It also allows for capturing the User who performed the changes.

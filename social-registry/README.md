@@ -36,7 +36,7 @@ Some of the key features offered by OpenG2P's Social Registry are as follows:
 * [Ability to **share data** with other systems via standard interfaces.](features/data-share.md)
 * [**Privacy** controls on the data](features/privacy-and-security.md).
 * [Packaged for **rapid deployment**](features/rapid-deployment-framework.md)
-* [**Dynamic registry**: multiple update mechanisms](features/registry-update-mechanisms.md).
+* [**Dynamic registry**: multiple update mechanisms](features/dynamic-registry.md).
 * [Automatic computation of scores like **PMT**](features/score-computation.md)**.**
 * Easy user interface for administration
 * [Deduplication support](features/deduplication/).
