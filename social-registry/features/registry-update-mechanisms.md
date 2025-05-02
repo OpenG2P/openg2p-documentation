@@ -18,10 +18,10 @@ Many government departments maintain registries built through surveys and data c
 
 With a suite of powerful update mechanisms, the Dynamic Registry enables:
 
-* Seamless integration and automatic data synchronisation from other departments, registries, and sources via APIs
-* Beneficiaries to easily update their information through intuitive self-service portals and mobile apps
-* Reliable offline data collection and updates in low-connectivity areas using field agents and mobile devices, with automatic uploads when connectivity is restored
-* Agent-assisted online registration and updates for those needing in-person support
+* Seamless integration and automatic data synchronisation from other departments, registries, and sources via **APIs**
+* Beneficiaries to easily update their information through intuitive **self-service portals** and mobile apps
+* Reliable **offline data collection** and updates in low-connectivity areas using field agents and mobile devices, with automatic uploads when connectivity is restored
+* **Agent-assisted** online registration and updates for those needing in-person support
 * Direct data updates by administrators, complete with a secure audit trail for full transparency
 
 This comprehensive approach dramatically reduces errors and ensures your welfare programs reach the right people, every time. With OpenG2P’s Dynamic Registry, you gain a future-ready, flexible, and robust solution to keep your beneficiary data accurate and actionable—empowering more effective and inclusive social protection programs
