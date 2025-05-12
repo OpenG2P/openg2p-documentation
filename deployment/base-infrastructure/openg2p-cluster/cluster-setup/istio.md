@@ -27,8 +27,7 @@ Currently, we use the [Ingressgateway](https://istio.io/latest/docs/tasks/traffi
 *   From [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, run;
 
     ```bash
-    istioctl operator init
-    kubectl apply -f istio-operator.yaml
+    istioctl install -f istio-operator.yaml
     ```
 
     * Wait for `istiod` and `ingressgateway` pods to start.

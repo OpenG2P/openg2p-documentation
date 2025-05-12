@@ -49,7 +49,7 @@ For high availability and resilience of this cluster, read the [production guide
 
     ```bash
     RANCHER_HOSTNAME=rancher.openg2p.org \
-        ./install.sh
+        ./install.sh --version 2.9.3
     ```
 * Login to Rancher using the above hostname and bootstrap the admin user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.
 

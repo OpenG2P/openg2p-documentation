@@ -81,4 +81,3 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin
 ### Odoo
 
 * Follow with [Odoo post-install guide](../../deployment/deployment-guide/odoo-post-install-configuration.md) to activate Odoo modules.
-* If you want to add content
