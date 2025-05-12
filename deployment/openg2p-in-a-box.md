@@ -8,7 +8,7 @@ This document describes a deployment model wherein the infrastructure and compon
 
 ## Deployment architecture
 
-{% embed url="https://miro.com/app/board/uXjVKEY_ZNk=/?embedAutoplay=true&share_link_id=129465054105" %}
+<figure><img src="../.gitbook/assets/openg2p-in-a-box.jpg" alt=""><figcaption><p>OpenG2P In a Box</p></figcaption></figure>
 
 {% hint style="danger" %}
 Do NOT use this deployment model for production/pilots.
