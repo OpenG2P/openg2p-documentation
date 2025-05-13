@@ -215,6 +215,7 @@
       * [Logging](pbms/functionality/monitoring-and-reporting/logging.md)
     * [Priority List](pbms/functionality/priority-list.md)
     * [Offline Capabilities](pbms/functionality/offline-capabilities.md)
+    * [Grievance Redress Mechanism](pbms/functionality/grievance-redress-mechanism.md)
   * [Versions](pbms/versions.md)
   * [Developer Zone](pbms/developer-zone/README.md)
     * [Odoo Modules](pbms/developer-zone/odoo-modules/README.md)
