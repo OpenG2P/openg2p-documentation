@@ -17,15 +17,15 @@ While various approaches can achieve these goals, OpenG2P has integrated with [I
 
 ## Conceptual overview
 
-{% embed url="https://miro.com/app/board/uXjVIE8imj8=/" %}
+<figure><img src="../.gitbook/assets/OpenG2P-IUDX Conceptual Overview.jpg" alt=""><figcaption><p>OpenG2P-IUDX Conceptual Overview</p></figcaption></figure>
 
 ### Data sharing hierarchy
 
-<figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption><p>OpenG2P-IUDX Data Sharing Hierachy</p></figcaption></figure>
 
 ## Demo setup
 
-{% embed url="https://miro.com/app/board/uXjVIDngMAk=/" %}
+<figure><img src="../.gitbook/assets/OpenG2P-IUDX Demo Setup.jpg" alt=""><figcaption><p>OpenG2P-IUDX Demo Setup</p></figcaption></figure>
 
 ## Configuration and customization
 
@@ -64,8 +64,8 @@ The UI is not open source. It's deployed by IUDX.
 
 ## Developer guide
 
-* [Social Registry Connector](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1370/social-registry/developer-zone/odoo-modules/g2p-registry-datashare-rabbitmq)
-* [PBMS Connector](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1370/pbms/developer-zone/odoo-modules/g2p-program-datashare-rabbitmq)
+* [Social Registry Connector](https://docs.openg2p.org/social-registry/developer-zone/odoo-modules/g2p-registry-datashare-rabbitmq)
+* [PBMS Connector](https://docs.openg2p.org/pbms/developer-zone/odoo-modules/g2p-program-datashare-rabbitmq)
 
 ## Source code
 
