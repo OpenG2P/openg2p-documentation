@@ -4,7 +4,7 @@ description: Getting started with OpenG2P
 
 # OpenG2P In a Box
 
-This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a single node/VM/machine.  This will help you to get started with OpenG2P and experience the functionality without having to meet all r[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same.  The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
+This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a single node/VM/machine.  This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same.  The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
 
 ## Deployment architecture
 
@@ -20,7 +20,7 @@ Do NOT use this deployment model for production/pilots.
 
 *   Take Machine with the following configuration.
 
-    <table><thead><tr><th width="186">Purpose</th><th width="209">Compute/Memory/Storage</th><th>Note</th></tr></thead><tbody><tr><td>Wireguard Bastion / NFS Server / Rancher Cluster / OpenG2P Cluster / Nginx Server</td><td><p>16vCPU / 64 GB RAM /</p><p>256 GB storage /<br>OS:Ubuntu 22.04</p></td><td>All the components mentioned will be installed on a single node.</td></tr></tbody></table>
+    <table><thead><tr><th width="186">Purpose</th><th width="209">Compute/Memory/Storage</th><th>Note</th></tr></thead><tbody><tr><td>Wireguard Bastion / NFS Server / Rancher Cluster / OpenG2P Cluster / Nginx Server</td><td><p>16vCPU / 64 GB RAM /</p><p>256 GB storage / OS:Ubuntu 22.04</p></td><td>All the components mentioned will be installed on a single node.</td></tr></tbody></table>
 * Before proceeding with the deployment, review the following topics to better understand each infrastructure component required for a successful setup:
   1. 🔒 **Firewall Rules**: Review basic firewall concepts and how to configure rules to allow traffic to and from required services.\
      [Read about Firewall Rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)
@@ -55,19 +55,20 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
     <mark style="color:green;">Run the following commands and verify that each returns the version information:</mark>
 
-    <pre><code><strong>wget --version
-    </strong><strong>curl --version
-    </strong>kubectl version --client
+    ```
+    wget --version
+    curl --version
+    kubectl version --client
     istioctl version
     helm version
     jq --version
-    </code></pre>
+    ```
 
     ✅ <mark style="color:green;">You should see version details for each tool without any errors.</mark>
 2. Follow the document linked below to set up the **firewall rules** required for the deployment.\
    🔒[Set up Firewall rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)\
    **Note:** Make sure to include K8s Firewall, NFS Firewall, Wireguard Firewall, and LB Firewall.\
-   🔍 Verification Checkpoint:\
+   🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
    <mark style="color:green;">Run</mark> <mark style="color:green;"></mark><mark style="color:green;">`iptables -L`</mark> <mark style="color:green;"></mark><mark style="color:green;">or</mark> <mark style="color:green;"></mark><mark style="color:green;">`ufw status`</mark> <mark style="color:green;"></mark><mark style="color:green;">to ensure the rules are active in case you're using on-premises or self-managed native server nodes. If you're deploying on AWS cloud infrastructure, verify or configure the necessary firewall rules within the</mark> <mark style="color:green;"></mark><mark style="color:green;">**Security Groups**</mark> <mark style="color:green;"></mark><mark style="color:green;">associated with your instances.</mark>
 3. Follow the below steps to Setup **Kubernetes Cluster** (RKE2 Server) as a **root user**.
    1. Create the rke2 config directory - `mkdir -p /etc/rancher/rke2`
@@ -91,8 +92,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        ```
 
        **Note**:Download the Kubeconfig file `rke2.yaml` and keep it securely.\
-       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Run the below command to check the status of rke2 server shown in the screenshot below.</mark>\
-       <mark style="color:green;">`sudo systemctl status rke2-server`</mark>&#x20;
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Run the below command to check the status of rke2 server shown in the screenshot below.</mark>&#x20;
 
        <figure><img src="../.gitbook/assets/image (34).png" alt=""><figcaption></figcaption></figure>
 4. Install **Wireguard** Bastion servers for secure VPN access:
@@ -114,7 +114,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        kubectl -n wireguard-system logs -f wireguard-app-users
        ```
    4. Once it finishes, navigate to `/etc/wireguard-app-users`. You will find multiple peer configuration files and cd in to `peer1` folder and copy `peer1.conf`  to your notepad.
-   5.  Follow the document provided below to setup a WireGuard on your local system.\
+   5.  Follow the link provided below to setup a WireGuard on your local system.\
        [Install WireGuard Client on Desktop](base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)\
        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard server is running and the setup is completed on your local machine. You can refer to the screenshots below for guidance.</mark>\ <mark style="color:green;">On server node:</mark>
 
@@ -124,66 +124,163 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 
        <figure><img src="../.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure>
    6. Once WireGuard is running and setup on your local machine, you can easily set up kubectl locally and access the cluster from your machine. (Optional)
-5. Install [NFS Server](base-infrastructure/nfs-server.md#installation).
-6. Install [Kubernetes NFS CSI Driver](base-infrastructure/openg2p-cluster/cluster-setup/#nfs-client-provisioner).
-7.  Istio: Setup; from [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, run the following:
+5. Install NFS Server to provide **persistent storage volumes** to Kubernetes Cluster:
+   1.  Download/copy the install script from the link provided below into the server machine.\
+       [NFS Installation script ](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installat)
+
+       To install an NFS server, run the following command as root user:
+
+       ```bash
+       ./install-nfs-server.sh
+       ```
+   2.  For every sandbox/namespace, create a new folder in `/srv/nfs` folder on the server node. Suggested folder structure: `/srv/nfs/<cluster name>`. \
+       **Example:**
+
+       ```
+       sudo mkdir /srv/nfs/rancher
+       sudo mkdir /srv/nfs/openg2p
+       ```
+
+       Run this command to provide full accces for nfs folder `sudo chmod -R 777 /srv/nfs` \
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+       <mark style="color:green;">Make sure the NFS server is running and the setup is completed on your local machine. You can refer to the screenshots below for guidance.</mark>
+
+       <figure><img src="../.gitbook/assets/image (35).png" alt=""><figcaption></figcaption></figure>
+6. Install the Kubernetes **NFS CSI driver** and the **NFS client provisioner** on the cluster as follows:
+   1. Clone [https://github.com/OpenG2P/openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment).
+   2.  From [kubernetes/nfs-client](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nfs-client) directory, **run**: (Make sure to replace the `<Node Internal IP>` and `<cluster name>` parameters appropriately below)
+
+       ```
+       NFS_SERVER=<Node Internal IP> \
+       NFS_PATH=/srv/nfs/<cluster_name> \
+           ./install-nfs-csi-driver.sh
+       ```
+
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+       <mark style="color:green;">Make sure the NFS CSI driver and client provisioner is running and the setup is completed on your local machine. You can refer to the screenshots below for guidance.</mark>
+
+       <figure><img src="../.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure>
+7.  To set up **Istio** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided commands to install the **Istio Operator**, **Istio Service Mesh**, and **Istio Ingress Gateway** components.\
+    Install Istio from [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory:
 
     ```bash
-    istioctl operator init
-    kubectl apply -f istio-operator-no-external-lb.yaml
+    istioctl install -f istio-operator-no-external-lb.yaml
     kubectl apply -f istio-ef-spdy-upgrade.yaml
     ```
-8. Set up TLS using the following:
-   *   Create [SSL Certificate using Letsencrypt](deployment-guide/ssl-certificates-using-letsencrypt.md) for Rancher (Edit hostname below):
+
+    Wait for `istiod` and `ingressgateway` pods to start on **istio-system** namespace.\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Check whether all the Istio pods have come up; refer to the screenshot below.</mark>
+
+    <figure><img src="../.gitbook/assets/image (37).png" alt=""><figcaption></figcaption></figure>
+8. Set up Transport Layer Security (TLS) for secure communication by following the steps outlined below. This will ensure that data transmitted between services is encrypted and protected from unauthorized access:
+   1.  Install **letsencrypt** and **certbot** using below command:
+
+       ```
+       sudo apt install certbot
+       ```
+   2.  Since the preferred challenge is DNS type, the below command asks for `_acme-challenge.` Create the `_acme-challenge` **TXT** DNS record accordingly using a Public DNS Provider **(e.g., AWS Route 53, Cloudflare, GoDaddy)**, and continue with the prompt to generate certs.
+
+       <figure><img src="../.gitbook/assets/image (44).png" alt=""><figcaption></figcaption></figure>
+   3.  Create SSL Certificate using Letsencrypt for **Rancher** by editing **hostname** below:
 
        ```bash
        certbot certonly --agree-tos --manual \
            --preferred-challenges=dns \
            -d rancher.your.org
        ```
-   *   Create Rancher TLS Secret (Edit certificate paths below):
+
+       Create **Rancher TLS Secret** using below command (Edit **certificate paths** below):
 
        ```bash
        kubectl -n istio-system create secret tls tls-rancher-ingress \
            --cert /etc/letsencrypt/live/rancher.your.org/fullchain.pem \
            --key /etc/letsencrypt/live/rancher.your.org/privkey.pem
        ```
-   *   Create [SSL Certificate using Letsencrypt](deployment-guide/ssl-certificates-using-letsencrypt.md) for Keycloak (Edit hostname below):
+   4.  Create SSL Certificate using Letsencrypt for **Keycloak** by editing **hostname** below:
 
        ```bash
        certbot certonly --agree-tos --manual \
            --preferred-challenges=dns \
            -d keycloak.your.org
        ```
-   *   Create Keycloak TLS Secret, using (Edit certificate paths below):
+
+       Create **Keycloak TLS** **Secret**, using (Edit **certificate paths** below):
 
        ```bash
        kubectl -n istio-system create secret tls tls-keycloak-ingress \
            --cert /etc/letsencrypt/live/keycloak.your.org/fullchain.pem \
            --key /etc/letsencrypt/live/keycloak.your.org/privkey.pem
        ```
-9. Set up DNS for Rancher and Keycloak hostnames to point to the IP of the node.
-10. Rancher Install; from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) directory, run the following (Edit hostname below):
+
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+       <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory and have been uploaded to the istio-system namespace as a Kubernetes secret. Refer the screenshot below. and use this command to check the secrets.</mark>
+
+       ```
+       kubectl get secrets -n istio-system
+       ```
+
+       <figure><img src="../.gitbook/assets/image (40).png" alt=""><figcaption></figcaption></figure>
+9. Set up **DNS** **records** for the Rancher and Keycloak hostnames so that they resolve to the public (or private, depending on your setup) IP address of the node where the services are exposed. This can be achieved in the following way:
+   1.  Using a Public DNS Provider **(e.g., AWS Route 53, Cloudflare, GoDaddy)**:
+
+       Create A records (or CNAMEs, if appropriate) for the fully qualified domain names (FQDNs) you plan to use for Rancher and Keycloak (e.g., rancher.example.com and keycloak.example.com).
+
+       Point these records to the Internal IP address of node.\
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+       <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the screenshot.</mark>
+
+       <figure><img src="../.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
+10. To Install **rancher** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided command to install the rancher (Edit **hostname** below):\
+    Install rancher from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) directory:
 
     ```bash
     RANCHER_HOSTNAME=rancher.your.org \
     TLS=true \
-        ./install.sh --set replicas=1
+    ./install.sh --set replicas=1 --version 2.9.3
     ```
 
-    * Login to Rancher using the above hostname and bootstrap the `admin` user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.
-11. Keycloak Install; from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak) directory, run the following (Edit hostname below):
+    Login to Rancher using the above hostname and bootstrap the `admin` user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Use the command below to verify that all Rancher pods are running properly in the cattle-system namespace, and ensure that Rancher is accessible from your browser. Refer the screenshot.</mark>
+
+    <figure><img src="../.gitbook/assets/image (46).png" alt=""><figcaption></figcaption></figure>
+
+    <figure><img src="../.gitbook/assets/image (47).png" alt=""><figcaption></figcaption></figure>
+11. To Install **keycloak** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided command to install the rancher (Edit **hostname** below):\
+    Install rancher from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak) directory:
 
     ```bash
     KEYCLOAK_HOSTNAME=keycloak.your.org \
     TLS=true \
-        ./install.sh --set replicaCount=1
+    ./install.sh --set replicaCount=1
     ```
-12. [Integrate Rancher & Keycloak](base-infrastructure/rancher.md#rancher-keycloak-integration).
-13. Continue to use the same cluster (`local` cluster) for OpenG2P Modules also.
-    * In Rancher, create a Project and Namespace, on which the OpenG2P modules will be installed. The rest of this guide will assume the Namespace to be `dev` .
-    * In Rancher -> Namespaces menu, enable "Istio Auto Injection" for `dev` namespace.
-14. Follow [Istio Namespace setup](base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup):
+
+    Log in to Keycloak using the configured hostname, and retrieve the admin user credentials from the Rancher UI by checking the Kubernetes secrets in the keycloak namespace.\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Use the command below to verify that all keycloak pods are running properly in the keycloak-system namespace, and ensure that keycloak is accessible from your browser. Refer the screenshot.</mark>
+
+    <figure><img src="../.gitbook/assets/image (48).png" alt=""><figcaption></figcaption></figure>
+
+    <figure><img src="../.gitbook/assets/image (49).png" alt=""><figcaption></figcaption></figure>
+12. Integrate **Rancher** with **Keycloak** for Centralized Authentication.\
+    Integrating Rancher with Keycloak allows you to use Keycloak as an identity provider (IdP) for Rancher, enabling centralized authentication and user management. This is especially useful in environments where single sign-on (SSO) and role-based access control (RBAC) are required across multiple services. Refer the link provide below to do the same.\
+    [Steps to Integrate Rancher with Keycloak](https://docs.openg2p.org/deployment/base-infrastructure/rancher)\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Once you attempt to log in using rancher.hostname.org, you will be redirected to authenticate via Keycloak. Log in using your Keycloak credentials. In Rancher, your user status should appear as "Active," as shown in the screenshot.</mark>
+
+    <figure><img src="../.gitbook/assets/image (50).png" alt=""><figcaption></figcaption></figure>
+
+    **Note:** So, this completes the base infrastructure setup for OpenG2P, and you can now begin installing the **OpenG2P applications** by following the steps below.
+13. Now, continue to use the same cluster (`local` cluster) for **OpenG2P** Modules installation also.
+    1. In Rancher, create a Project and Namespace, on which the OpenG2P modules will be installed. **The rest of this guide will assume the namespace to be `dev`**.
+    2.  In Rancher -> Namespaces menu, enable **Istio Auto Injection** for `dev` namespace.\
+        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+        <mark style="color:green;">Refer to the screenshot below for the dev namespace under the dev project, and ensure that Istio injection is enabled.</mark>\
+
+
+        <figure><img src="../.gitbook/assets/image (51).png" alt=""><figcaption></figcaption></figure>
+14. Follow Istio Namespace setup and set up an Istio gateway on **dev** namespace for a domain.
     1.  Edit and run this to define the variables:
 
         ```
