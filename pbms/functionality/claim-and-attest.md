@@ -17,7 +17,7 @@ This helps maintain a balance between community-sourced data corrections and gov
 * **Claim**: A request raised by a user to change or add to the registry data.
 * **Attestation**: The official validation of a claim by an authorized attestor (usually a government official).
 * **Evidence**: Supporting documents or attachments uploaded with a claim to support its validity.
-* **Trust Level**: A qualitative marker assigned to a claim after attestation, indicating the reliability of the data.
+* **Trust level**: A qualitative marker assigned to a claim after attestation, indicating the reliability of the data.
 * **Re-attestation**: Revalidation of data that has a limited validity or expired trust window.
 * **Revocation**: The ability to retract or invalidate previously attested claims if they are found incorrect.
 * **Appeals**: Mechanism for claimants to challenge a rejected or revoked claim.
@@ -41,7 +41,7 @@ A claim typically progresses through the following stages:
 
 1. **Draft** – Initial stage where the claim is being prepared.
 2. **Submitted** – Claim is submitted for review.
-3. **Under Review** – Claim is picked up by an attestor or routed automatically.
+3. **Under review** – Claim is picked up by an attestor or routed automatically.
 4. **Approved** – Claim is validated and applied to the registry.
 5. **Rejected** – Claim is invalidated due to insufficient evidence, incorrect data, or policy violations.
 6. **Expired** – Claims with time-bound trust levels may require re-attestation after expiry.
@@ -51,29 +51,29 @@ A claim typically progresses through the following stages:
 
 ### 4. Supported Features
 
-#### Evidence Attachment Support
+#### Evidence attachment support
 
 Users can upload documents, photos, or scanned IDs to support their claim. This may be mandatory or optional based on the claim type.
 
-#### Trust Level Assignment (without scoring)
+#### Trust level assignment&#x20;
 
 After attestation, a trust level like _Low_, _Medium_, or _High_ can be assigned to the claim to reflect its credibility.
 
-#### Claim Expiry and Re-Attestation
+#### Claim expiry and re-attestation
 
 Some claims may have expiry durations (e.g., temporary disability status). These claims must be re-attested after their validity period ends.
 
-#### Appeals and Feedback Workflow
+#### Appeals and feedback workflow
 
 Claimants can raise an appeal or submit feedback on a rejected claim. The appeal goes through a secondary review process.
 
-#### Claim Revocation Registry
+#### Claim revocation registry
 
 All revoked claims are stored in a separate registry for audit and governance purposes. The reason for revocation and who performed the action is logged.
 
 ***
 
-### 5. Permissions and Access Control
+### 5. Permissions and access control
 
 Permissions are defined per role. Key access controls include:
 
@@ -83,18 +83,18 @@ Permissions are defined per role. Key access controls include:
 
 ***
 
-### 6. Configurations and Extensions
+### 6. Configurations and extensions
 
-* **Claim Types**: Configurable per registry entity (individual, household, etc.) with optional fields for attachments and expected verification steps.
-* **Trust Levels**: Configured as labels (e.g., "Community Verified", "Digitally Verified") and do not use numerical scoring.
-* **Claim Expiry Durations**: Defined per claim type (e.g., 180 days).
-* **Re-Attestation Rules**: Allow automatic alerts or assignment after expiry.
-* **Appeals Workflow**: Optional and can be enabled per deployment.
-* **Audit Logs**: Maintained for each claim and its transitions.
+* **Claim types**: Configurable per registry entity (individual, household, etc.) with optional fields for attachments and expected verification steps.
+* **Trust levels**: Configured as labels (e.g., "Community Verified", "Digitally Verified") and do not use numerical scoring.
+* **Claim expiry durations**: Defined per claim type (e.g., 180 days).
+* **Re-attestation rules**: Allow automatic alerts or assignment after expiry.
+* **Appeals workflow**: Optional and can be enabled per deployment.
+* **Audit logs**: Maintained for each claim and its transitions.
 
 ***
 
-### 7. Integration with Registry
+### 7. Integration with registry
 
 Approved claims trigger updates to the Social Registry models (`individual`, `household`, etc.) based on configured mappings. All claims are logged with references to:
 
@@ -107,11 +107,3 @@ Rejections and revocations are non-destructive to registry data, but are logged 
 
 ***
 
-### Next Steps
-
-Let us know if you would like:
-
-* A visual diagram of the Claim Lifecycle
-* A breakdown into separate documentation pages (e.g., Claims, Attestation, Appeals)
-* Admin/config UI screenshots or mockups
-* API interface documentation for Claim submission and approval

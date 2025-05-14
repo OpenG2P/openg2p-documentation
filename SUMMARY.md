@@ -69,7 +69,7 @@
     * [Rapid Deployment Framework](social-registry/features/rapid-deployment-framework.md)
     * [Performance & Scale](social-registry/features/performance-and-scale.md)
     * [Draft and Publish](social-registry/features/draft-and-publish.md)
-    * [Claim and Attest](social-registry/features/claim-and-attest.md)
+    * [Claim and Attest](pbms/functionality/claim-and-attest.md)
   * [Versions](social-registry/versions.md)
   * [Deployment](social-registry/deployment/README.md)
     * [Domain names and Certificates](social-registry/deployment/domain-names-and-certificates.md)
