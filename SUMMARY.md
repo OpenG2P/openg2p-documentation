@@ -373,6 +373,7 @@
   * [Developer Zone](pbms-gen2/developer-zone/README.md)
     * [Design](pbms-gen2/developer-zone/design/README.md)
       * [Concept](pbms-gen2/developer-zone/design/concept.md)
+      * [PBMS (Odoo)](pbms-gen2/developer-zone/design/pbms-odoo.md)
 * [Utilities and Tools](utilities-and-tools/README.md)
   * [ODK](utilities-and-tools/odk-collection-app.md)
     * [📔 User Guides](utilities-and-tools/odk-collection-app/user-guides/README.md)
