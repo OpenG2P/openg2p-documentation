@@ -31,25 +31,17 @@ Before you deploy, make sure the following are available:
 6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on _**Include Prerelease Versions**_ under _**Preferences**_ below the _**Helm Charts**_.
 7. Navigate to **Apps->Charts** page on Rancher. You can find the _**OpenG2P PBMS**_ is listed in the dashboard.
 
-<div align="left">
+<div align="left"><figure><img src="../../.gitbook/assets/pbms-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
-<figure><img src="../../.gitbook/assets/pbms-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure>
-
-</div>
-
-7. Click the _**Part 1**_ Helm chart, select the version you want to install, and click on _**Install**_.
-8. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then click on _**Next**_.
-9.  Navigate to each app's configuration page, and configure the following:
-
+7. You can ignore "**Part 1**" as it refers to an older version of the Helm chart, and proceed directly to "**Part 2**" for the updated Helm chart instructions.
+8. Click on "**Part 2**" Helm chart, select the latest version to be installed, and click Install.
+9. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then click on _**Next**_.
+10. Navigate to each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `pbms.dev.openg2p.org` and `odk-pbms.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
     2. Your organization-wide Keycloak URL is _Keycloak Base Url_ . (Refer to [Keycloak installation](https://docs.openg2p.org/deployment/base-infrastructure/rancher#keycloak-installation)).
-    3. Create a Keycloak client.
-    4. Provide the OIDC Client details. Refer to [Keycloak Client Creation](https://docs.openg2p.org/deployment/deployment-guide/keycloak-client-creation) guide.
-    5. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
-    6. Navigate back to _**Apps->Charts**_ page on Rancher. Choose _**Part 2**_ Helm chart. Select the same version as for _**Part 1**_, and click on _**Install**_.
-    7. On the next screen, give the same installation name as for _**Part 1**_ but with suffix `-p2` , like `pbms-p2`. Select the same namespace as _**Part 1**_. Check the option _**Customise Helm**_ before the installation, and click on _**Next**_.
-    8. Follow the step 9 for other application installation.
-    9. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
+    3. OIDC Client details are asked. Create Keycloak client, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.&#x20;
+11. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
+12. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
 
     <img src="https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2F3034178245-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJZcdob2emEcLMvLyIxqT%252Fuploads%252F4hoWPrmmdc5vJdS02WWz%252Fpod-running.png%3Falt%3Dmedia%26token%3Df5dc7bd5-671a-4c39-b861-d865bd258884&#x26;width=768&#x26;dpr=4&#x26;quality=100&#x26;sign=8d13255d&#x26;sv=1" alt="" data-size="original">
 
@@ -65,7 +57,7 @@ Before you deploy, make sure the following are available:
 
 **Assigning roles to users**
 
-Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admin/#con-client-roles\_server\_administration\_guide) for the following components and assign them to users.
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users.
 
 | Component                           | Role name      |
 | ----------------------------------- | -------------- |

@@ -221,16 +221,17 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        ```
 
        <figure><img src="../.gitbook/assets/image (40).png" alt=""><figcaption></figcaption></figure>
-9. Set up **DNS** **records** for the Rancher and Keycloak hostnames so that they resolve to the public (or private, depending on your setup) IP address of the node where the services are exposed. This can be achieved in the following way:
-   1.  Using a Public DNS Provider **(e.g., AWS Route 53, Cloudflare, GoDaddy)**:
+9.  Set up **DNS** **records** for the Rancher and Keycloak hostnames so that they resolve to the public (or private, depending on your setup) IP address of the node where the services are exposed. This can be achieved in the following way:
 
-       Create A records (or CNAMEs, if appropriate) for the fully qualified domain names (FQDNs) you plan to use for Rancher and Keycloak (e.g., rancher.example.com and keycloak.example.com).
+    Using a Public DNS Provider **(e.g., AWS Route 53, Cloudflare, GoDaddy)**:
 
-       Point these records to the Internal IP address of node.\
-       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-       <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the screenshot.</mark>
+    Create A records (or CNAMEs, if appropriate) for the fully qualified domain names (FQDNs) you plan to use for Rancher and Keycloak (e.g., rancher.example.com and keycloak.example.com).
 
-       <figure><img src="../.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
+    Point these records to the Internal IP address of node.\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the screenshot.</mark>
+
+    <figure><img src="../.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
 10. To Install **rancher** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided command to install the rancher (Edit **hostname** below):\
     Install rancher from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) directory:
 
@@ -276,24 +277,23 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     1. In Rancher, create a Project and Namespace, on which the OpenG2P modules will be installed. **The rest of this guide will assume the namespace to be `dev`**.
     2.  In Rancher -> Namespaces menu, enable **Istio Auto Injection** for `dev` namespace.\
         🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-        <mark style="color:green;">Refer to the screenshot below for the dev namespace under the dev project, and ensure that Istio injection is enabled.</mark>\
-
+        <mark style="color:green;">Refer to the screenshot below for the dev namespace under the dev project, and ensure that Istio injection is enabled.</mark>
 
         <figure><img src="../.gitbook/assets/image (51).png" alt=""><figcaption></figcaption></figure>
-14. Follow Istio Namespace setup and set up an Istio gateway on **dev** namespace for a domain.
-    1.  Edit and run this to define the variables:
+14. Set up an Istio gateway on **dev** namespace for a domain.
+    1.  Provide your **hostname** and run this to define the variables:
 
         ```
         export NS=dev
         export WILDCARD_HOSTNAME='*.dev.your.org'
         ```
-    2.  Run this apply gateways
+    2.  Go to [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory from **openg2p-deployment** repository and run this to apply gateway.
 
         ```bash
         kubectl create ns $NS
         envsubst < istio-gateway-tls.yaml | kubectl apply -f -
         ```
-    3.  Create [SSL Certificate using Letsencrypt](deployment-guide/ssl-certificates-using-letsencrypt.md) for the wildcard hostname used above. Example usage:
+    3.  Create **SSL Certificate** using **Letsencrypt** for the wildcard hostname used above. Example usage(provide your hostname):
 
         ```bash
         certbot certonly --agree-tos --manual \
@@ -301,19 +301,52 @@ To set up the **base infrastructure**, log in to the machine and install the fol
             -d dev.your.org \
             -d *.dev.your.org
         ```
-    4.  Add the certificate to K8s.
 
-        ```bash
+        Create OpenG2P TLS Secret, using (Edit certificate paths below):
+
+        ```
         kubectl -n istio-system create secret tls tls-openg2p-$NS-ingress \
             --cert=<certificate path> \
             --key=<certificate key path>
         ```
-15. Install [Prometheus and Monitoring](base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) from Rancher
-16. Install Logging and Fluentd. (TODO)
+    4.  You can follow **step 9** for DNS record setup.\
+        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+        <mark style="color:green;">Once you create the gateway, you should be able to see it under the Rancher UI in the Istio > Gateway section for the dev namespace. The SSL certificates will be stored in the /etc/letsencrypt/live directory. Refer to the screenshot below.</mark>
 
-### OpenG2P modules' installation
+        <figure><img src="../.gitbook/assets/image (53).png" alt=""><figcaption></figcaption></figure>
+15. Install Prometheus and enable cluster monitoring directly from the Rancher UI. Follow the link provided below to complete the deployment.\
+    Install [Prometheus and Monitoring](base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) on OpenG2P Cluster.\
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Once monitoring is installed in Rancher, navigate to the Monitoring section where you'll see options for Alertmanager and Grafana. You can click on these to access their respective dashboards.</mark>
 
-[Install OpenG2P modules via Rancher](../spar/deployment/#installation-using-rancher-ui). &#x20;
+    <figure><img src="../.gitbook/assets/image (55).png" alt=""><figcaption></figcaption></figure>
+16. Install **Logging** and **Fluentd** Installation.
+
+    Fluentd is used to collect and parse logs generated by applications within the Kubernetes cluster.
+
+    Only one Fluentd installation is required per Kubernetes cluster.
+
+    To install **Fluentd** using **Rancher UI**:
+
+    1. Navigate to **Apps** (or **Apps & Marketplace**) → **Charts**.
+    2. Search for and select the **Logging** chart.
+    3. Install it using the default values.
+    4. When prompted, select **Project: System** to ensure Fluentd runs in the appropriate system namespace.\
+       🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+       <mark style="color:green;">Once logging is installed, verify that all pods in the cattle-logging-system namespace are up and running, and ensure that logs are being collected for each service.</mark>
+
+### OpenG2P module's installation
+
+You can follow the below links to install **OpenG2P** modules via **Rancher UI**.
+
+1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module.
+2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module.
+3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module.
+4.  Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p). \
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+    <mark style="color:green;">Once you deploy any of the modules mentioned above, you can also deploy the OpenG2P Landing Page. All services should then be accessible from your web browser. Refer to the screenshot for reference.</mark>
+
+    <figure><img src="../.gitbook/assets/image (56).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 **How is "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**

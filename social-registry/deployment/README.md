@@ -25,36 +25,32 @@ Before you deploy, make sure the following are available:
 
 1. Log in to Rancher admin console.
 2. Select your cluster.
-3. Under _Apps -> Repositories_ click on _Create_ to add a repository.
-4. Provide _Name_ as "openg2p" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
+3. Under _**Apps -> Repositories**_ click on _Create_ to add a repository.
+4. Provide _Name_ as "**openg2p**" and target HTTPS _Index URL_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click _Create_.
 5. Select the namespace in which you would like to install Social Registry, from the namespace filter on the top-right.
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under _Preferences_ under _Helm Charts_.
-7. Navigate to _Apps->Charts_ page on Rancher. You should see "OpenG2P Social Registry" Helm charts listed.
+6. To display **prerelease versions** of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "**Include Prerelease Versions**" under _Preferences_ under _Helm Charts_.
+7. Navigate to _**Apps->Charts**_ page on Rancher. You should see "**OpenG2P Social Registry**" Helm charts listed.
 
 <div align="left"><figure><img src="../../.gitbook/assets/social-registry-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
-7. Click on "Part 1" Helm chart, select the version to be installed, and click _Install_.
-8. On the next screen, choose a name for installation, like `social-registry`. Select the checkbox _Customise Helm options before install_, and click _Next_.
-9. Go through each app's configuration page, and configure the following:
-   1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
-   2. _Keycloak Base Url_ is your organization-wide Keycloak URL.  (Refer to [Keycloak installation](../../deployment/base-infrastructure/rancher.md#keycloak-installation)).
-   3. Create a Keycloak client,&#x20;
-   4. &#x20;OIDC Client details are asked. Refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-   5. To change the docker image from the default image, click on _Edit YAML_ table and update the following section in Helm:
+7. You can ignore "**Part 1**" as it refers to an older version of the Helm chart, and proceed directly to "**Part** **2**" for the updated Helm chart instructions.
+8. Click on "**Part 2**" Helm chart, select the latest version to be installed, and click _Install_.
+9. On the next screen, choose a name for installation, like `social-registry`. Select the checkbox _**Customise Helm options** before install_, and click _Next_.
+10. Go through each app's configuration page, and configure the following:
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
+    2. _**Keycloak Base Url**_ is your organization-wide Keycloak URL.  (Refer to [Keycloak installation](../../deployment/base-infrastructure/rancher.md#keycloak-installation)).
+    3. OIDC Client details are asked. **Create Keycloak client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    4.  To change the docker image from the default image, click on _Edit YAML_ table and update the following section in Helm. This step is required only if you have separate docker image to be deployed or else you can go with default one _skip this step_.
 
-```yaml
-image:
-    pullPolicy: Always
-    repository: openg2p/openg2p-social-registry-odoo-package
-    tag: 17.0-develop-social-registry
-```
-
-10. To pull docker from a private repository on Docker Hub, follow guide [here](../../deployment/deployment-guide/pulling-docker-from-private-repository-on-docker-hub.md).
-11. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
-12. Navigate back to _Apps->Charts_ page on Rancher. Choose "Part 2" Helm chart. Select the same version as for "Part 1", and click _Install_.
-13. On the next screen, give the same installation name as for "Part 1" but with suffix `-p2` , like `social-registry-p2`. Select the same namespace as "Part 1". Select the checkbox _Customise Helm options before install_, and click _Next_.
-14. Repeat steps 9 & 10.&#x20;
-15. Wait for all pods to get into _Running_ state. This may take several minutes.
+        ```
+        image:
+            pullPolicy: Always
+            repository: openg2p/openg2p-social-registry-odoo-package
+            tag: 17.0-develop-social-registry
+        ```
+11. To pull docker from a private repository on Docker Hub, follow guide [here](../../deployment/deployment-guide/pulling-docker-from-private-repository-on-docker-hub.md). This step is required only if you have separate private docker image to be deployed or else you can go with default one _skip this step_.
+12. Click _Next_ to reach _Helm Options_ page. Disable `wait` flag. Click on _Install_.
+13. Wait for all pods to get into _**Running**_**&#x20;state**. This may take several minutes.
 
 <div align="center"><figure><img src="../../.gitbook/assets/pod-running.png" alt="" width="147"><figcaption></figcaption></figure></div>
 
