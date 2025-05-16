@@ -480,6 +480,7 @@
     * [Kubernetes Master Nodes](deployment/deployment-guide/kubernetes-master-nodes.md)
     * [Enabling Keycloak User Self-Registration](deployment/deployment-guide/enabling-keycloak-user-self-registration.md)
     * [Automating Cache Cleanup on K8s Cluster Nodes with Cron Job](deployment/deployment-guide/automating-cache-cleanup-on-k8s-cluster-nodes-with-cron-job.md)
+    * [Set Up Slack Alerts for a Standalone Node using Netdata](deployment/deployment-guide/set-up-slack-alerts-for-a-standalone-node-using-netdata.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [📒 Guides](guides/README.md)
