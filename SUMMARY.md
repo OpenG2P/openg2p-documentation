@@ -400,6 +400,7 @@
   * [Unified Conversation Agent (UCA)](utilities-and-tools/unified-conversation-agent-uca/README.md)
     * [Modal Context Protocol(MCP)](utilities-and-tools/unified-conversation-agent-uca/modal-context-protocol-mcp.md)
     * [Model Context Protocol (MCP) Implementation in UCA](utilities-and-tools/unified-conversation-agent-uca/model-context-protocol-mcp-implementation-in-uca.md)
+    * [Social Benefits Assistant with FastMCP](utilities-and-tools/unified-conversation-agent-uca/social-benefits-assistant-with-fastmcp.md)
 * [Testing](testing/README.md)
   * [Test Workflow](testing/test-workflow.md)
   * [Automation Framework](testing/automation-framework.md)
