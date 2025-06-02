@@ -2,10 +2,6 @@
 
 The following technologies and tools are used by PBMS.
 
-# Technology Stack
-
-The following technologies and tools are used by PBMS.
-
 | Technology      | Purpose                 | Version | License                                                           |
 | --------------- | ----------------------- | ------- | ----------------------------------------------------------------- |
 | Ubuntu Server   | Operating System        | 22.04   | Free                                                              |
