@@ -4,7 +4,7 @@ The following technologies and tools are used by PBMS.
 
 | Domain                  | Technology      | Version | License                                                           |
 | ----------------------- | --------------- | ------- | ----------------------------------------------------------------- |
-| Operating System        | Ubuntu Server   | 20.04   | Free                                                              |
+| Operating System        | Ubuntu Server   | 22.04   | Free                                                              |
 | Business Apps           | Odoo            | 17.0    | LGPL                                                              |
 | Development             | Python          | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
 | REST API                | FastAPI         |         | MIT                                                               |

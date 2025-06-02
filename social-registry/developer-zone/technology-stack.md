@@ -4,11 +4,9 @@ description: The following technologies and tools are used by Social Registry
 
 # Technology Stack
 
-## Technology Stack
-
 | Technology                                  | Purpose                 | Version | License                                                           |
 | ------------------------------------------- | ----------------------- | ------- | ----------------------------------------------------------------- |
-| Ubuntu Server                               | Operating System        | 20.04   | Free                                                              |
+| Ubuntu Server                               | Operating System        | 22.04   | Free                                                              |
 | Odoo                                        | Business Apps           | 17.0    | LGPL                                                              |
 | Python                                      | Development             | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
 | FastAPI                                     | REST API                |         | MIT                                                               |
