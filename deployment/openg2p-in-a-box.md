@@ -4,7 +4,7 @@ description: Getting started with OpenG2P
 
 # OpenG2P In a Box
 
-This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a single node/VM/machine.  This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same.  The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
+This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a **single node**/VM/machine.  This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same.  The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
 
 ## Deployment architecture
 
@@ -18,39 +18,45 @@ Do NOT use this deployment model for production/pilots.
 
 ### Prerequisites
 
-*   Take Machine with the following configuration.
+#### Hardware provisioning
 
-    <table><thead><tr><th width="186">Purpose</th><th width="209">Compute/Memory/Storage</th><th>Note</th></tr></thead><tbody><tr><td>Wireguard Bastion / NFS Server / Rancher Cluster / OpenG2P Cluster / Nginx Server</td><td><p>16vCPU / 64 GB RAM /</p><p>256 GB storage / OS:Ubuntu 22.04</p></td><td>All the components mentioned will be installed on a single node.</td></tr></tbody></table>
-* Before proceeding with the deployment, review the following topics to better understand each infrastructure component required for a successful setup:
-  1. 🔒 **Firewall Rules**: Review basic firewall concepts and how to configure rules to allow traffic to and from required services.\
-     [Read about Firewall Rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)
-  2. 📦 **Kubernetes Cluster (RKE2 Server):** Understand how to set up and configure a lightweight, secure RKE2 Kubernetes cluster.\
-     [Read about RKE2 Setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#cluster-installation)
-  3. 🔐 **WireGuard Bastion:** Learn how to configure WireGuard as a secure VPN tunnel to access internal resources in your cluster.\
-     [Read about WireGuard Bastion](https://docs.openg2p.org/deployment/base-infrastructure/wireguard-bastion#installation)
-  4. 📁 **NFS Server:** Set up a Network File System to provide shared persistent storage across your Kubernetes workloads.\
-     [Read about NFS Server](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installation)
-  5. 🔗 **Kubernetes NFS CSI Driver:** Deploy the CSI driver to enable dynamic NFS volume provisioning in Kubernetes.\
-     [Read about NFS CSI Driver](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#nfs-client-provisioner)
-  6. 🧩 **Istio Service Mesh:** Use Istio to manage traffic flow, security, and observability between microservices.\
-     [Read about Istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio)
-  7. 🔐 **SSL Certificates (Let's Encrypt):** Configure Let's Encrypt to automate SSL certificate issuance and renewal for secure access.\
-     [Read about Let's Encrypt Setup](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
-  8. 🧑‍💻 **Rancher:** Use Rancher to manage and monitor your Kubernetes clusters through an intuitive web interface.\
-     [Read about Rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher)
-  9. 🧾 **Keycloak:** Implement Keycloak for identity, authentication, and authorization management using SSO and OIDC.\
-     [Read about Keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak)
-  10. 📊 **Prometheus Monitoring:** Set up Prometheus to collect metrics from your Kubernetes services and visualize them via Grafana.\
-      [Read about Prometheus and Monitoring](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
-  11. 📝 **Logging and Fluentd:** Collect and centralize application logs using Fluentd for easier debugging and analysis.\
-      Read about [Logging](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) and [Fluentd](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
+OpenG2P in-a-box minimally requires access to a machine (virtual machine) with the following configuration. Please make sure this machine is available with OS installed as mentioned below. You must have "root" access to the machine:
+
+* 16vCPU / 64 GB RAM / 256 GB storage
+* Operating System:  Ubuntu 22.04
+
+#### Concepts
+
+Before proceeding with the deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
+
+1. 🔒 **Firewall Rules**: Review basic firewall concepts and how to configure rules to allow traffic to and from required services.\
+   [Read about Firewall Rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)
+2. 📦 **Kubernetes Cluster (RKE2 Server):** Understand how to set up and configure a lightweight, secure RKE2 Kubernetes cluster.\
+   [Read about RKE2 Setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#cluster-installation)
+3. 🔐 **WireGuard Bastion:** Learn how to configure WireGuard as a secure VPN tunnel to access internal resources in your cluster.\
+   [Read about WireGuard Bastion](https://docs.openg2p.org/deployment/base-infrastructure/wireguard-bastion#installation)
+4. 📁 **NFS Server:** Set up a Network File System to provide shared persistent storage across your Kubernetes workloads.\
+   [Read about NFS Server](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installation)
+5. 🔗 **Kubernetes NFS CSI Driver:** Deploy the CSI driver to enable dynamic NFS volume provisioning in Kubernetes.\
+   [Read about NFS CSI Driver](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#nfs-client-provisioner)
+6. 🧩 **Istio Service Mesh:** Use Istio to manage traffic flow, security, and observability between microservices.\
+   [Read about Istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio)
+7. 🔐 **SSL Certificates (Let's Encrypt):** Configure Let's Encrypt to automate SSL certificate issuance and renewal for secure access.\
+   [Read about Let's Encrypt Setup](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
+8. 🧑‍💻 **Rancher:** Use Rancher to manage and monitor your Kubernetes clusters through an intuitive web interface.\
+   [Read about Rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher)
+9. 🧾 **Keycloak:** Implement Keycloak for identity, authentication, and authorization management using SSO and OIDC.\
+   [Read about Keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak)
+10. 📊 **Prometheus Monitoring:** Set up Prometheus to collect metrics from your Kubernetes services and visualize them via Grafana.\
+    [Read about Prometheus and Monitoring](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
+11. 📝 **Logging and Fluentd:** Collect and centralize application logs using Fluentd for easier debugging and analysis.\
+    Read about [Logging](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) and [Fluentd](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
 
 ### Base infrastructure setup
 
-To set up the **base infrastructure**, log in to the machine and install the following. Make sure to follow each **verification step** to ensure that everything is installed correctly and the setup is progressing smoothly.\
-**Note:** Perform all necessary installations on a **single node** as this configuration is designed to operate completely.
+To set up the **base infrastructure**, log in to the machine and install the following. Make sure to follow each **verification step** to ensure that everything is installed correctly and the setup is progressing smoothly.
 
-1.  Ensure that all the listed tools are installed on the node. After installation, verify the version of each tool to confirm that they have been installed correctly.\
+1.  Tools: Install the following tools. After installation, verify the version of each tool to confirm that they have been installed correctly.\
     Tools: `wget` , `curl` , `kubectl` , `istioctl` , `helm` , `jq` \
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
     <mark style="color:green;">Run the following commands and verify that each returns the version information:</mark>
@@ -65,17 +71,16 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     ```
 
     ✅ <mark style="color:green;">You should see version details for each tool without any errors.</mark>
-2. Follow the document linked below to set up the **firewall rules** required for the deployment.\
+2. Firewall: Follow the document linked below to set up the **firewall rules** required for the deployment.\
    🔒[Set up Firewall rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)\
-   **Note:** Make sure to include K8s Firewall, NFS Firewall, Wireguard Firewall, and LB Firewall.\
    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
    <mark style="color:green;">Run</mark> <mark style="color:green;"></mark><mark style="color:green;">`iptables -L`</mark> <mark style="color:green;"></mark><mark style="color:green;">or</mark> <mark style="color:green;"></mark><mark style="color:green;">`ufw status`</mark> <mark style="color:green;"></mark><mark style="color:green;">to ensure the rules are active in case you're using on-premises or self-managed native server nodes. If you're deploying on AWS cloud infrastructure, verify or configure the necessary firewall rules within the</mark> <mark style="color:green;"></mark><mark style="color:green;">**Security Groups**</mark> <mark style="color:green;"></mark><mark style="color:green;">associated with your instances.</mark>
-3. Follow the below steps to Setup **Kubernetes Cluster** (RKE2 Server) as a **root user**.
+3. **Kubernetes cluster**: Follow the below steps to set up Kubernetes Cluster (RKE2 Server) as a `root` user.
    1. Create the rke2 config directory - `mkdir -p /etc/rancher/rke2`
    2. &#x20;Create a `config.yaml` file in the above directory, using the following config file template.\
       Use [rke2-server.conf.primary.template](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/rke2/rke2-server.conf.primary.template). The token can be any arbitrary string.
    3. Edit the above `config.yaml` file with the appropriate names, IPs, and tokens.
-   4.  Run the following commands to set the **RKE2 version** and **download** and **start RKE2** **server:**
+   4.  Run the following commands to set the **RKE2** version, download  the same and start **RKE2** **server:**
 
        ```
        export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
@@ -83,7 +88,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        systemctl enable rke2-server
        systemctl start rke2-server
        ```
-   5.  To export KUBECONFIG, run:
+   5.  Export KUBECONFIG:
 
        ```
        echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
@@ -91,11 +96,11 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        kubectl get nodes 
        ```
 
-       **Note**:Download the Kubeconfig file `rke2.yaml` and keep it securely.\
+       Download the Kubeconfig file `rke2.yaml` and keep it securely. (This is important!)\
        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Run the below command to check the status of rke2 server shown in the screenshot below.</mark>&#x20;
 
        <figure><img src="../.gitbook/assets/image (34).png" alt=""><figcaption></figcaption></figure>
-4. Install **Wireguard** Bastion servers for secure VPN access:
+4. **Wireguard**: Install Wireguard Bastion servers for secure VPN access:
    1. Clone the [openg2p-deployment](https://github.com/OpenG2P/openg2p-deployment) repo and navigate to the [kubernetes/wireguard](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/wireguard) directory
    2.  Run this command to install wireguard server/channel with root user:
 
@@ -124,7 +129,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 
        <figure><img src="../.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure>
    6. Once WireGuard is running and setup on your local machine, you can easily set up kubectl locally and access the cluster from your machine. (Optional)
-5. Install NFS Server to provide **persistent storage volumes** to Kubernetes Cluster:
+5. **NFS Server**: Install NFS Server to provide **persistent storage volumes** to Kubernetes Cluster:
    1.  Download/copy the install script from the link provided below into the server machine.\
        [NFS Installation script ](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installat)
 
@@ -134,14 +139,14 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        ./install-nfs-server.sh
        ```
    2.  For every sandbox/namespace, create a new folder in `/srv/nfs` folder on the server node. Suggested folder structure: `/srv/nfs/<cluster name>`. \
-       **Example:**
+       Example:
 
        ```
        sudo mkdir /srv/nfs/rancher
        sudo mkdir /srv/nfs/openg2p
        ```
 
-       Run this command to provide full accces for nfs folder `sudo chmod -R 777 /srv/nfs` \
+       Run this command to provide full accces for `nfs` folder `sudo chmod -R 777 /srv/nfs` \
        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
        <mark style="color:green;">Make sure the NFS server is running and the setup is completed on your local machine. You can refer to the screenshots below for guidance.</mark>
 
@@ -160,7 +165,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        <mark style="color:green;">Make sure the NFS CSI driver and client provisioner is running and the setup is completed on your local machine. You can refer to the screenshots below for guidance.</mark>
 
        <figure><img src="../.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure>
-7.  To set up **Istio** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided commands to install the **Istio Operator**, **Istio Service Mesh**, and **Istio Ingress Gateway** components.\
+7.  **Istio**: Set up Istio in the cluster by navigating to the directory linked below from the **openg2p-deployment** repository.  Run the below commands to install the **Istio Operator**, **Istio Service Mesh**, and **Istio Ingress Gateway** components.\
     Install Istio from [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory:
 
     ```bash
@@ -173,7 +178,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     <mark style="color:green;">Check whether all the Istio pods have come up; refer to the screenshot below.</mark>
 
     <figure><img src="../.gitbook/assets/image (37).png" alt=""><figcaption></figcaption></figure>
-8. Set up Transport Layer Security (TLS) for secure communication by following the steps outlined below. This will ensure that data transmitted between services is encrypted and protected from unauthorized access:
+8. **TLS**: Set up Transport Layer Security (TLS) for secure communication by following the steps. This will ensure that data transmitted between services is encrypted and protected from unauthorized access:
    1.  Install **letsencrypt** and **certbot** using below command:
 
        ```
@@ -232,7 +237,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the screenshot.</mark>
 
     <figure><img src="../.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
-10. To Install **rancher** in the cluster, navigate to the directory linked below from the **openg2p-deployment** repository and run the provided command to install the rancher (Edit **hostname** below):\
+10. **Rancher**: Navigate to the directory linked below from the **openg2p-deployment** repository and run the provided command to install the rancher (Edit **hostname** below):\
     Install rancher from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher) directory:
 
     ```bash
@@ -243,7 +248,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 
     Login to Rancher using the above hostname and bootstrap the `admin` user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.\
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-    <mark style="color:green;">Use the command below to verify that all Rancher pods are running properly in the cattle-system namespace, and ensure that Rancher is accessible from your browser. Refer the screenshot.</mark>
+    <mark style="color:green;">Verify that all Rancher pods are running properly in the cattle-system namespace, and Rancher is accessible from your browser.</mark>&#x20;
 
     <figure><img src="../.gitbook/assets/image (46).png" alt=""><figcaption></figcaption></figure>
 
