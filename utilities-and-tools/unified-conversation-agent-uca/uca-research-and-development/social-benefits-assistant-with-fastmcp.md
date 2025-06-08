@@ -39,7 +39,7 @@ The Social Benefits Assistant uses a distributed architecture based on the Model
 
 ### System Architecture:
 
-<figure><img src="../../.gitbook/assets/Screenshot 2025-05-14 085900.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Screenshot 2025-05-14 085900.png" alt=""><figcaption></figcaption></figure>
 
 ### Key Architectural Decisions
 

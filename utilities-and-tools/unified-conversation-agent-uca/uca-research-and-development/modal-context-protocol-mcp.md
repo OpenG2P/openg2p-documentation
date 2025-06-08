@@ -8,7 +8,7 @@ description: standard vs our domain specific.
 
 ### 1. Introduction: What is Model Context Protocol?
 
-<figure><img src="../../.gitbook/assets/mcp_overview-641a298352ff835488af36be3d8eee52.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/mcp_overview-641a298352ff835488af36be3d8eee52.png" alt=""><figcaption></figcaption></figure>
 
 The Model Context Protocol (MCP) is a standardized architectural framework for AI applications that facilitates communication between AI systems and various data sources, tools, and services. Just as USB-C offers a universal connector for devices to interact with multiple accessories, MCP provides a standardized way for AI applications to connect with different tools, databases, and external services.
 
@@ -82,7 +82,7 @@ The transport layer, as shown in Image 3, handles the underlying communication i
 
 ### 4. Key Benefits of MCP
 
-<figure><img src="../../.gitbook/assets/what is mcp.gif" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/what is mcp.gif" alt=""><figcaption></figcaption></figure>
 
 The Model Context Protocol offers several significant advantages over traditional integration approaches:
 
@@ -190,7 +190,7 @@ For organizations, MCP provides a standardized way to connect AI systems with:
 * Business intelligence tools
 *
 
-    <figure><img src="../../.gitbook/assets/mcp5.gif" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../.gitbook/assets/mcp5.gif" alt=""><figcaption></figcaption></figure>
 
 ### 7. Comparison with Traditional Approaches
 

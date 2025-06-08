@@ -33,7 +33,7 @@ Social Registry Functional Architecture
 Some of the key features offered by OpenG2P's Social Registry are as follows:
 
 * [Holds both **individual and household** records with relationships. ](features/individuals-and-groups/)
-* [Ability to **share data** with other systems via standard interfaces.](features/data-share.md)
+* [Ability to **share data** with other systems via standard interfaces.](features/data-share/)
 * [**Privacy** controls on the data](features/privacy-and-security.md).
 * [Packaged for **rapid deployment**](features/rapid-deployment-framework.md)
 * [**Dynamic registry**: multiple update mechanisms](features/dynamic-registry.md).
