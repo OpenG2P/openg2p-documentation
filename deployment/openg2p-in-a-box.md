@@ -18,7 +18,7 @@ Do NOT use this deployment model for production/pilots.
 
 ### Prerequisites
 
-#### Hardware provisioning
+#### Hardware requirements
 
 OpenG2P in-a-box minimally requires access to a machine (virtual machine) with the following configuration. Please make sure this machine is available with OS installed as mentioned below. You must have "root" access to the machine:
 
