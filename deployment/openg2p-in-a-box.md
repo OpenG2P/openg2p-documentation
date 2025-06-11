@@ -25,7 +25,15 @@ OpenG2P in-a-box minimally requires access to a machine (virtual machine) with t
 * 16vCPU / 64 GB RAM / 256 GB storage
 * Operating System:  Ubuntu 22.04
 
-#### Concepts
+#### DNS and SSL configuration
+
+A valid domain with DNS management access is required. You may use AWS Route53 or any other DNS provider. The DNS access must allow you to:
+
+* Create and delete `TXT` records (for DNS-ACHME challenge).
+* Manage `A` records(for pointing domains to IP/Ingress).
+* Create `CNAME` records(if needed for subdomain routing).
+
+**Concepts**
 
 Before proceeding with the deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
 
@@ -50,7 +58,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
     <mark style="color:green;">Run the following commands and verify that each returns the version information:</mark>
 
-    ```
+    ```bash
     wget --version
     curl --version
     kubectl version --client
@@ -71,7 +79,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
    3. Edit the above `config.yaml` file with the appropriate names, IPs, and tokens.
    4.  Run the following commands to set the `RKE2` version, download  the same and start RKE2 server:
 
-       ```
+       ```bash
        export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
        curl -sfL https://get.rke2.io | sh - 
        systemctl enable rke2-server
@@ -79,7 +87,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        ```
    5.  Export KUBECONFIG:
 
-       ```
+       ```bash
        echo -e 'export PATH="$PATH:/var/lib/rancher/rke2/bin"\nexport KUBECONFIG="/etc/rancher/rke2/rke2.yaml"' >> ~/.bashrc
        source ~/.bashrc
        kubectl get nodes 
@@ -99,7 +107,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 
        For example:
 
-       ```
+       ```bash
        WG_MODE=k8s ./wg.sh wireguard_app_users 10.15.0.0/16 51820 254 172.16.0.0/24
        ```
    3.  Check logs of the servers and wait for all servers to finish startup. Example:
@@ -130,7 +138,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
    2.  For every sandbox/namespace, create a new folder in `/srv/nfs` folder on the server node. Suggested folder structure: `/srv/nfs/<cluster name>`. \
        Example:
 
-       ```
+       ```bash
        sudo mkdir /srv/nfs/rancher
        sudo mkdir /srv/nfs/openg2p
        ```
@@ -143,7 +151,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 6. Install the Kubernetes NFS CSI driver and the NFS client provisioner on the cluster as follows:
    1.  From openg2p-deployment repo [kubernetes/nfs-client](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nfs-client) directory, **run**: (Make sure to replace the `<Node Internal IP>` and `<cluster name>` parameters appropriately below)
 
-       ```
+       ```bash
        NFS_SERVER=<Node Internal IP> \
        NFS_PATH=/srv/nfs/<cluster_name> \
            ./install-nfs-csi-driver.sh
@@ -168,7 +176,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 8. **TLS**: Set up Transport Layer Security (TLS) for secure communication by following the steps. This will ensure that data transmitted between services is encrypted and protected from unauthorized access:
    1.  Install letsencrypt and certbot using below command:
 
-       ```
+       ```bash
        sudo apt install certbot
        ```
    2.  Since the preferred challenge is DNS type, the below command asks for `_acme-challenge.` Create the `_acme-challenge` TXT DNS record accordingly using a Public DNS Provider (e.g., AWS Route 53, Cloudflare, GoDaddy), and continue with the prompt to generate certs.
@@ -208,7 +216,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
        🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
        <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory and have been uploaded to the istio-system namespace as a Kubernetes secret.</mark>
 
-       ```
+       ```bash
        kubectl get secrets -n istio-system
        ```
 
@@ -271,7 +279,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 14. **Istio**: Set up an Istio gateway on dev namespace.
     1.  Provide your hostname and run this to define the variables:
 
-        ```
+        ```bash
         export NS=dev
         export WILDCARD_HOSTNAME='*.dev.your.org'
         ```
@@ -292,7 +300,7 @@ To set up the **base infrastructure**, log in to the machine and install the fol
 
         Create OpenG2P TLS Secret, using (Edit certificate paths below):
 
-        ```
+        ```bash
         kubectl -n istio-system create secret tls tls-openg2p-$NS-ingress \
             --cert=<certificate path> \
             --key=<certificate key path>

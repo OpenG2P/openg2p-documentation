@@ -491,6 +491,7 @@
     * [Install WebSub](deployment/deployment-guide/install-websub.md)
     * [Set up ClamAV virus scanning for incoming traffic](deployment/deployment-guide/set-up-clamav-virus-scanning-for-incoming-traffic.md)
     * [Air-gapped deployment setup using Gitlab](deployment/deployment-guide/air-gapped-deployment-setup-using-gitlab.md)
+    * [MinIO Installation Guide on a Standalone VM](deployment/deployment-guide/minio-installation-guide-on-a-standalone-vm.md)
   * [Persistent Storage](deployment/persistent-storage.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/persistent-storage/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
 * [📒 Guides](guides/README.md)
