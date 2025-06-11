@@ -25,7 +25,7 @@ OpenG2P in-a-box minimally requires access to a machine (virtual machine) with t
 * 16vCPU / 64 GB RAM / 256 GB storage
 * Operating System:  Ubuntu 22.04
 
-#### DNS and SSL configuration
+#### DNS for SSL certificate
 
 A valid domain with DNS management access is required. You may use AWS Route53 or any other DNS provider. The DNS access must allow you to:
 
