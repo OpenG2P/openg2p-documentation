@@ -29,9 +29,9 @@ OpenG2P in-a-box minimally requires access to a machine (virtual machine) with t
 
 A valid domain with DNS management access is required. You may use AWS Route53 or any other DNS provider. The DNS access must allow you to:
 
-* Create and delete `TXT` records (for DNS-ACHME challenge).
-* Manage `A` records(for pointing domains to IP/Ingress).
-* Create `CNAME` records(if needed for subdomain routing).
+* Create and delete `TXT` records (for DNS-ACME challenge).
+* Manage `A` records (for pointing domains to IP/Ingress).
+* Create `CNAME` records (if needed for subdomain routing).
 
 **Concepts**
 
