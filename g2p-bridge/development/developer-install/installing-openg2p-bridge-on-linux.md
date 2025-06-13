@@ -74,11 +74,11 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
     ```bash
     python3 -m pip install \
-        openg2p-fastapi-common==1.1.1 \
-        openg2p-fastapi-auth==1.1.1 \
-        openg2p-g2pconnect-common-lib==1.0.0 \
-        openg2p-g2p-bridge-models==1.0.0 \
-        openg2p-g2p-bridge-api==1.0.0
+        openg2p-fastapi-common==1.1.2 \
+        openg2p-fastapi-auth==1.1.2 \
+        openg2p-g2pconnect-common-lib==1.1.0 \
+        openg2p-g2p-bridge-models==1.1.0 \
+        openg2p-g2p-bridge-api==1.1.0
     ```
 *   Create a .env file&#x20;
 
@@ -123,12 +123,12 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
     ```bash
     python3 -m pip install \
-        openg2p-fastapi-common==1.1.1 \
-        openg2p-fastapi-auth==1.1.1 \
-        openg2p-g2pconnect-common-lib==1.0.0 \
-        openg2p-g2p-bridge-models==1.0.0 \
-        openg2p-g2p-bridge-bank-connectors==1.0.0 \
-        openg2p-g2p-bridge-celery-beat-producers==1.0.0    
+        openg2p-fastapi-common==1.1.2 \
+        openg2p-fastapi-auth==1.1.2 \
+        openg2p-g2pconnect-common-lib==1.1.0 \
+        openg2p-g2p-bridge-models==1.1.0 \
+        openg2p-g2p-bridge-bank-connectors==1.1.0 \
+        openg2p-g2p-bridge-celery-beat-producers==1.1.0    
     ```
 *   Create a .env file
 
@@ -175,12 +175,12 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
     ```bash
     python3 -m pip install \
-        openg2p-fastapi-common==1.1.1 \
-        openg2p-fastapi-auth==1.1.1 \
-        openg2p-g2pconnect-common-lib==1.0.0 \
-        openg2p-g2p-bridge-models==1.0.0 \
-        openg2p-g2p-bridge-bank-connectors==1.0.0 \
-        openg2p-g2p-bridge-celery-workers==1.0.0    
+        openg2p-fastapi-common==1.1.2 \
+        openg2p-fastapi-auth==1.1.2 \
+        openg2p-g2pconnect-common-lib==1.1.0 \
+        openg2p-g2p-bridge-models==1.1.0 \
+        openg2p-g2p-bridge-bank-connectors==1.1.0 \
+        openg2p-g2p-bridge-celery-workers==1.1.0    
     ```
 *   Create a .env file
 

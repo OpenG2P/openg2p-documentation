@@ -339,6 +339,7 @@
   * [Developer Zone](g2p-bridge/development/README.md)
     * [Design](g2p-bridge/development/design-specifications/README.md)
       * [IN APIs from PBMS](g2p-bridge/development/design-specifications/persistent-objects/README.md)
+        * [create\_benefit\_program\_configuration](g2p-bridge/development/design-specifications/persistent-objects/create_benefit_program_configuration.md)
         * [create\_disbursement\_envelope](g2p-bridge/development/design-specifications/inward-apis-from-pbms/create_disbursement_envelope.md)
         * [cancel\_disbursement\_envelope](g2p-bridge/development/design-specifications/inward-apis-from-pbms/cancel_disbursement_envelope.md)
         * [create\_disbursements](g2p-bridge/development/design-specifications/persistent-objects/disbursement.md)

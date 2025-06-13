@@ -72,8 +72,8 @@ sudo apt install -y python3-pip python3-dev build-essential
 
     ```bash
     python3 -m pip install \
-        openg2p-fastapi-common==1.1.1 \
-        openg2p-fastapi-auth==1.1.1 \
+        openg2p-fastapi-common==1.1.2 \
+        openg2p-fastapi-auth==1.1.2 \
         openg2p-g2p-bridge-example-bank-models==1.0.0 \
         openg2p-g2p-bridge-example-bank-api==1.0.0
     ```
@@ -117,8 +117,8 @@ sudo apt install -y python3-pip python3-dev build-essential
 
     ```bash
     python3 -m pip install \
-        openg2p-fastapi-common==1.1.1 \
-        openg2p-fastapi-auth==1.1.1 \
+        openg2p-fastapi-common==1.1.2 \
+        openg2p-fastapi-auth==1.1.2 \
         openg2p-g2p-bridge-example-bank-models==1.0.0 \
         openg2p-g2p-bridge-example-bank-celery==1.0.0
     ```
