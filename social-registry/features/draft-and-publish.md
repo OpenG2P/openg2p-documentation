@@ -1,5 +1,6 @@
 ---
 description: Work in progress
+hidden: true
 ---
 
 # Draft and Publish
