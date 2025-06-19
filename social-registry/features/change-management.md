@@ -105,6 +105,23 @@ Step 5: Outcome
 * System maintains complete audit trail
 * User receives notification of outcome
 
+## Change Request Interfaces
+
+There would be multiple entry points through which a registry record change or addition might be requested. It can be mainly categorized into two channel.
+
+1. Odoo based channels
+   * Social Registry Admin: Direct UI within Odoo
+   * CSV/Excel Import: Bulk import with change request generation
+   * Agent Portal: Field agent interface within Odoo
+   * ODK Import: Mobile data collection integration
+2. API based channels
+   * Self-Service Portal: External web interface
+   * External Systems: Third-party integrations
+   * DCI interfaces: API's exposed as per the DCI specifications\
+
+
+{% embed url="https://miro.com/app/board/uXjVImzoRgY=/?share_link_id=278785513081" %}
+
 \
 
 
