@@ -21,7 +21,7 @@ While various approaches can achieve these goals, OpenG2P has integrated with [I
 
 ### Data sharing hierarchy
 
-<figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption><p>OpenG2P-IUDX Data Sharing Hierachy</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (17) (1).png" alt=""><figcaption><p>OpenG2P-IUDX Data Sharing Hierachy</p></figcaption></figure>
 
 ## Demo setup
 

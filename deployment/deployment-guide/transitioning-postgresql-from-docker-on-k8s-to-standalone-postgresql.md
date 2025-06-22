@@ -92,7 +92,7 @@ Migrating PostgreSQL from a Kubernetes cluster (running in Docker containers wit
        \
 
 
-       <figure><img src="../../.gitbook/assets/image (3) (1).png" alt=""><figcaption><p>odoo-conf.png</p></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>odoo-conf.png</p></figcaption></figure>
 
 
 6. **Ensure Data Consistency** **after the migration.**

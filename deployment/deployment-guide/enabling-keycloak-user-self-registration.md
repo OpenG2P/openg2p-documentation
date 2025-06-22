@@ -47,7 +47,7 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
 4. **Configure Authentication and reCAPTCHA**
    1.  Navigate to the **Authentication** tab and make a copy of the **registration** as **registration2** and bind it to Resgistration flow.
 
-       <figure><img src="../../.gitbook/assets/image (13).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (13) (1).png" alt=""><figcaption></figcaption></figure>
 
        1. Edit the newly created registration flow, ensuring all step requirements remain the same.
        2. Add reCAPTCHA in the **reCAPTCHA settings**.
@@ -57,7 +57,7 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
    2. To provide complete access to **SR** or **PBMS** for self-registered users, create the necessary roles for the respective clients.
    3.  Assign all the created client roles to **Realm Settings → User Registration** to set default roles for self-registered users.
 
-       <figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption><p><br></p></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (4) (1).png" alt=""><figcaption><p><br></p></figcaption></figure>
 6. **Integrate Keycloak Credentials with Applications**
    1. Make sure your application is already integrated with Keycloak login for authentication. If not, configure it for [Keycloak authentication](../../pbms/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-log-in.md).\
 
@@ -66,7 +66,7 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
    2. Try to **login with keycloak** and it will redirect you to keycloak login page.
    3.  The **Register** link should now be visible.
 
-       <figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (8) (1).png" alt=""><figcaption></figcaption></figure>
    4. Click the **Register** link to access the registration page.
    5. Users can enter their details (name, email, and password) and proceed with 2 factor authentication to create an account.
    6. Upon registration, users will receive a confirmation email (if email verification is enabled).

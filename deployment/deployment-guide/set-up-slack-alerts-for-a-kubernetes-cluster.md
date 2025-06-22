@@ -42,7 +42,7 @@ Alerting is essential for monitoring modern systems, ensuring issues are detecte
    8.  Verify whether the alerts are firing from the Prometheus UI and check if Slack notifications are being received.\
 
 
-       <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption><p><em><strong>Prometheus dashboard</strong></em><br></p></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (22).png" alt=""><figcaption><p><em><strong>Prometheus dashboard</strong></em><br></p></figcaption></figure>
 
-       <figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption><p><em><strong>slack channel</strong></em></p></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/image (1) (1).png" alt=""><figcaption><p><em><strong>slack channel</strong></em></p></figcaption></figure>
 
