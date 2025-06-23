@@ -348,6 +348,8 @@ You can follow the below links to install OpenG2P modules via Rancher UI.
 
 <figure><img src="../.gitbook/assets/image (56).png" alt=""><figcaption></figcaption></figure>
 
+## FAQ
+
 {% hint style="info" %}
 **How is "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
 
