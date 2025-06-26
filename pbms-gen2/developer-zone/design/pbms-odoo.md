@@ -26,19 +26,45 @@ Configure a list of benefit codes (products) that are disbursed by the various p
 * SERVICE - Applicable when the department provides services such as health screenings to the public.
 * COMBINATION - Applicable when a benefit includes both a commodity plus a service bundled. E.g. a vaccine will involve a physical vaccine vial plus the service of administering the vaccine.
 
-### Tables involved
+#### Screens
+
+#### Tables involved
 
 1. g2p\_benefit\_codes
-
-### Screens
 
 ### <mark style="color:blue;">Program Definition</mark>
 
 You configure the benefit programs which govern the benefit distribution. The key attributes that you define in a benefit program are as follows
 
-1. Target Registry - This attribute indicates the registry from where the beneficiaries' list will be drawn. Mapping a target registry to a program will allow you to define eligibility, priority and entitlement rules using the attributes of the registry. For this, you have to ensure that the target registry is made available as an "ABSTRACT CLASS" in your PBMS Odoo instance.&#x20;
+1. Target Registry - This attribute indicates the registry from where the beneficiaries' list will be drawn. Mapping a target registry to a program will allow you to define eligibility, priority and entitlement rules using the attributes of the registry. For this, you have to ensure that the target registry is made available as an "ABSTRACT CLASS" in your PBMS Odoo instance. Detailed instructions on how to make this Abstract class available to the PBMS Odoo, can be found in here.
+2. Enrolment Frequency - This specifies how frequently will you refresh the Beneficiary List under the program. New enrolments are done by creating a new enrolment cycle. New enrolments typically involve field agents verifying existing beneficiaries, striking out beneficiaries who no longer qualify and adding new beneficiaries. You can also have changes administered through self service portals or integration with Civil Registry APIs or a combination of all of these methods.
+3. Disbursement Frequency - This specifies how frequently will you make disbursements under this program. Typically you will Disburse far more frequently than you Enrol. For e.g. you might have an annual enrolment frequency with a monthly disbursement frequency.
+4. Benefit Codes - You need to associate a list of Benefit codes with a Program. A program can disburse one or more Benefit codes (products / services) to its beneficiaries. You also need to create entitlement rules for every benefit code associated with the Program.
+5. Eligibility Rules - You need to define a set of rules that make a registrant eligible to qualify as a beneficiary under this program. You can use the Target Registry - attributes to define these eligibility rules.
+6. Entitlement Rules - You need to define a set of rules that will compute an entitlement (of a benefit code) for a given beneficiary. You need distinct entitlement rules for every benefit code associated with the Program.
 
+#### Screens
 
+#### Tables involved
+
+1. g2p\_program\_definition (primary table that stores the program definition)
+2. g2p\_benefit\_codes\_g2p\_program\_definition\_rel (benefit codes for a program)
+3. g2p\_eligibility\_rule\_definition (eligibility rules for a program)
+4. g2p\_entitlement\_rule\_definition (entitlement rules for a program)
+
+### Geographic Administrative Zones
+
+When a benefit program involves physical distribution of goods and services, geography assumes significance. To enable the necessary configurations, the PBMS platform provides you two types of Geographic Administrative Zones
+
+#### Geographic Administrative Zone - Large
+
+This is a large zone (examples include - States or Districts). Depending on your situation, you can configure any of your relevant Geographic Administrative Zone as a GAZ-Large.
+
+#### Geographic Administrative Zone - Small
+
+This is a small zone within a Large Zone. A typical Large Zone will consider a number of small zones. Examples of small zones will include - Post Codes, Localities and Streets.
+
+A beneficiary address should necessarily consist of a Large Zone and a Small Zone.
 
 
 
@@ -48,7 +74,7 @@ You configure the benefit programs which govern the benefit distribution. The ke
 
 1. Geographic Administrative Zones - Large
 2. Geographic Administrative Zones - Small
-3. Agencies
+3. Agenciesive
 4. Warehouses
 
 
