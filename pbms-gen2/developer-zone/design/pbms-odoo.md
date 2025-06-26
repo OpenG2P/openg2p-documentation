@@ -14,46 +14,32 @@ layout:
 
 # PBMS (Odoo)
 
-The following entities will be defined in PBMS. PBMS will be an Odoo extension.
+## Static definitions / configurations
 
-<mark style="color:blue;">**Programs**</mark>
+### Benefit Codes
 
-* Enrolment Cycles
-  * Beneficiary Lists
-* Eligibility Rules
-* Entitlement Rules
-* Disbursement Cycles
-  * Disbursement Lists
+Configure a list of benefit codes (products) that are disbursed by the various programs. Benefit Codes are broadly classified into the following types
 
-<mark style="color:blue;">**Benefit Codes**</mark>
+* CASH\_DIGITAL — Cash benefits, distributed digitally using direct credits into beneficiary bank accounts or mobile wallets. It is mandatory for Beneficiary financial addresses to be maintained in SPAR (ID-Account Mapper) in case of CASH\_DIGITAL. The Measurement unit for CASH\_DIGITAL will be restricted to ISO Currency codes.
+* CASH\_PHYSICAL - Cash benefits, distributed physically. The platform assumes that there will be an agency (service provider) involved in this chain. The Agency will have agents on the ground (field agents) who will physically distribute cash. The department will transfer the required funds to the Agencies by directly transfers into the Agencies' bank accounts. The Measurement unit for CASH\_DIGITAL will be restricted to ISO Currency codes.
+* COMMODITY - All physical goods such as staples, books, grains and fuel will come under this category.
+* SERVICE - Applicable when the department provides services such as health screenings to the public.
+* COMBINATION - Applicable when a benefit includes both a commodity plus a service bundled. E.g. a vaccine will involve a physical vaccine vial plus the service of administering the vaccine.
 
-<mark style="color:blue;">**Agencies**</mark>
+### Tables involved
 
-* Geo Codes for Agencies
-* Benefit Codes for Agencies
+1. g2p\_benefit\_codes
 
-The detailed entities, their attributes and user actions are given below
+### Program Definition
 
-<mark style="color:blue;">**Program**</mark>
 
-| Attribute                      | Description |
-| ------------------------------ | ----------- |
-| program\_id                    |             |
-| program\_mnemonic              |             |
-| program\_description           |             |
-| target\_registry               |             |
-| enrolment\_frequency           |             |
-| disbursement\_cycle\_frequency |             |
-| disbursement\_                 |             |
 
-Enrolment Cycle
+1. Geographic Administrative Zones - Large
+2. Geographic Administrative Zones - Small
+3. Agencies
+4. Warehouses
 
-| Attribute                | Description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| program\_id              | Non Unique Index. One Program will have several enrolment cycles. |
-| enrolment\_cycle\_id     | Unique (Private Key)                                              |
-| enrolment\_cycle\_number | Integer. Running Serial, starts at 1.                             |
-| enrolment\_start\_date   | Date                                                              |
-| enrolment\_end\_date     | Date                                                              |
-|                          |                                                                   |
+
+
+
 
