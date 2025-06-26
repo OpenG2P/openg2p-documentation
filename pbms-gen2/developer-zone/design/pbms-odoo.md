@@ -52,7 +52,7 @@ You configure the benefit programs which govern the benefit distribution. The ke
 3. g2p\_eligibility\_rule\_definition (eligibility rules for a program)
 4. g2p\_entitlement\_rule\_definition (entitlement rules for a program)
 
-### Geographic Administrative Zones
+### <mark style="color:blue;">Geographic Administrative Zones</mark>
 
 When a benefit program involves physical distribution of goods and services, geography assumes significance. To enable the necessary configurations, the PBMS platform provides you two types of Geographic Administrative Zones
 
@@ -66,9 +66,25 @@ This is a small zone within a Large Zone. A typical Large Zone will consider a n
 
 A beneficiary address should necessarily consist of a Large Zone and a Small Zone.
 
+#### Screens
 
+#### Tables involved
 
+### Warehouses
 
+When a program involves physical distribution of goods and services, the program administering department needs to liaise with a warehouse, where the goods are stored. Depending on the geographical spread of the beneficiaries, the department will likely appoint agencies who then procure the goods from these warehouses and do the actual distribution.&#x20;
+
+You need to maintain Warehouses and also associate these warehouses to the Geography (large) and the Benefit Codes. Because you might use specific warehouses for certain geographical zones (driven by proximity and ease of transport). Similarly, they might be specific warehouses for specific goods.&#x20;
+
+Based on these constraints, you have to map Warehouses to Geographic Administrative Zones (Large) and to one or more Benefit. Codes.
+
+During disbursement, the PBMS platform will automatically allocate Warehouses depending on these configurations.
+
+#### Screens
+
+#### Tables involved
+
+### Agencies
 
 
 
