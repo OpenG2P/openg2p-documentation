@@ -16,7 +16,7 @@ layout:
 
 ## Static definitions / configurations
 
-### Benefit Codes
+### <mark style="color:blue;">Benefit Codes</mark>
 
 Configure a list of benefit codes (products) that are disbursed by the various programs. Benefit Codes are broadly classified into the following types
 
@@ -30,7 +30,19 @@ Configure a list of benefit codes (products) that are disbursed by the various p
 
 1. g2p\_benefit\_codes
 
-### Program Definition
+### Screens
+
+### <mark style="color:blue;">Program Definition</mark>
+
+You configure the benefit programs which govern the benefit distribution. The key attributes that you define in a benefit program are as follows
+
+1. Target Registry - This attribute indicates the registry from where the beneficiaries' list will be drawn. Mapping a target registry to a program will allow you to define eligibility, priority and entitlement rules using the attributes of the registry. For this, you have to ensure that the target registry is made available as an "ABSTRACT CLASS" in your PBMS Odoo instance.&#x20;
+
+
+
+
+
+
 
 
 
