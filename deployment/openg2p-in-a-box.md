@@ -73,7 +73,7 @@ jq --version
 
 #### **2. Firewall**
 
-Follow the document linked below to set up the firewall rules required for the deployment.\
+Follow the link below to set up the firewall rules required for the deployment.\
 🔒[Set up Firewall rules](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/firewall)\
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Run</mark> <mark style="color:green;"></mark><mark style="color:green;">`iptables -L`</mark> <mark style="color:green;"></mark><mark style="color:green;">or</mark> <mark style="color:green;"></mark><mark style="color:green;">`ufw status`</mark> <mark style="color:green;"></mark><mark style="color:green;">to ensure the rules are active in case you're using on-premises or self-managed native server nodes. If you're deploying on AWS cloud infrastructure, verify or configure the necessary firewall rules within the</mark> <mark style="color:green;"></mark><mark style="color:green;">**Security Groups**</mark> <mark style="color:green;"></mark><mark style="color:green;">associated with your instances.</mark>
@@ -131,23 +131,20 @@ Install Wireguard Bastion server for secure VPN access:
 4. Once it finishes, navigate to `/etc/wireguard-app-users`. You will find multiple peer configuration files and CD in to `peer1` folder and copy `peer1.conf`  to your notepad.
 5.  Follow the link provided below to setup a WireGuard on your system.\
     [Install WireGuard Client on Desktop](base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)\
-    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard server is running on server node and the wireguard setup is completed on your machine.</mark>\ <mark style="color:green;">On server node:</mark>
+    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard service is running on k8s cluster and the Wireguard setup is completed on your machine.</mark>\ <mark style="color:green;">On k8s cluster:</mark>
 
     <figure><img src="../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
 
     <mark style="color:green;">On your machine:</mark>
 
     <figure><img src="../.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
-6. Once WireGuard is running and configured on your  machine, you can easily set up `kubectl` and access the cluster from your machine. (optional)
+6. After installing WireGuard on the cluster and configuring it on your local machine, you can install and configure `kubectl` using the RKE2 kubeconfig file generated during the Kubernetes cluster setup on the server. This allows you to access the cluster from your local command line.
 
 #### **5. NFS Server**
 
 &#x20;Install NFS Server to provide persistent storage volumes to kubernetes cluster:
 
-1.  Download/copy the install script from the link provided below into the server node.\
-    [NFS Installation script ](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installat)
-
-    To install an NFS server, run the following command as root user:
+1.  Follow the openg2p-deployment repository under the [openg2p-deployment/nfs-server](https://github.com/OpenG2P/openg2p-deployment/blob/main/nfs-server/install-nfs-server.sh) directory to install the NFS server. Run the following command as the root user.
 
     ```bash
     ./install-nfs-server.sh
@@ -298,7 +295,7 @@ Log in to Keycloak using admin credentials from the Keycloak namespace secrets i
 
 #### 11. Integrate Rancher with Keycloak&#x20;
 
-[Integrating Rancher with Keycloak](https://docs.openg2p.org/deployment/base-infrastructure/rancher) enables centralized authentication and user management using Keycloak as the IdP.\
+[Integrating Rancher with Keycloak](https://docs.openg2p.org/deployment/base-infrastructure/rancher#rancher-keycloak-integration) enables centralized authentication and user management using Keycloak as the IdP.\
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once you attempt to log in using rancher.hostname.org, you will be redirected to authenticate via Keycloak. Log in using your Keycloak credentials. In Rancher, your user status should appear as "Active," as shown in the screenshot.</mark>
 
@@ -310,22 +307,23 @@ Log in to Keycloak using admin credentials from the Keycloak namespace secrets i
 
 Continue to use the same cluster (`local` cluster) for OpenG2P modules  installation.
 
-1. In Rancher, create a project and namespace, on which the OpenG2P modules will be installed. **`The rest of this guide will assume the namespace to be demo-dev`**.
-2.  In rancher -> namespaces menu, enable `Istio Auto Injection` for demo-dev namespace.\
+1. In Rancher, create a project and namespace, on which the OpenG2P modules will be installed.\
+   &#x20;**`The rest of this guide will assume the namespace to be dev`**.
+2.  In rancher -> namespaces menu, enable `Istio Auto Injection` for dev namespace.\
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-    <mark style="color:green;">Verify Istio injection is enabled for the demo-dev namespace in the DEMO-DEV project.</mark>
+    <mark style="color:green;">Verify Istio injection is enabled for the dev namespace in the DEV project.</mark>
 
     <figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
-#### **13. Istio**
+#### **13. Istio** gateway
 
 &#x20;Set up an Istio gateway on dev namespace.
 
 1.  Provide your hostname and run this to define the variables:
 
     ```bash
-    export NS=demo-dev
-    export WILDCARD_HOSTNAME='*.demo-dev.your.org'
+    export NS=dev
+    export WILDCARD_HOSTNAME='*.dev.your.org'
     ```
 2.  Go to [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory and run this to apply gateway.
 
@@ -338,8 +336,8 @@ Continue to use the same cluster (`local` cluster) for OpenG2P modules  installa
     ```bash
     certbot certonly --agree-tos --manual \
         --preferred-challenges=dns \
-        -d demo-dev.your.org \
-        -d *.demo-dev.your.org
+        -d dev.your.org \
+        -d *.dev.your.org
     ```
 
     DNS mapping:
@@ -358,7 +356,7 @@ Continue to use the same cluster (`local` cluster) for OpenG2P modules  installa
     <figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
     🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-    <mark style="color:green;">Once created, the gateway will appear in Rancher UI under Istio > Gateway in the demo-dev namespace.</mark>
+    <mark style="color:green;">Once created, the gateway will appear in Rancher UI under Istio > Gateway in the dev namespace.</mark>
 
     <figure><img src="../.gitbook/assets/image (53).png" alt=""><figcaption></figcaption></figure>
 
@@ -372,27 +370,18 @@ Install [Prometheus and Monitoring](base-infrastructure/openg2p-cluster/promethe
 
 #### **15. Cluster Logging**
 
-Install Logging and Fluentd Installation.
-
-Fluentd is used to collect and parse logs generated by applications within the Kubernetes cluster.
-
-Only one Fluentd installation is required per Kubernetes cluster. Follow the below steps from rancher.
-
-1. Navigate to `Apps & Marketplace → Charts`.
-2. Search for and select the `Logging` chart.
-3. Install it using the default values.
-4. When prompted, select `Project: System` to ensure Fluentd runs in the appropriate system namespace.\
-   🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-   <mark style="color:green;">Once logging is installed, verify that all pods in the cattle-logging-system namespace are up and running, and ensure that logs are being collected for each service.</mark>
+Install [Logging and Fluentd](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch#fluentd-installation) is used to collect and parse logs generated by applications within the Kubernetes cluster.\
+🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+<mark style="color:green;">Once logging is installed, verify that all pods in the cattle-logging-system namespace are up and running, and ensure that logs are being collected for each service.</mark>
 
 ### OpenG2P module's installation
 
 You can follow the below links to install OpenG2P modules via Rancher UI.
 
-1. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p).&#x20;
-2. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module.
-3. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module.
-4. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module.\
+1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module.
+2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module.
+3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module.
+4. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p).\
    🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
    <mark style="color:green;">Once you deploy any of the modules mentioned above, you can also deploy the OpenG2P Landing Page. All services should be accessible from landing page.</mark>
 
