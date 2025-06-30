@@ -33,8 +33,8 @@ Before you deploy, make sure the following are available:
 
 <div align="left"><figure><img src="../../.gitbook/assets/pbms-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
-7. You can ignore "**Part 1**" as it refers to an older version of the Helm chart, and proceed directly to "**Part 2**" for the updated Helm chart instructions.
-8. Click on "**Part 2**" Helm chart, select the latest version to be installed, and click Install.
+7. You can ignore "**Part 2**" as it refers to an older version of the Helm chart, and proceed directly to "**Part 1**" for the updated Helm chart instructions.
+8. Click on "**Part 1**" Helm chart, select the latest version to be installed, and click Install.
 9. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then click on _**Next**_.
 10. Navigate to each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `pbms.dev.openg2p.org` and `odk-pbms.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.

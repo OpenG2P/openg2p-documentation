@@ -33,8 +33,8 @@ Before you deploy, make sure the following are available:
 
 <div align="left"><figure><img src="../../.gitbook/assets/social-registry-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
-7. You can ignore "**Part 1**" as it refers to an older version of the Helm chart, and proceed directly to "**Part** **2**" for the updated Helm chart instructions.
-8. Click on "**Part 2**" Helm chart, select the latest version to be installed, and click _Install_.
+7. You can ignore "**Part 2**" as it refers to an older version of the Helm chart, and proceed directly to "**Part 1**" for the updated Helm chart instructions.
+8. Click on "**Part 1**" Helm chart, select the latest version to be installed, and click _Install_.
 9. On the next screen, choose a name for installation, like `social-registry`. Select the checkbox _**Customise Helm options** before install_, and click _Next_.
 10. Go through each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
