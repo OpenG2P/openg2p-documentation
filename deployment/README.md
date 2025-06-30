@@ -41,6 +41,9 @@ For deployment, set up the following in the sequence given below:
 
 ## **Concepts** <a href="#concepts" id="concepts"></a>
 
+{% hint style="info" %}
+**Concepts**
+
 Before proceeding with deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
 
 1. 🔒 [**Firewall Rules**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster)
@@ -54,3 +57,4 @@ Before proceeding with deployment, read up on the following topics to better und
 9. 🧾 [**Keycloak**](https://docs.openg2p.org/deployment/1.0.0/guides/user-guides/create-payment-manager-types)
 10. 📊 [**Prometheus Monitoring**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
 11. 📝 [**Logging**](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) **and** [**Fluentd**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
+{% endhint %}
