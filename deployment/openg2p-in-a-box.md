@@ -14,26 +14,9 @@ This document describes a deployment model wherein the infrastructure and compon
 Do NOT use this deployment model for production/pilots.
 {% endhint %}
 
-## Installation
+## Prerequisites
 
-### Prerequisites
-
-#### Hardware requirements
-
-OpenG2P in-a-box minimally requires access to a machine (virtual machine) with the following configuration. Please make sure this machine is available with OS installed as mentioned below. You must have "root" access to the machine:
-
-* 16vCPU / 64 GB RAM / 256 GB storage
-* Operating System:  Ubuntu 22.04
-
-#### DNS for SSL certificate
-
-A valid domain with DNS management access is required. You may use AWS Route53 or any other DNS provider. The DNS access must allow you to:
-
-* Create and delete `TXT` records (for DNS-ACME challenge).
-* Manage `A` records (for pointing domains to IP/Ingress).
-* Create `CNAME` records (if needed for subdomain routing).
-
-**Concepts**
+### **Concepts**
 
 Before proceeding with the deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
 
@@ -49,7 +32,22 @@ Before proceeding with the deployment, read up on the following topics to better
 10. 📊 [**Prometheus Monitoring**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
 11. 📝 [**Logging**](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) **and** [**Fluentd**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
 
-### Base infrastructure setup
+### Hardware requirements
+
+OpenG2P in-a-box minimally requires access to a machine (virtual machine) with the following configuration. Please make sure this machine is available with OS installed as mentioned below. You must have "root" access to the machine:
+
+* 16vCPU / 64 GB RAM / 256 GB storage
+* Operating System:  Ubuntu 22.04
+
+### DNS for SSL certificate
+
+A valid domain with DNS management access is required. You may use AWS Route53 or any other DNS provider. The DNS access must allow you to:
+
+* Create and delete `TXT` records (for DNS-ACME challenge).
+* Manage `A` records (for pointing domains to IP/Ingress).
+* Create `CNAME` records (if needed for subdomain routing).
+
+## Base infrastructure setup
 
 To set up the **base infrastructure**, log in to the machine and install the following. Make sure to follow each **verification step** to ensure that everything is installed correctly and the setup is progressing smoothly.
 
