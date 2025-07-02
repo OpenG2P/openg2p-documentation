@@ -25,27 +25,23 @@ Before you deploy SPAR, make sure the following are available:
 
 1. Log in to Rancher admin console.
 2. Select your cluster.
-3. Under _**Apps -> Repositories**_ click the _**Create**_ to add a repository.
-4. Provide _**Name**_ as "openg2p" and target HTTPS _**Index URL**_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on _**Create**_.
+3. Under **Apps -> Repositories** click the **Create** to add a repository.
+4. Provide **Name** as "openg2p" and target HTTPS **Index** **URL** as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on **Create**.
 5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on _**Include Prerelease Versions**_ under _**Preferences**_ below the _**Helm Charts**_.
-7. Navigate to **Apps->Charts** page on Rancher. You can find the _**OpenG2P SPAR**_ is listed in the dashboard.
+6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on **Include Prerelease Versions** under **Preferences** below the **Helm Charts**.
+7. Navigate to **Apps->Charts** page on Rancher. You can find the **OpenG2P SPAR** is listed in the dashboard.
 
-<div align="left">
+<div align="left"><figure><img src="../../.gitbook/assets/spar-chart-on-rancher.png" alt="" width="302"><figcaption></figcaption></figure></div>
 
-<figure><img src="../../.gitbook/assets/spar-chart-on-rancher.png" alt="" width="302"><figcaption></figcaption></figure>
-
-</div>
-
-6. Click on the Helm chart, select the version to be installed, and click _**Install**_.
-7. On the next screen, choose a name for installation, like `spar`. Select the checkbox _**Customise Helm**_ before the installation, and then click on _**Next**_.
+6. Click on the Helm chart, select the version to be installed, and click **Install**.
+7. On the next screen, choose a name for installation, like `spar`. Select the checkbox **Customise Helm** before the installation, and then click on **Next**.
 8. Navigate to each app's configuration page, and configure the following:
    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `spar.dev.openg2p.org`  etc. `<appname>` is arbitrary - default names have been provided.
-   2. Your organization-wide Keycloak URL is _Keycloak Base Url_ . (Refer to [Keycloak installation](https://docs.openg2p.org/deployment/base-infrastructure/rancher#keycloak-installation)).
-   3. Create a Keycloak client.
-   4. Provide the OIDC Client details. Refer to [Keycloak Client Creation](https://docs.openg2p.org/deployment/deployment-guide/keycloak-client-creation) guide.
-   5. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
-   6. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
+   2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
+   3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+   4. Click on **Next** to navigate to **Helm** **Options** page. Disable `wait` flag. Click on **Install**.
+   5. Watch for every pods to enter a **Running** state. This may take several minutes.\
+      ![](<../../.gitbook/assets/image (64).png>)
 
 ## Installation using the command line
 
@@ -64,9 +60,9 @@ Before you deploy SPAR, make sure the following are available:
 
 After installation, SPAR is accessible over following URLs based on the `SPAR_HOSTNAME` given above:
 
-* SPAR Self Service UI:  _https://spar.openg2p.sandbox.net_
-* SPAR Self Service API: _https://spar.openg2p.sandbox.net/api/selfservice_
-* SPAR Mapper: _https://spar.openg2p.sandbox.net/api/mapper_
+* SPAR Self Service UI:  `https://spar.openg2p.sandbox.net`
+* SPAR Self Service API: `https://spar.openg2p.sandbox.net/api/selfservice`
+* SPAR Mapper: `https://spar.openg2p.sandbox.net/api/mapper`
 
 ## Database
 

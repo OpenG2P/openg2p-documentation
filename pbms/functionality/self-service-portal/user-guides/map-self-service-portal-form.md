@@ -27,15 +27,15 @@ This document provides step-by-step instructions for configuring **Login Provide
 
 1. Enable **Debug Mode.** (Settings --> General Settings --> Developer Tools --> Activate the developer mode).
 
-<figure><img src="../../../../.gitbook/assets/image (20) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (20) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Go to the **OAuth Providers** section. (Settings --> Users & companies --> OAuth Providers)
 
-<figure><img src="../../../../.gitbook/assets/image (21) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (21) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Create a new **Login Provider** and enter the required values in the respective fields.
 
-<figure><img src="../../../../.gitbook/assets/image (22) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (22) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 For example, the fields, their descriptions, and sample values are given below.
 

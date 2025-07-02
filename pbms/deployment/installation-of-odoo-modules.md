@@ -14,43 +14,27 @@ layout:
 
 # Installation of Odoo Modules
 
-This document provides instructions on installing modules applicable to PBMS from the Odoo platform.
+Once the PBMS module is deployed, individual Odoo modules can be installed directly from the Odoo dashboard as required.
 
 ## Procedure
 
-1. Use the link [https://pbms.explore.openg2p.org/](https://pbms.explore.openg2p.org/web/login) and login with valid credentials to access the PBMS module.
-2. Click the main menu icon ![](../../.gitbook/assets/main-menu.png) and select _**Apps**_.
+1. Open the landing page for your environment (e.g., [https://explore.openg2p.org/](https://explore.openg2p.org/)), and log in to the PBMS module using valid credentials available in the Secrets section of the Rancher UI.
+2.  Once you logged in enable `Activate the developer mode` under **settings -> General Settings -> Developer Tools.**
 
-<figure><img src="../../.gitbook/assets/pbmsexplore1.png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../.gitbook/assets/image (27).png" alt=""><figcaption></figcaption></figure>
+3. Click the main menu icon ![](../../.gitbook/assets/main-menu.png) and select **Apps**.
+4.  Search G2P modules inside the **Search field** available on the dashboard.
 
-Apps screen is displayed.
+    <figure><img src="../../.gitbook/assets/image (28).png" alt=""><figcaption></figcaption></figure>
+5. You can search for a module by name to **Install** it according to your project requirements. And to upgrade an existing module, click the **Upgrade** button to apply the latest version.
+6. Click the **Learn More** button to learn about OpenG2P.
+7.  Click the ![](../../.gitbook/assets/ellipsis-icon.png) icon to get Module Information.
 
-3. Click the _**G2P**_ from the _**CATEGORIES**_ menu in the left pane.
+    | Feature     | Description                                |
+    | ----------- | ------------------------------------------ |
+    | Module Info | It contains the information of the module. |
+    | Learn More  | It navigates to the OpenG2P website page.  |
 
-<figure><img src="../../.gitbook/assets/pbmsexplore2.png" alt=""><figcaption></figcaption></figure>
 
-You can find all the modules applicable for PBMS in the right pane.
-
-4. Choose the module, click the _**Install/Activate**_ button to install the module based on your project requirements.&#x20;
-
-{% hint style="info" %}
-* In Odoo 15.0, click the _**Install**_ button, and in Odoo 17.0, click the _**Activate**_ button to install the module based on your project requirements.&#x20;
-{% endhint %}
-
-Or
-
-You can enter the module name in the _**Search**_ field to choose the module to install based on your project requirements.
-
-5. Click the _**Upgrade**_ button to upgrade to the latest version of the module.
-6. Click the _**Learn More**_ button to learn about OpenG2P.
-7. Click the ![](../../.gitbook/assets/ellipsis-icon.png) icon
-
-| Feature     | Description                                |
-| ----------- | ------------------------------------------ |
-| Module Info | It contains the information of the module. |
-| Learn More  | It navigates to the OpenG2P website page.  |
-
-* In Odoo 15.0, after the successful installation, the status of the module is changed from Install to Installed.
-* In Odoo 17.0, the _**Activate**_ button will not be available after the successful installation of the module.
 
 Similarly, you can activate the other modules for PBMS based on your project requirements.

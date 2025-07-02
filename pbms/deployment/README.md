@@ -25,31 +25,39 @@ Before you deploy, make sure the following are available:
 
 1. Log in to Rancher admin console.
 2. Select your cluster.
-3. Under _**Apps -> Repositories**_ click the _**Create**_ to add a repository.
-4. Provide _**Name**_ as "openg2p" and target HTTPS _**Index URL**_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on _**Create**_.
-5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.&#x20;
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on _**Include Prerelease Versions**_ under _**Preferences**_ below the _**Helm Charts**_.
-7. Navigate to **Apps->Charts** page on Rancher. You can find the _**OpenG2P PBMS**_ is listed in the dashboard.
+3. Under **Apps -> Repositories** click the **Create** to add a repository.
+4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.\
 
-<div align="left"><figure><img src="../../.gitbook/assets/pbms-deployment-rancher-list.png" alt=""><figcaption></figcaption></figure></div>
 
-7. You can ignore "**Part 2**" as it refers to an older version of the Helm chart, and proceed directly to "**Part 1**" for the updated Helm chart instructions.
-8. Click on "**Part 1**" Helm chart, select the latest version to be installed, and click Install.
-9. On the next screen, choose a name for installation, like `pbms.` Check the option _**Customise Helm**_ before the installation, and then click on _**Next**_.
+    <figure><img src="../../.gitbook/assets/image (65).png" alt=""><figcaption></figcaption></figure>
+5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.\
+
+
+    <figure><img src="../../.gitbook/assets/image (66).png" alt=""><figcaption></figcaption></figure>
+6. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
+7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P PBMS` Helm charts listed.\
+
+
+    <figure><img src="../../.gitbook/assets/image (67).png" alt=""><figcaption></figcaption></figure>
+
+    **Note:** You can ignore "**Part 2**" as it refers to an older version of the Helm chart.
+8. &#x20;Proceed to Install `OpenG2P PBMS` chart select the latest version to be installed, and click Install.
+9. On the next screen, choose a name for installation, like `pbms`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Navigate to each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `pbms.dev.openg2p.org` and `odk-pbms.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
-    2. Your organization-wide Keycloak URL is _Keycloak Base Url_ . (Refer to [Keycloak installation](https://docs.openg2p.org/deployment/base-infrastructure/rancher#keycloak-installation)).
-    3. OIDC Client details are asked. Create Keycloak client, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.&#x20;
-11. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
-12. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
+    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+11. Click on Next to navigate to Helm Options page. Disable `wait` flag. Click on Install.
+12. Watch for every pods to enter a **Running** state. This may take several minutes.\
 
-    <img src="https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2F3034178245-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FJZcdob2emEcLMvLyIxqT%252Fuploads%252F4hoWPrmmdc5vJdS02WWz%252Fpod-running.png%3Falt%3Dmedia%26token%3Df5dc7bd5-671a-4c39-b861-d865bd258884&#x26;width=768&#x26;dpr=4&#x26;quality=100&#x26;sign=8d13255d&#x26;sv=1" alt="" data-size="original">
+
+    <div align="left"><figure><img src="../../.gitbook/assets/image (68).png" alt=""><figcaption></figcaption></figure></div>
 
 ## Installation using the command line
 
 * Install the following utilities on your machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* TBD
+* To Be Done
 
 ## Post installation
 

@@ -14,4 +14,4 @@ layout:
 
 # Tech Guides
 
-[Bank Connector Interface Guide](bank-connector-interface-guide.md)
+[Bank Connector Interface Guide](deployment/bank-connector-interface-guide.md)
