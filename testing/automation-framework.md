@@ -29,10 +29,11 @@ Below points are the purposes for using a data-driven testing framework
 2. Java -&#x20;
 3. Maven - This is being used as a Dependency Management tool.
 4. TestNG - TestNG is used as a framework and as a reporting tool as well.
-5. Log4j - It's used to log messages within software and has the ability to communicate with other services on a system.
-6. Apache POI - provides stream-based processing, that is suitable for large files and requires less memory. Apache POI is able to handle both XLS and XLSX formats of spreadsheets.
-7. Webdriver Manager - WebDriverManager can automatically download and manage WebDriver dependencies for different browsers such as Chrome, Firefox, Safari, and Edge.
-8. ReportNG -&#x20;
+5. Log4j - It's used to log messages within software and can communicate with other services on a system.
+6. Jackson - Java library for parsing and generating JSON, which is part of the `FasterXML` project and is known for being fast, flexible, and powerful.
+7. WebDriverManager - WebDriverManager can automatically download and manage WebDriver dependencies for various browsers, including Chrome, Firefox, Safari, and Edge.
+
+
 
 ## Prerequisites
 
@@ -40,34 +41,12 @@ Below points are the purposes for using a data-driven testing framework
 
 Step 1: Set Up a Maven Project
 
-Step 2: Add below mentioned Dependencies
+Step 2: Add the below-mentioned Dependencies in `pom.xml`
 
 * &#x20;Selenium Webdriver
 
 ```
 selenium-java
-```
-
-* Apache POI
-
-```
-poi
-```
-
-```
-poi-ooxml
-```
-
-```
-poi-ooxml-schemas
-```
-
-```
-xmlbeans
-```
-
-```
-commons-collections4
 ```
 
 * TestNG
@@ -92,10 +71,10 @@ log4j-api
 log4j-core
 ```
 
-* ReportNG
+* Jackson
 
 ```
-reportng
+jackson-core
 ```
 
 
@@ -110,46 +89,31 @@ Step 6: Execute Tests
 
 ### Test data preparation
 
-* The test data file format should be XLS or XLSX.
-* There should be a sheet with test data for each method and the sheet name should match the name of the method.
-* Each column name of the sheet should have a unique.
-* Any number of data can be passed
+* The test data file format should be JSON.
+* JSON format should be proper.
+* Any number of data points can be passed.
 
 ## Test case design
 
 ### Test scenarios
 
-* Each Page should have its own test class and each scenario should have its own method.
+* Each Page should have its test class, and each scenario should have its method.
 * All Sanity and Regression scenarios are to be covered.
 * Both scenarios can be run separately.
 * Negative scenarios are also covered
 
 ### &#x20;Test steps
 
-* Provide both valid and invalid test data in the XLSX / XLS file
+* Provide both valid and invalid test data in the JSON file
 * Provide only the required number of test data to avoid a longer run time.
 
 ## Data-Driven testing implementation
 
-### Test data loading
+Test Data Storage : All test inputs are stored in a structured JSON file ( `testdata.json`).
 
-*   XLX or XLSX files should be stored in &#x20;
-
-    ```
-    user.dir + \src\main\resources\testdata
-    ```
+09io]\\
 
 
-* Mapping between the `ReadXLSData` class and the `testdata` should be done
-* Column Names of the sheets to be passed in the methods signature placeholder as parameters to fetch the data from the data provider.
-
-### Test execution
-
-* Set up test Environment
-* Create Test class
-* Implement data provider
-* Run test classes
-* Analyze test results &#x20;
 
 ## Reporting and logging
 
