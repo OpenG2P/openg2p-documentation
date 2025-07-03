@@ -109,11 +109,15 @@ Step 6: Execute Tests
 
 ## Data-Driven testing implementation
 
-Test Data Storage : All test inputs are stored in a structured JSON file ( `testdata.json`).
+**Test Data Storage:** All test inputs are stored in a structured JSON file ( `testdata.json`).
 
-09io]\\
+**POJO Class (`TestData`)**: A simple Java class with getters and setters maps the JSON fields.
 
+**Data Reader Utility:** `ObjectMapper` From Jackson is used to parse the JSON into a list of `TestData` objects.
 
+**Data Provider Method:** A TestNG `@DataProvider` Returns test data as a 2D `Object[][]` array.
+
+**Test Method**: The `@Test` method accepts `TestData` as a parameter and extracts values via getters.
 
 ## Reporting and logging
 
@@ -121,12 +125,12 @@ Test Data Storage : All test inputs are stored in a structured JSON file ( `test
 
 * TestNG is used as a report provider
 * Every class name is to be mentioned in the `testng.xml` file to be a part of a report
-* Should be able to generate HTML emailable report by running the `testng.xm`l file.
-* An `emailable-report.html` and `testing-failed.xml` reports to be generated in the test-output file.
+* Should be able to generate an HTML emailable report by running the `testng.xm`l file.
+* An `emailable-report.html` and `testing-failed.xml` Reports to be generated in the test-output file.
 
 ### Logging
 
-* log4j has been used as a logging tool
+* Log4j has been used as a logging tool
 * This will provide the log for each test method that fails during the test suite execution
 * Finding the exact error in the test suite execution will be easy
 
@@ -139,21 +143,19 @@ Test Data Storage : All test inputs are stored in a structured JSON file ( `test
 
 ### Test environment parameters
 
-* Users need to provide the browser name (Case insensitive) and URL of the environment in `configfiles > config.properties.`
+* Users need to provide the browser name (case-insensitive) and the URL of the environment in `configfiles > config.properties.`
 
 ## Maintenance and updates
 
 ### Test data updates
 
 1. Identify the need for updates, considering application changes, data quality, and new scenarios.
-2. Update data in its source (e.g., Excel, database) to reflect current requirements and formats.
+2. Update data in its source (JSON file) to reflect current requirements and formats.
 3. Ensure data validity by including boundary and edge cases.
 4. Consider versioning data for tracking changes over time.
 
 ### Codebase maintenance
 
 ### Conclusion
-
-### Summary
 
 ### Future improvements
