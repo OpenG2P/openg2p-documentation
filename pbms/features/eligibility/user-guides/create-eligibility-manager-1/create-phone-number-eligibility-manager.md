@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Create Phone Number Eligibility Manager
 
 This guide provides the step-by-step instructions to create a Phone Number Eligibility Manager.

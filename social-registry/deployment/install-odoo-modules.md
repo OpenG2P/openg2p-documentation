@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Installation of Odoo Modules
 
 Once the SR module is deployed, individual Odoo modules can be installed directly from the Odoo dashboard as required.

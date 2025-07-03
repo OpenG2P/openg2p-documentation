@@ -1,16 +1,5 @@
 ---
 description: Beneficiary Registry
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # 📔 Create a Group and Add Individual Registrants to the Group

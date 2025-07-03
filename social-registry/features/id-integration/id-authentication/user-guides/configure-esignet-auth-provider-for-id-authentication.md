@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure eSignet Auth Provider for ID Authentication
 
 This document provides instructions on how to configure eSignet Authentication Provider in PBMS to help the end-users to utilise the eSignet option to log into PBMS.

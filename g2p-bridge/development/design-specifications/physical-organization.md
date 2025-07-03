@@ -1,18 +1,4 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
-# Physical organization
+# Physical Organization
 
 The G2P-Bridge system has been organized and baselined in the following manner
 

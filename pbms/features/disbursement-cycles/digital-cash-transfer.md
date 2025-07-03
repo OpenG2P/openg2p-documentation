@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Digital Cash Transfer
 
 Digitalization of cash transfers in social benefits delivery programs can make the benefit disbursement swift, efficient, safe, and secure. Digitalization of payment processes end-to-end can be achieved by providing these two key functions:

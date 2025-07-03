@@ -1,16 +1,5 @@
 ---
 description: Performance testing of Resolve API
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Resolve API

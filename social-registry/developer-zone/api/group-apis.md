@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Group APIs
 
 OpenG2P Social Registry APIs are CRUD APIs that allow the end-user to create, read, and update the group registry data.

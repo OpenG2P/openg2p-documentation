@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Print Disbursement Summary
 
 A disbursement summary provides information on the amount of funds/entitlements allocated to registrants/beneficiaries who meet program cycle eligibility requirements.  A _**Print Disbursement Summary**_ is a feature that allows the user to print the list of funds/entitlements allocated following the [cycle approval](https://docs.openg2p.org/pbms/functionality/disbursement-cycles/in-kind-transfer/user-guides/create-and-approve-disbursement-cycle).&#x20;
@@ -26,9 +12,7 @@ The user must have an Administrator, Program Manager, or Cycle manager role to a
 
 The page for the Disbursement Summary is depicted in the image below. The Disbursement Summary page contains comprehensive information, including program details, payment information and disbursal amounts. This provides a clear synopsis of the total amount allocated in the relevant program cycle.
 
-<figure><img src="../../../.gitbook/assets/disbursement-summary.png" alt=""><figcaption></figcaption></figure>
-
-
+<figure><img src="../../.gitbook/assets/disbursement-summary.png" alt=""><figcaption></figcaption></figure>
 
 Notes:
 

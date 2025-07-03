@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Audit Logs
 
 **Audit logs** are an essential component of any system that stores sensitive data. They help in monitoring user activity, recording actions such as login attempts, changing user accounts, updating  records, any message added to the record, notification pushed to the record, request sent and accessing sensitive data. This document provides an overview of audit logs, their importance, and best practices for their implementation.

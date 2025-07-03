@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # ODK
 
 ODK (Open Data Kit) is an open-source toolkit that helps organisations collect, manage, and use data, particularly in areas with limited internet connectivity. It enables users to create custom data collection forms on mobile devices and collect data offline. ODK Collect is the client-side app, and ODK Central is the server-side app.

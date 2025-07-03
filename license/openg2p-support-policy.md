@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # OpenG2P Support Policy
 
 Support is a critical aspect of adopting any software.  OpenG2P offers support to adopting countries and their solutions providers on the platform. This enables OpenG2P users to get fixes and updates on the platform. This document lays down the OpenG2P's support policy, while also specifying how these apply to the various versions of OpenG2P that have been released and the ones to come in the future.

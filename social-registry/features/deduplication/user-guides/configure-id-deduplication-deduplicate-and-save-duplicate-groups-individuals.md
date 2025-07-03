@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure ID Deduplication, Deduplicate, and Save Duplicate Groups/Individuals
 
 This document provides instructions to configure ID deduplication method. This will help you to deduplicate the data and save the duplicate groups/individuals in the appropriate registries.
@@ -33,7 +19,7 @@ You can view the _**Groups**_ screen by default.
 
 ## Configure the ID deduplication
 
-3. Click the main menu icon ![](https://docs.openg2p.org/\~gitbook/image?url=https%3A%2F%2Fcontent.gitbook.com%2Fcontent%2FJZcdob2emEcLMvLyIxqT%2Fblobs%2F8OB4tqV7ZFODV0mhFdjA%2Fimage.png\&width=300\&dpr=4\&quality=100\&sign=d9c9a547\&sv=1) and select _**Settings**_.
+3. Click the main menu icon ![](https://docs.openg2p.org/~gitbook/image?url=https%3A%2F%2Fcontent.gitbook.com%2Fcontent%2FJZcdob2emEcLMvLyIxqT%2Fblobs%2F8OB4tqV7ZFODV0mhFdjA%2Fimage.png\&width=300\&dpr=4\&quality=100\&sign=d9c9a547\&sv=1) and select _**Settings**_.
 4. Select _**G2P Registry Settings**_ from the left menu bar.
 
 Below the _**G2P Registry Deduplication Settings,**_ you can find two ID types.

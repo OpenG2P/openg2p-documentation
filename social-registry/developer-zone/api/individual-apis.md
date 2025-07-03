@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Individual APIs
 
 OpenG2P Social Registry APIs are CRUD APIs that allow the end-user to create, read, and update the Individual registry data.
@@ -219,8 +205,6 @@ This endpoint allows the end-user to retrieve the individual registry data based
 | Method | `GET`                                                    |
 | URI    | `<openg2p.sandbox.net>/api/v1/registry/individual/{_id}` |
 | Cookie | session\_id=\<session\_id>                               |
-
-
 
 <table><thead><tr><th width="177">Parameter Name</th><th width="205">Description</th><th width="217">Mandatory/Optional</th><th>Data Type</th></tr></thead><tbody><tr><td>id</td><td>The ID of an individual</td><td>Mandatory</td><td><p>Number </p><p>Example: 124567</p></td></tr></tbody></table>
 

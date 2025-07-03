@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Performance & Scale
 
 The **Social Registry** is designed to efficiently handle millions of records, ensuring seamless scalability and performance. At its core, the platform leverages **PostgreSQL** with optimized indexing strategies to maintain high-speed data processing without degradation.

@@ -1,16 +1,5 @@
 ---
 description: SPAR Release Notes for 1.0.0
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # 1.0.0

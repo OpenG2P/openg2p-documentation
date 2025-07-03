@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # G2P Auth: OIDC - Reg ID
 
 ### Module name
@@ -54,4 +40,4 @@ G2P ID Type field reference (exclusive of the basic field in ID Type configurati
 
 ### Source code
 
-[https://github.com/OpenG2P/openg2p-auth/tree/17.0-develop/g2p\_auth\_id\_oidc](https://github.com/OpenG2P/openg2p-auth/tree/17.0-develop/g2p\_auth\_id\_oidc)
+[https://github.com/OpenG2P/openg2p-auth/tree/17.0-develop/g2p\_auth\_id\_oidc](https://github.com/OpenG2P/openg2p-auth/tree/17.0-develop/g2p_auth_id_oidc)

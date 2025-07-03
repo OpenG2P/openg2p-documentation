@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Import Social Registry Data into PBMS
 
 This document provides instructions to import data from the Social Registry (SR) into Program Beneficiary Management Systems' (PBMS) individual/group registries.

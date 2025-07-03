@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Create ID Document Eligibility Manager
 
 This guide provides the step-by-step instructions to create a ID Document Eligibility Manager.

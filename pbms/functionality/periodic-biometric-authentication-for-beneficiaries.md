@@ -1,16 +1,5 @@
 ---
 description: Upcoming features - under development
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Periodic Biometric Authentication for Beneficiaries

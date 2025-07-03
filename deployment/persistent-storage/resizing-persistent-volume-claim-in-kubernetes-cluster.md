@@ -1,16 +1,5 @@
 ---
 description: Guide on Resizing PVC (Persistent Volume Claim) in Kubernetes Cluster
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Resizing Persistent Volume Claim in Kubernetes Cluster

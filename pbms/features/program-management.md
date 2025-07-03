@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Program Management
 
 OpenG2P platform's program management is a sequence of processes encompassing program creation to deciding entitlement for the beneficiaries. Digitalization of these processes offers multiple benefits such as ease of administration, agility of operations, data empowerment and so on.

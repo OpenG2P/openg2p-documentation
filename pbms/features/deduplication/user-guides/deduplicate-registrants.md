@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Deduplicate Registrants
 
 This guide provides the steps to identify duplicate registrants in the program. The registrants are deduplicated based on the Deduplication Managers configured in the program.

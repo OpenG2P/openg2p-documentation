@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Generate SSL Certificates using Letsencrypt
 
 This document explains how to generate and renew SSL certificates using Let's Encrypt and how to automate the certificate issuance and renewal process with the AWS Route53 plugin.

@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Beneficiary Management
 
 Beneficiary management refers to the process of identifying, selecting, and managing individuals or groups who are eligible to receive benefits from a program or an organization.&#x20;

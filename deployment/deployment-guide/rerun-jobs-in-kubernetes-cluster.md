@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Rerun Jobs in Kubernetes Cluster
 
 This guide provides instructions on how to rerun jobs in Kubernetes cluster.

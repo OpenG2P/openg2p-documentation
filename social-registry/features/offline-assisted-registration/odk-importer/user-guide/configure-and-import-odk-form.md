@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure and Import ODK Form
 
 This document provides step-by-step instructions for configuring the ODK central into the Social Registry (SR) and importing the ODK form. After importing the ODK form, only the fields and their values customised using the JSON formatter are included in the individual/group registries of the SR.

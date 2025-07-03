@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Disbursement
 
 A program may have disbursements done in multiple cycles with different start and end dates for each cycle. Such cycles may be defined and triggered as per the schedule defined in each cycle. Each program should have at least one Cycle Manager associated with it.

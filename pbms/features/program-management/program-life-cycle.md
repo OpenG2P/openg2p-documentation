@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Program Life Cycle
 
 A program is a scheme created to assist an individual/group to avail benefits given by the government of their country. An Individual/group must undergo sequence of verification process to avail the benefits.&#x20;

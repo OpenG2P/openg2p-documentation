@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # benefit\_program\_configuration
 
 This is a configuration table that stores account details (with sponsor banks) for a benefit program.&#x20;
@@ -23,8 +9,6 @@ The design caters for the following thought process
 1. Multiple programs exist and share the same funding account
 2. Multiple programs exist with each program using a dedicated funding account in the same FSP (financial service provider / Bank)
 3. Multiple programs exist with programs using different funding accounts across different FSPs
-
-
 
 | Attribute                        | Description                                                                                                                                                                                                                                                                                |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

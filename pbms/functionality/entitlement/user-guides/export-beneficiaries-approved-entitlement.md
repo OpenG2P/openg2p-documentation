@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Export Beneficiaries Approved Entitlement
 
 This document provides instructions to export the recorded beneficiaries' approved entitlement from the PBMS module.

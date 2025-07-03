@@ -1,16 +1,5 @@
 ---
 description: Triggered by Batch job
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # disburse\_funds\_from\_bank
@@ -61,6 +50,4 @@ update bank\_disbursement\_batch\_status
 1. disbursement\_status = 'PENDING'
 2. disbursement\_timestamp = now()
 3. latest\_error\_code = as received from sponsor bank API response
-4. disbursement\_attempts+ = 1
-
-&#x20;
+4. disbursement\_attempts+ = 1&#x20;

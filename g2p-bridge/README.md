@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # G2P Bridge
 
 The **G2P Bridge** is a standalone, independent Digital Public Infrastructure (DPI) component designed to seamlessly connect upstream Social Protection Systems and other Government-to-Person (G2P) bulk benefit systems with downstream Disbursement Service Providers\* (DSPs).

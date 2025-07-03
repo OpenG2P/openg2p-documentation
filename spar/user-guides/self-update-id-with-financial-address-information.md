@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Link FA (Self Service)
 
 This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR (Social Payments Account Registry) and map his/her national ID with their respective bank account, mobile wallet account, and email wallet account.

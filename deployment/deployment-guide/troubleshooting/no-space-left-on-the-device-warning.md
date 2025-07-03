@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # No Space Left on the Device Warning
 
 This guide is to resolve **Storage Issues** caused by the NFS server on a node.

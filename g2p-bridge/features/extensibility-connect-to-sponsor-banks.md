@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Extensibility - Connect to Sponsor Banks
 
 Different benefit programs across various government departments can connect to different sponsor banks (treasury banks & commercial banks) to effect their respective disbursements. The following figure represents this

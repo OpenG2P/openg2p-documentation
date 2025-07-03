@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Packaging Odoo based Docker
 
 This page contains steps for packaging different components and add-ons, of a module into a docker image. These instructions must be helpful for System Integrators to add custom Odoo add-ons and create a package.

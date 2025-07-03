@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 4Sure Test Summary
 
 This document summarises the test strategy, deliverables, and results recorded while testing the [4Sure](../4sure-verifier.md) application.
@@ -71,7 +57,7 @@ You can find the defect summaries that are identified during testing in the belo
 
 ## Release information
 
-* APK link: [ https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive\_link](https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive\_link)
+* APK link: [ https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive\_link](https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive_link)
 * Build Date: 2024-03-21
 * Build name: 4Sure-debug-v0.7.0-21-03-2024-arm64-v8a.apk
 * Deployment Target: Android 12 and above

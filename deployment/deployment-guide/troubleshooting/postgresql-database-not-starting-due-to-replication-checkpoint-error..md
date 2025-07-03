@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # PostgreSQL Database not Starting due to Replication Checkpoint Error
 
 This guide explains how to resolve PostgreSQL **replication checkpoint** error when the file is corrupted.

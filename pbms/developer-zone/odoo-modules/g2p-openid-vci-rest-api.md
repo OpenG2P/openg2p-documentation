@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # G2P OpenID VCI: Rest API
 
 ### Module name
@@ -28,7 +14,7 @@ G2P OpenID VCI: Rest API
 
 ### Functionality
 
-This module exposes the following [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1\_0.html) REST APIs.
+This module exposes the following [OpenID for VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) REST APIs.
 
 The endpoints and their descriptions are given below.
 

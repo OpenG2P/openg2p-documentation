@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Verify Eligibility of Registrants in a Cycle
 
 This document provides instructions on verify eligibility of registrants in a cycle.

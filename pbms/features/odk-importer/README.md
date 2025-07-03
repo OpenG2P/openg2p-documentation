@@ -1,16 +1,5 @@
 ---
 description: Work In progress
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # ODK Importer
@@ -54,7 +43,7 @@ The ODK Importer module requires configuration to establish a connection with OD
 
 ## **Source code**
 
-[https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer](https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer)
+[https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p\_odk\_importer](https://github.com/OpenG2P/openg2p-importers/tree/17.0-develop/g2p_odk_importer)
 
 ## **Technical concepts**
 

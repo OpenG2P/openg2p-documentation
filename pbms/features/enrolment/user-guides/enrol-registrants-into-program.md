@@ -1,18 +1,4 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
-# 📔 Enrol Registrants into Program
+# 📔 Enroll Registrants into Program
 
 This guide will help enrol registrants into a program, who are registered through offline registration and online self-registration process.
 

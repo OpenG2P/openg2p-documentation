@@ -1,20 +1,6 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Search APIs
 
-The Search APIs have implemented the [G2P Connect Registry Core APIs](https://g2p-connect.github.io/specs/release/html/registry\_core\_api\_v1.0.0.html) specification. These APIs are designed to offer comprehensive searching capabilities across individual and group registries. It utilizes advanced query options for precise results. The API facilitates querying across all Social Registry (SR) registrants. It leverages **GraphQL** to handle complex queries efficiently. It retrieves only the requisite data for a specific query.
+The Search APIs have implemented the [G2P Connect Registry Core APIs](https://g2p-connect.github.io/specs/release/html/registry_core_api_v1.0.0.html) specification. These APIs are designed to offer comprehensive searching capabilities across individual and group registries. It utilizes advanced query options for precise results. The API facilitates querying across all Social Registry (SR) registrants. It leverages **GraphQL** to handle complex queries efficiently. It retrieves only the requisite data for a specific query.
 
 ## Authentication
 

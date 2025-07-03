@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Dynamic Registry
 
 Many government departments maintain registries built through surveys and data collection, but these are rarely updated, resulting in significant inclusion and exclusion errors in welfare delivery. OpenG2P’s **Dynamic Registry** transforms this process by ensuring beneficiary data is always current and accurate.

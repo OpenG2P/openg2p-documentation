@@ -1,16 +1,5 @@
 ---
 description: Triggered by Batch job
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # block\_funds\_with\_bank

@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Beneficiary Registry
 
 The concept of a beneficiary registry (BR) involves maintaining a database or record system that contains information about individuals or entities who are beneficiaries of a particular program, service, or assistance. This registry typically includes details such as the beneficiary's identity number, eligibility criteria, participation in programs, entitlements, and any benefits received.

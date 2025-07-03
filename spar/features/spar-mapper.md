@@ -1,16 +1,5 @@
 ---
 description: aka ID Account Mapper
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # SPAR Mapper
@@ -44,7 +33,7 @@ layout:
 
 Refer to this picture - SPAR in the G2P landscape
 
-<figure><img src="../../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR Subsystem in the OpenG2P landscape</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Gitbook-SPAR-Landscape.jpg" alt=""><figcaption><p>SPAR Subsystem in the OpenG2P landscape</p></figcaption></figure>
 
 The PBMS (Program and Beneficiary Management System) is the place where a government department (or a social welfare organization) manages the benefit programs. These programs will identify and target beneficiaries based on eligibility rules. Based on the beneficiary profiles and other attributes, the PBMS will calculate entitlements.
 
@@ -63,7 +52,7 @@ Even in such a scenario, we recommend that the Beneficiary ID be allocated by a 
 
 This is explained in the figure below
 
-<figure><img src="../../../.gitbook/assets/Gitbook-ID-in-OpenG2P.jpg" alt=""><figcaption><p>ID in OpenG2P Landscape</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Gitbook-ID-in-OpenG2P.jpg" alt=""><figcaption><p>ID in OpenG2P Landscape</p></figcaption></figure>
 
 Thus, the PBMS produces only a list of Beneficiary IDs and their disbursement amounts. Now this beneficiary ID has to be translated into a Financial Address (either a Bank Account or a Mobile Wallet) so that the beneficiary's account/wallet can be credited appropriately.
 
@@ -76,7 +65,7 @@ Depending on the implementation, anyone of the following participant systems can
 3. The Sponsor Bank (the bank that services the Government Department) can do this lookup and enrich the disbursement list with FA information before sending the list to the Clearing network
 4. The Clearing Network (Switch) can do this lookup and then distribute the disbursement list amongst the various Destination Banks
 
-The SPAR Mapper implements all APIs as specified by [G2P Connect](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html) to facilitate interoperability and participation by these participants.&#x20;
+The SPAR Mapper implements all APIs as specified by [G2P Connect](https://g2p-connect.github.io/specs/release/html/mapper_core_api_v1.0.0.html) to facilitate interoperability and participation by these participants.&#x20;
 
 ### Maintainers of SPAR Mapper
 
@@ -84,7 +73,7 @@ Who and how do we update information in the SPAR Mapper?
 
 #### Option - 1 - Banks and Mobile Service Providers
 
-In this option, beneficiaries have to instruct their banks (or mobile wallet service providers for walllets) that they wish to receive the G2P benefit transfers in a specific account (or wallet). The Banks (or mobile wallet service providers) in turn update the SPAR Mapper, based on these instructions received from the beneficiaries. The banks update the SPAR Mapper using the standard [G2PConnect APIs](https://g2p-connect.github.io/specs/release/html/mapper\_core\_api\_v1.0.0.html) published by the Mapper.&#x20;
+In this option, beneficiaries have to instruct their banks (or mobile wallet service providers for walllets) that they wish to receive the G2P benefit transfers in a specific account (or wallet). The Banks (or mobile wallet service providers) in turn update the SPAR Mapper, based on these instructions received from the beneficiaries. The banks update the SPAR Mapper using the standard [G2PConnect APIs](https://g2p-connect.github.io/specs/release/html/mapper_core_api_v1.0.0.html) published by the Mapper.&#x20;
 
 In this, all the participant banks (and mobile wallet service providers) have to develop this technology infrastructure to update the Mapper and implement this process in their branches.
 

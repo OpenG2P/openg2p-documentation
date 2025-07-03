@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # OpenG2P Program Payment: G2P Connect Payment Manager
 
 ### Module name
@@ -80,7 +66,7 @@ N/A
 
 ### Source code
 
-[https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_g2p\_connect](https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_g2p\_connect)
+[https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p\_payment\_g2p\_connect](https://github.com/OpenG2P/openg2p-program/tree/15.0-develop/g2p_payment_g2p_connect)
 
 ### Installation
 

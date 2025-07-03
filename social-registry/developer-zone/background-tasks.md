@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Background Tasks
 
 You can use the Background Tasks infrastructure to perform - long duration tasks, in an asynchronous paradigm. To initiate a background task, you have to insert a record into the following table

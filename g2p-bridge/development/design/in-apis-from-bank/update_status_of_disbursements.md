@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # upload\_mt940
 
 MT940 is a structured account statement. The sponsor bank will send this statement (for the benefit program funding account) everyday.&#x20;

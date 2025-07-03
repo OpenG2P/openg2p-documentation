@@ -1,16 +1,5 @@
 ---
 description: Providing Self Service features for the beneficiaries
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # SPAR Self Service
@@ -31,10 +20,4 @@ The **SPAR Self Service Microservice** offers the following features
 The **SPAR Self Service UI** - is a reference UI (based on ReactJS). The government department can use this UI and create an implementation based on its UI strategy.
 
 * The SPAR Self Service UI provides a search functionality for Banks & their Branches, Wallet Providers - to enable a beneficiary&#x20;
-* The UI also allows a beneficiary to log in and change his/her destination account (or wallet) any number of times
-
-
-
-
-
-&#x20;
+* The UI also allows a beneficiary to log in and change his/her destination account (or wallet) any number of times&#x20;

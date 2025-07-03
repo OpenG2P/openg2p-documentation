@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Private Access Channel
 
 A Private Access Channel (PAC) is a tuple of Wireguard, Load Balancer, and Ingress gateway server.  A channel provides **access to resources** of the infrastructure and this can be controlled. The users assigned to the Wireguard server determine the group of users with access to these channels. All users with access to a Wireguard server have access to all channels to which the Wireguard server is connected. The [deployment architecture](../#deployment-architecture-v4) depicts a high-level view of the PACs.  A zoomed-in view is presented below.

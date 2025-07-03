@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Restart Deployment or StatefulSets to Redistribute Pods across Nodes
 
 The document explains how to redistribute pods across nodes by restarting deployment or StatefulSets.

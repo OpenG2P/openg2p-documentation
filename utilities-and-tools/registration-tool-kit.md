@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Registration Tool Kit
 
 According to the World Bank, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from registrants while recording is adding this information to the [Registry](../pbms/functionality/beneficiary-management/beneficiary-registry/). Verification is the process of authenticating those registrants whose information has been recorded.

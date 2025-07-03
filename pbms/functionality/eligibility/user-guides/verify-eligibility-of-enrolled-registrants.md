@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Verify Eligibility of Enrolled Registrants
 
 This document provides instructions on verifying the eligibility of enrolled registrants in a program.

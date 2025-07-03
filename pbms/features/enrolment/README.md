@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Enrolment
 
 Enrolment is the process of creating a beneficiary list of individuals/groups by querying the registry and applying eligibility criteria. OpenG2P provides convenient filters and plugins to make the entire process frictionless, convenient and time-saving.

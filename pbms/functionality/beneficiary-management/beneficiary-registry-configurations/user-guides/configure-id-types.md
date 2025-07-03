@@ -1,16 +1,5 @@
 ---
 description: Beneficiary Registry
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # 📔 Configure ID Types
@@ -27,23 +16,23 @@ The user must have the Program Administrator role.
 
 1. Click on _Configuration._
 
-<figure><img src="../../../../../../.gitbook/assets/id-configuation (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/id-configuation (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _ID Types_.
 
-<figure><img src="../../../../../../.gitbook/assets/id-configuation-types (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/id-configuation-types (1).png" alt=""><figcaption></figcaption></figure>
 
 3. Click on _Create_.
 
-<figure><img src="../../../../../../.gitbook/assets/id-types-create (1).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/id-types-create (1).PNG" alt=""><figcaption></figcaption></figure>
 
 4. A new bar appears. Enter the name and click on _Save_.
 
-<figure><img src="../../../../../../.gitbook/assets/id-create-blank (3).PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/id-create-blank (3).PNG" alt=""><figcaption></figcaption></figure>
 
 5. The new ID type gets added to the list.
 
-<figure><img src="../../../../../../.gitbook/assets/id-types-new.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/id-types-new.PNG" alt=""><figcaption></figcaption></figure>
 
 ## Delete ID Types
 

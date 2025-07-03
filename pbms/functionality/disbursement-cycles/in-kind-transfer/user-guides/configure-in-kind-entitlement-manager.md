@@ -1,16 +1,5 @@
 ---
 description: Disbursement - In-Kind
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # 📔 Configure In-Kind Entitlement Manager

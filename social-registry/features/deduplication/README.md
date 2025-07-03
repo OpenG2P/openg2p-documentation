@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Deduplication
 
 In Social Registry (SR), the data are received and recorded in several ways. SR is dynamically updated via APIs, Service Provider Portal, ODK, Login-based direct data entry, etc. To maintain the data integrity in SR, a process is a must to ensure the uniqueness and accuracy of the recorded registrants' data. SR has a solution/feature named _**Deduplication**_.&#x20;
@@ -38,7 +24,7 @@ To know more about Odoo merge and deduplication, [click here](https://hibou.io/d
 
 ## **Source code**
 
-[https://github.com/OpenG2P/openg2p-social-registry/tree/17.0-develop/g2p\_registry\_id\_deduplication](https://github.com/OpenG2P/openg2p-social-registry/tree/17.0-develop/g2p\_registry\_id\_deduplication)
+[https://github.com/OpenG2P/openg2p-social-registry/tree/17.0-develop/g2p\_registry\_id\_deduplication](https://github.com/OpenG2P/openg2p-social-registry/tree/17.0-develop/g2p_registry_id_deduplication)
 
 ## Related user guides
 

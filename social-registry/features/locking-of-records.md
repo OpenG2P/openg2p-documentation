@@ -1,18 +1,4 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
-# Lock and Unlock
+# Locking of Records
 
 In Social Registry (SR) huge volumes of data are recorded. There is a need to set a limit to prevent the data from being edited multiple times. If the limit is set, it improves the accuracy of the data. The Social Registry has the Lock and Unlock feature which plays a pivotal role in maintaining the integrity of the recorded data. &#x20;
 

@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Create Program
 
 Create Program screen helps to create a new program. This document provides step-by-step instructions to create a new program. The user with a Program Manager and Administrator role can create a new program.

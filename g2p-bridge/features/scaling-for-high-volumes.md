@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Scaling for High Volumes
 
 The G2P Bridge is designed to perform in high volume disbursement scenarios. To achieve this, all the processing in the G2P Bridge is done asynchronously.&#x20;

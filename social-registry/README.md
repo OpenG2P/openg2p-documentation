@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Social Registry
 
 Social Registry (SR) is an independent module offered by OpenG2P to enable the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR  interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country. SR is not a mere database - it is based on principles of a good [functional registry](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/upcoming-daas-cohorts/functional-registries)  offering several features that can result into exponential benefits to government and people via data share, user control, issue of verifiable credentials etc.

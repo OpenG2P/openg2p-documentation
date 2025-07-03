@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure Portal User to Limit Accessing Location
 
 This document contains step-by-step instructions to configure portal user to access only the limited locations in the registration portal where they have recorded the details from the individual/group registrants.&#x20;

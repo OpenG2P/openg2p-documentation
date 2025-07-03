@@ -1,16 +1,5 @@
 ---
 description: SPAR Privacy & Security
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Privacy & Security

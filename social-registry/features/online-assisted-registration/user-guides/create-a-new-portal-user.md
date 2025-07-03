@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Create a New Portal User
 
 This document provides instructions to create a new portal user and grand portal access to the new portal user in the Social Registry (SR) module.

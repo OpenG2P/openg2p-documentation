@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Create Eligibility Manager under Program
 
 ## Description
@@ -28,10 +14,10 @@ Refer _**Create User and Assign Role**_ user guide to know how to assign role fo
 
 ## Procedure
 
-1. Click the main menu icon ![](../../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
+1. Click the main menu icon ![](../../../.gitbook/assets/main-menu.png) and select _**Programs**_.
 2. The _**Programs**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose Program module</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose Program module</p></figcaption></figure>
 
 2. Click the program name for which configuration to be done.
 3. The selected program screen is displayed. For example, here the program selected is Individual Cash Program.
@@ -40,9 +26,9 @@ Note:
 
 By default, in the _**Program**_ field, you can find the selected program name.
 
-<figure><img src="../../../../.gitbook/assets/program-list (1).png" alt=""><figcaption><p>Program list</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/program-list (1).png" alt=""><figcaption><p>Program list</p></figcaption></figure>
 
-<figure><img src="../../../../.gitbook/assets/sample-program-screen.png" alt=""><figcaption><p>Sample program screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/sample-program-screen.png" alt=""><figcaption><p>Sample program screen</p></figcaption></figure>
 
 4. Enter the _**Description**_ of the program.
 5. Choose one of the \_**Target Type**\_s. The values are
@@ -56,14 +42,14 @@ Note:
 
 You can configure the required Managers from the available list.
 
-<figure><img src="../../../../.gitbook/assets/configuration.png" alt=""><figcaption><p>List of Configurable Managers</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration.png" alt=""><figcaption><p>List of Configurable Managers</p></figcaption></figure>
 
 ### Eligibility Manager configuration
 
 1. In the _**Eligibility Managers**_ section, click the link _**Add a line.**_
 2. The _**Add: Eligibility Managers**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/add-eligibility-managers.png" alt=""><figcaption><p>Add: Eligibility Managers</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/add-eligibility-managers.png" alt=""><figcaption><p>Add: Eligibility Managers</p></figcaption></figure>
 
 In _**Add: Eligibility Managers**_ screen, the features and their descriptions are:
 
@@ -72,7 +58,7 @@ In _**Add: Eligibility Managers**_ screen, the features and their descriptions a
 3. Click the _**Create**_ button.
 4. The below screen _**Add: Eligibility Managers**_ screen is displayed.
 
-<figure><img src="../../../../.gitbook/assets/add-eligibility-managers-1.png" alt=""><figcaption><p>Add: Eligibility Managers</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/add-eligibility-managers-1.png" alt=""><figcaption><p>Add: Eligibility Managers</p></figcaption></figure>
 
 The feature and its description is:
 
@@ -82,7 +68,7 @@ Note:
 
 Once the Manager is selected, an additional field is displayed.
 
-<figure><img src="../../../../.gitbook/assets/add-eligibility-managers-2.png" alt=""><figcaption><p>Choose Eligibility Manager</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/add-eligibility-managers-2.png" alt=""><figcaption><p>Choose Eligibility Manager</p></figcaption></figure>
 
 5. Enter the Eligibility Manager's name in the second field.
 
@@ -94,17 +80,17 @@ In the drop-down, choose the Eligibility Manager's name, if already available or
 7. Click the _**Create and Edit**_ button.
 8. _**Create: Manager screen**_ is displayed.
 
-<figure><img src="../../../../.gitbook/assets/create-manager.png" alt=""><figcaption><p>Create Manger screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/create-manager.png" alt=""><figcaption><p>Create Manger screen</p></figcaption></figure>
 
 In the Create: Manager screen, the features and their descriptions are:
 
-<table><thead><tr><th width="185">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>Enter the name of the Eligibility manager</td></tr><tr><td>Domain</td><td>Set the eligibility criteria's using <em><strong>Add Filter</strong></em> button on the creation page.</td></tr><tr><td>Match all records</td><td>Retrieves the data which matches all records</td></tr><tr><td><img src="../../../../.gitbook/assets/number-of-records.png" alt="" data-size="original"></td><td><p>Click the <em><strong>Records</strong></em> button. The <em><strong>Selected records</strong></em> screen is displayed.</p><p><em>Note:</em></p><ul><li><em>By default the list of three records are listed in the <strong>Selected records</strong> screen.</em></li><li><em>Click the <strong>Cancel</strong> button to close the <strong>Selected records</strong> screen.</em></li></ul></td></tr><tr><td><img src="../../../../.gitbook/assets/referesh-button.png" alt="" data-size="original"></td><td>Click the <em><strong>Refresh</strong></em> button to refresh the screen</td></tr><tr><td>Add filter</td><td><p>Click the <em><strong>Add filter</strong></em> button to set eligibility criteria using Domain Filters. You may set multiple eligibility criteria.</p><ol><li>Click the <em><strong>Add filters</strong></em> button. The multiple criteria fields are displayed.</li><li>Select the multiple criteria such as ID, condition and count.</li><li>Click the <strong>x</strong> button to remove the entry in the criteria fields.</li><li>Click the <strong>+</strong> button to add new multiple criteria field.</li><li>Click the <strong>...</strong> option to display fields in <em><strong>Any of</strong></em> section. The multiple criteria fields are displayed.</li></ol><p><em>Note: You can click the <strong>...</strong> option to add n number of <strong>Any of</strong> section</em></p><ol start="6"><li>The value chosen in the multiple criteria fields are displayed in the <em><strong>Code editor</strong></em>.</li><li>In the Match records chose one of the followings:</li></ol><ul><li>Select <em><strong>All</strong></em> to display the data belongs to <em><strong>All</strong></em> section</li><li>Select <em><strong>Any</strong></em> to display the data belongs to <em><strong>Any</strong></em> <em><strong>of</strong></em> section</li></ul></td></tr></tbody></table>
+<table><thead><tr><th width="185">Feature</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>Enter the name of the Eligibility manager</td></tr><tr><td>Domain</td><td>Set the eligibility criteria's using <em><strong>Add Filter</strong></em> button on the creation page.</td></tr><tr><td>Match all records</td><td>Retrieves the data which matches all records</td></tr><tr><td><img src="../../../.gitbook/assets/number-of-records.png" alt="" data-size="original"></td><td><p>Click the <em><strong>Records</strong></em> button. The <em><strong>Selected records</strong></em> screen is displayed.</p><p><em>Note:</em></p><ul><li><em>By default the list of three records are listed in the <strong>Selected records</strong> screen.</em></li><li><em>Click the <strong>Cancel</strong> button to close the <strong>Selected records</strong> screen.</em></li></ul></td></tr><tr><td><img src="../../../.gitbook/assets/referesh-button.png" alt="" data-size="original"></td><td>Click the <em><strong>Refresh</strong></em> button to refresh the screen</td></tr><tr><td>Add filter</td><td><p>Click the <em><strong>Add filter</strong></em> button to set eligibility criteria using Domain Filters. You may set multiple eligibility criteria.</p><ol><li>Click the <em><strong>Add filters</strong></em> button. The multiple criteria fields are displayed.</li><li>Select the multiple criteria such as ID, condition and count.</li><li>Click the <strong>x</strong> button to remove the entry in the criteria fields.</li><li>Click the <strong>+</strong> button to add new multiple criteria field.</li><li>Click the <strong>...</strong> option to display fields in <em><strong>Any of</strong></em> section. The multiple criteria fields are displayed.</li></ol><p><em>Note: You can click the <strong>...</strong> option to add n number of <strong>Any of</strong> section</em></p><ol start="6"><li>The value chosen in the multiple criteria fields are displayed in the <em><strong>Code editor</strong></em>.</li><li>In the Match records chose one of the followings:</li></ol><ul><li>Select <em><strong>All</strong></em> to display the data belongs to <em><strong>All</strong></em> section</li><li>Select <em><strong>Any</strong></em> to display the data belongs to <em><strong>Any</strong></em> <em><strong>of</strong></em> section</li></ul></td></tr></tbody></table>
 
 9. Click the _**Save**_ button to save the data.
 10. Click the _**Discard**_ button to exit the screen.
 11. The added new Eligibility Manager is listed in the _**Configuration**_ tab list.
 
-<figure><img src="../../../../.gitbook/assets/eligibility-configuration-manager-list.png" alt=""><figcaption><p>List of Eligibility Managers</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/eligibility-configuration-manager-list.png" alt=""><figcaption><p>List of Eligibility Managers</p></figcaption></figure>
 
 12. Click the _**Save**_ button which will save the eligibility manager to that program under configuration.
 
@@ -112,16 +98,16 @@ In the Create: Manager screen, the features and their descriptions are:
 
 In the _**Add Eligibility Manager**_ screen, you can find the list of Eligibility Manager.
 
-<figure><img src="../../../../.gitbook/assets/eligibility-manager-list.png" alt=""><figcaption><p>Eligibility Manager list</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/eligibility-manager-list.png" alt=""><figcaption><p>Eligibility Manager list</p></figcaption></figure>
 
 1. Check the required Manager in the list, it enables the _**Select, Action**_ button. It also shows the number of entries selected.
 
-<figure><img src="../../../../.gitbook/assets/eligibility-manager-list-1 (1) (1) (1) (1).png" alt=""><figcaption><p>Selected Eligibility Manager list</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/eligibility-manager-list-1 (1) (1) (1) (1).png" alt=""><figcaption><p>Selected Eligibility Manager list</p></figcaption></figure>
 
 2. Click the _**Select**_ button.
 3. The selected Manager will be listed in the Eligibility Manager section below the _**Configuration**_ tab.
 
-<figure><img src="../../../../.gitbook/assets/configuration -1.png" alt=""><figcaption><p>New list of Eligibility Manager</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/configuration -1.png" alt=""><figcaption><p>New list of Eligibility Manager</p></figcaption></figure>
 
 ### Delete - Eligibility Manager
 
@@ -129,14 +115,14 @@ In the _**Add Eligibility Managers**_ screen, you can find the list of Eligibili
 
 1. Check the required Manager in the list, it enables the _**Select, Action**_ button. It also shows the number of entries selected.
 
-<figure><img src="../../../../.gitbook/assets/delete-eligibility-managers-1.png" alt=""><figcaption><p>Search, Action button enabled</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/delete-eligibility-managers-1.png" alt=""><figcaption><p>Search, Action button enabled</p></figcaption></figure>
 
 2. Click the _**Action**_ button and then click _**delete**_.
 
-<figure><img src="../../../../.gitbook/assets/delete-eligibility-managers.png" alt=""><figcaption><p>Action button</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/delete-eligibility-managers.png" alt=""><figcaption><p>Action button</p></figcaption></figure>
 
 3. The _**Confirmation**_ dialog box pops up.
 4. Click the _**OK**_ button to delete the entry. The selected entry will be deleted
 5. Click the _**Cancel**_ button to retain the entry.
 
-<figure><img src="../../../../.gitbook/assets/delete-eligibility-managers-2.png" alt=""><figcaption><p>Deleted entry screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/delete-eligibility-managers-2.png" alt=""><figcaption><p>Deleted entry screen</p></figcaption></figure>

@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure Group Types
 
 This document provides instructions to configure group types in the _**Beneficiary Registry**_ module.
@@ -46,8 +32,6 @@ _**Group Types**_ screen is displayed.
 4. Enter the relevant [Group types](../#group-types) in the Kind field.
 
 For example, here, enter School in the Kind field.
-
-
 
 <figure><img src="../../../../../.gitbook/assets/group-type-fill-field-br (1).png" alt=""><figcaption></figcaption></figure>
 

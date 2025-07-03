@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # get\_disbursement\_status
 
 | API Attributes |                                                       |
@@ -38,8 +24,3 @@ It returns a **List\[DisbursementStatusPayload]**
 
 * <mark style="color:blue;">DisbursementRecon - max of 1 record, can be 0 records</mark>
 * <mark style="color:blue;">List\[DisbursementErrorRecon] - may be 0, 1 or many records</mark>
-
-
-
-
-

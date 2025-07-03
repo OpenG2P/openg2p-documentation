@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Import Specific ODK Forms using ODK Instance ID
 
 This document provides instructions for importing specific applicants/registrants' ODK forms hosted in ODK Central. It uses the unique [**Instance ID**](import-specific-odk-forms-using-odk-instance-id.md#instance-id) of the ODK forms to import them into the SR modules' relevant individual/group registries.

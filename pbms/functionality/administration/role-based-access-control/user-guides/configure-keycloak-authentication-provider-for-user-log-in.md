@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Configure Keycloak Authentication Provider for User Log in
 
 This document provides instructions on how to configure Keycloak Authentication Provider in PBMS to help the end-users to utilise the Keycloak option to log into PBMS.

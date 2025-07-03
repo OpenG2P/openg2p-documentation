@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Embed a Miro diagram
 
 * Make sure the diagram on Miro has permissions for anyone to view the boards (this is available under Share)

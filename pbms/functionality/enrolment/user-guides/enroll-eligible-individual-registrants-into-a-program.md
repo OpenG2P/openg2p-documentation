@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # 📔 Enroll Eligible Individual Registrants into a Program
 
 This document provides instructions to enroll eligible individual registrants into a program.

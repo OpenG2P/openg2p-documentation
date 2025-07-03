@@ -1,16 +1,5 @@
 ---
 description: Deployment of Wireguard Bastion
-layout:
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
 ---
 
 # Wireguard Bastion

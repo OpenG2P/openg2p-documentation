@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Configure External Database to Connect OpenG2P Environment
 
 This document provides instructions to setup and install external database for OpenG2P environments.

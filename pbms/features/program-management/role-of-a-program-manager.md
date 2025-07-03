@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Role of a Program Manager
 
 In OpenG2P, program management comprises a sequence of process to make programs and their benefits to reach the eligible individuals/groups. The program manager must perform sequential process to manage program efficiently.

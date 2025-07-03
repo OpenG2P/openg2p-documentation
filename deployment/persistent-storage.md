@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Persistent Storage
 
 This document provides information on all the Persistent storages, i.e., PVs (Persistent Volume) and PVCs (Persistent Volume Claim), in OpenG2P deployments. It describes the type of storage, deletion behavior, and how to identify which PV belongs to which pod. It also defines and highlights the specific behavior of the StatefulSets and Deployments.
