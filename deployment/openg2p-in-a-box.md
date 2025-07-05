@@ -208,7 +208,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         -d rancher.example.com
     ```
 
-    \
     Create Rancher TLS Secret using below command (edit certificate paths below):
 
     ```bash
@@ -217,7 +216,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         --key /etc/letsencrypt/live/rancher.example.com/privkey.pem
     ```
 
-    \
     Screenshot for TXT record mapping:
 
     <figure><img src="../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
@@ -229,7 +227,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         -d keycloak.example.com
     ```
 
-    \
     Create Keycloak TLS Secret, using (edit certificate paths below):
 
     ```bash
@@ -238,7 +235,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         --key /etc/letsencrypt/live/keycloak.example.com/privkey.pem
     ```
 
-    \
     Screenshot for TXT record mapping:
 
     <figure><img src="../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
@@ -251,7 +247,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         -d *.dev.example.com
     ```
 
-    \
     Create OpenG2P-Sandbox envrionment TLS Secret, using (Edit certificate paths below):
 
     ```bash
@@ -260,7 +255,6 @@ Follow the below steps to generate SSL certifiactes for each domain.
         --key /etc/letsencrypt/live/dev.example.com/privkey.pem
     ```
 
-    \
     Screenshot for TXT record mapping:
 
     <figure><img src="../.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
@@ -399,10 +393,11 @@ This completes the OpenG2P cluster setup and you can now proceed with installing
 
 You can follow the below links to install OpenG2P modules via Rancher UI.
 
-1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module.
-2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module.
-3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module.
-4. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p).
+1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module
+2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module
+3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module
+4. Install [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui) Module
+5. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p)
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once you deploy any of the modules mentioned above, you can also deploy the OpenG2P Landing Page. All services should be accessible from landing page.</mark>
