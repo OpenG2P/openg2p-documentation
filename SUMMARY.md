@@ -334,7 +334,6 @@
     * [Privacy & Security](g2p-bridge/features/privacy-and-security.md)
     * [Monitoring & Reporting](g2p-bridge/features/monitoring-and-reporting.md)
   * [Deployment](g2p-bridge/deployment/README.md)
-    * [Deployment of G2P Bridge](g2p-bridge/deployment/deployment-of-g2p-bridge.md)
     * [Deployment of Example Bank](g2p-bridge/deployment/deployment-of-example-bank.md)
     * [PBMS Configuration](g2p-bridge/user-guides/configure-g2p-connect-payment-manager.md)
     * [Domain Names and Certificates](g2p-bridge/deployment/domain-names-and-certificates.md)

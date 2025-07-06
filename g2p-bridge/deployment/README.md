@@ -1,54 +1,158 @@
 # Deployment
 
-G2P Bridge Deployment
+This guide provides instructions for deploying all G2P Bridge components on a Kubernetes cluster using Helm charts. These charts will install the G2P Bridge components along with a dedicated PostgreSQL server, all within the same namespace. The deployment may be achieved by the following methods:
 
-The instructions here pertain to the deployment of all G2P Bridge components on the Kubernetes cluster using [Helm charts](helm-charts.md).  The charts install G2P Bridge components along with the Postgresql server specific to G2P Bridge. All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+* [Using Rancher UI](./#using-rancher-ui)
+* [Using command line](./#using-the-command-line)
 
-* [Using Rancher UI ](./#installation-using-rancher-ui)
-* [Using command line](./#installation-using-the-command-line)
+***
 
 ## Prerequisites
 
-Before you deploy G2P Bridge, make sure the following are available:
+Before you begin the G2P Bridge deployment, ensure the following prerequisites are met:
 
-* [Base infrastructure](https://docs.openg2p.org/deployment/base-infrastructure) along with domain name and certificates for Rancher and Keycloak
-* [Domain names and certificates](domain-names-and-certificates.md) specific to Social Registry.
-* Nginx server configuration
-  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
-* Namespace is created (On Rancher a namespace is created under a Project).
-* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission on the namespace of OpenG2P cluster.
-* Gateways are setup for the domain as given here [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup).
+* Base Infrastructure: A running Kubernetes cluster is required. You can use any Kubernetes provider.
+* Helm CLI: The Helm CLI (version 3.x or higher) must be installed. You can find installation instructions in the official Helm guide.
+* Domain and Certificates: You need a domain name and certificates for Rancher and Keycloak, as well as domain names and certificates specific to the Social Registry.
+* Nginx Configuration: An Nginx server must be configured with a `.conf` file in the `sites-enabled`directory containing the SSL certificates.
+* Kubernetes Namespace: A namespace must be created. In Rancher, this is done within a Project.
+* Permissions: You will need "Project Owner" permissions on the namespace within the OpenG2P cluster.
+* Gateways: Istio gateways must be set up for the domain as per the Istio namespace setup instructions.
+* Docker Hub Access: Ensure that you can access Docker Hub to pull the necessary container images.
+* Configured Values: The `values.yaml` file should be updated with any custom settings required for your deployment, such as image versions, credentials, and hostnames.
 
-## Installation using Rancher UI
+***
 
-1. Log in to Rancher admin console.
-2. Select your cluster.
-3. Under _**Apps -> Repositories**_ click the _**Create**_ to add a repository.
-4. Provide _**Name**_ as "openg2p" and target HTTPS _**Index URL**_ as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on _**Create**_.
-5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on _**Include Prerelease Versions**_ under _**Preferences**_ below the _**Helm Charts**_.
-7. Navigate to **Apps->Charts** page on Rancher. You can find the _**OpenG2P SPAR**_ is listed in the dashboard.
+## Deployment Artefacts
+
+Here is an overview of the necessary artifacts for deploying the G2P Bridge application. These are stored in designated repositories for controlled access and straightforward deployment.
+
+### **1. Helm Chart for G2P Bridge**
+
+* Purpose: Deploys the entire G2P Bridge suite on Kubernetes, which includes the API, Celery Beat (for scheduled tasks), and Celery Workers (for background processing).
+* Repository: [G2P Bridge Deployment on GitHub](https://github.com/OpenG2P/openg2p-g2p-bridge-deployment)
+*   Access and Installation: To add the GitHub Helm chart repository and install the `openg2p-g2p-bridge`chart, which contains all G2P Bridge components, run the following commands:
+
+    ```bash
+    helm repo add openg2p https://github.com/OpenG2P/openg2p-g2p-bridge-deployment
+    helm repo update
+    helm install openg2p-g2p-bridge openg2p/openg2p-g2p-bridge --namespace your-namespace
+    ```
+* Environment Configuration: Make sure that the required environment variables are configured before installation. Refer to the G2P Bridge Developer section for more information on environment configuration.
+
+### **2. Docker Images**
+
+* Purpose: Provide containerized versions of each G2P Bridge component for consistent and repeatable deployments.
+* Repository: [Docker Hub](https://hub.docker.com/)
+* Available Images:
+  * `openg2p-g2p-bridge-api`
+  * `openg2p-g2p-bridge-celery-workers`
+  * `openg2p-g2p-bridge-celery-beat-producers`
+*   Usage: You can pull each image directly from Docker Hub using the following commands. Replace `<version>` with the specific tag or use `latest` for the most recent stable release.
+
+    ```bash
+    docker pull openg2p/openg2p-g2p-bridge-api:<version>
+    docker pull openg2p/openg2p-g2p-bridge-celery-workers:<version>
+    docker pull openg2p/openg2p-g2p-bridge-celery-beat-producers:<version>
+    ```
+
+### **3. Python Libraries**
+
+* Purpose: Provide essential libraries and dependencies for G2P Bridge services. These are available on PyPI and should be installed where necessary.
+* Repository: [PyPI (Python Package Index)](https://pypi.org/)
+* Available Libraries:
+  * `openg2p-fastapi-common`
+  * `openg2p-fastapi-auth`
+  * `openg2p-g2pconnect-common-lib`
+  * `openg2p-g2p-bridge-models`
+  * `openg2p-g2p-bridge-api`
+  * `openg2p-g2p-bridge-bank-connectors`
+  * `openg2p-g2p-bridge-celery-beat-producers`
+  * `openg2p-g2p-bridge-celery-workers`
+*   Installation: Install each required package using `pip`:
+
+    ```bash
+    pip install openg2p-fastapi-common openg2p-fastapi-auth openg2p-g2pconnect-common-lib openg2p-g2p-bridge-models openg2p-g2p-bridge-api openg2p-g2p-bridge-bank-connectors openg2p-g2p-bridge-celery-beat-producers openg2p-g2p-bridge-celery-workers
+    ```
+
+***
+
+## Installation
+
+### **Using Rancher UI**
+
+1. Log in to the Rancher admin console and select your cluster.
+2. Go to Apps -> Repositories and click Create to add a new repository.
+3. Enter "openg2p" as the Name and `https://openg2p.github.io/openg2p-helm/rancher` as the target HTTPS Index URL, then click Create.
+4. Select the desired namespace for installation from the filter on the top-right.
+5. To see prerelease versions of OpenG2P apps, click your user avatar in the upper right corner of the Rancher dashboard and select Include Prerelease Versions under Preferences.
+6. Navigate to the Apps -> Charts page. The OpenG2P SPAR will be listed on the dashboard.
+7. Click on the Helm chart, choose the version you want to install, and click Install.
 
 <div align="left"><figure><img src="../../.gitbook/assets/Screenshot 2025-06-30 at 1.21.29 PM.png" alt="" width="295"><figcaption></figcaption></figure></div>
 
-6. Click on the Helm chart, select the version to be installed, and click _**Install**_.
-7. On the next screen, choose a name for installation, like `g2p-bridge`. Select the checkbox _**Customise Helm**_ before the installation, and then click on _**Next**_.
-8. Navigate to each app's configuration page, and configure the following:
-   1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `g2p-bridge.dev.openg2p.org`  etc. `<appname>` is arbitrary - default names have been provided.
-   2. Select all the recommended services you want to install. Bridge installation comes with API and Celery Background task services.&#x20;
-   3. Click on _**Next**_ to navigate to _**Helm Options**_ page. Disable `wait` flag. Click on _**Install**_.
-   4. Watch for every pods to enter a _**Running**_ state. This may take several minutes.
+8. On the next screen, provide a name for the installation (e.g., `g2p-bridge`), check the Customise Helmbox before installation, and click Next.
+9. Configure the following for each app:
+   * Set a hostname for each app in the format `<appname>.<base-hostname>`, where `<base-hostname>` is the wildcard hostname chosen during the Istio namespace setup (e.g., `g2p-bridge.dev.openg2p.org`). The `<appname>` is arbitrary, and default names are provided.
+   * Select all the recommended services you wish to install. The Bridge installation includes API and Celery Background task services.
+10. Click Next to proceed to the Helm Options page. Disable the wait flag and click Install.
+11. Monitor the pods until they all enter a Running state, which may take several minutes.
 
-## Access links
+### **Using the Command Line**
 
-After installation, G2P-BRIDGE is accessible over following URLs based on the url given above:
+1.  Clone the GitHub Repository:
 
-* G2P-Bridge API: _https://g2p-bridge.openg2p.sandbox.net/_&#x61;pi/
+    ```bash
+    git clone https://github.com/OpenG2P/openg2p-g2p-bridge-deployment.git
+    cd openg2p-g2p-bridge-deployment/charts
+    ```
+2.  Install Helm Dependencies:
 
-## Database
+    ```bash
+    helm dependency update
+    ```
+3.  Install the Helm Chart:
 
-Postgresql is installed as part of the above procedure in the same namespace. The default database created is `openg2p_g2p_bridge_db`.
+    ```bash
+    helm install openg2p-g2p-bridge ./openg2p-g2p-bridge -f values.yaml -n <namespace>
+    ```
 
-## Sanity testing
+    * Replace `openg2p-g2p-bridge` with your desired release name.
+    * Replace `<namespace>` with your Kubernetes namespace.
+    * Use the `-f` flag to provide custom configurations through a `values.yaml` file.
+4. Update Values File (Optional): To customize your configuration, you can update the `values.yaml` file. This is where you can set the hostname, Docker image tags, and other configurations to match your environment.
+5.  Check the Deployment: After running the install command, verify that all pods and services are running correctly.
+
+    ```bash
+    helm status openg2p-g2p-bridge
+    kubectl get pods,svc
+    ```
+6.  Updating the Helm Release: If you make changes to the `values.yaml` file or any part of the Helm chart, use the following command to upgrade the release:
+
+    ```bash
+    # This command will delete all Kubernetes resources associated with the release.
+    helm upgrade openg2p-g2p-bridge ./openg2p-g2p-bridge -f values.yaml -n <namespace>
+    ```
+
+***
+
+## Post-Installation Configuration
+
+After deploying the G2P Bridge, you must configure the following database table to enable the benefit program features:
+
+* Table: `benefit_program_configurations`
+* Purpose: This table stores configuration details for each benefit program, which are essential for the operation of the G2P Bridge.
+
+### **Access Links**
+
+Once the installation is complete, G2P-Bridge will be accessible at the following URL, based on the URL you provided during setup:
+
+* G2P-Bridge API: `https://g2p-bridge.openg2p.sandbox.net/api/g2p-bridge`
+
+### **Database**
+
+PostgreSQL is installed as part of this procedure in the same namespace. The default database created is `openg2p_g2p_bridge_db`.
+
+## **Sanity Testing**
 
 TBD
