@@ -16,55 +16,64 @@ G2P Registry: Security
 
 [Odoo](https://www.odoo.com/)
 
-### Functionality
+**Functionality**
 
-* **Session Timeout Management**
-  * Automatically logs out inactive users by monitoring session file timestamps.
-  * Ends sessions that exceed the configured timeout.
-  * Updates timestamps on active HTTP requests.
-* **Debug Mode Restriction**
-  * Restricts access to Debug Mode for users by "Restrict Debug Mode" group.
-* **Database Parameter Removal from Signup URLs**
-  * Removes the `db` parameter from generated signup URLs for enhanced security.
+**Session Timeout Management**
 
+* **Automatic User Logout**: Monitors user session activity and automatically logs out inactive users
+* **Configurable Timeout**: Session timeout duration can be configured via system parameters
+* **Activity Tracking**: Updates session timestamps on active HTTP requests to track user activity
+* **Session Expiration Check**: Compares last activity time with current time to determine if session has expired
+* **Graceful Logout**: Properly terminates expired sessions while preserving database connection
 
+**Session Timeout Control**
+
+* **Enable/Disable Feature**: Session timeout can be activated or deactivated via configuration
+* **Real-time Configuration**: Changes to session timeout settings immediately clear cache for instant application
+
+**Debug Mode Restriction**
+
+* Restricts access to Debug Mode for users by "Restrict Debug Mode" group
+
+**Database Parameter Removal from Signup URLs**
+
+* Removes the `db` parameter from generated signup URLs for enhanced security
 
 **Dependencies**
 
-Module dependencies
+**Module dependencies**
 
 * base
 * auth\_signup
 
-### Configuration
+**Configuration**
 
-**• Session Timeout**
+**Session Timeout Parameters**
+
+**Timeout Duration**
 
 * **Parameter Key**: `inactive_session_timeout_seconds`
 * **Default Value**: `7200` seconds (2 hours)
-* **Configuration Methods**:
-  * **Odoo UI**:\
-    Navigate to **Settings → Technical → Parameters → System Parameters** and set the key.
-  *   **Programmatically**:\
-      Use the following code to set the timeout value:
+* **Description**: Sets the duration of inactivity before a session expires
 
-      ```python
-      self.env['ir.config_parameter'].set_param('inactive_session_timeout_seconds', '3600')
-      ```
-* When the parameter is updated, the module **clears the ORM cache** to apply the new value immediately across all sessions.
+**Timeout Activation**
 
-***
+* **Parameter Key**: `inactive_session_timeout_active`
+* **Default Value**: `False`
+* **Description**: Enables or disables the session timeout feature
+* **Values**:
+  * `"True"` - Session timeout is active
+  * `"False"` - Session timeout is disabled
 
-**• Hide DB in URLs (Optional)**
+**Hide DB in URLs (Optional)**
 
 * **Parameter Key**: `g2p_security.hide_db_param`
 * **Set to**: `"True"` to remove the `db` parameter from generated signup URLs
 * **Default**: `"True"`
 
-### Source code
+**Source code** [https://github.com/OpenG2P/openg2p-registry/tree/17.0-develop/g2p\_security](https://github.com/OpenG2P/openg2p-registry/tree/17.0-develop/g2p_security)
 
-[https://github.com/OpenG2P/openg2p-registry](https://github.com/OpenG2P/openg2p-registry/tree/17.0-1.5/g2p_security)
-
-### Installation
+**Installation**
 
 * Install the "G2P Registry: Security" module from the Odoo Apps interface.
+
