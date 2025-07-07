@@ -1,6 +1,4 @@
-# PBMS (Odoo)
-
-## Static definitions / configurations
+# Static definitions
 
 ### <mark style="color:blue;">Benefit Codes</mark>
 
@@ -60,7 +58,7 @@ A beneficiary address should necessarily consist of a Large Zone and a Small Zon
 
 When a program involves physical distribution of goods and services, the program administering department needs to liaise with a warehouse, where the goods are stored. Depending on the geographical spread of the beneficiaries, the department will likely appoint agencies who then procure the goods from these warehouses and do the actual distribution.&#x20;
 
-You need to maintain Warehouses and also associate these warehouses to the Geography (large) and the Benefit Codes. Because you might use specific warehouses for certain geographical zones (driven by proximity and ease of transport). Similarly, they might be specific warehouses for specific goods.&#x20;
+You need to maintain Warehouses and also associate these warehouses to the Geography (large) and the Benefit Codes. Because you might use specific warehouses for certain geographical zones (driven by proximity and ease of transport). Similarly, there might be specific warehouses for specific goods.&#x20;
 
 Based on these constraints, you have to map Warehouses to Geographic Administrative Zones (Large) and to one or more Benefit. Codes.
 
@@ -72,12 +70,15 @@ During disbursement, the PBMS platform will automatically allocate Warehouses de
 
 ### Agencies
 
+Similar to Warehouses, when a benefit program involves physical distribution of goods and services, a government department typically empanels agencies who help with the actual delivery on the field.&#x20;
+
+These agencies are chosen based on their presence on the field. Agencies typically have a zone of operation. Similarly, not all agencies are equipped to handle all goods and services. So based on these capabilities, you have to map agencies to GAZ-small and Benefit Codes.
+
+During disbursement, the PBMS platform will automatically allocate Agencies depending on these configurations.
+
+Screens
 
 
-1. Geographic Administrative Zones - Large
-2. Geographic Administrative Zones - Small
-3. Agenciesive
-4. Warehouses
 
 
 
