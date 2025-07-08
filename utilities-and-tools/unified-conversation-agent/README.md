@@ -1,7 +1,3 @@
----
-description: WORK IN PROGRESS
----
-
 # Unified Conversation Agent (UCA)
 
 This is an exploration project to build an AI-based Unified Conversation Agent (UCA) to make the lives of end users better and deliver useful services. UCA will leverage AI technologies to support OpenG2P use cases for social benefit delivery across programs and departments. This intelligent agent will engage directly with callers via voice, providing real-time updates on program statuses and disbursements, informing them about eligibility for additional programs, and enabling seamless program application entirely through phone or voice interactions.
@@ -27,9 +23,7 @@ This is an exploration project to build an AI-based Unified Conversation Agent (
 
 ## Components & Design
 
-{% embed url="https://miro.com/app/board/uXjVIlEFyLM=/" %}
-UCA Technical Architecture
-{% endembed %}
+<figure><img src="../../.gitbook/assets/uca-technical.jpg" alt=""><figcaption></figcaption></figure>
 
 #### Overview
 
@@ -89,9 +83,7 @@ UCA Technical Architecture
   * Ollama v0.8.0
   * PBMS + PostgreSQL: exposes program information, beneficiary data, and grievance redressal mechanisms.
 
-{% embed url="https://miro.com/app/board/uXjVIlVOwRI=/?share_link_id=630177844252" %}
-PoC Setup Diagram
-{% endembed %}
+<figure><img src="../../.gitbook/assets/uca-poc-setup.jpg" alt=""><figcaption></figcaption></figure>
 
 ### PoC demo videos
 
