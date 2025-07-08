@@ -11,15 +11,13 @@ The instructions here pertain to the deployment of all Social Registry and assoc
 
 ## Prerequisites
 
-Before you deploy, make sure the following are available:
+Before you deploy, make sure the following are in place:
 
-* [Base infrastructure](../../deployment/base-infrastructure/) along with domain name and certificates for Rancher and Keycloak.
-* [Domain names and certificates](domain-names-and-certificates.md) specific to Social Registry.
-* Nginx server configuration
-  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
-* Namespace is created (On Rancher a namespace is created under a Project).
-* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission on the namespace of OpenG2P cluster.&#x20;
-* Gateways are setup for the domain as given here [Istio namespace setup](../../deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).
+* ✅ **Kubernetes cluster** is up and running
+* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
+* ✅ **Namespace is created** (via Rancher under a Project)
+* ✅ **Project Owner access** on the OpenG2P namespace
+* ✅ **Istio gateway** is set up in the namespace
 
 ## Installation using Rancher UI
 
@@ -35,8 +33,7 @@ Before you deploy, make sure the following are available:
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 6. Select the namespace in which you would like to install Social Registry, from the namespace filter on the top-right.
-7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P Social Registry` Helm charts listed.\
-
+7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P Social Registry` Helm charts listed.
 
     <figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
@@ -59,8 +56,7 @@ Before you deploy, make sure the following are available:
 11. To pull docker from a private repository on Docker Hub, follow guide [here](../../deployment/deployment-guide/pulling-docker-from-private-repository-on-docker-hub.md). \
     **Note:** This step is required only if you have separate private docker image to be deployed or else you can go with default one skip this step.
 12. Click Next to reach Helm Options page. Disable `wait` flag. Click on Install.
-13. Wait for all the pods to get into **Running state**. This may take several minutes.\
-
+13. Wait for all the pods to get into **Running state**. This may take several minutes.
 
     <div align="left"><figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure></div>
 

@@ -1,84 +1,38 @@
 ---
-description: Helm Chart Deployment of OpenG2P Example Bank Simulator
+description: Deployment of OpenG2P Example Bank Simulator
 ---
 
 # Deployment of Example Bank
 
 ### Prerequisites
 
-Before deploying the Helm charts, ensure that the following prerequisites are met:
+Before you deploy, make sure the following are in place:
 
-1. **Kubernetes Cluster**: A Kubernetes cluster is up and running. You can use any Kubernetes provider.
-2. **Helm CLI**: Helm CLI installed. Version 3.x or higher is recommended. You can install Helm using the official Helm installation guide.
-3. **Access to Docker Hub**: Ensure that Docker Hub can be accessed to pull the required container images.
-4. **Configured Values**: Update the `values.yaml` file with any custom settings needed for your deployment, including image versions, credentials, hostnames, etc.
+* ✅ **Kubernetes cluster** is up and running
+* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
+* ✅ **Namespace is created** (via Rancher under a Project)
+* ✅ **Project Owner access** on the OpenG2P namespace
+* ✅ **Istio gateway** is set up in the namespace
 
-### Deployment Artefacts
+## Installation using Rancher UI
 
-An overview of all necessary artifacts to deploy the G2P Bridge Example Bank application, stored in designated repositories to ensure controlled access and ease of deployment.
+1. Log in to the Rancher admin console and select your cluster.
+2. Go to Apps -> Repositories and click Create to add a new repository.
+3. Enter "openg2p" as the Name and `https://openg2p.github.io/openg2p-helm/rancher` as the target HTTPS Index URL, then click Create.
+4. Select the desired namespace for installation from the filter on the top-right.
+5. To see prerelease versions of OpenG2P apps, click your user avatar in the upper right corner of the Rancher dashboard and select Include Prerelease Versions under Preferences.
+6. Navigate to the Apps -> Charts page. The OpenG2P-G2P-Bridge-Example-Bank will be listed on the dashboard.
+7. Click on the Helm chart, choose the version you want to install, and click Install.\
+   ![](<../../.gitbook/assets/image (73).png>)
+8. On the next screen, provide a name for the installation (e.g., `example-bank`), check the Customise Helmbox before installation, and click Next.
+9. Configure the following for each app:
+   * Set a hostname for each app in the format `<appname>.<base-hostname>`, where `<base-hostname>` is the wildcard hostname chosen during the Istio namespace setup (e.g., `example-bank.dev.openg2p.org`). The `<appname>` is arbitrary, and default names are provided.
+   * Select all the recommended services you wish to install. The Bridge installation includes API and Celery Background task services.
+10. Click Next to proceed to the Helm Options page. Disable the wait flag and click Install.
+11. Monitor the pods until they all enter a Running state, which may take several minutes.\
+    ![](<../../.gitbook/assets/image (77).png>)
 
-**1. Helm Chart for G2P Bridge Example Bank**
-
-* **Purpose**: Deploys the complete G2P Bridge suite on Kubernetes, including the API, Celery Beat (for scheduled tasks), and Celery Workers (for background processing).
-* **Repository**: [G2P Bridge Example Bank Deployment on GitHub​](https://github.com/psnappz/openg2p-g2p-bridge-example-bank)
-* **Access and Installation**:
-  *   Add the GitHub Helm chart repository and install the `openg2p-g2p-bridge-example-bank` chart, which includes all Example Bank components:\
-
-
-      ```bash
-      helm repo add openg2p https://github.com/OpenG2P/openg2p-g2p-bridge-example-bank-deployment
-      helm repo update
-      helm install openg2p-example-bank openg2p/openg2p-g2p-bridge-example-bank --namespace your-namespace
-      ```
-  * **Environment Configuration**: Ensure the required environment variables are configured before installation. Refer to [Example Bank Developer](https://docs.openg2p.org/g2p-bridge/development/developer-install/example-bank#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977) section to know more about environment configuration.
-
-**2. Docker Images**
-
-* **Purpose**: Provides containerized versions of each G2P Bridge component for consistent and repeatable deployments.
-* **Repository**: Docker Hub
-* **Available Images**:
-  * **API**: [openg2p-g2p-bridge-example-bank-api​](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-example-bank-api)
-  * **Celery Workers**: openg2p-g2p-bridge-example-bank-celery-workers[^1][​](https://hub.docker.com/r/openg2p/openg2p-g2p-bridge-example-bank-celery)
-* **Usage**:
-  *   Each image can be pulled directly from Docker Hub:
-
-      ```bash
-      docker pull openg2p/openg2p-g2p-bridge-example-bank-api:<version>
-      docker pull openg2p/openg2p-g2p-bridge-example-bank-celery:<version>
-      ```
-  * Replace `<version>` with the specific tag or `latest` for the latest stable release.
-
-**2. Python Libraries**
-
-* **Purpose**: Provides essential libraries and dependencies for Example Bank services. These are available on PyPI and should be installed where necessary.
-* **Repository**: [PyPI (Python Package Index)](https://pypi.org/)​
-* **Available Libraries**:
-  * `openg2p-fastapi-common`: Common FastAPI components.
-  * `openg2p-fastapi-auth`: Authentication modules.
-  * `openg2p-g2pconnect-common-lib`: Core library for G2P Connect.
-  * `openg2p-g2p-bridge-example-bank-models`: Database models.
-  * `openg2p-g2p-bridge-example-bank-api`: API components.
-  * `openg2p-g2p-bridge-example-bank-celery`: Celery tasks.
-* **Installation**:
-  *   Install each required package using `pip`
-
-      ```
-      pip install openg2p-fastapi-common
-      pip install openg2p-fastapi-auth
-      pip install openg2p-g2pconnect-common-lib
-      pip install openg2p-g2p-bridge-example-bank-models
-      pip install openg2p-g2p-bridge-example-bank-api
-      pip install openg2p-g2p-bridge-example-bank-celery
-      ```
-
-**3. Post-Installation Configuration**
-
-After deploying the Example Bank, the following database table must be configured to enable the benefit program features:
-
-* **Table**: `accounts`
-* **Purpose**: Stores bank account details, which are essential for the operation of the G2P Bridge.
-
-### Deployment Steps
+## **Installation using CLI**
 
 #### 1. Clone the GitHub Repository
 
@@ -142,4 +96,9 @@ $ helm uninstall openg2p-g2p-example-bank -n <namespace>
 
 This will delete all Kubernetes resources associated with the release.
 
-[^1]: 
+## **Post-Installation Configuration**
+
+After deploying the Example Bank, the following database table must be configured to enable the benefit program features:
+
+* **Table**: `accounts`
+* **Purpose**: Stores bank account details, which are essential for the operation of the G2P Bridge.

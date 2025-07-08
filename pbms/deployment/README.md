@@ -11,15 +11,13 @@ This document contains instructions for all the deployment of PBMS modules and t
 
 ## Prerequisites
 
-Before you deploy, make sure the following are available:
+Before you deploy, make sure the following are in place:
 
-* [Base infrastructure](https://docs.openg2p.org/deployment/base-infrastructure) including the domain name and certificates from Rancher and Keycloak.&#x20;
-* PBMS's [Domain names and certificates](https://docs.openg2p.org/pbms/deployment/domain-names-and-certificates).&#x20;
-* Nginx server configuration
-  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
-* Rancher must have a Namespace created under a Project.
-* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission to use the OpenG2P cluster's namespace.
-* Gateways are setup for the domain as given here [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup).&#x20;
+* ✅ **Kubernetes cluster** is up and running
+* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
+* ✅ **Namespace is created** (via Rancher under a Project)
+* ✅ **Project Owner access** on the OpenG2P namespace
+* ✅ **Istio gateway** is set up in the namespace
 
 ## Installation using Rancher UI
 
@@ -48,8 +46,7 @@ Before you deploy, make sure the following are available:
     2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
     3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
 11. Click on Next to navigate to Helm Options page. Disable `wait` flag. Click on Install.
-12. Watch for every pods to enter a **Running** state. This may take several minutes.\
-
+12. Watch for every pods to enter a **Running** state. This may take several minutes.
 
     <div align="left"><figure><img src="../../.gitbook/assets/image (68).png" alt=""><figcaption></figcaption></figure></div>
 

@@ -11,15 +11,13 @@ The instructions here pertain to the deployment of all SPAR components on the Ku
 
 ## Prerequisites
 
-Before you deploy SPAR, make sure the following are available:
+Before you deploy, make sure the following are in place:
 
-* [Base infrastructure](https://docs.openg2p.org/deployment/base-infrastructure) along with domain name and certificates for Rancher and Keycloak
-* [Domain names and certificates](https://docs.openg2p.org/spar/deployment/domain-names-and-certificates) specific to Social Registry.
-* Nginx server configuration
-  * A conf file is created under `sites-enabled` on Nginx containing the above SSL certs. See [sample conf file](https://github.com/OpenG2P/openg2p-deployment/blob/main/kubernetes/nginx/server.sample.conf).
-* Namespace is created (On Rancher a namespace is created under a Project).
-* [Project Owner](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles#project-roles) permission on the namespace of OpenG2P cluster.
-* Gateways are setup for the domain as given here [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup).
+* ✅ **Kubernetes cluster** is up and running
+* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
+* ✅ **Namespace is created** (via Rancher under a Project)
+* ✅ **Project Owner access** on the OpenG2P namespace
+* ✅ **Istio gateway** is set up in the namespace
 
 ## Installation using Rancher UI
 
@@ -29,21 +27,19 @@ Before you deploy SPAR, make sure the following are available:
 4. Provide **Name** as "openg2p" and target HTTPS **Index** **URL** as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on **Create**.
 5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
 6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on **Include Prerelease Versions** under **Preferences** below the **Helm Charts**.
-7. Navigate to **Apps->Charts** page on Rancher. You can find the **OpenG2P SPAR** is listed in the dashboard.
+7. Navigate to **Apps->Charts** page on Rancher. You can find the **OpenG2P SPAR** is listed in the dashboard.\
+   ![](<../../.gitbook/assets/image (74).png>)
+8. Click on the Helm chart, select the version to be installed, and click **Install**.
+9. On the next screen, choose a name for installation, like `spar`. Select the checkbox **Customise Helm** before the installation, and then click on **Next**.
+10. Navigate to each app's configuration page, and configure the following:
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `spar.dev.openg2p.org`  etc. `<appname>` is arbitrary - default names have been provided.
+    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    4. Click on **Next** to navigate to **Helm** **Options** page. Disable `wait` flag. Click on **Install**.
+    5. Watch for every pods to enter a **Running** state. This may take several minutes.\
+       ![](<../../.gitbook/assets/image (64).png>)
 
-<div align="left"><figure><img src="../../.gitbook/assets/spar-chart-on-rancher.png" alt="" width="302"><figcaption></figcaption></figure></div>
-
-6. Click on the Helm chart, select the version to be installed, and click **Install**.
-7. On the next screen, choose a name for installation, like `spar`. Select the checkbox **Customise Helm** before the installation, and then click on **Next**.
-8. Navigate to each app's configuration page, and configure the following:
-   1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `spar.dev.openg2p.org`  etc. `<appname>` is arbitrary - default names have been provided.
-   2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-   3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-   4. Click on **Next** to navigate to **Helm** **Options** page. Disable `wait` flag. Click on **Install**.
-   5. Watch for every pods to enter a **Running** state. This may take several minutes.\
-      ![](<../../.gitbook/assets/image (64).png>)
-
-## Installation using the command line
+## Installation using CLI
 
 * Install the following utilities on your machine:
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
