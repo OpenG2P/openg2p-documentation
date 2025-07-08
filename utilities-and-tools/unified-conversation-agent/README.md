@@ -25,12 +25,12 @@ This is an exploration project to build an AI-based Unified Conversation Agent (
 
 <figure><img src="../../.gitbook/assets/uca-technical.jpg" alt=""><figcaption></figcaption></figure>
 
-#### Overview
+### Overview
 
 * UCA backend contains a FastAPI-based API server that exposes chat, authentication, and other related APIs.
 * Internally, the backend primarily interfaces with Ollama to generate AI responses. Moreover, it uses Ollama tool calling capabilities for retrieving information and allowing the AI to interact with external systems.
 
-#### LLM Common (openg2p-llm-common) Python module
+### LLM Common (openg2p-llm-common) Python module
 
 * This module contains classes and interfaces for different components required for a generic AI-based agent to function. The contents of this module are described as follows.
 * Almost all the classes given here are defined as interfaces. This gives the system flexibility to have multiple implementations of the services, which can then be pieced together at runtime.
@@ -52,7 +52,7 @@ This is an exploration project to build an AI-based Unified Conversation Agent (
   * A [Parler-TTS](https://github.com/huggingface/parler-tts)-based STTService is implemented, which can be installed as a Python module extra when installing the "openg2p-llm-common" module.
   * It is assumed that text processing (manipulating text to generate proper words for symbols and numbers, etc), audio processing (converting the raw audio bytes to a playable audio format, including encoding and resampling, etc) are handled within the TTSService.
 
-#### UCA (openg2p-uca) Python module
+### UCA (openg2p-uca) Python module
 
 * This contains a REST API layer (written in FastAPI), which exposes APIs for chatting (in regular mode and quick-chat mode), including APIs for sending and receiving voice messages. These are called by the frontend that runs on the web browser.
   * This chat API flow is like this: User calls the voice chat API, which sends audio to the backend. Audio is then converted to text by the STTService. The text is then processed by the LLM, along with previous messages in the chat thread (this involves invoking the required tools). The generated response is returned to the user as a text message. The user may then call the speak API to play this response text message as audio.
@@ -70,7 +70,7 @@ This is an exploration project to build an AI-based Unified Conversation Agent (
   * Get Grievance Ticket Status
 * This module also implements one Agent that makes use of all the above tools. (WIP. This is done for the PoC, but may change during implementation.)
 
-## Proof of concept Demo
+## Proof of concept&#x20;
 
 ### PoC setup
 
@@ -99,7 +99,7 @@ Grievance Demo
 
 Refer to [Developer Notes](https://github.com/OpenG2P/openg2p-uca?tab=readme-ov-file#developer-notes).
 
-## Source Code
+## Source code
 
 * Backend [https://github.com/OpenG2P/openg2p-uca](https://github.com/OpenG2P/openg2p-uca)
   * Contains LLM Common Python module and UCA Python module.
