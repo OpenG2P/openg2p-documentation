@@ -2,11 +2,29 @@
 description: Production Deployment Guide
 ---
 
-# Production
+# Production Deployment
 
 The guide here provides some useful hints for production deployment. However, this guide is not intended to be a comprehensive production deployment handbook. Production deployments vary and implementers of OpenG2P (like System Integrators) have a choice of production configurations, orchestration platforms and components. We also encourage our partners to update this guide based on their learning in the field.
 
-## RBAC
+## Air gaped deployment
+
+### Private Docker registry
+
+### Private Git repositories
+
+## Standalone Postgresql installation&#x20;
+
+* Postgres on a separate machine with high capacity.&#x20;
+* Number of instances of Postgresql pods
+* Cloud native if available
+* Production configuratio
+* Master / Slave configuration
+
+## MinIO
+
+## Kubernetes configurations
+
+### RBAC
 
 Carefully assign roles to Rancher users. Pre-defined role templates are available on Rancher. Follow [this guide](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles).  Specifically, protect the following action on resources:
 
@@ -16,20 +34,13 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 * Access to DB via port forwarding
 * Logging into DB pods
 
-## Postgresql&#x20;
+### High availability of services
 
-* Number of instances of Postgresql pods
-* Cloud native if available
-* Production configuration
-* Master / Slave configuration
-
-## High availability of services
-
-### Pod replication
+#### Pod replication
 
 * Replication of pods for high-availability.
 
-### Node replication
+#### Node replication
 
 * Provisioning of VMs across different underlying hardware and subnets for resilience.&#x20;
 * Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
@@ -100,7 +111,7 @@ The mapping between PVCs and PV must be saved after the installation so in case 
 
 <figure><img src="../.gitbook/assets/rancher-pvc-download.png" alt=""><figcaption></figcaption></figure>
 
-### NFS&#x20;
+## NFS&#x20;
 
 ### Cluster access key
 
@@ -129,6 +140,3 @@ You must adjust the max request body size according to the number of files/data 
 * Enable data nodes in OpenSearch so that backups can be taken of the data node.
 * The data node maybe enabled while installing OpenSearch. _(TBD)._
 
-## CEPH Storage
-
-If the Kubernetes clusters are used for other critical applications with large data that is critical, CEPH storage may be considered. CEPH is a highly scalable and distributed data storage which provides high performance, reliability and scalability.  The storage system is installed on a separate cluster and Kubernetes communicates the same via CSI drivers that are available. CEPH automatically replicates data across multiple nodes, ensuring data redundancy and protection against node failures. However,  CEPH is very complex to set up and manage as compared to say NFS.  It has a steep learning curve. Further, it requires high resources (CPU, memory, network).

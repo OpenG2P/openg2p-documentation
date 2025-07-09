@@ -18,7 +18,7 @@ If you would like to start off with OpenG2P and have limited hardware resources,
 * High availability of services.
 * Seamless transition to production rollout (same infrastructure may be used with few additions. Refer to [production guide](production.md)).&#x20;
 
-## Deployment architecture (V4)
+## V4 deployment architecture&#x20;
 
 <figure><img src="../.gitbook/assets/deployment-architecture-v4.jpg" alt=""><figcaption><p>Deployment Architecture</p></figcaption></figure>
 
