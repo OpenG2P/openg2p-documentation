@@ -460,7 +460,7 @@
   * [Resource Requirements](deployment/hardware-requirements.md)
   * [Helm Charts](deployment/helm-charts.md)
   * [Upgrades](deployment/upgrades.md)
-  * [Production](deployment/production.md)
+  * [Production Deployment](deployment/production.md)
   * [OpenG2P In a Box](deployment/openg2p-in-a-box.md)
   * [Packaging](deployment/packaging.md)
   * [Versioning](deployment/versioning.md)

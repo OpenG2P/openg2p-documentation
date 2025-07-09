@@ -10,6 +10,14 @@ OpenG2P offers production-grade deployment scripts, [Helm charts](helm-charts.md
 \* This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the past few years.  The V4 deployment architecture is an extension of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
 {% endhint %}
 
+If you would like to start off with OpenG2P and have limited hardware resources, you may deploy "[**OpenG2P in a box**](openg2p-in-a-box.md)" that installs all essential components required to run OpenG2P modules. However,  **we recommend installing V4 deployment infrastructure** in your organisation that offers several benefits:
+
+* Ability to scale up by adding machines when multiple sandboxes are required, or load on the system is high.
+* Single infrastructure to hold several sandboxes like dev, qa, staging and even production.
+* High security and access control.
+* High availability of services.
+* Seamless transition to production rollout (same infrastructure may be used with few additions. Refer to [production guide](production.md)).&#x20;
+
 ## Deployment architecture (V4)
 
 <figure><img src="../.gitbook/assets/deployment-architecture-v4.jpg" alt=""><figcaption><p>Deployment Architecture</p></figcaption></figure>
