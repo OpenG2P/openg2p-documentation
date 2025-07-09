@@ -18,4 +18,6 @@ practices to identify critical security flaws in assessing the platform’s risk
 **All four applications achieved the highest risk rating (A+)**, indicating an overall low risk\
 posture in line with best practices.
 
-The final reports of the audit are available [here](https://drive.google.com/drive/folders/12phue7q_DeP75APfrQtDV7G9optZx6rS?usp=drive_link)
+The final reports of the audit are available below.
+
+{% embed url="https://drive.google.com/drive/folders/12phue7q_DeP75APfrQtDV7G9optZx6rS" %}
