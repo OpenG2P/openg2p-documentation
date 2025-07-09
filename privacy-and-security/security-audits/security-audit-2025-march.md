@@ -1,11 +1,8 @@
----
-description: Exercise by GHSC - March to June 2025
----
-
 # Security Audit 2025 March
 
-OpenG2P partnered with [Nucleus Systems](https://nucleus-systems.com/) (formerly GHSC) to conduct an independent t**hird-party security audit** of OpenG2P platform. During this exercise, Nucleus Systems performed a comprehensive set of web and API **penetration tests** on four key applications of\
-the OpenG2P platform:&#x20;
+<figure><img src="../../.gitbook/assets/Security rating banner (1).jpg" alt=""><figcaption></figcaption></figure>
+
+OpenG2P partnered with [Nucleus Systems](https://nucleus-systems.com/) (formerly GHSC) to conduct an independent t**hird-party security audit** of OpenG2P platform. During this exercise, Nucleus Systems performed a comprehensive set of web and API **penetration tests** on four key applications of the OpenG2P platform:&#x20;
 
 1. Social Registry
 2. &#x20;PBMS
@@ -14,7 +11,7 @@ the OpenG2P platform:&#x20;
 
 \
 These technical assessments were conducted in accordance with OWASP and industry best\
-practices to identify critical security flaws in assessing the platform’s risk posture.\
+practices to identify critical security flaws and assess the platform’s risk posture.\
 **All four applications achieved the highest risk rating (A+)**, indicating an overall low risk\
 posture in line with best practices.
 
