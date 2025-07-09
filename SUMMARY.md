@@ -387,6 +387,7 @@
       * [PBMS (Odoo)](pbms-gen2/developer-zone/design/pbms-odoo/README.md)
         * [Static definitions](pbms-gen2/developer-zone/design/pbms-odoo/pbms-odoo.md)
         * [Enrolment & Disbursement Cycles](pbms-gen2/developer-zone/design/pbms-odoo/enrolment-and-disbursement-cycles.md)
+        * [Enrolment workflow](pbms-gen2/developer-zone/design/pbms-odoo/enrolment-workflow.md)
 * [Utilities and Tools](utilities-and-tools/README.md)
   * [ODK](utilities-and-tools/odk-collection-app.md)
     * [📔 User Guides](utilities-and-tools/odk-collection-app/user-guides/README.md)
