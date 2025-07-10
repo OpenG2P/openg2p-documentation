@@ -389,6 +389,7 @@
         * [Enrolment & Disbursement Cycles](pbms-gen2/developer-zone/design/pbms-odoo/enrolment-and-disbursement-cycles.md)
         * [Enrolment workflow](pbms-gen2/developer-zone/design/pbms-odoo/enrolment-workflow.md)
         * [Disbursement workflow](pbms-gen2/developer-zone/design/pbms-odoo/disbursement-workflow.md)
+        * [G2P Bridge workflow](pbms-gen2/developer-zone/design/pbms-odoo/g2p-bridge-workflow.md)
 * [Utilities and Tools](utilities-and-tools/README.md)
   * [ODK](utilities-and-tools/odk-collection-app.md)
     * [📔 User Guides](utilities-and-tools/odk-collection-app/user-guides/README.md)
