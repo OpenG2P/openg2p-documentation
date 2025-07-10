@@ -1,6 +1,6 @@
 # Security Audit 2025 March
 
-<figure><img src="../../.gitbook/assets/Security rating banner (1).jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Security rating banner - black.png" alt=""><figcaption></figcaption></figure>
 
 OpenG2P partnered with [Nucleus Systems](https://nucleus-systems.com/) (formerly GHSC) to conduct an independent t**hird-party security audit** of OpenG2P platform. During this exercise, Nucleus Systems performed a comprehensive set of web and API **penetration tests** on four key applications of the OpenG2P platform:&#x20;
 
