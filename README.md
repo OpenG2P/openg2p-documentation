@@ -1,5 +1,5 @@
 ---
-cover: .gitbook/assets/landing-page-banner.png
+cover: .gitbook/assets/Security rating banner - black.png
 coverY: 0
 ---
 
