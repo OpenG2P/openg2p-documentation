@@ -35,10 +35,14 @@ Depending on the resource availability and purpose, we offer different modes (or
 
 ## Installation
 
-For installing the above infrastructure, first make sure you are familiar with various concepts that are listed below.  First install the base infrastructure and then the OpenG2P modules. &#x20;
+Before you install the above infrastructure make sure you are familiar with various [concepts](./#concepts) that are listed below.  Install the base infrastructure first and then the OpenG2P modules. &#x20;
 
 * [Base infrastructure](base-infrastructure/)
-* OpenG2P specific modules _(instructions available in module-specific deployment pages)_
+* OpenG2P modules:
+  * [Social registry](../social-registry/deployment/)
+  * [PBMS](../pbms/deployment/)
+  * [SPAR](../spar/deployment/)
+  * [G2P Bridge](../g2p-bridge/deployment/)
 
 ## **Concepts** <a href="#concepts" id="concepts"></a>
 
