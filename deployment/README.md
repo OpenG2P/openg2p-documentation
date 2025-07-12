@@ -13,7 +13,7 @@ For System Integrators, the V4 Deployment Infra represents a substantial time an
 The V4 deployment is offered as a set of instructions, scripts, [Helm charts](helm-charts.md), utilities and guidelines.
 
 {% hint style="info" %}
-\* This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the past few years.  The V4 deployment architecture is an evolution of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
+This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the past few years.  The V4 deployment architecture is an evolution of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
 {% endhint %}
 
 ## V4 deployment architecture&#x20;
@@ -31,23 +31,11 @@ The Keycloak inside the Rancher cluster provides **organisation-wide authorisati
 
 Depending on the resource availability and purpose, we offer different modes (or configurations) of deployment as follows:
 
-<table><thead><tr><th width="169">Deployment Mode</th><th>Resource requirement</th></tr></thead><tbody><tr><td><a href="openg2p-in-a-box.md">In-a-box</a></td><td>Single machine deployment. Good to start off with OpenG2P while still installing the entire V4 infrastructure packed in a box.  You may use such a deployment for learning how to deploy and for trying out OpenG2P. However, this is not recommended for production. </td></tr><tr><td>Development</td><td>This is typically a multi-node deployment for your organization, hosting multiple sandboxes such as Dev, QA, and Demo on the same infrastructure to optimize resource utilization. It provides high security and full access control for internal development and testing. Components like Postgres and MinIO are installed as Docker containers here, whereas in production they are usually deployed on separate machines. This deployment facilitates a smooth transition to production.</td></tr><tr><td>Production </td><td>Extension of the Development mode. It consists of multi-node deployment for fail-safe operation and high availability for your services. Certain features related to scalability, manageability, and access control have been strengthened to support production deployments. This infrastructure also allows you to host multiple environments, such as Production and Staging/UAT, within the same infrastructure.  Critical components like Postgres, Minio and installed on separate machines for better manageability, scale and access control.</td></tr></tbody></table>
+<table><thead><tr><th width="169">Deployment Mode</th><th>Resource requirement</th></tr></thead><tbody><tr><td><a href="openg2p-in-a-box.md">In-a-box</a></td><td>Single-machine deployment is an ideal way to get started with OpenG2P, as it includes the complete V4 infrastructure packaged together. This setup is suitable for learning and experimentation purposes. However, it is not recommended for production use.</td></tr><tr><td>Development</td><td>This is typically a multi-node deployment for your organization, hosting multiple sandboxes (environments) such as Dev, QA, and Demo on the same infrastructure to optimize resource utilization. It provides high security and full access control for internal development and testing. Components like Postgres and MinIO are installed as Docker containers here, whereas in production they are usually deployed on separate machines. This deployment facilitates a smooth transition to production.</td></tr><tr><td>Production </td><td>Extension of the Development mode. It consists of multi-node deployment for fail-safe operation and high availability for your services. Certain features related to scalability, manageability, and access control have been strengthened to support production deployments. This infrastructure also allows you to host multiple environments, such as Production and Staging/UAT, within the same infrastructure.  Critical components like Postgres, Minio and installed on separate machines for better manageability, scale and access control.</td></tr></tbody></table>
 
-If you would like to start off with OpenG2P and have limited hardware resources, you may deploy "[**OpenG2P in a box**](openg2p-in-a-box.md)" that installs all essential components required to run OpenG2P modules. However,  **we recommend installing V4 deployment infrastructure** in your organisation that offers several benefits:
+## Installation
 
-* Ability to scale up by adding machines when multiple sandboxes are required, or load on the system is high.
-* Single infrastructure to hold several sandboxes like dev, qa, staging and even production.
-* High security and access control.
-* High availability of services.
-* Seamless transition to production rollout (same infrastructure may be used with few additions. Refer to [production guide](production.md)).&#x20;
-
-
-
-
-
-The above is a recommended architecture that also optimises resource usage.&#x20;
-
-For deployment, set up the following in the sequence given below:
+For installing the above infrastructure, first make sure you are familiar with various concepts that are listed below.  First install the base infrastructure and then the OpenG2P modules. &#x20;
 
 * [Base infrastructure](base-infrastructure/)
 * OpenG2P specific modules _(instructions available in module-specific deployment pages)_
