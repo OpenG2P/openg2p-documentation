@@ -409,6 +409,8 @@ You can follow the below links to install OpenG2P modules via Rancher UI.
 {% hint style="info" %}
 **How is "In a Box" different from** [**V4**](./#deployment-architecture-v4)**? Why should this not be used for production?**
 
+In-a-box is a [deployment mode](./#deployment-modes) of the V4 architecture - it packs almost all components of V4 into a single node.&#x20;
+
 * In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](base-infrastructure/load-balancer/nginx.md).
 * The SSL certificates are loaded on the Istio gateway while in V4 the certificates are loaded on the Nginx server.
 * The Wireguard bastion runs inside the Kubernetes cluster itself as a pod. This is not recommended in production where Wireguard must run on a separate node.
