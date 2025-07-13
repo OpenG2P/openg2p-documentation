@@ -58,7 +58,7 @@ If in [annotations](https://ranchermanager.docs.rancher.com/how-to-guides/new-us
 
 The Helm chart version is mentioned under the `version` attribute in the `Chart.yaml` file (see [example](https://github.com/OpenG2P/openg2p-spar-deployment/blob/1.0.0/charts/spar/Chart.yaml)).  Important to note that the version of Helm chart MAY NOT match the primary Docker version of the app inside the chart. However, generally, the major and minor versions would be same. For example, Helm chart version 1.4.2 of Social Registry may contain 1.4.0 of the Social Registry Odoo Docker. The chart version may have moved forward due to some other changes in the chart like change in dependencies, their version, or even any other minor fixes in the chart. &#x20;
 
-A 3 digit version of a chart is considered 'frozen'. See more details about versioning [here](versioning.md#frozen-versions).  Charts that are not frozen will have `-develop` tag. Examples:
+A 3 digit version of a chart is considered 'frozen'. See more details about versioning [here](../releases/versioning.md#frozen-versions).  Charts that are not frozen will have `-develop` tag. Examples:
 
 * &#x20;`1.4.0-develop`:  Non-frozen chart on 1.4  branch of the deployment repository.  \`
 * `0.0.0-develop`: Non-frozen chart on `develop`branch of deployment repository.

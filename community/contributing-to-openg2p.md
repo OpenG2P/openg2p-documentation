@@ -28,7 +28,7 @@ To contribute code to the OpenG2P project, follow the steps given below:
 
 ## Coding conventions
 
-* For Odoo modules, follow the [Odoo Coding Guidelines.](https://www.odoo.com/documentation/15.0/contributing/development/coding\_guidelines.html)
+* For Odoo modules, follow the [Odoo Coding Guidelines.](https://www.odoo.com/documentation/15.0/contributing/development/coding_guidelines.html)
 * For non-Odoo Python code, follow [PEP 8 – Style Guide for Python Code](https://peps.python.org/pep-0008/).
 
 ## Documentation contributions
@@ -37,4 +37,4 @@ The documentation of the project is available as `.md` files in the [Documentati
 
 ## Versioning of modules
 
-Refer to the [Versioning guide](../deployment/versioning.md).
+Refer to the [Versioning guide](../releases/versioning.md).

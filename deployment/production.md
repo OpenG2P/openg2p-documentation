@@ -4,7 +4,7 @@ description: Production Deployment Guide
 
 # Production Deployment
 
-The guide here provides some useful hints for production deployment. However, this guide is not intended to be a comprehensive production deployment handbook. Production deployments vary and implementers of OpenG2P (like System Integrators) have a choice of production configurations, orchestration platforms and components. We also encourage our partners to update this guide based on their learning in the field.
+The guide here provides some useful hints for production deployment. It is assumed that you are familiar with the [V4 deployment architecture](./#v4-deployment-architecture) and have already deployed the same for your development. This guide is NOT intended to be a comprehensive production deployment handbook. Since production environments can vary widely, OpenG2P implementers—such as system integrators—have flexibility in choosing production configurations, orchestration platforms, and components. We also encourage our partners to contribute updates to this guide based on their real-world experiences and insights.
 
 ## Air gaped deployment
 
