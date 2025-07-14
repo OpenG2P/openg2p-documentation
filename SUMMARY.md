@@ -505,6 +505,7 @@
     * [MinIO Standalone Installation Guide on Ubuntu VM](deployment/deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md)
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/deployment-guide/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
     * [Persistent Storage](deployment/deployment-guide/persistent-storage.md)
+    * [ETCD Backup and Restore](deployment/deployment-guide/etcd-backup-and-restore.md)
 * [📒 Guides](guides/README.md)
   * [📔 User Guides](guides/user-guides/README.md)
     * [PBMS](guides/user-guides/pbms/README.md)
