@@ -1,6 +1,6 @@
 # Packaging
 
-A module like Social Registry, PBMS, or SPAR is offered as a [Helm Chart](helm-charts.md) package.&#x20;
+A module like Social Registry, PBMS, or SPAR is offered as a [Helm Chart](../releases/helm-charts.md) package.&#x20;
 
 Refer to the packaging hierarchy here:
 

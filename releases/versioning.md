@@ -2,19 +2,19 @@
 description: Version and branch conventions followed in OpenG2P
 ---
 
-# Versioning
+# Versioning conventions
 
 In general, OpenG2P follows  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). However,  there are exceptions concerning Oodo modules which follow [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning). &#x20;
 
 ## Versioning conventions for artifacts
 
-| Artifacts        | Versioning                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Helm Charts      |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). See more details [here](../deployment/helm-charts.md#helm-chart-versions). |
-| Dockers          |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                             |
-| Git repositories | As per guidelines given [here](versioning.md#git-repository-versioning).                                                                    |
-| Odoo modules     | [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning)                                                             |
-| Non-Odoo modules |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                                             |
+| Artifacts        | Versioning                                                                                                                    |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Helm Charts      |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). See more details [here](helm-charts.md#helm-chart-versions). |
+| Dockers          |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                               |
+| Git repositories | As per guidelines given [here](versioning.md#git-repository-versioning).                                                      |
+| Odoo modules     | [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning)                                               |
+| Non-Odoo modules |  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html)                                                               |
 
 ## Git repository versioning
 
