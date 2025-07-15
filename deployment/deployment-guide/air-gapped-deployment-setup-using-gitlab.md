@@ -1,7 +1,3 @@
----
-description: WORK IN PROGRESS
----
-
 # Air-gapped deployment setup using Gitlab
 
 The guide describes steps to setup OpenG2P infra on air-gapped networks (where components run without accessing the internet) using Gitlab.

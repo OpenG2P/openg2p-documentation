@@ -12,28 +12,34 @@ Air-gapped deployment means that the nodes and cluster resources are placed in c
 
 ### Private Docker registry
 
-_\[This section is not the same as a private image repository on Docker Hub, which still requires internet, albeit the docker image is not listed publicly.]_
+> _This section is not the same as a private image repository on Docker Hub, which still requires internet, albeit the docker image is not listed publicly._
 
-This involves in setting up a docker registry to which all the docker images required by the OpenG2P modules will be uploaded, and the Kubernetes Cluster will be pointed to this private registry instead of Public Docker hub. _(TBD Guide)_
+This involves setting up a Docker registry to which all the Docker images required by the OpenG2P modules will be uploaded, and the Kubernetes Cluster will be pointed to this private registry instead of Public Docker hub. _(TBD Guide)_
 
-Newer tags of docker images will need to be pushed manually into this registry since there won't be any internet connection to pull automatically.
+Production Docker images will need to be pushed manually into this registry since there won't be any internet connection to pull automatically from Docker Hub.
 
 ### Private Git repositories
 
-This involves in setting up a Git Server that is accessible within the network. This new Git server will store some repos required by OpenG2P modules during runtime. These repos include config repos, script repos, etc. This also gives the advantage of selectively pushing OpenG2P module upgrades in the form of Helm chart versions, since helm charts will also be stored in one of the repos in the private Git server. _(TBD Guide)_
+This setup requires configuring a Git server that is accessible within your network. The Git server will host repositories needed by OpenG2P modules at runtime, such as configuration files, scripts, and more. Additionally, storing Helm charts in this private Git server allows you to selectively deploy OpenG2P module upgrades by managing Helm chart versions. (Detailed guide TBD)
 
 {% hint style="info" %}
-You can [install Gitlab on a standalone instance](deployment-guide/air-gapped-deployment-setup-using-gitlab.md) on the same network. This acts as both git server and private docker registry. Do read about the Gitlab products and their licenses before installing.
+You can [install Gitlab on a standalone instance](deployment-guide/air-gapped-deployment-setup-using-gitlab.md) on the same network. This acts as both a Git server and a private docker registry. Do read about the Gitlab products and their licenses before installing.
 {% endhint %}
 
 ## Standalone PostgreSQL installation&#x20;
+
+In a production environment, you will typically install Postgres on a separate machine with tight control on access and backups.  Some of the points to note about this setup:
 
 * Postgres on a separate machine with high capacity.&#x20;
 * Number of instances of PostgreSQL nodes
   * Master / Slave configuration
 * Cloud native if available
-* Production configuration
-* [Guide for migrating existing PostgreSQL docker to Standalone Instance](deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
+* Setting up backup of the data (<mark style="color:red;">**Critical!**</mark>)
+*   Production Configuration
+
+    **Note:** It is highly recommended that experienced Database Administrators determine the production configuration.
+
+If you are moving your PostgreSQL DB from Docker to standalone machine refer to [Guide for migrating existing PostgreSQL docker to Standalone Instance](deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
 
 ## Standalone MinIO installation
 
