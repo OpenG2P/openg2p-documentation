@@ -41,4 +41,4 @@ OpenG2P is built on a bedrock of good practices and principles that drive our wo
 
 The platform is built for inclusion and has supporting features. For example, beneficiaries in remote areas without network connectivity can be registered offline.
 
-The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under [open-source licenses](license/). It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
+The OpenG2P code is currently available on [GitHub](https://github.com/openg2p) under [open-source licenses](license.md). It is currently housed in the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), a non-profit research university.
