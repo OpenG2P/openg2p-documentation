@@ -94,9 +94,6 @@ Module Name: g2p\_registry\_encryption
 
 * For Registry Encryption, the following config can be configured on the Encryption Providers page:
 
-| Name                                 | Property name                     | Description                                                                                                                                                                                                                                                                               |
-| ------------------------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Registry Fields to Encrypt           | registry\_fields\_to\_enc         | <p>Registry fields that are supposed to be considered for encryption-decryption. This should be given as a list. Defaults:</p><pre class="language-python"><code class="lang-python">["name","family_name","given_name","addl_name","display_name","address","birth_place"]
-</code></pre> |
-| Registry Encrypted Field Placeholder | registry\_enc\_field\_placeholder | String placeholder for an encrypted field in registry. Defaults to `encrypted`.                                                                                                                                                                                                           |
+<table><thead><tr><th>Name</th><th>Property name</th><th>Description</th></tr></thead><tbody><tr><td>Registry Fields to Encrypt</td><td>registry_fields_to_enc</td><td><p>Registry fields that are supposed to be considered for encryption-decryption. This should be given as a list. Defaults:</p><pre class="language-python"><code class="lang-python">["name","family_name","given_name","addl_name","display_name","address","birth_place"]
+</code></pre></td></tr><tr><td>Registry Encrypted Field Placeholder</td><td>registry_enc_field_placeholder</td><td>String placeholder for an encrypted field in registry. Defaults to <code>encrypted</code>.</td></tr></tbody></table>
 

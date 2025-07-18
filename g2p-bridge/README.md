@@ -47,13 +47,9 @@ Rather than relying on expensive real-time payment processing capabilities, thes
 
 The following figure shows how the G2P Bridge digital cash transfer subsystem fits into the overall G2P landscape
 
-{% embed url="https://miro.com/app/board/uXjVKX-8Zq0=/?embedAutoplay=true&share_link_id=992769892719" %}
-G2P Bridge in the G2P landscape
-{% endembed %}
+<figure><img src="../.gitbook/assets/g2p-bridge-landscape.jpg" alt=""><figcaption></figcaption></figure>
 
 ## G2P Bridge technical overview
 
-{% embed url="https://miro.com/app/board/uXjVKWoMWx0=/?embedAutoplay=true&share_link_id=312099976717" %}
-G2P Bridge - Technical Architecture
-{% endembed %}
+<figure><img src="../.gitbook/assets/g2p-bridge-tech-architecture.jpg" alt=""><figcaption></figcaption></figure>
 
