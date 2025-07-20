@@ -33,6 +33,10 @@ Depending on the resource availability and purpose, we offer different modes (or
 
 <table><thead><tr><th width="169">Deployment Mode</th><th>Description</th></tr></thead><tbody><tr><td><a href="openg2p-in-a-box.md"><strong>In-a-box</strong></a></td><td><strong>Single-machine</strong> deployment is an ideal way to get started with OpenG2P, as it includes the complete V4 infrastructure packaged together. This setup is suitable for learning and experimentation purposes. However, it is not recommended for production use.</td></tr><tr><td><a href="./#development-mode-installation"><strong>Development</strong></a></td><td>This is typically a <strong>multi-node</strong> deployment for your organization, hosting multiple sandboxes (environments) such as Dev, QA, and Demo on the same infrastructure to optimize resource utilization (see above deployment architecture diagram).   It provides high security and full access control for internal development and testing. Components like Postgres and MinIO are installed as Docker containers here, whereas in production they are usually deployed on separate machines. This deployment facilitates a smooth transition to production.</td></tr><tr><td><a href="production.md"><strong>Production</strong></a> </td><td>Extension of the Development mode. It consists of multi-node deployment for fail-safe operation and high availability for your services. Certain features related to scalability, manageability, and access control have been strengthened to support production deployments.  This infrastructure  allows you to host multiple environments, such as Production and Staging/UAT, within the same infrastructure.  Critical components like Postgres, Minio and installed on separate machines for better manageability, scale and access control. Refer to the <a href="production.md">production guide</a>.</td></tr></tbody></table>
 
+## In-a-box mode installation
+
+Refer to the guide [here](openg2p-in-a-box.md).
+
 ## Development mode installation
 
 Before you install the above infrastructure make sure you are familiar with various [concepts](./#concepts) that are listed below.  Install the base infrastructure first and then the OpenG2P modules. &#x20;
@@ -43,6 +47,10 @@ Before you install the above infrastructure make sure you are familiar with vari
   * [PBMS](../pbms/deployment/)
   * [SPAR](../spar/deployment/)
   * [G2P Bridge](../g2p-bridge/deployment/)
+
+## **Production mode installation** <a href="#concepts" id="concepts"></a>
+
+Refer to the guide [here](production.md).
 
 ## **Concepts** <a href="#concepts" id="concepts"></a>
 
