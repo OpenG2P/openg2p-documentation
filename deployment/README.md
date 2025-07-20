@@ -55,8 +55,6 @@ Refer to the guide [here](production.md).
 ## **Concepts** <a href="#concepts" id="concepts"></a>
 
 {% hint style="info" %}
-**Concepts**
-
 Before proceeding with deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
 
 1. 🔒 [**Firewall Rules**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster)
