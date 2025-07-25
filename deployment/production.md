@@ -67,6 +67,14 @@ You must adjust the max request body size according to the number of files/data 
 
 For cloud native deployment, you may consider moving to highly available cloud native load balancer depending on the use case and the available options.
 
+## Docker Images
+
+### Image Pull Policy
+
+Ensure that image pull policy for all the docker images of the OpenG2P modules are set to `IfNotPresent`. This will prevent the system from pulling the docker images every time if the images already exist on the nodes.
+
+This can be checked during installation of a module in Rancher -> Installed Apps -> (chose the OpenG2P module) -> Edit values.yaml -> Find all occurrences of `pullPolicy` across the yaml and ensure that the values are set to `IfNotPresent`.&#x20;
+
 ## Kubernetes configurations
 
 ### RBAC
