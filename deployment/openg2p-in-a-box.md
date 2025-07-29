@@ -249,17 +249,16 @@ Follow the below steps to generate SSL certifiactes for each domain.
 
     Create OpenG2P-Sandbox envrionment TLS Secret, using (Edit certificate paths below):
 
-    ```bash
-    kubectl -n istio-system create secret tls tls-openg2p-$NS-ingress \
-        --cert /etc/letsencrypt/live/dev.example.com/fullchain.pem \
+    <pre class="language-bash"><code class="lang-bash">export NS=&#x3C;sandbox-name>
+    <strong>kubectl -n istio-system create secret tls tls-openg2p-$NS-ingress \
+    </strong>    --cert /etc/letsencrypt/live/dev.example.com/fullchain.pem \
         --key /etc/letsencrypt/live/dev.example.com/privkey.pem
-    ```
+    </code></pre>
 
+    **Note:** `You can name your sandbox anything, e.g., dev, qa, or test`. Make sure to note it down for future use, as you’ll use the same name for the **project and namespace** when creating them in Rancher.\
     Screenshot for TXT record mapping:
 
     <figure><img src="../.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
-
-    **Note:** `You can name your sandbox anything, e.g., dev, qa, or test`. Make sure to note it down for future use, as you’ll use the same name for the **project and namespace** when creating them in Rancher.
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory and have been uploaded to the istio-system namespace as a Kubernetes secret.</mark>
 
