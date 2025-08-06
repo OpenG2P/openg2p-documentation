@@ -8,11 +8,7 @@ The registry is offered as ready-to-deploy package which can be configured for a
 
 ## Functional architecture
 
-
-
-{% embed url="https://miro.com/app/board/uXjVN3lWhUg=/?embedAutoplay=true&share_link_id=891444726778" %}
-Social Registry Functional Architecture
-{% endembed %}
+<figure><img src="../.gitbook/assets/social-registry-functional-architecture.jpg" alt=""><figcaption></figcaption></figure>
 
 ## Salient features
 
