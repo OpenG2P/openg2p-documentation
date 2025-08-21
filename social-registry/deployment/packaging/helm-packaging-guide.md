@@ -8,10 +8,6 @@ description: How to create a Helm Package for Social Registry
 
 Social Registry and all its dependencies are installed using a single [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts). Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.  The contents of the Helm package may be found in the [`Chart.yaml`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/develop/charts/openg2p-social-registry/Chart.yaml) file\*.  Learn more on Helm charts, versioning and publishing [here](../../../releases/helm-charts.md#helm-chart-versions).
 
-{% hint style="info" %}
-\* The chart has been split into parts to address the Kubernetes ETCD limitation. [Learn more >>](../../../releases/helm-charts.md#helm-chart-size-limitation)
-{% endhint %}
-
 The package hierarchy is depicted below.
 
 {% embed url="https://miro.com/app/board/uXjVKoUYG7g=/" %}
@@ -23,18 +19,18 @@ The package hierarchy is depicted below.
 The charts are located in [this](https://github.com/OpenG2P/openg2p-social-registry-deployment/) repo.
 
 1. Decide on which branch you would like to create the tag.
-2. On the marked branch create another branch with same name as the version, e.g. 1.3.1.
+2. On the marked branch, create another temporary branch with the same name as the version, e.g. 1.3.1 (or some generic name like `temp`).
 3. On this branch make the necessary changes in the chart:
-   1. Update `Chart.yaml` file. Make sure 3 digit version without any suffix is updated in the file.
-   2. Update any dependency chart versions. Make sure all the versions of other charts are frozen versions.
-   3. Update `values.yaml` with the tagged version of the docker image.&#x20;
-4. Check in the changes on this branch
-5. Create a tag following tagging conventions. E.g. `v1.3.1`. &#x20;
-6. The Github workflow action to package Helm and push on `openg2p-helm` repo's `gh-pages` branch should be triggered automatically and the chart published.
-7. Update the [Versions](../../versions.md) page on this documentation.
+   1. Update all `Chart.yaml` files. Make sure 3 digit version without any suffix is updated in the file.
+   2. Update any dependency chart versions. Make sure all the versions of other charts are frozen versions (not develop/prerelease versions).
+   3. Update `values.yaml` with the tagged version of all the Docker images. (There are multiple places where tags of docker images have to be updated. Find all lines containing `image:`.)
+4. Commit the changes on this branch
+5. Create a tag following tagging conventions out of this temporary branch. E.g. `v1.3.1`.
+6. The GitHub workflow action to package Helm charts and push to the `openg2p-helm` repo should be triggered automatically.
+7. Delete the temporary branch that was created in the above steps.
+8. Update the [Versions](../../versions.md) page on this documentation.
+9. Once the GitHub actions are finished, the packages should be available on Rancher also (Use the refresh button on the Rancher Charts page to see the latest versions).
 
 {% hint style="warning" %}
-The Github workflow triggers only if the branch already exists and changes are applied on the branch. So create the branch first on Github directly and push the Helm changes.
+Do NOT make these changes to the temporary branch directly on GitHub. Create the temporary branch on GitHub first, commit all the changes locally, and then make a push to the temporary branch from local. (This is done this way because of how the GitHub action gets triggered.)
 {% endhint %}
-
-### Making package availabe on Rancher
