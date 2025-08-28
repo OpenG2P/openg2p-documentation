@@ -285,6 +285,7 @@ Install rancher from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-dep
 
 ```bash
 RANCHER_HOSTNAME=rancher.example.com \
+NS=cattle-system \
 TLS=true \
 ./install.sh --set replicas=1 --version 2.9.3
 ```
@@ -304,6 +305,7 @@ Install keycloak from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-d
 
 ```bash
 KEYCLOAK_HOSTNAME=keycloak.example.com \
+NS=keycloak-system \
 TLS=true \
 ./install.sh --set replicaCount=1
 ```
