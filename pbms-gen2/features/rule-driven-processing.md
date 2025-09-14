@@ -1,0 +1,20 @@
+---
+layout:
+  width: default
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+---
+
+# Rule-Driven Processing
+
+At the heart of PBMS lies its rule-driven framework. Eligibility rules determine who qualifies as a beneficiary during enrolment cycles, ensuring that only citizens who meet defined criteria are enrolled. Disbursement rules operate within the context of beneficiary lists and allow programs to refine or reduce those lists when preparing disbursements. Entitlement rules are applied to disbursement lists to determine the exact goods or services each beneficiary is entitled to. By applying these rules systematically, PBMS ensures that the process is transparent, auditable, and adaptable to varying program needs.
