@@ -524,7 +524,7 @@
     * [Resizing Persistent Volume Claim in Kubernetes Cluster](deployment/deployment-guide/resizing-persistent-volume-claim-in-kubernetes-cluster.md)
     * [Persistent Storage](deployment/deployment-guide/persistent-storage.md)
     * [ETCD Backup and Restore](deployment/deployment-guide/etcd-backup-and-restore.md)
-  * [Archiecture V5](deployment/archiecture-v5.md)
+  * [Archiecture V4.5](deployment/archiecture-v4.5.md)
 * [📒 Guides](guides/README.md)
   * [📔 User Guides](guides/user-guides/README.md)
     * [PBMS](guides/user-guides/pbms/README.md)
