@@ -10,6 +10,12 @@ The new way of deployment offers a few challenges as databases of several sandbo
 
 ## Postgres
 
+* Postgres is installed using openg2p-commons
+* Originally the chart of Postgres would create database for the module along with an admin user of the database.
+* Now the database and user has to be created by each module before installation
+* Postgres-init Helm Chart has been created for this purpose
+* This chart must be added to the dependency of module Helm and sufficient time must be given for the module to wait until the database is created.  There is `wait_for_psql.py` in Docker of modules like Registry and PBMS. The timeout there needs to be increased to ensure that enough time is given for the postgres-init to run and create the database
+
 ### Database initialization
 
 ## Work progress
