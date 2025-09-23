@@ -81,7 +81,7 @@
     * [Packaging](social-registry/deployment/packaging/README.md)
       * [📘 Docker Packaging Guide](social-registry/deployment/packaging/docker-packaging-guide.md)
       * [📘 Helm Packaging Guide](social-registry/deployment/packaging/helm-packaging-guide.md)
-      * [Helm Developer Guide](social-registry/deployment/packaging/helm-developer-guide.md)
+      * [Registry Helm Chart - Developer's Guide](social-registry/deployment/packaging/registry-helm-chart-developers-guide.md)
   * [Developer Zone](social-registry/developer-zone/README.md)
     * [Technology Stack](social-registry/developer-zone/technology-stack.md)
     * [API Reference](social-registry/developer-zone/api/README.md)
