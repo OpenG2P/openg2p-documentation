@@ -16,3 +16,8 @@ The courses are currently available only to those who are part of our [OpenG2P P
 All the courses are available at the [learn.openg2p.org](https://learn.openg2p.org/).
 
 The team is working on creating more courses that will provide insights on OpenG2P in specific use cases, and more.&#x20;
+
+## Learning platform
+
+OpenG2P Academy uses Moodle version 4.5 for the courses.  Guide to install Moodle and configure it for our purpose is available [here](https://docs.google.com/document/d/1s08DJg9kBdu91HIQkxU7F6Fg0DlqM05E9grWBDFcWQ8/edit?tab=t.0).
+
