@@ -10,7 +10,7 @@ SR enables APIs to [Search](search-apis.md) and do CRUD operations.  The search 
 
 * [Search APIs](search-apis.md)
 * [Individual APIs](individual-apis.md)
-* [Group APIs](group-apis.md)
+* [Group APIs](group-apis/)
 
 ## Source code
 
