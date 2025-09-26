@@ -2,7 +2,11 @@
 description: How to create a Helm Package for Social Registry
 ---
 
-# 📘 Helm Packaging Guide
+# Registry Helm Chart - 2.x.x
+
+{% hint style="warning" %}
+The material here applies to all Social Registry charts with 2.x.x versions.  The deployment architecture going forward is changed [(4.5 architecture)](../../../deployment/archiecture-v4.5/) and consequently the charts have changed. For newer charts refer to documentation on 3.x.x version of charts and above&#x20;
+{% endhint %}
 
 ## Concepts
 
