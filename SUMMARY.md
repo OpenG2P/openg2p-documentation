@@ -328,7 +328,7 @@
     * [1.1.0](spar/releases/release-notes-1.md)
 * [G2P Bridge](g2p-bridge/README.md)
   * [Features](g2p-bridge/features/README.md)
-    * [Extensibility - Connect to Sponsor Banks](g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
+    * [Extensibility Layer](g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
     * [Account Mapper Resolution](g2p-bridge/features/account-mapper-resolution.md)
     * [Reconciliation with Sponsor Bank](g2p-bridge/features/reconciliation-with-sponsor-bank.md)
     * [Scaling for High Volumes](g2p-bridge/features/scaling-for-high-volumes.md)
