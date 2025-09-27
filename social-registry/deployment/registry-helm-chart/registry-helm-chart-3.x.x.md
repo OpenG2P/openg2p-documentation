@@ -8,6 +8,10 @@ description: >-
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
 
+## Chart dependencies
+
+Several modules that were installed in 2.x.x
+
 ## External database for Odoo
 
 In the [4.5 deployment architecture](../../../deployment/archiecture-v4.5/),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
@@ -71,6 +75,19 @@ Several global are used in the Registry Helm chart.  Strictly speaking, globals 
 
 * Use of `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo.
 
+### Bootstrap modules
+
+Modules that are pre-installed in Odoo are specified as a hard coded list in the Helm chart:
+
+```
+ ODOO_BOOTSTRAP_MODULES: >-
+      base,
+      g2p_app_filter,
+      g2p_auth_oidc,
+      g2p_auth_oidc_keycloak,
+      g2p_registry
+```
+
 ### Secrets
 
 * "keep" method
@@ -88,8 +105,6 @@ Several global are used in the Registry Helm chart.  Strictly speaking, globals 
 * Secret for user does not get deleted (and rightly so)
 * If you re-run the helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
 *
-
-
 
 &#x20;
 
