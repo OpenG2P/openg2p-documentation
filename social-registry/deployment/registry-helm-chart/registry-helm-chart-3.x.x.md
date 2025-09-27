@@ -37,7 +37,8 @@ The postgres-init Docker is published on [Docker Hub](https://hub.docker.com/r/o
 To run the Docker from your machine on the cluster (for development and testing), use the following method:
 
 * Port forward using `kubectl` to connect to Postgres server on the cluster
-* Give host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
+* Create an env file like this [example](https://github.com/OpenG2P/postgres-init/blob/develop/.env.example). For POSTGRES\_HOST  give the host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
+* Run as given [here](https://github.com/OpenG2P/postgres-init/blob/develop/README.md).
 
 {% hint style="warning" %}
 If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work on Linux machine otherwise you will run into architecture mismatch issues.
@@ -46,6 +47,25 @@ If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work o
 ## Odoo
 
 ### Modifications to original Odoo chart
+
+* Original Odoo chart as certain assumptions a
+* New version 26.3.0 created maintained by OpenG2P
+* Secrets separated - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be good practices to add them to the Postgres secret both from a management and security perspective. &#x20;
+
+```
+- name: POSTGRESQL_CLIENT_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalDatabase.existingPostgresSecret }}
+                  key: {{ include "odoo.databaseSecretPostgresPasswordKey" . }}
+```
+
+* The above change is in `deployment.yaml` - a new secret variable called `existingPostgresSecret` has been defined.
+* Since we want variable names for registry, users, etc that are based on release names rather than hard-coded names, the deployment.yaml of Odoo had to be modified to use `'tpl'` function rather than directly rendering the values. The `tpl` enables use to pass on a value like  '.Release.Name' which will get resolved in `deployment.yaml` of Odoo chart.
+
+### Use of globals
+
+Several global are used in the Registry Helm chart.  Strictly speaking, globals are not required and we must try not to use them.  However, here, they offer certain convenience.  To avoid hard coding of the same value of a param appearing in multiple places in the Helm chart, we use globals which are accessible to the sub-charts.  &#x20;
 
 ### Overriding Odoo templates
 
