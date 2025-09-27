@@ -8,33 +8,7 @@ description: >-
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
 
-## Chart dependencies
-
 Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/archiecture-v4.5/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
-
-## External database for Odoo
-
-In the [4.5 deployment architecture](../../../deployment/archiecture-v4.5/),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
-
-`postgresql:`\
-`enabled: false`
-
-`externalDatabase:`\
-`create: true`
-
-Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created posgtes-init (see below section)
-
-## Postgres Init
-
-&#x20;In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Postgres installation in Odoo's Helm chart.  For external database, we now have to initialise the DB, create the user and password.  Refer to Docker of postgres-init and its Helm chart [here](https://github.com/OpenG2P/postgres-init).  This is a general purpose Helm chart and can be used across modules. The functionality implemented are limited to the following:
-
-* Creation of a DB in an existing Postgres server
-* Creation of DB user
-* Creation of DB user secret with password
-
-The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
-
-The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
 ### Docker
 
@@ -52,7 +26,19 @@ If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work o
 
 ## Odoo
 
-### Modifications to original Odoo chart
+### External database
+
+In the [4.5 deployment architecture](../../../deployment/archiecture-v4.5/),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
+
+`postgresql:`\
+`enabled: false`
+
+`externalDatabase:`\
+`create: true`
+
+Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created posgtes-init (see below section)
+
+### Modifications to the original Odoo chart
 
 The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
 
@@ -96,6 +82,18 @@ Odoo Docker is packaged using the scripts in [`openg2p-packaging`](https://githu
 * WAIT\_FOR\_PROGRESS:  This is passed from `values.yaml` to a  [wait-for-psql.py ](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/docker-entrypoint.d/04-wait-for-postgres.sh)script before starting the Odoo Docker. If set to '-1', the script will not wait.&#x20;
 * The conf file passed on to Odoo may be found inside the Docker at `/etc/odoo/odoo.conf.` You may 'enter' the Odoo Docker from Rancher - by executing shell for the Odoo Pod.
 * Odoo Docker can take up to 8-10 minutes to come up as it creates several tables in the database.
+
+## Postgres-init
+
+In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Postgres installation in Odoo's Helm chart.  For external database, we now have to initialise the DB, create the user and password.  Refer to Docker of postgres-init and its Helm chart [here](https://github.com/OpenG2P/postgres-init).  This is a general purpose Helm chart and can be used across modules. The functionality implemented are limited to the following:
+
+* Creation of a DB in an existing Postgres server
+* Creation of DB user
+* Creation of DB user secret with password
+
+The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
+
+The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
 ## ID Generator and mosip-kernel DB init
 
