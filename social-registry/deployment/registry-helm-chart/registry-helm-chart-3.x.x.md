@@ -52,9 +52,9 @@ If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work o
 
 ### Modifications to original Odoo chart
 
-* Original Odoo chart as certain assumptions a
-* New version 26.3.0 created maintained by OpenG2P
-* Secrets separated - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be good practices to add them to the Postgres secret both from a management and security perspective. &#x20;
+The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
+
+* **Secrets separated** - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be good practices to add them to the Postgres secret both from a management and security perspective. &#x20;
 
 ```
 - name: POSTGRESQL_CLIENT_POSTGRES_PASSWORD
@@ -65,7 +65,6 @@ If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work o
 ```
 
 * The above change is in `deployment.yaml` - a new secret variable called `existingPostgresSecret` has been defined.
-* Since we want variable names for registry, users, etc that are based on release names rather than hard-coded names, the deployment.yaml of Odoo had to be modified to use `'tpl'` function rather than directly rendering the values. The `tpl` enables use to pass on a value like  '.Release.Name' which will get resolved in `deployment.yaml` of Odoo chart.
 
 ### Use of globals
 
@@ -98,7 +97,7 @@ Modules that are pre-installed in Odoo are specified as a hard coded list in the
 * WAIT\_FOR\_PROGRESS
 *
 
-
+## Running the Registry chart
 
 ## Tear down
 
