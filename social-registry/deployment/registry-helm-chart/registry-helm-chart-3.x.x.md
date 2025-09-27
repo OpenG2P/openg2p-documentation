@@ -10,7 +10,7 @@ The guide here can be used to understand why[ Registry Helm chart](https://githu
 
 ## Chart dependencies
 
-Several modules that were installed in 2.x.x
+Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/archiecture-v4.5/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
 ## External database for Odoo
 
@@ -33,6 +33,8 @@ Note that `create: true` is not really creating the DB - this is perhaps a known
 * Creation of DB user secret with password
 
 The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
+
+The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
 ### Docker
 
@@ -72,11 +74,11 @@ Several global are used in the Registry Helm chart.  Strictly speaking, globals 
 
 ### Overriding Odoo templates
 
-* Use of `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo.
+Use of `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo such that values like .`Release.Name` can be used.  Some of the Odoo templates have been overridden in the Registry chart to enable templating. Refer to [`_helpers.tpl`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/templates/_helpers.tpl) for details on these templates.
 
 ### Bootstrap modules
 
-Modules that are pre-installed in Odoo are specified as a hard coded list in the Helm chart:
+Modules that are pre-installed in Odoo are specified as a hard-coded list in the Registry Helm chart:
 
 ```
  ODOO_BOOTSTRAP_MODULES: >-
@@ -87,15 +89,23 @@ Modules that are pre-installed in Odoo are specified as a hard coded list in the
       g2p_registry
 ```
 
-### Secrets
+### Docker
 
-* "keep" method
-*
+Odoo Docker is packaged using the scripts in [`openg2p-packaging`](https://github.com/OpenG2P/openg2p-packaging/tree/main/packaging) repo.
 
-## &#x20;values.yaml
+* WAIT\_FOR\_PROGRESS:  This is passed from `values.yaml` to a  [wait-for-psql.py ](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/docker-entrypoint.d/04-wait-for-postgres.sh)script before starting the Odoo Docker. If set to '-1', the script will not wait.&#x20;
+* The conf file passed on to Odoo may be found inside the Docker at `/etc/odoo/odoo.conf.` You may 'enter' the Odoo Docker from Rancher - by executing shell for the Odoo Pod.
+* Odoo Docker can take up to 8-10 minutes to come up as it creates several tables in the database.
 
-* WAIT\_FOR\_PROGRESS
-*
+## ID Generator and mosip-kernel DB init
+
+The ID Generator requires mosip-kernel database to be created. This is currently created under Registry, but ideally, mosip\_kernel could be created as part of openg2p-commons (TBD).
+
+## Background tasks
+
+The bg-tasks installed with this Helm require Redis which is also installed with this chart.  We would use one Redis per module instead of installing Redis for every application.&#x20;
+
+Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the logs ‘unable’ to connect to Redis, it’s fine, as long as ultimately it gets connected.
 
 ## Running the Registry chart
 
