@@ -18,11 +18,58 @@ In the [4.5 deployment architecture](../../../deployment/archiecture-v4.5/),  si
 `externalDatabase:`\
 `create: true`
 
-TBD: What does create: true do?
+Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created posgtes-init (see below section)
 
 ## Postgres Init
 
-In the [4.5 deployment architecture](../../../deployment/archiecture-v4.5/),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](../../../deployment/archiecture-v4.5/openg2p-commons-helm-chart.md)).    In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Posgres installation in Odoo's Helm chart.
+&#x20;In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Postgres installation in Odoo's Helm chart.  For external database, we now have to initialise the DB, create the user and password.  Refer to Docker of postgres-init and its Helm chart [here](https://github.com/OpenG2P/postgres-init).  This is a general purpose Helm chart and can be used across modules. The functionality implemented are limited to the following:
+
+* Creation of a DB in an existing Postgres server
+* Creation of DB user
+* Creation of DB user secret with password
+
+The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
+
+### Docker
+
+The postgres-init Docker is published on [Docker Hub](https://hub.docker.com/r/openg2p/postgres-init).
+
+To run the Docker from your machine on the cluster (for development and testing), use the following method:
+
+* Port forward using `kubectl` to connect to Postgres server on the cluster
+* Give host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
+
+{% hint style="warning" %}
+If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work on Linux machine otherwise you will run into architecture mismatch issues.
+{% endhint %}
+
+## Odoo
+
+### Modifications to original Odoo chart
+
+### Overriding Odoo templates
+
+* Use of `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo.
+
+### Secrets
+
+* "keep" method
+*
+
+## &#x20;values.yaml
+
+* WAIT\_FOR\_PROGRESS
+*
+
+
+
+## Tear down
+
+* Secret for user does not get deleted (and rightly so)
+* If you re-run the helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
+*
+
+
 
 &#x20;
 
