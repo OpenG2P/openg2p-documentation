@@ -4,20 +4,6 @@ The guide here can be used to understand why[ Registry Helm chart](https://githu
 
 Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/archiecture-v4.5/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
-### Docker
-
-The postgres-init Docker is published on [Docker Hub](https://hub.docker.com/r/openg2p/postgres-init).
-
-To run the Docker from your machine on the cluster (for development and testing), use the following method:
-
-* Port forward using `kubectl` to connect to Postgres server on the cluster
-* Create an env file like this [example](https://github.com/OpenG2P/postgres-init/blob/develop/.env.example). For POSTGRES\_HOST  give the host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
-* Run as given [here](https://github.com/OpenG2P/postgres-init/blob/develop/README.md).
-
-{% hint style="warning" %}
-If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work on Linux machine otherwise you will run into architecture mismatch issues.
-{% endhint %}
-
 ## Odoo
 
 ### External database
@@ -89,9 +75,23 @@ The script is idempotent - which means if we run the init again, and if the data
 
 The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
+### Docker
+
+The postgres-init Docker is published on [Docker Hub](https://hub.docker.com/r/openg2p/postgres-init).
+
+To run the Docker from your machine on the cluster (for development and testing), use the following method:
+
+* Port forward using `kubectl` to connect to Postgres server on the cluster
+* Create an env file like this [example](https://github.com/OpenG2P/postgres-init/blob/develop/.env.example). For POSTGRES\_HOST  give the host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
+* Run as given [here](https://github.com/OpenG2P/postgres-init/blob/develop/README.md).
+
+{% hint style="warning" %}
+<mark style="color:$warning;">If you would like to update the postgres-init Docker, DO NOT use Mac OS,  work on Linux machine otherwise you will run into architecture mismatch issues.</mark>
+{% endhint %}
+
 ## ID Generator and mosip-kernel DB init
 
-The ID Generator requires mosip-kernel database to be created. This is currently created under Registry, but ideally, mosip\_kernel could be created as part of openg2p-commons (TBD).
+The ID Generator requires mosip-kernel database to be created. <mark style="color:orange;">This is currently created under Registry, but ideally, mosip\_kernel could be created as part of openg2p-commons (TBD)</mark>.
 
 ## Background tasks
 
@@ -105,18 +105,18 @@ The chart is available on Rancher.  Follow the installation steps given [here](.
 
 ## Tear down
 
-To completely cleanup Registry installation, note the following:  Helm uninstall will not delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
+To completely cleanup Registry installation, note the following:  Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
 
 To tear down completely:
 
-1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> delete)
+1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
 2. Delete `registry` secret in the namespace
-3. Drop registry\_db and user from Postgres&#x20;
+3. Drop `registry_db` and user from Postgres&#x20;
    1. Login into Postgres as admin (via port fowarding or directly from Rancher)
    2. Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
    3. `drop database registry_db;`&#x20;
    4. `drop role registry_db_user;`&#x20;
-4. Drop mosip-kernel database:
+4. Drop `mosip-kernel` database:
    1. `drop database mosip-kernel`&#x20;
 
 _<mark style="color:orange;">TBD: The above step will move to openg2p-commons, so this won't be required here.</mark>_
