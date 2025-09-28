@@ -1,9 +1,3 @@
----
-description: >-
-  [Work in Progress] Detailed tips and tricks for understanding Registry's Helm
-  chart
----
-
 # Registry Helm Chart - 3.x.x
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
@@ -107,11 +101,29 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 ## Running the Registry chart
 
+The chart is available on Rancher.  Follow the installation steps given [here](../../../g2p-bridge/deployment/#installation-using-rancher-ui).  Make sure openg2p-commons is installed before installing Registry.
+
 ## Tear down
 
-* Secret for user does not get deleted (and rightly so)
-* If you re-run the helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
-*
+To completely cleanup Registry installation, note the following:  Helm uninstall will not delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
+
+To tear down completely:
+
+1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> delete)
+2. Delete `registry` secret in the namespace
+3. Drop registry\_db and user from Postgres&#x20;
+   1. Login into Postgres as admin (via port fowarding or directly from Rancher)
+   2. Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
+   3. `drop database registry_db;`&#x20;
+   4. `drop role registry_db_user;`&#x20;
+4. Drop mosip-kernel database:
+   1. `drop database mosip-kernel`&#x20;
+
+_<mark style="color:orange;">TBD: The above step will move to openg2p-commons, so this won't be required here.</mark>_
+
+
+
+
 
 &#x20;
 
