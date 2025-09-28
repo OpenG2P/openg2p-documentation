@@ -22,7 +22,7 @@ Note that `create: true` is not really creating the DB - this is perhaps a known
 
 The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
 
-* **Secrets separated** - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be good practices to add them to the Postgres secret both from a management and security perspective. &#x20;
+* **Secrets separated** - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be a good practice to add them to the Postgres secret both from a management and security perspective. &#x20;
 
 ```
 - name: POSTGRESQL_CLIENT_POSTGRES_PASSWORD
@@ -32,15 +32,15 @@ The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. Whi
                   key: {{ include "odoo.databaseSecretPostgresPasswordKey" . }}
 ```
 
-* The above change is in `deployment.yaml` - a new secret variable called `existingPostgresSecret` has been defined.
+* The above change is in `deployment.yaml` of Odoo chart - a new secret variable called `existingPostgresSecret` has been defined.
 
 ### Use of globals
 
-Several global are used in the Registry Helm chart.  Strictly speaking, globals are not required and we must try not to use them.  However, here, they offer certain convenience.  To avoid hard coding of the same value of a param appearing in multiple places in the Helm chart, we use globals which are accessible to the sub-charts.  &#x20;
+Several global are used in the Registry Helm chart.  Strictly speaking, globals are not required and we must try not to use them. However, here, they offer certain convenience.  To avoid hard coding of the same value of a param appearing in multiple places in the Helm chart, we use globals which are accessible to the sub-charts.  &#x20;
 
 ### Overriding Odoo templates
 
-Use of `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo such that values like .`Release.Name` can be used.  Some of the Odoo templates have been overridden in the Registry chart to enable templating. Refer to [`_helpers.tpl`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/templates/_helpers.tpl) for details on these templates.
+We have used  the function  `tpl` to ensure a value is resolved in `deployment.yaml` of Odoo such that values like .`Release.Name` can be used.  Some of the Odoo templates have been overridden in the Registry chart to enable templating. Refer to [`_helpers.tpl`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/templates/_helpers.tpl) for details on these overriden templates.
 
 ### Bootstrap modules
 
