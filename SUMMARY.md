@@ -462,6 +462,7 @@
   * [OpenG2P - IUDX](data-share/openg2p-iudx.md)
 * [Interoperability](interoperability.md)
 * [Deployment](deployment/README.md)
+  * [OpenG2P Deployment Model](deployment/openg2p-deployment-model.md)
   * [Resource Requirements](deployment/hardware-requirements.md)
   * [Base Infrastructure](deployment/base-infrastructure/README.md)
     * [Wireguard Bastion](deployment/base-infrastructure/wireguard-bastion/README.md)
