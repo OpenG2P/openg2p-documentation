@@ -16,15 +16,17 @@ The deployment is offered as a set of instructions, scripts, [Helm charts](../re
 
 The deployment utilizes several open source third party components. The concept and role of these components is given below:
 
+>
+
 {% columns %}
-{% column width="33.33333333333333%" %}
-Wireguard&#x20;
+{% column width="16.666666666666664%" %}
+<mark style="color:$primary;">Wireguard</mark>&#x20;
 {% endcolumn %}
 
-{% column width="66.66666666666667%" %}
+{% column width="83.33333333333334%" %}
 [Wireguard](https://www.wireguard.com/) (WG) is the recommended VPN to enable [private access channel](deployment-guide/private-access-channel.md) to your clusters and resources. Wireguard is a fast secure & open-source VPN, with P2P traffic encryption.
 
-> _Note that the terms WG Bastion and WG server are interchangeably used in this document._
+_Note that the terms WG Bastion and WG server are interchangeably used in this document._
 
 Multiple WG servers will be required to provide a group of users access to certain resources. Multiple  WG server may run on the same Virtual Machine (VM).  A group of users who access to a particular WG server will have access to all [private access channels](deployment-guide/private-access-channel.md) that are connected to this WG server.
 
