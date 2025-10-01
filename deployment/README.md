@@ -4,30 +4,23 @@ description: OpenG2P Deployment
 
 # Deployment
 
-OpenG2P’s **V4 deployment architecture** offers a **production-grade, Kubernetes-based platform** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, and Demo sandboxes—within a single organisational setup, enabling seamless management across the entire software lifecycle.
+## OpenG2P deployment model
 
-This infrastructure ensures **secure access for internal development teams** and has been rigorously tested, earning an [**A+ rating in third-party penetration testing**](../privacy-and-security/security-audits/security-audit-2025-march.md), underscoring its strong security posture. By leveraging the same V4 base for both development and production, it facilitates an **easy and efficient transition from development to production environments**, significantly reducing complexity and risks.
+OpenG2P’s **deployment model** offers a **production-grade, Kubernetes-based platform** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, and Demo sandboxes—within a single organisational setup, enabling seamless management across the entire software lifecycle. &#x20;
 
-For System Integrators, the V4 Deployment Infra represents a substantial time and resource saver by eliminating the need to build production-grade deployment setups from scratch. This turnkey solution accelerates implementation while maintaining enterprise-level security and operational excellence, making it the ideal foundation for organisations aiming to deploy OpenG2P at scale with confidence.
+The OpenG2P deployment model is inspired by [V4 deployment architecture](v4-deployment-architecture.md) developed by OpenG2P team. Considering OpenG2P's use cases, resource availability with departments of countries, and ease of deployment,  we have adapted the V4 architure to be deployed in a "single box" - the entire installation in one sufficiently sized virtual machine or bare metal.
 
-The V4 deployment is offered as a set of instructions, scripts, [Helm charts](../releases/helm-charts.md), utilities and guidelines.
+This deployment model ensures **secure access for internal development teams** and has been rigorously tested, earning an [**A+ rating in third-party penetration testing**](../privacy-and-security/security-audits/security-audit-2025-march.md), underscoring its strong security posture. By leveraging the same deployment model for development as well as production, it facilitates an **easy and efficient transition from development to production environments**, significantly reducing complexity and risks.
 
-{% hint style="info" %}
-This deployment architecture is referred to as "V4" by the OpenG2P team due to the way it has evolved over the past few years.  The V4 deployment architecture is an evolution of MOSIP's [V3 architecture](https://github.com/mosip/k8s-infra).  Unlike V3, where separate clusters are created for environments, in V4, all sandboxes and environments reside in the same cluster with finer access controls
-{% endhint %}
+For System Integrators, the OpenG2P deployment model represents a substantial time and resource saver by eliminating the need to build production-grade deployment setups from scratch. This turnkey solution accelerates implementation while maintaining enterprise-level security and operational excellence, making it the ideal foundation for organisations aiming to deploy OpenG2P at scale with confidence.
 
-## V4 deployment architecture&#x20;
+The deployment is offered as a set of instructions, scripts, [Helm charts](../releases/helm-charts.md), utilities and guidelines.
 
-<figure><img src="../.gitbook/assets/deployment-architecture-v4.jpg" alt=""><figcaption><p>Deployment Architecture</p></figcaption></figure>
+## Single box deployment
 
-The V4 architecture consists of two clusters - one for [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one for all OpenG2P modules and supporting components. All sandboxes and environments reside in the OpenG2P cluster under separate namespaces. The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
-1. Multiple Wireguard servers enable separate [access channels](deployment-guide/private-access-channel.md).
-2. Access control at the application level, where login to dashboards and portals is controlled via authentication and authorisation defined in Keycloak.
 
-The Keycloak inside the Rancher cluster provides **organisation-wide authorisation** and offers single sign-on for all resources.&#x20;
 
-## Deployment modes
 
 Depending on the resource availability and purpose, we offer different modes (or configurations) of deployment as follows:
 
