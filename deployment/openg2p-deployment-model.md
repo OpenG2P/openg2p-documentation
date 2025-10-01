@@ -12,25 +12,29 @@ The deployment is offered as a set of instructions, scripts, [Helm charts](../re
 
 <figure><img src="../.gitbook/assets/openg2p-deployment-model.jpg" alt=""><figcaption></figcaption></figure>
 
+## Key concepts
+
+* Each environment like 'qa', 'dev', 'staging', 'production' is installed in a **separate Kubernetes namespace** on the same cluster.
+* Access to each environment (namespace) can be controlled via [private access channels](deployment-guide/private-access-channel.md).
+* Firewall is outside the purview of this deployment.
+* Git repo and Docker Registry are assumed externally hosted (public or private).  In case of production deployments, these should be hosted within private network. &#x20;
+* As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines).&#x20;
+
 ## Role of various components
 
 The deployment utilizes several open source third party components. The concept and role of these components is given below:
 
->
+
 
 {% columns %}
 {% column width="16.666666666666664%" %}
-<mark style="color:$primary;">Wireguard</mark>&#x20;
+<mark style="color:$primary;">Wireguard</mark>
 {% endcolumn %}
 
 {% column width="83.33333333333334%" %}
-[Wireguard](https://www.wireguard.com/) (WG) is the recommended VPN to enable [private access channel](deployment-guide/private-access-channel.md) to your clusters and resources. Wireguard is a fast secure & open-source VPN, with P2P traffic encryption.
+[Wireguard](https://www.wireguard.com/) is a fast secure & open-source VPN, with P2P traffic encryption that can enable secure (non-public) access to the resources.  A combination of Wireguard, Nginx and Isto gateway is used to enable fine-grained access control to the environments.  See [Private Access Channels](deployment-guide/private-access-channel.md).
 
-_Note that the terms WG Bastion and WG server are interchangeably used in this document._
-
-Multiple WG servers will be required to provide a group of users access to certain resources. Multiple  WG server may run on the same Virtual Machine (VM).  A group of users who access to a particular WG server will have access to all [private access channels](deployment-guide/private-access-channel.md) that are connected to this WG server.
-
-It is recommended to set up at least two channels, one for System Administrators, and one for OpenG2P Application Users (like Program Managers, Service Providers, etc). Further channels may be created based on the need.
+_Note that the terms Wireguard, Wireguard Bastion and Wireguard Server are interchangeably used in this document._
 {% endcolumn %}
 {% endcolumns %}
 
