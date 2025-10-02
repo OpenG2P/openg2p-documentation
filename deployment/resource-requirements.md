@@ -10,6 +10,11 @@ For a full deployment you need the following
 
 ### Hardware requirements
 
+<table><thead><tr><th width="143">Configuration</th><th width="64">vCPU</th><th width="131">RAM</th><th width="122">Storage</th><th>Notes</th></tr></thead><tbody><tr><td>Development</td><td>16</td><td>64 GB</td><td>128 GB SSD</td><td>For one environment/sandbox. For more number of sandboxes, scale up proportionately.</td></tr><tr><td>Production</td><td>64</td><td>256 GB</td><td>512 GB SSD</td><td>Storage depends on size of data. </td></tr></tbody></table>
+
+* Each VM should have **minimum 2 network interface cards** for creating access channels
+* SSD storage is vital for performance (HDD does not work well).
+
 ### Domain names&#x20;
 
 To access resources on cluster,  domain names and mappings are required.  The suggested domain name convention is as follows:
