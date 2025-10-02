@@ -19,10 +19,13 @@ The deployment is offered as a set of instructions, scripts, [Helm charts](../re
 * Firewall is outside the purview of this deployment.
 * Git repo and Docker Registry are assumed externally hosted (public or private).  In case of production deployments, these should be hosted within private network. &#x20;
 * As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines).&#x20;
+*
 
 ## Role of various components
 
 The deployment utilizes several open source third party components. The concept and role of these components is given below:
+
+<table><thead><tr><th width="221">Component</th><th>Description</th></tr></thead><tbody><tr><td><mark style="color:$primary;">Wireguard</mark></td><td><p><a href="https://www.wireguard.com/">Wireguard</a> is a fast secure &#x26; open-source VPN, with P2P traffic encryption that can enable secure (non-public) access to the resources.  A combination of Wireguard, Nginx and Isto gateway is used to enable fine-grained access control to the environments.  See <a href="deployment-guide/private-access-channel.md">Private Access Channels</a>.</p><p><sup><em>Note that the terms Wireguard, Wireguard Bastion and Wireguard Server are used interchangeably in this document.</em></sup></p></td></tr><tr><td>Nginx</td><td>Nginx as a reverse-proxy for incoming external (public) traffic. It serves as HTTPS termination and together with Wireguard and Istio Gateway it can be used to create private access channels.  Nginx isolates the internal network such that traffic does not directly fall on the Istio Gateway of the Kubernetes cluster.</td></tr><tr><td>Ingress Gateway</td><td></td></tr></tbody></table>
 
 
 
