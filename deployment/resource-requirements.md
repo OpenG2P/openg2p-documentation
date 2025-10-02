@@ -10,7 +10,7 @@ For a full deployment you need the following
 
 ### Hardware requirements
 
-<table><thead><tr><th width="143">Configuration</th><th width="64">vCPU</th><th width="131">RAM</th><th width="122">Storage</th><th>Notes</th></tr></thead><tbody><tr><td>Development</td><td>16</td><td>64 GB</td><td>128 GB SSD</td><td>For one environment/sandbox. For more number of sandboxes, scale up proportionately.</td></tr><tr><td>Production</td><td>64</td><td>256 GB</td><td>512 GB SSD</td><td>Storage depends on size of data. </td></tr></tbody></table>
+<table><thead><tr><th width="143">Configuration</th><th width="64">vCPU</th><th width="131">RAM</th><th width="122">Storage</th><th>Notes</th></tr></thead><tbody><tr><td>Development</td><td>16</td><td>64 GB</td><td>128 GB SSD</td><td>For one environment/sandbox. For more number of sandboxes, scale up proportionately.</td></tr><tr><td>Production</td><td>64</td><td>256 GB</td><td>512 GB SSD</td><td>Storage will depend on several factors, so option to expand the volume should be available.</td></tr></tbody></table>
 
 * Each VM should have **minimum 2 network interface cards** for creating access channels
 * SSD storage is vital for performance (HDD does not work well).
@@ -39,4 +39,3 @@ The domain name mapping needs to be done on your domain service provider.  For e
 
 At least one wildcard certificate is required depending on the above domain names used. This can also be generated using Letsencrypt. See guide [here](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
 
-##
