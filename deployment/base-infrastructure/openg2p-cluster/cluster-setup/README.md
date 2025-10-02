@@ -25,7 +25,7 @@ Broadly, the steps to install are as follows:
 
 ## Virtual machines provisioning
 
-Provision for virtual machines (VMs) as per configuration mentioned in [Hardware Requirements](../../../hardware-requirements.md). Make sure you have root privileges to the machines and have secure access to them.
+Provision for virtual machines (VMs) as per configuration mentioned in [Hardware Requirements](../../../_archive/hardware-requirements.md). Make sure you have root privileges to the machines and have secure access to them.
 
 Install the following tools on all machines including the one you are using to connect to the VMs.
 

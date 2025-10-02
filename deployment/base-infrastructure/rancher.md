@@ -10,7 +10,7 @@ The guide here provides instructions to install both the Rancher server and Keyc
 
 To deploy Rancher carry out the following steps:
 
-1. Provision resources as given [here](../hardware-requirements.md).
+1. Provision resources as given [here](../_archive/hardware-requirements.md).
 2. Make sure [NFS server](nfs-server.md) is already installed.
 3. Install Kubernetes (K8s) cluster&#x20;
 4. Install Rancher

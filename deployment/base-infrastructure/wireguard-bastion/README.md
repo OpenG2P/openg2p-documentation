@@ -14,7 +14,7 @@ It is recommended to set up at least two channels, one for System Administrators
 
 ## Prerequisites
 
-* One virtual machine (VM) running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Resource Requirements](../../hardware-requirements.md).
+* One virtual machine (VM) running on the same network as the rest of the nodes, and has access to them. For recommended configuration of the VM refer to [Resource Requirements](../../_archive/hardware-requirements.md).
 * Firewall rules: Allow only `22/tcp`, `51820-51830/udp` ports.
 * Docker installed on the VM.
 

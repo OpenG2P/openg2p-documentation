@@ -4,7 +4,7 @@ description: Getting started with OpenG2P
 
 # OpenG2P In a Box
 
-This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a **single node/VM/machine**. This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same. The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
+This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a **single node/VM/machine**. This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](_archive/hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](./#deployment-architecture), but a compact version of the same. The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
 
 ## Deployment architecture
 
