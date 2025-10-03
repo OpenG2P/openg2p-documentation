@@ -463,6 +463,7 @@
 * [Deployment](deployment/README.md)
   * [OpenG2P Deployment Model](deployment/openg2p-deployment-model.md)
   * [Resource Requirements](deployment/resource-requirements.md)
+  * [Deployment Instructions](deployment/deployment-instructions.md)
   * [Base Infrastructure](deployment/base-infrastructure/README.md)
     * [Wireguard Bastion](deployment/base-infrastructure/wireguard-bastion/README.md)
       * [Install WireGuard Client on Android Device](deployment/base-infrastructure/wireguard-bastion/install-wireguard-app-and-activate-tunnel.md)
