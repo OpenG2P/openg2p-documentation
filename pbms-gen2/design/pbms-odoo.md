@@ -10,7 +10,9 @@ Configure a list of benefit codes (products) that are disbursed by the various p
 * SERVICE - Applicable when the department provides services such as health screenings to the public.
 * COMBINATION - Applicable when a benefit includes both a commodity plus a service bundled. E.g. a vaccine will involve a physical vaccine vial plus the service of administering the vaccine.
 
-#### Screens
+#### Benefit code definition
+
+<figure><img src="../../.gitbook/assets/Benefit-Codes-List.png" alt=""><figcaption></figcaption></figure>
 
 #### Tables involved
 
@@ -27,7 +29,13 @@ You configure the benefit programs which govern the benefit distribution. The ke
 5. Eligibility Rules - You need to define a set of rules that make a registrant eligible to qualify as a beneficiary under this program. You can use the Target Registry - attributes to define these eligibility rules.
 6. Entitlement Rules - You need to define a set of rules that will compute an entitlement (of a benefit code) for a given beneficiary. You need distinct entitlement rules for every benefit code associated with the Program.
 
-#### Screens
+#### Benefit program definition
+
+<figure><img src="../../.gitbook/assets/Program-List.png" alt=""><figcaption></figcaption></figure>
+
+#### Benefit program associated with benefit codes
+
+<figure><img src="../../.gitbook/assets/Program-Benefit-Codes.png" alt=""><figcaption></figcaption></figure>
 
 #### Tables involved
 
