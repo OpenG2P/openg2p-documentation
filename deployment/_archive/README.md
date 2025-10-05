@@ -1,3 +1,7 @@
+---
+noIndex: true
+---
+
 # \_Archive
 
 Legacy content for reference. &#x20;
