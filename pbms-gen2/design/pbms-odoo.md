@@ -52,13 +52,17 @@ When a benefit program involves physical distribution of goods and services, geo
 
 This is a large zone (examples include - States or Districts). Depending on your situation, you can configure any of your relevant Geographic Administrative Zone as a GAZ-Large.
 
+<figure><img src="../../.gitbook/assets/Geo-Large-Area-Codes-List.png" alt=""><figcaption></figcaption></figure>
+
 #### Geographic Administrative Zone - Small
 
 This is a small zone within a Large Zone. A typical Large Zone will consider a number of small zones. Examples of small zones will include - Post Codes, Localities and Streets.
 
 A beneficiary address should necessarily consist of a Large Zone and a Small Zone.
 
-#### Screens
+<figure><img src="../../.gitbook/assets/Geo-Small-Area-Codes-List.png" alt=""><figcaption></figcaption></figure>
+
+
 
 #### Tables involved
 
@@ -72,7 +76,13 @@ Based on these constraints, you have to map Warehouses to Geographic Administrat
 
 During disbursement, the PBMS platform will automatically allocate Warehouses depending on these configurations.
 
-#### Screens
+####
+
+<figure><img src="../../.gitbook/assets/Warehouse-List.png" alt=""><figcaption></figcaption></figure>
+
+####
+
+<figure><img src="../../.gitbook/assets/Warehouse-Large-Area-association-MH.png" alt=""><figcaption></figcaption></figure>
 
 #### Tables involved
 
@@ -84,9 +94,9 @@ These agencies are chosen based on their presence on the field. Agencies typical
 
 During disbursement, the PBMS platform will automatically allocate Agencies depending on these configurations.
 
-Screens
+<figure><img src="../../.gitbook/assets/Agency-List.png" alt=""><figcaption></figcaption></figure>
 
-
+<figure><img src="../../.gitbook/assets/Agency-Small-Area-association-BLR.png" alt=""><figcaption></figcaption></figure>
 
 
 
