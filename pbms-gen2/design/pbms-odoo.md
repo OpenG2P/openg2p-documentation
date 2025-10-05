@@ -10,9 +10,7 @@ Configure a list of benefit codes (products) that are disbursed by the various p
 * SERVICE - Applicable when the department provides services such as health screenings to the public.
 * COMBINATION - Applicable when a benefit includes both a commodity plus a service bundled. E.g. a vaccine will involve a physical vaccine vial plus the service of administering the vaccine.
 
-#### Benefit code definition
-
-<figure><img src="../../.gitbook/assets/Benefit-Codes-List.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Benefit-Codes-List.png" alt=""><figcaption><p>Screen showing list of Benefit codes</p></figcaption></figure>
 
 #### Tables involved
 
@@ -29,13 +27,11 @@ You configure the benefit programs which govern the benefit distribution. The ke
 5. Eligibility Rules - You need to define a set of rules that make a registrant eligible to qualify as a beneficiary under this program. You can use the Target Registry - attributes to define these eligibility rules.
 6. Entitlement Rules - You need to define a set of rules that will compute an entitlement (of a benefit code) for a given beneficiary. You need distinct entitlement rules for every benefit code associated with the Program.
 
-#### Benefit program definition
+<figure><img src="../../.gitbook/assets/Program-List.png" alt=""><figcaption><p>Screen showing list of Benefit codes</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/Program-List.png" alt=""><figcaption></figcaption></figure>
 
-#### Benefit program associated with benefit codes
 
-<figure><img src="../../.gitbook/assets/Program-Benefit-Codes.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Program-Benefit-Codes.png" alt=""><figcaption><p>Screen showing Program associated with Benefit codes</p></figcaption></figure>
 
 #### Tables involved
 
@@ -52,7 +48,7 @@ When a benefit program involves physical distribution of goods and services, geo
 
 This is a large zone (examples include - States or Districts). Depending on your situation, you can configure any of your relevant Geographic Administrative Zone as a GAZ-Large.
 
-<figure><img src="../../.gitbook/assets/Geo-Large-Area-Codes-List.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Geo-Large-Area-Codes-List.png" alt=""><figcaption><p>Screen showing list of Geo administrative areas - Large</p></figcaption></figure>
 
 #### Geographic Administrative Zone - Small
 
@@ -60,9 +56,7 @@ This is a small zone within a Large Zone. A typical Large Zone will consider a n
 
 A beneficiary address should necessarily consist of a Large Zone and a Small Zone.
 
-<figure><img src="../../.gitbook/assets/Geo-Small-Area-Codes-List.png" alt=""><figcaption></figcaption></figure>
-
-
+<figure><img src="../../.gitbook/assets/Geo-Small-Area-Codes-List.png" alt=""><figcaption><p>Screen showing list of Geo administrative areas - Small</p></figcaption></figure>
 
 #### Tables involved
 
@@ -76,13 +70,9 @@ Based on these constraints, you have to map Warehouses to Geographic Administrat
 
 During disbursement, the PBMS platform will automatically allocate Warehouses depending on these configurations.
 
-####
+<figure><img src="../../.gitbook/assets/Warehouse-List.png" alt=""><figcaption><p>Screen showing list of Warehouses</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/Warehouse-List.png" alt=""><figcaption></figcaption></figure>
-
-####
-
-<figure><img src="../../.gitbook/assets/Warehouse-Large-Area-association-MH.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Warehouse-Large-Area-association-MH.png" alt=""><figcaption><p>Screen showing Warehouse associated with Geo administrative area - Large</p></figcaption></figure>
 
 #### Tables involved
 
@@ -94,9 +84,9 @@ These agencies are chosen based on their presence on the field. Agencies typical
 
 During disbursement, the PBMS platform will automatically allocate Agencies depending on these configurations.
 
-<figure><img src="../../.gitbook/assets/Agency-List.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Agency-List.png" alt=""><figcaption><p>Screen showing list of agencies</p></figcaption></figure>
 
-<figure><img src="../../.gitbook/assets/Agency-Small-Area-association-BLR.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Agency-Small-Area-association-BLR.png" alt=""><figcaption><p>Screen showing agency associated to Geo administrative area - Small</p></figcaption></figure>
 
 
 

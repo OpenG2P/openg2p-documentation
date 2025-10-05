@@ -18,3 +18,6 @@ So in the example above, the disbursement cycle of Februrary will operate on the
 
 However the disbursement cycles starting from July onwards will start operating on the enrolment list created and approved in June, till the refreshed enrolment list is created and approved next January.
 
+<figure><img src="../../.gitbook/assets/Program-Enrolment-Cycles.png" alt=""><figcaption><p>Program definition with Enrolment Cycle</p></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Cycles.png" alt=""><figcaption><p>Program definition with Disbursement Cycle</p></figcaption></figure>
