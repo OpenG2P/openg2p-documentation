@@ -92,7 +92,7 @@ This is only a one-time installation. Whenever you want to add new servers for e
 
 ### Prerequisites
 
-* [Create wildcard TLS certificates](../../deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
+* [Create wildcard TLS certificates](../../../deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
 
 ### Installation
 

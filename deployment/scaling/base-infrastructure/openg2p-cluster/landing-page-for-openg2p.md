@@ -28,5 +28,5 @@ Before you deploy, make sure the following are available:
 6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under _Preferences_ under _Helm Charts_.
 7.  Navigate to _Apps->Charts_ page on Rancher. You should see "Landing Page" Helm charts listed.
 
-    <figure><img src="../../../.gitbook/assets/image (23) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../../.gitbook/assets/image (23) (1).png" alt=""><figcaption></figcaption></figure>
 8. Click on the Helm chart, provide the necessary URLs in the configuration, click Next, remove the wait flag, and then install it.

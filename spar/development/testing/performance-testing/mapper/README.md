@@ -38,7 +38,7 @@ TBD
 ### Test tools
 
 * [Locust](https://locust.io/) to generate API load.
-* [Grafana charts & Prometheus](../../../../../deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) to monitor and measure POD resource utilizations
+* [Grafana charts & Prometheus](../../../../../deployment/scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) to monitor and measure POD resource utilizations
 
 ## APIs
 
