@@ -400,6 +400,7 @@
   * [Design](pbms-gen2/design/README.md)
     * [Concept](pbms-gen2/design/concept.md)
     * [Static definitions](pbms-gen2/design/pbms-odoo.md)
+    * [Rule definitions](pbms-gen2/design/rule-definitions.md)
     * [Enrolment & Disbursement Cycles](pbms-gen2/design/enrolment-and-disbursement-cycles.md)
     * [Enrolment workflow](pbms-gen2/design/enrolment-workflow.md)
     * [Disbursement workflow](pbms-gen2/design/disbursement-workflow.md)
