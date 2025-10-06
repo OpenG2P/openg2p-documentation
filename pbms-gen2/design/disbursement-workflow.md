@@ -13,5 +13,12 @@ The entire processing within G2P Bridge is automated and does not require any ma
 1. View Disbursement Envelopes and&#x20;
 2. View Disbursement Batches
 
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Lists.png" alt=""><figcaption><p>Screen showing Disbursement Lists prepared under a Disbursement Cycle</p></figcaption></figure>
 
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Summary.png" alt=""><figcaption><p>Screen showing summary information of a Disbursment List</p></figcaption></figure>
 
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Verifications.png" alt=""><figcaption><p>Screen showing Verifications done on a Disbursement List</p></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Envelopes.png" alt=""><figcaption><p>Screen showing - Disbursement envelopes created for an Approved Disbursement List</p></figcaption></figure>
+
+<figure><img src="../../.gitbook/assets/Program-Disbursement-Batches.png" alt=""><figcaption><p>Screen showing Disbursement batches created for an Approved Disbursement List</p></figcaption></figure>
