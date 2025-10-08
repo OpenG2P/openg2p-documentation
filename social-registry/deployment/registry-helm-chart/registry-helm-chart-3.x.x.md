@@ -91,7 +91,7 @@ To run the Docker from your machine on the cluster (for development and testing)
 
 ## ID Generator and mosip-kernel DB init
 
-The ID Generator requires mosip-kernel database to be created. <mark style="color:orange;">This is currently created under Registry, but ideally, mosip\_kernel could be created as part of openg2p-commons (TBD)</mark>.
+The ID Generator requires `mosip_kerne`l database to be created. <mark style="color:orange;">This is currently created under Registry, but ideally,</mark> <mark style="color:orange;"></mark><mark style="color:orange;">`mosip_kerne`</mark><mark style="color:orange;">l could be part of</mark> <mark style="color:orange;"></mark><mark style="color:orange;">`openg2p-commons`</mark> <mark style="color:orange;"></mark><mark style="color:orange;">(TBD)</mark>.
 
 ## Background tasks
 
@@ -119,7 +119,7 @@ To tear down completely:
 4. Drop `mosip-kernel` database:
    1. `drop database mosip-kernel`&#x20;
 
-_<mark style="color:orange;">TBD: The above step will move to openg2p-commons, so this won't be required here.</mark>_
+_<mark style="color:orange;">TBD: The step 4 will be moved to openg2p-commons, so this won't be required here.</mark>_
 
 
 
