@@ -1,7 +1,3 @@
----
-description: Modified deployment architecture more in tune with production deployment
----
-
 # Environment Installation
 
 In the previous deployments of modules each module was "self contained" - we would install all associated dependencies (like PostgreSQL, MinIO, OpenSearch, Kafka, Keymanager, etc. ) for a module as a single package, thus enabling a single click deployment for Registry, PBMS, G2P Bridge and SPAR and a clean separation of resources along with easier naming conventions, etc.  This is good to deploy a sandbox; however, in production, we seldom find more than one instance of the Postgres server or MinIO.  Even Kafka being resource-hungry, is preferred to have a single instance used by several services.  Therefore, having a set of **shared common resources**  within an **environment** would not only be closer to a production scenario but also save us resources on our deployment as resources would be shared across the modules.  The new deployment Helm charts offers a common resources layer - installed via "[openg2p-commons](../openg2p-commons-helm-chart.md)" Helm Chart, and then each module, like Registry, PBMS etc, will continue to have their Helm packages with dependencies specific to the modules.
