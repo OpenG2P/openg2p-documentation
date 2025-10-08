@@ -2,13 +2,13 @@
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
 
-Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/environment-deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
 ## Odoo
 
 ### External database
 
-In the [4.5 deployment architecture](../../../deployment/environment-deployment/),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
+In the [4.5 deployment architecture](../../../deployment/deployment-instructions/environment-installation.md),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
 
 `postgresql:`\
 `enabled: false`
