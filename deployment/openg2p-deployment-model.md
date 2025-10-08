@@ -1,6 +1,6 @@
 # OpenG2P Deployment Model
 
-OpenG2P’s **deployment model** offers a **production-grade, Kubernetes-based platform** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, and Demo sandboxes—within a single organisational setup, enabling seamless management across the entire software lifecycle. &#x20;
+OpenG2P’s **deployment model** offers a **production-grade, Kubernetes-based infrastructure** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, and Demo sandboxes—within a single organisational setup, enabling seamless management across the entire software lifecycle. &#x20;
 
 The OpenG2P deployment model is inspired by [V4 deployment architecture](scaling/v4-deployment-architecture.md) developed by OpenG2P team. Considering OpenG2P's use cases, resource availability with departments of countries, and ease of deployment,  we have adapted the V4 architure to be deployed in a "single box" - the entire installation in one sufficiently sized virtual machine or bare metal.
 
@@ -27,22 +27,4 @@ The deployment is **cloud agnostic** - it does not use cloud specific components
 The deployment utilizes several open source third party components. The concept and role of these components is given below:
 
 <table><thead><tr><th width="221">Component</th><th>Description</th></tr></thead><tbody><tr><td><mark style="color:$primary;">Wireguard</mark></td><td><p><a href="https://www.wireguard.com/">Wireguard</a> is a fast secure &#x26; open-source VPN, with P2P traffic encryption that can enable secure (non-public) access to the resources.  A combination of Wireguard, Nginx and Isto gateway is used to enable fine-grained access control to the environments.  See <a href="deployment-guide/private-access-channel.md">Private Access Channels</a>.</p><p><sup><em>Note that the terms Wireguard, Wireguard Bastion and Wireguard Server are used interchangeably in this document.</em></sup></p></td></tr><tr><td>Nginx</td><td>Nginx as a reverse-proxy for incoming external (public) traffic. It serves as HTTPS termination and together with Wireguard and Istio Gateway it can be used to create <a href="deployment-guide/private-access-channel.md">private access channels</a>.  Nginx isolates the internal network such that traffic does not directly fall on the Istio Gateway of the Kubernetes cluster.</td></tr><tr><td>Ingress Gateway</td><td></td></tr><tr><td>Rancher</td><td></td></tr><tr><td>Keycloak</td><td></td></tr><tr><td>Istio</td><td></td></tr><tr><td>NFS</td><td></td></tr><tr><td>Prometheus &#x26; Grafana</td><td></td></tr><tr><td>FluentD</td><td></td></tr><tr><td>OpenSearch</td><td></td></tr></tbody></table>
-
-## Deployment instructions
-
-{% hint style="info" %}
-**CONCETPS**: Before proceeding with deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
-
-1. 🔒 [**Firewall Rules**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster)
-2. 📦 [**Kubernetes Cluster**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#cluster-installation)
-3. 🔐 [**WireGuard Bastion**](https://docs.openg2p.org/deployment/base-infrastructure/wireguard-bastion#installation)
-4. 📁 [**NFS Server**](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installation)
-5. 🔗 [**Kubernetes NFS CSI Driver**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#nfs-client-provisioner)
-6. 🧩 [**Istio Service Mesh**](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio)
-7. 🔐 [**SSL Certificates**](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
-8. 🧑‍💻 [**Rancher**](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher)
-9. 🧾 [**Keycloak**](https://docs.openg2p.org/deployment/1.0.0/guides/user-guides/create-payment-manager-types)
-10. 📊 [**Prometheus Monitoring**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
-11. 📝 [**Logging**](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) **and** [**Fluentd**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
-{% endhint %}
 
