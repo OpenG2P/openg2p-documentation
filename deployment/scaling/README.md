@@ -1,8 +1,7 @@
 ---
 description: >-
-  The documentation in this section applies to multi-machine deployment
-  architecture.  This is for reference for system integrators and countries who
-  have deployed OpenG2P on multiple-machines.
+  The documentation in this section is a reference material for system
+  integrators and countries to scale up the infrastructure.
 ---
 
 # Scaling
