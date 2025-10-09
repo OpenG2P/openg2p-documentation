@@ -22,7 +22,7 @@ To deploy Rancher carry out the following steps:
 Follow steps 1-5 in the guide given [here](openg2p-cluster/cluster-setup/).
 
 {% hint style="info" %}
-For high availability and resilience of this cluster, read the [production guide](../../production.md).
+For high availability and resilience of this cluster, read the [production guide](../../deployment-instructions/production.md).
 {% endhint %}
 
 ## Nginx/Loadbalancer Setup
