@@ -465,7 +465,7 @@
   * [OpenG2P Deployment Model](deployment/openg2p-deployment-model.md)
   * [Resource Requirements](deployment/resource-requirements.md)
   * [Deployment Instructions](deployment/deployment-instructions/README.md)
-    * [Infrastructure Installation](deployment/deployment-instructions/infrastructure-installation.md)
+    * [Infrastructure Setup](deployment/deployment-instructions/infrastructure-setup.md)
     * [Environment Installation](deployment/deployment-instructions/environment-installation.md)
     * [Modules Installation](deployment/deployment-instructions/modules-installation.md)
   * [OpenG2P Commons Helm Chart](deployment/openg2p-commons-helm-chart.md)

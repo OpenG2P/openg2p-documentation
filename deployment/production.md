@@ -4,7 +4,17 @@ description: Production Deployment Guide
 
 # Production Deployment
 
-The guide here provides some useful hints for production deployment. It is assumed that you are familiar with the [V4 deployment architecture](./#v4-deployment-architecture) and have already deployed the same in ["Development Mode".](./#deployment-modes) This guide is NOT intended to be a comprehensive production deployment handbook. Since production environments can vary widely, OpenG2P implementers—such as system integrators—have flexibility in choosing production configurations, orchestration platforms, and components. We also encourage our partners to contribute updates to this guide based on their real-world experiences and insights.
+The guide here provides some useful hints for production and pilot deployments. This guide is NOT intended to be a comprehensive production deployment handbook. Since production environments can vary widely, OpenG2P implementers—such as system integrators—have flexibility in choosing production configurations, orchestration platforms, and components. We also encourage our partners to contribute updates to this guide based on their real-world experiences and insights.
+
+## Backups
+
+Backups are <mark style="color:$danger;">**crtitical**</mark>  for any production deployment.  Ensure that the following backups are taken frequently, and supervised regularly:
+
+* Periodic snapshotting and backup for Postgres DB, MinIO buckets and objects, all volumes in NFS. (TBD Guide)
+* The Persistent Volume information of the Kubernetes cluster must be backed up after the installation. This is required in case the cluster goes down, or NFS has issues, the pods can be recreated with original data.
+  * Download the YAMLs of PV in Rancher -> OpenG2P Cluster -> Storage -> Persistent Volumes and keep it securely accessible to system administrators.
+  * Furthermore, this guide can be used to [restore a PV from an NFS folder](deployment-guide/restore-a-pvc-from-an-nfs-folder-and-attach-it-to-a-pod.md).
+* ETCD needs to be backed up periodically. Refer to the guide [here](deployment-guide/etcd-backup-and-restore.md).
 
 ## Air-gapped deployment
 
@@ -28,14 +38,10 @@ You can [install Gitlab on a standalone instance](deployment-guide/air-gapped-de
 
 ## Standalone PostgreSQL installation&#x20;
 
-In a production environment, you will typically install Postgres on a separate machine with tight control on access and backups.  Some of the points to note about this setup:
+In the [OpenG2P deployment model ](openg2p-deployment-model.md) Postgres is installed on the same machine as the other services. However, if you wish to run Postgres on a separate machine for better maintaince, access control, and backups you may do so.  Please note the following:
 
-* Postgres on a separate machine with high capacity.&#x20;
-* Number of instances of PostgreSQL nodes
-  * Master / Slave configuration
-* Cloud native if available
-* Setting up backup of the data (<mark style="color:red;">**Critical!**</mark>)
-*   Production Configuration
+* Master/Slave configuration is typically required for very high availability  applications.  If you are running portals that require 100% up-time then you may go for a Master/Slave configuration. In this case,  you will have to provision for sufficient hardware.
+*   Production Configuration&#x20;
 
     **Note:** It is highly recommended that experienced Database Administrators determine the production configuration.
 
@@ -43,9 +49,7 @@ If you are moving your PostgreSQL DB from Docker to standalone machine refer to 
 
 ## Standalone MinIO installation
 
-* MinIO on separate machine with high capacity.
-* MinIO data directory pointed to a separate disk (or partition) that uses a filesystem ([XFS](https://wiki.ubuntu.com/XFS) for example) which can handle large number of files.
-* [Standalone MinIO Installation Guide](deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
+In the [OpenG2P deployment model ](openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
 
 ## Backups
 
