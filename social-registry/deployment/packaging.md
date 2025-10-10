@@ -1,6 +1,6 @@
-# Packaging
+# Packaging - Registry Helm Chart
 
-A module like Social Registry, PBMS, or SPAR is offered as a [Helm Chart](../releases/helm-charts.md) package.&#x20;
+A module like Social Registry, PBMS, or SPAR is offered as a [Helm Chart](../../releases/helm-charts.md) package.&#x20;
 
 Refer to the packaging hierarchy here:
 
@@ -12,6 +12,6 @@ At the highest level a package is synonymous to a Helm chart that collates all d
 
 Helm chart contain Dockers for various components. The Dockers for top-level modules like Social Regsitry, PBMS, are created with a [Docker package file](https://github.com/OpenG2P/openg2p-packaging/blob/main/packaging/packages/social-registry/1.2.0.txt).  Learn more about packaging and uploading such Dockers in the following guides:
 
-* [Automatic Build and Upload of Private Dockers](deployment-guide/automatic-build-and-upload-of-private-dockers.md)
-* [Packaging Odoo based Docker](deployment-guide/packaging-openg2p-docker.md)
+* [Automatic Build and Upload of Private Dockers](../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)
+* [Packaging Odoo based Docker](../../deployment/deployment-guide/packaging-openg2p-docker.md)
 

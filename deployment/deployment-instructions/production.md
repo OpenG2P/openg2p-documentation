@@ -6,6 +6,10 @@ description: Production Deployment Guide
 
 The guide here provides some useful hints for production and pilot deployments. This guide is NOT intended to be a comprehensive production deployment handbook. Since production environments can vary widely, OpenG2P implementers—such as system integrators—have flexibility in choosing production configurations, orchestration platforms, and components. We also encourage our partners to contribute updates to this guide based on their real-world experiences and insights.
 
+{% hint style="warning" %}
+These best practices may demand **additional hardware and other resources**. Please review all the recommendations carefully and assess your production deployment requirements in addition to those specified under [Resource Requirements](../resource-requirements.md).
+{% endhint %}
+
 ## Backups
 
 Backups are <mark style="color:$danger;">**crtitical**</mark>  for any production deployment.  Ensure that the following backups are taken frequently, and supervised regularly:
@@ -50,14 +54,6 @@ If you are moving your PostgreSQL DB from Docker to standalone machine refer to 
 ## Standalone MinIO installation
 
 In the [OpenG2P deployment model ](../openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
-
-## Backups
-
-* Set up periodic snapshotting and backup for Postgres DB, MinIO buckets and objects, all volumes in NFS. (TBD Guide)
-* The PV information must be backed up after the installation. In case the cluster goes down, or NFS has issues, the pods can be recreated with original data.
-  * Download the YAMLs of PV in Rancher -> OpenG2P Cluster -> Storage -> Persistent Volumes and keep it securely accessible to system administrators.
-  * Furthermore, this guide can be used to [restore a PV from an NFS folder](../deployment-guide/restore-a-pvc-from-an-nfs-folder-and-attach-it-to-a-pod.md).
-* ETCD needs to be backed up periodically. Refer to the guide [here](../deployment-guide/etcd-backup-and-restore.md).
 
 ## Security
 
