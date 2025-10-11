@@ -1,26 +1,21 @@
 # Environment Installation
 
-## Concepts
+## Common resources&#x20;
 
-In the previous deployments of modules each module was "self contained" - we would install all associated dependencies (like PostgreSQL, MinIO, OpenSearch, Kafka, Keymanager, etc. ) for a module as a single package, thus enabling a single click deployment for Registry, PBMS, G2P Bridge and SPAR and a clean separation of resources along with easier naming conventions, etc.  This is good to deploy a sandbox; however, in production, we seldom find more than one instance of the Postgres server or MinIO.  Even Kafka being resource-hungry, is preferred to have a single instance used by several services.  Therefore, having a set of **shared common resources**  within an **environment** would not only be closer to a production scenario but also save us resources on our deployment as resources would be shared across the modules.  The new deployment Helm charts offers a common resources layer - installed via "[openg2p-commons](../openg2p-commons-helm-chart.md)" Helm Chart, and then each module, like Registry, PBMS etc, will continue to have their Helm packages with dependencies specific to the modules.
+Install openg2p-commons.
 
-The new way of deployment offers a few challenges as databases of several sandboxes and instances of the module reside in the same PostgreSQL server. We must ensure that every database and its users are properly named to avoid any name clashes and allocated sufficient resources to the Postgres server. The tear down of modules also gets complicated as footprints or each module reside in the common components and they need to be removed manually or via scripts.
+## Moduels
 
-#### Self contained versus shared common resources
+You can follow the below links to install OpenG2P modules via Rancher UI.
 
-| Modules    | Helm Chart Versions - Self Contained | Helm Chart Versions - Shared Common Resources |
-| ---------- | ------------------------------------ | --------------------------------------------- |
-| Registry   | 2.x.x                                | 3.x.x                                         |
-| PBMS       | 2.x.x                                | 3.x.x                                         |
-| SPAR       | 1.x.x                                | 2.x.x                                         |
-| G2P Bridge | 1.x.x                                | 2.x.x                                         |
+1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module
+2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module
+3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module
+4. Install [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui) Module
+5. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p)
 
-#### Postgres
+🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
+<mark style="color:green;">Once you deploy any of the modules mentioned above, you can also deploy the OpenG2P Landing Page. All services should be accessible from landing page.</mark>
 
-Postgres is installed using openg2p-commons. In previous deployment model the chart of Postgres would create database for the module along with an admin user of the database. Now the database and user has to be created by each module before installation. [`postgres-ini`](https://github.com/OpenG2P/postgres-init)  Helm Chart has been created for this purpose. This chart must be added to the dependency of the respective module Helm and sufficient time must be given for the module to wait until the database is created. There is[ `wait_for_psql.py` ](https://github.com/OpenG2P/openg2p-packaging/tree/main/packaging/docker-entrypoint.d) in Docker of modules like Registry and PBMS. The timeout there needs to be increased to ensure that enough time is given for the postgres-init to run and create the database
+<figure><img src="../../.gitbook/assets/image (56).png" alt=""><figcaption></figcaption></figure>
 
-### Database initialization
-
-## Work progress
-
-{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-3290" %}

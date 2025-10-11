@@ -468,7 +468,6 @@
   * [Deployment Instructions](deployment/deployment-instructions/README.md)
     * [Infrastructure Setup](deployment/deployment-instructions/infrastructure-setup.md)
     * [Environment Installation](deployment/deployment-instructions/environment-installation.md)
-    * [Modules Installation](deployment/deployment-instructions/modules-installation.md)
     * [Production Deployment Best Practices](deployment/deployment-instructions/production.md)
   * [OpenG2P Commons Helm Chart](deployment/openg2p-commons-helm-chart.md)
   * [Upgrades](deployment/upgrades.md)
