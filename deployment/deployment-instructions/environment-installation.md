@@ -4,7 +4,7 @@
 
 Install openg2p-commons.
 
-## Moduels
+## Modules
 
 You can follow the below links to install OpenG2P modules via Rancher UI.
 
