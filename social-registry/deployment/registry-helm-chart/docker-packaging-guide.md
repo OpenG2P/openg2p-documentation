@@ -26,7 +26,7 @@ Versions of all repositories that are used to create the Docker are specified in
 
 For more information on how to run this from the command line, refer to the [Custom Odoo docker packaging](../../../deployment/deployment-guide/packaging-openg2p-docker.md) guide.
 
-## Steps to create Docker
+## Steps to create Registry Docker
 
 ### Creating tokens to clone private repositories
 
@@ -49,3 +49,7 @@ For more information on how to run this from the command line, refer to the [Cus
 5. Trigger Docker build and push using the Github Actions.  Provide the above file path as input w.r.t to `packages` folder.
 6. Verify that the new Docker has been pushed on Docker Hub.
 7. Update the details of this version on the [Versions](../../versions.md) page.
+
+## Automatic build and upload of private Dockers
+
+Refer to the guide:  [Automatic Build and Upload of Private Dockers](../../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)

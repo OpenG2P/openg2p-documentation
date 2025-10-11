@@ -5,18 +5,12 @@ description: How to create a Helm Package for Social Registry
 # Registry Helm Chart - 2.x.x
 
 {% hint style="warning" %}
-The material here applies to all Social Registry charts with 2.x.x versions.  The deployment architecture going forward is changed [(4.5 architecture)](../../../deployment/deployment-instructions/environment-installation.md) and consequently the charts have changed. For newer charts refer to documentation on 3.x.x version of charts and above&#x20;
+The material here applies to all Social Registry charts with 2.x.x versions.  The environment deployment architecture going forward is changed and consequently the charts have changed too. For newer charts refer to documentation on 3.x.x version of charts and above&#x20;
 {% endhint %}
 
-## Concepts
+## Creation of Helm Chart
 
-Social Registry and all its dependencies are installed using a single [Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/develop/charts). Helm package is the highest level of package that is offered for module installation.  The Helm package contains all dependencies and is intended to be installed "single click" from Rancher or the command line.  The contents of the Helm package may be found in the [`Chart.yaml`](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/develop/charts/openg2p-social-registry/Chart.yaml) file\*.  Learn more on Helm charts, versioning and publishing [here](../../../releases/helm-charts.md#helm-chart-versions).
-
-The package hierarchy is depicted below.
-
-{% embed url="https://miro.com/app/board/uXjVKoUYG7g=/" %}
-
-## Steps
+Below are steps to create 2.x.x Helm Chart for Registry ().
 
 ### Tagging Helm repo
 
