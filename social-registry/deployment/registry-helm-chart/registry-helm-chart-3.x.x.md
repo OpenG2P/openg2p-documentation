@@ -103,29 +103,5 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 The chart is available on Rancher.  Follow the installation steps given [here](../../../g2p-bridge/deployment/#installation-using-rancher-ui).  Make sure openg2p-commons is installed before installing Registry.
 
-## Tear down
-
-To completely cleanup Registry installation, note the following:  Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
-
-To tear down completely:
-
-1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
-2. Delete `registry` secret in the namespace
-3. Drop `registry_db` and user from Postgres&#x20;
-   1. Login into Postgres as admin (via port fowarding or directly from Rancher)
-   2. Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
-   3. `drop database registry_db;`&#x20;
-   4. `drop role registry_db_user;`&#x20;
-4. Drop `mosip-kernel` database:
-   1. `drop database mosip-kernel`&#x20;
-
-_<mark style="color:orange;">TBD: The step 4 will be moved to openg2p-commons, so this won't be required here.</mark>_
-
-
-
-
-
-&#x20;
-
-
+## Tear down&#x20;
 
