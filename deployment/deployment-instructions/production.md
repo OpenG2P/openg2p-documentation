@@ -42,7 +42,7 @@ You can [install Gitlab on a standalone instance](../deployment-guide/air-gapped
 
 ## Standalone PostgreSQL installation&#x20;
 
-In the [OpenG2P deployment model ](../openg2p-deployment-model.md) Postgres is installed on the same machine as the other services. However, if you wish to run Postgres on a separate machine for better maintaince, access control, and backups you may do so.  Please note the following:
+In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) Postgres is installed on the same machine as the other services. However, if you wish to run Postgres on a separate machine for better maintaince, access control, and backups you may do so.  Please note the following:
 
 * Master/Slave configuration is typically required for very high availability  applications.  If you are running portals that require 100% up-time then you may go for a Master/Slave configuration. In this case,  you will have to provision for sufficient hardware.
 *   Production Configuration&#x20;
@@ -53,7 +53,7 @@ If you are moving your PostgreSQL DB from Docker to standalone machine refer to 
 
 ## Standalone MinIO installation
 
-In the [OpenG2P deployment model ](../openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
+In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
 
 ## Security
 

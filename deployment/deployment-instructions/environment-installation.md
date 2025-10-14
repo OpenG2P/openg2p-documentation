@@ -5,8 +5,16 @@
 Install common components as below:
 
 * Create namespace for your environment using Rancher UI or command line&#x20;
-* For production environment install PostgreSQL server separately on the same virtual machine using command line
-* Install openg2p-commons Helm Chart.  For production environment do not install Docker based Postgres (see step above)
+* For **production environment** install PostgreSQL server separately on the same virtual machine using command line
+* Install openg2p-commons Helm Chart.  For **production environment** do not install Docker based Postgres (see step above)
+* The **latest `openg2p-commons` Helm chart** is available directly in the **Rancher UI**.
+* To deploy it:
+  1. Open the **Rancher UI** and go to the **Apps & Marketplace** section.
+  2. In the search bar, type **`openg2p-commons`**.
+  3. Select the chart, **configure the required values** (e.g., domains, Keycloak Clients).
+  4. Click **Install** to deploy the Commons Helmchart.
+
+Once deployed, the OpenG2P Commons services such as PostgreSQL, MinIO, Keymanager, OpenSearch, and others will be automatically set up and available for dependent applications.
 
 ## Modules
 

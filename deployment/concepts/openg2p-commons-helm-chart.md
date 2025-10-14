@@ -1,7 +1,3 @@
----
-description: WORK IN PROGRESS
----
-
 # OpenG2P Commons Helm Chart
 
 #### Overview
@@ -52,12 +48,4 @@ The `openg2p-commons` Helm chart bundles the following core components:
 
 #### How to Deploy OpenG2P Commons
 
-* The **latest `openg2p-commons` Helm chart** is available directly in the **Rancher UI**.
-* To deploy it:
-  1. Open the **Rancher UI** and go to the **Apps & Marketplace** section.
-  2. In the search bar, type **`openg2p-commons`**.
-  3. Select the chart, **configure the required values** (e.g., domains, Keycloak Clients).
-  4. Click **Install** to deploy the Commons Helmchart.
-
-Once deployed, the OpenG2P Commons services such as PostgreSQL, MinIO, Keymanager, OpenSearch, and others will be automatically set up and available for dependent applications.
-
+Refer the instructions [here](../deployment-instructions/environment-installation.md#common-resources).
