@@ -21,7 +21,7 @@ Roles and Privileges in PBMS have been organized into three tiers
 
 1. High level groups
 2. High level groups - mapping to - Low level groups
-3. Low level groupw - mapping to - Odoo models & buttons
+3. Low level groups - mapping to - Odoo models & buttons
 
 ### High level groups&#x20;
 
