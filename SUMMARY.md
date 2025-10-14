@@ -405,6 +405,7 @@
     * [Enrolment & Disbursement Cycles](pbms-gen2/design/enrolment-and-disbursement-cycles.md)
     * [Enrolment workflow](pbms-gen2/design/enrolment-workflow.md)
     * [Disbursement workflow](pbms-gen2/design/disbursement-workflow.md)
+    * [Roles & privileges](pbms-gen2/design/roles-and-privileges.md)
     * [G2P Bridge workflow](pbms-gen2/design/g2p-bridge-workflow.md)
   * [Deployment](pbms-gen2/deployment.md)
   * [Developer Zone](pbms-gen2/developer-zone.md)
