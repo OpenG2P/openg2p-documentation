@@ -2,13 +2,13 @@
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
 
-Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../../deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
 ## Odoo
 
 ### External database
 
-In the [4.5 deployment architecture](broken-reference),  single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)).  This implies that the same PostgreSQL server will house databases from all the modules per environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
+In the current deployment architecture single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1513/deployment/archiecture-v4.5/openg2p-commons-helm-chart)). This implies that the same PostgreSQL server will house databases from all the modules in that environment, including multiple instances of Registry (if any).  In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
 
 `postgresql:`\
 `enabled: false`
@@ -16,7 +16,7 @@ In the [4.5 deployment architecture](broken-reference),  single instance of Post
 `externalDatabase:`\
 `create: true`
 
-Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created posgtes-init (see below section)
+Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created [posgtes-init](registry-helm-chart-3.x.x.md#postgres-init).
 
 ### Modifications to the original Odoo chart
 
@@ -32,7 +32,7 @@ The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. Whi
                   key: {{ include "odoo.databaseSecretPostgresPasswordKey" . }}
 ```
 
-* The above change is in `deployment.yaml` of Odoo chart - a new secret variable called `existingPostgresSecret` has been defined.
+* The above change is in `deployment.yaml` of Odoo chart - a new secret variable called `existingPostgresSecret` has been defined and accordingly some Odoo templates had to be modified (see section below).
 
 ### Use of globals
 
@@ -101,8 +101,8 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 ## Running the Registry chart
 
-The chart is available on Rancher.  Follow the installation steps given [here](../../../../g2p-bridge/deployment/#installation-using-rancher-ui).  Make sure openg2p-commons is installed before installing Registry.
+The chart is available on Rancher.  Follow the [installation steps](../registry-installation-instructions.md). &#x20;
 
 ## Tear down&#x20;
 
-Refer to instructions [here](../../registry-installation-instructions.md#tear-down).
+Refer to instructions [here](../registry-installation-instructions.md#tear-down).

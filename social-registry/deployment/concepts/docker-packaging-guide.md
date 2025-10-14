@@ -24,7 +24,7 @@ The package may contain private repositories, in which case, the token to clone 
 
 Versions of all repositories that are used to create the Docker are specified in the package file. For Dockers that are "frozen" it is assumed that all versions of repositories are frozen as well (i.e., tagged).
 
-For more information on how to run this from the command line, refer to the [Custom Odoo docker packaging](../../../../deployment/deployment-guide/packaging-openg2p-docker.md) guide.
+For more information on how to run this from the command line, refer to the [Custom Odoo docker packaging](../../../deployment/deployment-guide/packaging-openg2p-docker.md) guide.
 
 ## Steps to create Registry Docker
 
@@ -48,8 +48,8 @@ For more information on how to run this from the command line, refer to the [Cus
 4. Make sure the repositories are tagged with the versions matching in the package file.  See above section on tagging.
 5. Trigger Docker build and push using the Github Actions.  Provide the above file path as input w.r.t to `packages` folder.
 6. Verify that the new Docker has been pushed on Docker Hub.
-7. Update the details of this version on the [Versions](../../../versions.md) page.
+7. Update the details of this version on the [Versions](../../versions.md) page.
 
 ## Automatic build and upload of private Dockers
 
-Refer to the guide:  [Automatic Build and Upload of Private Dockers](../../../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)
+Refer to the guide:  [Automatic Build and Upload of Private Dockers](../../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)

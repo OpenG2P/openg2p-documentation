@@ -7,7 +7,7 @@ The instructions here pertain to the deployment of all  Registry and associated 
 Before you deploy, make sure the following are in place:
 
 * ✅ [Infrastruction setup](../../deployment/deployment-instructions/infrastructure-setup.md) is completed&#x20;
-* ✅ [Environment](../../deployment/deployment-instructions/environment-installation.md) has been setup.
+* ✅ [Environment](../../deployment/deployment-instructions/environment-installation.md) has been setup with common resources installed.
 * ✅ Domain name `registry.<your environment>.<your domain name>` (e.g. `registry.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
 * ✅ **Project Owner access** on the OpenG2P namespace
 

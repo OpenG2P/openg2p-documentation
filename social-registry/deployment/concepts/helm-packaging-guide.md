@@ -26,7 +26,7 @@ The charts are located in [this](https://github.com/OpenG2P/openg2p-social-regis
 5. Create a tag following tagging conventions out of this temporary branch. E.g. `v1.3.1`.
 6. The GitHub workflow action to package Helm charts and push to the `openg2p-helm` repo should be triggered automatically.
 7. Delete the temporary branch that was created in the above steps.
-8. Update the [Versions](../../../versions.md) page on this documentation.
+8. Update the [Versions](../../versions.md) page on this documentation.
 9. Once the GitHub actions are finished, the packages should be available on Rancher also (Use the refresh button on the Rancher Charts page to see the latest versions).
 
 {% hint style="warning" %}
