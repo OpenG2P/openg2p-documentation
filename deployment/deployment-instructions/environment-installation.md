@@ -1,21 +1,20 @@
 # Environment Installation
 
-## Common resources&#x20;
+## Common resources
 
-Install openg2p-commons.
+Install common components as below:
+
+* Create namespace for your environment using Rancher UI or command line&#x20;
+* For production environment install PostgreSQL server separately on the same virtual machine using command line
+* Install openg2p-commons Helm Chart.  For production environment do not install Docker based Postgres (see step above)
 
 ## Modules
 
-You can follow the below links to install OpenG2P modules via Rancher UI.
+Install the modules and other utility apps individually using their respective instructions:
 
-1. Install [SocialRegistry](https://docs.openg2p.org/social-registry/deployment) Module
-2. Install [PBMS](https://docs.openg2p.org/pbms/deployment) Module
-3. Install [SPAR](https://docs.openg2p.org/spar/deployment) Module
-4. Install [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui) Module
-5. Install [OpenG2P Landing Page](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/landing-page-for-openg2p)
-
-🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-<mark style="color:green;">Once you deploy any of the modules mentioned above, you can also deploy the OpenG2P Landing Page. All services should be accessible from landing page.</mark>
-
-<figure><img src="../../.gitbook/assets/image (56).png" alt=""><figcaption></figcaption></figure>
+1. [Registry](../../social-registry/deployment/registry-installation-instructions.md)
+2. [PBMS](https://docs.openg2p.org/pbms/deployment)&#x20;
+3. [SPAR](https://docs.openg2p.org/spar/deployment)&#x20;
+4. [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui)&#x20;
+5. Beneficiary Portal
 
