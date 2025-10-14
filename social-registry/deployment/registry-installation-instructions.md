@@ -78,11 +78,10 @@ To tear down completely:
 1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
 2. Delete `registry` secret in the namespace
 3. Drop `registry_db` and user from Postgres&#x20;
-   1. Login into Postgres as admin (via port fowarding or directly from Rancher)
-   2. Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
-   3. `drop database registry_db;`&#x20;
-   4. `drop role registry_db_user;`&#x20;
+   1. Login into Postgres as admin (via port fowarding or directly from Rancher). Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
+   2. `drop database registry_db;`&#x20;
+   3. `drop role registry_db_user;`&#x20;
 4. Drop `mosip-kernel` database:
    1. `drop database mosip-kernel`&#x20;
 
-_<mark style="color:orange;">TBD: The step 4 will be moved to openg2p-commons, so this won't be required here.</mark>_
+_<mark style="color:orange;">TBD: Step 4 will be moved to openg2p-commons, so this won't be required here.</mark>_
