@@ -6,8 +6,6 @@ The instructions here pertain to the deployment of all  Registry and associated 
 
 Before you deploy, make sure the following are in place:
 
-
-
 * ✅ [Infrastruction setup](../../deployment/deployment-instructions/infrastructure-setup.md) is completed&#x20;
 * ✅ [Environment](../../deployment/deployment-instructions/environment-installation.md) has been setup.
 * ✅ Domain name `registry.<your environment>.<your domain name>` (e.g. `registry.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
@@ -26,14 +24,13 @@ Before you deploy, make sure the following are in place:
 
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
-6. Select the namespace in which you would like to install Social Registry, from the namespace filter on the top-right.
-7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P Social Registry` Helm charts listed.
+6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
+7. Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P  Registry` Helm charts listed.
 
-    <figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/registry-app-on-rancher.png" alt="" width="323"><figcaption></figcaption></figure>
 
-    **Note:** You can ignore "**Part 2**" as it refers to an older version of the Helm chart
-8. Proceed to Install `OpenG2P Social Registry` chart select the latest version to be installed, and click Install.
-9. On the next screen, choose a name for installation, like `social-registry`. Select the checkbox `Customise Helm options` before install, and click Next.
+8. Proceed to Install `OpenG2P  Registry` chart select the latest version to be installed, and click Install.
+9. On the next screen, choose a name for installation, like `registry`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
     2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
@@ -70,7 +67,7 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin
 
 ### Odoo
 
-* Follow with [Odoo post-install guide](../../deployment/deployment-guide/odoo-post-install-configuration.md) to activate Odoo modules.
+* Activate the Registry Odoo module after logging into Odoo (TBD).
 
 ## Tear down
 

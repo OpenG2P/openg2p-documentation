@@ -2,7 +2,7 @@
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
 
-Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../../deployment/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
 ## Odoo
 
@@ -101,7 +101,8 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 ## Running the Registry chart
 
-The chart is available on Rancher.  Follow the installation steps given [here](../../../g2p-bridge/deployment/#installation-using-rancher-ui).  Make sure openg2p-commons is installed before installing Registry.
+The chart is available on Rancher.  Follow the installation steps given [here](../../../../g2p-bridge/deployment/#installation-using-rancher-ui).  Make sure openg2p-commons is installed before installing Registry.
 
 ## Tear down&#x20;
 
+Refer to instructions [here](../../registry-installation-instructions.md#tear-down).
