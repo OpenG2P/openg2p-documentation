@@ -1,4 +1,4 @@
-# Registry Helm Chart - 3.x
+# Registry Helm Chart 3.x
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).  Refer to packaing concepts.
 
@@ -28,11 +28,11 @@ In the current deployment architecture single instance of PostgreSQL is installe
 `externalDatabase:`\
 `create: true`
 
-Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created [posgtes-init](registry-helm-chart-3.x.md#postgres-init).
+Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created [posgtes-init](registry-helm-chart-3.x.x.md#postgres-init).
 
 ### Modifications to the original Odoo chart
 
-The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
+The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
 
 * **Secrets separated** - original Odoo Helm chart assumed that the same secret resource of Kubernetes contains keys for both -  Postgres admin and database user.  However, we would like to keep them separate as several instances of modules may be initialised and it wouldn't be a good practice to add them to the Postgres secret both from a management and security perspective. &#x20;
 
@@ -85,7 +85,7 @@ In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo
 
 The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
 
-The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.md#tear-down) instructions below.
+The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
 ### Docker
 
