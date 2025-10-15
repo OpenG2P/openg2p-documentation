@@ -1,6 +1,6 @@
 # Registry Installation
 
-The instructions here pertain to the deployment of all  Registry and associated components on the Kubernetes cluster using [Registry Helm chart](../developer-zone/registry-helm-chart-3.x.x.md). All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+The instructions here pertain to the deployment of all  Registry and associated components on the Kubernetes cluster using [Registry Helm chart](../developer-zone/registry-helm-chart-3.x.md). All the components are installed in the same namespace. The deployment may be achieved by the following methods:
 
 ## Prerequisites
 

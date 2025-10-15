@@ -2,15 +2,15 @@
 description: How to create a Helm Package for Social Registry
 ---
 
-# Registry Helm Chart - 2.x.x
+# Registry Helm Chart - 2.x
 
 {% hint style="warning" %}
-The material here applies to all Social Registry charts with 2.x.x versions.  The environment deployment architecture going forward is changed and consequently the charts have changed too. For newer charts refer to documentation on 3.x.x version of charts and above&#x20;
+The material here applies to all Social Registry charts with 2.x versions.  The environment deployment architecture going forward is changed and consequently the charts have changed too. For newer charts refer to documentation on 3.x version of charts and above&#x20;
 {% endhint %}
 
 ## Creation of Helm Chart
 
-Below are steps to create 2.x.x Helm Chart for Registry ().
+Below are steps to create 2.x  Helm Chart for Registry ().
 
 ### Tagging Helm repo
 
