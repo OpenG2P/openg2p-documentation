@@ -1,7 +1,7 @@
 # Table of contents
 
 * [Overview](README.md)
-* [Social Registry](social-registry/README.md)
+* [Registry](social-registry/README.md)
   * [Features](social-registry/features/README.md)
     * [Individuals and Households](social-registry/features/individuals-and-groups/README.md)
       * [📔 User Guides](social-registry/features/individuals-and-groups/user-guides/README.md)

@@ -1,8 +1,8 @@
-# Social Registry
+# Registry
 
-Social Registry (SR) is an independent module offered by OpenG2P to enable the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR  interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country. SR is not a mere database - it is based on principles of a good [functional registry](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/upcoming-daas-cohorts/functional-registries)  offering several features that can result into exponential benefits to government and people via data share, user control, issue of verifiable credentials etc.
+**OpenG2P Registry** is an independent module that enables the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR  interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country. SR is not a mere database - it is based on principles of a good [functional registry](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/upcoming-daas-cohorts/functional-registries)  offering several features that can result into exponential benefits to government and people via data share, user control, issue of verifiable credentials etc.
 
-The registry can host demographic data of both individuals and groups (family/household) and this data is privacy protected.  SR offers the unique feature of issuing digitally signed credentials - Verifiable Credentials - to the beneficiaries.
+The registry can host demographic data of both individuals and groups (family/household) and this data is privacy protected.  OpenG2P Registry offers the unique feature of issuing digitally signed credentials - Verifiable Credentials - to the beneficiaries.
 
 The registry is offered as ready-to-deploy package which can be configured for a use case.&#x20;
 
@@ -12,7 +12,7 @@ The registry is offered as ready-to-deploy package which can be configured for a
 
 ## Salient features
 
-Some of the key features offered by OpenG2P's Social Registry are as follows:
+Some of the key features offered by the Registry are as follows:
 
 * [Holds both **individual and household** records with relationships. ](features/individuals-and-groups/)
 * [Ability to **share data** with other systems via standard interfaces.](features/data-share/)
