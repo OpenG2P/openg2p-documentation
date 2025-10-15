@@ -20,7 +20,7 @@ Once deployed, the OpenG2P Commons services such as PostgreSQL, MinIO, Keymanage
 
 Install the modules and other utility apps individually using their respective instructions:
 
-1. [Registry](../../social-registry/deployment/registry-installation-instructions.md)
+1. [Registry](../../social-registry/deployment/registry-installation.md)
 2. [PBMS](https://docs.openg2p.org/pbms/deployment)&#x20;
 3. [SPAR](https://docs.openg2p.org/spar/deployment)&#x20;
 4. [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui)&#x20;

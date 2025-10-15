@@ -1,8 +1,20 @@
 # Registry Helm Chart - 3.x.x
 
-The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).
+The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).  Refer to packaing concepts.
 
-Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../../deployment/concepts/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+Several modules that were installed in 2.x.x have been moved to [openg2p-commons](../../deployment/concepts/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+
+## Context
+
+A package of Registry module is offered as a Helm Chart that contains several other dependencies.
+
+Refer to the packaging hierarchy here:
+
+<figure><img src="../../.gitbook/assets/module-packaging (1).jpg" alt=""><figcaption></figcaption></figure>
+
+At the highest level a package is synonymous to a Helm chart that collates all dependencies for a   "single-click" installation.  This "Module Package Helm Chart" contains several other dependent charts.  Each Helm chart typically contains one Docker (there may be more, but for simplicity let's consider a single Docker per Helm).  A Docker is a package in itself that may contain code from several Git repositories. A single Git repository may house multiple components like Odoo modules, FastAPI modules etc.&#x20;
+
+The depencies are listed in `Chart.yaml` file of the Helm Chart.
 
 ## Odoo
 
@@ -101,8 +113,8 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 ## Running the Registry chart
 
-The chart is available on Rancher.  Follow the [installation steps](../registry-installation-instructions.md). &#x20;
+The chart is available on Rancher.  Follow the [installation steps](../deployment/registry-installation.md). &#x20;
 
 ## Tear down&#x20;
 
-Refer to instructions [here](../registry-installation-instructions.md#tear-down).
+Refer to instructions [here](../deployment/registry-installation.md#tear-down).
