@@ -1,8 +1,8 @@
 # OpenG2P Commons Helm Chart
 
-#### Overview
+## Overview
 
-**Purpose:**
+### **Purpose**
 
 * This guide explains the **design rationale** behind the OpenG2P Commons Helm chart.
 * It also provides **references for Helm chart development** and links to:
@@ -15,7 +15,7 @@
 * In the new design, these have been **centralized under the `openg2p-commons` chart**.
 * Only the **common dependency modules** shared across all applications are included in this chart.
 
-**Commons dependencies:**\
+**Commons dependencies**\
 The `openg2p-commons` Helm chart bundles the following core components:
 
 * **PostgreSQL**  &#x20;
@@ -46,6 +46,6 @@ The `openg2p-commons` Helm chart bundles the following core components:
   we extracted the **existing charts and versions** we depend on and uploaded them to **our own private Helm repository**.
 * All our Helm charts are now updated to reference these **internal chart paths** instead of Bitnami’s public sources.
 
-#### How to Deploy OpenG2P Commons
+#### How to deploy OpenG2P Commons
 
 Refer the instructions [here](../deployment-instructions/environment-installation.md#common-resources).
