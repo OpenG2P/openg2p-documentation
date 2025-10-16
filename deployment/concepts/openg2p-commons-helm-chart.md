@@ -9,13 +9,13 @@
   * The [**source code**](https://github.com/OpenG2P/openg2p-deployment-commons) of the chart.
   * The [**new architecture**](openg2p-deployment-model.md) documentation.
 
-**Design Update (from v2.x.x onward):**
+**Design update (from v2.x.x onward)**
 
 * In OpenG2P **version 2.x.x**, many dependency modules were installed **separately** for each application.
 * In the new design, these have been **centralized under the `openg2p-commons` chart**.
 * Only the **common dependency modules** shared across all applications are included in this chart.
 
-**List of Commons Dependencies:**\
+**Commons dependencies:**\
 The `openg2p-commons` Helm chart bundles the following core components:
 
 * **PostgreSQL**  &#x20;
