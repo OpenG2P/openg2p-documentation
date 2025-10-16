@@ -12,7 +12,7 @@ The deployment is offered as a set of instructions, scripts, [Helm charts](../..
 
 The deployment is **cloud agnostic** - it does not use cloud specific components.&#x20;
 
-<figure><img src="../../.gitbook/assets/openg2p-deployment-model.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/openg2p-deployment-model (1).jpg" alt=""><figcaption></figcaption></figure>
 
 ## Key concepts
 
