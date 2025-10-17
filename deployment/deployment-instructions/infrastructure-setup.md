@@ -1,19 +1,19 @@
-# Infrastructure Installation
+# Infrastructure Setup
 
 {% hint style="info" %}
-**CONCETPS**: Before proceeding with deployment, read up on the following topics to better understand each infrastructure component required for a successful setup:
+**CONCETPS**: Before proceeding with deployment, read up on the following topics (using material available on the Internet) to better understand each infrastructure component required for a successful setup:
 
-1. 🔒 [**Firewall Rules**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster)
-2. 📦 [**Kubernetes Cluster**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#cluster-installation)
-3. 🔐 [**WireGuard Bastion**](https://docs.openg2p.org/deployment/base-infrastructure/wireguard-bastion#installation)
-4. 📁 [**NFS Server**](https://docs.openg2p.org/deployment/base-infrastructure/nfs-server#installation)
+1. 🔒 **Firewall Rules**
+2. 📦 **Kubernetes**&#x20;
+3. 🔐 **WireGuard**&#x20;
+4. 📁 **NFS**&#x20;
 5. 🔗 [**Kubernetes NFS CSI Driver**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#nfs-client-provisioner)
-6. 🧩 [**Istio Service Mesh**](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio)
-7. 🔐 [**SSL Certificates**](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt)
-8. 🧑‍💻 [**Rancher**](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/rancher)
-9. 🧾 [**Keycloak**](https://docs.openg2p.org/deployment/1.0.0/guides/user-guides/create-payment-manager-types)
-10. 📊 [**Prometheus Monitoring**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/prometheus-and-grafana)
-11. 📝 [**Logging**](https://docs.openg2p.org/pbms/functionality/monitoring-and-reporting/logging) **and** [**Fluentd**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch)
+6. 🧩 **Istio**&#x20;
+7. 🔐 **SSL Certificates**
+8. 🧑‍💻 **Rancher**
+9. 🧾 **Keycloak**
+10. 📊 **Prometheus & Grafana**
+11. 📝 **Fluentd**
 {% endhint %}
 
 ## Base infrastructure setup
