@@ -85,6 +85,8 @@ In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo
 
 The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
 
+Postgres-init has ability to **initialise multiple databases.** The list of databases need to be specified in the Helm Chart's [values.yaml](https://github.com/OpenG2P/postgres-init/blob/develop/chart/values.yaml).
+
 The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm in uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire Registry clean, refer to the [tear down](registry-helm-chart-3.x.x.md#tear-down) instructions below.
 
 ### Docker
