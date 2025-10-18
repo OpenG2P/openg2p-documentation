@@ -33,9 +33,10 @@ Before you deploy, make sure the following are in place:
 9. On the next screen, choose a name for installation, like `registry`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
-    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
-    4.  To change the docker image from the default image, click on `Edit YAML` table and update the following section in Helm. \
+    2. For production deployments, if the PostgreSQL server is run directly (natively) on the VM. for _PostgreSQL Hostname_ specifiy  `host.docker.internal`  which is proxy for `localhost` as from within Docker of Odoo `localhost` will not be recognized. If you are running PostgreSQL on a separate machine, specify the Host domain or IP.
+    3. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
+    4. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    5.  To change the docker image from the default image, click on `Edit YAML` table and update the following section in Helm. \
         **Note:** This step is required only if you have separate docker image to be deployed or else you can go with default one skip this step.
 
         ```bash

@@ -30,6 +30,8 @@ In the current deployment architecture single instance of PostgreSQL is installe
 
 Note that `create: true` is not really creating the DB - this is perhaps a known issue in Odoo Docker.  It expects DB and user name and secret to exist a priori.  Hence, we have created [posgtes-init](registry-helm-chart-3.x.x.md#postgres-init).
 
+For production deployments, the PostgreSQL server is run directly (natively) on the VM. In this case, specifiy Postgres Host in Helm Charts as `host.docker.internal`  which is proxy for `localhost` as from within Docker of Odoo `localhost` will not be recognized.   Or if you are running PostgreSQL on a separate machine, specify the Host domain or IP.
+
 ### Modifications to the original Odoo chart
 
 The original Bitnami chart 26.2.9 was modified to suit OpenG2P requirements. While most modifications were about [overriding a few templates](registry-helm-chart-3.x.x.md#overriding-odoo-templates), there were some changes in charts as well. The new version 26.3.0 is created maintained by OpenG2P.  The source code of the chart is available [here](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/odoo).  The following changes were made:
@@ -96,7 +98,7 @@ The postgres-init Docker is published on [Docker Hub](https://hub.docker.com/r/o
 To run the Docker from your machine on the cluster (for development and testing), use the following method:
 
 * Port forward using `kubectl` to connect to Postgres server on the cluster
-* Create an env file like this [example](https://github.com/OpenG2P/postgres-init/blob/develop/.env.example). For POSTGRES\_HOST  give the host name as `host.docker.internal`  otherwise from within Docker `localhost` won't be recognized.
+* Create an env file like this [example](https://github.com/OpenG2P/postgres-init/blob/develop/.env.example).  If Postgres is running directly on your machine and the host is `localhost`, For POSTGRES\_HOST  give the host name as `host.docker.internal`  otherwise from within Docker of Postgres-init  `localhost` won't be recognized.
 * Run as given [here](https://github.com/OpenG2P/postgres-init/blob/develop/README.md).
 
 {% hint style="warning" %}
