@@ -70,6 +70,21 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin
 
 * Activate the Registry Odoo module after logging into Odoo (TBD).
 
+## Accessing the registry
+
+On the browser connect to URL
+
+https://\<registry domain name>/web/login?db=registry\_db
+
+Examples:
+
+* [https://registry.devops.openg2p.org/web/login?db=registry\_db](https://admin-pbms.devops.openg2p.org/web/login?db=pbms_db)&#x20;
+* [https://admin-registry.devops.openg2p.org/web/login?db=registry\_db](https://admin-pbms.devops.openg2p.org/web/login?db=pbms_db)
+
+<mark style="color:orange;">**TBD:  The database in the above URL should not be required. This issue is to be fixed. See issue below:**</mark>
+
+{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-3299" %}
+
 ## Tear down
 
 To completely cleanup Registry installation, note the following:  Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
