@@ -18,7 +18,7 @@ The changes made PBMS Helm Chart w.r.t previous versions (3.x and below) are sim
 
 ## Running the Helm Chart
 
-Follow the instructions given [here](../deployment/pbms-deployment-instructions.md).
+Follow the instructions given [here](../../pbms/deployment/pbms-deployment-instructions.md).
 
 ## Work items
 
