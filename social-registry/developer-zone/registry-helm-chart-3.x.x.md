@@ -79,7 +79,7 @@ Odoo Docker is packaged using the scripts in [`openg2p-packaging`](https://githu
 
 ## Postgres-init
 
-In the previous Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Postgres installation in Odoo's Helm chart.  For external database, we now have to initialise the DB, create the user and password.  Refer to Docker of postgres-init and its Helm chart [here](https://github.com/OpenG2P/postgres-init).  This is a general purpose Helm chart and can be used across modules. The functionality implemented are limited to the following:
+In the previous Registry Helm chart (2.x.x) the initialization of DB was part of the Odoo installation where the DB for Odoo was initialized as part of the Postgres installation in Odoo's Helm chart.  For external database, we now have to initialise the DB, create the user and password.  Refer to Docker of postgres-init and its Helm chart [here](https://github.com/OpenG2P/postgres-init).  This is a general purpose Helm chart and can be used across modules. The functionality implemented are limited to the following:
 
 * Creation of a DB in an existing Postgres server
 * Creation of DB user
