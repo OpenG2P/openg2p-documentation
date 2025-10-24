@@ -285,7 +285,7 @@
     * [PBMS Helm Chart 4.x](pbms/developer-zone/pbms-helm-chart-4.x.md)
     * [Technology Stack](pbms/developer-zone/technology-stack.md)
   * [Deployment](pbms/deployment/README.md)
-    * [PBMS Deployment Instructions](pbms/deployment/pbms-deployment-instructions.md)
+    * [Deployment Instructions](pbms/deployment/pbms-deployment-instructions.md)
     * [i18n](pbms/deployment/i18n.md)
     * [Installation of Odoo Modules](pbms/deployment/installation-of-odoo-modules.md)
     * [Domain names and Certificates](pbms/deployment/domain-names-and-certificates.md)
