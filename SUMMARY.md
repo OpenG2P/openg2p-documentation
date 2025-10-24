@@ -284,7 +284,7 @@
       * [G2P SelfServicePortal](pbms/developer-zone/repositories/g2p-selfserviceportal.md)
     * [Technology Stack](pbms/developer-zone/technology-stack.md)
   * [Deployment](pbms/deployment/README.md)
-    * [Deployment Instructions](pbms/deployment/pbms-deployment-instructions.md)
+    * [PBMS Deployment Instructions](pbms/deployment/pbms-deployment-instructions.md)
     * [i18n](pbms/deployment/i18n.md)
     * [Installation of Odoo Modules](pbms/deployment/installation-of-odoo-modules.md)
     * [Domain names and Certificates](pbms/deployment/domain-names-and-certificates.md)
