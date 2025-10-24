@@ -2,7 +2,7 @@
 description: PBMS Deployment Instructions
 ---
 
-# Deployment Instructions
+# PBMS Deployment Instructions
 
 This document contains instructions for all the deployment of PBMS modules and their related components on the Kubernetes cluster using [Helm charts](https://docs.openg2p.org/pbms/deployment/helm-charts). All the components are installed in the same namespace. The methods used to achieve the deployment are:
 
