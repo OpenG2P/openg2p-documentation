@@ -19,7 +19,7 @@ The three steps involved in the registration process using the ODK Collect App a
 
 * ODK Central Configuration
 * Field Registration
-* Use [**ODK Importer**](../pbms/features/odk-importer/) or [**MTS Connector**](../pbms/developer-zone/odoo-modules/mts-connector.md)
+* Use [**ODK Importer**](../pbms/previous-generation/functionality/odk-importer/) or [**MTS Connector**](../pbms/previous-generation/developer-zone/odoo-modules/mts-connector.md)
 
 ### ODK Central Configuration
 
@@ -58,7 +58,7 @@ A program administrator must create an ODK MTS Connector to map the ODK forms in
 
 &#x20;_Note: The OpenG2P registry accepts the individual or group KYC data only in JSON format._
 
-To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md).
+To learn the steps to create an ODK MTS Connector, click [here](../pbms/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md).
 
 ## ODK language support
 
@@ -78,4 +78,4 @@ To learn the steps to create an ODK MTS Connector, click [here](../pbms/user-gui
 
 :notebook\_with\_decorative\_cover:[Download Form on ODK Collect](odk-collection-app/user-guides/download-form-on-odk-collect.md)
 
-:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../pbms/user-guides/eligibility-and-program-enrollment/mts-connector/create-mts-connector/create-odk-mts-connector.md)
+:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../pbms/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md)

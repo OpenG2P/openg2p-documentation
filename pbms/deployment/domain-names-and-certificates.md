@@ -1,28 +1,19 @@
 ---
-description: Domain names and mapping for PBMS
+description: Domain names and certificates for PBMS
 ---
 
-# Domain names and Certificates
+# Domain names & certificates
 
-### Domain names <a href="#domain-names" id="domain-names"></a>
+## Domain names <a href="#domain-names" id="domain-names"></a>
 
-Suggested convention:
+The suggested convention is given below.
 
-\<component>.\<environment>.\<your org domain>.\<tld>
+`<component>.<environment>.<your org domain>.<tld>`
 
-| Component           | Example Domain                  |
-| ------------------- | ------------------------------- |
-| PBMS                | pbms.dev.openg2p.org            |
-| Logging dashboard   | opensearch-pbms.dev.openg2p.org |
-| Reporting dashboard | opensearch-pbms.dev.openg2p.org |
-| Minio console       | minio-pbms.dev.openg2p.org      |
-| ODK Central         | odk-pbms.dev.openg2p.org        |
-| eSignet             | esignet-pbms.dev.openg2p.org    |
-| Apache Superset     | superset-pbms.dev.openg2p.org   |
-| Kafka dashboard     | kafka-pbms.dev.openg2p.org      |
+<table><thead><tr><th width="165">Component</th><th>Example Domain</th></tr></thead><tbody><tr><td>PBMS</td><td><code>pbms.dev.openg2p.org</code></td></tr></tbody></table>
 
-All the above domains point to Nginx IP corresponding to server (virtual host) that routes to Istio Ingress gateway server on OpenG2P Cluster.
+All the above domains point to Nginx IP corresponding to server (virtual host) that routes to Istio Ingress gateway server on [OpenG2P Cluster](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster).
 
-### Certificates <a href="#certificates" id="certificates"></a>
+## Certificates
 
-SSL certs for all the above must be available, generally as a wild card certificate for the domain, example. `*.dev.openg2p.org`
+SSL certs for all the above must be available, generally as a wild card certificate for the domain, example. `*.dev.openg2p.org`\

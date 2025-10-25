@@ -1,6 +1,2 @@
----
-description: PMBS Developer's Zone
----
-
-# Development
+# Developer Zone
 

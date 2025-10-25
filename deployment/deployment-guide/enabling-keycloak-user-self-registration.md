@@ -59,7 +59,7 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
 
        <figure><img src="../../.gitbook/assets/image (4) (1) (1).png" alt=""><figcaption><p><br></p></figcaption></figure>
 6. **Integrate Keycloak Credentials with Applications**
-   1. Make sure your application is already integrated with Keycloak login for authentication. If not, configure it for [Keycloak authentication](../../pbms/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-log-in.md).\
+   1. Make sure your application is already integrated with Keycloak login for authentication. If not, configure it for [Keycloak authentication](../../pbms/previous-generation/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-log-in.md).\
 
 7. **Verify Self-Registration**
    1. Open **Socialregistry** or **PBMS** service in an incognito/private browser window.
