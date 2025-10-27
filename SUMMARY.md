@@ -598,3 +598,4 @@
   * [Code of Conduct](community/code-of-conduct.md)
 * [Blogs](blogs/README.md)
   * [OpenG2P and SDG Goals](blogs/openg2p-and-sdg-goals.md)
+  * [Why Odoo?](blogs/why-odoo.md)
