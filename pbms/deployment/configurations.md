@@ -10,7 +10,9 @@ Once all the pods are in **Running** state we can start interacting with the Odo
 
 ## Prerequisites
 
-* [ ] The user must have access to PBMS in OpenG2P systems.
+* [ ] An installed and running instance of keycloak
+* [ ] An installed and running instance of minio object store
+* [ ] The user must have access to PBMS in OpenG2P systems
 * [ ] The user must be an Administrator on the system
 
 ## Configure Minio Object Store

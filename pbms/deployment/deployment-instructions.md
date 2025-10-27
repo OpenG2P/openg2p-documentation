@@ -6,6 +6,10 @@ description: PBMS deployment instructions
 
 The instructions here pertain to the deployment of PBMS and associated components on the Kubernetes cluster using PBMS Helm chart. All the components are installed in the same namespace.
 
+{% hint style="info" %}
+Minio Object Store and Keycloak installation can be skipped if already deployed via [OpenG2P Commons](../../deployment/deployment-instructions/) and you wish to use those.
+{% endhint %}
+
 ## Prerequisites
 
 Before you deploy, make sure the following are in place:
@@ -33,7 +37,7 @@ Before you deploy, make sure the following are in place:
 5.  Navigate to **Apps → Charts** and locate the chart:
 
     * **Name:** _OpenG2P PBMS (3.0.0)_
-    * **Description:** Installs PBMS Odoo + Postgres, Background Tasks, and Minio
+    * **Description:** A Helm chart for OpenG2P PBMS
 
     <figure><img src="../../.gitbook/assets/image (80).png" alt=""><figcaption></figcaption></figure>
 6. Click the chart, choose **version 3.0.0**, and click **Install**.
