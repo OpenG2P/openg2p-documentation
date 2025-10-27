@@ -1,6 +1,6 @@
 # Why Odoo?
 
-A frequent question in the OpenG2P community is _why the project has chosen the Odoo framework_ as its underlying technology for building some of the core modules. This blog post clarifies the rationale behind that decision.
+A frequent question in the OpenG2P community is _why the project has chosen the Odoo framework as its underlying technology_ for building some of the core modules. This blog post clarifies the rationale behind that decision.
 
 The story goes back to OpenG2P’s roots: the platform was originally developed as an extension of UNDP’s system, which made extensive use of Odoo for program management functions. Multiple project milestones involved thoughtful evaluations about potentially moving away from Odoo. Each time, the conclusion remained consistent—Odoo continues to deliver critical flexibility and rapid feature deployment, especially for core OpenG2P modules like [Registry](../social-registry/) and [PBMS](../pbms/).
 
