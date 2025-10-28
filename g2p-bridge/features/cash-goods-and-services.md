@@ -14,6 +14,8 @@ The processing of disbursement instructions within an envelope depends on the en
 
 The following diagram shows the detailed workflow within G2P Bridge for each of these product types.
 
+{% embed url="https://miro.com/app/board/uXjVJf5HgOI=/?share_link_id=142748356432" %}
+
 \
 \
 \
