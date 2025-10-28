@@ -368,6 +368,7 @@
     * [1.1.0](spar/releases/release-notes-1.md)
 * [G2P Bridge](g2p-bridge/README.md)
   * [Features](g2p-bridge/features/README.md)
+    * [Cash, goods & services](g2p-bridge/features/cash-goods-and-services.md)
     * [Extensibility Layer](g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
     * [Account Mapper Resolution](g2p-bridge/features/account-mapper-resolution.md)
     * [Reconciliation with Sponsor Bank](g2p-bridge/features/reconciliation-with-sponsor-bank.md)
