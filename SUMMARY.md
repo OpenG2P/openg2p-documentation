@@ -122,7 +122,7 @@
     * [Enrolment workflow](pbms/design/enrolment-workflow.md)
     * [Disbursement workflow](pbms/design/disbursement-workflow.md)
     * [Roles & privileges](pbms/design/roles-and-privileges.md)
-    * [G2P Bridge workflow](pbms/design/g2p-bridge-workflow.md)
+    * [Post disbursement workflow](pbms/design/g2p-bridge-workflow.md)
   * [Deployment](pbms/deployment/README.md)
     * [Deployment Instructions](pbms/deployment/deployment-instructions.md)
     * [Configurations](pbms/deployment/configurations.md)
