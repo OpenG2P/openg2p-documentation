@@ -1,4 +1,6 @@
-# Account Mapper Resolution
+# Address resolver - SPAR
+
+**Specific implementation of Address resolver - where G2P Bridge connects to OpenG2P SPAR to retrieve the Financial Address of a Beneficiary**
 
 The upstream Program Management (MIS) systems provide a disbursement list for every disbursement cycle. While many MIS systems currently store beneficiary financial address, the DPI paradigm seeks to abstract this financial address information into a de-coupled purpose built account mapper service. This design ensures that the beneficiary has to ensure his correct financial address (either a bank account or a mobile wallet) only in one single place as opposed to registering his financial address in every Program.
 
