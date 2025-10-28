@@ -1,20 +1,59 @@
 # Environment Installation
 
-## Common resources
+The instructions here pertain to the deployment of commons  on the Kubernetes cluster using OpenG2P-Commons.  All the components are installed in the same namespace.
 
-Install common components as below:
+## Prerequisites
 
-* Create namespace for your environment using Rancher UI or command line&#x20;
-* For **production environment** install PostgreSQL server separately on the same virtual machine using command line
-* Install openg2p-commons Helm Chart.  For **production environment** do not install Docker based Postgres (see step above)
-* The **latest `openg2p-commons` Helm chart** is available directly in the **Rancher UI**.
-* To deploy it:
-  1. Open the **Rancher UI** and go to the **Apps & Marketplace** section.
-  2. In the search bar, type **`openg2p-commons`**.
-  3. Select the chart, **configure the required values** (e.g., domains, Keycloak Clients).
-  4. Click **Install** to deploy the Commons Helmchart.
+Before you deploy, make sure the following are in place:
+
+* ✅ [Infrastruction setup](infrastructure-setup.md) is completed&#x20;
+* ✅ [Environment](environment-installation.md) has been setup with common resources installed.
+* ✅ Domain name `esignet.<your environment>.<your domain name>` (e.g. `esignet.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
+* ✅ **Project Owner access** on the OpenG2P namespace
+
+## Installation using Rancher UI
+
+1. Log in to Rancher admin console.
+2. Select your cluster.
+3. Under **Apps -> Repositories** click on Create to add a repository.
+4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.\
+
+
+    <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.\
+
+
+    <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
+7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P  commons` Helm charts listed.
+
+    <figure><img src="../../.gitbook/assets/image (84).png" alt=""><figcaption></figcaption></figure>
+8. Proceed to Install `OpenG2P  Commons` chart select the latest version to be installed, and click Install.
+9. On the next screen, choose a name for installation, like `Commons`. Select the checkbox `Customise Helm options` before install, and click Next.
+10. Go through each app's configuration page, and configure the following:
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `esignet.dev.openg2p.org` and `odk.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
+    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../deployment-guide/keycloak-client-creation.md) guide.
+11. Click Next to reach Helm Options page. Disable `wait` flag. Click on Install.
+12. Wait for all the pods to get into **Running state**. This may take several minutes.
+
+    <div align="left"><figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure></div>
 
 Once deployed, the OpenG2P Commons services such as PostgreSQL, MinIO, Keymanager, OpenSearch, and others will be automatically set up and available for dependent applications.
+
+## Post Installation
+
+### Keycloak
+
+#### Assigning roles to users
+
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users:
+
+<table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for logging</td><td><code>admin</code></td></tr><tr><td>OpenSearch Dashboards for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a> </td><td><code>admin</code></td></tr><tr><td>Kafka UI for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a></td><td><code>Admin</code></td></tr><tr><td>Apache Superset</td><td><code>Admin</code></td></tr><tr><td>Minio Console</td><td><code>consoleAdmin</code></td></tr></tbody></table>
+
+#### Assigning roles to clients
+
+* For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
 
 ## Modules
 

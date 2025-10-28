@@ -323,12 +323,14 @@ In Rancher, create a project and namespace, on which the OpenG2P modules will be
 &#x20;The rest of this guide assumes the namespace to be `dev`, as the TLS certificates were created for the domain `dev.example.com` during the certificate setup.
 {% endhint %}
 
-In rancher -> namespaces menu, enable `Istio Auto Injection` for `dev` namespace.
+{% hint style="warning" %}
+In Rancher, make sure that `Istio auto-injection` for the dev namespace is disabled.
+{% endhint %}
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
-&#x20;<mark style="color:green;">Verify Istio injection is enabled for the dev namespace in the DEV project.</mark>
+&#x20;<mark style="color:green;">Verify your project name and namespace appear under project/namespace section.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure></div>
+<figure><img src="../../.gitbook/assets/image (82).png" alt=""><figcaption></figcaption></figure>
 
 #### **13. Istio** gateway setup
 

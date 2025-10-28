@@ -25,14 +25,13 @@ Before you deploy, make sure the following are in place:
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
-7. Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P  Registry` Helm charts listed.
+7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P  Registry` Helm charts listed.
 
-<figure><img src="../../.gitbook/assets/registry-app-on-rancher.png" alt="" width="323"><figcaption></figcaption></figure>
-
+    <div align="center"><figure><img src="../../.gitbook/assets/image (83).png" alt=""><figcaption></figcaption></figure></div>
 8. Proceed to Install `OpenG2P  Registry` chart select the latest version to be installed, and click Install.
 9. On the next screen, choose a name for installation, like `registry`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
-    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org` and `odk-sr.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
     2. For production deployments, if the PostgreSQL server is run directly (natively) on the VM. for _PostgreSQL Hostname_ specifiy  `host.docker.internal`  which is proxy for `localhost` as from within Docker of Odoo `localhost` will not be recognized. If you are running PostgreSQL on a separate machine, specify the Host domain or IP.
     3. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
     4. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
@@ -53,18 +52,6 @@ Before you deploy, make sure the following are in place:
     <div align="left"><figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure></div>
 
 ## Post Installation
-
-### Keycloak
-
-#### Assigning roles to users
-
-Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users:
-
-<table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for logging</td><td><code>admin</code></td></tr><tr><td>OpenSearch Dashboards for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a> </td><td><code>admin</code></td></tr><tr><td>Kafka UI for <a href="../../monitoring-and-reporting/reporting-framework/">Reporting</a></td><td><code>Admin</code></td></tr><tr><td>Apache Superset</td><td><code>Admin</code></td></tr><tr><td>Minio Console</td><td><code>consoleAdmin</code></td></tr></tbody></table>
-
-#### Assigning roles to clients
-
-* For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
 
 ### Odoo
 
