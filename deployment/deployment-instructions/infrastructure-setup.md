@@ -258,7 +258,7 @@ Point these records to the **Internal IP** address of node.
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the</mark> \ <mark style="color:green;">screenshot.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../.gitbook/assets/image (2) (1) (2).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **9. Rancher installation**
 
