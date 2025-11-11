@@ -601,7 +601,7 @@
       * [Embed a Miro diagram](guides/documentation-guides/documentation-guidelines/embed-a-miro-diagram.md)
     * [OpenG2P Module Doc Template](guides/documentation-guides/openg2p-module-doc-template.md)
 * [Use Cases](use-cases/README.md)
-  * [Farmer Registry](use-cases/farmer-registry/README.md)
+  * [Farmer Profile](use-cases/farmer-registry/README.md)
     * [Reference Design: Farmer Registry](use-cases/farmer-registry/reference-design-farmer-registry.md)
 * [License](license.md)
 * [OpenG2P Academy](openg2p-academy.md)
