@@ -1,10 +1,10 @@
-# Reference Design: Farmer Registry
+# Reference Design: Farmer Profile
 
-The OpenG2P Farmer Registry is designed to streamline the identification, registration, and verification of farmers in a structured and scalable manner. It aligns with the use case documented in [OpenG2P Farmer Registry Use Case](https://docs.openg2p.org/use-cases/farmer-registry) and provides a reference implementation based on OpenG2P principles. This reference design can be a base to start off your farmer registry implementation and further you may modify as per your farmer registry specification.&#x20;
+The OpenG2P Farmer Profile is designed to streamline the identification, registration, and verification of farmers in a structured and scalable manner. It aligns with the use case documented in [OpenG2P Farmer Profile Use Case](https://docs.openg2p.org/use-cases/farmer-registry) and provides a reference implementation based on OpenG2P principles. This reference design can be a base to start off your farmer registry implementation and further you may modify as per your farmer profile specification.&#x20;
 
 ## Use case&#x20;
 
-Refer [Farmer Registry](./)
+Refer [Farmer Profile](./)
 
 ## Source code
 
@@ -12,7 +12,7 @@ The entire source code for the reference design can be found in the GitHub [repo
 
 ## Components&#x20;
 
-Included The Farmer Registry solution comprises the following components, as reflected in the OpenG2P Reference Designs GitHub repository:&#x20;
+Included The Farmer Profile solution comprises the following components, as reflected in the OpenG2P Reference Designs GitHub repository:&#x20;
 
 * `g2p_farmer`: Core farmer registry model.
 * `g2p_farmer_rest_api`: REST API for accessing and managing farmer data.

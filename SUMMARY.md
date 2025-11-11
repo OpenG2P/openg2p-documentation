@@ -602,7 +602,7 @@
     * [OpenG2P Module Doc Template](guides/documentation-guides/openg2p-module-doc-template.md)
 * [Use Cases](use-cases/README.md)
   * [Farmer Profile](use-cases/farmer-registry/README.md)
-    * [Reference Design: Farmer Registry](use-cases/farmer-registry/reference-design-farmer-registry.md)
+    * [Reference Design: Farmer Profile](use-cases/farmer-registry/reference-design-farmer-registry.md)
 * [License](license.md)
 * [OpenG2P Academy](openg2p-academy.md)
 * [Community](community/README.md)
