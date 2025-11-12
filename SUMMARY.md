@@ -467,6 +467,7 @@
         * [Openg2p Beneficiary Portal UI](utilities-and-tools/beneficiary-portal/developer-zone/developer-setup/openg2p-beneficiary-portal-ui.md)
         * [Openg2p Portal Server](utilities-and-tools/beneficiary-portal/developer-zone/developer-setup/openg2p-portal-server.md)
       * [React/Next.js Project Structure](utilities-and-tools/beneficiary-portal/developer-zone/react-next.js-project-structure.md)
+    * [Deployment of Strapi](utilities-and-tools/beneficiary-portal/deployment-of-strapi.md)
   * [Grievance Redress Mechanism](utilities-and-tools/grievance-redress-mechanism.md)
 * [Testing](testing/README.md)
   * [Test Workflow](testing/test-workflow.md)
