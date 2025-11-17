@@ -75,6 +75,7 @@
     * [Claim and Attest](pbms/functionality/claim-and-attest.md)
     * [Change Management](social-registry/features/change-management.md)
     * [Grievance Redress Mechanism](social-registry/features/grievance-redress-mechanism.md)
+    * [Registry API](social-registry/features/registry-api.md)
   * [Versions](social-registry/versions.md)
   * [Deployment](social-registry/deployment/README.md)
     * [Registry Installation](social-registry/deployment/registry-installation.md)
