@@ -151,11 +151,12 @@ Mode of Interaction:
 
 #### Registry add and update interfaces - Table
 
-| Partner systems     | API Interface      | True           | True | Online           |
-| ------------------- | ------------------ | -------------- | ---- | ---------------- |
-| Staff, Admins       | Web Portal         | True           | True | Online           |
-| Agents, Enumerators | Agent Portal       | True           | True | Offline / Online |
-| Beneficiaries       | Beneficiary Portal | True (limited) | True | Online           |
+| Typical Users       | Interface Type     | Add (New Record through CR) | Update (Change Request) | Connectivity     |
+| ------------------- | ------------------ | --------------------------- | ----------------------- | ---------------- |
+| Partner systems     | API Interface      | True                        | True                    | Online           |
+| Staff, Admins       | Web Portal         | True                        | True                    | Online           |
+| Agents, Enumerators | Agent Portal       | True                        | True                    | Offline / Online |
+| Beneficiaries       | Beneficiary Portal | True (limited)              | True                    | Online           |
 
 
 
@@ -169,8 +170,9 @@ Each API component serves a specific user or system category while maintaining c
 
 
 
-| <mark style="color:orange;">openg2p-registry-core</mark> | <mark style="color:orange;">Internal registry services</mark> | <mark style="color:orange;">Core registry data management</mark> | <p><mark style="color:orange;">Foundational service used by other components.</mark><br><br></p> |
+| API Component                                            | Primary Users / Systems                                       | Purpose                                                          | Typical Use                                                                                      |
 | -------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| <mark style="color:orange;">openg2p-registry-core</mark> | <mark style="color:orange;">Internal registry services</mark> | <mark style="color:orange;">Core registry data management</mark> | <p><mark style="color:orange;">Foundational service used by other components.</mark><br><br></p> |
 | openg2p-registry-partner-api                             | External partner systems (PBMS, NID, PSP)                     | System-to-system data exchange                                   | Submit/fetch registrations, enrollments, and updates                                             |
 | openg2p-registry-bene-portal-api                         | Beneficiaries                                                 | Direct citizen interaction                                       | Self-registration and change requests                                                            |
 | openg2p-registry-agency-portal-api                       | Agents and agencies                                           | Assisted beneficiary services                                    | Agent-led registration and program enrollment                                                    |
