@@ -127,8 +127,7 @@ After installing WireGuard on the cluster and configuring it on your local machi
     Example:
 
     ```bash
-    sudo mkdir /srv/nfs/rancher
-    sudo mkdir /srv/nfs/openg2p
+    sudo mkdir /srv/nfs/global
     ```
 
     Run this command to provide full accces for `nfs` folder `sudo chmod -R 777 /srv/nfs`&#x20;
@@ -157,7 +156,7 @@ After installing WireGuard on the cluster and configuring it on your local machi
 To set up Istio from [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory, run the commands below to install the Istio Operator, Istio Service Mesh, and Istio Ingress Gateway components. Wait for `istiod` and `ingressgateway` pods to start on istio-system namespace.
 
 ```bash
-istioctl install -f istio-operator-no-external-lb.yaml
+istioctl install -f istio-operator.yaml
 kubectl apply -f istio-ef-spdy-upgrade.yaml
 ```
 
@@ -166,80 +165,20 @@ kubectl apply -f istio-ef-spdy-upgrade.yaml
 
 <div align="left"><figure><img src="../../.gitbook/assets/image (21) (1).png" alt=""><figcaption></figcaption></figure></div>
 
-#### **7.** Setting up TLS certificates for domain
+#### **7.** Setting up nginx load balancer
 
+Follow the document [here](https://docs.openg2p.org/deployment/scaling/base-infrastructure/load-balancer/nginx) to setup nginx.
+
+{% hint style="info" %}
 Set up TLS/SSL certificates for your domain (e.g., sandbox.\<your-domain>) to enable secure, encrypted communication between services.\
 Ensure certificates are created for the following four domains to enable HTTPS in the environment:
+{% endhint %}
 
 <table data-header-hidden><thead><tr><th width="206"></th><th width="219"></th><th></th></tr></thead><tbody><tr><td><strong>Purpose</strong></td><td><strong>Domain Example</strong></td><td><strong>Description</strong></td></tr><tr><td>Rancher UI</td><td><code>rancher.example.com</code></td><td>Used to access the Rancher web interface</td></tr><tr><td>Keycloak Authentication</td><td><code>keycloak.example.com</code></td><td>Used for authentication via Keycloak</td></tr><tr><td>Sandbox Environment</td><td><code>sandbox.example.com</code></td><td>Main entry point for the sandbox environment</td></tr><tr><td>Wildcard for Sandbox</td><td><code>*.sandbox.example.com</code></td><td>Covers subdomains like <code>app.sandbox.example.com</code>, etc.</td></tr></tbody></table>
 
-Follow the below steps to generate SSL certifiactes for each domain.
-
-1.  Install letsencrypt and certbot using below command:
-
-    ```bash
-    sudo apt install certbot
-    ```
-2. Since the preferred challenge is DNS type, the below commands asks for `_acme-challenge.` Create the `_acme-challenge` TXT DNS record accordingly using a Public DNS Provider (e.g., AWS Route 53, Cloudflare, GoDaddy), and continue with the prompt to generate certs and map the value in DNS Provider.
-3.  Create SSL Certificate using letsencrypt for **`rancher`** by editing hostname below:
-
-    ```bash
-    certbot certonly --agree-tos --manual \
-        --preferred-challenges=dns \
-        -d rancher.example.com
-    ```
-
-    Create Rancher TLS Secret using below command (edit certificate paths below):
-
-    ```bash
-    kubectl -n istio-system create secret tls tls-rancher-ingress \
-        --cert /etc/letsencrypt/live/rancher.example.com/fullchain.pem \
-        --key /etc/letsencrypt/live/rancher.example.com/privkey.pem
-    ```
-
-    Screenshot for TXT record mapping:
-
-    <figure><img src="../../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
-4.  Create SSL Certificate using letsencrypt for **`keycloak`** by editing hostname below:
-
-    ```bash
-    certbot certonly --agree-tos --manual \
-        --preferred-challenges=dns \
-        -d keycloak.example.com
-    ```
-
-    Create Keycloak TLS Secret, using (edit certificate paths below):
-
-    ```bash
-    kubectl -n istio-system create secret tls tls-keycloak-ingress \
-        --cert /etc/letsencrypt/live/keycloak.example.com/fullchain.pem \
-        --key /etc/letsencrypt/live/keycloak.example.com/privkey.pem
-    ```
-
-    Screenshot for TXT record mapping:
-
-    <figure><img src="../../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
-5.  Create SSL Certificate using letsencrypt for **`Sandbox Environment`** and **`Wildcard for Sandbox`** at the same time by editing hostname below and keep it ready for future use:
-
-    ```bash
-    certbot certonly --agree-tos --manual \
-        --preferred-challenges=dns \
-        -d dev.example.com \  
-        -d *.dev.example.com
-    ```
-
-    Create OpenG2P-Sandbox envrionment TLS Secret, using (Edit certificate paths below):
-
-    <pre class="language-bash"><code class="lang-bash">export NS=&#x3C;sandbox-name>
-    <strong>kubectl -n istio-system create secret tls tls-openg2p-$NS-ingress \
-    </strong>    --cert /etc/letsencrypt/live/dev.example.com/fullchain.pem \
-        --key /etc/letsencrypt/live/dev.example.com/privkey.pem
-    </code></pre>
-
-    **Note:** `You can name your sandbox anything, e.g., dev, qa, or test`. Make sure to note it down for future use, as you’ll use the same name for the **project and namespace** when creating them in Rancher.\
-    Screenshot for TXT record mapping:
-
-    <figure><img src="../../.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+You can name your sandbox anything, e.g., dev, qa, or test. Make sure to note it down for future use, as you’ll use the same name for the project and namespa**ce** when creating them in Rancher.
+{% endhint %}
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory and have been uploaded to the istio-system namespace as a Kubernetes secret.</mark>
 
@@ -267,8 +206,7 @@ Install rancher from [kubernetes/rancher](https://github.com/OpenG2P/openg2p-dep
 ```bash
 RANCHER_HOSTNAME=rancher.example.com \
 NS=cattle-system \
-TLS=true \
-./install.sh --set replicas=1 --version 2.9.3
+./install.sh --set replicas=1 --version 2.12.3
 ```
 
 Login to Rancher using the above hostname and bootstrap the `admin` user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.
@@ -287,7 +225,6 @@ Install keycloak from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-d
 ```bash
 KEYCLOAK_HOSTNAME=keycloak.example.com \
 NS=keycloak-system \
-TLS=true \
 ./install.sh --set replicaCount=1
 ```
 
@@ -340,12 +277,13 @@ In Rancher, make sure that `Istio auto-injection` for the dev namespace is disab
 
     ```bash
     export NS=dev
-    export WILDCARD_HOSTNAME='*.dev.example.com'
+    export HOSTNAME='dev.your.org'
+    export WILDCARD_HOSTNAME='*.dev.your.org'
     ```
 2.  Go to [kubernetes/istio](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/istio) directory and run this to apply gateway.
 
     ```bash
-    envsubst < istio-gateway-tls.yaml | kubectl apply -f -
+    envsubst < istio-gateway.yaml | kubectl apply -f -
     ```
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
@@ -364,7 +302,15 @@ Install [Prometheus and Monitoring](../scaling/base-infrastructure/openg2p-clust
 
 #### **15. Cluster Logging installation**
 
-Install [Logging and Fluentd](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/fluentd-and-opensearch#fluentd-installation) is used to collect and parse logs generated by applications within the Kubernetes cluster.
+Install Logging and Fluentd is used to collect and parse logs generated by applications within the Kubernetes cluster.\
+Follow the below commands to install logging:
+
+```bash
+helm repo add rancher-charts 
+helm repo update
+helm install rancher-logging-crd rancher-charts/rancher-logging-crd --version 102.0.0+up3.17.10 --namespace cattle-logging-system --create-namespace
+helm install rancher-logging rancher-charts/rancher-logging   --version 102.0.0+up3.17.10   --namespace cattle-logging-system   --set global.cattle.psp.enabled=false   --set psp.enabled=false
+```
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once logging is installed, verify that all pods in the cattle-logging-system namespace are up and running, and ensure that logs are being collected for each service.</mark>

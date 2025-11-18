@@ -113,3 +113,7 @@ Make sure any test or stray data in Postgres, OpenSearch or any other persistenc
 In development deployment mode, OpenSearch is installed as a single pod (that runs multiple roles). In production, switch to OpenSearch cluster deployment. OpenSearch cluster involves multiple pods each with different roles (like master, data, coordinating, ingest, etc).
 
 Switching to OpenSearch Cluster deployment can be done directly during deployment of the OpenG2P Module _(TBD Guide)._
+
+## Add disk alerts to monitor NFS and NGINX
+
+In case of a multi-node architecture, if you have NFS and NGINX installed separately, you need to configure separate Prometheus scraping mechanisms on those machines to monitor their resource usage and receive alerts for the NFS and NGINX nodes.
