@@ -1,19 +1,24 @@
+---
+description: This document describes how to setup kubernetes infrastructure for OpenG2P.
+---
+
 # Infrastructure Setup
 
 {% hint style="info" %}
 **CONCETPS**: Before proceeding with deployment, read up on the following topics (using material available on the Internet) to better understand each infrastructure component required for a successful setup:
 
-1. 🔒 **Firewall Rules**
-2. 📦 **Kubernetes**&#x20;
-3. 🔐 **WireGuard**&#x20;
-4. 📁 **NFS**&#x20;
+1. 🔒 [**Firewall Rules**](https://docs.cloud.google.com/firewall/docs/firewalls)
+2. 📦 [**Kubernetes**](https://kubernetes.io/docs/concepts/)&#x20;
+3. 🔐 [**WireGuard**](https://www.wireguard.com/quickstart/)&#x20;
+4. 📁 [**NFS**](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/storage_administration_guide/ch-nfs)&#x20;
 5. 🔗 [**Kubernetes NFS CSI Driver**](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup#nfs-client-provisioner)
-6. 🧩 **Istio**&#x20;
-7. 🔐 **SSL Certificates**
-8. 🧑‍💻 **Rancher**
-9. 🧾 **Keycloak**
-10. 📊 **Prometheus & Grafana**
-11. 📝 **Fluentd**
+6. 🧩 [**Istio**](https://istio.io/latest/docs/concepts/what-is-istio/)&#x20;
+7. 🔐 [**SSL Certificates**](https://aws.amazon.com/what-is/ssl-certificate/)
+8. 🖼️ [**Nginx Server**](https://nginx.org/en/docs/)
+9. 🧑‍💻 [**Rancher**](https://ranchermanager.docs.rancher.com/)
+10. 🧾 [**Keycloak**](https://www.keycloak.org/documentation)
+11. 📊 [**Prometheus & Grafana**](https://grafana.com/docs/grafana/latest/getting-started/get-started-grafana-prometheus/)
+12. 📝 [**Fluentd**](https://docs.fluentd.org/)
 {% endhint %}
 
 ## Base infrastructure setup
@@ -180,7 +185,7 @@ Ensure certificates are created for the following four domains to enable HTTPS i
 You can name your sandbox anything, e.g., dev, qa, or test. Make sure to note it down for future use, as you’ll use the same name for the project and namespa**ce** when creating them in Rancher.
 {% endhint %}
 
-🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory and have been uploaded to the istio-system namespace as a Kubernetes secret.</mark>
+🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory.</mark>
 
 <div align="left"><figure><img src="../../.gitbook/assets/image (4) (1).png" alt=""><figcaption></figcaption></figure></div>
 

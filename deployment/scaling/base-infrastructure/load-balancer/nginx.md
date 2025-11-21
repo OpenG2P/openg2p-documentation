@@ -137,4 +137,8 @@ Creation of the `<sandbox name>.conf` file applies only to one server in the ngi
 
 ### Post-installation
 
-Map the hostnames to Nginx IPs on your DNS service, such as Route53 on AWS.
+If you want to keep your environment private and access it only through WireGuard VPN, then map **only the private IP address of your nginx node** to your domains instead of the public IP.
+
+{% hint style="info" %}
+To make your environment publicly accessible, ensure that a public DNS is configured. Then, map the nginx node’s public IP address to the appropriate domain names for both public and private DNS entries.
+{% endhint %}

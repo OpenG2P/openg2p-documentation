@@ -16,12 +16,10 @@ Before you deploy, make sure the following are in place:
 1. Log in to Rancher admin console.
 2. Select your cluster.
 3. Under **Apps -> Repositories** click on Create to add a repository.
-4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.\
-
+4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.<br>
 
     <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
-5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.\
-
+5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.<br>
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
@@ -38,8 +36,6 @@ Before you deploy, make sure the following are in place:
 12. Wait for all the pods to get into **Running state**. This may take several minutes.
 
     <div align="left"><figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure></div>
-
-Once deployed, the OpenG2P Commons services such as PostgreSQL, MinIO, Keymanager, OpenSearch, and others will be automatically set up and available for dependent applications.
 
 ## Post Installation
 

@@ -16,12 +16,10 @@ Before you deploy, make sure the following are in place:
 1. Log in to Rancher admin console.
 2. Select your cluster.
 3. Under **Apps -> Repositories** click on Create to add a repository.
-4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.\
-
+4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.<br>
 
     <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
-5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.\
-
+5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.<br>
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
@@ -31,12 +29,12 @@ Before you deploy, make sure the following are in place:
 8. Proceed to Install `OpenG2P  Registry` chart select the latest version to be installed, and click Install.
 9. On the next screen, choose a name for installation, like `registry`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
-    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
-    2. For production deployments, if the PostgreSQL server is run directly (natively) on the VM. for _PostgreSQL Hostname_ specifiy  `host.docker.internal`  which is proxy for `localhost` as from within Docker of Odoo `localhost` will not be recognized. If you are running PostgreSQL on a separate machine, specify the Host domain or IP.
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
+    2. For production deployments, if the PostgreSQL server is running as a pod inside Kubernetes, set the PostgreSQL hostname to `host.docker.internal` (PostgreSQL pod name), as this acts as a proxy for localhost. If PostgreSQL is running on a separate server, specify the server’s domain name or IP address instead.
     3. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
     4. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
     5.  To change the docker image from the default image, click on `Edit YAML` table and update the following section in Helm. \
-        **Note:** This step is required only if you have separate docker image to be deployed or else you can go with default one skip this step.
+        **Note:** This step is required only if you have separate docker image to be deployed or else you can go with default one and skip this step.
 
         ```bash
         image:
@@ -55,7 +53,7 @@ Before you deploy, make sure the following are in place:
 
 ### Odoo
 
-* Activate the Registry Odoo module after logging into Odoo (TBD).
+* Activate the `base_registry` module after logging into Odoo (TBD).
 
 ## Accessing the registry
 
@@ -86,5 +84,3 @@ To tear down completely:
    3. `drop role registry_db_user;`&#x20;
 4. Drop `mosip-kernel` database:
    1. `drop database mosip-kernel`&#x20;
-
-_<mark style="color:orange;">TBD: Step 4 will be moved to openg2p-commons, so this won't be required here.</mark>_
