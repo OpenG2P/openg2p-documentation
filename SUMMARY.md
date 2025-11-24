@@ -128,7 +128,6 @@
     * [Deployment Instructions](pbms/deployment/deployment-instructions.md)
     * [Configurations](pbms/deployment/configurations.md)
     * [Domain names & certificates](pbms/deployment/domain-names-and-certificates.md)
-    * [PBMS Helm Charts](pbms/deployment/pbms-helm-charts.md)
   * [Developer Zone](pbms/developer-zone/README.md)
     * [PBMS Helm Chart 4.x](pbms/developer-zone/pbms-helm-chart-4.x.md)
     * [Repositories](pbms/developer-zone/repositories.md)

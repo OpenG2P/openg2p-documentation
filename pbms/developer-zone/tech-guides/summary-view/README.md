@@ -6,8 +6,7 @@ description: >-
 
 # Summary View
 
-Summary lines (the underlying model responsible for rendering the summary view) runs onclick of the `View <Eligibility/Entitlement>  List` button via the method [`_compute_summary_lines`](https://github.com/OpenG2P/openg2p-pbms-odoo/blob/aa01745d6826d8410a2b21892dfca99a25200cf1/g2p_pbms/models/beneficiary_list/bgtask_summary_wizard.py#L269)\
-
+Summary lines (the underlying model responsible for rendering the summary view) runs onclick of the `View <Eligibility/Entitlement>  List` button via the method [`_compute_summary_lines`](https://github.com/OpenG2P/openg2p-pbms-odoo/blob/aa01745d6826d8410a2b21892dfca99a25200cf1/g2p_pbms/models/beneficiary_list/bgtask_summary_wizard.py#L269)<br>
 
 <figure><img src="../../../../.gitbook/assets/image (85).png" alt=""><figcaption></figcaption></figure>
 

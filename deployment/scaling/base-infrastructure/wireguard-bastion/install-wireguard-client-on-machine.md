@@ -22,8 +22,7 @@ The steps to set up a WireGuard client on an **windows machine** are:
 The steps to set up a WireGuard client on an **Ubuntu machine** are:
 
 1. After successfully installing WireGuard, navigate to the directory `/etc/wireguard` using the terminal.
-2. Next, create a file named `<name>.conf`, add the WireGuard configuration file to it, and save the file.\
-
+2. Next, create a file named `<name>.conf`, add the WireGuard configuration file to it, and save the file.<br>
 3.  **Activate** WireGuard using the commands below.
 
     ```

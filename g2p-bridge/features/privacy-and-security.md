@@ -8,7 +8,7 @@ G2P Bridge - Security Architecture
 
 ## Partner authorization
 
-### **Onboarding a Partner to consume an OpenG2P API** 
+### **Onboarding a Partner to consume an OpenG2P API**<br>
 
 <figure><img src="../../.gitbook/assets/image (57).png" alt=""><figcaption><p>Partner Onboarding for OpenG2P API</p></figcaption></figure>
 

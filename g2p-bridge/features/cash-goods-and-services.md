@@ -18,4 +18,4 @@ The following diagram shows the detailed workflow within G2P Bridge for each of 
 
 \
 \
-\
+<br>

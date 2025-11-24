@@ -155,4 +155,4 @@ If you encounter any issues during setup or usage, refer to the following resour
 
 Spar UI provides a convenient interface for interacting with Spar services, allowing users to manage ID mappings and access linked account information. By following this documentation, you can set up Spar UI and leverage its features effectively.
 
-\
+<br>

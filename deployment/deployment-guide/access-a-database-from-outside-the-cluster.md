@@ -74,8 +74,7 @@ Ensure that the cluster kubeconfig is set on your machine and follow the command
     psql -h localhost -p 5432 -U <dbuser> -d <database>
     ```
 
-    \
-
+    <br>
 
 Notes
 

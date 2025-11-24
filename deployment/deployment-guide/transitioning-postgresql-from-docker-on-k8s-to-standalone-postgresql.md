@@ -89,8 +89,7 @@ Migrating PostgreSQL from a Kubernetes cluster (running in Docker containers wit
        /post-init-openg2p.sh
        ```
    *   After running this command, restart the Odoo service. Once it is up and running, exec into the pod again and verify whether the external database details have been updated in the `odoo.conf` file located in the directory `/bitnami/odoo/conf/odoo.conf`.\
-       \
-
+       <br>
 
        <figure><img src="../../.gitbook/assets/image (3) (1) (1) (1).png" alt=""><figcaption><p>odoo-conf.png</p></figcaption></figure>
 

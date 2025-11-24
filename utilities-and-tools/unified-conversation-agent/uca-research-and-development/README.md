@@ -79,8 +79,7 @@ This callback function captures audio data in real-time and places it in a queue
 
 * Audio is captured at 16kHz with 16-bit depth
 * Processing occurs in blocks of 8000 samples
-* Single channel (mono) audio input is used for optimal recognition\
-
+* Single channel (mono) audio input is used for optimal recognition<br>
 
 ## 2.Text to Speech using different models
 

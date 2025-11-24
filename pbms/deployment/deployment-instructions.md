@@ -74,7 +74,7 @@ Before you deploy, make sure the following are in place:
 
 ## Installation using CLI
 
-1.  Clone the [OpenG2P PBMS Deployment Repository](pbms-helm-charts.md)
+1.  Clone the [OpenG2P PBMS Deployment Repository](broken-reference)
 
     ```
     git clone https://github.com/OpenG2P/openg2p-pbms-gen2-deployment.git
@@ -100,9 +100,7 @@ Before you deploy, make sure the following are in place:
     * `openg2p-pbms-bg-task-celery-*`: Celery environment variables (frequency, batch size, etc.)
     * `istio.virtualservice.host`: Hostname when Istio is enabled
 
-    {% hint style="info" %}
-    You can override values inline using `--set` or pass a custom file with `-f`.
-    {% endhint %}
+    <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>You can override values inline using <code>--set</code> or pass a custom file with <code>-f</code>.</p></div>
 
 
 4.  Install the Helm chart
@@ -171,8 +169,7 @@ helm uninstall <release-name> -n <namespace>
        ```
        kubectl get pods -n <namespace> | grep celery
        ```
-   * Confirm task queues are registered correctly.\
-
+   * Confirm task queues are registered correctly.<br>
 5. Validate Redis and Minio connectivity:
    * Ensure Redis pod is running and reachable by the Celery worker.
    * Verify Minio access credentials match the Helm values and Odoo configuration.

@@ -39,8 +39,7 @@ Alerting is essential for monitoring modern systems, ensuring issues are detecte
    5. Add cluster name in, `patch-cluster-name.yaml`
    6. Run **install.sh** to apply the configuration for alertmanager.
    7. And restart the alert-manager service on k8s-cluster.
-   8.  Verify whether the alerts are firing from the Prometheus UI and check if Slack notifications are being received.\
-
+   8.  Verify whether the alerts are firing from the Prometheus UI and check if Slack notifications are being received.<br>
 
        <figure><img src="../../.gitbook/assets/image (22) (1).png" alt=""><figcaption><p><em><strong>Prometheus dashboard</strong></em><br></p></figcaption></figure>
 

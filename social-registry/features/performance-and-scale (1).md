@@ -29,9 +29,8 @@ The main registry table - 'res\_partner" was populated with 50,000,000 (50 milli
 
 * Nested queries executed by the Odoo UI are suboptimal and do not utilize the index on g2p\_reg\_id.value – Queries are always on “res\_partner” with nested subqueries on child tables
 
-**Postgres Parallel Queries - Measurements**\
-
-
+**Postgres Parallel Queries - Measurements**<br>
+------------------------------------------------
 
 Queries were fired in parallel on the Postgres database to measure the performance of the postgres database server.&#x20;
 
@@ -59,8 +58,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 ### LIKE query on Indexed Text Column (20 threads):&#x20;
 
-Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)\
-
+Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)<br>
 
 `SELECT "res_partner"."id", "res_partner"."name", "res_partner"."address", "res_partner"."phone", "res_partner"."birthdate", "res_partner"."registration_date", "res_partner"."disabled"`
 

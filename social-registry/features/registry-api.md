@@ -45,8 +45,7 @@ To capture and manage applications for specific programs or schemes, ensuring th
 * Prepare entitlements for approved beneficiaries.
 * Execute benefit disbursement through the payment system.
 * Throughout this lifecycle, PBMS continuously updates the Registry with the current status of the application and stages of the benefit transfer (e.g., verified, approved, paid, etc.).
-* This two-way interaction ensures data consistency between the Registry and PBMS while maintaining a full audit trail of beneficiary enrollment and payment activity.\
-
+* This two-way interaction ensures data consistency between the Registry and PBMS while maintaining a full audit trail of beneficiary enrollment and payment activity.<br>
 
 #### 3. Change requests&#x20;
 
@@ -93,8 +92,7 @@ They usually have administrative or supervisory privileges and operate from with
 **Mode of Interaction:**
 
 * Through web-based administrative dashboards or back-office systems.
-* Typically authenticated via secure identity providers (e.g., Keycloak or Single Sign-On).\
-
+* Typically authenticated via secure identity providers (e.g., Keycloak or Single Sign-On).<br>
 
 #### 2. Partners
 
@@ -127,8 +125,7 @@ They often represent field-level staff, enumerators, or service center operators
 **Mode of Interaction:**
 
 * Through mobile data collection tools, assisted service portals, or agent dashboards.
-* Operate under authentication and role-based access control managed by the system administrator.\
-
+* Operate under authentication and role-based access control managed by the system administrator.<br>
 
 #### 4. Beneficiaries
 

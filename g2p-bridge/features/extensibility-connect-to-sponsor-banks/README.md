@@ -19,8 +19,7 @@ Connecting G2P Bridge to Sponsor Banks
     Credit Beneficiary Account (in another destination bank, within the country) - Disbursement Amount\
     \
     a. Single instruction per beneficiary, each instruction identified by a unique Disbursement ID.\
-    b. Multiple instructions in a single payload (API invocation), depending on batch size configuration\
-
+    b. Multiple instructions in a single payload (API invocation), depending on batch size configuration<br>
 
 **For other goods & services, including cash which is physically distributed**
 

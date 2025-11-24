@@ -19,4 +19,4 @@ All the above domains point to Nginx IP corresponding to server (virtual host) t
 
 ## Certificates
 
-SSL certs for all the above must be available, generally as a wild card certificate for the domain, example. `*.dev.openg2p.org`\
+SSL certs for all the above must be available, generally as a wild card certificate for the domain, example. `*.dev.openg2p.org`<br>

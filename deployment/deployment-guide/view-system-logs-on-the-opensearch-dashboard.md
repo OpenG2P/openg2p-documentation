@@ -23,8 +23,7 @@ This guide will walk you through how to access, filter, and interpret system log
 6. **Explore and Export Logs**
    * Click on individual log entries to view details.
    * Use the **Share** button to generate reports or export logs if needed.
-   *   And you can see the image below for all the operations above.\
-
+   *   And you can see the image below for all the operations above.<br>
 
        <figure><img src="../../.gitbook/assets/image (3) (1) (1).png" alt=""><figcaption><p>Opensearch-dashboard.png</p></figcaption></figure>
    * This framework provides a streamlined way to monitor and analyze logs effectively. Use filters regularly to narrow down critical information like errors or warnings.

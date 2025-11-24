@@ -45,8 +45,7 @@ This will help you obtain and renew SSL certificates from Let’s Encrypt using 
 Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
 
 * You need an AWS account with Route 53 hosted zones configured.
-*   Create an IAM user with the following permissions and have Route53FullAccess role:\
-
+*   Create an IAM user with the following permissions and have Route53FullAccess role:<br>
 
     ```json
     {
@@ -66,8 +65,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
 
 
 * Save the access key and secret key for this user.
-*   Ensure Certbot is installed on your server. If not, install it\
-
+*   Ensure Certbot is installed on your server. If not, install it<br>
 
     ```bash
     sudo apt update
@@ -79,8 +77,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
 
 * You must own a domain name and have it configured in Route 53.
 * Download and Configure AWS CLI on nginx node as **root user.**
-  *   [ ] Download AWS CLI using below commands.\
-
+  *   [ ] Download AWS CLI using below commands.<br>
 
       ```bash
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -90,8 +87,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
       ```
 
 
-  *   [ ] Certbot requires access to your AWS credentials to interact with Route 53. Run the command `aws configure`as **root user** to set up your AWS credentials, which will prompt you for your AWS IAM user's access key, secret key, and default region. Then verify your AWS CLI configuration by running\
-
+  *   [ ] Certbot requires access to your AWS credentials to interact with Route 53. Run the command `aws configure`as **root user** to set up your AWS credentials, which will prompt you for your AWS IAM user's access key, secret key, and default region. Then verify your AWS CLI configuration by running<br>
 
       <pre class="language-bash"><code class="lang-bash">cat .aws/credentails or config
       <strong>aws sts get-caller-identity #To check AWS authentication for user
@@ -99,8 +95,7 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
       </code></pre>
 
 
-*   Use Certbot with the Route 53 plugin to request a certificate replace openg2p.sandbox.org with your domain. Once the certificate is generated, it will inform you that it will automatically renew when nearing expiry and systemd timer (certbot.timer) and service (certbot.service) are created in the /lib/systemd/system directory for automatic renewals.\
-
+*   Use Certbot with the Route 53 plugin to request a certificate replace openg2p.sandbox.org with your domain. Once the certificate is generated, it will inform you that it will automatically renew when nearing expiry and systemd timer (certbot.timer) and service (certbot.service) are created in the /lib/systemd/system directory for automatic renewals.<br>
 
     ```bash
     certbot certonly --dns-route53 -d openg2p.sandbox.org -d '*.openg2p.sandbox.org'
@@ -113,4 +108,4 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
 
 
 
-\
+<br>

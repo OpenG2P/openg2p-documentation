@@ -80,4 +80,4 @@ echo "All Deployments and StatefulSets in the namespace: $NAMESPACE have been sc
 5. Replace \<namespace> with the desired namespace. If no namespace is specified, it defaults to default.\
    Example: `./scale_k8s_replicas_to_one.sh dev`
 
-\
+<br>

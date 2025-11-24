@@ -8,26 +8,20 @@
 * Configure hostname to reach this WebSub, and Keycloak Base Url, and click "Edit Values.yaml":
   *   Disable Kafka Installation under `kafka` section:
 
-      {% code fullWidth="false" %}
-      ```yaml
-      ...
+      <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">...
       kafka:
         enabled: false
       ...
-      ```
-      {% endcode %}
+      </code></pre>
   * Get the name of existing Kafka service running in the namespace depending on which OpenG2P module you want to use with this WebSub instance. Example: `social-registry-kafka` . The exact service names can be checked under Rancher -> Service Discovery -> Services.
   *   Replace Kafka Service name in values.yaml, against the following property. Example:
 
-      {% code fullWidth="false" %}
-      ```yaml
-      ...
+      <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">...
       # kafkaInstallationName: '{{ include "common.names.fullname" .Subcharts.kafka }}'
       # Above line is replaced with the following.
       kafkaInstallationName: social-registry-kafka
       ...
-      ```
-      {% endcode %}
+      </code></pre>
 * Click proceed and Finalize WebSub installation.
 
 ## Post-installation Keycloak Setup

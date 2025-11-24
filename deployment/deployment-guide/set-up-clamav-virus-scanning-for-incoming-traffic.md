@@ -22,46 +22,31 @@ This section uses Wiremind Helm charts for ClamAV installation on Kubernetes.
 
 *   Create `clamav-system` namespace.
 
-    {% code fullWidth="false" %}
-    ```sh
-    kubectl create ns clamav-system
-    ```
-    {% endcode %}
+    <pre class="language-sh" data-full-width="false"><code class="lang-sh">kubectl create ns clamav-system
+    </code></pre>
 * \[Optional] Move `clamav-system` namespace into `System` project in Rancher to manage access control.
 *   Add wiremind helm repo
 
-    {% code fullWidth="false" %}
-    ```sh
-    helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts
+    <pre class="language-sh" data-full-width="false"><code class="lang-sh">helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts
     helm repo update
-    ```
-    {% endcode %}
+    </code></pre>
 *   &#x20;Install ClamAV in `clamav-system` namespace.
 
-    {% code fullWidth="false" %}
-    ```sh
-    helm -n clamav-system upgrade --install clamav wiremind/clamav
-    ```
-    {% endcode %}
+    <pre class="language-sh" data-full-width="false"><code class="lang-sh">helm -n clamav-system upgrade --install clamav wiremind/clamav
+    </code></pre>
 
 ### Clammit Installation
 
 * Requires ClamAV from above.
 *   Add openg2p helm repo
 
-    {% code fullWidth="false" %}
-    ```sh
-    helm repo add openg2p https://openg2p.github.io/openg2p-helm
+    <pre class="language-sh" data-full-width="false"><code class="lang-sh">helm repo add openg2p https://openg2p.github.io/openg2p-helm
     helm repo update
-    ```
-    {% endcode %}
+    </code></pre>
 *   &#x20;Install Clammit in `clamav-system` namespace.
 
-    {% code fullWidth="false" %}
-    ```sh
-    helm -n clamav-system upgrade --install clammit openg2p/clammit
-    ```
-    {% endcode %}
+    <pre class="language-sh" data-full-width="false"><code class="lang-sh">helm -n clamav-system upgrade --install clammit openg2p/clammit
+    </code></pre>
 
 ## Virus-scan setup
 
@@ -70,22 +55,16 @@ This section describes the configuration process to pass all incoming traffic of
 * Navigate to Rancher -> Istio -> Virtual Services, choose the virtual service for which you want to enable virus scanning, and edit as YAML.
 *   Copy the route -> destination -> host and port number. Under headers -> request -> set, add a header like:
 
-    {% code fullWidth="false" %}
-    ```yaml
-    x-clammit-backend: http://{destination_host}.{destination_namespace}:{destination_port}
-    ```
-    {% endcode %}
+    <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">x-clammit-backend: http://{destination_host}.{destination_namespace}:{destination_port}
+    </code></pre>
 *   Change the route -> destination -> host and port number to the following.
 
-    {% code fullWidth="false" %}
-    ```yaml
-    route:
+    <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">route:
       - destination:
           host: clammit.clamav-system.svc.cluster.local
           port:
             number: 80
-    ```
-    {% endcode %}
+    </code></pre>
 
 ### Example
 
@@ -93,9 +72,7 @@ Say you want to virus-scan all incoming traffic of the Social Registry odoo modu
 
 *   Before
 
-    {% code fullWidth="false" %}
-    ```yaml
-    spec:
+    <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">spec:
       ...
       http:
         ...
@@ -108,13 +85,10 @@ Say you want to virus-scan all incoming traffic of the Social Registry odoo modu
                 host: social-registry-odoo
                 port:
                   number: 80
-    ```
-    {% endcode %}
+    </code></pre>
 *   After
 
-    {% code fullWidth="false" %}
-    ```yaml
-    spec:
+    <pre class="language-yaml" data-full-width="false"><code class="lang-yaml">spec:
       ...
       http:
         ...
@@ -128,8 +102,7 @@ Say you want to virus-scan all incoming traffic of the Social Registry odoo modu
                 host: clammit.clamav-system.svc.cluster.local
                 port:
                   number: 80
-    ```
-    {% endcode %}
+    </code></pre>
 
 ## Sources
 

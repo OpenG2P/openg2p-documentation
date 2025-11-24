@@ -117,11 +117,9 @@ There would be multiple entry points through which a registry record change or a
 2. API based channels
    * Self-Service Portal: External web interface
    * External Systems: Third-party integrations
-   * DCI interfaces: API's exposed as per the DCI specifications\
-
+   * DCI interfaces: API's exposed as per the DCI specifications<br>
 
 {% embed url="https://miro.com/app/board/uXjVImzoRgY=/?share_link_id=278785513081" %}
 
-\
-
+<br>
 

@@ -20,20 +20,17 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
 1. **Log in to Keycloak**
    1. Open the Keycloak Admin Console.
    2. Log in using admin credentials.
-   3. You can configure self-registration in your existing realm or create a separate realm for public environments and configure it there.\
-
+   3. You can configure self-registration in your existing realm or create a separate realm for public environments and configure it there.<br>
 2. **Enable User Registration**
    1. Navigate to **Realm Settings**.
-   2.  Click on the **General Settings** tab and provide the necessary details.\
-
+   2.  Click on the **General Settings** tab and provide the necessary details.<br>
 
        <figure><img src="../../.gitbook/assets/image (33) (1).png" alt=""><figcaption></figcaption></figure>
    3. Click on the **Login** tab, enable the following options:
       * **User registration**: Allows users to register themselves.
       * **Verify email**: Ensures users confirm their email addresses after registration.
       * **Forgot password**: Allows users to reset their passwords via email.
-      * **Login with email**: Enables users to log in using their email addresses instead of usernames.\
-
+      * **Login with email**: Enables users to log in using their email addresses instead of usernames.<br>
 3. **Configure Email Settings**
    1. In the **Realm Settings**, locate the **Email** section.
    2.  Configure the **Template** and **Connection & Authentication** sections with SMTP settings.
@@ -59,8 +56,7 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
 
        <figure><img src="../../.gitbook/assets/image (4) (1) (1).png" alt=""><figcaption><p><br></p></figcaption></figure>
 6. **Integrate Keycloak Credentials with Applications**
-   1. Make sure your application is already integrated with Keycloak login for authentication. If not, configure it for [Keycloak authentication](../../pbms/previous-generation/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-log-in.md).\
-
+   1. Make sure your application is already integrated with Keycloak login for authentication. If not, configure it for [Keycloak authentication](../../pbms/previous-generation/functionality/administration/role-based-access-control/user-guides/configure-keycloak-authentication-provider-for-user-log-in.md).<br>
 7. **Verify Self-Registration**
    1. Open **Socialregistry** or **PBMS** service in an incognito/private browser window.
    2. Try to **login with keycloak** and it will redirect you to keycloak login page.
@@ -70,6 +66,5 @@ This guide covers enabling self-registration for users on Keycloak. Also refer t
    4. Click the **Register** link to access the registration page.
    5. Users can enter their details (name, email, and password) and proceed with 2 factor authentication to create an account.
    6. Upon registration, users will receive a confirmation email (if email verification is enabled).
-   7. After confirming their email, users can log in to odoo application.\
-
+   7. After confirming their email, users can log in to odoo application.<br>
 8. Once users are registered in Keycloak, they can use the same credentials wherever the app integrates with Keycloak authentication.

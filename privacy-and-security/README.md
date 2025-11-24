@@ -66,7 +66,6 @@ While deployment infrastructure is a choice of the implementer/system integrator
 
 * Security policies and processes
 
-OpenG2P team can help review security policies defined by the government/system Integrator. \
-
+OpenG2P team can help review security policies defined by the government/system Integrator. <br>
 
 </details>

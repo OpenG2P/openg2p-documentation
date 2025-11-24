@@ -113,4 +113,4 @@ wget -O /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh && sh /
 
 This setup helps ensure you are promptly notified of potential issues on your VM, enhancing system reliability and awareness. And you can refere more on netdata [here](https://learn.netdata.cloud/docs/netdata-agent/installation/linux/).
 
-\
+<br>

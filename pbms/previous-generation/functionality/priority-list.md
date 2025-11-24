@@ -115,8 +115,7 @@ Purpose: Execute the recurring process of creating a cycle, applying priority ru
 
 * Prepare payments for approved entitlements.
 * Approve payments manually.
-* Disburse payments to beneficiaries.\
-
+* Disburse payments to beneficiaries.<br>
 
 {% embed url="https://miro.com/app/board/uXjVLwhMvMU=/?share_link_id=131444890620" %}
 

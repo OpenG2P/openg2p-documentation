@@ -13,11 +13,9 @@ Make sure the NFS folder still contains your data. If your PostgreSQL pod was us
 ### Create a persistentvolume (PV)
 
 1. Once your new cluster setup is complete with the old NFS instance attached, ensure that the old storage class is properly attached and ready for use.
-2.  And before deploying the services, make sure to create all the required PVs using the provided `pv.yaml` file. Update the YAML file with your PV details and apply it. The deployed services will then use the same PVCs already present in the existing NFS storage class.\
+2.  And before deploying the services, make sure to create all the required PVs using the provided `pv.yaml` file. Update the YAML file with your PV details and apply it. The deployed services will then use the same PVCs already present in the existing NFS storage class.<br>
 
-
-    **Note:** Ensure you use the correct PV names and details from the existing PVs and update them accordingly in the YAML file. Additionally, you must retain the old secrets of the respective services to ensure proper connectivity, and these secrets need to be updated back into Kubernetes.\
-
+    **Note:** Ensure you use the correct PV names and details from the existing PVs and update them accordingly in the YAML file. Additionally, you must retain the old secrets of the respective services to ensure proper connectivity, and these secrets need to be updated back into Kubernetes.<br>
 
     ```yaml
     apiVersion: v1
@@ -52,8 +50,7 @@ Make sure the NFS folder still contains your data. If your PostgreSQL pod was us
     ```
 
 
-3.  &#x20;Once you create the `pv.yaml` file, use the command below to apply it. This will create the PersistentVolume (PV) in the respective namespace, and it will be in the "Available" state.\
-
+3.  &#x20;Once you create the `pv.yaml` file, use the command below to apply it. This will create the PersistentVolume (PV) in the respective namespace, and it will be in the "Available" state.<br>
 
     ```bash
     kubectl apply -f <pv.yaml> -n <namespace>
@@ -67,8 +64,7 @@ Make sure the NFS folder still contains your data. If your PostgreSQL pod was us
 
 1.  After the PV is configured, deploy your service pods. They will automatically bind to the PVC and utilize the existing NFS data. **While deploying,** **ensure that the old secrets are updated accordingly.**
 
-    Below is a example template for configuring credentials.\
-
+    Below is a example template for configuring credentials.<br>
 
     ```yaml
     odooPassword: <odooPassword>

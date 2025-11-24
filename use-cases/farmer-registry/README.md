@@ -13,8 +13,7 @@ A Farmer Profile is a foundational block in the digital transformation of the ag
 
 ## OpenG2P solution and architecture
 
-OpenG2P’s Registry module, linked with other databases, provides a comprehensive solution for a Farmer Profile. With this module, you can capture, manage, share and analyze farmer data efficiently to provide a digital-first approach to farmer identification and management. It contains:\
-
+OpenG2P’s Registry module, linked with other databases, provides a comprehensive solution for a Farmer Profile. With this module, you can capture, manage, share and analyze farmer data efficiently to provide a digital-first approach to farmer identification and management. It contains:<br>
 
 * Implementation of an offline ODK-based data collection system integrated with OpenG2P
 * Implementation of an online Registration Portal
