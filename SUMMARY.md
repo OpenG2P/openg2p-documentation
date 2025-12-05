@@ -444,6 +444,8 @@
       * [Deduplication](registry-gen-2/design/detailed-design-notes/deduplication.md)
       * [Consent Management](registry-gen-2/design/detailed-design-notes/consent-management.md)
       * [Registry metadata](registry-gen-2/design/detailed-design-notes/registry-metadata.md)
+      * [Computation framework](registry-gen-2/design/detailed-design-notes/computation-framework.md)
+      * [Database - encryption at rest](registry-gen-2/design/detailed-design-notes/database-encryption-at-rest.md)
   * [Deployment](registry-gen-2/deployment.md)
   * [Developer Zone](registry-gen-2/developer-zone.md)
 * [Utilities and Tools](utilities-and-tools/README.md)

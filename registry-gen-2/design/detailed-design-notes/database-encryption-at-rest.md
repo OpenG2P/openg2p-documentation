@@ -1,0 +1,2 @@
+# Database - encryption at rest
+
