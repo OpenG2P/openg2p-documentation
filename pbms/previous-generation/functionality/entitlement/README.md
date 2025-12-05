@@ -41,7 +41,7 @@ The Entitlement Manager can have one or more stages of approval, and the Program
 
 OpenG2P provides an easy-to-use UI for creating an Entitlement Voucher Template along with a QR code configuration. Once the entitlement is approved, a voucher file is generated according to the voucher template and QR code configuration.&#x20;
 
-To understand the workflow for entitlement vouchers, [click here](broken-reference).
+To understand the workflow for entitlement vouchers, [click here](/broken/pages/lkm5Ou7dYlYxtMgV4vKU).
 
 The Entitlement Manager provides an option to auto-generate the entitlement voucher file upon entitlement approval. By default, these files are stored in the cloud. Program administrators can also configure the storage type - cloud, OpenG2P storage, or external storage - for the entitlement voucher files.&#x20;
 

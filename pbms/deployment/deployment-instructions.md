@@ -74,7 +74,7 @@ Before you deploy, make sure the following are in place:
 
 ## Installation using CLI
 
-1.  Clone the [OpenG2P PBMS Deployment Repository](broken-reference)
+1.  Clone the [OpenG2P PBMS Deployment Repository](/broken/pages/haoN7hIUMM9RRDGXMp7S)
 
     ```
     git clone https://github.com/OpenG2P/openg2p-pbms-gen2-deployment.git

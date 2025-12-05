@@ -31,8 +31,8 @@ OpenG2P 1.1.0 focuses on the core needs of our stakeholders from start to finish
 
 ## Build and deploy
 
-* To build and run this release as a developer refer to the guide [here](broken-reference).
-* To deploy this release on Kubernetes refer to the guide [here](broken-reference).
+* To build and run this release as a developer refer to the guide [here](/broken/pages/J0ddhaQyBuUpzrY1EWAw).
+* To deploy this release on Kubernetes refer to the guide [here](/broken/pages/iIsGpNTaYUYs4PgNbN85).
 
 ## Test report
 

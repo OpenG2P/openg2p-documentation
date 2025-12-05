@@ -15,7 +15,7 @@ This page provides comprehensive documentation for the installation of SPAR Self
 * Git
 * PostgreSQL
 * virtualenv
-* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](broken-reference) for setup instructions.
+* **eSignet:** Ensure that eSignet is properly configured. Refer to the [eSignet Deployment Guide](/broken/pages/QReaeHMGQdodBVgEbboM) for setup instructions.
 * **SPAR Mapper API Configuration:** Ensure that the SPAR Mapper API is properly configured according to the [SPAR Mapper API Installation](spar-mapper-api.md).
 
 #### Python dependencies
@@ -193,7 +193,7 @@ DB_USER_PASSWORD="password" \
 
 ### Authentication
 
-The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](broken-reference) for setup instructions.
+The `spar-self-service-api` supports authentication via eSignet. Refer to the deployment documentation for eSignet [here](/broken/pages/QReaeHMGQdodBVgEbboM) for setup instructions.
 
 #### Setting up redirection
 

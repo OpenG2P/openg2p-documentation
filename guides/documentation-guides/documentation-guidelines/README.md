@@ -43,7 +43,7 @@ To learn how to embed a miro image in the GitBook, [click here](embed-a-miro-dia
 
 ## Set an image within the frame in Miro
 
-To learn how to set an image within the frame in miro, [click here](broken-reference)
+To learn how to set an image within the frame in miro, [click here](/broken/pages/XL0xh0UR27BAWjgsRFD2)
 
 ## Avoid repetition
 

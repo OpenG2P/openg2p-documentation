@@ -42,7 +42,7 @@ The Document Encryption module in OpenG2P safeguards all documents uploaded to t
 
 ## Secure deployment
 
-OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](broken-reference)
+OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](/broken/pages/tDNeRfLR3IBWdGnZI5X1)
 
 ## FAQ
 

@@ -14,7 +14,7 @@ Logs captured by [Fluentd](./) from different components are pushed to [OpenSear
 
 * The following utilities/tools must be present on the user's machine.
   * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* [Keycloak](broken-reference) for Authentication and Sign-in to UI
+* [Keycloak](/broken/pages/dQgqgbcQa7z1dRigG2lV) for Authentication and Sign-in to UI
 
 ## Installation
 

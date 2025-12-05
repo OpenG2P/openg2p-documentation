@@ -10,7 +10,7 @@ Apache Superset offers SQL query based datasets and charts for visualisation of 
 
 ## Installation
 
-Refer to the [deployment guide](broken-reference).
+Refer to the [deployment guide](/broken/pages/msdlwGvHY3x0r225bC49).
 
 ## Add a new country map&#x20;
 
