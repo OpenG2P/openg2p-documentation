@@ -15,7 +15,7 @@ layout:
     visible: true
 ---
 
-# High Level Design
+# Concept
 
 <figure><img src="../../../.gitbook/assets/Registry-definition.png" alt=""><figcaption></figcaption></figure>
 
