@@ -17,7 +17,7 @@ layout:
 
 # High Level Design
 
-<figure><img src="../../.gitbook/assets/What-is-Registry.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Registry-definition.png" alt=""><figcaption></figcaption></figure>
 
 ***
 
