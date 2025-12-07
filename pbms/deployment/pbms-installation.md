@@ -2,7 +2,7 @@
 description: PBMS deployment instructions
 ---
 
-# Deployment Instructions
+# PBMS Installation
 
 The instructions here pertain to the deployment of PBMS and associated components on the Kubernetes cluster using PBMS Helm chart. All the components are installed in the same namespace.
 
@@ -14,11 +14,11 @@ Minio Object Store and Keycloak installation can be skipped if already deployed 
 
 Before you deploy, make sure the following are in place:
 
-* [ ] Kubernetes cluster is up and running
-* [ ] Nginx server is configured (skip this for OpenG2P-in-a-box)
-* [ ] Namespace is created (via Rancher under a Project)
-* [ ] Project Owner access on the OpenG2P namespace
-* [ ] Istio gateway is set up in the namespace
+* [x] Kubernetes cluster is up and running
+* [x] Nginx server is configured (skip this for OpenG2P-in-a-box)
+* [x] Namespace is created (via Rancher under a Project)
+* [x] Project Owner access on the OpenG2P namespace
+* [x] Istio gateway is set up in the namespace
 
 ## Installation using Rancher UI
 
@@ -36,11 +36,11 @@ Before you deploy, make sure the following are in place:
     <figure><img src="../../.gitbook/assets/image (81).png" alt=""><figcaption></figcaption></figure>
 5.  Navigate to **Apps → Charts** and locate the chart:
 
-    * **Name:** _OpenG2P PBMS (3.0.0)_
+    * **Name:** _OpenG2P PBMS_ &#x20;
     * **Description:** A Helm chart for OpenG2P PBMS
 
     <figure><img src="../../.gitbook/assets/image (80).png" alt=""><figcaption></figcaption></figure>
-6. Click the chart, choose **version 3.0.0**, and click **Install**.
+6. Proceed to Install `OpenG2P PBMS` chart select the latest version to be installed, and click Install.
 7. On the next screen:
    * **Installation Name:** `openg2p-pbms` (or any preferred name)
    * Enable **Customise Helmbox before installation** → click **Next**
