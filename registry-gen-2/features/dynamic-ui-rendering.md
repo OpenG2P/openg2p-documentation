@@ -21,4 +21,6 @@ The Base Registry includes a dynamic form rendering engine that reads the regist
 
 #### Extensible Component Model
 
-UI implementers may define new custom components that the renderer can use inside JSON Schema definitions. The registry frontend exposes reusable interface patterns including hierarchical tab navigation for child registers, audit history views, pending change alerts, and version comparison screens. This ensures a consistent user experience across all registry types while still allowing domain-specific customization.
+UI implementers may define new custom components that the renderer can use inside JSON Schema definitions.&#x20;
+
+Apart from the custom domain models that are presented based on the JSON schema configurations, the domain registers (customized and extended) will render themselves using the same hierarchical tab navigation for child registers, verification panels, version history panels, pending change alerts, and de-duplicate screens. This ensures a consistent user experience across all registry types while still allowing domain-specific customizations.
