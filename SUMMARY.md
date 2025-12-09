@@ -344,6 +344,7 @@
     * [Interoperability](spar/features/interoperability.md)
     * [Performance & Scale](spar/features/performance-and-scale.md)
     * [Monitoring & Reporting](spar/features/monitoring-and-reporting.md)
+  * [Versions](spar/versions.md)
   * [Deployment](spar/deployment/README.md)
     * [Domain Names and Certificates](spar/deployment/domain-names-and-certificates.md)
     * [SPAR Helm Chart 1.x](spar/deployment/helm-charts.md)
