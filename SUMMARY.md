@@ -384,6 +384,7 @@
     * [Interoperability](g2p-bridge/features/interoperability.md)
     * [Privacy & Security](g2p-bridge/features/privacy-and-security.md)
     * [Monitoring & Reporting](g2p-bridge/features/monitoring-and-reporting.md)
+  * [Versions](g2p-bridge/versions.md)
   * [Deployment](g2p-bridge/deployment/README.md)
     * [Deployment of Example Bank](g2p-bridge/deployment/deployment-of-example-bank.md)
     * [PBMS Configuration](g2p-bridge/user-guides/configure-g2p-connect-payment-manager.md)
