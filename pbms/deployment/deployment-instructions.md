@@ -36,11 +36,11 @@ Before you deploy, make sure the following are in place:
     <figure><img src="../../.gitbook/assets/image (81).png" alt=""><figcaption></figcaption></figure>
 5.  Navigate to **Apps → Charts** and locate the chart:
 
-    * **Name:** _OpenG2P PBMS_ &#x20;
+    * **Name:** _OpenG2P PBMS (3.0.0)_
     * **Description:** A Helm chart for OpenG2P PBMS
 
     <figure><img src="../../.gitbook/assets/image (80).png" alt=""><figcaption></figcaption></figure>
-6. Proceed to Install `OpenG2P PBMS` chart select the latest version to be installed, and click Install.
+6. Click the chart, choose **version 3.0.0**, and click **Install**.
 7. On the next screen:
    * **Installation Name:** `openg2p-pbms` (or any preferred name)
    * Enable **Customise Helmbox before installation** → click **Next**
@@ -49,26 +49,18 @@ Before you deploy, make sure the following are in place:
    * **PostgreSQL Host:** Provide the hostname of the PostgreSQL instance (or use the internal one if enabled)
    * **Keycloak Base URL:** Enter your Keycloak URL (e.g., `https://keycloak.openg2p.sandbox.net`)
    * **Email Service Name:** Provide the email service name used in PBMS
-   * **OIDC Client ID:** Provide the OIDC client ID for PBMS (Odoo)
-   * **OIDC Client Secret:** Provide the OIDC client secret for PBMS (Odoo)
 9. In the **Registry Settings** section:
    * **Registry DB:** Provide the PostgreSQL database name for Registry
    * **Registry DB User:** Enter the DB username
    * **Registry DB Secret:** Specify the Kubernetes secret name containing the DB password
    * **Registry DB Secret Key:** Enter the key name within the secret containing the user password
-10. In the **Background Task Settings** section (only visible if enabled):
-    * **Celery Beat Producer Frequency:** Set frequency in seconds (e.g., `60`)
-    * **Celery Beat Producer Batch Size:** Set the number of tasks per batch
-    * **Celery Beat Producer Number of Tasks to Process:** Set total tasks per run
-    * **Celery Workers G2P Bridge Base URL:** Provide the Bridge API URL used by Celery Workers
-    * **Celery Workers Batch Size:** Set worker batch size
-11. Configure **Minio Settings** (if applicable):
-    * **Hostname:** e.g., `minio-pbms.dev.openg2p.org`
-    * Enable **Install Minio** and **Enable Minio Persistence**
-12. Click **Next** → go to **Helm Options**.
+10. Configure **Odoo Settings** :
+    * **OIDC Client ID:** Provide the OIDC client ID for PBMS (Odoo)
+    * **OIDC Client Secret:** Provide the OIDC client secret for PBMS (Odoo)
+11. Click **Next** → go to **Helm Options**.
     * **Disable the Wait flag**
-13. Click **Install**.
-14. Monitor pods in your namespace until they reach the **Running** state.
+12. Click **Install**.
+13. Monitor pods in your namespace until they reach the **Running** state.
 
     <div align="left"><figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure></div>
 
@@ -95,9 +87,7 @@ Before you deploy, make sure the following are in place:
     * `global.keycloakBaseUrl`: Base URL for Keycloak authentication
     * `global.postgresqlHost`: PostgreSQL host (e.g., `openg2p-commons-postgresql`)
     * `global.registryDB*` and `global.pbmsDB*`: Registry and PBMS database credentials
-    * `global.minioInstallationName`: Minio instance for file storage
     * `odoo.image.tag`: PBMS version or custom image tag
-    * `openg2p-pbms-bg-task-celery-*`: Celery environment variables (frequency, batch size, etc.)
     * `istio.virtualservice.host`: Hostname when Istio is enabled
 
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>You can override values inline using <code>--set</code> or pass a custom file with <code>-f</code>.</p></div>
@@ -136,7 +126,7 @@ Before you deploy, make sure the following are in place:
     ```
 
 {% hint style="info" %}
-To uninstall PBMS from command line:
+To uninstall PBMS from command line:&#x20;
 
 ```
 helm uninstall <release-name> -n <namespace>
@@ -160,20 +150,12 @@ helm uninstall <release-name> -n <namespace>
        ```
        kubectl exec -it <odoo-pod-name> -n <namespace> -- \
          odoo -d <database-name> -u all --stop-after-init
-       ```
-
-
-4. Verify background workers:
-   *   Check Celery workers and beat scheduler pods:
 
        ```
-       kubectl get pods -n <namespace> | grep celery
-       ```
-   * Confirm task queues are registered correctly.<br>
-5. Validate Redis and Minio connectivity:
+4. Validate Redis and Minio connectivity:
    * Ensure Redis pod is running and reachable by the Celery worker.
    * Verify Minio access credentials match the Helm values and Odoo configuration.
-6. Confirm database migrations:
+5. Confirm database migrations:
    *   Review logs of Odoo pod for any migration errors:
 
        ```
@@ -181,9 +163,23 @@ helm uninstall <release-name> -n <namespace>
        ```
 
 
-7.  (Optional) Apply PBMS demo or seed data:
+6.  (Optional) Apply PBMS demo or seed data:
 
     ```
     kubectl exec -it <odoo-pod-name> -n <namespace> -- \
       odoo -d <database-name> -i g2p_pbms_demo
     ```
+
+## Tear down
+
+To completely cleanup PBMS installation, note the following:  Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
+
+To tear down completely:
+
+1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
+2. Delete pbms secret in the namespace
+3. Drop pbms`_db` and user from Postgres&#x20;
+   1. Login into Postgres as admin (via port fowarding or directly from Rancher). Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
+   2. `drop database pbms_db;`&#x20;
+   3. `drop role pbms_db_user;`&#x20;
+

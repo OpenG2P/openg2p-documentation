@@ -125,7 +125,7 @@
     * [Roles & privileges](pbms/design/roles-and-privileges.md)
     * [Post disbursement workflow](pbms/design/g2p-bridge-workflow.md)
   * [Deployment](pbms/deployment/README.md)
-    * [PBMS Installation](pbms/deployment/pbms-installation.md)
+    * [PBMS Installation](pbms/deployment/deployment-instructions.md)
     * [PBMS Helm Chart 4.x](pbms/deployment/pbms-helm-chart-4.x.md)
     * [Configurations](pbms/deployment/configurations.md)
     * [Domain names & certificates](pbms/deployment/domain-names-and-certificates.md)
