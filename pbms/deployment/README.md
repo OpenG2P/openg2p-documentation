@@ -4,7 +4,7 @@ description: PBMS Deployment
 
 # Deployment
 
-The instructions here pertain to the deployment of all PBMS and associated components on the Kubernetes cluster using [Helm charts](../../social-registry/developer-zone/registry-helm-chart-3.x.x.md). All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+The instructions here pertain to the deployment of all PBMS and associated components on the Kubernetes cluster using [Helm charts](../../social-registry/deployment/registry-helm-chart-3.x.x.md). All the components are installed in the same namespace. The deployment may be achieved by the following methods:
 
 * [Using Rancher UI](./#installation-using-rancher-ui)&#x20;
 * [Using command line](./#installation-using-the-command-line)
