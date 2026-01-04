@@ -1,6 +1,6 @@
 # Environment Installation
 
-The instructions here pertain to the deployment of commons  on the Kubernetes cluster using OpenG2P-Commons.  All the components are installed in the same namespace.
+The instructions here pertain to the deployment of common components for an environment on the Kubernetes cluster.  All the components are installed in the same namespace.
 
 ## Prerequisites
 
@@ -22,12 +22,12 @@ Before you deploy, make sure the following are in place:
 5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.<br>
 
     <figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
-6. Select the namespace in which you would like to install Registry, from the namespace filter on the top-right.
+6. Select the namespace from the namespace filter on the top-right.
 7.  Navigate to **Apps->Charts** page on Rancher. You should see `OpenG2P  commons` Helm charts listed.
 
     <figure><img src="../../.gitbook/assets/image (84).png" alt=""><figcaption></figcaption></figure>
-8. Proceed to Install `OpenG2P  Commons` chart select the latest version to be installed, and click Install.
-9. On the next screen, choose a name for installation, like `Commons`. Select the checkbox `Customise Helm options` before install, and click Next.
+8. Proceed to Install `OpenG2P  Commons` chart select the latest version to be installed, and click _Install_.
+9. On the next screen, provie installation name as `commons` .  Select the checkbox `Customise Helm options` before install, and click _Next_.
 10. Go through each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `esignet.dev.openg2p.org` and `odk.dev.openg2p.org` , etc. `<appname>` is arbitrary - default names have been provided.
     2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
