@@ -7,7 +7,7 @@ description: PBMS deployment instructions
 The instructions here pertain to the deployment of PBMS and associated components on the Kubernetes cluster using PBMS Helm chart. All the components are installed in the same namespace.
 
 {% hint style="info" %}
-Minio Object Store and Keycloak installation can be skipped if already deployed via [OpenG2P Commons](../../deployment/deployment-instructions/) and you wish to use those.
+Minio Object Store and Keycloak installation can be skipped if already deployed via [OpenG2P Commons](../../deployment/deployment-instructions/)
 {% endhint %}
 
 ## Prerequisites
@@ -85,7 +85,7 @@ Before you deploy, make sure the following are in place:
 
     * `global.hostname`: Public hostname for PBMS (e.g., `pbms.dev.openg2p.org`)
     * `global.keycloakBaseUrl`: Base URL for Keycloak authentication
-    * `global.postgresqlHost`: PostgreSQL host (e.g., `openg2p-commons-postgresql`)
+    * `global.postgresqlHost`: PostgreSQL host (e.g., `commons-postgresql`)
     * `global.registryDB*` and `global.pbmsDB*`: Registry and PBMS database credentials
     * `odoo.image.tag`: PBMS version or custom image tag
     * `istio.virtualservice.host`: Hostname when Istio is enabled
@@ -179,7 +179,7 @@ To tear down completely:
 1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
 2. Delete pbms secret in the namespace
 3. Drop pbms`_db` and user from Postgres&#x20;
-   1. Login into Postgres as admin (via port fowarding or directly from Rancher). Use the `postgres-password` key in `openg2p-commons-postgresql` secret to get the password
+   1. Login into Postgres as admin (via port fowarding or directly from Rancher). Use the `postgres-password` key in `commons-postgresql` secret to get the password
    2. `drop database pbms_db;`&#x20;
    3. `drop role pbms_db_user;`&#x20;
 

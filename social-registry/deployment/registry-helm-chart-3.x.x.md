@@ -2,7 +2,7 @@
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x has been designed the way it is.  There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry).  Refer to packaing concepts.
 
-Several modules that were installed in 2.x have been moved to [openg2p-commons](../../deployment/concepts/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
+Several modules that were installed in 2.x have been moved to ["OpenG2P Commons"](../../deployment/concepts/openg2p-commons-helm-chart.md).  Only the ones specific to Registry have been retained in this chart.&#x20;
 
 ## Context
 
@@ -117,8 +117,8 @@ Bg-tasks attempts to connect to Redis till Redis is up.  So if you see in the lo
 
 ## Running the Registry chart
 
-The chart is available on Rancher.  Follow the [installation steps](../deployment/registry-installation.md). &#x20;
+The chart is available on Rancher.  Follow the [installation steps](registry-installation.md). &#x20;
 
 ## Tear down&#x20;
 
-Refer to instructions [here](../deployment/registry-installation.md#tear-down).
+Refer to instructions [here](registry-installation.md#tear-down).
