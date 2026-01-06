@@ -1,4 +1,4 @@
-# Configure IPSec VPN Gateway to connect to external Systems using Strongswan
+# Configure IPSec VPN Gateway to Connect to External Systems using Strongswan
 
 1. Create a new Virtual Machine on the same network as the rest of the cluster nodes. This machine will be used as a gateway to access the external IPs. This machine will need a public IP. The preferred OS is Ubuntu Server 20.04 or higher.
 2. The rest of this guide will assume the following:
@@ -18,7 +18,7 @@
       2.  Run this to apply the above config:
 
           ```
-          sudo systctl --system
+          sudo sysctl --system
           ```
    2. Install and configure Strongswan.
       1.  Install Strongswan, run:

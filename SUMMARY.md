@@ -595,6 +595,7 @@
     * [ETCD Backup and Restore](deployment/deployment-guide/etcd-backup-and-restore.md)
     * [How to Update an Environment from One Domain to Another](deployment/deployment-guide/how-to-update-an-environment-from-one-domain-to-another.md)
     * [Deployment of Novu](deployment/deployment-guide/deployment-of-novu.md)
+    * [Implement backup with Barman](deployment/deployment-guide/implement-backup-with-barman.md)
   * [Scaling](deployment/scaling/README.md)
     * [V4 Deployment Architecture](deployment/scaling/v4-deployment-architecture.md)
     * [Resource Requirements for Scaled Up Cluster Setup](deployment/scaling/hardware-requirements.md)
