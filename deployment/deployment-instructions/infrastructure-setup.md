@@ -61,7 +61,7 @@ Follow the below steps to set up Kubernetes Cluster (RKE2 Server) as a `root` us
 4.  Run the following commands to set the `RKE2` version, download  the same and start RKE2 server:
 
     ```bash
-    export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
+    export INSTALL_RKE2_VERSION="v1.33.6+rke2r1"
     curl -sfL https://get.rke2.io | sh - 
     systemctl enable rke2-server
     systemctl start rke2-server
