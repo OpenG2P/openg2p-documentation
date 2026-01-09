@@ -6,15 +6,17 @@ description: About Postgres Init Helm Chart
 
 ## Context
 
-The **postgres-init** Helm Chart was created to conveniently create a **database** on an existing PostgreSQL installation. Important to note that the Chart here assumes that PostgreSQL server is already available. The motivation to create this chart were the following:
+The [**postgres-init**](https://github.com/openg2p/postgres-init) Helm Chart was created to conveniently create a **database** on an existing PostgreSQL installation. Important to note that the Chart here assumes that PostgreSQL server is already available. The motivation to create this chart were the following:
 
-* In new OpenG2P deployment model, there is only instance PostgreSQL server for a given sandbox/deployment/namespace. All databases are created within this server.  In previous installations of Registry and PBMS, the Odoo chart would create its own instance of PostgreSQL running as a Pod on cluster. Now that we have externalized the databases, we needed a script to create database aprioriy and then install the respective modules.&#x20;
+* In new OpenG2P deployment model, there is only one instance PostgreSQL server for a given sandbox/deployment/namespace. All databases are created within this server.  In previous installations of Registry and PBMS, the Odoo chart would create its own instance of PostgreSQL running as a Pod on cluster. Now that we have externalized the databases, we needed a script to create database aprioriy and then install the respective modules.&#x20;
 * Harmonising database creation across all modules such that there is a uniform way of creating datasbases.
 
 ## Functionality&#x20;
 
-* Creation of one or more databases (DB) on an existing Postgres server
-* Creation of DB user
+Following functionality is supported:
+
+* Creation of one or more databases (DB) on an existing PostgreSQL server
+* Creation of one DB user
 * Creation of DB user secret with password on Kuberenetes cluster.
 * Installation of any database extensions like `pg_trgm`.
 
@@ -22,15 +24,19 @@ The script is idempotent - which means if we run the init again, and if the data
 
 For multiple databases the same need to be specified as list item in  [values.yaml](https://github.com/OpenG2P/postgres-init/blob/develop/chart/values.yaml).
 
-The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm is uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists in Postgres, and therefore the secret must also exist. If you would like to tear down entire module clean, refer to the **tear down** instructions of the respective modules.
+The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm is uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists, and therefore the secret must also exist. If you would like to tear down entire module clean, refer to the [**tear down**](postgres-init-helm-chart.md#tear-down) instructions below.
 
 ## Source code
 
-Code of the script, Docker and Helm chart available [here](https://github.com/openg2p/postgres-init).
+Code of the script, Docker and Helm chart are available [here](https://github.com/openg2p/postgres-init).
 
 ## Run
 
-Instructions here pertain to running the Helm chart on command line or as part of module installation scripts.
+Instructions here pertain to running the Helm chart on command line. &#x20;
+
+{% hint style="info" %}
+_Note that you generally will not need to run this Helm from command line as it is alreay embedded in the deployment Helm charts of respective modules._
+{% endhint %}
 
 * Update / override following params in values.yaml
 
