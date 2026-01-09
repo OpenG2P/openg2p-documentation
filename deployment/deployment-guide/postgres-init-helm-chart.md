@@ -15,7 +15,8 @@ The **postgres-init** Helm Chart was created to conveniently create a **database
 
 * Creation of one or more databases (DB) on an existing Postgres server
 * Creation of DB user
-* Creation of DB user secret with password
+* Creation of DB user secret with password on Kuberenetes cluster.
+* Installation of any database extensions like `pg_trgm`.
 
 The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
 
@@ -29,8 +30,63 @@ Code of the script, Docker and Helm chart available [here](https://github.com/op
 
 ## Run
 
-TBD
+Instructions here pertain to running the Helm chart on command line or as part of module installation scripts.
+
+* Update / override following params in values.yaml
+
+```
+postgresql:
+  host: "commons-postgresql"
+  port: 5432
+  # -- Existing secret with PostgreSQL superuser credentials
+  user: postgres
+  existingSecret: commons-postgresql
+  existingSecretPostgresPasswordKey: "postgres-password"
+```
+
+* Add list of databases you wish to create:
+
+```
+databases:
+  - name: your_db
+    user: your_db_user
+    # Generated randomly in secrets.yaml. Don't assign it here
+    password: ""
+    secret: 'your-user-secret'
+    secretUserPasswordKey: 'your-user-password-key'
+    # List of extensions to install (comma-separated or list). Example
+    # - 'pg_trgm'
+    extensions: []
+```
+
+* You may add extensions as list like:
+
+```
+extensions:
+  - 'pg_trgm'
+```
+
+* Run&#x20;
+
+```
+$ helm -n <your namespace> install postgres-init .
+```
+
+* Verify that the database, users, extensions and  secrets mentioned in `values.yaml` have been created,
+
+## Tear down
+
+* Uninstall the Helm chart
+
+```
+$ helm -n <your namespace> uninstall postgres-init
+```
+
+* The above **does not** delete the database, users and secrets.  Delete all these manually:
+  * database (via psql)
+  * db user (via psql)
+  * secret on cluster (via kubectl or Rancher)
 
 ## Versions
 
-<table><thead><tr><th width="100">Version</th><th width="100">Published Date</th><th>Contents</th></tr></thead><tbody><tr><td>1.0</td><td>09-Jan-2026</td><td><p>Stable version with following base features: </p><ul><li>Creation of one or more databases (DB) on an existing Postgres server</li><li>Creation of DB user</li><li>Creation of DB user secret with password</li></ul></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="100">Helm Chart Version</th><th width="100">Published Date</th><th>Contents</th></tr></thead><tbody><tr><td>1.0.0</td><td>09-Jan-2026</td><td><p>Stable version with following base features: </p><ul><li>Creation of one or more databases (DB) on an existing Postgres server</li><li>Creation of DB user</li><li>Creation of DB user secret with password</li></ul></td></tr><tr><td>0.0.0-develop</td><td>In progress</td><td>Added feature to optionally install Postgres extensions like pg_trgm . This chart may be used instead of previous one.</td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
