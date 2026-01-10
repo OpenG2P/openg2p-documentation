@@ -72,7 +72,7 @@ The script, Docker and Helm chart is available [here](https://github.com/OpenG2P
 
 ### Run
 
-Run the Helm on the command line (Rancher verision is not yet available). Also, running on command line gives more flexibility to update values.yaml as required. &#x20;
+Run the Helm on the command line or on Rancher. The below procedure is for command line. On Rancher the procedure is like any other chart. &#x20;
 
 _Note that the Helm chart needs to be installed on the cluster and namespace of interest (e.g. sandbox) as all client secrets are created in the same namespace. The cluster and namespace may. not be same as where Keycloak itself runs._
 
