@@ -135,11 +135,7 @@ $ helm -n <namespace> uninstall kecyloak init
 
 ### Versions
 
-| Helm Chart Version | Date Published | Contents                                                                       |
-| ------------------ | -------------- | ------------------------------------------------------------------------------ |
-| 0.0.0-develop      | Jan 2026       | Tested version.  After sufficient usage, this will be tagged to fixed version. |
-|                    |                |                                                                                |
-|                    |                |                                                                                |
+<table><thead><tr><th width="100">Helm Chart Version</th><th width="100">Date Published</th><th>Contents</th></tr></thead><tbody><tr><td>0.0.0-develop</td><td>Jan 2026</td><td>Tested version.  After sufficient usage, this will be tagged to fixed version. Compatible with Keycloak 24.0.5.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
 
 ### Developer
 
