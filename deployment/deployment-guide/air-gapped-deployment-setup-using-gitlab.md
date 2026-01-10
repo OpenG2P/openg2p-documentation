@@ -24,7 +24,7 @@ This guide will assume that during installation and initial setup internet conne
 
 ## Gitlab Keycloak Integration
 
-* Use [Keycloak client creation](keycloak-client-creation.md) guide to create new client for Gitlab.
+* Use [Keycloak client creation](keycloak/keycloak-client-creation.md) guide to create new client for Gitlab.
 * Use this to configure the Keycloak client as [auth provider for gitlab](https://docs.gitlab.com/administration/auth/oidc/). TODO: elaborate.
 * Create users on Gitlab, link the user of gitlab with the user from Keycloak. TODO: elaborate.
 * All logins to Gitlab can be through Keycloak only after applying these changes.

@@ -34,7 +34,7 @@ Before you deploy, make sure the following are in place:
 10. Navigate to each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `spar.dev.openg2p.org`  etc. `<appname>` is arbitrary - default names have been provided.
     2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak/keycloak-client-creation.md) guide.
     4. Click on **Next** to navigate to **Helm** **Options** page. Disable `wait` flag. Click on **Install**.
     5. Watch for every pods to enter a **Running** state. This may take several minutes.\
        ![](<../../.gitbook/assets/image (64).png>)

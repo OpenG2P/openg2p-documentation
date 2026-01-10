@@ -39,7 +39,7 @@ Before you deploy, make sure the following are in place:
 10. Go through each app's configuration page, and configure the following:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `pbms.dev.openg2p.org` etc. `<appname>` is arbitrary - default names have been provided.
     2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak/keycloak-client-creation.md) guide.
     4. In the **Registry Settings** section:
        * **Registry DB:** Provide the PostgreSQL database name for Registry
        * **Registry DB User:** Enter the DB username

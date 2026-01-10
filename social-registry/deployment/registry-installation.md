@@ -32,7 +32,7 @@ Before you deploy, make sure the following are in place:
     1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../../deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `socialregistry.dev.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
     2. For production deployments, if the PostgreSQL server is running as a pod inside Kubernetes, set the PostgreSQL hostname to `host.docker.internal` (PostgreSQL pod name), as this acts as a proxy for localhost. If PostgreSQL is running on a separate server, specify the server’s domain name or IP address instead.
     3. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-    4. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak-client-creation.md) guide.
+    4. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak/keycloak-client-creation.md) guide.
     5.  To change the docker image from the default image, click on `Edit YAML` table and update the following section in Helm. \
         **Note:** This step is required only if you have separate docker image to be deployed or else you can go with default one and skip this step.
 

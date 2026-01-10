@@ -11,7 +11,7 @@ Please note that all of the following operations are made on the selected realm.
 * Navigate to Keycloak Admin Console -> Authentication Menu -> Policies Section.
 *   Add the following policies.
 
-    <figure><img src="../../.gitbook/assets/image (27) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../.gitbook/assets/image (27) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## Password expiry & history policy
 
@@ -22,14 +22,14 @@ TODO
 * Navigate to Keycloak Admin Console -> Realm Settings -> Security defenses.
 *   Under "Brute force detection", configure Account lock out option after 3 wrong password attempts.
 
-    <figure><img src="../../.gitbook/assets/image (30) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../.gitbook/assets/image (30) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## MFA setup
 
 * Navigate to Keycloak Admin Console -> Authentication Menu -> Flows Section.
 *   Click on **Browser** flow, make a copy of the Browser as **Browser with 2Fa** and bind it to Browser flow.
 
-    <figure><img src="../../.gitbook/assets/image (25) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../.gitbook/assets/image (25) (1).png" alt=""><figcaption></figcaption></figure>
 
     1. Look for the Browser - Conditional OTP option which by default is set to `Alternative`. Change this to `Required`.
     2. That's it. KeyCloak is now configured for 2FA.
