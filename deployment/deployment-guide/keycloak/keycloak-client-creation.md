@@ -20,7 +20,7 @@ layout:
 
 For logging into various services of our modules, we use Keycloak as the OIDC auth provider. All users are configured on Keycloak.  We also need to configure "clients" on Keycloak for apps to connect to Keycloak. This guide provides the manual and automated mechanims to create a client with appropriate settings for our use.
 
-## Manual Procedure
+## Manual procedure
 
 The steps to create a Keycloak client are given below.
 
