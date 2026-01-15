@@ -86,7 +86,7 @@ Although these views should be present for an ideal installation as an add-on to
 
 In these views we define the menu ribbon view (including both tree and form) for the new registries defined.
 
-<figure><img src="../../../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (1) (3).png" alt=""><figcaption></figcaption></figure>
 
 *   Create a window action (`ir.actions.act_window`) referencing your model.
 
@@ -189,7 +189,7 @@ The views are already set to inherit from the PBMS views and it's recommended to
 
 This view defines the **Search Beneficiaries** section in PBMS UI and is paired with a custom-defined widget (in the `/static` folder) which integrates JavaScript to manage the search functionality.
 
-<figure><img src="../../../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (82).png" alt=""><figcaption></figcaption></figure>
 
 Update your model info within the `<xpath>` groups. Use the correct `target_registry` and `model` as defined earlier.
 

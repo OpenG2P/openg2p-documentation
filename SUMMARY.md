@@ -602,6 +602,7 @@
       * [Keycloak Client Creation](deployment/deployment-guide/keycloak/keycloak-client-creation.md)
       * [Enabling Keycloak User Self-Registration](deployment/deployment-guide/keycloak/enabling-keycloak-user-self-registration.md)
       * [Keycloak Advanced Security](deployment/deployment-guide/keycloak/keycloak-advanced-security.md)
+    * [NFS Migration – Migrating PVC's to a New NFS Server](deployment/deployment-guide/nfs-migration-migrating-pvcs-to-a-new-nfs-server.md)
   * [Scaling](deployment/scaling/README.md)
     * [V4 Deployment Architecture](deployment/scaling/v4-deployment-architecture.md)
     * [Resource Requirements for Scaled Up Cluster Setup](deployment/scaling/hardware-requirements.md)

@@ -13,6 +13,37 @@ Before you deploy, make sure the following are in place:
 
 ## Installation using Rancher UI
 
+1. Log in to Rancher admin console.
+2. Select your cluster.
+3. Under **Apps -> Repositories** click on Create to add a repository.
+4.  Provide Name as `openg2p` and target HTTPS Index URL as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click Create.
+
+    <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+5.  To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on `Include Prerelease Versions` under Preferences under Helm Charts.
+
+    <figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+6. Select the namespace from the namespace filter on the top-right.
+7.  Navigate to **Apps->Charts** page on Rancher. You should see **OpenG2P commons** Helm charts listed.
+
+    <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+8. Proceed to Install **OpenG2P Commons** chart select the latest version to be installed, and click Install.
+9. On the next screen, provie installation name as **`commons`** . Select the checkbox Customise Helm options before install, and click Next.\
+   **Note:** Make sure the installation name should be **commons** only.
+10. Go through each app's configuration page, and configure the following:
+    1. Configure a hostname for each app in the following way. \
+       `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace](https://docs.openg2p.org/deployment/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup) setup. Example: `esignet.dev.openg2p.org` and `odk.dev.openg2p.org` , etc. is arbitrary - default names have been provided.
+    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak..org)
+    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation ](https://docs.openg2p.org/deployment/deployment-guide/keycloak/keycloak-client-creation)guide.
+11. Click Next to reach Helm Options page. Disable **`wait`** flag. Click on Install.
+12. Wait for all the pods to get into **Running state**. This may take several minutes.\
+    ![](<../../.gitbook/assets/image (3).png>)
+
+## Installation using the command line
+
+* Install the following utilities on your machine:
+  * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
+* To Be Done
+
 ## Post Installation
 
 ### Keycloak

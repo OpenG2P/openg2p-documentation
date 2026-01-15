@@ -187,7 +187,7 @@ You can name your sandbox anything, e.g., dev, qa, or test. Make sure to note it
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (4) (1).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../.gitbook/assets/image (4) (1) (2).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **8.** Mapping domains to cluster IP
 
@@ -202,7 +202,7 @@ Point these records to the **Internal IP** address of node.
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the</mark> \ <mark style="color:green;">screenshot.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (2) (1) (2).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../.gitbook/assets/image (2) (1) (2) (1).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **9. Rancher installation**
 
@@ -272,7 +272,7 @@ In Rancher, make sure that `Istio auto-injection` for the dev namespace is disab
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 &#x20;<mark style="color:green;">Verify your project name and namespace appear under project/namespace section.</mark>
 
-<figure><img src="../../.gitbook/assets/image (82).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (82) (1).png" alt=""><figcaption></figcaption></figure>
 
 #### **13. Istio** gateway setup
 

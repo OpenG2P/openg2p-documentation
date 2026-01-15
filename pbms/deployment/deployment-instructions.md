@@ -29,7 +29,7 @@ Before you deploy, make sure the following are in place:
     * **Target HTTPS Index URL:** `https://openg2p.github.io/openg2p-helm/rancher`
     * Click **Create**
 
-    <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../.gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
 3. On the top-right, select the **namespace** where you want to install PBMS.
 4.  To view prerelease charts (if required), click your **user avatar → Preferences → Include Prerelease Versions**.
 
