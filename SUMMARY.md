@@ -485,6 +485,7 @@
   * [Deployment](registry-gen-2/deployment.md)
   * [Developer Zone](registry-gen-2/developer-zone/README.md)
     * [Registry UI Widget Library](registry-gen-2/developer-zone/registry-ui-widget-library.md)
+    * [Registry UI Widgets: Complete guide and reference](registry-gen-2/developer-zone/registry-ui-widgets-complete-guide-and-reference.md)
 * [Consent Management](consent-management/README.md)
   * [Design](consent-management/design/README.md)
     * [High level design](consent-management/design/high-level-design.md)
