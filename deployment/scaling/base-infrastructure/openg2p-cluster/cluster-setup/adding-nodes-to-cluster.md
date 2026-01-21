@@ -24,3 +24,7 @@ Below are the steps to add more nodes to the Kubernetes cluster.
     systemctl enable rke2-server
     systemctl start rke2-server
     ```
+
+{% hint style="info" %}
+After adding each node to the cluster, ensure that the node IP is added to the Nginx configuration.
+{% endhint %}

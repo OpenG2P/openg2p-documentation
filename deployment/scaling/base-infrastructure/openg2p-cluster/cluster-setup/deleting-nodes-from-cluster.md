@@ -19,3 +19,7 @@ The steps to delete nodes from Kubernetes cluster are:
     ```
 * After deleting the node, check your Kubernetes cluster to ensure the node has been deleted.
 * Make sure the node IP is removed from the LoadBalancer/NGINX to avoid intermittent issues in the environment. &#x20;
+
+{% hint style="info" %}
+After removing a node from the cluster, ensure that the node IP is removed from the Nginx configuration.
+{% endhint %}
