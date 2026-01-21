@@ -673,3 +673,4 @@
 * [Blogs](blogs/README.md)
   * [OpenG2P and SDG Goals](blogs/openg2p-and-sdg-goals.md)
   * [Why Odoo?](blogs/why-odoo.md)
+  * [Dynamic Registry: A Foundation for Effective G2P Delivery](blogs/dynamic-registry-a-foundation-for-effective-g2p-delivery.md)
