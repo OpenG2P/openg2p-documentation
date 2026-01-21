@@ -6,15 +6,7 @@ As governments increasingly digitise G2P service delivery globally, there is a g
 
 While many countries maintain databases, these often lack the interconnectivity and accuracy required to effectively deliver services. Some key differences between registry and database are as follows:&#x20;
 
-| **Aspect**        | **Registry**                                                                       | **Database**                                              |
-| ----------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Purpose           | Acts as a trusted, authoritative source of truth for specific entities             | Stores and retrieves data for an application or system    |
-| Nature of Data    | Verified, official, and authoritative records (e.g., citizens, businesses, assets) | Any type of data, including raw, unverified, or temporary |
-| Identifiers       | Maintains unique identifiers to ensure one-to-one mapping of entities              | May not enforce uniqueness; duplicates are common         |
-| Data Integrity    | Enforces strict accuracy, authenticity, and validation rules                       | Integrity rules are optional and application-specific     |
-| Change management | Enforces change control, version history and audit trail                           | Not offered in typical databases                          |
-| Real-time Use     | Supports real-time or near real-time lookups and validation                        | Not necessarily designed for real-time validation         |
-| Interoperability  | Designed for reuse across multiple systems and sectors                             | Typically siloed within a single system                   |
+<table data-header-hidden><thead><tr><th width="186.8560791015625"></th><th width="288.2982177734375"></th><th></th></tr></thead><tbody><tr><td><strong>Aspect</strong></td><td><strong>Registry</strong></td><td><strong>Database</strong></td></tr><tr><td>Purpose</td><td>Acts as a trusted, authoritative source of truth for specific entities</td><td>Stores and retrieves data for an application or system</td></tr><tr><td>Nature of Data</td><td>Verified, official, and authoritative records (e.g., citizens, businesses, assets)</td><td>Any type of data, including raw, unverified, or temporary</td></tr><tr><td>Identifiers</td><td>Maintains unique identifiers to ensure one-to-one mapping of entities</td><td>May not enforce uniqueness; duplicates are common</td></tr><tr><td>Data Integrity</td><td>Enforces strict accuracy, authenticity, and validation rules</td><td>Integrity rules are optional and application-specific</td></tr><tr><td>Change management</td><td>Enforces change control, version history and audit trail </td><td>Not offered in typical databases </td></tr><tr><td>Real-time Use</td><td>Supports real-time or near real-time lookups and validation</td><td>Not necessarily designed for real-time validation</td></tr><tr><td>Interoperability</td><td>Designed for reuse across multiple systems and sectors</td><td>Typically siloed within a single system</td></tr></tbody></table>
 
 #### Registry as a DPI layer
 
