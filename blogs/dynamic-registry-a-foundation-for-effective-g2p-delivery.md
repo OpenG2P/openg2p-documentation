@@ -30,9 +30,9 @@ A good registry system offers substantial benefits to both governments and citiz
 
 For governments, accurate, dynamic, interoperable registries,&#x20;
 
-* Enable targeted allocation of resources. For example, in social welfare programs, a registry helps minimise leakages by efficiently verifying identities and eligibility, thereby saving public funds and strengthening trust in government institutions.
-* Generate efficiencies for program administrators by reducing redundant data collection. For example, Mexico’s Cuestionario Único de Información Socioeconómica (CUIS) consolidated 17 distinct socio-economic questionnaires into one harmonised registry.&#x20;
-* Inform registration and eligibility processes, supports the design and implementation of programs, and provides policymakers with visibility into the populations they serve. Malawi’s [Social Registry](https://mtukula.com/content?view=19\&pageName=Targeting) is used by the Social Cash Transfer Program to access data on households and PMT scores to create beneficiary lists. &#x20;
+* Enable targeted allocation of resources. For example, in social welfare programmes, a registry helps minimise leakages by efficiently verifying identities and eligibility, thereby saving public funds and strengthening trust in government institutions.
+* Generate efficiencies for programme administrators by reducing redundant data collection. For example, Mexico’s Cuestionario Único de Información Socioeconómica (CUIS) consolidated 17 distinct socio-economic questionnaires into one harmonised registry.&#x20;
+* Inform registration and eligibility processes, supports the design and implementation of programmes, and provides policymakers with visibility into the populations they serve. Malawi’s [Social Registry](https://mtukula.com/content?view=19\&pageName=Targeting) is used by the Social Cash Transfer Programme to access data on households and PMT scores to create beneficiary lists. &#x20;
 * Facilitate assessment of needs of the population, analyse gaps in coverage of benefits and services and help coordinate policy responses.&#x20;
 * Enable rapid and shock responsive interventions to emerging needs to citizens, especially during crises. In response to the COVID-19 emergency, Turkey’s ISAS allowed the country to quickly deliver a one-time cash benefit for individuals by checking eligibility against administrative data ([World Bank](https://documents.worldbank.org/en/publication/documents-reports/documentdetail/099050824133015472))
 
@@ -58,13 +58,13 @@ A well-designed registry system has the following functionalities:&#x20;
 * **User consent management**: Has explicit consent mechanisms that allow individuals to control how and with whom their data is shared.
 * **Authorised data sharing with defined scope**: Data is shared only through secure channels, with clear authorisation, purpose limitation, and scope of information shared.
 * **Comprehensive change management**: Includes version history, audit trails, approval workflows, and change control to track and validate all data modifications.
-* **Eligibility and needs assessments**: Assesses needs and conditions of applicants, verifies eligibility and automatically computes scores to support program targeting and prioritization.
+* **Eligibility and needs assessments**: Assesses needs and conditions of applicants, verifies eligibility and automatically computes scores to support programme targeting and prioritisation.
 * **Uniqueness linked to a verified ID**: Ensures each individual is uniquely identified, preventing duplication and fraud through linkage with national or foundational IDs.
-* **Registry-specific ID generation**: Generates program- or registry-specific identifiers (e.g., Social ID, Disability ID, Pension ID) where required.
+* **Registry-specific ID generation**: Generates programme- or registry-specific identifiers (e.g., Social ID, Disability ID, Pension ID) where required.
 * **Strong data integrity rules**: Enforces validation rules, mandatory fields, value ranges, and limits, while flagging violations for correction.
 * **Issuance of verifiable credentials**: Provides digitally verifiable credentials that can be used for offline verification in low-connectivity environments.
-* **Flexible and use-case agnostic architecture**: Not hardwired to a single program or model, allowing adaptation across multiple use cases while retaining powerful core functionalities.
+* **Flexible and use-case agnostic architecture**: Not hardwired to a single programme or model, allowing adaptation across multiple use cases while retaining powerful core functionalities.
 
 The creation of an effective registry system is crucial for modern governance. By transitioning from traditional databases to integrated registries built on DPI infrastructure, countries can dramatically improve their ability to deliver benefits to citizens efficiently and transparently.
 
-OpenG2P’s Registry module is an open-source, modular, and reusable DPI infrastructure developed specifically to meet these rigorous technical and governance requirements. It is designed to be easily deployed and customised for diverse national contexts. We invite you to explore the [Registry Gen 2 ](../registry-gen-2/)module with advanced features to accelerate your digital G2P program. <br>
+OpenG2P’s Registry module is an open-source, modular, and reusable DPI infrastructure developed specifically to meet these rigorous technical and governance requirements. It is designed to be easily deployed and customised for diverse national contexts. We invite you to explore the [Registry Gen 2 ](../registry-gen-2/)module with advanced features to accelerate your digital G2P programme. <br>
