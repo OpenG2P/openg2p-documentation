@@ -1,13 +1,12 @@
 # Environment Installation
 
-The instructions here pertain to the deployment of common components for an environment on the Kubernetes cluster.  All the components are installed in the same namespace.
+The instructions here pertain to the deployment of [common components](../concepts/openg2p-commons-helm-chart.md) for an environment on the Kubernetes cluster.  All the components are installed in the same namespace.
 
 ## Prerequisites
 
 Before you deploy, make sure the following are in place:
 
 * ✅ [Infrastruction setup](infrastructure-setup.md) is completed&#x20;
-* ✅ [Environment](environment-installation.md) has been setup with common resources installed.
 * ✅ Domain name `esignet.<your environment>.<your domain name>` (e.g. `esignet.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
 * ✅ **Project Owner access** on the OpenG2P namespace
 

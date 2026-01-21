@@ -7,13 +7,13 @@
   * The [**source code**](https://github.com/OpenG2P/openg2p-deployment-commons) of the chart.
   * The [**new architecture**](openg2p-deployment-model.md) documentation.
 
-### **Design update (from v2.x.x onward)**
+## **Design update (from v2.x.x onward)**
 
 * In OpenG2P **version 2.x.x**, many dependency modules were installed separately for each application.
 * In the new design, these have been centralized under the `openg2p-commons` chart.
 * Only the common dependency modules shared across all applications are included in this chart.
 
-### **Commons dependencies**
+## &#x20;**Dependencies**
 
 The `openg2p-commons` Helm chart bundles the following core components.
 
@@ -27,7 +27,7 @@ The `openg2p-commons` Helm chart bundles the following core components.
 8. **Superset**
 9. **eSignet** (includes _eSignet_ + _Mock Identity System_)
 
-### Bitnami secure images transition
+## Bitnami secure images transition
 
 **From August 28th, 2025**, Bitnami is evolving its public catalog under the **Bitnami Secure Images** initiative.
 
@@ -45,6 +45,14 @@ The `openg2p-commons` Helm chart bundles the following core components.
   we extracted the existing charts and versions we depend on and uploaded them to our own private Helm repository.
 * All our Helm charts are now updated to reference these internal chart paths instead of Bitnami’s public sources.
 
-#### How to deploy openg2p commons
+## Versions
+
+|       |             |                 |
+| ----- | ----------- | --------------- |
+| 1.0.0 | 21-Jan-2026 | Stable version. |
+|       |             |                 |
+|       |             |                 |
+
+## How to deploy openg2p commons
 
 Refer the instructions [here](../deployment-instructions/environment-installation.md#common-resources).
