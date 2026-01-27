@@ -47,11 +47,11 @@ The `openg2p-commons` Helm chart bundles the following core components.
 
 ## Versions
 
-|       |             |                 |
-| ----- | ----------- | --------------- |
-| 1.0.0 | 21-Jan-2026 | Stable version. |
-|       |             |                 |
-|       |             |                 |
+| HelmVesion    | Published On | Comments                                                                                                                                             |
+| ------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0         | 21-Jan-2026  | Stable version.                                                                                                                                      |
+| 1.1.0-develop | In progress  | <p>Several major changes.  See</p><p>  <a href="https://openg2p.atlassian.net/browse/G2P-4036">https://openg2p.atlassian.net/browse/G2P-4036</a></p> |
+|               |              |                                                                                                                                                      |
 
 ## How to deploy openg2p commons
 
