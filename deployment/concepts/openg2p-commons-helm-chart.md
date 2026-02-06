@@ -56,3 +56,22 @@ The `openg2p-commons` Helm chart bundles the following core components.
 ## How to deploy openg2p commons
 
 Refer the instructions [here](../deployment-instructions/environment-installation.md#common-resources).
+
+## Tear down
+
+To completely clean up the OpenG2P-Commons installation, follow these steps:
+
+1. Uninstall OpenG2P-Commons from Rancher
+   * Go to **Apps → Installed Apps**
+   * Select **OpenG2P-Commons**
+   * Click **Delete**
+2. Manually remove all remaining workloads associated with OpenG2P-Commons, such as Pods, Deployments, StatefulSets, Jobs, and related resources.
+3. Delete secrets created by this chart only
+   * Remove **application/user secrets** created by OpenG2P-Commons
+   * **Do not delete any Keycloak client or Keycloak-related secrets**
+4. Delete Persistent Volume Claims (PVCs)
+   * Identify PVCs created by OpenG2P-Commons
+   * Delete those PVCs
+5. Delete corresponding Persistent Volumes (PVs)
+   * Identify PVs associated with the deleted PVCs
+   * Delete PVs that are in **Released** state
