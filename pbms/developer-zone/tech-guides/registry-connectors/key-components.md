@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Key Components
 
 The `RegistryInterface` defines methods for summary, eligibility and entitlement computation, registry access, and query construction. See the attached Key details of the same are mentioned below

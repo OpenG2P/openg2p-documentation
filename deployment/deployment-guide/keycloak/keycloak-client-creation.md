@@ -1,19 +1,5 @@
 ---
 description: Guide to create a Keycloak OIDC client for authentication in modules
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
 ---
 
 # Keycloak Client Creation

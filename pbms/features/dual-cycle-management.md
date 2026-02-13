@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Dual Cycle Management
 
 PBMS distinguishes between two types of cycles: enrolment cycles and disbursement cycles. Enrolment cycles are periodic drives in which citizens are vetted and added as beneficiaries to a program. These cycles typically occur less frequently but over longer periods. Disbursement cycles, in contrast, are shorter in duration and more frequent, often aligned with monthly or quarterly schedules. During disbursement cycles, actual benefits—whether goods, services, or cash—are delivered to beneficiaries. PBMS also enables pruning of enrolment lists during disbursement cycles through the application of disbursement rules, which allows programs to adapt to budgetary and logistical constraints.

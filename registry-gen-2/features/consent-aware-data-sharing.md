@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Consent-Aware data sharing
 
 The Base Registry supports a consent governance model for data sharing, implemented through a dedicated **Consent Management microservice** rather than embedded in the registry core. When personal data is requested by an external partner, the registry does not evaluate consent locally; instead, it delegates all consent verification to the Consent Management service. Consent decisions are tied to the data subject identity, the requesting partner system, the specific data categories being shared, and an expiry period.

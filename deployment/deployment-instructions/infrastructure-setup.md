@@ -128,14 +128,17 @@ After installing WireGuard on the cluster and configuring it on your local machi
     ```bash
     ./install-nfs-server.sh
     ```
-2.  For every sandbox/namespace, create a new folder in `/srv/nfs` folder on the server node. Suggested folder structure: `/srv/nfs/<cluster name>`. \
+2.  Create a new folder in `/srv/nfs` folder on the server node. Suggested folder structure: `/srv/nfs/<cluster name>`. \
     Example:
 
     ```bash
-    sudo mkdir /srv/nfs/global
+    sudo mkdir /srv/nfs/openg2p
     ```
+3.  Run this command to provide full access for `nfs` folder.&#x20;
 
-    Run this command to provide full accces for `nfs` folder `sudo chmod -R 777 /srv/nfs`&#x20;
+    ```bash
+    sudo chmod -R 777 /srv/nfs
+    ```
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 &#x20;<mark style="color:green;">Make sure the NFS server is running and the setup is completed on server node.</mark>
@@ -323,3 +326,8 @@ helm install rancher-logging rancher-charts/rancher-logging   --version 102.0.0+
 {% hint style="success" %}
 This completes the OpenG2P cluster setup and you can now proceed with installing the OpenG2P modules.
 {% endhint %}
+
+#### 16. Set up ClamAV virus scanning for openg2p
+
+Install ClamAV and clammit for antivirus protection and refer to the document [here](https://docs.openg2p.org/deployment/deployment-guide/set-up-clamav-virus-scanning-for-incoming-traffic).
+

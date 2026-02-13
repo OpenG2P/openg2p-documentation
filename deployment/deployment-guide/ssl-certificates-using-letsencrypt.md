@@ -101,10 +101,17 @@ Steps for Using Let’s Encrypt with the AWS Route 53 Plugin
     certbot certonly --dns-route53 -d openg2p.sandbox.org -d '*.openg2p.sandbox.org'
     ```
 
-    \
-    Note
+{% hint style="info" %}
+If you're running an Nginx server on the same node, you can add a post-hook to restart it after a certificate renewal. Simply create the file `/etc/letsencrypt/renewal-hook/post/nginx-restart.sh` with the command to restart Nginx. And for more info on certbot auto-renewal refer [here](https://eff-certbot.readthedocs.io/en/stable/using.html#automated-renewals)
+{% endhint %}
 
-    If you're running an Nginx server on the same node, you can add a post-hook to restart it after a certificate renewal. Simply create the file `/etc/letsencrypt/renewal-hook/post/nginx-restart.sh` with the command to restart Nginx. And for more info on certbot auto-renewal refer [here](https://eff-certbot.readthedocs.io/en/stable/using.html#automated-renewals)
+## Why we use a sandbox-specific domain certificate
+
+{% hint style="info" %}
+In certain cases, we issue a certificate for a sandbox-specific domain (for example, `rancher.openg2p.org`) instead of using a single wildcard certificate for `*.openg2p.org`. This is because standard wildcard certificates only cover one subdomain level. A certificate for `*.openg2p.org` will secure `rancher.openg2p.org` or `portal.openg2p.org`, but it **cannot secure subdomains beyond a single level** (e.g., `app.rancher.openg2p.org`).\
+\
+Using a sandbox-specific certificate ensures proper SSL coverage for these domains while maintaining security and compliance.
+{% endhint %}
 
 
 

@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Unified Registry model
 
 The Base Registry implements a generic and extensible registry model that can be instantiated to represent any domain entity such as farmers, workers, students, land records or institutions. The core registry architecture provides a canonical structure for maintaining identity, related attributes, and relationships between registry records. Each registry instance inherits the base behaviors while retaining the ability to define custom domain fields, validation logic, and workflow rules. The approach ensures that the registry product remains consistent at its core, regardless of the domain manifestation, while enabling a low-code extensibility model through metadata-driven configuration rather than hard-coded logic.

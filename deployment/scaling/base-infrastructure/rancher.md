@@ -38,7 +38,7 @@ For high availability and resilience of this cluster, read the [production guide
 
     ```bash
     RANCHER_HOSTNAME=rancher.openg2p.org \
-        ./install.sh --version 2.9.3
+        ./install.sh --version 2.12.3
     ```
 * Login to Rancher using the above hostname and bootstrap the admin user according to the instructions. After successfully logging in to Rancher as admin, save the new admin user password in `local` cluster, in `cattle-system` namespace, under `rancher-secret`, with key `adminPassword`.
 * Change [Rancher Agent TLS Mode](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-references/tls-settings#agent-tls-enforcement) to `system-store`.
@@ -60,6 +60,7 @@ For high availability and resilience of this cluster, read the [production guide
 * Under `master` realm -> `Realm Settings` -> `Login` Tab -> `Email Settings` , enable `Email as username`.
 * Proceed with the rest of the steps given in the [Rancher Auth - Keycloak (SAML)](https://docs.ranchermanager.rancher.io/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/authentication-config/configure-keycloak-saml) guide:
   * Create a SAML client on Keycloak with the default config mentioned in the above guide.
+  * For the Rancher client you created, go to `Client Scopes → rancher-dedicated`, and add all predefined mappers to it.
   * In Keycloak client settings, disable `Client Signature Required` , under `Keys` tab.
   * Configure Auth Provider under Rancher with the default config mentioned in the above guide.
 * Ignore any error that says `An error occurred logging in: An error occurred logging in. Please try again.`. The integration is successful as long as it shows `Login with Keycloak` button on the login page.

@@ -48,7 +48,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   * SSH into the node.  Execute all the below commands as root user.
   *   Create the rke2 config directory
 
-      ```
+      ```bash
       mkdir -p /etc/rancher/rke2
       ```
   * Create a `config.yaml` file in the above directory, using one of the following config file templates:
@@ -59,7 +59,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   *   Run the following to set the RKE2 version after referring to [RKE2 Releases](https://github.com/rancher/rke2/releases).
 
       ```bash
-      export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
+      export INSTALL_RKE2_VERSION="v1.33.6+rke2r1"
       ```
   *   Run this to download rke2.
 
@@ -107,22 +107,23 @@ In StorageClass, when the `reclaimPolicy` is set to `Retain`it implies that when
 When `reclaimPolicy` is set to `Delete,`if a PVC is deleted, both the PV and the relevant folder in the NFS get deleted.
 {% endhint %}
 
-## Longhorn  (optional)
-
-This installation only applies if Longhorn is used as storage. This may be skipped if you are using NFS.
-
-[Longhorn Install as a Rancher App](https://longhorn.io/docs/1.3.2/deploy/install/install-with-rancher/)
-
 ## Istio
 
 Refer guide [here](istio.md).
 
 ## Cluster import to Rancher
 
+{% hint style="info" %}
+This section is only for OpenG2P cluster
+{% endhint %}
+
 This step assumes that a [Rancher server ](../../rancher.md)has already been set up and operational.
 
-* Navigate to the _Cluster Management_ section in Rancher
-* Click on _Import Existing Cluster_. Follow the steps to import the new OpenG2P cluster
+* Follow the steps to import the new OpenG2P cluster.
+  * Navigate to the Cluster Management section in Rancher.&#x20;
+  * Click on `Import Existing Cluster`. And select `Generic` .
+  * Enter the name of the cluster you want to import, leave all other settings as default, and click `Create`.
+  * You will receive a command to run on your OpenG2P cluster (where you have `kubectl` access). Running this command will import your OpenG2P cluster into the Rancher cluster.
 * After importing, download `kubeconfig` file for the new cluster from rancher (top right on the main page), to access the cluster through kubectl from the user's machine (client), without SSH
 
 ## Cluster access to users

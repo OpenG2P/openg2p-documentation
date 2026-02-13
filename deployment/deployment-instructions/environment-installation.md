@@ -57,6 +57,11 @@ Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin
 
 * For Social Registry to be able to access Keymanager APIs, create a realm role in Keycloak with the name "KEYMANAGER\_ADMIN" and assign this as a service account role to the Social Registry Keycloak client.
 
+{% hint style="info" %}
+By default, the Superset username and password are **admin / admin**. To change this, run the following command inside the superset pod.\
+`superset fab reset-password --username admin --password <NEW_PASSWORD>`
+{% endhint %}
+
 ## Modules
 
 Install the modules and other utility apps individually using their respective instructions:

@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Metadata driven extensibility
 
 The registry platform is designed for low-code extensibility, enabling new registry types, registers, operations, data mappings, and partner integrations to be added through configuration rather than changes to the core codebase. The Base Registry provides a minimalist and stable runtime, while each domain implementation — such as an Agriculture Registry with Farmer, Crop, Land, and Vehicle Registers — defines only its extensions: ORM models, Pydantic schemas, business validation logic, and JSON UI schemas.

@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Developer Install
 
 The guide provides steps to install the OpenG2P PBMS package on a laptop/desktop running on Linux system. Developers can run the entire PBMS (including Odoo and Background Tasks) on their local machines.&#x20;

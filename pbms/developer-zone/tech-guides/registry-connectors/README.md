@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Registry Connector
 
 This guide provides details on implementing the [Registry Connectors Interface](https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions) for integration with PBMS Background Tasks.

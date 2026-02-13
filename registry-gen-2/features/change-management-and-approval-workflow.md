@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Change management & Approval workflow
 
 All data modifications in the registry are processed through a centrally managed change request workflow. The Base Registry enforces that no record, including newly created records, can be introduced or modified without undergoing an approval process. When a user or system initiates a change, a new change request is created along with supporting evidence. The change request follows a structured workflow that includes domain validations, deduplication, manual verifications, and manual approval before the changes are committed to the registry.

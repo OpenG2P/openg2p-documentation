@@ -577,6 +577,7 @@
       * [PostgreSQL Database not Starting due to Replication Checkpoint Error](deployment/deployment-guide/troubleshooting/postgresql-database-not-starting-due-to-replication-checkpoint-error..md)
       * [No Space Left on the Device Warning](deployment/deployment-guide/troubleshooting/no-space-left-on-the-device-warning.md)
       * [RKE2 Kubernetes Cluster not Starting due to ETCD Quorum Loss](deployment/deployment-guide/troubleshooting-section/rke2-kubernetes-cluster-not-starting-due-to-etcd-quorum-loss.md)
+      * [Performance Issues in Environments](deployment/deployment-guide/troubleshooting-section/performance-issues-in-environments.md)
     * [Restart Deployment or StatefulSets to Redistribute Pods across Nodes](deployment/deployment-guide/redistribute-pods-across-nodes-by-restarting-deployment-statefulsets.md)
     * [Rerun Jobs in Kubernetes Cluster](deployment/deployment-guide/rerun-jobs-in-kubernetes-cluster.md)
     * [Finding URLs in the System](deployment/deployment-guide/finding-urls-in-the-system.md)

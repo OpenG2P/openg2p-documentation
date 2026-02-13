@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Eligibility Summary View
 
 Eligibility metrics are primarily derived from the `registry_summary` section of the API response. This section contains registry-type specific statistics (e.g., for a farmer registry: land holding mean, quartiles; or for a student registry: enrollment counts).

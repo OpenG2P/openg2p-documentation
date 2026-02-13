@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Event Publishing and WebSub Integration
 
 The Base Registry includes event publishing support using a WebSub-compatible mechanism. Whenever a registry changes state, the system generates and publishes a notification to subscribers who have registered interest in that registry type or event type. Topics can be aligned with interoperability standards, enabling external systems to receive updates in standardized payload formats.

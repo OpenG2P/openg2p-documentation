@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Audit-ability & Trace-ability
 
 The Base Registry provides end-to-end traceability for all data lifecycle events. Every change request records who initiated the change, who verified the supporting evidence, and who approved the change for execution. The registry maintains immutable logs for each step of the workflow, including timestamps and digital signatures when applicable. This makes the registry suitable for systems that require legal or regulatory accountability, such as land registries, civil registers, and entitlement systems.

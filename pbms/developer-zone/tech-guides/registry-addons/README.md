@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Registry Addons
 
 This guide provides details on implementing the [Registry Addon Odoo Modules](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions) for integration with PBMS Odoo.

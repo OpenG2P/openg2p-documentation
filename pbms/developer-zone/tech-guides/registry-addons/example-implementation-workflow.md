@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Example Implementation Workflow
 
 Before starting the implementation of the custom registry add-ons, we need to ensure the design and implementation of custom registry views within the registry database based on some set standards. These views will serve as the communication interface with PBMS -  enabling rule configuration, reference lookups during calculations, and other integrations. This design will ensure that both PBMS and Background Task modules have standardized and consistent access to the necessary registry attributes, forming a unified knowledge base for PBMS functions across the registry.

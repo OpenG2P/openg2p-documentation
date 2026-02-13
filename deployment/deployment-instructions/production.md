@@ -51,6 +51,8 @@ In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) Post
 
 If you are moving your PostgreSQL DB from Docker to standalone machine refer to [Guide for migrating existing PostgreSQL docker to Standalone Instance](../deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
 
+If you want to configure strong backup tool for standalone PostgreSQL means refer to this [document](https://docs.openg2p.org/deployment/deployment-guide/implement-backup-with-barman).
+
 ## Standalone MinIO installation
 
 In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).

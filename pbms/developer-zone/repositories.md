@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Repositories
 
 <table><thead><tr><th width="315.9024658203125">Repository</th><th>Description</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-odoo">openg2p-pbms-odoo</a></td><td>This repository is the main PBMS application based on Odoo. This application fulfils all the user actions such as benefit program definition, benefit codes definition, geographies, service providers, rules and cycles, creation of beneficiary lists. </td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-odoo-extensions">openg2p-pbms-odoo-extensions</a></td><td>This repository houses all the extensibility and customisable features of PBMS viz. target registry names, target registry models, the eligibility and entitlement summary views and UI theme. These extensibility features are bundled as Odoo modules.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-bg-tasks">openg2p-pbms-bg-tasks</a></td><td>This contains the two runtimes - Celery Beat Producers and Celery Worker Tasks. These two runtimes together do all the asynchronous processing for PBMS.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions">openg2p-pbms-bg-tasks-extensions</a></td><td>The extensibility modules for the bg-tasks, viz. registry models and the apis for eligibility and entitlement summary views.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-docker">openg2p-pbms-docker</a></td><td>The docker creation scripts that create the docker runtimes for pbms-odoo, bg-tasks (celery beat and celery workers)</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-pbms-gen2-deployment">openg2p-pbms-gen2-deployment</a></td><td>The helm charts, templates and values or deploying PBMS-Odoo and BG-Tasks (Celery Beat and Celery Workers) in a K8S cluster.</td></tr></tbody></table>

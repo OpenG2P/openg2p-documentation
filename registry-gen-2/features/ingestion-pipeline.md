@@ -1,20 +1,3 @@
----
-layout:
-  width: default
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
-  metadata:
-    visible: true
----
-
 # Ingestion pipeline
 
 The Base Registry supports ingesting data from external systems through a fully **asynchronous ingestion pipeline.** Partner systems may send registry-related events in different formats or interoperable standards. Incoming messages are validated for signature authenticity, stored as raw events without transformation, and then processed in stages using Celery workers. The pipeline separates raw persistence, semantic interpretation, and registry update operations, allowing each stage to run independently and at scale.
