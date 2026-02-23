@@ -28,4 +28,19 @@ This repository contains the Celery <mark style="color:$success;">**runtimes**</
 
 This repository, packaged as a <mark style="color:$success;">**library**</mark>, contains the core registry codebase. It contains the ORM Models, Pydantic schemas and the core business logic of the registry platform. This library need does not require a separate installation. All the runtimes package this as a library within themselves.
 
-openg2p
+### openg2p-registry-extensions
+
+This is the repository that contains the domain extensions created by OpenG2P. Since the base registry itself is devoid of any functional domain, OpenG2P has created certain domain extensions which may be treated as reference implentations. For a given domain, this repository will contain the ORM Models, the Pydantic Schemas, any custom business logic for the domain, and Database scripts for UI JSON Schemas. There will be  separate folders for different domains. The python code blocks need to be packaged as libraries, while the database scripts need to be executed in the database, to create the relevant records.
+
+### openg2p-registry-standards
+
+This repository contains JSON transformation templates for data sharing standards such as DCI. The templates here are used to transform domain models into industry standard payloads for outward data sharing and vice versa for incoming data feeds. OpenG2P Registry currently supports the DCI standards. As and when, other standards are adopted, these will also appear here, in this repository.
+
+### openg2p-registry-docker
+
+This repository contains the Docker creation scripts and configurations for creating Docker images for all the runtimes, viz the API runtimes and Celery runtimes.
+
+### openg2p-registry-deployment
+
+This repository contains the Helm charts for deploying OpenG2P Registry and all the necessary dependent services sucha as MinIO, Postgres, Keycloak, MOSIP KeyManager etc.
+
