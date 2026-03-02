@@ -438,6 +438,7 @@
   * [Releases](g2p-bridge/releases/README.md)
     * [1.0.2](g2p-bridge/releases/1.0.2.md)
 * [Registry - Gen 2](registry-gen-2/README.md)
+  * [Concepts](registry-gen-2/concepts.md)
   * [Features](registry-gen-2/features/README.md)
     * [Unified Registry model](registry-gen-2/features/unified-registry-model.md)
     * [Change management & Approval workflow](registry-gen-2/features/change-management-and-approval-workflow.md)
