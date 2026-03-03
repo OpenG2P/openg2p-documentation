@@ -98,9 +98,11 @@ This is handled by the Browser Engine
 
 **Step - 6 (Exchange the Authorization\_Code for Tokens)**
 
-**Step - 7 (Validate ID Token and create Authorization Context)**
+**Step - 7 (Return the Tokens)**
 
-**Step - 8 (Return Success Response to Browser)**
+**Step - 8 (Validate ID Token and create Authorization Context)**
+
+**Step - 9 (Return Success Response to Browser)**
 
 
 
