@@ -70,11 +70,12 @@ To support this, the registry backend must provide an API **(/registrant\_authen
 <pre data-full-width="true"><code><strong>AuthTransaction {
 </strong>state: "af0ifjsldkj", ## key value for retrieving the object
 codeVerifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk", ## IdP uses, to validate ownership of Authorization Code
-nonce: "random-opaque-value", ## Registry callback uses to prevent replay of Tokens
+nonce: "random-opaque-value", ## Registry uses to prevent replay of Tokens
 clientId: "FARMER_REGISTRY_DOA_SOME_PROVINCE",
 redirectUri: "https://farmer_registry.doasp.org/registrant_authentication/callback",
 createdAt: "2026-03-03T06:20:00Z",
-expiresAt: "2026-03-03T06:25:00Z"
+expiresAt: "2026-03-03T06:25:00Z",
+registrantId: "124a-2utz-1ute-1jdt"
 }
 </code></pre>
 
@@ -144,6 +145,28 @@ grant_type=authorization_code
 The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
 
 **Step - 8 (Validate ID Token and create Authorization Context)**
+
+1. Validate the Signature of the Token
+2.  The Public Keys of the IdP are available at
+
+    ```
+    https://idp.example.org/.well-known/jwks.json
+    ```
+
+    * Read `kid` from ID token header
+    * Select matching key from JWKS
+    * Verify the signature using the declared algorithm (`alg`)
+3.  Validate the following claims
+
+    | Claim   | Validation                                                                      |
+    | ------- | ------------------------------------------------------------------------------- |
+    | `iss`   | Must match IdP issuer                                                           |
+    | `aud`   | Must contain registry client\_id - FARMER\_REGISTRY\_DOA\_SOME\_PROVINCE        |
+    | `exp`   | Must be in the future                                                           |
+    | `iat`   | Must be reasonable                                                              |
+    | `nbf`   | (If present) must be ≤ now                                                      |
+    | `nonce` | Must match stored nonce (auth\_transaction.nonce)                               |
+    | `sub`   | Must be present and the value should match the auth\_transaction.registrant\_id |
 
 
 
