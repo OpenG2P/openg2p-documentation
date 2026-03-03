@@ -483,6 +483,7 @@
       * [UI/UX wireframes](registry-gen-2/design/detailed-design-notes/ui-ux-wireframes.md)
       * [UI design](registry-gen-2/design/detailed-design-notes/ui-design.md)
       * [UI engineering / design](registry-gen-2/design/detailed-design-notes/ui-engineering-design.md)
+      * [Registrant Authentication - OIDC Widget](registry-gen-2/design/detailed-design-notes/registrant-authentication-oidc-widget.md)
   * [Deployment](registry-gen-2/deployment.md)
   * [Developer Zone](registry-gen-2/developer-zone/README.md)
     * [Registry UI Widget Library](registry-gen-2/developer-zone/registry-ui-widget-library.md)
