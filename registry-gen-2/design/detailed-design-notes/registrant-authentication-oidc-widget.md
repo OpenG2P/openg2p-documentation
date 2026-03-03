@@ -27,7 +27,7 @@ layout:
 GET https://idp.example.org/authorize
 ?response_type=code
 &client_id=FARMER_REGISTRY_DOA_SOME_PROVINCE
-&redirect_uri=https://farmer_registry.doasp.org/oidc/callback
+&redirect_uri=https://farmer_registry.doasp.org/registrant_authentication/callback
 &scope=openid profile
 &state=af0ifjsldkj
 &code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
@@ -68,11 +68,11 @@ To support this, the registry backend must provide an API **(/registrant\_authen
 9. To support this functionality, the API - **start\_oidc\_transaction** will store the following **Auth\_Trasaction** object in REDIS. This object will be addressed (retrievable) by using the **STATE** value as Ke&#x79;**.**
 
 <pre data-full-width="true"><code><strong>AuthTransaction {
-</strong>state: "random-opaque-value", ## key value for retrieving the object
-codeVerifier: "high-entropy-secret", ## IdP uses, to validate ownership of Authorization Code
+</strong>state: "af0ifjsldkj", ## key value for retrieving the object
+codeVerifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk", ## IdP uses, to validate ownership of Authorization Code
 nonce: "random-opaque-value", ## Registry callback uses to prevent replay of Tokens
 clientId: "FARMER_REGISTRY_DOA_SOME_PROVINCE",
-redirectUri: "https://farmer_registry.doasp.org/oidc/callback",
+redirectUri: "https://farmer_registry.doasp.org/registrant_authentication/callback",
 createdAt: "2026-03-03T06:20:00Z",
 expiresAt: "2026-03-03T06:25:00Z"
 }
@@ -98,11 +98,58 @@ This is handled by the Browser Engine
 
 **Step - 6 (Exchange the Authorization\_Code for Tokens)**
 
+This API is implemented by the Registry. This is the API that is specified in the original request as "redirect\_uri" — https://farmer\_registry.doasp.org/registrant\_authentication/callback
+
+In this API, the Registry will receive the "Authorization\_Code" and the "State" as URL parameters
+
+```
+https://registry.example.org/oidc/callback
+?code=SplxlOBeZQQYbYS6WxSbIA
+&state=af0ifjsldkj
+```
+
+1. Retrieve the Auth\_Transaction using the state
+2. Validate existence of State
+3. Validate expiry time of the Transaction
+4. Use Code\_Verifier and call the IdP to exchange the Authorization\_Code for Token
+5. This is a POST request (Server to Server)
+
+**Endpoint**
+
+```
+https://idp.example.org/oauth2/token
+```
+
+**HTTP Request**
+
+```
+POST /oauth2/token HTTP/1.1
+Host: idp.example.org
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic cmVnaXN0cnktY2xpZW50OnMzY3IzdA==
+```
+
+**HTTP Request Body**
+
+```
+grant_type=authorization_code
+&code=SplxlOBeZQQYbYS6WxSbIA
+&redirect_uri=https://farmer_registry.doasp.org/registrant_authentication/callback
+&client_id=FARMER_REGISTRY_DOA_SOME_PROVINCE
+&code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+```
+
 **Step - 7 (Return the Tokens)**
+
+The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
 
 **Step - 8 (Validate ID Token and create Authorization Context)**
 
+
+
 **Step - 9 (Return Success Response to Browser)**
+
+
 
 
 
