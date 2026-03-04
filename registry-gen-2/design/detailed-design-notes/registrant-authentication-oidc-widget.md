@@ -144,7 +144,7 @@ grant_type=authorization_code
 
 The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
 
-**Step - 8 (Validate ID Token and create Authorization Context)**
+**Step - 8 (Validate ID Token and create "Identity-Verification" Context)**
 
 1. Validate the Signature of the Token
 2.  The Public Keys of the IdP are available at
@@ -167,8 +167,23 @@ The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
     | `nbf`   | (If present) must be ≤ now                                                      |
     | `nonce` | Must match stored nonce (auth\_transaction.nonce)                               |
     | `sub`   | Must be present and the value should match the auth\_transaction.registrant\_id |
+4. Create an "Identity-Verification" context
 
+```
+{"identity-verificationId": "VER-2026-00123",
+"registrantId": "REG-12345",
+"idp": "idp.example.org",
+"subject": "00u123abcXYZ",
+"verifiedAt": "2026-03-03T08:10:00Z",
+"validUntil": "2027-03-03T08:10:00Z",
+"assuranceLevel": "strong",
+"verificationMethod": "oidc",
+"claimsVerified": { "name": true, "date_of_birth": true, "phone": true }
+}
+```
 
+5. The Register-Record should have a status = "Identity-verified" - BOOLEAN - that should be marked TRUE along with the latest "identity-verificationId"
+6. The Identity-Verification Context should be persisted in another table - which has Identity-VerificationId as the Primary Key
 
 **Step - 9 (Return Success Response to Browser)**
 
