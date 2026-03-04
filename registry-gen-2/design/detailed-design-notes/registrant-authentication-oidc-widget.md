@@ -25,7 +25,9 @@ layout:
 
 The Widget is not the component that is the true owner of the authentication-transaction. The true ownership, instead lies with the Registry Server side.&#x20;
 
-Step-2 - The API receives this call and starts the Authentication Transaction. It creates an Auth-Transaction object.&#x20;
+**Step-2 - Start Auth\_Transaction API**
+
+The API receives this call and starts the Authentication Transaction. It creates an Auth-Transaction object.&#x20;
 
 To create this Auth-Transaction object, the server side relies on some configurations (configuration tables) with values that can be tweaked to suit the implementation specifics.
 
@@ -57,7 +59,7 @@ To create this Auth-Transaction object, the server side relies on some configura
    2. The API will store this NONCE
    3. In Step-8, when the Registry receives the token (registry exchanges the authorization\_code for tokens), the registry will unpack the NONCE and validate this NONCE value
    4. This NONCE validation, ensures that a TOKEN is bound to the original STATE (mentioned in Point 5)
-9. To support this functionality, the API - **start\_oidc\_transaction** will store the following **Auth\_Trasaction** object in REDIS. This object will be addressed (retrievable) by using the **STATE** value as Ke&#x79;**.**
+9. To support this functionality, the API - **start\_authentication\_transaction** will store the following **Auth\_Transaction** object in REDIS. This object will be addressed (retrievable) by using the **STATE** value as Ke&#x79;**.**
 
 <pre data-full-width="true"><code><strong>AuthTransaction {
 </strong>state: "af0ifjsldkj", ## key value for retrieving the object
