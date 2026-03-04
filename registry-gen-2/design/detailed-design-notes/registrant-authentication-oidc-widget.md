@@ -21,21 +21,13 @@ layout:
 
 <figure><img src="../../../.gitbook/assets/OIDC Widget for. Registrant Authentication (2).jpg" alt=""><figcaption></figcaption></figure>
 
-**Step-1 (302 Redirect from OIDC Widget to IdP Authorization Endpoint)**
+**Step-1 - Widget calls Registry API — /registrant-authentication/start-authentication-transaction**
 
-```
-GET https://idp.example.org/authorize
-?response_type=code
-&client_id=FARMER_REGISTRY_DOA_SOME_PROVINCE
-&redirect_uri=https://farmer_registry.doasp.org/registrant_authentication/callback
-&scope=openid profile
-&state=af0ifjsldkj
-&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
-&code_challenge_method=S256
-&nonce=n-0S6_WzA2Mj
-```
+The Widget is not the component that is the true owner of the authentication-transaction. The true ownership, instead lies with the Registry Server side.&#x20;
 
-To support this, the registry backend must provide an API **(/registrant\_authentication/start\_oidc\_transaction)** to the OIDC UI Widget.
+Step-2 - The API receives this call and starts the Authentication Transaction. It creates an Auth-Transaction object.&#x20;
+
+To create this Auth-Transaction object, the server side relies on some configurations (configuration tables) with values that can be tweaked to suit the implementation specifics.
 
 1. response\_type = code (tells that the exchange is based on an Authorization Code and not tokens) - This can be hardcoded in the Widget
 2. client\_id = FARMER\_REGISTRY\_DOA\_SOME\_PROVINCE
@@ -79,25 +71,36 @@ registrantId: "124a-2utz-1ute-1jdt"
 }
 </code></pre>
 
+**Step-3 (302 Redirect from OIDC Widget to IdP Authorization Endpoint)**
 
+<pre><code>GET https://idp.example.org/authorize
+<strong>?response_type=code
+</strong>&#x26;client_id=FARMER_REGISTRY_DOA_SOME_PROVINCE
+&#x26;redirect_uri=https://farmer_registry.doasp.org/registrant_authentication/callback
+&#x26;scope=openid profile
+&#x26;state=af0ifjsldkj
+&#x26;code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+&#x26;code_challenge_method=S256
+&#x26;nonce=n-0S6_WzA2Mj
+</code></pre>
 
-**Step - 2 (Navigate to IdP Authorization endpoint)**
+**Step - 4 (Navigate to IdP Authorization endpoint)**
 
 This is handled by the Browser Engine
 
-**Step - 3 (Authenticate Registrant)**
+**Step - 5 (Authenticate Registrant)**
 
 This is handled by the IdP depending on how the ID Authentication mechanism has been configured.
 
-**Step - 4 (Redirect to redirect\_uri)**
+**Step - 6 (Redirect to redirect\_uri)**
 
 This is handled by the IdP, once it establishes the result of Authentication
 
-**Step - 5 (Handle the redirect into redirect\_uri)**
+**Step - 7 (Handle the redirect into redirect\_uri)**
 
 This is handled by the Browser Engine
 
-**Step - 6 (Exchange the Authorization\_Code for Tokens)**
+**Step - 8 (Exchange the Authorization\_Code for Tokens)**
 
 This API is implemented by the Registry. This is the API that is specified in the original request as "redirect\_uri" — https://farmer\_registry.doasp.org/registrant\_authentication/callback
 
@@ -140,11 +143,11 @@ grant_type=authorization_code
 &code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
 ```
 
-**Step - 7 (Return the Tokens)**
+**Step - 9 (Return the Tokens)**
 
 The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
 
-**Step - 8 (Validate ID Token and create "Identity-Verification" Context)**
+**Step - 10 (Validate ID Token and create "Identity-Verification" Context)**
 
 1. Validate the Signature of the Token
 2.  The Public Keys of the IdP are available at
@@ -185,7 +188,7 @@ The IdP validates the code\_verifier (using SHA-256) and returns the Tokens.
 5. The Register-Record should have a status = "Identity-verified" - BOOLEAN - that should be marked TRUE along with the latest "identity-verificationId"
 6. The Identity-Verification Context should be persisted in another table - which has Identity-VerificationId as the Primary Key
 
-**Step - 9 (Return Success Response to Browser)**
+**Step - 11 (Return Success Response to Browser)**
 
 
 
