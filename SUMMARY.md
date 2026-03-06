@@ -552,7 +552,7 @@
   * [OpenG2P - IUDX](data-share/openg2p-iudx.md)
 * [Deployment](deployment/README.md)
   * [Concepts](deployment/concepts/README.md)
-    * [OpenG2P Deployment Model](deployment/concepts/openg2p-deployment-model.md)
+    * [OpenG2P Deployment Architecture](deployment/concepts/openg2p-deployment-model.md)
     * [OpenG2P Commons Helm Chart](deployment/concepts/openg2p-commons-helm-chart.md)
   * [Resource Requirements](deployment/resource-requirements.md)
   * [Deployment Instructions](deployment/deployment-instructions/README.md)

@@ -1,16 +1,28 @@
-# OpenG2P Deployment Model
+---
+description: Complete information and guide on deployment of OpenG2P components
+---
 
-OpenG2P’s **deployment model** offers a **production-grade, Kubernetes-based infrastructure** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, and Demo sandboxes—within a single organisational setup, enabling seamless management across the entire software lifecycle. &#x20;
+# OpenG2P Deployment Architecture
 
-The OpenG2P deployment model is inspired by [V4 deployment architecture](../scaling/v4-deployment-architecture.md) developed by OpenG2P team. Considering OpenG2P's use cases, resource availability with departments of countries, and ease of deployment,  we have adapted the V4 architure to be deployed in a "single box"  - the entire installation in one sufficiently sized virtual machine (VM) or bare metal.
+OpenG2P’s offers a **production-grade, Kubernetes-based deployment architecture** designed to deliver secure, scalable, and reliable deployments of OpenG2P modules. Built on a robust Kubernetes orchestration framework, it supports multiple isolated environments—such as Development, QA, Demo, Staging, Pilot and Production —within a single organisational setup, enabling seamless management across the entire software lifecycle. &#x20;
 
 This deployment model ensures **secure access for internal development teams** and has been rigorously tested, earning an [**A+ rating in third-party penetration testing**](../../privacy-and-security/security-audits/security-audit-2025-march.md), underscoring its strong security posture. By leveraging the same deployment model for development as well as production, it facilitates an **easy and efficient transition from development to production environments**, significantly reducing complexity and risks.
 
-For System Integrators, the OpenG2P deployment model represents a substantial time and resource saver by eliminating the need to build production-grade deployment setups from scratch. This turnkey solution accelerates implementation while maintaining enterprise-level security and operational excellence, making it the ideal foundation for organisations aiming to deploy OpenG2P at scale with confidence.
+For System implementors, the OpenG2P deployment package represents a substantial time and resource saver by eliminating the need to build production-grade deployment setups from scratch. This turnkey solution accelerates implementation while maintaining enterprise-level security and operational excellence, making it the ideal foundation for organisations aiming to deploy OpenG2P at scale with confidence.
 
 The deployment is offered as a set of instructions, scripts, [Helm charts](../../releases/helm-charts.md), utilities and guidelines.
 
-The deployment is **cloud agnostic** - it does not use cloud specific components.&#x20;
+The deployment is **cloud agnostic** - it does not use cloud specific components - completely suitable for on-prem setups.
+
+## Deployment architectures
+
+Depening on availability of compute resources and scale of your deploment we recommend the following deployment architectures:
+
+<table><thead><tr><th width="140.9140625">Architecture</th><th>Descripion</th><th>Purpose</th></tr></thead><tbody><tr><td>Single-node </td><td>All components including Kubernetes, Wireguard, Nginx, NFS run on the same machine.  Multiple environments run in separate Kubernetes namespaces</td><td>Well suited for quickly bring up OpenG2P for creating development sandboxes like dev, qa etc.  PostgreSQL runs at Dockers within each namespace.  </td></tr><tr><td>Two-node</td><td>The storage server is separated from the compute server (Kubernetes). PostgreSQL server runs on a separate "storage node" that contains large volumes of SSD storage with high througput disk I/O. The NFS also runs on this node. Thus, there is a separate of concerns between compute and data.</td><td>For pilots and even small scale production setups, specifically where I high uptime is not critical. If systems are predominantly used by administrators and some down time of services and portals is acceptable, then this architecture would be sufficient.</td></tr><tr><td>Multi-node</td><td>Multiple separate nodes for each of Wireguard, Nginx, Kubernetes nodes, NFS, PostgreSQL.</td><td>Full scale production deployment where fail safety is critical — certain services must continue to run without interruptions. Also, when the scale is high in terms of compute requirements. This typically will be the case with registration portals/beneficiary portals that have to be kept up and down time is not acceptable.</td></tr></tbody></table>
+
+{% hint style="warning" %}
+Over and above all these, there is minimally one more node required for backups and running local Git and Docker repositories. Refer to [Resource Requirements](../resource-requirements.md).
+{% endhint %}
 
 <figure><img src="../../.gitbook/assets/openg2p-deployment-model (1).jpg" alt=""><figcaption></figcaption></figure>
 
