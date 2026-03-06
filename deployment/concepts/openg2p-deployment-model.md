@@ -24,17 +24,36 @@ Depening on availability of compute resources and scale of your deploment we rec
 Over and above all these, there is minimally one more node required for backups and running local Git and Docker repositories. Refer to [Resource Requirements](../resource-requirements.md).
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/openg2p-deployment-model (1).jpg" alt=""><figcaption></figcaption></figure>
+## Single-node
 
-## Key concepts
+<figure><img src="../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption></figcaption></figure>
 
-* Each environment like 'qa', 'dev', 'staging', 'production' is installed in a **separate Kubernetes namespace** on the same cluster.
-* Nginx, Wireguard, NFS and Postgres (production) are installed natively on the VM.  Rest of the components are inside the Kubernetes cluster.
-* Access to each environment (namespace) can be controlled via [private access channels](../deployment-guide/private-access-channel.md).
+* Single virtual machine running all services
+* One Kubernetes cluster hosting both Rancher and OpenG2P services
+* Nginx, Wireguard, NFS server running outside the Kubernetes cluster but on the same node
+* Multiple environments like dev, qa, demo etc.  as Kubernetes namespaces
+* Access to each environment (namespace) can be controlled via [private access channels](../deployment-guide/private-access-channel.md). (The node needs multiple network interfaces to support the same).
 * SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
 * Firewall is outside the purview of this deployment.
-* Git repo and Docker Registry are assumed externally hosted (public or private).  In case of production deployments, these should be hosted within private network. &#x20;
-* As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines).&#x20;
+* Git repo and Docker Registry are assumed externally hosted (public or private).  For on-prem hosting you will need more resources to host the same as in [Three-node](openg2p-deployment-model.md#three-node) setup.
+* As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines) as in [Full-scale](openg2p-deployment-model.md#full-scale) setup.
+
+## Three-node
+
+<figure><img src="../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption></figcaption></figure>
+
+* Separation of concerns - storage and reverse proxy on separate nodes
+* PostgreSQL server runs on the Storage Node.&#x20;
+* Only one environment like Pilot or Prod is expected to run on the cluster. _Sharing same PosgreSQL server for multiple envirornments is not recommended. If you would like to do the same, make sure names of all databases are different for different environments._
+* NFS server runs on the storage node
+* Storage node is expected to have larger SSD disks and not very high compute capability, while Compute node must have high compute power and RAM. See [Resource Requirements](../resource-requirements.md).
+* Storage Node can be managed - in terms of access, scale up and backups indendently.
+* Local Git repo and Docker Repositories may be hosted on Storage Node.
+* Access to each environment (namespace) can be controlled via [private access channels](../deployment-guide/private-access-channel.md). (The node needs multiple network interfaces to support the same).
+* SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
+* Firewall is outside the purview of this deployment.
+
+## Full-scale
 
 ## Role of various components
 
