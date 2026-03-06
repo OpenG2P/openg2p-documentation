@@ -1,6 +1,27 @@
-# Registry
+---
+description: Gen 1 Registry by OpenG2P
+noIndex: true
+layout:
+  width: default
+  title:
+    visible: true
+  description:
+    visible: true
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+  tags:
+    visible: true
+---
 
-**OpenG2P Registry** is an independent module that enables the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR  interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country. SR is not a mere database - it is based on principles of a good [functional registry](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/upcoming-daas-cohorts/functional-registries)  offering several features that can result into exponential benefits to government and people via data share, user control, issue of verifiable credentials etc.
+# Social Registry
+
+**OpenG2P Social Registry (SR)** is an independent module that enables the creation of **registries** of individuals and groups of people with demographic data with advanced features that make the SR  interoperable and easily fit into the digital public infrastructure (DPI) infrastructure of a country. SR is not a mere database - it is based on principles of a good [functional registry](https://docs.cdpi.dev/initiatives/dpi-as-a-packaged-solution-daas/upcoming-daas-cohorts/functional-registries)  offering several features that can result into exponential benefits to government and people via data share, user control, issue of verifiable credentials etc.
 
 The registry can host demographic data of both individuals and groups (family/household) and this data is privacy protected.  OpenG2P Registry offers the unique feature of issuing digitally signed credentials - Verifiable Credentials - to the beneficiaries.
 

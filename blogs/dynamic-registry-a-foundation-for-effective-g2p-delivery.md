@@ -59,4 +59,4 @@ A well-designed registry system has the following functionalities:&#x20;
 
 The creation of an effective registry system is crucial for modern governance. By transitioning from traditional databases to integrated registries built on DPI infrastructure, countries can dramatically improve their ability to deliver benefits to citizens efficiently and transparently.
 
-OpenG2P’s Registry module is an open-source, modular, and reusable DPI infrastructure developed specifically to meet these rigorous technical and governance requirements. It is designed to be easily deployed and customised for diverse national contexts. We invite you to explore the [Registry Gen 2 ](../registry-gen-2/)module with advanced features to accelerate your digital G2P programme. <br>
+OpenG2P’s Registry module is an open-source, modular, and reusable DPI infrastructure developed specifically to meet these rigorous technical and governance requirements. It is designed to be easily deployed and customised for diverse national contexts. We invite you to explore the [Registry Gen 2 ](../registry/)module with advanced features to accelerate your digital G2P programme. <br>

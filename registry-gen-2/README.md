@@ -1,2 +1,0 @@
-# Registry - Gen 2
-
