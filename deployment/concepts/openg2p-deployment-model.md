@@ -84,26 +84,13 @@ The deployment utilizes several open source third party components. The concept 
 * More importantly Istio provides comprehensive observability features. We can visualize & monitor service-to-service traffic real-time, with tools like [Kiali](https://istio.io/latest/docs/ops/integrations/kiali/), which would help identify performance bottlenecks and diagnose issues.
 {% endhint %}
 
-## Installation of an environment
+## Base infrastructure
 
-An environment is an insolated setup for a specific purpose like development, testing, staging, production etc.  In OpenG2P's deployment model each environment is a namespace in Kubernetes.  The namespace contains set of common shared modules - [`openg2p-commons`](openg2p-commons-helm-chart.md) - and the modules (Registry, PBMS, SPAR, G2P Bridge) themselves along with any third-party dependency modules.  Access to each environment can be controlled using [private access channels](../deployment-guide/private-access-channel.md) and RBAC of Kubernetes.
+In all the architectures above there is a base infrastructure (comprising of Kubernetes, Nginx, Wireguard, NFS etc) over which specific environments are installed.  Refer to the base infrastructure installation instructions [here](../deployment-instructions/infrastructure-setup.md).
 
-In the previous deployments of modules each module was "self contained" - we would install all associated dependencies (like PostgreSQL, MinIO, OpenSearch, Kafka, Keymanager, etc. ) for a module as a single package, thus enabling a single click deployment for Registry, PBMS, G2P Bridge and SPAR and a clean separation of resources along with easier naming conventions, etc.  This is good to deploy a sandbox; however, in production, we seldom find more than one instance of the Postgres server or MinIO.  Even Kafka being resource-hungry, is preferred to have a single instance used by several services.  Therefore, having a set of **shared common resources**  within an **environment** would not only be closer to a production scenario but also save us resources on our deployment as resources would be shared across the modules.  The new deployment Helm charts offers a common resources layer - installed via "[openg2p-commons](openg2p-commons-helm-chart.md)" Helm Chart, and then each module, like Registry, PBMS etc, will continue to have their Helm packages with dependencies specific to the modules.
+## Environments
 
-The new way of deployment offers a few challenges as databases of several sandboxes and instances of the module reside in the same PostgreSQL server. We must ensure that every database and its users are properly named to avoid any name clashes and allocated sufficient resources to the Postgres server. The tear down of modules also gets complicated as footprints or each module reside in the common components and they need to be removed manually or via scripts.
+An environment is an insolated setup for a specific purpose like development, testing, staging, production etc.  In OpenG2P's deployment model each environment is a namespace in Kubernetes.  The namespace contains set of common shared modules - [`openg2p-commons`](openg2p-commons-helm-chart.md) - and the modules (Registry, PBMS, SPAR, G2P Bridge) themselves along with any third-party dependency modules.  Access to each environment can be controlled using [private access channels](../deployment-guide/private-access-channel.md) and RBAC of Kubernetes.  Only one instance of PostgreSQL server is run per environment which means all  modules use the same PostgreSQL server (Dockerized or external - depending on the choice of installation).
 
-## PostgreSQL
+While the installation can be easily achieved by provided Helm Charts, tear down of the environment involves few manual steps. Refer to tear down section in the deployment documentation for each module.
 
-Postgres is installed using openg2p-commons. In previous deployment model the chart of Postgres would create database for the module along with an admin user of the database. Now the database and user has to be created by each module before installation. [`postgres-ini`](https://github.com/OpenG2P/postgres-init)  Helm Chart has been created for this purpose. This chart must be added to the dependency of the respective module Helm and sufficient time must be given for the module to wait until the database is created. There is[ `wait_for_psql.py` ](https://github.com/OpenG2P/openg2p-packaging/tree/main/packaging/docker-entrypoint.d) in Docker of modules like Registry and PBMS. The timeout there needs to be increased to ensure that enough time is given for the postgres-init to run and create the database
-
-#### Database initialization
-
-#### Work in progress
-
-The work items related to environment depoyment may be tracked here:
-
-{% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-3290" %}
-
-#### Modules
-
-After the openg2p-commons is installed, all the modules - Registry,  PBMS, SPAR, G2P Bridge - are installed using their respective Helm charts.
