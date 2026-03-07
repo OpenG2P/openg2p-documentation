@@ -8,7 +8,7 @@ OpenG2P’s offers a **production-grade, Kubernetes-based deployment architectur
 
 This deployment architecture ensures **secure access for internal development teams** and has been rigorously tested, earning an [**A+ rating in third-party penetration testing**](../../privacy-and-security/security-audits/security-audit-2025-march.md), underscoring its strong security posture. By leveraging the same deployment model for development as well as production, it facilitates an **easy and efficient transition from development to production environments**, significantly reducing complexity and risks.
 
-The deployment is offered as a **package** of instructions, scripts, [Helm charts](../../releases/helm-charts.md), utilities and guidelines. enabling system implementors, to rapidly deploy OpenG2P securely thereby saving time and resources substantially and by eliminating the need to build production-grade deployment setups from scratch.&#x20;
+The deployment is offered as a **package** of instructions, scripts, [Helm charts](../../releases/helm-charts.md), utilities and guidelines. enabling system implementors to rapidly deploy OpenG2P securely thereby saving time and resources substantially and by eliminating the need to build production-grade deployment setups from scratch.&#x20;
 
 The deployment is **cloud agnostic** - it does not use cloud specific components - completely suitable for on-prem setups.
 
@@ -24,7 +24,7 @@ Depening on availability of compute resources and scale of your deploment we rec
 Over and above all these, there is minimally one more node required for backups and running local Git and Docker repositories. Refer to [Resource Requirements](../resource-requirements.md).
 {% endhint %}
 
-## Single-node
+### Single-node
 
 <figure><img src="../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption></figcaption></figure>
 
@@ -38,7 +38,7 @@ Over and above all these, there is minimally one more node required for backups 
 * Git repo and Docker Registry are assumed externally hosted (public or private).  For on-prem hosting you will need more resources to host the same as in [Three-node](openg2p-deployment-model.md#three-node) setup.
 * As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines) as in [Full-scale](openg2p-deployment-model.md#full-scale) setup.
 
-## Three-node
+### Three-node
 
 <figure><img src="../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption></figcaption></figure>
 
@@ -53,7 +53,20 @@ Over and above all these, there is minimally one more node required for backups 
 * SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
 * Firewall is outside the purview of this deployment.
 
-## Full-scale
+### Full-scale
+
+<figure><img src="../../.gitbook/assets/deployment-architecture-v4.jpg" alt=""><figcaption></figcaption></figure>
+
+* For multiple applications, large scale rollout where availability, real-time response is critical
+* The Rancher cluster is separated from OpenG2P cluster as Rancher can manage multiple clusters.
+* Organization wide Keycloak runs on Rancher cluster
+* NFS server is hosted on a separate node
+* PostgreSQL (although not shown in the diagram) is also hosted on separate servers for production deployments
+* Multiple environments can run within OpenG2P cluster (as in single-node and three-node architectures
+* Miniumum number of OpenG2P cluster nodes recommended is 3 nodes — this is for fail safety of Kubrenetes "master" node.
+* More nodes may be added to the cluster as per scaling requirements
+* Wireguard and Load Balancer (Nginx) run on separate nodes for better separation  of concens and management.
+* While OpenG2P departmental apps typically don't need such robust infrastructure, it's essential if you want fast-response, beneficiary-facing websites with zero downtime.
 
 ## Role of various components
 
