@@ -8,12 +8,27 @@ For a full deployment you need the following
 4. [Domain mapping](resource-requirements.md#domain-mapping)
 5. [Certificates](resource-requirements.md#certificates)
 
-### Hardware requirements
+## Hardware requirements
 
-<table><thead><tr><th width="143">Configuration</th><th width="64">vCPU</th><th width="131">RAM</th><th width="122">Storage</th><th>Notes</th></tr></thead><tbody><tr><td>Development/ Sandbox</td><td>16</td><td>64 GB</td><td>128 GB SSD</td><td>For one environment/sandbox. For more number of sandboxes, scale up proportionately.</td></tr><tr><td>Production</td><td>64</td><td>256 GB</td><td>512 GB SSD</td><td>Storage will depend on several factors, so option to expand the volume should be available.</td></tr><tr><td>Production - Backups</td><td></td><td></td><td>512 GB S3/HDD/SDD/Tape</td><td>Only for backups.</td></tr></tbody></table>
+### Single-node
 
-* Each VM should have **minimum 2 network interface cards** for creating [access channels](deployment-guide/private-access-channel.md)
-* **SSD** storage is vital for performance (HDD does not work well).
+| Machine Purpose   | Specs                                                                                | Notes                                                                                                                                                                                                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Compute node      | <ul><li>16 vCPU/64 GB RAM/128 GB SSD</li><li>2 network interface cards<br></li></ul> | This configuration will let you install  2 environments with all OpenG2P modules loaded. For more, expand the virtual machines.  The network interface cards are required to setup the[ private access channel](deployment-guide/private-access-channel.md). |
+| Backup (optional) | <ul><li>2 vCPU/8 GB RAM/256 GB HDD/SDD</li></ul>                                     | Backup machine need not have SSD.                                                                                                                                                                                                                            |
+
+### Three-node
+
+| Machine Purpose    | Specs                                                                          | Notes                                                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Compute node       | <ul><li>16 vCPU/64 GB RAM/128 GB SSD</li></ul>                                 | This configuration will let you install  2 environments with all OpenG2P modules loaded. For more, expand the virtual machines.                                                                                           |
+| Storage node       | <ul><li>8 vCPU/32 GB/256 GB SSD</li></ul>                                      | If PostgreSQL is getting overloaded, the CPU/RAM may have to expanded                                                                                                                                                     |
+| Reverse proxy node | <ul><li>4 vCPU/16 GB/64 GB SSD</li><li>2 network interface cards<br></li></ul> | Its not expected that this machine will get overloaded unless very high traffic applications. The network interface cards are required to setup the[ private access channel](deployment-guide/private-access-channel.md). |
+| Backup (optional)  | <ul><li>2 vCPU/8 GB RAM/512 GB HDD/SDD</li></ul>                               | Backup machine need not have SSD.                                                                                                                                                                                         |
+
+### Full-scale
+
+<table><thead><tr><th width="182.60546875">Machine Purpose</th><th width="117.859375" align="center">Number of machines</th><th>Specs</th><th>Notes</th></tr></thead><tbody><tr><td>OpenG2P cluster Kubernetes nodes</td><td align="center">3</td><td><ul><li>8 vCPU/32 GB RAM/128 GB SSD</li></ul></td><td>Minimum 3 nodes are required for fail safety of Kubernetes 'master' node. All these nodes also act as 'workers'.</td></tr><tr><td>Rancher cluster Kubernetes nodes</td><td align="center">1</td><td><ul><li>8 vCPU/32 GB RAM/128 GB SSD</li></ul></td><td>The number of machines may be increased to 3 if high availablity of Rancher cluster is critically.</td></tr><tr><td>Reverse proxy node</td><td align="center">1</td><td><ul><li>4 vCPU/16 GB/64 GB SSD</li><li>2 network inteface cards</li></ul></td><td>Its not expected that this machine will get overloaded unless very high traffic applications.</td></tr><tr><td>Storage node</td><td align="center">1</td><td><ul><li>16 vCPU/64 GB/512 GB SSD</li></ul></td><td>Both PostgreSQL and NFS </td></tr><tr><td>Backup (optional)</td><td align="center">1</td><td><ul><li>2 vCPU/8 GB RAM/512 GB HDD/SDD</li></ul></td><td>Backup machine need not have SSD.  </td></tr></tbody></table>
 
 ### Domain names&#x20;
 

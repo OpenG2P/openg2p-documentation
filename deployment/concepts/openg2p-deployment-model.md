@@ -60,8 +60,8 @@ Over and above all these, there is minimally one more node required for backups 
 * For multiple applications, large scale rollout where availability, real-time response is critical
 * The Rancher cluster is separated from OpenG2P cluster as Rancher can manage multiple clusters.
 * Organization wide Keycloak runs on Rancher cluster
-* NFS server is hosted on a separate node
-* PostgreSQL (although not shown in the diagram) is also hosted on separate servers for production deployments
+* NFS server is hosted on a separate "Storage node".&#x20;
+* PostgreSQL (although not shown in the diagram) is also hosted on separate servers for production deployments.  The same may be run on the above Storage node. Thus PostgreSQL and NFS may run on the same node if load can be handled.
 * Multiple environments can run within OpenG2P cluster (as in single-node and three-node architectures
 * Miniumum number of OpenG2P cluster nodes recommended is 3 nodes — this is for fail safety of Kubrenetes "master" node.
 * More nodes may be added to the cluster as per scaling requirements
