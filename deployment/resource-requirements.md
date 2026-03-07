@@ -54,3 +54,9 @@ The domain name mapping needs to be done on your domain service provider.  For e
 
 At least one wildcard certificate is required depending on the above domain names used. This can also be generated using Letsencrypt. See guide [here](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
 
+{% hint style="info" %}
+**General Recommendations**
+
+If you would like to get started with OpenG2P with couple of sandboxes like dev/qa go for single-node architecture.  For pilot and production, the three-node architecture is highly recommened. If you decide to use the single-node setup for pilots, make sure you have backups in place - this is very important. In this case you may need to migrate the data from PostgreSQL on Kubernetes to standaone PostgreSQL server. Follow the migration guide give [here](deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
+{% endhint %}
+
