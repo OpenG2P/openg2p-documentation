@@ -16,7 +16,7 @@ In this phase to understand the user case and your requirements in as much detai
 * Describe your use case in detail. How will the data be consumed/used from this registry — who are the consumers. Would you like to share the data with other departments, systems, agencies, applications? -> "use\_case\_info".
 * What is the process of registration? would it be online via portal, or offline via agents collecting information?  -> "offline\_registrations" (true/false)
 * What kind of documents are required for registration? -> "documents"
-* Is this a 'green field' implementation or 'brown field'. Meaning do you already have existing data that you would like to import. In which in what form is the data available - is it Excel sheets, or some database?  Or is this data available via APIs of some of other system.  -> "existing\_data\_import" (true/false)&#x20;
+* Is this a 'green field' implementation or 'brown field'. 'green field' means a fresh data colloection. While 'brown field' implies  you already have existing data that you would like to import. In which in what form is the data available - is it Excel sheets, or some database?  Or is this data available via APIs of some of other system.  -> "existing\_data\_import" (true/false)&#x20;
 * What are the various functionalities you are looking for your use case that must be supported by OpenG2P Registry?
 * Are you ok with having developement sandbox installed on a public cloud? -> "sandbox\_on\_cloud"  (true/false)
 * Will your pilot and production system run on on-prem hardware or you are ok with running the same on cloud?  -> "production\_on\_cloud" (true/false)
