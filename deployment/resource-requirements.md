@@ -2,13 +2,13 @@
 
 For a full deployment you need the following
 
-1. Hardware requirements mentioned below.&#x20;
-2. Public IP assigned to machine if public access is enabled (for public facing portals and apps)
-3. [Domain names](resource-requirements.md#domain-names)&#x20;
-4. [Domain mapping](resource-requirements.md#domain-mapping)
-5. [Certificates](resource-requirements.md#certificates)
+1. Compute requirements &#x20;
+2. [Domain names](resource-requirements.md#domain-names)&#x20;
+3. [Domain mapping](resource-requirements.md#domain-mapping)
+4. [Certificates](resource-requirements.md#certificates)
+5. Additional requirements
 
-## Hardware requirements
+## Compute requirements
 
 ### Single-node
 
@@ -30,7 +30,7 @@ For a full deployment you need the following
 
 <table><thead><tr><th width="182.60546875">Machine Purpose</th><th width="117.859375" align="center">Number of machines</th><th>Specs</th><th>Notes</th></tr></thead><tbody><tr><td>OpenG2P cluster Kubernetes nodes</td><td align="center">3</td><td><ul><li>8 vCPU/32 GB RAM/128 GB SSD</li></ul></td><td>Minimum 3 nodes are required for fail safety of Kubernetes 'master' node. All these nodes also act as 'workers'.</td></tr><tr><td>Rancher cluster Kubernetes nodes</td><td align="center">1</td><td><ul><li>8 vCPU/32 GB RAM/128 GB SSD</li></ul></td><td>The number of machines may be increased to 3 if high availablity of Rancher cluster is critically.</td></tr><tr><td>Reverse proxy node</td><td align="center">1</td><td><ul><li>4 vCPU/16 GB/64 GB SSD</li><li>2 network inteface cards</li></ul></td><td>Its not expected that this machine will get overloaded unless very high traffic applications.</td></tr><tr><td>Storage node</td><td align="center">1</td><td><ul><li>16 vCPU/64 GB/512 GB SSD</li></ul></td><td>Both PostgreSQL and NFS </td></tr><tr><td>Backup (optional)</td><td align="center">1</td><td><ul><li>2 vCPU/8 GB RAM/512 GB HDD/SDD</li></ul></td><td>Backup machine need not have SSD.  </td></tr></tbody></table>
 
-### Domain names&#x20;
+## Domain names&#x20;
 
 To access resources on cluster,  domain names and mappings are required.  The suggested domain name convention is as follows:
 
@@ -41,7 +41,7 @@ Example:&#x20;
 * spar.dev.openg2p.org
 * socialregistry.uat.openg2p.org
 
-### Domain mapping
+## Domain mapping
 
 | Requirement Description      | Domain Name (examples)                                                                      | Mapped to                                                                                                                                             |
 | ---------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -50,13 +50,19 @@ Example:&#x20;
 
 The domain name mapping needs to be done on your domain service provider.  For example, on AWS this is configured on Route 53.
 
-### Certificates <a href="#certificates" id="certificates"></a>
+## Certificates <a href="#certificates" id="certificates"></a>
 
 At least one wildcard certificate is required depending on the above domain names used. This can also be generated using Letsencrypt. See guide [here](https://docs.openg2p.org/deployment/deployment-guide/ssl-certificates-using-letsencrypt).
+
+## Additional requirements
+
+There may be additional resources that may need to be arranged based on your requirements and rollout plan. Some of these are assumed to be available:
+
+* Tablets/phones for offline registrations
+* Firewall for on-prem setups
 
 {% hint style="info" %}
 **General Recommendations**
 
-If you would like to get started with OpenG2P with couple of sandboxes like dev/qa go for single-node architecture.  For pilot and production, the three-node architecture is highly recommened. If you decide to use the single-node setup for pilots, make sure you have backups in place - this is very important. In this case you may need to migrate the data from PostgreSQL on Kubernetes to standaone PostgreSQL server. Follow the migration guide give [here](deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
+If you would like to get started with OpenG2P with couple of sandboxes like dev/qa go with single-node architecture.  For pilot and production, the three-node architecture is highly recommened. If you decide to use the single-node setup for pilots, make sure you have backups in place - this is very important. In this case you may need to migrate the data from PostgreSQL on Kubernetes to standaone PostgreSQL server. Follow the migration guide give [here](deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md).
 {% endhint %}
-
