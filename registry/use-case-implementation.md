@@ -13,8 +13,8 @@ In this phase to understand the user case and your requirements in as much detai
 * Your country? -> "country"
 * Your department/organisation that wants to use OpenG2P Registry.  -> "department"
 * &#x20;What is your end2end use case — is this a benefit delivery program, if so what is the name of the program for which Registry is required? -> "program".  Or your mandate is just to create a registry like a National Social Registy or Farmer Registry, or Family Registry that will serve several programs, use cases and several departements? Desicribe the type of registry - like 'Social Registry', 'Workers Registry', 'Farmer Registry', 'Disability Registry', 'Family Registry', 'Students Registry', 'Health Workers Registry', 'Crop Registry', 'Land Registry', 'Vehicle Registry' etc -> "registry\_type"
-* Describe your use case in detail.
-* What is the process of registration? would it be online via portal, or offline via agents collecting information? &#x20;
+* Describe your use case in detail. How will the data be consumed/used from this registry — who are the consumers. Would you like to share the data with other departments, systems, agencies, applications? -> "use\_case\_info".
+* What is the process of registration? would it be online via portal, or offline via agents collecting information?  -> "offline\_registrations" (true/false)
 * What kind of documents are required for registration? -> "documents"
 * Is this a 'green field' implementation or 'brown field'. Meaning do you already have existing data that you would like to import. In which in what form is the data available - is it Excel sheets, or some database?  Or is this data available via APIs of some of other system.  -> "existing\_data\_import" (true/false)&#x20;
 * What are the various functionalities you are looking for your use case that must be supported by OpenG2P Registry?
@@ -22,13 +22,16 @@ In this phase to understand the user case and your requirements in as much detai
 * Will your pilot and production system run on on-prem hardware or you are ok with running the same on cloud?  -> "production\_on\_cloud" (true/false)
 * What is the number of primary records of the subjects (e.g. farmer, citizen, vehicles, families etc) expected the registry?  -> "n\_records"&#x20;
 * Which ID(s) will be used for the records? "id\_types"
-*
+* Any specific interoperability requirements? -> "interoperability"
 
 #### Completion criteria
 
+* The phase can be considered completed when all the above information is available.&#x20;
+
 #### Output
 
-
+* Requirement analysis with mapping of features/functionality, and importantly gaps between what is required versus what is offered by OpenG2P. The gaps should be clearly marked out separately.&#x20;
+* Guidance on the compute resources and other resource requirements for creating the setups for development, pilot and rollout
 
 ### Phase 2: Customization
 
