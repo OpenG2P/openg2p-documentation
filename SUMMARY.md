@@ -52,6 +52,7 @@
       * [Registrant Authentication - OIDC Widget](registry/design/detailed-design-notes/registrant-authentication-oidc-widget.md)
   * [Deployment](registry/deployment.md)
   * [Developer Zone](registry/developer-zone.md)
+  * [Use Case Implementation](registry/use-case-implementation.md)
 * [Social Registry](social-registry/README.md)
   * [Features](social-registry/features/README.md)
     * [Individuals and Households](social-registry/features/individuals-and-groups/README.md)

@@ -25,3 +25,4 @@ Irrespective of the mechanism, every change has to pass through the change manag
 
 ## One core, many domains
 
+OpenG2P Registry is a core platform over which registries of any domain can be implemented. By 'extending' the core the Registry can manifest itself as a Farmer Registry, Vehicle Registry, Social Registry, Family Registry, Crop Registry, Disability Registry etc. The fundamentals of a good registry remain the same across domains.
