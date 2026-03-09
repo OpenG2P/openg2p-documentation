@@ -6,7 +6,7 @@ OpenG2P Registry provides a base platform to create a Registry but it still need
 
 #### Purpose
 
-In this phase to understand the user case and your requirements in as much detail as possible to map it the product and identify and gaps vis a vis what OpenG2P offers. In this phase we also understand the plan for doing a pilot or full rollout, the scale of the pilot/rollout, timelines and so on.
+In this phase we understand the use case and your requirements in as much detail as possible to map it the product and identify and gaps vis a vis what OpenG2P offers. In this phase we also understand the plan for doing a pilot or full rollout, the scale of the pilot/rollout, timelines and so on.
 
 #### Information to collect
 
@@ -34,6 +34,18 @@ In this phase to understand the user case and your requirements in as much detai
 * Guidance on the compute resources and other resource requirements for creating the setups for development, pilot and rollout
 
 ### Phase 2: Customization
+
+#### Purpose
+
+In this phase the configuration and code changes are done after obtaining fine grained details of registry like registry parameters, constraints, number of registers, number of tables etc. Changes to configurations and code and then done and artifacts created for deployments.
+
+#### Information to collect &#x20;
+
+* What the exact name of your registry? -> "registry\_name"
+* How many registers does it contain? Give name of each register. -> "registers\[]"&#x20;
+* Give exact names of the database columns for each register. -> "register\[name, \[columns]".
+* What are the various constraints between the tables (database contraints) -> "database\_constraints\[]"
+* What is the number of digits required for your functional ID? -> "id\_length"
 
 ### Phase 3: Sandbox
 
