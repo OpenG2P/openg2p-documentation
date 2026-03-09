@@ -34,6 +34,7 @@
       * [Partner APIs](registry/design/high-level-design/partner-apis.md)
     * [Detailed design notes](registry/design/detailed-design-notes/README.md)
       * [Organization of codebase](registry/design/detailed-design-notes/organization-of-codebase.md)
+      * [Deployment Design](registry/design/detailed-design-notes/deployment-design.md)
       * [Ingestion pipeline](registry/design/detailed-design-notes/ingestion-pipeline.md)
       * [Outgestion pipeline](registry/design/detailed-design-notes/outgestion-pipeline.md)
       * [Deduplication](registry/design/detailed-design-notes/deduplication.md)
