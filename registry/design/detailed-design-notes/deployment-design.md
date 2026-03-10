@@ -162,3 +162,13 @@ tablename = "g2p_register_history_individuals"
 class G2PTableHistoryVehicle(G2PTableHistory): 
 tablename = "g2p_table_history_vehicles"
 ```
+
+### 4. Define Pydantic models for Registers and Tables
+
+### 5. Define Pydantic models for version histories - Registers & Tables
+
+### 6. Define Service class for Registers & Tables
+
+### 7. Naming convention for ORM & Pydantic models, tables and services
+
+### 8. Database scripts for Configuration Tables
