@@ -113,14 +113,14 @@ The G2PPerson abstract class brings the following attributes into the Register.&
 
 #### G2PTableVehicles
 
-```
+```py
 class G2PTableVehicle(G2PTable): 
 tablename = "g2p_table_vehicles"
 ```
 
 Since, we are treating vehicles as just a table of attributes for an individual, we only extend **G2PTable** and not G2PRegister. Any store, where we are not managing functional IDs, where there is no formal registry functionalities required, we can consider using G2PTable rather than G2PRegister. The G2PTable brings the following attributes
 
-<pre><code><strong>class G2PTable(BaseORMModel): 
+<pre class="language-py"><code class="lang-py"><strong>class G2PTable(BaseORMModel): 
 </strong>    abstract = True
     internal_record_id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     link_internal_record_id: Mapped[str] = mapped_column(String, nullable=True, index=True) # Link to internal_record_id of the parent
@@ -133,7 +133,7 @@ Since, we are treating vehicles as just a table of attributes for an individual,
 
 #### G2PRegisterHistoryHousehold
 
-```
+```py
 class G2PRegisterHistoryHousehold(G2PRegisterHistory, G2PGeo): 
 tablename = "g2p_register_individuals"
 ```
