@@ -31,15 +31,15 @@ If Vehicles are only additional peripheral information and does not involving al
 
 3. **Vehicles Table**
 
-### 1. ORM Models for the identified Registers and Tables
+### ORM Models for the identified Registers and Tables
 
 The **ORM Model** defines how a domain entity is **persisted in the registry database**. It specifies the fields, identifiers, and relationships that represent the entity in storage.
 
 Implementers define an ORM model to establish the **database structure for the registry records**, enabling the platform to store, retrieve, and manage the entity data.
 
-We need to create the following ORM Models
+#### G2PRegisterHousehold
 
-```
+```py
 class G2PRegisterHousehold(G2PRegister, G2PGeo): 
 tablename = "g2p_register_households"
 ```
@@ -48,18 +48,96 @@ Here, G2PRegister is a base class that needs to be extended by all REGISTER Clas
 
 G2PRegister brings the following attributes into the inherited REGISTER Class
 
-class G2PRegister(BaseORMModel): **abstract** = True
+```py
+class G2PRegister(BaseORMModel): 
+    abstract = True
+    internal_record_id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    functional_record_id: Mapped[str] = mapped_column(String, nullable=True, unique=True, index=True)
+    link_internal_record_id: Mapped[str] = mapped_column(String, nullable=True, index=True) # Link to internal_record_id of the parent
+    link_foundational_id: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    record_name: Mapped[str] = mapped_column(String, nullable=True)
+    record_image_storage_id: Mapped[str] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[str] = mapped_column(DateTime, nullable=False)
+    last_approved_at: Mapped[str] = mapped_column(DateTime, nullable=False)
+    last_approved_by: Mapped[str] = mapped_column(String, nullable=False)
+    search_text: Mapped[str] = mapped_column(Text, nullable=True)
+```
 
-<pre><code><strong>internal_record_id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-</strong>functional_record_id: Mapped[str] = mapped_column(String, nullable=True, unique=True, index=True)
-link_internal_record_id: Mapped[str] = mapped_column(String, nullable=True, index=True) # Link to internal_record_id of the parent
-link_foundational_id: Mapped[str] = mapped_column(String, nullable=True, index=True)
-record_name: Mapped[str] = mapped_column(String, nullable=True)
-record_image_storage_id: Mapped[str] = mapped_column(Text, nullable=True)
-created_by: Mapped[str] = mapped_column(String, nullable=False)
-created_at: Mapped[str] = mapped_column(DateTime, nullable=False)
-last_approved_at: Mapped[str] = mapped_column(DateTime, nullable=False)
-last_approved_by: Mapped[str] = mapped_column(String, nullable=False)
-search_text: Mapped[str] = mapped_column(Text, nullable=True)
+The G2PRegisterHousehold class needs to extend G2PGeo, if the Household register has address attributes.    &#x20;
+
+```py
+class G2PGeo(BaseORMModel):
+    __abstract__ = True
+    latitude: Mapped[str] = mapped_column(String, nullable=True)
+    longitude: Mapped[str] = mapped_column(String, nullable=True)
+    altitude: Mapped[str] = mapped_column(String, nullable=True)
+    plus_code: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    address_line_1: Mapped[str] = mapped_column(String, nullable=True)
+    address_line_2: Mapped[str] = mapped_column(String, nullable=True)
+    postal_code: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    country_code: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    geo_lowest_level_value_id: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    geo_code_hierarchy_json: Mapped[str] = mapped_column(JSONB, nullable=True)
+```
+
+#### G2PRegisterIndividual
+
+```
+class G2PRegisterIndividual(G2PRegister, G2PPerson G2PGeo): 
+tablename = "g2p_register_individuals"
+```
+
+The G2PPerson abstract class brings the following attributes into the Register.&#x20;
+
+<pre class="language-py"><code class="lang-py"><strong>class G2PPerson(BaseORMModel): 
+</strong>    abstract = True
+    foundational_id: Mapped[str] = mapped_column(String, nullable=True, unique=True, index=True)
+    first_name: Mapped[str] = mapped_column(String, nullable=True)
+    middle_name: Mapped[str] = mapped_column(String, nullable=True)
+    last_name: Mapped[str] = mapped_column(String, nullable=True)
+    given_name: Mapped[str] = mapped_column(String, nullable=True)
+    prefix: Mapped[str] = mapped_column(String, nullable=True)
+    suffix: Mapped[str] = mapped_column(String, nullable=True)
+    gender: Mapped[GenderEnum] = mapped_column(String, nullable=True)
+    birth_date: Mapped[str] = mapped_column(Date, nullable=True)
+    phone_numbers: Mapped[list] = mapped_column(JSONB, nullable=True)
+    emails: Mapped[list] = mapped_column(JSONB, nullable=True)
+    marital_status: Mapped[MaritalStatusEnum] = mapped_column(String, nullable=True)
+    occupation: Mapped[str] = mapped_column(String, nullable=True)
+    income_level: Mapped[str] = mapped_column(String, nullable=True)
+    language_code: Mapped[str] = mapped_column(String, nullable=True)
+    education_level: Mapped[str] = mapped_column(String, nullable=True)
+    registration_date: Mapped[str] = mapped_column(Date, nullable=True)
 </code></pre>
 
+#### G2PTableVehicles
+
+```
+class G2PTableVehicle(G2PTable): 
+tablename = "g2p_table_vehicles"
+```
+
+#### Since, we are treating vehicles as just a table of attributes for an individual, we only extend G2PTable and not G2PRegister. Any store, where we are not managing functional IDs, where there is no formal registry functionalities required, we can consider using G2PTable rather than G2PRegister. The G2PTable brings the following attributes
+
+<pre><code><strong>class G2PTable(BaseORMModel): 
+</strong>    abstract = True
+    internal_record_id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    link_internal_record_id: Mapped[str] = mapped_column(String, nullable=True, index=True) # Link to internal_record_id of the parent
+    link_foundational_id: Mapped[str] = mapped_column(String, nullable=True, index=True)
+    created_by: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[str] = mapped_column(DateTime, nullable=False)
+    last_approved_at: Mapped[str] = mapped_column(DateTime, nullable=False)
+    last_approved_by: Mapped[str] = mapped_column(String, nullable=False)
+
+    
+</code></pre>
+
+#### G2PRegisterHistoryHousehold
+
+```
+class G2PRegisterHistoryHousehold(G2PRegisterHistory, G2PGeo): 
+tablename = "g2p_register_individuals"
+```
+
+#### G2PRegisterHistoryIndividual
