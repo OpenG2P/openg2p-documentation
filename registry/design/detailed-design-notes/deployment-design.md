@@ -169,6 +169,16 @@ tablename = "g2p_table_history_vehicles"
 
 ### 6. Define Service class for Registers & Tables
 
-### 7. Naming convention for ORM & Pydantic models, tables and services
+### 7. Naming convention - models, tables and services
 
-### 8. Database scripts for Configuration Tables
+### 8. Database scripts
+
+1. registry-configurations
+2. register\_metadata
+3. lookup-data
+4. registry-inbound-message-rules
+5. registry-outbound-messages-templates
+6. data-models
+7. register-data
+
+### 9. Databse scripts for master-data-service
