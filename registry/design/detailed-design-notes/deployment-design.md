@@ -118,7 +118,7 @@ class G2PTableVehicle(G2PTable):
 tablename = "g2p_table_vehicles"
 ```
 
-#### Since, we are treating vehicles as just a table of attributes for an individual, we only extend G2PTable and not G2PRegister. Any store, where we are not managing functional IDs, where there is no formal registry functionalities required, we can consider using G2PTable rather than G2PRegister. The G2PTable brings the following attributes
+Since, we are treating vehicles as just a table of attributes for an individual, we only extend **G2PTable** and not G2PRegister. Any store, where we are not managing functional IDs, where there is no formal registry functionalities required, we can consider using G2PTable rather than G2PRegister. The G2PTable brings the following attributes
 
 <pre><code><strong>class G2PTable(BaseORMModel): 
 </strong>    abstract = True
@@ -129,8 +129,6 @@ tablename = "g2p_table_vehicles"
     created_at: Mapped[str] = mapped_column(DateTime, nullable=False)
     last_approved_at: Mapped[str] = mapped_column(DateTime, nullable=False)
     last_approved_by: Mapped[str] = mapped_column(String, nullable=False)
-
-    
 </code></pre>
 
 #### G2PRegisterHistoryHousehold
