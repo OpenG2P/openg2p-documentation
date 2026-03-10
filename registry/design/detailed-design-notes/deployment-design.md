@@ -31,11 +31,20 @@ If Vehicles are only additional peripheral information and does not involving al
 
 3. **Vehicles Table**
 
-### ORM Models for the identified Registers and Tables
+### 1. Create a Household Registry Extension Pack
+
+Fork the repo - [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)
+
+There are reference implementations (farmer\_extension) available here. Create a suitable folder here, in our case - "household\_extension"
+
+### 2. Define ORM models for the identified Registers and Tables
+
+<mark style="color:$primary;">**Target folder**</mark>\
+<mark style="color:blue;">openg2p-registry-farmer-extension/src/openg2p\_registry\_farmer\_extension/register\_domain</mark>
 
 The **ORM Model** defines how a domain entity is **persisted in the registry database**. It specifies the fields, identifiers, and relationships that represent the entity in storage.
 
-Implementers define an ORM model to establish the **database structure for the registry records**, enabling the platform to store, retrieve, and manage the entity data.
+Define ORM models to establish the **database structure for the registry records**, enabling the platform to store, retrieve, and manage the entity data.
 
 #### G2PRegisterHousehold
 
@@ -84,7 +93,7 @@ class G2PGeo(BaseORMModel):
 #### G2PRegisterIndividual
 
 ```
-class G2PRegisterIndividual(G2PRegister, G2PPerson G2PGeo): 
+class G2PRegisterIndividual(G2PRegister, G2PPerson, G2PGeo): 
 tablename = "g2p_register_individuals"
 ```
 
@@ -131,11 +140,25 @@ Since, we are treating vehicles as just a table of attributes for an individual,
     last_approved_by: Mapped[str] = mapped_column(String, nullable=False)
 </code></pre>
 
+### 3. Define ORM Models for version histories of Registers and Tables
+
 #### G2PRegisterHistoryHousehold
 
 ```py
 class G2PRegisterHistoryHousehold(G2PRegisterHistory, G2PGeo): 
-tablename = "g2p_register_individuals"
+tablename = "g2p_register_history_households"
 ```
 
 #### G2PRegisterHistoryIndividual
+
+```py
+class G2PRegisterHistoryHousehold(G2PRegisterHistory, G2PGeo): 
+tablename = "g2p_register_history_individuals"
+```
+
+#### G2PTableHistoryVehicle
+
+```
+class G2PTableHistoryVehicle(G2PTableHistory): 
+tablename = "g2p_table_history_vehicles"
+```
