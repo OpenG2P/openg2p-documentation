@@ -51,8 +51,8 @@ In this phase the configuration and code changes are done after obtaining fine g
 #### Actions
 
 * Git clone the following repositories in your local machine. Make sure these are cloned in a empty folder that does not contain any previous repos or contents:
-  * Repo 1: [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)
-  * Repo 2: [https://github.com/OpenG2P/openg2p-registry-gen2-docker](https://github.com/OpenG2P/openg2p-registry-gen2-docker)
+  * Repo 1: [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)  branch 'develop'
+  * Repo 2: [https://github.com/OpenG2P/openg2p-registry-gen2-docker](https://github.com/OpenG2P/openg2p-registry-gen2-docker) branch 'develop'
 * Inside Repo 2 inside each of the following folders, create a copy of `farmer-develop.txt` file. Change the name to `<registry-menemonic>-develop.txt` .
   * staff-portal-api
   * partner-api
