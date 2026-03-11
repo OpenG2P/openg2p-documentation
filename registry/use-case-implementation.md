@@ -59,9 +59,9 @@ In this phase the configuration and code changes are done after obtaining fine g
   * celery
 * Inside each of `<registry-menemonic>-develop.txt`  in the above folders, replace the word 'farmer' with registry mnemonic.&#x20;
 * From the root directory of Repo 2 run the follwing commands:
-  * `scripts/build.py staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
-  * `scripts/build.py partner-api/<registry-menemonic>-develop.txt`
-  * `scripts/build.py celery/<registry-menemonic>-develop.txt`
+  * `scripts/build.sh staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
+  * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
+  * `scripts/build.sh celery/<registry-menemonic>-develop.txt`
 
 ### Phase 3: Sandbox
 
