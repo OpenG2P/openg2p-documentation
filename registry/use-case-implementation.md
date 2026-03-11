@@ -41,11 +41,27 @@ In this phase the configuration and code changes are done after obtaining fine g
 
 #### Information to collect &#x20;
 
-* What the exact name of your registry? -> "registry\_name"
+* What the full name of your registry? Keep the name as short as possible. This will appear on all user interface text fields. Example 'Health Workers Registry'  -> "registry\_name"
+* What is the registry name menemonic? Keep this very short. This is be used in code, file names, Docker name, Service name etc.  Suggested is lower case of registry name separated by hyphens, e.g. 'health-worker'. Do not add add 'registry' as a prefix or suffix to the name as it will be added automatically. -> "registry\_mnemonic".
 * How many registers does it contain? Give name of each register. -> "registers\[]"&#x20;
 * Give exact names of the database columns for each register. -> "register\[name, \[columns]".
 * What are the various constraints between the tables (database contraints) -> "database\_constraints\[]"
 * What is the number of digits required for your functional ID? -> "id\_length"
+
+#### Actions
+
+* Git clone the following repositories in your local machine. Make sure these are cloned in a empty folder that does not contain any previous repos or contents:
+  * Repo 1: [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)
+  * Repo 2: [https://github.com/OpenG2P/openg2p-registry-gen2-docker](https://github.com/OpenG2P/openg2p-registry-gen2-docker)
+* Inside Repo 2 inside each of the following folders, create a copy of `farmer-develop.txt` file. Change the name to `<registry-menemonic>-develop.txt` .
+  * staff-portal-api
+  * partner-api
+  * celery
+* Inside each of `<registry-menemonic>-develop.txt`  in the above folders, replace the word 'farmer' with registry mnemonic.&#x20;
+* From the root directory of Repo 2 run the follwing commands:
+  * `scripts/build.py staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
+  * `scripts/build.py partner-api/<registry-menemonic>-develop.txt`
+  * `scripts/build.py celery/<registry-menemonic>-develop.txt`
 
 ### Phase 3: Sandbox
 
