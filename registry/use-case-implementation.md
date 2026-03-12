@@ -50,14 +50,17 @@ In this phase the configuration and code changes are done after obtaining fine g
 
 #### Actions
 
-* Git clone the following repositories in your local machine. Make sure these are cloned in a empty folder that does not contain any previous repos or contents:
+* Git clone the following repositories in your local machine in a "build folder". Make sure the "build folder" is created fresh everytime, and  is empty -  does not contain any previous repos or contents:
   * Repo 1: [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)  branch 'develop'
   * Repo 2: [https://github.com/OpenG2P/openg2p-registry-gen2-docker](https://github.com/OpenG2P/openg2p-registry-gen2-docker) branch 'develop'
-* Inside Repo 2 inside each of the following folders, create a copy of `farmer-develop.txt` file. Change the name to `<registry-menemonic>-develop.txt` .
+* Inside Repo 1, in the root folder, make a copy of the entire folder `openg2p-registry-farmer-extension`  to `openg2p-registry-<registry_menomic>-extension`&#x20;
+* Inside Repo 2 inside each of the following folders, create a copy of `farmer-develop.txt` file. Change the name to `<registry_menemonic>-develop.txt` .
   * staff-portal-api
   * partner-api
   * celery
-* Inside each of `<registry-menemonic>-develop.txt`  in the above folders, replace the word 'farmer' with registry mnemonic.&#x20;
+* Inside each of `<registry_menemonic>-develop.txt`  in the above folders, apply the following changes
+  * In the first line which contains the Docker name, replace the word 'farmer' with `<registry_mnemonic>`.&#x20;
+  * Replace the line `git://develop//https://github.com/openg2p/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-farmer-extension`  with `<full-path-of-build-folder/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-<registry_mneominic>-extension`
 * From the root directory of Repo 2 run the follwing commands:
   * `scripts/build.sh staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
   * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
