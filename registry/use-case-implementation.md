@@ -66,6 +66,22 @@ In this phase the configuration and code changes are done after obtaining fine g
   * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
   * `scripts/build.sh celery/<registry-menemonic>-develop.txt`
 
+#### Completion criteria
+
+* All Dockers built successfully
+* Customized code with all modifications, additions checked in git repo (TBD)
+
+#### Output
+
+* Dockers for all of these available
+  * staff-portal-api
+  * partner-api
+  * celery&#x20;
+* Customization report consisting of&#x20;
+  * List of modifications at a high level - major changes and their repositories.
+  * Git final commit id for after checkin the code.
+  * Names of all the Dockers created along with their tags.
+
 ### Phase 3: Sandbox
 
 ### Phase 4: Pilot&#x20;
