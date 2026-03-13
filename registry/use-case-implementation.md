@@ -33,11 +33,11 @@ In this phase we understand the use case and your requirements in as much detail
 * Requirement analysis with mapping of features/functionality, and importantly gaps between what is required versus what is offered by OpenG2P. The gaps should be clearly marked out separately.&#x20;
 * Guidance on the compute resources and other resource requirements for creating the setups for development, pilot and rollout
 
-### Phase 2: Customization
+### Phase 2: Build
 
 #### Purpose
 
-In this phase the configuration and code changes are done after obtaining fine grained details of registry like registry parameters, constraints, number of registers, number of tables etc. Changes to configurations and code and then done and artifacts created for deployments.
+In this phase the code changes and configurations are done after obtaining fine grained details of registry like registry parameters, constraints, number of registers, number of tables etc. Deployment artifacts like Docker, Helm are created after building the code.
 
 #### Information to collect &#x20;
 
@@ -69,7 +69,7 @@ In this phase the configuration and code changes are done after obtaining fine g
 #### Completion criteria
 
 * All Dockers built successfully
-* Customized code with all modifications, additions checked in git repo (TBD)
+* Code specific to this impelmentation checked in git repo (TBD)
 
 #### Output
 
