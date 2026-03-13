@@ -2,7 +2,7 @@
 
 OpenG2P Registry provides a base platform to create a Registry but it still needs a manifestation specific to your use case.  A typical implementation will involve the following process.
 
-### Phase 1:  Domain requirements
+### Phase 1:  Requirements
 
 #### Purpose
 
