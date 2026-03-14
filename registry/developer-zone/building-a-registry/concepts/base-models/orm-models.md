@@ -8,9 +8,9 @@ The OpenG2P Registry platform provides a set of **base ORM models** to help impl
 
 The primary base models are:
 
-* `g2p_register`
-* `g2p_table`
-* `g2p_program_register`
+* [`g2p_register`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+* [`g2p_table`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+* [`g2p_program_register`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 These models include a set of **core attributes required to support registry functionality** such as identity management, record linking, and workflow processing.
 
@@ -125,34 +125,46 @@ This mechanism enables the platform to support **relationships between datasets*
 
 At the same time, it allows each dataset to remain **logically independent**, while still maintaining referential relationships between related records.
 
-g2p\_register\_individuals
+An example is given below
+
+**g2p\_register\_individuals** (Register to manage individuals)
 
 <table data-full-width="true"><thead><tr><th width="199.078857421875">internal_record_id</th><th>functional_record_id</th><th>nam</th></tr></thead><tbody><tr><td><pre><code>7f1c2a9e
 </code></pre></td><td><pre><code>1000452
 </code></pre></td><td><pre><code>Ravi Kumar
 </code></pre></td></tr></tbody></table>
 
-g2p\_table\_utilities
+**g2p\_table\_utilities** (TABLE to manage an individual's utility subscriptions)
 
-<table><thead><tr><th width="342.7225341796875">internal_record_id</th><th>utility_type</th><th>subscription_id</th><th>link_internal_record_id</th></tr></thead><tbody><tr><td><pre><code>2a6b3e5c
-</code></pre></td><td>Electricity</td><td></td><td><pre><code>7f1c2a9e
+<table data-full-width="true"><thead><tr><th width="166.7701416015625">internal_record_id</th><th width="142.775146484375">utility_type</th><th width="159.03955078125">subscription_id</th><th>link_internal_record_id</th></tr></thead><tbody><tr><td><pre><code>2a6b3e5c
+</code></pre></td><td><pre><code>Electricity
+</code></pre></td><td><pre><code>9000848
+</code></pre></td><td><pre><code>7f1c2a9e
 </code></pre></td></tr><tr><td><pre><code>7b6g3y4p
-</code></pre></td><td>Water</td><td></td><td><pre><code>7f1c2a9e
+</code></pre></td><td><pre><code>Water
+</code></pre></td><td><pre><code>18579594
+</code></pre></td><td><pre><code>7f1c2a9e
 </code></pre></td></tr><tr><td><pre><code>8c7h4u5q
-</code></pre></td><td>Internet</td><td></td><td><pre><code>7f1c2a9e
+</code></pre></td><td><pre><code>Sewage
+</code></pre></td><td><pre><code>18589583
+</code></pre></td><td><pre class="language-actionscript-3"><code class="lang-actionscript-3">7f1c2a9e
 </code></pre></td></tr></tbody></table>
 
 ***
 
-####
-
 #### g2p\_program\_register
+
+The `g2p_program_register` model is used to store **applications submitted for a specific benefit program**. Each record represents an application submitted by an individual or household to be considered for participation in a program.
+
+The following are the key attributes associated with this model.
+
+<table data-full-width="true"><thead><tr><th width="176.470458984375">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>internal_record_id</td><td>The internal <strong>UUID primary key</strong> of the application record. This identifier is used internally by the registry for data retrieval, relationships, and business logic.</td></tr><tr><td>program_id</td><td>The unique identifier of the <strong>benefit program</strong> for which the application is submitted. This links the application record to the corresponding program defined in the Program and Benefit Management System (PBMS).</td></tr><tr><td>program_mnemonic</td><td>A short, human-readable <strong>code or mnemonic</strong> representing the program. This is typically used for easier identification of the program in logs, integrations, and operational workflows.</td></tr><tr><td>foundational_id</td><td>The <strong>foundational identity identifier</strong> of the applicant, if available. This typically corresponds to a national or regional foundational ID used to uniquely identify individuals.</td></tr><tr><td>link_foundational_id</td><td>Used to link the application to another <strong>foundational identity record</strong>, when the application relates to a different individual than the applicant. For example, a household member applying on behalf of another individual.</td></tr></tbody></table>
 
 ### Convenience Models Provided by the Platform
 
 In addition to the base models, the platform provides **convenience models** that simplify the implementation of common domain patterns.
 
-#### `g2p_person`
+#### [`g2p_person`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 This model should be used when the register represents **individual persons**.
 
@@ -162,30 +174,11 @@ Typical examples include:
 * Disability Register
 * Individual Register
 
-The model provides commonly required attributes and structures relevant to representing individuals
-
-```
-
-internal_record_id    |    name 
-UUID-1                |    Ravi Kumar
-
-Utilities Table (g2p_table_utilities)
-internal_record_id    | utility_type        |link_internal_record_id 
-1                    | Electricity        |    UUID-1 
-2                    | Water                 |         UUID-1 
-3                    | Internet | UUID-1
-```
-
-```
-```
-
-### Utilities Table (g2p\_table\_utilities)
-
-utility\_id | utility\_type | link\_internal\_record\_id 1 | Electricity | UUID-1 2 | Water | UUID-1 3 | Internet | UUID-1
+The model provides commonly required attributes and structures relevant to representing individuals.
 
 ***
 
-#### `g2p_geo`
+#### [`g2p_geo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 This model is used when register records require **geographical or address information**.
 
