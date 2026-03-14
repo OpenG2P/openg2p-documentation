@@ -207,20 +207,15 @@ This approach ensures that:
 * The register records remain **compact and normalized**
 * The **complete location hierarchy remains easily accessible** when needed.
 
-### Models for Version History
+### Base Models for Version History
 
-The OpenG2P Registry platform maintains **version history for registry records** in order to support auditability, traceability, and change tracking.
+The OpenG2P Registry platform provides **base models** to store **version history for registry records** in order to support auditability, traceability, and change tracking.
 
 Whenever a record in a register or table is modified, the platform stores the previous version of the record in a corresponding **history model**. This allows the system to maintain a **complete historical trail of changes** made to registry data over time.
 
 The following models are used to store version history:
 
-| History Model            | Description                                                                                              |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| **`G2PRegisterHistory`** | Stores historical versions of records from registers that extend the `G2PRegister` base model.           |
-| **`G2PTableHistory`**    | Stores historical versions of records from tables that extend the `G2PTable` base model.                 |
-| **`G2PGeoHistory`**      | Stores historical versions of geographic data associated with records that extend the `G2PGeo` model.    |
-| **`G2PPersonHistory`**   | Stores historical versions of person-related attributes for registers that extend the `G2PPerson` model. |
+<table><thead><tr><th width="315.04046630859375">History Model</th><th>Description</th></tr></thead><tbody><tr><td><code>G2PRegisterHistory</code><br><code>e.g. G2PRegisterHistoryHouseholds</code></td><td>Stores historical versions of records from registers that extend the <code>G2PRegister</code> base model.</td></tr><tr><td><code>G2PTableHistory</code><br><code>e.g. G2PTableHistoryUtilities</code></td><td>Stores historical versions of records from tables that extend the <code>G2PTable</code> base model.</td></tr><tr><td><code>G2PGeoHistory</code><br><code>e.g. G2PRegistryHistoryIndividuals</code></td><td>Stores historical versions of geographic data associated with records that extend the <code>G2PGeo</code> model.</td></tr><tr><td><code>G2PPersonHistory</code><br><code>e.g. G2PRegistryHistoryIndividuals</code></td><td>Stores historical versions of person-related attributes for registers that extend the <code>G2PPerson</code> model.</td></tr></tbody></table>
 
 #### Purpose of Version History
 
