@@ -101,6 +101,53 @@ which demonstrates how the `search_text` attribute can be populated using domain
 
 ***
 
+#### g2p\_table
+
+**`internal_record_id`**
+
+This is the **internal primary key** of the record and is implemented as a **UUID**.
+
+All internal retrieval operations and business logic within the registry rely on this attribute to uniquely identify records.
+
+**`link_internal_record_id`**
+
+This attribute is used to **link a record in a Table to a record in another Register or Table**.
+
+For example, consider an **Individual Register** where additional information about individuals is stored in a supporting table called `g2p_table_utilities`. This table may contain a list of **public utilities subscribed to by an individual**, such as electricity, water, or internet services.
+
+In this case, each record in `g2p_table_utilities` will store the **`internal_record_id` of the corresponding Individual record** in its `link_internal_record_id` field.
+
+This mechanism enables the platform to support **relationships between datasets**, including:
+
+* A **Register linked to another Register**
+* A **Table linked to a Register**
+* A **Table linked to another Table**
+
+At the same time, it allows each dataset to remain **logically independent**, while still maintaining referential relationships between related records.
+
+g2p\_register\_individuals
+
+<table data-full-width="true"><thead><tr><th width="199.078857421875">internal_record_id</th><th>functional_record_id</th><th>nam</th></tr></thead><tbody><tr><td><pre><code>7f1c2a9e
+</code></pre></td><td><pre><code>1000452
+</code></pre></td><td><pre><code>Ravi Kumar
+</code></pre></td></tr></tbody></table>
+
+g2p\_table\_utilities
+
+<table><thead><tr><th width="342.7225341796875">internal_record_id</th><th>utility_type</th><th>subscription_id</th><th>link_internal_record_id</th></tr></thead><tbody><tr><td><pre><code>2a6b3e5c
+</code></pre></td><td>Electricity</td><td></td><td><pre><code>7f1c2a9e
+</code></pre></td></tr><tr><td><pre><code>7b6g3y4p
+</code></pre></td><td>Water</td><td></td><td><pre><code>7f1c2a9e
+</code></pre></td></tr><tr><td><pre><code>8c7h4u5q
+</code></pre></td><td>Internet</td><td></td><td><pre><code>7f1c2a9e
+</code></pre></td></tr></tbody></table>
+
+***
+
+####
+
+#### g2p\_program\_register
+
 ### Convenience Models Provided by the Platform
 
 In addition to the base models, the platform provides **convenience models** that simplify the implementation of common domain patterns.
@@ -115,7 +162,26 @@ Typical examples include:
 * Disability Register
 * Individual Register
 
-The model provides commonly required attributes and structures relevant to representing individuals.
+The model provides commonly required attributes and structures relevant to representing individuals
+
+```
+
+internal_record_id    |    name 
+UUID-1                |    Ravi Kumar
+
+Utilities Table (g2p_table_utilities)
+internal_record_id    | utility_type        |link_internal_record_id 
+1                    | Electricity        |    UUID-1 
+2                    | Water                 |         UUID-1 
+3                    | Internet | UUID-1
+```
+
+```
+```
+
+### Utilities Table (g2p\_table\_utilities)
+
+utility\_id | utility\_type | link\_internal\_record\_id 1 | Electricity | UUID-1 2 | Water | UUID-1 3 | Internet | UUID-1
 
 ***
 
