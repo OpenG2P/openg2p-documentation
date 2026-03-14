@@ -1,6 +1,6 @@
 # Organization of codebase
 
-<div data-full-width="true"><figure><img src="../../../.gitbook/assets/Registry-Code-Organization.jpg" alt=""><figcaption><p>Organization of the Registry codebase in github. The labels in green are the repo names</p></figcaption></figure></div>
+<div data-full-width="true"><figure><img src="../../../../.gitbook/assets/Registry-Code-Organization.jpg" alt=""><figcaption><p>Organization of the Registry codebase in github. The labels in green are the repo names</p></figcaption></figure></div>
 
 The registry codebase is organized into several repositories.
 
