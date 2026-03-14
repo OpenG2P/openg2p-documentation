@@ -1,8 +1,8 @@
 ---
-description: ORM Models for Defining Registry Domain Models
+description: ORM Models and Pydantic Schemas for defining domain objects of a Registry
 ---
 
-# ORM models
+# Base models
 
 The OpenG2P Registry platform provides a set of **base ORM models** to help implementers define the domain models required for a registry.
 
@@ -227,3 +227,24 @@ The version history mechanism enables the registry platform to:
 * Provide **transparency for governance and compliance processes**
 
 By separating historical records into dedicated history models, the platform ensures that **operational datasets remain optimized for current usage**, while still preserving full historical information.
+
+### Base Pydantic Schemas
+
+In addition to the ORM models, the OpenG2P Registry platform also provides a set of **base Pydantic schemas**. These schemas are used for **data validation, serialization, and API request/response handling** within the registry services.
+
+The platform provides the following base schemas:
+
+* [`G2PRegisterBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PTableBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PProgramRegisterBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PPersonSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PGeoSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PRegisterHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PTableHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PProgramRegisterHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PPersonHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PGeoHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+
+Domain implementations must define their **domain-specific schemas** by extending the appropriate base schemas listed above. This ensures that all domain schemas inherit the **core attributes and validation rules** required by the registry platform.
+
+Implementation teams can refer to the [**Farmer Registry reference implementation**](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/tree/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/register_domain/schemas) for an example of how domain schemas are defined by extending these base schemas.ORM Models for Defining Registry Domain Models
