@@ -24,14 +24,21 @@ In this phase we understand the use case and your requirements in as much detail
 * Which ID(s) will be used for the records? "id\_types"
 * Any specific interoperability requirements? -> "interoperability"
 
-#### Completion criteria
-
-* The phase can be considered completed when all the above information is available.&#x20;
-
 #### Output
 
-* Requirement analysis with mapping of features/functionality, and importantly gaps between what is required versus what is offered by OpenG2P. The gaps should be clearly marked out separately.&#x20;
+Requirement analysis report comprising of&#x20;
+
+* Mapping of features/functionality, and importantly gaps between what is required versus what is offered by OpenG2P. The gaps should be clearly marked out separately.&#x20;
 * Guidance on the compute resources and other resource requirements for creating the setups for development, pilot and rollout
+
+#### **Phase Transition Protocol (completion criteria)**
+
+After the phase report is generated, the following protocol must be strictly followed to move to the next phase
+
+1. The user must be informed about the requirements report and asked to review it carefully.
+2. If there are any changes, the same should be captured and report generated again.
+3. The user's approval must be taken for the report.
+4. The user must be informed briefly about the next phase and asked if the user is ok to start the next phase.
 
 ### Phase 2: Build
 
@@ -66,7 +73,7 @@ In this phase the code changes and configurations are done after obtaining fine 
   * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
   * `scripts/build.sh celery/<registry-menemonic>-develop.txt`
 
-#### Completion criteria
+#### **Phase Transition Protocol (completion criteria)**
 
 * All Dockers built successfully
 * Code specific to this impelmentation checked in git repo (TBD)
