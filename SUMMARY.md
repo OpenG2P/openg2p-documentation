@@ -56,6 +56,7 @@
       * [Concepts](registry/developer-zone/building-a-registry/concepts.md)
         * [Registry vs Register](registry/developer-zone/building-a-registry/concepts/registry-vs-register.md)
         * [Base models](registry/developer-zone/building-a-registry/concepts/base-models.md)
+        * [Registry & Register metadata](registry/developer-zone/building-a-registry/concepts/registry-and-register-metadata.md)
         * [Organization of codebase](registry/design/detailed-design-notes/organization-of-codebase.md)
         * [Build & deploy a registry](registry/developer-zone/building-a-registry/concepts/build-and-deploy-a-registry.md)
       * [Guide to Building a Registry](registry/developer-zone/building-a-registry/guide-to-building-a-registry.md)
