@@ -8,9 +8,9 @@ The OpenG2P Registry platform provides a set of **base ORM models** to help impl
 
 The primary base models are:
 
-* [`g2p_register`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
-* [`g2p_table`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
-* [`g2p_program_register`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+* G2PRegister
+* G2PTable
+* G2PProgramRegister
 
 These models include a set of **core attributes required to support registry functionality** such as identity management, record linking, and workflow processing.
 
@@ -20,7 +20,7 @@ It is **mandatory** that all domain models defined within a registry **extend on
 
 ### Core Attributes Provided by Base Models
 
-#### g2p\_register
+#### G2PRegister (g2p\_register)
 
 **`internal_record_id`**
 
@@ -101,7 +101,7 @@ which demonstrates how the `search_text` attribute can be populated using domain
 
 ***
 
-#### g2p\_table
+#### G2PTable (g2p\_table)
 
 **`internal_record_id`**
 
@@ -152,7 +152,7 @@ An example is given below
 
 ***
 
-#### g2p\_program\_register
+#### G2PProgramHistory (g2p\_program\_history)
 
 The `g2p_program_register` model is used to store **applications submitted for a specific benefit program**. Each record represents an application submitted by an individual or household to be considered for participation in a program.
 
@@ -164,7 +164,7 @@ The following are the key attributes associated with this model.
 
 In addition to the base models, the platform provides **convenience models** that simplify the implementation of common domain patterns.
 
-#### [`g2p_person`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+#### G2PPerson (g2p\_person)
 
 This model should be used when the register represents **individual persons**.
 
@@ -178,7 +178,7 @@ The model provides commonly required attributes and structures relevant to repre
 
 ***
 
-#### [`g2p_geo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+#### G2PGeo (g2p\_geo)
 
 This model is used when register records require **geographical or address information**.
 
@@ -206,3 +206,29 @@ This approach ensures that:
 
 * The register records remain **compact and normalized**
 * The **complete location hierarchy remains easily accessible** when needed.
+
+### Models for Version History
+
+The OpenG2P Registry platform maintains **version history for registry records** in order to support auditability, traceability, and change tracking.
+
+Whenever a record in a register or table is modified, the platform stores the previous version of the record in a corresponding **history model**. This allows the system to maintain a **complete historical trail of changes** made to registry data over time.
+
+The following models are used to store version history:
+
+| History Model            | Description                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **`G2PRegisterHistory`** | Stores historical versions of records from registers that extend the `G2PRegister` base model.           |
+| **`G2PTableHistory`**    | Stores historical versions of records from tables that extend the `G2PTable` base model.                 |
+| **`G2PGeoHistory`**      | Stores historical versions of geographic data associated with records that extend the `G2PGeo` model.    |
+| **`G2PPersonHistory`**   | Stores historical versions of person-related attributes for registers that extend the `G2PPerson` model. |
+
+#### Purpose of Version History
+
+The version history mechanism enables the registry platform to:
+
+* Maintain a **complete audit trail** of data changes
+* Support **traceability of record updates over time**
+* Enable **data rollback or investigation** when required
+* Provide **transparency for governance and compliance processes**
+
+By separating historical records into dedicated history models, the platform ensures that **operational datasets remain optimized for current usage**, while still preserving full historical information.
