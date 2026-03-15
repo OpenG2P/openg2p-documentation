@@ -26,6 +26,11 @@ Each register can have a corresponding schema definition that specifies:
 
 The Registry Staff UI uses this metadata to dynamically construct search and filtering interfaces.
 
+This configuration is applicable only to datasets classified as:
+
+* **REGISTER**
+* **PROGRAM\_REGISTER**
+
 <table><thead><tr><th width="205.36334228515625">Schema</th><th>UI Function</th></tr></thead><tbody><tr><td><strong>search_result_schema</strong></td><td>Defines which attributes appear in the <strong>Search Results List</strong>.</td></tr><tr><td><strong>filter_schema</strong></td><td>Determines which attributes appear in the <strong>Filter panel</strong> on the register list page.</td></tr></tbody></table>
 
 This approach allows implementation teams to **customize UI behavior without modifying frontend code**.
