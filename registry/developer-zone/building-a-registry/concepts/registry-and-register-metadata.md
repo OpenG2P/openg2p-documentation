@@ -1,2 +1,0 @@
-# Registry & Register metadata
-
