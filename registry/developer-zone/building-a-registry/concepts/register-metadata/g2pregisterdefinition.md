@@ -106,3 +106,14 @@ The specific attributes used for deduplication are defined as a **JSON configura
 [`g2p_register_schemas`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_schema.py)
 
 The deduplication process typically runs during **change request processing**, where newly submitted records are compared against existing records to identify potential duplicates.
+
+## Reference Implementation
+
+A reference implementation of the **register metadata configuration** can be found in the Farmer Registry extension.
+
+The SQL script that initializes the `g2p_register_definition` table and other registry metadata is available in the [OpenG2P Registry Extensions repository](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) — Farmer Extension.
+
+The g2p\_register\_definition database script for Farmer Registry is available [here](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_definitions.sql).
+
+```
+```
