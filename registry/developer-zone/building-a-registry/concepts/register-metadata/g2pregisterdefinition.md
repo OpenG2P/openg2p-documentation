@@ -4,7 +4,7 @@ description: g2p_register_definitions - the principal metadata information on Re
 
 # G2PRegisterDefinition
 
-This table - [g2p\_register\_definitions](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) - stores the **core metadata definition for all register types** within the platform.
+This table - [g2p\_register\_definitions](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) - stores the core metadata definition for all register types within the platform.
 
 Every dataset in the registry—whether it is a **REGISTER**, **TABLE**, or **PROGRAM\_REGISTER**—must have a corresponding entry in this table.
 
