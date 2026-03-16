@@ -67,7 +67,7 @@ In this phase the code changes and configurations are done after obtaining fine 
   * celery
 * Inside each of `<registry_menemonic>-develop.txt`  in the above folders, apply the following changes
   * Replace the line `git://develop//https://github.com/openg2p/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-farmer-extension`  with `{{workDir}}/openg2p-registry-gen2-extensions/openg2p-registry-<registry_mneominic>-extension`   _(note there is no '#' or 'subdirectory' in this path)_.
-  * In the first line which contains the Docker name, replace the word 'farmer' with `<registry_mnemonic>`.&#x20;
+  * In the very first line of the file (that starts with a '#'), and which contains the Docker name, replace the word 'farmer' with `<registry_mnemonic>`. &#x20;
 * From the root directory of Repo 2 run the follwing commands:
   * `scripts/build.sh staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
   * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
