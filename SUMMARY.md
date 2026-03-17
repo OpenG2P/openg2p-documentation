@@ -56,6 +56,8 @@
       * [Concepts](registry/developer-zone/building-a-registry/concepts.md)
         * [Registry vs Register](registry/developer-zone/building-a-registry/concepts/registry-vs-register.md)
         * [Base models](registry/developer-zone/building-a-registry/concepts/base-models.md)
+        * [Registry Configuration](registry/developer-zone/building-a-registry/concepts/registry-configuration/README.md)
+          * [G2PRegistryConfiguration](registry/developer-zone/building-a-registry/concepts/registry-configuration/g2pregistryconfiguration.md)
         * [Register metadata](registry/developer-zone/building-a-registry/concepts/registry-and-register-metadata.md)
           * [G2PRegisterDefinition](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregisterdefinition.md)
           * [G2PRegisterSchema](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregisterschema.md)
