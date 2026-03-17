@@ -61,6 +61,7 @@
           * [G2PRegisterSchema](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregisterschema.md)
           * [G2PRegisterUITab](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregisteruitab.md)
           * [G2PRegisterSection](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregistersection.md)
+          * [G2PRegisterSectionDocumentLabels](registry/developer-zone/building-a-registry/concepts/register-metadata/g2pregistersectiondocumentlabels.md)
         * [Organization of codebase](registry/design/detailed-design-notes/organization-of-codebase.md)
         * [Build & deploy a registry](registry/developer-zone/building-a-registry/concepts/build-and-deploy-a-registry.md)
       * [Guide to Building a Registry](registry/developer-zone/building-a-registry/guide-to-building-a-registry.md)
