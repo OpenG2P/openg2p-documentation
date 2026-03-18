@@ -32,9 +32,26 @@ The following facts must be collected. Each fact has a key (shown in quotes) tha
 | 12 | Which ID type(s) will be used for records (e.g. national ID, MOSIP ID, custom functional ID)? | `id_types` | list | Yes |
 | 13 | Are there any specific interoperability requirements — integration with other systems, APIs, or standards (e.g. G2P Connect, MOSIP)? | `interoperability` | text | No |
 
+### Product Feature Discovery (Mandatory)
+
+Users typically do not know the full breadth and depth of what OpenG2P Registry offers. The advisor must therefore proactively scan the product knowledge base and ask the user about every feature that has not yet been discussed.
+
+**How to do this:**
+
+1. After collecting the user's stated requirements, scan the product knowledge base for all features and capabilities of OpenG2P Registry.
+2. For each feature found in the KB that the user has NOT yet mentioned or addressed, ask the user whether they need it.
+3. Group related features into a single question turn (e.g. ask about all identity/deduplication features together, all reporting features together, all integration features together).
+4. Record the user's answer for each feature:
+   - If needed and supported → record as `feature_<name>: required`
+   - If not needed → record as `feature_<name>: not_required`
+   - If needed but not supported → record as a GAP
+5. This process is **not optional**. Phase 1 cannot be considered complete until every feature in the KB has been explicitly discussed with the user.
+
+**Why this matters:** The gap analysis in the Requirements Report depends on knowing which features are needed, which are not, and which cannot be met. A feature not discussed is a feature not analysed.
+
 ### Gap Analysis Rules
 
-For each requirement stated by the user:
+For every requirement stated by the user, AND for every OpenG2P feature raised during Product Feature Discovery:
 
 1. Search the OpenG2P product knowledge base for explicit evidence of support.
 2. If the knowledge base confirms support — mark as **Supported** (Native or Configuration).
@@ -46,10 +63,11 @@ For each requirement stated by the user:
 
 All of the following must be satisfied before generating the Phase 1 report:
 
-- [ ] All mandatory facts in the table above are recorded (confirmed or explicitly deferred as unknown)
-- [ ] Every stated requirement has been assessed against the product KB and recorded as Supported or GAP
-- [ ] All OpenG2P Registry features have been reviewed with the user — each marked as Required, Not Required, or GAP
+- [ ] All mandatory facts in the Information to Collect table are recorded (confirmed or explicitly deferred as unknown)
+- [ ] Every requirement stated by the user has been assessed against the product KB and recorded as Supported or GAP
+- [ ] Product Feature Discovery is complete: every feature in the OpenG2P KB has been raised with the user and recorded as Required, Not Required, or GAP — none skipped
 - [ ] Infrastructure preferences (sandbox, pilot, production) are recorded
+- [ ] No feature from the KB remains undiscussed
 
 ### Output
 
