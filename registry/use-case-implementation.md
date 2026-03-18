@@ -1,98 +1,198 @@
 # Use Case Implementation
 
-OpenG2P Registry provides a base platform to create a Registry but it still needs a manifestation specific to your use case.  A typical implementation will involve the following process.
+OpenG2P Registry provides a base platform to create a Registry, but it needs to be configured and customised for your specific use case. A typical implementation follows five phases: Requirements, Build, Sandbox, Pilot, and Full Rollout.
 
-### Phase 1:  Requirements
+Each phase follows a consistent structure: **Purpose → Information to Collect → Actions → Completion Criteria → Output**.
 
-#### Purpose
+---
 
-In this phase we understand the use case and your requirements in as much detail as possible to map it the product and identify and gaps vis a vis what OpenG2P offers. In this phase we also understand the plan for doing a pilot or full rollout, the scale of the pilot/rollout, timelines and so on.
+## Phase 1: Requirements Analysis
 
-#### Information to collect
+### Purpose
 
-* Your country? -> "country"
-* Your department/organisation that wants to use OpenG2P Registry.  -> "department"
-* &#x20;What is your end2end use case — is this a benefit delivery program, if so what is the name of the program for which Registry is required? -> "program".  Or your mandate is just to create a registry like a National Social Registy or Farmer Registry, or Family Registry that will serve several programs, use cases and several departements? Desicribe the type of registry - like 'Social Registry', 'Workers Registry', 'Farmer Registry', 'Disability Registry', 'Family Registry', 'Students Registry', 'Health Workers Registry', 'Crop Registry', 'Land Registry', 'Vehicle Registry' etc -> "registry\_type"
-* Describe your use case in detail. How will the data be consumed/used from this registry — who are the consumers. Would you like to share the data with other departments, systems, agencies, applications? -> "use\_case\_info".
-* What is the process of registration? would it be online via portal, or offline via agents collecting information?  -> "offline\_registrations" (true/false)
-* What kind of documents are required for registration? -> "documents"
-* Is this a 'green field' implementation or 'brown field'. 'green field' means a fresh data colloection. While 'brown field' implies  you already have existing data that you would like to import. In which in what form is the data available - is it Excel sheets, or some database?  Or is this data available via APIs of some of other system.  -> "existing\_data\_import" (true/false)&#x20;
-* What are the various functionalities you are looking for your use case that must be supported by OpenG2P Registry?
-* Are you ok with having developement sandbox installed on a public cloud? -> "sandbox\_on\_cloud"  (true/false)
-* Will your pilot and production system run on on-prem hardware or you are ok with running the same on cloud?  -> "production\_on\_cloud" (true/false)
-* What is the number of primary records of the subjects (e.g. farmer, citizen, vehicles, families etc) expected the registry?  -> "n\_records"&#x20;
-* Which ID(s) will be used for the records? "id\_types"
-* Any specific interoperability requirements? -> "interoperability"
+Understand the use case and requirements in detail, map them to what OpenG2P Registry offers, and clearly identify any gaps. Also understand the deployment plan — pilot vs. full rollout, scale, timelines, and infrastructure preferences.
 
-#### Output
+### Information to Collect
 
-Requirement analysis report comprising of&#x20;
+The following facts must be collected. Each fact has a key (shown in quotes) that is used to record it in the advisory system.
 
-* Mapping of features/functionality, and importantly gaps between what is required versus what is offered by OpenG2P. The gaps should be clearly marked out separately.&#x20;
-* Guidance on the compute resources and other resource requirements for creating the setups for development, pilot and rollout
+| # | Question | Fact Key | Type | Mandatory |
+|---|----------|----------|------|-----------|
+| 1 | What country is this implementation for? | `country` | text | Yes |
+| 2 | Which department or organisation is implementing this? | `department` | text | Yes |
+| 3 | What is the end-to-end use case? Is this for a specific benefit delivery programme (give the programme name), or a general-purpose registry (e.g. National Social Registry, Farmer Registry, Family Registry, Health Workers Registry, Disability Registry, Students Registry, Crop Registry, Land Registry, Vehicle Registry)? | `program` / `registry_type` | text | Yes |
+| 4 | Describe the use case in detail. How will data be consumed — who are the consumers? Will data be shared with other departments, systems, agencies, or applications? | `use_case_info` | text | Yes |
+| 5 | How will registration happen — online via a portal, or offline via agents collecting data in the field? | `offline_registrations` | true/false | Yes |
+| 6 | What documents are required for registration? | `documents` | list | Yes |
+| 7 | Is this a greenfield implementation (fresh data collection) or brownfield (existing data to import)? If brownfield, what form is the existing data in — Excel, database, APIs of another system? | `existing_data_import` | true/false + details | Yes |
+| 8 | What specific functionalities are required that must be supported by OpenG2P Registry? List all requirements explicitly, including any that may not be standard registry features. | `requirements` | list | Yes |
+| 9 | Is a development sandbox on a public cloud acceptable? | `sandbox_on_cloud` | true/false | Yes |
+| 10 | Will the pilot and production systems run on on-premises hardware or on cloud? | `production_on_cloud` | true/false | Yes |
+| 11 | How many primary records are expected in the registry (e.g. number of farmers, citizens, vehicles, families)? | `n_records` | number | Yes |
+| 12 | Which ID type(s) will be used for records (e.g. national ID, MOSIP ID, custom functional ID)? | `id_types` | list | Yes |
+| 13 | Are there any specific interoperability requirements — integration with other systems, APIs, or standards (e.g. G2P Connect, MOSIP)? | `interoperability` | text | No |
 
-#### **Phase Transition Protocol (completion criteria)**
+### Gap Analysis Rules
 
-After the phase report is generated, the following protocol must be strictly followed to move to the next phase
+For each requirement stated by the user:
 
-1. The user must be informed about the requirements report and asked to review it carefully.
-2. If there are any changes, the same should be captured and report generated again.
-3. The user's approval must be taken for the report.
-4. The user must be informed briefly about the next phase and asked if the user is ok to start the next phase.
+1. Search the OpenG2P product knowledge base for explicit evidence of support.
+2. If the knowledge base confirms support — mark as **Supported** (Native or Configuration).
+3. If the knowledge base does not clearly confirm support — mark as **GAP**, regardless of how obvious or basic the requirement sounds.
+4. Record every requirement and its gap status as a fact. Requirements not recorded will not appear in the report.
+5. Use fact key `gap_<topic>` for gap items (e.g. `gap_loan_management`, `gap_weather_reports`).
 
-### Phase 2: Build
+### Completion Criteria
 
-#### Purpose
+All of the following must be satisfied before generating the Phase 1 report:
 
-In this phase the code changes and configurations are done after obtaining fine grained details of registry like registry parameters, constraints, number of registers, number of tables etc. Deployment artifacts like Docker, Helm are created after building the code.
+- [ ] All mandatory facts in the table above are recorded (confirmed or explicitly deferred as unknown)
+- [ ] Every stated requirement has been assessed against the product KB and recorded as Supported or GAP
+- [ ] All OpenG2P Registry features have been reviewed with the user — each marked as Required, Not Required, or GAP
+- [ ] Infrastructure preferences (sandbox, pilot, production) are recorded
 
-#### Information to collect &#x20;
+### Output
 
-* What the full name of your registry? Keep the name as short as possible. This will appear on all user interface text fields. Example 'Health Workers Registry'  -> "registry\_name"
-* What is the registry name menemonic? Keep this very short. This is be used in code, file names, Docker name, Service name etc.  Suggested is lower case of registry name separated by hyphens, e.g. 'health-worker'. Do not add add 'registry' as a prefix or suffix to the name as it will be added automatically. -> "registry\_mnemonic".
-* How many registers does it contain? Give name of each register. -> "registers\[]"&#x20;
-* Give exact names of the database columns for each register. -> "register\[name, \[columns]".
-* What are the various constraints between the tables (database contraints) -> "database\_constraints\[]"
-* What is the number of digits required for your functional ID? -> "id\_length"
+**Requirements Analysis Report** containing:
 
-#### Actions
+1. **Project Context** — Programme/registry name, country, department, scale, purpose (2–3 sentences)
+2. **Discovered Facts** — Complete list of all recorded facts with values
+3. **Requirements vs OpenG2P Mapping** — For each stated requirement:
+   - Exact wording as stated by the user
+   - OpenG2P feature or module that addresses it
+   - Support level: Native / Configuration / Partial / Gap
+   - How it is addressed (one sentence from KB), or gap description
+4. **Gaps Summary** — All Gap and Partial items clearly listed with what is missing and what custom work is needed
+5. **Resource Requirements** — Recommended deployment architecture (single-node / three-node / full-scale) and compute specs for development sandbox, pilot, and production environments — sourced from KB only
 
-* Git clone the following repositories in your local machine in a "build folder". Make sure the "build folder" is created fresh everytime, and  is empty -  does not contain any previous repos or contents:
-  * Repo 1: [https://github.com/OpenG2P/openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions)  branch 'develop'
-  * Repo 2: [https://github.com/OpenG2P/openg2p-registry-gen2-docker](https://github.com/OpenG2P/openg2p-registry-gen2-docker) branch 'develop'
-* Inside Repo 1, in the root folder, make a copy of the entire folder `openg2p-registry-farmer-extension`  to `openg2p-registry-<registry_menomic>-extension`&#x20;
-* Inside Repo 2 inside each of the following folders, create a copy of `farmer-develop.txt` file. Change the name to `<registry_menemonic>-develop.txt` .
-  * staff-portal-api
-  * partner-api
-  * celery
-* Inside each of `<registry_menemonic>-develop.txt`  in the above folders, apply the following changes
-  * Replace the line `git://develop//https://github.com/openg2p/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-farmer-extension`  with `{{workDir}}/openg2p-registry-gen2-extensions/openg2p-registry-<registry_mneominic>-extension`   _(note there is no '#' or 'subdirectory' in this path)_.
-  * In the very first line of the file (that starts with a '#'), and which contains the Docker name, replace the word 'farmer' with `<registry_mnemonic>`. &#x20;
-* From the root directory of Repo 2 run the follwing commands:
-  * `scripts/build.sh staff-portal-api/<registry-menemonic>-develop.txt`&#x20;
-  * `scripts/build.sh partner-api/<registry-menemonic>-develop.txt`
-  * `scripts/build.sh celery/<registry-menemonic>-develop.txt`
+### Phase Transition Protocol
 
-#### **Phase Transition Protocol (completion criteria)**
+After the report is generated, follow this sequence strictly before moving to Phase 2:
 
-* All Dockers built successfully
-* Code specific to this impelmentation checked in git repo (TBD)
+1. Inform the user the Requirements Analysis Report has been generated and ask them to review it.
+2. If the user requests changes — capture them, update the facts, and regenerate the report.
+3. Get explicit approval from the user that the report is accurate and complete.
+4. Briefly describe Phase 2 (Build) — what it involves and what information will be needed.
+5. Ask: "Are you ready to proceed to the Build phase?"
+6. Only advance to Phase 2 after the user explicitly confirms.
 
-#### Output
+---
 
-* Dockers for all of these available
-  * staff-portal-api
-  * partner-api
-  * celery&#x20;
-* Customization report consisting of&#x20;
-  * List of modifications at a high level - major changes and their repositories.
-  * Git final commit id for after checkin the code.
-  * Names of all the Dockers created along with their tags.
+## Phase 2: Build
 
-### Phase 3: Sandbox
+### Purpose
 
-### Phase 4: Pilot&#x20;
+Collect the fine-grained technical details of the registry, make the necessary code changes and configurations, and build the deployment artefacts (Docker images, Helm charts).
 
-### Phase 5: Full rollout
+### Information to Collect
 
-## &#x20;
+All of the following facts are **mandatory**. Do not proceed to Actions until all are recorded (confirmed or explicitly deferred as unknown by the user).
+
+| # | Question | Fact Key | Type | Mandatory |
+|---|----------|----------|------|-----------|
+| 1 | What is the full name of your registry? Keep it as short as possible — it will appear on all UI labels. Example: `Health Workers Registry` | `registry_name` | text | Yes |
+| 2 | What is the registry mnemonic? This is a very short code used in filenames, Docker image names, service names, and URLs. Use lowercase letters and hyphens only. Do NOT include the word "registry". Example: `health-worker` | `registry_mnemonic` | text (lowercase, hyphens only) | Yes |
+| 3 | How many registers does this registry contain? What is the name of each register? | `registers` | list of names | Yes |
+| 4 | For each register, what are the exact names of the database columns (fields)? | `register_columns` | map: register name → list of column names | Yes |
+| 5 | What are the database constraints between tables (foreign keys, unique constraints, check constraints)? | `database_constraints` | list | Yes |
+| 6 | How many digits are required for the functional ID? | `id_length` | number | Yes |
+
+**Validation rules:**
+
+- `registry_mnemonic` must be lowercase, hyphen-separated, no spaces, no "registry" prefix/suffix. Example: `health-worker` ✓, `HealthWorkerRegistry` ✗
+- Column names must be exact — they will be used directly in code generation
+- `id_length` is typically 9–12 digits; confirm with the user if unsure
+
+### Actions
+
+The following steps are executed automatically by the system after the user confirms the Build phase summary. All paths are relative to the build working directory.
+
+**Repository setup:**
+
+| Step | Type | Details |
+|------|------|---------|
+| Clone extensions repo | `clone` | Repo: `https://github.com/OpenG2P/openg2p-registry-gen2-extensions` Branch: `develop` |
+| Clone docker repo | `clone` | Repo: `https://github.com/OpenG2P/openg2p-registry-gen2-docker` Branch: `develop` |
+
+**Code customisation (Repo 1 — extensions):**
+
+| Step | Type | Details |
+|------|------|---------|
+| Copy farmer extension folder | `copy_dir` | src: `openg2p-registry-gen2-extensions/openg2p-registry-farmer-extension` → dest: `openg2p-registry-gen2-extensions/openg2p-registry-<registry_mnemonic>-extension` |
+
+**Code customisation (Repo 2 — docker, repeat for each of: `staff-portal-api`, `partner-api`, `celery`):**
+
+| Step | Type | Details |
+|------|------|---------|
+| Copy develop.txt | `copy_file` | src: `openg2p-registry-gen2-docker/<folder>/farmer-develop.txt` → dest: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` |
+| Replace pip dependency line | `replace_in_file` | file: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` find: `git://develop//https://github.com/openg2p/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-farmer-extension` replaceWith: `{{workDir}}/openg2p-registry-gen2-extensions/openg2p-registry-<registry_mnemonic>-extension` Note: no `#subdirectory=` in the replacement path |
+| Replace Docker image name | `replace_in_file` | file: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` find: first line of the file — the `#` comment line containing the Docker image name, which includes the word `farmer` replaceWith: same line with `farmer` replaced by `<registry_mnemonic>` Note: this step must run AFTER the pip dependency replacement above |
+
+**Build Docker images (run from root of Repo 2):**
+
+| Step | Type | Details |
+|------|------|---------|
+| Build staff-portal-api | `run` | cmd: `bash` args: `["scripts/build.sh", "staff-portal-api/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
+| Build partner-api | `run` | cmd: `bash` args: `["scripts/build.sh", "partner-api/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
+| Build celery | `run` | cmd: `bash` args: `["scripts/build.sh", "celery/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
+
+**Important ordering rules:**
+- The `replace_in_file` step for the pip dependency line must run BEFORE the Docker image name replacement on the same file
+- All `copy_file` steps must complete before any `replace_in_file` steps on those files
+- All `replace_in_file` steps must complete before any `run` (build) steps
+
+### Completion Criteria
+
+- [ ] All mandatory facts in the Information to Collect table above are recorded
+- [ ] User has confirmed the Build phase summary
+- [ ] All three Docker images built successfully: `staff-portal-api`, `partner-api`, `celery`
+- [ ] Code checked in to git repository (TBD)
+
+### Output
+
+**Build Report** containing:
+
+1. **Registry Configuration Summary** — registry name, mnemonic, registers, columns, constraints, ID length
+2. **Modifications Made** — high-level list of files copied, renamed, and modified, with repository names
+3. **Docker Images Built** — names and tags of all Docker images created
+4. **Git Commit ID** — final commit hash after code check-in
+
+### Phase Transition Protocol
+
+After the Build Report is generated:
+
+1. Inform the user the Build Report is available and ask them to review it.
+2. Confirm all Docker images are available and accessible.
+3. Get explicit user approval on the Build Report.
+4. Briefly describe Phase 3 (Sandbox) — deploying the built images to a sandbox environment for testing.
+5. Ask: "Are you ready to proceed to the Sandbox phase?"
+
+---
+
+## Phase 3: Sandbox
+
+### Purpose
+
+Deploy the built Docker images to a sandbox (development) environment and verify the registry is working correctly end-to-end. This is the first live deployment of the customised registry.
+
+_Details to be added._
+
+---
+
+## Phase 4: Pilot
+
+### Purpose
+
+Deploy to a limited production-like environment with real users and real data at reduced scale. Validate the registry against actual operational requirements before full rollout.
+
+_Details to be added._
+
+---
+
+## Phase 5: Full Rollout
+
+### Purpose
+
+Deploy to the full production environment at the planned scale. Includes data migration (for brownfield implementations), staff training, and operational handover.
+
+_Details to be added._
