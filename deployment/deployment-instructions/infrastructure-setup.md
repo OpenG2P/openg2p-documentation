@@ -228,7 +228,7 @@ Login to Rancher using the above hostname and bootstrap the `admin` user accordi
 
 #### **10. keycloak installation**
 
-Install keycloak from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak) directory (edit hostname):
+* Install keycloak from [kubernetes/keycloak](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/keycloak) directory (edit hostname):
 
 ```bash
 KEYCLOAK_HOSTNAME=keycloak.example.com \
@@ -236,7 +236,11 @@ NS=keycloak-system \
 ./install.sh --set replicaCount=1
 ```
 
-Log in to Keycloak using admin credentials from the Keycloak namespace secrets in Rancher UI.
+* Log in to Keycloak using admin credentials from the Keycloak namespace secrets in Rancher UI.
+* Create the following default user (that will be required in later installations)
+  * User name: client-manager@\<your domain email> _(example client-manager@openg2p.org)_
+  * Realm: master
+  * Roles: default-role-master, manage-clients, query-clients, view-clients _(restrict to only these roles)_.
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Verify Keycloak pods in the</mark> <mark style="color:green;"></mark><mark style="color:green;">`keycloak-system`</mark> <mark style="color:green;"></mark><mark style="color:green;">namespace and ensure it's accessible in your browser.</mark>
