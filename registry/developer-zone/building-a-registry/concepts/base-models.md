@@ -152,13 +152,13 @@ An example is given below
 
 ***
 
-#### G2PProgramHistory (g2p\_program\_history)
+#### G2PProgramRegister (g2p\_program\_register)
 
 The `g2p_program_register` model is used to store **applications submitted for a specific benefit program**. Each record represents an application submitted by an individual or household to be considered for participation in a program.
 
 The following are the key attributes associated with this model.
 
-<table data-full-width="true"><thead><tr><th width="176.470458984375">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>internal_record_id</td><td>The internal <strong>UUID primary key</strong> of the application record. This identifier is used internally by the registry for data retrieval, relationships, and business logic.</td></tr><tr><td>program_id</td><td>The unique identifier of the <strong>benefit program</strong> for which the application is submitted. This links the application record to the corresponding program defined in the Program and Benefit Management System (PBMS).</td></tr><tr><td>program_mnemonic</td><td>A short, human-readable <strong>code or mnemonic</strong> representing the program. This is typically used for easier identification of the program in logs, integrations, and operational workflows.</td></tr><tr><td>foundational_id</td><td>The <strong>foundational identity identifier</strong> of the applicant, if available. This typically corresponds to a national or regional foundational ID used to uniquely identify individuals.</td></tr><tr><td>link_foundational_id</td><td>Used to link the application to another <strong>foundational identity record</strong>, when the application relates to a different individual than the applicant. For example, a household member applying on behalf of another individual.</td></tr></tbody></table>
+<table data-full-width="true"><thead><tr><th width="176.470458984375">Attribute</th><th>Description</th></tr></thead><tbody><tr><td>internal_record_id</td><td>The internal <strong>UUID primary key</strong> of the application record. This identifier is used internally by the registry for data retrieval, relationships, and business logic.</td></tr><tr><td>foundational_id</td><td>The <strong>foundational identity identifier</strong> of the applicant, if available. This typically corresponds to a national or regional foundational ID used to uniquely identify individuals.</td></tr><tr><td>link_foundational_id</td><td>Used to link the application to another <strong>foundational identity record</strong>, when the application relates to a different individual than the applicant. For example, a household member applying on behalf of another individual.</td></tr></tbody></table>
 
 ### Convenience Models Provided by the Platform
 
