@@ -90,7 +90,12 @@ In all the architectures above there is a base infrastructure (comprising of Kub
 
 ## Environments
 
-An environment is an insolated setup for a specific purpose like development, testing, staging, production etc.  In OpenG2P's deployment model each environment is a namespace in Kubernetes.  The namespace contains set of common shared modules - [`openg2p-commons`](openg2p-commons-helm-chart.md) - and the modules (Registry, PBMS, SPAR, G2P Bridge) themselves along with any third-party dependency modules.  Access to each environment can be controlled using [private access channels](../deployment-guide/private-access-channel.md) and RBAC of Kubernetes.  Only one instance of PostgreSQL server is run per environment which means all  modules use the same PostgreSQL server (Dockerized or external - depending on the choice of installation).
+An environment is an insolated setup for a specific purpose like development, testing, staging, production etc.  In OpenG2P's deployment model each environment resides in a _namespace_ in Kubernetes.  The namespace contains set of common shared modules - [`openg2p-commons`](openg2p-commons-helm-chart.md) - and the modules (Registry, PBMS, SPAR, G2P Bridge) themselves along with any third-party dependency modules.  Access to each environment can be controlled using [private access channels](../deployment-guide/private-access-channel.md) and RBAC of Kubernetes.  Generally, all modules share the common resources like Postgres, MinIO, Kafka etc. These resources are installed as part of the [`openg2p-commons`](openg2p-commons-helm-chart.md) . Only one instance of PostgreSQL server is run per environment which means all  modules use the same PostgreSQL server (Dockerized or external - depending on the choice of installation).  An environment needs the following:
+
+1. A short name of the environment (without hyphens, to keep it simple) like 'qa'.  This name is used for domain name and namespace
+2. Wildcard domain name like '\*.qa.openg2p.org' 'cause several services will run within this domain.
+3. Installation of opengp2-commons
+4. Installation of any (or all modules):  Registry, PBMS, SPAR, G2P Bridge, Beneficiary Portal.
 
 While the installation can be easily achieved by provided Helm Charts, tear down of the environment involves few manual steps. Refer to tear down section in the deployment documentation for each module.
 
