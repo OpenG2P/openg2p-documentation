@@ -239,6 +239,7 @@ NS=keycloak-system \
 * Log in to Keycloak using admin credentials from the Keycloak namespace secrets in Rancher UI.
 * Create the following default user (that will be required in later installations)
   * User name: client-manager@\<your domain email> _(example client-manager@openg2p.org)_
+  * Password based credentials
   * Realm: master
   * Roles: default-role-master, manage-clients, query-clients, view-clients _(restrict to only these roles)_.
 
