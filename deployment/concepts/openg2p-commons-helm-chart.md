@@ -47,11 +47,11 @@ The `openg2p-commons` Helm chart bundles the following core components.
 
 ## Versions
 
-| HelmVesion    | Published On | Comments                                                                                                                                             |
-| ------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.0.0         | 21-Jan-2026  | Stable version.                                                                                                                                      |
-| 1.1.0-develop | In progress  | <p>Several major changes.  See</p><p>  <a href="https://openg2p.atlassian.net/browse/G2P-4036">https://openg2p.atlassian.net/browse/G2P-4036</a></p> |
-|               |              |                                                                                                                                                      |
+| HelmVesion    | Last Modified | Comments                                                                                                                                                                                          |
+| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0         | 21-Jan-2026   | Frozen stable version.                                                                                                                                                                            |
+| 1.1.0-develop | 13-Feb-2026   | Several major changes.  See [https://openg2p.atlassian.net/browse/G2P-4036](https://openg2p.atlassian.net/browse/G2P-4036). Works well with internal DB. With external DB, there are some issues. |
+| 1.2.0-develop | 24-Mar-2026   | Works well when run via command line using `install.sh` script but not from Rancher. <mark style="color:$danger;">DO NOT USE</mark> install from Rancher.                                         |
 
 ## How to deploy openg2p commons
 
