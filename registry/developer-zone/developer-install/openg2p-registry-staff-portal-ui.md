@@ -1,0 +1,107 @@
+---
+description: Developer Installation for Openg2p Registry Staff Portal UI
+---
+
+# Openg2p Registry Staff Portal UI
+
+### Setup
+
+Follow these steps to set up Openg2p Registry Staff Portal UI:
+
+* **Clone the Repository**: Clone the Openg2p Beneficiary Portal UI repository from the source:&#x20;
+
+```
+git clone git@github.com:OpenG2P/openg2p-registry-staff-portal-ui.git
+```
+
+* **Install Dependencies**: Navigate into the cloned Openg2p Registry Staff Portal UI directory and install dependencies using npm:
+
+```
+npm install
+```
+
+* **Configuration**: Configure the OpenG2P Registry Staff Portal UI to connect to the APIs by setting the required environment variables.
+
+```
+BACKEND_API_URL="https://staff-farmer-registry-gen2.dev.openg2p.org"
+MASTERDATA_BACKEND_API_URL="https://gen2-master-data.dev.openg2p.org/"
+
+APP_MNEMONIC="registry-ui"
+APP_URL="http://localhost:3000"
+
+PARTNER_IMPORT_EXPORT_ENABLE="true"
+PARTNER_INGEST_URL="https://partner-farmer-registry-gen2.dev.openg2p.org/partner/ingest_data?data_model=dcivc"
+
+VERIFY_SERVICE_URL="https://registry-farmer.dev.openg2p.org/v1/verify"
+VP_CLIENT_ID="did:web:registry-farmer.dev.openg2p.org:v1:verify"
+VP_PRESENTATION_ID="vp_id"
+VP_PURPOSE="Digital identity verification for registry onboarding"
+PAGE_SIZE=10
+
+IAM_URL="http://iam.openg2p.my"
+KEYCLOAK_LOGOUT_URL="https://keycloak2.openg2p.org/realms/{realmname}/protocol/openid-connect/logout"
+```
+
+**Nginx Configuration**: Configure Nginx to act as a reverse proxy for Openg2p Registry Staff Portal UI
+
+```
+# Install Nginx if not already installed
+sudo apt-get update
+sudo apt-get install nginx -y
+
+# Create a new configuration file for Openg2p Registry Staff Portal UI
+sudo nano /etc/nginx/sites-available/staff-portal.conf
+```
+
+* &#x20;Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).&#x20;
+
+```
+server {
+    listen 80;
+    server_name farmer-registry.openg2p.my;
+
+    proxy_buffer_size 256k;
+    proxy_buffers 8 512k;
+    proxy_busy_buffers_size 512k;
+    large_client_header_buffers 8 256k;
+
+    location / {
+        proxy_pass                      http://localhost:3000;
+        proxy_http_version              1.1;
+        proxy_set_header                Upgrade $http_upgrade;
+        proxy_set_header                Connection "upgrade";
+        proxy_set_header                Host $host;
+        proxy_set_header                Referer $http_referer;
+        proxy_set_header                X-Real-IP $remote_addr;
+        proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header                X-Forwarded-Proto $scheme;
+        proxy_pass_request_headers      on;
+    }
+}
+```
+
+* **Enable Configuration**: Enable the Nginx configuration by creating a symbolic link to `sites-enabled`
+
+```
+sudo ln -sf /etc/nginx/sites-available/staff-portal.conf /etc/nginx/sites-enabled/
+```
+
+* **Adding domain to Hosts**: Add the domain to the hosts for the system to recognize the domain.
+
+```
+sudo nano /etc/hosts
+127.0.0.1 farmer-registry.openg2p.my
+```
+
+* **Restart Nginx**: Restart the Nginx service to apply the changes:
+
+```
+sudo service nginx restart
+```
+
+* **Start Openg2p IAM Service**: Ensure that Openg2p IAM Service is up and running. Refer to the Openg2p IAM Service documentation.
+* **Run Openg2p Registry Staff Portal UI**: This command starts the development server. Open a web browser and navigate to the specified URL ([http://localhost:3000](http://localhost:3000/)) or a specific domain as per nginx server ([http://farmer-registry.openg2p.my](http://farmer-registry.openg2p.my/)) to access the UI interface.
+
+```
+npm run dev
+```
