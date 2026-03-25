@@ -581,6 +581,7 @@
     * [Infrastructure Setup](deployment/deployment-instructions/infrastructure-setup.md)
     * [Environment Installation](deployment/deployment-instructions/environment-installation.md)
     * [Production Deployment Best Practices](deployment/deployment-instructions/production.md)
+  * [Automation](deployment/automation.md)
   * [Upgrades](deployment/upgrades.md)
   * [Additional Guides](deployment/deployment-guide/README.md)
     * [Automatic Build and Upload of Private Dockers](deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)
