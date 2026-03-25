@@ -1,4 +1,4 @@
-# OpenG2P Commons Helm Chart
+# OpenG2P Commons Helm Chart 1.x
 
 ## Context
 
@@ -27,6 +27,11 @@ The `openg2p-commons` Helm chart bundles the following core components.
 8. **Superset**
 9. **eSignet** (includes _eSignet_ + _Mock Identity System_)
 
+
+
+{% hint style="info" %}
+
+
 ## Bitnami secure images transition
 
 **From August 28th, 2025**, Bitnami is evolving its public catalog under the **Bitnami Secure Images** initiative.
@@ -44,6 +49,7 @@ The `openg2p-commons` Helm chart bundles the following core components.
 * Since Bitnami removed free access to their Helm charts and Docker images,\
   we extracted the existing charts and versions we depend on and uploaded them to our own private Helm repository.
 * All our Helm charts are now updated to reference these internal chart paths instead of Bitnami’s public sources.
+{% endhint %}
 
 ## Versions
 
