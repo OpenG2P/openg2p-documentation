@@ -43,14 +43,49 @@ Can be migrated to `custom` mode later when real domain names are available.
 
 ### Custom mode
 
-For production deployments with proper domain names. Requires DNS A records pointing to the VM and uses Let's Encrypt for trusted TLS certificates.
+For production deployments with proper domain names. Requires DNS A records pointing to the VM.
 
-| Challenge Method | Config value | How it works |
+TLS certificates can be obtained in two ways (set `tls.method` in config):
+
+| TLS Method | Config value | How it works |
 | --- | --- | --- |
-| **Manual DNS** (default) | `dns` | Script pauses, shows TXT record to create, waits for confirmation |
+| **Let's Encrypt** (default) | `letsencrypt` | Auto-obtain certs. Set `tls.letsencrypt_email` and challenge method |
+| **User-provided** | `provided` | Bring your own certs. Set paths in `tls.rancher_cert`, `tls.rancher_key`, etc. |
+
+{% tabs %}
+{% tab title="Let's Encrypt" %}
+Choose a challenge method (`tls.letsencrypt_challenge`):
+
+| Challenge | Config value | How it works |
+| --- | --- | --- |
+| **Manual DNS** (default) | `dns` | Script pauses, shows TXT record to create |
 | **Cloudflare automated** | `dns-cloudflare` | Fully automated via Cloudflare API token |
 | **Route53 automated** | `dns-route53` | Fully automated via AWS credentials |
 | **HTTP challenge** | `http` | Requires port 80 open to internet |
+
+```yaml
+tls:
+  method: "letsencrypt"
+  letsencrypt_email: "admin@openg2p.org"
+  letsencrypt_challenge: "dns"
+```
+{% endtab %}
+
+{% tab title="User-Provided Certs" %}
+Supply your own certificate and key files. The script validates that the cert matches the hostname and that the cert/key pair match.
+
+Wildcard certs are supported — set `rancher_cert`/`rancher_key` and leave `keycloak_cert`/`keycloak_key` empty to reuse the same cert.
+
+```yaml
+tls:
+  method: "provided"
+  rancher_cert: "/path/to/fullchain.pem"
+  rancher_key: "/path/to/privkey.pem"
+  keycloak_cert: ""   # empty = reuse rancher cert (wildcard)
+  keycloak_key: ""
+```
+{% endtab %}
+{% endtabs %}
 
 ## Prerequisites
 
