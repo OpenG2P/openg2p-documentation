@@ -385,6 +385,46 @@ sudo ./openg2p-environment.sh --config env-config.yaml --phase 2    # Module ins
 sudo ./openg2p-environment.sh --config env-config.yaml --force       # Re-run everything
 ```
 
+### Domain Migration (Local → Custom)
+
+When your local sandbox is ready for a real domain, migrate without reinstalling:
+
+```bash
+cp migrate-config.example.yaml migrate-config.yaml
+# Edit: set new hostnames, Let's Encrypt email, environments to migrate
+sudo ./openg2p-migrate-domain.sh --config migrate-config.yaml
+```
+
+Example migration config:
+
+```yaml
+infra_config: "infra-config.yaml"
+new_domain_mode: "custom"
+new_rancher_hostname: "rancher.openg2p.org"
+new_keycloak_hostname: "keycloak.openg2p.org"
+letsencrypt_email: "admin@openg2p.org"
+letsencrypt_challenge: "dns"
+environments:
+  - name: "dev"
+    config_file: "env-config.yaml"
+    new_base_domain: "dev.openg2p.org"
+```
+
+{% hint style="success" %}
+This is a **non-destructive** operation. No data loss, no service reinstall. All config files are updated in place with automatic backups (`.pre-migration`).
+{% endhint %}
+
+The migration script:
+
+* Validates DNS A records for new hostnames
+* Obtains Let's Encrypt certificates (Rancher, Keycloak, and wildcard per environment)
+* Updates Nginx, Keycloak `KC_HOSTNAME`, Rancher server-url, SAML config, Istio Gateways
+* Helm upgrades each environment's charts with the new domain
+* Removes CoreDNS local domain forward
+* Updates `infra-config.yaml` and `env-config.yaml` files
+
+After migration, you can remove `/etc/resolver` entries and the self-signed CA from your laptop's trust store.
+
 ### Uninstalling
 
 **Remove a single environment** (keeps infrastructure intact):
@@ -414,6 +454,8 @@ automation/
 ├── openg2p-environment.sh            # Script 2: environment setup
 ├── openg2p-environment-uninstall.sh  # Uninstall: removes a single environment
 ├── env-config.example.yaml           # Config for Script 2
+├── openg2p-migrate-domain.sh         # Migrate: local → custom domain
+├── migrate-config.example.yaml       # Config for domain migration
 ├── lib/
 │   ├── utils.sh          # Shared: logging, state, config, wait helpers
 │   ├── phase1.sh         # Infra Phase 1: tools, RKE2, Wireguard, NFS, DNS, TLS, Nginx
