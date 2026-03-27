@@ -113,9 +113,9 @@ All internal retrieval operations and business logic within the registry rely on
 
 This attribute is used to **link a record in a Table to a record in another Register or Table**.
 
-For example, consider an **Individual Register** where additional information about individuals is stored in a supporting table called `g2p_table_utilities`. This table may contain a list of **public utilities subscribed to by an individual**, such as electricity, water, or internet services.
+For example, consider an **Individual Register** where additional information about individuals is stored in a supporting table called `g2p_register_utilities`. This table may contain a list of **public utilities subscribed to by an individual**, such as electricity, water, or internet services.
 
-In this case, each record in `g2p_table_utilities` will store the **`internal_record_id` of the corresponding Individual record** in its `link_internal_record_id` field.
+In this case, each record in `g2p_register_utilities` will store the **`internal_record_id` of the corresponding Individual record** in its `link_internal_record_id` field.
 
 This mechanism enables the platform to support **relationships between datasets**, including:
 
@@ -134,7 +134,7 @@ An example is given below
 </code></pre></td><td><pre><code>Ravi Kumar
 </code></pre></td></tr></tbody></table>
 
-**g2p\_table\_utilities** (TABLE to manage an individual's utility subscriptions)
+**g2p\_register\_utilities** (TABLE to manage an individual's utility subscriptions)
 
 <table data-full-width="true"><thead><tr><th width="166.7701416015625">internal_record_id</th><th width="142.775146484375">utility_type</th><th width="159.03955078125">subscription_id</th><th>link_internal_record_id</th></tr></thead><tbody><tr><td><pre><code>2a6b3e5c
 </code></pre></td><td><pre><code>Electricity
