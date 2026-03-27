@@ -16,7 +16,7 @@ Automated single-node deployment of the complete OpenG2P platform — from bare 
 | `openg2p-environment.sh` | Environment + modules (namespace, commons, Registry, PBMS, etc.) | Once per environment |
 
 {% hint style="info" %}
-The source code for all automation scripts lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/`.
+The source code for all automation scripts lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/single-node/`.
 {% endhint %}
 
 ## Domain Modes
@@ -105,7 +105,7 @@ SSH into the VM as root:
 
 ```bash
 git clone https://github.com/OpenG2P/openg2p-deployment.git
-cd openg2p-deployment/automation
+cd openg2p-deployment/automation/single-node
 cp infra-config.example.yaml infra-config.yaml
 # Edit infra-config.yaml — for local mode, just set node_ip and domain_mode: local
 sudo chmod +x openg2p-infra.sh
@@ -156,7 +156,7 @@ keycloak:
 Before running the script, create the security group:
 
 ```bash
-cd automation/aws
+cd automation/single-node/aws
 ./create-security-group.sh --vpc-id vpc-xxxxxxxxx
 ```
 
@@ -481,7 +481,7 @@ Infrastructure uninstall requires typing `DELETE EVERYTHING` to confirm. Removes
 ## File Structure
 
 ```
-automation/
+automation/single-node/
 ├── openg2p-infra.sh                  # Script 1: base infrastructure
 ├── openg2p-infra-uninstall.sh        # Uninstall: tears down entire infra
 ├── infra-config.example.yaml         # Config for Script 1
