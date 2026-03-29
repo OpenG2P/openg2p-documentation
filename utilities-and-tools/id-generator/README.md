@@ -40,6 +40,16 @@ AVAILABLE  →  TAKEN
 * **AVAILABLE** — In pool, ready to be issued.
 * **TAKEN** — Issued to a caller; permanently consumed. Never re-issued.
 
+## Detailed documentation
+
+| Page | Description |
+| ---- | ----------- |
+| [Functional Specifications](functional-specifications.md) | ID types, generation rules, 10 MOSIP filters, pool management, exhaustion handling, configuration |
+| [API Reference](api-reference.md) | REST API endpoints, request/response formats, error codes, OpenAPI spec |
+| [Technical Architecture](technical-architecture.md) | Async stack, database design, concurrency patterns, Kubernetes deployment |
+| [Deployment](deployment.md) | Helm chart installation, Docker setup, local development, environment variables |
+| [Testing](testing.md) | Test categories, execution commands, HTML reporting |
+
 ## Source code
 
 * GitHub: [https://github.com/OpenG2P/id-generator](https://github.com/OpenG2P/id-generator)
