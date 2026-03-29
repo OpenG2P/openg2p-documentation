@@ -24,6 +24,10 @@ Tests are organized into 5 categories, executed in order:
 | 4     | Exhaustion     | `exhaustion`    | Verify correct IDG-002 errors after space is consumed      |
 | 5     | Performance    | `performance`   | Response time percentiles (p50, p95, p99)                  |
 
+## Test cases
+
+A complete, human-readable list of all test cases is maintained in [`tests/test_cases.yaml`](https://github.com/OpenG2P/id-generator/blob/main/tests/test_cases.yaml). Each entry includes the test ID, name, category, file, and description. This file serves as a reviewable inventory of what is tested.
+
 ## Running tests
 
 ### Prerequisites
