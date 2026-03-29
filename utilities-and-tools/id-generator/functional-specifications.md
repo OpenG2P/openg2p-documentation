@@ -93,7 +93,7 @@ The effective ID space is significantly smaller than the raw numeric range due t
 
 ### Estimated ID space by length (after filters)
 
-These estimates were generated using [`scripts/space_estimator.py`](https://github.com/OpenG2P/id-generator/blob/main/scripts/space_estimator.py) with default filter parameters.
+These estimates were generated using [`scripts/space_estimator.py`](https://github.com/OpenG2P/id-generator/blob/main/scripts/space_estimator.py).
 
 | ID Length (digits) | Estimated Valid IDs   |
 | ------------------ | --------------------- |
@@ -109,9 +109,6 @@ These estimates were generated using [`scripts/space_estimator.py`](https://gith
 | 15                 | 13,285,071,919,224    |
 | 16                 | 123,889,361,047,011   |
 
-{% hint style="info" %}
-Actual counts depend on filter parameters (`sequence_limit`, `repeating_limit`, etc.). The estimates above use the default configuration. Use `scripts/space_estimator.py` to calculate for custom filter settings.
-{% endhint %}
 
 When the pool is empty **and** no more valid IDs can be generated:
 
