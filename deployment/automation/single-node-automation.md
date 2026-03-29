@@ -1,0 +1,536 @@
+---
+description: Single-node deployment automation
+---
+
+# Single-Node Automation
+
+The entire deployment process for a single-node setup has been automated and available as shell scripts. This is useful for bringing up an OpenG2P sandbox on your own machine — everything (K8s, Istio, Rancher, Keycloak, Nginx, environments) runs on a single VM.
+
+{% hint style="info" %}
+For adding environments to an existing multi-node infrastructure, see [Environment Setup for Multi-Node](environment-setup-multi-node.md).
+{% endhint %}
+
+## Overview
+
+Automated single-node deployment of the complete OpenG2P platform — from bare Ubuntu to running modules. Two scripts handle the entire lifecycle:
+
+| Script | Purpose | Run when |
+| --- | --- | --- |
+| `openg2p-infra.sh` | Base infrastructure (K8s, Istio, Rancher, Keycloak, monitoring, SSO) | Once per machine |
+| `openg2p-environment.sh` | Environment + modules (namespace, commons, Registry, PBMS, etc.) | Once per environment |
+
+{% hint style="info" %}
+The source code for all automation scripts lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/single-node/`.
+{% endhint %}
+
+## Domain Modes
+
+The infrastructure script supports two modes — set `domain_mode` in your config:
+
+| Mode | When to use | What you need | DNS | TLS |
+| --- | --- | --- | --- | --- |
+| **`local`** | Sandboxes, demos, pilots, air-gapped | Just a VM + its IP | dnsmasq (auto-installed) | Local CA + self-signed certs |
+| **`custom`** (default) | Production, public-facing | Domain names + DNS records | Your DNS provider | Let's Encrypt (DNS-01) |
+
+### Local mode
+
+Designed for getting OpenG2P running the same day, with zero external dependencies.
+
+* Installs `dnsmasq` on the VM to resolve `*.openg2p.test` to the VM's IP
+* Generates a local Certificate Authority with self-signed certs
+* Configures Wireguard VPN with split tunnel (only cluster traffic routed through VPN)
+* Hostnames are auto-derived: `rancher.openg2p.test`, `keycloak.openg2p.test`, etc.
+
+{% hint style="success" %}
+Can be migrated to `custom` mode later when real domain names are available.
+{% endhint %}
+
+### Custom mode
+
+For production deployments with proper domain names. Requires DNS A records pointing to the VM.
+
+TLS certificates can be obtained in two ways (set `tls.method` in config):
+
+| TLS Method | Config value | How it works |
+| --- | --- | --- |
+| **Let's Encrypt** (default) | `letsencrypt` | Auto-obtain certs. Set `tls.letsencrypt_email` and challenge method |
+| **User-provided** | `provided` | Bring your own certs. Set paths in `tls.rancher_cert`, `tls.rancher_key`, etc. |
+
+{% tabs %}
+{% tab title="Let's Encrypt" %}
+Choose a challenge method (`tls.letsencrypt_challenge`):
+
+| Challenge | Config value | How it works |
+| --- | --- | --- |
+| **Manual DNS** (default) | `dns` | Script pauses, shows TXT record to create |
+| **Cloudflare automated** | `dns-cloudflare` | Fully automated via Cloudflare API token |
+| **Route53 automated** | `dns-route53` | Fully automated via AWS credentials |
+| **HTTP challenge** | `http` | Requires port 80 open to internet |
+
+```yaml
+tls:
+  method: "letsencrypt"
+  letsencrypt_email: "admin@openg2p.org"
+  letsencrypt_challenge: "dns"
+```
+{% endtab %}
+
+{% tab title="User-Provided Certs" %}
+Supply your own certificate and key files. The script validates that the cert matches the hostname and that the cert/key pair match.
+
+Wildcard certs are supported — set `rancher_cert`/`rancher_key` and leave `keycloak_cert`/`keycloak_key` empty to reuse the same cert.
+
+```yaml
+tls:
+  method: "provided"
+  rancher_cert: "/path/to/fullchain.pem"
+  rancher_key: "/path/to/privkey.pem"
+  keycloak_cert: ""   # empty = reuse rancher cert (wildcard)
+  keycloak_key: ""
+```
+{% endtab %}
+{% endtabs %}
+
+## Prerequisites
+
+| Requirement | Local mode | Custom mode |
+| --- | --- | --- |
+| **VM** | Ubuntu 24.04 LTS, 16 vCPU, 64 GB RAM, 128 GB SSD | Same |
+| **Access** | Root/sudo on the VM | Same |
+| **Internet** | Required for downloading packages and Helm charts | Same |
+| **DNS** | Not needed (dnsmasq handles it) | A records for Rancher + Keycloak hostnames |
+| **TLS** | Not needed (local CA handles it) | DNS access for TXT records (Let's Encrypt) |
+
+## Quick Start
+
+### Step 1: Infrastructure Setup
+
+SSH into the VM as root:
+
+```bash
+git clone https://github.com/OpenG2P/openg2p-deployment.git
+cd openg2p-deployment/automation/single-node
+cp infra-config.example.yaml infra-config.yaml
+# Edit infra-config.yaml — for local mode, just set node_ip and domain_mode: local
+sudo chmod +x openg2p-infra.sh
+sudo ./openg2p-infra.sh --config infra-config.yaml
+```
+
+{% tabs %}
+{% tab title="Local Mode (minimal)" %}
+Only `node_ip` is required — everything else has defaults:
+
+```yaml
+node_ip: "172.16.0.10"       # Your VM's private IP
+domain_mode: "local"
+cluster_name: "openg2p"      # Display name in Rancher UI
+node_name: "node1"           # K8s node name
+keycloak:
+  admin_email: "admin@example.com"  # For Rancher-Keycloak SSO
+```
+{% endtab %}
+
+{% tab title="Custom Mode (production)" %}
+Requires domain names and DNS records:
+
+```yaml
+node_ip: "172.16.0.10"
+domain_mode: "custom"
+rancher_hostname: "rancher.openg2p.org"
+keycloak_hostname: "keycloak.openg2p.org"
+letsencrypt_email: "admin@openg2p.org"
+letsencrypt_challenge: "dns"
+keycloak:
+  admin_email: "admin@openg2p.org"
+```
+{% endtab %}
+
+{% tab title="AWS EC2" %}
+For AWS, also set the public IP for Wireguard:
+
+```yaml
+node_ip: "172.16.0.10"       # Private IP
+domain_mode: "local"
+wireguard:
+  endpoint: "54.x.x.x"       # Public IP for VPN clients
+keycloak:
+  admin_email: "admin@example.com"
+```
+
+Before running the script, create the security group:
+
+```bash
+cd automation/single-node/aws
+./create-security-group.sh --vpc-id vpc-xxxxxxxxx
+```
+
+After, attach it and disable source/dest check:
+
+```bash
+aws ec2 modify-instance-attribute --instance-id i-xxx --groups sg-xxx
+aws ec2 modify-instance-attribute --instance-id i-xxx --no-source-dest-check
+```
+{% endtab %}
+{% endtabs %}
+
+Takes \~15-25 minutes. Idempotent — re-run on failure.
+
+### Step 2: Environment Setup
+
+After infrastructure is ready, create environments:
+
+```bash
+cp env-config.example.yaml env-config.yaml
+# Edit env-config.yaml
+sudo ./openg2p-environment.sh --config env-config.yaml
+```
+
+{% tabs %}
+{% tab title="Local Mode" %}
+Everything is auto-derived from the infra config:
+
+```yaml
+environment: "dev"
+infra_config: "infra-config.yaml"
+modules:
+  commons: true
+```
+
+This creates namespace `dev` with domain `dev.openg2p.test`.
+{% endtab %}
+
+{% tab title="Custom Mode" %}
+Set `base_domain` and Keycloak credentials explicitly:
+
+```yaml
+environment: "dev"
+base_domain: "dev.openg2p.org"
+infra_config: "infra-config.yaml"
+keycloak:
+  client_manager_user: "client-manager@openg2p.org"
+  client_manager_password: "<from infra script output>"
+modules:
+  commons: true
+```
+{% endtab %}
+
+{% tab title="Multiple Environments" %}
+Run the script multiple times with different configs:
+
+```bash
+sudo ./openg2p-environment.sh --config env-dev.yaml    # dev.openg2p.test
+sudo ./openg2p-environment.sh --config env-qa.yaml     # qa.openg2p.test
+sudo ./openg2p-environment.sh --config env-pilot.yaml  # pilot.openg2p.test
+```
+{% endtab %}
+{% endtabs %}
+
+Takes \~15-20 minutes per environment.
+
+## Post-Infrastructure Steps (on your laptop)
+
+After the infra script completes, follow these steps to access the cluster.
+
+### 1. Wireguard VPN
+
+```bash
+# On the VM:
+sudo cp /etc/wireguard/peers/peer1/peer1.conf /tmp/
+sudo chmod 644 /tmp/peer1.conf
+
+# On your laptop:
+scp -i <your-key.pem> <user>@<public-ip>:/tmp/peer1.conf .
+```
+
+Import `peer1.conf` into the [Wireguard client app](https://www.wireguard.com/install/) and activate the tunnel.
+
+{% hint style="info" %}
+The default is **split tunnel** — only Wireguard subnet + VPC traffic routes through the VPN. Your internet stays direct and fast.
+{% endhint %}
+
+### 2. DNS Resolution (local mode only)
+
+{% tabs %}
+{% tab title="macOS" %}
+```bash
+sudo mkdir -p /etc/resolver
+echo "nameserver <node_ip>" | sudo tee /etc/resolver/<local_domain>
+# e.g.: echo "nameserver 172.29.8.137" | sudo tee /etc/resolver/openg2p.test
+```
+
+> **Note:** `dig` bypasses the macOS resolver system. Use `dscacheutil -q host -a name rancher.openg2p.test` or `ping` to verify.
+{% endtab %}
+
+{% tab title="Windows" %}
+Run in PowerShell as Administrator:
+
+```powershell
+Add-DnsClientNrptRule -Namespace ".<local_domain>" -NameServers "<node_ip>"
+# e.g.: Add-DnsClientNrptRule -Namespace ".openg2p.test" -NameServers "172.29.8.137"
+```
+{% endtab %}
+
+{% tab title="Linux" %}
+```bash
+sudo resolvectl dns wg0 <node_ip>
+sudo resolvectl domain wg0 '~<local_domain>'
+```
+{% endtab %}
+{% endtabs %}
+
+### 3. CA Certificate (local mode only)
+
+Copy `/etc/openg2p/ca/ca.crt` from the VM to your laptop, then install:
+
+{% tabs %}
+{% tab title="macOS" %}
+```bash
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.crt
+```
+
+Or double-click `ca.crt` → System Settings → General → Profiles.
+{% endtab %}
+
+{% tab title="Windows" %}
+Double-click `ca.crt` → Install Certificate → Local Machine → "Trusted Root Certification Authorities"
+{% endtab %}
+
+{% tab title="Linux" %}
+```bash
+sudo cp ca.crt /usr/local/share/ca-certificates/openg2p-ca.crt
+sudo update-ca-certificates
+```
+{% endtab %}
+{% endtabs %}
+
+### 4. kubectl / helm Access
+
+```bash
+# On the VM:
+sudo cp /etc/rancher/rke2/rke2-remote.yaml /tmp/
+sudo chmod 644 /tmp/rke2-remote.yaml
+
+# On your laptop:
+scp -i <your-key.pem> <user>@<public-ip>:/tmp/rke2-remote.yaml ~/.kube/openg2p-config
+export KUBECONFIG=~/.kube/openg2p-config
+kubectl get nodes
+```
+
+{% hint style="warning" %}
+Requires Wireguard VPN to be active — the K8s API is on the private IP.
+{% endhint %}
+
+### 5. Login to Rancher
+
+Open Rancher at `https://rancher.<domain>` — you should see a **"Login with Keycloak"** button.
+
+**Keycloak login (recommended):** Use the email address configured in `keycloak.admin_email` (default: `admin@openg2p.org`). Retrieve the Keycloak admin password:
+
+```bash
+sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl -n keycloak-system \
+  get secret keycloak -o jsonpath='{.data.admin-password}' | base64 -d && echo
+```
+
+**Local admin login:** Username **`admin`**. Retrieve the password:
+
+```bash
+sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl -n cattle-system \
+  get secret rancher-secret -o jsonpath='{.data.adminPassword}' | base64 -d && echo
+```
+
+## User Access & Roles
+
+Rancher ships with built-in project roles, but all include full Secrets access. The automation script creates two additional custom roles that exclude secrets:
+
+| Role | Source | Secrets Access | Permissions |
+| --- | --- | --- | --- |
+| **Project Owner** | Rancher built-in | Full | Full control of the project |
+| **Project Member** | Rancher built-in | Full | CRUD on workloads, services, configs, secrets |
+| **Project Member (No Secrets)** | Created by automation | None | Same as Project Member, minus secrets |
+| **Project Read-Only (No Secrets)** | Created by automation | None | View-only, no secrets |
+
+**To give a user access to an environment:**
+
+1. Create the user in **Keycloak** (Admin Console → Users → Add user). Use their email as username.
+2. In **Rancher**, go to Project (environment) → Members → Add Member.
+3. Search by email and assign a role.
+
+{% hint style="info" %}
+The Rancher `admin` global role (super admin) has access to everything. The initial admin user configured during setup already has this role.
+{% endhint %}
+
+## Client-Manager Credentials
+
+The infra script automatically creates a **`client-manager`** user in Keycloak's master realm. This service account is required by `openg2p-environment.sh` to create Keycloak clients for each environment.
+
+* **Username:** `client-manager@<your-domain>` (e.g., `client-manager@openg2p.org`)
+* **Password:** Auto-generated and displayed in the script's final output
+* **Roles:** `manage-clients`, `query-clients`, `view-clients`
+
+The password is saved on the VM at `/var/lib/openg2p/deploy-state/client-manager-password`.
+
+{% hint style="warning" %}
+Note down the client-manager password from the script output — you'll need it when running `openg2p-environment.sh`.
+{% endhint %}
+
+## Environment Setup Details
+
+### Phase 1: Environment Infrastructure
+
+| Step | What | Details |
+| --- | --- | --- |
+| E1.1 | Validate prerequisites | Infra completed, kubeconfig works, credentials available |
+| E1.2 | TLS certificate | **Local:** wildcard cert signed by CA. **Custom:** Let's Encrypt wildcard |
+| E1.3 | Nginx server block | `*.dev.openg2p.test` → Istio ingress |
+| E1.4 | K8s namespace | Creates the namespace |
+| E1.5 | Rancher Project | Creates project and moves namespace into it (RBAC) |
+| E1.6 | Istio Gateway | Gateway resource for hostname routing |
+| E1.7 | Keycloak secret | `keycloak-client-manager` K8s secret in namespace |
+
+### Phase 2: Module Installation
+
+openg2p-commons is split into two Helm charts installed sequentially:
+
+| Step | Chart | Details |
+| --- | --- | --- |
+| E2.1 | **openg2p-commons-base** | PostgreSQL, Kafka, MinIO, OpenSearch, Redis, SoftHSM, keycloak-init |
+| E2.2 | **openg2p-commons-services** | eSignet, KeyManager, Superset, ODK, master-data, reporting |
+| _(future)_ | Registry, PBMS, SPAR, G2P Bridge | Will be added as separate Helm installs |
+
+{% hint style="info" %}
+The services chart automatically connects to base infrastructure via release name references (`commons-postgresql`, `commons-redis`, etc.).
+{% endhint %}
+
+## Command Reference
+
+### Infrastructure
+
+```bash
+sudo ./openg2p-infra.sh --config infra-config.yaml              # Full setup
+sudo ./openg2p-infra.sh --config infra-config.yaml --phase 1    # Host setup only
+sudo ./openg2p-infra.sh --config infra-config.yaml --phase 2    # Helmfile only
+sudo ./openg2p-infra.sh --config infra-config.yaml --phase 3    # Rancher-Keycloak only
+sudo ./openg2p-infra.sh --config infra-config.yaml --force       # Re-run everything
+sudo ./openg2p-infra.sh --config infra-config.yaml --dry-run     # Preview
+sudo ./openg2p-infra.sh --reset                                   # Clear state markers
+```
+
+### Environment
+
+```bash
+sudo ./openg2p-environment.sh --config env-config.yaml              # Full setup
+sudo ./openg2p-environment.sh --config env-config.yaml --phase 1    # Infrastructure only
+sudo ./openg2p-environment.sh --config env-config.yaml --phase 2    # Module install only
+sudo ./openg2p-environment.sh --config env-config.yaml --force       # Re-run everything
+```
+
+### Domain Migration (Local → Custom)
+
+When your local sandbox is ready for a real domain, migrate without reinstalling:
+
+```bash
+cp migrate-config.example.yaml migrate-config.yaml
+# Edit: set new hostnames, Let's Encrypt email, environments to migrate
+sudo ./openg2p-migrate-domain.sh --config migrate-config.yaml
+```
+
+Example migration config:
+
+```yaml
+infra_config: "infra-config.yaml"
+new_domain_mode: "custom"
+new_rancher_hostname: "rancher.openg2p.org"
+new_keycloak_hostname: "keycloak.openg2p.org"
+letsencrypt_email: "admin@openg2p.org"
+letsencrypt_challenge: "dns"
+environments:
+  - name: "dev"
+    config_file: "env-config.yaml"
+    new_base_domain: "dev.openg2p.org"
+```
+
+{% hint style="success" %}
+This is a **non-destructive** operation. No data loss, no service reinstall. All config files are updated in place with automatic backups (`.pre-migration`).
+{% endhint %}
+
+The migration script:
+
+* Validates DNS A records for new hostnames
+* Obtains Let's Encrypt certificates (Rancher, Keycloak, and wildcard per environment)
+* Updates Nginx, Keycloak `KC_HOSTNAME`, Rancher server-url, SAML config, Istio Gateways
+* Helm upgrades each environment's charts with the new domain
+* Removes CoreDNS local domain forward
+* Updates `infra-config.yaml` and `env-config.yaml` files
+
+After migration, you can remove `/etc/resolver` entries and the self-signed CA from your laptop's trust store.
+
+### Uninstalling
+
+**Remove a single environment** (keeps infrastructure intact):
+
+```bash
+sudo ./openg2p-environment-uninstall.sh --config env-config.yaml
+```
+
+**Remove the entire infrastructure** (destroys everything):
+
+```bash
+sudo ./openg2p-infra-uninstall.sh
+```
+
+{% hint style="danger" %}
+Infrastructure uninstall requires typing `DELETE EVERYTHING` to confirm. Removes: RKE2 cluster, Wireguard VPN, dnsmasq, Nginx, NFS, TLS certificates, and all state. The VM is left clean for a fresh installation.
+{% endhint %}
+
+## File Structure
+
+```
+automation/single-node/
+├── openg2p-infra.sh                  # Script 1: base infrastructure
+├── openg2p-infra-uninstall.sh        # Uninstall: tears down entire infra
+├── infra-config.example.yaml         # Config for Script 1
+├── helmfile-infra.yaml.gotmpl        # Helmfile for platform components
+├── openg2p-environment.sh            # Script 2: environment setup
+├── openg2p-environment-uninstall.sh  # Uninstall: removes a single environment
+├── env-config.example.yaml           # Config for Script 2
+├── openg2p-migrate-domain.sh         # Migrate: local → custom domain
+├── migrate-config.example.yaml       # Config for domain migration
+├── lib/
+│   ├── utils.sh          # Shared: logging, state, config, wait helpers
+│   ├── phase1.sh         # Infra Phase 1: tools, RKE2, Wireguard, NFS, DNS, TLS, Nginx
+│   ├── phase2.sh         # Infra Phase 2: Istio, Helmfile sync
+│   ├── phase3.sh         # Infra Phase 3: Rancher-Keycloak SAML, roles, client-manager
+│   ├── env-phase1.sh     # Env Phase 1: certs, Nginx, namespace, Rancher project, Istio GW
+│   └── env-phase2.sh     # Env Phase 2: commons helm install (future: more modules)
+├── aws/
+│   ├── create-security-group.sh   # Creates "openg2p-single-node" SG
+│   └── security-group.json        # Reference: exported SG rules
+└── charts/
+    ├── raw/               # Minimal chart for raw K8s manifests
+    └── istio-install/     # Istio operator YAML
+```
+
+## Troubleshooting
+
+{% hint style="info" %}
+**Script failed?** Re-run it. Completed steps are skipped. Error messages include diagnostic commands.
+{% endhint %}
+
+**Local DNS not resolving on your laptop?**
+Ensure Wireguard VPN is connected. Configure per-domain DNS on your laptop (see Step 2 above). On macOS, `dig` bypasses the resolver system — use `ping` or `dscacheutil` to test.
+
+**Browser shows certificate warning in local mode?**
+Install the CA certificate on your laptop (see Step 3 above).
+
+**Check cluster status:**
+
+```bash
+kubectl get nodes                              # Node health
+kubectl get pods -A | grep -v Running          # Problem pods
+helm list -A                                    # Helm releases
+journalctl -u rke2-server -n 50               # RKE2 logs
+```
+
+{% hint style="info" %}
+This automation does not replace the Rancher UI. Your existing umbrella Helm charts with `questions.yml` continue to work for manual installs via the Rancher App Catalog.
+{% endhint %}
