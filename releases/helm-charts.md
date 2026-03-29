@@ -49,7 +49,16 @@ annotations:
 
 ### Manual publishing
 
-To publish a chart on Rancher Apps in step 3 above, copy the chart zip to  `/rancher` folder of the repo.  Run `./index.sh.`This will generate and `index.yaml` file in the folder. This file will be read by Rancher to display in the catalogue (refer [Installation using Rancher UI](../spar/deployment/#installation-using-rancher-ui) on how to add this repository).&#x20;
+To publish a chart on Rancher Apps in step 3 above,&#x20;
+
+* copy the chart zip to  `/rancher` folder of the repo.&#x20;
+* cd /rancher&#x20;
+* &#x20;Run command  `helm repo index --url ../ . --merge index.yaml` &#x20;
+* Delete the chart zip in `/rancher` - its no longer required.
+
+This will update  `index.yaml` file in the .`/rancher` folder. This file will be read by Rancher to display in the catalogue (refer [Installation using Rancher UI](../spar/deployment/#installation-using-rancher-ui) on how to add this repository).&#x20;
+
+
 
 {% hint style="info" %}
 If in [annotations](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/helm-charts-in-rancher/create-apps#chartyaml-annotations) for the chart fixed name and namespace of the Helm chart is specified, then only one instance of the application will be installed and further attempts to install will only update the application. Example, Monitoring app on Rancher.
