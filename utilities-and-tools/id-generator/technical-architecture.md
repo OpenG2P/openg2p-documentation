@@ -20,7 +20,7 @@ id-generator/
 │       ├── models.py            # Table creation (table-per-ID-type)
 │       ├── api/
 │       │   ├── router.py        # API endpoints
-│       │   └── schema.py        # MOSIP response envelope
+│       │   └── schema.py        # Response envelope
 │       ├── generator/
 │       │   ├── engine.py        # ID generation pipeline
 │       │   ├── filters.py       # 10 filter implementations

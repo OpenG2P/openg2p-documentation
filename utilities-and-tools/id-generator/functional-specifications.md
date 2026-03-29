@@ -40,7 +40,7 @@ Each consuming application is assigned an **ID type** (e.g., `farmer_id`, `house
 
 ### Filters
 
-Every generated ID must pass **all 10 filters**. These are based on [MOSIP UIN generation filters](https://docs.mosip.io/1.2.0/id-lifecycle-management/supporting-components/commons/id-generator#uin-generation-filters).
+Every generated ID must pass **all 10 filters**. These filter rules are inspired by [MOSIP UIN generation filters](https://docs.mosip.io/1.2.0/id-lifecycle-management/supporting-components/commons/id-generator#uin-generation-filters).
 
 | #  | Filter                         | Description                                                                 | Config key                         |
 | -- | ------------------------------ | --------------------------------------------------------------------------- | ---------------------------------- |
@@ -180,4 +180,4 @@ For the complete API reference, see [API Reference](api-reference.md).
 
 ## Reference
 
-* [MOSIP UIN Generator Documentation](https://docs.mosip.io/1.2.0/id-lifecycle-management/supporting-components/commons/id-generator#uin-generation-filters)
+* ID generation filters inspired by: [MOSIP UIN Generator](https://docs.mosip.io/1.2.0/id-lifecycle-management/supporting-components/commons/id-generator#uin-generation-filters)

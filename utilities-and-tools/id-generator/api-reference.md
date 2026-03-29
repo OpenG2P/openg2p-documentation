@@ -18,13 +18,13 @@ The ID Generator exposes an **OpenAPI 3.1 compliant** REST API. A running instan
 
 ## Response envelope
 
-All endpoints return a consistent MOSIP-style JSON envelope.
+All endpoints return a consistent JSON envelope.
 
 **Success response:**
 
 ```json
 {
-  "id": "mosip.idgenerator",
+  "id": "openg2p.idgenerator",
   "version": "1.0",
   "responsetime": "2026-03-27T10:00:00.000Z",
   "response": { ... },
@@ -36,7 +36,7 @@ All endpoints return a consistent MOSIP-style JSON envelope.
 
 ```json
 {
-  "id": "mosip.idgenerator",
+  "id": "openg2p.idgenerator",
   "version": "1.0",
   "responsetime": "2026-03-27T10:00:00.000Z",
   "response": null,
@@ -62,7 +62,7 @@ Issues a single AVAILABLE ID from the specified ID type pool and marks it as TAK
 
 ```json
 {
-  "id": "mosip.idgenerator",
+  "id": "openg2p.idgenerator",
   "version": "1.0",
   "responsetime": "2026-03-27T10:00:00.000Z",
   "response": {
