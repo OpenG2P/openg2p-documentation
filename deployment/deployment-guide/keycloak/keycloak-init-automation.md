@@ -18,7 +18,7 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 * **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
 * **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
 * **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified.
-* **Namespace suffix**: A suffix (default: Kubernetes namespace) is appended to client names to distinguish clients created for different namespaces.
+* **Namespace suffix**: A suffix (default: Kubernetes namespace) is appended to realm names to distinguish realms created for different namespaces (e.g., `staff` becomes `staff-qa`).
 * **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, and secrets are not modified or regenerated.
 
 ## Configuration
@@ -26,32 +26,36 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 Realms and their clients are defined in `values.yaml` under the `realms` key. Each realm is a map entry with its clients listed underneath:
 
 ```yaml
+suffix: '{{ .Release.Namespace }}'
+
 realms:
-  master:
+  staff-{{ .suffix }}:
     clients:
-      - clientId: 'openg2p-sr-{{ .suffix }}'
-        name: 'Social Registry {{ .suffix }}'
+      - clientId: openg2p-sr
+        name: Social Registry
         redirectUris:
           - "*"
-      - clientId: 'openg2p-superset-{{ .suffix }}'
-        name: 'Superset {{ .suffix }}'
+      - clientId: openg2p-superset
+        name: Superset
         redirectUris:
           - "*"
         clientRoles:
           - "Admin"
-  another-realm:
+  another-realm-{{ .suffix }}:
     clients:
-      - clientId: 'my-app-{{ .suffix }}'
-        name: 'My App {{ .suffix }}'
+      - clientId: my-app
+        name: My App
         redirectUris:
           - "*"
 ```
+
+The `suffix` (default: Kubernetes namespace) is applied to realm names via the `{{ .suffix }}` template. For example, if deployed in the `qa` namespace, `staff-{{ .suffix }}` becomes `staff-qa`. Client IDs remain unchanged across namespaces.
 
 Each client supports the following parameters:
 
 | Parameter      | Required | Description                                                                 |
 | -------------- | -------- | --------------------------------------------------------------------------- |
-| `clientId`     | Yes      | Unique client identifier. Supports `{{ .suffix }}` template.                |
+| `clientId`     | Yes      | Unique client identifier.                                                   |
 | `name`         | No       | Display name. Defaults to `clientId`.                                       |
 | `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                           |
 | `secret`       | No       | Client secret. If not provided, a random secret is generated and stored.    |
@@ -72,6 +76,8 @@ A **client manager** user on Keycloak with limited permissions:
   * `manage-clients`
   * `query-clients`
   * `view-clients`
+  * `create-realm`
+  
 
 ### Installation
 
