@@ -58,7 +58,7 @@ The `openg2p-commons` Helm chart bundles the following core components.
 | 1.0.0         | 21-Jan-2026   | Frozen stable version.                                                                                                                                                                                                                        |
 | 1.1.0-develop | 13-Feb-2026   | Several major changes.  See [https://openg2p.atlassian.net/browse/G2P-4036](https://openg2p.atlassian.net/browse/G2P-4036). Works well with internal DB. With external DB, there are some issues.                                             |
 | 1.2.0-develop | 24-Mar-2026   | Works well when run via command line using `install.sh` script but not from Rancher. <mark style="color:$danger;">DO NOT USE</mark> install from Rancher.                                                                                     |
-| 2.0.0-develop | 24-Mar-2026   | Completely rearchitected. NOT COMPATIBLE WITH PREVIOUS VERSIONS.  Chart split into two charts as Rancher would not honor the install hooks.  The 'base' chart installs Postgres etc, while other services are installed by 'services' chart.  |
+| 2.0.0-develop | 30-Mar-2026   | Completely rearchitected. NOT COMPATIBLE WITH PREVIOUS VERSIONS.  Chart split into two charts as Rancher would not honor the install hooks.  The 'base' chart installs Postgres etc, while other services are installed by 'services' chart.  |
 
 ## How to deploy openg2p commons
 
