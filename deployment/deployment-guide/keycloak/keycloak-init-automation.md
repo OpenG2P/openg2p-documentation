@@ -108,6 +108,13 @@ helm -n <namespace> install keycloak-init .
    * Clients have been created on Keycloak with the expected client roles.
    * Kubernetes secrets for all clients have been created in the namespace.
 
+### Versions
+
+| Helm Chart Version | Last Modified | Contents                                                                                          |
+| ------------------ | ------------- | ------------------------------------------------------------------------------------------------- |
+| 0.0.0-develop      | Mar 2026      | Realm creation added. Clients are now defined under realms.                                       |
+| 0.0.0-develop      | Jan 2026      | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
+
 ### Tear down
 
 Uninstall the Helm chart:
@@ -181,8 +188,3 @@ Alternatively, run everything in one command using the test script:
 The local Keycloak instance runs version 24.0.5 in dev mode.
 {% endhint %}
 
-## Versions
-
-| Helm Chart Version | Date Published | Contents                                                                                          |
-| ------------------ | -------------- | ------------------------------------------------------------------------------------------------- |
-| 0.0.0-develop      | Jan 2026       | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
