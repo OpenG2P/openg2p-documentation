@@ -50,6 +50,7 @@
         * [Registry UI Widget Library](registry/design/detailed-design-notes/ui-engineering-design/registry-ui-widget-library.md)
         * [Registry UI Widgets: Complete guide and reference](registry/design/detailed-design-notes/ui-engineering-design/registry-ui-widgets-complete-guide-and-reference.md)
       * [Registrant Authentication - OIDC Widget](registry/design/detailed-design-notes/registrant-authentication-oidc-widget.md)
+      * [RBAC Roles and Permissions](registry/design/detailed-design-notes/rbac-roles-and-permissions.md)
   * [Versions](registry/versions.md)
   * [Deployment](registry/deployment.md)
   * [Developer Zone](registry/developer-zone/README.md)
