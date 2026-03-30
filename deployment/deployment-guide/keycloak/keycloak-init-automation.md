@@ -1,107 +1,188 @@
+---
+description: Automate Keycloak realm and client creation using the keycloak-init tool
+---
+
 # Keycloak Init Automation
 
-## Helm chart
+## Overview
 
-The Helm chart **keycloak-init** automates the above process and is extremely useful while creating clients in a bulk during environment setup. &#x20;
-
-### Functionality
-
-The Helm chart offers the following functionality:
-
-* Creation of multiple clients
-* Automatic generation of client secrets and storage of these as **Kubernetes secrets i**n your namespace.  The secrets can be securely read by the module Helm charts instead of passing them as parameters during installation.
-* Idempotent:  If client already present, then running the Helm chart again does not change anything. Secrets are also untouched. &#x20;
-* Client roles created as well
-* A suffix with namespace is added to the name of all clients to distinguish from clients created for other namespaces
-* Few default clients are already listed in [values.yaml](https://github.com/OpenG2P/keycloak-init/blob/develop/helm/values.yaml).&#x20;
+The **keycloak-init** tool automates the creation of Keycloak realms and clients. It is useful during environment setup where multiple clients need to be created in bulk across one or more realms. The tool comprises a Python script packaged as a Docker image and a Helm chart for Kubernetes deployment.
 
 ### Source code
 
-The script, Docker and Helm chart is available [here](https://github.com/OpenG2P/keycloak-init/tree/develop).
+[https://github.com/OpenG2P/keycloak-init](https://github.com/OpenG2P/keycloak-init/tree/develop)
 
-### Run
+## Functionality
 
-Run the Helm on the command line or on Rancher. The below procedure is for command line. On Rancher the procedure is like any other chart. &#x20;
+* **Realm management**: Define any number of realms. If a realm does not exist, it is created automatically. If it already exists, it is left untouched.
+* **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
+* **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
+* **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified.
+* **Namespace suffix**: A suffix (default: Kubernetes namespace) is appended to client names to distinguish clients created for different namespaces.
+* **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, and secrets are not modified or regenerated.
 
-_Note that the Helm chart needs to be installed on the cluster and namespace of interest (e.g. sandbox) as all client secrets are created in the same namespace. The cluster and namespace may. not be same as where Keycloak itself runs._
+## Configuration
 
-#### Prerequisites
+Realms and their clients are defined in `values.yaml` under the `realms` key. Each realm is a map entry with its clients listed underneath:
 
-A **client manager** user on Keycloak with limited permissions to run this Helm chart with following parameters:
-
-* User name (example client-manager@openg2p.org)
-* Password based credentials
-* Roles for this user (limited to only these):
-  * default-role-master
-  * manage-clients
-  * query-clients
-  * view-client
-
-#### Steps
-
-* Clone [keycloak-init repo](https://github.com/OpenG2P/keycloak-init/tree/develop).
-* Create a secret for the client manager **in installation namespace** with following params. You may create the same using Rancher instead of command line:
-  * Type: `Opaque`
-  * Secret name: `keycloak-client-manager`&#x20;
-  * Key:  `keycloak-client-manager-password`
-  * Value:  \<password of the client manager user> _(pick this from Keycloak)_
-* Inspect `values.yaml` for list of clients. Update if required. Some clients may require client roles. Review them as well.  Carefully review and update the following parameters:
-
+```yaml
+realms:
+  master:
+    clients:
+      - clientId: 'openg2p-sr-{{ .suffix }}'
+        name: 'Social Registry {{ .suffix }}'
+        redirectUris:
+          - "*"
+      - clientId: 'openg2p-superset-{{ .suffix }}'
+        name: 'Superset {{ .suffix }}'
+        redirectUris:
+          - "*"
+        clientRoles:
+          - "Admin"
+  another-realm:
+    clients:
+      - clientId: 'my-app-{{ .suffix }}'
+        name: 'My App {{ .suffix }}'
+        redirectUris:
+          - "*"
 ```
+
+Each client supports the following parameters:
+
+| Parameter      | Required | Description                                                                 |
+| -------------- | -------- | --------------------------------------------------------------------------- |
+| `clientId`     | Yes      | Unique client identifier. Supports `{{ .suffix }}` template.                |
+| `name`         | No       | Display name. Defaults to `clientId`.                                       |
+| `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                           |
+| `secret`       | No       | Client secret. If not provided, a random secret is generated and stored.    |
+| `clientRoles`  | No       | List of client role names to create.                                        |
+
+Default clients are listed in [values.yaml](https://github.com/OpenG2P/keycloak-init/blob/develop/helm/values.yaml).
+
+## Helm chart
+
+### Prerequisites
+
+A **client manager** user on Keycloak with limited permissions:
+
+* User name (example: `client-manager@openg2p.org`)
+* Password-based credentials
+* Roles (limited to only these):
+  * `default-role-master`
+  * `manage-clients`
+  * `query-clients`
+  * `view-clients`
+
+### Installation
+
+{% hint style="info" %}
+The Helm chart must be installed on the cluster and namespace of interest (e.g., `sandbox`) since all client secrets are created in the same namespace. The cluster and namespace may not be the same as where Keycloak itself runs.
+{% endhint %}
+
+1. Clone the [keycloak-init repo](https://github.com/OpenG2P/keycloak-init/tree/develop).
+2. Create a secret for the client manager **in the installation namespace**. You may create this using Rancher instead of command line:
+   * Type: `Opaque`
+   * Secret name: `keycloak-client-manager`
+   * Key: `keycloak-client-manager-password`
+   * Value: _\<password of the client manager user>_
+3. Review and update `values.yaml`. Pay attention to the following:
+
+```yaml
 keycloak:
-  # Internal service name on the cluster
   url: "https://keycloak2.openg2p.org"
-  user: "client-manager@openg2p.org" 
-  # Use secret instead of directly passing password here
+  user: "client-manager@openg2p.org"
   password: ""
-  realm: "master"
-  # If you want to use an existing secret for password
-  existingSecret: "keycloak-client-manager" 
+  existingSecret: "keycloak-client-manager"
   existingSecretKey: "keycloak-client-manager-password"
 ```
 
-* Run
+4. Review the `realms` section for the list of realms and clients. Update as required.
+5. Run the Helm chart:
 
-```
-$ helm -n <namespace> install keycloak-init .
+```bash
+helm -n <namespace> install keycloak-init .
 ```
 
-* Verify the following
-  * Clients have been created on Keycloak with client roles
-  * Secrets of all the clients have been created in the namespace
+6. Verify:
+   * Realms have been created on Keycloak (if they did not already exist).
+   * Clients have been created on Keycloak with the expected client roles.
+   * Kubernetes secrets for all clients have been created in the namespace.
 
 ### Tear down
 
-* Uninstall the Helm chart
+Uninstall the Helm chart:
 
-```
-$ helm -n <namespace> uninstall kecyloak init
-```
-
-* The above **does not delete** clients on Keycloak or Kubernetes secrets. Delete them manually:
-  * Kecloak clients (via Admin user interface of Keycloak)
-  * Kubernetes secrets for all clients (via Rancher or command line)&#x20;
-
-### Versions
-
-<table><thead><tr><th width="100">Helm Chart Version</th><th width="100">Date Published</th><th>Contents</th></tr></thead><tbody><tr><td>0.0.0-develop</td><td>Jan 2026</td><td>Tested version.  After sufficient usage, this will be tagged to fixed version. Compatible with Keycloak 24.0.5.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
-
-### Developer
-
-Build Docker:
-
-```
-cd docker
-docker build -t openg2p/keycloak-init:develop .
-docker push openg2p/keycloak-init:develop 
+```bash
+helm -n <namespace> uninstall keycloak-init
 ```
 
 {% hint style="warning" %}
-Make sure you build the Docker only on Ubuntu machine and not MacOS as there may be architecture mismtach issues.
+Uninstalling the Helm chart **does not delete** realms or clients on Keycloak, nor the Kubernetes secrets. Delete them manually:
+
+* Keycloak clients and realms (via the Keycloak Admin console)
+* Kubernetes secrets for all clients (via Rancher or command line)
 {% endhint %}
 
-TODO:
+## Docker image
 
-* Automate the Docker build and publish
-* Automate Helm package and publish
+The Python script is packaged as a Docker image published to Docker Hub:
 
+```
+docker.io/openg2p/keycloak-init:<branch-name>
+```
+
+The image tag corresponds to the Git branch name. A GitHub Actions workflow automatically builds and publishes the image on every push to the `docker/` directory.
+
+## CI/CD
+
+Two GitHub Actions workflows are configured:
+
+| Workflow           | Trigger paths                                  | Description                                      |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------ |
+| **Docker Publish** | `docker/**`, `.github/workflows/docker-publish.yml` | Builds and pushes Docker image to Docker Hub     |
+| **Helm Publish**   | `helm/**`, `.github/workflows/helm-publish.yml`     | Packages and publishes the Helm chart            |
+
+## Local testing
+
+A Docker Compose-based test setup is provided under `tests/` to run the tool locally against a real Keycloak instance.
+
+### Steps
+
+1. Start Keycloak:
+
+```bash
+cd tests
+docker compose up keycloak -d
+```
+
+2. Wait for Keycloak to be healthy. You can verify by accessing [http://localhost:8080](http://localhost:8080) in a browser.
+   * Admin credentials: `admin` / `admin`
+3. Review `tests/local_clients.yaml` for the test realm and client definitions.
+4. Run the init script:
+
+```bash
+docker compose up --build --no-deps keycloak-init
+```
+
+5. Log into the Keycloak Admin console at [http://localhost:8080](http://localhost:8080) and verify that the realm and clients have been created.
+6. To stop and clean up:
+
+```bash
+docker compose down
+```
+
+Alternatively, run everything in one command using the test script:
+
+```bash
+./run_docker_test.sh
+```
+
+{% hint style="info" %}
+The local Keycloak instance runs version 24.0.5 in dev mode.
+{% endhint %}
+
+## Versions
+
+| Helm Chart Version | Date Published | Contents                                                                                          |
+| ------------------ | -------------- | ------------------------------------------------------------------------------------------------- |
+| 0.0.0-develop      | Jan 2026       | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
