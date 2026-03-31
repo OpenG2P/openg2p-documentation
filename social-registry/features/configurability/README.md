@@ -12,7 +12,7 @@ ID Type is a reference name given by the platform to refer to a registrant ident
 
 The figure below illustrates the 'ID Types' page with some created IDs displayed below.
 
-<figure><img src="../../../.gitbook/assets/id-types.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="/broken/files/hamCJbx0F5W9ilmFUdSA" alt=""><figcaption></figcaption></figure>
 
 ### Registrant Tags
 

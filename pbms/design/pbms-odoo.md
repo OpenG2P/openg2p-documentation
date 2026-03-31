@@ -27,7 +27,7 @@ You configure the benefit programs which govern the benefit distribution. The ke
 5. Eligibility Rules - You need to define a set of rules that make a registrant eligible to qualify as a beneficiary under this program. You can use the Target Registry - attributes to define these eligibility rules.
 6. Entitlement Rules - You need to define a set of rules that will compute an entitlement (of a benefit code) for a given beneficiary. You need distinct entitlement rules for every benefit code associated with the Program.
 
-<figure><img src="../../.gitbook/assets/Program-List.png" alt=""><figcaption><p>Screen showing list of Benefit codes</p></figcaption></figure>
+<figure><img src="/broken/files/2bANxJoVwz8x7R6P2IJv" alt=""><figcaption><p>Screen showing list of Benefit codes</p></figcaption></figure>
 
 
 

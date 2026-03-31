@@ -19,7 +19,7 @@ Refer the [Create User and Assign Role](../../../pbms/previous-generation/functi
 
 <figure><img src="../../../.gitbook/assets/programs.png" alt=""><figcaption><p>Choose Programs in the menu</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/Program-screen.png" alt=""><figcaption><p>Programs screen</p></figcaption></figure>
+<figure><img src="/broken/files/s9ToDKYWXUwutZpITpVP" alt=""><figcaption><p>Programs screen</p></figcaption></figure>
 
 _**Programs**_ screen provides a dashboard view that lists all the available Program Names, Target Type, Number of Enrolled Beneficiaries against each program, State (whether active/inactive), and the Beneficiaries list.
 

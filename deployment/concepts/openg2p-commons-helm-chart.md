@@ -13,11 +13,11 @@
 * In the new design, these have been centralized under the `openg2p-commons` chart.
 * Only the common dependency modules shared across all applications are included in this chart.
 
-## &#x20;**Dependencies**
+## **Dependencies**
 
 The `openg2p-commons` Helm chart bundles the following core components.
 
-1. **PostgreSQL**  &#x20;
+1. **PostgreSQL**
 2. **Mail SMTP Server**
 3. **MinIO**
 4. **ODK Central**
@@ -27,12 +27,8 @@ The `openg2p-commons` Helm chart bundles the following core components.
 8. **Superset**
 9. **eSignet** (includes _eSignet_ + _Mock Identity System_)
 
-
-
 {% hint style="info" %}
-
-
-## Bitnami secure images transition
+### Bitnami secure images transition
 
 **From August 28th, 2025**, Bitnami is evolving its public catalog under the **Bitnami Secure Images** initiative.
 
@@ -53,12 +49,12 @@ The `openg2p-commons` Helm chart bundles the following core components.
 
 ## Versions
 
-| HelmVesion    | Last Modified | Comments                                                                                                                                                                                                                                      |
-| ------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.0.0         | 21-Jan-2026   | Frozen stable version.                                                                                                                                                                                                                        |
-| 1.1.0-develop | 13-Feb-2026   | Several major changes.  See [https://openg2p.atlassian.net/browse/G2P-4036](https://openg2p.atlassian.net/browse/G2P-4036). Works well with internal DB. With external DB, there are some issues.                                             |
-| 1.2.0-develop | 24-Mar-2026   | Works well when run via command line using `install.sh` script but not from Rancher. <mark style="color:$danger;">DO NOT USE</mark> install from Rancher.                                                                                     |
-| 2.0.0-develop | 30-Mar-2026   | Completely rearchitected. NOT COMPATIBLE WITH PREVIOUS VERSIONS.  Chart split into two charts as Rancher would not honor the install hooks.  The 'base' chart installs Postgres etc, while other services are installed by 'services' chart.  |
+| HelmVesion    | Last Modified | Comments                                                                                                                                                                                                                                   |
+| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.0.0         | 21-Jan-2026   | Frozen stable version.                                                                                                                                                                                                                     |
+| 1.1.0-develop | 13-Feb-2026   | Several major changes. See [https://openg2p.atlassian.net/browse/G2P-4036](https://openg2p.atlassian.net/browse/G2P-4036). Works well with internal DB. With external DB, there are some issues.                                           |
+| 1.2.0-develop | 24-Mar-2026   | Works well when run via command line using `install.sh` script but not from Rancher. <mark style="color:$danger;">DO NOT USE</mark> install from Rancher.                                                                                  |
+| 2.0.0-develop | 30-Mar-2026   | Completely rearchitected. NOT COMPATIBLE WITH PREVIOUS VERSIONS. Chart split into two charts as Rancher would not honor the install hooks. The 'base' chart installs Postgres etc, while other services are installed by 'services' chart. |
 
 ## How to deploy openg2p commons
 
