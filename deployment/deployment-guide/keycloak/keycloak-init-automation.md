@@ -17,7 +17,7 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 * **Realm management**: Define any number of realms. If a realm does not exist, it is created automatically. If it already exists, it is left untouched.
 * **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
 * **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
-* **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified.
+* **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified. Supports composite roles that contain other roles.
 * **Namespace suffix**: A suffix (default: Kubernetes namespace) is appended to realm names to distinguish realms created for different namespaces (e.g., `staff` becomes `staff-qa`).
 * **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, and secrets are not modified or regenerated.
 
@@ -59,9 +59,29 @@ Each client supports the following parameters:
 | `name`         | No       | Display name. Defaults to `clientId`.                                       |
 | `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                           |
 | `secret`       | No       | Client secret. If not provided, a random secret is generated and stored.    |
-| `clientRoles`  | No       | List of client role names to create.                                        |
+| `clientRoles`  | No       | List of client roles to create. See below.                                  |
 
 Default clients are listed in [values.yaml](https://github.com/OpenG2P/keycloak-init/blob/develop/helm/values.yaml).
+
+### Client roles
+
+Roles can be defined as simple strings or as objects with composite child roles. Both formats can be mixed in the same list:
+
+```yaml
+clientRoles:
+  # Simple roles (string format)
+  - intake-officer
+  - data-editor
+  - data-validator
+  # Composite role (object format) — contains the roles listed under composites
+  - name: super-admin
+    composites:
+      - intake-officer
+      - data-editor
+      - data-validator
+```
+
+Composite roles are created in two passes: all roles are created first, then composite relationships are established. This is fully backward compatible — existing charts that pass `clientRoles` as a list of strings continue to work unchanged.
 
 ## Helm chart
 
@@ -118,7 +138,7 @@ helm -n <namespace> install keycloak-init .
 
 | Helm Chart Version | Last Modified | Contents                                                                                          |
 | ------------------ | ------------- | ------------------------------------------------------------------------------------------------- |
-| 0.0.0-develop      | Mar 2026      | Realm creation added. Clients are now defined under realms.                                       |
+| 0.0.0-develop      | Mar 2026      | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.   |
 | 0.0.0-develop      | Jan 2026      | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
 
 ### Tear down
