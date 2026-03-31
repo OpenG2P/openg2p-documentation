@@ -33,6 +33,10 @@ The OpenG2P Registry enforces role-based access control (RBAC) through **Keycloa
 
 Roles are organised into two classifications — **Operations** and **Configurations** — each serving a distinct functional area of the registry.
 
+{% hint style="info" %}
+The roles and permissions listed here are the defaults shipped with OpenG2P Registry. They can be customised during installation via the Registry Helm chart.
+{% endhint %}
+
 ## Roles
 
 ### Operations roles
