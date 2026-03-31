@@ -43,26 +43,26 @@ The roles and permissions listed here are the defaults shipped with OpenG2P Regi
 
 Operations roles govern day-to-day data management workflows such as intake, editing, verification, and integration monitoring.
 
-| Role                     | Technical name                     | Description                                                                                      |
-| ------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Intake Officer           | `registry-ops-intake-officer`      | Handles initial data entry and submission of new records into the registry.                      |
-| Intake Validator         | `registry-ops-intake-verifier`     | Validates and verifies the accuracy of newly submitted intake records before further processing. |
-| Data Editor              | `registry-ops-registry-editor`     | Edits and updates existing registry records as part of ongoing data maintenance.                 |
-| Data Validator           | `registry-ops-registry-verifier`   | Reviews and verifies changes made to registry records to ensure correctness and compliance.      |
-| Data Supervisor          | `registry-ops-registry-approver`   | Approves verified registry changes, making them final and officially accepted.                   |
-| Integration Manager      | `registry-ops-integration-manager` | Manages and monitors data exchange between the registry and external systems.                    |
-| Operations Administrator | `registry-ops-super-operator`      | Has full operational control across the registry.                                                |
+| Role                     | Description                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| Intake Officer           | Handles initial data entry and submission of new records into the registry.                      |
+| Intake Validator         | Validates and verifies the accuracy of newly submitted intake records before further processing. |
+| Data Editor              | Edits and updates existing registry records as part of ongoing data maintenance.                 |
+| Data Validator           | Reviews and verifies changes made to registry records to ensure correctness and compliance.      |
+| Data Supervisor          | Approves verified registry changes, making them final and officially accepted.                   |
+| Integration Manager      | Manages and monitors data exchange between the registry and external systems.                    |
+| Operations Administrator | Has full operational control across the registry.                                                |
 
 ### Configuration roles
 
 Configuration roles control how the registry itself is set up — schemas, integrations, and reference data.
 
-| Role                      | Technical name                                | Description                                                                                            |
-| ------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Schema Designer           | `registry-config-registry-configurator`       | Configures core registry settings such as domain schemas, fields, and validation rules.                |
-| Integration Specialist    | `registry-config-integration-configurator`    | Sets up and manages configurations for integrations with external systems and APIs.                    |
-| Reference Data Specialist | `registry-config-reference-data-configurator` | Maintains and updates reference/master data used across the registry.                                  |
-| Technical Administrator   | `registry-config-super-configurator`          | Has full control over all configuration aspects, including registry, integrations, and reference data. |
+| Role                      | Description                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Schema Designer           | Configures core registry settings such as domain schemas, fields, and validation rules.                |
+| Integration Specialist    | Sets up and manages configurations for integrations with external systems and APIs.                    |
+| Reference Data Specialist | Maintains and updates reference/master data used across the registry.                                  |
+| Technical Administrator   | Has full control over all configuration aspects, including registry, integrations, and reference data. |
 
 ## Permissions
 
