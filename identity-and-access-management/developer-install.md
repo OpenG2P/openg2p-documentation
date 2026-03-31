@@ -4,7 +4,7 @@ description: >-
   IAM Service
 ---
 
-# Openg2p IAM Service
+# Developer Install
 
 ### Prerequisites
 
@@ -115,7 +115,7 @@ python3 -m iam_staff_portal_api.main migrate
 
 Import the CSV file below into the `login_providers` table.
 
-{% file src="../../../.gitbook/assets/login_providers.csv" %}
+{% file src="../.gitbook/assets/login_providers.csv" %}
 
 * **Nginx Configuration**: Configure Nginx to act as a reverse proxy for Openg2p IAM Service
 
@@ -185,4 +185,3 @@ uvicorn iam_staff_portal_api.main:app --reload
 
 * Access Swagger API Documentation.
   * [http://localhost:8000/docs](http://localhost:8000/docs) or [http://iam.openg2p.my/docs](http://selfservice17.openg2p.my/v1/selfservice/docs)
-

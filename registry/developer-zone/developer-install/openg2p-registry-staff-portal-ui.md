@@ -8,7 +8,7 @@ description: Developer Installation for Openg2p Registry Staff Portal UI
 
 Follow these steps to set up Openg2p Registry Staff Portal UI:
 
-* **Clone the Repository**: Clone the Openg2p Beneficiary Portal UI repository from the source:&#x20;
+* **Clone the Repository**: Clone the Openg2p Registry Staff Portal UI repository from the source:&#x20;
 
 ```
 git clone git@github.com:OpenG2P/openg2p-registry-staff-portal-ui.git
