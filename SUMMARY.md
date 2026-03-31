@@ -512,6 +512,7 @@
   * [User Guides](g2p-bridge/user-guides/README.md)
   * [Releases](g2p-bridge/releases/README.md)
     * [1.0.2](g2p-bridge/releases/1.0.2.md)
+* [Identity and Access Management](identity-and-access-management.md)
 * [Staff Portal](staff-portal/README.md)
   * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)
 * [Consent Management](consent-management/README.md)
