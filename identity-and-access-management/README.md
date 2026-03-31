@@ -101,15 +101,41 @@ Tokens issued by Keycloak follow OIDC standards and include:
 
 ```
 {
-  "sub": "user-id",
-  "realm_access": {
-    "roles": ["default-roles"]
-  },
-  "resource_access": {
-    "openg2p-registry": {
-      "roles": ["admin", "viewer"]
-    }
-  }
+    "iss": "https://<auth-server>/realms/<realm>",
+    "sub": "<user-id>",
+    "aud": [
+        "<service-a>",
+        "<service-b>"
+    ],
+    "azp": "<client-application>",
+    "exp": 1700000000,
+    "iat": 1699996400,
+    "typ": "Bearer",
+    "preferred_username": "staff.user@example.com",
+    "email": "staff.user@example.com",
+    "name": "Staff User",
+    "given_name": "Staff",
+    "family_name": "User",
+    "scope": "openid profile email",
+    "realm_access": {
+        "roles": [
+            "create-realm"
+        ]
+    },
+    "resource_access": {
+        "<service-a>": {
+            "roles": [
+                "view",
+                "edit"
+            ]
+        },
+        "<service-b>": {
+            "roles": [
+                "admin"
+            ]
+        }
+    },
+    "user_type": "STAFF"
 }
 ```
 
