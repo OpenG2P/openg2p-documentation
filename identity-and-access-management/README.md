@@ -99,7 +99,7 @@ The following clients are registered:
 
 Tokens issued by Keycloak follow OIDC standards and include:
 
-```
+```json
 {
     "iss": "https://<auth-server>/realms/<realm>",
     "sub": "<user-id>",
