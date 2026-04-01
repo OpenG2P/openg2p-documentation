@@ -82,17 +82,7 @@ Composite roles are created in two passes: all roles are created first, then com
 
 ### Prerequisites
 
-A **client manager** user on Keycloak with limited permissions:
-
-* User name (example: `client-manager@openg2p.org`)
-* Password-based credentials
-* Roles (limited to only these):
-  * `default-role-master`
-  * `manage-clients`
-  * `query-clients`
-  * `view-clients`
-  * `create-realm`
-  
+A Keycloak **admin** user with permissions to create realms, clients, and roles.
 
 ### Installation
 
@@ -101,20 +91,20 @@ The Helm chart must be installed on the cluster and namespace of interest (e.g.,
 {% endhint %}
 
 1. Clone the [keycloak-init repo](https://github.com/OpenG2P/keycloak-init/tree/develop).
-2. Create a secret for the client manager **in the installation namespace**. You may create this using Rancher instead of command line:
+2. Create a secret for the Keycloak admin **in the installation namespace**. You may create this using Rancher instead of command line:
    * Type: `Opaque`
-   * Secret name: `keycloak-client-manager`
-   * Key: `keycloak-client-manager-password`
-   * Value: _\<password of the client manager user>_
+   * Secret name: `keycloak-admin`
+   * Key: `keycloak-admin-password`
+   * Value: _\<password of the Keycloak admin user>_
 3. Review and update `values.yaml`. Pay attention to the following:
 
 ```yaml
 keycloak:
   url: "https://keycloak2.openg2p.org"
-  user: "client-manager@openg2p.org"
+  user: "admin"
   password: ""
-  existingSecret: "keycloak-client-manager"
-  existingSecretKey: "keycloak-client-manager-password"
+  existingSecret: "keycloak-admin"
+  existingSecretKey: "keycloak-admin-password"
 ```
 
 4. Review the `realms` section for the list of realms and clients. Update as required.
