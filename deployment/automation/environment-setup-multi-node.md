@@ -38,7 +38,6 @@ In a multi-node setup, each environment gets its own domain, namespace, and full
 │    • Namespace                                               │
 │    • Rancher Project                                         │
 │    • Istio Gateway                                           │
-│    • Keycloak secret                                         │
 │    • Helm: openg2p-commons-base                              │
 │    • Helm: openg2p-commons-services                          │
 └──────────────────────────────────────────────────────────────┘
@@ -55,13 +54,13 @@ The setup has two parts:
 | Part | Where | What |
 | --- | --- | --- |
 | **Nginx setup** (Steps 1-3) | On the Nginx node (manual) | DNS, TLS certificate, Nginx server block |
-| **Cluster setup** (Steps 4-5) | From your workstation (automated) | Namespace, Rancher project, Istio, Helm charts |
+| **Cluster setup** (Steps 4-5) | From your workstation (automated) | Namespace, Rancher project, Istio gateway, Helm charts |
 
 ## Prerequisites
 
 | Requirement | Details |
 | --- | --- |
-| **Infrastructure** | Nginx node, K8s cluster, Istio, Rancher, and Keycloak are all running |
+| **Infrastructure** | Nginx node, K8s cluster, Istio, and Rancher are all running |
 | **Nginx node** | `certbot` installed, `nginx` running, `istio_ingress` upstream configured |
 | **Workstation** | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster |
 | **DNS access** | Ability to create A records and TXT records at your DNS provider |
@@ -250,11 +249,6 @@ Edit `env-config.yaml` with your values:
 ```yaml
 environment: "qa"
 base_domain: "qa.openg2p.org"
-keycloak_hostname: "keycloak.openg2p.org"
-
-keycloak:
-  client_manager_user: "client-manager@openg2p.org"
-  client_manager_password: "your-password-here"
 
 modules:
   commons: true
@@ -268,16 +262,15 @@ From your **workstation** (with kubectl access to the cluster):
 ./env-cluster.sh --config env-config.yaml
 ```
 
-The script performs 6 steps automatically:
+The script performs 5 steps automatically:
 
 | Step | What it does |
 | --- | --- |
 | 1 | Creates the K8s namespace |
 | 2 | Creates a Rancher Project and associates the namespace |
 | 3 | Creates the Istio Gateway for `*.qa.openg2p.org` |
-| 4 | Creates the Keycloak `client-manager` K8s secret |
-| 5 | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, etc.) |
-| 6 | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.) |
+| 4 | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
+| 5 | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.) |
 
 {% hint style="info" %}
 Takes approximately 15-20 minutes. The script is idempotent — it checks for existing resources before creating them.
@@ -289,9 +282,6 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 | --- | --- |
 | `environment` | Environment name — used as namespace and Rancher project (e.g., `qa`) |
 | `base_domain` | Full base domain for this environment (e.g., `qa.openg2p.org`) |
-| `keycloak_hostname` | Keycloak hostname from infra setup (e.g., `keycloak.openg2p.org`) |
-| `keycloak.client_manager_user` | Keycloak client-manager username |
-| `keycloak.client_manager_password` | Keycloak client-manager password |
 | `commons_base.chart_version` | Helm chart version for openg2p-commons-base |
 | `commons_base.chart_path` | Local chart path (leave empty to use remote repo) |
 | `commons_base.extra_helm_args` | Additional `--set` flags for the base chart |
@@ -309,7 +299,7 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 | Option | Description |
 | --- | --- |
 | `--config <file>` | Path to environment config file (required) |
-| `--step <N>` | Run only a specific step (1-6) |
+| `--step <N>` | Run only a specific step (1-5) |
 | `--force` | Uninstall and reinstall Helm charts |
 | `--help` | Show help message |
 
