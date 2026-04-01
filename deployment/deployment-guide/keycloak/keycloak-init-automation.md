@@ -18,7 +18,6 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 * **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
 * **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
 * **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified. Supports composite roles that contain other roles.
-* **Namespace suffix**: A suffix (default: Kubernetes namespace) is appended to realm names to distinguish realms created for different namespaces (e.g., `staff` becomes `staff-qa`).
 * **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, and secrets are not modified or regenerated.
 
 ## Configuration
@@ -26,10 +25,8 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 Realms and their clients are defined in `values.yaml` under the `realms` key. Each realm is a map entry with its clients listed underneath:
 
 ```yaml
-suffix: '{{ .Release.Namespace }}'
-
 realms:
-  staff-{{ .suffix }}:
+  staff:
     clients:
       - clientId: openg2p-sr
         name: Social Registry
@@ -41,15 +38,13 @@ realms:
           - "*"
         clientRoles:
           - "Admin"
-  another-realm-{{ .suffix }}:
-    clients:
-      - clientId: my-app
-        name: My App
-        redirectUris:
-          - "*"
+  agent:
+    clients: []
+  beneficiary:
+    clients: []
 ```
 
-The `suffix` (default: Kubernetes namespace) is applied to realm names via the `{{ .suffix }}` template. For example, if deployed in the `qa` namespace, `staff-{{ .suffix }}` becomes `staff-qa`. Client IDs remain unchanged across namespaces.
+Realm names are used as-is. Realms with no clients can be defined with `clients: []` — they will still be created in Keycloak.
 
 Each client supports the following parameters:
 
