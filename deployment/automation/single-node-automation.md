@@ -206,9 +206,6 @@ Set `base_domain` and Keycloak credentials explicitly:
 environment: "dev"
 base_domain: "dev.openg2p.org"
 infra_config: "infra-config.yaml"
-keycloak:
-  client_manager_user: "client-manager@openg2p.org"
-  client_manager_password: "<from infra script output>"
 modules:
   commons: true
 ```
@@ -359,33 +356,18 @@ Rancher ships with built-in project roles, but all include full Secrets access. 
 The Rancher `admin` global role (super admin) has access to everything. The initial admin user configured during setup already has this role.
 {% endhint %}
 
-## Client-Manager Credentials
-
-The infra script automatically creates a **`client-manager`** user in Keycloak's master realm. This service account is required by `openg2p-environment.sh` to create Keycloak clients for each environment.
-
-* **Username:** `client-manager@<your-domain>` (e.g., `client-manager@openg2p.org`)
-* **Password:** Auto-generated and displayed in the script's final output
-* **Roles:** `manage-clients`, `query-clients`, `view-clients`
-
-The password is saved on the VM at `/var/lib/openg2p/deploy-state/client-manager-password`.
-
-{% hint style="warning" %}
-Note down the client-manager password from the script output — you'll need it when running `openg2p-environment.sh`.
-{% endhint %}
-
 ## Environment Setup Details
 
 ### Phase 1: Environment Infrastructure
 
 | Step | What | Details |
 | --- | --- | --- |
-| E1.1 | Validate prerequisites | Infra completed, kubeconfig works, credentials available |
+| E1.1 | Validate prerequisites | Infra completed, kubeconfig works, base domain available |
 | E1.2 | TLS certificate | **Local:** wildcard cert signed by CA. **Custom:** Let's Encrypt wildcard |
 | E1.3 | Nginx server block | `*.dev.openg2p.test` → Istio ingress |
 | E1.4 | K8s namespace | Creates the namespace |
 | E1.5 | Rancher Project | Creates project and moves namespace into it (RBAC) |
 | E1.6 | Istio Gateway | Gateway resource for hostname routing |
-| E1.7 | Keycloak secret | `keycloak-client-manager` K8s secret in namespace |
 
 ### Phase 2: Module Installation
 
@@ -499,7 +481,7 @@ automation/single-node/
 │   ├── utils.sh          # Shared: logging, state, config, wait helpers
 │   ├── phase1.sh         # Infra Phase 1: tools, RKE2, Wireguard, NFS, DNS, TLS, Nginx
 │   ├── phase2.sh         # Infra Phase 2: Istio, Helmfile sync
-│   ├── phase3.sh         # Infra Phase 3: Rancher-Keycloak SAML, roles, client-manager
+│   ├── phase3.sh         # Infra Phase 3: Rancher-Keycloak SAML, roles
 │   ├── env-phase1.sh     # Env Phase 1: certs, Nginx, namespace, Rancher project, Istio GW
 │   └── env-phase2.sh     # Env Phase 2: commons helm install (future: more modules)
 ├── aws/
