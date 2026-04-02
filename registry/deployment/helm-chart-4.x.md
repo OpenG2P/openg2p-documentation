@@ -1,4 +1,4 @@
-# Registry Helm Chart 4.x
+# Helm Chart 4.x
 
 ## Overview
 
@@ -12,18 +12,18 @@ This guide assumes that the Kubernetes infrastructure and the **commons** enviro
 
 The chart deploys the following application components and subcharts:
 
-| Component | Type | Default | Description |
-| --------- | ---- | ------- | ----------- |
-| **Staff Portal API** | Application | Enabled | Backend API for the staff-facing registry portal |
-| **Staff Portal UI** | Application | Enabled | Next.js frontend for registry staff operations |
-| **Partner API** | Application | Enabled | API for partner/external system integrations |
-| **Beneficiary Portal API** | Application | Disabled | API for beneficiary self-service portal |
-| **Celery Beat Producer** | Application | Enabled | Periodic task scheduler for async processing |
-| **Celery Worker** | Application | Enabled | Worker for background tasks (ingestion, deduplication, etc.) |
-| **Redis** | Subchart | Enabled | Message broker and result backend for Celery |
-| **postgres-init** | Subchart | Enabled | Initialises the registry database, user, and extensions in the shared PostgreSQL |
-| **ID Generator** | Subchart | Enabled | Generates unique IDs for registrants and households |
-| **Keycloak Init** | Subchart | Enabled | Creates the OIDC client and RBAC roles in Keycloak |
+| Component                  | Type        | Default  | Description                                                                      |
+| -------------------------- | ----------- | -------- | -------------------------------------------------------------------------------- |
+| **Staff Portal API**       | Application | Enabled  | Backend API for the staff-facing registry portal                                 |
+| **Staff Portal UI**        | Application | Enabled  | Next.js frontend for registry staff operations                                   |
+| **Partner API**            | Application | Enabled  | API for partner/external system integrations                                     |
+| **Beneficiary Portal API** | Application | Disabled | API for beneficiary self-service portal                                          |
+| **Celery Beat Producer**   | Application | Enabled  | Periodic task scheduler for async processing                                     |
+| **Celery Worker**          | Application | Enabled  | Worker for background tasks (ingestion, deduplication, etc.)                     |
+| **Redis**                  | Subchart    | Enabled  | Message broker and result backend for Celery                                     |
+| **postgres-init**          | Subchart    | Enabled  | Initialises the registry database, user, and extensions in the shared PostgreSQL |
+| **ID Generator**           | Subchart    | Enabled  | Generates unique IDs for registrants and households                              |
+| **Keycloak Init**          | Subchart    | Enabled  | Creates the OIDC client and RBAC roles in Keycloak                               |
 
 ### Architecture diagram
 
@@ -64,16 +64,16 @@ The chart deploys the following application components and subcharts:
 
 Before installing the Registry chart, ensure the following are available in the target namespace:
 
-| Prerequisite | Provided by | Details |
-| ------------ | ----------- | ------- |
-| PostgreSQL | `commons` release | Shared database server. The postgres superuser secret must exist as `commons-postgresql`. |
-| Keycloak | `commons` release | Namespace-local Keycloak at `keycloak.<namespace>.openg2p.org`. Admin secret must exist as `commons-keycloak`. |
-| MinIO | `commons` release | Object storage for document templates. Secret: `commons-minio`. |
-| IAM Service | `commons` release | Authentication provider at `http://commons-services-iam-staff-portal-api`. |
-| Keymanager | `commons` release | Key management service at `commons-services-keymanager`. |
-| Master Data API | `commons` release | Reference/master data service at `http://commons-services-master-data-api`. |
-| Istio | Infrastructure | Service mesh with ingress gateway for routing. |
-| Wildcard DNS | Infrastructure | `*.<namespace>.openg2p.org` resolving to the cluster ingress. |
+| Prerequisite    | Provided by       | Details                                                                                                        |
+| --------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL      | `commons` release | Shared database server. The postgres superuser secret must exist as `commons-postgresql`.                      |
+| Keycloak        | `commons` release | Namespace-local Keycloak at `keycloak.<namespace>.openg2p.org`. Admin secret must exist as `commons-keycloak`. |
+| MinIO           | `commons` release | Object storage for document templates. Secret: `commons-minio`.                                                |
+| IAM Service     | `commons` release | Authentication provider at `http://commons-services-iam-staff-portal-api`.                                     |
+| Keymanager      | `commons` release | Key management service at `commons-services-keymanager`.                                                       |
+| Master Data API | `commons` release | Reference/master data service at `http://commons-services-master-data-api`.                                    |
+| Istio           | Infrastructure    | Service mesh with ingress gateway for routing.                                                                 |
+| Wildcard DNS    | Infrastructure    | `*.<namespace>.openg2p.org` resolving to the cluster ingress.                                                  |
 
 {% hint style="warning" %}
 The commons release name is assumed to be **`commons`** throughout the chart defaults. If your commons release has a different name, you must override the relevant service URLs (`keycloak-init.keycloak.url`, `keycloak-init.keycloak.existingSecret`, `global.iamServiceUrl`, `global.keymanagerInstallationName`, etc.).
@@ -87,7 +87,7 @@ The commons release name is assumed to be **`commons`** throughout the chart def
 2. Select the **OpenG2P Registry** chart from the `openg2p` catalogue.
 3. Choose the target **namespace** (e.g. `trial`, `qa`, `production`).
 4. Set the **release name** (e.g. `farmer-registry`). This name is used to derive hostnames, database names, and Kubernetes resource names.
-5. Fill in the configuration form (see [Configuration](#configuration) below). For advanced options, switch to **Edit YAML**.
+5. Fill in the configuration form (see [Configuration](helm-chart-4.x.md#configuration) below). For advanced options, switch to **Edit YAML**.
 6. Under Helm Options, **disable the `wait` flag** to avoid timeouts on first install.
 7. Click **Install** and wait for all pods to reach `Running` state.
 
@@ -129,13 +129,13 @@ helm -n trial template farmer-registry openg2p/openg2p-registry \
 
 The chart uses Go template expressions in `values.yaml` to derive hostnames automatically from the Helm release name and namespace:
 
-| Service | Default hostname pattern | Example (`farmer-registry` in `trial`) |
-| ------- | ----------------------- | -------------------------------------- |
-| Staff Portal UI | `<release>.<namespace>.openg2p.org` | `farmer-registry.trial.openg2p.org` |
-| Staff Portal API | `staff-<release>.<namespace>.openg2p.org` | `staff-farmer-registry.trial.openg2p.org` |
-| Partner API | `partner-<release>.<namespace>.openg2p.org` | `partner-farmer-registry.trial.openg2p.org` |
-| ID Generator | `idgenerator-<release>.<namespace>.openg2p.org` | `idgenerator-farmer-registry.trial.openg2p.org` |
-| Keycloak | `keycloak.<namespace>.openg2p.org` | `keycloak.trial.openg2p.org` |
+| Service          | Default hostname pattern                        | Example (`farmer-registry` in `trial`)          |
+| ---------------- | ----------------------------------------------- | ----------------------------------------------- |
+| Staff Portal UI  | `<release>.<namespace>.openg2p.org`             | `farmer-registry.trial.openg2p.org`             |
+| Staff Portal API | `staff-<release>.<namespace>.openg2p.org`       | `staff-farmer-registry.trial.openg2p.org`       |
+| Partner API      | `partner-<release>.<namespace>.openg2p.org`     | `partner-farmer-registry.trial.openg2p.org`     |
+| ID Generator     | `idgenerator-<release>.<namespace>.openg2p.org` | `idgenerator-farmer-registry.trial.openg2p.org` |
+| Keycloak         | `keycloak.<namespace>.openg2p.org`              | `keycloak.trial.openg2p.org`                    |
 
 The base hostname is controlled by `global.registryHostname`.
 
@@ -143,35 +143,35 @@ The base hostname is controlled by `global.registryHostname`.
 
 These parameters are shared across all components:
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `global.registryVariant` | `farmer` | Registry variant name. Affects Docker image names. |
-| `global.registryHostname` | `{{ .Release.Name }}.{{ .Release.Namespace }}.openg2p.org` | Base hostname for all services. |
-| `global.postgresqlHost` | `commons-postgresql` | PostgreSQL server hostname. |
-| `global.keycloakBaseUrl` | `https://keycloak.{{ .Release.Namespace }}.openg2p.org` | Keycloak base URL. |
-| `global.keycloakRealm` | `staff-{{ .Release.Namespace }}` | Keycloak realm name for staff authentication. |
-| `global.authClientId` | `registry-staff-portal` | OIDC client ID in Keycloak. |
-| `global.authClientSecret` | `registry-staff-portal` | K8s Secret name holding the OIDC client password. |
-| `global.iamServiceUrl` | `http://commons-services-iam-staff-portal-api` | Internal URL of the IAM service. |
-| `global.masterDataApiUrl` | `http://commons-services-master-data-api` | Internal URL of the Master Data API. |
-| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name for keymanager. |
+| Parameter                           | Default                                                    | Description                                        |
+| ----------------------------------- | ---------------------------------------------------------- | -------------------------------------------------- |
+| `global.registryVariant`            | `farmer`                                                   | Registry variant name. Affects Docker image names. |
+| `global.registryHostname`           | `{{ .Release.Name }}.{{ .Release.Namespace }}.openg2p.org` | Base hostname for all services.                    |
+| `global.postgresqlHost`             | `commons-postgresql`                                       | PostgreSQL server hostname.                        |
+| `global.keycloakBaseUrl`            | `https://keycloak.{{ .Release.Namespace }}.openg2p.org`    | Keycloak base URL.                                 |
+| `global.keycloakRealm`              | `staff-{{ .Release.Namespace }}`                           | Keycloak realm name for staff authentication.      |
+| `global.authClientId`               | `registry-staff-portal`                                    | OIDC client ID in Keycloak.                        |
+| `global.authClientSecret`           | `registry-staff-portal`                                    | K8s Secret name holding the OIDC client password.  |
+| `global.iamServiceUrl`              | `http://commons-services-iam-staff-portal-api`             | Internal URL of the IAM service.                   |
+| `global.masterDataApiUrl`           | `http://commons-services-master-data-api`                  | Internal URL of the Master Data API.               |
+| `global.keymanagerInstallationName` | `commons-services-keymanager`                              | Internal service name for keymanager.              |
 
 ### Rancher UI questions
 
 The chart provides a simplified Rancher UI form (`questions.yaml`) with the most commonly configured parameters:
 
-| Field | Parameter | Group |
-| ----- | --------- | ----- |
-| Registry Hostname | `global.registryHostname` | General |
-| PostgreSQL Server Host | `global.postgresqlHost` | General |
-| Keycloak Base URL | `global.keycloakBaseUrl` | General |
-| Keycloak Init toggle | `keycloak-init.enabled` | General |
-| Staff Portal API toggle | `staffPortalApi.enabled` | General |
-| Staff Portal UI toggle | `staffPortalUi.enabled` | General |
-| Partner API toggle | `partnerApi.enabled` | General |
-| Beneficiary Portal API toggle | `benePortalApi.enabled` | General |
-| ID Generator toggle | `idgenerator.enabled` | General |
-| ID Types Configuration | _(see note)_ | ID Generator |
+| Field                         | Parameter                 | Group        |
+| ----------------------------- | ------------------------- | ------------ |
+| Registry Hostname             | `global.registryHostname` | General      |
+| PostgreSQL Server Host        | `global.postgresqlHost`   | General      |
+| Keycloak Base URL             | `global.keycloakBaseUrl`  | General      |
+| Keycloak Init toggle          | `keycloak-init.enabled`   | General      |
+| Staff Portal API toggle       | `staffPortalApi.enabled`  | General      |
+| Staff Portal UI toggle        | `staffPortalUi.enabled`   | General      |
+| Partner API toggle            | `partnerApi.enabled`      | General      |
+| Beneficiary Portal API toggle | `benePortalApi.enabled`   | General      |
+| ID Generator toggle           | `idgenerator.enabled`     | General      |
+| ID Types Configuration        | _(see note)_              | ID Generator |
 
 {% hint style="info" %}
 ID type configuration (types, lengths, pool settings) cannot be expressed as simple form fields. The Rancher UI shows a note directing users to switch to **Edit YAML** to modify the `idgenerator.idGenerator.appConfig.idTypes` section.
@@ -181,10 +181,10 @@ ID type configuration (types, lengths, pool settings) cannot be expressed as sim
 
 The chart automatically derives database names and user names from the release name to avoid collisions:
 
-| Component | Database name | User name |
-| --------- | ------------- | --------- |
-| Registry | `<release_name>` (hyphens replaced with underscores) | `<release_name>_user` |
-| ID Generator | `<release_name>_idgenerator` | `<release_name>_idgenerator_user` |
+| Component    | Database name                                        | User name                         |
+| ------------ | ---------------------------------------------------- | --------------------------------- |
+| Registry     | `<release_name>` (hyphens replaced with underscores) | `<release_name>_user`             |
+| ID Generator | `<release_name>_idgenerator`                         | `<release_name>_idgenerator_user` |
 
 For example, release `farmer-registry` creates databases `farmer_registry` and `farmer_registry_idgenerator`.
 
@@ -198,30 +198,30 @@ The `postgres-init` chart uses the Helm `lookup` function to check if the DB use
 
 The `keycloak-init` subchart creates:
 
-- The Keycloak **realm** (e.g. `staff-trial`)
-- An OIDC **client** (`registry-staff-portal`) with a randomly generated secret
-- **RBAC roles** on the client (see below)
+* The Keycloak **realm** (e.g. `staff-trial`)
+* An OIDC **client** (`registry-staff-portal`) with a randomly generated secret
+* **RBAC roles** on the client (see below)
 
 The Keycloak Init Job connects to the namespace-local Keycloak using the admin credentials from the `commons-keycloak` secret.
 
 **Default RBAC roles created:**
 
-| Category | Roles |
-| -------- | ----- |
-| Operations | Intake Officer, Intake Validator, Data Editor, Data Validator, Data Supervisor, Integration Manager, Operations Administrator |
-| Configuration | Schema Designer, Integration Specialist, Reference Data Specialist, Technical Administrator |
+| Category      | Roles                                                                                                                         |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Operations    | Intake Officer, Intake Validator, Data Editor, Data Validator, Data Supervisor, Integration Manager, Operations Administrator |
+| Configuration | Schema Designer, Integration Specialist, Reference Data Specialist, Technical Administrator                                   |
 
 See [RBAC Roles and Permissions](https://docs.openg2p.org/registry/design/detailed-design-notes/rbac-roles-and-permissions) for detailed role descriptions.
 
 **Keycloak-init parameters:**
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `keycloak-init.enabled` | `true` | Enable/disable Keycloak client creation. |
-| `keycloak-init.keycloak.url` | `http://commons-keycloak:80` | Internal Keycloak URL. |
-| `keycloak-init.keycloak.user` | `admin` | Keycloak admin username. |
-| `keycloak-init.keycloak.existingSecret` | `commons-keycloak` | K8s Secret containing the admin password. |
-| `keycloak-init.keycloak.existingSecretKey` | `admin-password` | Key within the secret. |
+| Parameter                                  | Default                      | Description                               |
+| ------------------------------------------ | ---------------------------- | ----------------------------------------- |
+| `keycloak-init.enabled`                    | `true`                       | Enable/disable Keycloak client creation.  |
+| `keycloak-init.keycloak.url`               | `http://commons-keycloak:80` | Internal Keycloak URL.                    |
+| `keycloak-init.keycloak.user`              | `admin`                      | Keycloak admin username.                  |
+| `keycloak-init.keycloak.existingSecret`    | `commons-keycloak`           | K8s Secret containing the admin password. |
+| `keycloak-init.keycloak.existingSecretKey` | `admin-password`             | Key within the secret.                    |
 
 ### ID Generator
 
@@ -241,12 +241,12 @@ idgenerator:
       poolCheckIntervalSeconds: 30
 ```
 
-| Parameter | Default | Description |
-| --------- | ------- | ----------- |
-| `idTypes` | `farmer_id` (12), `household_id` (10) | Map of ID type names to their configuration. |
-| `poolMinThreshold` | `1000` | Minimum IDs in pool before regeneration triggers. |
-| `poolGenerationBatchSize` | `5000` | Number of IDs generated per batch. |
-| `poolCheckIntervalSeconds` | `30` | How often the pool level is checked. |
+| Parameter                  | Default                               | Description                                       |
+| -------------------------- | ------------------------------------- | ------------------------------------------------- |
+| `idTypes`                  | `farmer_id` (12), `household_id` (10) | Map of ID type names to their configuration.      |
+| `poolMinThreshold`         | `1000`                                | Minimum IDs in pool before regeneration triggers. |
+| `poolGenerationBatchSize`  | `5000`                                | Number of IDs generated per batch.                |
+| `poolCheckIntervalSeconds` | `30`                                  | How often the pool level is checked.              |
 
 ### Component toggles
 
@@ -302,7 +302,6 @@ keycloakIssuerUrl: '{{ tpl .Values.global.keycloakBaseUrl $ }}/realms/{{ tpl .Va
 The chart involves two distinct secret flows:
 
 1. **Database secrets** -- Created by `postgres-init` using Helm's `lookup` function. If the secret already exists, it is preserved. Annotated with `helm.sh/resource-policy: keep` to survive uninstalls.
-
 2. **OIDC client secret** -- Created by `keycloak-init`'s `client-secrets.yaml` template with a random password. The Keycloak Init Job reads this secret and pushes it to Keycloak when creating the OIDC client.
 
 {% hint style="warning" %}
@@ -317,14 +316,14 @@ The ID Generator runs its own `postgres-init` instance for its database. To avoi
 
 The chart references several services from the `commons` release by their internal Kubernetes service names:
 
-| Service | Default internal name |
-| ------- | -------------------- |
-| PostgreSQL | `commons-postgresql` |
-| Keycloak | `commons-keycloak:80` |
-| MinIO | `minio.<namespace>.openg2p.org` |
-| IAM | `commons-services-iam-staff-portal-api` |
-| Keymanager | `commons-services-keymanager` |
-| Master Data API | `commons-services-master-data-api` |
+| Service         | Default internal name                   |
+| --------------- | --------------------------------------- |
+| PostgreSQL      | `commons-postgresql`                    |
+| Keycloak        | `commons-keycloak:80`                   |
+| MinIO           | `minio.<namespace>.openg2p.org`         |
+| IAM             | `commons-services-iam-staff-portal-api` |
+| Keymanager      | `commons-services-keymanager`           |
+| Master Data API | `commons-services-master-data-api`      |
 
 These names assume the commons release is named `commons`. Override the corresponding global parameters if your commons release uses a different name.
 
@@ -337,14 +336,16 @@ Error: Secret "xyz" in namespace exists and cannot be imported into the current 
 ```
 
 This occurs when a Kubernetes Secret already exists and is owned by a different Helm release. Common causes:
-- The `keycloak-init` subchart's default realm configuration includes clients (e.g. `openg2p-superset`) that are already created by the commons release. Override the `keycloak-init.realms` section to include only the registry-specific realm and clients.
-- The `authClientSecret` name collides with another registry release in the same namespace. See the note on multiple releases below.
+
+* The `keycloak-init` subchart's default realm configuration includes clients (e.g. `openg2p-superset`) that are already created by the commons release. Override the `keycloak-init.realms` section to include only the registry-specific realm and clients.
+* The `authClientSecret` name collides with another registry release in the same namespace. See the note on multiple releases below.
 
 ### Keycloak Init Job fails with `CreateContainerConfigError`
 
 The Job cannot find the Keycloak admin secret. Ensure:
-- The commons release is installed and the `commons-keycloak` secret exists in the namespace.
-- If your commons release name differs, update `keycloak-init.keycloak.existingSecret` accordingly.
+
+* The commons release is installed and the `commons-keycloak` secret exists in the namespace.
+* If your commons release name differs, update `keycloak-init.keycloak.existingSecret` accordingly.
 
 ### IAM `Invalid Login Provider Id`
 
@@ -353,18 +354,19 @@ The `LOGIN_PROVIDER_ID` in the Staff Portal UI must match a configured login pro
 ### Database password mismatch after reinstall
 
 If the chart is uninstalled and the DB user secret is deleted manually, but the database user persists in PostgreSQL with the old password, a fresh install will generate a new random password that does not match. To resolve:
-- Delete the database user from PostgreSQL before reinstalling, or
-- Recreate the secret with the correct password before installing.
+
+* Delete the database user from PostgreSQL before reinstalling, or
+* Recreate the secret with the correct password before installing.
 
 ## Installing multiple releases
 
 The chart can be installed multiple times in the same namespace with different release names (e.g. `farmer-registry` and `livestock-registry`). Most resource names are derived from `{{ .Release.Name }}` and will not collide. However, the following values are currently hardcoded and **will clash**:
 
-| Parameter | Hardcoded value | Impact |
-| --------- | --------------- | ------ |
-| `global.authClientId` | `registry-staff-portal` | Both releases create the same Keycloak client |
-| `global.authClientSecret` | `registry-staff-portal` | Both releases try to own the same K8s Secret |
-| `keycloak-init` clientId | `registry-staff-portal` | Duplicate client in Keycloak |
+| Parameter                 | Hardcoded value         | Impact                                        |
+| ------------------------- | ----------------------- | --------------------------------------------- |
+| `global.authClientId`     | `registry-staff-portal` | Both releases create the same Keycloak client |
+| `global.authClientSecret` | `registry-staff-portal` | Both releases try to own the same K8s Secret  |
+| `keycloak-init` clientId  | `registry-staff-portal` | Duplicate client in Keycloak                  |
 
 {% hint style="warning" %}
 When installing multiple registry releases in the same namespace, you **must** override `global.authClientId`, `global.authClientSecret`, and the `keycloak-init.realms` clientId to be unique per release (e.g. `farmer-registry-staff-portal`).
@@ -372,8 +374,7 @@ When installing multiple registry releases in the same namespace, you **must** o
 
 ## Source code and references
 
-- **Chart source**: [openg2p-registry-gen2-deployment](https://github.com/OpenG2P/openg2p-registry-gen2-deployment)
-- **Helm repository**: `https://openg2p.github.io/openg2p-helm`
-- **RBAC documentation**: [RBAC Roles and Permissions](https://docs.openg2p.org/registry/design/detailed-design-notes/rbac-roles-and-permissions)
-- **Commons chart**: [OpenG2P Commons Helm Chart](https://docs.openg2p.org/deployment/concepts/openg2p-commons-helm-chart)
-- **postgres-init chart**: [Postgres Init Helm Chart](https://docs.openg2p.org/deployment/deployment-guide/postgres-init-helm-chart)
+* **Chart source**: [openg2p-registry-gen2-deployment](https://github.com/OpenG2P/openg2p-registry-gen2-deployment)
+* **Helm repository**: `https://openg2p.github.io/openg2p-helm`
+* **RBAC documentation**: [RBAC Roles and Permissions](https://docs.openg2p.org/registry/design/detailed-design-notes/rbac-roles-and-permissions)
+* **Commons chart**: [OpenG2P Commons Helm Chart](https://docs.openg2p.org/deployment/concepts/openg2p-commons-helm-chart)
