@@ -1,15 +1,17 @@
+---
+description: Registry version history and release tracking.
+---
+
 # Versions
 
-Various package versions of Registry are given below.&#x20;
-
-Note that these apply to Gen 2 Registry and hence the package versions&#x20;
+This page tracks the released versions of OpenG2P Registry (Gen 2).
 
 {% hint style="info" %}
-The below versionig applies to Gen2 Registry and hence starts from 4.0.  The[ previous versions](../social-registry/versions.md) of registry are for Gen 1 registry.
+OpenG2P Registry follows semantic versioning. The Helm chart version corresponds to the platform release version. See [Helm Chart 4.x](deployment/helm-chart-4.x.md) for deployment details.
 {% endhint %}
 
-| Helm Package | Last Modified | Description |
-| ------------ | ------------- | ----------- |
-|              |               |             |
-|              |               |             |
-|              |               |             |
+| Version | Release Date | Highlights              | Helm Chart                                    |
+| ------- | ------------ | ----------------------- | --------------------------------------------- |
+| 4.x     | Current      | Initial Gen 2 release   | [Helm Chart 4.x](deployment/helm-chart-4.x.md) |
+
+More version details will be added as releases progress.
