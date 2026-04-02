@@ -22,7 +22,9 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 
 ## Configuration
 
-Realms and their clients are defined in `values.yaml` under the `realms` key. Each realm is a map entry with its clients listed underneath:
+The keycloak-init chart ships with no default realms or clients. The calling chart (or user) must define all realms and clients in `values.yaml` under the `realms` key. This ensures that parent chart overrides fully replace the configuration rather than merging with defaults.
+
+Each realm is a map entry with its clients listed underneath:
 
 ```yaml
 realms:
@@ -44,7 +46,7 @@ realms:
     clients: []
 ```
 
-Realm names are used as-is. Realms with no clients can be defined with `clients: []` — they will still be created in Keycloak.
+Realms with no clients can be defined with `clients: []` — they will still be created in Keycloak.
 
 Each client supports the following parameters:
 
@@ -55,8 +57,6 @@ Each client supports the following parameters:
 | `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                           |
 | `secret`       | No       | Client secret. If not provided, a random secret is generated and stored.    |
 | `clientRoles`  | No       | List of client roles to create. See below.                                  |
-
-Default clients are listed in [values.yaml](https://github.com/OpenG2P/keycloak-init/blob/develop/helm/values.yaml).
 
 ### Client roles
 
