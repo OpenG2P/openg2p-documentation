@@ -1,80 +1,129 @@
-# OpenG2P Commons Helm Chart 1.x
+# OpenG2P Commons Helm Charts
 
 ## Context
 
-* This guide explains the **design rationale** behind the OpenG2P Commons Helm chart.
+* This guide explains the **design rationale** behind the OpenG2P Commons Helm charts.
 * It also provides references for Helm chart development and links to:
-  * The [**source code**](https://github.com/OpenG2P/openg2p-deployment-commons) of the chart.
+  * The [**source code**](https://github.com/OpenG2P/openg2p-deployment-commons) of the charts.
   * The [**new architecture**](openg2p-deployment-model.md) documentation.
 
-## **Design update (from v2.x.x onward)**
+## Architecture (v2.x onward)
 
-* In OpenG2P **version 2.x.x**, many dependency modules were installed separately for each application.
-* In the new design, these have been centralized under the `openg2p-commons` chart.
-* Only the common dependency modules shared across all applications are included in this chart.
+From version 2.0, the commons deployment is split into **two Helm charts**:
 
-## **Dependencies**
+1. **`openg2p-commons-base`** - Infrastructure layer (installed first)
+2. **`openg2p-commons-services`** - Application services layer (depends on base)
 
-The `openg2p-commons` Helm chart bundles the following core components.
+This split was necessary because Rancher's Helm integration does not execute Helm hooks, which caused ordering issues with a single chart.
 
-1. **PostgreSQL**
-2. **Mail SMTP Server**
-3. **MinIO**
-4. **ODK Central**
-5. **Keymanager** (includes keygen job to generate the keys for all modules)
-6. **OpenSearch**
-7. **Reporting** (includes _Reporting Framework_ + _Reporting Init_)
-8. **Superset**
-9. **eSignet** (includes _eSignet_ + _Mock Identity System_)
+### openg2p-commons-base
 
-{% hint style="info" %}
-### Bitnami secure images transition
+Installs all infrastructure components:
 
-**From August 28th, 2025**, Bitnami is evolving its public catalog under the **Bitnami Secure Images** initiative.
+| Component | Description |
+|-----------|-------------|
+| **Keycloak** | Per-environment identity provider (OIDC/OAuth2) |
+| **Keycloak Init** | Creates realms, clients, and themes in Keycloak |
+| **PostgreSQL** | Shared database server |
+| **Postgres Init** | Creates databases and users for all services |
+| **Redis** | Cache (without auth) |
+| **Redis Auth** | Cache with authentication (for eSignet) |
+| **Kafka** | Message broker |
+| **Kafka UI** | Kafka management dashboard |
+| **OpenSearch** | Search and analytics engine with dashboards |
+| **MinIO** | Object storage |
+| **SoftHSM** | Software HSM for key management |
+| **Mail** | SMTP relay server (optional) |
+| **Client Secrets Sync** | Fetches OIDC client secrets from Keycloak and stores in K8s secrets |
 
-**Key points:**
+### openg2p-commons-services
 
-* Community users now get access to **security-hardened container images** of popular software.
-* **Non-hardened Debian-based images** will be deprecated and gradually removed from the free public catalog.
-* Only latest tags of hardened images will remain available — meant for **development use only**.
-* Older versioned images (e.g., `10.6`, `2.50.0`) will move to the **Bitnami Legacy** repo (`docker.io/bitnamilegacy`) and will no longer receive updates.
-* For production workloads, users are encouraged to adopt **Bitnami Secure Images** — featuring hardened containers, SBOMs, CVE transparency, and enterprise support.
+Installs application services:
 
-**Our action:**
+| Component | Description |
+|-----------|-------------|
+| **Superset** | Data visualization and dashboards |
+| **eSignet** | Digital signature service |
+| **Mock Identity System** | Mock identity provider for testing |
+| **Keymanager** | Cryptographic key management |
+| **ODK Central** | Data collection |
+| **OpenG2P Master Data** | Master data service |
+| **Reporting** | Reporting framework |
+| **Artifactory** | Artifact repository |
+| **OpenG2P IAM Service** | Identity and access management API |
 
-* Since Bitnami removed free access to their Helm charts and Docker images,\
-  we extracted the existing charts and versions we depend on and uploaded them to our own private Helm repository.
-* All our Helm charts are now updated to reference these internal chart paths instead of Bitnami’s public sources.
-{% endhint %}
+## Key Design Decisions
+
+### Per-environment Keycloak
+
+Each environment gets its own Keycloak instance (installed as part of `openg2p-commons-base`). This eliminates the need for a shared Keycloak server and simplifies credential management - the Keycloak admin user is used directly for client initialization.
+
+* Keycloak URL: `https://keycloak.<baseDomain>`
+* Admin credentials are auto-generated and stored in a K8s secret
+* OIDC clients are created automatically by `keycloak-init`
+* Client secrets are synced to K8s secrets by `client-secrets-sync`
+
+### Keycloak Realms and Clients
+
+The `keycloak-init` job creates:
+
+* **`master` realm** - with `openg2p-admin` login and admin themes
+* **`staff` realm** - with `staff-portal` login and admin themes, containing OIDC clients:
+  * `openg2p-superset`, `openg2p-opensearch`, `openg2p-kafka`, `openg2p-minio`, `openg2p-odk`, `staff-portal`
+
+### Keycloak Themes
+
+Themes are specified per realm in the `keycloak-init` configuration:
+
+```yaml
+keycloak-init:
+  realms:
+    master:
+      themes:
+        loginTheme: openg2p-admin
+        adminTheme: openg2p-admin
+      clients: []
+    staff:
+      themes:
+        loginTheme: staff-portal
+        adminTheme: staff-portal
+      clients:
+        - clientId: staff-portal
+          name: Staff Portal
+          redirectUris: ["*"]
+```
+
+### No Helm Hooks
+
+Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, client-secrets-sync) run as regular Kubernetes resources. This ensures compatibility with Rancher, which skips hooks.
+
+### Shared PostgreSQL
+
+Keycloak uses the same PostgreSQL instance as other services. The `postgres-init` job creates a dedicated `keycloak` database and user.
 
 ## Versions
 
-| HelmVesion    | Last Modified | Comments                                                                                                                                                                                                                                   |
-| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1.0.0         | 21-Jan-2026   | Frozen stable version.                                                                                                                                                                                                                     |
-| 1.1.0-develop | 13-Feb-2026   | Several major changes. See [https://openg2p.atlassian.net/browse/G2P-4036](https://openg2p.atlassian.net/browse/G2P-4036). Works well with internal DB. With external DB, there are some issues.                                           |
-| 1.2.0-develop | 24-Mar-2026   | Works well when run via command line using `install.sh` script but not from Rancher. <mark style="color:$danger;">DO NOT USE</mark> install from Rancher.                                                                                  |
-| 2.0.0-develop | 30-Mar-2026   | Completely rearchitected. NOT COMPATIBLE WITH PREVIOUS VERSIONS. Chart split into two charts as Rancher would not honor the install hooks. The 'base' chart installs Postgres etc, while other services are installed by 'services' chart. |
+| Version | Last Modified | Comments |
+|---------|---------------|----------|
+| 1.0.0 | 21-Jan-2026 | Frozen stable version (single chart). |
+| 1.1.0-develop | 13-Feb-2026 | Several major changes. Works well with internal DB. |
+| 1.2.0-develop | 24-Mar-2026 | Works via CLI but not Rancher. |
+| 2.0.0-develop | 30-Mar-2026 | Split into two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH PREVIOUS VERSIONS. |
 
-## How to deploy openg2p commons
+## How to deploy
 
-Refer the instructions [here](../deployment-instructions/environment-installation.md#common-resources).
+Refer to the instructions [here](../deployment-instructions/environment-installation.md).
 
 ## Tear down
 
-To completely clean up the OpenG2P-Commons installation, follow these steps:
+Use the provided uninstall scripts:
 
-1. Uninstall OpenG2P-Commons from Rancher
-   * Go to **Apps → Installed Apps**
-   * Select **OpenG2P-Commons**
-   * Click **Delete**
-2. Manually remove all remaining workloads associated with OpenG2P-Commons, such as Pods, Deployments, StatefulSets, Jobs, and related resources.
-3. Delete secrets created by this chart only
-   * Remove **application/user secrets** created by OpenG2P-Commons
-   * **Do not delete any Keycloak client or Keycloak-related secrets**
-4. Delete Persistent Volume Claims (PVCs)
-   * Identify PVCs created by OpenG2P-Commons
-   * Delete those PVCs
-5. Delete corresponding Persistent Volumes (PVs)
-   * Identify PVs associated with the deleted PVCs
-   * Delete PVs that are in **Released** state
+```bash
+# Uninstall services first
+./uninstall.sh <namespace> <services-release-name>
+
+# Then uninstall base
+./uninstall-base.sh <namespace> <base-release-name>
+```
+
+The uninstall scripts handle cleanup of secrets (including those with `helm.sh/resource-policy: keep`), PVCs, and released PVs.
