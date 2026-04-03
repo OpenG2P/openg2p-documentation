@@ -503,6 +503,7 @@
   * [Authentication - Flow diagram](identity-and-access-management/authentication-flow-diagram.md)
   * [RBAC in Product APIs](identity-and-access-management/rbac-in-product-apis.md)
   * [Developer Install](identity-and-access-management/developer-install.md)
+  * [Security Controls](identity-and-access-management/security-controls.md)
 * [Staff Portal](staff-portal/README.md)
   * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)
   * [Developer Install](staff-portal/developer-install.md)
