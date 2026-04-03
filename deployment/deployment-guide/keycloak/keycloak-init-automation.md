@@ -18,7 +18,8 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 * **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
 * **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
 * **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified. Supports composite roles that contain other roles.
-* **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, and secrets are not modified or regenerated.
+* **Themes**: Optionally apply login and admin themes to each realm (e.g., `openg2p-admin` for the master realm, `staff-portal-login-theme` for the staff realm). Themes are only updated if they differ from the current setting.
+* **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, secrets, and themes are not modified unless a theme change is specified.
 
 ## Configuration
 
@@ -28,7 +29,15 @@ Each realm is a map entry with its clients listed underneath:
 
 ```yaml
 realms:
+  master:
+    themes:
+      loginTheme: openg2p-admin
+      adminTheme: openg2p-admin
+    clients: []
   staff:
+    themes:
+      loginTheme: staff-portal
+      adminTheme: staff-portal
     clients:
       - clientId: openg2p-sr
         name: Social Registry
@@ -42,11 +51,31 @@ realms:
           - "Admin"
   agent:
     clients: []
-  beneficiary:
-    clients: []
 ```
 
-Realms with no clients can be defined with `clients: []` — they will still be created in Keycloak.
+Realms with no clients can be defined with `clients: []` — they will still be created in Keycloak. The `themes` section is optional; if omitted, the realm's themes are left unchanged.
+
+### Themes
+
+Login and admin themes can be applied per realm. The theme names must match themes already installed in Keycloak (e.g., via the [keycloak-themes](https://github.com/OpenG2P/keycloak-themes) image).
+
+Available OpenG2P themes (from [keycloak-themes](https://github.com/OpenG2P/keycloak-themes)):
+
+| Theme Name       | Type           | Description                              |
+| ---------------- | -------------- | ---------------------------------------- |
+| `openg2p-admin`  | Login, Admin   | OpenG2P branded admin console            |
+| `staff-portal`   | Login, Admin   | Staff portal theme                       |
+| `g2p-advisor`    | Login          | G2P Advisor login theme                  |
+
+Each theme folder contains `login` and/or `admin` subdirectories. The theme name in Keycloak matches the folder name. Use the same name for both `loginTheme` and `adminTheme` when both types are available:
+
+```yaml
+themes:
+  loginTheme: staff-portal     # Applied to the realm's login page
+  adminTheme: staff-portal     # Applied to the realm's admin console
+```
+
+Themes are only updated when they differ from the current setting in Keycloak, keeping the operation idempotent.
 
 Each client supports the following parameters:
 
