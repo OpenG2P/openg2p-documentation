@@ -34,11 +34,11 @@ The OpenG2P Keycloak deployment requires custom login and admin themes for brand
 
 The custom image bundles the following themes:
 
-| Theme | Type | Description |
-| ----- | ---- | ----------- |
+| Theme | Types | Description |
+| ----- | ----- | ----------- |
 | `g2p-advisor` | Login | Dark-themed login page with OpenG2P branding and gold accents, supporting login, OTP, password reset, and email verification flows. |
-| `staff-portal-login-theme` | Login | Login theme for the OpenG2P Staff Portal. |
-| `staff-portal-admin-theme` | Admin | Admin console theme for the OpenG2P Staff Portal. |
+| `staff-portal` | Login, Admin | Login and admin console themes for the OpenG2P Staff Portal. |
+| `openg2p-admin` | Login, Admin | Login and admin console themes for the Keycloak Master Realm, titled "OpenG2P Admin". |
 
 ## Key resources
 
@@ -69,7 +69,7 @@ The workflow will:
 * Push the image to Docker Hub as `openg2p/keycloak:24.0.5-debian-12-r1-<g2p_version>`.
 
 {% hint style="info" %}
-The repository must have `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets configured under **Settings > Secrets and variables > Actions**.
+The repository must have access to the organisation secrets `docker_hub_actor` and `docker_hub_token` under **Settings > Secrets and variables > Actions**.
 {% endhint %}
 
 ### Building locally (macOS / Apple Silicon)
@@ -118,8 +118,8 @@ Once the custom image is deployed, themes must be activated per realm:
 3. Navigate to **Realm Settings** in the left sidebar.
 4. Go to the **Themes** tab.
 5. Select the desired theme from the dropdowns:
-   * **Login theme** -- choose `g2p-advisor` or `staff-portal-login-theme`
-   * **Admin console theme** -- choose `staff-portal-admin-theme`
+   * **Login theme** -- choose `g2p-advisor`, `staff-portal`, or `openg2p-admin`
+   * **Admin console theme** -- choose `staff-portal` or `openg2p-admin`
 6. Click **Save**.
 
 Changes take effect immediately for new sessions.
@@ -128,4 +128,4 @@ Changes take effect immediately for new sessions.
 
 | Tag | Date | Notes |
 | --- | ---- | ----- |
-| `24.0.5-debian-12-r1-g2p1` | 2026-04-03 | Initial build with g2p-advisor, staff-portal-login-theme, and staff-portal-admin-theme. |
+| `24.0.5-debian-12-r1-g2p1` | 2026-04-03 | Initial build with g2p-advisor, staff-portal, and openg2p-admin themes. |
