@@ -1,4 +1,4 @@
-# OpenG2P Commons Helm Charts
+# Commons Helm Charts 2.x
 
 ## Context
 
@@ -20,37 +20,37 @@ This split was necessary because Rancher's Helm integration does not execute Hel
 
 Installs all infrastructure components:
 
-| Component | Description |
-|-----------|-------------|
-| **Keycloak** | Per-environment identity provider (OIDC/OAuth2) |
-| **Keycloak Init** | Creates realms, clients, and themes in Keycloak |
-| **PostgreSQL** | Shared database server |
-| **Postgres Init** | Creates databases and users for all services |
-| **Redis** | Cache (without auth) |
-| **Redis Auth** | Cache with authentication (for eSignet) |
-| **Kafka** | Message broker |
-| **Kafka UI** | Kafka management dashboard |
-| **OpenSearch** | Search and analytics engine with dashboards |
-| **MinIO** | Object storage |
-| **SoftHSM** | Software HSM for key management |
-| **Mail** | SMTP relay server (optional) |
+| Component               | Description                                                         |
+| ----------------------- | ------------------------------------------------------------------- |
+| **Keycloak**            | Per-environment identity provider (OIDC/OAuth2)                     |
+| **Keycloak Init**       | Creates realms, clients, and themes in Keycloak                     |
+| **PostgreSQL**          | Shared database server                                              |
+| **Postgres Init**       | Creates databases and users for all services                        |
+| **Redis**               | Cache (without auth)                                                |
+| **Redis Auth**          | Cache with authentication (for eSignet)                             |
+| **Kafka**               | Message broker                                                      |
+| **Kafka UI**            | Kafka management dashboard                                          |
+| **OpenSearch**          | Search and analytics engine with dashboards                         |
+| **MinIO**               | Object storage                                                      |
+| **SoftHSM**             | Software HSM for key management                                     |
+| **Mail**                | SMTP relay server (optional)                                        |
 | **Client Secrets Sync** | Fetches OIDC client secrets from Keycloak and stores in K8s secrets |
 
 ### openg2p-commons-services
 
 Installs application services:
 
-| Component | Description |
-|-----------|-------------|
-| **Superset** | Data visualization and dashboards |
-| **eSignet** | Digital signature service |
+| Component                | Description                        |
+| ------------------------ | ---------------------------------- |
+| **Superset**             | Data visualization and dashboards  |
+| **eSignet**              | Digital signature service          |
 | **Mock Identity System** | Mock identity provider for testing |
-| **Keymanager** | Cryptographic key management |
-| **ODK Central** | Data collection |
-| **OpenG2P Master Data** | Master data service |
-| **Reporting** | Reporting framework |
-| **Artifactory** | Artifact repository |
-| **OpenG2P IAM Service** | Identity and access management API |
+| **Keymanager**           | Cryptographic key management       |
+| **ODK Central**          | Data collection                    |
+| **OpenG2P Master Data**  | Master data service                |
+| **Reporting**            | Reporting framework                |
+| **Artifactory**          | Artifact repository                |
+| **OpenG2P IAM Service**  | Identity and access management API |
 
 ## Key Design Decisions
 
@@ -103,12 +103,9 @@ Keycloak uses the same PostgreSQL instance as other services. The `postgres-init
 
 ## Versions
 
-| Version | Last Modified | Comments |
-|---------|---------------|----------|
-| 1.0.0 | 21-Jan-2026 | Frozen stable version (single chart). |
-| 1.1.0-develop | 13-Feb-2026 | Several major changes. Works well with internal DB. |
-| 1.2.0-develop | 24-Mar-2026 | Works via CLI but not Rancher. |
-| 2.0.0-develop | 30-Mar-2026 | Split into two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH PREVIOUS VERSIONS. |
+| Version       | Last Modified | Comments                                                                                                  |
+| ------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
+| 2.0.0-develop | 30-Mar-2026   | Split into two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH PREVIOUS VERSIONS. |
 
 ## How to deploy
 
@@ -127,3 +124,14 @@ Use the provided uninstall scripts:
 ```
 
 The uninstall scripts handle cleanup of secrets (including those with `helm.sh/resource-policy: keep`), PVCs, and released PVs.
+
+## Previous versions
+
+Previous version of Helm chart (1.x) was a single Helm chart that deployed all modules.  These are available in  [https://github.com/OpenG2P/openg2p-commons-deployment](https://github.com/OpenG2P/openg2p-commons-deployment) the repective branches.
+
+| Version       | Last Modified | Comments                                            |
+| ------------- | ------------- | --------------------------------------------------- |
+| 1.0.0         | 21-Jan-2026   | Frozen stable version (single chart).               |
+| 1.1.0-develop | 13-Feb-2026   | Several major changes. Works well with internal DB. |
+| 1.2.0-develop | 24-Mar-2026   | Works via CLI but not Rancher.                      |
+
