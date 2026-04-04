@@ -6,16 +6,16 @@ The Helm Chart for PBMS installation version 4.x and above are aligned new deplo
 
 ## Key updates to the chart
 
-The changes made PBMS Helm Chart w.r.t previous versions (3.x and below) are similar to [Registry Helm Chart 3.x.](../../social-registry/deployment/registry-helm-chart-3.x.x.md)   Important reference and points to note are listed below:
+The changes made PBMS Helm Chart w.r.t previous versions (3.x and below) are similar to [Registry Helm Chart 3.x.](../../products/registry/social-registry/deployment/registry-helm-chart-3.x.x.md)   Important reference and points to note are listed below:
 
 1. **Consolidation of dependents charts** into single PBMS charts. This was done because all the dependent charts are not useful on their own, so Helm chart for each of them was an overkill and adding to the maintance.  See&#x20;
 
 {% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-3614" %}
 
-2. [Postgres-init Helm chart ](../../social-registry/deployment/registry-helm-chart-3.x.x.md#postgres-init)added to initialize PBMS DB and Background Task DB (like in Registry)
+2. [Postgres-init Helm chart ](../../products/registry/social-registry/deployment/registry-helm-chart-3.x.x.md#postgres-init)added to initialize PBMS DB and Background Task DB (like in Registry)
 3. Hard coding removed on several resource names and consequently templating used to resolve the names.  Refer to the variables under 'globals' in [values.yaml](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/blob/4.0/charts/openg2p-pbms/values.yaml).
-4. Odoo Helm Chart version updated. This version was customized by OpenG2P to support overriding of templates.  [Learn more>>](../../social-registry/deployment/registry-helm-chart-3.x.x.md#modifications-to-the-original-odoo-chart).  The [\_helpers.tpl](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/blob/4.0/charts/openg2p-pbms/templates/_helper.tpl) template file was updated accordingly.
-5. External DB initialized in Odoo. [Learn more>>](../../social-registry/deployment/registry-helm-chart-3.x.x.md#odoo).
+4. Odoo Helm Chart version updated. This version was customized by OpenG2P to support overriding of templates.  [Learn more>>](../../products/registry/social-registry/deployment/registry-helm-chart-3.x.x.md#modifications-to-the-original-odoo-chart).  The [\_helpers.tpl](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/blob/4.0/charts/openg2p-pbms/templates/_helper.tpl) template file was updated accordingly.
+5. External DB initialized in Odoo. [Learn more>>](../../products/registry/social-registry/deployment/registry-helm-chart-3.x.x.md#odoo).
 6. Utlities like MinIO, Keymanager removed as they are now installed as common shared resources using OpenG2P Commons.
 7. Separate users and their secrets created for PBMS DB and Background Task DB.
 

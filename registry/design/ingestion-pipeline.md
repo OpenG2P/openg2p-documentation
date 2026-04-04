@@ -1,5 +1,7 @@
 ---
-description: End-to-end asynchronous ingestion flow -- from partner payload receipt to change request creation.
+description: >-
+  End-to-end asynchronous ingestion flow -- from partner payload receipt to
+  change request creation.
 ---
 
 # Ingestion Pipeline
@@ -27,62 +29,62 @@ The ingestion pipeline uses several configuration tables to control how incoming
 
 ### incoming\_partners
 
-| Column | Description |
-| --- | --- |
-| `partner_id` | Primary key |
-| `partner_mnemonic` | Short name for the partner system |
+| Column                    | Description                                              |
+| ------------------------- | -------------------------------------------------------- |
+| `partner_id`              | Primary key                                              |
+| `partner_mnemonic`        | Short name for the partner system                        |
 | `keymanager_reference_id` | Reference to the partner's public key in the key manager |
-| `is_active` | Whether the partner is currently active |
+| `is_active`               | Whether the partner is currently active                  |
 
 ### data\_models
 
-| Column | Description |
-| --- | --- |
-| `data_model_id` | Primary key |
-| `data_model_mnemonic` | Short name for the data model (e.g. `dci_v1`, `custom_farmer`) |
+| Column                   | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `data_model_id`          | Primary key                                                                   |
+| `data_model_mnemonic`    | Short name for the data model (e.g. `dci_v1`, `custom_farmer`)                |
 | `pattern_for_data_model` | JSONPath or regex pattern used to identify this data model from a raw payload |
-| `is_active` | Whether the data model is currently active |
+| `is_active`              | Whether the data model is currently active                                    |
 
 ### incoming\_model\_signature\_patterns
 
-| Column | Description |
-| --- | --- |
-| `signature_pattern_id` | Primary key |
-| `data_model_id` | Foreign key to the data model |
-| `key_path_for_sender` | JSONPath to extract the sender identifier |
-| `key_path_for_signature` | JSONPath to extract the signature value |
+| Column                           | Description                                     |
+| -------------------------------- | ----------------------------------------------- |
+| `signature_pattern_id`           | Primary key                                     |
+| `data_model_id`                  | Foreign key to the data model                   |
+| `key_path_for_sender`            | JSONPath to extract the sender identifier       |
+| `key_path_for_signature`         | JSONPath to extract the signature value         |
 | `key_path_for_signature_payload` | JSONPath to extract the payload that was signed |
 
 ### incoming\_model\_semantic\_patterns
 
-| Column | Description |
-| --- | --- |
-| `semantic_pattern_id` | Primary key |
-| `data_model_id` | Foreign key to the data model |
-| `register_id` | Target register for payloads matching this pattern |
-| `operation_id` | Target section/operation |
-| `pattern_for_register` | Pattern to match the register from the payload |
-| `pattern_for_operation` | Pattern to match the operation from the payload |
+| Column                          | Description                                                      |
+| ------------------------------- | ---------------------------------------------------------------- |
+| `semantic_pattern_id`           | Primary key                                                      |
+| `data_model_id`                 | Foreign key to the data model                                    |
+| `register_id`                   | Target register for payloads matching this pattern               |
+| `operation_id`                  | Target section/operation                                         |
+| `pattern_for_register`          | Pattern to match the register from the payload                   |
+| `pattern_for_operation`         | Pattern to match the operation from the payload                  |
 | `key_path_for_business_payload` | JSONPath to extract the business-relevant portion of the payload |
 
 ### incoming\_templates
 
-| Column | Description |
-| --- | --- |
-| `template_id` | Primary key |
-| `data_model_id` | Foreign key to the data model |
-| `register_id` | Target register |
-| `operation_id` | Target section/operation |
+| Column             | Description                                            |
+| ------------------ | ------------------------------------------------------ |
+| `template_id`      | Primary key                                            |
+| `data_model_id`    | Foreign key to the data model                          |
+| `register_id`      | Target register                                        |
+| `operation_id`     | Target section/operation                               |
 | `template_file_id` | Reference to the Jinja template file in object storage |
 
 ### incoming\_payload\_enricher
 
-| Column | Description |
-| --- | --- |
-| `enricher_id` | Primary key |
-| `data_model_id` | Foreign key to the data model |
-| `register_id` | Target register |
-| `operation_id` | Target section/operation |
+| Column                       | Description                                               |
+| ---------------------------- | --------------------------------------------------------- |
+| `enricher_id`                | Primary key                                               |
+| `data_model_id`              | Foreign key to the data model                             |
+| `register_id`                | Target register                                           |
+| `operation_id`               | Target section/operation                                  |
 | `raw_payload_enricher_class` | Fully qualified class name of the enricher implementation |
 
 The enricher is used for standards that follow the notification-then-search philosophy. When a payload contains only a reference identifier, the enricher fetches the full record from the source system before classification proceeds.
@@ -90,9 +92,8 @@ The enricher is used for standards that follow the notification-then-search phil
 ## Pipeline stages
 
 {% stepper %}
-
 {% step %}
-### API Ingestion
+#### API Ingestion
 
 The partner system calls the `/partner/ingest_data` endpoint. The API layer performs the following synchronous operations:
 
@@ -105,7 +106,7 @@ A Celery task is then dispatched to begin asynchronous processing.
 {% endstep %}
 
 {% step %}
-### Classification Worker
+#### Classification Worker
 
 The classification worker picks up the raw payload and applies semantic pattern matching:
 
@@ -116,7 +117,7 @@ The classification worker picks up the raw payload and applies semantic pattern 
 {% endstep %}
 
 {% step %}
-### Transformation Worker
+#### Transformation Worker
 
 The transformation worker converts the classified payload from the external schema to the internal registry schema:
 
@@ -126,7 +127,7 @@ The transformation worker converts the classified payload from the external sche
 {% endstep %}
 
 {% step %}
-### Ingestion Worker
+#### Ingestion Worker
 
 The ingestion worker creates the actual registry change request:
 
@@ -134,7 +135,6 @@ The ingestion worker creates the actual registry change request:
 * The change request enters the standard verification and approval workflow.
 * If auto-approval is configured for this section and source channel, the change request is approved immediately.
 {% endstep %}
-
 {% endstepper %}
 
 {% hint style="warning" %}
@@ -142,5 +142,5 @@ Every stage has built-in rollback and retry logic. If a stage fails, it is retri
 {% endhint %}
 
 {% content-ref url="../features/ingestion-pipeline.md" %}
-ingestion-pipeline.md
+[ingestion-pipeline.md](../features/ingestion-pipeline.md)
 {% endcontent-ref %}

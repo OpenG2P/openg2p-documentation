@@ -17,7 +17,7 @@ Only one Fluentd installation is required per Kubernetes cluster.
 
 ## OpenSearch installation
 
-OpenSearch can now be installed directly as part of  OpenG2P modules. For example, refer to [Social Registry deployment](../../../../../social-registry/deployment/) or [PBMS deployment](../../../../../pbms/previous-generation/deployment/).
+OpenSearch can now be installed directly as part of  OpenG2P modules. For example, refer to [Social Registry deployment](../../../../../products/registry/social-registry/deployment/) or [PBMS deployment](../../../../../registry/deployment/).
 
 ### Setup automatic clean-up of older logs
 

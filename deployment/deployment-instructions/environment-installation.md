@@ -46,6 +46,7 @@ cd charts/openg2p-commons-services
 ```
 
 Parameters:
+
 * `namespace` - must match the base chart namespace
 * `release-name` - Helm release name for services (e.g., `commons-services`)
 * `base-release-name` - release name used for base chart (e.g., `commons`)
@@ -85,6 +86,7 @@ Both scripts use `helm upgrade --install`, so they can be safely re-run to apply
 ### Keycloak (auto-configured)
 
 Keycloak is installed per-environment with:
+
 * **URL:** `https://keycloak.<base-domain>`
 * **Admin user:** `admin` (password auto-generated, stored in K8s secret `<release>-keycloak`)
 * **Realms:** `master` and `staff`
@@ -107,12 +109,12 @@ PostgreSQL databases are created automatically for all services. User passwords 
 
 Create [Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users:
 
-| Component | Client | Role name |
-|-----------|--------|-----------|
-| OpenSearch Dashboards | `openg2p-opensearch` | `admin` |
-| Kafka UI | `openg2p-kafka` | `Admin` |
-| Apache Superset | `openg2p-superset` | `Admin` |
-| MinIO Console | `openg2p-minio` | `consoleAdmin` |
+| Component             | Client               | Role name      |
+| --------------------- | -------------------- | -------------- |
+| OpenSearch Dashboards | `openg2p-opensearch` | `admin`        |
+| Kafka UI              | `openg2p-kafka`      | `Admin`        |
+| Apache Superset       | `openg2p-superset`   | `Admin`        |
+| MinIO Console         | `openg2p-minio`      | `consoleAdmin` |
 
 ### Assigning roles to clients
 
@@ -146,7 +148,7 @@ kubectl create secret generic external-pg-superuser \
 
 Install the modules and other utility apps individually using their respective instructions:
 
-1. [Registry](../../social-registry/deployment/registry-installation.md)
+1. [Registry](../../products/registry/social-registry/deployment/registry-installation.md)
 2. [PBMS](https://docs.openg2p.org/pbms/deployment)
 3. [SPAR](https://docs.openg2p.org/spar/deployment)
 4. [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui)

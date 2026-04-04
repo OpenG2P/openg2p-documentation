@@ -1,4 +1,4 @@
-# OpenG2P Support Policy
+# Support Policy
 
 Support is a critical aspect of adopting any software.  OpenG2P offers support to adopting countries and their solutions providers on the platform. This enables OpenG2P users to get fixes and updates on the platform. This document lays down the OpenG2P's support policy, while also specifying how these apply to the various versions of OpenG2P that have been released and the ones to come in the future.
 
@@ -8,7 +8,7 @@ While all versions typically go through the testing phases, specific stable vers
 
 All support for OpenG2P is provided under the terms of licensing given [here](../license.md) with no express warranties or guarantees.
 
-Release versions will have an associated support type/status, and this will be mentioned on the [release page](./) in the documentation.
+Release versions will have an associated support type/status, and this will be mentioned on the [release page](/broken/pages/Jw7twgL6cRHni1ONo22l) in the documentation.
 
 ## Patches and upgrades
 

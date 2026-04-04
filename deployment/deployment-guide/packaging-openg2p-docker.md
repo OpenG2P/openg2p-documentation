@@ -60,7 +60,7 @@ Steps to create the Docker image are given below.
 
 Notes:
 
-* The entire flow of creating Docker images from a package.txt can be made easier using the GitHub action. OpenG2P official images are built using this approach. For example, refer to the [Social Registry Docker packaging](../../social-registry/developer-zone/docker-packaging-guide.md) guide.
+* The entire flow of creating Docker images from a package.txt can be made easier using the GitHub action. OpenG2P official images are built using this approach. For example, refer to the [Social Registry Docker packaging](../../products/registry/social-registry/developer-zone/docker-packaging-guide.md) guide.
 * The above uses the [Docker library Odoo](https://hub.docker.com/_/odoo) image as base.
 * This also installs any Python requirements configured in `requirements.txt` inside each package.
 * Reference packages can be found in `packaging/packages` directory.
