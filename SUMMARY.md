@@ -530,7 +530,7 @@
     * [System Logging](monitoring-and-reporting/logging.md)
     * [System Health](monitoring-and-reporting/system-health.md)
   * [Interoperability](interoperability.md)
-* [Portals & Apps](staff-portal/README.md)
+* [Portals & Apps](portals-and-apps/README.md)
   * [Staff Portal](staff-portal/README.md)
     * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)
     * [Developer Install](staff-portal/developer-install.md)
