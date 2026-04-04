@@ -1,6 +1,8 @@
 # Table of contents
 
 * [Overview](README.md)
+
+## Products
 * [Registry](registry/README.md)
   * [Concepts](registry/concepts.md)
   * [Features](registry/features/README.md)
