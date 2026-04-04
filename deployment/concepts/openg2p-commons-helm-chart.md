@@ -58,10 +58,13 @@ Installs application services:
 
 Each environment gets its own Keycloak instance (installed as part of `openg2p-commons-base`). This eliminates the need for a shared Keycloak server and simplifies credential management - the Keycloak admin user is used directly for client initialization.
 
-* Keycloak URL: `https://keycloak.<baseDomain>`
-* Admin credentials are auto-generated and stored in a K8s secret
+* **External URL:** `https://keycloak.<baseDomain>` (browser-facing, used for OAuth redirects)
+* **Internal URL:** `http://<release>-keycloak:80` (pod-to-pod, used by backend services for token validation, OIDC discovery)
+* Admin credentials are auto-generated and stored in K8s secret `<release>-keycloak`
+* Keycloak image tag is configurable (default: `24.0.5-debian-12-r1-g2p1`)
 * OIDC clients are created automatically by `keycloak-init`
 * Client secrets are synced to K8s secrets by `client-secrets-sync`
+* Keycloak shares the commons PostgreSQL instance (dedicated `keycloak` database)
 
 ### Keycloak Realms and Clients
 
@@ -99,7 +102,22 @@ Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, clie
 
 ### Shared PostgreSQL
 
-Keycloak uses the same PostgreSQL instance as other services. The `postgres-init` job creates a dedicated `keycloak` database and user.
+All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used by disabling the embedded PostgreSQL and setting `global.postgresqlHost`.
+
+### Internal vs External URLs
+
+The charts maintain two Keycloak URL paths:
+
+* `global.keycloakInternalUrl` — used by backend pods (OIDC discovery, token validation, JWK fetching). Points to the in-cluster Keycloak service via HTTP.
+* `global.keycloakBaseUrl` / `global.keycloakExternalIssuerUrl` — used for browser-facing OAuth redirects. Points to the external HTTPS URL.
+
+This separation ensures backend services work without external DNS, while browsers are correctly redirected to the public Keycloak URL.
+
+### Helm `global` value propagation
+
+Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
+
+This means infrastructure names (like `postgresqlHost`, `redisInstallationName`) set in the parent's `global` are automatically available to all subcharts. IAM-specific globals (like `iamDB`, `iamDBUser`) work because they are unique to the IAM subchart.
 
 ## Versions
 
