@@ -500,7 +500,7 @@
     * [1.0.2](g2p-bridge/releases/1.0.2.md)
 ## Platform
 
-* [Platform Services](identity-and-access-management/README.md)
+* [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
     * [Authentication - Flow Diagram](identity-and-access-management/authentication-flow-diagram.md)
