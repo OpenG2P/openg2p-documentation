@@ -182,7 +182,20 @@ This implements the **Double Submit Cookie Pattern**.
 
 ***
 
-## **5. End-to-End Flow (With Both Tokens)**
+## **5. Content Security Policy**
+
+The UI layer (next.js) has to implement this.
+
+Content-Security-Policy:\
+default-src 'self';\
+script-src 'self';\
+connect-src 'self' https://\*.openg2p.org;\
+img-src 'self' data:;\
+<mark style="color:orange;">style-src 'self' 'unsafe-inline'; -— Do we need this?? Can our UI work without this?</mark>\
+object-src 'none';\
+frame-ancestors 'none';
+
+## **6. End-to-End Flow (With Both Tokens)**
 
 #### **Step-by-Step**
 
@@ -197,6 +210,7 @@ This implements the **Double Submit Cookie Pattern**.
 4. Frontend:
    * Uses session (no direct access to access\_token)
    * Reads csrf\_token
+   * Implements Content Security Policy (next.js)
 5. API Request:
    * Browser sends access\_token automatically
    * Frontend adds CSRF header
@@ -209,6 +223,6 @@ This implements the **Double Submit Cookie Pattern**.
 
 ## **6. Security Guarantees**
 
-<table><thead><tr><th width="177.54425048828125">Threat</th><th>Protection</th></tr></thead><tbody><tr><td>XSS</td><td>HttpOnly cookies</td></tr><tr><td>CSRF</td><td>Double submit cookie</td></tr><tr><td>Token misuse</td><td>Access vs ID token separation</td></tr><tr><td>Clickjacking</td><td>X-Frame-Options</td></tr><tr><td>MIME attacks</td><td>nosniff</td></tr></tbody></table>
+<table><thead><tr><th width="177.54425048828125">Threat</th><th>Protection</th></tr></thead><tbody><tr><td>XSS</td><td>HttpOnly cookies</td></tr><tr><td>CSRF</td><td>Double submit cookie</td></tr><tr><td>Token misuse</td><td>Access vs ID token separation</td></tr><tr><td>Clickjacking</td><td>X-Frame-Options</td></tr><tr><td>MIME attacks</td><td>nosniff</td></tr><tr><td>Browser execution</td><td>CSP implemented by the UI</td></tr></tbody></table>
 
 ***
