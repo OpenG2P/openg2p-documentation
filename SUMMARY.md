@@ -37,6 +37,7 @@
     * [UI Engineering](registry/design/detailed-design-notes/ui-engineering-design/README.md)
       * [Widget Library](registry/design/detailed-design-notes/ui-engineering-design/registry-ui-widget-library.md)
       * [Widgets Reference](registry/design/detailed-design-notes/ui-engineering-design/registry-ui-widgets-complete-guide-and-reference.md)
+    * [Score Computation framework](products/registry/design/score-computation-framework.md)
   * [Deployment](registry/deployment/README.md)
     * [Registry Helm Chart 4.x](registry/deployment/helm-chart-4.x.md)
     * [Post-Installation](registry/deployment/post-installation.md)
