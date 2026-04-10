@@ -17,9 +17,9 @@ layout:
     visible: true
 ---
 
-# Registrant Authentication - OIDC Widget
+# Registrant Authentication - OIDC
 
-<figure><img src="../../../.gitbook/assets/OIDC Widget for. Registrant Authentication (2).jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/OIDC Widget for. Registrant Authentication (2).jpg" alt=""><figcaption></figcaption></figure>
 
 **Step-1 - Widget calls Registry API — /registrant-authentication/start-authentication-transaction**
 

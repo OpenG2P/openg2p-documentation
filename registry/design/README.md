@@ -17,66 +17,66 @@ OpenG2P Registry is built as a set of FastAPI-based microservices that communica
 * **MinIO** -- object storage for documents, attachments, and raw ingestion payloads.
 * **Keycloak** -- identity and access management for staff users, partner systems, and registrant authentication.
 
-The functional architecture diagram is available on the [Registry landing page](../README.md).
+The functional architecture diagram is available on the [Registry landing page](../).
 
 ## Key design principles
 
-| Principle | Description |
-| --- | --- |
-| **Metadata-driven** | The core platform is domain-agnostic. Register structure, sections, tabs, and UI forms are all driven by metadata configuration rather than hard-coded logic. |
-| **Change-request-centric** | Every mutation to registry data flows through an approval workflow. No record is created or modified without a corresponding change request. |
-| **Asynchronous processing** | Celery workers handle ingestion, outgestion, deduplication, and computation. This decouples the API layer from heavy processing and enables horizontal scale-out. |
-| **Schema-driven UI** | JSON schemas stored in register metadata drive the rendering of forms in the staff portal, eliminating the need for per-register frontend code. |
-| **Envelope encryption** | Sensitive columns are encrypted at rest using AES with a Data Encryption Key (DEK) that is itself protected by an asymmetric KMS key. Read and write operations never call the KMS, avoiding latency overhead. |
+| Principle                   | Description                                                                                                                                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Metadata-driven**         | The core platform is domain-agnostic. Register structure, sections, tabs, and UI forms are all driven by metadata configuration rather than hard-coded logic.                                                  |
+| **Change-request-centric**  | Every mutation to registry data flows through an approval workflow. No record is created or modified without a corresponding change request.                                                                   |
+| **Asynchronous processing** | Celery workers handle ingestion, outgestion, deduplication, and computation. This decouples the API layer from heavy processing and enables horizontal scale-out.                                              |
+| **Schema-driven UI**        | JSON schemas stored in register metadata drive the rendering of forms in the staff portal, eliminating the need for per-register frontend code.                                                                |
+| **Envelope encryption**     | Sensitive columns are encrypted at rest using AES with a Data Encryption Key (DEK) that is itself protected by an asymmetric KMS key. Read and write operations never call the KMS, avoiding latency overhead. |
 
 ## Design topics
 
 The following sub-pages cover individual design topics in detail:
 
 {% content-ref url="data-model.md" %}
-data-model.md
+[data-model.md](data-model.md)
 {% endcontent-ref %}
 
 {% content-ref url="change-management.md" %}
-change-management.md
+[change-management.md](change-management.md)
 {% endcontent-ref %}
 
 {% content-ref url="ingestion-pipeline.md" %}
-ingestion-pipeline.md
+[ingestion-pipeline.md](ingestion-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/outgestion-pipeline.md" %}
-outgestion-pipeline.md
+[outgestion-pipeline.md](detailed-design-notes/outgestion-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="consent-management.md" %}
-consent-management.md
+[consent-management.md](consent-management.md)
 {% endcontent-ref %}
 
 {% content-ref url="encryption-at-rest.md" %}
-encryption-at-rest.md
+[encryption-at-rest.md](encryption-at-rest.md)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/partner-apis.md" %}
-partner-apis.md
+[partner-apis.md](detailed-design-notes/partner-apis.md)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/deduplication.md" %}
-deduplication.md
+[deduplication.md](detailed-design-notes/deduplication.md)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/computation-framework.md" %}
-computation-framework.md
+[computation-framework.md](detailed-design-notes/computation-framework.md)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/vc-issuance.md" %}
-vc-issuance.md
+[vc-issuance.md](detailed-design-notes/vc-issuance.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/registrant-authentication-oidc-widget.md" %}
-registrant-authentication-oidc-widget.md
+{% content-ref url="../../products/registry/design/registrant-authentication-oidc-widget/" %}
+[registrant-authentication-oidc-widget](../../products/registry/design/registrant-authentication-oidc-widget/)
 {% endcontent-ref %}
 
 {% content-ref url="detailed-design-notes/ui-engineering-design/" %}
-ui-engineering-design
+[ui-engineering-design](detailed-design-notes/ui-engineering-design/)
 {% endcontent-ref %}
