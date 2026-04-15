@@ -18,6 +18,6 @@ This page is under development. Content will be added shortly.
 
 ## Rollback procedure
 
-{% content-ref url="../versions.md" %}
-versions.md
+{% content-ref url="../../products/registry/versions/" %}
+[versions](../../products/registry/versions/)
 {% endcontent-ref %}
