@@ -554,7 +554,8 @@
 
 ***
 
-* [ARCHITECTURE](architecture.md)
+* [ARCHITECTURE](architecture/README.md)
+  * [Platform Tech Architecture](architecture/platform-tech-architecture.md)
 
 ## Tools
 
