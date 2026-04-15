@@ -19,4 +19,5 @@ layout:
 
 # Platform Tech Architecture
 
-<figure><img src="../.gitbook/assets/OpenG2P Tech Architecture.jpg" alt=""><figcaption></figcaption></figure>
+<div data-full-width="true"><figure><img src="../.gitbook/assets/OpenG2P Tech Architecture.jpg" alt="Tech Architecture of OpenG2P Platform"><figcaption><p>OpenG2P platform Tech Architecture</p></figcaption></figure></div>
+
