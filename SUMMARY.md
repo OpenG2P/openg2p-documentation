@@ -552,6 +552,10 @@
       * [React/Next.js Project Structure](utilities-and-tools/beneficiary-portal/developer-zone/react-next.js-project-structure.md)
     * [Deployment of Strapi](utilities-and-tools/beneficiary-portal/deployment-of-strapi.md)
 
+***
+
+* [Architecture](architecture.md)
+
 ## Tools
 
 * [Tools](utilities-and-tools/README.md)
