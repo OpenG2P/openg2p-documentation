@@ -62,7 +62,7 @@ This release also includes enhancements to the core registry platform: performan
 
 These runtiimes will be deployed by the v1.0.2 Package
 
-<table><thead><tr><th width="194.39324951171875">Component</th><th width="276">Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry APIs</td><td></td><td>Deployed as 3 API runtimes - <br><br>1. staff-portal-api - Providing REST APIs to Registry Staff UI<br><br>2.partner-api -- Providing REST APIs to the partner ecosystem and other DPGs</td></tr><tr><td>Celery Runtimes</td><td></td><td>Handles all asynchronous processing in the Registry platform.<br><br>1. Celery Beat Producer &#x26;<br>2. Celery Workers<br><br>The Beat Producer - reads the queues (tables) and emits the tasks to the Workers. The workers do the actual processing.<br><br>By design, there should be only 1 POD for the Beat Producer to ensure that the same task is not picked up by more than 1 Beat Producer.<br><br>The worker pods can be scaled suitably to handle the scale and load requirements.</td></tr><tr><td>Docker</td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="194.39324951171875">Component</th><th width="276">Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry APIs</td><td></td><td>Deployed as 3 API runtimes - <br><br>1. staff-portal-api - Providing REST APIs to Registry Staff UI<br><br>2.partner-api -- Providing REST APIs to the partner ecosystem and other DPGs</td></tr><tr><td>Celery Runtimes</td><td></td><td>Handles all asynchronous processing in the Registry platform.<br><br>1. Celery Beat Producer &#x26;<br>2. Celery Workers<br><br>The Beat Producer - reads the queues (tables) and emits the tasks to the Workers. The workers do the actual processing.<br><br>By design, there should be only 1 POD for the Beat Producer to ensure that the same task is not picked up by more than 1 Beat Producer.<br><br>The worker pods can be scaled suitably to handle the scale and load requirements.</td></tr></tbody></table>
 
 ### Registry Library components&#x20;
 
@@ -72,11 +72,11 @@ These library components are packaged within the runtimes
 
 ### Registry Messaging Templates
 
-<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Standards</td><td></td><td>This repository contains the messaging template files used by the registry to provide support to messaging standards.<br><br>This release contains the Farmer Registry DCI standards</td></tr></tbody></table>
+<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Standards</td><td></td><td>This repository contains the messaging template files used by the registry to provide support to messaging standards.<br><br>This release contains the Farmer Registry DCI standards<br><br><mark style="color:$primary;">These template files need to be uploaded into the registry platform as part of the configuration.</mark></td></tr></tbody></table>
 
 ### Other Registry Components
 
-<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Docker</td><td></td><td>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file - e.g. farmer-v1.0.2.txt — this specifies that the farmer manifestation is built using tag - v1.0.2. This manifest needs to be specified for every runtime, separately.</td></tr></tbody></table>
+<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Docker</td><td></td><td>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file.<br><br>e.g. farmer-v1.0.2.txt inside staff-portal-api<br><br>this specifies that the registry-staff-portal-api docker has been built using the <br><br>farmer extension - some tag<br>registry-staff-portal-api - some tag<br></td></tr></tbody></table>
 
 IAM
 
