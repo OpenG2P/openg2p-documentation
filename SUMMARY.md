@@ -14,6 +14,7 @@
     * [Ingestion Pipeline](registry/features/ingestion-pipeline.md)
     * [Outgestion Pipeline](registry/features/outgestion-pipeline.md)
     * [Dynamic UI Rendering](registry/features/dynamic-ui-rendering.md)
+    * [Registry Intake](products/registry/features/registry-intake.md)
     * [Event Publishing & WebSub Integration](registry/features/event-publishing-and-websub-integration.md)
     * [Consent-Aware Data Sharing](registry/features/consent-aware-data-sharing.md)
     * [Deduplication](registry/features/deduplication.md)
