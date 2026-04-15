@@ -1,10 +1,23 @@
 ---
-description: Release notes - v1.0.2
+layout:
+  width: default
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+  metadata:
+    visible: true
+  tags:
+    visible: true
 ---
 
 # Registry Release Notes - v1.0.2
-
-##
 
 **Release Date:** \[DATE TO BE FILLED]\
 **Branch:** 1.0\
@@ -12,21 +25,21 @@ description: Release notes - v1.0.2
 
 ***
 
-### Executive Summary
+## Executive Summary
 
 OpenG2P Registry v1.0.2 implements **domain agnosticism** as the core architectural principle. This version includes a **Farmer Registry Manifestation** implementation in the extensions repository, built using the extensible registry framework without modifying core platform code.
 
 This release also includes enhancements to the core registry platform: performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
 
-#### Key Highlights
+## Key Highlights
 
-**Domain Agnosticism & Extensibility**
+### **Domain Agnosticism & Extensibility**
 
 * **Farmer Registry Manifestation:** Farmer Registry implementation in the extensions repository demonstrating domain-specific customization without core platform modifications
 * **Extensible Framework:** Core registry platform supports multiple domain manifestations without code duplication
 * **Extension Architecture:** Organizations can implement domain-specific registries using the extension framework and core platform
 
-**Other Key features**
+### **Other Key features**
 
 * **Functional ID generation -** The registry uses a decoupled microservice - OpenG2P ID Generator to generate unique functional ID. Whether a Register will have a functional ID or not, is configurable in the Register Metadata.
 * **Multi-Provider Authentication:** The registry uses a decoupled microservice - OpenG2P IAM   to interfaces with OIDC / OAuth ID Providers (for authentication & authorization). The base release includes integration with Keycloak
@@ -39,34 +52,31 @@ This release also includes enhancements to the core registry platform: performan
 
 ***
 
-### Repository Links
+## Components of the release
 
-All repositories should be tagged with **v1.0.2** on branch 1.0:
-
-#### Core Components
-
-Registry Package
+### **Registry Package**
 
 <table><thead><tr><th width="195.139404296875">Package</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Deployment Package<br>v1.0.2</td><td></td><td>The Helm deployment package (v1.0.2) bundles the registry platform runtimes into a single deployable unit. Individual runtime versions are specified in the chart values and listed below. <br><br>Each runtime component uses a distinct version tag, but the Helm package version (v1.0.2) represents the complete, tested bundle of all components.</td></tr></tbody></table>
 
-Registry Runtimes (that will be deployed by the v1.0.2 Package)
+### Registry Runtimes
+
+These runtiimes will be deployed by the v1.0.2 Package
 
 <table><thead><tr><th width="194.39324951171875">Component</th><th width="276">Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry APIs</td><td></td><td>Deployed as 3 API runtimes - <br><br>1. staff-portal-api - Providing REST APIs to Registry Staff UI<br><br>2.partner-api -- Providing REST APIs to the partner ecosystem and other DPGs</td></tr><tr><td>Celery Runtimes</td><td></td><td>Handles all asynchronous processing in the Registry platform.<br><br>1. Celery Beat Producer &#x26;<br>2. Celery Workers<br><br>The Beat Producer - reads the queues (tables) and emits the tasks to the Workers. The workers do the actual processing.<br><br>By design, there should be only 1 POD for the Beat Producer to ensure that the same task is not picked up by more than 1 Beat Producer.<br><br>The worker pods can be scaled suitably to handle the scale and load requirements.</td></tr><tr><td>Docker</td><td></td><td></td></tr></tbody></table>
 
-Registry Library components (that are included within the runtimes)
+### Registry Library components&#x20;
 
-| Component         | Repository                                                                                          | Remarks                                                                                                                           |
-| ----------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Registry Core     | [openg2p-registry-gen2-core](https://github.com/OpenG2P/openg2p-registry-gen2-core/tags)            | Core Library for the Registry Platform                                                                                            |
-| Domain Extensions | [openg2-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/tags) | The domain extensions that need to be applied over the core registry platform. This release contains - farmer registry extensions |
+These library components are packaged within the runtimes
 
-Other Registry Components
+<table><thead><tr><th width="196.78900146484375">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry Core</td><td></td><td>Core Library for the Registry Platform</td></tr><tr><td>Domain Extensions</td><td></td><td>The domain extensions that need to be applied over the core registry platform. This release contains - farmer registry extensions</td></tr></tbody></table>
 
-| Component | Repository | Remarks                                                                                                                                                                                                                                                                                                                                                                                |
-| --------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Docker    |            | <p>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file - e.g. farmer-v1.0.2.txt — this specifies that the farmer manifestation is built using tag - v1.0.2. This manifest needs to be specified for every runtime, separately.</p> |
-| Standards |            | <p>This repository contains the messaging template files used by the registry to provide support to messaging standards.<br><br>This release contains the Farmer Registry DCI standards</p>                                                                                                                                                                                            |
-|           |            |                                                                                                                                                                                                                                                                                                                                                                                        |
+### Registry Messaging Templates
+
+<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Standards</td><td></td><td>This repository contains the messaging template files used by the registry to provide support to messaging standards.<br><br>This release contains the Farmer Registry DCI standards</td></tr></tbody></table>
+
+### Other Registry Components
+
+<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Docker</td><td></td><td>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file - e.g. farmer-v1.0.2.txt — this specifies that the farmer manifestation is built using tag - v1.0.2. This manifest needs to be specified for every runtime, separately.</td></tr></tbody></table>
 
 IAM
 
