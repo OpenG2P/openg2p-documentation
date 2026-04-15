@@ -19,4 +19,5 @@ layout:
 
 # Registry Tech Architecture
 
-<div data-full-width="true"><figure><img src="../.gitbook/assets/OpenG2P Registry - Tech Arch.jpg" alt=""><figcaption></figcaption></figure></div>
+<div data-full-width="false"><figure><img src="../.gitbook/assets/Tech Arch - Registry.jpg" alt=""><figcaption><p>Registry - Tech Architecture</p></figcaption></figure></div>
+
