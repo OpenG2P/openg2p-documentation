@@ -556,7 +556,7 @@
 
 * [ARCHITECTURE](architecture/README.md)
   * [Platform Tech Architecture](architecture/platform-tech-architecture.md)
-  * [Registry - Tech Architecture](architecture/registry-tech-architecture.md)
+  * [Registry Tech Architecture](architecture/registry-tech-architecture.md)
 
 ## Tools
 

@@ -17,6 +17,6 @@ layout:
     visible: true
 ---
 
-# Registry - Tech Architecture
+# Registry Tech Architecture
 
 <div data-full-width="true"><figure><img src="../.gitbook/assets/OpenG2P Registry - Tech Arch.jpg" alt=""><figcaption></figcaption></figure></div>
