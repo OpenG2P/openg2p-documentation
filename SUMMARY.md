@@ -554,7 +554,7 @@
 
 ***
 
-* [Architecture](architecture.md)
+* [ARCHITECTURE](architecture.md)
 
 ## Tools
 
