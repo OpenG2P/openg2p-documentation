@@ -514,6 +514,7 @@
 * [ARCHITECTURE](platform/architecture/README.md)
   * [Platform Tech Architecture](platform/architecture/platform-tech-architecture.md)
   * [Registry Tech Architecture](platform/architecture/registry-tech-architecture.md)
+  * [PBMS Tech Architecture](platform/architecture/pbms-tech-architecture.md)
 * [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
