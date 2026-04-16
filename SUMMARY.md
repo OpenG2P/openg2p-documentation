@@ -70,7 +70,7 @@
       * [Staff Portal API](registry/developer-zone/api-documentation/staff-portal-api.md)
       * [Partner API](registry/developer-zone/api-documentation/partner-api.md)
   * [Versions](products/registry/versions/README.md)
-    * [Registry Release Notes - v1.0.2](products/registry/versions/registry-release-notes-v1.0.2.md)
+    * [Registry Release Notes - v4.x.x](products/registry/versions/registry-release-notes-v1.0.2.md)
   * [Use Case Implementation](registry/use-case-implementation.md)
   * [Gen1: Social Registry](products/registry/social-registry/README.md)
     * [Features](products/registry/social-registry/features/README.md)
