@@ -8,7 +8,7 @@ This document provides instructions to setup and install external database for O
 
 ## Installation and configuration
 
-1. Log in to the external database node.&#x20;
+1. Log in to the external database node.
 2.  Install PostgreSQL using below commands.
 
     <pre class="language-bash"><code class="lang-bash"><strong>sudo apt update
@@ -18,7 +18,7 @@ This document provides instructions to setup and install external database for O
 
     <pre class="language-bash"><code class="lang-bash"><strong>service postgresql status
     </strong></code></pre>
-4.  Use the command below to log into the default postgres database using the default user, postgres, following a successful installation.&#x20;
+4.  Use the command below to log into the default postgres database using the default user, postgres, following a successful installation.
 
     ```bash
     sudo -u postgres psql
@@ -35,7 +35,7 @@ This document provides instructions to setup and install external database for O
 
 6. You should use the command below to set one for yourself, as the default _**postgres**_ user does not have a password.\
    `\password postgres` - to set the password, the password must have the combination of lowercase, uppercase, number. For example, `xwfJhfI9tK`\
-   Note :  The password must not have the special characters @, #, or -.
+   Note : The password must not have the special characters @, #, or -.
 7. After setting up the postgres password, the user must exit from the database and run the command below to perform some server-level configurations.
    1.  Access the postgresql.conf file, locate the parameter below, uncomment it, set it to listen on all IP addresses, and configure it to increase the number of connections.
 
@@ -51,7 +51,7 @@ This document provides instructions to setup and install external database for O
        vim /etc/postgresql/14/main/pg_hba.conf
        ```
 
-       <figure><img src="../../.gitbook/assets/postgres1 (2) (2) (2).png" alt=""><figcaption></figcaption></figure>
+       <figure><img src="../../.gitbook/assets/postgres1 (2) (2).png" alt=""><figcaption></figcaption></figure>
    3.  Restart PostgreSQL service to load configuration changes.
 
        ```bash
@@ -71,8 +71,8 @@ This document provides instructions to setup and install external database for O
 
     <pre class="language-bash"><code class="lang-bash"><strong>CREATE ROLE socialregistryuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '&#x3C;**provide password**>';
     </strong><strong>CREATE DATABASE socialregistrydb WITH OWNER = socialregistryuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;
-    </strong><strong>
-    </strong><strong>CREATE ROLE odkuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '&#x3C;**provide password**>';
+    </strong>
+    <strong>CREATE ROLE odkuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '&#x3C;**provide password**>';
     </strong><strong>CREATE DATABASE odkdb WITH OWNER = odkuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;
     </strong></code></pre>
 10. Try onnecting to both the databases and verify.

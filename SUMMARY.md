@@ -23,8 +23,8 @@
     * [Standards Compliance](registry/features/standards-compliance.md)
     * [Cloud-Native Deployment & Scaling](registry/features/cloud-native-deployment-and-scaling.md)
     * [Observability & Operational Control](registry/features/observability-and-operational-control.md)
-  * [Tech Architecture](architecture/registry-tech-architecture.md)
   * [Design](registry/design/README.md)
+    * [Tech Architecture](products/registry/design/registry-tech-architecture.md)
     * [Data Model](registry/design/data-model.md)
     * [Change Management](registry/design/change-management.md)
     * [Ingestion Pipeline](registry/design/ingestion-pipeline.md)
@@ -511,6 +511,7 @@
 
 ## Platform
 
+* [Platform Tech Architecture](platform/platform-tech-architecture.md)
 * [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
@@ -541,7 +542,6 @@
     * [System Logging](monitoring-and-reporting/logging.md)
     * [System Health](monitoring-and-reporting/system-health.md)
   * [Interoperability](interoperability.md)
-  * [Platform Tech Architecture](architecture/platform-tech-architecture.md)
 * [Portals & Apps](portals-and-apps/README.md)
   * [Staff Portal](staff-portal/README.md)
     * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)

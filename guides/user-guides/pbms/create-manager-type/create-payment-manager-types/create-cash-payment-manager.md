@@ -72,11 +72,11 @@ The payment file is configured based on the state of the _Automatically Created 
 * _Render per payment instead of batch_: If enabled, the payments are rendered individually instead of in a batch
 * _File Config:_ Name of the payment file for this batch
 
-<figure><img src="../../../../../.gitbook/assets/batch-tags-drop-down (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/batch-tags-drop-down (1).PNG" alt=""><figcaption></figcaption></figure>
 
 12. Click on _Save & Close._
 
-<figure><img src="../../../../../.gitbook/assets/batch-tags-template (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/batch-tags-template (1).PNG" alt=""><figcaption></figcaption></figure>
 
 13. Click on _Save._
 

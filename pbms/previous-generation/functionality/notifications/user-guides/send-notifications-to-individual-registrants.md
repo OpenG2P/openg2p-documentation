@@ -20,7 +20,7 @@ The notification configurations need to be completed. See the guide, [Create Not
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../../../.gitbook/assets/home-page-openg2p (4) (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/home-page-openg2p.png" alt=""><figcaption></figcaption></figure>
 
 2. Click on the desired program name.
 

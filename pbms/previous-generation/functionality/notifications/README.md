@@ -20,12 +20,12 @@ OpenG2P manages notifications via Notification Managers. Each program has at lea
 
 OpenG2P uses the in-built [Qweb Templates](https://www.odoo.com/documentation/16.0/developer/reference/frontend/qweb.html) and [Inline Templates](https://apps.odoo.com/apps/modules/10.0/mail_inline_css/) for configuring the HTML pages and fragments. Notifications are sent based on the event and application configurations.
 
-<figure><img src="../../../../.gitbook/assets/notification-template (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/notification-template (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 The two steps to configure the notifications are:
 
-1. The program administrator must create at least one Notification Manager for each Notification Manager type required.&#x20;
-2. After the Notification Manager is created, the Program administrator adds the Notification Manager to the program.&#x20;
+1. The program administrator must create at least one Notification Manager for each Notification Manager type required.
+2. After the Notification Manager is created, the Program administrator adds the Notification Manager to the program.
 
 ## Send notifications
 

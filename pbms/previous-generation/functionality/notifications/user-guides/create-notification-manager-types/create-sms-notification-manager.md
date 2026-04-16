@@ -12,7 +12,7 @@ The user should have a Program Administrator role assigned.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../../../../.gitbook/assets/home-page-openg2p (10).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../../.gitbook/assets/home-page-openg2p (9).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Configuration_ and then on _SMS Notification Manager._
 

@@ -3,19 +3,19 @@
 Proxy Means Test (PMT) is a method widely used by governments and international organizations to estimate income or consumption levels of households, particularly those in low and middle-income countries. PMT serves as a valuable tool for targeting social programs and subsidies effectively, ensuring that limited resources are allocated to those who need them the most. PMT is based on the principle that certain household characteristics, known as proxies, correlate with income and standard of living. These proxies may include household composition, housing quality, asset ownership, access to basic services, and other observable characteristics.
 
 {% hint style="info" %}
-## World Bank Formula
+### World Bank Formula
 
 One of the prominent formulas utilized in PMT calculations is the World Bank (WB) Formula, a significant contribution to poverty assessment and social assistance allocation. The formula's precision lies in its capacity to accurately identify the most vulnerable households. By incorporating multiple characteristics, it mitigates the risks of misclassifications and ensures resources reach those in genuine need. The formula is calculated using these steps:
 
-#### Regression model
+**Regression model**
 
 A regression model is constructed using data from a representative household survey where both income and proxies are available. Household characteristics like education, household size, and location might contribute to a higher or lower income prediction. Household welfare (usually income or consumption) is the dependent variable and observable characteristics are the independent variables.
 
-#### Formula creation
+**Formula creation**
 
 The regression analysis generates coefficients for each independent variable. Each coefficient is the corresponding characteristic's impact (also known as weightage) on household welfare, and the regression equation is the weighted sum. The regression equation is transformed into a simplified formula that can be used to predict household welfare based on observable characteristics.
 
-#### Proxy score and threshold determination
+**Proxy score and threshold determination**
 
 A proxy score is calculated for each household using the formula and indicates the household's relative income level. The proxy score is divided into different income brackets, and a corresponding threshold is established for each bracket. Households falling below a certain threshold are identified as eligible for social assistance or other targeted intervention
 {% endhint %}

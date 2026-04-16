@@ -45,7 +45,7 @@ Before you deploy, make sure the following are in place:
 11. Click on Next to navigate to Helm Options page. Disable `wait` flag. Click on Install.
 12. Watch for every pods to enter a **Running** state. This may take several minutes.
 
-    <div align="left"><figure><img src="../../../.gitbook/assets/image (68).png" alt=""><figcaption></figcaption></figure></div>
+    <div align="left"><figure><img src="../../../.gitbook/assets/image (63).png" alt=""><figcaption></figcaption></figure></div>
 
 ## Installation using the command line
 

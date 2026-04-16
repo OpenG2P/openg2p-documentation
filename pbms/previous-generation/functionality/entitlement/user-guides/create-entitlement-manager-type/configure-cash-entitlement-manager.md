@@ -29,10 +29,8 @@ _**Entitlement Managers/New**_ screen is displayed.
 
 <figure><img src="../../../../../../.gitbook/assets/entl-mngr-new.png" alt=""><figcaption></figcaption></figure>
 
-
-
 4. Enter the name of the entitlement manager.
-5. Select the appropriate program from the drop-down. (or) Select the _**Search More...**_ option from the drop-down.&#x20;
+5. Select the appropriate program from the drop-down. (or) Select the _**Search More...**_ option from the drop-down.
 
 <figure><img src="../../../../../../.gitbook/assets/prog-cash-search-more.png" alt=""><figcaption></figcaption></figure>
 
@@ -40,7 +38,7 @@ _**Search: Program**_ screen is displayed.
 
 <figure><img src="../../../../../../.gitbook/assets/search-program.png" alt=""><figcaption></figcaption></figure>
 
-6. Click the program name to configure the cash entitlement manager.&#x20;
+6. Click the program name to configure the cash entitlement manager.
 
 The program name appears in the Program drop-down.
 
@@ -63,7 +61,7 @@ _**Create Entitlement Items**_ screen is displayed.
 
 The fields and their descriptions are given below.
 
-<table><thead><tr><th width="183">Field</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>Enter the name of the entitlement items.</td></tr><tr><td>Amount per cycle</td><td>Enter the amount of the entitlement items that has to be disbursed per cycle.</td></tr><tr><td>Currency</td><td>Enter the currency type of the entitlement items</td></tr><tr><td>Condition Domain</td><td><ol><li>Click the <em><strong>Add filter</strong></em> button. </li><li>Set the rules to filter the beneficiaries based on the criteria.</li></ol><p>For example, the rule to search for criteria is selected as ID in the drop-down, assign the mathematical operation (for example, = is selected) for the rule, and enter the value for the rule ( for example, 1 is selected). Similarly you have added rules.</p></td></tr><tr><td>Multiplier</td><td>Select the appropriate value from the drop-down </td></tr><tr><td>Maximum number</td><td>Enter the maximum number for the multiplier</td></tr></tbody></table>
+<table><thead><tr><th width="183">Field</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>Enter the name of the entitlement items.</td></tr><tr><td>Amount per cycle</td><td>Enter the amount of the entitlement items that has to be disbursed per cycle.</td></tr><tr><td>Currency</td><td>Enter the currency type of the entitlement items</td></tr><tr><td>Condition Domain</td><td><ol><li>Click the <em><strong>Add filter</strong></em> button.</li><li>Set the rules to filter the beneficiaries based on the criteria.</li></ol><p>For example, the rule to search for criteria is selected as ID in the drop-down, assign the mathematical operation (for example, = is selected) for the rule, and enter the value for the rule ( for example, 1 is selected). Similarly you have added rules.</p></td></tr><tr><td>Multiplier</td><td>Select the appropriate value from the drop-down</td></tr><tr><td>Maximum number</td><td>Enter the maximum number for the multiplier</td></tr></tbody></table>
 
 <figure><img src="../../../../../../.gitbook/assets/create-entl-filled-items.png" alt=""><figcaption></figcaption></figure>
 
@@ -73,7 +71,7 @@ The fields and their descriptions are given below.
 
 _**Entitlement Managers/New**_ screen lists the newly created entitlement items.
 
-<figure><img src="../../../../../../.gitbook/assets/entl-mngr-new (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../../.gitbook/assets/entl-mngr-new.png" alt=""><figcaption></figcaption></figure>
 
 15. Select the appropriate ID type from the drop-down in the _**ID Type to store in entitlements** field._
 16. Select the appropriate entitlement validator from the drop-down in the _**Entitlement Validation Group**_ field.

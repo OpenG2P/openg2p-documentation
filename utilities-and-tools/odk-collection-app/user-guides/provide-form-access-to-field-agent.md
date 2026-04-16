@@ -17,7 +17,7 @@ For example, here, the project is considered as Safety Net Program
 
 3. Click the project (Safety Net Program) link listed below the **Projects**.
 
-<figure><img src="../../../.gitbook/assets/safety-net-program-under-project (1).png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/safety-net-program-under-project.png" alt=""><figcaption><p>ODK Central home screen</p></figcaption></figure>
 
 The project (Safety Net Program) overview page is displayed.
 

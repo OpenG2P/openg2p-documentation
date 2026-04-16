@@ -15,11 +15,7 @@ This document provides details of the activities, the field agent performs, afte
 
 1. Tap the _**ODK Collect App**_ icon in the agent's mobile device.
 
-<figure><img src="broken-reference" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
-
 You can find the configuration modes.
-
-<figure><img src="broken-reference" alt=""><figcaption><p>ODK Collect App</p></figcaption></figure>
 
 7. Tap the _**Configure with QR code**_ button.
 

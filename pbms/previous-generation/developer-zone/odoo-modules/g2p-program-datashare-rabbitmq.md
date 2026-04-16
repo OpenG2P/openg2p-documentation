@@ -14,7 +14,7 @@ G2P Program Datashare: RabbitMQ
 
 ### Functionality
 
-This module extends the core [RabbitMQ DataShare](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/1370/social-registry/developer-zone/odoo-modules/g2p-registry-datashare-rabbitmq) module to support publishing **Beneficiary Registry** data from PBMS (`g2p.program_membership` to external systems via RabbitMQ.
+This module extends the core [RabbitMQ DataShare](../../../../products/registry/social-registry/developer-zone/odoo-modules/g2p-registry-datashare-rabbitmq.md) module to support publishing **Beneficiary Registry** data from PBMS (`g2p.program_membership` to external systems via RabbitMQ.
 
 Key enhancements:
 

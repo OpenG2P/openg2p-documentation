@@ -27,5 +27,4 @@ Input security is handled in the following ways:
 * Know more about [Privacy and Security in OpenG2P](../../../../privacy-and-security/). And about [Keymanager integration](../../../../privacy-and-security/key-manager.md).
 * Link to [Configuration and source code](../../../../pbms/previous-generation/developer-zone/repositories/openg2p-security.md).
 
-<figure><img src="../../../../.gitbook/assets/Registry Keymanager (1) (1) (1) (1).jpg" alt=""><figcaption></figcaption></figure>
-
+<figure><img src="../../../../.gitbook/assets/Registry Keymanager (1) (1) (1).jpg" alt=""><figcaption></figcaption></figure>

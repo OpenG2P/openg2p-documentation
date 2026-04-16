@@ -1,4 +1,4 @@
-# Registry UI Widget Library
+# Widget Library
 
 ## What is registry UI widget?
 
@@ -14,7 +14,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 
 {% stepper %}
 {% step %}
-### Beneficiary registration forms
+#### Beneficiary registration forms
 
 * Dynamic form generation based on program requirements
 * Multi-step registration workflows
@@ -23,7 +23,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 {% endstep %}
 
 {% step %}
-### Data entry and management
+#### Data entry and management
 
 * Structured data entry with validation
 * Table-based data editing with inline operations
@@ -32,7 +32,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 {% endstep %}
 
 {% step %}
-### Registry viewing and editing with change request workflow
+#### Registry viewing and editing with change request workflow
 
 * Read-only registry views with section-based layouts
 * Edit-in-place functionality with section-level save operations
@@ -169,7 +169,7 @@ The file input widget includes advanced file management features:
 * Multiple File Support: Support for single or multiple file uploads
 * Supporting Documents: Section-level document management with type-specific handling
 
-### Change request-based design and change request view mode&#x20;
+### Change request-based design and change request view mode
 
 This is a core architectural feature that sets the Registry UI Widget Library apart from generic form libraries. The entire library is designed around the change request workflow pattern, which is fundamental to OpenG2P registry operations:
 

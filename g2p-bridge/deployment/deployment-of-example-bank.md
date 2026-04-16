@@ -30,7 +30,7 @@ Before you deploy, make sure the following are in place:
    * Select all the recommended services you wish to install. The Bridge installation includes API and Celery Background task services.
 10. Click Next to proceed to the Helm Options page. Disable the wait flag and click Install.
 11. Monitor the pods until they all enter a Running state, which may take several minutes.\
-    ![](<../../.gitbook/assets/image (77).png>)
+    ![](<../../.gitbook/assets/image (63).png>)
 
 ## **Installation using CLI**
 

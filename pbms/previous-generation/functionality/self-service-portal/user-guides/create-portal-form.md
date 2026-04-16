@@ -12,7 +12,7 @@ Ensure that **OpenG2P Formio** module is installed.
 
 1. Navigate to the _**Forms**_ section using the menu bar.
 
-<figure><img src="../../../../../.gitbook/assets/image (9) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/image (9) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Create a **Form Builder** and select a _**formio.js version.**_ If a version is not available, download it from the **Configuration** section.
 

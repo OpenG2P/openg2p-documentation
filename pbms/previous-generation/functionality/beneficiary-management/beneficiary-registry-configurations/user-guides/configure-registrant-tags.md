@@ -33,7 +33,7 @@ _**Registrant Tags**_ screen is displayed.
 
 <figure><img src="../../../../../../.gitbook/assets/registrant-tags-empty-field.png" alt=""><figcaption></figcaption></figure>
 
-4. Enter the relevant [Registrant Tags](../#registrant-tags) in the Tags field.&#x20;
+4. Enter the relevant [Registrant Tags](../#registrant-tags) in the Tags field.
 
 For example, here, enter the registrant tags as Unemployed.
 
@@ -60,11 +60,11 @@ This completes the configuration of registrant tag in Beneficiary Registry modul
 
 <figure><img src="../../../../../../.gitbook/assets/config-reg-tags-action-list.png" alt=""><figcaption></figcaption></figure>
 
-10. Click the _**Delete**_ option in the list.&#x20;
+10. Click the _**Delete**_ option in the list.
 
 _**Confirmation**_ dialog box is displayed.
 
-<figure><img src="../../../../../../.gitbook/assets/config-reg-tags-confirmation (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../../.gitbook/assets/config-reg-tags-confirmation (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 11. Click the _**OK**_ button to remove the selected tag from the Registrant Tags list.
 12. Click the _**Cancel**_ button to retain the selected tag.

@@ -12,14 +12,14 @@ Developers can run the entire OpenG2P package on their machines. The guide here 
 * Python3
 * Git
 * PostgreSQL
-* [Odoo 15.0](https://www.odoo.com/documentation/15.0/administration/on\_premise/source.html)
-* [Odoo 17.0](https://www.odoo.com/documentation/17.0/administration/on\_premise/source.html)
+* [Odoo 15.0](https://www.odoo.com/documentation/15.0/administration/on_premise/source.html)
+* [Odoo 17.0](https://www.odoo.com/documentation/17.0/administration/on_premise/source.html)
 
 {% tabs %}
 {% tab title="Odoo 15.0" %}
-## Installation of Odoo 15.0
+### Installation of Odoo 15.0
 
-#### 1. Update system packages
+**1. Update system packages**
 
 * Log in to your Linux server using SSH and update the package list and upgrade the existing packages:
 
@@ -28,7 +28,7 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-#### 2. Install dependencies
+**2. Install dependencies**
 
 * Odoo requires several dependencies to function correctly. Install them using the following commands:
 
@@ -36,7 +36,7 @@ sudo apt upgrade -y
 sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev libpq-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libopenjp2-7-dev libtiff5-dev libffi-dev nodejs npm
 ```
 
-#### 3. Create Odoo user
+**3. Create Odoo user**
 
 *   It is recommended to create a separate system user to run Odoo for security purposes. Create the user with the following command:
 
@@ -44,7 +44,7 @@ sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1
     sudo adduser --system --home=/opt/odoo --group odoo
     ```
 
-#### 4. Install and configure PostgreSQL
+**4. Install and configure PostgreSQL**
 
 *   Install PostgreSQL server and create a new database user for Odoo:
 
@@ -55,7 +55,7 @@ sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1
     exit
     ```
 
-#### 5. Install Wkhtmltopdf <a href="#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977" id="docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977"></a>
+**5. Install Wkhtmltopdf**
 
 *   Odoo supports printing report files in PDF format. Wkhtmltopdf helps to generate reports in PDF format from HTML data format. Moreover, the Qweb template reports are converted to HTML format by the report engine and Wkhtmltopdf will produce reports in PDF format:
 
@@ -65,7 +65,7 @@ sudo apt install -y python3-pip python3-dev build-essential libxml2-dev libxslt1
     sudo apt install -f
     ```
 
-#### 6. Install Odoo
+**6. Install Odoo**
 
 *   Clone the odoo15 repository from the official GitHub repository:
 
@@ -97,7 +97,7 @@ Cloning the odoo15 repository takes time because of the large file.
     pip3 install -r requirements.txt
     ```
 
-#### 7. Configure Odoo
+**7. Configure Odoo**
 
 * Edit the configuration file `/opt/odoo/odoo15/debian/odoo.conf` and set the appropriate values for the following parameters:
 
@@ -117,7 +117,7 @@ db_password = your_database_password
 
 * Inside the customs addons directories, place the relevant project module and custom third-party modules.
 
-#### 8. Start Odoo
+**8. Start Odoo**
 
 *   Start the Odoo server using the following command:
 
@@ -128,9 +128,9 @@ db_password = your_database_password
 {% endtab %}
 
 {% tab title="Odoo 17.0" %}
-## Installation of Odoo 17.0
+### Installation of Odoo 17.0
 
-#### 1. Update system packages
+**1. Update system packages**
 
 * Log in to your Linux server using SSH and update the package list and upgrade the existing packages:
 
@@ -139,7 +139,7 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-#### 2. Install dependencies
+**2. Install dependencies**
 
 * Odoo requires several dependencies to function correctly. Install them using the following commands:
 
@@ -152,7 +152,7 @@ sudo npm install -g less less-plugin-clean-css
 sudo apt-get install -y node-less
 ```
 
-#### 3. Create Odoo user
+**3. Create Odoo user**
 
 *   It is recommended to create a separate system user to run Odoo for security purposes. Create the user with the following command:
 
@@ -160,7 +160,7 @@ sudo apt-get install -y node-less
     sudo adduser --system --home=/opt/odoo --group odoo
     ```
 
-#### 4. Install and configure PostgreSQL
+**4. Install and configure PostgreSQL**
 
 *   Install PostgreSQL server and create a new database user for Odoo:
 
@@ -171,7 +171,7 @@ sudo apt-get install -y node-less
     exit
     ```
 
-#### 5. Install Wkhtmltopdf <a href="#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977" id="docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977"></a>
+**5. Install Wkhtmltopdf**
 
 *   Odoo supports printing report files in PDF format. Wkhtmltopdf helps to generate reports in PDF format from HTML data format. Moreover, the Qweb template reports are converted to HTML format by the report engine and Wkhtmltopdf will produce the report in PDF format:
 
@@ -181,7 +181,7 @@ sudo apt-get install -y node-less
     sudo apt install -f
     ```
 
-#### 6. Install Odoo
+**6. Install Odoo**
 
 *   Clone the odoo17 repository from the official GitHub repository:
 
@@ -213,7 +213,7 @@ Cloning the odoo17 repository takes time because of the large file.
     pip3 install -r requirements.txt
     ```
 
-#### 7. Configure Odoo
+**7. Configure Odoo**
 
 * Edit the configuration file `/opt/odoo/odoo17/debian/odoo.conf` and set the appropriate values for the following parameters:
 
@@ -233,7 +233,7 @@ db_password = your_database_password
 
 * Inside the customs addons directories, place the relevant project module and custom third-party modules.
 
-#### 8. Start Odoo
+**8. Start Odoo**
 
 *   Start the Odoo server using the following command:
 

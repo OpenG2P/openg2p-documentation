@@ -12,7 +12,7 @@ The user must have the Program Administrator role.
 
 1. Navigate to _Programs_ using the menu bar.
 
-<figure><img src="../../../../../../.gitbook/assets/conf-entitlement-manager-home.PNG" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../../.gitbook/assets/payment-file-program (1).png" alt=""><figcaption></figcaption></figure>
 
 2. Click on _Configuration_.
 

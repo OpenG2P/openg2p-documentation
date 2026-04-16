@@ -22,7 +22,7 @@ TODO
 * Navigate to Keycloak Admin Console -> Realm Settings -> Security defenses.
 *   Under "Brute force detection", configure Account lock out option after 3 wrong password attempts.
 
-    <figure><img src="../../../.gitbook/assets/image (30) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../.gitbook/assets/image (28) (1).png" alt=""><figcaption></figcaption></figure>
 
 ## MFA setup
 

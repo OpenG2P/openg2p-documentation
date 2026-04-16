@@ -57,7 +57,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
 {% tabs %}
 {% tab title="Bridge API" %}
-### Setting up the Bridge API
+#### Setting up the Bridge API
 
 *   Make a new Python virtual environment.
 
@@ -80,7 +80,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
         openg2p-g2p-bridge-models==1.1.0 \
         openg2p-g2p-bridge-api==1.1.0
     ```
-*   Create a .env file&#x20;
+*   Create a .env file
 
     ```
     G2P_BRIDGE_DB_DBNAME='bridgedb'
@@ -106,7 +106,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 {% endtab %}
 
 {% tab title="Bridge Celery Beat" %}
-### Setting up the Bridge Celery Beat
+#### Setting up the Bridge Celery Beat
 
 *   Make a new Python virtual environment.
 
@@ -158,7 +158,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 {% endtab %}
 
 {% tab title="Bridge Celery Worker" %}
-### Setting up the Bridge Celery Worker
+#### Setting up the Bridge Celery Worker
 
 *   Make a new Python virtual environment.
 

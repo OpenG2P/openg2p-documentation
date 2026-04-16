@@ -47,9 +47,9 @@ The _**e-Cards**_ screen in 4Sure App is displayed.
 
 <figure><img src="../../../.gitbook/assets/4Sure_e-cards.PNG" alt="" width="375"><figcaption></figcaption></figure>
 
-6. Add the National ID and Beneficiary ID cards.&#x20;
+6. Add the National ID and Beneficiary ID cards.
 
-You can follow the steps given in the [Verify Digital Credentials using 4Sure Application](https://app.gitbook.com/o/bnTr6Kp4z4CXR4QVIPSa/s/JZcdob2emEcLMvLyIxqT/~/changes/79/utilities-and-tools/user-guides/verify-digital-credentials-using-4sure-application) user guide to add national ID and Beneficiary ID.
+You can follow the steps given in the [Verify Digital Credentials using 4Sure Application](verify-digital-credentials-using-4sure-application.md) user guide to add national ID and Beneficiary ID.
 
 Once UIN matches on both the e-Cards, 4Sure App completes the verification process.
 
