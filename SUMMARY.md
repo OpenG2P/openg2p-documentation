@@ -23,6 +23,7 @@
     * [Standards Compliance](registry/features/standards-compliance.md)
     * [Cloud-Native Deployment & Scaling](registry/features/cloud-native-deployment-and-scaling.md)
     * [Observability & Operational Control](registry/features/observability-and-operational-control.md)
+  * [Tech Architecture](architecture/registry-tech-architecture.md)
   * [Design](registry/design/README.md)
     * [Data Model](registry/design/data-model.md)
     * [Change Management](registry/design/change-management.md)
@@ -540,6 +541,7 @@
     * [System Logging](monitoring-and-reporting/logging.md)
     * [System Health](monitoring-and-reporting/system-health.md)
   * [Interoperability](interoperability.md)
+  * [Platform Tech Architecture](architecture/platform-tech-architecture.md)
 * [Portals & Apps](portals-and-apps/README.md)
   * [Staff Portal](staff-portal/README.md)
     * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)
@@ -551,12 +553,6 @@
         * [Openg2p Portal Server](utilities-and-tools/beneficiary-portal/developer-zone/developer-setup/openg2p-portal-server.md)
       * [React/Next.js Project Structure](utilities-and-tools/beneficiary-portal/developer-zone/react-next.js-project-structure.md)
     * [Deployment of Strapi](utilities-and-tools/beneficiary-portal/deployment-of-strapi.md)
-
-***
-
-* [ARCHITECTURE](architecture/README.md)
-  * [Platform Tech Architecture](architecture/platform-tech-architecture.md)
-  * [Registry Tech Architecture](architecture/registry-tech-architecture.md)
 
 ## Tools
 
