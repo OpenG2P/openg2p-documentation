@@ -50,6 +50,12 @@ AVAILABLE  →  TAKEN
 | [Deployment](deployment.md) | Helm chart installation, Docker setup, local development, environment variables |
 | [Testing](testing.md) | Test categories, execution commands, HTML reporting |
 
+## Versions
+
+| Helm Chart Version | Docker Image                             | Date        | Comments |
+| ------------------ | ---------------------------------------- | ----------- | -------- |
+| 0.0.0-develop      | `openg2p/openg2p-id-generator:develop`   | in progress | —        |
+
 ## Source code
 
 * GitHub: [https://github.com/OpenG2P/id-generator](https://github.com/OpenG2P/id-generator)
