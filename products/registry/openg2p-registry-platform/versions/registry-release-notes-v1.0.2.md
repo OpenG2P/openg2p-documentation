@@ -64,6 +64,12 @@ These runtiimes will be deployed by the v1.0.2 Package
 
 <table><thead><tr><th width="194.39324951171875">Component</th><th width="276">Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry APIs</td><td>openg2p-registry-apis</td><td>Deployed as 3 API runtimes -<br><br>1. staff-portal-api - Providing REST APIs to Registry Staff UI<br><br>2.partner-api -- Providing REST APIs to the partner ecosystem and other DPGs</td></tr><tr><td>Celery Runtimes</td><td>openg2p-registry-celery</td><td>Handles all asynchronous processing in the Registry platform.<br><br>1. Celery Beat Producer &#x26;<br>2. Celery Workers<br><br>The Beat Producer - reads the queues (tables) and emits the tasks to the Workers. The workers do the actual processing.<br><br>By design, there should be only 1 POD for the Beat Producer to ensure that the same task is not picked up by more than 1 Beat Producer.<br><br>The worker pods can be scaled suitably to handle the scale and load requirements.</td></tr></tbody></table>
 
+### Registry UI runtimes
+
+| Component                | Repository                       | Remarks                                                                                                                                                                      |
+| ------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Registry-Staff-Portal-UI | openg2p-registry-staff-portal-ui | This component provides the functionalities required nuy the Staff Users of the department that hosts the registry - both the Configurations as well as Operational aspects  |
+
 ### Registry Library components
 
 These library components are packaged within the runtimes
