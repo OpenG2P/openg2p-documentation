@@ -511,7 +511,7 @@
 
 ## Platform
 
-* [ARCHITECTURE](platform/architecture/README.md)
+* [Platform Architecture](platform/architecture/README.md)
   * [Platform Tech Architecture](platform/architecture/platform-tech-architecture.md)
   * [Registry Tech Architecture](platform/architecture/registry-tech-architecture.md)
   * [PBMS Tech Architecture](platform/architecture/pbms-tech-architecture.md)
@@ -560,40 +560,39 @@
 
 ## Tools
 
-* [Tools](utilities-and-tools/README.md)
-  * [ID Generator](utilities-and-tools/id-generator/README.md)
-    * [Functional Specifications](utilities-and-tools/id-generator/functional-specifications.md)
-    * [API Reference](utilities-and-tools/id-generator/api-reference.md)
-    * [Technical Architecture](utilities-and-tools/id-generator/technical-architecture.md)
-    * [Deployment](utilities-and-tools/id-generator/deployment.md)
-    * [Testing](utilities-and-tools/id-generator/testing.md)
-  * [ODK](utilities-and-tools/odk-collection-app.md)
-    * [📔 User Guides](utilities-and-tools/odk-collection-app/user-guides/README.md)
-      * [📔 Create a Project for a Program](utilities-and-tools/odk-collection-app/user-guides/create-odk-form.md)
-      * [📔 Create a Form](utilities-and-tools/odk-collection-app/user-guides/create-a-form.md)
-      * [📔 Upload a Form](utilities-and-tools/odk-collection-app/user-guides/upload-a-form.md)
-      * [📔 Upload revised Form](utilities-and-tools/odk-collection-app/user-guides/upload-revised-form.md)
-      * [📔 Test a Form](utilities-and-tools/odk-collection-app/user-guides/test-a-form.md)
-      * [📔 Publish a Form](utilities-and-tools/odk-collection-app/user-guides/publish-a-form.md)
-      * [📔 Provide Form Access to Field Agent](utilities-and-tools/odk-collection-app/user-guides/provide-form-access-to-field-agent.md)
-      * [📔 Download a Form on ODK Collect](utilities-and-tools/odk-collection-app/user-guides/download-form-on-odk-collect.md)
-      * [📔 Delete a Form](utilities-and-tools/odk-collection-app/user-guides/delete-a-form.md)
-      * [📔 Register Offline](utilities-and-tools/odk-collection-app/user-guides/register-offline.md)
-  * [4Sure Verifier App](utilities-and-tools/4sure-verifier.md)
-    * [Installation Guide for 4Sure Application](utilities-and-tools/4sure-verifier-app/installation-guide-for-4sure-application.md)
-    * [📔 User Guides](utilities-and-tools/4sure-verifier-app/user-guides/README.md)
-      * [📔 Verify Digital Credentials using 4Sure Application](utilities-and-tools/4sure-verifier-app/user-guides/verify-digital-credentials-using-4sure-application.md)
-      * [📔 Verify and Populate the form in ODK Collect using 4Sure Application](utilities-and-tools/4sure-verifier-app/user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application.md)
-    * [4Sure Test Summary](utilities-and-tools/4sure-verifier-app/4sure-test-summary.md)
-  * [Smartscanner](utilities-and-tools/smartscanner/README.md)
-    * [📔 User Guides](utilities-and-tools/smartscanner/user-guides/README.md)
-  * [Registration Tool Kit](utilities-and-tools/registration-tool-kit.md)
-  * [Unified Conversation Agent (UCA)](utilities-and-tools/unified-conversation-agent/README.md)
-    * [UCA Research & Development](utilities-and-tools/unified-conversation-agent/uca-research-and-development/README.md)
-      * [Modal Context Protocol(MCP)](utilities-and-tools/unified-conversation-agent/uca-research-and-development/modal-context-protocol-mcp.md)
-      * [Model Context Protocol (MCP) Implementation in UCA](utilities-and-tools/unified-conversation-agent/uca-research-and-development/model-context-protocol-mcp-implementation-in-uca.md)
-      * [Social Benefits Assistant with FastMCP](utilities-and-tools/unified-conversation-agent/uca-research-and-development/social-benefits-assistant-with-fastmcp.md)
-  * [Grievance Redress Mechanism](utilities-and-tools/grievance-redress-mechanism.md)
+* [ID Generator](tools/id-generator/README.md)
+  * [Functional Specifications](tools/id-generator/functional-specifications.md)
+  * [API Reference](tools/id-generator/api-reference.md)
+  * [Technical Architecture](tools/id-generator/technical-architecture.md)
+  * [Deployment](tools/id-generator/deployment.md)
+  * [Testing](tools/id-generator/testing.md)
+* [4Sure Verifier App](tools/4sure-verifier/README.md)
+  * [Installation Guide for 4Sure Application](tools/4sure-verifier/installation-guide-for-4sure-application.md)
+  * [📔 User Guides](tools/4sure-verifier/user-guides/README.md)
+    * [📔 Verify Digital Credentials using 4Sure Application](tools/4sure-verifier/user-guides/verify-digital-credentials-using-4sure-application.md)
+    * [📔 Verify and Populate the form in ODK Collect using 4Sure Application](tools/4sure-verifier/user-guides/verify-and-populate-the-form-in-odk-collect-using-4sure-application.md)
+  * [4Sure Test Summary](tools/4sure-verifier/4sure-test-summary.md)
+* [ODK](tools/odk-collection-app/README.md)
+  * [📔 User Guides](tools/odk-collection-app/user-guides/README.md)
+    * [📔 Create a Project for a Program](tools/odk-collection-app/user-guides/create-odk-form.md)
+    * [📔 Create a Form](tools/odk-collection-app/user-guides/create-a-form.md)
+    * [📔 Upload a Form](tools/odk-collection-app/user-guides/upload-a-form.md)
+    * [📔 Upload revised Form](tools/odk-collection-app/user-guides/upload-revised-form.md)
+    * [📔 Test a Form](tools/odk-collection-app/user-guides/test-a-form.md)
+    * [📔 Publish a Form](tools/odk-collection-app/user-guides/publish-a-form.md)
+    * [📔 Provide Form Access to Field Agent](tools/odk-collection-app/user-guides/provide-form-access-to-field-agent.md)
+    * [📔 Download a Form on ODK Collect](tools/odk-collection-app/user-guides/download-form-on-odk-collect.md)
+    * [📔 Delete a Form](tools/odk-collection-app/user-guides/delete-a-form.md)
+    * [📔 Register Offline](tools/odk-collection-app/user-guides/register-offline.md)
+* [Registration Tool Kit](tools/registration-tool-kit.md)
+* [Smartscanner](tools/smartscanner/README.md)
+  * [📔 User Guides](tools/smartscanner/user-guides.md)
+* [Unified Conversation Agent (UCA)](tools/unified-conversation-agent/README.md)
+  * [UCA Research & Development](tools/unified-conversation-agent/uca-research-and-development/README.md)
+    * [Modal Context Protocol(MCP)](tools/unified-conversation-agent/uca-research-and-development/modal-context-protocol-mcp.md)
+    * [Model Context Protocol (MCP) Implementation in UCA](tools/unified-conversation-agent/uca-research-and-development/model-context-protocol-mcp-implementation-in-uca.md)
+    * [Social Benefits Assistant with FastMCP](tools/unified-conversation-agent/uca-research-and-development/social-benefits-assistant-with-fastmcp.md)
+* [Grievance Redress Mechanism](tools/grievance-redress-mechanism.md)
 
 ## Operations
 
@@ -730,8 +729,12 @@
 
 ## Community
 
-* [Community](community/README.md)
-  * [Contributing](community/contributing-to-openg2p.md)
-  * [Code of Conduct](community/code-of-conduct.md)
-  * [Support Policy](releases/openg2p-support-policy.md)
-  * [\_Archive](_archive.md)
+* [Contributing](community/contributing-to-openg2p.md)
+* [Code of Conduct](community/code-of-conduct.md)
+* [Support Policy](community/openg2p-support-policy.md)
+
+## \_ARCHIVE
+
+***
+
+* [\_Archive](_archive-1.md)

@@ -8,7 +8,7 @@ In the OpenG2P platform, intake is carried out via offline/online forms, and rec
 
 OpenG2P platform offers registration of persons into programs via the following interfaces:
 
-1. Agent-assisted registration using [ODK Collect app](odk-collection-app.md)
+1. Agent-assisted registration using [ODK Collect app](odk-collection-app/)
 2. Self-registration by a potential beneficiary
 3. API-based registration by other systems
 4. Manual entry
