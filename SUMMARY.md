@@ -75,7 +75,7 @@
     * [Use Case Implementation](products/registry/openg2p-registry-platform/use-case-implementation.md)
   * [Farmer Registry](products/registry/farmer-registry.md)
   * [National Social Registry](products/registry/national-social-registry.md)
-  * [Gen1: Social Registry](products/registry/social-registry/README.md)
+  * [Social Registry (Gen1)](products/registry/social-registry/README.md)
     * [Features](products/registry/social-registry/features/README.md)
       * [Individuals and Households](products/registry/social-registry/features/individuals-and-groups/README.md)
         * [📔 User Guides](products/registry/social-registry/features/individuals-and-groups/user-guides/README.md)
@@ -737,7 +737,5 @@
 * [Support Policy](community/openg2p-support-policy.md)
 
 ## \_ARCHIVE
-
-***
 
 * [\_Archive](_archive-1.md)
