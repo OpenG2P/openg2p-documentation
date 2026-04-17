@@ -1,6 +1,6 @@
 # Versions
 
-| Helm Version | Maser Data Runtimes    | Version Date | Comments                                                                                      |
-| ------------ | ---------------------- | ------------ | --------------------------------------------------------------------------------------------- |
-| 1.0.0        | master-data-api:v1.0.0 | 17-Apr-2026  | <ol><li>Initial Version of Master Data API - containing Partners and Geo Lookup dat</li></ol> |
-|              |                        |              |                                                                                               |
+| Helm Version                                                                       | Maser Data Runtimes                                                                                                                                                               | Version Date | Comments                                                                                      |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------- |
+| [1.0.0](https://github.com/OpenG2P/openg2p-gen2-master-data-deployment/tree/1.0.0) | [master-data-api:v1.0.0](https://hub.docker.com/layers/openg2p/openg2p-gen2-master-data-api/1.0.0/images/sha256-4739fd732e051c0102bea6245a01e3cfc479f00e71729a5e1640e27d475406a9) | 17-Apr-2026  | <ol><li>Initial Version of Master Data API - containing Partners and Geo Lookup dat</li></ol> |
+|                                                                                    |                                                                                                                                                                                   |              |                                                                                               |
