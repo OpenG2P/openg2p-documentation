@@ -116,7 +116,7 @@ For each ID type in config:
 * **No leader election needed** — any pod can generate, but only one at a time per ID type.
 * **`pg_try_advisory_lock`** is non-blocking — if another pod holds the lock, skip instantly.
 * **Database is the coordinator** — no Redis, ZooKeeper, or K8s leader election needed.
-* **Per-ID-type locks** — Pod A generates for `farmer_id` while Pod B generates for `household_id` simultaneously.
+* **Per-ID-type locks** — Pod A generates for `farmer` while Pod B generates for `household` simultaneously.
 
 ### Sub-batch insertion
 

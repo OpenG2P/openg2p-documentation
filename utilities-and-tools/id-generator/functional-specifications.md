@@ -8,7 +8,7 @@ description: >-
 
 ## ID types
 
-Each consuming application is assigned an **ID type** (e.g., `farmer_id`, `household_id`, `national_id`).
+Each consuming application is assigned an **ID type** (e.g., `farmer`, `household`, `national_id`).
 
 * ID types are **pre-configured** via config file or Helm values — not created via API.
 * Each ID type has **one configurable parameter: ID length** (2–32 digits).
@@ -137,9 +137,9 @@ id_generator:
 
   # ID types
   id_types:
-    farmer_id:
+    farmer:
       id_length: 12
-    household_id:
+    household:
       id_length: 10
 ```
 
@@ -155,15 +155,15 @@ ID_GENERATOR__ID_TYPES__NATIONAL_ID__ID_LENGTH=12
 One table per ID type, auto-created on startup:
 
 ```sql
-CREATE TABLE IF NOT EXISTS id_pool_farmer_id (
+CREATE TABLE IF NOT EXISTS id_pool_farmer (
     id_value    VARCHAR(32)   PRIMARY KEY,
     status      VARCHAR(16)   NOT NULL DEFAULT 'AVAILABLE',
     created_at  TIMESTAMPTZ   NOT NULL DEFAULT now(),
     issued_at   TIMESTAMPTZ   NULL
 );
 
-CREATE INDEX idx_farmer_id_available
-    ON id_pool_farmer_id (status) WHERE status = 'AVAILABLE';
+CREATE INDEX idx_farmer_available
+    ON id_pool_farmer (status) WHERE status = 'AVAILABLE';
 ```
 
 ## API endpoints

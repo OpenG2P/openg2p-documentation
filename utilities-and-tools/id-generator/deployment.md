@@ -46,9 +46,9 @@ idGenerator:
   replicaCount: 3
   appConfig:
     idTypes:
-      farmer_id:
+      farmer:
         idLength: 12
-      household_id:
+      household:
         idLength: 10
       national_id:
         idLength: 12
@@ -97,9 +97,9 @@ Default ID types:
 
 ```yaml
 idTypes:
-  farmer_id:
+  farmer:
     idLength: 12
-  household_id:
+  household:
     idLength: 10
 ```
 
