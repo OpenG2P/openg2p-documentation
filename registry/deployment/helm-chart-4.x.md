@@ -73,6 +73,7 @@ Before installing the Registry chart, ensure the following are available in the 
 | Keymanager      | `commons` release | Key management service at `commons-services-keymanager`.                                                       |
 | Master Data API | `commons` release | Reference/master data service at `http://commons-services-master-data-api`.                                    |
 | Istio           | Infrastructure    | Service mesh with ingress gateway for routing.                                                                 |
+| Fluent Operator | Infrastructure    | Fluent Operator + Fluentbit DaemonSet for log collection. OpenSearch Output created by commons-base.           |
 | Wildcard DNS    | Infrastructure    | `*.<namespace>.openg2p.org` resolving to the cluster ingress.                                                  |
 
 {% hint style="warning" %}
@@ -172,6 +173,8 @@ The chart provides a simplified Rancher UI form (`questions.yaml`) with the most
 | Beneficiary Portal API toggle | `benePortalApi.enabled`   | General      |
 | ID Generator toggle           | `idgenerator.enabled`     | General      |
 | ID Types Configuration        | _(see note)_              | ID Generator |
+| Enable Logging                | `logging.enabled`         | Logging      |
+| Fluent Output Name            | `logging.outputRef`       | Logging      |
 
 {% hint style="info" %}
 ID type configuration (types, lengths, pool settings) cannot be expressed as simple form fields. The Rancher UI shows a note directing users to switch to **Edit YAML** to modify the `idgenerator.idGenerator.appConfig.idTypes` section.
@@ -247,6 +250,44 @@ idgenerator:
 | `poolMinThreshold`         | `1000`                                | Minimum IDs in pool before regeneration triggers. |
 | `poolGenerationBatchSize`  | `5000`                                | Number of IDs generated per batch.                |
 | `poolCheckIntervalSeconds` | `30`                                  | How often the pool level is checked.              |
+
+### Logging
+
+The chart ships a [Fluent Operator](https://github.com/fluent/fluent-operator) `Flow` resource that captures JSON logs from all OpenG2P application pods and routes them to the OpenSearch `Output` already created by the **commons-base** chart. Logging is enabled by default.
+
+**How it works:**
+
+1. The `Flow` matches pods by `app.kubernetes.io/instance` (the Helm release name) **and** an explicit list of container names, so init containers (e.g. `postgres-checker`) are excluded.
+2. A `parser` filter parses the JSON log lines emitted by all OpenG2P services.
+3. A `tag_normaliser` filter formats the Fluent tag as `<namespace>.<pod>.<container>` for consistent OpenSearch indexing.
+4. Logs are forwarded to the namespace-scoped Output (default: `commons-opensearch`) via `localOutputRefs`.
+
+{% hint style="info" %}
+The Fluent Operator and Fluentbit DaemonSet must already be running on the cluster (typically deployed as part of the Rancher/infrastructure layer). The chart only creates the `Flow` resource — it does not deploy Fluentbit itself.
+{% endhint %}
+
+**Logging parameters:**
+
+| Parameter                  | Default              | Description                                                              |
+| -------------------------- | -------------------- | ------------------------------------------------------------------------ |
+| `logging.enabled`          | `true`               | Enable/disable the Fluent Operator Flow resource.                        |
+| `logging.outputRef`        | `commons-opensearch` | Name of the namespace-scoped Fluent Output resource (from commons-base). |
+| `logging.containerNames`   | _(see below)_        | List of container names whose logs are captured.                         |
+
+**Default `containerNames`:**
+
+```yaml
+logging:
+  containerNames:
+    - staff-portal-api
+    - staff-portal-ui
+    - partner-api
+    - bene-portal-api
+    - celery-beat-producer
+    - celery-worker
+```
+
+These must match the `nameOverride` values of the corresponding components. If you add custom sidecar containers or change a component's `nameOverride`, update this list accordingly.
 
 ### Component toggles
 
