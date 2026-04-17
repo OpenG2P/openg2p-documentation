@@ -52,9 +52,11 @@ AVAILABLE  →  TAKEN
 
 ## Versions
 
-| Helm Chart Version | Docker Image                             | Date        | Comments |
-| ------------------ | ---------------------------------------- | ----------- | -------- |
-| 0.0.0-develop      | `openg2p/openg2p-id-generator:develop`   | in progress | —        |
+| Helm Chart Version | Docker Image                             | Date        | Comments        |
+| ------------------ | ---------------------------------------- | ----------- | --------------- |
+| 1.0.0              | `openg2p/openg2p-id-generator:1.0.0`     | 2026-04-17  | Stable version  |
+| 1.0                | `openg2p/openg2p-id-generator:1.0`       | in progress | Moving version  |
+| 0.0.0-develop      | `openg2p/openg2p-id-generator:develop`   | in progress | —               |
 
 ## Source code
 
