@@ -1,8 +1,8 @@
 ---
 description: >-
   A service that generates unique, random numeric IDs for multiple consuming
-  applications with pre-generated pools, Verhoeff checksum, and
-  multi-ID-type support.
+  applications with pre-generated pools, Verhoeff checksum, and multi-ID-type
+  support.
 ---
 
 # ID Generator
@@ -42,21 +42,21 @@ AVAILABLE  →  TAKEN
 
 ## Detailed documentation
 
-| Page | Description |
-| ---- | ----------- |
+| Page                                                      | Description                                                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | [Functional Specifications](functional-specifications.md) | ID types, generation rules, 10 filter rules, pool management, exhaustion handling, configuration |
-| [API Reference](api-reference.md) | REST API endpoints, request/response formats, error codes, OpenAPI spec |
-| [Technical Architecture](technical-architecture.md) | Async stack, database design, concurrency patterns, Kubernetes deployment |
-| [Deployment](deployment.md) | Helm chart installation, Docker setup, local development, environment variables |
-| [Testing](testing.md) | Test categories, execution commands, HTML reporting |
+| [API Reference](api-reference.md)                         | REST API endpoints, request/response formats, error codes, OpenAPI spec                          |
+| [Technical Architecture](technical-architecture.md)       | Async stack, database design, concurrency patterns, Kubernetes deployment                        |
+| [Deployment](deployment.md)                               | Helm chart installation, Docker setup, local development, environment variables                  |
+| [Testing](testing.md)                                     | Test categories, execution commands, HTML reporting                                              |
 
 ## Versions
 
-| Helm Chart Version | Docker Image                             | Date        | Comments        |
-| ------------------ | ---------------------------------------- | ----------- | --------------- |
-| 1.0.0              | `openg2p/openg2p-id-generator:1.0.0`     | 2026-04-17  | Stable version  |
-| 1.0                | `openg2p/openg2p-id-generator:1.0`       | in progress | Moving version  |
-| 0.0.0-develop      | `openg2p/openg2p-id-generator:develop`   | in progress | —               |
+| Helm Chart Version                                                 | Docker Image                           | Date        | Comments       |
+| ------------------------------------------------------------------ | -------------------------------------- | ----------- | -------------- |
+| [1.0.0](https://github.com/OpenG2P/id-generator/tree/1.0.0)        | `openg2p/openg2p-id-generator:1.0.0`   | 2026-04-17  | Stable version |
+| [1.0](https://github.com/OpenG2P/id-generator/tree/1.0)            | `openg2p/openg2p-id-generator:1.0`     | in progress | Moving version |
+| [0.0.0-develop](https://github.com/OpenG2P/id-generator/tree/main) | `openg2p/openg2p-id-generator:develop` | in progress | —              |
 
 ## Source code
 
@@ -64,15 +64,15 @@ AVAILABLE  →  TAKEN
 
 ## Technology stack
 
-| Component      | Choice                        | License                              |
-| -------------- | ----------------------------- | ------------------------------------ |
-| Language        | Python 3.11+                  | PSF License (permissive)             |
-| Web Framework   | FastAPI                       | MIT                                  |
-| ASGI Server     | Uvicorn                       | BSD-3-Clause                         |
-| DB Driver       | asyncpg                       | Apache 2.0                           |
-| ORM             | SQLAlchemy 2.x (async)        | MIT                                  |
-| Config          | Pydantic Settings             | MIT                                  |
-| Database        | PostgreSQL                    | PostgreSQL License (permissive)      |
-| Deployment      | Kubernetes + Helm             | Apache 2.0                           |
+| Component     | Choice                 | License                         |
+| ------------- | ---------------------- | ------------------------------- |
+| Language      | Python 3.11+           | PSF License (permissive)        |
+| Web Framework | FastAPI                | MIT                             |
+| ASGI Server   | Uvicorn                | BSD-3-Clause                    |
+| DB Driver     | asyncpg                | Apache 2.0                      |
+| ORM           | SQLAlchemy 2.x (async) | MIT                             |
+| Config        | Pydantic Settings      | MIT                             |
+| Database      | PostgreSQL             | PostgreSQL License (permissive) |
+| Deployment    | Kubernetes + Helm      | Apache 2.0                      |
 
 All components use **permissive open-source licenses**. No copyleft (GPL) dependencies.
