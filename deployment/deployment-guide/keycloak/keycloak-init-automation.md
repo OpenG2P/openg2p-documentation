@@ -61,11 +61,11 @@ Login and admin themes can be applied per realm. The theme names must match them
 
 Available OpenG2P themes (from [keycloak-themes](https://github.com/OpenG2P/keycloak-themes)):
 
-| Theme Name       | Type           | Description                              |
-| ---------------- | -------------- | ---------------------------------------- |
-| `openg2p-admin`  | Login, Admin   | OpenG2P branded admin console            |
-| `staff-portal`   | Login, Admin   | Staff portal theme                       |
-| `g2p-advisor`    | Login          | G2P Advisor login theme                  |
+| Theme Name      | Type         | Description                   |
+| --------------- | ------------ | ----------------------------- |
+| `openg2p-admin` | Login, Admin | OpenG2P branded admin console |
+| `staff-portal`  | Login, Admin | Staff portal theme            |
+| `g2p-advisor`   | Login        | G2P Advisor login theme       |
 
 Each theme folder contains `login` and/or `admin` subdirectories. The theme name in Keycloak matches the folder name. Use the same name for both `loginTheme` and `adminTheme` when both types are available:
 
@@ -79,13 +79,13 @@ Themes are only updated when they differ from the current setting in Keycloak, k
 
 Each client supports the following parameters:
 
-| Parameter      | Required | Description                                                                 |
-| -------------- | -------- | --------------------------------------------------------------------------- |
-| `clientId`     | Yes      | Unique client identifier.                                                   |
-| `name`         | No       | Display name. Defaults to `clientId`.                                       |
-| `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                           |
-| `secret`       | No       | Client secret. If not provided, a random secret is generated and stored.    |
-| `clientRoles`  | No       | List of client roles to create. See below.                                  |
+| Parameter      | Required | Description                                                              |
+| -------------- | -------- | ------------------------------------------------------------------------ |
+| `clientId`     | Yes      | Unique client identifier.                                                |
+| `name`         | No       | Display name. Defaults to `clientId`.                                    |
+| `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                        |
+| `secret`       | No       | Client secret. If not provided, a random secret is generated and stored. |
+| `clientRoles`  | No       | List of client roles to create. See below.                               |
 
 ### Client roles
 
@@ -150,10 +150,11 @@ helm -n <namespace> install keycloak-init .
 
 ### Versions
 
-| Helm Chart Version | Last Modified | Contents                                                                                          |
-| ------------------ | ------------- | ------------------------------------------------------------------------------------------------- |
-| 0.0.0-develop      | Mar 2026      | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.   |
-| 0.0.0-develop      | Jan 2026      | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
+| Helm Chart Version                                               | Date        | Contents                                                                                                         |
+| ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                                        |
+| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.                  |
+| 0.0.0-develop                                                    | Jan 2026    | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
 
 ### Tear down
 
@@ -184,10 +185,10 @@ The image tag corresponds to the Git branch name. A GitHub Actions workflow auto
 
 Two GitHub Actions workflows are configured:
 
-| Workflow           | Trigger paths                                  | Description                                      |
-| ------------------ | ---------------------------------------------- | ------------------------------------------------ |
-| **Docker Publish** | `docker/**`, `.github/workflows/docker-publish.yml` | Builds and pushes Docker image to Docker Hub     |
-| **Helm Publish**   | `helm/**`, `.github/workflows/helm-publish.yml`     | Packages and publishes the Helm chart            |
+| Workflow           | Trigger paths                                       | Description                                  |
+| ------------------ | --------------------------------------------------- | -------------------------------------------- |
+| **Docker Publish** | `docker/**`, `.github/workflows/docker-publish.yml` | Builds and pushes Docker image to Docker Hub |
+| **Helm Publish**   | `helm/**`, `.github/workflows/helm-publish.yml`     | Packages and publishes the Helm chart        |
 
 ## Local testing
 
@@ -227,4 +228,3 @@ Alternatively, run everything in one command using the test script:
 {% hint style="info" %}
 The local Keycloak instance runs version 24.0.5 in dev mode.
 {% endhint %}
-
