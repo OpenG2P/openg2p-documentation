@@ -1,6 +1,6 @@
 # 4Sure Test Summary
 
-This document summarises the test strategy, deliverables, and results recorded while testing the [4Sure](../4sure-verifier.md) application.
+This document summarises the test strategy, deliverables, and results recorded while testing the [4Sure](./) application.
 
 ## Test objective
 
@@ -10,10 +10,10 @@ The purpose of testing is to ensure the functionality of the features in the 4Su
 
 The scope is to test the functionality of the features in the 4Sure application.
 
-| Feature                         | Test Cases                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <p>Feature in scope </p><p></p> | [https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20(%22To%20Do%22%2C%22In%20Progress%22)%20ORDER%20BY%20created%20DESC](https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20\(%22To%20Do%22%2C%22In%20Progress%22\)%20ORDER%20BY%20created%20DESC) |
-| Feature not in scope            | [https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20(%22To%20Do%22%2C%22In%20Progress%22)%20ORDER%20BY%20created%20DESC](https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20\(%22To%20Do%22%2C%22In%20Progress%22\)%20ORDER%20BY%20created%20DESC) |
+| Feature              | Test Cases                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Feature in scope     | [https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20(%22To%20Do%22%2C%22In%20Progress%22)%20ORDER%20BY%20created%20DESC](https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20\(%22To%20Do%22%2C%22In%20Progress%22\)%20ORDER%20BY%20created%20DESC) |
+| Feature not in scope | [https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20(%22To%20Do%22%2C%22In%20Progress%22)%20ORDER%20BY%20created%20DESC](https://openg2p.atlassian.net/jira/software/c/projects/FS/issues/?jql=project%20%3D%20%22FS%22%20AND%20type%20%3D%20story%20AND%20status%20IN%20\(%22To%20Do%22%2C%22In%20Progress%22\)%20ORDER%20BY%20created%20DESC) |
 
 ## **Test environment**
 
@@ -21,12 +21,12 @@ The scope is to test the functionality of the features in the 4Sure application.
 
 The 4Sure application is tested in standalone mode by installing the application on Android devices.
 
-<table><thead><tr><th width="294">Device Model</th><th width="347">OS Version</th><th width="116">Test Result</th></tr></thead><tbody><tr><td>Samsung Galaxy Tablet</td><td>Android V14</td><td>Pass</td></tr><tr><td>Moto G(60)</td><td>Android V12</td><td>Pass</td></tr><tr><td> Google pixel 6a</td><td>Android V13</td><td>Pass</td></tr></tbody></table>
+<table><thead><tr><th width="294">Device Model</th><th width="347">OS Version</th><th width="116">Test Result</th></tr></thead><tbody><tr><td>Samsung Galaxy Tablet</td><td>Android V14</td><td>Pass</td></tr><tr><td>Moto G(60)</td><td>Android V12</td><td>Pass</td></tr><tr><td>Google pixel 6a</td><td>Android V13</td><td>Pass</td></tr></tbody></table>
 
 ### Launch 4Sure application via ODK collect
 
-* The launching of 4Sure application via ODK collect is tested by installing the application on above mentioned Android devices, and&#x20;
-* Used explore environment for ODK collect&#x20;
+* The launching of 4Sure application via ODK collect is tested by installing the application on above mentioned Android devices, and
+* Used explore environment for ODK collect
 
 ## Test type
 
@@ -35,7 +35,7 @@ The below test types are used to make sure that the application is tested proper
 | Test type  | Description                                                                           |
 | ---------- | ------------------------------------------------------------------------------------- |
 | Sanity     | It is used to ensure that the major functionality of the application is working fine. |
-| Regression | It is used to ensure that the entire functionality    of the application works fine.  |
+| Regression | It is used to ensure that the entire functionality of the application works fine.     |
 
 ## Test execution summary
 
@@ -57,8 +57,7 @@ You can find the defect summaries that are identified during testing in the belo
 
 ## Release information
 
-* APK link: [ https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive\_link](https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive_link)
+* APK link: [https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive\_link](https://drive.google.com/file/d/1GeQFXjSOC69iZx91rX0fu5HWstM3rS5B/view?usp=drive_link)
 * Build Date: 2024-03-21
 * Build name: 4Sure-debug-v0.7.0-21-03-2024-arm64-v8a.apk
 * Deployment Target: Android 12 and above
-

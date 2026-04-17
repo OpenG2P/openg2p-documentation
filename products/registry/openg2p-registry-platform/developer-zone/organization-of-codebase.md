@@ -1,6 +1,6 @@
-# Organization of codebase
+# Organization of Codebase
 
-<div data-full-width="true"><figure><img src="../../../.gitbook/assets/Registry-Code-Organization.jpg" alt=""><figcaption><p>Organization of the Registry codebase in github. The labels in green are the repo names</p></figcaption></figure></div>
+<div data-full-width="true"><figure><img src="../../../../.gitbook/assets/Registry-Code-Organization.jpg" alt=""><figcaption><p>Organization of the Registry codebase in github. The labels in green are the repo names</p></figcaption></figure></div>
 
 The registry codebase is organized into several repositories.
 
@@ -17,7 +17,7 @@ This repository contains the API <mark style="color:blue;">**runtimes**</mark> f
 3. <mark style="color:blue;">openg2p-registry-agency-portal-api</mark> — Providing Registry REST APIs for the Unified Agency App
 4. <mark style="color:blue;">openg2p-registry-partner-api</mark> — Providing Registry REST APIs for the partner ecosystem.
 
-### &#x20;**openg2p-registry-celery**
+### **openg2p-registry-celery**
 
 This repository contains the Celery <mark style="color:$success;">**runtimes**</mark> for the registry. OpenG2P Registry uses the Celery framework to perform several asynchronous tasks on the registry. The celery framework consists of two runtimes
 
@@ -30,7 +30,7 @@ This repository, packaged as a <mark style="color:$success;">**library**</mark>,
 
 ### openg2p-registry-extensions
 
-This is the repository that contains the domain extensions created by OpenG2P. Since the base registry itself is devoid of any functional domain, OpenG2P has created certain domain extensions which may be treated as reference implentations. For a given domain, this repository will contain the ORM Models, the Pydantic Schemas, any custom business logic for the domain, and Database scripts for UI JSON Schemas. There will be  separate folders for different domains. The python code blocks need to be packaged as libraries, while the database scripts need to be executed in the database, to create the relevant records.
+This is the repository that contains the domain extensions created by OpenG2P. Since the base registry itself is devoid of any functional domain, OpenG2P has created certain domain extensions which may be treated as reference implentations. For a given domain, this repository will contain the ORM Models, the Pydantic Schemas, any custom business logic for the domain, and Database scripts for UI JSON Schemas. There will be separate folders for different domains. The python code blocks need to be packaged as libraries, while the database scripts need to be executed in the database, to create the relevant records.
 
 ### openg2p-registry-standards
 
@@ -43,4 +43,3 @@ This repository contains the Docker creation scripts and configurations for crea
 ### openg2p-registry-deployment
 
 This repository contains the Helm charts for deploying OpenG2P Registry and all the necessary dependent services sucha as MinIO, Postgres, Keycloak, MOSIP KeyManager etc.
-

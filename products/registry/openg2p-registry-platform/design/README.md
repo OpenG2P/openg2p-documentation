@@ -17,7 +17,7 @@ OpenG2P Registry is built as a set of FastAPI-based microservices that communica
 * **MinIO** -- object storage for documents, attachments, and raw ingestion payloads.
 * **Keycloak** -- identity and access management for staff users, partner systems, and registrant authentication.
 
-The functional architecture diagram is available on the [Registry landing page](../).
+The functional architecture diagram is available on the [Registry landing page](../../../../registry/).
 
 ## Key design principles
 
@@ -45,8 +45,8 @@ The following sub-pages cover individual design topics in detail:
 [ingestion-pipeline.md](ingestion-pipeline.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/outgestion-pipeline.md" %}
-[outgestion-pipeline.md](detailed-design-notes/outgestion-pipeline.md)
+{% content-ref url="../../../../registry/design/detailed-design-notes/outgestion-pipeline.md" %}
+[outgestion-pipeline.md](../../../../registry/design/detailed-design-notes/outgestion-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="consent-management.md" %}
@@ -57,26 +57,26 @@ The following sub-pages cover individual design topics in detail:
 [encryption-at-rest.md](encryption-at-rest.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/partner-apis.md" %}
-[partner-apis.md](detailed-design-notes/partner-apis.md)
+{% content-ref url="../../../../registry/design/detailed-design-notes/partner-apis.md" %}
+[partner-apis.md](../../../../registry/design/detailed-design-notes/partner-apis.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/deduplication.md" %}
-[deduplication.md](detailed-design-notes/deduplication.md)
+{% content-ref url="../../../../registry/design/detailed-design-notes/deduplication.md" %}
+[deduplication.md](../../../../registry/design/detailed-design-notes/deduplication.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/computation-framework.md" %}
-[computation-framework.md](detailed-design-notes/computation-framework.md)
+{% content-ref url="../../../../registry/design/detailed-design-notes/computation-framework.md" %}
+[computation-framework.md](../../../../registry/design/detailed-design-notes/computation-framework.md)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/vc-issuance.md" %}
-[vc-issuance.md](detailed-design-notes/vc-issuance.md)
+{% content-ref url="../../../../registry/design/detailed-design-notes/vc-issuance.md" %}
+[vc-issuance.md](../../../../registry/design/detailed-design-notes/vc-issuance.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../products/registry/design/registrant-authentication-oidc-widget/" %}
-[registrant-authentication-oidc-widget](../../products/registry/design/registrant-authentication-oidc-widget/)
+{% content-ref url="registrant-authentication-oidc-widget/" %}
+[registrant-authentication-oidc-widget](registrant-authentication-oidc-widget/)
 {% endcontent-ref %}
 
-{% content-ref url="detailed-design-notes/ui-engineering-design/" %}
-[ui-engineering-design](detailed-design-notes/ui-engineering-design/)
+{% content-ref url="ui-engineering-design/" %}
+[ui-engineering-design](ui-engineering-design/)
 {% endcontent-ref %}
