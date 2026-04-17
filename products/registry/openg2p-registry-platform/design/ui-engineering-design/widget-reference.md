@@ -1,38 +1,31 @@
----
-description: >-
-  Learn how to build dynamic forms from JSON configurations using the OpenG2P
-  Registry UI Widgets library. This comprehensive guide covers everything from
-  basic setup to advanced customization, includin
----
+# Widget Reference
 
-# Registry UI Widgets: Complete guide and reference
+A practical, widget-by-widget reference for `@openg2p/registry-widgets` showing how to build dynamic forms from JSON configs. Covers widget configuration fields, data binding via `widget-data-path`, validation and formatting, conditional show/hide and enable/disable logic, static and API data sources, section/panel layout rendering in `RegistryView`/`CRView`/`IntakeForm` modes, theming and i18n, and how to extend the library by registering custom widgets.
 
 ## Table of contents
 
-1. [Introduction](registry-ui-widgets-complete-guide-and-reference.md#introduction)
-2. [Installation and setup](registry-ui-widgets-complete-guide-and-reference.md#installation-and-setup)
-3. [Core concepts](registry-ui-widgets-complete-guide-and-reference.md#core-concepts)
-4. [Basic usage](registry-ui-widgets-complete-guide-and-reference.md#basic-usage)
-5. [Widget configuration](registry-ui-widgets-complete-guide-and-reference.md#widget-configuration)
-6. [Data binding](registry-ui-widgets-complete-guide-and-reference.md#data-binding)
-7. [Validation](registry-ui-widgets-complete-guide-and-reference.md#validation)
-8. [Conditional logic](registry-ui-widgets-complete-guide-and-reference.md#conditional-logic)
-9. [Data sources](registry-ui-widgets-complete-guide-and-reference.md#data-sources)
-10. [Formatting](registry-ui-widgets-complete-guide-and-reference.md#formatting)
-11. [Widget reference](registry-ui-widgets-complete-guide-and-reference.md#widget-reference)
-12. [Creating custom widgets](registry-ui-widgets-complete-guide-and-reference.md#creating-custom-widgets)
-13. [Advanced patterns](registry-ui-widgets-complete-guide-and-reference.md#advanced-patterns)
-14. [Internationalization](registry-ui-widgets-complete-guide-and-reference.md#internationalization)
-15. [Best practices](registry-ui-widgets-complete-guide-and-reference.md#best-practices)
-16. [Troubleshooting](registry-ui-widgets-complete-guide-and-reference.md#troubleshooting)
-
-***
+1. [Introduction](widget-reference.md#introduction)
+2. [Installation and setup](widget-reference.md#installation-and-setup)
+3. [Core concepts](widget-reference.md#core-concepts)
+4. [Basic usage](widget-reference.md#basic-usage)
+5. [Widget configuration](widget-reference.md#widget-configuration)
+6. [Data binding](widget-reference.md#data-binding)
+7. [Validation](widget-reference.md#validation)
+8. [Conditional logic](widget-reference.md#conditional-logic)
+9. [Data sources](widget-reference.md#data-sources)
+10. [Formatting](widget-reference.md#formatting)
+11. [Widget reference](widget-reference.md#widget-reference)
+12. [Creating custom widgets](widget-reference.md#creating-custom-widgets)
+13. [Advanced patterns](widget-reference.md#advanced-patterns)
+14. [Internationalization](widget-reference.md#internationalization)
+15. [Best practices](widget-reference.md#best-practices)
+16. [Troubleshooting](widget-reference.md#troubleshooting)
 
 ## Introduction
 
 The OpenG2P Registry UI Widgets library is a powerful, extensible React component library designed for building dynamic forms from JSON configurations. It provides:
 
-* **19+ Pre-built Widgets** for common form inputs
+* **20 Pre-built Widgets** for common form inputs (including `header-section` and `scores-display`)
 * **Redux-based State Management** for centralized form state
 * **Flexible Data Binding** with dot-notation paths
 * **Comprehensive Validation** with built-in rules and Zod schemas
@@ -41,23 +34,27 @@ The OpenG2P Registry UI Widgets library is a powerful, extensible React componen
 * **Internationalization** support
 * **Extensible Architecture** for custom widgets
 
-***
-
 ## Installation and setup
 
-### Step 1: Install the package
+{% stepper %}
+{% step %}
+### Install the package
 
 ```bash
 npm install @openg2p/registry-widgets
 ```
+{% endstep %}
 
-### Step 2: Install peer dependencies
+{% step %}
+### Install peer dependencies
 
 ```bash
 npm install react react-dom @reduxjs/toolkit react-redux zod i18next react-i18next
 ```
+{% endstep %}
 
-### Step 3: Basic setup
+{% step %}
+### Basic setup
 
 Create a Redux store and wrap your application with `WidgetProvider`:
 
@@ -78,14 +75,16 @@ function App() {
 
 export default App;
 ```
+{% endstep %}
 
-### Step 4: Initialize i18n (optional but recommended)
+{% step %}
+### Initialize i18n (optional but recommended)
 
 ```tsx
 import { initI18n } from '@openg2p/registry-widgets';
 
 // Initialize i18n with your language resources
-initI18n({
+await initI18n({
   lng: 'en',
   resources: {
     en: {
@@ -96,20 +95,20 @@ initI18n({
   }
 });
 ```
-
-***
+{% endstep %}
+{% endstepper %}
 
 ## Core concepts
 
-### 1. Widget configuration
+### Widget configuration
 
 Widgets are configured using JSON objects that follow the `BaseWidgetConfig` interface. Every widget requires:
 
-* `widget`: The widget name/type (e.g., "text", "select", "date")
+* `widget`: The widget name/type (e.g., `"text"`, `"select"`, `"date"`)
 * `widget-id`: A unique identifier for the widget
-* `widget-type`: The type category ("input", "layout", "table", "group")
+* `widget-type`: The type category (`"input"`, `"layout"`, `"table"`, `"group"`)
 
-### 2. useBaseWidget Hook
+### useBaseWidget Hook
 
 The `useBaseWidget` hook is the foundation of every widget. It provides:
 
@@ -132,7 +131,7 @@ const {
 } = useBaseWidget({ config });
 ```
 
-### 3. Widget registry
+### Widget registry
 
 The widget registry is a plugin system that maps widget names to React components. Widgets must be registered before use:
 
@@ -147,8 +146,6 @@ widgetRegistry.register({
 ```
 
 The library automatically registers all default widgets when imported.
-
-***
 
 ## Basic usage
 
@@ -249,11 +246,10 @@ const uiSchema = {
 };
 
 function MyForm() {
-  return <SectionsContainer schema={uiSchema} />;
+  // Note: in this codebase, `SectionsContainer` expects `sections` (array), not `schema`.
+  return <SectionsContainer sections={uiSchema.sections} />;
 }
 ```
-
-***
 
 ## Widget Configuration
 
@@ -311,8 +307,6 @@ const textInputConfig = {
 };
 ```
 
-***
-
 ## Data binding
 
 ### Single path binding
@@ -364,8 +358,6 @@ const { getFieldValue } = useBaseWidget({ config });
 const email = getFieldValue('person.email');
 const age = getFieldValue('person.age');
 ```
-
-***
 
 ## Validation
 
@@ -465,8 +457,6 @@ const validateCustom = () => {
 };
 ```
 
-***
-
 ## Conditional Logic
 
 ### Show/hide widgets
@@ -550,8 +540,6 @@ const submitButtonConfig = {
 };
 ```
 
-***
-
 ## Data sources
 
 Data sources provide options for select, radio, and checkbox widgets.
@@ -581,10 +569,14 @@ Load options from a REST API:
 {
   'widget-data-source': {
     type: 'api',
-    url: 'https://api.example.com/countries',
+    service: 'master-data',
+    endpoint: 'get_countries',
     method: 'GET',
     valueKey: 'id',      // Key for value in response
     labelKey: 'name',    // Key for label in response
+    params: {
+      // Optional static params merged into the request
+    },
     headers: {
       'Authorization': 'Bearer token'
     }
@@ -600,9 +592,10 @@ Load options based on another field's value:
 {
   'widget-data-source': {
     type: 'api',
-    url: 'https://api.example.com/cities',
+    service: 'master-data',
+    endpoint: 'get_cities',
     method: 'GET',
-    dependsOn: 'person.country',  // Reload when this field changes
+    dependsOn: 'person.country',  // Reload when this field changes (data-path or widget-id)
     valueKey: 'id',
     labelKey: 'name',
   }
@@ -628,34 +621,40 @@ Reference data from your schema:
 }
 ```
 
-### API adapter setup
+### API handler setup (host integration)
 
-Provide a custom API adapter for API data sources:
+Provide a `dataSourceRequestHandler` for API data sources. Widgets call this handler with `(service, endpoint, method, params, options)` and expect the host to return response data.
 
 ```tsx
-const apiAdapter = async (url: string, options: any) => {
-  const response = await fetch(url, {
-    method: options.method || 'GET',
+const dataSourceRequestHandler = async (
+  service: string,
+  endpoint: string,
+  method: string,
+  params: Record<string, any>,
+  options?: { headers?: Record<string, string> }
+) => {
+  // Host decides how "service" maps to a base URL / client
+  // and how "endpoint" maps to a path or operation.
+  const response = await fetch(`/api/${service}/${endpoint}`, {
+    method,
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options?.headers || {}),
     },
-    body: options.body ? JSON.stringify(options.body) : undefined,
+    body: method === 'GET' ? undefined : JSON.stringify(params),
   });
-  
+
   if (!response.ok) {
     throw new Error(`API error: ${response.statusText}`);
   }
-  
+
   return response.json();
 };
 
-<WidgetProvider store={store} apiAdapter={apiAdapter}>
+<WidgetProvider store={store} dataSourceRequestHandler={dataSourceRequestHandler}>
   {/* Your app */}
 </WidgetProvider>
 ```
-
-***
 
 ## Formatting
 
@@ -733,8 +732,6 @@ const apiAdapter = async (url: string, options: any) => {
 }
 ```
 
-***
-
 ## Widget reference
 
 This section provides detailed documentation for each widget available in the library. Each widget includes configuration options, usage examples, and special features.
@@ -757,7 +754,7 @@ This section provides detailed documentation for each widget available in the li
 
 ### Input widgets
 
-#### 1. Text Input Widget (`text`)
+#### Text Input Widget (`text`)
 
 A versatile text input widget supporting various input types and advanced formatting options.
 
@@ -869,9 +866,7 @@ A versatile text input widget supporting various input types and advanced format
 * Live character counter
 * Multiple HTML input types
 
-***
-
-#### 2. Text Area Widget (`textarea`)
+#### Text Area Widget (`textarea`)
 
 Multi-line text input widget for longer text content.
 
@@ -934,9 +929,7 @@ Multi-line text input widget for longer text content.
 * Character counter support
 * Same character filtering and case control as text input
 
-***
-
-#### 3. Number Input Widget (`number`)
+#### Number Input Widget (`number`)
 
 Numeric input widget with decimal precision, formatting, and range validation.
 
@@ -1027,9 +1020,7 @@ Numeric input widget with decimal precision, formatting, and range validation.
 * Right-aligned by default (configurable)
 * Format on blur option
 
-***
-
-#### 4. Currency Input Widget (`currency`)
+#### Currency Input Widget (`currency`)
 
 Specialized widget for currency input with automatic formatting.
 
@@ -1060,9 +1051,7 @@ Similar to Number Input Widget, but optimized for currency values.
 }
 ```
 
-***
-
-#### 5. Phone Input Widget (`phone`)
+#### Phone Input Widget (`phone`)
 
 Specialized widget for phone number input with automatic formatting.
 
@@ -1113,9 +1102,7 @@ Specialized widget for phone number input with automatic formatting.
 }
 ```
 
-***
-
-#### 6. Date Input Widget (`date`)
+#### Date Input Widget (`date`)
 
 Date input widget with picker support and date constraints.
 
@@ -1180,9 +1167,7 @@ Date input widget with picker support and date constraints.
 * Min/max date validation
 * Default to today option
 
-***
-
-#### 7. DateTime Input Widget (`datetime`)
+#### DateTime Input Widget (`datetime`)
 
 Date and time input widget with picker support.
 
@@ -1200,7 +1185,7 @@ Date and time input widget with picker support.
   "widget-data-path": "appointment.time", // Optional: Single path (string) or multi-path (object)
   "widget-data-default": "now",           // Optional: ISO datetime string (e.g., "2024-01-15T10:30:00") or "now"
   "widget-required": false,              // Optional: Required field
-  "widget-readonly": false,              // Optional: Read-only field
+  "widget-readonly": false,               // Optional: Read-only field
   "widget-data-placeholder": "",         // Optional: Placeholder text
   "widget-data-format": {                // Optional: Formatting options
     "dateTimeFormat": "YYYY-MM-DDTHH:mm", // DateTime format (default: "YYYY-MM-DDTHH:mm")
@@ -1228,9 +1213,7 @@ Date and time input widget with picker support.
 }
 ```
 
-***
-
-#### 8. File Input Widget (`file`)
+#### File Input Widget (`file`)
 
 File upload widget with preview support and file validation.
 
@@ -1299,11 +1282,9 @@ File upload widget with preview support and file validation.
 * File preview for images and PDFs
 * File serialization for Redux store
 
-***
-
 ### Selection widgets
 
-#### 9. Select Widget (`select`)
+#### Select Widget (`select`)
 
 Dropdown/select widget with data source support.
 
@@ -1369,7 +1350,8 @@ Dropdown/select widget with data source support.
   'widget-data-path': 'address.city',
   'widget-data-source': {
     type: 'api',
-    url: 'https://api.example.com/cities',
+    service: 'master-data',
+    endpoint: 'get_cities',
     method: 'GET',
     dependsOn: 'address.country',
     valueKey: 'id',
@@ -1385,9 +1367,7 @@ Dropdown/select widget with data source support.
 * Option sorting
 * Loading state for API sources
 
-***
-
-#### 10. Radio Widget (`radio`)
+#### Radio Widget (`radio`)
 
 Radio button group widget for single selection.
 
@@ -1451,9 +1431,7 @@ Radio button group widget for single selection.
 * Same data source support as select widget
 * Option sorting
 
-***
-
-#### 11. Checkbox Widget (`checkbox`)
+#### Checkbox Widget (`checkbox`)
 
 Checkbox widget for boolean or multiple selections.
 
@@ -1529,9 +1507,7 @@ Checkbox widget for boolean or multiple selections.
 * Multiple checkboxes for array selections
 * Same layout options as radio widget
 
-***
-
-#### 12. Boolean Widget (`boolean`)
+#### Boolean Widget (`boolean`)
 
 Specialized boolean widget with multiple representation options.
 
@@ -1616,11 +1592,9 @@ Specialized boolean widget with multiple representation options.
 * Optional unset state
 * Custom labels support
 
-***
-
 ### Layout widgets
 
-#### 13. Array Widget (`array-widget`)
+#### Array Widget (`array-widget`)
 
 Widget for repeating simple values in an array.
 
@@ -1683,9 +1657,7 @@ Widget for repeating simple values in an array.
 * Configurable item widget
 * Array value storage
 
-***
-
-#### 14. Iterable Accordion Widget (`iterable-accordion`)
+#### Iterable Accordion Widget (`iterable-accordion`)
 
 Accordion-style widget for repeating complex objects.
 
@@ -1739,11 +1711,9 @@ Similar to Array Widget, but displays items in an accordion format.
 * Supports complex nested widgets
 * Collapsible items
 
-***
-
 ### Display widgets
 
-#### 15. Display Widget (`display`)
+#### Display Widget (`display`)
 
 Read-only widget for displaying information.
 
@@ -1785,9 +1755,7 @@ Read-only widget for displaying information.
 * Supports formatted values
 * Can display without label (paragraph text)
 
-***
-
-#### 16. Profile Widget (`profile`)
+#### Profile Widget (`profile`)
 
 Widget for displaying profile information in a card layout.
 
@@ -1819,11 +1787,9 @@ Widget for displaying profile information in a card layout.
 }
 ```
 
-***
-
 ### Table widgets
 
-#### 17. Table Widget (`table`)
+#### Table Widget (`table`)
 
 Full-featured table widget with editable cells.
 
@@ -1912,9 +1878,7 @@ Full-featured table widget with editable cells.
 * Column-specific widget types
 * Full validation support per column
 
-***
-
-#### 18. Simple Table Widget (`simple-table`)
+#### Simple Table Widget (`simple-table`)
 
 Simplified table widget for read-only or simple data display.
 
@@ -1947,8 +1911,6 @@ Similar to Table Widget but optimized for display purposes.
 }
 ```
 
-***
-
 ### Widget configuration summary
 
 All widgets support these common configuration properties:
@@ -1969,11 +1931,11 @@ All widgets support these common configuration properties:
 * `widget-data-source`: Data source configuration
 * `widget-data-options`: Conditional logic and widget-specific options
 
-***
-
 ## Creating custom widgets
 
-### Step 1: Create the widget component
+{% stepper %}
+{% step %}
+### Create the widget component
 
 ```tsx
 import React from 'react';
@@ -2023,8 +1985,10 @@ export const MyCustomWidget: React.FC<MyCustomWidgetProps> = ({ config }) => {
   );
 };
 ```
+{% endstep %}
 
-### Step 2: Register the widget
+{% step %}
+### Register the widget
 
 ```tsx
 import { widgetRegistry } from '@openg2p/registry-widgets';
@@ -2035,8 +1999,10 @@ widgetRegistry.register({
   component: MyCustomWidget,
 });
 ```
+{% endstep %}
 
-### Step 3: Use the widget
+{% step %}
+### Use the widget
 
 ```tsx
 const config = {
@@ -2049,6 +2015,8 @@ const config = {
 
 <WidgetRenderer config={config} />
 ```
+{% endstep %}
+{% endstepper %}
 
 ### Advanced custom widget example
 
@@ -2132,8 +2100,6 @@ export const ColorPickerWidget: React.FC<{ config: BaseWidgetConfig }> = ({ conf
   );
 };
 ```
-
-***
 
 ## Advanced patterns
 
@@ -2240,7 +2206,8 @@ function FormWithValidation() {
 
   return (
     <div>
-      <SectionsContainer schema={schema} />
+      {/* Note: `SectionsContainer` expects `sections`, not `schema` */}
+      <SectionsContainer sections={schema.sections} />
       <button onClick={handleSubmit}>Submit</button>
     </div>
   );
@@ -2251,7 +2218,7 @@ function FormWithValidation() {
 
 ```tsx
 const arrayWidgetConfig = {
-  widget: 'array',
+  widget: 'array-widget',
   'widget-type': 'group',
   'widget-id': 'addresses',
   'widget-label': 'Addresses',
@@ -2272,18 +2239,14 @@ const arrayWidgetConfig = {
 };
 ```
 
-***
-
 ## Internationalization
 
-The widget library supports internationalization (i18n) with automatic translation loading from your host project's locale files. By default, the library will automatically discover and load translations from your project's messages/locales folder, making it easy to integrate with existing i18n setups.
+The widget library supports internationalization (i18n) with automatic translation loading from your host project's locale files. By default, the library will automatically discover and load translations from common `locales/` paths, making it easy to integrate with existing i18n setups.
 
 ### Automatic translation loading (default behavior)
 
 **The library automatically loads translations from your host project's locale directory.** You don't need to configure anything - just place your translation files in one of these standard locations (checked in order):
 
-* `/messages/{language}.json`
-* `/public/messages/{language}.json`
 * `/i18/locales/{language}.json`
 * `/public/i18/locales/{language}.json`
 * `/locales/{language}.json`
@@ -2319,7 +2282,7 @@ your-project/
 
 The library will automatically:
 
-1. Detect the current language (defaults to 'en')
+1. Detect the current language (defaults to `'en'`)
 2. Try to load translations from the standard paths listed above
 3. Fall back to default English translations if no files are found
 4. Use the loaded translations for all widget labels and messages
@@ -2337,7 +2300,7 @@ If you want to provide translations programmatically instead of using files:
 ```tsx
 import { initI18n } from '@openg2p/registry-widgets';
 
-initI18n({
+await initI18n({
   lng: 'en',
   resources: {
     en: {
@@ -2428,11 +2391,9 @@ export const MyWidget = ({ config }: { config: BaseWidgetConfig }) => {
 * **Override methods**: Use manual initialization, custom paths, or translate props when you need custom behavior
 * **Fallback**: Falls back to default English translations if no files are found
 
-***
-
 ## Best practices
 
-### 1. Widget IDs
+### Widget IDs
 
 Always use unique, descriptive widget IDs:
 
@@ -2444,7 +2405,7 @@ Always use unique, descriptive widget IDs:
 'widget-id': 'field1'
 ```
 
-### 2. Data paths
+### Data paths
 
 Use consistent dot-notation paths:
 
@@ -2456,7 +2417,7 @@ Use consistent dot-notation paths:
 'widget-data-path': 'personContactEmail'
 ```
 
-### 3. Validation
+### Validation
 
 Provide clear, user-friendly error messages:
 
@@ -2477,7 +2438,7 @@ Provide clear, user-friendly error messages:
 }
 ```
 
-### 4. Conditional logic
+### Conditional logic
 
 Keep conditions simple and testable:
 
@@ -2497,7 +2458,7 @@ Keep conditions simple and testable:
 // ❌ Bad - Complex nested logic (not supported)
 ```
 
-### 5. Data sources
+### Data sources
 
 Cache API responses when possible:
 
@@ -2511,7 +2472,7 @@ Cache API responses when possible:
 }
 ```
 
-### 6. Performance
+### Performance
 
 * Use `React.memo` for expensive widget components
 * Avoid unnecessary re-renders by using stable references
@@ -2527,7 +2488,7 @@ export const ExpensiveWidget = React.memo(({ config }: { config: BaseWidgetConfi
 });
 ```
 
-### 7. Type safety
+### Type safety
 
 Always use TypeScript types:
 
@@ -2538,8 +2499,6 @@ const config: BaseWidgetConfig = {
   // TypeScript will catch errors
 };
 ```
-
-***
 
 ## Troubleshooting
 
@@ -2634,10 +2593,10 @@ onChange(newValue);  // This should update Redux
 
 **Solutions**:
 
-1. Verify API adapter is provided:
+1. Verify `dataSourceRequestHandler` is provided (via `WidgetProvider` or directly on the widget hook/component):
 
 ```tsx
-<WidgetProvider apiAdapter={apiAdapter}>
+<WidgetProvider dataSourceRequestHandler={dataSourceRequestHandler}>
 ```
 
 2. Check API response format:
@@ -2650,9 +2609,16 @@ onChange(newValue);  // This should update Redux
 3. Check for errors in console:
 
 ```tsx
-const apiAdapter = async (url, options) => {
+const dataSourceRequestHandler = async (service, endpoint, method, params, options) => {
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(`/api/${service}/${endpoint}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options?.headers || {}),
+      },
+      body: method === 'GET' ? undefined : JSON.stringify(params),
+    });
     return response.json();
   } catch (error) {
     console.error('API error:', error);
@@ -2724,8 +2690,6 @@ const config: BaseWidgetConfig = {
   // ... other required fields
 };
 ```
-
-***
 
 ## Conclusion
 

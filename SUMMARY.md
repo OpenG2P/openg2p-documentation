@@ -40,7 +40,7 @@
         * [Detailed design](products/registry/openg2p-registry-platform/design/registrant-authentication-oidc-widget/detailed-design.md)
       * [UI Engineering](products/registry/openg2p-registry-platform/design/ui-engineering-design/README.md)
         * [Widget Library](products/registry/openg2p-registry-platform/design/ui-engineering-design/registry-ui-widget-library.md)
-        * [Widgets Reference](products/registry/openg2p-registry-platform/design/ui-engineering-design/registry-ui-widgets-complete-guide-and-reference.md)
+        * [Widget Reference](products/registry/openg2p-registry-platform/design/ui-engineering-design/widget-reference.md)
       * [Score Computation framework](products/registry/openg2p-registry-platform/design/score-computation-framework.md)
       * [Functional ID generation](products/registry/openg2p-registry-platform/design/functional-id-generation.md)
       * [Audit trail for Write Operations](products/registry/openg2p-registry-platform/design/audit-trail-for-write-operations.md)
