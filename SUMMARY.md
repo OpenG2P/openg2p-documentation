@@ -71,7 +71,7 @@
         * [Staff Portal API](products/registry/openg2p-registry-platform/developer-zone/api-documentation/staff-portal-api.md)
         * [Partner API](products/registry/openg2p-registry-platform/developer-zone/api-documentation/partner-api.md)
     * [Versions](products/registry/openg2p-registry-platform/versions/README.md)
-      * [Registry Release Notes - v4.x.x](products/registry/openg2p-registry-platform/versions/registry-release-notes-v1.0.2.md)
+      * [Registry Release Notes - v4.0.0](products/registry/openg2p-registry-platform/versions/registry-release-notes-v1.0.2.md)
     * [Use Case Implementation](products/registry/openg2p-registry-platform/use-case-implementation.md)
   * [Farmer Registry](products/registry/farmer-registry.md)
   * [National Social Registry](products/registry/national-social-registry.md)

@@ -17,10 +17,10 @@ layout:
     visible: true
 ---
 
-# Registry Release Notes - v4.x.x
+# Registry Release Notes - v4.0.0
 
-**Release Date:** \[DATE TO BE FILLED]\
-**Branch:** 1.0\
+**Release Date:** 17-Apr-2026\
+**Branch:** 4.0.0\
 **Previous Version:**
 
 ***
@@ -79,5 +79,13 @@ These library components are packaged within the runtimes
 <table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Docker</td><td>openg2p-registry-docker</td><td>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file.<br><br>e.g. farmer-v1.0.2.txt inside staff-portal-api<br><br>this specifies that the registry-staff-portal-api docker has been built using the<br><br>farmer extension - some tag<br>registry-staff-portal-api - some tag<br></td></tr></tbody></table>
 
 ***
+
+## Other Services used by Registry 4.0.0
+
+| Service              | Helm Version | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| -------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| IAM-Service          | 1.0.0        | <ol><li>IAM-Service serves as the gateway for ID and Access Token Validation</li><li>IAM-Service interfaces with ID-Providers like Keycloak for the token issuance</li><li>IAM-Service also provides a library for othe OpenG2P APIs like Registry, SPAR etc. for validating the tokens</li><li>Refer to IAM Service Documentation <a href="https://docs.openg2p.org/platform/platform-services/identity-and-access-management">here</a><br></li></ol> |
+| ID-Generator-Service | 1.0.0        | <ol><li>Registry service uses ID Generator service for issuance of Functional IDs</li><li>Refer to ID Generator Documentation <a href="https://docs.openg2p.org/tools/id-generator">here</a></li></ol>                                                                                                                                                                                                                                                 |
+|                      |              |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Features for upcoming Releases
