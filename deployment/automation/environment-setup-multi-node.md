@@ -314,15 +314,98 @@ To create additional environments (e.g., `staging`) on the same cluster:
 
 Each environment gets its own namespace, Rancher project, Istio gateway, and full set of services.
 
+## Uninstallation
+
+To tear down an environment, use `env-cluster-uninstall.sh` (the reverse of `env-cluster.sh`). It has two modes:
+
+{% tabs %}
+{% tab title="Default — Helm + data" %}
+Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets, PVCs, PVs). Preserves the namespace, Istio Gateway, and Rancher Project so the environment can be reinstalled quickly.
+
+```bash
+./env-cluster-uninstall.sh --config env-config.yaml
+```
+
+**Deletes:**
+
+* ALL Helm releases in the namespace — `commons-services`, `commons`, and any other module charts (Registry, PBMS, SPAR, G2P Bridge, custom charts, etc.). The `commons` release is uninstalled last since other modules depend on its infrastructure.
+* All Jobs (hook leftovers)
+* All Secrets in the namespace
+* All PVCs + associated PVs
+
+**Preserves:**
+
+* Namespace, Istio Gateway, Rancher Project
+* Nginx config, certificates, DNS records
+{% endtab %}
+
+{% tab title="Full teardown" %}
+Everything in the default mode, plus the Istio Gateway, Rancher Project, and the namespace itself. Leaves only infra-level resources.
+
+```bash
+./env-cluster-uninstall.sh --config env-config.yaml --full
+```
+
+**Also deletes:**
+
+* Istio Gateway(s) in the namespace
+* Rancher Project association (and the project itself, if Rancher is on this cluster)
+* The namespace itself
+
+**Preserves:**
+
+* Nginx config on the Nginx node
+* Let's Encrypt certificates
+* DNS records
+* Cluster / Rancher / Istio installations
+{% endtab %}
+
+{% tab title="Dry-run" %}
+See what would be deleted without actually deleting anything:
+
+```bash
+./env-cluster-uninstall.sh --config env-config.yaml --full --dry-run
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="warning" %}
+The script previews everything that will be deleted and asks for confirmation before proceeding.
+
+* Default mode requires typing `yes`
+* `--full` mode requires typing the environment name (prevents accidental wipes of the wrong environment)
+
+Use `--yes` to skip confirmation for automation/CI.
+{% endhint %}
+
+### Uninstall CLI options
+
+```bash
+./env-cluster-uninstall.sh --config env-config.yaml [options]
+```
+
+| Option | Description |
+| --- | --- |
+| `--config <file>` | Path to environment config file (required) |
+| `--full` | Also delete Istio Gateway, Rancher Project, and namespace |
+| `--yes` | Skip confirmation prompt (for automation) |
+| `--dry-run` | Show what would be deleted without actually deleting |
+| `--help` | Show help message |
+
+{% hint style="info" %}
+The uninstall script never touches the Nginx node, DNS records, certificates, or other namespaces on the cluster. Those are intentionally managed outside this automation.
+{% endhint %}
+
 ## File Structure
 
 ```
 automation/environment/
-├── env-cluster.sh            # Run from workstation (kubectl/helm)
-├── env-config.example.yaml   # Example config — copy and edit
+├── env-cluster.sh              # Install: run from workstation (kubectl/helm)
+├── env-cluster-uninstall.sh    # Uninstall: reverse of env-cluster.sh
+├── env-config.example.yaml     # Example config — copy and edit
 ├── lib/
-│   └── utils.sh              # Shared utilities (logging, config parser)
-└── .gitignore                # Ignores env-config.yaml
+│   └── utils.sh                # Shared utilities (logging, config parser)
+└── .gitignore                  # Ignores env-config.yaml
 ```
 
 ## Troubleshooting
