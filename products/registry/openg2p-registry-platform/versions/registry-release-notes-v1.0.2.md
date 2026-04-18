@@ -19,79 +19,90 @@ layout:
 
 # Registry Release Notes - v4.0.0
 
-**Release Date:** 17-Apr-2026\
-**Branch:** 4.0.0\
-**Previous Version:**
+| | |
+| --- | --- |
+| **Release Date** | 17-Apr-2026 |
+| **Helm Chart Version** | 1.0.2 |
+| **Branch** | 4.0.0 |
+| **Previous Version** | — |
 
-***
+---
 
-## Executive Summary
+## Summary
 
-OpenG2P Registry v4.x.x implements **domain agnosticism** as the core architectural principle. This version includes a **Farmer Registry Manifestation** implementation in the extensions repository, built using the extensible registry framework without modifying core platform code.
+OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectural principle. The platform ships with a **Farmer Registry** as the first domain manifestation, built entirely using the extension framework without modifying core platform code. This release also includes performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
 
-This release also includes enhancements to the core registry platform: performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
+---
 
-## Key Highlights
+## Key Features
 
-### **Domain Agnosticism & Extensibility**
+| Feature | Description | Details |
+| --- | --- | --- |
+| **Domain Agnosticism & Extensibility** | Core registry is domain-neutral; domain-specific registries are implemented as extensions | [Metadata-Driven Extensibility](../features/metadata-driven-extensibility.md), [Building a Registry](../developer-zone/building-a-registry/README.md) |
+| **Farmer Registry Manifestation** | Reference domain implementation demonstrating extension architecture | [Use Case Implementation](../use-case-implementation.md) |
+| **Functional ID Generation** | Decoupled ID generation via OpenG2P ID Generator; configurable per Register | [Functional ID Generation](../design/functional-id-generation.md), [ID Generator](../../../../utilities-and-tools/id-generator/README.md) |
+| **Multi-Provider Authentication** | OIDC/OAuth integration via OpenG2P IAM Service; ships with Keycloak support | [RBAC Roles & Permissions](../features/rbac-roles-and-permissions.md), [IAM](../../../../identity-and-access-management/README.md) |
+| **Change Request Infrastructure** | All write operations flow through centralized change requests with verification and approval | [Change Management](../features/change-management-and-approval-workflow.md), [Design](../design/change-management.md) |
+| **Version History** | Every register change is logged as a version snapshot linked to its originating change request | [Audit-ability & Trace-ability](../features/audit-ability-and-trace-ability.md) |
+| **Async Task Processing** | Celery Workers and Beat for background ingestion, outgestion, deduplication, and computation | [Ingestion Pipeline](../design/ingestion-pipeline.md), [Organization of Codebase](../developer-zone/organization-of-codebase.md) |
+| **Encryption at Rest** | Envelope encryption (AES + KMS) for sensitive fields | [Data Integrity, Security & Encryption](../features/data-integrity-security-and-encryption.md), [Design](../design/encryption-at-rest.md) |
+| **Audit & Verification Logging** | Comprehensive verification logging with audit trails and user action attribution | [Audit Trail Design](../design/audit-trail-for-write-operations.md) |
 
-* **Farmer Registry Manifestation:** Farmer Registry implementation in the extensions repository demonstrating domain-specific customization without core platform modifications
-* **Extensible Framework:** Core registry platform supports multiple domain manifestations without code duplication
-* **Extension Architecture:** Organizations can implement domain-specific registries using the extension framework and core platform
+For the complete feature list, see [Features](../features/README.md).
 
-### **Other Key features**
+---
 
-* **Functional ID generation -** The registry uses a decoupled microservice - OpenG2P ID Generator to generate unique functional ID. Whether a Register will have a functional ID or not, is configurable in the Register Metadata.
-* **Multi-Provider Authentication:** The registry uses a decoupled microservice - OpenG2P IAM to interfaces with OIDC / OAuth ID Providers (for authentication & authorization). The base release includes integration with Keycloak
-* **Change Requests** - All write operations into the Registers (from various channels) go through a centralized Change Request infrastructure. Change Requests need to be verified and approved before they overwrite the register
-* **Version History** - All changes to a register are logged into a Version Snapshot. A detailed version history, with links to corresponding originating change requests is available for every register record.
-* **Performance Optimizations:** Optimized database queries and async processing with Redis caching
-* **Error Handling & Validation:** Enhanced error handling and input validation across all endpoints
-* **Asynchronous Task Processing:** Celery Workers and Beat for background job processing
-* **Audit & Verification Logging:** Comprehensive verification logging with audit trails and user action attribution
+## Components & Versions
 
-***
+| Component | Version | Repository |
+| --- | --- | --- |
+| Deployment Package (Helm) | 1.0.2 | openg2p-registry-deployment |
+| Registry APIs | — | openg2p-registry-apis |
+| Celery Runtimes | — | openg2p-registry-celery |
+| Staff Portal UI | — | openg2p-registry-staff-portal-ui |
+| Registry Core (library) | — | openg2p-registry-core |
+| Domain Extensions | — | openg2p-registry-extensions |
+| Standards Templates | — | openg2p-registry-standards |
+| Docker Scripts | — | openg2p-registry-docker |
 
-## Components of the release
+For detailed component architecture and repository descriptions, see [Organization of Codebase](../developer-zone/organization-of-codebase.md).
 
-### **Registry Package**
+### External Service Dependencies
 
-<table><thead><tr><th width="195.139404296875">Package</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Deployment Package<br>v4.x.x</td><td>openg2p-registry-deployment</td><td>The Helm deployment package (v1.0.2) bundles the registry platform runtimes into a single deployable unit. Individual runtime versions are specified in the chart values and listed below.<br><br>Each runtime component uses a distinct version tag, but the Helm package version (v1.0.2) represents the complete, tested bundle of all components.</td></tr></tbody></table>
+| Service | Version | Details |
+| --- | --- | --- |
+| IAM Service | 1.0.0 | [Documentation](../../../../identity-and-access-management/README.md) |
+| ID Generator Service | 1.0.0 | [Documentation](../../../../utilities-and-tools/id-generator/README.md) |
+| Master Data Service | 1.0.0 | — |
 
-### Registry Runtimes
+---
 
-These runtiimes will be deployed by the v1.0.2 Package
+## Breaking Changes
 
-<table><thead><tr><th width="194.39324951171875">Component</th><th width="276">Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry APIs</td><td>openg2p-registry-apis</td><td>Deployed as 3 API runtimes -<br><br>1. staff-portal-api - Providing REST APIs to Registry Staff UI<br><br>2.partner-api -- Providing REST APIs to the partner ecosystem and other DPGs</td></tr><tr><td>Celery Runtimes</td><td>openg2p-registry-celery</td><td>Handles all asynchronous processing in the Registry platform.<br><br>1. Celery Beat Producer &#x26;<br>2. Celery Workers<br><br>The Beat Producer - reads the queues (tables) and emits the tasks to the Workers. The workers do the actual processing.<br><br>By design, there should be only 1 POD for the Beat Producer to ensure that the same task is not picked up by more than 1 Beat Producer.<br><br>The worker pods can be scaled suitably to handle the scale and load requirements.</td></tr></tbody></table>
+None. This is the first release of the Gen 2 Registry platform.
 
-### Registry UI runtimes
+---
 
-| Component                | Repository                       | Remarks                                                                                                                                                                      |
-| ------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Registry-Staff-Portal-UI | openg2p-registry-staff-portal-ui | This component provides the functionalities required nuy the Staff Users of the department that hosts the registry - both the Configurations as well as Operational aspects  |
+## Known Issues
 
-### Registry Library components
+_None identified at the time of release._
 
-These library components are packaged within the runtimes
+---
 
-<table><thead><tr><th width="196.78900146484375">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Registry Core</td><td>openg2p-registry-core</td><td>Core Library for the Registry Platform</td></tr><tr><td>Domain Extensions</td><td>openg2p-registry-extensions</td><td>The domain extensions that need to be applied over the core registry platform. This release contains - farmer registry extensions</td></tr></tbody></table>
+## Testing
 
-### Registry Messaging Templates
+{% hint style="info" %}
+Test results and coverage details to be published.
+{% endhint %}
 
-<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Standards</td><td>openg2p-registry-standards</td><td>This repository contains the messaging template files used by the registry to provide support to messaging standards.<br><br>This release contains the Farmer Registry DCI standards<br><br><mark style="color:$primary;">These template files need to be uploaded into the registry platform as part of the configuration.</mark></td></tr></tbody></table>
+---
 
-### Docker - packaging scripts and manifests
+## Upgrade Notes
 
-<table><thead><tr><th width="199.696533203125">Component</th><th>Repository</th><th>Remarks</th></tr></thead><tbody><tr><td>Docker</td><td>openg2p-registry-docker</td><td>Provides docker creation scripts for all the registry runtimes.<br><br>The docker repository has only the develop branch.<br><br>The exact versions and manifestations are specified in a manifest file.<br><br>e.g. farmer-v1.0.2.txt inside staff-portal-api<br><br>this specifies that the registry-staff-portal-api docker has been built using the<br><br>farmer extension - some tag<br>registry-staff-portal-api - some tag<br></td></tr></tbody></table>
+This is the initial v4.x release. For fresh deployment instructions, see [Deployment](../design/deployment/README.md).
 
-***
+---
 
-## Other Services used by Registry 4.0.0
+## Roadmap
 
-| Service              | Helm Version                                                                       | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| -------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| IAM-Service          | [1.0.0](https://github.com/OpenG2P/openg2p-iam-service-deployment/tree/1.0.0)      | <ol><li>IAM-Service serves as the gateway for ID and Access Token Validation</li><li>IAM-Service interfaces with ID-Providers like Keycloak for the token issuance</li><li>IAM-Service also provides a library for othe OpenG2P APIs like Registry, SPAR etc. for validating the tokens</li><li>Refer to IAM Service Documentation <a href="https://docs.openg2p.org/platform/platform-services/identity-and-access-management">here</a><br></li></ol> |
-| ID-Generator-Service | 1.0.0                                                                              | <ol><li>Registry service uses ID Generator service for issuance of Functional IDs</li><li>Refer to ID Generator Documentation <a href="https://docs.openg2p.org/tools/id-generator">here</a></li></ol>                                                                                                                                                                                                                                                 |
-| Master Data Service  | [1.0.0](https://github.com/OpenG2P/openg2p-gen2-master-data-deployment/tree/1.0.0) | <ol><li>Registry uses Master Data Service API for Partner and Geo Lookup Data </li></ol>                                                                                                                                                                                                                                                                                                                                                               |
-
-## Features for upcoming Releases
+For features planned for upcoming releases, see [Versions](README.md).
