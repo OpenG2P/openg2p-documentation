@@ -18,8 +18,9 @@ The **keycloak-init** tool automates the creation of Keycloak realms and clients
 * **Client creation**: Create multiple clients under each realm with appropriate OIDC settings, protocol mappers, and audience configuration.
 * **Client secrets**: Automatically generated and stored as Kubernetes secrets in your namespace. Module Helm charts can securely read these secrets instead of passing them as parameters during installation.
 * **Client roles**: Client-specific roles (e.g., `Admin`, `consoleAdmin`) are created as specified. Supports composite roles that contain other roles.
-* **Themes**: Optionally apply login and admin themes to each realm (e.g., `openg2p-admin` for the master realm, `staff-portal-login-theme` for the staff realm). Themes are only updated if they differ from the current setting.
-* **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, secrets, and themes are not modified unless a theme change is specified.
+* **Themes**: Optionally apply login and admin themes to each realm (e.g., `openg2p-admin` for the master realm, `staff-portal` for the staff realm). Themes are only updated if they differ from the current setting.
+* **Users**: Optionally create users with temporary passwords and assign realm and client roles. Users are prompted to change their password on first login.
+* **Idempotent**: Running the tool multiple times produces the same result. Existing realms, clients, roles, secrets, themes, and users are not modified.
 
 ## Configuration
 
@@ -106,6 +107,35 @@ clientRoles:
 ```
 
 Composite roles are created in two passes: all roles are created first, then composite relationships are established. This is fully backward compatible — existing charts that pass `clientRoles` as a list of strings continue to work unchanged.
+
+### Users
+
+Users can be optionally created under each realm. Users are created after clients and roles so that role assignments succeed. If a user already exists, creation is skipped (idempotent).
+
+```yaml
+users:
+  - username: admin@openg2p.org
+    password: changeme
+    email: admin@openg2p.org
+    realmRoles:
+      - default-roles-staff
+    clientRoleMappings:
+      registry-staff-portal:
+        - registry-ops-super-operator
+        - registry-config-super-configurator
+```
+
+| Parameter             | Required | Description                                                              |
+| --------------------- | -------- | ------------------------------------------------------------------------ |
+| `username`            | Yes      | Login username.                                                          |
+| `password`            | Yes      | Initial password. Marked as temporary — user must change on first login. |
+| `email`               | No       | Email address.                                                           |
+| `realmRoles`          | No       | List of realm-level role names to assign.                                |
+| `clientRoleMappings`  | No       | Map of client ID to list of client role names to assign.                 |
+
+{% hint style="info" %}
+The initial password is always set as temporary. The user will be prompted to change it on first login.
+{% endhint %}
 
 ## Helm chart
 
