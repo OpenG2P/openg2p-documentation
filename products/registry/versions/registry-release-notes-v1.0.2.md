@@ -54,16 +54,18 @@ For the complete feature list, see [Features](../features/).
 
 ## Components & versions
 
-| Component                 | Version | Repository                       |
-| ------------------------- | ------- | -------------------------------- |
-| Deployment Package (Helm) | 4.0.0   | openg2p-registry-gen2-deployment |
-| Registry APIs             | —       | openg2p-registry-apis            |
-| Celery Runtimes           | —       | openg2p-registry-celery          |
-| Staff Portal UI           | —       | openg2p-registry-staff-portal-ui |
-| Registry Core (library)   | —       | openg2p-registry-core            |
-| Domain Extensions         | —       | openg2p-registry-extensions      |
-| Standards Templates       | —       | openg2p-registry-standards       |
-| Docker Scripts            | —       | openg2p-registry-docker          |
+| Component                 | Version     | Repository                       |
+| ------------------------- | ----------- | -------------------------------- |
+| Deployment Package (Helm) | [4.0.0](./) | openg2p-registry-gen2-deployment |
+| Registry APIs             | —           | openg2p-registry-apis            |
+| Celery Runtimes           | —           | openg2p-registry-celery          |
+| Staff Portal UI           | —           | openg2p-registry-staff-portal-ui |
+| Registry Core (library)   | —           | openg2p-registry-core            |
+| Domain Extensions         | —           | openg2p-registry-extensions      |
+| Standards Templates       | —           | openg2p-registry-standards       |
+| Docker Scripts            | —           | openg2p-registry-docker          |
+
+The details of the individual components can be found in the Helm Charts and the Docker files.
 
 For detailed component architecture and repository descriptions, see [Organization of Codebase](../developer-zone/organization-of-codebase.md).
 
@@ -79,7 +81,7 @@ For detailed component architecture and repository descriptions, see [Organizati
 
 ## Breaking changes
 
-This is the first release of the Gen 2 Registry platform. This is complete new architecture and is  NOT COMPATIBLE with [Gen1 Registry](../social-registry/) (3.x and before).
+This is the first release of the Gen 2 Registry platform. This is complete new architecture and is NOT COMPATIBLE with [Gen1 Registry](../social-registry/) (3.x and before).
 
 ***
 
