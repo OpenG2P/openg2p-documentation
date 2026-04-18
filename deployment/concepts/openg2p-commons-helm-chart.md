@@ -113,6 +113,22 @@ The charts maintain two Keycloak URL paths:
 
 This separation ensures backend services work without external DNS, while browsers are correctly redirected to the public Keycloak URL.
 
+### Logging and Log Retention
+
+Pod logs from selected services are shipped to OpenSearch using the Fluent Operator. The **commons-services** chart creates a Flow resource that captures logs from configured containers (master-data, IAM, ODK, eSignet, keymanager, etc.) and routes them to the OpenSearch Output created by commons-base.
+
+Log retention is managed automatically via an OpenSearch **ISM (Index State Management) policy**. By default, logstash indexes older than 7 days are deleted. This is configurable:
+
+```bash
+# Set retention to 30 days
+--set opensearch.ismPolicy.retentionDays=30
+
+# Disable automatic log retention
+--set opensearch.ismPolicy.enabled=false
+```
+
+The ISM policy is applied by a Job that runs as part of the base chart installation. It auto-attaches to all new `logstash-*` indexes and also applies to any pre-existing indexes on upgrade.
+
 ### Helm `global` value propagation
 
 Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
