@@ -201,9 +201,10 @@ The `postgres-init` chart uses the Helm `lookup` function to check if the DB use
 
 The `keycloak-init` subchart creates:
 
-* The Keycloak **realm** (e.g. `staff-trial`)
+* The Keycloak **realm** (e.g. `staff`)
 * An OIDC **client** (`registry-staff-portal`) with a randomly generated secret
 * **RBAC roles** on the client (see below)
+* A default **admin user** with initial credentials and client role assignments
 
 The Keycloak Init Job connects to the namespace-local Keycloak using the admin credentials from the `commons-keycloak` secret.
 
@@ -215,6 +216,37 @@ The Keycloak Init Job connects to the namespace-local Keycloak using the admin c
 | Configuration | Schema Designer, Integration Specialist, Reference Data Specialist, Technical Administrator                                   |
 
 See [RBAC Roles and Permissions](https://docs.openg2p.org/registry/design/detailed-design-notes/rbac-roles-and-permissions) for detailed role descriptions.
+
+**Default user created:**
+
+The chart creates an initial admin user in the `staff` realm with the following defaults:
+
+| Field                | Default                  |
+| -------------------- | ------------------------ |
+| Username             | `admin`                  |
+| Password             | `admin`                  |
+| Email                | `admin@your.domain.com`  |
+| Client role mappings | Operations Administrator, Technical Administrator (on `registry-staff-portal` client) |
+
+{% hint style="warning" %}
+Change the default admin password immediately after first login. To customise the default user or add more users, override `keycloak-init.realms.staff.users` in your values file.
+{% endhint %}
+
+**User definition structure:**
+
+```yaml
+keycloak-init:
+  realms:
+    staff:
+      users:
+        - username: admin
+          password: admin
+          email: admin@your.domain.com
+          clientRoleMappings:
+            registry-staff-portal:
+              - "Operations Administrator"
+              - "Technical Administrator"
+```
 
 **Keycloak-init parameters:**
 
