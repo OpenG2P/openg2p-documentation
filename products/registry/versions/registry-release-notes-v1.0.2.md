@@ -40,8 +40,8 @@ OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectu
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Domain Agnosticism & Extensibility** | Core registry is domain-neutral; domain-specific registries are implemented as extensions      | [Metadata-Driven Extensibility](../features/metadata-driven-extensibility.md), [Building a Registry](../developer-zone/building-a-registry/) |
 | **Farmer Registry Manifestation**      | Reference domain implementation demonstrating extension architecture                           | [Use Case Implementation](../use-case-implementation.md)                                                                                     |
-| **Functional ID Generation**           | Decoupled ID generation via OpenG2P ID Generator; configurable per Register                    | [Functional ID Generation](../design/functional-id-generation.md), [ID Generator](../../../../utilities-and-tools/id-generator/)             |
-| **Multi-Provider Authentication**      | OIDC/OAuth integration via OpenG2P IAM Service; ships with Keycloak support                    | [RBAC Roles & Permissions](../features/rbac-roles-and-permissions.md), [IAM](../../../../identity-and-access-management/)                    |
+| **Functional ID Generation**           | Decoupled ID generation via OpenG2P ID Generator; configurable per Register                    | [Functional ID Generation](../design/functional-id-generation.md), [ID Generator](../../../utilities-and-tools/id-generator/)                |
+| **Multi-Provider Authentication**      | OIDC/OAuth integration via OpenG2P IAM Service; ships with Keycloak support                    | [RBAC Roles & Permissions](../features/rbac-roles-and-permissions.md), [IAM](../../../identity-and-access-management/)                       |
 | **Change Request Infrastructure**      | All write operations flow through centralized change requests with verification and approval   | [Change Management](../features/change-management-and-approval-workflow.md), [Design](../design/change-management.md)                        |
 | **Version History**                    | Every register change is logged as a version snapshot linked to its originating change request | [Audit-ability & Trace-ability](../features/audit-ability-and-trace-ability.md)                                                              |
 | **Async Task Processing**              | Celery Workers and Beat for background ingestion, outgestion, deduplication, and computation   | [Ingestion Pipeline](../design/ingestion-pipeline.md), [Organization of Codebase](../developer-zone/organization-of-codebase.md)             |
@@ -69,17 +69,17 @@ For detailed component architecture and repository descriptions, see [Organizati
 
 ### External Service Dependencies
 
-| Service              | Version | Details                                                        |
-| -------------------- | ------- | -------------------------------------------------------------- |
-| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/)   |
-| ID Generator Service | 1.0.0   | [Documentation](../../../../utilities-and-tools/id-generator/) |
-| Master Data Service  | 1.0.0   | —                                                              |
+| Service              | Version | Details                                                     |
+| -------------------- | ------- | ----------------------------------------------------------- |
+| IAM Service          | 1.0.0   | [Documentation](../../../identity-and-access-management/)   |
+| ID Generator Service | 1.0.0   | [Documentation](../../../utilities-and-tools/id-generator/) |
+| Master Data Service  | 1.0.0   | —                                                           |
 
 ***
 
 ## Breaking changes
 
-This is the first release of the Gen 2 Registry platform. This is complete new architecture and is  NOT COMPATIBLE with [Gen1 Registry](../../social-registry/) (3.x and before).
+This is the first release of the Gen 2 Registry platform. This is complete new architecture and is  NOT COMPATIBLE with [Gen1 Registry](../social-registry/) (3.x and before).
 
 ***
 
@@ -99,7 +99,7 @@ Test results and coverage details to be published.
 
 ## Deployment
 
-For deployment of Registry, see [Deployment](../../../../deployment/).
+For deployment of Registry, see [Deployment](../../../deployment/).
 
 ***
 

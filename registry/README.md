@@ -5,9 +5,9 @@ description: >-
   digital public infrastructure
 ---
 
-# Registry
+# OpenG2P Registry (Platform)
 
-**OpenG2P Registry** is an independent, open-source module for building **functional registries** -- not mere databases -- of individuals, non-human entities, and groups. It is designed to fit naturally into a country's digital public infrastructure (DPI), providing an authoritative, interoperable data platform that can serve multiple government agencies and programmes simultaneously.
+**OpenG2P Registry** is an open-source platform for building **functional registries** -- not mere databases -- of individuals, non-human entities, and groups. It is designed to fit naturally into a country's digital public infrastructure (DPI), providing an authoritative, interoperable data platform that can serve multiple government agencies and programmes simultaneously.
 
 A single deployment of the Registry can host one or more **Registers** (such as a Farmer Register, Individual Register, or Household Register), each governed by change-management workflows, version history, and consent-aware data sharing. Whether you are building a national social registry, a farmer registry, or a vehicle registry, the underlying principles and platform remain the same.
 
@@ -66,20 +66,20 @@ The architecture can be understood in terms of the following layers and capabili
 
 The following table summarises the major features of the Registry with links to detailed pages.
 
-| Capability                    | Description                                                  | Details                                                                                                                          |
-| ----------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Unified registry model        | Registers, Tables, and Programme Registers in one platform   | [Unified Registry Model](../products/registry/openg2p-registry-platform/features/unified-registry-model.md)                      |
-| Change management             | Verification and approval workflows for every data change    | [Change Management](../products/registry/openg2p-registry-platform/features/change-management-and-approval-workflow.md)          |
-| Metadata-driven extensibility | Configure registers, sections, and UI through metadata       | [Metadata-Driven Extensibility](../products/registry/openg2p-registry-platform/features/metadata-driven-extensibility.md)        |
-| Ingestion pipeline            | Bulk and streaming data import from external systems         | [Ingestion Pipeline](../products/registry/openg2p-registry-platform/features/ingestion-pipeline.md)                              |
-| Data integrity and encryption | Column-level encryption at rest; data integrity controls     | [Data Integrity & Encryption](../products/registry/openg2p-registry-platform/features/data-integrity-security-and-encryption.md) |
-| Consent-aware data sharing    | Share data with partner systems governed by consent policies | [Consent-Aware Data Sharing](../products/registry/openg2p-registry-platform/features/consent-aware-data-sharing.md)              |
-| Event publishing and WebSub   | Publish change events to downstream subscribers              | [Event Publishing](../products/registry/openg2p-registry-platform/features/event-publishing-and-websub-integration.md)           |
-| Audit and traceability        | Full audit trail of system events                            | [Audit & Traceability](../products/registry/openg2p-registry-platform/features/audit-ability-and-trace-ability.md)               |
-| Dynamic UI rendering          | UI generated from register metadata and JSON schemas         | [Dynamic UI Rendering](../products/registry/openg2p-registry-platform/features/dynamic-ui-rendering.md)                          |
-| Cloud-native deployment       | Helm-based deployment on Kubernetes                          | [Cloud-Native Deployment](../products/registry/openg2p-registry-platform/features/cloud-native-deployment-and-scaling.md)        |
-| Standards compliance          | Alignment with DPI and functional registry standards         | [Standards Compliance](../products/registry/openg2p-registry-platform/features/standards-compliance.md)                          |
-| Observability                 | Logging, monitoring, and operational controls                | [Observability](../products/registry/openg2p-registry-platform/features/observability-and-operational-control.md)                |
+| Capability                    | Description                                                  | Details                                                                                                |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Unified registry model        | Registers, Tables, and Programme Registers in one platform   | [Unified Registry Model](../products/registry/features/unified-registry-model.md)                      |
+| Change management             | Verification and approval workflows for every data change    | [Change Management](../products/registry/features/change-management-and-approval-workflow.md)          |
+| Metadata-driven extensibility | Configure registers, sections, and UI through metadata       | [Metadata-Driven Extensibility](../products/registry/features/metadata-driven-extensibility.md)        |
+| Ingestion pipeline            | Bulk and streaming data import from external systems         | [Ingestion Pipeline](../products/registry/features/ingestion-pipeline.md)                              |
+| Data integrity and encryption | Column-level encryption at rest; data integrity controls     | [Data Integrity & Encryption](../products/registry/features/data-integrity-security-and-encryption.md) |
+| Consent-aware data sharing    | Share data with partner systems governed by consent policies | [Consent-Aware Data Sharing](../products/registry/features/consent-aware-data-sharing.md)              |
+| Event publishing and WebSub   | Publish change events to downstream subscribers              | [Event Publishing](../products/registry/features/event-publishing-and-websub-integration.md)           |
+| Audit and traceability        | Full audit trail of system events                            | [Audit & Traceability](../products/registry/features/audit-ability-and-trace-ability.md)               |
+| Dynamic UI rendering          | UI generated from register metadata and JSON schemas         | [Dynamic UI Rendering](../products/registry/features/dynamic-ui-rendering.md)                          |
+| Cloud-native deployment       | Helm-based deployment on Kubernetes                          | [Cloud-Native Deployment](../products/registry/features/cloud-native-deployment-and-scaling.md)        |
+| Standards compliance          | Alignment with DPI and functional registry standards         | [Standards Compliance](../products/registry/features/standards-compliance.md)                          |
+| Observability                 | Logging, monitoring, and operational controls                | [Observability](../products/registry/features/observability-and-operational-control.md)                |
 
 {% hint style="info" %}
 This Registry is internally referred to as **Gen 2**. It is a major evolution from the previous [Social Registry](../products/registry/social-registry/), which was built on the Odoo platform. Gen 2 uses a completely different architecture based on **FastAPI** services, with a metadata-driven design and a rich set of features suited to diverse domain requirements.
@@ -87,18 +87,18 @@ This Registry is internally referred to as **Gen 2**. It is a major evolution fr
 
 ## Getting started
 
-{% content-ref url="../products/registry/openg2p-registry-platform/concepts.md" %}
-[concepts.md](../products/registry/openg2p-registry-platform/concepts.md)
+{% content-ref url="../products/registry/concepts.md" %}
+[concepts.md](../products/registry/concepts.md)
 {% endcontent-ref %}
 
-{% content-ref url="../products/registry/openg2p-registry-platform/features/" %}
-[features](../products/registry/openg2p-registry-platform/features/)
+{% content-ref url="../products/registry/features/" %}
+[features](../products/registry/features/)
 {% endcontent-ref %}
 
-{% content-ref url="../products/registry/openg2p-registry-platform/design/deployment/" %}
-[deployment](../products/registry/openg2p-registry-platform/design/deployment/)
+{% content-ref url="../products/registry/design/deployment/" %}
+[deployment](../products/registry/design/deployment/)
 {% endcontent-ref %}
 
-{% content-ref url="../products/registry/openg2p-registry-platform/developer-zone/" %}
-[developer-zone](../products/registry/openg2p-registry-platform/developer-zone/)
+{% content-ref url="../products/registry/developer-zone/" %}
+[developer-zone](../products/registry/developer-zone/)
 {% endcontent-ref %}
