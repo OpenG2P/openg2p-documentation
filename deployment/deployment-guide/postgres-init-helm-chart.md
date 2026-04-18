@@ -8,10 +8,10 @@ description: About Postgres Init Helm Chart
 
 The [**postgres-init**](https://github.com/openg2p/postgres-init) Helm Chart was created to conveniently create a **database** on an existing PostgreSQL installation. Important to note that the Chart here assumes that PostgreSQL server is already available. The motivation to create this chart were the following:
 
-* In new OpenG2P deployment model, there is only one instance PostgreSQL server for a given sandbox/deployment/namespace. All databases are created within this server.  In previous installations of Registry and PBMS, the Odoo chart would create its own instance of PostgreSQL running as a Pod on cluster. Now that we have externalized the databases, we needed a script to create database aprioriy and then install the respective modules.&#x20;
+* In new OpenG2P deployment model, there is only one instance PostgreSQL server for a given sandbox/deployment/namespace. All databases are created within this server. In previous installations of Registry and PBMS, the Odoo chart would create its own instance of PostgreSQL running as a Pod on cluster. Now that we have externalized the databases, we needed a script to create database aprioriy and then install the respective modules.
 * Harmonising database creation across all modules such that there is a uniform way of creating datasbases.
 
-## Functionality&#x20;
+## Functionality
 
 Following functionality is supported:
 
@@ -22,7 +22,7 @@ Following functionality is supported:
 
 The script is idempotent - which means if we run the init again, and if the database, user exist, it won't touch anything and just exit.
 
-For multiple databases the same need to be specified as list item in  [values.yaml](https://github.com/OpenG2P/postgres-init/blob/develop/chart/values.yaml).
+For multiple databases the same need to be specified as list item in [values.yaml](https://github.com/OpenG2P/postgres-init/blob/develop/chart/values.yaml).
 
 The database user [secret](https://github.com/OpenG2P/postgres-init/blob/develop/chart/templates/secret.yaml) created by this chart is set to 'keep' mode such that it doesn't get deleted if the Helm is uninstalled. This is important 'cause even if the Helm chart is uninstalled the database still exists, and therefore the secret must also exist. If you would like to tear down entire module clean, refer to the [**tear down**](postgres-init-helm-chart.md#tear-down) instructions below.
 
@@ -32,7 +32,7 @@ Code of the script, Docker and Helm chart are available [here](https://github.co
 
 ## Run
 
-Instructions here pertain to running the Helm chart on command line. &#x20;
+Instructions here pertain to running the Helm chart on command line.
 
 {% hint style="info" %}
 _Note that you generally will not need to run this Helm from command line as it is alreay embedded in the deployment Helm charts of respective modules._
@@ -72,13 +72,13 @@ extensions:
   - 'pg_trgm'
 ```
 
-* Run&#x20;
+* Run
 
 ```
 $ helm -n <your namespace> install postgres-init .
 ```
 
-* Verify that the database, users, extensions and  secrets mentioned in `values.yaml` have been created,
+* Verify that the database, users, extensions and secrets mentioned in `values.yaml` have been created,
 
 ## Tear down
 
@@ -88,11 +88,11 @@ $ helm -n <your namespace> install postgres-init .
 $ helm -n <your namespace> uninstall postgres-init
 ```
 
-* The above **does not** delete the database, users and secrets.  Delete all these manually:
+* The above **does not** delete the database, users and secrets. Delete all these manually:
   * database (via psql)
   * db user (via psql)
   * secret on cluster (via kubectl or Rancher)
 
 ## Versions
 
-<table><thead><tr><th width="100">Helm Chart Version</th><th width="100">Published Date</th><th>Contents</th></tr></thead><tbody><tr><td>1.0.0</td><td>09-Jan-2026</td><td><p>Stable version with following base features: </p><ul><li>Creation of one or more databases (DB) on an existing Postgres server</li><li>Creation of DB user</li><li>Creation of DB user secret with password</li></ul></td></tr><tr><td>1.1.0</td><td>23-Jan-2026</td><td><ul><li>Stable version</li><li>Added feature to optionally install Postgres extensions like pg_trgm . </li><li>Bug related to running as an upgrade fixed (in secrets.yaml)</li></ul></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="100">Helm Chart Version</th><th width="100">Published Date</th><th>Contents</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenG2P/postgres-init/tree/v1.1.0">1.1.0</a></td><td>23-Jan-2026</td><td><p><strong>Stable version</strong></p><ul><li>Added feature to optionally install Postgres extensions like pg_trgm .</li><li>Bug related to running as an upgrade fixed (in secrets.yaml)</li></ul></td></tr><tr><td><a href="https://github.com/OpenG2P/postgres-init/tree/v1.0.0">1.0.0</a></td><td>09-Jan-2026</td><td><p><strong>Stable version</strong> with following base features:</p><ul><li>Creation of one or more databases (DB) on an existing Postgres server</li><li>Creation of DB user</li><li>Creation of DB user secret with password</li></ul></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>

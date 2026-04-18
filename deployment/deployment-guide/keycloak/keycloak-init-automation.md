@@ -150,11 +150,10 @@ helm -n <namespace> install keycloak-init .
 
 ### Versions
 
-| Helm Chart Version                                               | Date        | Contents                                                                                                         |
-| ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                                        |
-| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.                  |
-| 0.0.0-develop                                                    | Jan 2026    | Tested version. After sufficient usage, this will be tagged to a fixed version. Compatible with Keycloak 24.0.5. |
+| Helm Chart Version                                               | Date        | Contents                                                                                        |
+| ---------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------- |
+| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                       |
+| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names. |
 
 ### Tear down
 
