@@ -6,25 +6,25 @@
 
 The Registry platform is composed of the following deployable runtimes, each packaged as a Docker image:
 
-| Runtime | Repository | Description |
-| --- | --- | --- |
-| **Staff Portal API** | openg2p-registry-apis | REST APIs serving the Registry Staff Portal UI |
-| **Partner API** | openg2p-registry-apis | REST APIs for the partner ecosystem and other DPGs |
-| **Celery Beat Producer** | openg2p-registry-celery | Periodic task scheduler that reads queues and emits tasks to workers. **Must run as exactly one instance (POD)** to avoid duplicate task pickup. |
-| **Celery Workers** | openg2p-registry-celery | Process asynchronous tasks (ingestion, outgestion, deduplication, computation). Scale worker PODs horizontally to handle higher volumes. |
-| **Staff Portal UI** | openg2p-registry-staff-portal-ui | ReactJS frontend for staff-facing configuration and operations |
+| Runtime                  | Repository                       | Description                                                                                                                                      |
+| ------------------------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Staff Portal API**     | openg2p-registry-apis            | REST APIs serving the Registry Staff Portal UI                                                                                                   |
+| **Partner API**          | openg2p-registry-apis            | REST APIs for the partner ecosystem and other DPGs                                                                                               |
+| **Celery Beat Producer** | openg2p-registry-celery          | Periodic task scheduler that reads queues and emits tasks to workers. **Must run as exactly one instance (POD)** to avoid duplicate task pickup. |
+| **Celery Workers**       | openg2p-registry-celery          | Process asynchronous tasks (ingestion, outgestion, deduplication, computation). Scale worker PODs horizontally to handle higher volumes.         |
+| **Staff Portal UI**      | openg2p-registry-staff-portal-ui | ReactJS frontend for staff-facing configuration and operations                                                                                   |
 
-The **Deployment Package** (openg2p-registry-deployment) bundles all runtimes into a single Helm chart. Individual runtime versions are specified in the chart values. See [Registry Helm Chart 4.x](../design/deployment/helm-chart-4.x.md) for deployment details.
+The **Deployment Package** (openg2p-registry-deployment) bundles all runtimes into a single Helm chart. Individual runtime versions are specified in the chart values. See [Registry Helm Chart 4.x](../deployment/helm-chart-4.x.md) for deployment details.
 
 ## External service dependencies
 
 The Registry platform depends on the following services, deployed separately:
 
-| Service | Purpose | Documentation |
-| --- | --- | --- |
-| **IAM Service** | Gateway for ID and Access Token validation; interfaces with OIDC/OAuth providers (Keycloak) for token issuance; provides a shared library for token validation across OpenG2P APIs | [Identity & Access Management](../../../../identity-and-access-management/README.md) |
-| **ID Generator Service** | Generates unique Functional IDs for registrants; usage is configurable per Register via Register Metadata | [ID Generator](../../../../utilities-and-tools/id-generator/README.md) |
-| **Master Data Service** | Provides Partner and Geo Lookup data via API | — |
+| Service                  | Purpose                                                                                                                                                                            | Documentation                                                               |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **IAM Service**          | Gateway for ID and Access Token validation; interfaces with OIDC/OAuth providers (Keycloak) for token issuance; provides a shared library for token validation across OpenG2P APIs | [Identity & Access Management](../../../../identity-and-access-management/) |
+| **ID Generator Service** | Generates unique Functional IDs for registrants; usage is configurable per Register via Register Metadata                                                                          | [ID Generator](../../../../utilities-and-tools/id-generator/)               |
+| **Master Data Service**  | Provides Partner and Geo Lookup data via API                                                                                                                                       | —                                                                           |
 
 ## Repositories
 

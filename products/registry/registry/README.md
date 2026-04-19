@@ -95,8 +95,8 @@ This Registry is internally referred to as **Gen 2**. It is a major evolution fr
 [features](features/)
 {% endcontent-ref %}
 
-{% content-ref url="design/deployment/" %}
-[deployment](design/deployment/)
+{% content-ref url="deployment/" %}
+[deployment](deployment/)
 {% endcontent-ref %}
 
 {% content-ref url="developer-zone/" %}
