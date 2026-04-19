@@ -129,6 +129,12 @@ Log retention is managed automatically via an OpenSearch **ISM (Index State Mana
 
 The ISM policy is applied by a Job that runs as part of the base chart installation. It auto-attaches to all new `logstash-*` indexes and also applies to any pre-existing indexes on upgrade.
 
+A **default logs dashboard** is automatically imported into OpenSearch Dashboards on install. It includes a Discover view with columns for timestamp, log level, kubernetes pod, and message. To disable automatic dashboard import:
+
+```bash
+--set opensearch.defaultDashboards.enabled=false
+```
+
 ### Helm `global` value propagation
 
 Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
