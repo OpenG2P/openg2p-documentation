@@ -11,13 +11,13 @@ OpenG2P is a **Digital Public Good** (DPG) recognised by the[ DPGA](https://digi
 
 ## Offerings
 
-OpenG2P offers **open-source, rapidly deployable, building blocks (modules)** to digitise G2P service delivery, focussing on social benefit delivery. The modules are interoperable, scalable, and secure.&#x20;
+OpenG2P offers **open-source, rapidly deployable, building blocks (modules)** to digitise G2P service delivery, focussing on social benefit delivery. The modules are interoperable, scalable, and secure.
 
 <div align="left"><figure><img src=".gitbook/assets/delivery-chain.png" alt=""><figcaption><p>The boxes in yellow depict the OpenG2P modules covering benefit delivery chain</p></figcaption></figure></div>
 
 ### <mark style="color:purple;">Modules</mark>
 
-<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Dynamic</strong> <strong>Registry</strong></td><td><a href=".gitbook/assets/social-registry-logo.jpg">social-registry-logo.jpg</a></td><td><a href="products/registry/social-registry/">social-registry</a></td></tr><tr><td><strong>Program and Beneficiary Management System</strong></td><td><a href=".gitbook/assets/PBMS-on-light-background.png">PBMS-on-light-background.png</a></td><td><a href="pbms/">pbms</a></td></tr><tr><td><strong>Social Payments Account Registry</strong> (ID Mapper)</td><td><a href=".gitbook/assets/spar-logo.png">spar-logo.png</a></td><td><a href="spar/">spar</a></td></tr><tr><td><strong>G2P Disbursement Bridge</strong></td><td><a href=".gitbook/assets/g2p-bridge-logo.png">g2p-bridge-logo.png</a></td><td><a href="g2p-bridge/">g2p-bridge</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Dynamic</strong> <strong>Registry</strong></td><td><a href=".gitbook/assets/social-registry-logo.jpg">social-registry-logo.jpg</a></td><td><a href="products/registry/registry/social-registry/">social-registry</a></td></tr><tr><td><strong>Program and Beneficiary Management System</strong></td><td><a href=".gitbook/assets/PBMS-on-light-background.png">PBMS-on-light-background.png</a></td><td><a href="pbms/">pbms</a></td></tr><tr><td><strong>Social Payments Account Registry</strong> (ID Mapper)</td><td><a href=".gitbook/assets/spar-logo.png">spar-logo.png</a></td><td><a href="spar/">spar</a></td></tr><tr><td><strong>G2P Disbursement Bridge</strong></td><td><a href=".gitbook/assets/g2p-bridge-logo.png">g2p-bridge-logo.png</a></td><td><a href="g2p-bridge/">g2p-bridge</a></td></tr></tbody></table>
 
 ### <mark style="color:purple;">Reference designs</mark>
 

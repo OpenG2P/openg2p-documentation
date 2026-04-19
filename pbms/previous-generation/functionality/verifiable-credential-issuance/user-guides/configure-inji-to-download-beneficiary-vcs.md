@@ -13,7 +13,7 @@ This guide contains the procedure to install and set up the backend required for
 
 (Only required for testing. Not required for production.)
 
-1. Create an [eSignet OIDC client](../../../../../products/registry/social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../../products/registry/registry/social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: mimoto-oidc
    * clientName: Inji Wallet
    * logoUrl:[https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)
@@ -22,7 +22,7 @@ This guide contains the procedure to install and set up the backend required for
 
 ### 2. Create OpenG2P Mimoto OIDC Client
 
-1. Create an [eSignet OIDC client](../../../../../products/registry/social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
+1. Create an [eSignet OIDC client](../../../../../products/registry/registry/social-registry/features/id-integration/id-authentication/user-guides/esignet-client-creation.md) with the following parameters:
    * clientId: `openg2p-mimoto-oidc`
    * clientName: `Inji Wallet`
    * logoUrl: [https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png](https://raw.githubusercontent.com/mosip/mosip-file-server/master/mosip-file-server/inji-model/inji-home-logo.png)
@@ -39,7 +39,7 @@ This guide contains the procedure to install and set up the backend required for
 (Only required for testing. Not required for production.)
 
 1. Collect public-key-private-key pairs from both the OIDC clients created above.
-2. Create a P12 file using [KeyStore Explorer](configure-inji-to-download-beneficiary-vcs.md#prerequisites).&#x20;
+2. Create a P12 file using [KeyStore Explorer](configure-inji-to-download-beneficiary-vcs.md#prerequisites).
    * Import the Mimoto OIDC client key pair with the name `mpartner-default-mimotooidc` and an appropriate password (The rest of this guide assumes this password is `openg2p123` ).
    * Import the OpenG2P Mimoto OIDC client key pair with the name `openg2p-mimotooidc` with the same password as the one for the above key pair, `openg2p123`.
    * Set keystore password. The password should be the same as the above, `openg2p123`.
@@ -57,7 +57,7 @@ This guide contains the procedure to install and set up the backend required for
 ### 5. Set up PBMS for VC Issuance
 
 1. Go to PBMS -> Settings -> VCI Issuers. Create one VC Issuer for each program for which VC download should be supported. Configure VC Issuer with the following parameters:
-   * Name: Name to identify the VC Issuer and to be displayed on the Inji App when downloading.&#x20;
+   * Name: Name to identify the VC Issuer and to be displayed on the Inji App when downloading.
    * Scope: Scope should be one of the entries present in the `scopes_supported` field in [mimoto-issuers-config.json](https://github.com/OpenG2P/mosip-config/blob/master/mimoto-issuers-config.json).
    * Issuer Type: Beneficiary
    * Program: Choose the relevant program

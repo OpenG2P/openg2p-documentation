@@ -148,7 +148,7 @@ kubectl create secret generic external-pg-superuser \
 
 Install the modules and other utility apps individually using their respective instructions:
 
-1. [Registry](../../products/registry/social-registry/deployment/registry-installation.md)
+1. [Registry](../../products/registry/registry/social-registry/deployment/registry-installation.md)
 2. [PBMS](https://docs.openg2p.org/pbms/deployment)
 3. [SPAR](https://docs.openg2p.org/spar/deployment)
 4. [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui)
