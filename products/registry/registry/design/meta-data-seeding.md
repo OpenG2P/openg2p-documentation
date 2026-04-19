@@ -86,3 +86,9 @@ Set `dbSeed.loadSampleData: true` to include sample data during installation. Fo
 {% hint style="info" %}
 Because the seed scripts are packaged into a Docker image, updating meta data only requires publishing a new image from the extensions repository. No Helm chart rebuild is needed.
 {% endhint %}
+
+## Versions
+
+| Docker image | Tag | Date | Comments |
+| --- | --- | --- | --- |
+| `openg2p/openg2p-farmer-registry-db-seed` | `1.0.2` | 19 Apr 2026 | Initial version of meta data seeder |
