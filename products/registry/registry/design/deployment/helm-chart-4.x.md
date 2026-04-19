@@ -24,6 +24,7 @@ The chart deploys the following application components and subcharts:
 | **postgres-init**          | Subchart    | Enabled  | Initialises the registry database, user, and extensions in the shared PostgreSQL |
 | **ID Generator**           | Subchart    | Enabled  | Generates unique IDs for registrants and households                              |
 | **Keycloak Init**          | Subchart    | Enabled  | Creates the OIDC client and RBAC roles in Keycloak                               |
+| **DB Seed**                | Hook Job    | Enabled  | Loads variant-specific configuration and optional sample data into the database   |
 
 ### Architecture diagram
 
@@ -320,6 +321,30 @@ logging:
 ```
 
 These must match the `nameOverride` values of the corresponding components. If you add custom sidecar containers or change a component's `nameOverride`, update this list accordingly.
+
+### DB Seed
+
+After all application pods are running, the chart executes a **DB Seed Job** that loads variant-specific configuration SQL scripts (register definitions, lookup data, VC configurations, etc.) into the registry database. Optionally, sample/demo data can also be loaded.
+
+The seed scripts are packaged into a dedicated Docker image published from the [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) repository. This decouples the SQL lifecycle from the Helm chart — updating seed data only requires a new image build, not a chart release.
+
+The Job runs as a Helm `post-install` / `post-upgrade` hook. Two init containers ensure readiness before seeding:
+
+1. **wait-for-db** — polls PostgreSQL until the database is reachable
+2. **wait-for-apps** — polls each enabled API service (e.g. `/ping`) to confirm tables have been created
+
+**DB Seed parameters:**
+
+| Parameter                 | Default                                    | Description                                          |
+| ------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| `dbSeed.enabled`          | `true`                                     | Enable/disable the seed Job.                         |
+| `dbSeed.loadSampleData`   | `false`                                    | Also load sample/demo data (off by default).         |
+| `dbSeed.image.repository` | `openg2p/openg2p-farmer-registry-db-seed`  | Docker image containing the seed SQL scripts.        |
+| `dbSeed.image.tag`        | `develop`                                  | Image tag (typically matches the extensions branch).  |
+
+{% hint style="info" %}
+To deploy a different registry variant (e.g. family), override `dbSeed.image.repository` with the corresponding seed image (e.g. `openg2p/openg2p-family-registry-db-seed`).
+{% endhint %}
 
 ### Component toggles
 
