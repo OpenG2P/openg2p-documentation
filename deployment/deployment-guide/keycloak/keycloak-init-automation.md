@@ -125,15 +125,15 @@ users:
         - registry-config-super-configurator
 ```
 
-| Parameter             | Required | Description                                                              |
-| --------------------- | -------- | ------------------------------------------------------------------------ |
-| `username`            | Yes      | Login username.                                                          |
-| `password`            | No       | Initial password. Required only when creating a new user. Marked as temporary — user must change on first login. If the user already exists and only role assignments are needed, this can be omitted. |
-| `email`               | No       | Email address.                                                           |
-| `firstName`           | No       | First name. Defaults to the username.                                    |
-| `lastName`            | No       | Last name. Defaults to empty.                                            |
-| `realmRoles`          | No       | List of realm-level role names to assign.                                |
-| `clientRoleMappings`  | No       | Map of client ID to list of client role names to assign.                 |
+| Parameter            | Required | Description                                                                                                                                                                                            |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `username`           | Yes      | Login username.                                                                                                                                                                                        |
+| `password`           | No       | Initial password. Required only when creating a new user. Marked as temporary — user must change on first login. If the user already exists and only role assignments are needed, this can be omitted. |
+| `email`              | No       | Email address.                                                                                                                                                                                         |
+| `firstName`          | No       | First name. Defaults to the username.                                                                                                                                                                  |
+| `lastName`           | No       | Last name. Defaults to empty.                                                                                                                                                                          |
+| `realmRoles`         | No       | List of realm-level role names to assign.                                                                                                                                                              |
+| `clientRoleMappings` | No       | Map of client ID to list of client role names to assign.                                                                                                                                               |
 
 {% hint style="info" %}
 The initial password is always set as temporary. The user will be prompted to change it on first login.
@@ -182,10 +182,11 @@ helm -n <namespace> install keycloak-init .
 
 ### Versions
 
-| Helm Chart Version                                               | Date        | Contents                                                                                        |
-| ---------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------- |
-| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                       |
-| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names. |
+| Helm Chart Version                                               | Date        | Contents                                                                                                         |
+| ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| [**1.1.0**](https://github.com/OpenG2P/keycloak-init/tree/1.1.0) | 19 Apr 2026 | Feature added to add users in a realm and assign roles. This is used to create default users when system is up.  |
+| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                                        |
+| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.                  |
 
 ### Tear down
 
