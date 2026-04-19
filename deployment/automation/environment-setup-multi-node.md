@@ -249,10 +249,15 @@ Edit `env-config.yaml` with your values:
 ```yaml
 environment: "qa"
 base_domain: "qa.openg2p.org"
+admin_email: "admin@openg2p.org"
 
 modules:
   commons: true
 ```
+
+{% hint style="info" %}
+`admin_email` is passed to the commons-base chart as `keycloak-init.realms.staff.users[0].email` — it becomes the default admin user in the per-env Keycloak `staff` realm. Leave it empty to accept the chart's default.
+{% endhint %}
 
 ### Step 5: Run env-cluster.sh
 
@@ -282,6 +287,7 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 | --- | --- |
 | `environment` | Environment name — used as namespace and Rancher project (e.g., `qa`) |
 | `base_domain` | Full base domain for this environment (e.g., `qa.openg2p.org`) |
+| `admin_email` | Email for the default Keycloak `staff`-realm admin user. Maps to `keycloak-init.realms.staff.users[0].email`. Leave empty to accept chart default. |
 | `commons_base.chart_version` | Helm chart version for openg2p-commons-base |
 | `commons_base.chart_path` | Local chart path (leave empty to use remote repo) |
 | `commons_base.extra_helm_args` | Additional `--set` flags for the base chart |
