@@ -24,7 +24,7 @@ The chart deploys the following application components and subcharts:
 | **postgres-init**          | Subchart    | Enabled  | Initialises the registry database, user, and extensions in the shared PostgreSQL |
 | **ID Generator**           | Subchart    | Enabled  | Generates unique IDs for registrants and households                              |
 | **Keycloak Init**          | Subchart    | Enabled  | Creates the OIDC client and RBAC roles in Keycloak                               |
-| **DB Seed**                | Hook Job    | Enabled  | Loads variant-specific configuration and optional sample data into the database   |
+| **Meta Data Seeding**      | Hook Job    | Enabled  | Seeds mandatory configuration and optional sample data into the database          |
 
 ### Architecture diagram
 
@@ -322,18 +322,18 @@ logging:
 
 These must match the `nameOverride` values of the corresponding components. If you add custom sidecar containers or change a component's `nameOverride`, update this list accordingly.
 
-### DB Seed
+### Meta Data Seeding
 
-After all application pods are running, the chart executes a **DB Seed Job** that loads variant-specific configuration SQL scripts (register definitions, lookup data, VC configurations, etc.) into the registry database. Optionally, sample/demo data can also be loaded.
+After all application pods are running, the chart seeds mandatory configuration meta data (register definitions, lookup data, VC configurations, etc.) into the database. Sample/demo data can optionally be loaded as well.
 
-The seed scripts are packaged into a dedicated Docker image published from the [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) repository. This decouples the SQL lifecycle from the Helm chart — updating seed data only requires a new image build, not a chart release.
+For full details on what gets seeded, the extensions repository structure, and the Docker image lifecycle, see [Meta Data Seeding](../design/meta-data-seeding.md).
 
-The Job runs as a Helm `post-install` / `post-upgrade` hook. Two init containers ensure readiness before seeding:
+The seeding runs as a Helm `post-install` / `post-upgrade` hook Job. Two init containers ensure readiness before execution:
 
 1. **wait-for-db** — polls PostgreSQL until the database is reachable
 2. **wait-for-apps** — polls each enabled API service (e.g. `/ping`) to confirm tables have been created
 
-**DB Seed parameters:**
+**Parameters:**
 
 | Parameter                 | Default                                    | Description                                          |
 | ------------------------- | ------------------------------------------ | ---------------------------------------------------- |
