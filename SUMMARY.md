@@ -27,6 +27,7 @@
     * [Design](products/registry/registry/design/README.md)
       * [Tech Architecture](products/registry/registry/design/registry-tech-architecture.md)
       * [Data Model](products/registry/registry/design/data-model.md)
+      * [Meta Data Seeding](products/registry/registry/design/meta-data-seeding.md)
       * [Change Management](products/registry/registry/design/change-management.md)
       * [Ingestion Pipeline](products/registry/registry/design/ingestion-pipeline.md)
       * [Outgestion Pipeline](products/registry/registry/design/outgestion-pipeline.md)
