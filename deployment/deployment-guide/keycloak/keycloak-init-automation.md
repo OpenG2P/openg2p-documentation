@@ -128,8 +128,10 @@ users:
 | Parameter             | Required | Description                                                              |
 | --------------------- | -------- | ------------------------------------------------------------------------ |
 | `username`            | Yes      | Login username.                                                          |
-| `password`            | Yes      | Initial password. Marked as temporary — user must change on first login. |
+| `password`            | No       | Initial password. Required only when creating a new user. Marked as temporary — user must change on first login. If the user already exists and only role assignments are needed, this can be omitted. |
 | `email`               | No       | Email address.                                                           |
+| `firstName`           | No       | First name. Defaults to the username.                                    |
+| `lastName`            | No       | Last name. Defaults to empty.                                            |
 | `realmRoles`          | No       | List of realm-level role names to assign.                                |
 | `clientRoleMappings`  | No       | Map of client ID to list of client role names to assign.                 |
 
