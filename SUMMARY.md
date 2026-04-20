@@ -738,7 +738,3 @@
 * [Contributing](community/contributing-to-openg2p.md)
 * [Code of Conduct](community/code-of-conduct.md)
 * [Support Policy](community/openg2p-support-policy.md)
-
-## \_ARCHIVE
-
-* [\_Archive](_archive-1.md)
