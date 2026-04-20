@@ -12,7 +12,7 @@ These best practices may demand **additional hardware and other resources**. Ple
 
 ## Backups
 
-Backups are <mark style="color:$danger;">**crtitical**</mark>  for any production deployment.  Ensure that the following backups are taken frequently, and supervised regularly:
+Backups are <mark style="color:$danger;">**crtitical**</mark> for any production deployment. Ensure that the following backups are taken frequently, and supervised regularly:
 
 * Periodic snapshotting and backup for Postgres DB, MinIO buckets and objects, all volumes in NFS. (TBD Guide)
 * The Persistent Volume information of the Kubernetes cluster must be backed up after the installation. This is required in case the cluster goes down, or NFS has issues, the pods can be recreated with original data.
@@ -40,12 +40,16 @@ This setup requires configuring a Git server that is accessible within your netw
 You can [install Gitlab on a standalone instance](../deployment-guide/air-gapped-deployment-setup-using-gitlab.md) on the same network. This acts as both a Git server and a private docker registry. Do read about the Gitlab products and their licenses before installing.
 {% endhint %}
 
-## Standalone PostgreSQL installation&#x20;
+## Keycloak
 
-In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) Postgres is installed on the same machine as the other services. However, if you wish to run Postgres on a separate machine for better maintaince, access control, and backups you may do so.  Please note the following:
+Increase the RAM of Keycloak under (Commons deployment) if you expect heavy traffic on Keycloak in Production. This could happen if users login via Keycloak into portals on mass scale.&#x20;
 
-* Master/Slave configuration is typically required for very high availability  applications.  If you are running portals that require 100% up-time then you may go for a Master/Slave configuration. In this case,  you will have to provision for sufficient hardware.
-*   Production Configuration&#x20;
+## Standalone PostgreSQL installation
+
+In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md)Postgres is installed on the same machine as the other services. However, if you wish to run Postgres on a separate machine for better maintaince, access control, and backups you may do so. Please note the following:
+
+* Master/Slave configuration is typically required for very high availability applications. If you are running portals that require 100% up-time then you may go for a Master/Slave configuration. In this case, you will have to provision for sufficient hardware.
+*   Production Configuration
 
     **Note:** It is highly recommended that experienced Database Administrators determine the production configuration.
 
@@ -55,7 +59,7 @@ If you want to configure strong backup tool for standalone PostgreSQL means refe
 
 ## Standalone MinIO installation
 
-In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md) MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
+In the [OpenG2P deployment model ](../concepts/openg2p-deployment-model.md)MinIO is installed as a Pod running on the Kubernetes cluster with undering storage on NFS. However, if you wish to run MinIO on a separate machine for better maintaince, access control, and backups you may follow the guide: [Standalone MinIO Installation Guide](../deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md).
 
 ## Security
 
@@ -75,13 +79,13 @@ For cloud native deployment, you may consider moving to highly available cloud n
 
 Ensure that image pull policy for all the docker images of the OpenG2P modules are set to `IfNotPresent`. This will prevent the system from pulling the docker images every time if the images already exist on the nodes.
 
-This can be checked during installation of a module in Rancher -> Installed Apps -> (chose the OpenG2P module) -> Edit values.yaml -> Find all occurrences of `pullPolicy` across the yaml and ensure that the values are set to `IfNotPresent`.&#x20;
+This can be checked during installation of a module in Rancher -> Installed Apps -> (chose the OpenG2P module) -> Edit values.yaml -> Find all occurrences of `pullPolicy` across the yaml and ensure that the values are set to `IfNotPresent`.
 
 ## Kubernetes configurations
 
 ### RBAC
 
-Carefully assign roles to Rancher users. Pre-defined role templates are available on Rancher. Follow [this guide](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles).  Specifically, protect the following action on resources:
+Carefully assign roles to Rancher users. Pre-defined role templates are available on Rancher. Follow [this guide](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles). Specifically, protect the following action on resources:
 
 * Deletion of Deployments/StatefulSets
 * Viewing of Secrets - at all levels - Cluster, Namespace
@@ -97,7 +101,7 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 
 #### Node replication
 
-* Provisioning of VMs across different underlying hardware and subnets for resilience.&#x20;
+* Provisioning of VMs across different underlying hardware and subnets for resilience.
 * Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
 
 Refer to the [Scaling](../scaling/) guide for multi-VM architecture.
@@ -108,7 +112,7 @@ Download the kubeconfig file of the OpenG2P RKE2 cluster and store it securely. 
 
 ## Data cleanup
 
-Make sure any test or stray data in Postgres, OpenSearch or any other persistence is cleaned up completely before rollout.  In case of fresh installation of OpenG2P modules, make sure PVCs, and PVs from previous versions are deleted.
+Make sure any test or stray data in Postgres, OpenSearch or any other persistence is cleaned up completely before rollout. In case of fresh installation of OpenG2P modules, make sure PVCs, and PVs from previous versions are deleted.
 
 ## OpenSearch
 
