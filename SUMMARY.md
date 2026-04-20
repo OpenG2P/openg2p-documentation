@@ -68,7 +68,7 @@
         * [Partner API](products/registry/registry/developer-zone/api-documentation/partner-api.md)
       * [Non Functional Requirements](products/registry/registry/developer-zone/non-functional-requirements.md)
     * [Versions](products/registry/registry/versions/README.md)
-      * [Registry Release Notes - v4.0.0](products/registry/registry/versions/registry-release-notes-v1.0.2.md)
+      * [Registry Release Notes - v4.0.0](products/registry/registry/versions/registry-release-notes-v4.0.0.md)
     * [Deployment](products/registry/registry/deployment/README.md)
       * [Registry Helm Chart 4.x](products/registry/registry/deployment/helm-chart-4.x.md)
       * [Post-Installation](products/registry/registry/deployment/post-installation.md)
