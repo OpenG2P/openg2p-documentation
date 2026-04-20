@@ -91,6 +91,14 @@ This is the first release of the Gen 2 Registry platform. This is complete new a
 
 Refer to [Security and Performance Testing - Design & Approach Document](../developer-zone/non-functional-requirements.md)
 
+
+
+***
+
+## Interoperability Standards
+
+The Farmer Registry implements the [Farmer DCI Standards](https://standards.spdci.org/standards/dci-standards/wip-farmers-registry) in the Ingestion and Outgestion pipelines.
+
 ## Known issues
 
 _None identified at the time of release._
