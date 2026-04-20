@@ -1,2 +1,0 @@
-# Ingestion pipeline
-

@@ -15,7 +15,7 @@ OpenG2P Registry provides a comprehensive set of features for building productio
 | Ingestion Pipeline                    | Asynchronous multi-standard data ingestion from external systems     | [Ingestion Pipeline](ingestion-pipeline.md)                                               |
 | Outgestion Pipeline                   | Push data to external systems via templates and events               | [Outgestion Pipeline](outgestion-pipeline.md)                                             |
 | Dynamic UI Rendering                  | Schema-driven UI with custom widget support                          | [Dynamic UI Rendering](dynamic-ui-rendering.md)                                           |
-| Event Publishing & WebSub             | Standards-based event notifications                                  | [Event Publishing & WebSub](../../../../registry/features/event-publishing-and-websub.md) |
+| Event Publishing & WebSub             | Standards-based event notifications                                  | [Event Publishing & WebSub](event-publishing-and-websub-integration.md) |
 | Consent-Aware Data Sharing            | Consent enforcement before outbound data sharing                     | [Consent-Aware Data Sharing](consent-aware-data-sharing.md)                               |
 | Deduplication                         | Identify and manage duplicate records                                | [Deduplication](deduplication.md)                                                         |
 | RBAC Roles & Permissions              | Fine-grained role-based access control via Keycloak                  | [RBAC Roles & Permissions](rbac-roles-and-permissions.md)                                 |

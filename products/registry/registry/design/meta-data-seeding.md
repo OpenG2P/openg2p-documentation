@@ -70,7 +70,7 @@ The CI workflow (`.github/workflows/docker-build-db-seed.yml`) triggers on any p
 
 ## Helm chart integration
 
-The [Registry Helm Chart 4.x](deployment/helm-chart-4.x.md) runs the seed image as a **post-install / post-upgrade** hook Job. The Job waits for all application pods to be healthy before executing, ensuring that database tables have been created by the API services.
+The [Registry Helm Chart 4.x](../deployment/helm-chart-4.x.md) runs the seed image as a **post-install / post-upgrade** hook Job. The Job waits for all application pods to be healthy before executing, ensuring that database tables have been created by the API services.
 
 ```yaml
 dbSeed:

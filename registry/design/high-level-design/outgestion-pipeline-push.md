@@ -1,2 +1,0 @@
-# Outgestion pipeline - Push
-

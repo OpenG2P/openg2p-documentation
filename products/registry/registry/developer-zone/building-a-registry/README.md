@@ -8,8 +8,8 @@ OpenG2P Registry is a domain-agnostic core. To create a registry for a specific 
 
 ## In this section
 
-{% content-ref url="../../../../../registry/developer-zone/building-a-registry/concepts/" %}
-[concepts](../../../../../registry/developer-zone/building-a-registry/concepts/)
+{% content-ref url="concepts/" %}
+[concepts](concepts/)
 {% endcontent-ref %}
 
 {% content-ref url="guide-to-building-a-registry.md" %}
