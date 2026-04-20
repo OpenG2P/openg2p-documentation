@@ -42,7 +42,7 @@ Measure the time taken for completion of the tasks with near 100% utilization in
 
 ### Infrastructure Scaling
 
-Registry Gen2 (and all other products from the OpenG2P stable) is deployed on a Kubernetes Cluster based on the design and architecture defined here.
+Registry Gen2 (and all other products from the OpenG2P stable) is deployed on a Kubernetes Cluster based on the design and architecture defined [here](../../../../deployment/concepts/openg2p-deployment-model.md).
 
 ### Security Testing
 
