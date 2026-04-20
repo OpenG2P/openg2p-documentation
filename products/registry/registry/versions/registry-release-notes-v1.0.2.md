@@ -32,6 +32,8 @@ layout:
 
 OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectural principle. The platform ships with a [**Farmer Registry**](../../farmer-registry.md) as the first domain manifestation, built entirely using the extension framework without modifying core platform code. This release also includes performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
 
+<div align="left" data-with-frame="true"><figure><img src="../../../../.gitbook/assets/farmer-registry-view.png" alt="" width="375"><figcaption></figcaption></figure></div>
+
 ***
 
 ## Key features
@@ -40,7 +42,7 @@ OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectu
 | -------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Domain Agnosticism & Extensibility** | Core registry is domain-neutral; domain-specific registries are implemented as extensions      | [Metadata-Driven Extensibility](../features/metadata-driven-extensibility.md), [Building a Registry](../developer-zone/building-a-registry/) |
 | **Farmer Registry Manifestation**      | Reference domain implementation demonstrating extension architecture                           | [Use Case Implementation](../use-case-implementation.md)                                                                                     |
-| **Functional ID Generation**           | Decoupled ID generation via OpenG2P ID Generator; configurable per Register                    | [Functional ID Generation](../design/functional-id-generation.md), [ID Generator](../../../../tools/id-generator/)             |
+| **Functional ID Generation**           | Decoupled ID generation via OpenG2P ID Generator; configurable per Register                    | [Functional ID Generation](../design/functional-id-generation.md), [ID Generator](../../../../tools/id-generator/)                           |
 | **Multi-Provider Authentication**      | OIDC/OAuth integration via OpenG2P IAM Service; ships with Keycloak support                    | [RBAC Roles & Permissions](../features/rbac-roles-and-permissions.md), [IAM](../../../../identity-and-access-management/)                    |
 | **Change Request Infrastructure**      | All write operations flow through centralized change requests with verification and approval   | [Change Management](../features/change-management-and-approval-workflow.md), [Design](../design/change-management.md)                        |
 | **Version History**                    | Every register change is logged as a version snapshot linked to its originating change request | [Audit-ability & Trace-ability](../features/audit-ability-and-trace-ability.md)                                                              |
@@ -71,11 +73,11 @@ For detailed component architecture and repository descriptions, see [Organizati
 
 ### External Service Dependencies
 
-| Service              | Version | Details                                                        |
-| -------------------- | ------- | -------------------------------------------------------------- |
-| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/)   |
-| ID Generator Service | 1.0.0   | [Documentation](../../../../tools/id-generator/) |
-| Master Data Service  | 1.0.0   | —                                                              |
+| Service              | Version | Details                                                      |
+| -------------------- | ------- | ------------------------------------------------------------ |
+| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/) |
+| ID Generator Service | 1.0.0   | [Documentation](../../../../tools/id-generator/)             |
+| Master Data Service  | 1.0.0   | —                                                            |
 
 ***
 
