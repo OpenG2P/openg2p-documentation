@@ -87,6 +87,10 @@ This is the first release of the Gen 2 Registry platform. This is complete new a
 
 ***
 
+## Non Functional Requirements
+
+Refer to [Security and Performance Testing - Design & Approach Document](../developer-zone/non-functional-requirements.md)
+
 ## Known issues
 
 _None identified at the time of release._
