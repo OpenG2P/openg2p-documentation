@@ -65,8 +65,8 @@ The following sub-pages cover individual design topics in detail:
 [deduplication.md](deduplication.md)
 {% endcontent-ref %}
 
-{% content-ref url="computation-framework.md" %}
-[computation-framework.md](computation-framework.md)
+{% content-ref url="/broken/pages/nOAbiWS0autyWLUUyxO4" %}
+[Broken link](/broken/pages/nOAbiWS0autyWLUUyxO4)
 {% endcontent-ref %}
 
 {% content-ref url="vc-issuance.md" %}
