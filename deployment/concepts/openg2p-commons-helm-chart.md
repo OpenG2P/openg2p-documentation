@@ -135,6 +135,42 @@ A **default logs dashboard** is automatically imported into OpenSearch Dashboard
 --set opensearch.defaultDashboards.enabled=false
 ```
 
+### Resource Limits (Sandbox vs Production)
+
+All components are configured with **sandbox-friendly resource limits** by default — designed for development and testing environments where Keycloak, OpenSearch, and Kafka see minimal load. This prevents components like Keycloak from consuming 3GB+ of RAM on idle clusters.
+
+**Default sandbox limits:**
+
+| Component | Memory Limit | JVM Heap | Notes |
+|-----------|-------------|----------|-------|
+| Keycloak | 1Gi | 512m | Increase to 2Gi / 1g for production |
+| PostgreSQL | 1Gi | N/A | Increase to 2-4Gi for production |
+| OpenSearch | 1Gi | 512m | Heap should be ~50% of limit; increase to 4-8Gi for production |
+| Kafka (controller + broker) | 1Gi each | 512m | Increase to 2Gi / 1g for production |
+| MinIO | 512Mi | N/A | Increase to 1-2Gi for heavy S3 usage |
+| Redis (x2) | 128Mi each | N/A | Sufficient for most workloads |
+| OpenSearch Dashboards | 512Mi | N/A | Sufficient for most workloads |
+| Kafka UI | 512Mi | 256m | Sufficient for most workloads |
+| SoftHSM | 128Mi | N/A | Sufficient |
+| Artifactory | 512Mi | N/A | Sufficient |
+
+To scale up for production, override the relevant values:
+
+```bash
+# Example: scale Keycloak and OpenSearch for production
+--set keycloak.resources.limits.memory=2Gi \
+--set keycloak.extraEnvVars[2].value="-Xms512m -Xmx1g" \
+--set opensearch.master.heapSize=2g \
+--set opensearch.master.resources.limits.memory=4Gi
+```
+
+**How to detect resource constraints:**
+* **OOMKilled** restarts — check `kubectl get pods` for high restart counts
+* **CPU throttling** — check `kubectl top pods` for CPU at limit
+* **Application-specific** — OpenSearch `_cluster/health` turning `yellow`/`red`, Kafka consumer lag increasing, Keycloak login latency
+
+Enable Rancher Monitoring (Prometheus + Grafana) to get dashboards and alerts for memory/CPU pressure across all pods.
+
 ### Helm `global` value propagation
 
 Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
