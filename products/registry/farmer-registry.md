@@ -1,5 +1,7 @@
 # Farmer Registry
 
+Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry.&#x20;
+
 ```mermaid
 graph LR
     A["OpenG2P Registry Platform"] --- P((" <b><span style='font-size:24px'>+</span></b> ")) --- B["Farmer Extensions"] --- E((" <b><span style='font-size:24px'>=</span></b> ")) --- C["Farmer Registry"]
@@ -10,7 +12,7 @@ graph LR
     style E fill:#fff,stroke:#999,font-size:24px,color:#000
 ```
 
-Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry. This registry contains the following registers:
+This registry contains the following [**registers**](registry/concepts.md#register):
 
 1. Farmer Register
 2. Household Register
