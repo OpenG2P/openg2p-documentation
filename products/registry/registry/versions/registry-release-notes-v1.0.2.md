@@ -32,7 +32,7 @@ layout:
 
 OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectural principle. The platform ships with a [**Farmer Registry**](../../farmer-registry.md) as the first domain manifestation, built entirely using the extension framework without modifying core platform code. This release also includes performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
 
-<div align="left" data-with-frame="true"><figure><img src="../../../../.gitbook/assets/farmer-registry-view.png" alt="" width="375"><figcaption></figcaption></figure></div>
+<div align="center" data-with-frame="true"><figure><img src="../../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure></div>
 
 ***
 
@@ -59,13 +59,13 @@ For the complete feature list, see [Features](../features/).
 | Component                 | Version     | Repository                       |
 | ------------------------- | ----------- | -------------------------------- |
 | Deployment Package (Helm) | [4.0.0](./) | openg2p-registry-gen2-deployment |
-| Registry APIs             | —           | openg2p-registry-apis            |
-| Celery Runtimes           | —           | openg2p-registry-celery          |
-| Staff Portal UI           | —           | openg2p-registry-staff-portal-ui |
-| Registry Core (library)   | —           | openg2p-registry-core            |
-| Domain Extensions         | —           | openg2p-registry-extensions      |
-| Standards Templates       | —           | openg2p-registry-standards       |
-| Docker Scripts            | —           | openg2p-registry-docker          |
+| Registry APIs             | 1.0.1       | openg2p-registry-apis            |
+| Celery Runtimes           | 1.0.1       | openg2p-registry-celery          |
+| Registry Staff Portal UI  | 1.0.2       | openg2p-registry-staff-portal-ui |
+| Registry Core (library)   | 1.0.2       | openg2p-registry-core            |
+| Domain Extensions         | 1.0.3       | openg2p-registry-extensions      |
+| Standards Templates       | 1.0.1       | openg2p-registry-standards       |
+| Docker Scripts            | 1.0.2       | openg2p-registry-docker          |
 
 The details of the individual components can be found in the Helm Charts and the Docker files.
 
@@ -73,11 +73,11 @@ For detailed component architecture and repository descriptions, see [Organizati
 
 ### External Service Dependencies
 
-| Service              | Version | Details                                                      |
-| -------------------- | ------- | ------------------------------------------------------------ |
-| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/) |
-| ID Generator Service | 1.0.0   | [Documentation](../../../../tools/id-generator/)             |
-| Master Data Service  | 1.0.0   | —                                                            |
+| Service              | Version | Details                                                                      |
+| -------------------- | ------- | ---------------------------------------------------------------------------- |
+| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/)                 |
+| ID Generator Service | 1.0.0   | [Documentation](../../../../tools/id-generator/)                             |
+| Master Data Service  | 1.0.0   | [Documentation](../../../../platform/platform-services/master-data-service/) |
 
 ***
 
@@ -101,15 +101,13 @@ The Farmer Registry implements the [Farmer DCI Standards](https://standards.spdc
 
 ## Known issues
 
-_None identified at the time of release._
+Refer to [issue Jiras](https://openg2p.atlassian.net/issues/?jql=type+%3D+Bug+AND+%28status+%21%3D+Closed+AND+status+%21%3D+Resolved%29+AND+labels+%3D+Reg_tagged_4.0.0+ORDER+BY+key+ASC%2C+created+DESC\&atlOrigin=eyJpIjoiZmE2NWQwZDc0NTRhNDViNmI3ZWJiMWU2ODlkMjcxOTYiLCJwIjoiaiJ9).
 
 ***
 
 ## Testing
 
-{% hint style="info" %}
-Test results and coverage details to be published.
-{% endhint %}
+{% embed url="https://docs.google.com/spreadsheets/d/1bnKFyO0DAi2M9Mvath17TUAAGKOaEi_-K_v9VGgI-iw/edit?usp=sharing" %}
 
 ***
 
