@@ -46,7 +46,7 @@ Registry Gen2 (and all other products from the OpenG2P stable) is deployed on a 
 
 ### Security Testing
 
-The OpenG2P Platform was subjected to a Security Audit by a 3rd party in June 2025. The detailed findings and reports of this audit can be found [here](https://www.openg2p.org/post/openg2p-achieves-highest-security-rating)
+The OpenG2P Platform was subjected to a Security Audit by a 3rd party in June 2025. The security Audit certified the OpenG2P platform as A+ (highest rating). The detailed findings and reports of this audit can be found [here](https://www.openg2p.org/post/openg2p-achieves-highest-security-rating)
 
 This audit included the security audit of the applications as well as the deployment architecture.
 
