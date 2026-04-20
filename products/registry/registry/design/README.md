@@ -45,8 +45,8 @@ The following sub-pages cover individual design topics in detail:
 [ingestion-pipeline.md](ingestion-pipeline.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../../../registry/design/detailed-design-notes/outgestion-pipeline.md" %}
-[outgestion-pipeline.md](../../../../registry/design/detailed-design-notes/outgestion-pipeline.md)
+{% content-ref url="outgestion-pipeline.md" %}
+[outgestion-pipeline.md](outgestion-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="consent-management.md" %}
@@ -57,20 +57,20 @@ The following sub-pages cover individual design topics in detail:
 [encryption-at-rest.md](encryption-at-rest.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../../../registry/design/detailed-design-notes/partner-apis.md" %}
-[partner-apis.md](../../../../registry/design/detailed-design-notes/partner-apis.md)
+{% content-ref url="partner-apis.md" %}
+[partner-apis.md](partner-apis.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../../../registry/design/detailed-design-notes/deduplication.md" %}
-[deduplication.md](../../../../registry/design/detailed-design-notes/deduplication.md)
+{% content-ref url="deduplication.md" %}
+[deduplication.md](deduplication.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../../../registry/design/detailed-design-notes/computation-framework.md" %}
-[computation-framework.md](../../../../registry/design/detailed-design-notes/computation-framework.md)
+{% content-ref url="computation-framework.md" %}
+[computation-framework.md](computation-framework.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../../../registry/design/detailed-design-notes/vc-issuance.md" %}
-[vc-issuance.md](../../../../registry/design/detailed-design-notes/vc-issuance.md)
+{% content-ref url="vc-issuance.md" %}
+[vc-issuance.md](vc-issuance.md)
 {% endcontent-ref %}
 
 {% content-ref url="registrant-authentication-oidc-widget/" %}
