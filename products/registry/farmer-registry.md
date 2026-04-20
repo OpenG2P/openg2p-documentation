@@ -1,6 +1,8 @@
 # Farmer Registry
 
-Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry.&#x20;
+<figure><img src="../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure>
+
+Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry.
 
 ```mermaid
 graph LR
