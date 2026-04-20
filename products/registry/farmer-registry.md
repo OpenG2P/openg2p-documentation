@@ -2,11 +2,12 @@
 
 ```mermaid
 graph LR
-    A["OpenG2P Registry Platform"] -->|+| B["Farmer Extensions"]
-    B -->|=| C["Farmer Registry"]
+    A["OpenG2P Registry Platform"] --- P((" <b><span style='font-size:24px'>+</span></b> ")) --- B["Farmer Extensions"] --- E((" <b><span style='font-size:24px'>=</span></b> ")) --- C["Farmer Registry"]
     style A fill:#e8f4fd,stroke:#2196F3,color:#000
     style B fill:#fff3e0,stroke:#FF9800,color:#000
     style C fill:#e8f5e9,stroke:#4CAF50,stroke-width:2px,color:#000
+    style P fill:#fff,stroke:#999,font-size:24px,color:#000
+    style E fill:#fff,stroke:#999,font-size:24px,color:#000
 ```
 
 Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry. This registry contains the following registers:
