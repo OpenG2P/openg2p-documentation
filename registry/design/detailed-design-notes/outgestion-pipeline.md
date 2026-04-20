@@ -1,2 +1,0 @@
-# Outgestion Pipeline
-
