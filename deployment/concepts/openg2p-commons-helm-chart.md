@@ -1,10 +1,17 @@
 # Commons Helm Charts 2.x
 
+## Versions
+
+| Chart | Version | Date | Comments |
+|-------|---------|------|----------|
+| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0) | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
+| openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). |
+
 ## Context
 
 * This guide explains the **design rationale** behind the OpenG2P Commons Helm charts.
 * It also provides references for Helm chart development and links to:
-  * The [**source code**](https://github.com/OpenG2P/openg2p-deployment-commons) of the charts.
+  * The [**source code**](https://github.com/OpenG2P/openg2p-commons-deployment) of the charts.
   * The [**new architecture**](openg2p-deployment-model.md) documentation.
 
 ## Architecture (v2.x onward)
@@ -129,10 +136,10 @@ Log retention is managed automatically via an OpenSearch **ISM (Index State Mana
 
 The ISM policy is applied by a Job that runs as part of the base chart installation. It auto-attaches to all new `logstash-*` indexes and also applies to any pre-existing indexes on upgrade.
 
-A **default logs dashboard** is automatically imported into OpenSearch Dashboards on install. It includes a Discover view with columns for timestamp, log level, kubernetes pod, and message. To disable automatic dashboard import:
+A **default logs saved search** is automatically imported into OpenSearch Dashboards on install and set as the landing page (via `defaultRoute`). It opens a Discover view with columns for timestamp, log level, kubernetes pod, and message, with 10-second auto-refresh enabled and a default time range of the last 1 hour. A pre-saved `level: ERROR` filter pill is shown at the top — it is **disabled by default** and can be **temporarily enabled or disabled with a single click** to toggle an ERROR-only view without touching the query bar. Typing a substring in the query bar (e.g., `odk`) filters to pods whose name contains that substring, thanks to an ngram-indexed subfield on `kubernetes.pod_name` applied via an OpenSearch index template. To disable automatic saved-search import:
 
 ```bash
---set opensearch.defaultDashboards.enabled=false
+--set opensearch.savedSearch.enabled=false
 ```
 
 ### Resource Limits (Sandbox vs Production)
@@ -176,13 +183,6 @@ Enable Rancher Monitoring (Prometheus + Grafana) to get dashboards and alerts fo
 Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
 
 This means infrastructure names (like `postgresqlHost`, `redisInstallationName`) set in the parent's `global` are automatically available to all subcharts. IAM-specific globals (like `iamDB`, `iamDBUser`) work because they are unique to the IAM subchart.
-
-## Versions
-
-| Version       | Last Modified | Comments                                                                                                  |
-| ------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
-| 2.0.0         | 21-Apr-2026   | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
-| 2.0.0-develop | 30-Mar-2026   | Split into two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH PREVIOUS VERSIONS. |
 
 ## How to deploy
 
