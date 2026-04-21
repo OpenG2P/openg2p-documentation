@@ -19,12 +19,13 @@ layout:
 
 # Registry Release Notes - v4.0.0
 
-|                        |             |
-| ---------------------- | ----------- |
-| **Release Date**       | 17-Apr-2026 |
-| **Helm Chart Version** | 4.0.0       |
-| **Branch**             | 4.0.0       |
-| **Previous Version**   | —           |
+|                        |                                                                                                                                                                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Version**            | 4.0.0                                                                                                                                                                                                                              |
+| **Helm Chart Version** | [4.0.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.0.0)                                                                                                                                                   |
+| **Release Date**       | 17-Apr-2026                                                                                                                                                                                                                        |
+| **Description**        | <p></p><ul><li>First release of Registry Gen 2 - the domain agnostic registry platform</li><li>4.0.0 manifests the <strong>Farmer Registry</strong> (with the farmer domain models defined in the extensions repository)</li></ul> |
+| **Previous Version**   | —                                                                                                                                                                                                                                  |
 
 ***
 
@@ -55,6 +56,8 @@ For the complete feature list, see [Features](../features/).
 ***
 
 ## Components & versions
+
+
 
 | Component                 | Version     | Repository                       |
 | ------------------------- | ----------- | -------------------------------- |
