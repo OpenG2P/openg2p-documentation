@@ -57,32 +57,11 @@ For the complete feature list, see [Features](../features/).
 
 ## Components & versions
 
+Refer to [Helm Chart](../deployment/helm-chart-4.x.md) for details on components, dependent services and compability.
 
-
-| Component                 | Version     | Repository                       |
-| ------------------------- | ----------- | -------------------------------- |
-| Deployment Package (Helm) | [4.0.0](./) | openg2p-registry-gen2-deployment |
-| Registry APIs             | 1.0.1       | openg2p-registry-apis            |
-| Celery Runtimes           | 1.0.1       | openg2p-registry-celery          |
-| Registry Staff Portal UI  | 1.0.2       | openg2p-registry-staff-portal-ui |
-| Registry Core (library)   | 1.0.2       | openg2p-registry-core            |
-| Domain Extensions         | 1.0.3       | openg2p-registry-extensions      |
-| Standards Templates       | 1.0.1       | openg2p-registry-standards       |
-| Docker Scripts            | 1.0.2       | openg2p-registry-docker          |
-
-The details of the individual components can be found in the Helm Charts and the Docker files.
+## Component architecture
 
 For detailed component architecture and repository descriptions, see [Organization of Codebase](../developer-zone/organization-of-codebase.md).
-
-### External Service Dependencies
-
-| Service              | Version | Details                                                                      |
-| -------------------- | ------- | ---------------------------------------------------------------------------- |
-| IAM Service          | 1.0.0   | [Documentation](../../../../identity-and-access-management/)                 |
-| ID Generator Service | 1.0.0   | [Documentation](../../../../tools/id-generator/)                             |
-| Master Data Service  | 1.0.0   | [Documentation](../../../../platform/platform-services/master-data-service/) |
-
-***
 
 ## Breaking changes
 
