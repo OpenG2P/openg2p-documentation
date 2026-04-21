@@ -181,6 +181,7 @@ This means infrastructure names (like `postgresqlHost`, `redisInstallationName`)
 
 | Version       | Last Modified | Comments                                                                                                  |
 | ------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
+| 2.0.0         | 21-Apr-2026   | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
 | 2.0.0-develop | 30-Mar-2026   | Split into two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH PREVIOUS VERSIONS. |
 
 ## How to deploy
