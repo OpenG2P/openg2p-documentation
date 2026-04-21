@@ -1,5 +1,12 @@
 # Commons Helm Charts 2.x
 
+## Context
+
+* This guide explains the **design rationale** behind the OpenG2P Commons Helm charts.
+* It also provides references for Helm chart development and links to:
+  * The [**source code**](https://github.com/OpenG2P/openg2p-commons-deployment) of the charts.
+  * The [**new architecture**](openg2p-deployment-model.md) documentation.
+
 ## Versions
 
 | Chart | Version | Date | Comments |
@@ -7,12 +14,6 @@
 | openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0) | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). |
 
-## Context
-
-* This guide explains the **design rationale** behind the OpenG2P Commons Helm charts.
-* It also provides references for Helm chart development and links to:
-  * The [**source code**](https://github.com/OpenG2P/openg2p-commons-deployment) of the charts.
-  * The [**new architecture**](openg2p-deployment-model.md) documentation.
 
 ## Architecture (v2.x onward)
 
