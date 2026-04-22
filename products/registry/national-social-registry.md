@@ -183,6 +183,10 @@ For dev/test environments, toggle sample-data seeding:
 
 This populates the database with 5 demo households, 15 demo individuals, and demo rows for every supporting table.
 
+### Tearing down
+
+NSR inherits its teardown procedure from the base chart — same `helm uninstall` + PVC / secret cleanup sequence applies. See [Helm chart v4.x deployment guide](registry/deployment/helm-chart-4.x.md) for the detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
+
 ### Rancher catalog
 
 The `openg2p-nsr` chart carries the `openg2p.org/add-to-rancher` annotation, which makes it appear in the Rancher-specific sub-index at `https://openg2p.github.io/openg2p-helm/rancher/` alongside the other OpenG2P charts. Rancher users install it directly from the Apps catalog; the chart's `questions.yaml` renders a branded form for the common knobs (domain, namespace, image tags, seeder toggle, individual-ID prefix/length).
