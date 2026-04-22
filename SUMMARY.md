@@ -173,6 +173,7 @@
           * [ODK App User Mapping](products/registry/registry/social-registry/developer-zone/odoo-modules/odk-app-user-mapping.md)
         * [Performance Testing](products/registry/registry/social-registry/developer-zone/performance-and-scale-1.md)
   * [Farmer Registry](products/registry/farmer-registry.md)
+  * [National Social Registry](products/registry/national-social-registry.md)
 * [PBMS](pbms/README.md)
   * [Features](pbms/features/README.md)
     * [Decoupled yet Registry-Aware](pbms/features/decoupled-yet-registry-aware.md)
