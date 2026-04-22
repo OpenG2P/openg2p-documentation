@@ -529,6 +529,7 @@
     * [Developer Install](identity-and-access-management/developer-install.md)
     * [Security Controls](identity-and-access-management/security-controls.md)
     * [Versions](platform/platform-services/identity-and-access-management/versions.md)
+  * [Audit Manager](platform/platform-services/audit-manager.md)
   * [Master Data Service](platform/platform-services/master-data-service/README.md)
     * [Versions](platform/platform-services/master-data-service/versions.md)
   * [Consent Management](consent-management/README.md)
