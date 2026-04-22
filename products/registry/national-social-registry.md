@@ -85,10 +85,11 @@ Extends `G2PRegister`, `G2PPerson`, `G2PGeo`. The primary register for person-le
 Grouped by theme:
 
 * **Identity & evidence** — `foundational_id_masked`, `foundational_id_verification_status`, `identity_evidence_type`, `legacy_program_ids`
+* **Names** — `full_name`, `alias_names` _(alternative-spellings list for search/dedup)_
 * **Demographics (beyond base)** — `estimated_age`, `age_method`, `citizenship_category`
 * **Household membership** — `relationship_to_head`, `residency_status`, `dependency_indicator`
 * **Contact** — `preferred_contact_method`, `contact_person_name`
-* **Vulnerability & inclusion** — `disability_status`, `disability_domains`, `disability_severity`, `plw_status`, `plw_status_date`, `orphanhood_flag`, `chronic_illness_flag`, `displacement_status`, `pastoralist_classification`, `high_mobility_indicator`
+* **Vulnerability & inclusion** — `disability_status` _(high-level YES/NO/UNKNOWN flag — per-domain severities live in the `IndividualDisability` table)_, `plw_status`, `plw_status_date`, `orphanhood_flag`, `chronic_illness_flag`, `displacement_status`, `pastoralist_classification`, `high_mobility_indicator`
 * **Livelihood** — `primary_livelihood`, `secondary_livelihood`, `employment_status`, `coping_strategies_index`
 
 ### Household (`g2p_register_households`)
@@ -105,6 +106,7 @@ Multi-valued or time-series data lives in supporting tables. Each is linked to a
 
 | Table | Parent | NSR-specific fields |
 | ----- | ------ | ------------------- |
+| **Individual Disability** (`g2p_register_individual_disabilities`) | Individual | `disability_domain` (Washington Group Short Set: VISION, HEARING, MOBILITY, COGNITION, SELF_CARE, COMMUNICATION), `disability_severity` — **one row per affected domain** so an individual can carry different severities across functional domains |
 | **Program Participation** (`g2p_register_program_participations`) | Individual _or_ Household | `linked_register_mnemonic`, `program_name`, `program_mnemonic`, `program_start_date`, `program_exit_date`, `legacy_program_id`, `payment_channel_preference`, `payment_account_token`, `payment_verification_status` |
 | **Poverty Score** (`g2p_register_poverty_scores`) | Household | `pmt_score`, `pmt_score_type`, `pmt_variables`, `pmt_calculation_date`, `pmt_model_version` |
 | **Asset** (`g2p_register_assets`) | Household | `asset_type`, `asset_category`, `quantity`, `size_value`, `size_unit`, `size_band`, `details` |
@@ -119,7 +121,8 @@ Multi-valued or time-series data lives in supporting tables. Each is linked to a
 | -------- | --------------------- | ------------------ |
 | `Individual` | `IND-` | ✅ |
 | `Household` | `HH-` | ✅ |
-| `ProgramParticipation` | `PP-` | ✖ (externally supplied) |
+| `IndividualDisability` | `DIS-` | ✖ (externally supplied) |
+| `ProgramParticipation` | `PP-` | ✖ |
 | `PovertyScore` | `PMT-` | ✖ |
 | `Asset` | `AST-` | ✖ |
 | `Shock` | `SHK-` | ✖ |
