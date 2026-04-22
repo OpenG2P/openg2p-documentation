@@ -474,6 +474,123 @@ The chart can be installed multiple times in the same namespace with different r
 When installing multiple registry releases in the same namespace, you **must** override `global.authClientId`, `global.authClientSecret`, and the `keycloak-init.realms` clientId to be unique per release (e.g. `farmer-registry-staff-portal`).
 {% endhint %}
 
+## Maintaining multiple variants (wrapper chart strategy)
+
+{% hint style="info" %}
+This section captures the recommended approach for maintaining multiple domain variants of the Registry (farmer, family, NSR, livestock, etc.) without duplicating the base chart. It is intended as a handover note for teams spinning up new variants.
+{% endhint %}
+
+### Problem
+
+OpenG2P Registry Gen 2 is one base Helm chart with many domain variants. Variants differ only by:
+
+* Docker image names (every component has a variant-branded image)
+* ID Generator `appConfig.idTypes`
+* Optionally a variant-specific meta-data seed image
+
+We want each variant to be an independently versioned package, not a copy-paste of the base chart.
+
+### Approach: wrapper charts in separate repos
+
+The base chart stays in `openg2p-registry-gen2-deployment`. Each variant gets its **own repo** holding a thin wrapper chart that depends on the base chart by version. This preserves the existing "branch name == chart version" convention per repo.
+
+```
+openg2p-registry-gen2-deployment          # base, branch 4.0.0 -> openg2p-registry:4.0.0
+openg2p-nsr-registry-deployment           # wrapper, branch 1.0.0 -> openg2p-nsr-registry:1.0.0
+openg2p-farmer-registry-deployment        # wrapper
+openg2p-family-registry-deployment        # wrapper
+```
+
+### Wrapper repo contents
+
+```
+charts/openg2p-<variant>-registry/
+├── Chart.yaml          # depends on openg2p-registry at a pinned version
+├── values.yaml         # ~30 lines: image names, idTypes
+├── questions.yaml      # variant-branded Rancher UI
+└── README.md
+.github/workflows/publish-trigger.yml    # same workflow as the base repo
+```
+
+**`Chart.yaml`:**
+
+```yaml
+apiVersion: v2
+name: openg2p-nsr-registry
+version: 1.0.0
+dependencies:
+  - name: openg2p-registry
+    version: 4.0.0
+    repository: https://openg2p.github.io/openg2p-helm
+annotations:
+  catalog.cattle.io/display-name: "OpenG2P NSR"
+  openg2p.org/add-to-rancher: ""
+```
+
+**`values.yaml`** — overrides must be nested under the base chart name; `global.*` values go at the top level:
+
+```yaml
+openg2p-registry:
+  staffPortalApi:
+    image: { repository: openg2p/openg2p-nsr-registry-staff-portal-api, tag: "1.0.0" }
+  partnerApi:
+    image: { repository: openg2p/openg2p-nsr-registry-partner-api, tag: "1.0.0" }
+  # ... one block per component
+  dbSeed:
+    image: { repository: openg2p/openg2p-nsr-registry-db-seed, tag: "1.0.0" }
+  idgenerator:
+    idGenerator:
+      appConfig:
+        idTypes:
+          - { name: individual, length: 10, prefix: "N" }
+```
+
+### CI and publishing
+
+All variants publish to the same Helm repository: `https://openg2p.github.io/openg2p-helm`. Each wrapper repo uses the same `publish-trigger.yml` workflow as the base repo. On push of a branch/tag, CI runs:
+
+1. `helm dep up` — pulls the pinned base chart tarball from the published Helm repo.
+2. `helm package` — produces `openg2p-<variant>-registry-<version>.tgz`.
+3. Commits the tarball to `openg2p/openg2p-helm gh-pages`.
+
+### Versioning rules
+
+| Change                                               | Bump                                       |
+| ---------------------------------------------------- | ------------------------------------------ |
+| Variant-only change (new image tag, new ID type)     | Wrapper MINOR/PATCH only                   |
+| Base chart backward-compatible change                | Base MINOR; wrappers opt in when ready     |
+| Base chart breaking change                           | Base MAJOR; wrappers bump MAJOR on adoption |
+
+### Boilerplate mitigations
+
+1. Create a **GitHub template repo** (e.g. `openg2p-registry-variant-template`) so spinning up a new variant repo is a 5-minute operation.
+2. Ship a uniform `scripts/bump-base.sh` in every wrapper for one-command base-version bumps.
+3. Use **Renovate** or Dependabot to auto-PR base-version bumps across variant repos when the base releases.
+
+### Rejected alternatives
+
+* **Single chart with `values-<variant>.yaml`** — no per-variant chart versioning.
+* **`if .Values.variant == "nsr"` branches inside base templates** — anti-pattern; variant knowledge leaks into the base.
+* **Wrapper charts inside the base repo** — couples variant release cadence to base-repo branching.
+* **Mono-repo with per-chart tags** — breaks the branch-name-equals-version convention.
+
+### Next steps for a new variant (example: NSR)
+
+1. Create the template repo (one-time).
+2. Spin up `openg2p-nsr-registry-deployment` from the template.
+3. Decide Docker image names; publish component images under `openg2p/openg2p-nsr-registry-*`.
+4. Define the variant's ID types for the ID Generator.
+5. Decide the seed strategy — add `openg2p-registry-nsr-extension/` under [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions), or skip seed for v1.
+6. Set Rancher branding (`catalog.cattle.io/display-name`, icon, `questions.yaml`).
+7. First wrapper release: `openg2p-nsr-registry:1.0.0` depends on `openg2p-registry:4.0.0`.
+
+### Related references
+
+* Base chart repo: [openg2p-registry-gen2-deployment](https://github.com/OpenG2P/openg2p-registry-gen2-deployment)
+* Published Helm repo: `https://openg2p.github.io/openg2p-helm` (gh-pages of [openg2p/openg2p-helm](https://github.com/OpenG2P/openg2p-helm))
+* Variant meta-data seed SQL: [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) — one `openg2p-registry-<variant>-extension/` folder per variant
+* [Meta Data Seeding design](../design/meta-data-seeding.md)
+
 ## Source code and references
 
 * **Chart source**: [openg2p-registry-gen2-deployment](https://github.com/OpenG2P/openg2p-registry-gen2-deployment)
