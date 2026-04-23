@@ -531,6 +531,12 @@
     * [Security Controls](identity-and-access-management/security-controls.md)
     * [Versions](platform/platform-services/identity-and-access-management/versions.md)
   * [Audit Manager](platform/platform-services/audit-manager.md)
+  * [ID Generator](platform/platform-services/id-generator/README.md)
+    * [Functional Specifications](platform/platform-services/id-generator/functional-specifications.md)
+    * [API Reference](platform/platform-services/id-generator/api-reference.md)
+    * [Technical Architecture](platform/platform-services/id-generator/technical-architecture.md)
+    * [Deployment](platform/platform-services/id-generator/deployment.md)
+    * [Testing](platform/platform-services/id-generator/testing.md)
   * [Master Data Service](platform/platform-services/master-data-service/README.md)
     * [Versions](platform/platform-services/master-data-service/versions.md)
   * [Consent Management](consent-management/README.md)
@@ -570,12 +576,6 @@
 
 ## Tools
 
-* [ID Generator](tools/id-generator/README.md)
-  * [Functional Specifications](tools/id-generator/functional-specifications.md)
-  * [API Reference](tools/id-generator/api-reference.md)
-  * [Technical Architecture](tools/id-generator/technical-architecture.md)
-  * [Deployment](tools/id-generator/deployment.md)
-  * [Testing](tools/id-generator/testing.md)
 * [4Sure Verifier App](tools/4sure-verifier/README.md)
   * [Installation Guide for 4Sure Application](tools/4sure-verifier/installation-guide-for-4sure-application.md)
   * [📔 User Guides](tools/4sure-verifier/user-guides/README.md)
