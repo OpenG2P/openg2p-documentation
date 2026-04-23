@@ -46,6 +46,7 @@
 * neutral\_color\_1
 * neutral\_color\_2
 * font\_family
+* font\_url
 * dashboard\_image
 
 ***
