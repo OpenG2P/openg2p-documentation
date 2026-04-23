@@ -419,6 +419,10 @@ Non-sensitive effective configuration, useful for diagnostics.
 
 ### `GET /docs` / `GET /redoc` / `GET /openapi.json`
 
+Served at `/v1/auditmanager/docs`, `/v1/auditmanager/redoc`, and
+`/v1/auditmanager/openapi.json` so they sit under the same Istio
+VirtualService prefix as the rest of the API.
+
 Standard FastAPI-provided OpenAPI surfaces.
 
 ---
@@ -600,7 +604,7 @@ Starts Postgres, Kafka (KRaft single-node), and the audit-manager service.
 After a few seconds:
 
 - API:      http://localhost:8000/v1/auditmanager/
-- Swagger:  http://localhost:8000/docs
+- Swagger:  http://localhost:8000/v1/auditmanager/docs
 - Health:   http://localhost:8000/v1/auditmanager/health
 
 ### Smoke test
@@ -683,7 +687,7 @@ N=1000 C=20 tests/load.sh
 Import [`tests/postman/OpenG2P-Audit-Manager.postman_collection.json`](https://github.com/OpenG2P/audit-manager/blob/main/tests/postman/OpenG2P-Audit-Manager.postman_collection.json)
 into Postman, Bruno, or Insomnia. Folders:
 
-- Service endpoints (`/health`, `/version`, `/config`, `/docs`)
+- Service endpoints (`/v1/auditmanager/health`, `/v1/auditmanager/version`, `/v1/auditmanager/config`, `/v1/auditmanager/docs`)
 - Single events — success paths (login, views, updates with diff, payment approve/reverse)
 - Single events — failure / denied outcomes
 - Batch ingestion
