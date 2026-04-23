@@ -10,27 +10,33 @@ Both Enrolment & Disbursement cycles have a Workflow definition attached to them
 
 ### Model Structures
 
-#### workflow\_definition
+#### g2p\_workflow\_stage\_definition
 
 <table><thead><tr><th width="215.4854736328125">Field</th><th width="175.69677734375">Data Type</th><th width="201.2332763671875">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>stage_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for workflow stage</td></tr><tr><td>program_id</td><td>String/UUID</td><td>Index</td><td>References program</td></tr><tr><td>cycle_type</td><td>Enum</td><td>ENROLMENT, DISBURSEMENT</td><td>Type of cycle workflow</td></tr><tr><td>stage_number</td><td>Integer</td><td></td><td>Sequential stage number</td></tr><tr><td>stage_name</td><td>String</td><td></td><td>Name of the stage</td></tr><tr><td>is_final_stage</td><td>Boolean</td><td></td><td>True if highest stage_number for this program/cycle_type</td></tr><tr><td>Roles</td><td>String (CSV)</td><td></td><td>Comma-separated list of roles authorized for this stage</td></tr><tr><td></td><td></td><td><strong>Unique</strong>: (program_id, cycle_type, stage_number)</td><td></td></tr></tbody></table>
 
-#### beneficiary\_list
+#### g2p\_beneficiary\_list
 
 <table><thead><tr><th width="212.14715576171875">Field</th><th width="178.47369384765625">Data Type</th><th width="201.919189453125">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>list_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for beneficiary list</td></tr><tr><td>cycle_id</td><td>String/UUID</td><td>Foreign Key</td><td>References cycle</td></tr><tr><td>list_number</td><td>Integer</td><td></td><td>Sequential integer for list versions (New field)</td></tr><tr><td>latest_stage_history_id</td><td>String/UUID</td><td>Foreign Key</td><td>References most recent stage_history record</td></tr><tr><td>number_of_beneficiaries</td><td>Integer</td><td></td><td>Total count of beneficiaries</td></tr><tr><td>disbursement_quantity</td><td>JSON</td><td></td><td>Disbursement details (Disbursement cycles only)</td></tr><tr><td></td><td></td><td><strong>Relationship</strong>: One cycle → one operating list at any time</td><td></td></tr></tbody></table>
 
-#### beneficiary\_list\_stage\_history
+#### g2p\_workflow\_stage\_history
 
 <table><thead><tr><th width="211.00933837890625">Field</th><th width="178.3089599609375">Data Type</th><th width="207.4267578125">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>stage_history_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for stage history record</td></tr><tr><td>list_id</td><td>String/UUID</td><td>Index, Foreign Key</td><td>References beneficiary_list</td></tr><tr><td>list_type</td><td>Enum</td><td>ENROLMENT, DISBURSEMENT</td><td>Type of list</td></tr><tr><td>stage_id</td><td>String/UUID</td><td>Foreign Key</td><td>References workflow_definition stage</td></tr><tr><td>enqueued_at</td><td>Timestamp</td><td></td><td>When list was queued at this stage</td></tr><tr><td>status</td><td>Enum</td><td>PENDING, APPROVED, REJECTED</td><td>Current approval status</td></tr><tr><td>acted_by</td><td>String/UUID</td><td></td><td>User who performed the action</td></tr><tr><td>acted_at</td><td>Timestamp</td><td></td><td>When action was performed</td></tr><tr><td>Remarks</td><td>Text</td><td></td><td>Comments or rejection reason</td></tr><tr><td></td><td></td><td><strong>Unique</strong>: (list_id, stage_id)</td><td>Each list can only have one record per stage</td></tr></tbody></table>
 
-#### beneficiary\_list\_pending\_stage
+#### g2p\_workflow\_pending\_stage
 
 <table><thead><tr><th width="211.79998779296875">Field</th><th width="174.87646484375">Data Type</th><th width="214.070556640625">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>list_id</td><td>String/UUID</td><td>Primary Key</td><td>References beneficiary_list</td></tr><tr><td>current_stage_id</td><td>String/UUID</td><td>Index, Foreign Key</td><td>References workflow_definition stage</td></tr><tr><td>enqueued_at</td><td>Timestamp</td><td></td><td>When list entered current stage</td></tr><tr><td>stage_status</td><td>Enum</td><td>PENDING</td><td>Status (always PENDING while in this table)</td></tr></tbody></table>
 
-#### cycle
+#### g2p\_enrolment\_cycle
 
-<table><thead><tr><th width="210.400390625">Field</th><th width="177.8212890625">Data Type</th><th width="215.408203125">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>cycle_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for cycle</td></tr><tr><td>program_id</td><td>String/UUID</td><td>Foreign Key</td><td>References program</td></tr><tr><td>cycle_type</td><td>Enum</td><td>ENROLMENT, DISBURSEMENT</td><td>Type of cycle</td></tr><tr><td>cycle_number</td><td>Integer</td><td></td><td>Sequence number within program</td></tr><tr><td>created_on</td><td>Timestamp</td><td></td><td>When cycle was created</td></tr><tr><td>created_by</td><td>String/UUID</td><td></td><td>User who created the cycle</td></tr><tr><td>latest_list_id</td><td>String/UUID</td><td>Foreign Key</td><td>References latest beneficiary_list (New field)</td></tr><tr><td>number_of_lists</td><td>Integer</td><td></td><td>Count of all list versions</td></tr></tbody></table>
+<table><thead><tr><th width="210.400390625">Field</th><th width="177.8212890625">Data Type</th><th width="215.408203125">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>cycle_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for cycle</td></tr><tr><td>program_id</td><td>String/UUID</td><td>Foreign Key</td><td>References progra</td></tr><tr><td>cycle_number</td><td>Integer</td><td></td><td>Sequence number within program</td></tr><tr><td>created_on</td><td>Timestamp</td><td></td><td>When cycle was created</td></tr><tr><td>created_by</td><td>String/UUID</td><td></td><td>User who created the cycle</td></tr><tr><td>latest_list_id</td><td>String/UUID</td><td>Foreign Key</td><td>References latest beneficiary_list (New field)</td></tr><tr><td>number_of_lists</td><td>Integer</td><td></td><td>Count of all list versions</td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>
 
-#### program\_metrics (New Model)
+#### g2p\_disbursement\_cycle
+
+<table><thead><tr><th width="210.400390625">Field</th><th width="177.8212890625">Data Type</th><th width="215.408203125">Constraints</th><th>Description</th></tr></thead><tbody><tr><td>cycle_id</td><td>String/UUID</td><td>Primary Key</td><td>Unique identifier for cycle</td></tr><tr><td>program_id</td><td>String/UUID</td><td>Foreign Key</td><td>References program</td></tr><tr><td>cycle_number</td><td>Integer</td><td></td><td>Sequence number within program</td></tr><tr><td>created_on</td><td>Timestamp</td><td></td><td>When cycle was created</td></tr><tr><td>created_by</td><td>String/UUID</td><td></td><td>User who created the cycle</td></tr><tr><td>latest_list_id</td><td>String/UUID</td><td>Foreign Key</td><td>References latest beneficiary_list (New field)</td></tr><tr><td>number_of_lists</td><td>Integer</td><td></td><td>Count of all list versions</td></tr></tbody></table>
+
+
+
+#### g2p\_program\_metrics (New Model)
 
 | Field                      | Data Type   | Constraints | Description                           |
 | -------------------------- | ----------- | ----------- | ------------------------------------- |

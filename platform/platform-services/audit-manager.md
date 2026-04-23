@@ -250,41 +250,6 @@ One sub-field is **strongly recommended when applicable**:
 Anything else (`changes`, `reason`, `context`, domain-specific fields)
 lives in `data` as event-type-specific attributes.
 
-### Mapping from CloudEvents to Postgres columns
-
-The service validates the full CloudEvents input and then persists a flat
-row. Some envelope fields are validated but **not stored** (they don't add
-signal to a forensic query). The `audit_events` table has exactly 15
-columns — every input field either maps to one of them or is dropped.
-
-| CloudEvents input field       | Stored as (DB column) | Notes                                                          |
-| ----------------------------- | --------------------- | -------------------------------------------------------------- |
-| `specversion`                 | — (dropped)           | Validated (`"1.0"`), not stored — same for every row.          |
-| `datacontenttype`             | — (dropped)           | Always `application/json` — no information to preserve.        |
-| `id`                          | `id`                  | Primary key (together with `occurred_at`) — dedup on replay.   |
-| `source`                      | `source`              | Which service emitted the event.                               |
-| `type`                        | `type`                | Reverse-DNS event type.                                        |
-| `time`                        | `occurred_at`         | Renamed on store — consistent with `ingested_at` naming.       |
-| `subject`                     | `subject`             | Primary object acted on; nullable.                             |
-| `traceparent`                 | `trace_id`            | Only the 16-byte trace id is extracted from the W3C header.    |
-| `data.actor.type`             | `actor_type`          | `user` \| `system` \| `service` \| `anonymous`.                |
-| `data.actor.id`               | `actor_id`            | Stable actor identifier.                                       |
-| `data.actor.*` (other fields) | `details.actor.*`     | Remaining actor fields (name, roles, ip, session_id) preserved under `details`. |
-| `data.action`                 | `action`              | Verb.                                                          |
-| `data.outcome`                | `outcome`             | `success` \| `failure` \| `denied`.                            |
-| `data.reason`                 | `reason`              | Promoted — common filter for failure / denied outcomes.        |
-| `data.resource.type`          | `resource_type`       | Nullable (login events have no resource).                      |
-| `data.resource.id`            | `resource_id`         | Nullable.                                                      |
-| `data.resource.*` (extras)    | `details.resource.*`  | Remaining resource attributes (amount, currency, program_id, etc.). |
-| `data.changes` / `data.context` / any other event-type-specific fields | `details.*`           | Event-type-specific extras carried in `details` JSONB.         |
-| — (server-assigned)           | `ingested_at`         | `DEFAULT now()` at insert time; useful for "recent arrivals" queries distinct from `occurred_at`. |
-
-**Columns in the DB that aren't input fields:** only `ingested_at`, set by
-Postgres `DEFAULT now()` at insert time.
-
-**Input fields that don't produce a column:** `specversion`, `datacontenttype`
-(both are always the same value and carry no forensic signal).
-
 ### Actor shape
 
 ```json
