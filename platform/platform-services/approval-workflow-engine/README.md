@@ -97,55 +97,114 @@ inbox with its own artifact detail.
 
 ## Example — two-stage approval, happy path
 
+**The policy** (`registry.cr.v1`) has two stages:
+
+* **Stage 1 — "District officers"** — mode `any-N:1`, rule
+  `group: /districts/D1` → resolves to **Alice** and **Bob**. Any one
+  approval advances the stage.
+* **Stage 2 — "State directors"** — mode `all`, rule
+  `user: director-X` → resolves to **Director-X** only. Director-X's
+  approval finalizes the request.
+
+**The scenario**: Registry posts change-request `cr-42` (for district
+D1) to AWE. Alice approves stage 1 (satisfying `any-N:1`, so Bob's task
+is skipped). Director-X then approves stage 2, and AWE notifies Registry
+to apply the change.
+
+**Key point about the arrows**: approvers never talk to AWE directly —
+they interact with the Registry UI, and Registry proxies
+`/v1/awe/tasks` + decision calls to AWE on their behalf. That's why
+every approver action below is drawn as two hops: Alice → Registry →
+AWE, then the response comes back the same way.
+
 ```
-┌─────────┐         ┌──────────┐         ┌──────────┐         ┌──────────┐
-│Registry │         │   AWE    │         │ Postgres │         │  Alice   │
-└────┬────┘         └────┬─────┘         └────┬─────┘         └────┬─────┘
-     │                   │                    │                    │
-     │ POST /requests    │                    │                    │
-     │ {cr-42, ctx:{D1}} │                    │                    │
-     ├──────────────────►│                    │                    │
-     │                   │ resolve stage 1    │                    │
-     │                   │ (district D1 grp)  │                    │
-     │                   │ ─► Alice, Bob      │                    │
-     │                   │ write request +    │                    │
-     │                   │ 2 tasks + event    │                    │
-     │                   ├───────────────────►│                    │
-     │  201 {request_id, │                    │                    │
-     │  status:in_review,│                    │                    │
-     │  tasks:[alice,bob]│                    │                    │
-     │◄──────────────────┤                    │                    │
-     │                   │                    │                    │
-     │                   │  webhook: request_created + stage_started
-     │◄──────────────────┤                    │                    │
-     │ set approval_     │                    │                    │
-     │ status=in_review  │                    │                    │
-     │                   │                    │                    │
-     │                                                             │
-     │ (Alice logs into Registry UI, Registry fetches her tasks)  │
-     │                   │ GET /tasks?assignee=me                  │
-     │                   │◄────────────────────────────────────────┤
-     │                   │ [alice's open task]                    │
-     │                   ├────────────────────────────────────────►│
-     │                                                             │
-     │                   │ POST /tasks/t-alice/decision            │
-     │                   │ {action:approve}                        │
-     │                   │◄────────────────────────────────────────┤
-     │                   │ any-1 satisfied                         │
-     │                   │ skip bob's task                         │
-     │                   │ resolve stage 2                         │
-     │                   │ ─► director-X                           │
-     │                   ├───────────────────►│                    │
-     │                   │                    │                    │
-     │  webhook: stage_completed + stage_started (stage 2)         │
-     │◄──────────────────┤                    │                    │
-     │                                                             │
-     │   … director-X approves (stage 2 is `all` with 1 approver) │
-     │                                                             │
-     │   webhook: stage_completed + request_approved              │
-     │◄──────────────────┤                    │                    │
-     │ apply CR to       │                    │                    │
-     │ registry tables   │                    │                    │
+┌───────┐   ┌──────────┐   ┌──────────┐   ┌─────────┐
+│ Alice │   │Director-X│   │ Registry │   │   AWE   │
+└───┬───┘   └────┬─────┘   └────┬─────┘   └────┬────┘
+    │            │              │               │
+    │            │              │ POST /v1/awe/requests
+    │            │              │ {policy_key: registry.cr.v1,
+    │            │              │  artifact_id: cr-42,
+    │            │              │  context: {district: "D1"}}
+    │            │              ├──────────────►│
+    │            │              │               │ resolve stage 1
+    │            │              │               │  (group /districts/D1)
+    │            │              │               │  → Alice, Bob
+    │            │              │               │ persist request +
+    │            │              │               │  2 tasks + events
+    │            │              │ 201 {request_id,
+    │            │              │      status: in_review,
+    │            │              │      tasks: [alice, bob]}
+    │            │              │◄──────────────┤
+    │            │              │               │
+    │            │              │ webhook: request_created
+    │            │              │         + stage_started
+    │            │              │◄──────────────┤
+    │            │              │ mirror approval_status=in_review
+    │            │              │               │
+    │            │              │               │
+    │ ═══════ Alice opens cr-42 in the Registry UI ═══════
+    │            │              │               │
+    │ GET /registry/cr/cr-42    │               │
+    ├────────────┼─────────────►│               │
+    │            │              │ Registry fetches her AWE tasks
+    │            │              │ GET /v1/awe/tasks?assignee=me
+    │            │              ├──────────────►│
+    │            │              │ [alice's open task for cr-42]
+    │            │              │◄──────────────┤
+    │ page (artifact + task)    │               │
+    │◄───────────┼──────────────┤               │
+    │            │              │               │
+    │ Alice clicks "Approve"    │               │
+    ├────────────┼─────────────►│               │
+    │            │              │ POST /v1/awe/tasks/{alice-task}
+    │            │              │      /decision
+    │            │              │ {action: approve}
+    │            │              ├──────────────►│
+    │            │              │               │ stage 1 (any-N:1) met
+    │            │              │               │ → skip Bob's open task
+    │            │              │               │ → resolve stage 2
+    │            │              │               │    (user: director-X)
+    │            │              │               │ → create dirX task
+    │            │              │ 201 Decision  │
+    │            │              │◄──────────────┤
+    │ ok         │              │               │
+    │◄───────────┼──────────────┤               │
+    │            │              │               │
+    │            │              │ webhook: stage_completed (s1)
+    │            │              │         + stage_started (s2)
+    │            │              │◄──────────────┤
+    │            │              │               │
+    │            │              │               │
+    │            │ ═══════ Director-X opens cr-42 in the Registry UI ═══
+    │            │              │               │
+    │            │ GET /registry/cr/cr-42       │
+    │            ├─────────────►│               │
+    │            │              │ GET /v1/awe/tasks?assignee=me
+    │            │              ├──────────────►│
+    │            │              │ [dirX's open task for cr-42]
+    │            │              │◄──────────────┤
+    │            │ page         │               │
+    │            │◄─────────────┤               │
+    │            │              │               │
+    │            │ Director-X clicks "Approve"  │
+    │            ├─────────────►│               │
+    │            │              │ POST /v1/awe/tasks/{dirX-task}
+    │            │              │      /decision {action: approve}
+    │            │              ├──────────────►│
+    │            │              │               │ stage 2 ("all", 1 of 1)
+    │            │              │               │ complete → last stage
+    │            │              │               │ → request approved
+    │            │              │ 201 Decision  │
+    │            │              │◄──────────────┤
+    │            │ ok           │               │
+    │            │◄─────────────┤               │
+    │            │              │               │
+    │            │              │ webhook: stage_completed (s2)
+    │            │              │         + request_approved
+    │            │              │◄──────────────┤
+    │            │              │ apply cr-42 to registry tables
+    │            │              │ (actual side-effect of the CR)
 ```
 
 ## Example — request is cancelled
