@@ -45,6 +45,7 @@
       * [Functional ID generation](products/registry/registry/design/functional-id-generation.md)
       * [Audit trail for Write Operations](products/registry/registry/design/audit-trail-for-write-operations.md)
       * [Registry themes](products/registry/registry/design/registry-themes.md)
+      * [Completion Score](products/registry/registry/design/completion-score.md)
     * [Developer Zone](products/registry/registry/developer-zone/README.md)
       * [Organization of Codebase](products/registry/registry/developer-zone/organization-of-codebase.md)
       * [Building a Registry](products/registry/registry/developer-zone/building-a-registry/README.md)
