@@ -298,65 +298,6 @@ Postgres `DEFAULT now()` at insert time.
 }
 ```
 
-### Example events
-
-**Login (no data changed):**
-```json
-{
-  "specversion": "1.0",
-  "id": "01HXQ9R...",
-  "source": "/openg2p/auth",
-  "type": "org.openg2p.auth.login",
-  "time": "2026-04-22T14:03:21Z",
-  "data": {
-    "actor":   { "type": "user", "id": "u_4421", "name": "fatima.k" },
-    "action":  "login",
-    "outcome": "success",
-    "context": { "ip": "10.2.14.88", "mfa": "totp" }
-  }
-}
-```
-
-**Beneficiary update with diff:**
-```json
-{
-  "specversion": "1.0",
-  "id": "01HXQ9S...",
-  "source": "/openg2p/beneficiary-service",
-  "type": "org.openg2p.beneficiary.updated",
-  "subject": "beneficiary/b_1029384756",
-  "time": "2026-04-22T14:05:12Z",
-  "data": {
-    "actor":    { "type": "user", "id": "u_4421" },
-    "action":   "update",
-    "outcome":  "success",
-    "resource": { "type": "beneficiary", "id": "b_1029384756" },
-    "changes":  [
-      { "field": "phone", "from": "+91...21", "to": "+91...88" }
-    ]
-  }
-}
-```
-
-**System-initiated payment reversal:**
-```json
-{
-  "specversion": "1.0",
-  "id": "01HXQ9T...",
-  "source": "/openg2p/payment-recon",
-  "type": "org.openg2p.payment.reversed",
-  "time": "2026-04-22T02:00:00Z",
-  "data": {
-    "actor":    { "type": "system", "id": "reconciliation-job" },
-    "action":   "reverse",
-    "outcome":  "success",
-    "resource": { "type": "payment", "id": "pay_55231" },
-    "reason":   "bank_rejection",
-    "context":  { "job_run_id": "r_20260422_0200", "bank_code": "E102" }
-  }
-}
-```
-
 ### Emitting events from API calls
 
 The common case for OpenG2P is: a service's REST API handler emits one audit
@@ -445,6 +386,45 @@ No `changes[]` field — because data-version tracking lives elsewhere.
 The audit records that `u_4421` called this API successfully against
 `b_1029384756`; the actual diff of before/after values is not duplicated here.
 
+#### Example C — call denied (`PUT /v1/beneficiary/{id}`, 403)
+
+Same API as an update, but the caller lacks the required role. The update
+never happens — still, we emit the event so investigators can find
+attempted unauthorised actions with a single indexed query on `outcome`.
+
+```json
+{
+  "specversion": "1.0",
+  "id": "01HXQ9R31...",
+  "source": "/openg2p/beneficiary-service",
+  "type": "org.openg2p.beneficiary.updated",
+  "subject": "beneficiary/b_1029384756",
+  "time": "2026-04-23T09:12:00Z",
+  "data": {
+    "actor":    { "type": "user", "id": "u_7777", "roles": ["viewer.basic"] },
+    "action":   "update",
+    "outcome":  "denied",
+    "reason":   "insufficient_role",
+    "resource": { "type": "beneficiary", "id": "b_1029384756" },
+    "context": {
+      "api":         "PUT /v1/beneficiary/b_1029384756",
+      "module":      "beneficiary-service",
+      "http_status": 403
+    }
+  }
+}
+```
+
+DB row: `outcome = denied`, `reason = insufficient_role` — both are flat
+indexed columns, so this finds the record in milliseconds:
+
+```sql
+SELECT occurred_at, actor_id, type, resource_id, reason
+FROM audit_events
+WHERE outcome = 'denied'
+  AND occurred_at > now() - interval '24 hours';
+```
+
 #### Practical emit — one line per handler
 
 ```python
@@ -504,8 +484,8 @@ The live machine-readable spec is auto-generated from the FastAPI app on
 every push and committed to the repo — this page embeds it rather than
 duplicating endpoint descriptions by hand:
 
-* **Source of truth:** [`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/main/docs/openapi.json) (auto-generated — do not edit by hand)
-* **CI workflow:** [`.github/workflows/docker-build.yml`](https://github.com/OpenG2P/audit-manager/blob/main/.github/workflows/docker-build.yml) regenerates and commits this file on every push to `src/` or `config/`
+* **Source of truth:** [`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/develop/docs/openapi.json) (auto-generated — do not edit by hand)
+* **CI workflow:** [`.github/workflows/docker-build.yml`](https://github.com/OpenG2P/audit-manager/blob/develop/.github/workflows/docker-build.yml) regenerates and commits this file on every push to `src/` or `config/`
 
 A running instance also exposes:
 
@@ -563,33 +543,33 @@ Every response (success or error) is wrapped in the standard OpenG2P envelope:
 ### Endpoints
 
 The blocks below are rendered by GitBook directly from
-[`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/main/docs/openapi.json).
+[`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/develop/docs/openapi.json).
 No manual updates here when endpoints evolve — the spec refreshes on the
 next `src/`-touching push.
 
 {% openapi-operation spec="audit-manager" path="/v1/auditmanager/events" method="post" %}
-[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
 {% openapi-operation spec="audit-manager" path="/v1/auditmanager/events/batch" method="post" %}
-[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
 {% openapi-operation spec="audit-manager" path="/v1/auditmanager/health" method="get" %}
-[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
 {% openapi-operation spec="audit-manager" path="/v1/auditmanager/version" method="get" %}
-[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
 {% openapi-operation spec="audit-manager" path="/v1/auditmanager/config" method="get" %}
-[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
 > **One-time GitBook setup:** register the spec ID `audit-manager` under
 > **Site settings → OpenAPI → Add spec**, with URL
-> `https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json`.
+> `https://raw.githubusercontent.com/OpenG2P/audit-manager/develop/docs/openapi.json`.
 > This mirrors how the registry-staff-portal-api spec is wired elsewhere
 > in OpenG2P GitBook.
 
@@ -815,7 +795,7 @@ uvicorn audit_manager.main:app --reload
 ## Testing
 
 Three layers, each proving a different thing. Full details in
-[`tests/README.md`](https://github.com/OpenG2P/audit-manager/blob/main/tests/README.md).
+[`tests/README.md`](https://github.com/OpenG2P/audit-manager/blob/develop/tests/README.md).
 
 ### 1. Unit tests — schema validation (no infra needed)
 
@@ -852,7 +832,7 @@ N=1000 C=20 tests/load.sh
 
 ### Postman collection
 
-Import [`tests/postman/OpenG2P-Audit-Manager.postman_collection.json`](https://github.com/OpenG2P/audit-manager/blob/main/tests/postman/OpenG2P-Audit-Manager.postman_collection.json)
+Import [`tests/postman/OpenG2P-Audit-Manager.postman_collection.json`](https://github.com/OpenG2P/audit-manager/blob/develop/tests/postman/OpenG2P-Audit-Manager.postman_collection.json)
 into Postman, Bruno, or Insomnia. Folders:
 
 - Service endpoints (`/v1/auditmanager/health`, `/v1/auditmanager/version`, `/v1/auditmanager/config`, `/v1/auditmanager/docs`)
@@ -866,7 +846,7 @@ ids, 4xx on invalid). Use the **Runner** to fire the whole collection.
 
 ### Sample events
 
-Nine JSON fixtures under [`tests/sample-events/`](https://github.com/OpenG2P/audit-manager/tree/main/tests/sample-events)
+Nine JSON fixtures under [`tests/sample-events/`](https://github.com/OpenG2P/audit-manager/tree/develop/tests/sample-events)
 cover every realistic OpenG2P audit shape — reusable as `curl -d @file.json`:
 
 ```bash
@@ -973,7 +953,7 @@ All configuration is layered, highest priority first:
 
 ### YAML config
 
-See [`config/default.yaml`](https://github.com/OpenG2P/audit-manager/blob/main/config/default.yaml) for the full reference. Top-level keys:
+See [`config/default.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/config/default.yaml) for the full reference. Top-level keys:
 
 - `audit_manager.ingest.*`  — queue size, batch limits
 - `audit_manager.kafka.*`   — topic, DLQ, producer/consumer tuning
@@ -981,8 +961,8 @@ See [`config/default.yaml`](https://github.com/OpenG2P/audit-manager/blob/main/c
 
 ### Helm values
 
-See [`helm/openg2p-audit-manager/values.yaml`](https://github.com/OpenG2P/audit-manager/blob/main/helm/openg2p-audit-manager/values.yaml) and
-[`helm/openg2p-audit-manager/questions.yaml`](https://github.com/OpenG2P/audit-manager/blob/main/helm/openg2p-audit-manager/questions.yaml) for
+See [`helm/openg2p-audit-manager/values.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/helm/openg2p-audit-manager/values.yaml) and
+[`helm/openg2p-audit-manager/questions.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/helm/openg2p-audit-manager/questions.yaml) for
 the full schema of user-facing values and their Rancher UI groupings.
 
 ---
