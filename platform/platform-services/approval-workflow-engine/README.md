@@ -106,21 +106,40 @@ inbox with its own artifact detail.
   `user: director-X` → resolves to **Director-X** only. Director-X's
   approval finalizes the request.
 
-**The scenario**: Registry posts change-request `cr-42` (for district
-D1) to AWE. Alice approves stage 1 (satisfying `any-N:1`, so Bob's task
-is skipped). Director-X then approves stage 2, and AWE notifies Registry
-to apply the change.
+**The scenario**:
+
+1. A change request `cr-42` (for district D1) **is created in Registry
+   somehow** — by a field agent, a bulk import, an upstream system, a
+   CSV upload; how and by whom is outside AWE's concern. Registry owns
+   the CR.
+2. Registry posts an approval request to AWE.
+3. **Alice** (a district officer) logs into Registry, sees `cr-42` in
+   her approval inbox, and approves — satisfying stage 1's `any-N:1`,
+   which skips Bob's task.
+4. **Director-X** logs into Registry, sees `cr-42` in his approval
+   inbox, and approves — satisfying stage 2's `all` and finalizing the
+   request.
+5. AWE fires the final webhook, Registry applies the CR.
+
+Alice and Director-X are **purely approvers** — they neither authored
+`cr-42` nor edit it; they only review and approve what's already
+there.
 
 **Key point about the arrows**: approvers never talk to AWE directly —
 they interact with the Registry UI, and Registry proxies
-`/v1/awe/tasks` + decision calls to AWE on their behalf. That's why
-every approver action below is drawn as two hops: Alice → Registry →
-AWE, then the response comes back the same way.
+`/v1/awe/tasks` + decision calls to AWE on their behalf. Every
+approver action below is drawn as two hops: Alice → Registry → AWE,
+response back the same way.
 
 ```
 ┌───────┐   ┌──────────┐   ┌──────────┐   ┌─────────┐
 │ Alice │   │Director-X│   │ Registry │   │   AWE   │
 └───┬───┘   └────┬─────┘   └────┬─────┘   └────┬────┘
+    │            │              │               │
+    │            │              │ ── CR cr-42 is created in Registry by
+    │            │              │    someone (not shown — not relevant
+    │            │              │    to AWE). Registry persists it with
+    │            │              │    local approval_status=pending.
     │            │              │               │
     │            │              │ POST /v1/awe/requests
     │            │              │ {policy_key: registry.cr.v1,
@@ -143,19 +162,20 @@ AWE, then the response comes back the same way.
     │            │              │ mirror approval_status=in_review
     │            │              │               │
     │            │              │               │
-    │ ═══════ Alice opens cr-42 in the Registry UI ═══════
+    │ ═══════ Alice logs into Registry, opens her approval inbox ═══════
     │            │              │               │
-    │ GET /registry/cr/cr-42    │               │
+    │ GET /registry/my-approvals│               │
     ├────────────┼─────────────►│               │
-    │            │              │ Registry fetches her AWE tasks
+    │            │              │ Registry proxies Alice's AWE task list
     │            │              │ GET /v1/awe/tasks?assignee=me
     │            │              ├──────────────►│
     │            │              │ [alice's open task for cr-42]
     │            │              │◄──────────────┤
-    │ page (artifact + task)    │               │
+    │ inbox: [cr-42 pending your approval]
     │◄───────────┼──────────────┤               │
     │            │              │               │
-    │ Alice clicks "Approve"    │               │
+    │ Alice clicks cr-42 → reviews the CR detail (from Registry's own DB)
+    │ → clicks "Approve"        │               │
     ├────────────┼─────────────►│               │
     │            │              │ POST /v1/awe/tasks/{alice-task}
     │            │              │      /decision
@@ -176,18 +196,18 @@ AWE, then the response comes back the same way.
     │            │              │◄──────────────┤
     │            │              │               │
     │            │              │               │
-    │            │ ═══════ Director-X opens cr-42 in the Registry UI ═══
+    │            │ ═══════ Director-X logs into Registry, opens his approval inbox ═══
     │            │              │               │
-    │            │ GET /registry/cr/cr-42       │
+    │            │ GET /registry/my-approvals   │
     │            ├─────────────►│               │
     │            │              │ GET /v1/awe/tasks?assignee=me
     │            │              ├──────────────►│
     │            │              │ [dirX's open task for cr-42]
     │            │              │◄──────────────┤
-    │            │ page         │               │
+    │            │ inbox: [cr-42 pending your approval]
     │            │◄─────────────┤               │
     │            │              │               │
-    │            │ Director-X clicks "Approve"  │
+    │            │ Director-X clicks cr-42 → reviews → "Approve"
     │            ├─────────────►│               │
     │            │              │ POST /v1/awe/tasks/{dirX-task}
     │            │              │      /decision {action: approve}
@@ -204,7 +224,7 @@ AWE, then the response comes back the same way.
     │            │              │         + request_approved
     │            │              │◄──────────────┤
     │            │              │ apply cr-42 to registry tables
-    │            │              │ (actual side-effect of the CR)
+    │            │              │ (Registry's own post-approval side-effect)
 ```
 
 ## Example — request is cancelled
