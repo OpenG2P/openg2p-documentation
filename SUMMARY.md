@@ -546,6 +546,7 @@
     * [Testing](platform/platform-services/id-generator/testing.md)
   * [Master Data Service](platform/platform-services/master-data-service/README.md)
     * [Versions](platform/platform-services/master-data-service/versions.md)
+  * [Approval Workflow Engine](platform/platform-services/approval-workflow-engine.md)
   * [Consent Management](consent-management/README.md)
     * [Design](consent-management/design/README.md)
       * [High Level Design](consent-management/design/high-level-design.md)
