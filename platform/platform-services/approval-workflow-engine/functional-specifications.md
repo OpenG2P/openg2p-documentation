@@ -182,7 +182,7 @@ if `callback_url` is set on the request, enqueues a `webhook_delivery`.
 | `request_approved`  | Last stage completed with `approved`                               | ✅              |
 | `request_rejected`  | Any stage completed with `rejected`, or `on_empty=block` triggered | ✅              |
 | `request_cancelled` | `POST /requests/{id}/cancel`                                       | ✅              |
-| `task_expired`      | SLA monitor finds an open task past `due_at`                       | (in timeline only) |
+| `task_expired`      | SLA monitor finds an open/claimed task past `due_at`               | ✅              |
 
 ### Webhook request format
 
@@ -278,12 +278,29 @@ distinct caller retry).
 Each stage can specify `sla_hours`. When tasks are created for a stage,
 `due_at` is set to `now + sla_hours`. The SLA monitor worker
 (`awe.sla.check_interval_seconds`, default 300s) scans for
-`status IN (open,claimed) AND due_at <= now()` and flips them to
+`status IN (open, claimed) AND due_at <= now()` and flips them to
 `expired`.
 
-v1 does **not** auto-reject a request when a task expires. Operators
-decide what to do: cancel the request, nudge the approver, or reassign.
-A future iteration may add escalation rules on the policy itself.
+**AWE's role is mechanism, not policy.** The monitor does exactly three
+things: marks the task `expired`, appends a `task_expired` event, and
+fires a webhook to the caller's `callback_url`. It does **not**
+auto-reject the request, auto-reassign, auto-escalate, or send
+reminders — all of that is domain-specific policy that belongs in the
+caller (Registry, PBMS, …).
+
+The webhook payload includes `task_id`, `stage_order`, `assignee`, and
+`due_at`, giving the caller enough to decide:
+
+* **Hard deadline** — cancel via `POST /v1/awe/requests/{id}/cancel`.
+* **Nudge-then-escalate** — send a reminder email; if still open after
+  another window, cancel.
+* **Reassign to supervisor** — cancel and create a new request with a
+  different `policy_key`.
+* **Silent reminder** — send a nag email, leave the task alone.
+
+A future iteration may add escalation rules on the policy itself
+(auto-reassign on expiry, auto-reject after N expirations). For v1,
+callers own the decision.
 
 ## Security posture
 
