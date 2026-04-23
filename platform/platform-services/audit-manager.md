@@ -357,6 +357,125 @@ Postgres `DEFAULT now()` at insert time.
 }
 ```
 
+### Emitting events from API calls
+
+The common case for OpenG2P is: a service's REST API handler emits one audit
+event per incoming call — capturing *who* called, *which* API, *on which
+entity*, and *the outcome*. This is distinct from recording data changes
+(field diffs, version history) — those are tracked separately. The audit
+event answers *"did this call happen?"* not *"what did the data look like
+before and after?"*.
+
+Given what a handler has at the moment of the call:
+
+| You have                                  | Goes into                                                  |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| User from auth token (id, name, roles)    | `data.actor.{type, id, name, roles}`                       |
+| Module name                               | `source` (as `/openg2p/<module>`) and `data.context.module`|
+| API name (HTTP method + path)             | `data.context.api`                                         |
+| Path param `{id}` for the primary entity  | `data.resource.{type, id}` and top-level `subject`         |
+| HTTP response status code                 | `data.context.http_status` (drives `outcome`)              |
+| Response error reason (on failure/denied) | `data.reason`                                              |
+
+**Outcome rule:** `2xx` → `success`, `401/403` → `denied` (+ `reason`),
+other `4xx/5xx` → `failure` (+ `reason`).
+
+**`subject` vs `data.resource` — both refer to the primary entity but in
+different shapes.** `subject` is a single string, part of the CloudEvents
+envelope — used by generic event-bus tooling for filtering and routing.
+`data.resource` is a structured `{ type, id, ...extras }` object — its
+`type` and `id` land in the flat, indexed DB columns `resource_type` and
+`resource_id`, so it's what forensic SQL queries actually use. Keep them
+consistent (same type, same id). If the entity has extra attributes worth
+capturing (e.g. a payment's `amount`, `currency`, `beneficiary_id`), put
+them on `data.resource` only — those extras flow into the `details` JSONB
+column.
+
+#### Example A — user logs in (`POST /v1/auth/login`, outcome = success)
+
+```json
+{
+  "specversion": "1.0",
+  "id": "01HXQ9R2V...",
+  "source": "/openg2p/auth",
+  "type": "org.openg2p.auth.login",
+  "time": "2026-04-23T09:00:12Z",
+  "data": {
+    "actor":   { "type": "user", "id": "u_4421", "name": "fatima.k", "ip": "10.2.14.88" },
+    "action":  "login",
+    "outcome": "success",
+    "context": {
+      "api":    "POST /v1/auth/login",
+      "module": "auth"
+    }
+  }
+}
+```
+
+DB row ends up as: `actor_id = u_4421`, `type = org.openg2p.auth.login`,
+`outcome = success`, no `resource_*`, and `details.context` preserved
+intact (`{"api": "POST /v1/auth/login", "module": "auth"}`).
+
+#### Example B — creating a beneficiary (`POST /v1/beneficiary/register`, 201)
+
+```json
+{
+  "specversion": "1.0",
+  "id": "01HXQ9R2X...",
+  "source": "/openg2p/beneficiary-service",
+  "type": "org.openg2p.beneficiary.created",
+  "subject": "beneficiary/b_1029384756",
+  "time": "2026-04-23T09:02:30Z",
+  "data": {
+    "actor":    { "type": "user", "id": "u_4421", "roles": ["registrar"] },
+    "action":   "create",
+    "outcome":  "success",
+    "resource": { "type": "beneficiary", "id": "b_1029384756" },
+    "context": {
+      "api":         "POST /v1/beneficiary/register",
+      "module":      "beneficiary-service",
+      "http_status": 201,
+      "request_id":  "req_8f2b..."
+    }
+  }
+}
+```
+
+No `changes[]` field — because data-version tracking lives elsewhere.
+The audit records that `u_4421` called this API successfully against
+`b_1029384756`; the actual diff of before/after values is not duplicated here.
+
+#### Practical emit — one line per handler
+
+```python
+# in a FastAPI middleware or dependency
+audit.emit(CloudEvent(
+    source=f"/openg2p/{MODULE}",
+    type=f"org.openg2p.{MODULE}.{VERB}",
+    subject=f"{resource_type}/{resource_id}" if resource_id else None,
+    data=AuditData(
+        actor=Actor(
+            type="user", id=user.id, name=user.name,
+            roles=user.roles, ip=request.client.host,
+        ),
+        action=VERB_TO_ACTION[VERB],
+        outcome=outcome_from_status(response.status_code),
+        reason=error_reason if outcome != "success" else None,
+        resource=Resource(type=resource_type, id=resource_id) if resource_id else None,
+        context={
+            "api":         f"{request.method} {request.url.path}",
+            "module":      MODULE,
+            "http_status": response.status_code,
+            "request_id":  request.headers.get("x-request-id"),
+        },
+    ),
+))
+```
+
+This is idiomatic for FastAPI — a single middleware can emit for every
+API call, and hand-written emits only happen for events that aren't 1:1
+with an HTTP call (e.g. a scheduled reconciliation job).
+
 ### Naming conventions for `type`
 
 - Lowercase, reverse-DNS: `org.openg2p.<domain>.<past_participle_verb>`
