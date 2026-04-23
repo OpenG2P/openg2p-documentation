@@ -500,49 +500,98 @@ with an HTTP call (e.g. a scheduled reconciliation job).
 
 Base path: `/v1/auditmanager/`
 
-### `POST /events`
+The live machine-readable spec is auto-generated from the FastAPI app on
+every push and committed to the repo — this page embeds it rather than
+duplicating endpoint descriptions by hand:
 
-Ingest a single CloudEvent. Returns `202 Accepted` synchronously after the
-event is enqueued — **does not wait for Kafka or Postgres.**
+* **Source of truth:** [`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/main/docs/openapi.json) (auto-generated — do not edit by hand)
+* **CI workflow:** [`.github/workflows/docker-build.yml`](https://github.com/OpenG2P/audit-manager/blob/main/.github/workflows/docker-build.yml) regenerates and commits this file on every push to `src/` or `config/`
 
-Request body: a single CloudEvent JSON object (see schema above).
+A running instance also exposes:
 
-Responses:
+| Path | What |
+| --- | --- |
+| `/v1/auditmanager/docs` | Swagger UI — interactive explorer |
+| `/v1/auditmanager/redoc` | ReDoc |
+| `/v1/auditmanager/openapi.json` | Machine-readable OpenAPI 3.1 JSON |
 
-| Status | Meaning                                                          |
-| ------ | ---------------------------------------------------------------- |
-| `202`  | Accepted into the ingest queue. The `id` is echoed in response.  |
-| `400`  | Malformed or schema-invalid event.                               |
-| `503`  | Ingest queue full (backpressure) **or** service not ready.       |
+### Response envelope
 
-### `POST /events/batch`
+Every response (success or error) is wrapped in the standard OpenG2P envelope:
 
-Ingest up to `ingest.max_batch_size` events in one request. Same 202
-semantics, returns the list of accepted ids.
+**Success:**
+```json
+{
+  "id": "openg2p.auditmanager",
+  "version": "1.0",
+  "responsetime": "2026-04-23T10:00:00.000Z",
+  "response": { ... },
+  "errors": []
+}
+```
 
-### `GET /health`
+**Error** — `response` is `null`, `errors` populated:
+```json
+{
+  "id": "openg2p.auditmanager",
+  "version": "1.0",
+  "responsetime": "2026-04-23T10:00:00.000Z",
+  "response": null,
+  "errors": [{ "errorCode": "AUD-004", "message": "Audit ingest queue full — backpressure" }]
+}
+```
 
-Liveness + readiness. Returns `200 {"status": "UP"}` when:
-1. Startup is complete
-2. Postgres is reachable
+### HTTP status codes
 
-Returns `503` otherwise.
+| Status | Meaning | When used |
+| --- | --- | --- |
+| `202 Accepted` | Accepted into the ingest queue (does **not** wait for Kafka or Postgres) | All successful ingest calls — single or batch |
+| `200 OK` | Request succeeded | `/health`, `/version`, `/config` |
+| `400 Bad Request` | Batch size exceeds `ingest.max_batch_size` | `/events/batch` only |
+| `422 Unprocessable Entity` | Malformed or schema-invalid CloudEvent | Ingest endpoints — FastAPI/pydantic validation |
+| `503 Service Unavailable` | Ingest queue full (backpressure) or service not ready | Ingest endpoints and `/health` |
 
-### `GET /version`
+### Error codes
 
-Build metadata — service version, git commit, build time.
+| Code | HTTP | Meaning |
+| --- | --- | --- |
+| `AUD-004` | 503 | Audit ingest queue full — backpressure; caller should retry with jitter |
+| `AUD-005` | 503 | Service not ready — startup not complete |
+| `AUD-006` | 503 | Database health check failed |
+| `AUD-007` | 400 | Batch payload exceeds `ingest.max_batch_size` |
 
-### `GET /config`
+### Endpoints
 
-Non-sensitive effective configuration, useful for diagnostics.
+The blocks below are rendered by GitBook directly from
+[`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/main/docs/openapi.json).
+No manual updates here when endpoints evolve — the spec refreshes on the
+next `src/`-touching push.
 
-### `GET /docs` / `GET /redoc` / `GET /openapi.json`
+{% openapi-operation spec="audit-manager" path="/v1/auditmanager/events" method="post" %}
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+{% endopenapi-operation %}
 
-Served at `/v1/auditmanager/docs`, `/v1/auditmanager/redoc`, and
-`/v1/auditmanager/openapi.json` so they sit under the same Istio
-VirtualService prefix as the rest of the API.
+{% openapi-operation spec="audit-manager" path="/v1/auditmanager/events/batch" method="post" %}
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+{% endopenapi-operation %}
 
-Standard FastAPI-provided OpenAPI surfaces.
+{% openapi-operation spec="audit-manager" path="/v1/auditmanager/health" method="get" %}
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="audit-manager" path="/v1/auditmanager/version" method="get" %}
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="audit-manager" path="/v1/auditmanager/config" method="get" %}
+[OpenAPI audit-manager](https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json)
+{% endopenapi-operation %}
+
+> **One-time GitBook setup:** register the spec ID `audit-manager` under
+> **Site settings → OpenAPI → Add spec**, with URL
+> `https://raw.githubusercontent.com/OpenG2P/audit-manager/main/docs/openapi.json`.
+> This mirrors how the registry-staff-portal-api spec is wired elsewhere
+> in OpenG2P GitBook.
 
 ---
 
