@@ -2,6 +2,9 @@
 description: >-
   REST API reference for the Approval Workflow Engine — rendered directly from
   the live OpenAPI 3.1 spec committed to the repo.
+layout:
+  feedback:
+    visible: false
 ---
 
 # API Reference
