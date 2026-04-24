@@ -546,7 +546,7 @@
     * [Testing](platform/platform-services/id-generator/testing.md)
   * [Master Data Service](platform/platform-services/master-data-service/README.md)
     * [Versions](platform/platform-services/master-data-service/versions.md)
-  * [Approval Workflow Engine](platform/platform-services/approval-workflow-engine/README.md)
+  * [Approval Workflow Engine (AWE)](platform/platform-services/approval-workflow-engine/README.md)
     * [Functional Specifications](platform/platform-services/approval-workflow-engine/functional-specifications.md)
     * [API Reference](platform/platform-services/approval-workflow-engine/api-reference.md)
     * [Technical Architecture](platform/platform-services/approval-workflow-engine/technical-architecture.md)
