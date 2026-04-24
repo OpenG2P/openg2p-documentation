@@ -85,6 +85,7 @@ Each client supports the following parameters:
 | `clientId`     | Yes      | Unique client identifier.                                                |
 | `name`         | No       | Display name. Defaults to `clientId`.                                    |
 | `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                        |
+| `webOrigins`   | No       | List of allowed CORS origins. Defaults to `["+"]`, which means allow all origins declared in `redirectUris`. |
 | `secret`       | No       | Client secret. If not provided, a random secret is generated and stored. |
 | `clientRoles`  | No       | List of client roles to create. See below.                               |
 

@@ -168,7 +168,42 @@ keycloak-init handles both automatically:
   `role:` and `group:` approver rule members.
 
 Both are declared in AWE's [helm values](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) —
-no post-install manual steps.
+no post-install manual steps here.
+
+### One post-install Keycloak tweak for the SPA client
+
+The admin SPA is a browser-side app and needs the `awe-admin-portal`
+client configured as a **public client with Web Origins set**. The
+upstream `keycloak-init` v1.1.0 script
+([`create_clients.py`](https://github.com/OpenG2P/keycloak-init/blob/main/docker/create_clients.py))
+hardcodes every client it creates as confidential with no Web Origins
+(fine for server-side-auth modules like Registry, wrong for SPAs).
+Until the upstream chart accepts these fields per-client, flip two
+toggles in the Keycloak admin UI once per deployment:
+
+1. **Clients → `awe-admin-portal` → Settings → Client authentication → Off** (makes it a public client). In pre-24 UIs this is "Access Type: public".
+2. **Clients → `awe-admin-portal` → Settings → Web Origins → `+`** (shorthand for "use the Valid Redirect URIs list for CORS"). Or list your hostname explicitly.
+3. **Save.**
+
+Without step 2, the browser's preflight on the token-exchange POST
+gets blocked by CORS and keycloak-js rejects `init()` with no detail —
+the SPA error page will surface the config it tried but not the CORS
+error itself. Symptom: *"Keycloak init failed … keycloak-js init()
+rejected with no detail"*.
+
+Equivalent kcadm.sh one-liner if you prefer CLI:
+
+```sh
+kcadm.sh update clients/$(kcadm.sh get clients -r staff -q clientId=awe-admin-portal --fields id --format csv --noquotes) \
+  -r staff \
+  -s 'publicClient=true' \
+  -s 'webOrigins=["+"]'
+```
+
+When the upstream chart gains support for these fields
+([tracked here](https://github.com/OpenG2P/keycloak-init/issues)), AWE's
+values already carry `publicClient: true` + `webOrigins: ["+"]` so the
+manual step disappears automatically.
 
 ### Install
 
