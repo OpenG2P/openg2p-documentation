@@ -185,6 +185,24 @@ toggles in the Keycloak admin UI once per deployment:
 2. **Clients → `awe-admin-portal` → Settings → Web Origins → `+`** (shorthand for "use the Valid Redirect URIs list for CORS"). Or list your hostname explicitly.
 3. **Save.**
 
+> **Why "Client authentication" must be Off for the SPA.** Client
+> authentication means the client sends a stored `client_secret` on
+> every `/token` call. A browser-based single-page app can't keep a
+> secret secret — any JS shipped to the browser is visible in
+> DevTools, so a client_secret baked in effectively becomes public.
+> OAuth 2.0 best current practice for browser apps is therefore
+> "public client + PKCE": the SPA generates a one-time
+> `code_verifier`/`code_challenge` pair per login, which Keycloak
+> binds to the authorization code and verifies on exchange.
+> Cryptographically equivalent, with no long-lived secret. The K8s
+> `client_secret` that `keycloak-init` generates for this client is
+> unused by the SPA — only our `awe-admin-resolver` service-account
+> client (used by the backend pod, not the browser) needs that
+> confidential flow. References: [RFC 8252 "OAuth 2.0 for Native
+> Apps"](https://datatracker.ietf.org/doc/html/rfc8252),
+> [RFC 7636 "PKCE"](https://datatracker.ietf.org/doc/html/rfc7636),
+> and [OAuth 2.0 Security BCP §2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics).
+
 Without step 2, the browser's preflight on the token-exchange POST
 gets blocked by CORS and keycloak-js rejects `init()` with no detail —
 the SPA error page will surface the config it tried but not the CORS
@@ -224,18 +242,76 @@ global:
   aweHostname: awe.registry.trial.openg2p.org
   postgresqlHost: commons-postgresql
   keycloakBaseUrl: https://keycloak.trial.openg2p.org
-  keycloakRealm: openg2p
 
 awe:
   appConfig:
     module: registry
 ```
 
-Most settings (issuer URL, JWKS URL, audience, resolver client ID) are
-derived from the `global.*` values by the chart — no per-environment
-overrides needed unless you diverge from the staff-realm convention.
-See [`helm/openg2p-awe/values.yaml`](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml)
+That's the whole override. The Keycloak client's `redirectUris` template
+references `global.aweHostname`, so changing that one value propagates
+through to the `awe-admin-portal` client's valid redirects and CORS
+Web Origins automatically.
+
+Most other settings (issuer URL, JWKS URL, audience, resolver client
+ID) are also derived from the `global.*` values — no further
+per-environment overrides needed unless you diverge from the
+staff-realm convention. See
+[`helm/openg2p-awe/values.yaml`](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml)
 for the full set.
+
+> **Why explicit redirect URIs (not `*`)?** A wildcard `*` works for
+> Keycloak's *login redirect* check, but it breaks CORS: Keycloak's
+> `webOrigins: ["+"]` shorthand expands to the non-wildcard entries in
+> the redirect URI list — so with `["*"]` the allowed-origins set ends
+> up empty and the browser silently blocks the SPA's token-exchange
+> POST. The chart ships with a host-templated URL to avoid this
+> footgun.
+
+### Uninstall / teardown
+
+`helm uninstall` removes AWE's workloads but leaves several resources
+behind by design — things owned by shared commons services (the
+Postgres database + role in `commons-postgresql`), Helm hook Jobs
+pinned with `hook-delete-policy: before-hook-creation`, and the
+keycloak-init client Secrets annotated `helm.sh/resource-policy:
+keep`. A dedicated tear-down script handles the full cleanup:
+
+```bash
+# From the awe repo:
+./scripts/uninstall-awe.sh --namespace <ns> --dry-run   # see what would happen
+./scripts/uninstall-awe.sh --namespace <ns>             # do it, with confirmation
+```
+
+The script runs eight steps in order:
+
+1. `helm uninstall <release>`
+2. Delete leftover Jobs + orphan Pods (keycloak-init, postgres-init)
+3. Delete the `awe-admin-portal` and `awe-admin-resolver` K8s Secrets
+   (created by keycloak-init with `resource-policy: keep`)
+4. Sweep any other Secrets / ConfigMaps carrying the release label
+5. Drop the Postgres database + role via `kubectl exec` into
+   `commons-postgresql`
+6. Delete PVCs labeled with the release
+7. Delete `Released` / orphaned PVs claimed by the namespace
+8. *(Optional, behind `--delete-kc-clients`)* delete the two Keycloak
+   clients themselves via `kcadm.sh` inside the `commons-keycloak` pod
+
+Useful flags:
+
+| Flag | What it does |
+|---|---|
+| `--dry-run` | Prints every action; changes nothing. Always safe to run first. |
+| `--yes` / `-y` | Skips the interactive "type the release name" confirmation — use in CI. |
+| `--release <name>` | Override the Helm release name (default `awe`). |
+| `--postgres-release <name>` | Override the commons-postgresql release (default `commons-postgresql`). |
+| `--keycloak-release <name>` | Override the commons-keycloak release. Only used with `--delete-kc-clients`. |
+| `--delete-kc-clients` | Also deletes the `awe-admin-portal` + `awe-admin-resolver` clients from the `staff` realm. Skip if another service reuses them. |
+| `--keep-kc-secrets` | Leave the keycloak-init Secrets in place — useful when re-installing immediately and you want the same client secret values. |
+| `--keep-pvs` | Delete PVCs but not PVs (retain storage for forensic inspection). |
+
+Prerequisites: `kubectl` (cluster-admin for the namespace), `helm`,
+`jq`, `bash` 4+.
 
 ## Configuration reference
 

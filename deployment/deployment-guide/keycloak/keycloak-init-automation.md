@@ -84,9 +84,10 @@ Each client supports the following parameters:
 | -------------- | -------- | ------------------------------------------------------------------------ |
 | `clientId`     | Yes      | Unique client identifier.                                                |
 | `name`         | No       | Display name. Defaults to `clientId`.                                    |
+| `publicClient` | No       | Defaults to `false` (Client Authentication: On, confidential client). Set to `true` for SPAs or browser-only apps — no client secret is used and service accounts are disabled. |
 | `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                        |
 | `webOrigins`   | No       | List of allowed CORS origins. Defaults to `["+"]`, which means allow all origins declared in `redirectUris`. |
-| `secret`       | No       | Client secret. If not provided, a random secret is generated and stored. |
+| `secret`       | No       | Client secret (confidential clients only). If not provided, a random secret is generated and stored. |
 | `clientRoles`  | No       | List of client roles to create. See below.                               |
 
 ### Client roles
