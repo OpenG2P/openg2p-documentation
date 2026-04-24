@@ -15,8 +15,10 @@ description: >-
 docker compose up --build
 ```
 
-Starts Postgres and the AWE service. After a few seconds:
+Starts **three** services — Postgres, the backend (`awe`), and the admin
+SPA (`awe-ui`, nginx-served static build). After a few seconds:
 
+* Admin UI: http://localhost:8080/ (nginx proxies `/v1/awe/*` to the backend)
 * API: http://localhost:8000/v1/awe/
 * Swagger: http://localhost:8000/v1/awe/docs
 * Health: http://localhost:8000/v1/awe/health
@@ -93,10 +95,27 @@ DB_HOST=localhost DB_PASSWORD=postgres \
 cd ui && npm install && npm run dev
 ```
 
-Open http://localhost:5173/v1/awe/admin/ — Vite proxies API calls to
+Open http://localhost:5173/ — Vite proxies API calls on `/v1/awe/*` to
 the uvicorn instance on :8000.
 
 ## Kubernetes install via Helm
+
+### Chart deploys **two Deployments + one Istio VirtualService**
+
+The single `openg2p-awe` chart ships:
+
+* **`awe`** — the backend (FastAPI + Postgres). Image
+  `openg2p/openg2p-awe:<branch>`.
+* **`awe-ui`** — the admin SPA, nginx-served static bundle. Image
+  `openg2p/openg2p-awe-ui:<branch>`. Low-traffic, single replica,
+  ~10 mCPU / 32 Mi requests.
+* **One Istio `VirtualService`** on the shared host
+  (`global.aweHostname`) with two routes:
+  * `/v1/awe/` → backend Service (most-specific prefix, evaluated first)
+  * `/`        → UI Service (catch-all)
+
+Same host, different paths; the browser treats API and UI as same-origin
+so no CORS is needed.
 
 ### Prerequisites
 
@@ -239,13 +258,6 @@ Env-var overrides use `AWE__` prefix with `__` as nested separator, e.g.
 | `notifier.smtp_port`         | `587`                | SMTP port.                                 |
 | `notifier.from_address`      | `no-reply@openg2p.org` | Envelope `From:` on sent mail.           |
 | `notifier.use_tls`           | `true`               | STARTTLS.                                  |
-
-### Admin UI
-
-| Key                    | Default          | Purpose                                                     |
-| ---------------------- | ---------------- | ----------------------------------------------------------- |
-| `admin_ui.enabled`     | `true`           | Mount the bundled SPA if built into the image.              |
-| `admin_ui.mount_path`  | `/v1/awe/admin`  | Path at which the SPA is served (matches Istio VirtualService). |
 
 ## Operational runbook
 
