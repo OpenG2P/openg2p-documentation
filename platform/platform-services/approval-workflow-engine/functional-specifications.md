@@ -120,6 +120,41 @@ Example: if your Registry caller sends
 is only meaningful because your `expression` or `http` rule reads
 `context.district` / `context.amount`.
 
+### Who decides what context to send?
+
+There is an **implicit contract between the policy author and the
+Caller service** — AWE does not mediate it. Whether the Caller needs to
+know anything about the policy depends on which rule types the policy
+uses:
+
+| Active policy uses…                                  | Caller awareness required?                                    |
+| ---------------------------------------------------- | ------------------------------------------------------------- |
+| Only `user`, `role`, `group`                         | None — `context: {}` is fine.                                  |
+| Any `expression` (JSONLogic) rule                    | Yes — Caller must include the keys the JSONLogic reads.       |
+| Any `http` rule                                      | Yes — Caller's resolver endpoint defines what it expects.     |
+| `skip_if` JSONLogic on any stage                     | Yes — same as `expression`.                                    |
+
+**Three patterns for managing this contract** (pick one per module):
+
+1. **Fixed artifact-summary blob.** Caller always sends a known shape
+   per `artifact_type` (e.g. for `registry.change_request`, always
+   `{district, amount, beneficiary_id, requester_role}`). Policy authors
+   may reference any of these keys; new rules using existing keys require
+   no Caller change. Slight over-fetching, maximum resilience.
+2. **Per-`policy_key` context spec.** Policy author publishes a small
+   spec next to the policy ("`registry.cr.v1` expects:
+   `district: str`, `amount: number`"). Caller code references it.
+   Tighter coupling, smaller payloads.
+3. **Simulate-driven discovery.** During development, ops runs
+   `POST /policies/{key}/versions/{v}/simulate` with sample contexts to
+   observe what fields the resolver actually consumes. Useful for
+   verification, not as the production contract.
+
+Because `context` is snapshotted on the request at creation time, the
+contract only matters when a **new policy version is activated** that
+references additional keys. In-flight requests continue resolving
+against the snapshot they were created with — no retro-active reshaping.
+
 ## Skip rules
 
 Two independent mechanisms skip a stage:
@@ -439,6 +474,14 @@ resolved assignee list; the Caller's webhook handler picks the channel,
 template, and contact lookup. A disabled SMTP scaffold lives in
 `src/awe/services/notifier.py` for low-effort fallbacks but is not the
 recommended path for production.
+
+**How does the Caller know what `context` keys to send?** Out-of-band —
+AWE doesn't mediate it. If the active policy only uses `user` / `role` /
+`group` rules, the Caller can send `context: {}`. If any rule type
+reads from context (`expression`, `http`, or `skip_if`), the Caller
+must send the keys those rules expect. See *"Who decides what context
+to send?"* under Context semantics for the three management patterns
+(fixed artifact blob, per-policy spec, simulate-driven discovery).
 
 **Why isn't there a unified approver inbox?** See "one AWE per module"
 above — deliberate tradeoff. The approver's home is the caller's own
