@@ -296,6 +296,27 @@ ops API.
   `approval_request.policy_id`. Activating a new version does not
   re-route them.
 
+### Which version runs when a Caller posts a request?
+
+**The Caller does not specify a version.** `POST /v1/awe/requests`
+accepts `policy_key` and has no `policy_version` field. The engine
+resolves the one version with `status=active` for that key (the schema
+guarantees at most one active version per `policy_key`) and pins the
+new request to it.
+
+Two implications:
+
+* **"Active" is the selector, not "latest".** A policy can have
+  v5=draft (newest), v4=archived, v3=active, v2=archived, v1=archived.
+  New requests run under v3 — the single active version — not v5.
+* **In-flight requests stay pinned to their starting version.** If you
+  activate v6 tomorrow, today's v3 requests continue resolving stages
+  under v3's rules; only *new* requests after that activation run under
+  v6.
+
+This is why `activate` / `deactivate` are the levers that change
+behaviour for new requests. Callers stay version-agnostic.
+
 ## Idempotency
 
 `POST /v1/awe/requests` accepts an optional `Idempotency-Key` request
@@ -528,6 +549,14 @@ reads from context (`expression`, `http`, or `skip_if`), the Caller
 must send the keys those rules expect. See *"Who decides what context
 to send?"* under Context semantics for the three management patterns
 (fixed artifact blob, per-policy spec, simulate-driven discovery).
+
+**Does the Caller specify which policy version to use?** No. The Caller
+sends `policy_key` only; AWE resolves the currently `active` version
+for that key and pins the request to it. "Active" (not "latest") is the
+selector — a draft v5 won't be picked even if v3 is the active one.
+In-flight requests stay on their starting version regardless of later
+activations. See *"Which version runs when a Caller posts a
+request?"* under Policy versioning.
 
 **Why isn't there a unified approver inbox?** See "one AWE per module"
 above — deliberate tradeoff. The approver's home is the caller's own
