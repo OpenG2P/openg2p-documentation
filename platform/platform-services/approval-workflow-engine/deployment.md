@@ -128,22 +128,27 @@ The commons `admin` user is mapped to `awe-admin` so you can
 authenticate into the admin SPA out of the box. Grant the role to any
 other users via the Keycloak admin UI.
 
-**One manual step after install** (skip if your policies only use
-`user:` / `expression:` / `http:` approver rules — this is only needed
-for `role:` and `group:` rule resolution):
+### Client-secret sync and service-account roles
 
-1. Open the Keycloak admin UI → realm `staff` → client
-   `awe-admin-resolver` → **Service accounts** tab
-2. Assign these realm-management roles to the service account:
-   `view-users`, `query-groups`
-3. (Alternatively, run `kcadm.sh add-roles --uusername
-   service-account-awe-admin-resolver -r staff
-   --cclientid realm-management --rolename view-users --rolename
-   query-groups`)
+keycloak-init handles both automatically:
 
-keycloak-init v1.1.0 provisions clients + client roles + user
-role-mappings but does not attach service-account roles, so this has
-to be done out-of-band.
+* **Client secrets** — the chart's `client-secrets.yaml` template
+  creates a Kubernetes Secret named after each `clientId`
+  (`awe-admin-portal`, `awe-admin-resolver`) with key `client_secret`,
+  generating a random value on first install and reusing the existing
+  Secret on upgrades. The init Job mounts these Secrets and uses them
+  when creating / updating the Keycloak clients, so Keycloak and K8s
+  stay in sync. AWE's Deployment references `awe-admin-resolver` via
+  `envVarsFrom` to pick up the client secret.
+* **Service-account roles** — Keycloak auto-creates the pseudo-user
+  `service-account-awe-admin-resolver` when the resolver client is
+  created with `serviceAccountsEnabled: true`. The chart's `users:`
+  block targets this user and grants it the `realm-management` client
+  roles `view-users` and `query-groups`, which AWE needs to enumerate
+  `role:` and `group:` approver rule members.
+
+Both are declared in AWE's [helm values](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) —
+no post-install manual steps.
 
 ### Install
 

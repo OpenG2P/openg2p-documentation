@@ -372,15 +372,15 @@ The Helm chart uses the `keycloak-init` subchart to declare, in the
 * **Client `awe-admin-resolver`** — confidential service-account client
   used by AWE to call Keycloak's admin API for `role:` and `group:`
   approver rule resolution. Its client secret lands in a Kubernetes
-  Secret that the chart's `envVarsFrom` injects into the pod.
+  Secret (named after the clientId, with key `client_secret`) that
+  keycloak-init auto-syncs between Keycloak and K8s; AWE's Deployment
+  injects it via `envVarsFrom`.
 
-One-time manual step after install: grant the `awe-admin-resolver`
-service account the realm-management roles `view-users` and
-`query-groups`. keycloak-init v1.1.0 provisions clients and user
-role-mappings but not service-account roles; see
-[Deployment → Kubernetes install](deployment.md) for the exact steps.
-Skip this step entirely if your policies use only `user:` /
-`expression:` / `http:` approver rules.
+The resolver's service account (`service-account-awe-admin-resolver`,
+auto-created by Keycloak) is granted `view-users` and `query-groups`
+from the `realm-management` client — all declared in AWE's helm values
+under `keycloak-init.realms.staff.users`, so no post-install manual
+steps are required.
 
 ### Webhook signing secrets
 
@@ -458,7 +458,6 @@ prioritised.
 | Area                    | What's missing                                                                                                                                                                                  | Workaround for now                                                                          |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | **Webhook signing**     | No API or UI to provision / rotate `callback_secret` rows. The signing code reads them, but operators have no way to insert one.                                                                | For trial / internal mesh, leave the `callback_url` set without a `callback_secret_id`; deliveries go unsigned. Acceptable on a trusted network; not for production. |
-| **Service-account roles** | keycloak-init creates the `awe-admin-resolver` client but doesn't attach the realm-management roles `view-users` + `query-groups` needed by `role:` and `group:` approver rules.               | One-time manual step in Keycloak admin UI per deployment, documented in Deployment.         |
 | **Auto-escalation on SLA** | AWE marks tasks `expired` and fires a webhook, but doesn't auto-reassign or re-route. Caller decides response.                                                                                | Caller's webhook handler invokes `/v1/awe/requests/{id}/cancel` or creates a new request.   |
 | **Parallel stages**     | Strictly sequential staging in v1. No BPMN-style gateways.                                                                                                                                      | Model parallel reviewers as multiple rules within a single stage in `all` mode.             |
 | **Delegation / OOO**    | No "delegate to substitute when primary is away" support.                                                                                                                                       | Adjust the policy or add the substitute as an additional rule.                              |
