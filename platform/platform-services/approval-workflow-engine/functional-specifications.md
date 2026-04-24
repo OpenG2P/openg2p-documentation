@@ -449,6 +449,26 @@ handler, call `/requests` for the artifact lifecycle, and proxy
 `/tasks` on behalf of approvers. Policies are configured separately by
 ops.
 
+## Deferred / TODO
+
+Items called out by the design but **not implemented in v1**. Tracked
+here so they don't get lost — each will become a real ticket when
+prioritised.
+
+| Area                    | What's missing                                                                                                                                                                                  | Workaround for now                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Webhook signing**     | No API or UI to provision / rotate `callback_secret` rows. The signing code reads them, but operators have no way to insert one.                                                                | For trial / internal mesh, leave the `callback_url` set without a `callback_secret_id`; deliveries go unsigned. Acceptable on a trusted network; not for production. |
+| **Service-account roles** | keycloak-init creates the `awe-admin-resolver` client but doesn't attach the realm-management roles `view-users` + `query-groups` needed by `role:` and `group:` approver rules.               | One-time manual step in Keycloak admin UI per deployment, documented in Deployment.         |
+| **Auto-escalation on SLA** | AWE marks tasks `expired` and fires a webhook, but doesn't auto-reassign or re-route. Caller decides response.                                                                                | Caller's webhook handler invokes `/v1/awe/requests/{id}/cancel` or creates a new request.   |
+| **Parallel stages**     | Strictly sequential staging in v1. No BPMN-style gateways.                                                                                                                                      | Model parallel reviewers as multiple rules within a single stage in `all` mode.             |
+| **Delegation / OOO**    | No "delegate to substitute when primary is away" support.                                                                                                                                       | Adjust the policy or add the substitute as an additional rule.                              |
+| **Cross-module unified inbox** | One AWE per module → approver acting across modules has separate inboxes.                                                                                                                | Approver UIs in each Caller surface their own inbox via proxied `/v1/awe/tasks?assignee=me`. |
+| **Attachments**         | Only `attachments_ref` URL stored; no upload/download.                                                                                                                                          | Files live in the Caller's storage; AWE just records the URL.                               |
+| **Notification channels in AWE** | SMTP scaffold exists but is `enabled: false`; no SMS / push / in-app.                                                                                                                  | Notifications are the Caller's responsibility — see Notifications section.                  |
+| **`expected_context_keys`** | No schema validation on the `context` blob sent in `POST /requests`.                                                                                                                      | Out-of-band coordination between policy author and Caller — see "Who decides what context to send?" |
+| **Retire idempotency keys** | `idempotency_key` rows kept forever in v1; no TTL sweeper.                                                                                                                                  | Storage is negligible; sweep manually if needed.                                            |
+| **Postman collection**  | Audit Manager ships one; AWE doesn't yet.                                                                                                                                                       | Hit the live Swagger UI at `/v1/awe/docs` for ad-hoc exploration.                           |
+
 ## FAQ
 
 **Can one AWE serve multiple modules?** The design deliberately runs one
