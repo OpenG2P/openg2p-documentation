@@ -86,6 +86,18 @@ A running instance also exposes the live spec at `/v1/awe/openapi.json` and inte
 [OpenAPI awe-specification](https://raw.githubusercontent.com/OpenG2P/awe/develop/docs/openapi.json)
 {% endopenapi-operation %}
 
-{% openapi-schemas spec="awe-specification" schemas="ApproverRuleIn,ApproverRuleOut,CancelRequest,CreateRequestIn,CreateRequestOut,DecisionIn,DecisionOut,ErrorDetail,EventOut,HTTPValidationError,HealthPayload,HealthResponse,PolicyCreate,PolicyOut,PolicyVersionOut,RequestOut,SimulateRequest,SimulateResponse,SimulateStageOut,StageIn,StageOut,TaskOut,ValidationError,VersionPayload,VersionResponse" grouped="true" %}
+## Webhook (outbound from AWE → Caller)
+
+AWE POSTs to whatever `callback_url` was set on the request whenever a
+status-changing event occurs. The contract — body schema and the three
+signed headers — is declared in the OpenAPI spec under the top-level
+`webhooks:` field (OpenAPI 3.1 feature) so it's discoverable from the
+same artifact as the rest of the API.
+
+{% openapi-webhook spec="awe-specification" name="approval-event" method="post" %}
+[OpenAPI awe-specification](https://raw.githubusercontent.com/OpenG2P/awe/develop/docs/openapi.json)
+{% endopenapi-webhook %}
+
+{% openapi-schemas spec="awe-specification" schemas="ApproverRuleIn,ApproverRuleOut,CancelRequest,CreateRequestIn,CreateRequestOut,DecisionIn,DecisionOut,ErrorDetail,EventOut,HTTPValidationError,HealthPayload,HealthResponse,PolicyCreate,PolicyOut,PolicyVersionOut,RequestOut,SimulateRequest,SimulateResponse,SimulateStageOut,StageIn,StageOut,TaskOut,ValidationError,VersionPayload,VersionResponse,WebhookEvent" grouped="true" %}
 [OpenAPI awe-specification](https://raw.githubusercontent.com/OpenG2P/awe/develop/docs/openapi.json)
 {% endopenapi-schemas %}

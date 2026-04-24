@@ -337,6 +337,56 @@ secret; the prior is marked `rotated`.
   `{"district": "D1"}` to pick approvers, don't also attach a full
   beneficiary record.
 
+## Notifications (email, SMS, in-app, …)
+
+**Sending notifications to approvers is the Caller's responsibility,
+not AWE's.** This is the same "mechanism, not policy" stance applied to
+SLA, post-approval business logic, and escalation. AWE provides the
+trigger by firing a `stage_started` webhook with the resolved assignee
+list; the Caller decides what channel(s) to use and what the message
+looks like.
+
+Why notifications belong in the Caller:
+
+| Concern                             | Why the Caller, not AWE                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| Approver's email / phone            | Caller already has verified contact info per user; AWE only knows the Keycloak `sub`   |
+| Channel choice                      | Email vs SMS vs in-app vs push depends on tenant config and user preference            |
+| Message branding / localisation     | Different modules, environments, languages all want different copy                     |
+| Deep links                          | Notifications should link to the Caller's own UI for the artifact, not to AWE          |
+| Throttling / consolidation          | "5 approvals waiting" digest emails are a Caller policy decision                       |
+
+A minimal SMTP notifier scaffold ships in
+[`src/awe/services/notifier.py`](https://github.com/OpenG2P/awe/blob/develop/src/awe/services/notifier.py)
+and is `enabled: false` by default. It exists only as a low-effort
+fallback for trial deployments without a Caller-side notification
+pipeline. Production deployments should leave it disabled and let the
+Caller's webhook handler drive notifications.
+
+## Caller integration surface
+
+A Caller service (Registry, PBMS, …) talks to AWE through **two API
+groups** plus webhook receipt. It does **not** touch the policy APIs —
+those are for the admin UI and ops tooling.
+
+| API surface                              | Who calls it                                                | When                                                            |
+| ---------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- |
+| `POST /v1/awe/requests`                  | Caller service (e.g. Registry)                              | When an artifact (CR, disbursement, …) is created and needs approval |
+| `POST /v1/awe/requests/{id}/cancel`      | Caller service                                              | When the underlying artifact is withdrawn upstream              |
+| `GET  /v1/awe/requests/{id}`             | Caller service                                              | Rarely — webhook usually keeps the local mirror fresh           |
+| `GET  /v1/awe/requests/{id}/events`      | Caller service                                              | When showing an audit timeline for the artifact in the Caller's UI |
+| `GET  /v1/awe/tasks?assignee=me`         | Caller service **proxying for an end-user approver**         | Approver opens their inbox in the Caller's UI                   |
+| `POST /v1/awe/tasks/{id}/claim`          | Caller service proxying                                     | Approver clicks a task                                          |
+| `POST /v1/awe/tasks/{id}/decision`       | Caller service proxying                                     | Approver clicks Approve / Reject                                |
+| `POST <caller's callback handler>`       | **AWE** (outbound — Caller is the receiver)                 | Whenever a webhook-emitting state change occurs                 |
+| `/v1/awe/policies/*`                     | Admin SPA / GitOps tooling — **not the Caller**             | Policy authors maintain rules                                   |
+| `/v1/awe/health` `/version` `/config`    | Kubernetes probes / ops                                     | Continuous                                                      |
+
+So the Caller's integration boils down to: implement one webhook
+handler, call `/requests` for the artifact lifecycle, and proxy
+`/tasks` on behalf of approvers. Policies are configured separately by
+ops.
+
 ## FAQ
 
 **Can one AWE serve multiple modules?** The design deliberately runs one
@@ -345,9 +395,55 @@ namespaces clean, isolates load, and avoids a "tenant" dimension on
 every table. The tradeoff is that approvers who act across modules have
 separate inboxes.
 
-**Why isn't there a unified approver inbox?** See above — deliberate
-tradeoff. The approver's home is the caller's own UI, which proxies
-`/v1/awe/tasks?assignee=me` and renders the artifact alongside.
+**What does the `201` response from `POST /tasks/{id}/decision`
+actually contain?** The newly-created decision row — its id, the
+action, the actor, the comment, the timestamp. It is a *mechanical*
+confirmation that the click was persisted; it does **not** carry the
+updated request status (still in_review? approved? rejected?). That
+state change is communicated to the Caller via the webhook — the
+single source of truth. The decision response is useful for "your
+approval was recorded" UX feedback; it is not a trigger for the
+Caller's post-approval business logic.
+
+**Why is a webhook needed at all? Couldn't the final 201 carry the
+status?** In the happy approver-decision path, technically yes. But
+three cases break that model: (1) **SLA expiry** is triggered by a
+background loop with no HTTP call to piggyback on; (2) **admin
+cancellation via the admin UI** sends the 200 to the admin, not the
+Caller; (3) **process crashes** between the Caller receiving the 201
+and persisting the side-effect cause silent divergence — webhook
+retries make this recoverable. Webhooks give the Caller one consistent,
+durable channel for every state change regardless of trigger.
+
+**Where does the webhook code run?** Two sides. **Dispatch is in AWE** —
+a background worker polls `webhook_delivery` and POSTs to whatever
+`callback_url` was set on the request. **The handler is in the
+Caller** — the Caller exposes one HTTP endpoint (e.g.
+`POST /internal/approval-callbacks`) that accepts the POST, verifies
+the HMAC signature, and triggers its own post-approval logic.
+
+**Do approvers ever talk to AWE directly?** No — the Caller's UI is the
+approver's only surface. Every `/v1/awe/tasks` call is the Caller's
+service proxying on behalf of the approver. This keeps auth and CORS
+simple and lets the Caller render the artifact alongside the task.
+
+**What if SLA fires and a task expires — what does AWE do?** Marks the
+task `expired`, appends a `task_expired` event, and fires a webhook to
+the Caller. AWE itself does **not** auto-reject, auto-reassign, or
+escalate — that's domain policy and lives in the Caller (cancel,
+notify, reassign, etc.).
+
+**Does AWE send approver notifications (email / SMS / push)?** No, by
+design — that's the Caller's job. AWE fires `stage_started` with the
+resolved assignee list; the Caller's webhook handler picks the channel,
+template, and contact lookup. A disabled SMTP scaffold lives in
+`src/awe/services/notifier.py` for low-effort fallbacks but is not the
+recommended path for production.
+
+**Why isn't there a unified approver inbox?** See "one AWE per module"
+above — deliberate tradeoff. The approver's home is the caller's own
+UI, which proxies `/v1/awe/tasks?assignee=me` and renders the artifact
+alongside.
 
 **How do I support parallel approvals (e.g. two stages in parallel)?** v1
 is strictly sequential. You can approximate parallelism by modeling both
