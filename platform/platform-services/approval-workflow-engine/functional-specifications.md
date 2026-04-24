@@ -341,19 +341,46 @@ callers own the decision.
 
 ### Authentication
 
-All runtime endpoints require a Keycloak-issued JWT bearer:
+All runtime endpoints require a Keycloak-issued JWT bearer. AWE
+operates under the shared **`staff`** realm (same realm as Registry /
+PBMS / other OpenG2P modules — AWE does not own the realm, it just
+provisions its own clients and roles inside it).
 
 * **Service tokens** (client_credentials) — caller services use these
   for `POST /requests`, `GET /requests/{id}`, etc.
 * **End-user tokens** — approver decisions (`POST /tasks/{id}/decision`)
   run with the user's token; `sub` becomes the `actor` on the decision.
 * **Admin operations** (policy CRUD, `cancel`) require the `awe-admin`
-  realm role.
+  role, provisioned as a **client role** on the `awe-admin-portal` client
+  and delivered to the token under
+  `resource_access.awe-admin-portal.roles`. Realm-scoped `awe-admin` is
+  also accepted (useful for dev-mode fixtures and legacy deployments).
 
 Tokens are verified against Keycloak JWKS with issuer+audience checks
 (`awe.keycloak.issuer`, `awe.keycloak.audience`). A dev mode
 (`issuer=""`) skips signature verification for local development and is
 **not reachable in the shipped Helm chart**.
+
+### Keycloak provisioning
+
+The Helm chart uses the `keycloak-init` subchart to declare, in the
+`staff` realm:
+
+* **Client `awe-admin-portal`** — public OIDC client the admin SPA
+  redirects to. Has one client role, `awe-admin`, mapped to the
+  commons-layer `admin` user on first install.
+* **Client `awe-admin-resolver`** — confidential service-account client
+  used by AWE to call Keycloak's admin API for `role:` and `group:`
+  approver rule resolution. Its client secret lands in a Kubernetes
+  Secret that the chart's `envVarsFrom` injects into the pod.
+
+One-time manual step after install: grant the `awe-admin-resolver`
+service account the realm-management roles `view-users` and
+`query-groups`. keycloak-init v1.1.0 provisions clients and user
+role-mappings but not service-account roles; see
+[Deployment → Kubernetes install](deployment.md) for the exact steps.
+Skip this step entirely if your policies use only `user:` /
+`expression:` / `http:` approver rules.
 
 ### Webhook signing secrets
 

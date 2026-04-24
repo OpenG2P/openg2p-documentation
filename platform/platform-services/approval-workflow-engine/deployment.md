@@ -101,16 +101,49 @@ the uvicorn instance on :8000.
 ### Prerequisites
 
 * Kubernetes 1.23+
-* A PostgreSQL instance reachable from the cluster (shared Postgres is
-  fine). The chart's `postgres-init` subchart creates the database and
-  user; it does **not** provision the Postgres server itself.
-* Keycloak with:
-  * A realm (default `openg2p`).
-  * A realm role `awe-admin` granted to the policy editors.
-  * A confidential client `awe-admin-resolver` with the realm-management
-    roles `view-users` and `query-groups` — used by AWE to resolve
-    `role:` / `group:` approver rules.
-* (If used) Istio for the VirtualService/Gateway templates.
+* **PostgreSQL** reachable from the cluster (shared Postgres is fine).
+  The chart's `postgres-init` subchart creates the database and user;
+  it does **not** provision the Postgres server itself.
+* **Keycloak**, deployed separately (via the commons-keycloak chart,
+  shared with Registry / PBMS). AWE's clients and roles are
+  provisioned on install by the `keycloak-init` subchart — see below.
+* (If used) Istio for the VirtualService / Gateway templates.
+
+### What the Keycloak integration provisions
+
+On install, the `keycloak-init` subchart creates two clients under the
+shared **`staff`** realm (this realm is created by the commons-keycloak
+install; AWE just adds to it — it does not own it):
+
+| Client               | Purpose                                                                                       | Type                             |
+| -------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| `awe-admin-portal`   | OIDC login for the bundled admin SPA. Carries the `awe-admin` client role.                    | Public (browser redirect flow)   |
+| `awe-admin-resolver` | Service account used by AWE to call Keycloak admin API for `role:` / `group:` approver rules. | Confidential (client credentials) |
+
+Client roles provisioned on `awe-admin-portal`:
+
+* `awe-admin` — gates policy CRUD and request cancellation
+
+The commons `admin` user is mapped to `awe-admin` so you can
+authenticate into the admin SPA out of the box. Grant the role to any
+other users via the Keycloak admin UI.
+
+**One manual step after install** (skip if your policies only use
+`user:` / `expression:` / `http:` approver rules — this is only needed
+for `role:` and `group:` rule resolution):
+
+1. Open the Keycloak admin UI → realm `staff` → client
+   `awe-admin-resolver` → **Service accounts** tab
+2. Assign these realm-management roles to the service account:
+   `view-users`, `query-groups`
+3. (Alternatively, run `kcadm.sh add-roles --uusername
+   service-account-awe-admin-resolver -r staff
+   --cclientid realm-management --rolename view-users --rolename
+   query-groups`)
+
+keycloak-init v1.1.0 provisions clients + client roles + user
+role-mappings but does not attach service-account roles, so this has
+to be done out-of-band.
 
 ### Install
 
@@ -136,11 +169,13 @@ global:
 awe:
   appConfig:
     module: registry
-    keycloak:
-      issuer: https://keycloak.trial.openg2p.org/realms/openg2p
-      jwksUrl: https://keycloak.trial.openg2p.org/realms/openg2p/protocol/openid-connect/certs
-      audience: awe-api
 ```
+
+Most settings (issuer URL, JWKS URL, audience, resolver client ID) are
+derived from the `global.*` values by the chart — no per-environment
+overrides needed unless you diverge from the staff-realm convention.
+See [`helm/openg2p-awe/values.yaml`](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml)
+for the full set.
 
 ## Configuration reference
 
@@ -183,7 +218,7 @@ Env-var overrides use `AWE__` prefix with `__` as nested separator, e.g.
 | Key                                 | Default                | Purpose                                                               |
 | ----------------------------------- | ---------------------- | --------------------------------------------------------------------- |
 | `keycloak.base_url`                 | `""` (disabled)        | Keycloak base URL for admin API calls.                                |
-| `keycloak.realm`                    | `openg2p`              | Realm name.                                                           |
+| `keycloak.realm`                    | `staff`                | Realm shared with Registry / PBMS. AWE provisions its clients here.  |
 | `keycloak.admin_client_id`          | `awe-admin-resolver`   | Confidential client used for admin API.                               |
 | `keycloak.admin_client_secret`      | `""`                   | Secret for that client — **never commit; inject via envVarsFrom**.    |
 | `keycloak.issuer`                   | `""` (dev mode)        | Expected `iss` claim on inbound bearers. Empty disables verification. |

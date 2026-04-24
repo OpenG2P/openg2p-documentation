@@ -13,9 +13,6 @@ SQLite database via `aiosqlite`, points dev-mode auth at empty issuer
 (unsigned JWTs accepted), and exercises the full FastAPI app over an
 in-process ASGI transport. The whole suite runs in about a second.
 
-Full test docs:
-[`tests/README.md`](https://github.com/OpenG2P/awe/blob/develop/tests/README.md).
-
 ## Run
 
 ```bash
@@ -63,6 +60,17 @@ secrets.
 * Signature equals `"sha256=" + HMAC_SHA256(secret, timestamp + "." + body)`.
 * Two signatures with different timestamps differ for the same body —
   proves replay-safety.
+
+### `test_sla_monitor.py` — SLA expiry
+
+* A task with `due_at` in the past is flipped to `expired` by one tick
+  of the SLA monitor.
+* A `task_expired` event is appended to the request timeline with
+  `task_id`, `stage_order`, `assignee`, and `due_at` in the payload.
+* A `webhook_delivery` row is enqueued `pending` pointing at the
+  request's `callback_url`.
+* The noop path (no due tasks) is exercised to confirm the monitor
+  commits cleanly.
 
 ## Sample payloads
 

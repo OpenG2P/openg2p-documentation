@@ -6,7 +6,7 @@ description: >-
   callbacks when state changes.
 ---
 
-# Approval Workflow Engine
+# Approval Workflow Engine (AWE)
 
 ## Overview
 
