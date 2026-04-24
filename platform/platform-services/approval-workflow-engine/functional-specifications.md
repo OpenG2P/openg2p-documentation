@@ -358,6 +358,52 @@ A future iteration may add escalation rules on the policy itself
 (auto-reassign on expiry, auto-reject after N expirations). For v1,
 callers own the decision.
 
+## Audit log
+
+Every admin / ops mutation in AWE writes one row to `audit_action`. This
+is **distinct from `approval_event`** (which captures the per-request
+state machine for callers to consume via webhook): `audit_action`
+records *who acted on shared configuration / state*, primarily for
+forensic and compliance use.
+
+### What gets recorded
+
+| Action               | Trigger                                              | `before` snapshot       | `after` snapshot        |
+| -------------------- | ---------------------------------------------------- | ----------------------- | ----------------------- |
+| `policy.create`      | `POST /v1/awe/policies`                              | —                       | full PolicyOut          |
+| `policy.add_version` | `PUT  /v1/awe/policies/{key}`                        | —                       | full PolicyOut          |
+| `policy.update`      | `PATCH /v1/awe/policies/{key}/versions/{v}`          | full PolicyOut (pre)    | full PolicyOut (post)   |
+| `policy.activate`    | `POST /v1/awe/policies/{key}/versions/{v}/activate`  | `{status,version}` of prior | `{status,version}` of new |
+| `policy.deactivate`  | `POST /v1/awe/policies/{key}/versions/{v}/deactivate`| `{status: active}`      | `{status: archived}`    |
+| `request.cancel`     | `POST /v1/awe/requests/{id}/cancel`                  | `{status: <prior>}`     | `{status: cancelled}`   |
+| `delivery.retry`     | `POST /v1/awe/admin/deliveries/{id}/retry`           | `{status, attempt, …}`  | `{status: pending, …}`  |
+
+Each row carries: `actor` (token `sub`), `actor_email`, `action`,
+`resource_type`, `resource_id`, optional `summary` (UI-friendly), and
+free-form `metadata` (cancel reason, request id, etc.).
+
+### Reading the log
+
+`GET /v1/awe/admin/audit?actor=&action=&resource_type=&resource_id=&since=&until=&limit=`
+
+Accepts `AWE_VIEWER` or `AWE_ADMIN`. Newest rows first; max `limit=1000`.
+The bundled admin SPA's "Audit Log" page renders this with filters and
+expandable per-row diffs.
+
+### What does NOT get recorded
+
+* **Read endpoints** — `GET /policies`, `GET /requests/{id}/events`,
+  `GET /admin/deliveries`, etc. Reads are not auditable for now; if you
+  need access logs, source them from the Istio sidecar or the Keycloak
+  audit stream.
+* **Workflow events** — `request_created`, `stage_started`,
+  `request_approved`, etc. Those live in `approval_event` (per-request
+  timeline). Audit deals with *configuration* changes, not *workflow*
+  state changes.
+* **Caller `POST /requests`** — creating an approval request is a
+  service-to-service operation, not an admin action; tracked instead in
+  `approval_event` as `request_created`.
+
 ## Security posture
 
 ### Authentication
@@ -371,11 +417,19 @@ provisions its own clients and roles inside it).
   for `POST /requests`, `GET /requests/{id}`, etc.
 * **End-user tokens** — approver decisions (`POST /tasks/{id}/decision`)
   run with the user's token; `sub` becomes the `actor` on the decision.
-* **Admin operations** (policy CRUD, `cancel`) require the `awe-admin`
-  role, provisioned as a **client role** on the `awe-admin-portal` client
-  and delivered to the token under
-  `resource_access.awe-admin-portal.roles`. Realm-scoped `awe-admin` is
-  also accepted (useful for dev-mode fixtures and legacy deployments).
+* **Admin / viewer operations** — gated on two client roles provisioned
+  on the `awe-admin-portal` client:
+
+  | Role          | Grants                                                                                         |
+  | ------------- | ---------------------------------------------------------------------------------------------- |
+  | `AWE_ADMIN`   | Full read + write. Policy CRUD / activate / deactivate, request cancellation, delivery retry. |
+  | `AWE_VIEWER`  | Read-only. List policies, requests, events, deliveries, and the audit log.                     |
+
+  Roles are read from both `realm_access.roles` and
+  `resource_access.<clientId>.roles` (the latter being the OpenG2P staff
+  realm convention — see Registry for reference). Admins implicitly have
+  viewer privileges; a call to a read endpoint with only `AWE_ADMIN`
+  works.
 
 Tokens are verified against Keycloak JWKS with issuer+audience checks
 (`awe.keycloak.issuer`, `awe.keycloak.audience`). A dev mode
@@ -388,8 +442,10 @@ The Helm chart uses the `keycloak-init` subchart to declare, in the
 `staff` realm:
 
 * **Client `awe-admin-portal`** — public OIDC client the admin SPA
-  redirects to. Has one client role, `awe-admin`, mapped to the
-  commons-layer `admin` user on first install.
+  redirects to. Has two client roles, `AWE_ADMIN` and `AWE_VIEWER`. The
+  commons-layer `admin` user is mapped to `AWE_ADMIN` on first install
+  so operators can log into the SPA out of the box; grant `AWE_VIEWER`
+  to read-only users via Keycloak admin UI as needed.
 * **Client `awe-admin-resolver`** — confidential service-account client
   used by AWE to call Keycloak's admin API for `role:` and `group:`
   approver rule resolution. Its client secret lands in a Kubernetes
@@ -557,6 +613,22 @@ selector — a draft v5 won't be picked even if v3 is the active one.
 In-flight requests stay on their starting version regardless of later
 activations. See *"Which version runs when a Caller posts a
 request?"* under Policy versioning.
+
+**Are admin actions audited?** Yes. Every policy CRUD / activate /
+deactivate, request cancellation, and delivery retry writes an
+append-only row to `audit_action` capturing actor, action,
+resource, before/after snapshots, and free-form metadata. Browse via
+`GET /v1/awe/admin/audit` (or the Audit Log page in the admin SPA);
+both accept `AWE_VIEWER` or `AWE_ADMIN`. Read operations and workflow
+state transitions are NOT in this log — see "What does NOT get
+recorded" under Audit log.
+
+**What roles does AWE define?** Two: `AWE_ADMIN` (full read + write)
+and `AWE_VIEWER` (read-only across policies / requests / events /
+deliveries / audit log). Both are client roles on `awe-admin-portal`,
+provisioned automatically by `keycloak-init`. Admin implies viewer
+where it matters (a token with only `AWE_ADMIN` can hit read endpoints
+that nominally accept `AWE_VIEWER`).
 
 **Why isn't there a unified approver inbox?** See "one AWE per module"
 above — deliberate tradeoff. The approver's home is the caller's own

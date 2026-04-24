@@ -32,8 +32,8 @@ which forces JWKS signature verification.
 ### Smoke test (create policy → request → approve)
 
 ```bash
-# Dev token with the awe-admin role — accepted by dev-mode auth.
-TOKEN='eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJkZXYtYWRtaW4iLCJlbWFpbCI6ImRldkBsb2NhbCIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJhd2UtYWRtaW4iXX19.'
+# Dev token with the AWE_ADMIN role — accepted by dev-mode auth.
+TOKEN='eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJkZXYtYWRtaW4iLCJlbWFpbCI6ImRldkBsb2NhbCIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJBV0VfQURNSU4iXX19.'
 
 # 1. Create a policy
 curl -sX POST http://localhost:8000/v1/awe/policies \
@@ -136,16 +136,17 @@ install; AWE just adds to it — it does not own it):
 
 | Client               | Purpose                                                                                       | Type                             |
 | -------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
-| `awe-admin-portal`   | OIDC login for the bundled admin SPA. Carries the `awe-admin` client role.                    | Public (browser redirect flow)   |
+| `awe-admin-portal`   | OIDC login for the bundled admin SPA. Carries the `AWE_ADMIN` and `AWE_VIEWER` client roles.   | Public (browser redirect flow)   |
 | `awe-admin-resolver` | Service account used by AWE to call Keycloak admin API for `role:` / `group:` approver rules. | Confidential (client credentials) |
 
 Client roles provisioned on `awe-admin-portal`:
 
-* `awe-admin` — gates policy CRUD and request cancellation
+* `AWE_ADMIN` — full read + write (policy CRUD, request cancel, delivery retry).
+* `AWE_VIEWER` — read-only (policies, requests, events, deliveries, audit log).
 
-The commons `admin` user is mapped to `awe-admin` so you can
-authenticate into the admin SPA out of the box. Grant the role to any
-other users via the Keycloak admin UI.
+The commons `admin` user is mapped to `AWE_ADMIN` so you can
+authenticate into the admin SPA out of the box. Grant `AWE_VIEWER` (or
+`AWE_ADMIN`) to other users via the Keycloak admin UI.
 
 ### Client-secret sync and service-account roles
 
