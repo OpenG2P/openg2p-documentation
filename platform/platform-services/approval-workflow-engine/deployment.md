@@ -164,26 +164,57 @@ keycloak-init handles both automatically:
   `service-account-awe-admin-resolver` when the resolver client is
   created with `serviceAccountsEnabled: true`. The chart's `users:`
   block targets this user and grants it the `realm-management` client
-  roles `view-users` and `query-groups`, which AWE needs to enumerate
-  `role:` and `group:` approver rule members.
+  roles below:
+
+  | Role | Why AWE needs it |
+  |--|--|
+  | `view-users` | List role / group members; read user ids. Required for both realm-role and client-role rules. |
+  | `view-clients` | Translate `clientId` (e.g. `registry-staff-portal`) → internal UUID. Required before calling the client-role members endpoint, i.e. whenever a `role:` rule sets `client:`. |
+  | `query-groups` | List group members for `group:` rules. |
+
+  These are **realm-wide reads** — the service account can enumerate
+  users and client definitions across every client in the realm,
+  including Callers' clients (Registry, Social Registry, etc.). This is
+  Keycloak's default admin model. If your realm has **Fine-Grained
+  Admin Permissions (FGAP)** enabled, you'll additionally need to grant
+  the resolver service account `view` permission on each target client
+  individually — consult whoever owns the realm.
+
+#### Role rules: realm vs client
+
+Approver rules of type `role:` can point at either a **realm role** or
+a **client role**:
+
+```yaml
+# Realm role — role exists at the realm level.
+- rule_type: role
+  rule_value: { role: "PROGRAM_MANAGER" }
+
+# Client role — role is defined on a specific client (e.g. Registry's
+# portal client). AWE does a clientId → UUID lookup, then queries the
+# client's role members. Lets AWE integrate with Callers that already
+# manage staff roles on their own client.
+- rule_type: role
+  rule_value:
+    role: "PROGRAM_MANAGER"
+    client: "registry-staff-portal"
+```
+
+At request creation time, AWE calls Keycloak to list the current members
+of the role and stores the resulting user ids as that stage's candidate
+approvers. Tasks are created for each — any one can act (or a quorum,
+if `min_approvals` > 1).
 
 Both are declared in AWE's [helm values](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) —
 no post-install manual steps here.
 
-### One post-install Keycloak tweak for the SPA client
+### Why `awe-admin-portal` is a **public** client (and should stay that way)
 
-The admin SPA is a browser-side app and needs the `awe-admin-portal`
-client configured as a **public client with Web Origins set**. The
-upstream `keycloak-init` v1.1.0 script
-([`create_clients.py`](https://github.com/OpenG2P/keycloak-init/blob/main/docker/create_clients.py))
-hardcodes every client it creates as confidential with no Web Origins
-(fine for server-side-auth modules like Registry, wrong for SPAs).
-Until the upstream chart accepts these fields per-client, flip two
-toggles in the Keycloak admin UI once per deployment:
-
-1. **Clients → `awe-admin-portal` → Settings → Client authentication → Off** (makes it a public client). In pre-24 UIs this is "Access Type: public".
-2. **Clients → `awe-admin-portal` → Settings → Web Origins → `+`** (shorthand for "use the Valid Redirect URIs list for CORS"). Or list your hostname explicitly.
-3. **Save.**
+The `keycloak-init` subchart (≥ `1.1.0-develop`) now honours the
+`publicClient: true` flag in AWE's helm values, so the admin SPA's
+client is created as public on first install — no Keycloak UI toggle
+needed. Worth understanding *why* we do this before an operator is
+tempted to "harden" it by flipping Client authentication back on:
 
 > **Why "Client authentication" must be Off for the SPA.** Client
 > authentication means the client sends a stored `client_secret` on
@@ -203,13 +234,8 @@ toggles in the Keycloak admin UI once per deployment:
 > [RFC 7636 "PKCE"](https://datatracker.ietf.org/doc/html/rfc7636),
 > and [OAuth 2.0 Security BCP §2.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics).
 
-Without step 2, the browser's preflight on the token-exchange POST
-gets blocked by CORS and keycloak-js rejects `init()` with no detail —
-the SPA error page will surface the config it tried but not the CORS
-error itself. Symptom: *"Keycloak init failed … keycloak-js init()
-rejected with no detail"*.
-
-Equivalent kcadm.sh one-liner if you prefer CLI:
+If you ever do need to fix this by hand (e.g. you're on an older
+keycloak-init that still hardcoded `publicClient: false`):
 
 ```sh
 kcadm.sh update clients/$(kcadm.sh get clients -r staff -q clientId=awe-admin-portal --fields id --format csv --noquotes) \
@@ -217,11 +243,6 @@ kcadm.sh update clients/$(kcadm.sh get clients -r staff -q clientId=awe-admin-po
   -s 'publicClient=true' \
   -s 'webOrigins=["+"]'
 ```
-
-When the upstream chart gains support for these fields
-([tracked here](https://github.com/OpenG2P/keycloak-init/issues)), AWE's
-values already carry `publicClient: true` + `webOrigins: ["+"]` so the
-manual step disappears automatically.
 
 ### Install
 

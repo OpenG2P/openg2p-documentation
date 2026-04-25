@@ -14,9 +14,11 @@ archives the previously active one; in-flight requests stay pinned to the
 version they started with.
 
 ```
-policy  (policy_key, version, artifact_type, status)
-  ├── stage 1  (stage_order=1, mode, sla_hours, skip_if, on_empty)
-  │     ├── rule A  (rule_type, rule_value)
+policy  (policy_key, version, artifact_type, status,
+         forbid_self_approval, forbid_repeat_approvers)
+  ├── stage 1  (stage_order, mode, sla_hours, skip_if, on_empty,
+  │             parallel_group, on_breach, escalation_rules)
+  │     ├── rule A  (rule_type, rule_value, kind, required)
   │     ├── rule B  …
   │     └── rule C  …
   ├── stage 2  …
@@ -27,8 +29,13 @@ policy  (policy_key, version, artifact_type, status)
 * `version` increments with every edit. At most one version has
   `status=active` per `policy_key` at any time.
 * `artifact_type` is caller-defined (opaque to AWE).
-* Stages are **strictly sequential**. Parallel gateways are explicitly not
-  supported in v1.
+* Stages run **sequentially by default**, but two or more stages sharing the
+  same `parallel_group` activate together; the next group only starts after
+  every stage in the current group is approved. See
+  [Parallel stages](#parallel-stages).
+* `forbid_self_approval` and `forbid_repeat_approvers` are
+  segregation-of-duties toggles — see
+  [Segregation of duties](#segregation-of-duties).
 
 ### Status lifecycle
 
@@ -64,13 +71,22 @@ When a stage completes, remaining open tasks for that stage flip to
 Each stage has ≥1 approver rule. Rules within a stage **union** — a user
 is an eligible approver for the stage if any rule resolves them.
 
-| Rule type    | `rule_value` shape                        | Approvers resolved from                                                       |
-| ------------ | ----------------------------------------- | ----------------------------------------------------------------------------- |
-| `user`       | `{"user_id": "u-alice"}`                  | Literal — always that one user.                                               |
-| `role`       | `{"role": "district-officer"}`            | Members of that Keycloak realm role (via admin API).                          |
-| `group`      | `{"group": "/districts/A"}`               | Members of that Keycloak group path.                                          |
-| `expression` | `{"logic": <JSONLogic>}`                  | JSONLogic evaluated against the request's context snapshot.                   |
-| `http`       | `{"url": "https://caller/resolve"}`       | Caller POSTed at that URL — returns `{"user_ids":[...]}`.                     |
+| Rule type    | `rule_value` shape                                                  | Approvers resolved from                                                       |
+| ------------ | ------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `user`       | `{"user_id": "u-alice"}`                                            | Literal — always that one user.                                               |
+| `role`       | `{"role": "PROGRAM_MANAGER"[, "client": "registry-staff-portal"]}`  | Members of that Keycloak role. `client` optional: omit for a realm role, set to a `clientId` to resolve a client role. |
+| `group`      | `{"group": "/districts/A"}`                                         | Members of that Keycloak group path.                                          |
+| `expression` | `{"logic": <JSONLogic>}`                                            | JSONLogic evaluated against the request's context snapshot.                   |
+| `http`       | `{"url": "https://caller/resolve"}`                                 | Caller POSTed at that URL — returns `{"user_ids":[...]}`.                     |
+
+Each rule additionally carries:
+
+* **`kind`** — `approver` (default) or `observer`. Observer-resolved users
+  receive a task and can comment, but do not gate stage completion. See
+  [Observers](#observers).
+* **`required`** — boolean. When `true`, the resolved user(s) must approve
+  before the stage can complete, even if the quorum mode would otherwise
+  allow it. Ignored for observer rules. See [Required approvers](#required-approvers).
 
 ### When does a rule read the context?
 
@@ -182,6 +198,90 @@ Applies when the stage's rules resolve to **zero approvers**:
   reason `no_approvers_resolved`. This is the default, so accidental
   mis-configuration can't accidentally auto-approve.
 
+## Parallel stages
+
+Two or more stages sharing the same `parallel_group` value activate
+together when their group becomes current. The group is "complete" only
+when **every stage in it is approved**. Any single stage rejecting
+terminates the request.
+
+```
+group=1: [Stage 1: Legal]      ┐
+         [Stage 2: Finance]    ┘  → group complete when both approved
+group=2: [Stage 3: Director]      → activates next
+```
+
+A stage with `parallel_group = null` is its own group of one — i.e. the
+default strictly-sequential behaviour. The engine ignores the literal
+`stage_order` for ordering between groups; what matters is the order of
+groups themselves (groups are evaluated by the smallest `stage_order`
+within them).
+
+## Required approvers
+
+A rule with `required: true` adds a hard "must approve" gate on top of the
+stage's quorum mode. The stage completes when **both** conditions hold:
+
+1. The quorum mode (`all` / `any-n` / `quorum` / `percentage`) is satisfied.
+2. Every user resolved by every `required` rule has approved.
+
+If a required user has no remaining open task (e.g. it was reassigned to
+someone else, then expired), the stage rejects.
+
+Common pattern: `mode = any-n`, `mode_value = 2`, three rules where one is
+marked `required` → "any 2 of 3 approve, but the third is mandatory."
+
+## Observers
+
+A rule with `kind: "observer"` resolves to users who get a task on the
+stage but do **not** count toward stage completion. Observers can read the
+request and post comments. Use this for stakeholders who need visibility
+without veto power (Legal review, Audit, etc.).
+
+Observer tasks are excluded from quorum / required-approver math, are not
+filtered by segregation-of-duties rules, and are not affected by SLA
+breaches (no `due_at` is set on observer tasks).
+
+## Segregation of duties
+
+Two policy-level toggles filter resolved approver lists at task-creation
+time:
+
+* `forbid_self_approval` — the request's `requester` is removed from every
+  stage's approver list.
+* `forbid_repeat_approvers` — anyone who has approved an earlier stage of
+  the same request is removed from later stages' approver lists.
+
+Filters apply only to `approver` rules; observers are never filtered. If
+a stage loses every eligible approver because of a filter, its `on_empty`
+setting decides whether to skip or block.
+
+## Delegation (out-of-office)
+
+A `user_delegation` row says: "for the window `[starts_at, ends_at)`,
+redirect any new task that would go to `user_id` over to `delegate_to`."
+
+When AWE creates tasks, it consults active delegations. If a resolved
+approver has one, the task is created for the delegate instead, with
+`delegated_from = original_user` recorded for audit. If multiple
+delegations overlap for the same user, the most recently created one
+wins.
+
+Delegations apply to **new** tasks only — they never retroactively
+reassign already-open tasks. For one-off retroactive moves, use the admin
+**Reassign** action on the task.
+
+## Reassignment
+
+`POST /v1/awe/tasks/{id}/reassign` (admin-only) closes an open task with
+status `reassigned` and creates a fresh task for the new user, preserving
+the original `due_at`. The new task records `reassigned_from = old_user`.
+The closed task's audit trail (claim history, etc.) is preserved.
+
+Decisions are never moved across reassignments. Decision integrity is
+per-task: if the original assignee never decided, the reassignment closes
+the task without a decision.
+
 ## Request lifecycle (state machine)
 
 ```
@@ -213,11 +313,13 @@ if `callback_url` is set on the request, enqueues a `webhook_delivery`.
 | `request_created`   | `POST /requests` succeeds                                          | ✅              |
 | `stage_started`     | A stage is resolved and its tasks created                          | ✅              |
 | `stage_completed`   | A stage reaches `approved` or `rejected`                           | ✅              |
-| `stage_skipped`     | `skip_if` true, or `on_empty=skip` + empty resolution             | (in timeline only) |
+| `stage_skipped`     | `skip_if` true, or `on_empty=skip` + empty resolution             | ✅              |
+| `stage_escalated`   | SLA breach with `on_breach=escalate` added new approver tasks      | ✅              |
 | `request_approved`  | Last stage completed with `approved`                               | ✅              |
 | `request_rejected`  | Any stage completed with `rejected`, or `on_empty=block` triggered | ✅              |
 | `request_cancelled` | `POST /requests/{id}/cancel`                                       | ✅              |
 | `task_expired`      | SLA monitor finds an open/claimed task past `due_at`               | ✅              |
+| `task_reassigned`   | Admin reassigned a task via `POST /tasks/{id}/reassign`            | ✅              |
 
 ### Webhook request format
 
@@ -331,32 +433,32 @@ distinct caller retry).
 
 ## SLA and escalation
 
-Each stage can specify `sla_hours`. When tasks are created for a stage,
-`due_at` is set to `now + sla_hours`. The SLA monitor worker
+Each stage can specify `sla_hours`. When approver tasks are created for
+the stage, `due_at` is set to `now + sla_hours`. The SLA monitor worker
 (`awe.sla.check_interval_seconds`, default 300s) scans for
-`status IN (open, claimed) AND due_at <= now()` and flips them to
-`expired`.
+`status IN (open, claimed) AND due_at <= now()` and flips matching
+approver tasks to `expired`. Observer tasks have no `due_at` and are
+unaffected.
 
-**AWE's role is mechanism, not policy.** The monitor does exactly three
-things: marks the task `expired`, appends a `task_expired` event, and
-fires a webhook to the caller's `callback_url`. It does **not**
-auto-reject the request, auto-reassign, auto-escalate, or send
-reminders — all of that is domain-specific policy that belongs in the
-caller (Registry, PBMS, …).
+For each task that expires, AWE emits a `task_expired` event (which fires
+a webhook). It then applies the stage's `on_breach` action **once per
+stage per tick**, even if multiple tasks on the stage expire together:
 
-The webhook payload includes `task_id`, `stage_order`, `assignee`, and
-`due_at`, giving the caller enough to decide:
+| `on_breach`     | What AWE does                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| `notify` (default, also when null) | Nothing further. Caller decides what to do based on the `task_expired` events.       |
+| `escalate`      | Resolves the stage's `escalation_rules` and adds those users as fresh approver tasks on the stage. Original expired tasks stay expired for audit. Emits `stage_escalated`. |
+| `auto_approve`  | Synthesizes `approve` decisions for all remaining open tasks on the stage (`actor = sla-monitor`). Stage advances normally — including parallel-group completion checks. |
+| `auto_reject`   | Symmetric — synthesizes `reject` decisions, terminating the request. |
 
-* **Hard deadline** — cancel via `POST /v1/awe/requests/{id}/cancel`.
-* **Nudge-then-escalate** — send a reminder email; if still open after
-  another window, cancel.
-* **Reassign to supervisor** — cancel and create a new request with a
-  different `policy_key`.
-* **Silent reminder** — send a nag email, leave the task alone.
+The `notify` mode preserves the v1 behaviour where caller-side policy
+owns the response. The other three are explicit opt-ins for AWE to take
+the decision; they let policies that want fully automated SLA enforcement
+avoid building parallel logic in every Caller.
 
-A future iteration may add escalation rules on the policy itself
-(auto-reassign on expiry, auto-reject after N expirations). For v1,
-callers own the decision.
+When `escalate` cannot resolve any new approvers (rules return empty),
+the action becomes a no-op — the original expired tasks remain expired
+and the stage waits for caller intervention, the same as `notify`.
 
 ## Audit log
 
