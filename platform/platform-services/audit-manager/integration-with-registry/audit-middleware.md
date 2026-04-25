@@ -10,9 +10,8 @@ description: >-
 ## What it does
 
 A single middleware class — `AuditMiddleware` — registered in the Staff
-Portal API's `main.py`, after `AuthMiddleware`. It captures every
-**authenticated** API call and emits one CloudEvent to the Audit Manager
-service. Health probes and OpenAPI surfaces are skipped automatically.
+Portal API's `main.py`, after `AuthMiddleware`. It captures API calls and
+emits one CloudEvent to the Audit Manager service per call.
 
 Key properties:
 
@@ -26,13 +25,43 @@ Key properties:
   `audit_manager_url` are required to actually emit events. The default
   setup is a no-op — safe to ship without configuring Audit Manager at
   all.
-* **Automatic skip-list:**
-  * `/ping`, `/openapi.json`, `/docs`, `/redoc`, `/docs/oauth2-redirect`
-  * `OPTIONS` preflight requests
-  * Anonymous requests — anything where `request.state.auth` is not
-    populated (i.e. paths the existing `AuthMiddleware` lets through with
-    `allow_by_default=True`). This implements the "only authenticated
-    user calls" policy with zero per-route configuration.
+
+### Audit policy
+
+| Request kind                                                       | Audited?    |
+| ------------------------------------------------------------------ | ----------- |
+| Authenticated (`request.state.auth` set), any outcome              | **Yes**     |
+| Anonymous + outcome non-2xx (rejected attempt)                     | **Yes** — captured as `actor.type=anonymous` (or recovered from JWT on 403, see below). Toggle off via `audit_anonymous_failures=false`. |
+| Anonymous + outcome 2xx (legitimate public endpoint)               | No          |
+| Health probes (`/ping`)                                            | No          |
+| OpenAPI surfaces (`/docs`, `/redoc`, `/openapi.json`, `/docs/oauth2-redirect`) | No |
+| `OPTIONS` preflight                                                | No          |
+
+**Why audit rejected anonymous calls?** They're attempted unauthorized
+access — exactly the signal a security review needs. The combination
+"automatic skip of legitimate anonymous traffic + capture of rejected
+anonymous traffic" gives you compliance signal without flooding the
+audit store with bot pings or browser CORS.
+
+**Disabling anonymous-failure auditing.** Set
+`REGISTRY_STAFF_PORTAL_API_AUDIT_ANONYMOUS_FAILURES=false`. The middleware
+then reverts to the original "audit only authenticated user calls" rule.
+
+### Recovering the real user on a 403
+
+When a user has a **valid token but the wrong role**, the existing
+`AuthMiddleware` raises `ForbiddenError` *before* setting `request.state.auth`
+— so by default the audit would have no user context. The middleware
+handles this specially: on a `403` with a bearer token present, it
+**decodes the JWT payload itself** (without re-verifying the signature —
+`AuthMiddleware` already did that before raising) to recover `sub`,
+`name`, `preferred_username`, and the client roles. This is safe because
+we know the signature was validated; we're just reading what the upstream
+already accepted.
+
+For `401` (no token, invalid signature, expired token), the JWT cannot be
+trusted, so the actor is recorded as `anonymous` with only the client IP
+preserved.
 
 ## Where it sits in the middleware stack
 
@@ -85,11 +114,13 @@ A single CloudEvents 1.0 envelope with the OpenG2P `data` conventions:
 | `source`             | `/openg2p/registry-staff-portal-api` (configurable via `audit_source`)             |
 | `type`               | `org.openg2p.staff_portal.<endpoint_function_name>`                                |
 | `time`               | UTC timestamp when the response was built                                          |
-| `data.actor.type`    | `"user"`                                                                           |
-| `data.actor.id`      | `principal.sub` (Keycloak subject id)                                              |
-| `data.actor.name`    | `principal.name`                                                                   |
-| `data.actor.roles`   | `principal.client_roles[<keycloak_client_id>]` — roles for this client only        |
-| `data.actor.ip`      | `request.client.host`                                                              |
+| `data.actor.type`    | `"user"` for authenticated callers; `"anonymous"` for unauthenticated rejected attempts |
+| `data.actor.id`      | `principal.sub` (Keycloak subject id), JWT `sub` on 403, or `"anonymous"` |
+| `data.actor.name`    | `principal.name` / JWT `name` claim (display name, e.g. "Admin User")              |
+| `data.actor.username`| JWT `preferred_username` claim (login handle, e.g. "admin"). Decoded directly from the bearer token. Not in the `Actor` schema explicitly — preserved via `extra="allow"` and lands under `details.actor.username`. |
+| `data.actor.roles`   | `principal.client_roles[<keycloak_client_id>]` (or `resource_access.<client>.roles` from JWT on 403) — roles for this client only |
+| `data.actor.ip`      | `X-Forwarded-For` first hop → `X-Real-IP` → `request.client.host`. Picks the real user IP behind Istio / a load balancer rather than the proxy's IP. |
+| `data.actor.session_id`| JWT `session_state` (or `sid`) claim — useful for grouping all actions in the same Keycloak login session. |
 | `data.action`        | First word of the endpoint function name (e.g. `approve_change_request` → `approve`) |
 | `data.outcome`       | `2xx → success`, `401/403 → denied`, other `4xx/5xx → failure`                     |
 | `data.context.api`   | `"<METHOD> <path>"` — e.g. `"POST /change-requests/approve_change_request"`        |
@@ -102,35 +133,51 @@ most Staff Portal endpoints are RPC-shaped POSTs without a clean
 URL-path entity to extract. We can add it later via per-route hints if
 needed.
 
+`data.actor.id` and `data.actor.type` land in **flat indexed columns**
+(`actor_id`, `actor_type`); the rest of `actor.*` (name, username, roles,
+ip) lives under the `details.actor.*` JSONB column on the audit-manager
+side — see [Mapping from CloudEvents to Postgres columns](../functional-specifications.md#mapping-from-cloudevents-to-postgres-columns).
+
 ## Files changed
 
-Three files in
-`openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/`:
+In `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/`:
 
 | File                                              | Change                                                                                  |
 | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `src/openg2p_registry_staff_portal_api/audit_middleware.py` | **New** — the middleware class. ~200 lines including comments.                  |
-| `src/openg2p_registry_staff_portal_api/config.py`           | **+5 settings**: `audit_enabled`, `audit_manager_url`, `audit_timeout_seconds`, `audit_source`, `audit_module` |
-| `src/openg2p_registry_staff_portal_api/main.py`             | **+2 lines** to register `AuditMiddleware` after `AuthMiddleware`                |
-| `.env.example`                                              | **+6 lines** documenting the new env vars                                       |
+| `src/openg2p_registry_staff_portal_api/audit_middleware.py` | **New** — the middleware class. ~280 lines including JWT-decode helper for the 403 recovery path. |
+| `src/openg2p_registry_staff_portal_api/config.py`           | **+6 settings**: `audit_enabled`, `audit_manager_url`, `audit_timeout_seconds`, `audit_source`, `audit_module`, `audit_anonymous_failures` |
+| `src/openg2p_registry_staff_portal_api/main.py`             | **+11 lines** to register `AuditMiddleware` after `AuthMiddleware`               |
+| `.env.example`                                              | **+8 lines** documenting the new env vars                                       |
+
+In `openg2p-audit-manager/`:
+
+| File                                              | Change                                                                                  |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `src/audit_manager/schema/cloud_event.py`         | `Actor` model gains `extra="allow"` so emitter-supplied custom actor fields (e.g. `username`) flow through to `details.actor.*` without a schema change here. |
 
 ## Configuration
 
-Five new environment variables (all prefixed with
+Six new environment variables (all prefixed with
 `REGISTRY_STAFF_PORTAL_API_`):
 
-| Env var                                         | Default                                  | Purpose                                                                                  |
-| ----------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `REGISTRY_STAFF_PORTAL_API_AUDIT_ENABLED`       | `false`                                  | Master on/off switch. Must be `true` AND a URL must be set for emission to happen.       |
-| `REGISTRY_STAFF_PORTAL_API_AUDIT_MANAGER_URL`   | empty                                    | Base URL of Audit Manager, e.g. `http://localhost:8002` or `http://audit-manager:80`.    |
-| `REGISTRY_STAFF_PORTAL_API_AUDIT_TIMEOUT_SECONDS`| `2.0`                                    | Timeout on each POST to Audit Manager. Bounded so a slow audit endpoint can't pile up.   |
-| `REGISTRY_STAFF_PORTAL_API_AUDIT_SOURCE`        | `/openg2p/registry-staff-portal-api`     | CloudEvents `source` field. Override only if you run multiple staff-portal deployments.  |
-| `REGISTRY_STAFF_PORTAL_API_AUDIT_MODULE`        | `registry-staff-portal-api`              | Module name placed in `data.context.module`.                                             |
+| Env var                                              | Default                                  | Purpose                                                                                  |
+| ---------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_ENABLED`            | `false`                                  | Master on/off switch. Must be `true` AND a URL must be set for emission to happen.       |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_MANAGER_URL`        | empty                                    | Base URL of Audit Manager, e.g. `http://localhost:8002` or `http://audit-manager:80`.    |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_TIMEOUT_SECONDS`    | `2.0`                                    | Timeout on each POST to Audit Manager. Bounded so a slow audit endpoint can't pile up.   |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_SOURCE`             | `/openg2p/registry-staff-portal-api`     | CloudEvents `source` field. Override only if you run multiple staff-portal deployments.  |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_MODULE`             | `registry-staff-portal-api`              | Module name placed in `data.context.module`.                                             |
+| `REGISTRY_STAFF_PORTAL_API_AUDIT_ANONYMOUS_FAILURES` | `true`                                   | When `true`, also audit rejected anonymous calls (401/403). Set to `false` to revert to the original "audit only authenticated user calls" rule. |
 
 **To disable auditing entirely:** set `AUDIT_ENABLED=false`, or omit
 `AUDIT_MANAGER_URL`. Either condition makes the middleware a no-op —
 there's no need to remove the middleware from `main.py`. The startup log
 will say `AuditMiddleware disabled (...). No-op.` so you can confirm.
+
+**To disable only anonymous-failure auditing** (and keep authenticated
+auditing): set `AUDIT_ANONYMOUS_FAILURES=false`. Useful in environments
+where the service is exposed to bot/scanner traffic and you don't want
+the audit store to fill with rejected anonymous probes.
 
 **To enable for local dev** (Audit Manager port-forwarded from cluster):
 
