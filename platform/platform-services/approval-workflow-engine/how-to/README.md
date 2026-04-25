@@ -2,7 +2,9 @@
 
 Short, task-oriented recipes. Each page walks through a single configuration
 in the AWE admin portal — no concepts, no rationale. For the why-and-how-it-works,
-read the [Functional Specifications](../functional-specifications.md).
+read the [Functional Specifications](../functional-specifications.md). For a
+one-page menu of every pattern AWE supports, see the
+[Scenarios catalog](../scenarios.md).
 
 | Task | Audience |
 |--|--|

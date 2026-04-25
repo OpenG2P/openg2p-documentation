@@ -15,6 +15,11 @@ It is **not** a BPMN engine or a workflow orchestrator for arbitrary business pr
 
 Built with **FastAPI** + **async SQLAlchemy** + **PostgreSQL**. Designed for **horizontal scaling on Kubernetes**, with **one AWE deployment per caller module** (`registry-awe`, `pbms-awe`, …) for clean isolation.
 
+> **Looking for "what scenarios can I model?"** — see the
+> [Scenarios catalog](scenarios.md) for a one-page index of every
+> approval pattern AWE handles, mapped to the configuration knob that
+> produces it.
+
 ### Key capabilities
 
 * **Caller-agnostic** — AWE doesn't know your artifact's shape. Callers pass `(artifact_type, artifact_id, context)` plus a callback URL; AWE only stores the identifier and a context snapshot used for approver resolution.
