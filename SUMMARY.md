@@ -540,6 +540,7 @@
     * [Testing](platform/platform-services/audit-manager/testing.md)
     * [Integration with Registry](platform/platform-services/audit-manager/integration-with-registry/README.md)
       * [Local Install — Staff Portal API](platform/platform-services/audit-manager/integration-with-registry/local-install.md)
+      * [Audit Middleware](platform/platform-services/audit-manager/integration-with-registry/audit-middleware.md)
   * [ID Generator](platform/platform-services/id-generator/README.md)
     * [Functional Specifications](platform/platform-services/id-generator/functional-specifications.md)
     * [API Reference](platform/platform-services/id-generator/api-reference.md)

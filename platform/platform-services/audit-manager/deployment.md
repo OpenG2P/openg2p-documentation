@@ -127,6 +127,61 @@ auditManager:
     enabled: false
 ```
 
+## Uninstall
+
+`helm uninstall audit-manager` cleans up the workloads, Service, Istio
+VirtualService, and Helm-owned secrets/configmaps. It does **not**:
+
+* Drop the Postgres database + role created by the `postgres-init`
+  subchart hook (those live inside `commons-postgresql`, not in the
+  audit-manager release).
+* Delete the Kafka topics created by the `topicInit` Helm hook.
+* Remove leftover hook Jobs (postgres-init, topic-init) that pin
+  themselves with `helm.sh/hook-delete-policy`.
+
+Use the bundled
+[`scripts/uninstall-audit-manager.sh`](https://github.com/OpenG2P/audit-manager/blob/develop/scripts/uninstall-audit-manager.sh)
+to do the full teardown. Same flag style as the AWE uninstaller.
+
+```bash
+# 1. Always dry-run first to see what will go
+./scripts/uninstall-audit-manager.sh --namespace trial --dry-run
+
+# 2. Real uninstall — interactive confirmation
+./scripts/uninstall-audit-manager.sh --namespace trial
+
+# 3. Full blast including Kafka topics, no prompt (CI / scripted teardown)
+./scripts/uninstall-audit-manager.sh --namespace trial \
+  --delete-kafka-topics --yes
+```
+
+What it does, in order:
+
+| Step | Action |
+| --- | --- |
+| 1 | `helm uninstall <release>` |
+| 2 | Delete leftover Jobs + completed pods (postgres-init, topic-init) |
+| 3 | Sweep any other Secrets / ConfigMaps labelled with the release |
+| 4 | Drop Postgres DB + role inside `commons-postgresql` |
+| 5 | (optional, `--delete-kafka-topics`) delete `openg2p.audit.events` and `openg2p.audit.dlq` from `commons-kafka` |
+| 6 | Delete PVCs labelled with the release (audit-manager has none today; included for parity) |
+| 7 | Delete PVs released by step 6 (skip with `--keep-pvs`) |
+
+Common flags (full list in the script header — `--help`):
+
+| Flag | Default | Purpose |
+| --- | --- | --- |
+| `--release <name>` | `audit-manager` | Helm release to uninstall |
+| `--namespace <ns>` | required | Namespace the release is in |
+| `--postgres-release <name>` | `commons-postgresql` | Helm release name of the shared Postgres |
+| `--kafka-release <name>` | `commons-kafka` | Helm release name of the shared Kafka |
+| `--delete-kafka-topics` | off | Also drop the audit topic + DLQ |
+| `--keep-pvs` | off | Delete PVCs but keep PVs (useful when the underlying volumes hold long-retained audit data and you intend to reattach them on a new install) |
+| `--dry-run` | off | Print actions, change nothing |
+| `--yes` | off | Skip the interactive "type the release name" confirmation |
+
+Requires `kubectl` (cluster admin), `helm`, `bash 4+`, `jq`.
+
 ## Configuration reference
 
 All configuration is layered, highest priority first:

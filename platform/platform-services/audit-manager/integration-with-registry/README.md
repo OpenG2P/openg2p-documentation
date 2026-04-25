@@ -16,6 +16,7 @@ API call and ships it to Audit Manager as a CloudEvents payload.
 | Page                                                              | Description                                                                                                              |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | [Local Install — Staff Portal API](local-install.md)              | Step-by-step instructions to run `openg2p-registry-staff-portal-api` locally on a developer machine, with all the fixes needed beyond the upstream README. Required before integrating audit emissions. |
+| [Audit Middleware](audit-middleware.md)                           | Design of the `AuditMiddleware` class added to Staff Portal API: where it sits in the stack, what gets emitted per call, the three files changed, configuration env vars (including the on/off switch), and end-to-end verification steps. |
 
 ## Integration approach (summary)
 
