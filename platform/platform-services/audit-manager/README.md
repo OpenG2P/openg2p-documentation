@@ -88,6 +88,7 @@ It is built with **FastAPI**, uses **Kafka** as a durable buffer, and
 | [Technical Architecture](technical-architecture.md)          | Why this design was chosen over alternatives, scalability model, reliability & delivery guarantees, partitioning strategy |
 | [Deployment](deployment.md)                                  | Local dev with Docker Compose, Helm chart install, configuration reference, operational runbook, security considerations |
 | [Testing](testing.md)                                        | Unit tests, smoke test, load test, Postman collection, sample events |
+| [Integration with Registry](integration-with-registry/README.md) | How OpenG2P services emit audit events to the Audit Manager. Includes a complete local-install guide for the Registry Staff Portal API as the reference integration. |
 
 ## Versions
 
