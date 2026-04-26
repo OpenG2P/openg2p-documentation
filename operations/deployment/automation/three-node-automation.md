@@ -119,8 +119,9 @@ The script enforces these minimums in a preflight pass before any installation w
 
 ### On the admin's laptop
 
-* `bash`, `ssh`, `rsync` (preinstalled on macOS and Linux)
-* SSH access (key-based) and **passwordless sudo** for one user account on each of the three VMs
+* **`bash` 4 or later**, `ssh`, `rsync`. macOS ships `/bin/bash` 3.2 by default — install a newer one with `brew install bash`. Linux distros ship 4+ by default.
+* A Wireguard client (only needed AFTER install, to reach the admin tools).
+* SSH access (key-based) and **passwordless sudo** for one user account on each of the three VMs.
 
 ### What's NOT required
 
@@ -218,56 +219,126 @@ Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 
 ### Step 4 — post-install on your laptop
 
-After the orchestrator finishes, the summary printed at the end has the exact `scp` commands. The three things you do once:
+When the orchestrator finishes it prints a **completion summary** with both passwords (Rancher local admin + Keycloak admin), the URLs, and the exact commands for each step below — keep that summary handy while you go through this section the first time.
 
-#### Wireguard peer config
+The four things to do, once, on your laptop:
+
+#### 4.1 Pull the Wireguard peer config and connect
+
+The peer file on the RP node is owned by `root`, so we read it via `sudo cat` over SSH and write it locally:
 
 ```bash
-scp -i <your-key> ubuntu@<rp-public-ip>:/etc/wireguard/peers/peer1/peer1.conf .
+ssh -i <your-key> ubuntu@<rp-public-ip> \
+    "sudo cat /etc/wireguard/peers/peer1/peer1.conf" > peer1.conf
 ```
 
-Import into the [Wireguard client app](https://www.wireguard.com/install/) and activate. The peer config includes the RP's WG IP as DNS server — `*.openg2p.internal` resolves automatically while connected.
+Install a Wireguard client and import this file:
 
-#### Trust the local CA
+| OS | Where to get the client |
+|---|---|
+| macOS | [Wireguard from the App Store](https://apps.apple.com/app/wireguard/id1451685025) |
+| Windows / Linux | [wireguard.com/install](https://www.wireguard.com/install/) |
+| iOS / Android | App Store / Play Store |
+
+In the app: **Add Tunnel → Import from file/archive → choose `peer1.conf` → Activate**.
+
+Verify the tunnel is up:
 
 ```bash
-scp -i <your-key> ubuntu@<rp-public-ip>:/etc/openg2p/ca/ca.crt .
+ping 10.15.0.1   # the RP's WG-side IP — must respond
+```
+
+{% hint style="info" %}
+The peer config uses **split tunnel** by default — only the Wireguard subnet (`10.15.0.0/16`) and the cluster's private subnet are routed through the VPN. Your normal internet stays direct.
+{% endhint %}
+
+#### 4.2 Trust the local CA on your laptop
+
+The admin tools are served with a certificate signed by a local CA generated on the RP. Pull and trust it once:
+
+```bash
+ssh -i <your-key> ubuntu@<rp-public-ip> \
+    "sudo cat /etc/openg2p/ca/ca.crt" > openg2p-ca.crt
 ```
 
 | OS | Install command |
 |---|---|
-| macOS | `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ca.crt` |
-| Linux | `sudo cp ca.crt /usr/local/share/ca-certificates/openg2p-ca.crt && sudo update-ca-certificates` |
-| Windows | Import via `certmgr.msc` into "Trusted Root Certification Authorities" |
+| macOS | `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain openg2p-ca.crt` |
+| Linux | `sudo cp openg2p-ca.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates` |
+| Windows | `certmgr.msc` → Trusted Root Certification Authorities → Import |
 
-#### kubectl access (optional)
+#### 4.3 (macOS only) DNS resolver entry
+
+Wireguard pushes a DNS server to your client, but macOS's resolver doesn't always honour pushed DNS for split-tunnel. Belt-and-braces:
 
 ```bash
-scp -i <your-key> ubuntu@<compute-private-ip>:/etc/rancher/rke2/rke2-remote.yaml ~/.kube/openg2p-prod
+sudo mkdir -p /etc/resolver
+echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
+```
+
+Verify:
+
+```bash
+dscacheutil -q host -a name rancher.openg2p.internal
+# should return the RP's private IP, e.g. 172.29.0.179
+```
+
+{% hint style="warning" %}
+Don't use `dig` to test on macOS — it bypasses the system resolver and will return NXDOMAIN even when everything works. Use `dscacheutil`, `ping`, or `curl`.
+{% endhint %}
+
+#### 4.4 Login to Rancher — the recommended flow
+
+There are two distinct logins. The first time you connect, do them in this order:
+
+**Step A — Login with the LOCAL Rancher admin first**
+
+Open `https://rancher.openg2p.internal` in your browser. On the Rancher login page, click **"Use a local user"** (the small link below the big "Login with Keycloak" button).
+
+* **Username**: `admin`
+* **Password**: shown in the orchestrator's completion summary; or fetch it from the cluster:
+
+  ```bash
+  export KUBECONFIG=~/.kube/openg2p-prod   # see "kubectl access" below
+  kubectl -n cattle-system get secret rancher-secret \
+    -o jsonpath='{.data.adminPassword}' | base64 -d && echo
+  ```
+
+You're now in Rancher as the local admin. Use this session to take a quick look around.
+
+**Step B — Find the Keycloak admin password (optional, for confirmation)**
+
+While logged in to Rancher, browse to: **`local` cluster → Storage → Secrets → keycloak-system → keycloak**. Reveal the `admin-password` value. This is the same password the orchestrator's summary printed; the Rancher UI just gives you a click-to-reveal way to find it without using kubectl.
+
+**Step C — Logout, then login again with Keycloak SSO**
+
+In Rancher, click your avatar (top-right) → **Log Out**. You're back at the login screen.
+
+Now click the big **"Login with Keycloak"** button. Your browser is redirected to `https://keycloak.openg2p.internal/...` — the URL change confirms you're on the Keycloak login form, not Rancher's.
+
+* **Username**: the email you set in `keycloak_admin_email` (default: `admin@openg2p.internal`).
+* **Password**: the Keycloak admin password (from the orchestrator summary, or step B above).
+
+Keycloak authenticates you, signs a SAML assertion, and redirects you back to Rancher. You should land on the Rancher home page as the Keycloak-authenticated admin. **SAML SSO is now verified working.**
+
+{% hint style="success" %}
+From now on, day-to-day admins should use "Login with Keycloak". Manage user accounts in Keycloak, assign Rancher roles via Rancher's **Members** UI. The local `admin` is a fallback for when Keycloak is unavailable — guard the password accordingly.
+{% endhint %}
+
+#### 4.5 (Optional) kubectl from your laptop
+
+If you want to run `kubectl` directly against the cluster (instead of going through the Rancher UI):
+
+```bash
+mkdir -p ~/.kube
+ssh -i <your-key> ubuntu@<compute-private-ip> \
+    "sudo cat /etc/rancher/rke2/rke2-remote.yaml" > ~/.kube/openg2p-prod
+chmod 600 ~/.kube/openg2p-prod
 export KUBECONFIG=~/.kube/openg2p-prod
 kubectl get nodes
 ```
 
-Requires Wireguard active — the K8s API listens on the private IP.
-
-#### Login to Rancher
-
-Open `https://rancher.openg2p.internal` (or whatever you set `internal_domain` to) and click **Login with Keycloak**.
-
-* Username: the email configured in `keycloak_admin_email`.
-* Password: from the Kubernetes secret —
-
-```bash
-kubectl -n keycloak-system get secret keycloak \
-  -o jsonpath='{.data.admin-password}' | base64 -d && echo
-```
-
-A local Rancher admin (fallback) also exists with username `admin`:
-
-```bash
-kubectl -n cattle-system get secret rancher-secret \
-  -o jsonpath='{.data.adminPassword}' | base64 -d && echo
-```
+Requires Wireguard active — the K8s API listens on the compute node's private IP, only reachable through the VPN.
 
 ## What this automation DOES
 
@@ -586,7 +657,60 @@ Stop instances when not using them to drop EC2 charges to near-zero (you still p
 **Script failed?** Re-run it. Completed steps are skipped via state markers. Error messages include diagnostic commands.
 {% endhint %}
 
-**Preflight fails on a node** — the failure message lists which check failed (CPU, RAM, disk, internet, IP). Resize or reconfigure that VM and re-run.
+### Orchestrator (`openg2p-prod.sh`)
+
+**`bash 4+ required` at startup** — only happens on macOS where `/bin/bash` is 3.2 by default. Install a newer one: `brew install bash`. The script's `#!/usr/bin/env bash` will then resolve to it.
+
+**Script exits silently with no output (or only the boot line)** — there's a fatal error somewhere; the trap should print `[FATAL] ... at line N (command)`. If you see only the boot line and nothing else, check the log file path printed by the trap.
+
+**Preflight fails on a node** — the failure summary lists which node and which check (CPU, RAM, disk, internet, IP). Resize or reconfigure that VM and re-run. Common cases:
+
+* RAM falls just below the threshold — Linux reports a slightly smaller MemTotal than the AWS-advertised RAM (kernel reservation). The check accepts 10% slack; if it still fails, your VM really is under-sized.
+* Internet egress: from the failing node, run `curl -sSI --max-time 10 https://get.rke2.io` to reproduce.
+
+### SSH and host-key prompts
+
+**SSH probe fails with a host-key prompt** — should not happen anymore (the orchestrator uses `StrictHostKeyChecking=no` for ephemeral cloud VMs), but if it does, the SSH error is surfaced verbatim in the `log_error` block. The most common real cause is the laptop's public IP not being in `admin_cidr` on the cloud security group — check what the script set, vs `curl -s https://checkip.amazonaws.com`.
+
+**Compute helmfile sync hangs or errors** — SSH into the compute node:
+
+```bash
+sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl get pods -A | grep -v Running
+sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl get events -A --sort-by=.lastTimestamp | tail -30
+```
+
+Then re-run only that phase: `./openg2p-prod.sh --config prod-config.yaml --role compute --phase 2`.
+
+### Phase 3 (Rancher / Keycloak SAML)
+
+**Phase 3 reports `Cannot reach Rancher at https://rancher.<internal>`** — the compute node can't resolve or connect to the Rancher hostname. Two checks (run on the compute node):
+
+```bash
+grep rancher /etc/hosts                      # entry must point at RP private IP
+curl -kv https://rancher.openg2p.internal/ping 2>&1 | head -30
+```
+
+If `/etc/hosts` is missing the entry, re-run `--role compute --phase 3` — the script self-heals the `/etc/hosts` block via `ensure_admin_hostnames_in_etc_hosts`. If `curl` returns "Connection refused", nginx on the RP isn't listening on 443 — see the next item.
+
+**Nginx on the RP listens on 0.0.0.0:80 instead of `<rp-private>:443`** — happens when the apt nginx package's default config pre-bound port 80 and a `systemctl reload` didn't transition the listen sockets. Fix: `sudo systemctl restart nginx` on the RP. The current script uses unconditional `restart` (not `reload`) and verifies the bind, so this should not recur.
+
+### Login
+
+**Rancher's "Login with Keycloak" rejects the credentials** — the most common mistake is using the wrong password for the wrong username/page:
+
+* On Keycloak's page (URL `keycloak.openg2p.internal/...`), use the **email** from `keycloak_admin_email` and the password from `keycloak-system/keycloak`.
+* On Rancher's local-user page (URL `rancher.openg2p.internal`), use `admin` and the password from `cattle-system/rancher-secret`.
+
+Both passwords are printed live in the orchestrator's completion summary.
+
+**Wireguard connects but `*.openg2p.internal` doesn't resolve on macOS** — `dig` bypasses the macOS resolver and will give NXDOMAIN even when everything works. Use `dscacheutil -q host -a name rancher.openg2p.internal` instead. For reliable per-domain DNS:
+
+```bash
+sudo mkdir -p /etc/resolver
+echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
+```
+
+**Browser certificate warning even after trusting the CA** — on macOS the CA must be trusted at the **System** keychain (not Login keychain). Run the `security add-trusted-cert -k /Library/Keychains/System.keychain ...` form, then restart the browser.
 
 **Compute helmfile sync hangs or errors** — SSH into the compute node:
 
