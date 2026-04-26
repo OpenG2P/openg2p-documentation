@@ -639,6 +639,7 @@
   * [Concepts](deployment/concepts/README.md)
     * [OpenG2P Deployment Architecture](deployment/concepts/openg2p-deployment-model.md)
     * [Commons Helm Charts 2.x](deployment/concepts/openg2p-commons-helm-chart.md)
+    * [DNS & TLS Certificates](deployment/concepts/dns-and-certificates.md)
   * [Resource Requirements](deployment/resource-requirements.md)
   * [Deployment Instructions](deployment/deployment-instructions/README.md)
     * [Infrastructure Setup](deployment/deployment-instructions/infrastructure-setup.md)
