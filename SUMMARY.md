@@ -646,6 +646,7 @@
     * [Production Deployment Best Practices](deployment/deployment-instructions/production.md)
   * [Automation](deployment/automation/README.md)
     * [Single-Node Automation](deployment/automation/single-node-automation.md)
+    * [Three-node Automation](operations/deployment/automation/three-node-automation.md)
     * [Environment Setup for Multi-Node](deployment/automation/environment-setup-multi-node.md)
   * [Scaling](deployment/scaling/README.md)
     * [V4 Deployment Architecture](deployment/scaling/v4-deployment-architecture.md)
