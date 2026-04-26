@@ -159,6 +159,10 @@ keycloak:
 {% endtab %}
 
 {% tab title="AWS EC2" %}
+{% hint style="success" %}
+**Recommended instance type: `m5a.4xlarge`** — 16 vCPU / 64 GB RAM with AMD EPYC processors. Meets the OpenG2P single-node resource requirements at the lowest hourly cost among comparable instance types (cheaper than `m5.4xlarge`, `c5.4xlarge`, or `m6a.4xlarge` for the same vCPU/RAM). Pair it with a 128 GB gp3 EBS volume.
+{% endhint %}
+
 For AWS, also set the public IP for Wireguard:
 
 ```yaml
