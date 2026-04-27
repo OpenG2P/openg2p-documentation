@@ -127,22 +127,62 @@ By default, the Superset username and password are **admin / admin**. To change 
 
 ## External PostgreSQL
 
-For production deployments with an external PostgreSQL server:
+For production deployments where PostgreSQL runs outside Kubernetes (a managed service like AWS RDS / Cloud SQL, or a dedicated VM), follow these steps.
+
+### Why pre-create the secret?
+
+Helm cannot create a Kubernetes secret on the fly that subcharts reference at render time. Several components — `postgres-init`, Keycloak's external database config, the per-service `postgresInit` jobs (keymanager, eSignet, mock-identity-system, IAM service, audit-manager) — all read the PostgreSQL **superuser password** from the same Kubernetes secret. So the secret must exist **before** `helm install` runs.
+
+### Step 1: Pre-create the superuser secret
 
 ```bash
-./install-base.sh trial commons trial.openg2p.org \
-  --set postgresql.enabled=false \
-  --set global.postgresqlHost=external-pg.example.com \
-  --set postgres-init.postgresql.existingSecret=external-pg-superuser
-```
+kubectl create namespace <namespace> 2>/dev/null || true
 
-You must pre-create the superuser password secret before installing:
-
-```bash
 kubectl create secret generic external-pg-superuser \
   -n <namespace> \
-  --from-literal=postgres-password="<superuser-password>"
+  --from-literal=postgres-password='<your-postgres-superuser-password>'
 ```
+
+The default key name is `postgres-password`. If your secret uses a different key (e.g. `password` from a managed-service-generated secret), pass `--set global.postgresqlSecretKey=<key-name>` during install.
+
+### Step 2: Install with external PostgreSQL overrides
+
+```bash
+./install-base.sh <namespace> commons <base-domain> \
+  --set postgresql.enabled=false \
+  --set global.postgresqlHost=<external-pg-hostname-or-ip> \
+  --set global.postgresqlSecret=external-pg-superuser
+```
+
+- **`postgresql.enabled=false`** — disables the embedded Bitnami PostgreSQL chart
+- **`global.postgresqlHost`** — fully qualified hostname or IP of your external server (must be reachable from the cluster's pod network)
+- **`global.postgresqlSecret`** — name of the secret you created in Step 1
+
+The install script verifies that the secret exists before proceeding.
+
+### Step 3: Install services with the same overrides
+
+```bash
+./install.sh <namespace> commons-services commons <base-domain> \
+  --set global.postgresqlHost=<external-pg-hostname-or-ip> \
+  --set global.postgresqlSecret=external-pg-superuser
+```
+
+### What gets created in PostgreSQL
+
+The `postgres-init` job (running as a regular Kubernetes Job) connects to the external server using the superuser credentials and creates:
+
+- Databases: `superset`, `odkdb`, `mosip_keymgr`, `mosip_mockidentitysystem`, `mosip_esignet`, `keycloak`, plus `<release>_iam` and `<release>_auditmanager` from the services chart
+- One database user per database with auto-generated passwords
+- Per-user secrets stored in Kubernetes (`superset-db-user`, `odk-db-user`, `keymgr-db-user`, etc.)
+
+Your external PostgreSQL user must therefore have **`CREATE DATABASE` and `CREATE ROLE`** privileges. A typical RDS master user works.
+
+### Notes for managed PostgreSQL (RDS / Cloud SQL)
+
+- Some managed services don't allow `CREATE DATABASE` for non-master users — use the master credentials
+- The connection must use the standard PostgreSQL port `5432` (override `postgres-init.postgresql.port` if your service exposes a different port)
+- TLS connections are not yet configured by default — if your provider requires SSL, you may need to extend the postgres-init job
 
 ## Modules
 
