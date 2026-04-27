@@ -308,3 +308,42 @@ consumers handle both. This keeps the forensic record honest.
 events (startup, shutdown, errors, DLQ). It does not log the audit payloads
 themselves — those would duplicate the audit store into the regular log
 pipeline, which is exactly what we're trying to avoid.
+
+**How do I find when a user logged in, or how often?** Audit Manager
+doesn't see login events directly — login happens at Keycloak, *before*
+any API call reaches the service whose middleware emits audits. The audit
+log captures *post-login* API calls only. Three ways to get login data,
+in increasing fidelity:
+
+1. **Approximate from existing audit data.** Each Keycloak session has a
+   unique `session_state` claim, captured as `actor.session_id`. The
+   earliest event with a given `session_id` is a close proxy for login
+   time:
+
+   ```sql
+   SELECT
+     details->'actor'->>'session_id'  AS session,
+     MIN(occurred_at)                 AS approx_login_time,
+     MAX(occurred_at)                 AS last_activity,
+     COUNT(*)                         AS api_calls_in_session
+   FROM audit_events
+   WHERE actor_id = '<keycloak-sub>'
+     AND details->'actor'->>'session_id' IS NOT NULL
+   GROUP BY 1
+   ORDER BY approx_login_time DESC;
+   ```
+
+   Good enough for "when did admin last log in" / "how often does X
+   access the system". Won't capture **failed** login attempts.
+
+2. **Keycloak's built-in event log.** Realm Settings → Events → *Save
+   Events* = ON. Real login / logout / login-error events with
+   timestamps, IP, outcome — but they live in Keycloak's database,
+   separate from `audit_events`.
+
+3. **Keycloak Event Listener SPI → POST to Audit Manager.** A small Java
+   SPI subscribes to LOGIN/LOGOUT events at Keycloak and emits each as a
+   CloudEvent (`type: org.openg2p.auth.login`) into the same
+   `audit_events` table. Highest fidelity, including failed logins,
+   logouts, password changes, MFA challenges. Biggest effort. Planned
+   future enhancement; raise an issue if you need it.
