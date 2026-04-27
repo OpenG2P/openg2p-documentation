@@ -9,11 +9,10 @@
 
 ## Versions
 
-| Chart | Version | Date | Comments |
-|-------|---------|------|----------|
-| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0) | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
-| openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). |
-
+| Chart                                          | Version                                                                         | Date        | Comments                                                                                                                                                        |
+| ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0)      | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS.                                                       |
+| openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | <ul><li>Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search).</li><li>Resource constraints applied.</li></ul> |
 
 ## Architecture (v2.x onward)
 
@@ -149,18 +148,18 @@ All components are configured with **sandbox-friendly resource limits** by defau
 
 **Default sandbox limits:**
 
-| Component | Memory Limit | JVM Heap | Notes |
-|-----------|-------------|----------|-------|
-| Keycloak | 1Gi | 512m | Increase to 2Gi / 1g for production |
-| PostgreSQL | 1Gi | N/A | Increase to 2-4Gi for production |
-| OpenSearch | 1Gi | 512m | Heap should be ~50% of limit; increase to 4-8Gi for production |
-| Kafka (controller + broker) | 1Gi each | 512m | Increase to 2Gi / 1g for production |
-| MinIO | 512Mi | N/A | Increase to 1-2Gi for heavy S3 usage |
-| Redis (x2) | 128Mi each | N/A | Sufficient for most workloads |
-| OpenSearch Dashboards | 512Mi | N/A | Sufficient for most workloads |
-| Kafka UI | 512Mi | 256m | Sufficient for most workloads |
-| SoftHSM | 128Mi | N/A | Sufficient |
-| Artifactory | 512Mi | N/A | Sufficient |
+| Component                   | Memory Limit | JVM Heap | Notes                                                           |
+| --------------------------- | ------------ | -------- | --------------------------------------------------------------- |
+| Keycloak                    | 1Gi          | 512m     | Increase to 2Gi / 1g for production                             |
+| PostgreSQL                  | 1Gi          | N/A      | Increase to 2-4Gi for production                                |
+| OpenSearch                  | 1Gi          | 512m     | Heap should be \~50% of limit; increase to 4-8Gi for production |
+| Kafka (controller + broker) | 1Gi each     | 512m     | Increase to 2Gi / 1g for production                             |
+| MinIO                       | 512Mi        | N/A      | Increase to 1-2Gi for heavy S3 usage                            |
+| Redis (x2)                  | 128Mi each   | N/A      | Sufficient for most workloads                                   |
+| OpenSearch Dashboards       | 512Mi        | N/A      | Sufficient for most workloads                                   |
+| Kafka UI                    | 512Mi        | 256m     | Sufficient for most workloads                                   |
+| SoftHSM                     | 128Mi        | N/A      | Sufficient                                                      |
+| Artifactory                 | 512Mi        | N/A      | Sufficient                                                      |
 
 To scale up for production, override the relevant values:
 
@@ -173,6 +172,7 @@ To scale up for production, override the relevant values:
 ```
 
 **How to detect resource constraints:**
+
 * **OOMKilled** restarts — check `kubectl get pods` for high restart counts
 * **CPU throttling** — check `kubectl top pods` for CPU at limit
 * **Application-specific** — OpenSearch `_cluster/health` turning `yellow`/`red`, Kafka consumer lag increasing, Keycloak login latency
@@ -205,11 +205,10 @@ The uninstall scripts handle cleanup of secrets (including those with `helm.sh/r
 
 ## Previous versions
 
-Previous version of Helm chart (1.x) was a single Helm chart that deployed all modules.  These are available in  [https://github.com/OpenG2P/openg2p-commons-deployment](https://github.com/OpenG2P/openg2p-commons-deployment) the repective branches.
+Previous version of Helm chart (1.x) was a single Helm chart that deployed all modules. These are available in [https://github.com/OpenG2P/openg2p-commons-deployment](https://github.com/OpenG2P/openg2p-commons-deployment) the repective branches.
 
 | Version       | Last Modified | Comments                                            |
 | ------------- | ------------- | --------------------------------------------------- |
 | 1.0.0         | 21-Jan-2026   | Frozen stable version (single chart).               |
 | 1.1.0-develop | 13-Feb-2026   | Several major changes. Works well with internal DB. |
 | 1.2.0-develop | 24-Mar-2026   | Works via CLI but not Rancher.                      |
-
