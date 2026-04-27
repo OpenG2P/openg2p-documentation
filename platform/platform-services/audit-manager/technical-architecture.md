@@ -237,14 +237,34 @@ promoted columns already capture every envelope field; `details` holds
 what they don't. Kafka still carries the full CloudEvent, so forensic
 replay is possible from the topic if ever needed.
 
-**Indexes** (propagated automatically to child partitions):
+**Indexes** are defined on the parent table and propagated automatically
+to every monthly child partition by Postgres:
 
-* `(occurred_at DESC)` — time-range scans
-* `(actor_id, occurred_at DESC)` — everything a given actor did
-* `(resource_type, resource_id, occurred_at DESC)` — everything that
-  happened to a given resource
-* `(type, occurred_at DESC)` — counts / traces by event type
-* `(trace_id) WHERE trace_id IS NOT NULL` — cross-system correlation
+| Index                                                  | Used by                                                                            |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| **PRIMARY KEY (`id`, `occurred_at`)**                  | Point lookups by event id; also the dedup key for the consumer's idempotent `INSERT ... ON CONFLICT DO NOTHING`. |
+| `(occurred_at DESC)`                                   | Time-range scans (e.g. retention sweeps, "events in the last hour").               |
+| `(actor_id, occurred_at DESC)`                         | "Show me everything actor X did" — primary forensic query.                         |
+| `(resource_type, resource_id, occurred_at DESC)`       | "Show me everything that happened to beneficiary Y / payment Z".                   |
+| `(type, occurred_at DESC)`                             | Filter or count by CloudEvents type — e.g. "all `*.created` calls last week".      |
+| `(trace_id) WHERE trace_id IS NOT NULL`                | Cross-system correlation via the W3C `traceparent` header.                         |
+
+These five indexes plus the primary key cover every query pattern in the
+[Operational runbook](deployment.md#operational-runbook) without further
+tuning. They're applied at startup via `CREATE INDEX IF NOT EXISTS`, so
+existing deployments inherit them on the next pod restart.
+
+#### Indexes deliberately NOT added (avoid premature optimization)
+
+| Could-be index                                         | Why we skip it                                                                                                                                                              |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `(outcome, occurred_at DESC)`                          | `outcome` has only three values; Postgres typically does a Bitmap Index Scan via `(occurred_at)` plus an in-memory filter. Add only if "all denied events ever" becomes hot *without* a tight time window. |
+| GIN expression on `details->'actor'->>'session_id'`    | Login / session queries already filter by `actor_id` first, which hits the existing actor index and prunes 99 % of rows. Worth adding only if you ever query session_id *across all actors*. |
+
+If a real query plan turns up a slow scan, run `EXPLAIN ANALYZE`. Add a
+new index then, in [`src/audit_manager/models.py`](https://github.com/OpenG2P/audit-manager/blob/develop/src/audit_manager/models.py)
+under `_PARENT_INDEXES` — it's `CREATE INDEX IF NOT EXISTS`, so the next
+service restart picks it up across every existing partition.
 
 ### Partition maintenance
 

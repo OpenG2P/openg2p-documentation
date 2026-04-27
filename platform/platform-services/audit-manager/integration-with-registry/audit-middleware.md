@@ -121,12 +121,36 @@ A single CloudEvents 1.0 envelope with the OpenG2P `data` conventions:
 | `data.actor.roles`   | `principal.client_roles[<keycloak_client_id>]` (or `resource_access.<client>.roles` from JWT on 403) — roles for this client only |
 | `data.actor.ip`      | `X-Forwarded-For` first hop → `X-Real-IP` → `request.client.host`. Picks the real user IP behind Istio / a load balancer rather than the proxy's IP. |
 | `data.actor.session_id`| JWT `session_state` (or `sid`) claim — useful for grouping all actions in the same Keycloak login session. |
-| `data.action`        | First word of the endpoint function name (e.g. `approve_change_request` → `approve`) |
+| `data.action`        | First word of the endpoint function name (e.g. `approve_change_request` → `approve`, `get_individuals` → `get`). See note below. |
 | `data.outcome`       | `2xx → success`, `401/403 → denied`, other `4xx/5xx → failure`                     |
 | `data.context.api`   | `"<METHOD> <path>"` — e.g. `"POST /change-requests/approve_change_request"`        |
 | `data.context.module`| `"registry-staff-portal-api"` (configurable via `audit_module`)                    |
 | `data.context.http_status` | `response.status_code`                                                       |
 | `data.context.request_id` | Value of the `X-Request-ID` header if present                                 |
+
+### Why `action` is the first word, not the full function name
+
+Most Staff Portal endpoints are declared as `POST` (they take JSON
+bodies for filters / pagination / sort), so the HTTP method tells you
+nothing about intent. The endpoint **function name** does — `get_individuals`,
+`create_change_request`, `delete_template`. The middleware splits on
+the first `_` and stores just the verb in `data.action`.
+
+This keeps `action` a **low-cardinality dimension** (~6 verbs:
+get / list / create / update / delete / search) so it's useful for
+cross-service dashboards and filters like "all `delete` events last
+week" or "all `login` failures across the platform". If we stored the
+full name there, the column would have hundreds of distinct values and
+be useless for aggregation.
+
+Nothing is lost — the full function name is preserved in two other
+places on the same row:
+
+* `type` → `org.openg2p.staff_portal.get_individuals` (the full operation name)
+* `details.context.api` → `POST /getIndividual` (the wire-level call)
+
+So `action` is the **summary verb**, `type` is the **full op**, and
+`context.api` is the **HTTP form**. Three layers, three uses.
 
 `data.resource` is intentionally **not** populated in this iteration —
 most Staff Portal endpoints are RPC-shaped POSTs without a clean
