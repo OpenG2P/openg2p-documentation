@@ -635,7 +635,27 @@ cd automation/production/aws
 ./openg2p-aws-destroy.sh --config aws-config.yaml
 ```
 
-Terminates the three instances, releases the EIP, deletes the security groups, deletes the key pair (use `--keep-key` to preserve), and removes the now-stale `provision-output.yaml`. Confirms by asking you to type the project name back.
+Confirms by asking you to type the project name back, then deletes everything tagged `Project=<project>`:
+
+| # | Resource | How it gets deleted |
+|---|---|---|
+| 1 | EC2 instances | `terminate-instances` + wait for `terminated` |
+| 1 | Root EBS volumes | Auto-deleted with the instance (created with `DeleteOnTermination: true`) |
+| 1 | Primary ENI | Auto-deleted with the instance |
+| 2 | Elastic IPs | `release-address` |
+| 3 | Security groups | `delete-security-group` |
+| 4 | Key pair | `delete-key-pair` (skip with `--keep-key`) |
+| 5 | **Stray EBS volumes** in `available` / `creating` / `error` state | Explicit `delete-volume` — catches volumes detached from instances or extras attached after provisioning |
+| 5 | **Stray snapshots** owned by you, tagged with the project | Explicit `delete-snapshot` |
+| 5 | **Stray ENIs** in `available` state, tagged | Explicit `delete-network-interface` |
+| 6 | `../provision-output.yaml` | Removed (stale after teardown) |
+| 7 | Final sweep | Lists anything **still** tagged `Project=<project>` so leaks are visible |
+
+A clean teardown ends with `Nothing left tagged Project=<project>`.
+
+{% hint style="warning" %}
+The destroy script only touches resources tagged `Project=<project>`. If you've created VPC peering, NAT gateways, EFS file systems, or anything else that you tagged with the same project, those will appear in the final sweep — review the list before assuming "all clean."
+{% endhint %}
 
 ### Costs (rough, us-east-1, on-demand)
 

@@ -9,10 +9,18 @@
 
 ## Versions
 
+<<<<<<< Updated upstream
 | Chart                                          | Version                                                                         | Date        | Comments                                                                                                                                                        |
 | ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0)      | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS.                                                       |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | <ul><li>Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search).</li><li>Resource constraints applied.</li></ul> |
+=======
+| Chart | Version | Date | Comments |
+|-------|---------|------|----------|
+| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0) | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
+| openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). Audit Manager service added to commons-services. |
+
+>>>>>>> Stashed changes
 
 ## Architecture (v2.x onward)
 
@@ -58,6 +66,7 @@ Installs application services:
 | **Reporting**            | Reporting framework                |
 | **Artifactory**          | Artifact repository                |
 | **OpenG2P IAM Service**  | Identity and access management API |
+| **OpenG2P Audit Manager** | Centralized audit event collector (Kafka-backed, stores audit trail in PostgreSQL) |
 
 ## Key Design Decisions
 

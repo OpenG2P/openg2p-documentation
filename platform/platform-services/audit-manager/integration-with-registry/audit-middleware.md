@@ -195,6 +195,65 @@ Restart uvicorn and the startup log will show:
 AuditMiddleware enabled — emitting to http://localhost:8002/v1/auditmanager/events
 ```
 
+### Wiring through the registry Helm chart
+
+You **do not** set `REGISTRY_STAFF_PORTAL_API_AUDIT_*` env vars by hand on
+each deployment. The registry's
+[base Helm chart](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/blob/develop/charts/openg2p-registry/values.yaml)
+already plumbs them through three `global.audit*` values that flow into
+the staff-portal-api's `envVars` block:
+
+```yaml
+# charts/openg2p-registry/values.yaml — global section
+global:
+  # ...
+  auditEnabled: false
+  auditManagerUrl: 'http://audit-manager:80'
+  auditAnonymousFailures: true
+
+# charts/openg2p-registry/values.yaml — staffPortalApi.envVars block
+staffPortalApi:
+  envVars:
+    # ...
+    REGISTRY_STAFF_PORTAL_API_AUDIT_ENABLED:            '{{ .Values.global.auditEnabled }}'
+    REGISTRY_STAFF_PORTAL_API_AUDIT_MANAGER_URL:        '{{ .Values.global.auditManagerUrl }}'
+    REGISTRY_STAFF_PORTAL_API_AUDIT_ANONYMOUS_FAILURES: '{{ .Values.global.auditAnonymousFailures }}'
+```
+
+**To enable auditing for an environment**, add to your per-env values
+file (e.g. `values-trial.yaml`):
+
+```yaml
+global:
+  auditEnabled: true
+  auditManagerUrl: 'http://audit-manager:80'   # override only if cross-namespace
+  # auditAnonymousFailures: false              # uncomment to suppress anon noise
+```
+
+…then `helm upgrade` the registry release. The Rancher UI also exposes
+these three under the **Audit Manager** group via
+[`questions.yaml`](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/blob/develop/charts/openg2p-registry/questions.yaml),
+so operators can flip them without editing YAML.
+
+**Cross-namespace deployment** — if audit-manager is not in the same
+namespace as the registry release, set the FQDN:
+
+```yaml
+global:
+  auditManagerUrl: 'http://audit-manager.<audit-namespace>.svc.cluster.local:80'
+```
+
+For the full registry-side documentation (dependency table, version
+matrix, the 4.1.0 release entry that introduces this feature), see the
+[registry Helm chart 4.x doc — Audit Manager integration](../../../../products/registry/registry/deployment/helm-chart-4.x.md#audit-manager-integration).
+
+**Enabling without redeploying staff-portal-api code.** Because every
+audit env var is no-op-by-default, you can ship the chart change first
+(while the staff-portal-api image still lacks the `AuditMiddleware` —
+the unknown env vars are silently ignored by pydantic-settings'
+`extra="allow"`). When you later roll the new image with the middleware,
+the variables are already in place and emission turns on at restart.
+
 ## Verification — end-to-end
 
 After enabling:
