@@ -649,6 +649,7 @@
     * [Single-Node Automation](deployment/automation/single-node-automation.md)
     * [Three-Node Automation](operations/deployment/automation/three-node-automation.md)
     * [Environment Setup for Multi-Node](deployment/automation/environment-setup-multi-node.md)
+    * [Backups](operations/deployment/automation/backups.md)
   * [Scaling](deployment/scaling/README.md)
     * [V4 Deployment Architecture](deployment/scaling/v4-deployment-architecture.md)
     * [Resource Requirements for Scaled Up Cluster Setup](deployment/scaling/hardware-requirements.md)
