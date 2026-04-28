@@ -47,6 +47,7 @@
       * [Registry themes](products/registry/registry/design/registry-themes.md)
       * [Completion Score](products/registry/registry/design/completion-score.md)
       * [Dynamic languages](products/registry/registry/design/dynamic-languages.md)
+      * [Intake Forms](products/registry/registry/design/intake-forms.md)
     * [Developer Zone](products/registry/registry/developer-zone/README.md)
       * [Organization of Codebase](products/registry/registry/developer-zone/organization-of-codebase.md)
       * [Building a Registry](products/registry/registry/developer-zone/building-a-registry/README.md)
