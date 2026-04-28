@@ -644,7 +644,7 @@ Confirms by asking you to type the project name back, then deletes everything ta
 | 1 | Primary ENI | Auto-deleted with the instance |
 | 2 | Elastic IPs | `release-address` |
 | 3 | Security groups | `delete-security-group` |
-| 4 | Key pair | `delete-key-pair` (skip with `--keep-key`) |
+| 4 | Key pair | **Only deleted if WE created it** (tagged `Project=<project>` `ManagedBy=openg2p-aws-provision`). Pre-existing keys imported by the user are kept. Force-keep with `--keep-key`. |
 | 5 | **Stray EBS volumes** in `available` / `creating` / `error` state | Explicit `delete-volume` — catches volumes detached from instances or extras attached after provisioning |
 | 5 | **Stray snapshots** owned by you, tagged with the project | Explicit `delete-snapshot` |
 | 5 | **Stray ENIs** in `available` state, tagged | Explicit `delete-network-interface` |
@@ -760,6 +760,35 @@ aws ec2 release-address --allocation-id <alloc-id>
 ```
 
 **Multiple environments on the same AWS account** — use a different `project:` value in each `aws-config.yaml` (e.g., `openg2p-prod`, `openg2p-staging`). Resources are isolated by tag; the destroy script only touches the configured project.
+
+## Manual uninstall (non-AWS deployments)
+
+For AWS-provisioned setups, `aws/openg2p-aws-destroy.sh` removes everything (see [Tearing down](#tearing-down) above). For other clouds / on-prem, dedicated uninstall scripts are not included in v1 — clean up manually per node:
+
+```bash
+# Compute (Kubernetes node)
+sudo /usr/local/bin/rke2-uninstall.sh
+sudo rm -rf /etc/openg2p /var/lib/openg2p /mnt/nfs
+
+# Storage
+sudo apt purge -y postgresql 'postgresql-contrib*' nfs-kernel-server
+sudo rm -rf /etc/openg2p /var/lib/openg2p /srv/nfs
+
+# Reverse Proxy
+sudo apt purge -y wireguard-tools dnsmasq nginx
+sudo rm -rf /etc/openg2p /etc/wireguard /var/lib/openg2p
+sudo rm -f /etc/dnsmasq.d/openg2p.conf /etc/nginx/sites-enabled/openg2p-infra.conf
+```
+
+After that, drop your laptop-side `provision-output.yaml` (if you used the AWS path) and the orchestrator's `.state/` directory. Full uninstall automation will land when the environment automation work begins.
+
+## The orchestrator's `.state/` directory
+
+The orchestrator keeps **laptop-side bookkeeping** under `automation/production/.state/orchestrator/*.done` to remember which whole-phase pushes have already been issued (e.g. "storage phase 1 was successfully driven from this laptop"). It is **not** the source of truth for what's installed — that lives on each node under `/var/lib/openg2p/deploy-state/`.
+
+* **Safe to delete?** Yes, any time. Worst case is the orchestrator re-pushes role bundles and re-invokes role scripts; the remote state markers then skip already-done sub-steps, so nothing actually re-runs.
+* **Should it be checked in?** No — already gitignored.
+* **Quick reset:** `./openg2p-prod.sh --reset-laptop` removes the directory cleanly.
 
 ## Related documentation
 
