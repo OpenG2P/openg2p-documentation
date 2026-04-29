@@ -10,6 +10,16 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 For single-node deployments where everything runs on a single VM, see [Single-Node Automation](single-node-automation.md).
 {% endhint %}
 
+{% hint style="warning" %}
+**Sandbox vs production**
+
+Use this script to install **commons modules** only for sandbox deployments where the default Commons parameters are acceptable (in-cluster PostgreSQL, MinIO, Kafka, etc.).
+
+For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
+
+The script is still useful in production for the namespace, Rancher Project, and Istio Gateway scaffolding.
+{% endhint %}
+
 ## Architecture
 
 In a multi-node setup, each environment gets its own domain, namespace, and full set of services. The Nginx node handles TLS termination and proxies traffic to the cluster's Istio ingress gateway.
