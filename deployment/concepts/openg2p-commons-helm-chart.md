@@ -110,7 +110,7 @@ Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, clie
 
 ### Shared PostgreSQL
 
-All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used by disabling the embedded PostgreSQL and setting `global.postgresqlHost`.
+All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used — see the [External PostgreSQL](#external-postgresql) section below for the full setup steps.
 
 ### Internal vs External URLs
 
@@ -185,6 +185,76 @@ Enable Rancher Monitoring (Prometheus + Grafana) to get dashboards and alerts fo
 Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
 
 This means infrastructure names (like `postgresqlHost`, `redisInstallationName`) set in the parent's `global` are automatically available to all subcharts. IAM-specific globals (like `iamDB`, `iamDBUser`) work because they are unique to the IAM subchart.
+
+## External PostgreSQL
+
+By default, **commons-base** installs an embedded PostgreSQL (Bitnami chart) inside the cluster. For production deployments, you typically want to use an external PostgreSQL server — a managed service (AWS RDS, Cloud SQL) or a dedicated VM. The charts support this with a few configuration overrides.
+
+### What gets created in PostgreSQL
+
+The `postgres-init` job (running as a regular Kubernetes Job) connects to PostgreSQL using the **superuser** credentials and creates:
+
+* Databases (one per service): `superset`, `odkdb`, `mosip_keymgr`, `mosip_mockidentitysystem`, `mosip_esignet`, `keycloak`, plus `<release>_iam` and `<release>_auditmanager` from the services chart
+* One database user per database, with a randomly generated password
+* Per-user secrets in Kubernetes (`superset-db-user`, `odk-db-user`, `keymgr-db-user`, `keycloak-db-user`, `commons-services-iam`, `commons-services-auditmanager`, etc.) — services read these for their own connections
+
+So your **external PostgreSQL user must have `CREATE DATABASE` and `CREATE ROLE` privileges**. A managed-service master user (e.g. RDS master) typically works.
+
+### Configuration overrides
+
+Three globals control PostgreSQL connectivity. They are wired identically in both `openg2p-commons-base` and `openg2p-commons-services`:
+
+| Global | Purpose | Default (embedded) | Set for external |
+|--------|---------|-------------------|------------------|
+| `global.postgresqlHost` | Hostname or IP of the PostgreSQL server | `<release>-postgresql` | External hostname or IP |
+| `global.postgresqlSecret` | Name of K8s secret holding the superuser password | `<release>-postgresql` | Your pre-created secret name |
+| `global.postgresqlSecretKey` | Key inside the secret | `postgres-password` | Override if your secret uses a different key |
+
+### Why pre-creation of the secret is required
+
+Multiple subcharts reference the superuser secret at template render time (postgres-init, Keycloak's externalDatabase, keymanager's postgresInit, eSignet, mock-identity-system, IAM service, audit-manager). Helm cannot create a secret on the fly that other resources within the same release reference — chicken-and-egg. So the secret must exist **before** `helm install` runs.
+
+### Steps to install with external PostgreSQL
+
+**1. Pre-create the K8s secret** with the PostgreSQL superuser password:
+
+```bash
+kubectl create namespace <namespace> 2>/dev/null || true
+
+kubectl create secret generic external-pg-superuser \
+  -n <namespace> \
+  --from-literal=postgres-password='<superuser-password>'
+```
+
+**2. Install commons-base** with external PG overrides:
+
+```bash
+./install-base.sh <namespace> commons <base-domain> \
+  --set postgresql.enabled=false \
+  --set global.postgresqlHost=<external-pg-host-or-ip> \
+  --set global.postgresqlSecret=external-pg-superuser
+```
+
+The `install-base.sh` script verifies the secret exists in the namespace before proceeding (fails fast with the exact `kubectl create` command if missing).
+
+**3. Install commons-services** with the same overrides:
+
+```bash
+./install.sh <namespace> commons-services commons <base-domain> \
+  --set global.postgresqlHost=<external-pg-host-or-ip> \
+  --set global.postgresqlSecret=external-pg-superuser
+```
+
+### From the Rancher UI
+
+The same three globals are exposed in `questions.yaml` for both charts under the **Postgres** / **Infrastructure** group. Set them through the UI and the chart behaves identically. Remember to pre-create the secret in the target namespace using `kubectl` first — Rancher's installer doesn't have a pre-flight check for it, so a missing secret will surface as `CreateContainerConfigError` on the postgres-init pods.
+
+### Notes
+
+* If your external secret uses a different key than `postgres-password`, also set `global.postgresqlSecretKey=<your-key>`.
+* The connection assumes standard PostgreSQL port `5432`. Override `postgres-init.postgresql.port` if your service exposes a different port.
+* TLS is not configured by default. If your provider requires SSL, you'd need to extend the postgres-init job (out of scope for the standard chart).
+* For embedded PostgreSQL (default), no manual secret creation is needed — the Bitnami PostgreSQL chart auto-creates `<release>-postgresql` with key `postgres-password`, which the charts reference by default.
 
 ## How to deploy
 
