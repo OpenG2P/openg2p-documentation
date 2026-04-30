@@ -1,8 +1,28 @@
 # Use Case Implementation
 
-OpenG2P Registry provides a base platform to create a Registry, but it needs to be configured and customised for your specific use case. A typical implementation follows five phases: Requirements, Build, Sandbox, Pilot, and Full Rollout.
+OpenG2P Registry provides a base platform for creating a Registry, but it must be configured and customised to a specific use case. A typical implementation proceeds through five phases: **Requirements**, **Build**, **Sandbox**, **Pilot**, and **Full Rollout**.
 
-Each phase follows a consistent structure: **Purpose → Information to Collect → Actions → Completion Criteria → Output**.
+Each phase is documented in a consistent structure so that any guide — a human consultant or an automated advisor — can walk an implementer through it. The structure is:
+
+1. **Purpose** — what the phase achieves and why it exists as a distinct phase.
+2. **Enter / Exit** — the preconditions for entering this phase and the durable test that determines when it is complete.
+3. **Discovery** — what the guide must learn from the implementer, and why each item matters.
+4. **Activities** — the work performed during the phase, in approximate order.
+5. **References** — pointers to product features, related concepts, and worked examples relevant to this phase.
+6. **Gap analysis** — verifiable checks the guide runs before the phase ends.
+7. **Output** — the artefact produced when the phase ends.
+8. **Common pitfalls** — issues observed in past implementations, populated as evidence accumulates.
+
+## Phase Transition Protocol
+
+After each phase report is produced, the same protocol applies:
+
+1. Inform the implementer that the phase report is ready, and ask them to review it.
+2. If they request changes, capture them, update the underlying facts, and regenerate the report.
+3. Obtain explicit approval that the report is accurate and complete.
+4. Briefly describe the next phase — what it involves, what information will be needed.
+5. Ask whether the implementer is ready to proceed.
+6. Advance only after explicit confirmation.
 
 ---
 
@@ -10,89 +30,68 @@ Each phase follows a consistent structure: **Purpose → Information to Collect 
 
 ### Purpose
 
-Understand the use case and requirements in detail, map them to what OpenG2P Registry offers, and clearly identify any gaps. Also understand the deployment plan — pilot vs. full rollout, scale, timelines, and infrastructure preferences.
+Understand the implementer's use case in detail, map it to the capabilities of OpenG2P Registry, identify gaps clearly, and capture deployment plans — pilot versus full rollout, scale, and infrastructure preferences.
 
-### Information to Collect
+### Enter / Exit
 
-The following facts must be collected. Each fact has a key (shown in quotes) that is used to record it in the advisory system.
+- **Enter** — the implementer has decided to use OpenG2P Registry as part of their G2P stack.
+- **Exit** — a Requirements Analysis Report has been produced and explicitly approved by the implementer.
 
-| # | Question | Fact Key | Type | Mandatory |
-|---|----------|----------|------|-----------|
-| 1 | What country is this implementation for? | `country` | text | Yes |
-| 2 | Which department or organisation is implementing this? | `department` | text | Yes |
-| 3 | What is the end-to-end use case? Is this for a specific benefit delivery programme (give the programme name), or a general-purpose registry (e.g. National Social Registry, Farmer Registry, Family Registry, Health Workers Registry, Disability Registry, Students Registry, Crop Registry, Land Registry, Vehicle Registry)? | `program` / `registry_type` | text | Yes |
-| 4 | Describe the use case in detail. How will data be consumed — who are the consumers? Will data be shared with other departments, systems, agencies, or applications? | `use_case_info` | text | Yes |
-| 5 | How will registration happen — online via a portal, or offline via agents collecting data in the field? | `offline_registrations` | true/false | Yes |
-| 6 | What documents are required for registration? | `documents` | list | Yes |
-| 7 | Is this a greenfield implementation (fresh data collection) or brownfield (existing data to import)? If brownfield, what form is the existing data in — Excel, database, APIs of another system? | `existing_data_import` | true/false + details | Yes |
-| 8 | What specific functionalities are required that must be supported by OpenG2P Registry? List all requirements explicitly, including any that may not be standard registry features. | `requirements` | list | Yes |
-| 9 | Is a development sandbox on a public cloud acceptable? | `sandbox_on_cloud` | true/false | Yes |
-| 10 | Will the pilot and production systems run on on-premises hardware or on cloud? | `production_on_cloud` | true/false | Yes |
-| 11 | How many primary records are expected in the registry (e.g. number of farmers, citizens, vehicles, families)? | `n_records` | number | Yes |
-| 12 | Which ID type(s) will be used for records (e.g. national ID, MOSIP ID, custom functional ID)? | `id_types` | list | Yes |
-| 13 | Are there any specific interoperability requirements — integration with other systems, APIs, or standards (e.g. G2P Connect, MOSIP)? | `interoperability` | text | No |
+### Discovery
 
-### Product Feature Discovery (Mandatory)
+The guide establishes each of the following before this phase ends. Each item carries a "(why)" pointing to where the answer feeds downstream decisions.
 
-Users typically do not know the full breadth and depth of what OpenG2P Registry offers. The advisor must therefore proactively scan the product knowledge base and ask the user about every feature that has not yet been discussed.
+- **Country and implementing organisation** — the country and the department or agency owning the implementation. (Establishes regulatory and language context; surfaces any data-residency constraints.)
+- **End-to-end use case** — whether this registry serves a specific benefit-delivery programme, or is a general-purpose registry such as a national social registry, farmer registry, family registry, health workers registry, disability registry, students registry, crop registry, land registry, or vehicle registry. (Determines registry typology and which feature set to highlight.)
+- **Use case detail and consumers** — how data will be consumed, and which downstream departments, systems, agencies, or applications use it. (Drives integration scope.)
+- **Registration channel** — whether registration happens online via a portal, offline via field agents, or both. (Affects UI scope, sync behaviour, and offline tooling.)
+- **Documents required for registration** — what documentation accompanies a record. (Drives upload, verification, and storage design.)
+- **Greenfield or brownfield** — whether the implementation begins with fresh data collection or imports existing data. For brownfield, the form of existing data — Excel, database, APIs of another system, or other. (Determines whether a data-migration sub-track is needed.)
+- **Specific functionalities required** — every capability the implementer expects, including any that may not be standard registry features. (Forms the requirements baseline against which gap analysis runs.)
+- **Sandbox infrastructure preference** — whether a sandbox on a public cloud is acceptable. (Affects sandbox-phase deployment topology.)
+- **Pilot and production infrastructure** — on-premises or cloud. (Affects later-phase deployment design and the support model.)
+- **Scale** — the order of magnitude of expected primary records (farmers, citizens, vehicles, families, etc.). (Determines deployment topology and capacity profile.)
+- **Identifier types** — which identifier schemes apply to records (national ID, MOSIP ID, custom functional ID). (Determines integration with the chosen identity provider.)
+- **Interoperability requirements** *(optional)* — integrations with other systems, APIs, or standards (for example G2P Connect or MOSIP). (Drives external-interface scope.)
 
-**How to do this:**
+### Activities
 
-1. After collecting the user's stated requirements, scan the product knowledge base for all features and capabilities of OpenG2P Registry.
-2. For each feature found in the KB that the user has NOT yet mentioned or addressed, ask the user whether they need it.
-3. Group related features into a single question turn (e.g. ask about all identity/deduplication features together, all reporting features together, all integration features together).
-4. Record the user's answer for each feature:
-   - If needed and supported → record as `feature_<name>: required`
-   - If not needed → record as `feature_<name>: not_required`
-   - If needed but not supported → record as a GAP
-5. This process is **not optional**. Phase 1 cannot be considered complete until every feature in the KB has been explicitly discussed with the user.
+- Walk the implementer through each Discovery item, deferring decisions that belong to later phases.
+- After the implementer's stated requirements have been captured, perform **Product Feature Discovery**: review every feature documented for OpenG2P Registry and raise with the implementer any feature not yet discussed. Group related features into a single conversational turn — identity and deduplication features together, reporting features together, integration features together. For each feature surfaced, record one of: required, not required, or required-but-not-supported (gap).
+- For every stated requirement and every feature surfaced via Product Feature Discovery, look for explicit support in the OpenG2P knowledge base. Mark as **Supported** (native or via configuration) when explicit evidence exists. Mark as **Gap** otherwise — including obvious or seemingly basic items, since the gap analysis depends on explicit evidence rather than assumption.
+- For each gap, classify it as: (a) configurable at deploy time, (b) requires customisation (will be addressed in Phase 2), or (c) requires upstream change (raise as an issue).
 
-**Why this matters:** The gap analysis in the Requirements Report depends on knowing which features are needed, which are not, and which cannot be met. A feature not discussed is a feature not analysed.
+### References
 
-### Gap Analysis Rules
+- The OpenG2P Registry feature surface, deployment patterns, and capacity profiles.
+- Conceptual material on eligibility modelling, identifier resolution, data sharing, and brownfield data import.
+- MOSIP integration touchpoints.
+- The Farmer Registry as a worked example of an agriculture-domain implementation.
+- The National Social Registry as a worked example of a national-scale implementation.
 
-For every requirement stated by the user, AND for every OpenG2P feature raised during Product Feature Discovery:
+### Gap analysis
 
-1. Search the OpenG2P product knowledge base for explicit evidence of support.
-2. If the knowledge base confirms support — mark as **Supported** (Native or Configuration).
-3. If the knowledge base does not clearly confirm support — mark as **GAP**, regardless of how obvious or basic the requirement sounds.
-4. Record every requirement and its gap status as a fact. Requirements not recorded will not appear in the report.
-5. Use fact key `gap_<topic>` for gap items (e.g. `gap_loan_management`, `gap_weather_reports`).
+The guide verifies before producing the Phase 1 report:
 
-### Completion Criteria
-
-All of the following must be satisfied before generating the Phase 1 report:
-
-- [ ] All mandatory facts in the Information to Collect table are recorded (confirmed or explicitly deferred as unknown)
-- [ ] Every requirement stated by the user has been assessed against the product KB and recorded as Supported or GAP
-- [ ] Product Feature Discovery is complete: every feature in the OpenG2P KB has been raised with the user and recorded as Required, Not Required, or GAP — none skipped
-- [ ] Infrastructure preferences (sandbox, pilot, production) are recorded
-- [ ] No feature from the KB remains undiscussed
+- [ ] Every Discovery item has been answered, deferred with explicit acknowledgement, or marked unknown.
+- [ ] Every requirement stated by the implementer has been assessed against the product knowledge base and recorded as Supported or Gap.
+- [ ] Product Feature Discovery is complete: every feature documented for OpenG2P Registry has been raised with the implementer and classified as Required, Not Required, or Gap.
+- [ ] Infrastructure preferences for sandbox, pilot, and production are recorded.
+- [ ] No feature documented in the knowledge base remains undiscussed.
 
 ### Output
 
-**Requirements Analysis Report** containing:
+**Requirements Analysis Report**, containing:
 
-1. **Project Context** — Programme/registry name, country, department, scale, purpose (2–3 sentences)
-2. **Discovered Facts** — Complete list of all recorded facts with values
-3. **Requirements vs OpenG2P Mapping** — For each stated requirement:
-   - Exact wording as stated by the user
-   - OpenG2P feature or module that addresses it
-   - Support level: Native / Configuration / Partial / Gap
-   - How it is addressed (one sentence from KB), or gap description
-4. **Gaps Summary** — All Gap and Partial items clearly listed with what is missing and what custom work is needed
-5. **Resource Requirements** — Recommended deployment architecture (single-node / three-node / full-scale) and compute specs for development sandbox, pilot, and production environments — sourced from KB only
+1. **Project context** — programme or registry name, country, department, scale, and purpose (two to three sentences).
+2. **Discovered facts** — the complete list of facts collected during Discovery.
+3. **Requirements vs OpenG2P mapping** — for each stated requirement: the requirement as worded by the implementer; the OpenG2P feature or module that addresses it; the support level (native, configuration, partial, or gap); a one-sentence description of how it is addressed (sourced from the knowledge base) or, for gaps, a description of what is missing.
+4. **Gaps summary** — all Gap and Partial items, with the missing capability and the custom work it implies.
+5. **Resource requirements** — recommended deployment architecture (single-node, three-node, or full-scale) and compute specifications for development sandbox, pilot, and production environments. Sourced from the knowledge base only.
 
-### Phase Transition Protocol
+### Common pitfalls
 
-After the report is generated, follow this sequence strictly before moving to Phase 2:
-
-1. Inform the user the Requirements Analysis Report has been generated and ask them to review it.
-2. If the user requests changes — capture them, update the facts, and regenerate the report.
-3. Get explicit approval from the user that the report is accurate and complete.
-4. Briefly describe Phase 2 (Build) — what it involves and what information will be needed.
-5. Ask: "Are you ready to proceed to the Build phase?"
-6. Only advance to Phase 2 after the user explicitly confirms.
+(none recorded yet)
 
 ---
 
@@ -100,90 +99,81 @@ After the report is generated, follow this sequence strictly before moving to Ph
 
 ### Purpose
 
-Collect the fine-grained technical details of the registry, make the necessary code changes and configurations, and build the deployment artefacts (Docker images, Helm charts).
+Capture the fine-grained technical details of the registry, perform the necessary code changes and configurations, and produce deployment artefacts (Docker images, Helm charts).
 
-### Information to Collect
+### Enter / Exit
 
-All of the following facts are **mandatory**. Do not proceed to Actions until all are recorded (confirmed or explicitly deferred as unknown by the user).
+- **Enter** — the Requirements Analysis Report is approved.
+- **Exit** — a Build Report is produced, all required Docker images are available, and code changes are committed to the implementer's repository.
 
-| # | Question | Fact Key | Type | Mandatory |
-|---|----------|----------|------|-----------|
-| 1 | What is the full name of your registry? Keep it as short as possible — it will appear on all UI labels. Example: `Health Workers Registry` | `registry_name` | text | Yes |
-| 2 | What is the registry mnemonic? This is a very short code used in filenames, Docker image names, service names, and URLs. Use lowercase letters and hyphens only. Do NOT include the word "registry". Example: `health-worker` | `registry_mnemonic` | text (lowercase, hyphens only) | Yes |
-| 3 | How many registers does this registry contain? What is the name of each register? | `registers` | list of names | Yes |
-| 4 | For each register, what are the exact names of the database columns (fields)? | `register_columns` | map: register name → list of column names | Yes |
-| 5 | What are the database constraints between tables (foreign keys, unique constraints, check constraints)? | `database_constraints` | list | Yes |
-| 6 | How many digits are required for the functional ID? | `id_length` | number | Yes |
+### Discovery
 
-**Validation rules:**
+- **Registry name** — the full, public-facing name of the registry. Kept short, since it appears on user-interface labels.
+- **Registry mnemonic** — a short identifier code used in filenames, image names, service names, and URLs. Lowercase, hyphens only, no whitespace, and excluding the word "registry".
+- **Registers** — how many distinct registers this registry contains, and the name of each.
+- **Register columns** — for each register, the exact names of the database fields. Names are used directly during code generation, so exactness matters.
+- **Database constraints** — foreign keys, unique constraints, check constraints, and any other inter-table relationships.
+- **Functional ID length** — number of digits required for the functional identifier, typically nine to twelve.
 
-- `registry_mnemonic` must be lowercase, hyphen-separated, no spaces, no "registry" prefix/suffix. Example: `health-worker` ✓, `HealthWorkerRegistry` ✗
-- Column names must be exact — they will be used directly in code generation
-- `id_length` is typically 9–12 digits; confirm with the user if unsure
+The formal validation rules for these inputs (character classes, allowed forms, length bounds) are documented on the registry build-contract page and surfaced by the guide when collecting answers.
 
-### Actions
+### Activities
 
-The following steps are executed automatically by the system after the user confirms the Build phase summary. All paths are relative to the build working directory.
+These activities are performed automatically by the advisor's build executor after the implementer has confirmed the Build phase summary. The list captures the canonical build flow; the precise mechanics — exact source paths, target paths, and replacement patterns — are documented on the registry build-contract page and may evolve as the build automation matures.
 
-**Repository setup:**
+**Repository setup**
 
-| Step | Type | Details |
-|------|------|---------|
-| Clone extensions repo | `clone` | Repo: `https://github.com/OpenG2P/openg2p-registry-gen2-extensions` Branch: `develop` |
-| Clone docker repo | `clone` | Repo: `https://github.com/OpenG2P/openg2p-registry-gen2-docker` Branch: `develop` |
+- Clone the registry extensions repository on its development branch.
+- Clone the registry docker repository on its development branch.
 
-**Code customisation (Repo 1 — extensions):**
+**Code customisation — extensions repository**
 
-| Step | Type | Details |
-|------|------|---------|
-| Copy farmer extension folder | `copy_dir` | src: `openg2p-registry-gen2-extensions/openg2p-registry-farmer-extension` → dest: `openg2p-registry-gen2-extensions/openg2p-registry-<registry_mnemonic>-extension` |
+- Copy the reference farmer-extension folder into a new folder named after the registry mnemonic. The reference folder location and target naming convention are documented on the registry build-contract page.
 
-**Code customisation (Repo 2 — docker, repeat for each of: `staff-portal-api`, `partner-api`, `celery`):**
+**Code customisation — docker repository**
 
-| Step | Type | Details |
-|------|------|---------|
-| Copy develop.txt | `copy_file` | src: `openg2p-registry-gen2-docker/<folder>/farmer-develop.txt` → dest: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` |
-| Replace pip dependency line | `replace_in_file` | file: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` find: `git://develop//https://github.com/openg2p/openg2p-registry-gen2-extensions#subdirectory=openg2p-registry-farmer-extension` replaceWith: `{{workDir}}/openg2p-registry-gen2-extensions/openg2p-registry-<registry_mnemonic>-extension` Note: no `#subdirectory=` in the replacement path |
-| Replace Docker image name | `replace_in_file` | file: `openg2p-registry-gen2-docker/<folder>/<registry_mnemonic>-develop.txt` find: first line of the file — the `#` comment line containing the Docker image name, which includes the word `farmer` replaceWith: same line with `farmer` replaced by `<registry_mnemonic>` Note: this step must run AFTER the pip dependency replacement above |
+For each of the three service folders (`staff-portal-api`, `partner-api`, `celery`):
 
-**Build Docker images (run from root of Repo 2):**
+- Copy the reference build descriptor into a new descriptor file named after the registry mnemonic.
+- Replace the dependency line that points at the upstream farmer extension with a path that points at the new local extension folder created in the previous step. The exact source pattern and replacement form are documented on the registry build-contract page.
+- Replace the Docker image name in the descriptor's leading comment line — substituting the reference name with the registry mnemonic. This step must run after the dependency line replacement above.
 
-| Step | Type | Details |
-|------|------|---------|
-| Build staff-portal-api | `run` | cmd: `bash` args: `["scripts/build.sh", "staff-portal-api/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
-| Build partner-api | `run` | cmd: `bash` args: `["scripts/build.sh", "partner-api/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
-| Build celery | `run` | cmd: `bash` args: `["scripts/build.sh", "celery/<registry_mnemonic>-develop.txt"]` cwd: `openg2p-registry-gen2-docker` |
+**Build Docker images**
 
-**Important ordering rules:**
-- The `replace_in_file` step for the pip dependency line must run BEFORE the Docker image name replacement on the same file
-- All `copy_file` steps must complete before any `replace_in_file` steps on those files
-- All `replace_in_file` steps must complete before any `run` (build) steps
+From the root of the docker repository, run the build script for each of the three descriptors (`staff-portal-api`, `partner-api`, `celery`).
 
-### Completion Criteria
+**Ordering rules**
 
-- [ ] All mandatory facts in the Information to Collect table above are recorded
-- [ ] User has confirmed the Build phase summary
-- [ ] All three Docker images built successfully: `staff-portal-api`, `partner-api`, `celery`
-- [ ] Code checked in to git repository (TBD)
+- The dependency line replacement must run before the Docker image name replacement on the same descriptor.
+- All file copies must complete before any in-file replacements on those files.
+- All in-file replacements must complete before any image-build runs.
+
+### References
+
+- The registry extensions repository — extension folder structure, reference folder, naming conventions.
+- The registry docker repository — service folders, build descriptors, build scripts.
+- The registry build-contract page — formal contract for build-time customisation: source paths, target paths, replacement rules, validation rules.
+- The OpenG2P Registry feature and configuration surface.
+
+### Gap analysis
+
+- [ ] Every Discovery item is recorded.
+- [ ] The Build phase summary has been confirmed by the implementer.
+- [ ] All three Docker images have been built successfully (`staff-portal-api`, `partner-api`, `celery`).
+- [ ] Code changes have been committed to the implementer's repository.
 
 ### Output
 
-**Build Report** containing:
+**Build Report**, containing:
 
-1. **Registry Configuration Summary** — registry name, mnemonic, registers, columns, constraints, ID length
-2. **Modifications Made** — high-level list of files copied, renamed, and modified, with repository names
-3. **Docker Images Built** — names and tags of all Docker images created
-4. **Git Commit ID** — final commit hash after code check-in
+1. **Registry configuration summary** — registry name, mnemonic, registers, columns, constraints, ID length.
+2. **Modifications made** — high-level list of files copied, renamed, and modified, with the owning repository for each.
+3. **Docker images built** — names and tags of all images produced.
+4. **Git commit ID** — the final commit hash after code is checked in.
 
-### Phase Transition Protocol
+### Common pitfalls
 
-After the Build Report is generated:
-
-1. Inform the user the Build Report is available and ask them to review it.
-2. Confirm all Docker images are available and accessible.
-3. Get explicit user approval on the Build Report.
-4. Briefly describe Phase 3 (Sandbox) — deploying the built images to a sandbox environment for testing.
-5. Ask: "Are you ready to proceed to the Sandbox phase?"
+(none recorded yet)
 
 ---
 
@@ -191,7 +181,7 @@ After the Build Report is generated:
 
 ### Purpose
 
-Deploy the built Docker images to a sandbox (development) environment and verify the registry is working correctly end-to-end. This is the first live deployment of the customised registry.
+Deploy the built Docker images to a sandbox (development) environment and verify the registry works end-to-end. This is the first live deployment of the customised registry.
 
 _Details to be added._
 
@@ -211,6 +201,6 @@ _Details to be added._
 
 ### Purpose
 
-Deploy to the full production environment at the planned scale. Includes data migration (for brownfield implementations), staff training, and operational handover.
+Deploy to the full production environment at planned scale. Includes data migration (for brownfield implementations), staff training, and operational handover.
 
 _Details to be added._
