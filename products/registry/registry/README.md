@@ -84,7 +84,7 @@ The following table summarises the major features of the Registry with links to 
 | Observability                 | Logging, monitoring, and operational controls                | [Observability](features/observability-and-operational-control.md)                |
 
 {% hint style="info" %}
-This Registry is internally referred to as **Gen 2**. It is a major evolution from the previous [Social Registry](social-registry/), which was built on the Odoo platform. Gen 2 uses a completely different architecture based on **FastAPI** services, with a metadata-driven design and a rich set of features suited to diverse domain requirements.
+This Registry is internally referred to as **Gen 2**. It is a major evolution from the previous [Social Registry](_archive/social-registry/), which was built on the Odoo platform. Gen 2 uses a completely different architecture based on **FastAPI** services, with a metadata-driven design and a rich set of features suited to diverse domain requirements.
 {% endhint %}
 
 ## Getting started

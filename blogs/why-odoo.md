@@ -2,7 +2,7 @@
 
 A frequent question in the OpenG2P community is _why the project has chosen the Odoo framework as its underlying technology_ for building some of the core modules. This blog post clarifies the rationale behind that decision.
 
-The story goes back to OpenG2P’s roots: the platform was originally developed as an extension of UNDP’s system, which made extensive use of Odoo for program management functions. During the course of OpenG2P's evolution, multiple project milestones involved thoughtful evaluations about potentially moving away from Odoo. Each time, the conclusion remained consistent—Odoo continues to deliver critical flexibility and rapid feature deployment, especially for core OpenG2P modules like [Registry](../products/registry/registry/social-registry/) and [PBMS](../pbms/).
+The story goes back to OpenG2P’s roots: the platform was originally developed as an extension of UNDP’s system, which made extensive use of Odoo for program management functions. During the course of OpenG2P's evolution, multiple project milestones involved thoughtful evaluations about potentially moving away from Odoo. Each time, the conclusion remained consistent—Odoo continues to deliver critical flexibility and rapid feature deployment, especially for core OpenG2P modules like [Registry](../products/registry/registry/_archive/social-registry/) and [PBMS](../pbms/).
 
 **Adaptability and speed** remain vital for OpenG2P, as new country requirements and business processes frequently emerge. The ability to update the core platform rapidly is a significant advantage and Odoo’s integrated user interface makes a big difference—even when compared to purely API-driven systems.
 
@@ -20,6 +20,6 @@ Odoo’s **extensibility** stands out: implementation teams never have to modify
 
 It’s important to note that key cash transfer functions—such as [G2P Bridge](../g2p-bridge/) and [SPAR](../spar/)—are architected with **fastAPI** rather than Odoo. This choice reflects OpenG2P’s focus on performance and scalability for specialized modules.
 
-[**Licensing**](../products/registry/registry/social-registry/features/online-assisted-registration/) considerations also shaped our technology choices. Odoo is offered under the permissive LGPL license, and care has been taken to remove any AGPL or GPL dependencies. OpenG2P Odoo libraries rely strictly on LGPL components. Legal reviews have confirmed these choices to support straightforward adoption and compliance for system integrators.
+[**Licensing**](../products/registry/registry/_archive/social-registry/features/online-assisted-registration/) considerations also shaped our technology choices. Odoo is offered under the permissive LGPL license, and care has been taken to remove any AGPL or GPL dependencies. OpenG2P Odoo libraries rely strictly on LGPL components. Legal reviews have confirmed these choices to support straightforward adoption and compliance for system integrators.
 
 In summary, OpenG2P continues to rely on Odoo for its flexibility, extensibility, configuration ease, robust localization, and proven security—while innovating with complementary technologies where needed. This strategic choice helps OpenG2P deliver adaptable, secure, and scalable solutions for social protection programs across the world.

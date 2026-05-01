@@ -154,9 +154,9 @@ The default key name is `postgres-password`. If your secret uses a different key
   --set global.postgresqlSecret=external-pg-superuser
 ```
 
-- **`postgresql.enabled=false`** — disables the embedded Bitnami PostgreSQL chart
-- **`global.postgresqlHost`** — fully qualified hostname or IP of your external server (must be reachable from the cluster's pod network)
-- **`global.postgresqlSecret`** — name of the secret you created in Step 1
+* **`postgresql.enabled=false`** — disables the embedded Bitnami PostgreSQL chart
+* **`global.postgresqlHost`** — fully qualified hostname or IP of your external server (must be reachable from the cluster's pod network)
+* **`global.postgresqlSecret`** — name of the secret you created in Step 1
 
 The install script verifies that the secret exists before proceeding.
 
@@ -172,23 +172,23 @@ The install script verifies that the secret exists before proceeding.
 
 The `postgres-init` job (running as a regular Kubernetes Job) connects to the external server using the superuser credentials and creates:
 
-- Databases: `superset`, `odkdb`, `mosip_keymgr`, `mosip_mockidentitysystem`, `mosip_esignet`, `keycloak`, plus `<release>_iam` and `<release>_auditmanager` from the services chart
-- One database user per database with auto-generated passwords
-- Per-user secrets stored in Kubernetes (`superset-db-user`, `odk-db-user`, `keymgr-db-user`, etc.)
+* Databases: `superset`, `odkdb`, `mosip_keymgr`, `mosip_mockidentitysystem`, `mosip_esignet`, `keycloak`, plus `<release>_iam` and `<release>_auditmanager` from the services chart
+* One database user per database with auto-generated passwords
+* Per-user secrets stored in Kubernetes (`superset-db-user`, `odk-db-user`, `keymgr-db-user`, etc.)
 
 Your external PostgreSQL user must therefore have **`CREATE DATABASE` and `CREATE ROLE`** privileges. A typical RDS master user works.
 
 ### Notes for managed PostgreSQL (RDS / Cloud SQL)
 
-- Some managed services don't allow `CREATE DATABASE` for non-master users — use the master credentials
-- The connection must use the standard PostgreSQL port `5432` (override `postgres-init.postgresql.port` if your service exposes a different port)
-- TLS connections are not yet configured by default — if your provider requires SSL, you may need to extend the postgres-init job
+* Some managed services don't allow `CREATE DATABASE` for non-master users — use the master credentials
+* The connection must use the standard PostgreSQL port `5432` (override `postgres-init.postgresql.port` if your service exposes a different port)
+* TLS connections are not yet configured by default — if your provider requires SSL, you may need to extend the postgres-init job
 
 ## Modules
 
 Install the modules and other utility apps individually using their respective instructions:
 
-1. [Registry](../../products/registry/registry/social-registry/deployment/registry-installation.md)
+1. [Registry](../../products/registry/registry/_archive/social-registry/deployment/registry-installation.md)
 2. [PBMS](https://docs.openg2p.org/pbms/deployment)
 3. [SPAR](https://docs.openg2p.org/spar/deployment)
 4. [G2P Bridge](https://docs.openg2p.org/g2p-bridge/deployment#installation-using-rancher-ui)

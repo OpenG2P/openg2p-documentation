@@ -4,13 +4,11 @@ description: Performance & Security - Design & Approach
 
 # Non Functional Requirements
 
-
-
 ### Performance Testing
 
 Registry uses FastAPI based microservice architecture with Postgresql database.
 
-Gen-1 of Registry used Odoo and Postgresql. A high volume performance test with 50 million records (40 million individuals and 10 million households) was performed and various User Action Measurements were recorded. Detailed findings were recorded with recommendations [here](../social-registry/developer-zone/performance-and-scale-1.md).
+Gen-1 of Registry used Odoo and Postgresql. A high volume performance test with 50 million records (40 million individuals and 10 million households) was performed and various User Action Measurements were recorded. Detailed findings were recorded with recommendations [here](../_archive/social-registry/developer-zone/performance-and-scale-1.md).
 
 Gen2 of Registry has completely moved out of Odoo. Gen2 of Registry is built using FastAPI microservice architecture with React based User Interface for the Staff Portal.
 

@@ -1,0 +1,27 @@
+# Dynamic Registry
+
+Many government departments maintain registries built through surveys and data collection, but these are rarely updated, resulting in significant inclusion and exclusion errors in welfare delivery. OpenG2P’s **Dynamic Registry** transforms this process by ensuring beneficiary data is always current and accurate.
+
+With a suite of powerful update mechanisms, the Dynamic Registry enables:
+
+* Seamless integration and automatic data synchronisation from other departments, registries, and sources via **APIs**
+* Beneficiaries to easily update their information through intuitive **self-service portals** and mobile apps
+* Reliable **offline data collection** and updates in low-connectivity areas using field agents and mobile devices, with automatic uploads when connectivity is restored
+* **Agent-assisted** online registration and updates for those needing in-person support
+* Direct data updates by administrators, complete with a secure audit trail for full transparency
+
+This comprehensive approach dramatically reduces errors and ensures your welfare programs reach the right people, every time. With OpenG2P’s Dynamic Registry, you gain a future-ready, flexible, and robust solution to keep your beneficiary data accurate and actionable—empowering more effective and inclusive social protection programs
+
+{% hint style="info" %}
+References
+
+[SOCIAL PROTECTION POLICY PAPER - 2 - Dynamic Social Registries in Social Protection](https://www.undp.org/sites/g/files/zskgke326/files/2022-11/Social%20Protection%20Policy%20Paper%202.pdf)
+
+[Turkey's Integrated Social Assistance System](https://documents1.worldbank.org/curated/en/515231530005107572/pdf/Turkey-SA-summary.pdf)
+{% endhint %}
+
+## Update mechanisms
+
+Several mechanims are available to keep the registry up-to-date as listed in the table below.
+
+<table><thead><tr><th width="286">Mechanism</th><th>Description</th></tr></thead><tbody><tr><td><a href="../developer-zone/api/"><strong>APIs</strong></a></td><td>APIs provide automatic updates and real-time data synchronization between systems.</td></tr><tr><td><a href="individuals-and-groups/user-guides/"><strong>Login-based direct data entry</strong></a></td><td>Authorised users can log into the SR module to manually insert or change information. You have direct control over the data and can make changes quickly using this mechanism.</td></tr><tr><td><a href="online-assisted-registration/"><strong>Registration portal</strong></a></td><td>Beneficiaries who have registered can log in to the portal to receive services from service providers, such as organisations or entities. They can manually add and update their details on the portal.</td></tr><tr><td><a href="../../../../../../tools/odk-collection-app/"><strong>ODK</strong></a></td><td><ul><li>ODK (Open Data Kit) can be accessed via Android devices, Agents, and other devices. ODK is a tool that allows for data collection from mobile devices. The ODK Collect app allows enumerators or field workers to collect data offline. The registrant details are uploaded to ODK Central as the agent moves to a place with internet connectivity.</li><li>The ODK Importer is a module built by OpenG2P. It is specifically designed to customise, set up the necessary field depending on the ODK form, and import the beneficiary's pertinent ODK form into OpenG2P Systems using the Social Registry module.</li></ul></td></tr><tr><td><a href="individuals-and-groups/user-guides/import-csv-file-to-social-registry.md"><strong>CSV</strong></a></td><td>Users can upload a CSV (Comma-Separated Values) file with the most recent data to update the Social Registry. This approach is helpful for users with the data in a spreadsheet format or bulk updates.</td></tr></tbody></table>

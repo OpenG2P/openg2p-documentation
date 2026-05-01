@@ -65,7 +65,7 @@ For detailed component architecture and repository descriptions, see [Organizati
 
 ## Breaking changes
 
-This is the first release of the Gen 2 Registry platform. This is complete new architecture and is NOT COMPATIBLE with [Gen1 Registry](../social-registry/) (3.x and before).
+This is the first release of the Gen 2 Registry platform. This is complete new architecture and is NOT COMPATIBLE with [Gen1 Registry](../_archive/social-registry/) (3.x and before).
 
 ***
 

@@ -6,7 +6,7 @@ The Helm Chart for SPAR installation version 2.x and above are aligned new deplo
 
 ## Key updates to the chart
 
-The changes made SPAR Helm Chart w.r.t previous versions (1.x and below) are similar to [Registry Helm Chart 3.x.](../../products/registry/registry/social-registry/deployment/registry-helm-chart-3.x.x.md) Important reference and points to note are listed below:
+The changes made SPAR Helm Chart w.r.t previous versions (1.x and below) are similar to [Registry Helm Chart 3.x.](../../products/registry/registry/_archive/social-registry/deployment/registry-helm-chart-3.x.x.md) Important reference and points to note are listed below:
 
 1. **Consolidation of dependents charts** into single SPAR charts. This was done because all the dependent charts are not useful on their own, so Helm chart for each of them was an overkill and adding to the maintance. See
 

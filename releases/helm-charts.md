@@ -6,12 +6,12 @@ For deployment on Kubernetes OpenG2P provides Helm charts for all its components
 
 Charts may be found here:
 
-| Module                                                            | Location                                                                                                                         |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [Social Registry](../products/registry/registry/social-registry/) | [https://github.com/OpenG2P/openg2p-social-registry-deployment/](https://github.com/OpenG2P/openg2p-social-registry-deployment/) |
-| [PBMS](../pbms/)                                                  | [https://github.com/OpenG2P/openg2p-pbms-deployment](https://github.com/OpenG2P/openg2p-pbms-deployment)                         |
-| [SPAR](../spar/)                                                  | [https://github.com/OpenG2P/openg2p-spar-deployment/](https://github.com/OpenG2P/openg2p-spar-deployment/)                       |
-| [G2P Bridge](../g2p-bridge/)                                      | [https://github.com/OpenG2P/openg2p-g2p-bridge-deployment](https://github.com/OpenG2P/openg2p-g2p-bridge-deployment)             |
+| Module                                                                     | Location                                                                                                                         |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [Social Registry](../products/registry/registry/_archive/social-registry/) | [https://github.com/OpenG2P/openg2p-social-registry-deployment/](https://github.com/OpenG2P/openg2p-social-registry-deployment/) |
+| [PBMS](../pbms/)                                                           | [https://github.com/OpenG2P/openg2p-pbms-deployment](https://github.com/OpenG2P/openg2p-pbms-deployment)                         |
+| [SPAR](../spar/)                                                           | [https://github.com/OpenG2P/openg2p-spar-deployment/](https://github.com/OpenG2P/openg2p-spar-deployment/)                       |
+| [G2P Bridge](../g2p-bridge/)                                               | [https://github.com/OpenG2P/openg2p-g2p-bridge-deployment](https://github.com/OpenG2P/openg2p-g2p-bridge-deployment)             |
 
 ## Published repository
 

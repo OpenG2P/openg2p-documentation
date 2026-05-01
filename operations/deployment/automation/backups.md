@@ -1,5 +1,8 @@
 ---
-description: Backup and restore automation for OpenG2P 3-node production installs — PostgreSQL via pgBackRest, etcd snapshots, rancher-backup for Kubernetes resources, restic for NFS data and configs. Pull-based from a separate backup node.
+description: >-
+  Backup and restore automation for OpenG2P 3-node production installs —
+  PostgreSQL via pgBackRest, etcd snapshots, rancher-backup for Kubernetes
+  resources, restic for NFS data and configs. Pull-based f
 ---
 
 # Backups
@@ -12,7 +15,7 @@ The whole stack is opt-in. You can deploy the 3-node platform without backups, t
 
 ## What this is, in one paragraph
 
-A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of an OpenG2P production install — PostgreSQL via pgBackRest with WAL streaming for ~1-minute RPO, etcd snapshots from RKE2's built-in mechanism, Kubernetes resources via the [rancher-backup operator](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery), NFS data via [restic](https://restic.net/) with a sidecar manifest that maps NFS UUID directories back to their PVC/namespace/app, and the small but critical filesystem state (Wireguard config, Nginx config, RKE2 TLS material) via restic over SSH-tar. All repos are encrypted at rest. Drills run weekly. Restores are deliberate — staged into temp dirs, never overwriting live data without an operator's runbook step.
+A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of an OpenG2P production install — PostgreSQL via pgBackRest with WAL streaming for \~1-minute RPO, etcd snapshots from RKE2's built-in mechanism, Kubernetes resources via the [rancher-backup operator](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery), NFS data via [restic](https://restic.net/) with a sidecar manifest that maps NFS UUID directories back to their PVC/namespace/app, and the small but critical filesystem state (Wireguard config, Nginx config, RKE2 TLS material) via restic over SSH-tar. All repos are encrypted at rest. Drills run weekly. Restores are deliberate — staged into temp dirs, never overwriting live data without an operator's runbook step.
 
 ## Sub-pages
 
@@ -60,13 +63,13 @@ After install, cron on the backup host runs the daily/weekly schedule. Operators
 
 ## Recovery objectives
 
-| Component | RPO | RTO |
-|---|---|---|
-| PostgreSQL (with WAL streaming) | ≈1 min | minutes (PITR), 10s of minutes (full restore) |
-| Kubernetes resources (Secrets, CRs, PV/PVCs) | 24h (nightly) | 5–15 min (rancher-backup `Restore` CR) |
-| NFS data | 24h | minutes per PVC, hours for full export |
-| etcd snapshots | 6h | 5–10 min (cluster-reset restore) |
-| RP/compute filesystem state (WG, Nginx, RKE2 TLS) | 24h | minutes per subsystem |
+| Component                                         | RPO           | RTO                                           |
+| ------------------------------------------------- | ------------- | --------------------------------------------- |
+| PostgreSQL (with WAL streaming)                   | ≈1 min        | minutes (PITR), 10s of minutes (full restore) |
+| Kubernetes resources (Secrets, CRs, PV/PVCs)      | 24h (nightly) | 5–15 min (rancher-backup `Restore` CR)        |
+| NFS data                                          | 24h           | minutes per PVC, hours for full export        |
+| etcd snapshots                                    | 6h            | 5–10 min (cluster-reset restore)              |
+| RP/compute filesystem state (WG, Nginx, RKE2 TLS) | 24h           | minutes per subsystem                         |
 
 All of these are configurable via `backup-config.yaml` schedules. The defaults match a 6-month retention window and assume a 1 TB backup volume; smaller volumes work but shorten retention before pruning.
 
