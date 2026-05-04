@@ -634,6 +634,12 @@
     * [Model Context Protocol (MCP) Implementation in UCA](tools/unified-conversation-agent/uca-research-and-development/model-context-protocol-mcp-implementation-in-uca.md)
     * [Social Benefits Assistant with FastMCP](tools/unified-conversation-agent/uca-research-and-development/social-benefits-assistant-with-fastmcp.md)
 * [Grievance Redress Mechanism](tools/grievance-redress-mechanism.md)
+* [G2P WikiLLM](tools/g2p-wikillm/README.md)
+  * [Concept — WikiLLM](tools/g2p-wikillm/concept.md)
+  * [Design](tools/g2p-wikillm/design.md)
+  * [CLAUDE.md vs wiki/index.md](tools/g2p-wikillm/claude-md-vs-index.md)
+  * [Scripts](tools/g2p-wikillm/scripts.md)
+  * [Roadmap & Automation](tools/g2p-wikillm/automation-todo.md)
 
 ## Operations
 
