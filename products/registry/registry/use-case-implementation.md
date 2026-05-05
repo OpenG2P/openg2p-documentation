@@ -21,6 +21,7 @@ Every Discovery item has the following fields. Items are identified by their hea
 * **Why** — what downstream decision, activity, or phase consumes this answer.
 * **Required** — `yes`, `no`, or `conditional: <expression>`.
 * **Type** — `text`, `number`, `boolean`, `enum [...]`, `list`, `prose`, `file`, or `classification` (a typed answer that may include free text).
+* **Impact** — one of: `code`, `configuration`, `informational`, `deployment`, `migration`. Captures the kind of downstream effect the answer has: `code` items feed Phase 2 generation; `configuration` items become seed SQL or env vars; `informational` items appear only in the Requirements Analysis Report; `deployment` items feed Phase 3+; `migration` items gate the brownfield sub-track. Distinct from `Affects`, which names specific phases.
 * **Affects** _(optional)_ — specific downstream phases or activities that consume this answer.
 * **Follow-ups** _(optional)_ — conditional sub-items, each itself a Discovery item, conditioned on the parent answer.
 * **Validation** _(optional)_ — explicit constraints beyond the Type.
@@ -64,6 +65,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Establishes regulatory context, language defaults, and data-residency constraints that affect later-phase deployment region and the support model.
 * **Required:** yes
 * **Type:** text
+* **Impact:** code
 
 #### implementing_organisation
 
@@ -71,6 +73,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Identifies the operational owner and the stakeholder model; informs operational handover and access policies.
 * **Required:** yes
 * **Type:** text
+* **Impact:** informational
 
 #### registry_name
 
@@ -78,6 +81,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Used in user-facing labels and report headers.
 * **Required:** yes
 * **Type:** text
+* **Impact:** configuration
 
 #### registry_logo_small
 
@@ -85,6 +89,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Used in the staff portal header and beneficiary portal small-format placements.
 * **Required:** yes
 * **Type:** file (image)
+* **Impact:** configuration
 
 #### registry_logo_medium
 
@@ -92,6 +97,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Used in landing pages, generated reports, and printed cards.
 * **Required:** yes
 * **Type:** file (image)
+* **Impact:** configuration
 
 #### supported_languages
 
@@ -99,6 +105,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives Keycloak theme and frontend i18n configuration, and number/date format selection.
 * **Required:** yes
 * **Type:** list
+* **Impact:** configuration
 
 #### use_case_detail
 
@@ -106,6 +113,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives integration scope and informs the gap analysis on data sharing and interoperability. Catches narrative context that the structured items below cannot.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** informational
 * **Affects:** Phase 1 gap analysis on interoperability; integration design in later phases.
 
 ---
@@ -118,6 +126,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines registry typology and the feature set the advisor surfaces during Product Feature Discovery.
 * **Required:** yes
 * **Type:** enum \[`specific-programme`, `general-purpose`]
+* **Impact:** code
 * **Follow-ups:**
   * **program_name** _(when registry_typology = specific-programme)_ — what is the name of the programme?
   * **registry_type** _(when registry_typology = general-purpose)_ — which type of registry: national social registry, farmer registry, family registry, health workers registry, disability registry, students registry, crop registry, land registry, vehicle registry, or other?
@@ -132,6 +141,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Each Register becomes a distinct table and entity in the generated code. Hierarchy determines parent/child relationships in schema and UI.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 * **Examples:** A Social Registry typically has two Registers — a Households Register and an Individuals Register, where an Individual reports into a Household.
 
 #### registers_physical_object
@@ -140,6 +150,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Anchors the domain model. Affects ID generation rules and UI defaults.
 * **Required:** yes
 * **Type:** classification — a map of register name to physical object kind.
+* **Impact:** code
 * **Examples:** PERSON, HOUSE, VEHICLE, SCHOOL, FARM, LAND PARCEL.
 
 #### supporting_tables
@@ -148,6 +159,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Supporting tables capture multi-valued attributes (e.g., a person's land holdings, a household's assets). They become tables linked to the main Registers via foreign keys.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 * **Examples:** A Land table for an Individual where each individual may own multiple land parcels.
 
 #### main_register_attributes
@@ -156,6 +168,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Forms the schema for the Register tables. Each attribute becomes a column with a chosen type.
 * **Required:** yes
 * **Type:** classification — a map of register name to list of attribute names with types.
+* **Impact:** code
 
 #### supporting_table_attributes
 
@@ -163,6 +176,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Forms the schema for the supporting tables.
 * **Required:** yes
 * **Type:** classification — a map of supporting table name to list of attribute names with types.
+* **Impact:** code
 
 ---
 
@@ -174,6 +188,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether identity verification can rely on the national identity provider or requires an alternative mechanism.
 * **Required:** conditional: any Register has registers_physical_object = PERSON
 * **Type:** boolean
+* **Impact:** code
 * **Follow-ups (when yes):** all subsequent Foundational ID items below.
 
 #### foundational_id_name
@@ -182,6 +197,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Used in generated UI labels and configuration references.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** text
+* **Impact:** informational
 * **Examples:** PHILSYS National ID (Philippines), AADHAAR (India), Fayda National ID (Ethiopia).
 
 #### foundational_id_responsible_department
@@ -190,6 +206,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Identifies the integration counterpart and the governance owner of the ID.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** text
+* **Impact:** informational
 
 #### foundational_id_verification_mechanism
 
@@ -197,6 +214,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects integration design between the registry and the national identity provider.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** prose
+* **Impact:** code
 
 #### foundational_id_biometrics
 
@@ -204,6 +222,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives device requirements for field agents and additional integration considerations.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** boolean
+* **Impact:** code
 
 #### foundational_id_integration_mechanism
 
@@ -211,6 +230,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines the eSignet / OAuth-OIDC configuration approach.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** prose
+* **Impact:** code
 
 #### foundational_id_kyc_periodicity
 
@@ -218,6 +238,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives scheduled re-verification jobs and consent renewal flows.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** text
+* **Impact:** code
 
 #### foundational_id_length
 
@@ -225,6 +246,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Required for input validation and storage column sizing.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** number
+* **Impact:** configuration
 
 #### foundational_id_format
 
@@ -232,6 +254,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives input validation regex and storage type.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** enum \[`alphanumeric`, `numeric`]
+* **Impact:** code
 
 #### foundational_id_prefix_suffix_encoding
 
@@ -239,6 +262,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects ID parsing logic and any region-derived attributes.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** prose
+* **Impact:** informational
 
 #### foundational_id_attributes_stored
 
@@ -246,6 +270,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines which attributes the registry can fetch via verification vs. must collect itself.
 * **Required:** conditional: has_foundational_id = yes
 * **Type:** list
+* **Impact:** code
 
 ---
 
@@ -257,6 +282,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Triggers the functional ID generation and tracking subsystem.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### functional_id_examples
 
@@ -264,6 +290,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Helps clarify intent and naming conventions.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** prose
+* **Impact:** informational
 * **Examples:** Voter ID (electoral register), Household ID (social register), Pension ID (pension register).
 
 #### functional_id_length
@@ -272,6 +299,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Used during code generation in the build phase.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** number
+* **Impact:** code
 * **Validation:** typically nine to twelve; confirm with implementer if outside this range.
 
 #### functional_id_format
@@ -280,6 +308,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives ID generation logic.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** enum \[`alphanumeric`, `numeric`]
+* **Impact:** code
 
 #### functional_id_prefix_suffix_encoding
 
@@ -287,6 +316,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects ID generation algorithm.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** prose
+* **Impact:** code
 
 #### functional_id_generation_timing
 
@@ -294,6 +324,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether ID generation is part of the registration workflow or a separate event.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** enum \[`at-registration`, `at-application`, `other`]
+* **Impact:** code
 
 #### functional_id_owning_department
 
@@ -301,6 +332,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether the registry generates IDs locally or integrates with an external service.
 * **Required:** conditional: has_functional_id = yes
 * **Type:** enum \[`own-department`, `external-department`]
+* **Impact:** code
 
 #### functional_id_integration_mechanism
 
@@ -308,6 +340,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives external integration design.
 * **Required:** conditional: functional_id_owning_department = external-department
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -319,6 +352,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the scoring subsystem in the registry. Scores affect indexing, search, eligibility, and reporting.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### scores_examples
 
@@ -326,6 +360,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Anchors the scoring logic to a real-world definition.
 * **Required:** conditional: has_scores = yes
 * **Type:** prose
+* **Impact:** code
 * **Examples:** Poverty score (Social Registry), Disability score (Disability Registry), Food Security score.
 
 #### scores_per_register
@@ -334,6 +369,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Each score becomes a configured score type with its own computation pipeline.
 * **Required:** conditional: has_scores = yes
 * **Type:** classification — a map of register name to list of score types.
+* **Impact:** code
 
 #### scores_external_dependencies
 
@@ -341,6 +377,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects whether the score computation is local or requires external lookups.
 * **Required:** conditional: has_scores = yes
 * **Type:** prose
+* **Impact:** code
 
 #### scores_periodicity
 
@@ -348,6 +385,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives scheduled jobs in the celery worker.
 * **Required:** conditional: has_scores = yes
 * **Type:** text
+* **Impact:** code
 
 #### scores_compute_on_change
 
@@ -355,6 +393,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives event-driven score recomputation logic.
 * **Required:** conditional: has_scores = yes
 * **Type:** boolean
+* **Impact:** configuration
 
 #### scores_notify_registrant
 
@@ -362,6 +401,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives notification triggers.
 * **Required:** conditional: has_scores = yes
 * **Type:** boolean
+* **Impact:** code
 
 #### scores_notify_other_departments
 
@@ -369,6 +409,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives outgoing integration / event-publishing design.
 * **Required:** conditional: has_scores = yes
 * **Type:** boolean
+* **Impact:** code
 
 ---
 
@@ -380,6 +421,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects UI scope, sync behaviour, and offline tooling decisions.
 * **Required:** yes
 * **Type:** enum \[`online`, `offline`, `both`]
+* **Impact:** code
 
 #### enumeration_field_agents
 
@@ -387,6 +429,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives mobile-app and offline-first feature requirements.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** informational
 
 #### enumeration_offices_in_villages
 
@@ -394,6 +437,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects deployment topology and access models for distributed offices.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** informational
 
 #### internet_connectivity_in_remote_regions
 
@@ -401,6 +445,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives offline-mode requirements and sync strategy.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 #### enumeration_devices
 
@@ -408,6 +453,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects mobile-app target platforms and device-integration scope.
 * **Required:** conditional: enumeration_field_agents = yes
 * **Type:** list
+* **Impact:** code
 
 #### uses_odk
 
@@ -415,6 +461,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives ODK integration / form-import scope.
 * **Required:** conditional: enumeration_field_agents = yes
 * **Type:** boolean
+* **Impact:** code
 
 #### enumeration_periodicity
 
@@ -422,6 +469,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives scheduled enumeration cycles and re-survey workflows.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** informational
 
 ---
 
@@ -433,6 +481,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives upload, verification, and storage design — including blob storage configuration and document-verification workflow.
 * **Required:** yes
 * **Type:** list
+* **Impact:** configuration
 
 ---
 
@@ -444,6 +493,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the approval-level configuration on each Register and the change-request workflow.
 * **Required:** yes
 * **Type:** number
+* **Impact:** code
 * **Examples:** 0 (auto-approve), 1, 2, 3 levels of approval.
 
 #### approval_workflow_approvers_login
@@ -452,6 +502,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives access management and notification design for approvers.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** informational
 
 #### approval_workflow_approvers_location
 
@@ -459,6 +510,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects authentication strategy and offline considerations for approvers.
 * **Required:** yes
 * **Type:** enum \[`in-office`, `remote`, `both`]
+* **Impact:** informational
 
 #### approval_workflow_approvers_devices
 
@@ -466,6 +518,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives mobile-friendly approval UI scope.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** informational
 
 ---
 
@@ -477,6 +530,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the change-request flow and the user-facing edit UI.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** configuration
 
 #### edit_submission_channel
 
@@ -484,6 +538,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives UI scope and channel-specific workflows.
 * **Required:** yes
 * **Type:** enum \[`office`, `field-agent`, `online`, `multiple`]
+* **Impact:** configuration
 
 #### edit_approval_workflow
 
@@ -491,6 +546,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the change-request approval configuration, possibly distinct from new-record approval.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -502,6 +558,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects target platforms for agent applications.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 
 #### agent_named_login
 
@@ -509,6 +566,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives identity provisioning for agents.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** configuration
 
 #### agent_profile_management
 
@@ -516,6 +574,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives Keycloak realm configuration and admin workflow.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** configuration
 
 #### agent_authentication_with_foundational_id
 
@@ -523,6 +582,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives agent-app authentication design.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 ---
 
@@ -534,6 +594,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether the beneficiary portal API and frontend are in scope.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** configuration
 
 #### beneficiary_portal_capabilities
 
@@ -541,6 +602,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Defines the beneficiary portal's feature surface — view records, request edits, claim/attest, etc.
 * **Required:** conditional: has_beneficiary_portal = yes
 * **Type:** prose
+* **Impact:** code
 
 #### beneficiary_portal_access_management
 
@@ -548,6 +610,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives authentication integration for beneficiaries.
 * **Required:** conditional: has_beneficiary_portal = yes
 * **Type:** prose
+* **Impact:** code
 * **Examples:** Aadhaar Login (India), PHILSYS authentication (Philippines).
 
 ---
@@ -560,6 +623,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Forms the baseline for the integration design.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 
 #### kyc_based_edits
 
@@ -567,6 +631,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives event-subscription / sync design with the foundational ID provider.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### outgoing_notifications_on_edits
 
@@ -574,6 +639,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives outgoing event-publishing and webhook configuration.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 #### outgoing_periodic_publishes
 
@@ -581,6 +647,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives scheduled bulk-export jobs.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 #### incoming_feeds
 
@@ -588,6 +655,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives ingestion-pipeline design.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 #### incoming_feeds_approval_workflow
 
@@ -595,6 +663,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether incoming-feed-driven changes are auto-applied or require approval.
 * **Required:** conditional: incoming_feeds is non-empty
 * **Type:** prose
+* **Impact:** code
 
 #### vc_ingestion
 
@@ -602,6 +671,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives VC-verification subsystem inclusion.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -613,6 +683,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether the Programme Register feature is in scope.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### benefit_programs_list
 
@@ -620,6 +691,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the programme catalogue configuration.
 * **Required:** conditional: registry_used_for_benefit_programs = yes
 * **Type:** list
+* **Impact:** code
 
 #### track_benefit_program_memberships
 
@@ -627,6 +699,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives Programme Register + membership-tracking design.
 * **Required:** conditional: registry_used_for_benefit_programs = yes
 * **Type:** boolean
+* **Impact:** code
 
 #### benefit_programs_scope
 
@@ -634,6 +707,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines cross-department integration scope for programme data.
 * **Required:** conditional: track_benefit_program_memberships = yes
 * **Type:** enum \[`own-department-only`, `cross-department`]
+* **Impact:** code
 
 #### benefit_coverage_change_workflow
 
@@ -641,6 +715,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the membership-update workflow.
 * **Required:** conditional: track_benefit_program_memberships = yes
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -652,6 +727,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives VC issuance subsystem inclusion.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### vc_platform
 
@@ -659,6 +735,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines integration target for VC issuance.
 * **Required:** conditional: issues_verifiable_credentials = yes
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -670,6 +747,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives card-generation and printing subsystem design.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** code
 
 #### card_contents
 
@@ -677,6 +755,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Defines the card layout template and the data fields included.
 * **Required:** conditional: registry_provides_cards = yes
 * **Type:** list
+* **Impact:** code
 
 #### card_qr_code
 
@@ -684,6 +763,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives QR generation and verification-API design.
 * **Required:** conditional: registry_provides_cards = yes
 * **Type:** boolean
+* **Impact:** code
 
 ---
 
@@ -695,6 +775,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether the notification subsystem is in scope.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 #### notification_triggering_events
 
@@ -702,6 +783,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the notification-trigger configuration.
 * **Required:** conditional: has_notification_requirements is non-empty
 * **Type:** list
+* **Impact:** code
 
 ---
 
@@ -713,6 +795,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Brownfield implies a data-migration sub-track in later phases; greenfield does not.
 * **Required:** yes
 * **Type:** enum \[`greenfield`, `brownfield`]
+* **Impact:** migration
 
 #### existing_data_form
 
@@ -720,6 +803,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives the ingestion connector design for migration.
 * **Required:** conditional: existing_data = brownfield
 * **Type:** classification
+* **Impact:** migration
 
 #### existing_registry_platform
 
@@ -727,6 +811,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Identifies the source system for data migration.
 * **Required:** conditional: existing_data = brownfield
 * **Type:** prose
+* **Impact:** migration
 
 #### existing_registry_technology
 
@@ -734,6 +819,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives migration-tooling selection (export formats, connector libraries).
 * **Required:** conditional: existing_data = brownfield
 * **Type:** prose
+* **Impact:** migration
 
 #### existing_registry_rdbms
 
@@ -741,6 +827,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines the migration ETL approach.
 * **Required:** conditional: existing_data = brownfield
 * **Type:** prose
+* **Impact:** migration
 
 ---
 
@@ -752,10 +839,35 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Catch-all for domain-specific needs not covered by the structured items. Forms the requirements baseline against which the gap analysis runs.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 
 ---
 
 **Infrastructure**
+
+#### sandbox_hosting_strategy
+
+* **Ask:** Explain your Sandbox Hosting Strategy — within country, public cloud hosting, within office premises, private data centre, or captive data centre. Multiple may apply; prose answer.
+* **Why:** Drives sandbox-phase deployment topology choices and the support model.
+* **Required:** yes
+* **Type:** prose
+* **Impact:** deployment
+
+#### sandbox_outside_office_ok
+
+* **Ask:** Can the sandbox be hosted outside your office premises?
+* **Why:** Boundary constraint on where the sandbox can physically/logically run.
+* **Required:** yes
+* **Type:** boolean
+* **Impact:** deployment
+
+#### sandbox_outside_country_ok
+
+* **Ask:** Can the sandbox be hosted outside your country?
+* **Why:** Affects data-residency and compliance for development/test environments.
+* **Required:** yes
+* **Type:** boolean
+* **Impact:** deployment
 
 #### sandbox_on_cloud
 
@@ -763,6 +875,15 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects sandbox-phase deployment topology, separately from the production deployment.
 * **Required:** yes
 * **Type:** boolean
+* **Impact:** deployment
+
+#### production_hosting_strategy
+
+* **Ask:** Explain your Production Hosting Strategy — within country, public cloud hosting, within office premises, private data centre, or captive data centre. Multiple may apply; prose answer.
+* **Why:** Drives production-phase deployment topology and the support model. Complements the high-level `production_infrastructure` enum below with the specific hosting category.
+* **Required:** yes
+* **Type:** prose
+* **Impact:** deployment
 
 #### production_infrastructure
 
@@ -770,6 +891,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Affects later-phase deployment design and the support model.
 * **Required:** yes
 * **Type:** enum \[`on-prem`, `cloud`, `hybrid`]
+* **Impact:** deployment
 
 #### existing_cloud_service_provider
 
@@ -777,6 +899,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines whether the production deployment can use an existing CSP arrangement.
 * **Required:** conditional: production_infrastructure in [`cloud`, `hybrid`]
 * **Type:** prose
+* **Impact:** informational
 
 ---
 
@@ -788,6 +911,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Determines support model and handover scope.
 * **Required:** yes
 * **Type:** enum \[`in-house`, `service-provider`, `hybrid`]
+* **Impact:** informational
 
 #### software_policies
 
@@ -795,6 +919,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives compliance considerations for the deployment.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** informational
 
 #### network_for_distributed_offices
 
@@ -802,6 +927,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives sync strategy and offline-mode scope.
 * **Required:** conditional: enumeration_offices_in_villages = yes OR enumeration_field_agents = yes
 * **Type:** prose
+* **Impact:** informational
 
 #### needs_offline_features
 
@@ -809,6 +935,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives offline-first and sync design.
 * **Required:** yes
 * **Type:** prose
+* **Impact:** code
 
 ---
 
@@ -820,6 +947,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives migration sizing and initial deployment topology.
 * **Required:** yes
 * **Type:** number
+* **Impact:** deployment
 
 #### record_scale_5_year_estimate
 
@@ -827,6 +955,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives capacity planning and topology decisions for production.
 * **Required:** yes
 * **Type:** number
+* **Impact:** deployment
 
 ---
 
@@ -838,6 +967,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives capacity planning for the staff portal API and Keycloak realm.
 * **Required:** yes
 * **Type:** number
+* **Impact:** deployment
 
 #### agent_user_count
 
@@ -845,6 +975,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives capacity planning for agent-application and partner-API loads.
 * **Required:** yes
 * **Type:** number
+* **Impact:** deployment
 
 #### beneficiary_portal_user_volume
 
@@ -852,6 +983,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives capacity planning for the beneficiary portal API.
 * **Required:** conditional: has_beneficiary_portal = yes
 * **Type:** number
+* **Impact:** deployment
 
 #### integration_traffic_volumetrics
 
@@ -859,6 +991,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives capacity planning for the integration tier.
 * **Required:** conditional: api_integrations is non-empty
 * **Type:** prose
+* **Impact:** deployment
 
 ---
 
@@ -870,6 +1003,7 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Why:** Drives external-interface scope and standards conformance.
 * **Required:** no
 * **Type:** prose
+* **Impact:** code
 
 ### Activities
 
@@ -940,6 +1074,7 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Used directly during code generation, in file paths, and in image tags. Constraints follow because downstream tooling depends on the form.
 * **Required:** yes
 * **Type:** text
+* **Impact:** configuration
 * **Validation:** lowercase letters and hyphens only; no whitespace; must not include the word `registry`.
 * **Examples:** `health-worker` ✓, `HealthWorkerRegistry` ✗, `health worker registry` ✗
 
@@ -949,6 +1084,17 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Drives the staff-portal-ui theme generation and the beneficiary portal styling.
 * **Required:** no
 * **Type:** prose
+* **Impact:** configuration
+
+#### register_mnemonics
+
+* **Ask:** Provide a mnemonic for every Register and supporting Table identified in Phase 1 — short identifier codes used in code generation, table names, model class names, and service paths.
+* **Why:** Each Register/Table mnemonic feeds directly into ORM model class names, table names, and generated paths. Distinct from `registry_mnemonic` (which identifies the overall registry); this captures the per-Register/Table identifiers.
+* **Required:** yes
+* **Type:** classification — a map of register/table name to mnemonic.
+* **Impact:** code
+* **Validation:** lowercase letters and hyphens only; no whitespace; must be unique within the project.
+* **Examples:** `{ "Households Register": "household", "Individuals Register": "individual", "Land": "land" }`
 
 **Schema and constraints**
 
@@ -958,6 +1104,7 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Names and types are used directly during code generation; exactness matters for downstream queries, migrations, and UI generation.
 * **Required:** yes
 * **Type:** classification — a map of register/table name to ordered list of `{column_name, type, nullable, default}` entries.
+* **Impact:** code
 
 #### database_constraints
 
@@ -965,6 +1112,7 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Constraints are reflected in schema generation and validation logic. Determines referential integrity in the generated migrations.
 * **Required:** yes
 * **Type:** list
+* **Impact:** code
 
 **Notification payloads**
 
@@ -974,6 +1122,27 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Drives the generation of notification templates in the registry.
 * **Required:** conditional: notification_triggering_events is non-empty
 * **Type:** classification — a map of event name to `{sms, email}` payload templates.
+* **Impact:** code
+
+**Domains and addressing**
+
+#### production_domain_name
+
+* **Ask:** What will be the domain name(s) of the Registry that citizens and staff will use in production? List all that apply (e.g., one for the staff portal, one for the beneficiary portal, one for partner APIs).
+* **Why:** Drives Helm/ingress configuration, certificate generation, and external URL patterns built into the Docker images and Helm chart.
+* **Required:** yes
+* **Type:** list
+* **Impact:** deployment
+* **Examples:** `staff.registry.gov.cs`, `portal.registry.gov.cs`, `api.registry.gov.cs`
+
+#### sandbox_base_domain
+
+* **Ask:** What should be the base domain for the sandbox? Internal-only, not exposed to the public. Default is `*.<registry_mnemonic>.internal`.
+* **Why:** Configures sandbox ingress routing and TLS handling for development. Sandbox doesn't require real public DNS.
+* **Required:** no
+* **Type:** text
+* **Impact:** deployment
+* **Examples:** `*.health-worker.internal`, `*.farmer-registry.dev`
 
 ### Activities
 
@@ -1070,7 +1239,35 @@ Deploy the built Docker images to a sandbox (development) environment and verify
 
 ### Discovery items
 
-_(to be added)_
+The Phase 3 Discovery items below capture infrastructure and access information needed for the **production** rollout. They are gathered during the sandbox phase because the answers (especially SSL/DNS lead times) determine the Phase 5 rollout schedule. The sandbox itself does NOT require these — sandbox uses the internal base domain captured in Phase 2 and doesn't issue real SSL certificates.
+
+**Production domains, certificates, and DNS**
+
+#### ssl_cert_acquisition
+
+* **Ask:** How easily and quickly can you acquire SSL certificates for the production domains listed in `production_domain_name`? Describe the process, the certificate authority, and the typical lead time.
+* **Why:** SSL acquisition lead time is the long pole in many deployments. Captured in Phase 3 so Phase 5 (Full Rollout) scheduling is realistic. Sandbox doesn't need this.
+* **Required:** yes
+* **Type:** prose
+* **Impact:** deployment
+* **Examples:** "Let's Encrypt automated, ~5 minutes"; "Internal CA, 2-week request process"; "Commercial cert via department procurement, 4-6 weeks".
+
+#### wildcard_ssl_supported
+
+* **Ask:** Can you obtain a wildcard SSL certificate (e.g., `*.registry.gov.cs`) so that subdomains can be assigned without per-subdomain certificates?
+* **Why:** Wildcards dramatically simplify multi-service deployments (staff portal + beneficiary portal + partner API + sandbox subdomains all on one cert). Drives ingress and subdomain-allocation strategy.
+* **Required:** yes
+* **Type:** boolean
+* **Impact:** deployment
+
+#### dns_access_lead_time
+
+* **Ask:** Do you (or your teams) have access to a DNS server that can point to the production system? How long will DNS configuration take?
+* **Why:** DNS access and lead time are go-live gates. Drives Phase 5 (Full Rollout) sequencing and identifies whether DNS work needs to start in parallel with build/sandbox or can be deferred to rollout.
+* **Required:** yes
+* **Type:** prose
+* **Impact:** deployment
+* **Examples:** "Direct access via Route53, immediate"; "Submit ticket to central IT, 2-day SLA"; "Department doesn't control DNS, requires inter-ministry coordination, 2-4 weeks".
 
 ### Activities
 
