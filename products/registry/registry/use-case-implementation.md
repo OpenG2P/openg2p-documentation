@@ -83,22 +83,6 @@ The Discovery items below are grouped into thematic blocks for readability. The 
 * **Type:** text
 * **Impact:** configuration
 
-#### registry_logo_small
-
-* **Ask:** Provide a small-sized logo image for the Registry or the implementing department.
-* **Why:** Used in the staff portal header and beneficiary portal small-format placements.
-* **Required:** yes
-* **Type:** file (image)
-* **Impact:** configuration
-
-#### registry_logo_medium
-
-* **Ask:** Provide a medium-sized logo image for the Registry or the implementing department.
-* **Why:** Used in landing pages, generated reports, and printed cards.
-* **Required:** yes
-* **Type:** file (image)
-* **Impact:** configuration
-
 #### supported_languages
 
 * **Ask:** In which languages will users access the platform?
@@ -1084,6 +1068,22 @@ Capture the fine-grained technical inputs required to generate the customised re
 * **Why:** Drives the staff-portal-ui theme generation and the beneficiary portal styling.
 * **Required:** no
 * **Type:** prose
+* **Impact:** configuration
+
+#### registry_logo_small
+
+* **Ask:** Provide a small-sized logo image for the Registry or the implementing department.
+* **Why:** Used in the staff portal header and beneficiary portal small-format placements. Compiled into the customised images during Phase 2 generation.
+* **Required:** yes
+* **Type:** file (image)
+* **Impact:** configuration
+
+#### registry_logo_medium
+
+* **Ask:** Provide a medium-sized logo image for the Registry or the implementing department.
+* **Why:** Used in landing pages, generated reports, and printed cards. Compiled into the customised images during Phase 2 generation.
+* **Required:** yes
+* **Type:** file (image)
 * **Impact:** configuration
 
 #### register_mnemonics
