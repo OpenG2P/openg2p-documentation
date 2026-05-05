@@ -9,9 +9,9 @@
 
 ## Versions
 
-| Chart | Version | Date | Comments |
-|-------|---------|------|----------|
-| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0) | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS. |
+| Chart                                          | Version                                                                         | Date        | Comments                                                                                                                                                 |
+| ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0)      | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS.                                                |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). Audit Manager service added to commons-services. |
 
 ## Architecture (v2.x onward)
@@ -47,17 +47,17 @@ Installs all infrastructure components:
 
 Installs application services:
 
-| Component                | Description                        |
-| ------------------------ | ---------------------------------- |
-| **Superset**             | Data visualization and dashboards  |
-| **eSignet**              | Digital signature service          |
-| **Mock Identity System** | Mock identity provider for testing |
-| **Keymanager**           | Cryptographic key management       |
-| **ODK Central**          | Data collection                    |
-| **OpenG2P Master Data**  | Master data service                |
-| **Reporting**            | Reporting framework                |
-| **Artifactory**          | Artifact repository                |
-| **OpenG2P IAM Service**  | Identity and access management API |
+| Component                 | Description                                                                        |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| **Superset**              | Data visualization and dashboards                                                  |
+| **eSignet**               | Digital signature service                                                          |
+| **Mock Identity System**  | Mock identity provider for testing                                                 |
+| **Keymanager**            | Cryptographic key management                                                       |
+| **ODK Central**           | Data collection                                                                    |
+| **OpenG2P Master Data**   | Master data service                                                                |
+| **Reporting**             | Reporting framework                                                                |
+| **Artifactory**           | Artifact repository                                                                |
+| **OpenG2P IAM Service**   | Identity and access management API                                                 |
 | **OpenG2P Audit Manager** | Centralized audit event collector (Kafka-backed, stores audit trail in PostgreSQL) |
 
 ## Key Design Decisions
@@ -110,7 +110,7 @@ Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, clie
 
 ### Shared PostgreSQL
 
-All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used — see the [External PostgreSQL](#external-postgresql) section below for the full setup steps.
+All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used — see the [External PostgreSQL](openg2p-commons-helm-chart.md#external-postgresql) section below for the full setup steps.
 
 ### Internal vs External URLs
 
@@ -204,11 +204,11 @@ So your **external PostgreSQL user must have `CREATE DATABASE` and `CREATE ROLE`
 
 Three globals control PostgreSQL connectivity. They are wired identically in both `openg2p-commons-base` and `openg2p-commons-services`:
 
-| Global | Purpose | Default (embedded) | Set for external |
-|--------|---------|-------------------|------------------|
-| `global.postgresqlHost` | Hostname or IP of the PostgreSQL server | `<release>-postgresql` | External hostname or IP |
-| `global.postgresqlSecret` | Name of K8s secret holding the superuser password | `<release>-postgresql` | Your pre-created secret name |
-| `global.postgresqlSecretKey` | Key inside the secret | `postgres-password` | Override if your secret uses a different key |
+| Global                       | Purpose                                           | Default (embedded)     | Set for external                             |
+| ---------------------------- | ------------------------------------------------- | ---------------------- | -------------------------------------------- |
+| `global.postgresqlHost`      | Hostname or IP of the PostgreSQL server           | `<release>-postgresql` | External hostname or IP                      |
+| `global.postgresqlSecret`    | Name of K8s secret holding the superuser password | `<release>-postgresql` | Your pre-created secret name                 |
+| `global.postgresqlSecretKey` | Key inside the secret                             | `postgres-password`    | Override if your secret uses a different key |
 
 ### Why pre-creation of the secret is required
 
@@ -221,7 +221,7 @@ Multiple subcharts reference the superuser secret at template render time (postg
 ```bash
 kubectl create namespace <namespace> 2>/dev/null || true
 
-kubectl create secret generic external-pg-superuser \
+kubectl create secret generic commons-postgresql \
   -n <namespace> \
   --from-literal=postgres-password='<superuser-password>'
 ```
@@ -232,7 +232,7 @@ kubectl create secret generic external-pg-superuser \
 ./install-base.sh <namespace> commons <base-domain> \
   --set postgresql.enabled=false \
   --set global.postgresqlHost=<external-pg-host-or-ip> \
-  --set global.postgresqlSecret=external-pg-superuser
+  --set global.postgresqlSecret=commons-postgresql
 ```
 
 The `install-base.sh` script verifies the secret exists in the namespace before proceeding (fails fast with the exact `kubectl create` command if missing).
@@ -242,7 +242,7 @@ The `install-base.sh` script verifies the secret exists in the namespace before 
 ```bash
 ./install.sh <namespace> commons-services commons <base-domain> \
   --set global.postgresqlHost=<external-pg-host-or-ip> \
-  --set global.postgresqlSecret=external-pg-superuser
+  --set global.postgresqlSecret=commons-postgresql
 ```
 
 ### From the Rancher UI
