@@ -4,6 +4,7 @@ This page captures open work items and the proposed approach for keeping the wik
 
 ## TODO list
 
+* **Lens-not-mirror migration** — the entity-page schema was tightened to follow the "lens, not mirror" principle: `## Public surface` now asks for a characterisation (count, grouping, auth pattern, anomalies) rather than an enumeration; `## Data model` asks for relationships and meaning rather than column lists; new required sections `## Rationale` and `## Cross-layer flows` were added. Lint warns when entity pages mirror specs (>10 endpoint rows in Public surface, >12 column rows in Data model alongside a migration source) or carry medium/high confidence with no Rationale. **Existing entity pages currently fail lint on the new required sections** — they must be regenerated with `npm run synthesise:entities` under the new schema. Two new page types were also added: `flow` (cross-layer traces; first one to write is `flow-partner-ingest`) and `glossary` (operator-vs-developer vocabulary mappings, single page at `wiki/glossary.md`).
 * **Automatic updates on source change** — see below. Currently runs require a human invoking `./tools/update.sh`.
 * **Incremental rebuilds for entities and cross-synthesis** — both are full-rebuild today. They should follow the same input-hash skip pattern that `synthesise:sources` already uses.
 * **Better redaction tooling for `lessons/`** — Presidio + LLM scrub is wired, but the human-review UX is still a manual diff. A small admin UI on top of `lessons/proposed/` would cut review friction.

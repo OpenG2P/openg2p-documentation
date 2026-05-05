@@ -70,12 +70,19 @@ g2p-wiki/
 LLM-built, schema-conformant markdown pages. Each page has YAML frontmatter (title, type, slug, sources, related, tags, created, updated, confidence) and a body that follows the schema for its type:
 
 * **`concept/`** — abstract ideas (e.g. eligibility, identity resolution). Body: Definition, Where it appears, Variants and decisions, Related concepts.
-* **`entities/`** — concrete things (modules, repos, services). Body: Purpose, Public surface, Data model, Dependencies, Deployment shape, Where to read deeper. Frontmatter additionally includes `commit_sha`.
+* **`entities/`** — concrete things (modules, repos, services). The lens layer for one repository or service: it carries the meaning, points at the code for the spelling. Body: Purpose, Public surface (characterised, not enumerated), Data model (relationships and meaning, not column lists), Rationale, State and lifecycle (when applicable), Dependencies, Cross-layer flows, Deployment shape, Where to read deeper. Frontmatter additionally includes `commit_sha`.
 * **`sources/`** — one-page summaries of each ingested document. Body: Origin, Summary, Key claims, Terminology introduced, Cross-references, Notes for synthesis. This is the transparency layer — readers can trace any wiki claim back to the source.
 * **`comparisons/`** — cross-cutting analyses spanning multiple entities (e.g. all `spar-*` repos and how they fit together). Body: Purpose, Cluster, How they fit together, Distinctions, Open questions.
+* **`flows/`** — directed, sequential traces of a request, event, or job as it crosses entity boundaries (e.g. `flow-partner-ingest`: Partner API → core classify/enrich → Changerequest Controller → store). Body: Trigger, Steps, State transitions, Failure modes, Variants, Where to read deeper. Flows capture cross-layer behaviour that is invisible from any single entity page.
 * **`playbooks/`** — phased implementation guides (e.g. Registry use-case implementation). Each phase has Discovery items (`Ask`, `Why`, `Required`, `Type`), Activities, References, Gap analysis, Output spec, Common pitfalls. The advisor walks these section by section.
 
+Plus a single `wiki/glossary.md` that maps OpenG2P vocabulary across audiences — what a term means in code, in product docs, and to operators.
+
 Cross-references between wiki pages use `[[slug]]`. The lint pass verifies every link resolves.
+
+#### Lens, not mirror
+
+The wiki follows the **lens-not-mirror** principle: it documents what code cannot tell an agent on its own (purpose, rationale, cross-cutting patterns, state machines, vocabulary mappings) and points at the code for everything else (exact paths, column names, signatures). A page should never restate a spec that is listed in its `Where to read deeper` section. The lint pass enforces this with heuristics: it warns when an entity's `## Public surface` enumerates more than ~10 endpoints, when `## Data model` enumerates columns alongside a migration source, or when high/medium-confidence pages have an empty `## Rationale`. See [Concept — WikiLLM](concept.md) for the full reasoning.
 
 ### What goes in `lessons/`
 

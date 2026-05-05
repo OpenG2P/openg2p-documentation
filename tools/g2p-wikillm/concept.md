@@ -6,12 +6,20 @@ Andrej Karpathy proposed treating an LLM-readable knowledge base less like a vec
 
 For the long form of the idea, see Karpathy's note as captured here: [https://antigravity.codes/blog/karpathy-llm-wiki-idea-file#implementation-guide](https://antigravity.codes/blog/karpathy-llm-wiki-idea-file#implementation-guide).
 
+## Lens, not mirror
+
+A second principle, complementary to Karpathy's, governs **how each page is written**: the wiki is a **lens** on the source, not a **mirror** of it. Its job is to capture what the source cannot tell an agent on its own — purpose, rationale, cross-cutting patterns, state machines, operator-vocabulary mappings, cross-layer flows — and to point at the source for everything else (exact paths, column names, method signatures, file locations).
+
+A wiki that deliberately doesn't duplicate sources is dramatically more stable against churn: route additions and column edits don't invalidate it, because it never claimed those specific details in the first place. **What changes in the wiki is what changes in *meaning*, not what changes in *spelling*.**
+
+This principle is enforced by the entity-page schema (which asks for characterisations, not enumerations) and by lint heuristics that warn when pages enumerate too much.
+
 ## What we adopted
 
-G2P WikiLLM follows this principle directly:
+G2P WikiLLM follows both principles directly:
 
 * **Compile once, read many.** Sources are ingested into `raw/`. An LLM-driven synthesis pass turns them into a graph of typed pages under `wiki/`. The advisor reads `wiki/` at runtime and never re-derives.
-* **Typed pages, not blobs.** Every page is one of: `concept`, `entity`, `source`, `comparison`, or `playbook`. Each type has a fixed body schema (defined in `CLAUDE.md`).
+* **Typed pages, not blobs.** Every page is one of: `concept`, `entity`, `source`, `comparison`, `flow`, `playbook`, or `glossary`. Each type has a fixed body schema (defined in `CLAUDE.md`).
 * **Cross-references, not embeddings.** Pages link to each other with `[[slug]]`. A deterministic linter checks every link resolves.
 * **Traceability.** Every page lists the `raw/` paths it was derived from in its `sources:` frontmatter. Every claim can be traced back to a source.
 * **Confidence labelling.** Synthesis tags each page `high`, `medium`, `low`, or `needs-review` based on how strongly the source supported the page.
