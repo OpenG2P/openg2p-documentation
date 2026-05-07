@@ -49,8 +49,8 @@ The following sub-pages cover individual design topics in detail:
 [outgestion-pipeline.md](outgestion-pipeline.md)
 {% endcontent-ref %}
 
-{% content-ref url="consent-management.md" %}
-[consent-management.md](consent-management.md)
+{% content-ref url="../../../../platform/platform-services/consent-management/design/consent-management.md" %}
+[consent-management.md](../../../../platform/platform-services/consent-management/design/consent-management.md)
 {% endcontent-ref %}
 
 {% content-ref url="encryption-at-rest.md" %}
