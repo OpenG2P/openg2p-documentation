@@ -1041,12 +1041,21 @@ Before producing the Phase 1 report, the advisor verifies:
 
 ### Purpose
 
-Capture the fine-grained technical inputs required to generate the customised registry, generate the code by adapting the Farmer Registry reference, compile until clean, review against the Phase 1 specification, and produce Docker images published to a private Docker Hub repository. The implementer-facing output of this phase is a working set of build artefacts and source code, ready to be exercised in the local sandbox in Phase 3.
+Take the approved Phase 1 specification and produce a running, customised registry: two GitLab repositories under the implementer's subgroup (`<mnemonic>-extension` and `<mnemonic>-deployment`), Docker images published to GitLab Container Registry, a generated Python test suite, and a verified local sandbox running the customised stack. The implementer-facing output of this phase is a green smoke-test run plus the published GitLab artefacts, ready for Phase 3 (Sandbox).
 
 ### Enter / Exit
 
-* **Enter when:** the Requirements Analysis Report is approved.
-* **Exit when:** every component of the customised registry compiles cleanly, every code-level review check passes against the Phase 1 specification, and all Docker images have been built and pushed to the configured private Docker Hub repository.
+* **Enter when:** the Requirements Analysis Report is approved AND every Phase 2 Discovery item below has been recorded (the build runs as a single linear job; missing inputs cannot be filled in mid-flight).
+* **Exit when:** all generated code is pushed to GitLab, GitLab CI has built and published every Docker image to GitLab Container Registry under the `:develop` tag, the local sandbox is up, and the generated smoke-test suite passes.
+
+### Execution model
+
+Phase 2 runs as **one linear, abort-on-error job** per project.
+
+* Inputs are collected upfront. The advisor refuses to start the build if any required Discovery item is missing.
+* The job produces side effects in three places: the project workspace on the advisor host (filesystem), the implementer's GitLab subgroup (two new repositories + their CI runs + Container Registry images), and a per-project local docker-compose stack on the advisor host.
+* If any step fails, the job aborts immediately. The advisor reports the failure with the failing step, captured logs, and the artefact left behind (e.g., partial GitLab repo state). The implementer fixes the underlying issue (often a Discovery answer) and re-runs the build from scratch — there is no resume mid-flight.
+* The job is idempotent at the granularity of the whole run: re-running rewrites the workspace, force-pushes to the same GitLab repositories, and replaces the local sandbox stack.
 
 ### Discovery items
 
@@ -1054,82 +1063,100 @@ Capture the fine-grained technical inputs required to generate the customised re
 
 #### registry_mnemonic
 
-* **Ask:** What is the registry mnemonic — a short identifier code used in filenames, image names, service names, and URLs?
-* **Why:** Used directly during code generation, in file paths, and in image tags. Constraints follow because downstream tooling depends on the form.
+* **Ask:** What is the registry mnemonic — a short identifier code used in filenames, image names, service names, GitLab repository names, and URLs?
+* **Why:** Drives every generated artefact: Python package names, table prefixes, image names, GitLab project slugs.
 * **Required:** yes
 * **Type:** text
 * **Impact:** configuration
-* **Validation:** lowercase letters and hyphens only; no whitespace; must not include the word `registry`.
+* **Validation:** lowercase letters and hyphens only; no whitespace; must not include the word `registry`; 3–30 characters.
 * **Examples:** `health-worker` ✓, `HealthWorkerRegistry` ✗, `health worker registry` ✗
-
-#### ui_theme
-
-* **Ask:** Does the department have a UI Theme — fonts, colours, accents — that the registry should adopt? Provide details.
-* **Why:** Drives the staff-portal-ui theme generation and the beneficiary portal styling.
-* **Required:** no
-* **Type:** prose
-* **Impact:** configuration
 
 #### registry_logo_small
 
-* **Ask:** Provide a small-sized logo image for the Registry or the implementing department.
-* **Why:** Used in the staff portal header and beneficiary portal small-format placements. Compiled into the customised images during Phase 2 generation.
+* **Ask:** Provide a small-sized logo image for the Registry or the implementing department (used in the staff portal header and beneficiary portal small-format placements).
+* **Why:** Compiled into the customised UI images. Sized for header use.
 * **Required:** yes
 * **Type:** file (image)
 * **Impact:** configuration
 
 #### registry_logo_medium
 
-* **Ask:** Provide a medium-sized logo image for the Registry or the implementing department.
-* **Why:** Used in landing pages, generated reports, and printed cards. Compiled into the customised images during Phase 2 generation.
+* **Ask:** Provide a medium-sized logo image for the Registry or the implementing department (used in landing pages, generated reports, and printed cards).
+* **Why:** Compiled into the customised UI images. Sized for full-width and print use.
 * **Required:** yes
 * **Type:** file (image)
+* **Impact:** configuration
+
+#### ui_theme
+
+* **Ask:** Does the department have a UI theme — fonts, colours, accents — that the registry should adopt? Describe it (or attach a brand kit).
+* **Why:** Drives staff-portal-ui theme overrides and beneficiary portal styling.
+* **Required:** no
+* **Type:** prose
 * **Impact:** configuration
 
 #### register_mnemonics
 
 * **Ask:** Provide a mnemonic for every Register and supporting Table identified in Phase 1 — short identifier codes used in code generation, table names, model class names, and service paths.
-* **Why:** Each Register/Table mnemonic feeds directly into ORM model class names, table names, and generated paths. Distinct from `registry_mnemonic` (which identifies the overall registry); this captures the per-Register/Table identifiers.
+* **Why:** Each Register/Table mnemonic becomes a Python module name, an ORM class suffix, a database table name (`g2p_register_<mnemonic>s`), and a service path component. Distinct from `registry_mnemonic` (which identifies the overall registry).
 * **Required:** yes
 * **Type:** classification — a map of register/table name to mnemonic.
 * **Impact:** code
-* **Validation:** lowercase letters and hyphens only; no whitespace; must be unique within the project.
-* **Examples:** `{ "Households Register": "household", "Individuals Register": "individual", "Land": "land" }`
+* **Validation:** lowercase letters and hyphens only; no whitespace; unique within the project.
+* **Examples:** `{ "Households Register": "household", "Individuals Register": "individual", "Land Holdings": "land" }`
 
 **Schema and constraints**
 
 #### register_columns
 
-* **Ask:** For each Register and supporting table, what are the exact names and data types of the database columns?
-* **Why:** Names and types are used directly during code generation; exactness matters for downstream queries, migrations, and UI generation.
+* **Ask:** For each Register and supporting Table, list the exact names and data types of the database columns.
+* **Why:** Names and types are used directly during code generation; exactness matters for ORM models, migrations, schemas, and UI generation.
 * **Required:** yes
-* **Type:** classification — a map of register/table name to ordered list of `{column_name, type, nullable, default}` entries.
+* **Type:** classification — a map of register/table name to an ordered list of `{column_name, type}` entries.
 * **Impact:** code
+
+#### attribute_constraints
+
+* **Ask:** For each column, which are NOT NULL, which have a default value, and what are those defaults?
+* **Why:** NOT NULL and DEFAULT clauses are emitted into ORM model definitions and migration SQL. Without this the build cannot decide nullability and would have to guess — kept separate from `database_constraints` (which covers cross-column / cross-table rules) to make the per-column shape explicit upfront.
+* **Required:** yes
+* **Type:** classification — a map of `register/table name → column_name → {nullable: bool, default: <value | null>}`.
+* **Impact:** code
+* **Examples:** `{ "Households Register": { "head_of_household_id": { "nullable": false, "default": null }, "registered_at": { "nullable": false, "default": "now()" } } }`
 
 #### database_constraints
 
-* **Ask:** What database constraints apply between tables — foreign keys, unique constraints, check constraints?
-* **Why:** Constraints are reflected in schema generation and validation logic. Determines referential integrity in the generated migrations.
+* **Ask:** What database constraints apply between tables and columns — foreign keys, unique constraints, check constraints?
+* **Why:** Reflected in generated migrations and validation logic. Determines referential integrity.
 * **Required:** yes
-* **Type:** list
+* **Type:** list of `{kind: foreign_key | unique | check, ...}` records.
 * **Impact:** code
+
+#### functional_id_encoding_pattern
+
+* **Ask:** What is the exact pattern for the Functional ID — fixed prefix, fixed suffix, separator, body composition (sequential, random, year-prefixed, etc.)?
+* **Why:** The Functional ID generator class in the extension package needs a deterministic pattern. Phase 1 captured length and high-level format; this captures the exact composition the generator emits, including any literal prefix/suffix per Register. Without it the build would have to invent the encoding.
+* **Required:** yes
+* **Type:** classification — a map of register name to `{prefix, suffix, separator, body_kind: sequential | random | year_seq, body_length}`.
+* **Impact:** code
+* **Examples:** `{ "Households Register": { "prefix": "HH-", "suffix": "", "separator": "", "body_kind": "sequential", "body_length": 8 } }`
 
 **Notification payloads**
 
 #### notification_payloads
 
 * **Ask:** For each triggering event captured in `notification_triggering_events` during Phase 1, provide the payload (subject, body template, variables) for SMS and Email notifications.
-* **Why:** Drives the generation of notification templates in the registry.
-* **Required:** conditional: notification_triggering_events is non-empty
+* **Why:** Drives generation of notification templates seeded into the registry's outbound-message tables.
+* **Required:** conditional: `notification_triggering_events` is non-empty
 * **Type:** classification — a map of event name to `{sms, email}` payload templates.
 * **Impact:** code
 
-**Domains and addressing**
+**Deployment shape**
 
 #### production_domain_name
 
-* **Ask:** What will be the domain name(s) of the Registry that citizens and staff will use in production? List all that apply (e.g., one for the staff portal, one for the beneficiary portal, one for partner APIs).
-* **Why:** Drives Helm/ingress configuration, certificate generation, and external URL patterns built into the Docker images and Helm chart.
+* **Ask:** What will be the domain name(s) the Registry uses in production? List all that apply (e.g., one for the staff portal, one for the beneficiary portal, one for partner APIs).
+* **Why:** Drives Helm/ingress values, certificate generation, and external URL patterns baked into the deployment chart.
 * **Required:** yes
 * **Type:** list
 * **Impact:** deployment
@@ -1137,88 +1164,176 @@ Capture the fine-grained technical inputs required to generate the customised re
 
 #### sandbox_base_domain
 
-* **Ask:** What should be the base domain for the sandbox? Internal-only, not exposed to the public. Default is `*.<registry_mnemonic>.internal`.
-* **Why:** Configures sandbox ingress routing and TLS handling for development. Sandbox doesn't require real public DNS.
+* **Ask:** What base domain should the sandbox use? Internal-only, not exposed to the public.
+* **Why:** Configures sandbox ingress routing for the docker-compose stack on the advisor host. Default is `*.<registry_mnemonic>.internal` if unanswered.
 * **Required:** no
 * **Type:** text
 * **Impact:** deployment
 * **Examples:** `*.health-worker.internal`, `*.farmer-registry.dev`
 
+#### helm_resource_profile
+
+* **Ask:** What replica count and per-pod CPU/memory request should each component (staff-portal-api, partner-api, celery, staff-portal-ui, db) be sized at for production? A simple T-shirt size is acceptable (`small | medium | large`); custom per-component overrides are also accepted.
+* **Why:** Drives `replicas:` and `resources.requests` blocks in the generated Helm wrapper chart's `values.yaml`. Sandbox always uses `small` regardless of this answer.
+* **Required:** yes
+* **Type:** classification — either a single t-shirt size or a map of component → `{replicas, cpu, memory}`.
+* **Impact:** deployment
+* **Examples:** `"medium"` or `{ "staff-portal-api": { "replicas": 3, "cpu": "500m", "memory": "1Gi" } }`
+
+**Brownfield migration (informational)**
+
+#### migration_plan_summary
+
+* **Ask:** If this registry will replace or absorb data from an existing system, summarise the cutover plan in one paragraph: source system(s), record volume, planned migration approach (bulk import / incremental sync / parallel run), and target cutover date if known.
+* **Why:** Recorded in the Build Report for traceability. Does not affect generated code in v2.0; future versions may use this to schedule the migration sub-track.
+* **Required:** conditional: `existing_system_to_replace` (Phase 1) is non-empty
+* **Type:** prose
+* **Impact:** migration
+
+**GitLab workspace**
+
+#### gitlab_user_handle
+
+* **Ask:** What is your GitLab username on `gitlab.com`? The advisor will create a private subgroup `OpenG2P/g2p-advisor/<your-username>/` and place the generated repositories under it.
+* **Why:** Determines the per-implementer subgroup path. GitLab usernames are globally unique, so the path is collision-free without an extra suffix.
+* **Required:** yes
+* **Type:** text
+* **Impact:** deployment
+* **Validation:** must match GitLab's username rules (lowercase, alphanumerics, dashes/underscores; 2–255 chars).
+
+#### gitlab_user_email
+
+* **Ask:** What email address should be added as a `Developer` member on the two generated GitLab projects? Use the email tied to your GitLab account so you receive CI notifications and can clone via SSH.
+* **Why:** The advisor's GitLab service token creates the projects, but the implementer is the human owner. Adding them as Developer grants pull/push and pipeline-trigger access without giving them group-admin rights they shouldn't need.
+* **Required:** yes
+* **Type:** text
+* **Impact:** deployment
+* **Validation:** valid email; should match the GitLab account associated with `gitlab_user_handle`.
+
 ### Activities
 
-These activities are performed automatically by the advisor's build executor after the implementer has confirmed the Phase 2 input summary. Each activity acts on the Phase 1 + Phase 2 working_case and produces artefacts in the project's workspace.
+The advisor's build executor runs the following activities sequentially as one linear job. Every step either succeeds or aborts the entire job. There is no pause/resume.
 
-#### collect_build_inputs
+#### 1. collect_build_inputs
 
-Walk the implementer through every Phase 2 Discovery item and record the answers in working_case. Confirm the captured inputs as a Phase 2 input summary before proceeding.
+Confirm every required Phase 2 Discovery item is recorded in working_case. If any required item is missing, abort before starting the job and ask the implementer to record it via the Phase 2 chat thread. Then present a Phase 2 input summary and obtain explicit approval before proceeding.
 
-#### clone_reference_registry
+#### 2. prepare_gitlab_workspace
 
-Use Farmer Registry — `https://github.com/OpenG2P/farmer-registry` — as the reference template. Clone the repository into the project workspace as the structural baseline for the customised registry.
+Using the advisor's GitLab service token (`GITLAB_TOKEN` configured at deploy time):
 
-#### generate_extensions_and_dockers
+* Ensure the parent group `OpenG2P/g2p-advisor` exists (created once during advisor provisioning; not per-project).
+* Create the per-implementer subgroup at `OpenG2P/g2p-advisor/<gitlab_user_handle>` if it does not already exist. Visibility: **private**.
+* Create two empty projects under that subgroup, both **private**, with default branch `develop`:
+  * `<registry_mnemonic>-extension`
+  * `<registry_mnemonic>-deployment`
+* Add `gitlab_user_email` as a `Developer` member on each project.
+* Enable the Container Registry on the deployment project.
+* If any of these resources already exists from a prior run, leave it in place and reuse it. The job is designed to be re-runnable.
 
-Adapt the cloned reference into the customised registry by applying the Phase 1 + Phase 2 specification:
+Abort if the service token lacks permission to create subgroups or projects under `OpenG2P/g2p-advisor`.
 
-* Rename the extension package from `farmer-extension` to `<registry_mnemonic>-extension`.
-* Replace the reference Registers with the implementer's Registers and supporting tables, generating the corresponding ORM models, Pydantic schemas, UI configurations, and seed SQL.
-* Apply the implementer's database constraints (foreign keys, unique, check) to the generated migrations.
-* Adapt the Functional ID generation logic to honour `functional_id_length`, `functional_id_format`, and any prefix/suffix encoding.
-* Update Docker descriptors (staff-portal-api, partner-api, celery) with the new image names and dependency paths pointing at the renamed extension package.
-* Generate the Helm chart with the implementer's chart name, image references, replica counts derived from `record_scale_5_year_estimate` and `staff_user_count` / `agent_user_count`, and ID type configuration matching the implementer's identifier choices.
-* Generate notification templates from `notification_payloads` if applicable.
+#### 3. clone_reference_registry
 
-#### compile_until_success
+Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) — pinned at the latest `develop` SHA — into the project workspace as the structural baseline. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
 
-Run build commands sequentially across the customised packages and Docker images. When a compilation error arises, analyse the failure, apply the targeted fix to the generated code, and continue. Iterate until every component compiles cleanly.
+#### 4. generate_extension_repo
 
-#### review_against_specifications
+Adapt the cloned reference's `farmer-extension/` tree into the customised extension and push it to `<registry_mnemonic>-extension`. Specifically:
 
-Carefully review the generated code against the Phase 1 + Phase 2 working_case before finalising the build:
+* Rename the Python package directory from `openg2p_registry_farmer_extension` to `openg2p_registry_<registry_mnemonic_underscored>_extension` and update `pyproject.toml` (`name`, `description`, version-source paths).
+* For every entry in `register_mnemonics`, generate the three model classes (`G2PRegister<Entity>`, `G2PRegisterHistory<Entity>`, `G2PIntakeForm<Entity>`) plus any per-entity mixin needed for shared columns. Apply `register_columns` and `attribute_constraints` to each model. Set `__tablename__` to `g2p_register_<entity_plural>`.
+* Replace the Farmer Registry reference models (`farmer.py`, `household.py`, `crop.py`, …) with the generated set; remove any unused model files.
+* Generate parallel `schemas/`, `services/`, `factory/`, and `id_generator/` modules per Register following the reference layout.
+* Replace `id_generator/`'s hard-coded prefixes with code derived from `functional_id_encoding_pattern`.
+* Apply `database_constraints` (foreign-key, unique, check) into the model definitions and any explicit migration SQL the reference carries.
+* Generate the `configurations/` SQL seed tree (register-metadata, lookup-data, registry-configurations, data-models, registry-outbound-messages-templates, registry-inbound-message-rules) for the new Registers — including the `g2p_register_definitions` rows with appropriate `master_register_id` hierarchy.
+* Generate `sample_data/register-data/*.sql` per Register/Table (synthetic insert statements for sandbox seeding).
+* If `notification_payloads` is provided, generate the matching outbound-messages-templates SQL.
+* Update `app.py` so `Initializer.migrate_database` registers all generated models.
+* Commit the result and force-push to `develop` on the new GitLab project.
 
-* Every Register defined matches the implementer's structure and naming.
-* Every supporting table is present with the correct columns and data types.
-* Database constraints (foreign keys, unique, check) are reflected in the generated migrations.
-* Functional ID generation logic matches `functional_id_length`, `functional_id_format`, and any prefix/suffix encoding.
-* UI labels, themes, and locale files match `ui_theme` and `supported_languages`.
-* Approval workflow levels match `approval_workflow_levels`.
-* Notification templates are present for every event in `notification_triggering_events`.
+#### 5. generate_deployment_repo
 
-Record any specification mismatches as findings. Mismatches block phase exit until resolved.
+Adapt the cloned reference's `docker/` and `helm/` trees into the deployment repo and push it to `<registry_mnemonic>-deployment`. Specifically:
 
-#### build_and_push_dockers
+* Update each service's `develop.txt` to point its dependency overrides at `<registry_mnemonic>-extension` (resolved from GitLab; the advisor configures the dependency URL with a deploy token if the registry needs authentication).
+* Update each `Dockerfile` so build-time package installs reference the renamed Python package.
+* Rewrite the Helm wrapper chart (`helm/openg2p-<registry_mnemonic>-registry/`) over the `openg2p-registry` base chart. Apply `helm_resource_profile`, `production_domain_name`, and `sandbox_base_domain`. Image references point at `registry.gitlab.com/openg2p/g2p-advisor/<gitlab_user_handle>/<registry_mnemonic>-deployment/<service>:develop`.
+* Add a top-level `docker-compose.sandbox.yaml` for the local sandbox (Postgres + the five customised services pulled from GitLab Container Registry).
+* Add `.gitlab-ci.yml` that builds each Docker service on push to `develop` and publishes images to the project's Container Registry under `:develop`. The CI is generated, not hand-written by the implementer.
+* Commit and force-push to `develop`.
 
-Build all Docker images for the customised registry — staff-portal-api, partner-api, celery, and any auxiliary images. Tag images with `<registry_mnemonic>-<service>:<version>`. Push every image to the configured **private Docker Hub** repository.
+#### 6. wait_for_ci_publish_images
+
+After both pushes, GitLab CI pipelines start automatically. The advisor polls each pipeline until it succeeds (or fails). On any pipeline failure, abort the job and surface the failing job's log link so the implementer can inspect it. On success, verify every expected image tag exists in the deployment project's Container Registry.
+
+Expected images, all under tag `:develop`:
+
+* `<registry_mnemonic>-deployment/staff-portal-api`
+* `<registry_mnemonic>-deployment/partner-api`
+* `<registry_mnemonic>-deployment/celery`
+* `<registry_mnemonic>-deployment/staff-portal-ui`
+* `<registry_mnemonic>-deployment/db-seed`
+
+#### 7. generate_test_suite
+
+Generate a Python test suite scoped to the customised registry and place it inside the deployment repo under `tests/`. Two layers:
+
+* **API tests** (`tests/api/`, `pytest` + `httpx`): one test module per Register, covering create / read / update (where applicable) / list, plus the Functional ID format check, plus a smoke check on every notification template (where `notification_payloads` is non-empty).
+* **UI tests** (`tests/ui/`, `pytest-playwright`): a small set of staff-portal flows — login, navigate to each Register's list view, open the create form, save a record, see it in the list. Headless Chromium.
+
+The Farmer Registry reference contains no tests; this suite is generated from scratch using the advisor's test templates parameterised by `register_mnemonics`, `register_columns`, `functional_id_encoding_pattern`, and the resolved staff-portal URL. Push the tests as an additional commit on `develop` of the deployment repo.
+
+#### 8. deploy_local_sandbox
+
+Bring up the customised stack on the advisor host using docker compose:
+
+* Detect the available compose CLI: prefer the v2 plugin (`docker compose`, used by the production AWS host); fall back to the legacy `docker-compose` binary (used on macOS dev installs). Honour `DOCKER_COMPOSE_CMD` if set in the environment.
+* Pull the `:develop` images from the deployment project's Container Registry. The advisor host authenticates using the same GitLab service token.
+* Start the stack from the generated `docker-compose.sandbox.yaml` on a per-project port range. Wait for every service's healthcheck to pass before declaring the sandbox up.
+* Tear down any prior sandbox for this project before bringing up the new one.
+
+#### 9. run_smoke_tests
+
+Run the generated `tests/api/` and `tests/ui/` suites against the running sandbox. The job exits successfully only if both layers pass. On failure, surface the failing test names + assertion output and abort the phase.
+
+#### 10. produce_build_report
+
+Generate the Build Report (see Output) and present it to the implementer for approval per the Phase Transition Protocol.
 
 ### References
 
-* Farmer Registry reference repository: `https://github.com/OpenG2P/farmer-registry`.
-* Registry extensions package conventions and the extension build contract.
-* Registry docker repository structure and per-service descriptors (staff-portal-api, partner-api, celery).
-* Helm chart generation and ID type configuration.
+* Farmer Registry reference repository: `https://github.com/OpenG2P/farmer-registry` — the structural baseline this phase substitutes against.
+* Registry extensions package conventions and the extension build contract (multiple-inheritance pattern: `G2PRegister<Entity>(G2PRegister, G2PPerson, G2PGeo, G2P<Entity>)`).
+* Registry deployment repository conventions: per-service `Dockerfile` + `develop.txt`, wrapper Helm chart over `openg2p-registry` base chart, sample-data SQL seeds keyed per Register/Table.
+* `g2p_register_definitions` schema and master-register hierarchy.
+* GitLab Container Registry conventions: image path `registry.gitlab.com/<group>/<project>/<service>:<tag>`.
 * OpenG2P Registry feature and configuration surface.
 
 ### Gap analysis
 
-Before producing the Phase 2 report, the advisor verifies:
+Before producing the Build Report, the advisor verifies:
 
-* Every Phase 2 Discovery item is recorded.
+* Every required Phase 2 Discovery item is recorded.
 * The Phase 2 input summary has been confirmed by the implementer.
-* `compile_until_success` has terminated with every component compiling cleanly.
-* `review_against_specifications` has run with no unresolved findings.
-* Every Docker image required for the customised registry has been built and pushed to the private Docker Hub repository.
+* Both GitLab projects exist under `OpenG2P/g2p-advisor/<gitlab_user_handle>/` and contain the generated code on `develop`.
+* `gitlab_user_email` is a Developer on both projects.
+* Every expected image tag exists in the deployment project's Container Registry under `:develop`.
+* The local sandbox docker-compose stack is up; every service healthcheck has passed.
+* The generated `tests/api/` and `tests/ui/` suites both exited 0 against the running sandbox.
 
 ### Output
 
 **Build Report**, with these sections:
 
-1. **Build identity** — `registry_mnemonic`, `registry_name`, `ui_theme` summary.
-2. **Schema summary** — Registers, supporting tables, columns, and database constraints applied.
-3. **Modifications made** — high-level list of files generated, renamed, and modified, grouped by repository (extensions, docker scripts, helm chart, notification templates).
-4. **Compilation log summary** — terminal compile-success status per component, plus any compile fixes applied automatically.
-5. **Review findings** — outcome of `review_against_specifications`. Any mismatches blocked the phase; the section confirms zero open findings at exit.
-6. **Docker images published** — names, tags, sizes, and the destination Docker Hub repository for every image produced.
-7. **Git commit identifiers** — final commit hashes for the customised extension and docker repositories in the project workspace.
+1. **Build identity** — `registry_mnemonic`, `register_mnemonics`, `ui_theme` summary, logos referenced.
+2. **Schema summary** — Registers, supporting Tables, columns, attribute constraints, cross-table constraints, Functional ID encoding patterns applied.
+3. **GitLab artefacts** — links to the two created projects (`<mnemonic>-extension`, `<mnemonic>-deployment`), the final commit SHAs on `develop`, the CI pipeline URLs, and the published image references in Container Registry.
+4. **Helm + deployment summary** — chart name, applied `helm_resource_profile`, `production_domain_name` ingress entries, sandbox base domain.
+5. **Test suite summary** — generated test counts (API + UI), pass/fail per layer, link to the captured smoke-test log.
+6. **Sandbox deployment** — docker-compose CLI used, sandbox URL on the advisor host, port range allocated.
+7. **Brownfield migration plan** — verbatim from `migration_plan_summary` (informational only).
 
 ### Common pitfalls
 
