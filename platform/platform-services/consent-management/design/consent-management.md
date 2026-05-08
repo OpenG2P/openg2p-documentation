@@ -1,8 +1,10 @@
 ---
-description: Consent Management microservice -- consent flow, data structures, and enforcement model.
+description: >-
+  Consent Management microservice -- consent flow, data structures, and
+  enforcement model.
 ---
 
-# Consent Management
+# High level design
 
 ## Overview
 
@@ -136,6 +138,6 @@ The Consent Receipt is generated at the same time as the Consent Artefact. It co
 }
 ```
 
-{% content-ref url="../features/consent-aware-data-sharing.md" %}
-consent-aware-data-sharing.md
+{% content-ref url="../../../../products/registry/registry/features/consent-aware-data-sharing.md" %}
+[consent-aware-data-sharing.md](../../../../products/registry/registry/features/consent-aware-data-sharing.md)
 {% endcontent-ref %}
