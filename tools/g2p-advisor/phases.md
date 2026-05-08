@@ -46,9 +46,26 @@ The codegen call uses tool calling (`submit_files` with a single `files: [{path,
 
 **Default model:** Anthropic Sonnet (codegen is the place to spend money for fewer iterations on broken code).
 
+### Phase 2 chat stages
+
+The Phase 2 chat is stage-aware — its behaviour shifts based on `working_case` + the build job's status + `current_phase`:
+
+| Stage | When | What the chat does |
+|---|---|---|
+| **A — Input collection** | Required Phase 2 Discovery items missing | Walks the items in batches; records via `record_discovery_answer` |
+| **B — Build in flight (or not started)** | All required items captured; build_job is none / running / failed | Acknowledges build state; helps diagnose failures (no file edits in v0.x) |
+| **C — Build succeeded — sign-off** | build_job.status = succeeded | Synthesises the Build Report from artefacts; runs the revisions loop; on approval calls `save_phase_report` + `phase_complete` |
+| **D — Already approved** | current_phase > 2 | Refuses to do further work; declines to walk Phase 3-5 (those aren't implemented). Lets the user revisit/correct Phase 2 inputs without re-issuing sign-off prompts. |
+
+### UI layout
+
+Phase 2's view is a split layout: a **chat panel** on the left (collects build inputs through guided conversation, helps diagnose failures) and a **Build Activity Panel** on the right (terminal-style live log of the orchestrator).
+
+The **Start build** button is disabled until every required Phase 2 Discovery item is recorded in the project's `working_case`. The chat-side LLM walks the implementer through them; the panel polls every 5 seconds and the button enables automatically as soon as the last item lands. Hovering the disabled button shows the missing-inputs list.
+
 ### Build Activity Panel
 
-Phase 2's UI is a terminal-style log of every event the orchestrator emits:
+The right-side panel is a terminal-style log of every event the orchestrator emits:
 
 ```
 ▸ → collect_build_inputs
@@ -72,3 +89,5 @@ A **Stop** button is available while the build is running. It marks the job abor
 * **Phase 5: Full Rollout** — guidance for production cutover, including brownfield migration from existing systems.
 
 These are about the *implementer's* environments, not the advisor's local sandbox. The Advisor's role becomes guidance + checklists rather than direct execution. Designed but not built in v0.x.
+
+The phase strip in the UI marks Phases 3-5 as `(coming soon)` and keeps them un-clickable even if a project's `current_phase` has advanced past 2 — so accidentally calling `phase_complete({phase: 2})` doesn't expose un-implemented walkthroughs to the user.
