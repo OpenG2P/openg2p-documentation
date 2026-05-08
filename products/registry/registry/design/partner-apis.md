@@ -20,4 +20,4 @@ This page is under development. Content will be added shortly.
 
 ## Related pages
 
-* [Partner API](../developer-zone/api-documentation/partner-api.md)
+* [Partner API](../developer-zone/api-documentation/1.0.0/partner-api.md)
