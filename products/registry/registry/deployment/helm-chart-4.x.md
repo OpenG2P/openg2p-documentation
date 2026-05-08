@@ -1,4 +1,4 @@
-# Helm Chart 4.x
+# Registry Helm Chart 4.x
 
 ## Overview
 
@@ -10,7 +10,10 @@ This guide assumes that the Kubernetes infrastructure and the **commons** enviro
 
 ## Versions
 
-<table><thead><tr><th>Version</th><th>Release Date</th><th>Components</th><th>Compatibility</th><th>Comments</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.0.0">4.0.0</a></td><td>21 Apr 2026</td><td><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-staff-portal-api/1.0.2/images/sha256-371a53cdea562456e5ca36f8f27b9e51841503551f475c636f5a294a4cd981c5">farmer-registry-staff-portal-api:v1.0.2</a><br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-partner-api/1.0.2/images/sha256-0537420d01acf8feebcf9df96e480a741c23b2fa670898a04d7b1e5f9d4b98bb">farmer-registry-partner-api:v1.0.2</a><br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-celery/1.0.2/images/sha256-3c142006b21c2787f91e3c5d4bd5b9d7a56065b235b6751c6d0d052dac8cc516">farmer-registry-celery:v1.0.2</a><br>(the same celery image is used as a beat-producer as well as a worker - based on an input parameter)<br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-registry-staff-portal-ui/1.0.2/images/sha256-41fa5232674073944eaa17d46bdf6c5b373165e3101937ecf093c44000860bd1">registry-staff-portal-ui:v1.0.2</a></td><td><a href="https://docs.openg2p.org/deployment/concepts/openg2p-commons-helm-chart">Commons Base 2.0.0</a><br>Commons Services 2.0.0<br>IAM Service 1.0.0<br>ID Generator 1.0.0<br>Master Data 0.0.0-develop</td><td>Stable Version</td></tr><tr><td>4.1.0</td><td><em>future release</em></td><td>farmer-registry-staff-portal-api:v1.1.x<br>(other component versions TBD)</td><td>Adds <a href="../../../../platform/platform-services/audit-manager/">OpenG2P Audit Manager</a> integration. Compatible with audit-manager 1.0.x.</td><td><strong>Planned</strong> — adds the <code>AuditMiddleware</code> in staff-portal-api so every authenticated API call (and rejected anonymous attempt) emits a CloudEvent to the Audit Manager. See <a href="#audit-manager-integration">Audit Manager integration</a> below for the new <code>global.audit*</code> values. <strong>Disabled by default</strong> — opt in per environment.</td></tr></tbody></table>
+| Helm Version                                                                     | Release Date | Components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Compatibility                                                                                                                                                                                                     | Comments                                                              |
+| -------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [4.1.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.1.0) | 08 May 2026  | Same as 4.0.0.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | <p>Commons Services 2.0.1<br>IAM Service 1.0.0<br>ID Generator 1.0.0<br>Master Data 0.0.0-develop</p>                                                                                                             | <ul><li>Audit manager added</li><li>Uninstall script added.</li></ul> |
+| [4.0.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.0.0) | 21 Apr 2026  | <p><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-staff-portal-api/1.0.2/images/sha256-371a53cdea562456e5ca36f8f27b9e51841503551f475c636f5a294a4cd981c5">farmer-registry-staff-portal-api:v1.0.2</a><br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-partner-api/1.0.2/images/sha256-0537420d01acf8feebcf9df96e480a741c23b2fa670898a04d7b1e5f9d4b98bb">farmer-registry-partner-api:v1.0.2</a><br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-farmer-registry-celery/1.0.2/images/sha256-3c142006b21c2787f91e3c5d4bd5b9d7a56065b235b6751c6d0d052dac8cc516">farmer-registry-celery:v1.0.2</a><br>(the same celery image is used as a beat-producer as well as a worker - based on an input parameter)<br><br><a href="https://hub.docker.com/layers/openg2p/openg2p-registry-staff-portal-ui/1.0.2/images/sha256-41fa5232674073944eaa17d46bdf6c5b373165e3101937ecf093c44000860bd1">registry-staff-portal-ui:v1.0.2</a></p> | <p><a href="https://docs.openg2p.org/deployment/concepts/openg2p-commons-helm-chart">Commons Base 2.0.0</a><br>Commons Services 2.0.0<br>IAM Service 1.0.0<br>ID Generator 1.0.0<br>Master Data 0.0.0-develop</p> | Stable Version                                                        |
 
 ## Components
 
@@ -28,7 +31,7 @@ The chart deploys the following application components and subcharts:
 | **postgres-init**          | Subchart    | Enabled  | Initialises the registry database, user, and extensions in the shared PostgreSQL |
 | **ID Generator**           | Subchart    | Enabled  | Generates unique IDs for registrants and households                              |
 | **Keycloak Init**          | Subchart    | Enabled  | Creates the OIDC client and RBAC roles in Keycloak                               |
-| **Meta Data Seeding**      | Hook Job    | Enabled  | Seeds mandatory configuration and optional sample data into the database          |
+| **Meta Data Seeding**      | Hook Job    | Enabled  | Seeds mandatory configuration and optional sample data into the database         |
 
 ### Architecture diagram
 
@@ -226,11 +229,11 @@ See [RBAC Roles and Permissions](https://docs.openg2p.org/registry/design/detail
 
 The chart creates an initial admin user in the `staff` realm with the following defaults:
 
-| Field                | Default                  |
-| -------------------- | ------------------------ |
-| Username             | `admin`                  |
-| Password             | `admin`                  |
-| Email                | `admin@your.domain.com`  |
+| Field                | Default                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| Username             | `admin`                                                                               |
+| Password             | `admin`                                                                               |
+| Email                | `admin@your.domain.com`                                                               |
 | Client role mappings | Operations Administrator, Technical Administrator (on `registry-staff-portal` client) |
 
 {% hint style="warning" %}
@@ -305,11 +308,11 @@ The Fluent Operator and Fluentbit DaemonSet must already be running on the clust
 
 **Logging parameters:**
 
-| Parameter                  | Default              | Description                                                              |
-| -------------------------- | -------------------- | ------------------------------------------------------------------------ |
-| `logging.enabled`          | `true`               | Enable/disable the Fluent Operator Flow resource.                        |
-| `logging.outputRef`        | `commons-opensearch` | Name of the namespace-scoped Fluent Output resource (from commons-base). |
-| `logging.containerNames`   | _(see below)_        | List of container names whose logs are captured.                         |
+| Parameter                | Default              | Description                                                              |
+| ------------------------ | -------------------- | ------------------------------------------------------------------------ |
+| `logging.enabled`        | `true`               | Enable/disable the Fluent Operator Flow resource.                        |
+| `logging.outputRef`      | `commons-opensearch` | Name of the namespace-scoped Fluent Output resource (from commons-base). |
+| `logging.containerNames` | _(see below)_        | List of container names whose logs are captured.                         |
 
 **Default `containerNames`:**
 
@@ -328,23 +331,17 @@ These must match the `nameOverride` values of the corresponding components. If y
 
 ### Audit Manager integration
 
-Available from chart **4.1.0** with `staff-portal-api 1.1.x`. Earlier
-chart/image versions ignore the env vars (no harm in leaving them
-configured).
+Available from chart **4.1.0** with `staff-portal-api 1.1.x`. Earlier chart/image versions ignore the env vars (no harm in leaving them configured).
 
-The chart wires three env vars into `staff-portal-api` so that every
-authenticated API call — and every rejected anonymous attempt — emits a
-CloudEvent to the [OpenG2P Audit Manager](../../../../platform/platform-services/audit-manager/).
-Emission is fire-and-forget; the audit pipeline cannot delay or fail a
-user request.
+The chart wires three env vars into `staff-portal-api` so that every authenticated API call — and every rejected anonymous attempt — emits a CloudEvent to the [OpenG2P Audit Manager](../../../../platform/platform-services/audit-manager/). Emission is fire-and-forget; the audit pipeline cannot delay or fail a user request.
 
 **Parameters:**
 
-| Parameter                          | Default                       | Description                                                                                                                                              |
-| ---------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `global.auditEnabled`              | `false`                       | Master switch. Must be `true` AND `auditManagerUrl` must be set for any audits to flow.                                                                   |
-| `global.auditManagerUrl`           | `http://audit-manager:80`     | Internal URL of the Audit Manager service. Default uses the short Kubernetes DNS name (works when audit-manager is in the same namespace as the registry). |
-| `global.auditAnonymousFailures`    | `true`                        | When `true`, also audit rejected anonymous calls (401/403). Set `false` to skip them and audit only authenticated user calls.                            |
+| Parameter                       | Default                   | Description                                                                                                                                                |
+| ------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `global.auditEnabled`           | `false`                   | Master switch. Must be `true` AND `auditManagerUrl` must be set for any audits to flow.                                                                    |
+| `global.auditManagerUrl`        | `http://audit-manager:80` | Internal URL of the Audit Manager service. Default uses the short Kubernetes DNS name (works when audit-manager is in the same namespace as the registry). |
+| `global.auditAnonymousFailures` | `true`                    | When `true`, also audit rejected anonymous calls (401/403). Set `false` to skip them and audit only authenticated user calls.                              |
 
 **Enabling for an environment:**
 
@@ -356,27 +353,18 @@ global:
   # auditAnonymousFailures: false               # uncomment to suppress anon noise
 ```
 
-**Cross-namespace deployment.** If audit-manager is in a different
-namespace than the registry, use the FQDN:
+**Cross-namespace deployment.** If audit-manager is in a different namespace than the registry, use the FQDN:
 
 ```yaml
 global:
   auditManagerUrl: http://audit-manager.<audit-namespace>.svc.cluster.local:80
 ```
 
-**What gets audited.** Every authenticated `POST` to staff-portal-api
-endpoints (`/registry-config/*`, `/register-metadata/*`, `/change-requests/*`,
-`/ingestion-config/*`, `/outgestion-config/*`, etc.) plus rejected
-anonymous attempts. Health probes (`/ping`), OpenAPI surfaces (`/docs`,
-`/redoc`, `/openapi.json`), and OPTIONS preflight are always skipped.
+**What gets audited.** Every authenticated `POST` to staff-portal-api endpoints (`/registry-config/*`, `/register-metadata/*`, `/change-requests/*`, `/ingestion-config/*`, `/outgestion-config/*`, etc.) plus rejected anonymous attempts. Health probes (`/ping`), OpenAPI surfaces (`/docs`, `/redoc`, `/openapi.json`), and OPTIONS preflight are always skipped.
 
-For the full schema, query examples, and middleware design, see the
-audit-manager [Integration with Registry](../../../../platform/platform-services/audit-manager/integration-with-registry/)
-section.
+For the full schema, query examples, and middleware design, see the audit-manager [Integration with Registry](../../../../platform/platform-services/audit-manager/integration-with-registry/) section.
 
-**Disabling.** Set `global.auditEnabled=false` (or omit
-`auditManagerUrl`). The middleware becomes a no-op — no per-pod
-restart logic needed beyond the standard `helm upgrade`.
+**Disabling.** Set `global.auditEnabled=false` (or omit `auditManagerUrl`). The middleware becomes a no-op — no per-pod restart logic needed beyond the standard `helm upgrade`.
 
 ### Meta Data Seeding
 
@@ -391,12 +379,12 @@ The seeding runs as a Helm `post-install` / `post-upgrade` hook Job. Two init co
 
 **Parameters:**
 
-| Parameter                 | Default                                    | Description                                          |
-| ------------------------- | ------------------------------------------ | ---------------------------------------------------- |
-| `dbSeed.enabled`          | `true`                                     | Enable/disable the seed Job.                         |
-| `dbSeed.loadSampleData`   | `false`                                    | Also load sample/demo data (off by default).         |
-| `dbSeed.image.repository` | `openg2p/openg2p-farmer-registry-db-seed`  | Docker image containing the seed SQL scripts.        |
-| `dbSeed.image.tag`        | `develop`                                  | Image tag (typically matches the extensions branch).  |
+| Parameter                 | Default                                   | Description                                          |
+| ------------------------- | ----------------------------------------- | ---------------------------------------------------- |
+| `dbSeed.enabled`          | `true`                                    | Enable/disable the seed Job.                         |
+| `dbSeed.loadSampleData`   | `false`                                   | Also load sample/demo data (off by default).         |
+| `dbSeed.image.repository` | `openg2p/openg2p-farmer-registry-db-seed` | Docker image containing the seed SQL scripts.        |
+| `dbSeed.image.tag`        | `develop`                                 | Image tag (typically matches the extensions branch). |
 
 {% hint style="info" %}
 To deploy a different registry variant (e.g. family), override `dbSeed.image.repository` with the corresponding seed image (e.g. `openg2p/openg2p-family-registry-db-seed`).
@@ -607,11 +595,11 @@ All variants publish to the same Helm repository: `https://openg2p.github.io/ope
 
 ### Versioning rules
 
-| Change                                               | Bump                                       |
-| ---------------------------------------------------- | ------------------------------------------ |
-| Variant-only change (new image tag, new ID type)     | Wrapper MINOR/PATCH only                   |
-| Base chart backward-compatible change                | Base MINOR; wrappers opt in when ready     |
-| Base chart breaking change                           | Base MAJOR; wrappers bump MAJOR on adoption |
+| Change                                           | Bump                                        |
+| ------------------------------------------------ | ------------------------------------------- |
+| Variant-only change (new image tag, new ID type) | Wrapper MINOR/PATCH only                    |
+| Base chart backward-compatible change            | Base MINOR; wrappers opt in when ready      |
+| Base chart breaking change                       | Base MAJOR; wrappers bump MAJOR on adoption |
 
 ### Boilerplate mitigations
 
