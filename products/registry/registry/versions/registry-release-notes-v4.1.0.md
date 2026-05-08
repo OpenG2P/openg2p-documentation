@@ -14,3 +14,5 @@ Major Features introduced in 4.1.0
 
 [Dynamic Languages](../design/dynamic-languages.md) - This feature allows you to define a new language for the Registry and import a translation file (JSON format).
 
+[Audit Log](../design/audit-trail-for-write-operations.md) - All API requests into the registry are now logged with non-blocking API call into a separate Audit Log Service. This logging has been enabled by introducing an intercepting middleware in the Registry API layer.
+
