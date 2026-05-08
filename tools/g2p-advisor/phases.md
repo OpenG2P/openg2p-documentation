@@ -33,26 +33,28 @@ Code generation, build, sandbox, handover. Single linear, **abort-on-error, buil
 
 The Activity sequence is **read from the playbook** ([use-case-implementation.md](../../products/registry/registry/use-case-implementation.md) → Phase 2 → `### Activities`). The orchestrator's main loop iterates the parsed list and dispatches each name to a TypeScript handler. Reordering Activities is a playbook edit — no code change needed.
 
-15 Activities in the current sequence:
+16 Activities in the current sequence:
 
 ```
 1.  collect_build_inputs       — validate working_case has every required input
 2.  prepare_gitlab_workspace   — reserve subgroup + project shells; refuses to
                                   use a deletion-scheduled project
 3.  clone_reference_registry   — fresh clone of farmer-registry
-4.  generate_extension_files   — LLM codegen
-5.  compile_extension          — `python -m py_compile`
-6.  generate_deployment_files  — Helm + Docker + sandbox compose templates
-7.  compile_deployment         — `helm lint` + YAML parse
-8.  build_images_locally       — `docker build` only (NO registry push)
-9.  generate_test_suite        — pytest + httpx + pytest-playwright
-10. deploy_local_sandbox       — docker compose up on the advisor host
-11. run_smoke_tests            — pytest against the running sandbox
+4.  generate_extension_files   — LLM codegen, per-Register batched
+5.  review_extension_code      — LLM review pass; structured findings,
+                                  critical → abort, warning → log
+6.  compile_extension          — `python -m py_compile`
+7.  generate_deployment_files  — Helm + Docker + sandbox compose templates
+8.  compile_deployment         — `helm lint` + YAML parse
+9.  build_images_locally       — `docker build` only (NO registry push)
+10. generate_test_suite        — pytest + httpx + pytest-playwright
+11. deploy_local_sandbox       — docker compose up on the advisor host
+12. run_smoke_tests            — pytest against the running sandbox
    ─── above this line is local-only; nothing has reached GitLab yet ───
-12. push_extension_repo        — git push (first GitLab side effect)
-13. push_deployment_repo       — git push deployment repo (incl. tests/)
-14. push_images_to_registry    — docker push to GitLab Container Registry
-15. produce_build_report       — versioned report file on disk
+13. push_extension_repo        — git push (first GitLab side effect)
+14. push_deployment_repo       — git push deployment repo (incl. tests/)
+15. push_images_to_registry    — docker push to GitLab Container Registry
+16. produce_build_report       — versioned report file on disk
 ```
 
 **Build-locally-first** means a failure at any Activity 1–11 leaves zero side effects on GitLab — no broken commits land, no images get pushed. The implementer iterates locally without polluting the deployment repo. Activities 12–14 only run when everything below the line is green.
@@ -64,6 +66,8 @@ The Activity sequence is **read from the playbook** ([use-case-implementation.md
 The codegen call uses tool calling (`submit_files` with a single `files: [{path, content}]` argument). Tool calls are uniformly supported across providers — robust to per-provider strictness rules on `response_format`. Streaming is enabled so the panel shows live token progress.
 
 **Default model:** Anthropic Sonnet (codegen is the place to spend money for fewer iterations on broken code).
+
+**Per-Register batching.** Activity 4 (`generate_extension_files`) issues one LLM `submit_files` tool call per Register, not one combined call. A single call generating files for 7+ Registers exhausts even Sonnet's output budget (~30K+ output tokens) and the stream finishes with empty arguments. Per-Register calls keep each request to ~3 files × 100-200 lines = comfortably under 8K output tokens. The cross-Register barrel files (`models/__init__.py`, `schemas/__init__.py`, `services/__init__.py`, `factory/__init__.py`) are produced deterministically by the orchestrator from the full Register list — the LLM never sees the full set, so it couldn't write correct barrels anyway.
 
 ### Phase 2 chat stages
 

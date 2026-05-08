@@ -1061,7 +1061,7 @@ The job produces side effects in three places: the project workspace on the advi
 
 The job is idempotent at the granularity of the whole run: re-running rewrites the workspace, replaces the local sandbox stack, force-pushes to the same GitLab repositories, and overwrites the same image tags in the Container Registry. Re-runs leverage Docker layer caching and git's incremental push, so unchanged work is cheap.
 
-**Update / change loop.** When the implementer changes any Phase 2 Discovery answer after a successful build, re-running the build re-executes every Activity. Activities 1–9 regenerate the workspace + images; 10–11 redeploy + retest the sandbox; 12–15 republish to GitLab and refresh the Build Report. Same abort-on-error semantics; same build-locally-first ordering.
+**Update / change loop.** When the implementer changes any Phase 2 Discovery answer after a successful build, re-running the build re-executes every Activity. Activities 1–10 regenerate the workspace + images; 11–12 redeploy + retest the sandbox; 13–16 republish to GitLab and refresh the Build Report. Same abort-on-error semantics; same build-locally-first ordering.
 
 ### Discovery items
 
@@ -1230,7 +1230,7 @@ The job is idempotent at the granularity of the whole run: re-running rewrites t
 
 The advisor's build executor runs these Activities sequentially as one linear, **abort-on-error, build-locally-first** job. Every Activity either succeeds or aborts the phase; there is no pause / resume.
 
-The order below is the contract — the orchestrator implementation MUST execute Activities in this exact sequence. Activities 1–11 happen entirely on the advisor host (no GitLab side effects). Activities 12–15 publish to GitLab only AFTER 1–11 have all succeeded. A failed local Activity leaves zero remote artefacts.
+The order below is the contract — the orchestrator implementation MUST execute Activities in this exact sequence. Activities 1–12 happen entirely on the advisor host (no GitLab side effects). Activities 13–16 publish to GitLab only AFTER 1–12 have all succeeded. A failed local Activity leaves zero remote artefacts.
 
 Each Activity body declares: **Inputs** consumed (Discovery items / prior outputs), **Side effects** (workspace, sandbox, GitLab, registry), and **On failure** semantics.
 
@@ -1248,7 +1248,7 @@ Confirm every required Phase 2 Discovery item is present in working_case. If any
 * **Side effects:** GitLab — creates subgroup + two project shells (extension + deployment), invites Developer, allowlists CI_JOB_TOKEN, unprotects `develop`. Idempotent.
 * **On failure:** abort. Permission errors (token scope, project-deletion-grace-period, etc.) surface here.
 
-Reserve the GitLab namespace early so we know the image-registry path before the local build (the docker images are tagged with this path even though they're not pushed until Activity 14). Subgroup at `OpenG2P/g2p-advisor/<gitlab_user_handle>`. Two private projects under it: `<registry_mnemonic>-extension` and `<registry_mnemonic>-deployment`, default branch `develop`. The deployment project's CI_JOB_TOKEN is allowlisted to read the extension project. The implementer is added as Developer on both. **Refuse to use a project that is in GitLab's deletion grace period** (path suffix `-deletion_scheduled-<id>`); surface a clear error so the implementer either waits or chooses a different mnemonic.
+Reserve the GitLab namespace early so we know the image-registry path before the local build (the docker images are tagged with this path even though they're not pushed until Activity 15). Subgroup at `OpenG2P/g2p-advisor/<gitlab_user_handle>`. Two private projects under it: `<registry_mnemonic>-extension` and `<registry_mnemonic>-deployment`, default branch `develop`. The deployment project's CI_JOB_TOKEN is allowlisted to read the extension project. The implementer is added as Developer on both. **Refuse to use a project that is in GitLab's deletion grace period** (path suffix `-deletion_scheduled-<id>`); surface a clear error so the implementer either waits or chooses a different mnemonic.
 
 #### 3. clone_reference_registry
 
@@ -1266,7 +1266,20 @@ Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) at the conf
 
 Adapt the cloned reference's `farmer-extension/` into the customised extension. Specifically: rename the Python package, generate per-Register model + schema + service + factory files (LLM-driven), regenerate `app.py` migrations registration, regenerate the ID generator from `functional_id_encoding_pattern`, regenerate the seed SQL trees (register-metadata, sample-data, lookup-data), apply attribute and database constraints. The result is committable code in `<workspace>/extension/`.
 
-#### 5. compile_extension
+#### 5. review_extension_code
+
+* **Inputs:** generated per-Register files at `<workspace>/extension/src/<package>/register_domain/`, the Discovery items the codegen consumed (`register_columns`, `attribute_constraints`, `functional_id_encoding_pattern`, `register_mnemonics`).
+* **Side effects:** none. Read-only LLM-driven review.
+* **On failure:** abort with the structured list of findings. Each finding identifies the file + the specific contract violation. Common cause: LLM omitted a column from the model, picked the wrong base class, or hardcoded a value that should come from inputs.
+
+Run a build-mode LLM pass over every generated per-Register Python file (`models/<mnemonic>.py`, `schemas/<mnemonic>.py`, `services/<mnemonic>.py`). The review compares each file against the Discovery items as ground truth and produces a structured findings list via a `submit_findings` tool call. Findings have a severity:
+
+* **critical** — aborts the phase. Examples: a column from `register_columns` is missing as a `Mapped[…]` field; `__tablename__` doesn't match `g2p_register_<plural>`; class name doesn't follow the `G2PRegister<Pascal>` contract; an import references an undeclared symbol; the ID generator hardcodes a prefix that should come from `functional_id_encoding_pattern`.
+* **warning** — surfaced in the activity log; build proceeds. Examples: nullable / default drift between SQLAlchemy column and Pydantic schema; identifying-column choice in `construct_search_text` looks weak.
+
+This is the LLM's structured second-pass review; `compile_extension` (next) catches Python syntax errors that this review can't reasonably check. Together they cover most of the codegen failure surface before any Docker build runs.
+
+#### 6. compile_extension
 
 * **Inputs:** generated extension at `<workspace>/extension/`.
 * **Side effects:** none. Read-only validation.
@@ -1274,7 +1287,7 @@ Adapt the cloned reference's `farmer-extension/` into the customised extension. 
 
 Run `python -m py_compile` over every `.py` file in the extension package. Catches syntax errors in seconds, before any container build.
 
-#### 6. generate_deployment_files
+#### 7. generate_deployment_files
 
 * **Inputs:** `helm_resource_profile`, `production_domain_name`, `sandbox_base_domain`, `organisation_mnemonic`, `registry_mnemonic`, image base path computed from Activity 2.
 * **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.gitlab-ci.yml` to `<workspace>/deployment/`.
@@ -1282,7 +1295,7 @@ Run `python -m py_compile` over every `.py` file in the extension package. Catch
 
 Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.gitlab-ci.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
 
-#### 7. compile_deployment
+#### 8. compile_deployment
 
 * **Inputs:** generated deployment at `<workspace>/deployment/`.
 * **Side effects:** none. Read-only validation.
@@ -1290,7 +1303,7 @@ Adapt the reference's `docker/` and `helm/` into the customised deployment repo.
 
 Run `helm lint` on the wrapper chart and parse every YAML file with a strict YAML parser. Catches malformed templates and bad indentation before the docker build.
 
-#### 8. build_images_locally
+#### 9. build_images_locally
 
 * **Inputs:** `<workspace>/deployment/` + staged copy of `<workspace>/extension/`.
 * **Side effects:** advisor host docker daemon — produces locally-tagged images. **No `docker push`.**
@@ -1298,7 +1311,7 @@ Run `helm lint` on the wrapper chart and parse every YAML file with a strict YAM
 
 Build all five service images with `docker build`, tagging each with the GitLab Container Registry path. Backend services (staff-portal-api, partner-api, celery, staff-portal-ui) use `docker/scripts/build.sh` from the reference; db-seed uses a direct `docker build` with `--build-arg EXTENSION_DIR`. Layer caching keeps re-runs fast when only minor changes were made.
 
-#### 9. generate_test_suite
+#### 10. generate_test_suite
 
 * **Inputs:** `register_mnemonics`, `register_columns`, `functional_id_encoding_pattern`, `notification_payloads` (optional), generated deployment workspace.
 * **Side effects:** workspace — writes `tests/` under `<workspace>/deployment/`.
@@ -1308,27 +1321,27 @@ Generate a Python pytest suite tailored to this build:
 
 * `tests/api/` (`pytest` + `httpx`) — one module per Register with create / read / update / list, plus Functional ID format check, plus a smoke check on every notification template if `notification_payloads` is non-empty.
 * `tests/ui/` (`pytest-playwright`, headless Chromium) — staff-portal flows: login, navigate to each Register's list view, create a record, see it in the list.
-* `tests/conftest.py` — fixtures pointing at the running sandbox (set by Activity 10).
+* `tests/conftest.py` — fixtures pointing at the running sandbox (set by Activity 11).
 
 The Farmer Registry reference carries no tests. This suite is generated from scratch by the advisor and committed in Activity 13. Tests are reusable beyond the build phase: the implementer takes them with the deployment repo and re-runs them in pilot / production.
 
-#### 10. deploy_local_sandbox
+#### 11. deploy_local_sandbox
 
-* **Inputs:** `<workspace>/deployment/` (containing the generated compose file), local docker images from Activity 8.
+* **Inputs:** `<workspace>/deployment/` (containing the generated compose file), local docker images from Activity 9.
 * **Side effects:** advisor host — brings up a per-project docker-compose stack.
 * **On failure:** abort. Surface the failing service's logs.
 
 Bring up the customised stack via `docker compose -f docker-compose.sandbox.yaml up -d`. Detect the available compose CLI (`docker compose` v2 plugin or `docker-compose` v1 binary; honour `DOCKER_COMPOSE_CMD`). Wait for every service's healthcheck. Tear down any prior sandbox for this project first.
 
-#### 11. run_smoke_tests
+#### 12. run_smoke_tests
 
-* **Inputs:** generated test suite at `<workspace>/deployment/tests/`, running sandbox from Activity 10.
+* **Inputs:** generated test suite at `<workspace>/deployment/tests/`, running sandbox from Activity 11.
 * **Side effects:** none beyond test artefacts (logs, JUnit XML).
 * **On failure:** abort. **No GitLab push happens.** Surface failing test names + assertions to the chat.
 
 Execute `pytest tests/api tests/ui` against the running sandbox. The phase advances to publishing only if both layers pass.
 
-#### 12. push_extension_repo
+#### 13. push_extension_repo
 
 * **Inputs:** `<workspace>/extension/`, GitLab project from Activity 2.
 * **Side effects:** GitLab — git push to `<mnemonic>-extension` `develop`. **First publishing Activity.**
@@ -1336,7 +1349,7 @@ Execute `pytest tests/api tests/ui` against the running sandbox. The phase advan
 
 Init git in the extension workspace, commit, and force-push to GitLab. By the time this runs, the code has been compiled, the docker image built using it, the sandbox brought up using that image, and smoke tests passed against the sandbox. Pushing here means everything is genuinely green.
 
-#### 13. push_deployment_repo
+#### 14. push_deployment_repo
 
 * **Inputs:** `<workspace>/deployment/`, GitLab project from Activity 2, generated test suite.
 * **Side effects:** GitLab — git push to `<mnemonic>-deployment` `develop`.
@@ -1344,15 +1357,15 @@ Init git in the extension workspace, commit, and force-push to GitLab. By the ti
 
 Same shape as Activity 12 but for the deployment repo. The push includes the generated `tests/` directory so the implementer can re-run the suite in their own environment later.
 
-#### 14. push_images_to_registry
+#### 15. push_images_to_registry
 
-* **Inputs:** locally-tagged images from Activity 8, GitLab project's Container Registry.
+* **Inputs:** locally-tagged images from Activity 9, GitLab project's Container Registry.
 * **Side effects:** GitLab Container Registry — `docker push` for each image.
 * **On failure:** abort.
 
 `docker login` to the GitLab Container Registry, then `docker push` for each image. Tag is `:develop`.
 
-#### 15. produce_build_report
+#### 16. produce_build_report
 
 * **Inputs:** every captured artefact reference (workspace, GitLab URLs, image refs, test results).
 * **Side effects:** `phase_reports/` on disk (a new versioned report file).
@@ -1368,11 +1381,12 @@ Phase 2 generates and runs a real test suite — it's not a smoke check that's t
 
 | Layer | Tool | Catches | When it runs |
 |---|---|---|---|
-| Compile / lint | `python -m py_compile`, `helm lint`, YAML parser | Syntax errors, malformed templates, bad indentation | Activities 5 + 7 (during the local build) |
-| Local Docker build | `docker build` | Dockerfile path issues, dep install failures, base-image mismatches, missing system packages | Activity 8 |
-| Local sandbox bring-up | `docker compose up -d` + healthchecks | Service-level wiring: containers actually start, healthchecks pass, DB seeds run, Keycloak realm imports | Activity 10 |
-| Generated smoke tests (API) | `pytest` + `httpx` | API correctness per Register: create / read / list, Functional ID encoding, notification template generation | Activity 11 |
-| Generated smoke tests (UI) | `pytest-playwright` (headless Chromium) | UI correctness: login, navigate to each Register list view, create-and-see-in-list flow | Activity 11 |
+| LLM-driven code review | build-mode LLM with `submit_findings` tool | Generated code drift from Discovery items: missing columns, wrong base classes, hardcoded values | Activity 5 |
+| Compile / lint | `python -m py_compile`, `helm lint`, YAML parser | Syntax errors, malformed templates, bad indentation | Activities 6 + 8 |
+| Local Docker build | `docker build` | Dockerfile path issues, dep install failures, base-image mismatches, missing system packages | Activity 9 |
+| Local sandbox bring-up | `docker compose up -d` + healthchecks | Service-level wiring: containers actually start, healthchecks pass, DB seeds run, Keycloak realm imports | Activity 11 |
+| Generated smoke tests (API) | `pytest` + `httpx` | API correctness per Register: create / read / list, Functional ID encoding, notification template generation | Activity 12 |
+| Generated smoke tests (UI) | `pytest-playwright` (headless Chromium) | UI correctness: login, navigate to each Register list view, create-and-see-in-list flow | Activity 12 |
 | Live regression suite (the same generated tests, re-runnable later) | `pytest` from the cloned deployment repo | Same coverage; manual / scheduled runs against pilot / prod environments | Manual, post-handover |
 
 **Test generation parameters.** Tests are parameterised — they are not a fixed scaffold. Inputs that drive what gets generated:
@@ -1401,13 +1415,14 @@ Phase 2 generates and runs a real test suite — it's not a smoke check that's t
 Before producing the Build Report, the advisor verifies:
 
 * Every required Phase 2 Discovery item is recorded.
-* Activities 5 (compile_extension) and 7 (compile_deployment) exited clean.
-* Activity 8 (build_images_locally) produced every expected image tag in the local docker daemon.
-* Activity 10 (deploy_local_sandbox) brought up every service with healthchecks passing.
-* Activity 11 (run_smoke_tests) exited 0 — both `tests/api/` and `tests/ui/` passed against the running sandbox.
-* Activities 12 + 13 pushed the extension and deployment repos to GitLab; both contain the latest generated code on `develop`.
+* Activity 5 (review_extension_code) raised no critical findings.
+* Activities 6 (compile_extension) and 8 (compile_deployment) exited clean.
+* Activity 9 (build_images_locally) produced every expected image tag in the local docker daemon.
+* Activity 11 (deploy_local_sandbox) brought up every service with healthchecks passing.
+* Activity 12 (run_smoke_tests) exited 0 — both `tests/api/` and `tests/ui/` passed against the running sandbox.
+* Activities 13 + 14 pushed the extension and deployment repos to GitLab; both contain the latest generated code on `develop`.
 * `gitlab_user_email` is a Developer on both GitLab projects.
-* Activity 14 published every expected image to the deployment project's Container Registry under `:develop`.
+* Activity 15 published every expected image to the deployment project's Container Registry under `:develop`.
 
 ### Output
 
