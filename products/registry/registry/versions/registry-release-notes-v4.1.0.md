@@ -1,5 +1,13 @@
 # Registry Release Notes - v4.1.0
 
+|                        |                           |
+| ---------------------- | ------------------------- |
+| **Version**            | 4.1.0                     |
+| **Helm Chart Version** | 4.1.0                     |
+| **Release Date**       | 08-May-2026               |
+| **Description**        | <p></p><ul><li></li></ul> |
+| **Previous Version**   | 4.0.0                     |
+
 Major Features introduced in 4.1.0
 
 [Intake Form](../design/intake-forms/) is now treated as a separate route (INSERT) into a register. Change Requests is reserved for the EDIT route. All new records into a REGISTER will now be routed through Intake Forms. Intake Forms and Change Requests are now parallel routes into a REGISTER.
@@ -15,4 +23,8 @@ Major Features introduced in 4.1.0
 [Dynamic Languages](../design/dynamic-languages.md) - This feature allows you to define a new language for the Registry and import a translation file (JSON format).
 
 [Audit Log](../design/audit-trail-for-write-operations.md) - All API requests into the registry are now logged with non-blocking API call into a separate Audit Log Service. This logging has been enabled by introducing an intercepting middleware in the Registry API layer.
+
+
+
+
 
