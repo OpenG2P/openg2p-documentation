@@ -107,12 +107,14 @@ A shared `runToolLoop()` helper handles the function-calling loop: model emits t
 ```
 users                — synced from Keycloak (mock for now)
 projects             — id, user_id, name, current_phase, status, working_case JSONB
-project_messages     — chat history per project
+project_messages     — chat history, phase-scoped (each phase has its own thread)
 chat_messages        — chat-mode history per user (not project-scoped)
 phase_reports        — versioned approved reports per project + phase
 build_jobs           — Phase 2: one linear job per project, status running|succeeded|failed|aborted
 build_job_events     — append-only event feed: step_start, step_done, step_fail, log, summary
 ```
+
+Each Phase's chat sees only its own thread — the `phase` column on `project_messages` keeps Phase 1's walkthrough talk from leaking into Phase 2's LLM context window. The `GET /api/projects/{id}/messages?phase=N` endpoint and the per-phase POST handlers honour this filter.
 
 ## Phase 2 build orchestrator
 
