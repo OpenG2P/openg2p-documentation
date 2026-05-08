@@ -11,3 +11,9 @@ The Staff Portal provides a unified interface to securely access multiple OpenG2
 * **Secure Navigation**: All apps are protected behind authentication
 * **Scalable Integration**: Easily add/remove applications dynamically
 
+## Versions
+
+| Helm Version | Image Version | Published Date | Comments |
+| ------------ | ------------- | -------------- | -------- |
+|              |               |                |          |
+|              |               |                |          |
