@@ -116,27 +116,42 @@ build_job_events     — append-only event feed: step_start, step_done, step_fai
 
 Each Phase's chat sees only its own thread — the `phase` column on `project_messages` keeps Phase 1's walkthrough talk from leaking into Phase 2's LLM context window. The `GET /api/projects/{id}/messages?phase=N` endpoint and the per-phase POST handlers honour this filter.
 
-## Phase 2 build orchestrator
+## Phase 2 build orchestrator — playbook-driven
 
-Phase 2 is a single linear job with abort-on-error semantics. 13 steps, executed in order:
+Phase 2 is a single linear job with **abort-on-error, build-locally-first** semantics. The Activity sequence is **not hardcoded in the orchestrator** — it's read from the playbook's `### Activities` section in [use-case-implementation.md](../../products/registry/registry/use-case-implementation.md). The orchestrator's main loop iterates the parsed Activity name list and dispatches each name to a registered handler in `HANDLERS` (`src/lib/build/orchestrator.ts`).
+
+This means **reordering or adding Activities is a playbook edit**:
+
+* Add an Activity → playbook edit + register the handler in `HANDLERS`.
+* Reorder Activities → playbook edit only.
+* Remove an Activity → playbook edit only.
+
+Current Activity sequence (15 steps; live source is the playbook):
 
 ```
 1.  collect_build_inputs           ← validate working_case has every required key
-2.  prepare_gitlab_workspace       ← create per-implementer subgroup, two private projects, allowlist CI_JOB_TOKEN
-3.  clone_reference_registry       ← fresh clone of farmer-registry as the substitution surface
-4.  generate_extension_repo        ← LLM-driven codegen of per-Register Python files
-5.  compile_extension              ← `python -m py_compile` over generated files
-6.  push_extension_repo            ← `git init` + force-push to GitLab
-7.  generate_deployment_repo       ← deterministic templates: Helm chart, Docker descriptors, sandbox compose
-8.  compile_deployment             ← `helm lint` + `yaml.safe_load` over generated files
-9.  build_and_push_images          ← `docker build` per service + push to GitLab Container Registry
-10. push_deployment_repo           ← `git init` + force-push deployment repo
-11. generate_test_suite            ← (planned) Python pytest + httpx + pytest-playwright
-12. deploy_local_sandbox           ← (planned) docker compose up the customised stack
-13. run_smoke_tests                ← (planned) execute generated tests against running sandbox
+2.  prepare_gitlab_workspace       ← reserve subgroup + project shells, allowlist CI_JOB_TOKEN
+3.  clone_reference_registry       ← fresh clone of farmer-registry
+4.  generate_extension_files       ← LLM-driven codegen
+5.  compile_extension              ← `python -m py_compile`
+6.  generate_deployment_files      ← deterministic templates: Helm, Docker, sandbox compose
+7.  compile_deployment             ← `helm lint` + YAML parse
+8.  build_images_locally           ← `docker build` only — no registry push yet
+9.  generate_test_suite            ← Python pytest (httpx) + pytest-playwright
+10. deploy_local_sandbox           ← `docker compose up -d` on the advisor host
+11. run_smoke_tests                ← `pytest tests/` against the live sandbox
+   ────────────── EVERYTHING ABOVE IS LOCAL — no GitLab side effects ──────────────
+12. push_extension_repo            ← `git init` + force-push (only after smoke tests passed)
+13. push_deployment_repo           ← `git init` + force-push deployment repo (incl. tests/)
+14. push_images_to_registry        ← `docker push` to GitLab Container Registry
+15. produce_build_report           ← versioned report saved to phase_reports/
 ```
 
-If any step fails, the orchestrator marks the job failed, emits a `summary` event, and stops. The implementer fixes the underlying issue (often a missing/wrong Discovery answer) and re-runs from scratch — there is no resume mid-flight.
+**Build-locally-first** is the contract: a failed Activity at any local step (1–11) leaves zero GitLab side effects — no commits pushed, no images uploaded. The implementer iterates locally without polluting the GitLab repo with broken commits or burning CI minutes. Only after sandbox + smoke tests pass do Activities 12–14 publish.
+
+**Update / change loop**: when the implementer changes a Phase 2 Discovery answer after a successful build, re-running the build re-executes every Activity. Docker layer caching + git's incremental push keep re-runs fast on minor changes.
+
+**Failure semantics**: any handler that throws stops the phase. The orchestrator marks the job failed, emits a `summary` event, and stops. The implementer fixes the underlying cause (usually a Discovery answer or a model output) and re-runs from scratch — no resume mid-flight.
 
 ## Image naming convention
 

@@ -1050,12 +1050,18 @@ Take the approved Phase 1 specification and produce a running, customised regist
 
 ### Execution model
 
-Phase 2 runs as **one linear, abort-on-error job** per project.
+Phase 2 runs as **one linear, abort-on-error, build-locally-first** job per project. Two policies frame everything:
 
-* Inputs are collected upfront. The advisor refuses to start the build if any required Discovery item is missing.
-* The job produces side effects in three places: the project workspace on the advisor host (filesystem), the implementer's GitLab subgroup (two new repositories + their CI runs + Container Registry images), and a per-project local docker-compose stack on the advisor host.
-* If any step fails, the job aborts immediately. The advisor reports the failure with the failing step, captured logs, and the artefact left behind (e.g., partial GitLab repo state). The implementer fixes the underlying issue (often a Discovery answer) and re-runs the build from scratch — there is no resume mid-flight.
-* The job is idempotent at the granularity of the whole run: re-running rewrites the workspace, force-pushes to the same GitLab repositories, and replaces the local sandbox stack.
+* **Build-locally-first.** Code does not reach GitLab until every local check is green. Generation, compilation, Docker image build, sandbox bring-up, and smoke tests all happen on the advisor host *before* any `git push` or `docker push` to GitLab. A failed local check leaves zero side effects on GitLab — the implementer iterates locally without polluting the GitLab repo with broken commits or the Container Registry with unusable images.
+* **Abort-on-error.** Activities run in strict order. If Activity *N* fails, Activity *N+1* never starts. The advisor reports the failure with the failing step + captured logs, the implementer fixes the underlying cause (usually a Discovery answer or a model output), and re-runs the entire phase from scratch. There is no resume mid-flight.
+
+Inputs are collected upfront. The advisor refuses to start the build if any required Discovery item is missing.
+
+The job produces side effects in three places: the project workspace on the advisor host (filesystem), a local docker-compose stack on the advisor host (sandbox), and — only after every local check succeeds — the implementer's GitLab subgroup (two repositories + their Container Registry images).
+
+The job is idempotent at the granularity of the whole run: re-running rewrites the workspace, replaces the local sandbox stack, force-pushes to the same GitLab repositories, and overwrites the same image tags in the Container Registry. Re-runs leverage Docker layer caching and git's incremental push, so unchanged work is cheap.
+
+**Update / change loop.** When the implementer changes any Phase 2 Discovery answer after a successful build, re-running the build re-executes every Activity. Activities 1–9 regenerate the workspace + images; 10–11 redeploy + retest the sandbox; 12–15 republish to GitLab and refresh the Build Report. Same abort-on-error semantics; same build-locally-first ordering.
 
 ### Discovery items
 
@@ -1222,95 +1228,164 @@ Phase 2 runs as **one linear, abort-on-error job** per project.
 
 ### Activities
 
-The advisor's build executor runs the following activities sequentially as one linear job. Every step either succeeds or aborts the entire job. There is no pause/resume.
+The advisor's build executor runs these Activities sequentially as one linear, **abort-on-error, build-locally-first** job. Every Activity either succeeds or aborts the phase; there is no pause / resume.
+
+The order below is the contract — the orchestrator implementation MUST execute Activities in this exact sequence. Activities 1–11 happen entirely on the advisor host (no GitLab side effects). Activities 12–15 publish to GitLab only AFTER 1–11 have all succeeded. A failed local Activity leaves zero remote artefacts.
+
+Each Activity body declares: **Inputs** consumed (Discovery items / prior outputs), **Side effects** (workspace, sandbox, GitLab, registry), and **On failure** semantics.
 
 #### 1. collect_build_inputs
 
-Confirm every required Phase 2 Discovery item is recorded in working_case. If any required item is missing, abort before starting the job and ask the implementer to record it via the Phase 2 chat thread. Then present a Phase 2 input summary and obtain explicit approval before proceeding.
+* **Inputs:** every required Phase 2 Discovery item.
+* **Side effects:** none. Just validates working_case.
+* **On failure:** abort with a "missing inputs" list. The implementer fills the gaps via Phase 2 chat and re-runs.
+
+Confirm every required Phase 2 Discovery item is present in working_case. If any required item is missing or invalid, abort before opening a build job. Otherwise present a one-line input summary in the activity log and proceed.
 
 #### 2. prepare_gitlab_workspace
 
-Using the advisor's GitLab service token (`GITLAB_TOKEN` configured at deploy time):
+* **Inputs:** `gitlab_user_handle`, `gitlab_user_email`, `registry_mnemonic`, `organisation_mnemonic`.
+* **Side effects:** GitLab — creates subgroup + two project shells (extension + deployment), invites Developer, allowlists CI_JOB_TOKEN, unprotects `develop`. Idempotent.
+* **On failure:** abort. Permission errors (token scope, project-deletion-grace-period, etc.) surface here.
 
-* Ensure the parent group `OpenG2P/g2p-advisor` exists (created once during advisor provisioning; not per-project).
-* Create the per-implementer subgroup at `OpenG2P/g2p-advisor/<gitlab_user_handle>` if it does not already exist. Visibility: **private**.
-* Create two empty projects under that subgroup, both **private**, with default branch `develop`:
-  * `<registry_mnemonic>-extension`
-  * `<registry_mnemonic>-deployment`
-* Add `gitlab_user_email` as a `Developer` member on each project.
-* Enable the Container Registry on the deployment project.
-* If any of these resources already exists from a prior run, leave it in place and reuse it. The job is designed to be re-runnable.
-
-Abort if the service token lacks permission to create subgroups or projects under `OpenG2P/g2p-advisor`.
+Reserve the GitLab namespace early so we know the image-registry path before the local build (the docker images are tagged with this path even though they're not pushed until Activity 14). Subgroup at `OpenG2P/g2p-advisor/<gitlab_user_handle>`. Two private projects under it: `<registry_mnemonic>-extension` and `<registry_mnemonic>-deployment`, default branch `develop`. The deployment project's CI_JOB_TOKEN is allowlisted to read the extension project. The implementer is added as Developer on both. **Refuse to use a project that is in GitLab's deletion grace period** (path suffix `-deletion_scheduled-<id>`); surface a clear error so the implementer either waits or chooses a different mnemonic.
 
 #### 3. clone_reference_registry
 
-Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) — pinned at the latest `develop` SHA — into the project workspace as the structural baseline. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
+* **Inputs:** none.
+* **Side effects:** workspace — fresh clone of Farmer Registry into `<workspace>/reference/`.
+* **On failure:** abort. Network / git-clone errors.
 
-#### 4. generate_extension_repo
+Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) at the configured branch into the project workspace. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
 
-Adapt the cloned reference's `farmer-extension/` tree into the customised extension and push it to `<registry_mnemonic>-extension`. Specifically:
+#### 4. generate_extension_files
 
-* Rename the Python package directory from `openg2p_registry_farmer_extension` to `openg2p_registry_<registry_mnemonic_underscored>_extension` and update `pyproject.toml` (`name`, `description`, version-source paths).
-* For every entry in `register_mnemonics`, generate the three model classes (`G2PRegister<Entity>`, `G2PRegisterHistory<Entity>`, `G2PIntakeForm<Entity>`) plus any per-entity mixin needed for shared columns. Apply `register_columns` and `attribute_constraints` to each model. Set `__tablename__` to `g2p_register_<entity_plural>`.
-* Replace the Farmer Registry reference models (`farmer.py`, `household.py`, `crop.py`, …) with the generated set; remove any unused model files.
-* Generate parallel `schemas/`, `services/`, `factory/`, and `id_generator/` modules per Register following the reference layout.
-* Replace `id_generator/`'s hard-coded prefixes with code derived from `functional_id_encoding_pattern`.
-* Apply `database_constraints` (foreign-key, unique, check) into the model definitions and any explicit migration SQL the reference carries.
-* Generate the `configurations/` SQL seed tree (register-metadata, lookup-data, registry-configurations, data-models, registry-outbound-messages-templates, registry-inbound-message-rules) for the new Registers — including the `g2p_register_definitions` rows with appropriate `master_register_id` hierarchy.
-* Generate `sample_data/register-data/*.sql` per Register/Table (synthetic insert statements for sandbox seeding).
-* If `notification_payloads` is provided, generate the matching outbound-messages-templates SQL.
-* Update `app.py` so `Initializer.migrate_database` registers all generated models.
-* Commit the result and force-push to `develop` on the new GitLab project.
+* **Inputs:** `register_mnemonics`, `register_columns`, `attribute_constraints`, `database_constraints`, `functional_id_encoding_pattern`, `notification_payloads` (optional), `organisation_mnemonic`, `registry_mnemonic`.
+* **Side effects:** workspace — writes the customised extension repo to `<workspace>/extension/`. **No GitLab push.**
+* **On failure:** abort. LLM errors, codegen schema violations, file-write errors.
 
-#### 5. generate_deployment_repo
+Adapt the cloned reference's `farmer-extension/` into the customised extension. Specifically: rename the Python package, generate per-Register model + schema + service + factory files (LLM-driven), regenerate `app.py` migrations registration, regenerate the ID generator from `functional_id_encoding_pattern`, regenerate the seed SQL trees (register-metadata, sample-data, lookup-data), apply attribute and database constraints. The result is committable code in `<workspace>/extension/`.
 
-Adapt the cloned reference's `docker/` and `helm/` trees into the deployment repo and push it to `<registry_mnemonic>-deployment`. Specifically:
+#### 5. compile_extension
 
-* Update each service's `develop.txt` to point its dependency overrides at `<registry_mnemonic>-extension` (resolved from GitLab; the advisor configures the dependency URL with a deploy token if the registry needs authentication).
-* Update each `Dockerfile` so build-time package installs reference the renamed Python package.
-* Rewrite the Helm wrapper chart (`helm/openg2p-<registry_mnemonic>-registry/`) over the `openg2p-registry` base chart. Apply `helm_resource_profile`, `production_domain_name`, and `sandbox_base_domain`. Image references point at `registry.gitlab.com/openg2p/g2p-advisor/<gitlab_user_handle>/<registry_mnemonic>-deployment/<service>:develop`.
-* Add a top-level `docker-compose.sandbox.yaml` for the local sandbox (Postgres + the five customised services pulled from GitLab Container Registry).
-* Add `.gitlab-ci.yml` that builds each Docker service on push to `develop` and publishes images to the project's Container Registry under `:develop`. The CI is generated, not hand-written by the implementer.
-* Commit and force-push to `develop`.
+* **Inputs:** generated extension at `<workspace>/extension/`.
+* **Side effects:** none. Read-only validation.
+* **On failure:** abort. Surface the compile error tail to the chat for diagnosis. Common cause: codegen produced syntactically invalid Python.
 
-#### 6. wait_for_ci_publish_images
+Run `python -m py_compile` over every `.py` file in the extension package. Catches syntax errors in seconds, before any container build.
 
-After both pushes, GitLab CI pipelines start automatically. The advisor polls each pipeline until it succeeds (or fails). On any pipeline failure, abort the job and surface the failing job's log link so the implementer can inspect it. On success, verify every expected image tag exists in the deployment project's Container Registry.
+#### 6. generate_deployment_files
 
-Expected images, all under tag `:develop`:
+* **Inputs:** `helm_resource_profile`, `production_domain_name`, `sandbox_base_domain`, `organisation_mnemonic`, `registry_mnemonic`, image base path computed from Activity 2.
+* **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.gitlab-ci.yml` to `<workspace>/deployment/`.
+* **On failure:** abort.
 
-* `<registry_mnemonic>-deployment/staff-portal-api`
-* `<registry_mnemonic>-deployment/partner-api`
-* `<registry_mnemonic>-deployment/celery`
-* `<registry_mnemonic>-deployment/staff-portal-ui`
-* `<registry_mnemonic>-deployment/db-seed`
+Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.gitlab-ci.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
 
-#### 7. generate_test_suite
+#### 7. compile_deployment
 
-Generate a Python test suite scoped to the customised registry and place it inside the deployment repo under `tests/`. Two layers:
+* **Inputs:** generated deployment at `<workspace>/deployment/`.
+* **Side effects:** none. Read-only validation.
+* **On failure:** abort. Surface the offending file + parser error.
 
-* **API tests** (`tests/api/`, `pytest` + `httpx`): one test module per Register, covering create / read / update (where applicable) / list, plus the Functional ID format check, plus a smoke check on every notification template (where `notification_payloads` is non-empty).
-* **UI tests** (`tests/ui/`, `pytest-playwright`): a small set of staff-portal flows — login, navigate to each Register's list view, open the create form, save a record, see it in the list. Headless Chromium.
+Run `helm lint` on the wrapper chart and parse every YAML file with a strict YAML parser. Catches malformed templates and bad indentation before the docker build.
 
-The Farmer Registry reference contains no tests; this suite is generated from scratch using the advisor's test templates parameterised by `register_mnemonics`, `register_columns`, `functional_id_encoding_pattern`, and the resolved staff-portal URL. Push the tests as an additional commit on `develop` of the deployment repo.
+#### 8. build_images_locally
 
-#### 8. deploy_local_sandbox
+* **Inputs:** `<workspace>/deployment/` + staged copy of `<workspace>/extension/`.
+* **Side effects:** advisor host docker daemon — produces locally-tagged images. **No `docker push`.**
+* **On failure:** abort. Surface the docker-build log tail.
 
-Bring up the customised stack on the advisor host using docker compose:
+Build all five service images with `docker build`, tagging each with the GitLab Container Registry path. Backend services (staff-portal-api, partner-api, celery, staff-portal-ui) use `docker/scripts/build.sh` from the reference; db-seed uses a direct `docker build` with `--build-arg EXTENSION_DIR`. Layer caching keeps re-runs fast when only minor changes were made.
 
-* Detect the available compose CLI: prefer the v2 plugin (`docker compose`, used by the production AWS host); fall back to the legacy `docker-compose` binary (used on macOS dev installs). Honour `DOCKER_COMPOSE_CMD` if set in the environment.
-* Pull the `:develop` images from the deployment project's Container Registry. The advisor host authenticates using the same GitLab service token.
-* Start the stack from the generated `docker-compose.sandbox.yaml` on a per-project port range. Wait for every service's healthcheck to pass before declaring the sandbox up.
-* Tear down any prior sandbox for this project before bringing up the new one.
+#### 9. generate_test_suite
 
-#### 9. run_smoke_tests
+* **Inputs:** `register_mnemonics`, `register_columns`, `functional_id_encoding_pattern`, `notification_payloads` (optional), generated deployment workspace.
+* **Side effects:** workspace — writes `tests/` under `<workspace>/deployment/`.
+* **On failure:** abort.
 
-Run the generated `tests/api/` and `tests/ui/` suites against the running sandbox. The job exits successfully only if both layers pass. On failure, surface the failing test names + assertion output and abort the phase.
+Generate a Python pytest suite tailored to this build:
 
-#### 10. produce_build_report
+* `tests/api/` (`pytest` + `httpx`) — one module per Register with create / read / update / list, plus Functional ID format check, plus a smoke check on every notification template if `notification_payloads` is non-empty.
+* `tests/ui/` (`pytest-playwright`, headless Chromium) — staff-portal flows: login, navigate to each Register's list view, create a record, see it in the list.
+* `tests/conftest.py` — fixtures pointing at the running sandbox (set by Activity 10).
 
-Generate the Build Report (see Output) and present it to the implementer for approval per the Phase Transition Protocol.
+The Farmer Registry reference carries no tests. This suite is generated from scratch by the advisor and committed in Activity 13. Tests are reusable beyond the build phase: the implementer takes them with the deployment repo and re-runs them in pilot / production.
+
+#### 10. deploy_local_sandbox
+
+* **Inputs:** `<workspace>/deployment/` (containing the generated compose file), local docker images from Activity 8.
+* **Side effects:** advisor host — brings up a per-project docker-compose stack.
+* **On failure:** abort. Surface the failing service's logs.
+
+Bring up the customised stack via `docker compose -f docker-compose.sandbox.yaml up -d`. Detect the available compose CLI (`docker compose` v2 plugin or `docker-compose` v1 binary; honour `DOCKER_COMPOSE_CMD`). Wait for every service's healthcheck. Tear down any prior sandbox for this project first.
+
+#### 11. run_smoke_tests
+
+* **Inputs:** generated test suite at `<workspace>/deployment/tests/`, running sandbox from Activity 10.
+* **Side effects:** none beyond test artefacts (logs, JUnit XML).
+* **On failure:** abort. **No GitLab push happens.** Surface failing test names + assertions to the chat.
+
+Execute `pytest tests/api tests/ui` against the running sandbox. The phase advances to publishing only if both layers pass.
+
+#### 12. push_extension_repo
+
+* **Inputs:** `<workspace>/extension/`, GitLab project from Activity 2.
+* **Side effects:** GitLab — git push to `<mnemonic>-extension` `develop`. **First publishing Activity.**
+* **On failure:** abort.
+
+Init git in the extension workspace, commit, and force-push to GitLab. By the time this runs, the code has been compiled, the docker image built using it, the sandbox brought up using that image, and smoke tests passed against the sandbox. Pushing here means everything is genuinely green.
+
+#### 13. push_deployment_repo
+
+* **Inputs:** `<workspace>/deployment/`, GitLab project from Activity 2, generated test suite.
+* **Side effects:** GitLab — git push to `<mnemonic>-deployment` `develop`.
+* **On failure:** abort.
+
+Same shape as Activity 12 but for the deployment repo. The push includes the generated `tests/` directory so the implementer can re-run the suite in their own environment later.
+
+#### 14. push_images_to_registry
+
+* **Inputs:** locally-tagged images from Activity 8, GitLab project's Container Registry.
+* **Side effects:** GitLab Container Registry — `docker push` for each image.
+* **On failure:** abort.
+
+`docker login` to the GitLab Container Registry, then `docker push` for each image. Tag is `:develop`.
+
+#### 15. produce_build_report
+
+* **Inputs:** every captured artefact reference (workspace, GitLab URLs, image refs, test results).
+* **Side effects:** `phase_reports/` on disk (a new versioned report file).
+* **On failure:** the build is functionally done; report failures should not block the implementer. Surface the error but mark the build as succeeded.
+
+Generate the Build Report (see [Output](#output)) and present it to the implementer for approval per the Phase Transition Protocol. On approval, save via the `save_phase_report` tool and call `phase_complete` to advance to Phase 3.
+
+### Testing contract
+
+Phase 2 generates and runs a real test suite — it's not a smoke check that's thrown away.
+
+**Test layers:**
+
+| Layer | Tool | Catches | When it runs |
+|---|---|---|---|
+| Compile / lint | `python -m py_compile`, `helm lint`, YAML parser | Syntax errors, malformed templates, bad indentation | Activities 5 + 7 (during the local build) |
+| Local Docker build | `docker build` | Dockerfile path issues, dep install failures, base-image mismatches, missing system packages | Activity 8 |
+| Local sandbox bring-up | `docker compose up -d` + healthchecks | Service-level wiring: containers actually start, healthchecks pass, DB seeds run, Keycloak realm imports | Activity 10 |
+| Generated smoke tests (API) | `pytest` + `httpx` | API correctness per Register: create / read / list, Functional ID encoding, notification template generation | Activity 11 |
+| Generated smoke tests (UI) | `pytest-playwright` (headless Chromium) | UI correctness: login, navigate to each Register list view, create-and-see-in-list flow | Activity 11 |
+| Live regression suite (the same generated tests, re-runnable later) | `pytest` from the cloned deployment repo | Same coverage; manual / scheduled runs against pilot / prod environments | Manual, post-handover |
+
+**Test generation parameters.** Tests are parameterised — they are not a fixed scaffold. Inputs that drive what gets generated:
+
+* `register_mnemonics` → one test module per Register
+* `register_columns` + `attribute_constraints` → field-level assertions in create / read tests
+* `functional_id_encoding_pattern` → Functional ID format check per Register
+* `notification_payloads` → notification template smoke checks (skipped if empty)
+* `production_domain_name` → expected `Host` headers in API tests (sandbox uses internal hostnames)
+
+**Failure semantics.** A failure at any test layer aborts the phase before any GitLab push happens. The advisor surfaces the failure in the Build Activity Panel + Phase 2 chat for diagnosis. The implementer iterates locally (typically by changing a Discovery answer and re-running) until tests pass; only then does code reach GitLab.
+
+**Tests as artefacts.** The generated test suite is committed to the deployment repo (Activity 13). The implementer takes ownership of it at handover. They can re-run `pytest` against pilot / production environments to validate later changes.
 
 ### References
 
@@ -1326,12 +1401,13 @@ Generate the Build Report (see Output) and present it to the implementer for app
 Before producing the Build Report, the advisor verifies:
 
 * Every required Phase 2 Discovery item is recorded.
-* The Phase 2 input summary has been confirmed by the implementer.
-* Both GitLab projects exist under `OpenG2P/g2p-advisor/<gitlab_user_handle>/` and contain the generated code on `develop`.
-* `gitlab_user_email` is a Developer on both projects.
-* Every expected image tag exists in the deployment project's Container Registry under `:develop`.
-* The local sandbox docker-compose stack is up; every service healthcheck has passed.
-* The generated `tests/api/` and `tests/ui/` suites both exited 0 against the running sandbox.
+* Activities 5 (compile_extension) and 7 (compile_deployment) exited clean.
+* Activity 8 (build_images_locally) produced every expected image tag in the local docker daemon.
+* Activity 10 (deploy_local_sandbox) brought up every service with healthchecks passing.
+* Activity 11 (run_smoke_tests) exited 0 — both `tests/api/` and `tests/ui/` passed against the running sandbox.
+* Activities 12 + 13 pushed the extension and deployment repos to GitLab; both contain the latest generated code on `develop`.
+* `gitlab_user_email` is a Developer on both GitLab projects.
+* Activity 14 published every expected image to the deployment project's Container Registry under `:develop`.
 
 ### Output
 

@@ -29,23 +29,33 @@ The Phase 1 chat is stage-aware (mirroring Phase 2's behaviour):
 
 ## Phase 2: Build
 
-Code generation, build, sandbox, handover. Single linear, abort-on-error job per project.
+Code generation, build, sandbox, handover. Single linear, **abort-on-error, build-locally-first** job per project.
 
-The orchestrator walks 13 steps in order:
+The Activity sequence is **read from the playbook** ([use-case-implementation.md](../../products/registry/registry/use-case-implementation.md) → Phase 2 → `### Activities`). The orchestrator's main loop iterates the parsed list and dispatches each name to a TypeScript handler. Reordering Activities is a playbook edit — no code change needed.
 
-1. **collect_build_inputs** — validate working_case has every required Phase 2 Discovery item.
-2. **prepare_gitlab_workspace** — create per-implementer subgroup, two private projects (`<mnemonic>-extension`, `<mnemonic>-deployment`), allowlist the deployment project's `CI_JOB_TOKEN` to read the extension project, invite the implementer as Developer.
-3. **clone_reference_registry** — fresh clone of [farmer-registry](https://github.com/openg2p/farmer-registry) as the substitution surface.
-4. **generate_extension_repo** — LLM-driven codegen of per-Register Python files (models, schemas, services, factory, ORM definitions, ID generator) plus deterministic regeneration of `app.py`, sample-data SQL, register definitions.
-5. **compile_extension** — `python -m py_compile` over every `.py`. Catches syntax errors in seconds.
-6. **push_extension_repo** — `git init` + force-push to GitLab.
-7. **generate_deployment_repo** — deterministic templates for Helm chart, Dockerfile substitution, sandbox compose file.
-8. **compile_deployment** — `helm lint` + `yaml.safe_load` over every YAML file.
-9. **build_and_push_images** — `docker login` to GitLab Container Registry, `docker build` each service via the upstream `build.sh` (handles `parse_service.py` + dependency staging), `docker push` to the project's Container Registry.
-10. **push_deployment_repo** — `git init` + force-push deployment repo (after images live so the compose file references valid images).
-11. **generate_test_suite** *(planned)* — Python pytest + httpx (API) + pytest-playwright (UI), parameterised by `register_mnemonics`.
-12. **deploy_local_sandbox** *(planned)* — docker-compose up of the customised stack on the advisor host.
-13. **run_smoke_tests** *(planned)* — execute generated tests against the running sandbox.
+15 Activities in the current sequence:
+
+```
+1.  collect_build_inputs       — validate working_case has every required input
+2.  prepare_gitlab_workspace   — reserve subgroup + project shells; refuses to
+                                  use a deletion-scheduled project
+3.  clone_reference_registry   — fresh clone of farmer-registry
+4.  generate_extension_files   — LLM codegen
+5.  compile_extension          — `python -m py_compile`
+6.  generate_deployment_files  — Helm + Docker + sandbox compose templates
+7.  compile_deployment         — `helm lint` + YAML parse
+8.  build_images_locally       — `docker build` only (NO registry push)
+9.  generate_test_suite        — pytest + httpx + pytest-playwright
+10. deploy_local_sandbox       — docker compose up on the advisor host
+11. run_smoke_tests            — pytest against the running sandbox
+   ─── above this line is local-only; nothing has reached GitLab yet ───
+12. push_extension_repo        — git push (first GitLab side effect)
+13. push_deployment_repo       — git push deployment repo (incl. tests/)
+14. push_images_to_registry    — docker push to GitLab Container Registry
+15. produce_build_report       — versioned report file on disk
+```
+
+**Build-locally-first** means a failure at any Activity 1–11 leaves zero side effects on GitLab — no broken commits land, no images get pushed. The implementer iterates locally without polluting the deployment repo. Activities 12–14 only run when everything below the line is green.
 
 **Image naming:** `<org-mnemonic>-<registry-mnemonic>-<service>:develop`. The Helm wrapper chart follows the same: `<org-mnemonic>-<registry-mnemonic>-registry`. Both come from Discovery items captured upfront.
 
