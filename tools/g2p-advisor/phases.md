@@ -18,6 +18,15 @@ The report is versioned: every approval creates a new version; the previous appr
 
 **Default model:** Anthropic Haiku (cheap, fast, very reliable tool-calling).
 
+### Phase 1 chat stages
+
+The Phase 1 chat is stage-aware (mirroring Phase 2's behaviour):
+
+| Stage | When | What the chat does |
+|---|---|---|
+| **Initial walkthrough** | `current_phase = 1` | Walks Discovery items in batches; records via `record_discovery_answer`; runs the sign-off flow (gap classification → Requirements Analysis Report → revisions loop → approval → save + advance to Phase 2) |
+| **Already approved** | `current_phase > 1` | Refuses to restart the exit flow. On kickoff, gives a short reply pointing the user at Phase 2 (or offering to revisit captured answers / show a summary). If the user records a change, asks whether to produce a new approved report version. The previous version stays on disk (auto-versioned). |
+
 ## Phase 2: Build
 
 Code generation, build, sandbox, handover. Single linear, abort-on-error job per project.

@@ -33,17 +33,19 @@ Full Phase 2 cleanup for one project. Leaves Phase 1 state intact.
 
 ```bash
 npm run cleanup:phase2 -- --project <project-uuid> \
-  [--keep-gitlab-repos] [--keep-workspace] [--keep-current-phase] [--dry-run]
+  [--keep-gitlab-repos] [--keep-workspace] [--keep-current-phase] \
+  [--clear-messages] [--dry-run]
 ```
 
 What it does (in order):
 
 1. `TRUNCATE build_jobs + build_job_events` — kills every build job + event row in the DB.
 2. Strips every Phase 2 `working_case` key from this project; rolls `current_phase` back to 2 (Phase 1 stays approved).
-3. `rm -rf <WORKSPACE_PATH>/<project-dir>/` — clears the local generated trees and reference clone.
-4. `DELETE` the project's GitLab repos: `<mnemonic>-extension` and `<mnemonic>-deployment`.
+3. *(optional, `--clear-messages`)* — `DELETE FROM project_messages WHERE project_id = …`. Wipes the chat history for this project so stale LLM hallucinations don't get replayed into the next conversation. Captured Phase 1 facts in `working_case` are NOT touched — only the message thread.
+4. `rm -rf <WORKSPACE_PATH>/<project-dir>/` — clears the local generated trees and reference clone.
+5. `DELETE` the project's GitLab repos: `<mnemonic>-extension` and `<mnemonic>-deployment`.
 
-What it doesn't touch: the project row itself, Phase 1 working_case keys, Phase 1 chat history, approved Phase 1 reports, the user's GitLab subgroup, other projects' workspaces.
+What it doesn't touch: the project row itself, Phase 1 working_case keys, approved Phase 1 reports, the user's GitLab subgroup, other projects' workspaces. `project_messages` only deleted with `--clear-messages`.
 
 `--dry-run` previews everything without applying.
 
