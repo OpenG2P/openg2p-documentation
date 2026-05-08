@@ -80,15 +80,15 @@ Themes are only updated when they differ from the current setting in Keycloak, k
 
 Each client supports the following parameters:
 
-| Parameter      | Required | Description                                                              |
-| -------------- | -------- | ------------------------------------------------------------------------ |
-| `clientId`     | Yes      | Unique client identifier.                                                |
-| `name`         | No       | Display name. Defaults to `clientId`.                                    |
+| Parameter      | Required | Description                                                                                                                                                                     |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `clientId`     | Yes      | Unique client identifier.                                                                                                                                                       |
+| `name`         | No       | Display name. Defaults to `clientId`.                                                                                                                                           |
 | `publicClient` | No       | Defaults to `false` (Client Authentication: On, confidential client). Set to `true` for SPAs or browser-only apps — no client secret is used and service accounts are disabled. |
-| `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                        |
-| `webOrigins`   | No       | List of allowed CORS origins. Defaults to `["+"]`, which means allow all origins declared in `redirectUris`. |
-| `secret`       | No       | Client secret (confidential clients only). If not provided, a random secret is generated and stored. |
-| `clientRoles`  | No       | List of client roles to create. See below.                               |
+| `redirectUris` | No       | List of valid redirect URIs. Defaults to `["*"]`.                                                                                                                               |
+| `webOrigins`   | No       | List of allowed CORS origins. Defaults to `["+"]`, which means allow all origins declared in `redirectUris`.                                                                    |
+| `secret`       | No       | Client secret (confidential clients only). If not provided, a random secret is generated and stored.                                                                            |
+| `clientRoles`  | No       | List of client roles to create. See below.                                                                                                                                      |
 
 ### Client roles
 
@@ -184,11 +184,12 @@ helm -n <namespace> install keycloak-init .
 
 ### Versions
 
-| Helm Chart Version                                               | Date        | Contents                                                                                                         |
-| ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| [**1.1.0**](https://github.com/OpenG2P/keycloak-init/tree/1.1.0) | 19 Apr 2026 | Feature added to add users in a realm and assign roles. This is used to create default users when system is up.  |
-| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                                        |
-| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.                  |
+| Helm Chart Version                                               | Date        | Contents                                                                                                        |
+| ---------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
+| [1.1.1](https://github.com/OpenG2P/keycloak-init/tree/v1.1.1)    | 08 May 2026 | Proper valid redirect URL feature added. See. [G2P-4456](https://openg2p.atlassian.net/browse/G2P-4456)         |
+| [**1.1.0**](https://github.com/OpenG2P/keycloak-init/tree/1.1.0) | 19 Apr 2026 | Feature added to add users in a realm and assign roles. This is used to create default users when system is up. |
+| [**1.0.0**](https://github.com/OpenG2P/keycloak-init/tree/1.0.0) | 17 Apr 2026 | Stable version. No diff w.r.t previous version (0.0.0-develop, Mar 2026).                                       |
+| 0.0.0-develop                                                    | Mar 2026    | Realm creation, composite client roles, global.keycloakBaseUrl fallback, suffix on realm names.                 |
 
 ### Tear down
 
