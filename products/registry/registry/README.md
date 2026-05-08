@@ -11,7 +11,9 @@ description: >-
 
 A single deployment of the Registry can host one or more **Registers** (such as a Farmer Register, Individual Register, or Household Register), each governed by change-management workflows, version history, and consent-aware data sharing. Whether you are building a national social registry, a farmer registry, or a vehicle registry, the underlying principles and platform remain the same.
 
-<div data-with-frame="true"><figure><img src="../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure></div>
+Watch the video below for a quick introduction to the OpenG2P Registry Platform.&#x20;
+
+{% embed url="https://drive.google.com/file/d/1FmAZ4Tf_iFBTtsHJEV4FTm1h95rqq87K/preview" %}
 
 ## Why a registry?
 
