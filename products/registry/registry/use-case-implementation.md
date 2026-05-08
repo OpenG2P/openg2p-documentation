@@ -1061,6 +1061,16 @@ Phase 2 runs as **one linear, abort-on-error job** per project.
 
 **Build identity**
 
+#### organisation_mnemonic
+
+* **Ask:** What is a short identifier for the implementing organisation? Pick a 2–15-character lowercase code that reads as the org's "stamp" on the generated artefacts (e.g. `doh` for Department of Health, `moh` for Ministry of Health, `tnsr` for Tanzania National Social Registry).
+* **Why:** Becomes the leading segment of every generated Docker image name (`<org>-<registry_mnemonic>-<service>:develop`) and the Helm wrapper-chart name (`<org>-<registry_mnemonic>-registry`). Without this, image names default to `openg2p-...` and read as generic OpenG2P artefacts rather than this implementer's customised stack.
+* **Required:** yes
+* **Type:** text
+* **Impact:** configuration
+* **Validation:** lowercase letters, digits, and hyphens only; 2–15 characters; cannot start or end with a hyphen.
+* **Examples:** `doh` ✓, `tnsr` ✓, `dept-of-health` ✓, `Department of Health` ✗ (use the org's name elsewhere; this is just a short identifier).
+
 #### registry_mnemonic
 
 * **Ask:** What is the registry mnemonic — a short identifier code used in filenames, image names, service names, GitLab repository names, and URLs?

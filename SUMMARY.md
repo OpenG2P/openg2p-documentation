@@ -641,6 +641,14 @@
   * [CLAUDE.md vs wiki/index.md](tools/g2p-wikillm/claude-md-vs-index.md)
   * [Scripts](tools/g2p-wikillm/scripts.md)
   * [Roadmap & Automation](tools/g2p-wikillm/automation-todo.md)
+* [G2P Advisor](tools/g2p-advisor/README.md)
+  * [Concept](tools/g2p-advisor/concept.md)
+  * [Design](tools/g2p-advisor/design.md)
+  * [Modes](tools/g2p-advisor/modes.md)
+  * [Phases](tools/g2p-advisor/phases.md)
+  * [Running](tools/g2p-advisor/running.md)
+  * [Scripts](tools/g2p-advisor/scripts.md)
+  * [Roadmap](tools/g2p-advisor/roadmap.md)
 
 ## Operations
 
