@@ -25,7 +25,18 @@ The Farmer Registry inherits all the [features of the registry platform](registr
 
 ## Versions
 
-Refer to [versions](registry/versions/).
+| Artefact | Current | Where |
+| -------- | ------- | ----- |
+| Farmer Registry Helm wrapper chart | `1.1.0` | [`helm/openg2p-farmer-registry/`](https://github.com/OpenG2P/farmer-registry/tree/1.1.0/helm/openg2p-farmer-registry) |
+| Base registry chart (dependency) | `4.1.0` | [Registry Release Notes v4.1.0](registry/versions/registry-release-notes-v4.1.0.md) |
+| Docker images (tag) | `1.1.0` | Docker Hub `openg2p/openg2p-farmer-registry-*` |
+| Release date | 08-May-2026 | — |
+
+Farmer Registry follows the **branch-name-equals-version** convention: the `develop` branch carries `-develop` pre-release tags on both the wrapper chart and all Docker images. Release branches drop the suffix and produce versioned artefacts (e.g. `1.1.0`).
+
+Source code at the `1.1.0` tag: [github.com/OpenG2P/farmer-registry/tree/1.1.0](https://github.com/OpenG2P/farmer-registry/tree/1.1.0)
+
+For platform-level release notes (which manifest Farmer Registry releases), see [Registry versions](registry/versions/).
 
 ## Domain models
 
