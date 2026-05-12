@@ -113,6 +113,15 @@ Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, clie
 
 All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used — see the [External PostgreSQL](openg2p-commons-helm-chart.md#external-postgresql) section below for the full setup steps.
 
+### MinIO Console vs S3 API
+
+MinIO exposes two ports on a single Kubernetes Service: **9001 (Console UI)** and **9000 (S3 API)**. To route browser traffic to the console and S3-client traffic to the API without manual port juggling, the chart creates **two Istio VirtualServices**:
+
+* `minio.<baseDomain>` → port 9001 (Console UI)
+* `minio-api.<baseDomain>` → port 9000 (S3 API)
+
+Pod-to-pod S3 calls (e.g., from ODK Central) use the internal cluster service `http://commons-minio:9000` — they don't go through Istio. Both hostnames work out of the box on a fresh install; no manual VirtualService edits required.
+
 ### Internal vs External URLs
 
 The charts maintain two Keycloak URL paths:
