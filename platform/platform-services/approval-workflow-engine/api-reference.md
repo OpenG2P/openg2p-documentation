@@ -13,6 +13,36 @@ Base path: `/v1/awe/`. The spec below is rendered from the live [`docs/openapi.j
 
 A running instance also exposes the live spec at `/v1/awe/openapi.json` and interactive UIs at `/v1/awe/docs` (Swagger) and `/v1/awe/redoc`.
 
+## Caller API surface — what an integrator actually uses
+
+The full reference below covers every endpoint, including the admin
+surface that powers AWE's own portal (policy CRUD, simulate, delegations,
+audit log, delivery retry). **Caller services do not call any of those.**
+
+A Caller integration touches only the five endpoints below, plus implements
+one inbound webhook handler.
+
+### Outbound — Caller → AWE
+
+| API | When the Caller calls it |
+|--|--|
+| `POST /v1/awe/requests` | A Caller-owned artifact has been created and needs approval. Pass `policy_key`, `artifact_type`, `artifact_id`, `context`, `callback_url`, `requester`. |
+| `POST /v1/awe/requests/{id}/cancel` | The underlying artifact was withdrawn, or the Caller wants to abort an in-flight flow. |
+| `GET /v1/awe/tasks?assignee=me` *(forwarding the approver's JWT)* | When an approver opens the Caller's UI — returns every open AWE task assigned to the user whose JWT is on the request, across all requests and policies. `me` expands to the token's `sub` claim. The Caller joins this list with its own artifact rows (by `awe_request_id`) to build the per-Caller inbox. |
+| `POST /v1/awe/tasks/{task_id}/decision` *(forwarding the approver's JWT)* | Records the approver's `approve` / `reject` / `abstain`. |
+| `GET /v1/awe/requests/{id}` *(optional)* | Per-request lookup — full state of one approval flow by id (current stage, resolved approvers, history, context snapshot). Used when a user opens an artifact detail page in the Caller's UI and the Caller wants to render an "approval state" panel inline. **Not** an admin list view; takes a single id, returns one request. Skip it if you'd rather rely solely on the webhook to drive UI state. The Caller decides which users see this panel — AWE itself does not restrict reads. |
+
+### Inbound — AWE → Caller (implemented by the Caller, not called)
+
+| Endpoint | What the Caller does |
+|--|--|
+| `POST {callback_url}` | Receives signed AWE webhooks. On `request_approved` apply the artifact-side effect; on `request_rejected` / `request_cancelled` close out the artifact accordingly. Validate the `X-Approval-Signature` HMAC, dedup on `X-Approval-Event-Id`, return 2xx within the configured timeout. |
+
+Everything else in the reference below is admin / operator surface served
+from AWE's bundled portal.
+
+---
+
 {% openapi-operation spec="awe-specification" path="/v1/awe/health" method="get" %}
 [OpenAPI awe-specification](https://raw.githubusercontent.com/OpenG2P/awe/develop/docs/openapi.json)
 {% endopenapi-operation %}
