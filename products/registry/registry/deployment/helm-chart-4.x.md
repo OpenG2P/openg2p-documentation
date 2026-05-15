@@ -175,6 +175,7 @@ The chart provides a simplified Rancher UI form (`questions.yaml`) with the most
 | Registry Hostname             | `global.registryHostname` | General      |
 | PostgreSQL Server Host        | `global.postgresqlHost`   | General      |
 | Keycloak Base URL             | `global.keycloakBaseUrl`  | General      |
+| MinIO S3 API Host             | `global.minioHost`        | General      |
 | Keycloak Init toggle          | `keycloak-init.enabled`   | General      |
 | Staff Portal API toggle       | `staffPortalApi.enabled`  | General      |
 | Staff Portal UI toggle        | `staffPortalUi.enabled`   | General      |
@@ -184,6 +185,10 @@ The chart provides a simplified Rancher UI form (`questions.yaml`) with the most
 | ID Types Configuration        | _(see note)_              | ID Generator |
 | Enable Logging                | `logging.enabled`         | Logging      |
 | Fluent Output Name            | `logging.outputRef`       | Logging      |
+
+{% hint style="warning" %}
+**MinIO S3 API Host** must be the **S3 API** hostname exposed by commons-base's Istio VirtualService (`apiHost`, default `minio-api.<basedomain>`) — **not** the MinIO Console UI hostname (`minio.<basedomain>`). The registry generates pre-signed URLs that browsers follow directly, so the endpoint must be reachable externally and must speak the S3 protocol.
+{% endhint %}
 
 {% hint style="info" %}
 ID type configuration (types, lengths, pool settings) cannot be expressed as simple form fields. The Rancher UI shows a note directing users to switch to **Edit YAML** to modify the `idgenerator.idGenerator.appConfig.idTypes` section.
