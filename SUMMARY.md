@@ -671,6 +671,7 @@
   * [Automation](deployment/automation/README.md)
     * [Single-Node Automation](deployment/automation/single-node-automation.md)
     * [Three-Node Automation](operations/deployment/automation/three-node-automation.md)
+      * [Fallback: Two Nginx VMs (single-NIC each)](operations/deployment/automation/three-node-automation-fallback-second-rp.md)
     * [Environment Setup for Multi-Node](deployment/automation/environment-setup-multi-node.md)
     * [Backups](operations/deployment/automation/backups.md)
       * [Architecture](operations/deployment/automation/backups/architecture.md)

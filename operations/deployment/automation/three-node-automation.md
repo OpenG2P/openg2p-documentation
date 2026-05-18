@@ -23,7 +23,7 @@ The three-node deployment model itself — what each node does, why the split ex
   <tbody>
     <tr>
       <td><strong>Reverse Proxy</strong></td>
-      <td>Nginx (TLS terminator), Wireguard server, dnsmasq (internal DNS), local Certificate Authority</td>
+      <td>Nginx (TLS terminator, two-channel: public + private), Wireguard server</td>
       <td>Yes — public IP, Wireguard endpoint</td>
     </tr>
     <tr>
@@ -39,15 +39,26 @@ The three-node deployment model itself — what each node does, why the split ex
   </tbody>
 </table>
 
-### Why admin tools live behind Wireguard with self-signed certs
+### Why admin tools live behind Wireguard
 
-Rancher and the per-cluster Keycloak that fronts it are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface, served on internal hostnames like `rancher.openg2p.internal` and `keycloak.openg2p.internal`. A local CA signs the wildcard cert for these hostnames. Admin laptops connect via Wireguard (which pushes DNS pointing at the RP's dnsmasq) and trust the local CA once.
+Rancher, Keycloak, Grafana, Prometheus are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>`, `keycloak.<your-domain>`, `grafana.<your-domain>`, `prometheus.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
 
-This is deliberate. Government customers almost universally require admin tools to be VPN-only, often can't quickly procure certificates for them, and have security policies that flag publicly exposed admin panels.
+This is deliberate. Government customers almost universally require admin tools to be VPN-only, have security policies that flag publicly exposed admin panels, and procure certs from their own CAs (rarely Let's Encrypt).
 
 {% hint style="info" %}
-For the full discussion — why we split internal vs. public certs, why wildcards are rare in government deployments, what cert formats customers usually have, and how DNS-01 validation works — see [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
+For the full discussion of cert formats commonly seen in gov procurement (PEM split bundles, PFX, sovereign CAs) and why per-FQDN dominates over wildcards, see [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
 {% endhint %}
+
+### Channel separation: public vs private on the RP
+
+The RP has two network interfaces (see [Prerequisites § 2](#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)):
+
+* **vNIC-public** — public IP. Wireguard server binds here. Future env-automation will bind public citizen-facing Nginx server blocks here too.
+* **vNIC-internal** — internal IP. Admin Nginx server blocks bind here (rancher, keycloak, grafana, prometheus). The compute and storage nodes also live on this network.
+
+Nginx server blocks for each hostname are bound to a specific IP, so the two channels can't bleed into each other. Public traffic can never reach an admin hostname; only Wireguard peers (whose tunnel exits on the internal interface) can.
+
+The [Private Access Channel](../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the single-channel admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
 
 ### Idempotent and resumable
 
@@ -63,7 +74,7 @@ Each node tracks completed steps in `/var/lib/openg2p/deploy-state/*.done`. Re-r
     <tr>
       <td><code>prod-config.yaml</code></td>
       <td>You author it</td>
-      <td>preferences: <code>cluster_name</code>, <code>internal_domain</code>, versions, <code>keycloak_admin_email</code>, <code>postgres_*</code>, <code>nfs_*</code></td>
+      <td>preferences: <code>cluster_name</code>, <code>public_domain</code>, hostnames per service, cert paths, versions, <code>keycloak_admin_email</code>, <code>postgres_*</code>, <code>nfs_*</code></td>
       <td>First</td>
     </tr>
     <tr>
@@ -93,14 +104,14 @@ The orchestrator auto-loads `provision-output.yaml` next to `prod-config.yaml`. 
 | Logging | Rancher logging 102.0.0 | Fluentd + OpenSearch |
 | Storage | NFS-CSI driver v4.7.0 | Default StorageClass `nfs-csi`, retain policy |
 | VPN | Wireguard (kernel + tools) | Native systemd service on the RP node |
-| Internal DNS | dnsmasq | On the RP node, listening on private + WG interfaces |
+| DNS | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts` |
 | Database (host) | PostgreSQL 16 | On the storage node, ready for environment automation |
 
 ## Prerequisites
 
-Three Ubuntu 24.04 VMs and a laptop. That's effectively it.
+This section is **self-contained** — everything you need to have ready before running the automation. The orchestrator's `--preflight` mode mechanically verifies every item below and refuses to start if any is missing, with a clear error message and a link back to this section.
 
-### On the three VMs
+### 1. Three Ubuntu 24.04 VMs
 
 | | Reverse Proxy | Compute | Storage |
 |---|---|---|---|
@@ -109,25 +120,136 @@ Three Ubuntu 24.04 VMs and a laptop. That's effectively it.
 | **RAM minimum** | 4 GB | 64 GB | 32 GB |
 | **Root disk minimum** | 64 GB | 128 GB | 256 GB |
 | **Disk type** | SSD recommended | SSD recommended | SSD strongly recommended |
-| **Public IP** | Required (Wireguard endpoint) | Recommended for laptop SSH | Recommended for laptop SSH |
 | **Network** | All three on the same private subnet | | |
 | **Internet egress** | Required during install (apt, RKE2, Helm charts) | | |
 
-{% hint style="info" %}
-The script enforces these minimums in a preflight pass before any installation work starts. Smaller VMs are rejected with a clear message. See [Resource Requirements](../../../deployment/resource-requirements.md) for the full table.
-{% endhint %}
+See [Resource Requirements](../../../deployment/resource-requirements.md) for the full table per deployment model.
 
-### On the admin's laptop
+### 2. Two network interfaces on the Reverse Proxy VM
 
-* **`bash` 4 or later**, `ssh`, `rsync`. macOS ships `/bin/bash` 3.2 by default — install a newer one with `brew install bash`. Linux distros ship 4+ by default.
+The RP node terminates **two** network channels:
+
+* **Public channel** — Wireguard endpoint + (in env-automation later) citizen-facing services. Reachable from the internet.
+* **Private channel** — Nginx server blocks for the admin tools. Reachable only via Wireguard or the internal network.
+
+For the two channels to be enforced cleanly, the RP needs **two separate IPs** — one per channel — and they must be on **different network interfaces**. SNI / Host-header differentiation on a single IP is NOT enough: anyone able to reach the public IP on 443 could set the Host header and bypass the channel separation.
+
+The standard pattern is:
+
+| Interface | Network | Used for |
+|---|---|---|
+| `vNIC-public` | DMZ / public-facing | Wireguard UDP, public Nginx server blocks |
+| `vNIC-internal` | internal mgmt / cluster | Admin Nginx server blocks (rancher, keycloak, grafana, prometheus) |
+
+Adding the second vNIC is a sysadmin task done **before** running the automation. It's trivial on every common hypervisor:
+
+| Hypervisor | How to add the second vNIC |
+|---|---|
+| VMware vSphere / ESXi | Point-and-click in vCenter; hot-add supported |
+| KVM / libvirt (`virt-manager`) | XML edit or one click; hot-add supported |
+| Proxmox VE | Web UI; seconds |
+| Microsoft Hyper-V | Hyper-V Manager → Add Hardware → Network Adapter |
+| Nutanix AHV | Prism Element / Central |
+| OpenStack | Multiple ports per instance — built into the API |
+| oVirt / RHV | Per-VM NIC management |
+| Bare metal | Use a second physical NIC, or a VLAN-tagged sub-interface on the existing one |
+
+If you genuinely cannot add a second vNIC (rare on modern hypervisors), see [Fallback: two Nginx VMs](three-node-automation-fallback-second-rp.md).
+
+### 3. Customer-supplied DNS records
+
+The automation does NOT install any DNS server. Your authoritative DNS must resolve the following hostnames:
+
+| Hostname | DNS A-record → | Channel | Purpose |
+|---|---|---|---|
+| `rancher.<your-domain>` | RP's **internal** IP (the vNIC-internal one) | private | Rancher cluster manager UI |
+| `keycloak.<your-domain>` | RP's **internal** IP | private | Keycloak admin SSO (Rancher's identity provider) |
+| `grafana.<your-domain>` | RP's **internal** IP | private | Grafana dashboards (from rancher-monitoring) |
+| `prometheus.<your-domain>` | RP's **internal** IP | private | Prometheus UI (from rancher-monitoring) |
+
+`<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The four hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
+
+Admin laptops must be able to resolve these hostnames. Three working patterns:
+
+1. **Split-horizon DNS** (recommended) — your internal DNS resolves these to the RP's internal IP; public DNS doesn't expose them. Admin laptops reach the internal DNS via Wireguard.
+2. **Public DNS pointing at the private IP** — anyone can resolve the name, but the IP is private; only Wireguard peers can reach it. Acceptable for many gov setups.
+3. **`/etc/hosts` on the admin laptop** — fully manual. The orchestrator prints the exact lines in the completion summary; you append them once per laptop.
+
+### 4. Customer-supplied TLS certificates
+
+The automation does NOT generate certs. You provide one cert+key per admin hostname (or one wildcard covering all four). Government CAs typically deliver certificates in one of these formats — all are supported:
+
+| Format | Files you provide | Notes |
+|---|---|---|
+| **PEM fullchain + key** | `<host>.fullchain.pem`, `<host>.key` | Native Nginx format. Most CAs can produce this on request. |
+| **Separate PEM** | `<host>.cert.pem`, `<host>.chain.pem`, `<host>.key.pem` | Auto-concatenated into a fullchain by the script. Common from commercial CAs. |
+| **PFX / P12** | `<host>.pfx` (with password) | Windows IIS / Microsoft AD CS export. Converted with `openssl pkcs12` by the script. |
+| **ZIP bundle** | `<host>.zip` (Sectigo/DigiCert layout) | Auto-detected and extracted. |
+
+The customer drops the cert files in a directory on **your laptop** (not the RP). Reference them by path in `prod-config.yaml`. The script:
+
+1. **Validates locally** on your laptop before any push:
+   * Cert covers the declared hostname (SAN/CN match, including wildcards)
+   * Key matches cert (modulus / pubkey hash)
+   * Chain is complete
+   * Expires more than 30 days out (warn at 14, fail at 7)
+   * Issued by a trusted CA (warn-only — sovereign / internal CAs are accepted)
+2. **Normalizes** to PEM fullchain + key.
+3. **Uploads** to `/etc/openg2p/certs/public/<hostname>/` on the RP (`fullchain.pem` 0644, `privkey.pem` 0600, root:root).
+4. **Atomic-swap** into Nginx, with rollback if `nginx -t` fails on the new config.
+
+See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md) for the deeper discussion on cert formats, per-FQDN vs wildcards in gov environments, and the validation pipeline.
+
+You can also pre-validate certs without running an install:
+
+```bash
+./openg2p-prod.sh --validate-certs --config prod-config.yaml
+```
+
+Iterate until every cert reports green before you commit to the install.
+
+### 5. Customer-supplied SSH access
+
+* Key-based SSH from the admin's laptop to each of the three VMs.
+* The SSH user on each VM has **passwordless sudo** (`NOPASSWD:ALL` in `/etc/sudoers.d/<user>`) or you SSH as root directly.
+
+### 6. On the admin's laptop
+
+* **`bash` 4 or later** (`bash --version`). macOS ships `/bin/bash` 3.2 by default — install a newer one with `brew install bash` and make sure it's first in `PATH`. Linux distros ship 4+ by default.
+* `ssh`, `rsync` (preinstalled on macOS and Linux).
+* `openssl` (preinstalled on macOS and Linux) — used by the local cert validator.
 * A Wireguard client (only needed AFTER install, to reach the admin tools).
-* SSH access (key-based) and **passwordless sudo** for one user account on each of the three VMs.
+* The cert files from your customer / CA, in any of the supported formats above.
 
-### What's NOT required
+### 7. What this automation does NOT need
 
-* No domain name or DNS records (admin tools live under `*.openg2p.internal`, served via Wireguard).
-* No TLS certificates — a local CA generates self-signed certs for the admin tools. Public domains and certs are only needed later, when you add citizen-facing environments.
-* No git, Docker registry, or backup node — those are deferred to follow-up automation.
+Explicitly so:
+
+* **No git server, no Docker registry, no backup node.** Deferred to follow-up automation.
+* **No public DNS for the admin hostnames** (point them at private IPs; access is via Wireguard).
+* **No Let's Encrypt or any other ACME client.** Government deployments universally use procured certs from sovereign or commercial CAs.
+* **No local CA / self-signed certs.** Earlier versions of the automation used a self-signed CA for admin tools; this is no longer supported. Real certs only.
+
+### Preflight verification
+
+The orchestrator's `--preflight` mode (and the implicit preflight at the start of an end-to-end run) mechanically validates everything in this section:
+
+```bash
+./openg2p-prod.sh --preflight --config prod-config.yaml
+```
+
+For each item that fails, the error message tells you exactly what's wrong and links back here. Example failures and what to fix:
+
+| Preflight error | Fix |
+|---|---|
+| `RP node has only 1 network interface` | Add a second vNIC (see [section 2](#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)) |
+| `DNS: rancher.<domain> does not resolve` | Add the A-record (see [section 3](#id-3.-customer-supplied-dns-records)) |
+| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP internal is 5.6.7.8` | DNS points at the wrong IP — fix the A-record |
+| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>` | Wrong cert for that hostname (see [section 4](#id-4.-customer-supplied-tls-certificates)) |
+| `Cert ./certs/rancher.pem: key does not match cert` | Mismatched cert/key pair |
+| `RAM: 3 GB (need ≥4)` | Resize the VM (see [section 1](#id-1.-three-ubuntu-24.04-vms)) |
+
+Preflight is non-destructive — it makes no changes. Run it until everything's green, then run the full install.
 
 ## How to use the script
 
@@ -147,24 +269,42 @@ cd openg2p-deployment/automation/production
 cp prod-config.example.yaml prod-config.yaml
 ```
 
-Edit `prod-config.yaml`. The example config has every key tagged either `[USER]` (you fill in) or `[AWS]` (auto-populated by AWS provisioning, or you fill in for non-AWS installs):
+Edit `prod-config.yaml`. The example config has every key tagged either `[USER]` (you fill in), `[CUSTOMER]` (provided by customer / govt — hostnames, certs), or `[AWS]` (auto-populated by AWS provisioning, or you fill in for non-AWS installs):
 
 ```yaml
-# [USER] keys you typically set
+# [USER] preferences
 cluster_name: "openg2p"
-internal_domain: "openg2p.internal"
-keycloak_admin_email: "admin@openg2p.internal"
+keycloak_admin_email: "admin@yourcorp.gov.eth"
 postgres_version: "16"
 wg_subnet: "10.15.0.0/16"
 wg_port: "51820"
 
-# [AWS] keys — leave blank if using AWS provisioning, fill in otherwise
-rp_public_ip: ""
-rp_private_ip: ""
+# [CUSTOMER] domain (DNS A-records for rancher.<domain>, keycloak.<domain>,
+# grafana.<domain>, prometheus.<domain> must already exist, all pointing
+# at the RP's INTERNAL IP — see Prerequisites § 3)
+public_domain: "openg2p.gov.eth"
+# Override individual hostnames only if your customer uses non-standard names:
+# rancher_hostname:    "k8s-admin.dept.gov"
+# keycloak_hostname:   "sso.dept.gov"
+# ...
+
+# [CUSTOMER] TLS certs (paths on YOUR laptop; uploaded to RP at install time)
+# Either provide one wildcard cert covering all four:
+tls_wildcard_cert: "./certs/wildcard.fullchain.pem"
+tls_wildcard_key:  "./certs/wildcard.key"
+# OR provide per-FQDN certs (leave wildcard blank, fill these):
+# tls_rancher_cert:    "./certs/rancher.fullchain.pem"
+# tls_rancher_key:     "./certs/rancher.key"
+# ... (similar for keycloak, grafana, prometheus)
+
+# [AWS|MANUAL] node networking — auto-populated by AWS provisioning,
+# or fill in manually for on-prem
+rp_public_ip:       ""    # vNIC-public address, also the Wireguard endpoint
+rp_internal_ip:     ""    # vNIC-internal address, Nginx binds admin server blocks here
 compute_private_ip: ""
 storage_private_ip: ""
-private_subnet: ""
-# ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr, wg_endpoint
+private_subnet:     ""
+# ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr
 ```
 
 ### Step 2 — probe and preflight
@@ -192,7 +332,7 @@ Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 | 0 | All 3 nodes | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel) |
 | 1 | Storage | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet) |
 | 2 | Compute | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass |
-| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs, dnsmasq, local CA + wildcard cert, Nginx server blocks |
+| 3 | Reverse Proxy | apt basics, ufw, second-NIC bring-up, Wireguard server + peer configs, customer cert ingest + validate + install, Nginx server blocks bound to vNIC-internal |
 | 4 | Compute | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging |
 | 5 | Compute | Rancher-Keycloak SAML integration |
 
@@ -252,39 +392,30 @@ ping 10.15.0.1   # the RP's WG-side IP — must respond
 The peer config uses **split tunnel** by default — only the Wireguard subnet (`10.15.0.0/16`) and the cluster's private subnet are routed through the VPN. Your normal internet stays direct.
 {% endhint %}
 
-#### 4.2 Trust the local CA on your laptop
+#### 4.2 (Skipped — no local CA)
 
-The admin tools are served with a certificate signed by a local CA generated on the RP. Pull and trust it once:
+Since you're using **real certs from your customer's CA** (see [Prerequisites § 4](#id-4.-customer-supplied-tls-certificates)), there's no CA to install on your laptop. Browsers already trust the issuing CA. If you see a cert warning when first opening Rancher, that's a real issue — your cert chain probably isn't complete; re-run `--validate-certs` and the pre-flight will catch it.
 
-```bash
-ssh -i <your-key> ubuntu@<rp-public-ip> \
-    "sudo cat /etc/openg2p/ca/ca.crt" > openg2p-ca.crt
-```
+#### 4.3 DNS resolution on your laptop
 
-| OS | Install command |
-|---|---|
-| macOS | `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain openg2p-ca.crt` |
-| Linux | `sudo cp openg2p-ca.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates` |
-| Windows | `certmgr.msc` → Trusted Root Certification Authorities → Import |
+You need your laptop to resolve the admin hostnames (`rancher.<domain>`, `keycloak.<domain>`, `grafana.<domain>`, `prometheus.<domain>`) to the RP's **internal** IP. Three working patterns:
 
-#### 4.3 (macOS only) DNS resolver entry
+1. **Customer's DNS reachable through Wireguard** (preferred) — the WG peer config can include the customer's internal DNS resolver. Edit `peer1.conf` after pulling it (or have the customer add it):
+   ```
+   [Interface]
+   ...
+   DNS = <customer-internal-dns-IP>
+   ```
 
-Wireguard pushes a DNS server to your client, but macOS's resolver doesn't always honour pushed DNS for split-tunnel. Belt-and-braces:
+2. **`/etc/hosts` on your laptop** — manual but reliable. The orchestrator's completion summary prints the exact lines. Append once per laptop:
+   ```
+   <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth grafana.openg2p.gov.eth prometheus.openg2p.gov.eth
+   ```
 
-```bash
-sudo mkdir -p /etc/resolver
-echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
-```
-
-Verify:
-
-```bash
-dscacheutil -q host -a name rancher.openg2p.internal
-# should return the RP's private IP, e.g. 172.29.0.179
-```
+3. **Public DNS pointing at the private IP** — if the customer's authoritative DNS is public-facing and OK with publishing private-IP A-records, the hostnames resolve from anywhere (but only WG-connected laptops can actually reach the IP).
 
 {% hint style="warning" %}
-Don't use `dig` to test on macOS — it bypasses the system resolver and will return NXDOMAIN even when everything works. Use `dscacheutil`, `ping`, or `curl`.
+On macOS, don't use `dig` to test — it bypasses the system resolver and will give NXDOMAIN even when everything works. Use `dscacheutil -q host -a name rancher.<domain>`, `ping`, or `curl`.
 {% endhint %}
 
 #### 4.4 Login to Rancher — the recommended flow
@@ -293,7 +424,7 @@ There are two distinct logins. The first time you connect, do them in this order
 
 **Step A — Login with the LOCAL Rancher admin first**
 
-Open `https://rancher.openg2p.internal` in your browser. On the Rancher login page, click **"Use a local user"** (the small link below the big "Login with Keycloak" button).
+Open `https://rancher.<your-domain>` in your browser (the hostname you put in `rancher_hostname`). On the Rancher login page, click **"Use a local user"** (the small link below the big "Login with Keycloak" button).
 
 * **Username**: `admin`
 * **Password**: shown in the orchestrator's completion summary; or fetch it from the cluster:
@@ -314,9 +445,9 @@ While logged in to Rancher, browse to: **`local` cluster → Storage → Secrets
 
 In Rancher, click your avatar (top-right) → **Log Out**. You're back at the login screen.
 
-Now click the big **"Login with Keycloak"** button. Your browser is redirected to `https://keycloak.openg2p.internal/...` — the URL change confirms you're on the Keycloak login form, not Rancher's.
+Now click the big **"Login with Keycloak"** button. Your browser is redirected to `https://keycloak.<your-domain>/...` — the URL change confirms you're on the Keycloak login form, not Rancher's.
 
-* **Username**: the email you set in `keycloak_admin_email` (default: `admin@openg2p.internal`).
+* **Username**: the email you set in `keycloak_admin_email`.
 * **Password**: the Keycloak admin password (from the orchestrator summary, or step B above).
 
 Keycloak authenticates you, signs a SAML assertion, and redirects you back to Rancher. You should land on the Rancher home page as the Keycloak-authenticated admin. **SAML SSO is now verified working.**
@@ -344,7 +475,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 
 * Provisions a working production OpenG2P infrastructure on three Ubuntu 24.04 VMs.
 * Hard-enforces resource and network requirements via preflight — no surprise failures 18 minutes into an install.
-* Sets up a local CA + Wireguard + dnsmasq scheme so admin tools work with **zero customer DNS or cert procurement**.
+* Configures Wireguard + Nginx on the RP node with **customer-supplied DNS and TLS certs** (the customer's CA — sovereign, commercial, internal PKI), validates the certs locally before push, and serves the admin tools on a dedicated private network interface (vNIC-internal).
 * Installs Rancher, Keycloak (admin SSO), monitoring (Prometheus + Grafana), and logging (Fluentd + OpenSearch) via Helmfile.
 * Wires Rancher-Keycloak SAML integration so admins log in once via Keycloak.
 * Configures the storage node with NFS export and host PostgreSQL (PG16), ready for environment automation to create per-environment databases on per-environment ports. The auto-generated superuser password is saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (and printed in the orchestrator's completion summary).
@@ -355,7 +486,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 These are deferred to follow-up automation, not gaps:
 
 * **Environment automation** — creating `prod`, `staging`, etc. namespaces with their own Postgres, Keycloak, eSignet, Superset, etc. The host PostgreSQL on the storage node sits idle until that lands.
-* **Customer-supplied public domains and certs** — admin tools live entirely under `*.openg2p.internal` with self-signed certs. Per-FQDN certs in mixed formats (PEM, PFX, ZIP bundles) are an environment-automation concern. See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
+* **Citizen-facing public domains and certs** — admin tools (the four hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP's public NIC. See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
@@ -379,18 +510,18 @@ You should see the peer line populated with a recent handshake timestamp. On Wir
 #### 2. Internal DNS
 
 ```bash
-ping -c1 rancher.openg2p.internal
+ping -c1 rancher.<your-domain>
 ```
 
-The hostname should resolve to the reverse-proxy node's private IP (the WG-server IP, typically `10.15.0.1`).
+The hostname should resolve to the RP's **internal** IP (e.g. `172.29.0.179`), not its public IP. If it resolves to the public IP, your customer's DNS has the wrong A-record.
 
 {% hint style="info" %}
-On macOS, `dig` bypasses the system resolver. Use `dscacheutil -q host -a name rancher.openg2p.internal` if `dig` returns NXDOMAIN.
+On macOS, `dig` bypasses the system resolver. Use `dscacheutil -q host -a name rancher.<your-domain>` if `dig` returns NXDOMAIN.
 {% endhint %}
 
 #### 3. Browser to Rancher
 
-Open `https://rancher.openg2p.internal`. You should see the Rancher login page with a **Login with Keycloak** button — and **no certificate warning** (assuming you installed the local CA).
+Open `https://rancher.<your-domain>`. You should see the Rancher login page with a **Login with Keycloak** button — and **no certificate warning** (your customer-supplied cert chains to a publicly-trusted CA).
 
 #### 4. kubectl
 
@@ -406,10 +537,10 @@ The first command should show the compute node `Ready`. The second should be emp
 
 ```bash
 sudo systemctl is-active wg-quick@wg0       # active
-sudo systemctl is-active dnsmasq            # active
 sudo systemctl is-active nginx              # active
 sudo nginx -t                               # syntax OK
-sudo dig +short rancher.openg2p.internal @127.0.0.1   # → RP private IP
+sudo ss -tlnp | grep -E ':80|:443'          # nginx bound to vNIC-internal IP
+sudo ls /etc/openg2p/certs/public/          # one dir per admin hostname
 ```
 
 ### On the compute node
