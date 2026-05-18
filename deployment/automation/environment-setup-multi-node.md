@@ -332,14 +332,18 @@ Each environment gets its own namespace, Rancher project, Istio gateway, and ful
 
 ## Uninstallation
 
-To tear down an environment, use `env-cluster-uninstall.sh` (the reverse of `env-cluster.sh`). It has two modes:
+To tear down an environment, use `env-cluster-uninstall.sh` (the reverse of `env-cluster.sh`). It has two modes.
+
+{% hint style="info" %}
+The uninstall script takes only `--namespace <name>` — it does **not** read `env-config.yaml`. All cleanup is namespace-scoped, so it doesn't matter which apps or chart versions were originally installed. Every Helm release, Secret, PVC, and (in `--full` mode) the namespace itself is removed.
+{% endhint %}
 
 {% tabs %}
 {% tab title="Default — Helm + data" %}
 Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets, PVCs, PVs). Preserves the namespace, Istio Gateway, and Rancher Project so the environment can be reinstalled quickly.
 
 ```bash
-./env-cluster-uninstall.sh --config env-config.yaml
+./env-cluster-uninstall.sh --namespace qa
 ```
 
 **Deletes:**
@@ -359,7 +363,7 @@ Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets,
 Everything in the default mode, plus the Istio Gateway, Rancher Project, and the namespace itself. Leaves only infra-level resources.
 
 ```bash
-./env-cluster-uninstall.sh --config env-config.yaml --full
+./env-cluster-uninstall.sh --namespace qa --full
 ```
 
 **Also deletes:**
@@ -380,7 +384,7 @@ Everything in the default mode, plus the Istio Gateway, Rancher Project, and the
 See what would be deleted without actually deleting anything:
 
 ```bash
-./env-cluster-uninstall.sh --config env-config.yaml --full --dry-run
+./env-cluster-uninstall.sh --namespace qa --full --dry-run
 ```
 {% endtab %}
 {% endtabs %}
@@ -389,7 +393,7 @@ See what would be deleted without actually deleting anything:
 The script previews everything that will be deleted and asks for confirmation before proceeding.
 
 * Default mode requires typing `yes`
-* `--full` mode requires typing the environment name (prevents accidental wipes of the wrong environment)
+* `--full` mode requires typing the namespace name (prevents accidental wipes of the wrong environment)
 
 Use `--yes` to skip confirmation for automation/CI.
 {% endhint %}
@@ -397,12 +401,12 @@ Use `--yes` to skip confirmation for automation/CI.
 ### Uninstall CLI options
 
 ```bash
-./env-cluster-uninstall.sh --config env-config.yaml [options]
+./env-cluster-uninstall.sh --namespace <name> [options]
 ```
 
 | Option | Description |
 | --- | --- |
-| `--config <file>` | Path to environment config file (required) |
+| `--namespace <name>` | Target Kubernetes namespace to tear down (required) |
 | `--full` | Also delete Istio Gateway, Rancher Project, and namespace |
 | `--yes` | Skip confirmation prompt (for automation) |
 | `--dry-run` | Show what would be deleted without actually deleting |
