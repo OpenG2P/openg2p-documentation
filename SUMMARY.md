@@ -49,6 +49,7 @@
       * [Intake Forms](products/registry/registry/design/intake-forms/README.md)
         * [Input Mechanisms](products/registry/registry/design/intake-forms/input-mechanisms.md)
       * [Record level permissions](products/registry/registry/design/record-level-permissions.md)
+      * [AWE Integration](products/registry/registry/design/awe-integration.md)
     * [Developer Zone](products/registry/registry/developer-zone/README.md)
       * [Organization of Codebase](products/registry/registry/developer-zone/organization-of-codebase.md)
       * [Building a Registry](products/registry/registry/developer-zone/building-a-registry/README.md)
