@@ -80,7 +80,7 @@ Download the Kubeconfig file `rke2.yaml` and keep it securely. (This is importan
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Check the status of rke2 server as shown in the screenshot below.</mark>
 
-<figure><img src="../../.gitbook/assets/image (34) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (34) (1).png" alt=""><figcaption></figcaption></figure>
 
 #### **4. Wireguard installation**
 
@@ -105,15 +105,15 @@ Install Wireguard Bastion server for secure VPN access:
     ```
 4. Once it finishes, navigate to `/etc/wireguard-app-users`. You will find multiple peer configuration files and CD in to `peer1` folder and copy `peer1.conf` to your notepad.
 5. Follow the link provided below to setup a WireGuard on your system.\
-   [Install WireGuard Client on Desktop](../scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
+   [Install WireGuard Client on Desktop](../../../../deployment/scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard service is running on k8s cluster and the Wireguard setup is completed on your machine.</mark>\ <mark style="color:green;">On k8s cluster:</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure></div>
 
 <mark style="color:green;">On your machine:</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (23).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (23).png" alt=""><figcaption></figcaption></figure></div>
 
 {% hint style="success" %}
 After installing WireGuard on the cluster and configuring it on your local machine, you can install and configure `kubectl` using the RKE2 kubeconfig file generated during the Kubernetes cluster setup on the server. This allows you to access the cluster from your local command line.
@@ -143,7 +143,7 @@ Install NFS Server to provide persistent storage volumes to kubernetes cluster:
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Make sure the NFS server is running and the setup is completed on server node.</mark>
 
-<div align="left" data-full-width="false"><figure><img src="../../.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left" data-full-width="false"><figure><img src="../../../../.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure></div>
 
 3. Install the Kubernetes NFS CSI driver and the NFS client provisioner on the cluster.
 4.  From openg2p-deployment repo [kubernetes/nfs-client](https://github.com/OpenG2P/openg2p-deployment/tree/main/kubernetes/nfs-client) directory, **run**: (Make sure to replace the `<Node Internal IP>` and `<cluster name>` parameters appropriately below)
@@ -157,7 +157,7 @@ Install NFS Server to provide persistent storage volumes to kubernetes cluster:
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Make sure the NFS CSI driver and client provisioner is running and the setup is completed on server node.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **6. Istio installation**
 
@@ -171,7 +171,7 @@ kubectl apply -f istio-ef-spdy-upgrade.yaml
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Check whether all the Istio pods have come up.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (21) (1).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (21) (1).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **7.** Setting up nginx load balancer
 
@@ -190,7 +190,7 @@ You can name your sandbox anything, e.g., dev, qa, or test. Make sure to note it
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">After creating the certificates, verify that they are present in the /etc/letsencrypt/live/ directory.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (4) (1) (2).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (4) (1) (2).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **8.** Mapping domains to cluster IP
 
@@ -205,7 +205,7 @@ Point these records to the **Internal IP** address of node.
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">The screenshot below is an example of DNS mapping using AWS Route 53. You can use any DNS provider as per your requirements, and the domain mapping should be similar to what is shown in the</mark> \ <mark style="color:green;">screenshot.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (2) (1) (2) (1).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (2) (1) (2) (1).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **9. Rancher installation**
 
@@ -222,9 +222,9 @@ Login to Rancher using the above hostname and bootstrap the `admin` user accordi
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Verify that all Rancher pods are running properly in the cattle-system namespace, and Rancher is accessible from your browser.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (61).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (61).png" alt=""><figcaption></figcaption></figure></div>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (62).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (62).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **10. keycloak installation**
 
@@ -246,9 +246,9 @@ NS=keycloak-system \
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Verify Keycloak pods in the</mark> <mark style="color:green;">`keycloak-system`</mark> <mark style="color:green;">namespace and ensure it's accessible in your browser.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (9) (1).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (9) (1).png" alt=""><figcaption></figcaption></figure></div>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (49).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (49).png" alt=""><figcaption></figcaption></figure></div>
 
 #### 11. Integrating Rancher with Keycloak
 
@@ -257,7 +257,7 @@ NS=keycloak-system \
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once you attempt to log in using rancher.hostname.org, you will be redirected to authenticate via Keycloak. Log in using your Keycloak credentials. In Rancher, your user status should appear as "Active," as shown in the screenshot.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (50).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (50).png" alt=""><figcaption></figcaption></figure></div>
 
 {% hint style="success" %}
 So, this completes the base infrastructure setup for OpenG2P, and you can now begin installing the `OpenG2P modules` by following the steps below.
@@ -280,7 +280,7 @@ In Rancher, make sure that `Istio auto-injection` for the dev namespace is disab
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Verify your project name and namespace appear under project/namespace section.</mark>
 
-<figure><img src="../../.gitbook/assets/image (82) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (82) (1).png" alt=""><figcaption></figcaption></figure>
 
 #### **13. Istio** gateway setup
 
@@ -302,16 +302,16 @@ Set up an Istio gateway on `dev` namespace.
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once created, the gateway will appear in Rancher UI under Istio > Gateway in the dev namespace.</mark>
 
-<div align="left"><figure><img src="../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure></div>
+<div align="left"><figure><img src="../../../../.gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure></div>
 
 #### **14. Cluster Monitoring installation**
 
-Install [Prometheus and Monitoring](../scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
+Install [Prometheus and Monitoring](../../../../deployment/scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once monitoring is installed in Rancher, navigate to the Monitoring section where you'll see options for Alertmanager and Grafana. You can click on these to access their respective dashboards.</mark>
 
-<figure><img src="../../.gitbook/assets/image (55).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (55).png" alt=""><figcaption></figcaption></figure>
 
 #### **15. Cluster Logging installation**
 

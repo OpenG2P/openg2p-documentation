@@ -7,7 +7,7 @@ description: >-
 
 # Backups
 
-This page is the entry point for the OpenG2P backup automation that lives at `automation/backups/openg2p-backup.sh` in the deployment repo. It complements the [Three-Node Automation](three-node-automation.md): the 3-node script gets the platform up, the backup automation keeps it recoverable.
+This page is the entry point for the OpenG2P backup automation that lives at `automation/backups/openg2p-backup.sh` in the deployment repo. It complements the [Three-Node Automation](../infrastructure-setup/three-node-automation/): the 3-node script gets the platform up, the backup automation keeps it recoverable.
 
 {% hint style="info" %}
 The whole stack is opt-in. You can deploy the 3-node platform without backups, then add backups later by running aws-provision again with `backup_node.enabled: true` and running `openg2p-backup.sh install`.
@@ -19,18 +19,18 @@ A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of 
 
 ## Sub-pages
 
-* [Architecture](backups/architecture.md) — the tools, why each is here, what's deliberately not used
-* [What gets backed up](backups/what-gets-backed-up.md) — the per-component table and the rationale for what's lost vs. recreated on a fresh install
-* [Prerequisites](backups/prerequisites.md) — backup-node sizing, network, secret custody (p12 keystore model)
-* [Configuration](backups/configuration.md) — `backup-config.yaml` reference
-* [Operations](backups/operations.md) — `install`, `run`, `verify`, `list`, `status`, group toggles
-* [Drills](backups/drills.md) — weekly verify + dry-run-restore harness, interpreting `.status.json`
-* [Restoration](backups/restoration.md) — index of restore scenarios
-  * [Postgres PITR](backups/restoration/postgres-pitr.md)
-  * [Single PVC](backups/restoration/single-pvc.md)
-  * [Etcd in-place](backups/restoration/etcd-in-place.md)
-  * [Full rebuild](backups/restoration/full-rebuild.md)
-* [Alerting (Phase 2)](backups/alerting.md) — candidate mechanisms, deferred from v1
+* [Architecture](architecture.md) — the tools, why each is here, what's deliberately not used
+* [What gets backed up](what-gets-backed-up.md) — the per-component table and the rationale for what's lost vs. recreated on a fresh install
+* [Prerequisites](prerequisites.md) — backup-node sizing, network, secret custody (p12 keystore model)
+* [Configuration](configuration.md) — `backup-config.yaml` reference
+* [Operations](operations.md) — `install`, `run`, `verify`, `list`, `status`, group toggles
+* [Drills](drills.md) — weekly verify + dry-run-restore harness, interpreting `.status.json`
+* [Restoration](restoration/) — index of restore scenarios
+  * [Postgres PITR](restoration/postgres-pitr.md)
+  * [Single PVC](restoration/single-pvc.md)
+  * [Etcd in-place](restoration/etcd-in-place.md)
+  * [Full rebuild](restoration/full-rebuild.md)
+* [Alerting (Phase 2)](alerting.md) — candidate mechanisms, deferred from v1
 
 ## TL;DR — get backups running
 
@@ -76,7 +76,7 @@ All of these are configurable via `backup-config.yaml` schedules. The defaults m
 ## What this does not do
 
 * **Multi-site / offsite replication.** v1 keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — this is 1/1/0. Plan a second offsite target later via `restic copy` or pgBackRest's secondary repo support.
-* **Mass alerting.** Status is exposed as `/var/lib/openg2p-backup/.status.json` on the backup host. A Phase 2 layer wires that into Prometheus/email/Slack (see [Alerting](backups/alerting.md)).
+* **Mass alerting.** Status is exposed as `/var/lib/openg2p-backup/.status.json` on the backup host. A Phase 2 layer wires that into Prometheus/email/Slack (see [Alerting](alerting.md)).
 * **Full disaster-recovery rehearsal.** Weekly drills do per-component verify + dry-run-restore. Cluster-wide rehearsals into a sandbox VPC are a manual, separately-scheduled operator activity.
 * **Restoring to a different cluster topology.** Restore assumes you're rebuilding into the same 3-node shape. Cross-version or cross-architecture restore is out of scope.
 

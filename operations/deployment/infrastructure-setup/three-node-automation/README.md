@@ -1,10 +1,13 @@
 ---
-description: Three-node production deployment automation — one orchestrator script that drives a Reverse Proxy, Compute (Kubernetes), and Storage node from the admin's laptop, with optional AWS provisioning.
+description: >-
+  Three-node production deployment automation — one orchestrator script that
+  drives a Reverse Proxy, Compute (Kubernetes), and Storage node from the
+  admin's laptop, with optional AWS provisioning.
 ---
 
-# Three-Node Automation
+# Production - Three-Node
 
-The three-node automation provisions a complete production OpenG2P infrastructure across three Ubuntu 24.04 VMs from your laptop, with a single command. It is the production counterpart to [Single-Node Automation](../../../deployment/automation/single-node-automation.md): same logging, same idempotency, same general structure, but split across three role-specialised machines.
+The three-node automation provisions a complete production OpenG2P infrastructure across three Ubuntu 24.04 VMs from your laptop, with a single command. It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across three role-specialised machines.
 
 {% hint style="info" %}
 The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/production/`. The optional AWS provisioning lives at `automation/production/aws/`.
@@ -12,53 +15,32 @@ The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/o
 
 ## Key concepts
 
-The three-node deployment model itself — what each node does, why the split exists, and where it fits between single-node and full-scale — is described in [OpenG2P Deployment Architecture](../../../deployment/concepts/openg2p-deployment-model.md#three-node). This page is about the **automation** that brings it up.
+The three-node deployment model itself — what each node does, why the split exists, and where it fits between single-node and full-scale — is described in [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md#three-node). This page is about the **automation** that brings it up.
 
 ### The three roles
 
-<table>
-  <thead>
-    <tr><th width="180">Role</th><th>What runs on it</th><th>Public-facing?</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Reverse Proxy</strong></td>
-      <td>Nginx (TLS terminator, two-channel: public + private), Wireguard server</td>
-      <td>Yes — public IP, Wireguard endpoint</td>
-    </tr>
-    <tr>
-      <td><strong>Compute</strong></td>
-      <td>RKE2 single-control-plane Kubernetes, Istio, Rancher, Keycloak (admin SSO), Prometheus + Grafana, Fluentd + OpenSearch, NFS client</td>
-      <td>No — only reachable via the reverse proxy or Wireguard</td>
-    </tr>
-    <tr>
-      <td><strong>Storage</strong></td>
-      <td>NFS server (cluster persistent storage), host-installed PostgreSQL (ready for environment automation)</td>
-      <td>No — private subnet only</td>
-    </tr>
-  </tbody>
-</table>
+<table><thead><tr><th width="180">Role</th><th>What runs on it</th><th>Public-facing?</th></tr></thead><tbody><tr><td><strong>Reverse Proxy</strong></td><td>Nginx (TLS terminator, two-channel: public + private), Wireguard server</td><td>Yes — public IP, Wireguard endpoint</td></tr><tr><td><strong>Compute</strong></td><td>RKE2 single-control-plane Kubernetes, Istio, Rancher, Keycloak (admin SSO), Prometheus + Grafana, Fluentd + OpenSearch, NFS client</td><td>No — only reachable via the reverse proxy or Wireguard</td></tr><tr><td><strong>Storage</strong></td><td>NFS server (cluster persistent storage), host-installed PostgreSQL (ready for environment automation)</td><td>No — private subnet only</td></tr></tbody></table>
 
 ### Why admin tools live behind Wireguard
 
-Rancher, Keycloak, Grafana, Prometheus are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>`, `keycloak.<your-domain>`, `grafana.<your-domain>`, `prometheus.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
+Rancher, Keycloak, Grafana, Prometheus are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>`, `keycloak.<your-domain>`, `grafana.<your-domain>`, `prometheus.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
 
 This is deliberate. Government customers almost universally require admin tools to be VPN-only, have security policies that flag publicly exposed admin panels, and procure certs from their own CAs (rarely Let's Encrypt).
 
 {% hint style="info" %}
-For the full discussion of cert formats commonly seen in gov procurement (PEM split bundles, PFX, sovereign CAs) and why per-FQDN dominates over wildcards, see [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
+For the full discussion of cert formats commonly seen in gov procurement (PEM split bundles, PFX, sovereign CAs) and why per-FQDN dominates over wildcards, see [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md).
 {% endhint %}
 
 ### Channel separation: public vs private on the RP
 
-The RP has two network interfaces (see [Prerequisites § 2](#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)):
+The RP has two network interfaces (see [Prerequisites § 2](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)):
 
 * **vNIC-public** — public IP. Wireguard server binds here. Future env-automation will bind public citizen-facing Nginx server blocks here too.
 * **vNIC-internal** — internal IP. Admin Nginx server blocks bind here (rancher, keycloak, grafana, prometheus). The compute and storage nodes also live on this network.
 
 Nginx server blocks for each hostname are bound to a specific IP, so the two channels can't bleed into each other. Public traffic can never reach an admin hostname; only Wireguard peers (whose tunnel exits on the internal interface) can.
 
-The [Private Access Channel](../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the single-channel admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
+The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the single-channel admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
 
 ### Idempotent and resumable
 
@@ -66,46 +48,31 @@ Each node tracks completed steps in `/var/lib/openg2p/deploy-state/*.done`. Re-r
 
 ### Two-file configuration
 
-<table>
-  <thead>
-    <tr><th>File</th><th>Author</th><th>Contains</th><th>Loaded</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>prod-config.yaml</code></td>
-      <td>You author it</td>
-      <td>preferences: <code>cluster_name</code>, <code>public_domain</code>, hostnames per service, cert paths, versions, <code>keycloak_admin_email</code>, <code>postgres_*</code>, <code>nfs_*</code></td>
-      <td>First</td>
-    </tr>
-    <tr>
-      <td><code>provision-output.yaml</code></td>
-      <td>Auto-generated by AWS provisioning (or filled by hand for non-AWS installs)</td>
-      <td>provisioning state: IPs, SSH paths, <code>private_subnet</code>, <code>admin_cidr</code>, <code>wg_endpoint</code></td>
-      <td>Second — overrides matching keys</td>
-    </tr>
-  </tbody>
-</table>
+| File                    | Author                                                                      | Contains                                                                                                                                 | Loaded                           |
+| ----------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `prod-config.yaml`      | You author it                                                               | preferences: `cluster_name`, `public_domain`, hostnames per service, cert paths, versions, `keycloak_admin_email`, `postgres_*`, `nfs_*` | First                            |
+| `provision-output.yaml` | Auto-generated by AWS provisioning (or filled by hand for non-AWS installs) | provisioning state: IPs, SSH paths, `private_subnet`, `admin_cidr`, `wg_endpoint`                                                        | Second — overrides matching keys |
 
 The orchestrator auto-loads `provision-output.yaml` next to `prod-config.yaml`. Re-running AWS provisioning regenerates `provision-output.yaml` cleanly without touching your hand-edited preferences.
 
 ## Technology
 
-| Component | Version | Notes |
-|---|---|---|
-| OS | Ubuntu Server 24.04 LTS | All three nodes |
-| Orchestrator | bash + ssh + rsync | Runs on your laptop, no extra dependencies |
-| Kubernetes | RKE2 v1.33.6 | Single control-plane on the compute node |
-| Service mesh | Istio 1.24.1 | Installed via `istioctl` |
-| Helm | v3.17.3 | + helm-diff plugin |
-| Helmfile | v1.1.0 | Drives the platform component installs |
-| Cluster manager | Rancher 2.12.3 | In-cluster, with embedded Postgres |
-| Auth | Keycloak (in-cluster) | SSO for Rancher only — embedded Postgres on NFS-backed PVC |
-| Monitoring | Rancher monitoring 105.0.0 | Prometheus + Grafana |
-| Logging | Rancher logging 102.0.0 | Fluentd + OpenSearch |
-| Storage | NFS-CSI driver v4.7.0 | Default StorageClass `nfs-csi`, retain policy |
-| VPN | Wireguard (kernel + tools) | Native systemd service on the RP node |
-| DNS | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts` |
-| Database (host) | PostgreSQL 16 | On the storage node, ready for environment automation |
+| Component       | Version                                     | Notes                                                                           |
+| --------------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
+| OS              | Ubuntu Server 24.04 LTS                     | All three nodes                                                                 |
+| Orchestrator    | bash + ssh + rsync                          | Runs on your laptop, no extra dependencies                                      |
+| Kubernetes      | RKE2 v1.33.6                                | Single control-plane on the compute node                                        |
+| Service mesh    | Istio 1.24.1                                | Installed via `istioctl`                                                        |
+| Helm            | v3.17.3                                     | + helm-diff plugin                                                              |
+| Helmfile        | v1.1.0                                      | Drives the platform component installs                                          |
+| Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                              |
+| Auth            | Keycloak (in-cluster)                       | SSO for Rancher only — embedded Postgres on NFS-backed PVC                      |
+| Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                            |
+| Logging         | Rancher logging 102.0.0                     | Fluentd + OpenSearch                                                            |
+| Storage         | NFS-CSI driver v4.7.0                       | Default StorageClass `nfs-csi`, retain policy                                   |
+| VPN             | Wireguard (kernel + tools)                  | Native systemd service on the RP node                                           |
+| DNS             | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts` |
+| Database (host) | PostgreSQL 16                               | On the storage node, ready for environment automation                           |
 
 ## Prerequisites
 
@@ -113,17 +80,17 @@ This section is **self-contained** — everything you need to have ready before 
 
 ### 1. Three Ubuntu 24.04 VMs
 
-| | Reverse Proxy | Compute | Storage |
-|---|---|---|---|
-| **OS** | Ubuntu Server 24.04 LTS | Ubuntu Server 24.04 LTS | Ubuntu Server 24.04 LTS |
-| **vCPU minimum** | 2 | 16 | 8 |
-| **RAM minimum** | 4 GB | 64 GB | 32 GB |
-| **Root disk minimum** | 64 GB | 128 GB | 256 GB |
-| **Disk type** | SSD recommended | SSD recommended | SSD strongly recommended |
-| **Network** | All three on the same private subnet | | |
-| **Internet egress** | Required during install (apt, RKE2, Helm charts) | | |
+|                       | Reverse Proxy                                    | Compute                 | Storage                  |
+| --------------------- | ------------------------------------------------ | ----------------------- | ------------------------ |
+| **OS**                | Ubuntu Server 24.04 LTS                          | Ubuntu Server 24.04 LTS | Ubuntu Server 24.04 LTS  |
+| **vCPU minimum**      | 2                                                | 16                      | 8                        |
+| **RAM minimum**       | 4 GB                                             | 64 GB                   | 32 GB                    |
+| **Root disk minimum** | 64 GB                                            | 128 GB                  | 256 GB                   |
+| **Disk type**         | SSD recommended                                  | SSD recommended         | SSD strongly recommended |
+| **Network**           | All three on the same private subnet             |                         |                          |
+| **Internet egress**   | Required during install (apt, RKE2, Helm charts) |                         |                          |
 
-See [Resource Requirements](../../../deployment/resource-requirements.md) for the full table per deployment model.
+See [Resource Requirements](../../../../deployment/resource-requirements.md) for the full table per deployment model.
 
 ### 2. Two network interfaces on the Reverse Proxy VM
 
@@ -136,23 +103,23 @@ For the two channels to be enforced cleanly, the RP needs **two separate IPs** �
 
 The standard pattern is:
 
-| Interface | Network | Used for |
-|---|---|---|
-| `vNIC-public` | DMZ / public-facing | Wireguard UDP, public Nginx server blocks |
+| Interface       | Network                 | Used for                                                           |
+| --------------- | ----------------------- | ------------------------------------------------------------------ |
+| `vNIC-public`   | DMZ / public-facing     | Wireguard UDP, public Nginx server blocks                          |
 | `vNIC-internal` | internal mgmt / cluster | Admin Nginx server blocks (rancher, keycloak, grafana, prometheus) |
 
 Adding the second vNIC is a sysadmin task done **before** running the automation. It's trivial on every common hypervisor:
 
-| Hypervisor | How to add the second vNIC |
-|---|---|
-| VMware vSphere / ESXi | Point-and-click in vCenter; hot-add supported |
-| KVM / libvirt (`virt-manager`) | XML edit or one click; hot-add supported |
-| Proxmox VE | Web UI; seconds |
-| Microsoft Hyper-V | Hyper-V Manager → Add Hardware → Network Adapter |
-| Nutanix AHV | Prism Element / Central |
-| OpenStack | Multiple ports per instance — built into the API |
-| oVirt / RHV | Per-VM NIC management |
-| Bare metal | Use a second physical NIC, or a VLAN-tagged sub-interface on the existing one |
+| Hypervisor                     | How to add the second vNIC                                                    |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| VMware vSphere / ESXi          | Point-and-click in vCenter; hot-add supported                                 |
+| KVM / libvirt (`virt-manager`) | XML edit or one click; hot-add supported                                      |
+| Proxmox VE                     | Web UI; seconds                                                               |
+| Microsoft Hyper-V              | Hyper-V Manager → Add Hardware → Network Adapter                              |
+| Nutanix AHV                    | Prism Element / Central                                                       |
+| OpenStack                      | Multiple ports per instance — built into the API                              |
+| oVirt / RHV                    | Per-VM NIC management                                                         |
+| Bare metal                     | Use a second physical NIC, or a VLAN-tagged sub-interface on the existing one |
 
 If you genuinely cannot add a second vNIC (rare on modern hypervisors), see [Fallback: two Nginx VMs](three-node-automation-fallback-second-rp.md).
 
@@ -160,12 +127,12 @@ If you genuinely cannot add a second vNIC (rare on modern hypervisors), see [Fal
 
 The automation does NOT install any DNS server. Your authoritative DNS must resolve the following hostnames:
 
-| Hostname | DNS A-record → | Channel | Purpose |
-|---|---|---|---|
-| `rancher.<your-domain>` | RP's **internal** IP (the vNIC-internal one) | private | Rancher cluster manager UI |
-| `keycloak.<your-domain>` | RP's **internal** IP | private | Keycloak admin SSO (Rancher's identity provider) |
-| `grafana.<your-domain>` | RP's **internal** IP | private | Grafana dashboards (from rancher-monitoring) |
-| `prometheus.<your-domain>` | RP's **internal** IP | private | Prometheus UI (from rancher-monitoring) |
+| Hostname                   | DNS A-record →                               | Channel | Purpose                                          |
+| -------------------------- | -------------------------------------------- | ------- | ------------------------------------------------ |
+| `rancher.<your-domain>`    | RP's **internal** IP (the vNIC-internal one) | private | Rancher cluster manager UI                       |
+| `keycloak.<your-domain>`   | RP's **internal** IP                         | private | Keycloak admin SSO (Rancher's identity provider) |
+| `grafana.<your-domain>`    | RP's **internal** IP                         | private | Grafana dashboards (from rancher-monitoring)     |
+| `prometheus.<your-domain>` | RP's **internal** IP                         | private | Prometheus UI (from rancher-monitoring)          |
 
 `<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The four hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
 
@@ -179,12 +146,12 @@ Admin laptops must be able to resolve these hostnames. Three working patterns:
 
 The automation does NOT generate certs. You provide one cert+key per admin hostname (or one wildcard covering all four). Government CAs typically deliver certificates in one of these formats — all are supported:
 
-| Format | Files you provide | Notes |
-|---|---|---|
-| **PEM fullchain + key** | `<host>.fullchain.pem`, `<host>.key` | Native Nginx format. Most CAs can produce this on request. |
-| **Separate PEM** | `<host>.cert.pem`, `<host>.chain.pem`, `<host>.key.pem` | Auto-concatenated into a fullchain by the script. Common from commercial CAs. |
-| **PFX / P12** | `<host>.pfx` (with password) | Windows IIS / Microsoft AD CS export. Converted with `openssl pkcs12` by the script. |
-| **ZIP bundle** | `<host>.zip` (Sectigo/DigiCert layout) | Auto-detected and extracted. |
+| Format                  | Files you provide                                       | Notes                                                                                |
+| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **PEM fullchain + key** | `<host>.fullchain.pem`, `<host>.key`                    | Native Nginx format. Most CAs can produce this on request.                           |
+| **Separate PEM**        | `<host>.cert.pem`, `<host>.chain.pem`, `<host>.key.pem` | Auto-concatenated into a fullchain by the script. Common from commercial CAs.        |
+| **PFX / P12**           | `<host>.pfx` (with password)                            | Windows IIS / Microsoft AD CS export. Converted with `openssl pkcs12` by the script. |
+| **ZIP bundle**          | `<host>.zip` (Sectigo/DigiCert layout)                  | Auto-detected and extracted.                                                         |
 
 The customer drops the cert files in a directory on **your laptop** (not the RP). Reference them by path in `prod-config.yaml`. The script:
 
@@ -198,7 +165,7 @@ The customer drops the cert files in a directory on **your laptop** (not the RP)
 3. **Uploads** to `/etc/openg2p/certs/public/<hostname>/` on the RP (`fullchain.pem` 0644, `privkey.pem` 0600, root:root).
 4. **Atomic-swap** into Nginx, with rollback if `nginx -t` fails on the new config.
 
-See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md) for the deeper discussion on cert formats, per-FQDN vs wildcards in gov environments, and the validation pipeline.
+See [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) for the deeper discussion on cert formats, per-FQDN vs wildcards in gov environments, and the validation pipeline.
 
 You can also pre-validate certs without running an install:
 
@@ -240,14 +207,14 @@ The orchestrator's `--preflight` mode (and the implicit preflight at the start o
 
 For each item that fails, the error message tells you exactly what's wrong and links back here. Example failures and what to fix:
 
-| Preflight error | Fix |
-|---|---|
-| `RP node has only 1 network interface` | Add a second vNIC (see [section 2](#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)) |
-| `DNS: rancher.<domain> does not resolve` | Add the A-record (see [section 3](#id-3.-customer-supplied-dns-records)) |
-| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP internal is 5.6.7.8` | DNS points at the wrong IP — fix the A-record |
-| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>` | Wrong cert for that hostname (see [section 4](#id-4.-customer-supplied-tls-certificates)) |
-| `Cert ./certs/rancher.pem: key does not match cert` | Mismatched cert/key pair |
-| `RAM: 3 GB (need ≥4)` | Resize the VM (see [section 1](#id-1.-three-ubuntu-24.04-vms)) |
+| Preflight error                                                        | Fix                                                                                          |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `RP node has only 1 network interface`                                 | Add a second vNIC (see [section 2](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)) |
+| `DNS: rancher.<domain> does not resolve`                               | Add the A-record (see [section 3](./#id-3.-customer-supplied-dns-records))                   |
+| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP internal is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                |
+| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`   | Wrong cert for that hostname (see [section 4](./#id-4.-customer-supplied-tls-certificates))  |
+| `Cert ./certs/rancher.pem: key does not match cert`                    | Mismatched cert/key pair                                                                     |
+| `RAM: 3 GB (need ≥4)`                                                  | Resize the VM (see [section 1](./#id-1.-three-ubuntu-24.04-vms))                             |
 
 Preflight is non-destructive — it makes no changes. Run it until everything's green, then run the full install.
 
@@ -255,7 +222,7 @@ Preflight is non-destructive — it makes no changes. Run it until everything's 
 
 ### Step 0 (optional) — provision the VMs on AWS
 
-If you don't already have three Ubuntu VMs, the bundled AWS provisioning creates them for you. See [AWS provisioning](#aws-provisioning) below.
+If you don't already have three Ubuntu VMs, the bundled AWS provisioning creates them for you. See [AWS provisioning](./#aws-provisioning) below.
 
 If you have your own VMs (other clouds, on-prem, manual EC2), skip to step 1.
 
@@ -326,15 +293,15 @@ The preflight runs in parallel on all three nodes, hard-fails on any node that d
 
 Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 
-| # | Where | What |
-|---|---|---|
-| 0 | Laptop | SSH + sudo probe on all 3 nodes |
-| 0 | All 3 nodes | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel) |
-| 1 | Storage | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet) |
-| 2 | Compute | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass |
+| # | Where         | What                                                                                                                                                         |
+| - | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 0 | Laptop        | SSH + sudo probe on all 3 nodes                                                                                                                              |
+| 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                     |
+| 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                 |
+| 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                 |
 | 3 | Reverse Proxy | apt basics, ufw, second-NIC bring-up, Wireguard server + peer configs, customer cert ingest + validate + install, Nginx server blocks bound to vNIC-internal |
-| 4 | Compute | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging |
-| 5 | Compute | Rancher-Keycloak SAML integration |
+| 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                            |
+| 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                            |
 
 ### Common command shapes
 
@@ -374,11 +341,11 @@ ssh -i <your-key> ubuntu@<rp-public-ip> \
 
 Install a Wireguard client and import this file:
 
-| OS | Where to get the client |
-|---|---|
-| macOS | [Wireguard from the App Store](https://apps.apple.com/app/wireguard/id1451685025) |
-| Windows / Linux | [wireguard.com/install](https://www.wireguard.com/install/) |
-| iOS / Android | App Store / Play Store |
+| OS              | Where to get the client                                                           |
+| --------------- | --------------------------------------------------------------------------------- |
+| macOS           | [Wireguard from the App Store](https://apps.apple.com/app/wireguard/id1451685025) |
+| Windows / Linux | [wireguard.com/install](https://www.wireguard.com/install/)                       |
+| iOS / Android   | App Store / Play Store                                                            |
 
 In the app: **Add Tunnel → Import from file/archive → choose `peer1.conf` → Activate**.
 
@@ -394,24 +361,24 @@ The peer config uses **split tunnel** by default — only the Wireguard subnet (
 
 #### 4.2 (Skipped — no local CA)
 
-Since you're using **real certs from your customer's CA** (see [Prerequisites § 4](#id-4.-customer-supplied-tls-certificates)), there's no CA to install on your laptop. Browsers already trust the issuing CA. If you see a cert warning when first opening Rancher, that's a real issue — your cert chain probably isn't complete; re-run `--validate-certs` and the pre-flight will catch it.
+Since you're using **real certs from your customer's CA** (see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)), there's no CA to install on your laptop. Browsers already trust the issuing CA. If you see a cert warning when first opening Rancher, that's a real issue — your cert chain probably isn't complete; re-run `--validate-certs` and the pre-flight will catch it.
 
 #### 4.3 DNS resolution on your laptop
 
 You need your laptop to resolve the admin hostnames (`rancher.<domain>`, `keycloak.<domain>`, `grafana.<domain>`, `prometheus.<domain>`) to the RP's **internal** IP. Three working patterns:
 
-1. **Customer's DNS reachable through Wireguard** (preferred) — the WG peer config can include the customer's internal DNS resolver. Edit `peer1.conf` after pulling it (or have the customer add it):
-   ```
-   [Interface]
-   ...
-   DNS = <customer-internal-dns-IP>
-   ```
+1.  **Customer's DNS reachable through Wireguard** (preferred) — the WG peer config can include the customer's internal DNS resolver. Edit `peer1.conf` after pulling it (or have the customer add it):
 
-2. **`/etc/hosts` on your laptop** — manual but reliable. The orchestrator's completion summary prints the exact lines. Append once per laptop:
-   ```
-   <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth grafana.openg2p.gov.eth prometheus.openg2p.gov.eth
-   ```
+    ```
+    [Interface]
+    ...
+    DNS = <customer-internal-dns-IP>
+    ```
+2.  **`/etc/hosts` on your laptop** — manual but reliable. The orchestrator's completion summary prints the exact lines. Append once per laptop:
 
+    ```
+    <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth grafana.openg2p.gov.eth prometheus.openg2p.gov.eth
+    ```
 3. **Public DNS pointing at the private IP** — if the customer's authoritative DNS is public-facing and OK with publishing private-IP A-records, the hostnames resolve from anywhere (but only WG-connected laptops can actually reach the IP).
 
 {% hint style="warning" %}
@@ -427,13 +394,13 @@ There are two distinct logins. The first time you connect, do them in this order
 Open `https://rancher.<your-domain>` in your browser (the hostname you put in `rancher_hostname`). On the Rancher login page, click **"Use a local user"** (the small link below the big "Login with Keycloak" button).
 
 * **Username**: `admin`
-* **Password**: shown in the orchestrator's completion summary; or fetch it from the cluster:
+*   **Password**: shown in the orchestrator's completion summary; or fetch it from the cluster:
 
-  ```bash
-  export KUBECONFIG=~/.kube/openg2p-prod   # see "kubectl access" below
-  kubectl -n cattle-system get secret rancher-secret \
-    -o jsonpath='{.data.adminPassword}' | base64 -d && echo
-  ```
+    ```bash
+    export KUBECONFIG=~/.kube/openg2p-prod   # see "kubectl access" below
+    kubectl -n cattle-system get secret rancher-secret \
+      -o jsonpath='{.data.adminPassword}' | base64 -d && echo
+    ```
 
 You're now in Rancher as the local admin. Use this session to take a quick look around.
 
@@ -486,7 +453,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 These are deferred to follow-up automation, not gaps:
 
 * **Environment automation** — creating `prod`, `staging`, etc. namespaces with their own Postgres, Keycloak, eSignet, Superset, etc. The host PostgreSQL on the storage node sits idle until that lands.
-* **Citizen-facing public domains and certs** — admin tools (the four hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP's public NIC. See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md).
+* **Citizen-facing public domains and certs** — admin tools (the four hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP's public NIC. See [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md).
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
@@ -595,12 +562,12 @@ The bundled AWS provisioning is a separate, optional step that creates the three
 
 ### Prerequisites
 
-| | |
-|---|---|
-| **AWS CLI** | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`. |
+|                     |                                                                                                                                                       |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AWS CLI**         | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`.                                                                              |
 | **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`. |
-| **`jq`** | Not required (we deliberately avoid the dependency). |
-| **Permissions** | The IAM user/role needs the EC2 permissions listed below. |
+| **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                  |
+| **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                             |
 
 ### IAM permissions
 
@@ -649,26 +616,26 @@ If you have full EC2 admin (`AmazonEC2FullAccess` managed policy + `sts:GetCalle
 
 All resources are tagged with `Project=<project>` so the destroy script can find and remove them later.
 
-| Resource | Default name | Configurable | Notes |
-|---|---|---|---|
-| Key pair | `openg2p-prod-key` | `key_name` | Created if missing; .pem saved to `aws/keys/` mode 0400 |
-| SG: RP | `openg2p-prod-reverse-proxy` | `rp_sg_name` | Reused if exists; rules added if missing |
-| SG: Compute | `openg2p-prod-k8s-node` | `compute_sg_name` | Same |
-| SG: Storage | `openg2p-prod-storage` | `storage_sg_name` | Same |
-| Elastic IP | tagged `Role=reverse-proxy-eip` | — | Best-effort: warns and falls back to dynamic IP if quota exceeded |
-| Instance: RP | `openg2p-prod-reverse-proxy` | `rp_name` | `t3a.medium`, 64 GB gp3 |
-| Instance: Compute | `openg2p-prod-k8s-node-1` | `compute_name` | `m5a.4xlarge`, 128 GB gp3 |
-| Instance: Storage | `openg2p-prod-storage` | `storage_name` | `t3a.2xlarge`, 256 GB gp3 |
+| Resource          | Default name                    | Configurable      | Notes                                                             |
+| ----------------- | ------------------------------- | ----------------- | ----------------------------------------------------------------- |
+| Key pair          | `openg2p-prod-key`              | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400           |
+| SG: RP            | `openg2p-prod-reverse-proxy`    | `rp_sg_name`      | Reused if exists; rules added if missing                          |
+| SG: Compute       | `openg2p-prod-k8s-node`         | `compute_sg_name` | Same                                                              |
+| SG: Storage       | `openg2p-prod-storage`          | `storage_sg_name` | Same                                                              |
+| Elastic IP        | tagged `Role=reverse-proxy-eip` | —                 | Best-effort: warns and falls back to dynamic IP if quota exceeded |
+| Instance: RP      | `openg2p-prod-reverse-proxy`    | `rp_name`         | `t3a.medium`, 64 GB gp3                                           |
+| Instance: Compute | `openg2p-prod-k8s-node-1`       | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                         |
+| Instance: Storage | `openg2p-prod-storage`          | `storage_name`    | `t3a.2xlarge`, 256 GB gp3                                         |
 
 ### Default sizing
 
 Matches the OpenG2P resource minimums.
 
-| Role | Instance type | vCPU | RAM | Root disk (gp3) |
-|---|---|---|---|---|
-| Reverse Proxy | `t3a.medium` | 2 | 4 GB | 64 GB |
-| Compute / K8s | `m5a.4xlarge` | 16 | 64 GB | 128 GB |
-| Storage | `t3a.2xlarge` | 8 | 32 GB | 256 GB |
+| Role          | Instance type | vCPU | RAM   | Root disk (gp3) |
+| ------------- | ------------- | ---- | ----- | --------------- |
+| Reverse Proxy | `t3a.medium`  | 2    | 4 GB  | 64 GB           |
+| Compute / K8s | `m5a.4xlarge` | 16   | 64 GB | 128 GB          |
+| Storage       | `t3a.2xlarge` | 8    | 32 GB | 256 GB          |
 
 All sizes are configurable in `aws-config.yaml` via `*_instance_type`, `*_disk_gb`, `*_disk_iops`, `*_disk_throughput`. Larger is fine; smaller may fail the orchestrator's preflight.
 
@@ -771,19 +738,19 @@ cd automation/production/aws
 
 Confirms by asking you to type the project name back, then deletes everything tagged `Project=<project>`:
 
-| # | Resource | How it gets deleted |
-|---|---|---|
-| 1 | EC2 instances | `terminate-instances` + wait for `terminated` |
-| 1 | Root EBS volumes | Auto-deleted with the instance (created with `DeleteOnTermination: true`) |
-| 1 | Primary ENI | Auto-deleted with the instance |
-| 2 | Elastic IPs | `release-address` |
-| 3 | Security groups | `delete-security-group` |
-| 4 | Key pair | **Only deleted if WE created it** (tagged `Project=<project>` `ManagedBy=openg2p-aws-provision`). Pre-existing keys imported by the user are kept. Force-keep with `--keep-key`. |
-| 5 | **Stray EBS volumes** in `available` / `creating` / `error` state | Explicit `delete-volume` — catches volumes detached from instances or extras attached after provisioning |
-| 5 | **Stray snapshots** owned by you, tagged with the project | Explicit `delete-snapshot` |
-| 5 | **Stray ENIs** in `available` state, tagged | Explicit `delete-network-interface` |
-| 6 | `../provision-output.yaml` | Removed (stale after teardown) |
-| 7 | Final sweep | Lists anything **still** tagged `Project=<project>` so leaks are visible |
+| # | Resource                                                          | How it gets deleted                                                                                                                                                              |
+| - | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | EC2 instances                                                     | `terminate-instances` + wait for `terminated`                                                                                                                                    |
+| 1 | Root EBS volumes                                                  | Auto-deleted with the instance (created with `DeleteOnTermination: true`)                                                                                                        |
+| 1 | Primary ENI                                                       | Auto-deleted with the instance                                                                                                                                                   |
+| 2 | Elastic IPs                                                       | `release-address`                                                                                                                                                                |
+| 3 | Security groups                                                   | `delete-security-group`                                                                                                                                                          |
+| 4 | Key pair                                                          | **Only deleted if WE created it** (tagged `Project=<project>` `ManagedBy=openg2p-aws-provision`). Pre-existing keys imported by the user are kept. Force-keep with `--keep-key`. |
+| 5 | **Stray EBS volumes** in `available` / `creating` / `error` state | Explicit `delete-volume` — catches volumes detached from instances or extras attached after provisioning                                                                         |
+| 5 | **Stray snapshots** owned by you, tagged with the project         | Explicit `delete-snapshot`                                                                                                                                                       |
+| 5 | **Stray ENIs** in `available` state, tagged                       | Explicit `delete-network-interface`                                                                                                                                              |
+| 6 | `../provision-output.yaml`                                        | Removed (stale after teardown)                                                                                                                                                   |
+| 7 | Final sweep                                                       | Lists anything **still** tagged `Project=<project>` so leaks are visible                                                                                                         |
 
 A clean teardown ends with `Nothing left tagged Project=<project>`.
 
@@ -793,15 +760,15 @@ The destroy script only touches resources tagged `Project=<project>`. If you've 
 
 ### Costs (rough, us-east-1, on-demand)
 
-| Item | $/hour | $/month (730 h) |
-|---|---|---|
-| `t3a.medium` (RP) | $0.0376 | ~$27 |
-| `m5a.4xlarge` (Compute) | $0.688 | ~$502 |
-| `t3a.2xlarge` (Storage) | $0.301 | ~$220 |
-| EIP (attached) | free | $0 |
-| EIP (released-but-unattached) | $0.005 | ~$3.65 |
-| EBS gp3 storage (64 + 128 + 256 = 448 GB) | $0.08/GB-month | ~$36 |
-| **Total** | | **~$785/month** if running 24/7 |
+| Item                                      | $/hour         | $/month (730 h)                  |
+| ----------------------------------------- | -------------- | -------------------------------- |
+| `t3a.medium` (RP)                         | $0.0376        | \~$27                            |
+| `m5a.4xlarge` (Compute)                   | $0.688         | \~$502                           |
+| `t3a.2xlarge` (Storage)                   | $0.301         | \~$220                           |
+| EIP (attached)                            | free           | $0                               |
+| EIP (released-but-unattached)             | $0.005         | \~$3.65                          |
+| EBS gp3 storage (64 + 128 + 256 = 448 GB) | $0.08/GB-month | \~$36                            |
+| **Total**                                 |                | **\~$785/month** if running 24/7 |
 
 Stop instances when not using them to drop EC2 charges to near-zero (you still pay for EBS). The EIP stays attached to the (stopped) RP, so the Wireguard endpoint survives stop/start when present.
 
@@ -897,7 +864,7 @@ aws ec2 release-address --allocation-id <alloc-id>
 
 ## Manual uninstall (non-AWS deployments)
 
-For AWS-provisioned setups, `aws/openg2p-aws-destroy.sh` removes everything (see [Tearing down](#tearing-down) above). For other clouds / on-prem, dedicated uninstall scripts are not included in v1 — clean up manually per node:
+For AWS-provisioned setups, `aws/openg2p-aws-destroy.sh` removes everything (see [Tearing down](./#tearing-down) above). For other clouds / on-prem, dedicated uninstall scripts are not included in v1 — clean up manually per node:
 
 ```bash
 # Compute (Kubernetes node)
@@ -926,7 +893,7 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 
 ## Related documentation
 
-* [OpenG2P Deployment Architecture](../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (single-node / three-node / full-scale) and where this automation fits.
-* [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md) — why admin tools are internal, why citizen-facing certs are typically per-FQDN, and the cert formats customers actually have.
-* [Resource Requirements](../../../deployment/resource-requirements.md) — minimums per node, by deployment model.
-* [Single-Node Automation](../../../deployment/automation/single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.
+* [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (single-node / three-node / full-scale) and where this automation fits.
+* [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) — why admin tools are internal, why citizen-facing certs are typically per-FQDN, and the cert formats customers actually have.
+* [Resource Requirements](../../../../deployment/resource-requirements.md) — minimums per node, by deployment model.
+* [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.

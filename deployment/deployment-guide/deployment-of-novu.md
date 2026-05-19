@@ -1,13 +1,13 @@
 # Deployment of Novu
 
-The instructions here pertain to the deployment of Novu and associated components on the Kubernetes cluster using  [Novu helm chart](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/novu).  All the components are installed in the same namespace.&#x20;
+The instructions here pertain to the deployment of Novu and associated components on the Kubernetes cluster using [Novu helm chart](https://github.com/OpenG2P/openg2p-deployment/tree/main/charts/novu). All the components are installed in the same namespace.
 
 ## Prerequisites
 
 Before you deploy, make sure the following are in place:
 
-* ✅ [Infrastruction setup](../deployment-instructions/infrastructure-setup.md) is completed.
-* ✅ [Environment](../deployment-instructions/environment-installation.md) has been setup with common resources installed.
+* ✅ [Infrastruction setup](../../operations/deployment/_archive/deployment-instructions/infrastructure-setup.md) is completed.
+* ✅ [Environment](../../operations/deployment/_archive/deployment-instructions/environment-installation.md) has been setup with common resources installed.
 * ✅ Domain name `novu.<your environment>.<your domain name>` (e.g. `novu.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
 * ✅ **Project Owner access** on the OpenG2P namespace
 
@@ -29,7 +29,7 @@ Before you deploy, make sure the following are in place:
 8. Proceed to Install `novu` chart select the latest version to be installed, and click Install.
 9. On the next screen, choose a name for installation, like `novu`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
-    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup).  Example: `novu-api.qa.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup). Example: `novu-api.qa.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
 11. Click Next to reach Helm Options page. Disable `wait` flag. Click on Install.
 12. Wait for all the pods to get into **Running state**. This may take several minutes.
 

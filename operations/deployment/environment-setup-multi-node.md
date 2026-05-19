@@ -2,12 +2,12 @@
 description: Setting up OpenG2P environments on an existing multi-node infrastructure
 ---
 
-# Environment Setup for Multi-Node Configuration
+# Environment Setup for Multi-Node
 
-This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes.
+This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes. Note that for a sandbox (single-node) setup the environment is installed as part of the [automation scripts](infrastructure-setup/single-node-automation.md).
 
 {% hint style="info" %}
-For single-node deployments where everything runs on a single VM, see [Single-Node Automation](single-node-automation.md).
+For single-node deployments where everything runs on a single VM, see [Single-Node Automation](infrastructure-setup/single-node-automation.md).
 {% endhint %}
 
 {% hint style="warning" %}
@@ -61,19 +61,19 @@ In a multi-node setup, each environment gets its own domain, namespace, and full
 
 The setup has two parts:
 
-| Part | Where | What |
-| --- | --- | --- |
-| **Nginx setup** (Steps 1-3) | On the Nginx node (manual) | DNS, TLS certificate, Nginx server block |
+| Part                          | Where                             | What                                                   |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------ |
+| **Nginx setup** (Steps 1-3)   | On the Nginx node (manual)        | DNS, TLS certificate, Nginx server block               |
 | **Cluster setup** (Steps 4-5) | From your workstation (automated) | Namespace, Rancher project, Istio gateway, Helm charts |
 
 ## Prerequisites
 
-| Requirement | Details |
-| --- | --- |
-| **Infrastructure** | Nginx node, K8s cluster, Istio, and Rancher are all running |
-| **Nginx node** | `certbot` installed, `nginx` running, `istio_ingress` upstream configured |
-| **Workstation** | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster |
-| **DNS access** | Ability to create A records and TXT records at your DNS provider |
+| Requirement        | Details                                                                     |
+| ------------------ | --------------------------------------------------------------------------- |
+| **Infrastructure** | Nginx node, K8s cluster, Istio, and Rancher are all running                 |
+| **Nginx node**     | `certbot` installed, `nginx` running, `istio_ingress` upstream configured   |
+| **Workstation**    | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster |
+| **DNS access**     | Ability to create A records and TXT records at your DNS provider            |
 
 {% hint style="info" %}
 The source code for the automation script lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/environment/`.
@@ -85,10 +85,10 @@ The source code for the automation script lives in the [`openg2p-deployment`](ht
 
 At your DNS provider, create two A records pointing to the **Nginx node's public IP**:
 
-| Type | Name | Value |
-| --- | --- | --- |
-| A | `qa.openg2p.org` | `<nginx_node_ip>` |
-| A | `*.qa.openg2p.org` | `<nginx_node_ip>` |
+| Type | Name               | Value             |
+| ---- | ------------------ | ----------------- |
+| A    | `qa.openg2p.org`   | `<nginx_node_ip>` |
+| A    | `*.qa.openg2p.org` | `<nginx_node_ip>` |
 
 {% hint style="warning" %}
 Wait for DNS propagation before proceeding. Verify with:
@@ -279,13 +279,13 @@ From your **workstation** (with kubectl access to the cluster):
 
 The script performs 5 steps automatically:
 
-| Step | What it does |
-| --- | --- |
-| 1 | Creates the K8s namespace |
-| 2 | Creates a Rancher Project and associates the namespace |
-| 3 | Creates the Istio Gateway for `*.qa.openg2p.org` |
-| 4 | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
-| 5 | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.) |
+| Step | What it does                                                                      |
+| ---- | --------------------------------------------------------------------------------- |
+| 1    | Creates the K8s namespace                                                         |
+| 2    | Creates a Rancher Project and associates the namespace                            |
+| 3    | Creates the Istio Gateway for `*.qa.openg2p.org`                                  |
+| 4    | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
+| 5    | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.)                |
 
 {% hint style="info" %}
 Takes approximately 15-20 minutes. The script is idempotent — it checks for existing resources before creating them.
@@ -293,18 +293,18 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 
 ## Configuration Reference
 
-| Key | Description |
-| --- | --- |
-| `environment` | Environment name — used as namespace and Rancher project (e.g., `qa`) |
-| `base_domain` | Full base domain for this environment (e.g., `qa.openg2p.org`) |
-| `admin_email` | Email for the default Keycloak `staff`-realm admin user. Maps to `keycloak-init.realms.staff.users[0].email`. Leave empty to accept chart default. |
-| `commons_base.chart_version` | Helm chart version for openg2p-commons-base |
-| `commons_base.chart_path` | Local chart path (leave empty to use remote repo) |
-| `commons_base.extra_helm_args` | Additional `--set` flags for the base chart |
-| `commons_services.chart_version` | Helm chart version for openg2p-commons-services |
-| `commons_services.chart_path` | Local chart path (leave empty to use remote repo) |
-| `commons_services.extra_helm_args` | Additional `--set` flags for the services chart |
-| `modules.commons` | Enable/disable commons installation (`true`/`false`) |
+| Key                                | Description                                                                                                                                        |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `environment`                      | Environment name — used as namespace and Rancher project (e.g., `qa`)                                                                              |
+| `base_domain`                      | Full base domain for this environment (e.g., `qa.openg2p.org`)                                                                                     |
+| `admin_email`                      | Email for the default Keycloak `staff`-realm admin user. Maps to `keycloak-init.realms.staff.users[0].email`. Leave empty to accept chart default. |
+| `commons_base.chart_version`       | Helm chart version for openg2p-commons-base                                                                                                        |
+| `commons_base.chart_path`          | Local chart path (leave empty to use remote repo)                                                                                                  |
+| `commons_base.extra_helm_args`     | Additional `--set` flags for the base chart                                                                                                        |
+| `commons_services.chart_version`   | Helm chart version for openg2p-commons-services                                                                                                    |
+| `commons_services.chart_path`      | Local chart path (leave empty to use remote repo)                                                                                                  |
+| `commons_services.extra_helm_args` | Additional `--set` flags for the services chart                                                                                                    |
+| `modules.commons`                  | Enable/disable commons installation (`true`/`false`)                                                                                               |
 
 ## CLI Options
 
@@ -312,12 +312,12 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 ./env-cluster.sh --config env-config.yaml [options]
 ```
 
-| Option | Description |
-| --- | --- |
+| Option            | Description                                |
+| ----------------- | ------------------------------------------ |
 | `--config <file>` | Path to environment config file (required) |
-| `--step <N>` | Run only a specific step (1-5) |
-| `--force` | Uninstall and reinstall Helm charts |
-| `--help` | Show help message |
+| `--step <N>`      | Run only a specific step (1-5)             |
+| `--force`         | Uninstall and reinstall Helm charts        |
+| `--help`          | Show help message                          |
 
 ## Creating Multiple Environments
 
@@ -404,13 +404,13 @@ Use `--yes` to skip confirmation for automation/CI.
 ./env-cluster-uninstall.sh --namespace <name> [options]
 ```
 
-| Option | Description |
-| --- | --- |
-| `--namespace <name>` | Target Kubernetes namespace to tear down (required) |
-| `--full` | Also delete Istio Gateway, Rancher Project, and namespace |
-| `--yes` | Skip confirmation prompt (for automation) |
-| `--dry-run` | Show what would be deleted without actually deleting |
-| `--help` | Show help message |
+| Option               | Description                                               |
+| -------------------- | --------------------------------------------------------- |
+| `--namespace <name>` | Target Kubernetes namespace to tear down (required)       |
+| `--full`             | Also delete Istio Gateway, Rancher Project, and namespace |
+| `--yes`              | Skip confirmation prompt (for automation)                 |
+| `--dry-run`          | Show what would be deleted without actually deleting      |
+| `--help`             | Show help message                                         |
 
 {% hint style="info" %}
 The uninstall script never touches the Nginx node, DNS records, certificates, or other namespaces on the cluster. Those are intentionally managed outside this automation.

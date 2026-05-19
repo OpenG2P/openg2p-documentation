@@ -1,10 +1,12 @@
 ---
-description: Fallback layout when the Reverse Proxy VM cannot have two network interfaces — split into two RP VMs (public + private).
+description: >-
+  Fallback layout when the Reverse Proxy VM cannot have two network interfaces —
+  split into two RP VMs (public + private).
 ---
 
 # Fallback: Two Nginx VMs (single-NIC each)
 
-This page is a **fallback** to the standard [Three-Node Automation](three-node-automation.md). Use it only when you cannot add a second vNIC to the Reverse Proxy VM (rare — see the [hypervisor table](three-node-automation.md#id-2.-two-network-interfaces-on-the-reverse-proxy-vm) in the main doc; every common hypervisor supports it).
+This page is a **fallback** to the standard [Three-Node Automation](./). Use it only when you cannot add a second vNIC to the Reverse Proxy VM (rare — see the [hypervisor table](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm) in the main doc; every common hypervisor supports it).
 
 {% hint style="warning" %}
 This is more moving parts than the standard layout (one more VM, two Nginx configs to keep aligned, two sets of cert deployments). Prefer the standard two-NIC RP whenever possible.
@@ -37,19 +39,19 @@ Four VMs instead of three. Both RPs are on the same internal/management network.
 
 ## Differences from the standard layout
 
-| Concern | Standard (single RP, 2 vNICs) | Fallback (two RPs, 1 vNIC each) |
-|---|---|---|
-| Number of VMs | 3 | 4 |
-| Wireguard server location | RP node, bound to vNIC-public | RP-public VM |
-| Public Nginx | RP node, bound to vNIC-public | RP-public VM |
-| Admin Nginx | RP node, bound to vNIC-internal | RP-private VM |
-| Routing | Trivially in-host between vNICs | WG → public NIC → internal network → admin NIC. Requires the internal network to route WG-source packets to RP-private's IP. |
-| Cert deployment | One copy of admin certs on the RP | Admin certs deployed to RP-private; public certs to RP-public |
-| Failure isolation | Single RP — if down, both channels down | Public + admin are decoupled at the VM level |
+| Concern                   | Standard (single RP, 2 vNICs)           | Fallback (two RPs, 1 vNIC each)                                                                                              |
+| ------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Number of VMs             | 3                                       | 4                                                                                                                            |
+| Wireguard server location | RP node, bound to vNIC-public           | RP-public VM                                                                                                                 |
+| Public Nginx              | RP node, bound to vNIC-public           | RP-public VM                                                                                                                 |
+| Admin Nginx               | RP node, bound to vNIC-internal         | RP-private VM                                                                                                                |
+| Routing                   | Trivially in-host between vNICs         | WG → public NIC → internal network → admin NIC. Requires the internal network to route WG-source packets to RP-private's IP. |
+| Cert deployment           | One copy of admin certs on the RP       | Admin certs deployed to RP-private; public certs to RP-public                                                                |
+| Failure isolation         | Single RP — if down, both channels down | Public + admin are decoupled at the VM level                                                                                 |
 
 ## Required prerequisites (in addition to the standard list)
 
-Refer to [Prerequisites in the main doc](three-node-automation.md#prerequisites) for everything else. The fallback layout **adds** these:
+Refer to [Prerequisites in the main doc](./#prerequisites) for everything else. The fallback layout **adds** these:
 
 1. **A fourth Ubuntu 24.04 VM** for RP-private. Same OS / minimum specs as the standard RP (2 vCPU, 4 GB RAM, 64 GB disk).
 2. Both RP VMs on the **same internal/management subnet** as compute and storage. Layer-3 routing between RP-public's public network and the internal subnet is the customer's responsibility (typical setup: RP-public is dual-homed at the L2 level via the hypervisor — its single OS-visible NIC has the public IP, but the underlying virtual switch is on the management VLAN).
@@ -131,5 +133,5 @@ Until then, the standard single-RP two-NIC layout is the supported path.
 
 ## Related
 
-* [Three-Node Automation (main)](three-node-automation.md)
-* [Private Access Channel (concept)](../../../deployment/deployment-guide/private-access-channel.md)
+* [Three-Node Automation (main)](./)
+* [Private Access Channel (concept)](../../../../deployment/deployment-guide/private-access-channel.md)

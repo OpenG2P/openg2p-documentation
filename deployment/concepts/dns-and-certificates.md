@@ -1,5 +1,7 @@
 ---
-description: How DNS and TLS certificates work in an OpenG2P deployment, the trade-offs, and the patterns we recommend for different customer realities.
+description: >-
+  How DNS and TLS certificates work in an OpenG2P deployment, the trade-offs,
+  and the patterns we recommend for different customer realities.
 ---
 
 # DNS & TLS Certificates
@@ -7,32 +9,17 @@ description: How DNS and TLS certificates work in an OpenG2P deployment, the tra
 DNS and TLS are two of the most painful parts of any production deployment, and OpenG2P customers — especially government departments — face a more constrained environment than the typical SaaS company. This page lays out the concepts, the real-world constraints we see in the field, and the patterns the OpenG2P automation builds around.
 
 {% hint style="info" %}
-This page is **conceptual**. For how the automation actually implements these patterns, see [Three-Node Automation](../../operations/deployment/automation/three-node-automation.md) and [Single-Node Automation](../automation/single-node-automation.md).
+This page is **conceptual**. For how the automation actually implements these patterns, see [Three-Node Automation](../../operations/deployment/infrastructure-setup/three-node-automation/) and [Single-Node Automation](../../operations/deployment/infrastructure-setup/single-node-automation.md).
 {% endhint %}
 
 ## The two layers
 
 Every OpenG2P deployment has two distinct categories of URL, and they have very different DNS / TLS needs.
 
-<table>
-  <thead>
-    <tr><th>Layer</th><th>Audience</th><th>Examples</th><th>Network exposure</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Admin / operator</strong></td>
-      <td>Internal staff, ops team, system integrators</td>
-      <td>Rancher, Keycloak (admin SSO), Grafana, OpenSearch dashboards, Prometheus</td>
-      <td>Reachable only over Wireguard VPN — never on the public internet</td>
-    </tr>
-    <tr>
-      <td><strong>Citizen-facing</strong></td>
-      <td>Public users (beneficiaries, applicants, agency staff)</td>
-      <td>Social registry portal, payments dashboard, eSignet, ODK Central, beneficiary self-service</td>
-      <td>Public internet</td>
-    </tr>
-  </tbody>
-</table>
+| Layer                | Audience                                               | Examples                                                                                   | Network exposure                                                 |
+| -------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Admin / operator** | Internal staff, ops team, system integrators           | Rancher, Keycloak (admin SSO), Grafana, OpenSearch dashboards, Prometheus                  | Reachable only over Wireguard VPN — never on the public internet |
+| **Citizen-facing**   | Public users (beneficiaries, applicants, agency staff) | Social registry portal, payments dashboard, eSignet, ODK Central, beneficiary self-service | Public internet                                                  |
 
 The two layers have radically different DNS and TLS requirements. Conflating them is one of the main reasons deployment is harder than it needs to be.
 
@@ -72,28 +59,7 @@ For services that real users hit over the public internet — the social registr
 
 Three patterns dominate, in roughly decreasing order of convenience:
 
-<table>
-  <thead>
-    <tr><th width="220">Pattern</th><th>Example</th><th>Cert needed</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Per-environment subdomain</strong></td>
-      <td><code>*.prod.openg2p.org</code> covering <code>registry.prod.openg2p.org</code>, <code>payments.prod.openg2p.org</code>, …</td>
-      <td>One wildcard per environment</td>
-    </tr>
-    <tr>
-      <td><strong>Service-specific FQDNs under a department domain</strong></td>
-      <td><code>social-registry.moswa.gov.eth</code>, <code>payments.moswa.gov.eth</code>, <code>auth.moswa.gov.eth</code></td>
-      <td>One cert per FQDN (or one SAN cert covering several)</td>
-    </tr>
-    <tr>
-      <td><strong>Mixed</strong></td>
-      <td>Some services on a department domain, others on a vendor-provided sub-tenant</td>
-      <td>Mix of the above</td>
-    </tr>
-  </tbody>
-</table>
+<table><thead><tr><th width="220">Pattern</th><th>Example</th><th>Cert needed</th></tr></thead><tbody><tr><td><strong>Per-environment subdomain</strong></td><td><code>*.prod.openg2p.org</code> covering <code>registry.prod.openg2p.org</code>, <code>payments.prod.openg2p.org</code>, …</td><td>One wildcard per environment</td></tr><tr><td><strong>Service-specific FQDNs under a department domain</strong></td><td><code>social-registry.moswa.gov.eth</code>, <code>payments.moswa.gov.eth</code>, <code>auth.moswa.gov.eth</code></td><td>One cert per FQDN (or one SAN cert covering several)</td></tr><tr><td><strong>Mixed</strong></td><td>Some services on a department domain, others on a vendor-provided sub-tenant</td><td>Mix of the above</td></tr></tbody></table>
 
 **Internal naming and external naming are decoupled.** Inside the cluster, services may be referenced as `registry.prod.openg2p.org` (OpenG2P convention), but the URL a citizen visits can be any hostname the customer chose — `social-registry.moswa.gov.eth`. The reverse proxy and Istio Gateway translate between the two via the `Host` header.
 
@@ -101,16 +67,7 @@ Three patterns dominate, in roughly decreasing order of convenience:
 
 Wildcards seem like the natural choice (one cert, many services), but they're the **exception** in government environments, not the norm.
 
-<table>
-  <thead><tr><th width="180">Reason</th><th>What it looks like in practice</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Security policy</strong></td><td>Many gov InfoSec teams ban wildcards — single key compromise exposes every subdomain. Per-FQDN limits blast radius.</td></tr>
-    <tr><td><strong>CA constraints</strong></td><td>Some sovereign CAs (DoD, national PKIs, ministry CAs) don't issue wildcards. One CN per cert, period.</td></tr>
-    <tr><td><strong>Procurement</strong></td><td>Certs go through tendering / approval per service. Each service has its own purchase order, owner, rotation date.</td></tr>
-    <tr><td><strong>Ownership boundaries</strong></td><td><code>social-registry.moswa.gov.eth</code> may be owned by the Ministry of Social Welfare; <code>payments.moswa.gov.eth</code> by Treasury. Different teams, different certs.</td></tr>
-    <tr><td><strong>SAN as middle ground</strong></td><td>Some CAs issue multi-SAN certs (one cert listing 5–10 specific hostnames). Treat these the same as wildcards from the deployment's perspective.</td></tr>
-  </tbody>
-</table>
+<table><thead><tr><th width="180">Reason</th><th>What it looks like in practice</th></tr></thead><tbody><tr><td><strong>Security policy</strong></td><td>Many gov InfoSec teams ban wildcards — single key compromise exposes every subdomain. Per-FQDN limits blast radius.</td></tr><tr><td><strong>CA constraints</strong></td><td>Some sovereign CAs (DoD, national PKIs, ministry CAs) don't issue wildcards. One CN per cert, period.</td></tr><tr><td><strong>Procurement</strong></td><td>Certs go through tendering / approval per service. Each service has its own purchase order, owner, rotation date.</td></tr><tr><td><strong>Ownership boundaries</strong></td><td><code>social-registry.moswa.gov.eth</code> may be owned by the Ministry of Social Welfare; <code>payments.moswa.gov.eth</code> by Treasury. Different teams, different certs.</td></tr><tr><td><strong>SAN as middle ground</strong></td><td>Some CAs issue multi-SAN certs (one cert listing 5–10 specific hostnames). Treat these the same as wildcards from the deployment's perspective.</td></tr></tbody></table>
 
 {% hint style="warning" %}
 **Don't bet on wildcards.** Architect for per-FQDN as the primary case, treat wildcards and SAN certs as a happy bonus when offered.
@@ -120,14 +77,14 @@ Wildcards seem like the natural choice (one cert, many services), but they're th
 
 When customers say "we have a certificate," it can mean any of the following:
 
-| Source | Format delivered | Customer pain |
-|---|---|---|
-| Let's Encrypt (own certbot) | `/etc/letsencrypt/live/<domain>/{fullchain.pem, privkey.pem}` | None if they did it; can't always copy |
-| Commercial CA (Sectigo, DigiCert, GoDaddy, GlobalSign) | Email/ZIP with `.crt` + `.ca-bundle` + separate `.key` | Concatenate fullchain, match key, install intermediates |
-| Cloudflare Origin / Universal | Two PEM blobs in the dashboard | Copy/paste |
-| Windows IIS / Azure | `.pfx` / `.p12` (binary, password-protected) | Convert with `openssl` |
-| AWS ACM | Not exportable (cloud-only) | Customer realises too late |
-| cPanel / Plesk hosted | PEM, downloadable | Usually fine |
+| Source                                                 | Format delivered                                              | Customer pain                                           |
+| ------------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------- |
+| Let's Encrypt (own certbot)                            | `/etc/letsencrypt/live/<domain>/{fullchain.pem, privkey.pem}` | None if they did it; can't always copy                  |
+| Commercial CA (Sectigo, DigiCert, GoDaddy, GlobalSign) | Email/ZIP with `.crt` + `.ca-bundle` + separate `.key`        | Concatenate fullchain, match key, install intermediates |
+| Cloudflare Origin / Universal                          | Two PEM blobs in the dashboard                                | Copy/paste                                              |
+| Windows IIS / Azure                                    | `.pfx` / `.p12` (binary, password-protected)                  | Convert with `openssl`                                  |
+| AWS ACM                                                | Not exportable (cloud-only)                                   | Customer realises too late                              |
+| cPanel / Plesk hosted                                  | PEM, downloadable                                             | Usually fine                                            |
 
 Plus the wildcard challenge: only **DNS-01** validation works for wildcards. Someone needs to put a TXT record at the DNS authority — which is often the part where customers get stuck.
 
@@ -146,11 +103,11 @@ For organisations whose DNS is operated by a separate team that doesn't support 
 
 ## How the automation handles all this
 
-| Layer | Approach |
-|---|---|
-| **Admin tools** (Rancher, Keycloak, monitoring) | Always internal. Local CA + self-signed wildcard for `*.openg2p.internal`, served via Wireguard. No customer DNS or certs needed. |
+| Layer                                                        | Approach                                                                                                                                                                                             |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Admin tools** (Rancher, Keycloak, monitoring)              | Always internal. Local CA + self-signed wildcard for `*.openg2p.internal`, served via Wireguard. No customer DNS or certs needed.                                                                    |
 | **Citizen-facing services** (registry, payments, eSignet, …) | Customer supplies hostnames and certs per service. The environment automation accepts certs in any of the formats above and normalises them; configures Nginx and Istio with per-FQDN server blocks. |
-| **Cert renewal** | For Let's Encrypt: certbot's systemd timer + Nginx reload hook (automatic). For user-provided certs: manual rotation via a one-line helper, and a Prometheus expiry monitor with Grafana alerts. |
+| **Cert renewal**                                             | For Let's Encrypt: certbot's systemd timer + Nginx reload hook (automatic). For user-provided certs: manual rotation via a one-line helper, and a Prometheus expiry monitor with Grafana alerts.     |
 
 This split lets a customer install the **infrastructure** with zero domain or cert procurement, then add citizen-facing services later as their compliance/legal teams complete cert procurement — without re-installing or migrating anything.
 

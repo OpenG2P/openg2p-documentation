@@ -7,7 +7,7 @@ description: PBMS deployment instructions
 The instructions here pertain to the deployment of PBMS and associated components on the Kubernetes cluster using PBMS Helm chart. All the components are installed in the same namespace.
 
 {% hint style="info" %}
-Minio Object Store and Keycloak installation can be skipped if already deployed via [OpenG2P Commons](../../deployment/deployment-instructions/)
+Minio Object Store and Keycloak installation can be skipped if already deployed via [OpenG2P Commons](../../operations/deployment/_archive/deployment-instructions/)
 {% endhint %}
 
 ## Prerequisites
@@ -72,15 +72,11 @@ Before you deploy, make sure the following are in place:
     git clone https://github.com/OpenG2P/openg2p-pbms-gen2-deployment.git
     cd openg2p-pbms-gen2-deployment/charts
     ```
-
-
 2.  Update Helm Dependencies
 
     ```
     helm dependency update openg2p-pbms
     ```
-
-
 3.  Review and update `values.yaml` as needed:
 
     * `global.hostname`: Public hostname for PBMS (e.g., `pbms.dev.openg2p.org`)
@@ -91,8 +87,6 @@ Before you deploy, make sure the following are in place:
     * `istio.virtualservice.host`: Hostname when Istio is enabled
 
     <div data-gb-custom-block data-tag="hint" data-style="info" class="hint hint-info"><p>You can override values inline using <code>--set</code> or pass a custom file with <code>-f</code>.</p></div>
-
-
 4.  Install the Helm chart
 
     ```
@@ -108,8 +102,6 @@ Before you deploy, make sure the following are in place:
     helm status <release-name> -n <namespace>
     kubectl get pods,svc -n <namespace>
     ```
-
-
 6.  Upgrade the deployment when changing configuration
 
     ```
@@ -126,7 +118,7 @@ Before you deploy, make sure the following are in place:
     ```
 
 {% hint style="info" %}
-To uninstall PBMS from command line:&#x20;
+To uninstall PBMS from command line:
 
 ```
 helm uninstall <release-name> -n <namespace>
@@ -140,8 +132,6 @@ helm uninstall <release-name> -n <namespace>
     ```
     kubectl get svc,ingress -n <namespace>
     ```
-
-
 2. Log in to Odoo using admin credentials (configured in Keycloak or Odoo setup).
 3. Activate the PBMS modules under **Apps**:
    * Ensure “OpenG2P PBMS Core”, “OpenG2P PBMS Background Tasks”, and other required extensions are installed.
@@ -161,8 +151,6 @@ helm uninstall <release-name> -n <namespace>
        ```
        kubectl logs <odoo-pod-name> -n <namespace>
        ```
-
-
 6.  (Optional) Apply PBMS demo or seed data:
 
     ```
@@ -172,14 +160,13 @@ helm uninstall <release-name> -n <namespace>
 
 ## Tear down
 
-To completely cleanup PBMS installation, note the following:  Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
+To completely cleanup PBMS installation, note the following: Helm uninstall will **not** delete the database and secrets created. Secret for user does not get deleted (and rightly so). If you re-run the Helm while database still exists, it just brings up Odoo without any issues - it does not re-initalize the database.
 
 To tear down completely:
 
 1. Helm uninstall via command line or Rancher (Apps -> Installed Apps --> Delete)
 2. Delete pbms secret in the namespace
-3. Drop pbms`_db` and user from Postgres&#x20;
+3. Drop pbms`_db` and user from Postgres
    1. Login into Postgres as admin (via port fowarding or directly from Rancher). Use the `postgres-password` key in `commons-postgresql` secret to get the password
-   2. `drop database pbms_db;`&#x20;
-   3. `drop role pbms_db_user;`&#x20;
-
+   2. `drop database pbms_db;`
+   3. `drop role pbms_db_user;`
