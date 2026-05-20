@@ -66,6 +66,8 @@ If a group is disabled in config, `run --component <that-group>` exits with a wa
 
 Failures don't stop other groups — `run` attempts every enabled group and surfaces per-group results in the status file.
 
+**rancher is special.** The nightly rancher backup is driven by an in-cluster `Schedule` CR, not by the cron file on the backup host. `run --component rancher` from the laptop creates an *ad-hoc* `Backup` CR — useful before upgrades, but not the routine cadence.
+
 ## verify
 
 ```bash

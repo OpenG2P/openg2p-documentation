@@ -72,7 +72,7 @@ schedules:
   pg_full:    "0 2 * * 0"
   pg_diff:    "0 2 * * 1-6"
   etcd_pull:  "15 */6 * * *"
-  rancher:    "0 3 * * *"
+  rancher:    "0 3 * * *"        # consumed by the in-cluster Schedule CR
   nfs:        "30 3 * * *"
   configs:    "30 3 * * *"
   drill:      "0 5 * * 0"
@@ -81,6 +81,8 @@ schedules:
 Standard cron syntax. The orchestrator renders these into `/etc/cron.d/openg2p-backup` on the backup host at install time. Edit the cron file directly to test changes; commit them back to `backup-config.yaml` so the next `install` re-applies them.
 
 The defaults stagger: PG at 02:00, etcd every 6h offset by 15 minutes, rancher and NFS at 03:00–03:30 (rancher writes a tarball that NFS then captures, so order matters), drill on Sunday at 05:00 after Saturday's runs.
+
+**About `schedules.rancher`**: nightly rancher backups are driven by the in-cluster `Schedule` CR (`manifests/rancher-backup-schedule.yaml`), not by a cron entry on the backup host. The `schedules.rancher` value is informational only today — it documents the intended cadence. (Wiring it into the Schedule CR's `.spec.schedule` is a Phase 2 nicety.) Ad-hoc rancher backups can still be triggered from the laptop with `./openg2p-backup.sh run --component rancher`.
 
 ## PostgreSQL
 

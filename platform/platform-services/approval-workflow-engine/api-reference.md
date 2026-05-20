@@ -41,6 +41,13 @@ one inbound webhook handler.
 Everything else in the reference below is admin / operator surface served
 from AWE's bundled portal.
 
+### Error responses
+
+Every non-2xx response returns AWE's standard error envelope with an
+`AWE-NNN` code in `errors[0].errorCode`. See the
+[Error codes](error-codes.md) page for the full catalog — what each
+code means, the HTTP status it ships with, and whether to retry.
+
 ---
 
 {% openapi-operation spec="awe-specification" path="/v1/awe/health" method="get" %}

@@ -565,6 +565,7 @@
     * [Scenarios catalog](platform/platform-services/approval-workflow-engine/scenarios.md)
     * [Functional Specifications](platform/platform-services/approval-workflow-engine/functional-specifications.md)
     * [API Reference](platform/platform-services/approval-workflow-engine/api-reference.md)
+    * [Error codes](platform/platform-services/approval-workflow-engine/error-codes.md)
     * [Technical Architecture](platform/platform-services/approval-workflow-engine/technical-architecture.md)
     * [Integration with Registry](platform/platform-services/approval-workflow-engine/integration-with-registry.md)
     * [Deployment](platform/platform-services/approval-workflow-engine/deployment.md)

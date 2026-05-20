@@ -12,7 +12,7 @@ Backups you don't test aren't backups. The orchestrator's `drill` subcommand run
 |---|---|
 | **pg** | `pgbackrest verify` → restore latest full into `/var/lib/openg2p-backup-restore/drill-pg-<timestamp>` on storage → if `pg.canary_table` is set, start a temporary Postgres on port 55432 and run `SELECT count(*) FROM <canary_table>` → tear down |
 | **etcd** | `etcdutl --write-out=table snapshot status <latest>` — verifies snapshot file isn't truncated/corrupt |
-| **rancher** | Spawns a busybox pod mounting the backup PVC, `tar -tzf` the latest tarball to confirm it lists expected GVKs |
+| **rancher** | Resolves the rancher-backup PVC's NFS path via `kubectl`, then SSHes to the storage node to confirm the latest `*.tar.gz` is present, non-zero size, and passes `gzip -t` integrity check. (Tarballs are encrypted when `encryptionConfigSecretName` is set, so we can't `tar -tzf` to list contents.) |
 | **nfs** | `restic check --read-data-subset=5%` on the NFS repo → `restic restore` of the canary file (`.pvc-mapping.yaml`) into a tempdir |
 | **configs** | `restic check --read-data-subset=5%` on the configs repo → `restic restore` of the smallest tagged snapshot (the `openg2p` tag) into a tempdir |
 
