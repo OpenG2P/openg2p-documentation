@@ -568,6 +568,7 @@ The bundled AWS provisioning is a separate, optional step that creates the three
 | **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`. |
 | **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                  |
 | **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                             |
+| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. An EIP is **required** (not optional) — see [About the Elastic IP](#about-the-elastic-ip) for why. If you're at quota, free one first (see [troubleshooting](#aws-provision-eip-addresslimitexceeded)) before running the provisioner. |
 
 ### IAM permissions
 
@@ -616,16 +617,17 @@ If you have full EC2 admin (`AmazonEC2FullAccess` managed policy + `sts:GetCalle
 
 All resources are tagged with `Project=<project>` so the destroy script can find and remove them later.
 
-| Resource          | Default name                    | Configurable      | Notes                                                             |
-| ----------------- | ------------------------------- | ----------------- | ----------------------------------------------------------------- |
-| Key pair          | `openg2p-prod-key`              | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400           |
-| SG: RP            | `openg2p-prod-reverse-proxy`    | `rp_sg_name`      | Reused if exists; rules added if missing                          |
-| SG: Compute       | `openg2p-prod-k8s-node`         | `compute_sg_name` | Same                                                              |
-| SG: Storage       | `openg2p-prod-storage`          | `storage_sg_name` | Same                                                              |
-| Elastic IP        | tagged `Role=reverse-proxy-eip` | —                 | Best-effort: warns and falls back to dynamic IP if quota exceeded |
-| Instance: RP      | `openg2p-prod-reverse-proxy`    | `rp_name`         | `t3a.medium`, 64 GB gp3                                           |
-| Instance: Compute | `openg2p-prod-k8s-node-1`       | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                         |
-| Instance: Storage | `openg2p-prod-storage`          | `storage_name`    | `t3a.2xlarge`, 256 GB gp3                                         |
+| Resource           | Default name                          | Configurable          | Notes                                                                                                                                              |
+| ------------------ | ------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Key pair           | `openg2p-prod-key`                    | `key_name`            | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                            |
+| SG: RP (public)    | `openg2p-prod-reverse-proxy-public`   | `rp_sg_public_name`   | Attached to RP's public ENI (Wireguard endpoint + public services from env automation). Reused if exists; rules added if missing.                  |
+| SG: RP (internal)  | `openg2p-prod-reverse-proxy-internal` | `rp_sg_internal_name` | Attached to RP's internal ENI (admin services only, intra-VPC). Reused if exists; rules added if missing.                                          |
+| SG: Compute        | `openg2p-prod-k8s-node`               | `compute_sg_name`     | Same                                                                                                                                               |
+| SG: Storage        | `openg2p-prod-storage`                | `storage_sg_name`     | Same                                                                                                                                               |
+| **Elastic IP**     | tagged `Role=reverse-proxy-eip`       | —                     | **Mandatory** — one EIP allocated and associated with the RP's public ENI. Script **hard-fails** on `AddressLimitExceeded`. See below for why.    |
+| Instance: RP       | `openg2p-prod-reverse-proxy`          | `rp_name`             | `t3a.medium`, 64 GB gp3, **two ENIs** (public + internal)                                                                                          |
+| Instance: Compute  | `openg2p-prod-k8s-node-1`             | `compute_name`        | `m5a.4xlarge`, 128 GB gp3                                                                                                                          |
+| Instance: Storage  | `openg2p-prod-storage`                | `storage_name`        | `t3a.2xlarge`, 256 GB gp3                                                                                                                          |
 
 ### Default sizing
 
@@ -643,16 +645,28 @@ All sizes are configurable in `aws-config.yaml` via `*_instance_type`, `*_disk_g
 
 Only the reverse-proxy node gets an Elastic IP. Compute and storage use AWS's auto-assigned dynamic public IPs (which is fine — those public IPs are only used for SSH from your laptop).
 
-The RP's EIP exists so the **Wireguard peer configs survive an instance stop/start** — the WG `Endpoint` line in every peer config is the RP's public IP, and a dynamic IP would change after a stop, breaking every VPN client.
+**The EIP is mandatory — not optional.** There are two reasons:
 
-If your AWS account has hit its EIP quota (`AddressLimitExceeded`), the script **does not fail**. It logs a warning, falls back to the auto-assigned dynamic IP, and continues. Your install completes normally; the trade-off is that a future stop/start of the RP will require regenerating peer configs.
+1. **AWS multi-ENI launch forbids auto-assigned public IPs.** The RP is launched with **two network interfaces** (public + internal) to enforce channel separation between the Wireguard endpoint and the admin Nginx (see [Channel separation](#channel-separation-public-vs-private-on-the-rp)). AWS's `RunInstances` API rejects `AssociatePublicIpAddress=true` whenever more than one ENI is specified at launch. So the RP comes up with **no public IP at all** unless we explicitly allocate and associate an EIP after launch. Without the EIP, the RP would be unreachable from the internet — no Wireguard, no admin access.
 
-To free unused EIPs:
+2. **Wireguard endpoint stability across stop/start.** The WG `Endpoint` line in every peer config is the RP's public IP. An EIP survives instance stop/start; a dynamic IP would not. Even if AWS allowed auto-assigned IPs on multi-ENI launches (it doesn't), we'd still want an EIP for this reason.
+
+**Behaviour when the EIP quota is exhausted:** if your AWS account is at the default 5-EIP per-region limit, `AllocateAddress` returns `AddressLimitExceeded` and the provisioner **hard-fails** at step 2 ("Allocating Elastic IP for RP"). No instances have been launched yet, so there's nothing to clean up — just free an EIP (or request a quota increase) and re-run.
+
+**To check your current EIP usage and free unused ones:**
 
 ```bash
+# How many EIPs are allocated in this region (compared to the quota of 5):
+aws ec2 describe-addresses --query 'length(Addresses)'
+
+# List EIPs that are allocated but not associated with any instance (these are safe to release):
 aws ec2 describe-addresses --query 'Addresses[?AssociationId==null].[AllocationId,PublicIp]' --output table
+
+# Release one:
 aws ec2 release-address --allocation-id <alloc-id>
 ```
+
+**During teardown**, `openg2p-aws-destroy.sh` automatically releases every EIP tagged `Project=<project>` (step 2 of the destroy flow), so the EIP returns to your pool for reuse on the next provision. No manual cleanup needed.
 
 ### Workflow
 
@@ -853,12 +867,19 @@ echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 
 **AWS provision: "VPC not found"** — some accounts have no default VPC. Either create one (`aws ec2 create-default-vpc`), set `vpc_id` and `subnet_id` explicitly in `aws-config.yaml`, or run with the default `vpc_id: ""` and pick interactively.
 
-**AWS provision: EIP `AddressLimitExceeded`** — the script warns and proceeds with a dynamic IP. To free unused EIPs and re-run for a stable IP:
+**AWS provision: EIP `AddressLimitExceeded`** — the script **hard-fails** at step 2 (no instances launched yet). The RP uses a multi-ENI launch, which AWS doesn't allow with auto-assigned public IPs, so an EIP is mandatory. Free an unused EIP and re-run, or request a quota increase:
 
 ```bash
+# List EIPs that are allocated but unassociated (safe to release):
 aws ec2 describe-addresses --query 'Addresses[?AssociationId==null].[AllocationId,PublicIp]' --output table
 aws ec2 release-address --allocation-id <alloc-id>
+
+# Or request a quota increase (default is 5 EIPs/region):
+aws service-quotas request-service-quota-increase \
+    --service-code ec2 --quota-code L-0263D0A3 --desired-value 10
 ```
+
+See [About the Elastic IP](#about-the-elastic-ip) for the full explanation of why EIP is mandatory.
 
 **Multiple environments on the same AWS account** — use a different `project:` value in each `aws-config.yaml` (e.g., `openg2p-prod`, `openg2p-staging`). Resources are isolated by tag; the destroy script only touches the configured project.
 
