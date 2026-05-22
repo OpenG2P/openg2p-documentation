@@ -580,6 +580,7 @@
       * [Forbid self-approval & repeat approvers](platform/platform-services/approval-workflow-engine/how-to/segregation-of-duties.md)
       * [Reassign a stuck task](platform/platform-services/approval-workflow-engine/how-to/reassign-task.md)
       * [Use a Keycloak client role in a rule](platform/platform-services/approval-workflow-engine/how-to/client-role-rule.md)
+  * [VC Issuance](platform/platform-services/vc-issuance.md)
   * [Consent Management](consent-management/README.md)
     * [Design](consent-management/design/README.md)
       * [High level design](platform/platform-services/consent-management/design/consent-management.md)
