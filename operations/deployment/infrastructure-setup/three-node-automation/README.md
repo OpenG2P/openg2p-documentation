@@ -291,6 +291,19 @@ The preflight runs in parallel on all three nodes, hard-fails on any node that d
 ./openg2p-prod.sh --config prod-config.yaml
 ```
 
+{% hint style="warning" %}
+**Starting fresh (re-provisioned or reset machines)?** The orchestrator keeps laptop-side completion markers under `automation/production/.state/`. If you've torn down and re-provisioned the VMs (or wiped them) but kept the same `prod-config.yaml`, those markers are **stale** — the orchestrator will think every phase is already done and skip the whole install, leaving you with bare machines (it finishes in seconds and prints "SETUP COMPLETE").
+
+Clear the stale state **before** the first install on fresh machines:
+
+```bash
+./openg2p-prod.sh --reset-laptop --config prod-config.yaml
+./openg2p-prod.sh --config prod-config.yaml
+```
+
+From v1.x the orchestrator also **announces** any pre-existing markers at the start of a run (which phases will be skipped, with timestamps, plus the `--reset-laptop` hint), so an accidental skip is never silent. If you see that banner and the machines are fresh, run `--reset-laptop` and re-run.
+{% endhint %}
+
 Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 
 | # | Where         | What                                                                                                                                                         |
@@ -772,6 +785,10 @@ A clean teardown ends with `Nothing left tagged Project=<project>`.
 The destroy script only touches resources tagged `Project=<project>`. If you've created VPC peering, NAT gateways, EFS file systems, or anything else that you tagged with the same project, those will appear in the final sweep — review the list before assuming "all clean."
 {% endhint %}
 
+{% hint style="info" %}
+**Before re-provisioning into the same config directory:** the teardown removes `provision-output.yaml`, but it does **not** clear the orchestrator's laptop-side state under `automation/production/.state/`. If you provision new VMs and re-run the install with the same `prod-config.yaml`, those stale markers will make the orchestrator skip every phase. Run `./openg2p-prod.sh --reset-laptop --config prod-config.yaml` after teardown (or before the next install) to start clean.
+{% endhint %}
+
 ### Costs (rough, us-east-1, on-demand)
 
 | Item                                      | $/hour         | $/month (730 h)                  |
@@ -797,6 +814,15 @@ Stop instances when not using them to drop EC2 charges to near-zero (you still p
 **`bash 4+ required` at startup** — only happens on macOS where `/bin/bash` is 3.2 by default. Install a newer one: `brew install bash`. The script's `#!/usr/bin/env bash` will then resolve to it.
 
 **Script exits silently with no output (or only the boot line)** — there's a fatal error somewhere; the trap should print `[FATAL] ... at line N (command)`. If you see only the boot line and nothing else, check the log file path printed by the trap.
+
+**Run finishes in seconds and prints "SETUP COMPLETE", but nothing is installed** — the laptop-side `.state/` markers are stale. This happens when you re-provisioned or reset the VMs but reused the same `prod-config.yaml`: the orchestrator sees every phase already marked done and skips them all. The run log shows `Skipping '<role> phase N' — already completed` for each phase, and the summary has empty hostnames / `<empty — secret may not exist>` passwords. Fix: clear the stale state and re-run.
+
+```bash
+./openg2p-prod.sh --reset-laptop --config prod-config.yaml
+./openg2p-prod.sh --config prod-config.yaml
+```
+
+The orchestrator now prints a banner listing pre-existing markers (with timestamps) at the start of every run, so check that first — old timestamps against fresh machines confirm the state is stale.
 
 **Preflight fails on a node** — the failure summary lists which node and which check (CPU, RAM, disk, internet, IP). Resize or reconfigure that VM and re-run. Common cases:
 
