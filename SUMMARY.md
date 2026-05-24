@@ -588,6 +588,7 @@
   * [VC Issuance](platform/platform-services/vc-issuance/README.md)
     * [Functional Specifications](platform/platform-services/vc-issuance/functional-specifications.md)
     * [Technical Architecture](platform/platform-services/vc-issuance/technical-architecture.md)
+    * [Registry Data Connector](platform/platform-services/vc-issuance/registry-data-connector.md)
     * [Identity & IdP](platform/platform-services/vc-issuance/identity-and-idp.md)
     * [Department Integration](platform/platform-services/vc-issuance/department-integration.md)
     * [API Reference](platform/platform-services/vc-issuance/api-reference.md)

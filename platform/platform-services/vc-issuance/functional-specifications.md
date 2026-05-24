@@ -17,7 +17,7 @@ description: >-
 | **Inji Web** | Hosted-wallet frontend (branded, embedded as the "My Wallet" tab). |
 | **Mimoto** | Hosted-wallet backend — performs the OpenID4VCI download, **stores** the VC, renders the **PDF**. |
 | **Inji Certify** | The issuer — signs the VC, pulling claims from the Registry. |
-| **OpenG2P Registry** | Source of the citizen's data; exposes a **REST API** that Certify's connector calls. |
+| **OpenG2P Registry** | Source of the citizen's data; in Phase 1 surfaced to Certify as a phone-keyed, active-only **DB view**. |
 
 ## 1. Login — phone number + OTP
 
@@ -66,8 +66,9 @@ Citizen        Branded Inji Web        Logto (OIDC AS)        Mimoto            
   the existing session) and hands the code to **Mimoto**.
 * **Mimoto** exchanges the code for a token, calls **Certify**, receives the **signed VC**, and
   **stores** it in the citizen's hosted wallet.
-* **Certify** builds the VC by **pulling** the citizen's claims from the **Registry REST API**
-  (resolving by phone number → record → functional ID → claims).
+* **Certify** builds the VC by **pulling** the citizen's claims — Phase 1 via the stock Postgres
+  plugin querying a **phone-keyed, active-only view** over the Registry data (`:id` = token
+  `sub` = phone). See [Registry Data Connector](registry-data-connector.md).
 * The citizen sees the new credential listed in **My Wallet**.
 
 ## 4. Download the PDF
@@ -88,6 +89,7 @@ wallet (keyed to their identity).
 ## Assumptions for Phase 1
 
 * Desktop portal; **phone + OTP** login via **Logto**; **no eSignet**.
-* The Registry holds the citizen's record and can be **looked up by phone number** via its REST API.
+* The Registry holds the citizen's record and can be **looked up by phone number** (one-to-one),
+  surfaced to Certify as a phone-keyed, active-only DB view (Phase 1 DB-direct).
 * Source = **Registry** only (PBMS/SPAR are later, same pattern).
-* Delivery = **hosted wallet + PDF**.
+* Delivery = **Mimoto-based hosted wallet + PDF** (no device wallet in Phase 1).

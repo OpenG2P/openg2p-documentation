@@ -1,7 +1,7 @@
 ---
 description: >-
   The APIs in the hosted-wallet issuance flow — Mimoto wallet endpoints, Inji
-  Certify endpoints, and the contract for the custom Registry REST connector.
+  Certify endpoints, and the Registry data connector (Phase 1 DB-direct; REST in Phase 2).
 ---
 
 # API Reference
@@ -78,33 +78,40 @@ Certify is configured to trust **Logto** as the token issuer
 (`mosip.certify.authn.issuer-uri` / `jwk-set-uri`), and to use the **Registry connector** plugin
 (`mosip.certify.integration.data-provider-plugin`).
 
-## Registry connector contract
+## Registry data connector — Phase 1 (DB-direct, Postgres plugin)
 
-The **custom `DataProviderPlugin`** in Certify calls the **OpenG2P Registry REST API** (not the
-DB). Logical contract:
+Phase 1 uses the stock **`PostgresDataProviderPlugin`** (no custom code). The "contract" is a
+SQL query + a view, not a REST call. Full design: [Registry Data Connector](registry-data-connector.md).
 
-* **Trigger:** Certify invokes the plugin with the **validated token claims** (notably the
-  citizen's **phone number**) and the requested **credential type**.
-* **Connector → Registry API** (indicative):
+* **Plugin selection:** `mosip.certify.integration.data-provider-plugin=PostgresDataProviderPlugin`.
+* **Scope → query mapping** (the `:id` parameter is bound to the token **`sub`**):
+  ```properties
+  mosip.certify.data-provider-plugin.postgres.scope-query-mapping={\
+    'registry_vc_ldp': 'select full_name, date_of_birth, gender, functional_id \
+                         from certify.beneficiary_vc_view where phone = :id'\
+  }
   ```
-  GET /registry/records?phone={phone}&register={registerId}
-  Authorization: <service credentials for Certify→Registry>
-  → { "functionalId": "...", "fields": { "fullName": "...", "dateOfBirth": "...", ... } }
-  ```
-* **Connector → Certify:** a JSON claims object Certify maps into the Velocity template, e.g.
-  ```jsonc
-  { "functionalId": "FARM-001234", "fullName": "…", "dateOfBirth": "…", "gender": "…", … }
-  ```
-* **Identity rule:** the connector keys on the **phone number** claim (Phase 1). If a deployment
-  later authenticates via eSignet/National ID, the connector keys on that identifier instead —
-  a connector configuration, not a redesign.
-* **Allowed claims:** must match the credential's configured `credential_subject` keys; the
-  **functional ID** is carried as a claim, while the credential's holder binding
+* **The view** `certify.beneficiary_vc_view` exposes only VC-relevant columns, keyed by **phone**,
+  **active-only**, surfaced inside Certify's DB via FDW / sync / cross-schema.
+* **Returned columns → VC claims:** column names align with the credential's `credential_subject`
+  keys / template `${...}`. The **functional ID** is a claim; holder binding
   (`credentialSubject.id`) is the hosted wallet's custodial key.
+* **Behaviours:** 1 active row → issued; no row (absent **or** inactive) → plugin *No Data Found* →
+  Certify error → portal shows "no eligible record".
+* **Requirement:** the token **`sub` must be the phone number** (Logto config), since the plugin
+  keys `:id` on `sub`.
+
+### Phase 2 (alternative) — custom REST connector
+
+A custom `DataProviderPlugin` that calls the **Registry REST API**, reads the `phone_number`
+claim, and returns a JSON claims object — avoiding the DB coupling and the `sub`=phone constraint,
+at the cost of custom Java. Indicative shape:
+```
+GET /registry/records?phone={phone}&register={registerId}   (service-auth)
+→ { "functionalId": "...", "fullName": "...", "dateOfBirth": "...", ... }
+```
 
 ## Notes
 
-* The Certify↔Registry call uses **service-to-service credentials**; the Registry enforces its
-  own authorization.
 * The `/wallets/.../presentations` (OpenID4VP) and device-wallet QR offer APIs belong to **later
   scenarios** and are out of scope for Phase 1.

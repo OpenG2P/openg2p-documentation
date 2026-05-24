@@ -2,14 +2,15 @@
 description: >-
   How a government department integrates VC issuance into its own portal — the
   embedding options (A–D, we use C), branding a hosted Inji Web, shared-Logto
-  SSO, and the Registry REST connector.
+  SSO, and the Registry data connection (Phase 1: DB-direct).
 ---
 
 # Department Integration
 
 A government department already has its own citizen portal. VC issuance is delivered by
 embedding a **branded Inji Web** (hosted wallet) into that portal as a **"My Wallet"** tab, with
-**shared login** via Logto, and a **Registry REST connector** in Certify supplying the data.
+**shared login** via Logto, and the **Registry data** supplied to Certify (Phase 1: DB-direct via
+the stock Postgres plugin).
 
 ## Embedding options
 
@@ -56,21 +57,22 @@ Two rules keep this smooth:
 2. **Do the Inji Web login via full redirect or popup**, not a hidden iframe (a silent
    in-iframe session check relies on third-party cookies, which modern browsers block).
 
-## The Registry connector (the department's data integration)
+## The Registry data connection (the department's data integration)
 
-Certify needs the citizen's data to build the VC. The department exposes this via its
-**Registry REST API**, and Certify calls it through a **custom connector**:
+Certify needs the citizen's data to build the VC. **Phase 1 is DB-direct**: Certify uses the
+stock **Postgres DataProvider plugin** to read a **phone-keyed, active-only view** that surfaces
+the Registry data inside Certify's database. This needs **no Certify code** — only SQL/config —
+but it requires:
 
-* **REST API, not direct database.** We deliberately do **not** connect Certify to the Registry
-  DB. The connector calls the Registry's REST API so the Registry retains ownership of its
-  schema, authorization and validation.
-* It is a small **custom `DataProviderPlugin`** (a JAR loaded by Certify) that: takes the
-  identifier from the token (**phone number** in Phase 1) and the credential type, calls the
-  Registry API to resolve the record → **functional ID** → claims, and returns the claim set.
-* This is the **principal piece of new code** in the whole integration; everything else
-  (Mimoto↔Certify, Inji Web embedding, Logto SSO) is configuration.
+* the token **`sub` = phone number** (Logto config), since the plugin keys `:id` on `sub`; and
+* the Registry data **reachable inside Certify's DB** (via FDW / a synced table / a same-database
+  view), exposed as a read-only view.
 
-See the contract in [API Reference → Registry connector](api-reference.md#registry-connector-contract).
+The cleaner **Phase-2 alternative** is a **custom REST connector** (a `DataProviderPlugin` JAR
+that calls the Registry REST API, reads the `phone_number` claim, and avoids DB coupling) — at
+the cost of custom Java.
+
+Full design, SQL, and behaviours: **[Registry Data Connector](registry-data-connector.md)**.
 
 ## What a department actually does (checklist)
 
@@ -81,7 +83,8 @@ See the contract in [API Reference → Registry connector](api-reference.md#regi
    tab** (Option C).
 4. **Register Certify as an issuer in Mimoto** (`mimoto-issuers-config.json`, auth server = Logto).
 5. **Define the credential type(s)** in Certify (`credential_config`: template, issuer DID, key).
-6. **Build/deploy the Registry REST connector** plugin in Certify and point it at the Registry API.
+6. **Wire the Registry data** (Phase 1): expose a phone-keyed, active-only **view** inside
+   Certify's DB (FDW/synced/cross-schema) and set the Postgres plugin's `scope-query-mapping`.
 
 Each department is effectively a **tenant**: its own branded Inji Web, its own Logto clients,
 its own Certify `credential_config`(s) and Registry connector.

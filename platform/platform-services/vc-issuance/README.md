@@ -24,9 +24,11 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
 | **Logto** | Citizen **IdP** — phone-number + OTP login, OIDC authorization server | self-hosted (OSS) |
 | **PostgreSQL** | Reused from the existing OpenG2P cluster | existing |
 
-> **Phase 1 scope:** citizen logs in (phone + OTP), generates a **Registry** credential into
-> their **hosted wallet**, and downloads it as a **PDF**. eSignet is **not** assumed present
-> (see [Identity & IdP](identity-and-idp.md)).
+> **Phase 1 scope:** citizen logs in (phone + OTP via Logto), generates a **Registry** credential
+> into the **Mimoto-based hosted wallet** (Inji Web + Mimoto **only** — no device wallet in
+> Phase 1), and downloads it as a **PDF**. Certify reads the citizen's claims **directly from the
+> database** via the stock Postgres plugin (see [Registry Data Connector](registry-data-connector.md)).
+> eSignet is **not** assumed present (see [Identity & IdP](identity-and-idp.md)).
 
 ## Design principles
 
@@ -35,8 +37,12 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
   [Identity & IdP](identity-and-idp.md).
 * **Hosted wallet, pulled — not pushed.** A credential enters the hosted wallet only by
   Mimoto performing an OpenID4VCI **`authorization_code` (PKCE)** download from Certify. Certify
-  **pulls the citizen's claims from the Registry** via a custom connector (the registry's
-  **REST API**, never the database directly).
+  therefore receives a **token** and **pulls the citizen's claims** at issuance.
+* **Phase 1 data access = DB-direct.** Certify uses the stock **Postgres DataProvider plugin**
+  to read a **phone-keyed view** that exposes the Registry data inside Certify's database
+  (the lookup key `:id` = the token `sub` = the citizen's phone number). A custom **REST**
+  connector is the cleaner Phase-2 alternative. See
+  [Registry Data Connector](registry-data-connector.md).
 * **One shared Certify, many sources.** Registry/PBMS/SPAR are *claim sources*, not issuers.
   Each credential type is one `credential_config` (template + issuer DID + signing key).
 * **Issuing authority is configuration, not code** — single authority assumed for now, but DID
@@ -65,7 +71,8 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
    │ 7. calls Certify credential endpoint (Bearer token)
    ▼
  Inji Certify (issuer)
-   │ 8. custom connector → Registry REST API: resolve phone → record → claims
+   │ 8. Postgres plugin: :id = token sub = phone → query certify.beneficiary_vc_view
+   │    (a phone-keyed, active-only view over the Registry data) → claims
    │ 9. render VC from template, sign with .p12 key → signed VC
    ▼
  Mimoto stores the signed VC  (verifiable_credentials table)
@@ -75,17 +82,18 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
 ```
 
 Key point: the citizen **logs in once** (phone+OTP at the portal); the wallet deposit reuses
-that **Logto SSO** silently. Certify **pulls** the claims from the Registry; the portal does
-**not** push claims.
+that **Logto SSO** silently. Certify **pulls** the claims at issuance (Phase 1: from a
+phone-keyed view over the Registry DB); the portal does **not** push claims.
 
 ## Sub-pages
 
 | Page | Contents |
 |------|----------|
 | [Functional Specifications](functional-specifications.md) | Actors, phone-OTP login, the "My Wallet" journey, deposit, PDF, sequence diagram |
-| [Technical Architecture](technical-architecture.md) | The pull model, Logto as OIDC AS, Mimoto auth-code/PKCE, the Registry connector, key management, multi-app/issuer, config |
+| [Technical Architecture](technical-architecture.md) | The pull model, Logto as OIDC AS, Mimoto auth-code/PKCE, key management, multi-app/issuer, config |
+| [Registry Data Connector](registry-data-connector.md) | **Phase 1 DB-direct**: Postgres plugin, `:id`=`sub`=phone, the phone-keyed view, active/missing handling; REST as the Phase-2 alternative |
 | [Identity & IdP](identity-and-idp.md) | Phone-OTP login, **Logto vs Keycloak**, citizen vs staff IdP, and the optional **eSignet** section |
-| [Department Integration](department-integration.md) | Embedding options **A–D** (we use **C**), branding, shared-Logto SSO, the Registry REST connector |
+| [Department Integration](department-integration.md) | Embedding options **A–D** (we use **C**), branding, shared-Logto SSO, the Registry data connection |
 | [API Reference](api-reference.md) | Mimoto wallet APIs, Certify endpoints, the Registry connector contract |
 | [Deployment](deployment.md) | Kubernetes, reusing cluster PostgreSQL, the published dockers + Logto, persisting `.p12` |
 | [Local Developer Trial](local-setup.md) | A verified developer smoke-test of Certify issuance (simplified flow, not the production model) |
@@ -94,11 +102,15 @@ that **Logto SSO** silently. Certify **pulls** the claims from the Registry; the
 
 These do not change the architecture but must be decided/built before go-live:
 
-* **Phone → Registry record resolver.** How the **phone number** from the Logto token maps to
-  exactly one Registry record / **functional ID**. Requires the Registry to be queryable by phone
-  via its REST API (and a rule for no-match / multiple-match). This logic lives in the Certify
-  **Registry connector**. Examine the existing registrant-authentication path in
-  `openg2p-registry-core` as a reference.
+* **Logto token `sub` = phone number.** The Phase-1 Postgres plugin keys on the token `sub`, so
+  Logto must present the **phone number** as the subject identifier. Verify Logto's behaviour (if
+  `sub` is an opaque id, adapt or move to the REST connector). See
+  [Registry Data Connector](registry-data-connector.md).
+* **Exposing the Registry data inside Certify's DB.** The stock Postgres plugin reads Certify's
+  own database, so the Registry data must be reachable there — via **FDW**, a **synced table**, or
+  a same-database cross-schema **view** — surfaced as a phone-keyed, active-only view.
+* **Phone → record resolver rule.** The **one-to-one** phone → functional ID assumption, plus the
+  no-match / inactive / multiple-match handling (largely expressed in the view's SQL).
 * **Issuer `did:web` hosting domain.** The stable, public HTTPS domain where each credential's
   `did.json` is served so verifiers can resolve the issuer key. Must be fixed before issuing
   (changing it later invalidates verification of already-issued VCs).

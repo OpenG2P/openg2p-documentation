@@ -27,9 +27,11 @@ This is the MOSIP-standard shape of the stack; the portal does **not** push clai
 ```
  Branded Inji Web (frontend) ──► Mimoto (BFF + storage + PDF) ──► Inji Certify (issuer)
         │                              │                               │
-        └──── OIDC (PKCE) ───► Logto (OIDC AS / citizen IdP)           └─ Registry REST connector ─► OpenG2P Registry API
-                                                                        │
+        └──── OIDC (PKCE) ───► Logto (OIDC AS / citizen IdP)           └─ Postgres plugin ─► certify.beneficiary_vc_view
+                                                                        │                     (phone-keyed view over Registry data:
+                                                                        │                      FDW / sync / cross-schema)
                               all on Kubernetes, reusing cluster PostgreSQL; Certify keys in .p12
+                              (Phase 2 alternative: a custom REST connector → OpenG2P Registry API)
 ```
 
 * **Logto** — citizen IdP and **OIDC authorization server**: phone+OTP login, issues the
@@ -56,28 +58,25 @@ PKCE (Proof Key for Code Exchange) binds the auth code to the client that starte
 PKCE is generated **client-side** by Inji Web (automatic — no work for us). Mimoto only consumes
 the verifier.
 
-## The Registry connector (the one real build item)
+## How Certify gets the claims
 
-Certify produces a VC for whoever the token identifies, so it must fetch that citizen's claims.
-We use a **custom `DataProviderPlugin`** in Certify that calls the **Registry REST API**:
+Certify produces a VC for whoever the token identifies, so it must fetch that citizen's claims at
+issuance. The full design is in **[Registry Data Connector](registry-data-connector.md)**; in
+summary:
 
-* **REST, not direct DB.** We deliberately do **not** point Certify at the Registry database.
-  The connector calls the Registry's API so the Registry keeps ownership of its schema,
-  authorization, and validation.
-* **Input:** the identifier from the token — the **phone number** (Phase 1) — plus the requested
-  credential type.
-* **Behaviour:** resolve phone → Registry record → **functional ID** (farmer id / social id /
-  household id) → the claim set for that credential type.
-* **Output:** a JSON claims object that Certify maps into the Velocity template.
-* **Packaging:** a JAR dropped into Certify's plugin loader path; selected via
-  `mosip.certify.integration.data-provider-plugin`.
+* **Phase 1 — DB-direct (stock Postgres plugin, no Certify code).** Certify uses
+  `PostgresDataProviderPlugin` to run **one SQL query per credential scope** against a
+  **phone-keyed, active-only view** that exposes the Registry data inside Certify's database. The
+  query's `:id` parameter is bound to the token **`sub`**, so **Logto must present the phone
+  number as `sub`**. Because the plugin reads **Certify's own database**, the Registry data is
+  surfaced there via **FDW / a synced table / a same-database view**. Presence and active/inactive
+  status are handled in the SQL (no row → "no eligible record").
+* **Phase 2 — custom REST connector (alternative).** A custom `DataProviderPlugin` that calls the
+  **Registry REST API**, reads the `phone_number` claim (so it does not need `sub`=phone), avoids
+  DB coupling, and lets the Registry own authorization. Costs custom Java.
 
-This connector is the principal piece of new code. See its contract in
-[API Reference](api-reference.md#registry-connector-contract).
-
-> **Identity resolution.** Authentication is Logto's job; the connector only consumes the
-> resolved **phone number** claim from the token to look up the Registry. The Registry must be
-> queryable by phone number.
+> **Identity resolution.** Authentication is Logto's job; the connector consumes the citizen's
+> **phone number** to look up the Registry, which is assumed **one-to-one** phone → functional ID.
 
 ## Multi-application and multi-issuer
 
