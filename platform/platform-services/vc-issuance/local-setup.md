@@ -5,12 +5,19 @@ description: >-
   needed for developer testing.
 ---
 
-# Local Setup & Verified Trial
+# Local Developer Trial
 
-This page records a **working** local trial that proves the issuance pipeline end-to-end. It
-uses the same **pre-authorized-code + Certify-as-its-own-AS** approach as the OpenG2P design,
-exercised with a plain HTTP client (no eSignet, no wallet app) so a developer can issue a VC in
-minutes. Verified with **Inji Certify v0.14.0**.
+> **Scope note.** This is a **developer smoke-test that proves Inji Certify can issue and sign a
+> VC** — it uses a **simplified flow** (pre-authorized-code with Certify acting as its own
+> authorization server, a plain HTTP client, no Mimoto/Inji Web/Logto). It is **not** the
+> production architecture. The production OpenG2P model is the **hosted wallet, pull-based** flow
+> (Mimoto `authorization_code`+PKCE, Logto as the IdP, a Registry connector) described in
+> [Technical Architecture](technical-architecture.md). Use this page only to validate Certify
+> issuance quickly on a laptop.
+
+This page records a **working** local trial that proves the signing pipeline end-to-end with a
+plain HTTP client (no IdP, no wallet app), so a developer can issue a VC in minutes. Verified
+with **Inji Certify 0.14.0**.
 
 ## What runs
 

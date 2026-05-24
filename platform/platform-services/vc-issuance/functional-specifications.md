@@ -1,8 +1,8 @@
 ---
 description: >-
-  The citizen's end-to-end journey — logging into the Beneficiary Portal and
-  downloading a Verifiable Credential to a phone wallet — and the assisted
-  (agent) variant.
+  The citizen's journey: phone-OTP login, the "My Wallet" tab (branded Inji
+  Web), generating a Registry credential into the hosted wallet, and
+  downloading it as a PDF.
 ---
 
 # Functional Specifications
@@ -11,98 +11,83 @@ description: >-
 
 | Actor | Role |
 |-------|------|
-| **Citizen (beneficiary)** | Logs into the Beneficiary Portal on a desktop and downloads their credential to a phone wallet. |
-| **Beneficiary Portal UI** | Desktop web app. Single front door for the citizen; talks to the Registry and PBMS backend APIs. |
-| **IAM (eSignet / Keycloak)** | Authenticates the citizen. eSignet may authenticate against **National ID**, or delegate to **Keycloak**. |
-| **Registry / PBMS bene-portal-api** | The source applications. Hold the citizen's data and orchestrate the credential offer. |
-| **Inji Certify** | The shared OpenID4VCI issuer that signs and issues the VC. |
-| **Phone wallet** | Inji Wallet or any OpenID4VCI-compliant wallet that receives and holds the VC. |
-| **Assisting agent** *(optional)* | Operates the portal on the citizen's behalf in a desk/kiosk setting. |
+| **Citizen (beneficiary)** | Logs into the department/Beneficiary Portal on a desktop, generates a credential into their hosted wallet, downloads a PDF. |
+| **Department / Beneficiary Portal** | The citizen-facing portal. Hosts a **"My Wallet"** tab that is a **branded Inji Web** (same parent domain). |
+| **Logto** | Citizen IdP — **phone-number + OTP** login; the OIDC authorization server for the whole flow. |
+| **Inji Web** | Hosted-wallet frontend (branded, embedded as the "My Wallet" tab). |
+| **Mimoto** | Hosted-wallet backend — performs the OpenID4VCI download, **stores** the VC, renders the **PDF**. |
+| **Inji Certify** | The issuer — signs the VC, pulling claims from the Registry. |
+| **OpenG2P Registry** | Source of the citizen's data; exposes a **REST API** that Certify's connector calls. |
 
-## 1. Login
+## 1. Login — phone number + OTP
 
-The citizen authenticates **once**, at the Beneficiary Portal, exactly as other OpenG2P
-portals do today:
+The citizen logs into the portal with their **phone number + OTP**, authenticated by **Logto**.
+This single login establishes a **Logto SSO session** reused for everything that follows
+(including the wallet deposit) — the citizen does **not** log in again.
 
-1. The portal redirects to **eSignet** (OIDC authorization).
-2. eSignet authenticates the citizen — via **National ID** auth, or by delegating to
-   **Keycloak** on the backend.
-3. On success the portal holds the citizen's session/token (the IAM access token), which
-   identifies the citizen for all subsequent calls to the Registry/PBMS backends.
+* The portal identifies the citizen by **phone number** (and/or a Logto user id). That phone
+  number is what links to the Registry record.
+* No eSignet is involved in Phase 1. (If a deployment has eSignet, see
+  [Identity & IdP → eSignet](identity-and-idp.md#optional-esignet).)
 
-> This login is the **single authentication gate** for the whole journey. Because the citizen
-> is already authenticated here, the later wallet step does **not** require a second login (see
-> [Technical Architecture → Authentication](technical-architecture.md#authentication)).
+## 2. "My Wallet" — a branded Inji Web tab
 
-## 2. Download a credential
+The portal has a **"My Wallet"** tab which is a **branded Inji Web** instance hosted on the same
+parent domain (see [Department Integration](department-integration.md)). It is initially empty.
+Because Inji Web uses the **same Logto**, opening it does not prompt another login (SSO).
 
-On the **Registry** page or the **PBMS** page, the citizen sees a **"Download Credential"**
-action (per credential type the source offers). When clicked:
+The citizen can generate a credential in two equivalent ways:
+* from **"My Wallet"**, a **"Generate credential"** action lists the credentials they're eligible
+  for; or
+* from a specific **Registry/Register** page, a **"Download credential"** action for that type.
+
+## 3. Generate the credential into the hosted wallet
 
 ```
-Citizen                Beneficiary Portal UI        Registry/PBMS bene-portal-api      Inji Certify
-   │  click "Download"        │                              │                              │
-   │ ───────────────────────► │  request offer (with token)  │                              │
-   │                          │ ───────────────────────────► │                              │
-   │                          │                              │ resolve citizen → record     │
-   │                          │                              │ map record → claims          │
-   │                          │                              │ generate PIN (tx_code)       │
-   │                          │                              │ POST /pre-authorized-data    │
-   │                          │                              │   { claims, tx_code } ─────► │
-   │                          │                              │ ◄─ { credential_offer_uri }  │
-   │                          │ ◄─ { offer_uri, pin } ─────── │                              │
-   │ ◄─ render QR + show PIN ─ │                              │                              │
-   │                          │                              │                              │
-   │  scan QR with phone wallet, type PIN                     │                              │
-   │ ───────────────────────────────────────────────────────────────────────────────────► │
-   │           wallet: GET offer → POST /oauth/token (code + PIN) → POST /credential (proof) │
-   │ ◄──────────────────────────────  signed VC stored in wallet  ──────────────────────────│
+Citizen        Branded Inji Web        Logto (OIDC AS)        Mimoto            Certify         Registry API
+   │ pick credential │                      │                   │                 │                 │
+   │ ───────────────►│ 1. authz_code+PKCE   │                   │                 │                 │
+   │                 │ ───────────────────► │ (silent via SSO)  │                 │                 │
+   │                 │ ◄──── auth code ──────│                   │                 │                 │
+   │                 │ 2. POST /wallets/{id}/credentials                           │                 │
+   │                 │    {issuer, code, grantType=authorization_code, codeVerifier}│                │
+   │                 │ ──────────────────────────────────────► │                 │                 │
+   │                 │                       3. token exchange  │ ──► Logto        │                 │
+   │                 │                       4. GET credential (Bearer) ─────────► │                 │
+   │                 │                                          │  5. resolve phone → record → claims│
+   │                 │                                          │     ───────────────────────────►   │
+   │                 │                                          │  6. render + sign VC (.p12)         │
+   │                 │ ◄───────────── signed VC ─────────────── │ ◄────────────── │                 │
+   │                 │                       7. Mimoto STORES the VC                                 │
+   │ ◄─ shows VC ────│                                                                               │
 ```
 
-### What each side does
+* The branded Inji Web obtains an **`authorization_code` + PKCE** from Logto (silent, thanks to
+  the existing session) and hands the code to **Mimoto**.
+* **Mimoto** exchanges the code for a token, calls **Certify**, receives the **signed VC**, and
+  **stores** it in the citizen's hosted wallet.
+* **Certify** builds the VC by **pulling** the citizen's claims from the **Registry REST API**
+  (resolving by phone number → record → functional ID → claims).
+* The citizen sees the new credential listed in **My Wallet**.
 
-* **The portal (Registry/PBMS bene-portal-api)**
-  * resolves the authenticated citizen to their record,
-  * builds the **claims** for the requested credential type from that record,
-  * generates a short numeric **PIN** (the OpenID4VCI `tx_code`),
-  * calls Inji Certify's `POST /pre-authorized-data` with the claims and the PIN,
-  * receives a **`credential_offer_uri`** (a deep link — *not* an image, *not* the VC),
-  * returns `{ credential_offer_uri, pin }` to the UI.
-* **The UI** renders the `credential_offer_uri` as a **QR code** and displays the **PIN**.
-* **The phone wallet** scans the QR, reads the offer, exchanges the pre-authorized code +
-  PIN for a token, proves possession of a device key, and pulls the **signed VC** straight
-  from Certify.
+## 4. Download the PDF
 
-### Why the QR and PIN, and where they come from
+From "My Wallet", the citizen clicks **Download**. Inji Web requests the credential from Mimoto
+as a **PDF** (`GET /wallets/{id}/credentials/{credId}`, `Accept: application/pdf`); Mimoto renders
+and returns it. The PDF can carry an embedded QR for offline verification.
 
-* The **QR** simply encodes the `credential_offer_uri` string. It is generated by the
-  portal/UI — Inji Certify does not return an image.
-* The **PIN** is **generated by the portal** and passed *into* the `pre-authorized-data` call;
-  Certify later forces the wallet to present the matching value. Certify never "returns" the
-  PIN — the portal already knows it. Its purpose is to bind redemption to the person looking at
-  the authenticated portal screen, so a leaked/screenshotted QR cannot be redeemed alone.
+> Phase 1 "download" = **PDF**. Online sharing to third parties (OpenID4VP) and the device-wallet
+> (QR-to-phone) path are **later scenarios** — see [Technical Architecture](technical-architecture.md).
 
-### Why the credential goes to the wallet, not the portal
+## Assisted (agent) variant
 
-This is the standard, holder-bound OpenID4VCI model. The wallet generates a device key and
-proves possession of it during issuance, so the VC is bound to the citizen's device. The
-portal only triggers the offer and **never receives or stores the signed VC**.
+In a desk/kiosk setting an agent can drive the same journey on the citizen's behalf (agent
+authenticated separately); the backend flow is identical. The citizen still owns the hosted
+wallet (keyed to their identity).
 
-## 3. Assisted (agent) variant
+## Assumptions for Phase 1
 
-In a desk/kiosk setting an **agent** can drive the same flow on the citizen's behalf:
-
-* the agent is authenticated (via the agent portal),
-* looks up the citizen and triggers the same offer,
-* the citizen scans the QR with their own phone and enters the PIN (read out or shown
-  on-screen).
-
-The backend flow is identical; only the caller and its authorization differ.
-
-## Assumptions for the current design
-
-* The Beneficiary Portal is used on a **desktop**; the citizen has a **smartphone wallet** to
-  receive the VC.
-* The citizen authenticates via **eSignet** (National ID or Keycloak) at the portal.
-* The same Inji Certify serves credentials sourced from **Registry** and **PBMS** (and later
-  SPAR), with a credential type configured per source.
+* Desktop portal; **phone + OTP** login via **Logto**; **no eSignet**.
+* The Registry holds the citizen's record and can be **looked up by phone number** via its REST API.
+* Source = **Registry** only (PBMS/SPAR are later, same pattern).
+* Delivery = **hosted wallet + PDF**.

@@ -1,99 +1,109 @@
 ---
 description: >-
-  Issuing W3C Verifiable Credentials from OpenG2P data sources (Registry, PBMS,
-  SPAR, …) using MOSIP Inji Certify, delivered to the citizen's phone wallet via
-  the Beneficiary Portal.
+  Issuing W3C Verifiable Credentials from OpenG2P data sources (Registry first,
+  then PBMS, SPAR, …) using MOSIP Inji Certify, held in a hosted wallet (Inji
+  Web + Mimoto) and downloadable as a PDF from the citizen's portal.
 ---
 
 # VC Issuance
 
 ## Overview
 
-**VC Issuance** lets OpenG2P turn the data a citizen already holds in OpenG2P systems
-(their **Registry** record, a **PBMS** benefit, a **SPAR** entry, …) into a standards-based
-**Verifiable Credential (VC)** that the citizen can carry in a mobile wallet and present
-anywhere, online or offline.
+**VC Issuance** turns a citizen's OpenG2P data (their **Registry** record first; later **PBMS**,
+**SPAR**, …) into a standards-based **Verifiable Credential (VC)** held in a **hosted wallet**
+and downloadable as a **PDF** from the citizen's portal.
 
-The signing/issuing engine is **MOSIP [Inji Certify](https://docs.inji.io/inji-certify)**, an
-open-source **OpenID4VCI** credential issuer. OpenG2P runs **one shared Inji Certify** as a
-platform service; the individual applications (Registry, PBMS, SPAR) are merely *sources of
-claims* — Certify itself is **not tied to any one application**.
+The building blocks are all MOSIP **Inji** components plus an OpenID Connect identity provider:
 
-From the citizen's point of view it is simple: they log into the **Beneficiary Portal** (a
-desktop web app), open the Registry or PBMS page, click **"Download Credential"**, scan a
-**QR code** with their phone wallet, and the signed credential lands in the wallet.
+| Component | Role | Version |
+|---|---|---|
+| **Inji Certify** | OpenID4VCI credential **issuer** (signs the VC) | 0.14.0 |
+| **Mimoto** | Hosted-wallet **backend**: downloads from Certify, **stores** the VC, renders **PDF** | 0.22.0 |
+| **Inji Web** | Hosted-wallet **frontend** (branded, embedded in the dept portal) | 0.17.0 |
+| **Inji Mobile** | Device wallet (later/optional scenario) | 0.22.1 |
+| **Logto** | Citizen **IdP** — phone-number + OTP login, OIDC authorization server | self-hosted (OSS) |
+| **PostgreSQL** | Reused from the existing OpenG2P cluster | existing |
 
-### Design principles
+> **Phase 1 scope:** citizen logs in (phone + OTP), generates a **Registry** credential into
+> their **hosted wallet**, and downloads it as a **PDF**. eSignet is **not** assumed present
+> (see [Identity & IdP](identity-and-idp.md)).
 
-* **Application-agnostic issuer.** The same Inji Certify serves Registry, PBMS, SPAR and any
-  future source. A source application contributes *claims*; it never signs anything.
-* **Issuing authority is configuration, not code.** A single issuing authority is assumed for
-  now, but nothing is hardcoded — each credential type carries its own issuer **DID** and
-  signing key, so multiple sub‑departments within an authority can issue different VCs.
-* **Keys stay inside Certify.** Certify uses its **embedded keymanager** with a **PKCS12
-  (`.p12`) keystore** (no HSM). No application ever touches signing keys.
-* **Reuse the cluster.** Certify runs on the OpenG2P **Kubernetes** cluster and reuses the
-  **existing PostgreSQL**.
-* **Holder-bound delivery.** The credential is delivered **directly to the citizen's wallet**
-  over OpenID4VCI (not handed back to the portal), so it is cryptographically bound to the
-  citizen's device.
+## Design principles
 
-## High-level architecture
+* **Citizen login is phone-number + OTP**, provided by **Logto** (a citizen-oriented OIDC IdP).
+  eSignet is **not** required; if a deployment has it, see the optional section in
+  [Identity & IdP](identity-and-idp.md).
+* **Hosted wallet, pulled — not pushed.** A credential enters the hosted wallet only by
+  Mimoto performing an OpenID4VCI **`authorization_code` (PKCE)** download from Certify. Certify
+  **pulls the citizen's claims from the Registry** via a custom connector (the registry's
+  **REST API**, never the database directly).
+* **One shared Certify, many sources.** Registry/PBMS/SPAR are *claim sources*, not issuers.
+  Each credential type is one `credential_config` (template + issuer DID + signing key).
+* **Issuing authority is configuration, not code** — single authority assumed for now, but DID
+  and key are per credential type, so sub-departments can diverge without code changes.
+* **Keys stay inside Certify** — embedded keymanager + **PKCS12 `.p12`** (no HSM).
+* **Reuse the cluster** — Kubernetes + the existing PostgreSQL.
+* **Departments embed a branded Inji Web** as a "My Wallet" tab (see
+  [Department Integration](department-integration.md)).
+
+## End-to-end flow (Phase 1 — hosted wallet + PDF)
 
 ```
-   Citizen (desktop browser)
-        │  1. Login  (eSignet → National ID, or Keycloak via IAM)
-        ▼
- ┌───────────────────────────┐
- │   Beneficiary Portal UI   │  (desktop web app; single login for the citizen)
- └───────────────────────────┘
-        │  talks internally to both source apps
-        ├───────────────────────────┐
-        ▼                            ▼
- ┌──────────────────┐        ┌──────────────────┐
- │ Registry         │        │ PBMS             │   ← sources of VC claims
- │ bene-portal-api  │        │ bene-portal-api  │
- └──────────────────┘        └──────────────────┘
-        │  2. citizen clicks "Download Credential" on the Registry/PBMS page
-        │  3. portal fetches the citizen's record → builds claims
-        │  4. POST /pre-authorized-data  { claims, tx_code (PIN) }   [trusted M2M]
-        └───────────────┬───────────────────────────────────────────┐
-                        ▼                                             │
-                ┌───────────────────────┐                            │
-                │   Inji Certify         │  (ONE shared instance)     │
-                │   OpenID4VCI issuer    │                            │
-                │   embedded keymanager  │                            │
-                │   PostgreSQL (shared)  │                            │
-                └───────────────────────┘                            │
-                        │  returns credential_offer_uri              │
-        ┌───────────────┘                                            │
-        ▼                                                            │
-  Portal returns { offer_uri → QR, PIN } to the UI                   │
-        │                                                            │
-        ▼  5. citizen scans QR with phone wallet, enters PIN         │
- ┌──────────────────┐   token + proof-of-possession + /credential   │
- │  Phone wallet    │ ─────────────────────────────────────────────►┘
- │ (Inji / any      │ ◄──────────  6. signed VC stored in wallet
- │  OpenID4VCI app) │
- └──────────────────┘
+ Citizen (desktop browser)
+   │ 1. opens the Dept/Beneficiary Portal → "My Wallet" tab (branded Inji Web, same parent domain)
+   │ 2. login: phone number + OTP   ─────────────────────►  Logto (OIDC AS / citizen IdP)
+   │                                ◄─────────────────────  session (SSO; reused everywhere)
+   │ 3. picks a Registry credential → "Generate"
+   ▼
+ Branded Inji Web (frontend, Option C)
+   │ 4. OIDC authorization_code + PKCE to Logto (silent via SSO) → auth code
+   │ 5. POST /wallets/{id}/credentials
+   │      { issuer=Certify, credentialConfigurationId, code, grantType=authorization_code, codeVerifier }
+   ▼
+ Mimoto (hosted-wallet backend)
+   │ 6. token exchange with Logto (code + verifier) → access token
+   │ 7. calls Certify credential endpoint (Bearer token)
+   ▼
+ Inji Certify (issuer)
+   │ 8. custom connector → Registry REST API: resolve phone → record → claims
+   │ 9. render VC from template, sign with .p12 key → signed VC
+   ▼
+ Mimoto stores the signed VC  (verifiable_credentials table)
+   │ 10. Inji Web lists it; "Download PDF" → Mimoto renders PDF
+   ▼
+ Citizen downloads the PDF
 ```
 
-> **Key point:** the signed VC travels **Certify → wallet**. The Beneficiary Portal only
-> *orchestrates the offer*; it never receives or stores the signed credential.
+Key point: the citizen **logs in once** (phone+OTP at the portal); the wallet deposit reuses
+that **Logto SSO** silently. Certify **pulls** the claims from the Registry; the portal does
+**not** push claims.
 
 ## Sub-pages
 
 | Page | Contents |
 |------|----------|
-| [Functional Specifications](functional-specifications.md) | Actors, login, the end-to-end "download credential" journey, QR + PIN, agent-assisted flow |
-| [Technical Architecture](technical-architecture.md) | Inji Certify internals, the push integration model, multi-application & multi-issuer design, authentication, key management, the 3-layer config model |
-| [API Reference](api-reference.md) | Inji Certify endpoints and the proposed Beneficiary Portal VC-issuance APIs, with example payloads |
-| [Deployment](deployment.md) | Running Certify on Kubernetes, reusing cluster PostgreSQL, configuration, per-authority deployment, DID hosting, security |
-| [Local Setup & Verified Trial](local-setup.md) | A working local docker-compose trial that issues a real signed VC over the APIs |
+| [Functional Specifications](functional-specifications.md) | Actors, phone-OTP login, the "My Wallet" journey, deposit, PDF, sequence diagram |
+| [Technical Architecture](technical-architecture.md) | The pull model, Logto as OIDC AS, Mimoto auth-code/PKCE, the Registry connector, key management, multi-app/issuer, config |
+| [Identity & IdP](identity-and-idp.md) | Phone-OTP login, **Logto vs Keycloak**, citizen vs staff IdP, and the optional **eSignet** section |
+| [Department Integration](department-integration.md) | Embedding options **A–D** (we use **C**), branding, shared-Logto SSO, the Registry REST connector |
+| [API Reference](api-reference.md) | Mimoto wallet APIs, Certify endpoints, the Registry connector contract |
+| [Deployment](deployment.md) | Kubernetes, reusing cluster PostgreSQL, the published dockers + Logto, persisting `.p12` |
+| [Local Developer Trial](local-setup.md) | A verified developer smoke-test of Certify issuance (simplified flow, not the production model) |
 
-## Status
+## Open items (to finalize during implementation)
 
-A working local trial has been completed: Inji Certify v0.14.0 was run locally and issued an
-Ed25519-signed credential end-to-end over the OpenID4VCI APIs (no eSignet, no wallet app
-needed for the developer trial). See [Local Setup & Verified Trial](local-setup.md). The
-OpenG2P production design described across these pages builds on that proven flow.
+These do not change the architecture but must be decided/built before go-live:
+
+* **Phone → Registry record resolver.** How the **phone number** from the Logto token maps to
+  exactly one Registry record / **functional ID**. Requires the Registry to be queryable by phone
+  via its REST API (and a rule for no-match / multiple-match). This logic lives in the Certify
+  **Registry connector**. Examine the existing registrant-authentication path in
+  `openg2p-registry-core` as a reference.
+* **Issuer `did:web` hosting domain.** The stable, public HTTPS domain where each credential's
+  `did.json` is served so verifiers can resolve the issuer key. Must be fixed before issuing
+  (changing it later invalidates verification of already-issued VCs).
+* **Indicative contracts to confirm against pinned versions.** The exact Mimoto
+  `mimoto-issuers-config.json` fields and the Registry connector request/response shape are
+  written as *indicative* and to be finalized against **Mimoto 0.22.0** / **Inji Certify 0.14.0**.
+* **Registry connector authorization.** The service-to-service credentials Certify uses to call
+  the Registry API, and the Registry-side authorization for that caller.
