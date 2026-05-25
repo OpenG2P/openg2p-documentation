@@ -1,106 +1,109 @@
 ---
 description: >-
-  How Inji Certify gets the citizen's claims in Phase 1 — the stock Postgres
-  DataProvider plugin reading a phone-keyed view inside Certify's database,
-  with the authorization-code token subject as the lookup key.
+  How Inji Certify gets the citizen's claims — a custom OpenG2P DataProvider
+  plugin that reads an external Registry database via configurable scope-based
+  SQL and a configurable token-claim → query-parameter binding.
 ---
 
-# Registry Data Connector (Phase 1: DB-direct)
+# Registry Data Connector
 
 In the hosted-wallet (pull) model, Certify receives a **token** and must source the citizen's
-claims. **Phase 1 uses the stock `PostgresDataProviderPlugin`** — no custom Certify code — reading
-a **phone-keyed view** that exposes the Registry data inside Certify's database.
+claims. OpenG2P uses a **custom DataProvider plugin** — `registry-dataprovider-plugin` — that
+reads an **external Registry database** with **configurable, scope-based SQL** and a
+**configurable claim→parameter** binding.
 
-## How the stock Postgres plugin works
+> Source code lives in the working repo at `vc-issuance/registry-dataprovider-plugin/`.
 
-* Plugin selection: `mosip.certify.integration.data-provider-plugin=PostgresDataProviderPlugin`.
-* You configure **one SQL query per credential scope**:
-  ```properties
-  mosip.certify.data-provider-plugin.postgres.scope-query-mapping={\
-    'registry_vc_ldp': 'select full_name, date_of_birth, gender, functional_id \
-                         from certify.beneficiary_vc_view where phone = :id'\
-  }
-  ```
-* At issuance the plugin runs: `query.setParameter("id", identityDetails.get("sub"))` — i.e.
-  **`:id` is bound to the access token's `sub` claim**, and the query is chosen by the token's
-  `scope`. The returned columns become the VC fields.
+## Why a custom plugin (and not the stock Postgres plugin)
 
-This yields **two hard requirements** that shape the Phase-1 design.
+Certify ships a `PostgresDataProviderPlugin`, but it has two limitations for our case:
 
-## Requirement 1 — the token `sub` must be the phone number
+1. it queries **Certify's own database** (shared `EntityManager`), so reaching a separate
+   `registrydb` would need FDW / replication / cross-schema tricks; and
+2. it binds the query's `:id` to the token **`sub`** only — forcing `sub` = phone in the IdP.
 
-The plugin binds `:id` to **`sub`** only (it does not read `phone_number` or any other claim). So
-for a phone-based lookup, **Logto must issue the access token with `sub` = the citizen's phone
-number** (the phone is the citizen's Logto username and login identifier).
+The custom plugin removes both:
 
-* **Action:** configure Logto so the subject identifier presented to Certify is the **phone
-  number**. (Verify Logto's behaviour — if `sub` is an opaque user id instead, the stock plugin
-  cannot key on phone, and you would need the custom REST connector below or a Logto/identifier
-  adaptation.)
-* The citizen always logs in via **phone + OTP**; full name etc. are profile attributes, but the
-  **identifier used here is the phone number**.
+| Concern | Stock Postgres plugin | Custom Registry plugin |
+|---|---|---|
+| Datasource | Certify's own DB | **Dedicated external** Registry datasource |
+| Lookup key | hardcoded `:id = sub` | **Configurable** `param → claim` mapping |
+| Query | config (SQL per scope) | config (SQL per scope) — same flexibility |
+| Code | none | a small Java plugin (built once, in Docker) |
 
-## Requirement 2 — the data must live inside Certify's database
+It keeps the good part — **queries defined in config** — so adding a credential type stays config,
+and the plugin never needs recompiling to change what's read.
 
-The Postgres plugin uses Certify's **own** `EntityManager` (no separate datasource); its native
-query runs on **Certify's database connection**. Since Certify's DB and the registry's `registrydb`
-are **separate databases**, the registry data must be **made reachable inside Certify's DB**. Pick
-one:
+## How it works
 
-| Approach | What it is | Freshness | Setup |
-|---|---|---|---|
-| **A. PostgreSQL FDW (recommended)** | `postgres_fdw` foreign tables in Certify's DB pointing at the registry tables, wrapped in a read-only **view** | Live | DBA: create FDW server + user mapping + grants |
-| **B. Replicated/synced table** | A job copies the needed fields into a `certify.*` table | Periodic/event | A sync pipeline |
-| **C. Same database, different schema** | If Certify shares the *same database* as the registry, a cross-schema view + `SELECT` grants | Live | Grants only (only if same DB) |
+At issuance Certify calls `fetchData(identityDetails)` with the validated token claims. The plugin:
 
-In all cases, expose a **read-only view** — e.g. `certify.beneficiary_vc_view` — that surfaces
-**only the VC-relevant columns**, keyed by **phone**, and **filters to active records**.
+1. reads the **`scope`** claim and picks the matching SQL from `scope-query-mapping`;
+2. binds each SQL named parameter from the token claim named in `param-claim-mapping`
+   (for phone login: `:id` ← `phone_number`);
+3. runs the query on the **dedicated Registry datasource**;
+4. returns the single matching row's columns as the VC claims.
 
-```sql
--- illustrative view (over FDW foreign tables or a synced copy)
-CREATE VIEW certify.beneficiary_vc_view AS
-SELECT phone, full_name, date_of_birth, gender, functional_id
-FROM   <registry-foreign-or-synced-tables>
-WHERE  status = 'active';
+```properties
+# selection & discovery
+mosip.certify.integration.scan-base-package=org.openg2p.certify.registry
+mosip.certify.integration.data-provider-plugin=RegistryDataProviderPlugin
+
+# dedicated external Registry datasource (read-only)
+mosip.certify.data-provider-plugin.registrydb.url=jdbc:postgresql://registry-db:5432/registrydb
+mosip.certify.data-provider-plugin.registrydb.username=certify_ro
+mosip.certify.data-provider-plugin.registrydb.password=${REGISTRY_DB_PASSWORD}
+
+# scope -> SQL (the view/table lives entirely in the SQL; alias columns to template vars)
+mosip.certify.data-provider-plugin.scope-query-mapping={\
+  'registry_vc_ldp': 'select "fullName","dateOfBirth","gender","functionalId" \
+                       from beneficiary_vc_view where phone = :id'\
+}
+
+# SQL param -> token claim (no hardcoded sub)
+mosip.certify.data-provider-plugin.param-claim-mapping={ 'id': 'phone_number' }
 ```
 
-## Lookup behaviour (the cases you asked for)
+## The view and the identifier
 
-With `... where phone = :id` against the active-only view:
+* The plugin is **schema-agnostic** — the table/view name, joins and filters are all inside the
+  configured SQL. So the Registry exposes a **read-only view** (e.g. `beneficiary_vc_view`),
+  **phone-keyed** and **active-only**, surfacing only the VC columns. The plugin doesn't need to
+  know its name; it's just part of the query string.
+* **Identifier is configurable:** binding `:id` ← `phone_number` matches "citizen logs in by
+  phone". The Registry is assumed **one-to-one** phone → functional ID. No IdP `sub` constraint.
+* **Column → claim names:** alias view columns to match the credential template `${...}`
+  variables (quote camelCase in Postgres); format dates as text for clean string claims.
+
+## Lookup behaviour
 
 | Case | Query result | Outcome |
 |---|---|---|
-| Phone maps 1:1 to an **active** record | 1 row | Claims returned → VC issued |
-| **No** record for the phone | 0 rows | Plugin throws *No Data Found* → Certify error → portal shows "no eligible record" |
-| Record exists but **inactive** | 0 rows (filtered) | Same as above — treated as not eligible |
+| Phone maps 1:1 to an **active** record | 1 row | claims returned → VC issued |
+| **No** record for the phone | 0 rows | `DataProviderExchangeException` → Certify error → portal "no eligible record" |
+| Record exists but **inactive** | 0 rows (filtered in the view) | same — treated as not eligible |
+| Multiple rows | >1 | first row used + warning logged (enforce 1:1 / `LIMIT 1`) |
 
-* The **one-to-one phone → functional ID** assumption is enforced by the view; defensively add
-  `LIMIT 1` or a uniqueness guarantee so multiple matches can never leak the wrong record.
-* Active/inactive and presence are handled **entirely in the SQL/view** — no Certify code.
+Presence and active/inactive are handled entirely in the **SQL/view** — no code change.
 
-## Field mapping
+## Build & deploy
 
-The view's **column names** must line up with the credential's configured `credentialSubject`
-keys and the Velocity template `${...}` placeholders (e.g. `functional_id` → `functionalId`).
-Alias columns in the view as needed. The **functional ID** is carried as a VC claim; the holder
-binding (`credentialSubject.id`) is the hosted wallet's custodial key, not any registry ID.
+* **Build without a local Java toolchain** — `vc-issuance/registry-dataprovider-plugin/build.sh`
+  runs the Maven Docker image and produces `target/registry-dataprovider-plugin.jar` (a
+  `Dockerfile` build is also provided). All dependencies are `provided`, so the JAR contains only
+  the plugin's classes (no version clashes).
+* **Deploy** — mount the JAR into Certify's plugin **loader_path**, add the properties above to
+  the active profile, create the read-only **view** + `certify_ro` user in the Registry DB, and
+  define the `credential_config` (template, issuer DID, signing key, scope).
 
 ## Security
 
-* Certify connects with a **read-only** DB user; expose **only the view**, never raw registry
-  tables.
-* For FDW, the foreign user mapping should also be least-privilege (read-only on the needed
-  tables).
+* Read-only DB user limited to the **view**; TLS to the DB; network access restricted to Certify.
+* The Registry owns what the view exposes — Certify never touches raw tables.
 
-## Future / alternative — custom REST connector
+## Future option — REST instead of DB
 
-A custom `DataProviderPlugin` that calls the **Registry REST API** (rather than the DB) is the
-cleaner long-term option:
-
-* reads the **`phone_number`** claim (so it does **not** require `sub` = phone),
-* avoids DB federation and schema coupling,
-* lets the Registry enforce its own authorization and compute derived claims.
-
-It costs **custom Java**, so Phase 1 uses the **DB-direct** approach above; the REST connector is
-the recommended Phase-2 evolution if DB coupling, the `sub = phone` constraint, or FDW operations
-become undesirable.
+The same `DataProviderPlugin` interface allows a REST variant that calls the Registry's **API**
+(honouring its API-layer authorization, no DB coupling) instead of the DB. It is interchangeable
+behind the same interface, so moving to it later is low-risk. The DB connector is the chosen
+Phase-1 approach for its simplicity (SQL + config, no API to build).

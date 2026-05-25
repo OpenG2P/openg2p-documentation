@@ -59,17 +59,15 @@ Whatever the citizen IdP is, it must be an **OIDC authorization server** that:
 
 Logto satisfies all of these. Configuration only — no code.
 
-### Phase-1 specific: the token `sub` must be the phone number
+### Phase-1 specific: release the `phone_number` claim
 
-The Phase-1 data connector is the stock **Postgres plugin**, which keys its lookup on the access
-token's **`sub`** claim. So Logto must present the **phone number as the subject identifier**
-(the phone is the citizen's Logto username and login identifier). Verify Logto's behaviour: if
-`sub` is an opaque user id rather than the phone, either adjust the Logto subject/identifier or
-move to the custom REST connector (which reads the `phone_number` claim). See
-[Registry Data Connector](registry-data-connector.md).
+The Phase-1 data connector is the custom [Registry Data Connector](registry-data-connector.md),
+which binds its SQL lookup from a **configurable token claim**. For phone login it uses
+**`phone_number`**, so Logto just needs to **release the `phone_number` claim** in the access
+token — there is **no constraint on `sub`** (the connector is not tied to the subject identifier).
 
 The citizen is assumed to map **one-to-one** phone → Registry **functional ID**; absence or an
-**inactive** record results in "no eligible credential" (handled in the connector's SQL).
+**inactive** record results in "no eligible credential" (handled in the connector's SQL/view).
 
 ## Optional: eSignet
 

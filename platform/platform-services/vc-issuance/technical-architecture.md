@@ -27,11 +27,11 @@ This is the MOSIP-standard shape of the stack; the portal does **not** push clai
 ```
  Branded Inji Web (frontend) ──► Mimoto (BFF + storage + PDF) ──► Inji Certify (issuer)
         │                              │                               │
-        └──── OIDC (PKCE) ───► Logto (OIDC AS / citizen IdP)           └─ Postgres plugin ─► certify.beneficiary_vc_view
-                                                                        │                     (phone-keyed view over Registry data:
-                                                                        │                      FDW / sync / cross-schema)
+        └──── OIDC (PKCE) ───► Logto (OIDC AS / citizen IdP)           └─ Registry plugin ─► OpenG2P Registry DB
+                                                                        │                     (external; read-only
+                                                                        │                      beneficiary_vc_view)
                               all on Kubernetes, reusing cluster PostgreSQL; Certify keys in .p12
-                              (Phase 2 alternative: a custom REST connector → OpenG2P Registry API)
+                              (Phase 2 option: same plugin interface, REST variant → Registry API)
 ```
 
 * **Logto** — citizen IdP and **OIDC authorization server**: phone+OTP login, issues the
@@ -64,16 +64,16 @@ Certify produces a VC for whoever the token identifies, so it must fetch that ci
 issuance. The full design is in **[Registry Data Connector](registry-data-connector.md)**; in
 summary:
 
-* **Phase 1 — DB-direct (stock Postgres plugin, no Certify code).** Certify uses
-  `PostgresDataProviderPlugin` to run **one SQL query per credential scope** against a
-  **phone-keyed, active-only view** that exposes the Registry data inside Certify's database. The
-  query's `:id` parameter is bound to the token **`sub`**, so **Logto must present the phone
-  number as `sub`**. Because the plugin reads **Certify's own database**, the Registry data is
-  surfaced there via **FDW / a synced table / a same-database view**. Presence and active/inactive
-  status are handled in the SQL (no row → "no eligible record").
-* **Phase 2 — custom REST connector (alternative).** A custom `DataProviderPlugin` that calls the
-  **Registry REST API**, reads the `phone_number` claim (so it does not need `sub`=phone), avoids
-  DB coupling, and lets the Registry own authorization. Costs custom Java.
+* **Phase 1 — a custom Registry DataProvider plugin** (`registry-dataprovider-plugin`, built in
+  this repo). It connects to a **dedicated external Registry datasource**, runs **one SQL query
+  per credential scope**, and binds each SQL parameter from a **configurable token claim**
+  (`:id` ← `phone_number`). It reads a read-only, **phone-keyed, active-only view**
+  (`beneficiary_vc_view`); no row (absent/inactive) → "no eligible record". No FDW and no `sub`
+  constraint. (We didn't use the stock Postgres plugin because it reads Certify's own DB and
+  hardcodes `:id`=`sub`.)
+* **Phase 2 — REST variant (optional).** The same `DataProviderPlugin` interface allows a variant
+  that calls the **Registry REST API** instead of the DB (API-layer authorization, no DB
+  coupling) — interchangeable behind the same interface.
 
 > **Identity resolution.** Authentication is Logto's job; the connector consumes the citizen's
 > **phone number** to look up the Registry, which is assumed **one-to-one** phone → functional ID.

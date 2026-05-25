@@ -78,34 +78,40 @@ Certify is configured to trust **Logto** as the token issuer
 (`mosip.certify.authn.issuer-uri` / `jwk-set-uri`), and to use the **Registry connector** plugin
 (`mosip.certify.integration.data-provider-plugin`).
 
-## Registry data connector — Phase 1 (DB-direct, Postgres plugin)
+## Registry data connector — Phase 1 (custom external-DB plugin)
 
-Phase 1 uses the stock **`PostgresDataProviderPlugin`** (no custom code). The "contract" is a
-SQL query + a view, not a REST call. Full design: [Registry Data Connector](registry-data-connector.md).
+Phase 1 uses the custom **`registry-dataprovider-plugin`** (built in this repo). The "contract" is
+config: an external datasource + scope→SQL + param→claim. Full design:
+[Registry Data Connector](registry-data-connector.md).
 
-* **Plugin selection:** `mosip.certify.integration.data-provider-plugin=PostgresDataProviderPlugin`.
-* **Scope → query mapping** (the `:id` parameter is bound to the token **`sub`**):
-  ```properties
-  mosip.certify.data-provider-plugin.postgres.scope-query-mapping={\
-    'registry_vc_ldp': 'select full_name, date_of_birth, gender, functional_id \
-                         from certify.beneficiary_vc_view where phone = :id'\
-  }
-  ```
-* **The view** `certify.beneficiary_vc_view` exposes only VC-relevant columns, keyed by **phone**,
-  **active-only**, surfaced inside Certify's DB via FDW / sync / cross-schema.
-* **Returned columns → VC claims:** column names align with the credential's `credential_subject`
-  keys / template `${...}`. The **functional ID** is a claim; holder binding
-  (`credentialSubject.id`) is the hosted wallet's custodial key.
-* **Behaviours:** 1 active row → issued; no row (absent **or** inactive) → plugin *No Data Found* →
-  Certify error → portal shows "no eligible record".
-* **Requirement:** the token **`sub` must be the phone number** (Logto config), since the plugin
-  keys `:id` on `sub`.
+```properties
+mosip.certify.integration.scan-base-package=org.openg2p.certify.registry
+mosip.certify.integration.data-provider-plugin=RegistryDataProviderPlugin
 
-### Phase 2 (alternative) — custom REST connector
+mosip.certify.data-provider-plugin.registrydb.url=jdbc:postgresql://registry-db:5432/registrydb
+mosip.certify.data-provider-plugin.registrydb.username=certify_ro
+mosip.certify.data-provider-plugin.registrydb.password=${REGISTRY_DB_PASSWORD}
 
-A custom `DataProviderPlugin` that calls the **Registry REST API**, reads the `phone_number`
-claim, and returns a JSON claims object — avoiding the DB coupling and the `sub`=phone constraint,
-at the cost of custom Java. Indicative shape:
+mosip.certify.data-provider-plugin.scope-query-mapping={\
+  'registry_vc_ldp': 'select "fullName","dateOfBirth","gender","functionalId" \
+                       from beneficiary_vc_view where phone = :id'\
+}
+mosip.certify.data-provider-plugin.param-claim-mapping={ 'id': 'phone_number' }
+```
+
+* **Configurable identifier:** `:id` is bound from the **`phone_number`** claim (no `sub`
+  constraint). Any claim/param can be mapped.
+* **Read-only view** `beneficiary_vc_view` in the **Registry DB** (external), phone-keyed,
+  active-only; its columns (aliased to the template `${...}` / `credential_subject` keys) become
+  the claims. The functional ID is a claim; holder binding (`credentialSubject.id`) is the hosted
+  wallet's custodial key.
+* **Behaviours:** 1 active row → issued; no row (absent **or** inactive) → error → portal "no
+  eligible record"; >1 row → first used + warning.
+
+### Phase 2 (option) — REST variant
+
+The same `DataProviderPlugin` interface allows a variant calling the **Registry REST API**
+instead of the DB (API-layer authorization, no DB coupling). Indicative shape:
 ```
 GET /registry/records?phone={phone}&register={registerId}   (service-auth)
 → { "functionalId": "...", "fullName": "...", "dateOfBirth": "...", ... }

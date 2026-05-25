@@ -38,11 +38,11 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
 * **Hosted wallet, pulled — not pushed.** A credential enters the hosted wallet only by
   Mimoto performing an OpenID4VCI **`authorization_code` (PKCE)** download from Certify. Certify
   therefore receives a **token** and **pulls the citizen's claims** at issuance.
-* **Phase 1 data access = DB-direct.** Certify uses the stock **Postgres DataProvider plugin**
-  to read a **phone-keyed view** that exposes the Registry data inside Certify's database
-  (the lookup key `:id` = the token `sub` = the citizen's phone number). A custom **REST**
-  connector is the cleaner Phase-2 alternative. See
-  [Registry Data Connector](registry-data-connector.md).
+* **Phase 1 data access = a custom Registry DataProvider plugin.** Certify loads
+  `registry-dataprovider-plugin` (built in this repo), which reads an **external Registry DB** via
+  configurable **scope-based SQL** and a **configurable claim→parameter** binding (`:id` ←
+  `phone_number`) — a read-only, phone-keyed, active-only **view**. No FDW and no `sub` constraint.
+  See [Registry Data Connector](registry-data-connector.md).
 * **One shared Certify, many sources.** Registry/PBMS/SPAR are *claim sources*, not issuers.
   Each credential type is one `credential_config` (template + issuer DID + signing key).
 * **Issuing authority is configuration, not code** — single authority assumed for now, but DID
@@ -71,8 +71,8 @@ The building blocks are all MOSIP **Inji** components plus an OpenID Connect ide
    │ 7. calls Certify credential endpoint (Bearer token)
    ▼
  Inji Certify (issuer)
-   │ 8. Postgres plugin: :id = token sub = phone → query certify.beneficiary_vc_view
-   │    (a phone-keyed, active-only view over the Registry data) → claims
+   │ 8. Registry plugin: bind :id ← phone_number claim → query the external Registry DB
+   │    (read-only, phone-keyed, active-only beneficiary_vc_view) → claims
    │ 9. render VC from template, sign with .p12 key → signed VC
    ▼
  Mimoto stores the signed VC  (verifiable_credentials table)
@@ -102,15 +102,13 @@ phone-keyed view over the Registry DB); the portal does **not** push claims.
 
 These do not change the architecture but must be decided/built before go-live:
 
-* **Logto token `sub` = phone number.** The Phase-1 Postgres plugin keys on the token `sub`, so
-  Logto must present the **phone number** as the subject identifier. Verify Logto's behaviour (if
-  `sub` is an opaque id, adapt or move to the REST connector). See
-  [Registry Data Connector](registry-data-connector.md).
-* **Exposing the Registry data inside Certify's DB.** The stock Postgres plugin reads Certify's
-  own database, so the Registry data must be reachable there — via **FDW**, a **synced table**, or
-  a same-database cross-schema **view** — surfaced as a phone-keyed, active-only view.
+* **Release the `phone_number` claim from Logto.** The connector binds its lookup from a
+  configurable claim (`phone_number`); Logto just needs to include it in the token. No `sub`
+  constraint.
+* **Registry read-only view + access.** Create the phone-keyed, active-only `beneficiary_vc_view`
+  and a least-privilege `certify_ro` user; ensure the Registry DB is reachable from Certify.
 * **Phone → record resolver rule.** The **one-to-one** phone → functional ID assumption, plus the
-  no-match / inactive / multiple-match handling (largely expressed in the view's SQL).
+  no-match / inactive / multiple-match handling (expressed in the view's SQL).
 * **Issuer `did:web` hosting domain.** The stable, public HTTPS domain where each credential's
   `did.json` is served so verifiers can resolve the issuer key. Must be fixed before issuing
   (changing it later invalidates verification of already-issued VCs).
