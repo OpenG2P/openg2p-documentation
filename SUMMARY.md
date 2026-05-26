@@ -71,7 +71,7 @@
           * [Registry Extensions](products/registry/registry/developer-zone/building-a-registry/concepts/registry-extensions/README.md)
             * [Platform & Extensions Model](products/registry/registry/developer-zone/building-a-registry/concepts/registry-extensions/platform-and-extensions-model.md)
             * [Extensions Contract](products/registry/registry/developer-zone/building-a-registry/concepts/registry-extensions/extensions-contract.md)
-        * [Step-by-Step Guide](products/registry/registry/developer-zone/building-a-registry/guide-to-building-a-registry/README.md)
+        * [Step-by-Step Guide](products/registry/registry/developer-zone/building-a-registry/guide-to-building-a-registry.md)
           * [Plan your domain](products/registry/registry/developer-zone/building-a-registry/guide-to-building-a-registry/plan-your-domain.md)
           * [Scaffold the repository](products/registry/registry/developer-zone/building-a-registry/guide-to-building-a-registry/scaffold-the-repository.md)
           * [Configure extensions package](products/registry/registry/developer-zone/building-a-registry/guide-to-building-a-registry/configure-extensions-package.md)
