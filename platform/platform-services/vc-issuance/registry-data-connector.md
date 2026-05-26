@@ -7,9 +7,9 @@ description: >-
 
 # Registry Data Connector
 
-In the hosted-wallet (pull) model, Certify receives a **token** and must source the citizen's
-claims. OpenG2P uses a **custom DataProvider plugin** — `registry-dataprovider-plugin` — that
-reads an **external Registry database** with **configurable, scope-based SQL** and a
+At issuance, Certify needs the citizen's claim data. OpenG2P supplies it with a **custom
+DataProvider plugin** — `registry-dataprovider-plugin` — that reads an **external Registry
+database** with **configurable, scope-based SQL** and a
 **configurable claim→parameter** binding.
 
 > Source code lives in the working repo at `vc-issuance/registry-dataprovider-plugin/`.
@@ -70,8 +70,16 @@ mosip.certify.data-provider-plugin.param-claim-mapping={ 'id': 'phone_number' }
   configured SQL. So the Registry exposes a **read-only view** (e.g. `beneficiary_vc_view`),
   **phone-keyed** and **active-only**, surfacing only the VC columns. The plugin doesn't need to
   know its name; it's just part of the query string.
-* **Identifier is configurable:** binding `:id` ← `phone_number` matches "citizen logs in by
-  phone". The Registry is assumed **one-to-one** phone → functional ID. No IdP `sub` constraint.
+* **Identifier is configurable (flow-agnostic):** the plugin binds `:id` from whatever identity
+  claim the issuance carries. In **Phase 1** (assisted, agent-driven) that's the citizen's
+  **functional ID** resolved by the agent's lookup; in a future self-service/wallet flow it could be
+  `phone_number`. The mapping is configuration, so the same plugin serves both. No IdP `sub` constraint.
+* **Multiple phone numbers per person:** in the OpenG2P registry an individual may have **more
+  than one** phone number (the `phone_numbers` field is a list). The view therefore exposes **one
+  row per phone number** (e.g. by expanding the list), so a citizen who logs in with **any** of
+  their registered numbers resolves to their record. Each number must map to exactly one person
+  (phone → person is one-to-one, even though a person → phones is one-to-many), so a lookup by
+  phone still returns a single record.
 * **Column → claim names:** alias view columns to match the credential template `${...}`
   variables (quote camelCase in Postgres); format dates as text for clean string claims.
 

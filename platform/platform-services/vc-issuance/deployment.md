@@ -1,107 +1,64 @@
 ---
 description: >-
-  Deploying VC issuance on the OpenG2P Kubernetes cluster — the published
-  dockers, Logto, reusing cluster PostgreSQL, configuration, and persisting the
-  .p12 keystore.
+  Deploying the Phase-1 VC-issuance stack — Inji Certify + the Registry
+  connector — on the OpenG2P Kubernetes cluster, reusing the existing
+  PostgreSQL. Plus Inji Verify for offline QR verification.
 ---
 
-# Deployment
+# Deployment (Phase 1)
 
-## Components & versions
+Phase 1 is intentionally small: **Inji Certify** (issuer) with the **Registry connector**, signing
+to a **`.p12`** keystore, reusing the cluster **PostgreSQL**, plus **Inji Verify** for the
+verification side. **No Logto, no Mimoto, no Inji Web** (those belong to the wallet options).
 
-| Component | Image / source | Version | Role |
-|---|---|---|---|
-| **Inji Certify** | `injistack/inji-certify-with-plugins` + `registry-dataprovider-plugin` JAR | **0.14.0** | Issuer |
-| **Mimoto** | `injistack/mimoto` | **0.22.0** | Hosted-wallet backend + PDF |
-| **Inji Web** | `injistack/inji-web` (branded) | **0.17.0** | Hosted-wallet frontend ("My Wallet" tab) |
-| **Logto** | self-hosted OSS | latest stable | Citizen IdP / OIDC AS (phone+OTP) |
-| **PostgreSQL** | existing cluster instance | existing | Reused (dedicated DB/schema per service) |
+## Components
 
-> **Phase 1 is Mimoto-based hosted only** — Inji Web + Mimoto. The **device wallet (Inji Mobile
-> 0.22.1)** is a later scenario and is not deployed in Phase 1.
+| Component | Image / source | Role |
+|---|---|---|
+| **Inji Certify** | `injistack/inji-certify-with-plugins` + the Registry connector JAR | Issues + signs the VC and the QR payload |
+| **Registry connector** | custom plugin (built in the `vc-issuance` repo) | Pulls claim data from the Registry view |
+| **Inji Verify** | `injistack/inji-verify-*` | Scans + validates the QR (offline) — verifier side |
+| **PostgreSQL** | existing cluster instance | Reused: a dedicated DB/schema for Certify |
+| **Issuance backend** | OpenG2P registry/staff portal API | Agent-driven trigger + PDF rendering |
 
 All run on the OpenG2P **Kubernetes** cluster.
 
-```
-            OpenG2P Kubernetes cluster
- ┌──────────────────────────────────────────────────────────────┐
- │  Logto (citizen IdP, phone+OTP, OIDC AS)                       │
- │  Branded Inji Web 0.17.0  ──►  Mimoto 0.22.0  ──►  Inji Certify 0.14.0
- │        (My Wallet tab)            │                    │  + Registry connector ─► Registry REST API
- │                                   ▼                    ▼
- │                           PostgreSQL (existing) ◄──────┴─ reuse: dedicated DBs/schemas
- │                           PVC: /…/CERTIFY_PKCS12 (.p12 keystore)
- └──────────────────────────────────────────────────────────────┘
-```
-
 ## Reuse the cluster PostgreSQL
+* Create a **dedicated database/schema** for Certify (e.g. `inji_certify`) on the existing
+  PostgreSQL; do not co-mingle with `registrydb`.
+* Run Certify's init SQL once (keymanager tables, `credential_config`, key policies).
+* The **Registry connector** connects to the registry DB **read-only** via a least-privilege user
+  against a dedicated view — see [Registry Data Connector](registry-data-connector.md).
 
-* Create **dedicated databases/schemas** on the existing PostgreSQL for **Certify** and
-  **Mimoto** (do not co-mingle with `registrydb`).
-* Run each service's **init SQL** once (Certify: keymanager + `credential_config` tables and key
-  policies; Mimoto: wallet + `verifiable_credentials` tables).
-* Supply connection details via Kubernetes **Secrets**.
-
-## Configuration summary
-
-* **Logto:** enable phone+OTP; register OIDC clients (portal, Inji Web/Mimoto); add the SMS
-  connector for the local gateway; **release the `phone_number` claim** in the access token (the
-  connector binds on it — no `sub` constraint).
-* **Certify:** trust **Logto** as the token issuer (`mosip.certify.authn.issuer-uri` /
-  `jwk-set-uri`); load the **`registry-dataprovider-plugin`** JAR into the loader_path and set
+## Configuration highlights
+* **Certify**: load the **Registry connector** JAR into the plugin loader path; set
   `data-provider-plugin=RegistryDataProviderPlugin` + `scan-base-package=org.openg2p.certify.registry`;
-  set the external `registrydb.*` datasource, `scope-query-mapping` and `param-claim-mapping`; set
-  the `.p12` keystore path/password; seed `credential_config` (template, issuer DID, signing key).
-* **Registry data access:** in the **Registry DB**, create a phone-keyed, **active-only** read-only
-  view (`beneficiary_vc_view`) and a least-privilege `certify_ro` user; ensure the Registry DB is
-  reachable from Certify. (No FDW/replication — the plugin connects directly. See
-  [Registry Data Connector](registry-data-connector.md).)
-* **Mimoto:** register Certify as an issuer in **`mimoto-issuers-config.json`** (Certify
-  well-known, `credentialConfigurationId`, auth server = Logto, OIDC client + `oidckeystore.p12`).
-* **Inji Web:** brand via `env.config.js`/`theme.config.js`/locales; host under the portal's
-  parent domain; wire to Logto. (See [Department Integration](department-integration.md).)
+  configure the external `registrydb.*` datasource, `scope-query-mapping`, and `param-claim-mapping`;
+  define the `credential_config` (Velocity template, issuer DID, signing key, and **`qr_settings` /
+  `qr_signature_algo`** for the printable QR).
+* **`.p12` keystore (no HSM)**: mount it on durable storage and **back it up** — the `.p12` plus the
+  encrypted key rows **are the issuer identity**; regenerating them invalidates previously issued
+  credentials.
+* **Issuer DID**: publish the issuer's public key / `did.json` at a **stable, resolvable HTTPS URL**
+  so Inji Verify can validate QRs **offline** at scan time.
 
-## Key persistence (critical — no HSM)
-
-The **`.p12` keystore + the encrypted key rows in PostgreSQL are the issuer identity**:
-
-* Mount the `.p12` directory on a **PersistentVolumeClaim**; verify the keystore path resolves to
-  that mount (a stray relative path writes it outside the volume → master key regenerates on
-  restart).
-* **Back up** the `.p12` and Certify's database together.
-* Regenerating them mints a **new issuer key** → **all previously issued VCs become
-  unverifiable**. Treat them as production secrets.
-
-## Issuer DID hosting
-
-Each credential's `didUrl` must be **resolvable** by verifiers. For `did:web:<host>`, host the
-`did.json` at the corresponding HTTPS URL on a **stable, public domain** (changing it
-invalidates verification of already-issued VCs).
-
-## Per-authority / multi-department
-
-* **One shared Certify per issuing authority**, serving its source apps (Registry first, then
-  PBMS, SPAR) and credential types.
-* Within an authority, sub-departments differ by **per-credential `credential_config`** (distinct
-  DIDs/keys) — not extra instances.
-* Genuinely separate legal authorities get **separate Certify instances** (separate `.p12`,
-  database, DID).
+## Verifier side
+**Inji Verify** validates the printed QR by checking the signature against the issuer's published
+key/DID. It does not need access to OpenG2P at scan time (offline-verifiable), aside from resolving
+the issuer's published key (cacheable).
 
 ## Security checklist
+* The issuance backend calls Certify as a **trusted machine-to-machine** caller (agent-authenticated
+  context); Certify is not exposed publicly for issuance.
+* Certify ↔ Registry is **read-only** via a dedicated view and least-privilege `certify_ro` user —
+  never raw registry tables.
+* Signing keys never leave Certify; the `.p12` + key tables are persisted, backed up, access-controlled.
+* Decide a **revocation/validity** posture for paper (short validity and/or an optional online
+  status-list check when the verifier is connected).
 
-* Citizen authenticated by **Logto** (phone+OTP) before any download.
-* The hosted-wallet deposit uses **`authorization_code` + PKCE**; PKCE generated by Inji Web.
-* **Certify ↔ Registry data (Phase 1)** is a **read-only** direct connection to the Registry DB,
-  limited to the **view** via a least-privilege `certify_ro` user — never raw registry tables.
-  (A Phase-2 REST variant would instead call the Registry API under its own authorization.)
-* Signing keys never leave Certify; the `.p12` + DB are persisted, backed up, access-controlled.
-* Host portal, Inji Web and Logto under one parent domain for clean first-party SSO.
-
-## Phasing
-
-* **Phase 1:** Registry → **Mimoto-based hosted wallet** (Inji Web + Mimoto only) → **PDF**
-  download; phone+OTP via Logto; claims via the **custom Registry DataProvider plugin** (external
-  Registry DB).
-* **Later:** **REST variant** of the connector (Registry API instead of DB); online sharing
-  (OpenID4VP) from the hosted wallet; **device wallet (Inji Mobile)** via QR; additional sources
-  (PBMS, SPAR); eSignet/National-ID where present.
+## Notes (environment)
+* The cluster already runs much of the OpenG2P/Inji stack (eSignet, keymanager, mock-identity,
+  registry APIs). Phase 1 only needs **Certify + the connector** added; the wallet-side services are
+  not required.
+* Local development can run Certify under Docker/Colima, reaching the cluster's registry DB via
+  `host.docker.internal` — but Phase-1 production lives on the cluster.

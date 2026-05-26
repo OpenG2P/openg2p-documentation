@@ -7,13 +7,14 @@ description: >-
 
 # Local Developer Trial
 
-> **Scope note.** This is a **developer smoke-test that proves Inji Certify can issue and sign a
-> VC** — it uses a **simplified flow** (pre-authorized-code with Certify acting as its own
-> authorization server, a plain HTTP client, no Mimoto/Inji Web/Logto). It is **not** the
-> production architecture. The production OpenG2P model is the **hosted wallet, pull-based** flow
-> (Mimoto `authorization_code`+PKCE, Logto as the IdP, a Registry connector) described in
-> [Technical Architecture](technical-architecture.md). Use this page only to validate Certify
-> issuance quickly on a laptop.
+> **Scope note.** This is a **developer smoke-test of the issuing/signing engine** — it proves Inji
+> Certify can build and **Ed25519-sign** a credential from external DB data via the
+> [Registry connector](registry-data-connector.md). It uses a **simplified issuance path**
+> (pre-authorized-code with Certify acting as its own authorization server, driven by a plain HTTP
+> client) just to exercise Certify on a laptop. In **Phase 1** production, issuance is instead
+> **agent-driven, server-side**, and the output is rendered to a **printed signed QR/PDF** (see
+> [Phase 1 — Paper Credential](phase-1-paper-credential.md)) — but the **signing engine and the
+> Registry connector validated here are exactly the same**.
 
 This page records a **working** local trial that proves the signing pipeline end-to-end with a
 plain HTTP client (no IdP, no wallet app), so a developer can issue a VC in minutes. Verified

@@ -1,119 +1,75 @@
 ---
 description: >-
-  Issuing W3C Verifiable Credentials from OpenG2P data sources (Registry first,
-  then PBMS, SPAR, …) using MOSIP Inji Certify, held in a hosted wallet (Inji
-  Web + Mimoto) and downloadable as a PDF from the citizen's portal.
+  Issuing Verifiable Credentials from OpenG2P data (Registry first) with MOSIP
+  Inji Certify — and, crucially, how a citizen holds and presents them. Phase 1
+  is paper-based; Phase 2 is self-owned smartphone wallets.
 ---
 
 # VC Issuance
 
 ## Overview
 
-**VC Issuance** turns a citizen's OpenG2P data (their **Registry** record first; later **PBMS**,
-**SPAR**, …) into a standards-based **Verifiable Credential (VC)** held in a **hosted wallet**
-and downloadable as a **PDF** from the citizen's portal.
+**VC Issuance** turns a citizen's OpenG2P data (their **Registry** record first; later PBMS, SPAR)
+into a standards-based **Verifiable Credential (VC)** signed by **MOSIP Inji Certify**.
 
-The building blocks are all MOSIP **Inji** components plus an OpenID Connect identity provider:
+The hard question is **not** issuing the VC — it's **how the citizen holds and presents it**, for a
+population that may have **no smartphone, no laptop, sometimes only a feature phone, sometimes no
+device at all**. That single constraint drives the whole design.
 
-| Component | Role | Version |
-|---|---|---|
-| **Inji Certify** | OpenID4VCI credential **issuer** (signs the VC) | 0.14.0 |
-| **Mimoto** | Hosted-wallet **backend**: downloads from Certify, **stores** the VC, renders **PDF** | 0.22.0 |
-| **Inji Web** | Hosted-wallet **frontend** (branded, embedded in the dept portal) | 0.17.0 |
-| **Inji Mobile** | Device wallet (later/optional scenario) | 0.22.1 |
-| **Logto** | Citizen **IdP** — phone-number + OTP login, OIDC authorization server | self-hosted (OSS) |
-| **PostgreSQL** | Reused from the existing OpenG2P cluster | existing |
+## The real design question: holder custody
 
-> **Phase 1 scope:** citizen logs in (phone + OTP via Logto), generates a **Registry** credential
-> into the **Mimoto-based hosted wallet** (Inji Web + Mimoto **only** — no device wallet in
-> Phase 1), and downloads it as a **PDF**. Certify reads the citizen's claims **directly from the
-> database** via the stock Postgres plugin (see [Registry Data Connector](registry-data-connector.md)).
-> eSignet is **not** assumed present (see [Identity & IdP](identity-and-idp.md)).
+There are three ways a citizen can hold and present a credential. They differ entirely by **what
+the citizen must own**:
 
-## Design principles
+| Option | Citizen must have | Holds the VC as | Presents by | Inji component |
+|---|---|---|---|---|
+| **A — Paper** | **nothing** (an agent assists) | a **printed PDF with a signed QR** | hands over paper; verifier scans the QR (offline) | Certify + QR/PDF + Inji Verify |
+| **B — Hosted wallet** | a phone (OTP) **and** browser access | server-side (custodial) | log in to view / print / present online | Inji Web + Mimoto |
+| **C — Device wallet** | a **smartphone** | on the device (self-held keys) | QR / OpenID4VP from the phone | Inji Mobile |
 
-* **Citizen login is phone-number + OTP**, provided by **Logto** (a citizen-oriented OIDC IdP).
-  eSignet is **not** required; if a deployment has it, see the optional section in
-  [Identity & IdP](identity-and-idp.md).
-* **Hosted wallet, pulled — not pushed.** A credential enters the hosted wallet only by
-  Mimoto performing an OpenID4VCI **`authorization_code` (PKCE)** download from Certify. Certify
-  therefore receives a **token** and **pulls the citizen's claims** at issuance.
-* **Phase 1 data access = a custom Registry DataProvider plugin.** Certify loads
-  `registry-dataprovider-plugin` (built in this repo), which reads an **external Registry DB** via
-  configurable **scope-based SQL** and a **configurable claim→parameter** binding (`:id` ←
-  `phone_number`) — a read-only, phone-keyed, active-only **view**. No FDW and no `sub` constraint.
-  See [Registry Data Connector](registry-data-connector.md).
-* **One shared Certify, many sources.** Registry/PBMS/SPAR are *claim sources*, not issuers.
-  Each credential type is one `credential_config` (template + issuer DID + signing key).
-* **Issuing authority is configuration, not code** — single authority assumed for now, but DID
-  and key are per credential type, so sub-departments can diverge without code changes.
-* **Keys stay inside Certify** — embedded keymanager + **PKCS12 `.p12`** (no HSM).
-* **Reuse the cluster** — Kubernetes + the existing PostgreSQL.
-* **Departments embed a branded Inji Web** as a "My Wallet" tab (see
-  [Department Integration](department-integration.md)).
+See the full analysis and comparisons in
+[Custody Options & Strategy](custody-options-and-strategy.md).
 
-## End-to-end flow (Phase 1 — hosted wallet + PDF)
+## Why this matters (the reasoning in brief)
 
-```
- Citizen (desktop browser)
-   │ 1. opens the Dept/Beneficiary Portal → "My Wallet" tab (branded Inji Web, same parent domain)
-   │ 2. login: phone number + OTP   ─────────────────────►  Logto (OIDC AS / citizen IdP)
-   │                                ◄─────────────────────  session (SSO; reused everywhere)
-   │ 3. picks a Registry credential → "Generate"
-   ▼
- Branded Inji Web (frontend, Option C)
-   │ 4. OIDC authorization_code + PKCE to Logto (silent via SSO) → auth code
-   │ 5. POST /wallets/{id}/credentials
-   │      { issuer=Certify, credentialConfigurationId, code, grantType=authorization_code, codeVerifier }
-   ▼
- Mimoto (hosted-wallet backend)
-   │ 6. token exchange with Logto (code + verifier) → access token
-   │ 7. calls Certify credential endpoint (Bearer token)
-   ▼
- Inji Certify (issuer)
-   │ 8. Registry plugin: bind :id ← phone_number claim → query the external Registry DB
-   │    (read-only, phone-keyed, active-only beneficiary_vc_view) → claims
-   │ 9. render VC from template, sign with .p12 key → signed VC
-   ▼
- Mimoto stores the signed VC  (verifiable_credentials table)
-   │ 10. Inji Web lists it; "Download PDF" → Mimoto renders PDF
-   ▼
- Citizen downloads the PDF
-```
+* **Classic VCs assume a holder with a device.** That excludes exactly the people we care about.
+  So "give everyone a wallet" is the *top* of the pyramid, not the **lowest common denominator**.
+* **The LCD is Option A (paper).** An agent issues the credential, it's printed as a PDF with an
+  **offline-verifiable signed QR**, the citizen carries paper, and any verifier scans it with Inji
+  Verify — **no device, no login, no connectivity for the citizen.**
+* **A feature phone doesn't change this** — it only receives an OTP; it can't run a wallet or the
+  hosted-wallet browser UI. So the feature-phone user is still served by paper.
+* **The hosted wallet (B) adds little for our audience.** For the device-less it's unusable; for a
+  smartphone owner the device wallet is strictly better. Its only genuine edge is *online
+  presentation for a "browser-but-no-smartphone"* minority — a narrow, shrinking slice. B is really
+  a **policy choice** (a custodial government locker, DigiLocker-style) rather than a capability tier.
+* **Device wallet (C) is the self-sovereign upgrade** for the growing smartphone segment.
 
-Key point: the citizen **logs in once** (phone+OTP at the portal); the wallet deposit reuses
-that **Logto SSO** silently. Certify **pulls** the claims at issuance (Phase 1: from a
-phone-keyed view over the Registry DB); the portal does **not** push claims.
+## Strategy (what we are building)
+
+* **Phase 1 — Paper (Option A).** Assisted issuance → signed QR/PDF → offline verification. The
+  backbone for the device-less majority. **No hosted wallet, no Logto, no Mimoto, no OpenID4VCI
+  device flow** — which removes almost all integration complexity.
+* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens
+  who have smartphones (self-sovereign, online + offline presentation).
+* **Option B (hosted wallet) — considered, not chosen.** Documented for completeness; it would only
+  be adopted as a deliberate **custodial-locker policy**, not as a default tier.
+* **Consent-based data sharing** (department ↔ department / third-party "pull") is a **separate
+  track** (registry partner APIs + consent), not a wallet feature — out of scope here.
 
 ## Sub-pages
 
 | Page | Contents |
 |------|----------|
-| [Functional Specifications](functional-specifications.md) | Actors, phone-OTP login, the "My Wallet" journey, deposit, PDF, sequence diagram |
-| [Technical Architecture](technical-architecture.md) | The pull model, Logto as OIDC AS, Mimoto auth-code/PKCE, key management, multi-app/issuer, config |
-| [Registry Data Connector](registry-data-connector.md) | **Phase 1 DB-direct**: Postgres plugin, `:id`=`sub`=phone, the phone-keyed view, active/missing handling; REST as the Phase-2 alternative |
-| [Identity & IdP](identity-and-idp.md) | Phone-OTP login, **Logto vs Keycloak**, citizen vs staff IdP, and the optional **eSignet** section |
-| [Department Integration](department-integration.md) | Embedding options **A–D** (we use **C**), branding, shared-Logto SSO, the Registry data connection |
-| [API Reference](api-reference.md) | Mimoto wallet APIs, Certify endpoints, the Registry connector contract |
-| [Deployment](deployment.md) | Kubernetes, reusing cluster PostgreSQL, the published dockers + Logto, persisting `.p12` |
-| [Local Developer Trial](local-setup.md) | A verified developer smoke-test of Certify issuance (simplified flow, not the production model) |
+| [Custody Options & Strategy](custody-options-and-strategy.md) | Full A/B/C analysis, comparisons, the LCD/feature-phone/custodial-vs-self-sovereign reasoning, and the phasing decision |
+| [Phase 1 — Paper Credential](phase-1-paper-credential.md) | The assisted-issuance → signed QR/PDF → offline-verify design and architecture |
+| [Registry Data Connector](registry-data-connector.md) | The custom Certify plugin that pulls claim data from the OpenG2P Registry |
+| [Deployment](deployment.md) | Running the Phase-1 stack (Certify + connector) on Kubernetes, reusing cluster PostgreSQL |
+| [Local Developer Trial](local-setup.md) | A verified local run that issues a signed VC from the real registry data |
+| [Phase 2 — Device Wallet](phase-2-device-wallet.md) | Future: self-owned smartphone wallets (Inji Mobile) |
 
-## Open items (to finalize during implementation)
+## Status
 
-These do not change the architecture but must be decided/built before go-live:
-
-* **Release the `phone_number` claim from Logto.** The connector binds its lookup from a
-  configurable claim (`phone_number`); Logto just needs to include it in the token. No `sub`
-  constraint.
-* **Registry read-only view + access.** Create the phone-keyed, active-only `beneficiary_vc_view`
-  and a least-privilege `certify_ro` user; ensure the Registry DB is reachable from Certify.
-* **Phone → record resolver rule.** The **one-to-one** phone → functional ID assumption, plus the
-  no-match / inactive / multiple-match handling (expressed in the view's SQL).
-* **Issuer `did:web` hosting domain.** The stable, public HTTPS domain where each credential's
-  `did.json` is served so verifiers can resolve the issuer key. Must be fixed before issuing
-  (changing it later invalidates verification of already-issued VCs).
-* **Indicative contracts to confirm against pinned versions.** The exact Mimoto
-  `mimoto-issuers-config.json` fields and the Registry connector request/response shape are
-  written as *indicative* and to be finalized against **Mimoto 0.22.0** / **Inji Certify 0.14.0**.
-* **Registry connector authorization.** The service-to-service credentials Certify uses to call
-  the Registry API, and the Registry-side authorization for that caller.
+The signing engine is proven: Inji Certify issues an Ed25519-signed credential, and our **custom
+Registry connector** populates it from the real OpenG2P registry (verified locally). Phase 1 now
+centres on the **printed, offline-verifiable QR/PDF** and its verification with Inji Verify.
