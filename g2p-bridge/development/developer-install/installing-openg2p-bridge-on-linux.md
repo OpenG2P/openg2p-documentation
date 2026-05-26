@@ -57,7 +57,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
 {% tabs %}
 {% tab title="Bridge API" %}
-#### Setting up the Bridge API
+**Setting up the Bridge API**
 
 *   Make a new Python virtual environment.
 
@@ -106,7 +106,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 {% endtab %}
 
 {% tab title="Bridge Celery Beat" %}
-#### Setting up the Bridge Celery Beat
+**Setting up the Bridge Celery Beat**
 
 *   Make a new Python virtual environment.
 
@@ -158,7 +158,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 {% endtab %}
 
 {% tab title="Bridge Celery Worker" %}
-#### Setting up the Bridge Celery Worker
+**Setting up the Bridge Celery Worker**
 
 *   Make a new Python virtual environment.
 

@@ -16,24 +16,33 @@ Each register can have a corresponding schema definition that specifies:
 
 ***
 
-## Attributes
+### Attributes
 
-<table><thead><tr><th width="202.65509033203125">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>register_id</strong></td><td>The identifier of the register to which this schema configuration belongs. This references the register defined in the <code>g2p_register_definition</code> table.</td></tr><tr><td><strong>deduplicate_schema</strong></td><td>Stored in <strong>JSON format</strong>. Defines the attributes that should be used by the platform’s deduplication algorithm to detect potential duplicate records in the register.</td></tr><tr><td><strong>search_result_schema</strong></td><td>Stored in <strong>JSON format</strong>. Defines the attributes that should be displayed in the <strong>Search Results page</strong> in the Registry Staff UI. The UI displays up to <strong>eight attributes</strong> for each search result entry. All attributes of the register become visible when the user opens the <strong>detailed view</strong> of a specific record.</td></tr><tr><td><strong>filter_schema</strong></td><td>Stored in <strong>JSON format</strong>. Defines the attributes that should be available as <strong>filter options</strong> in the UI. The filter section on the register list page is rendered dynamically based on this configuration.</td></tr></tbody></table>
+| Attribute                  | Description                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **register\_id**           | Identifier of the register. References `g2p_register_definitions.register_id`.                         |
+| **deduplicate\_schema**    | JSON defining attributes used by the deduplication algorithm to detect potential duplicate records.    |
+| **search\_result\_schema** | JSON defining attributes displayed in the **Search Results** page (up to eight attributes per result). |
+| **filter\_schema**         | JSON defining attributes available as **filter options** on the register list page.                    |
 
 ***
 
-## UI Behavior Driven by the Schema
+### UI Behavior
 
-The Registry Staff UI uses this metadata to dynamically construct search and filtering interfaces.
+Applicable to datasets classified as **REGISTER** or **PROGRAM\_REGISTER**.
 
-This configuration is applicable only to datasets classified as:
+| Schema                     | UI function                                  |
+| -------------------------- | -------------------------------------------- |
+| **search\_result\_schema** | Attributes shown in the search results list. |
+| **filter\_schema**         | Attributes shown in the filter panel.        |
 
-* **REGISTER**
-* **PROGRAM\_REGISTER**
+***
 
-<table><thead><tr><th width="205.36334228515625">Schema</th><th>UI Function</th></tr></thead><tbody><tr><td><strong>search_result_schema</strong></td><td>Defines which attributes appear in the <strong>Search Results List</strong>.</td></tr><tr><td><strong>filter_schema</strong></td><td>Determines which attributes appear in the <strong>Filter panel</strong> on the register list page.</td></tr></tbody></table>
+### Related metadata
 
-This approach allows implementation teams to **customize UI behavior without modifying frontend code**.
+| Table                      | Document                                          |
+| -------------------------- | ------------------------------------------------- |
+| `g2p_register_definitions` | [G2PRegisterDefinition](g2pregisterdefinition.md) |
 
 ***
 

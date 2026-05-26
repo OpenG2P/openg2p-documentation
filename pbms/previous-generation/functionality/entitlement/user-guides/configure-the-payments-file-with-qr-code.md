@@ -31,12 +31,12 @@ _**Payments File Configs /New**_ screen is displayed.
 
 The fields and their descriptions are given below:
 
-| Field    | Description                                                                                                                |
-| -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Name     | Enter the name for the payments file configuration                                                                         |
-| Type     | <p>Select the format for the payments file from the drop-down. The valid values are: </p><ul><li>PDF</li><li>CSV</li></ul> |
-| Template | Click the template tab to add the template of the payments file                                                            |
-| QR Codes | Click the QR codes to configure the QR codes in the payments file                                                          |
+| Field    | Description                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Name     | Enter the name for the payments file configuration                                                                        |
+| Type     | <p>Select the format for the payments file from the drop-down. The valid values are:</p><ul><li>PDF</li><li>CSV</li></ul> |
+| Template | Click the template tab to add the template of the payments file                                                           |
+| QR Codes | Click the QR codes to configure the QR codes in the payments file                                                         |
 
 ### Configure QR codes in payments file
 
@@ -50,31 +50,31 @@ _**Create Qrcode Config**_ screen is displayed.
 
 The fields and their descriptions are given below:
 
-| Field                | Description                                                                                                                                                                                                                            |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Name                 | Enter the name for the QR code                                                                                                                                                                                                         |
-| Type                 | <p>Select the appropriate option from the drop-down. The available options are: </p><ul><li>QR code</li><li>Code 128 Barcode</li></ul>                                                                                                 |
-| Data Type            | <p>Select the appropriate option from the drop-down. The available options are: </p><ul><li>String</li><li>JSON</li><li>JWT</li></ul>                                                                                                  |
-| Body                 | Fill the body based on the selected datatype                                                                                                                                                                                           |
-| Qrcode Version       | Enter the Qrcode version, if required. It is an optional field.                                                                                                                                                                        |
-| Qrcode Error Correct | <p></p><p>Select the appropriate option from the drop-down. The available options are: </p><ul><li>ERROR_CORRECT_M </li><li>ERROR_CORRECT_L </li><li>ERROR_CORRECT_H</li><li> ERROR_CORRECT_Q</li></ul><p>It is an optional field.</p> |
-| Qrcode Box Size      | Enter the size of the Qrcode box. Default size is 10. It is an optional field.                                                                                                                                                         |
-| Qrcode Border        | Enter the number of border for the QR code. Default border count is 4. It is an optional field.                                                                                                                                        |
+| Field                | Description                                                                                                                                                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                 | Enter the name for the QR code                                                                                                                                                                                              |
+| Type                 | <p>Select the appropriate option from the drop-down. The available options are:</p><ul><li>QR code</li><li>Code 128 Barcode</li></ul>                                                                                       |
+| Data Type            | <p>Select the appropriate option from the drop-down. The available options are:</p><ul><li>String</li><li>JSON</li><li>JWT</li></ul>                                                                                        |
+| Body                 | Fill the body based on the selected datatype                                                                                                                                                                                |
+| Qrcode Version       | Enter the Qrcode version, if required. It is an optional field.                                                                                                                                                             |
+| Qrcode Error Correct | <p>Select the appropriate option from the drop-down. The available options are:</p><ul><li>ERROR_CORRECT_M</li><li>ERROR_CORRECT_L</li><li>ERROR_CORRECT_H</li><li>ERROR_CORRECT_Q</li></ul><p>It is an optional field.</p> |
+| Qrcode Box Size      | Enter the size of the Qrcode box. Default size is 10. It is an optional field.                                                                                                                                              |
+| Qrcode Border        | Enter the number of border for the QR code. Default border count is 4. It is an optional field.                                                                                                                             |
 
 Based on the requirement you can configure QR code with different data types.
 
-* Configure QR code with the data types:&#x20;
+* Configure QR code with the data types:
   * string
   * JSON
   * JWT
 
 {% tabs %}
 {% tab title="String" %}
-#### Configure QR code with data type - string
+**Configure QR code with data type - string**
 
 1. Select the _**String**_ from the data type drop-down.
 
-If you want to configure QR code with minimum values, then select the data type as string (i.e., a  normal string to display inside the QR code). For example, the Qr codes may contain any one of the values like beneficiary ID, national ID, URL and so on.
+If you want to configure QR code with minimum values, then select the data type as string (i.e., a normal string to display inside the QR code). For example, the Qr codes may contain any one of the values like beneficiary ID, national ID, URL and so on.
 
 <figure><img src="../../../../../.gitbook/assets/create-qrcodes-string.png" alt=""><figcaption></figcaption></figure>
 
@@ -88,11 +88,11 @@ The created Qrcode Config is displayed in the QR Codes list.
 {% endtab %}
 
 {% tab title="JSON" %}
-#### Configure QR code with data type -  JSON
+**Configure QR code with data type - JSON**
 
 1. Select the _**JSON**_ from the data type drop-down.
 
-If you want to configure a QR code with more data, then select the data type as JSON (i.e.,  more data to display inside the QR code). For example, the QR code may contain data like issuer, subject, audience, expiry, amount, type, code, beneficiary name, service provider name, and so on.
+If you want to configure a QR code with more data, then select the data type as JSON (i.e., more data to display inside the QR code). For example, the QR code may contain data like issuer, subject, audience, expiry, amount, type, code, beneficiary name, service provider name, and so on.
 
 <figure><img src="../../../../../.gitbook/assets/create-qrcodes-JSON.png" alt=""><figcaption></figcaption></figure>
 
@@ -106,7 +106,7 @@ The created Qrcode Config is displayed in the QR Codes list.
 {% endtab %}
 
 {% tab title="JWT" %}
-#### Configure QR code with data type -  JWT
+**Configure QR code with data type - JWT**
 
 1. Select the _**JWT**_ from the data type drop-down.
 
@@ -130,9 +130,9 @@ After you configured the QR code, you must render QR codes in the template.
 
 * Click the _**Template**_ tab.
 
-It displays the html code. Template contains the html code which defines the appearance of the files in PDF format.&#x20;
+It displays the html code. Template contains the html code which defines the appearance of the files in PDF format.
 
-In the html code, search for the image source and update the QR code name that must appear in pdf format. For example&#x20;
+In the html code, search for the image source and update the QR code name that must appear in pdf format. For example
 
 \<img style="height:1.75in;width:1.75in;" t-att-src="object.qrcode\_ids.get\_by\_name('_**\<QR code name>**_').content\_htmlsafe"/>.
 

@@ -38,7 +38,7 @@ The OpenG2P Registry UI Widgets library is a powerful, extensible React componen
 
 {% stepper %}
 {% step %}
-#### Install the package
+**Install the package**
 
 ```bash
 npm install @openg2p/registry-widgets
@@ -46,7 +46,7 @@ npm install @openg2p/registry-widgets
 {% endstep %}
 
 {% step %}
-#### Install peer dependencies
+**Install peer dependencies**
 
 ```bash
 npm install react react-dom @reduxjs/toolkit react-redux zod i18next react-i18next
@@ -54,7 +54,7 @@ npm install react react-dom @reduxjs/toolkit react-redux zod i18next react-i18ne
 {% endstep %}
 
 {% step %}
-#### Basic setup
+**Basic setup**
 
 Create a Redux store and wrap your application with `WidgetProvider`:
 
@@ -78,7 +78,7 @@ export default App;
 {% endstep %}
 
 {% step %}
-#### Initialize i18n (optional but recommended)
+**Initialize i18n (optional but recommended)**
 
 ```tsx
 import { initI18n } from '@openg2p/registry-widgets';
@@ -1935,7 +1935,7 @@ All widgets support these common configuration properties:
 
 {% stepper %}
 {% step %}
-#### Create the widget component
+**Create the widget component**
 
 ```tsx
 import React from 'react';
@@ -1988,7 +1988,7 @@ export const MyCustomWidget: React.FC<MyCustomWidgetProps> = ({ config }) => {
 {% endstep %}
 
 {% step %}
-#### Register the widget
+**Register the widget**
 
 ```tsx
 import { widgetRegistry } from '@openg2p/registry-widgets';
@@ -2002,7 +2002,7 @@ widgetRegistry.register({
 {% endstep %}
 
 {% step %}
-#### Use the widget
+**Use the widget**
 
 ```tsx
 const config = {
