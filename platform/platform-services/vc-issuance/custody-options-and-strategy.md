@@ -102,7 +102,7 @@ not a default tier.
 | — | **B — Hosted wallet** | "browser-no-smartphone" minority | **Considered, not chosen** — adopt only as a deliberate custodial-locker policy |
 | separate | Consent-based data sharing | dept ↔ dept / third parties | Registry partner APIs + consent — not a wallet feature |
 
-**Consequence:** Phase 1 needs only **Certify (issue + sign) + the Registry connector + a signed
-QR/PDF + Inji Verify**. No Logto, no Mimoto, no hosted-wallet login, no OpenID4VCI device flow — i.e.
-none of the integration complexity those paths require. See
-[Phase 1 — Paper Credential](phase-1-paper-credential.md).
+**Consequence:** Phase 1 needs only an **Agent Portal API** (reads the Registry, pushes claims) +
+**Certify (issue + sign)** + a **signed QR/PDF** + **Inji Verify**. No Logto, no Mimoto, no
+hosted-wallet login, no OpenID4VCI device flow — i.e. none of the integration complexity those paths
+require. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).

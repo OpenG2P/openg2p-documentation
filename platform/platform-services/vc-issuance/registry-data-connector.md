@@ -1,16 +1,31 @@
 ---
 description: >-
-  How Inji Certify gets the citizen's claims — a custom OpenG2P DataProvider
-  plugin that reads an external Registry database via configurable scope-based
-  SQL and a configurable token-claim → query-parameter binding.
+  How Inji Certify gets the citizen's claims — two paths. Phase 1 PUSHES claims
+  from the Agent Portal API (Certify stays decoupled); the wallet flow PULLS via
+  a custom DataProvider plugin with configurable scope-based SQL.
 ---
 
 # Registry Data Connector
 
-At issuance, Certify needs the citizen's claim data. OpenG2P supplies it with a **custom
-DataProvider plugin** — `registry-dataprovider-plugin` — that reads an **external Registry
-database** with **configurable, scope-based SQL** and a
-**configurable claim→parameter** binding.
+Inji Certify needs the citizen's claim data at issuance. There are **two paths**, and OpenG2P uses
+each in a different phase:
+
+| Path | Who reads the Registry | Used by | Plugin |
+|---|---|---|---|
+| **Push** (Phase 1, paper) | the **Agent Portal API** reads the view and **pushes** claims to Certify | agent-driven issuance | `PreAuthPassthroughDataProviderPlugin` (echoes pushed claims as the subject) |
+| **Pull** (Phase 2, wallet) | **Certify itself** queries the Registry | wallet OpenID4VCI download | `RegistryDataProviderPlugin` (this page) |
+
+> **Phase 1 uses push.** The agent backend owns the Registry connection and Certify never touches the
+> Registry — see [Phase 1 — Paper Credential](phase-1-paper-credential.md). The **pull connector
+> below** is for the **wallet flow** ([Phase 2](phase-2-device-wallet.md)), where the citizen (not an
+> agent) authenticates and the wallet downloads the credential, so Certify must fetch the claims
+> itself. Both plugins are built in the same project; exactly one is active per deployment.
+
+## The pull connector (`registry-dataprovider-plugin`)
+
+For the wallet/pull path, OpenG2P supplies a **custom DataProvider plugin** that reads an **external
+Registry database** with **configurable, scope-based SQL** and a **configurable claim→parameter**
+binding.
 
 > Source code lives in the working repo at `vc-issuance/registry-dataprovider-plugin/`.
 
@@ -113,5 +128,5 @@ Presence and active/inactive are handled entirely in the **SQL/view** — no cod
 
 The same `DataProviderPlugin` interface allows a REST variant that calls the Registry's **API**
 (honouring its API-layer authorization, no DB coupling) instead of the DB. It is interchangeable
-behind the same interface, so moving to it later is low-risk. The DB connector is the chosen
-Phase-1 approach for its simplicity (SQL + config, no API to build).
+behind the same interface, so moving to it later is low-risk. The DB connector is the simpler default
+for the pull path (SQL + config, no API to build).

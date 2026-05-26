@@ -27,12 +27,17 @@ holds their own keys and credentials on their device.
 * **Inji Mobile** — MOSIP's OpenID4VCI device wallet (Android/iOS). Any OpenID4VCI-compliant wallet
   also interoperates, since Certify is standards-based.
 
-## Same issuer, same registry
-Phase 2 reuses the **same Inji Certify issuer** and the **same Registry connector** built for
-Phase 1 — only the **holder/delivery** changes (a device wallet instead of paper). The device wallet
-downloads the credential via OpenID4VCI; that flow needs an OAuth2/OIDC **authorization server** and
-introduces the integration considerations (token type, `c_nonce`, the AS choice) that Phase 1
-deliberately avoids. Those are taken up when Phase 2 is scheduled.
+## Same issuer, registry data pulled (not pushed)
+Phase 2 reuses the **same Inji Certify issuer** — only the **holder/delivery** changes (a device
+wallet instead of paper). The data path, however, flips: instead of the Phase-1 **push** (where the
+Agent Portal API reads the Registry and pushes claims), the wallet does an interactive **OpenID4VCI**
+download, so **Certify pulls** the citizen's claims itself via the custom **Registry connector**
+(`RegistryDataProviderPlugin`), keyed by the citizen's authenticated token claim. See
+[Registry Data Connector](registry-data-connector.md).
+
+That wallet flow needs an OAuth2/OIDC **authorization server** and introduces the integration
+considerations (token type, `c_nonce`, the AS choice) that Phase 1 deliberately avoids. Those are
+taken up when Phase 2 is scheduled.
 
 ## Not in scope (separate tracks)
 * **Hosted/custodial wallet (Option B, Inji Web + Mimoto)** — considered but **not chosen**; see
