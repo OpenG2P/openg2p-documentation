@@ -17,8 +17,8 @@ renders a **printable PDF with a QR**. No eSignet, no wallet app. Verified with 
 
 * `database` — PostgreSQL 15 (local stand-in for the cluster PostgreSQL; holds Certify's
   `inji_certify` DB)
-* `certify` — `injistack/inji-certify-with-plugins:0.14.0` on `http://localhost:8090`, with the
-  **passthrough plugin** JAR mounted into its loader path
+* `certify` — `injistack/inji-certify-with-plugins:0.14.0` on `http://localhost:8090` (**stock**, no
+  custom plugin)
 * **OpenG2P Registry** — the real registry DB (e.g. reached on `localhost:5432`), exposing the
   read-only `beneficiary_vc_view` (`phone`, `functionalRecordId`, `fullName`, `dateOfBirth`)
 * **Agent Portal API** — the `agent-portal-api` FastAPI service (the issuance backend)
@@ -37,9 +37,9 @@ The wallet UI, Mimoto and nginx services are not needed.
    `allowed-audiences` / `oauth.issuer` at Certify itself (pre-authorized-code flow, no eSignet).
 3. **`mosip.certify.cache.names=…,credentialOfferCache`** — the stock list omits
    `credentialOfferCache`, which the offer endpoint needs.
-4. **`mosip.certify.integration.data-provider-plugin=PreAuthPassthroughDataProviderPlugin`** — a small
-   custom plugin (built in the `vc-issuance` repo, dropped into the loader path) that makes the
-   **pushed claims the credential subject**. Certify needs **no Registry access**.
+4. **`mosip.certify.integration.data-provider-plugin=PreAuthDataProviderPlugin`** — a **built-in**
+   Certify plugin (ships inside `certify-service`, no custom jar) that makes the **pushed claims the
+   credential subject**. Certify needs **no Registry access**.
 5. **`credential_config` = `OpenG2PBeneficiaryCredential`** — a 3-field credential
    (`functionalRecordId`, `fullName`, `dateOfBirth`) with an **inline JSON-LD `@context`** (so no
    external context hosting is needed), Ed25519 signing key, and `qr_settings`.
@@ -49,7 +49,7 @@ The wallet UI, Mimoto and nginx services are not needed.
 ```
 Agent Portal API ──reads beneficiary_vc_view (by phone)──► OpenG2P Registry
         │  claims = {functionalRecordId, fullName, dateOfBirth}
-        └──push (pre-authorized-code)──► Inji Certify ──passthrough plugin──► Ed25519-signed VC
+        └──push (pre-authorized-code)──► Inji Certify ──PreAuthDataProviderPlugin (built-in)──► Ed25519-signed VC
         ◄── signed VC ──┘
         └── render ──► printable PDF + QR
 ```
@@ -92,8 +92,9 @@ human-readable fields plus a QR of the signed credential:
 
 ## What this confirms
 
-* **End-to-end push works**: real Registry row → Agent Portal API → Certify (passthrough) →
-  Ed25519-signed VC → printable PDF/QR — no citizen device, no wallet, no eSignet.
+* **End-to-end push works on stock Certify**: real Registry row → Agent Portal API → Certify
+  (built-in `PreAuthDataProviderPlugin`) → Ed25519-signed VC → printable PDF/QR — no citizen device,
+  no wallet, no eSignet, **no custom Certify plugin**.
 * **Certify is decoupled** from the Registry; only the Agent Portal API reads `beneficiary_vc_view`.
 * The same Agent Portal API code runs unchanged on the cluster; locally the **service classes** were
   driven directly because the private `openg2p-registry-core/-extensions` packages (needed for the
@@ -110,7 +111,7 @@ human-readable fields plus a QR of the signed credential:
 
 ## Working repository
 
-The runnable artifacts — the modified Certify compose config, the **passthrough plugin** project, the
-`agent-portal-api` service, `issue_vc.py`, and a sample issued PDF — are maintained in the internal
-**`vc-issuance`** working repository (and `agent-portal-api` under `openg2p-registry-gen2-apis`). These
-GitBook pages are the canonical design documentation; the working repos hold the runnable artifacts.
+The runnable artifacts — the modified Certify compose config, `issue_vc.py`, a sample issued PDF, and
+the (Phase-2) custom pull connector project — are maintained in the internal **`vc-issuance`** working
+repository (and the `agent-portal-api` service under `openg2p-registry-gen2-apis`). These GitBook pages
+are the canonical design documentation; the working repos hold the runnable artifacts.

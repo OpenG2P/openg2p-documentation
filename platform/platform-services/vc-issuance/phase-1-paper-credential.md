@@ -33,7 +33,7 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
    │                                        │ 3. PUSH claims (OpenID4VCI            │
    │                                        │    pre-authorized-code)               │
    │                                        │ ──────────────────►│                  │
-   │                                        │                    │ 4. passthrough plugin:
+   │                                        │                    │ 4. PreAuthDataProviderPlugin:
    │                                        │                    │    pushed claims = subject;
    │                                        │                    │    build VC from template,
    │                                        │                    │    sign (.p12 Ed25519 key)
@@ -46,6 +46,10 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
 * **The Agent Portal API owns the Registry lookup.** It reads the claims and **pushes** them into
   Certify; Certify never connects to the Registry. This keeps the issuer **decoupled** from registry
   data and credentials.
+* **Photograph (if used) is pushed as bytes.** Photos live in **MINIO**. Certify does **not** pull
+  from MINIO — so the Agent Portal API **fetches the image from MINIO, compresses it to a QR-sized
+  thumbnail, base64-encodes it, and pushes it as the `face` claim**. (A MINIO *link* would not work
+  for the offline QR, which must embed the actual bytes.)
 * **No citizen login.** The **agent** is the authenticated party; the citizen is identified by their
   **phone / functional ID** (looked up in the registry). There is no Logto/eSignet, no citizen wallet.
 * **Server-side issuance.** The backend drives Certify directly (a trusted machine-to-machine call)
@@ -62,11 +66,24 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
                                                                        key / DID  → ✅/❌
 ```
 
-* The **QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
-  **compact, signed payload** (CWT/mDoc-style, like a COVID certificate / mDL). Inji Certify's
-  `credential_config` supports this via **`qr_settings` + `qr_signature_algo`**.
-* **Offline verification:** the verifier checks the signature against the issuer's **published public
-  key / DID** — no call back to OpenG2P needed at scan time.
+* **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
+  **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used
+  by mDL / COVID certificates. Inji Certify supports this **natively** (no plugin) via the
+  `credential_config` columns **`qr_settings` + `qr_signature_algo`**: each `qr_settings` entry is a
+  Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
+  COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
+  `claim169` field.
+* **Photograph in the QR.** A `qr_settings` entry can include a **Face** object
+  (`{"Face": {"Data": "${face}", "Data format": "Image", "Data sub format": "JPEG"}}`). The image is
+  **embedded in the signed QR**, so it verifies offline. Because a QR holds only ~2–3 KB, the face
+  must be a **small, heavily compressed thumbnail** — not a full-resolution photo. The image **bytes**
+  must be supplied as the `face` claim (see issuance note below); Certify does not fetch images.
+* **Offline verification — where the key comes from.** The signed QR is a **COSE_Sign1 / CWT** whose
+  protected header carries the issuer **`x5c`** (certificate chain, embedded in the QR) and **`kid`**,
+  with `issuer` = the issuer **DID**. A verifier (Inji Verify) checks the signature using the embedded
+  `x5c` — **fully offline** — and anchors trust on the issuer's **published key/DID** (`did:web` →
+  `https://<issuer-host>/.well-known/did.json`). No call back to OpenG2P at scan time. (For the
+  JSON-LD VC, the equivalent pointer is `proof.verificationMethod = <issuerDID>#<key>`.)
 
 ## Architecture & components (Phase 1)
 
@@ -74,7 +91,7 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
  Agent Portal API ──reads──► OpenG2P Registry (read-only beneficiary_vc_view)
  (agent-driven)    │
                    └─push claims──► Inji Certify
-                                      ├─ passthrough plugin → pushed claims = VC subject
+                                      ├─ PreAuthDataProviderPlugin (built-in) → pushed claims = VC subject
                                       ├─ Velocity template  → VC body
                                       ├─ keymanager + .p12   → Ed25519 signature
                                       └─ (signed VC) ──► Agent Portal API → PDF + QR (printed)
@@ -85,10 +102,10 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
 * **Agent Portal API** — the issuance backend (`agent-portal-api`, FastAPI). Reads the citizen's
   claims from the read-only **Registry view** (`functionalRecordId`, `fullName`, `dateOfBirth`),
   **pushes** them into Certify, and renders the PDF/QR. Owns the only Registry connection.
-* **Inji Certify** — the issuer. Builds the VC from a Velocity template, signs with a key from its
-  **embedded keymanager (PKCS12 `.p12`, no HSM)**. A small **passthrough `DataProviderPlugin`**
-  (`PreAuthPassthroughDataProviderPlugin`) makes the **pushed claims the credential subject** — so
-  Certify needs **no Registry access**. (A pull variant exists for the wallet flow; see
+* **Inji Certify** — the issuer (used **stock**, no custom plugin). Builds the VC from a Velocity
+  template, signs with a key from its **embedded keymanager (PKCS12 `.p12`, no HSM)**. Certify's
+  **built-in `PreAuthDataProviderPlugin`** makes the **pushed claims the credential subject** — so
+  Certify needs **no Registry access**. (A custom pull connector exists for the wallet flow; see
   [Registry Data Connector](registry-data-connector.md).)
 * **PDF rendering** — the Agent Portal API composes the credential + QR into a printable PDF.
 * **Inji Verify** — the verifier app that scans and validates the QR offline.

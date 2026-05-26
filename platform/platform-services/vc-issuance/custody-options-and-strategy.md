@@ -2,7 +2,7 @@
 description: >-
   How a citizen holds and presents a Verifiable Credential — the three options
   (paper, hosted wallet, device wallet), who each serves, an honest comparison,
-  and why OpenG2P does paper first and self-own
+  and why OpenG2P does paper first and self-owned smartphone wallets next.
 ---
 
 # Custody Options & Strategy
@@ -83,11 +83,7 @@ So "skip B, go A → C?" is really: _does the program want a government-run cust
 | —           | **B — Hosted wallet**              | "browser-no-smartphone" minority       | **Considered, not chosen** — adopt only as a deliberate custodial-locker policy              |
 | separate    | Consent-based data sharing         | dept ↔ dept / third parties            | Registry partner APIs + consent — not a wallet feature                                       |
 
-<<<<<<< HEAD
 **Consequence:** Phase 1 needs only an **Agent Portal API** (reads the Registry, pushes claims) +
 **Certify (issue + sign)** + a **signed QR/PDF** + **Inji Verify**. No Logto, no Mimoto, no
 hosted-wallet login, no OpenID4VCI device flow — i.e. none of the integration complexity those paths
 require. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
-=======
-**Consequence:** Phase 1 needs only **Certify (issue + sign) + the Registry connector + a signed QR/PDF + Inji Verify**. No Logto, no Mimoto, no hosted-wallet login, no OpenID4VCI device flow — i.e. none of the integration complexity those paths require. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
->>>>>>> bcdebf767dfd6680471f911efd7317fc9b3f4214
