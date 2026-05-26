@@ -6,11 +6,11 @@ description: g2p_register_definitions - the principal metadata information on Re
 
 This table - [g2p\_register\_definitions](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) - stores the core metadata definition for all register types within the platform.
 
-Every dataset in the registry—whether it is a **REGISTER**, **TABLE**, or **PROGRAM\_REGISTER**—must have a corresponding entry in this table.
+Every dataset in the registry whether it is a **REGISTER**, **TABLE**, **PROGRAM\_REGISTER**, or **CORE\_TABLE** must have a corresponding entry in this table.
 
 ***
 
-## Core Attributes
+### Core Attributes
 
 | Attribute                 | Description                                                                                                                                                                                  |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,29 +21,29 @@ Every dataset in the registry—whether it is a **REGISTER**, **TABLE**, or **PR
 
 ***
 
-## Dynamic Class Resolution
+### Dynamic Class Resolution
 
 The platform dynamically constructs class names based on the **`register_mnemonic`**.
 
-| Component     | Derived Class                  |
-| ------------- | ------------------------------ |
-| ORM Model     | `G2PRegister{Mnemonic}`        |
-| History Model | `G2PRegisterHistory{Mnemonic}` |
-| Service Class | `G2PRegisterService{Mnemonic}` |
+| Component      | Derived Class                        |
+| -------------- | ------------------------------------ |
+| ORM Model      | `G2PRegister{Mnemonic}`              |
+| History Model  | `G2PRegisterHistory{Mnemonic}`       |
+| Domain Service | `G2PRegisterDomainService{Mnemonic}` |
 
-For example, if the register mnemonic is **Farmer**, the platform will resolve:
+For example, if the register mnemonic is **`PrimarySubject`**, the platform resolves:
 
-| Type          | Derived Class              |
-| ------------- | -------------------------- |
-| ORM Model     | `G2PRegisterFarmer`        |
-| History Model | `G2PRegisterHistoryFarmer` |
-| Service Class | `G2PRegisterServiceFarmer` |
+| Type           | Derived Class                            |
+| -------------- | ---------------------------------------- |
+| ORM Model      | `G2PRegisterPrimarySubject`              |
+| History Model  | `G2PRegisterHistoryPrimarySubject`       |
+| Domain Service | `G2PRegisterDomainServicePrimarySubject` |
 
 This mechanism allows the platform to **load domain-specific implementations dynamically**.
 
 ***
 
-## Register Hierarchy Configuration
+### Register Hierarchy Configuration
 
 | Attribute                | Description                                                      |
 | ------------------------ | ---------------------------------------------------------------- |
@@ -51,17 +51,17 @@ This mechanism allows the platform to **load domain-specific implementations dyn
 
 For example:
 
-| Register            | Master Register     |
-| ------------------- | ------------------- |
-| Household Register  | None                |
-| Individual Register | Household Register  |
-| Subscriptions Table | Individual Register |
+| Register                 | Master Register          |
+| ------------------------ | ------------------------ |
+| Group register           | None                     |
+| Primary subject register | Group register           |
+| Child table              | Primary subject register |
 
 This hierarchy enables the platform to understand **parent-child relationships between datasets**.
 
 ***
 
-## Register Display Configuration
+### Register Display Configuration
 
 | Attribute          | Description                                                                                                                      |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,41 +71,61 @@ This hierarchy enables the platform to understand **parent-child relationships b
 
 ***
 
-## Register Type Configuration
+### Register Type Configuration
 
-| Attribute             | Description                                                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **register\_purpose** | Specifies the classification of the register. Possible values include: `REGISTER`, `TABLE`, and `PROGRAM_REGISTER`. |
+| Attribute             | Description                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| **register\_purpose** | Classification of the register: `REGISTER`, `TABLE`, `PROGRAM_REGISTER`, or `CORE_TABLE`. |
 
 ***
 
-## Program Register Configuration
+### Program Register Configuration
 
-These fields are applicable **only when the register type is `PROGRAM_REGISTER`**.
+Applicable **only** when `register_purpose` is `PROGRAM_REGISTER`.
 
 | Attribute             | Description                                                             |
 | --------------------- | ----------------------------------------------------------------------- |
 | **program\_id**       | Identifier of the benefit program associated with the program register. |
 | **program\_mnemonic** | Short mnemonic representing the benefit program.                        |
 
-This configuration links the register with the **Program and Benefit Management System (PBMS)**.
+***
+
+### ID Generation Configuration
+
+| Attribute                                | Description                                                                                          |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **functional\_id\_generation\_required** | Indicates whether the platform should generate a functional identifier for records in this register. |
 
 ***
 
-## Deduplication Configuration
+### Deduplication Configuration
 
-The platform supports **record de-duplication** during data entry or change requests.
+| Attribute                   | Description                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| **dedup\_is\_enabled**      | Indicates whether deduplication should be applied to the register.                    |
+| **dedup\_threshold\_score** | Threshold score used by the deduplication algorithm to classify potential duplicates. |
 
-| Attribute                   | Description                                                                                                  |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **dedup\_is\_enabled**      | Indicates whether deduplication should be applied to the register.                                           |
-| **dedup\_threshold\_score** | Defines the threshold score used by the deduplication algorithm to classify records as potential duplicates. |
+The attributes used for deduplication are defined as JSON in [`g2p_register_schemas`](g2pregisterschema.md).
 
-The specific attributes used for deduplication are defined as a **JSON configuration** in the table:
+***
 
-[`g2p_register_schemas`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_schema.py)
+### Completion Score Configuration
 
-The deduplication process typically runs during **change request processing**, where newly submitted records are compared against existing records to identify potential duplicates.
+| Attribute                       | Description                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------------ |
+| **completion\_score\_required** | Indicates whether section completion scores must be computed for records in this register. |
+
+***
+
+### Registrant Authentication Configuration
+
+| Attribute                                       | Description                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **requires\_registrant\_authentication**        | Indicates whether registrants must authenticate before interacting with records in this register. |
+| **registrant\_authentication\_validity\_days**  | Number of days a registrant authentication remains valid.                                         |
+| **registrant\_re\_auth\_warning\_days\_before** | Number of days before authentication expiry when a re-authentication warning is shown.            |
+
+***
 
 ## Reference Implementation
 

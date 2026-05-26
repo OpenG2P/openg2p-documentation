@@ -15,7 +15,7 @@ G2P Documents Store
 ### Functionality
 
 1. The G2P Documents Store is a module developed by OpenG2P for managing and storing documents in the G2P system. This module provides functionalities for handling document storage, categorization, and tagging within the G2P application. It is designed to enhance document management capabilities and improve user experience.
-2.  #### Document Storage
+2.  **Document Storage**
 
     The G2P Documents Store allows users to store various types of documents within the G2P application. It provides a structured and organized approach to managing documents.
 

@@ -25,36 +25,47 @@ A register or program register may have **multiple intake forms**, each designed
 
 ***
 
-## Attributes
+### Attributes
 
-<table data-full-width="true"><thead><tr><th width="124.8968505859375">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>tab_id</strong></td><td>Primary key of the table. Uniquely identifies a tab definition across the platform.</td></tr><tr><td><strong>register_id</strong></td><td>Identifier of the register to which the tab definition belongs.</td></tr><tr><td><strong>tab_label</strong></td><td>The label displayed for the tab in the UI. The Staff UI automatically translates this label based on the user's language preference.</td></tr><tr><td><strong>tab_order</strong></td><td>Determines the order in which the tab appears for the register. Tabs with lower values appear earlier in the UI.</td></tr></tbody></table>
-
-***
-
-## Intake Form Configuration
-
-The following attributes apply when the tab is used as an **Intake Form**.
-
-<table data-full-width="true"><thead><tr><th width="246.15106201171875">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>used_for_new_intake_form</strong></td><td>Indicates whether the tab represents an <strong>intake form</strong> used to create new records in a REGISTER or PROGRAM_REGISTER.</td></tr><tr><td><strong>intake_form_name</strong></td><td>Name of the intake form. When multiple intake forms exist for a register, this name helps users distinguish between them when initiating a new intake process.</td></tr><tr><td><strong>intake_form_description</strong></td><td>A short description explaining the purpose of the intake form.</td></tr><tr><td><strong>no_of_verifications_required</strong></td><td>Specifies the number of verification steps required before the intake form submission can be approved.</td></tr><tr><td><strong>intake_form_auto_approve</strong></td><td>Indicates whether submissions from this intake form are <strong>automatically approved</strong> or require manual verification and approval before a change request is created.</td></tr></tbody></table>
+| Attribute        | Description                                                                    |
+| ---------------- | ------------------------------------------------------------------------------ |
+| **tab\_id**      | Primary key. Uniquely identifies a tab.                                        |
+| **register\_id** | Register to which the tab belongs.                                             |
+| **tab\_label**   | Label displayed in the UI (translated when language configuration is present). |
+| **tab\_order**   | Display order. Lower values appear first.                                      |
 
 ***
 
-## Lifecycle Configuration
+### Intake form fields (legacy)
 
-<table data-full-width="true"><thead><tr><th width="113.23358154296875">Attribute</th><th>Description</th></tr></thead><tbody><tr><td><strong>is_active</strong></td><td>Indicates whether the tab or intake form is currently active. This allows administrators to <strong>retire forms that are no longer in use</strong> without deleting their configuration.</td></tr></tbody></table>
+Some deployments store intake-form flags on register tabs. When using dedicated intake form tables (G2PIntakeFormDefinition), prefer seeding `g2p_intake_form_*` metadata instead.
+
+| Attribute                           | Description                                    |
+| ----------------------------------- | ---------------------------------------------- |
+| **used\_for\_new\_intake\_form**    | Tab represents an intake form for new records. |
+| **intake\_form\_name**              | Display name when multiple intake forms exist. |
+| **intake\_form\_description**       | Short description of the form.                 |
+| **no\_of\_verifications\_required** | Verifications before intake approval.          |
+| **intake\_form\_auto\_approve**     | Auto-approve intake submissions.               |
 
 ***
 
-## UI Behavior
+### Lifecycle
 
-The Registry Staff UI uses this metadata to dynamically:
+| Attribute      | Description                                                  |
+| -------------- | ------------------------------------------------------------ |
+| **is\_active** | When `FALSE`, tab is retired without deleting configuration. |
 
-* Render **tabbed views** for registers
-* Present **intake forms** for record creation
-* Determine **form workflows and verification requirements**
-* Control **tab ordering and visibility**
+***
 
-This metadata-driven approach allows implementation teams to **configure UI workflows without modifying application code**.
+### Related metadata
+
+Sections are linked to tabs through G2PRegisterUITabSection.
+
+| Table                          | Document                                    |
+| ------------------------------ | ------------------------------------------- |
+| `g2p_register_ui_tab_sections` | G2PRegisterUITabSection                     |
+| `g2p_register_sections`        | [G2PRegisterSection](g2pregistersection.md) |
 
 ***
 

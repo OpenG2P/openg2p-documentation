@@ -55,7 +55,7 @@ sudo apt install -y python3-pip python3-dev build-essential
 
 {% tabs %}
 {% tab title="Example Bank API" %}
-#### Setting up the Bridge API
+**Setting up the Bridge API**
 
 *   Make a new Python virtual environment.
 
@@ -100,7 +100,7 @@ sudo apt install -y python3-pip python3-dev build-essential
 {% endtab %}
 
 {% tab title="Example Bank Celery" %}
-#### Setting up the Example Bank Celery
+**Setting up the Example Bank Celery**
 
 *   Make a new Python virtual environment.
 

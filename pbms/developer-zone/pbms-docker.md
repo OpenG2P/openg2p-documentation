@@ -10,7 +10,7 @@ description: >-
 
 Dockers are created via GitHub workflows by triggering them manually. Dockers may be created from the command line as well. The docker images for PBMS Odoo and Background Tasks (API, Celery Beat Producer, and Celery Worker) are created independent of each other.
 
-The contents of the Docker are listed in a package file available in the [openg2p-pbms-docker](https://github.com/OpenG2P/openg2p-pbms-docker) repo. This package file is read by the [docker-build-odoo.yml](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/.github/workflows/docker-build-odoo.yml) workflow for odoo and [docker-build-bg-tasks.yml](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/.github/workflows/docker-build-bg-tasks.yml) workflow for background tasks. These workflows create the Docker Images and push them to the Docker Hub. &#x20;
+The contents of the Docker are listed in a package file available in the [openg2p-pbms-docker](https://github.com/OpenG2P/openg2p-pbms-docker) repo. This package file is read by the [docker-build-odoo.yml](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/.github/workflows/docker-build-odoo.yml) workflow for odoo and [docker-build-bg-tasks.yml](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/.github/workflows/docker-build-bg-tasks.yml) workflow for background tasks. These workflows create the Docker Images and push them to the Docker Hub.
 
 For odoo, the name and tag of the Docker are specified as the first line in the [package file](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/openg2p-pbms-odoo/3.0.0.txt) followed by the base version of the Odoo that is used to create the Docker. See example below.
 
@@ -53,26 +53,26 @@ Versions of all repositories that are used to create the Docker are specified in
 
 ### Tagging the repositories
 
-1. Run the "Tag the repo" (`tag.yml` ) workflow using Github Actions.  Make sure `OpenG2PBot` user on Github has 'Write' permission to the repository. The workflow checks if there are any changes w.r.t. to the previous version specified. If there are no changes the workflow fails with a message and a new tag is not created.
+1. Run the "Tag the repo" (`tag.yml` ) workflow using Github Actions. Make sure `OpenG2PBot` user on Github has 'Write' permission to the repository. The workflow checks if there are any changes w.r.t. to the previous version specified. If there are no changes the workflow fails with a message and a new tag is not created.
 
 ### Creating Docker Packages
 
 {% tabs %}
 {% tab title="Odoo" %}
-#### Docker package for Odoo
+**Docker package for Odoo**
 
-1. Create a package file for the new version that you want to create.  See [example](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/openg2p-pbms-odoo/3.0.0.txt). The name of the package file can be arbitrary but it is recommended that it reflects the Docker tag version.  E.g. `3.0.0.txt`.
-2. <mark style="color:red;">IMPORTANT</mark>: Update the first line in the package file to the new version.  (This is critical otherwise previous tag will get overwritten on Docker Hub.)
+1. Create a package file for the new version that you want to create. See [example](https://github.com/OpenG2P/openg2p-pbms-docker/blob/3.0/openg2p-pbms-odoo/3.0.0.txt). The name of the package file can be arbitrary but it is recommended that it reflects the Docker tag version. E.g. `3.0.0.txt`.
+2. <mark style="color:red;">IMPORTANT</mark>: Update the first line in the package file to the new version. (This is critical otherwise previous tag will get overwritten on Docker Hub.)
 3. Inspect the contents of the package file on which versions of repositories need to be packed in this Docker.
-4. Make sure the repositories are tagged with the versions matching in the package file.  See above section on [tagging](pbms-docker.md#tagging-the-repositories).
-5. Trigger `OpenG2P PBMS Odoo Dockers` action using the Github Actions.  Provide the correct branch and above file path as input w.r.t to `packages` folder.
+4. Make sure the repositories are tagged with the versions matching in the package file. See above section on [tagging](pbms-docker.md#tagging-the-repositories).
+5. Trigger `OpenG2P PBMS Odoo Dockers` action using the Github Actions. Provide the correct branch and above file path as input w.r.t to `packages` folder.
 6. Verify that the new Docker has been pushed on Docker Hub.
 {% endtab %}
 
 {% tab title="Background Tasks" %}
-#### Docker package for BG Tasks
+**Docker package for BG Tasks**
 
-1.  Create a package file each (api, celery-beat, and celery-worker) for the new version that you want to create.  See [examples](https://github.com/OpenG2P/openg2p-pbms-docker/tree/3.0/openg2p-pbms-bg-tasks). The name of the package file can **NOT** be arbitrary (it is recommended that for a new version the packaging be done on a new branch) since a static path is used in the workflow.
+1.  Create a package file each (api, celery-beat, and celery-worker) for the new version that you want to create. See [examples](https://github.com/OpenG2P/openg2p-pbms-docker/tree/3.0/openg2p-pbms-bg-tasks). The name of the package file can **NOT** be arbitrary (it is recommended that for a new version the packaging be done on a new branch) since a static path is used in the workflow.
 
     ```
     serviceFile:
@@ -80,7 +80,7 @@ Versions of all repositories that are used to create the Docker are specified in
        - openg2p-pbms-bg-tasks/bg-task-celery-worker.txt
        - openg2p-pbms-bg-tasks/bg-task-celery-beat.txt
     ```
-2. <mark style="color:red;">IMPORTANT</mark>: Update the second line in the package file to the new version.  (This is critical otherwise previous tag will get overwritten on Docker Hub.)
+2. <mark style="color:red;">IMPORTANT</mark>: Update the second line in the package file to the new version. (This is critical otherwise previous tag will get overwritten on Docker Hub.)
 3.  Inspect the contents of the package file and corresponding Dockerfile on which versions of repositories and additional dependencies need to be packed in this Docker. See below an example of package and Dockerfile for api:
 
     ```
@@ -129,12 +129,12 @@ Versions of all repositories that are used to create the Docker are specified in
     CMD python3 -m openg2p_bg_task_api.main migrate; \
         ${BG_TASK_WORKER_TYPE} "openg2p_bg_task_api.main:app" --workers ${BG_TASK_NO_OF_WORKERS} --worker-class uvicorn.workers.UvicornWorker --bind ${BG_TASK_HOST}:${BG_TASK_PORT}
     ```
-4. Make sure the repositories are tagged with the versions matching in the package file.  See above section on [tagging](pbms-docker.md#tagging-the-repositories).
-5. Trigger `OpenG2P PBMS Background Task Dockers`  action using the Github Actions.  Provide the correct branch and run the workflow.
+4. Make sure the repositories are tagged with the versions matching in the package file. See above section on [tagging](pbms-docker.md#tagging-the-repositories).
+5. Trigger `OpenG2P PBMS Background Task Dockers` action using the Github Actions. Provide the correct branch and run the workflow.
 6. Verify that the new Dockers has been pushed on Docker Hub.
 {% endtab %}
 {% endtabs %}
 
 ## Automatic build and upload of private Dockers
 
-Refer to the guide:  [Automatic Build and Upload of Private Dockers](../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)
+Refer to the guide: [Automatic Build and Upload of Private Dockers](../../deployment/deployment-guide/automatic-build-and-upload-of-private-dockers.md)

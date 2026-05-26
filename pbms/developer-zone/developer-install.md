@@ -10,7 +10,7 @@ Below are the prerequisites to install the OpenG2P package on a laptop/desktop.
 
 {% tabs %}
 {% tab title="Odoo 15.0" %}
-#### Installation of Odoo 15.0
+**Installation of Odoo 15.0**
 
 **1. Update system packages**
 
@@ -121,7 +121,7 @@ db_password = your_database_password
 {% endtab %}
 
 {% tab title="Odoo 17.0" %}
-#### Installation of Odoo 17.0
+**Installation of Odoo 17.0**
 
 **1. Update system packages**
 

@@ -14,7 +14,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 
 {% stepper %}
 {% step %}
-#### Beneficiary registration forms
+**Beneficiary registration forms**
 
 * Dynamic form generation based on program requirements
 * Multi-step registration workflows
@@ -23,7 +23,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 {% endstep %}
 
 {% step %}
-#### Data entry and management
+**Data entry and management**
 
 * Structured data entry with validation
 * Table-based data editing with inline operations
@@ -32,7 +32,7 @@ The Registry UI Widget Library serves as the foundation for building user interf
 {% endstep %}
 
 {% step %}
-#### Registry viewing and editing with change request workflow
+**Registry viewing and editing with change request workflow**
 
 * Read-only registry views with section-based layouts
 * Edit-in-place functionality with section-level save operations

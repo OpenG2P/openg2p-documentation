@@ -1,2 +1,0 @@
-# Build & deploy a registry
-
