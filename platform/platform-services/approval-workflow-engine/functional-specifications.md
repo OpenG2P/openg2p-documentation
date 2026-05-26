@@ -533,8 +533,16 @@ provisions its own clients and roles inside it).
   viewer privileges; a call to a read endpoint with only `AWE_ADMIN`
   works.
 
-Tokens are verified against Keycloak JWKS with issuer+audience checks
-(`awe.keycloak.issuer`, `awe.keycloak.audience`). A dev mode
+Tokens are verified against Keycloak JWKS with an issuer check
+(`awe.keycloak.issuer`). **Audience verification is disabled in v1**
+(`awe.keycloak.audience` is empty in the shipped Helm values) so that
+Caller integrations can forward an end-user's JWT to
+`POST /tasks/{id}/decision` — that token's `aud` is the Caller's own
+client (e.g. `registry-staff-portal`), not an AWE client, and would
+otherwise be rejected. Signature + issuer are still enforced; only the
+audience pin is relaxed. See
+[Integration with Registry → the audience claim](integration-with-registry.md#the-audience-claim--current-decision-and-the-path-to-tighten-it)
+for the rationale and the path to re-enabling it. A dev mode
 (`issuer=""`) skips signature verification for local development and is
 **not reachable in the shipped Helm chart**.
 

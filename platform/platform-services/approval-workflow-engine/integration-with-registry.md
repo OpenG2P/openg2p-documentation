@@ -76,6 +76,115 @@ hooks) untouched.
 | `callback_secret_id` | HMAC secret reference | configured `awe_callback_secret_id` |
 | approver bearer to AWE | the approver's own JWT | `request.state.auth.credentials` — **forwarded as-is** since both services trust the same Keycloak realm |
 
+## Authentication and the token model
+
+Two **different** tokens flow across the integration, on two different
+calls. Getting this right is the crux of the integration — the table
+below is the contract.
+
+| Call | `Authorization` header | What it proves | Verified by AWE? |
+|--|--|--|--|
+| `POST /v1/awe/requests` (open a flow) | Registry's **service-account token** (client_credentials) | The *Registry system* is creating this flow | Yes — JWKS signature + issuer (+ audience, see below) |
+| `requester` field in the `POST /requests` body | — (not a token; a plain string, e.g. `u-alice`) | Who *submitted* the CR — provenance only | **No** — stored as-is, never checked against Keycloak |
+| `POST /v1/awe/tasks/{id}/decision` (approve / reject) | The **approver's own user JWT**, forwarded by Registry | That *this specific human* is deciding | Yes — JWKS-verified, and `sub` must match the task's assignee |
+
+Key consequences:
+
+* **Create is system-acting-for-a-human.** The human (`requester`) is
+  data, not the caller. A string is enough because at create time
+  nobody is *acting as* that user — the Registry is recording who
+  initiated. AWE uses `requester` for guards like `forbid_self_approval`,
+  but never trusts it as an authenticated identity.
+* **Decide is the human acting directly.** This is the actual security
+  gate — a forged "Alice approved" applies a real mutation. So AWE
+  requires a proven identity (a real, signed token whose `sub` matches
+  the assignee), not an assertion.
+* **No AWE role is needed to approve.** The decision endpoint is gated on
+  *being the task's assignee*, not on holding `AWE_VIEWER` / `AWE_ADMIN`.
+  Those roles are only for the admin portal (policy CRUD, audit,
+  deliveries). An approver's authority comes from having been resolved
+  into the stage's approver set.
+
+### This depends on a design choice
+
+The table above reflects the **default model: forward the approver's
+JWT.** It is not the only option — see
+[Open design choices](#open-design-choices-to-confirm-before-coding),
+item 1. The alternative ("trust the Registry's assertion of who
+approved") collapses the decision row to a service token plus an
+asserted user id. The trade-off:
+
+* **Forward JWT (default):** strongest audit / non-repudiation; a
+  compromised Registry cannot forge approvals; AWE stays an independent
+  control. Cost: Registry must forward live user tokens, and the
+  audience claim must line up (next section).
+* **Trust the caller:** simplest; one service token does everything;
+  works for approvals arriving over non-Keycloak channels (SMS, IVR,
+  batch). Cost: AWE is only as trustworthy as the Registry — the
+  independent gate becomes a caller-controlled bookkeeping table.
+
+For OpenG2P, where approvals are a governance control, the default
+(forward JWT) is recommended. If a "trusted-caller" mode is ever needed,
+the clean shape is: a caller holding a specific role may pass
+`acting_as: "<user_id>"` on the decision call, and AWE records the
+decision as that user while logging that it was *asserted by* the
+Registry (not directly proven).
+
+### The audience claim — current decision and the path to tighten it
+
+AWE verifies the inbound token's `aud` against its configured
+`awe.keycloak.audience`. A **forwarded approver token was minted for the
+Registry's client** (e.g. `registry-staff-portal`), so its `aud` is the
+Registry client — **not** `awe-admin-portal`. If audience verification
+were on, AWE would reject every forwarded approver token with `401`, even
+though the user is valid and is the correct assignee.
+
+`keycloak-init` already auto-adds an audience mapper to every client it
+provisions, but it hardcodes the audience to the client's **own** id. So
+Registry tokens carry `aud: registry-staff-portal` and nothing else —
+there is no values-level hook today to add a second audience.
+
+> **Decision (v1): we have gone with Option 2 — audience verification is
+> disabled.** `awe.keycloak.audience` is set to `""` in AWE's Helm
+> values, so AWE accepts any validly-signed token from the trusted
+> `staff`-realm issuer. Signature and issuer are still enforced; only the
+> audience pin is relaxed. This is a deliberate trade-off: it's the
+> one-line change that lets forwarded approver tokens through without
+> touching Registry's Keycloak setup. It is acceptable for v1 because
+> every client lives in the same trusted realm.
+
+The three options, for reference:
+
+| Option | Where it's configured | Effort | Notes |
+|--|--|--|--|
+| **1. Add `awe` to Registry's token audience** | **Registry** Helm chart's `keycloak-init` | Higher | The stricter, "correct" fix — *deferred*. See "Tightening later" below. |
+| **2. Relax AWE's audience check** *(chosen for v1)* | **AWE** Helm values: `awe.keycloak.audience: ""` | One line | AWE accepts any validly-signed token from the trusted `staff`-realm issuer. Simplest; weaker (any realm token is accepted). |
+| **3. Token exchange** | Registry side | Highest | Registry exchanges the user token for an AWE-audienced token before forwarding. Cleanest in theory, most moving parts. |
+
+#### Tightening later (moving to Option 1)
+
+When stronger control is wanted, switch to Option 1. This is **not** an
+AWE-side change alone — AWE doesn't own the Registry client. It requires:
+
+1. **AWE side:** set `awe.keycloak.audience` back to the AWE client id
+   (e.g. `awe-admin-portal`) in AWE's Helm values, re-enabling the
+   audience pin.
+2. **Registry side — the keycloak-init enhancement:** the Registry's
+   tokens must carry `awe` (or `awe-admin-portal`) in their `aud` claim.
+   keycloak-init currently emits only each client's *self-audience*
+   mapper (`configure_mappers()` hardcodes `included.client.audience` to
+   the client's own id), so it would need to grow one of:
+   * support for **custom/extra protocol mappers** declared per-client in
+     the keycloak-init values (so an `oidc-audience-mapper` adding `awe`
+     can be attached to the Registry client), **or**
+   * support for assigning a shared **client scope** that carries the
+     audience mapper to the Registry client, **or**
+   * a documented **manual/post-install** step that adds the mapper via
+     the Keycloak admin API.
+
+Until keycloak-init gains one of those, Option 1 cannot be expressed
+declaratively — which is precisely why v1 uses Option 2.
+
 ## Code changes in the Registry
 
 ### 1. `G2PRegisterChangeRequest` model — one new column
@@ -222,7 +331,10 @@ alone.
    Forwarding the user JWT is simplest (Registry → AWE both trust
    Keycloak), but couples token lifetime to user session. A service
    token is more decoupled but loses approver identity unless we pass
-   it explicitly in the request body.
+   it explicitly in the request body. See
+   [Authentication and the token model](#authentication-and-the-token-model)
+   for the full trade-off (non-repudiation, blast radius, trusted-caller
+   mode) and the audience-claim configuration this requires.
    **Recommendation:** forward user tokens for v1.
 
 2. **Where `AWEClient` lives.**
