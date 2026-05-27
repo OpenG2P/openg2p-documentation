@@ -24,6 +24,46 @@ wallet options).
 
 All run on the OpenG2P **Kubernetes** cluster.
 
+> **The Certify helm chart alone is NOT enough.** `helm/inji-certify` deploys only the Certify
+> service pod — no database, no init SQL, no keystore, no data source. (The upstream `install.sh` also
+> assumes the full MOSIP sandbox — config-server, softhsm, esignet-mock, mock-identity — which Phase 1
+> does **not** use.) You must additionally provide items 2–10 below.
+
+## Install checklist (Phase 1)
+
+| # | Install / configure | Notes |
+|---|---|---|
+| 1 | **Inji Certify** (helm service pod) | issuer + signer |
+| 2 | **Certify DB/schema** on the cluster PostgreSQL | run Certify's init SQL once (keymanager tables, `credential_config`, caches) |
+| 3 | **`.p12` keystore** on a persistent volume | the issuer identity — persist + back up (no HSM) |
+| 4 | **Certify config** | Certify-as-AS (`authn.*` / `oauth.issuer` → itself); `data-provider-plugin=PreAuthDataProviderPlugin`; add `credentialOfferCache`; `credential_config` rows (template, DID/key, `qr_settings`) |
+| 5 | **Agent Portal API** (docker/helm) | reads `beneficiary_vc_view`, pushes claims, renders PDF/QR; holds the **only** Registry + MINIO connections |
+| 6 | **Agent Portal UI** | talks **only** to the Agent Portal API — never to Certify |
+| 7 | **Registry** `beneficiary_vc_view` + `certify_ro` user | read-only, least-privilege |
+| 8 | **MINIO access** for the Agent Portal API | only if the VC embeds a face thumbnail |
+| 9 | **Inji Verify** (helm) | verifier side — needed to scan/validate, not to issue |
+| 10 | **Trust distribution** | publish issuer cert/DID; push the issuer cert to verifiers' trust list |
+
+Optional infra: **Redis** only if Certify runs multi-replica/HA (the pre-auth offer/claims cache); a
+single replica uses the in-memory cache. Ingress/TLS as usual.
+
+## End-to-end call sequence (who calls whom)
+The **UI never touches Certify**; the **Agent Portal API** is the OpenID4VCI client (trusted M2M
+caller) and Certify is **not exposed publicly**.
+
+1. Agent logs into the UI and verifies the citizen (LoA1); UI → `POST /agent_portal/issue_vc {phone}`.
+2. Agent Portal API reads `beneficiary_vc_view` (and, if used, fetches + compresses the MINIO face).
+3. API → Certify **pre-authorized-code 4-call flow**: `POST /pre-authorized-data` (claims) →
+   `GET /credential-offer-data/{id}` → `POST /oauth/token` → `POST /issuance/credential` (Bearer +
+   proof JWT) → **signed VC** (+ claim-169 QR).
+4. API renders the PDF and returns VC + PDF to the UI; the agent prints it for the citizen.
+5. Later: a verifier scans the QR with **Inji Verify** → validates the COSE signature **offline**.
+
+Nuances: with no citizen device, the **API generates an ephemeral holder key** for the proof JWT
+(`credentialSubject.id` = a throwaway `did:jwk`; trust comes from the issuer signature, not holder
+binding). Certify caches the pushed claims only **transiently** for the issuance — it does not persist
+citizen data. The pre-auth `tx_code` is set/supplied by the API itself.
+
 ## One shared issuance service per environment
 Run **one Certify instance per environment** and let **every module** (Registry, PBMS, SPAR, …) use
 it. Certify is a **generic signing service**; the push model keeps it decoupled from each module's
@@ -56,6 +96,18 @@ data — every module is its own issuance backend that pushes its own claims.
   (the pull connector — see [Registry Data Connector](registry-data-connector.md) — is for the wallet
   flow).
 
+## Helm artifacts (where the charts live)
+* **Inji Certify chart** — `vc-issuance/helm/openg2p-inji-certify` (OpenG2P style: `common` +
+  `postgres-init` deps; Certify Deployment/Service/Gateway/VirtualService + a properties ConfigMap, a
+  `.p12` Secret mount, and a **DB-schema-init Job** that seeds the keymanager tables + `credential_config`).
+  It is packaged into and enabled from **commons-services** (`charts/openg2p-commons-services`, dep
+  alias `injiCertify`) — installed **with the commons layer**, reusing the cluster PostgreSQL.
+* **Agent Portal API image** — built from `openg2p-registry-gen2-apis/agent-portal-api` (Dockerfile +
+  `docker-build.yml`), e.g. `openg2p/openg2p-registry-agent-portal-api:<branch>`. Wired into the
+  **registry** chart (`openg2p-registry-gen2-deployment`, `agentPortalApi` block) so it installs **with
+  the registry**, pointed at the commons Certify service. (The agent portal **UI** follows the same
+  pattern once its image exists.)
+
 ## Configuration highlights
 * **Certify** (stock image, no custom plugin): set
   `data-provider-plugin=PreAuthDataProviderPlugin` (a built-in — turns the pushed claims into the VC
@@ -68,18 +120,41 @@ data — every module is its own issuance backend that pushes its own claims.
 * **`.p12` keystore (no HSM)**: mount it on durable storage and **back it up** — the `.p12` plus the
   encrypted key rows **are the issuer identity**; regenerating them invalidates previously issued
   credentials.
-* **Issuer DID / cert**: publish the issuer's public key / `did.json` at a **stable, resolvable HTTPS
-  URL** (`did:web:<host>` → `https://<host>/.well-known/did.json`). The signed claim-169 QR is a
-  **COSE/CWT** carrying the issuer **`x5c`** (cert chain) and **`kid`** in its header, so verifiers can
-  check it offline and anchor trust on the published key/cert (or its root).
+* **Issuer key / trust anchor**: the signed claim-169 QR is a **COSE/CWT**. Per the MOSIP 169 spec,
+  verifiers use **COSE** key-discovery (`x5chain` embedded cert, `x5t` hash, or `x5u` URI) and a
+  **pre-distributed trust anchor** — *not* `.well-known`/JWKS/DID resolution. So **distribute the
+  issuer's signing cert / root to verifiers** (a trust list). Optionally embed `x5chain` in the QR for
+  self-contained offline verification, trading off QR space. (The separate **JSON-LD VC** still uses
+  `did:web` → `https://<host>/.well-known/did.json` for `proof.verificationMethod`; publish that too if
+  JSON-LD VCs are issued.)
 * **Photograph**: if the credential embeds a face in the QR, the **Agent Portal API** must push a
-  **small compressed thumbnail** (base64) as the `face` claim — a QR holds only ~2–3 KB and Certify
-  does not fetch images. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
+  **~1–2 KB WEBP/AVIF/JPEG thumbnail** (base64) as the `face` claim — a QR holds only ~2.9 KB and
+  Certify does not fetch images. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
+
+## Issuer identity — configuration, keys & verification (key points)
+* **One issuer/authority per environment.** All **static** issuer config is set in the Certify chart
+  (issuer **DID**, signing-key alias/algo, credential type/scope/template) and seeded into
+  `credential_config` by the schema-init Job — and surfaced in the chart's install **`questions.yaml`**
+  (standalone and under commons-services). Two steps stay operational: keymanager **generates the
+  keypair on first boot**, and (Phase 2 only) you publish `did.json`.
+* **The issuer identity is a 3-part bundle — back it up together.** The **`.p12`** (master key) + the
+  **keymanager key rows in PostgreSQL** (the actual signing keys, encrypted under the master key) + the
+  **keystore password** (Secret). All three must be preserved and restored *consistently*; losing or
+  changing any of them **invalidates every credential already issued**. Persist the `.p12` on durable
+  storage (PVC) and fold the `.p12` + password Secret + Certify DB into the backup system as one
+  critical set. *(Exact `.p12` custody model — PVC vs pre-provisioned Secret — still to be finalised.)*
+* **Verification key hosting differs by phase:**
+  * **Phase 1 (paper / claim-169 QR): no hosted `did.json` needed.** Verification uses a
+    **pre-distributed trust anchor** (issuer cert/root loaded into Inji Verify) and/or the cert
+    **embedded in the QR** (`x5chain`). Distribute the issuer signing cert to verifiers.
+  * **Phase 2 (wallet / JSON-LD VC): a resolvable `did:web` is required** — host `did.json` (built from
+    `/.well-known/jwks.json` after first boot) at `https://<issuer-host>/.well-known/did.json`, either
+    self-hosted on the cluster under the Certify domain or on an external static host. Deferred to Phase 2.
 
 ## Verifier side
-**Inji Verify** validates the printed QR by checking the COSE/CWT signature — using the **`x5c`**
-embedded in the QR — against the issuer's published key/cert/DID. It does not need access to OpenG2P
-at scan time (offline-verifiable), aside from (cacheably) resolving/trusting the issuer's key.
+**Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's key —
+obtained from the QR's COSE header (`x5chain`/`x5t`/`x5u`) and/or a **pre-loaded issuer trust anchor**.
+It does not need access to OpenG2P at scan time (offline-verifiable).
 
 ## Security checklist
 * The **Agent Portal API** calls Certify as a **trusted machine-to-machine** caller

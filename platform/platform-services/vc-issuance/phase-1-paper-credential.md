@@ -47,9 +47,10 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
   Certify; Certify never connects to the Registry. This keeps the issuer **decoupled** from registry
   data and credentials.
 * **Photograph (if used) is pushed as bytes.** Photos live in **MINIO**. Certify does **not** pull
-  from MINIO — so the Agent Portal API **fetches the image from MINIO, compresses it to a QR-sized
-  thumbnail, base64-encodes it, and pushes it as the `face` claim**. (A MINIO *link* would not work
-  for the offline QR, which must embed the actual bytes.)
+  from MINIO — so the Agent Portal API **fetches the image from MINIO, downscales + compresses it to a
+  ~1–2 KB WEBP/AVIF/JPEG thumbnail, base64-encodes it, and pushes it as the `face` claim**. (A MINIO
+  *link* would not work for the offline QR, which must embed the actual bytes; and the thumbnail must
+  be tiny because the whole signed QR fits in ~2.9 KB.)
 * **No citizen login.** The **agent** is the authenticated party; the citizen is identified by their
   **phone / functional ID** (looked up in the registry). There is no Logto/eSignet, no citizen wallet.
 * **Server-side issuance.** The backend drives Certify directly (a trusted machine-to-machine call)
@@ -73,17 +74,22 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
   Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
   COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
   `claim169` field.
-* **Photograph in the QR.** A `qr_settings` entry can include a **Face** object
-  (`{"Face": {"Data": "${face}", "Data format": "Image", "Data sub format": "JPEG"}}`). The image is
-  **embedded in the signed QR**, so it verifies offline. Because a QR holds only ~2–3 KB, the face
-  must be a **small, heavily compressed thumbnail** — not a full-resolution photo. The image **bytes**
-  must be supplied as the `face` claim (see issuance note below); Certify does not fetch images.
-* **Offline verification — where the key comes from.** The signed QR is a **COSE_Sign1 / CWT** whose
-  protected header carries the issuer **`x5c`** (certificate chain, embedded in the QR) and **`kid`**,
-  with `issuer` = the issuer **DID**. A verifier (Inji Verify) checks the signature using the embedded
-  `x5c` — **fully offline** — and anchors trust on the issuer's **published key/DID** (`did:web` →
-  `https://<issuer-host>/.well-known/did.json`). No call back to OpenG2P at scan time. (For the
-  JSON-LD VC, the equivalent pointer is `proof.verificationMethod = <issuerDID>#<key>`.)
+* **Photograph in the QR ("large photo" reality).** A QR is hard-capped at **~2.9 KB**, so you can't
+  embed a real photo. The claim-169 standard fits a **low-resolution face thumbnail** by combining: a
+  modern codec (the spec's face field, attribute 62, allows **WEBP / AVIF / JPEG / PNG / WSQ** — WEBP/
+  AVIF give a recognisable face in **~1–2 KB**), **integer-keyed CBOR** (no JSON field-name overhead),
+  **zlib/Brotli** compression, and **Base45** packing. It's recognition-grade, not high-resolution —
+  the same approach as Aadhaar's Secure QR. The image **bytes** must be supplied as the `face` claim
+  (see issuance note below); Certify does not fetch images. The signature/cert also consume the QR
+  budget, so photo quality trades off against embedded trust material.
+* **Offline verification — where the key comes from.** The signed QR is a **COSE_Sign1 / CWT**. The
+  claim-169 spec **does not** use `.well-known`/JWKS (DID) discovery for the QR; it uses **COSE**
+  mechanisms in the signature header — `x5chain` (embedded cert), `x5t` (cert hash), or `x5u` (cert
+  URI) — and assumes the verifier holds a **pre-loaded trust anchor** ("the app already has the
+  country's/issuer's key"). Certify can embed the issuer cert (`x5c`) so verification is **fully
+  offline**, but embedding it costs QR bytes, so issuers often **omit it and rely on the pre-distributed
+  trust list**. Either way, no call back to OpenG2P at scan time. (The **JSON-LD VC** — not the QR —
+  still uses `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.)
 
 ## Architecture & components (Phase 1)
 
