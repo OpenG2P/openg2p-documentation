@@ -50,7 +50,7 @@ Wrap the base `openg2p-registry` chart with your image repositories, `idTypes`, 
 {% step %}
 ### [Post Install workflow](guide-to-building-a-registry/post-install-workflow.md)
 
-Automate CI/CD builds and Helm publishing with path-scoped workflows so SQL, Python, and chart changes rebuild only what they affect. Smoke-test editable installs, Docker builds, db-seed, cluster install, change requests, Celery, and partner ingestion before production.
+
 {% endstep %}
 {% endstepper %}
 
