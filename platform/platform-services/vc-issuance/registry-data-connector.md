@@ -34,6 +34,8 @@ chart**, and a registry can issue **multiple VC types** (e.g. an ID card vs ID +
 | **`credential_config`** (template, type, scope, DID, key, QR) | the **module's Helm** | a `vcDefinitions[].certifyConfig` list in the registry/NSR chart → registered into Certify on install via a Job (`POST /credential-configurations`) |
 | **Claim mapping** (type → view + columns) | the **module's Helm** | `vcDefinitions[]` → `REGISTRY_AGENT_PORTAL_API_VC_DEFINITIONS` (the Agent Portal API is config-driven and multi-VC) |
 | **Issuer** (DID + signing key) | **env-level** (one issuer/authority per environment) | set at **Certify install** — `global.vcIssuerDid` (+ the keymanager key alias); the module's register Job **references** this env issuer, it does not define it |
+| **Photo** (face on the card + in the QR) | the **module's Helm** + **registry/MINIO** | the view exposes the photo's **MINIO object key** (`vcDefinitions[].photo_key_column`); the Agent Portal API fetches it, thumbnails it, pushes it as the **`face`** claim → Certify embeds it in the signed **claim-169 QR**, and places it on the card |
+| **Card design** (logo, layout, branding) | the **module/designer** | an **SVG template** in `vcDefinitions[].svg_template` (shipped via the `svgTemplates` ConfigMap, mounted at `/app/pdf-templates`); the API fills `{{field}}`/`{{photo}}`/`{{qr}}` and renders SVG→PDF. Same SVG can later drive the Phase-2 wallet card |
 
 The Inji Certify chart stays **generic** (issuer + schema + keys); it seeds a module `credential_config`
 only behind a `dbSchemaInit.seedDemoCredential` flag (off by default — for standalone demos). Adding a
