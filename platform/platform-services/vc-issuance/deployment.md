@@ -34,9 +34,9 @@ All run on the OpenG2P **Kubernetes** cluster.
 | # | Install / configure | Notes |
 |---|---|---|
 | 1 | **Inji Certify** (helm service pod) | issuer + signer |
-| 2 | **Certify DB/schema** on the cluster PostgreSQL | run Certify's init SQL once (keymanager tables, `credential_config`, caches) |
+| 2 | **Certify DB/schema** on the cluster PostgreSQL | run Certify's init SQL once (keymanager tables, key policies, caches) — **no** `credential_config` (modules register those) |
 | 3 | **`.p12` keystore** on a persistent volume | the issuer identity — persist + back up (no HSM) |
-| 4 | **Certify config** | Certify-as-AS (`authn.*` / `oauth.issuer` → itself); `data-provider-plugin=PreAuthDataProviderPlugin`; add `credentialOfferCache`; `credential_config` rows (template, DID/key, `qr_settings`) |
+| 4 | **Certify config** | Certify-as-AS (`authn.*` / `oauth.issuer` → itself); `data-provider-plugin=PreAuthDataProviderPlugin`; add `credentialOfferCache`; **issuer DID** (`global.vcIssuerDid`) + signing key. The `credential_config` rows are registered by the **module** (registry/NSR). |
 | 5 | **Agent Portal API** (docker/helm) | reads `beneficiary_vc_view`, pushes claims, renders PDF/QR; holds the **only** Registry + MINIO connections |
 | 6 | **Agent Portal UI** | talks **only** to the Agent Portal API — never to Certify |
 | 7 | **Registry** `beneficiary_vc_view` + `certify_ro` user | read-only, least-privilege |
@@ -99,7 +99,8 @@ data — every module is its own issuance backend that pushes its own claims.
 ## Helm artifacts (where the charts live)
 * **Inji Certify chart** — `vc-issuance/helm/openg2p-inji-certify` (OpenG2P style: `common` +
   `postgres-init` deps; Certify Deployment/Service/Gateway/VirtualService + a properties ConfigMap, a
-  `.p12` Secret mount, and a **DB-schema-init Job** that seeds the keymanager tables + `credential_config`).
+  `.p12` Secret mount, and a **DB-schema-init Job** that seeds the keymanager tables + key policies —
+  generic, **no** `credential_config`; modules register those).
   It is packaged into and enabled from **commons-services** (`charts/openg2p-commons-services`, dep
   alias `injiCertify`) — installed **with the commons layer**, reusing the cluster PostgreSQL.
 * **Agent Portal API image** — built from `openg2p-registry-gen2-apis/agent-portal-api` (Dockerfile +
@@ -112,9 +113,9 @@ data — every module is its own issuance backend that pushes its own claims.
 * **Certify** (stock image, no custom plugin): set
   `data-provider-plugin=PreAuthDataProviderPlugin` (a built-in — turns the pushed claims into the VC
   subject); point the resource-server token settings (`authn.issuer-uri` / `jwk-set-uri` /
-  `allowed-audiences` / `oauth.issuer`) at Certify itself (pre-authorized-code flow, no eSignet);
-  define the `credential_config` (Velocity template, issuer DID, signing key, and **`qr_settings` /
-  `qr_signature_algo`** for the printable QR).
+  `allowed-audiences` / `oauth.issuer`) at Certify itself (pre-authorized-code flow, no eSignet); set
+  the **issuer DID** (`global.vcIssuerDid`) + signing key. The `credential_config` (Velocity template,
+  type/fields, **`qr_settings` / `qr_signature_algo`**) is **registered by the module**, not here.
 * **Agent Portal API**: configure the read-only registry datasource (`beneficiary_vc_view`), the
   Certify base URL + credential-config id, and the PDF output dir. It owns the only registry connection.
 * **`.p12` keystore (no HSM)**: mount it on durable storage and **back it up** — the `.p12` plus the
@@ -132,11 +133,15 @@ data — every module is its own issuance backend that pushes its own claims.
   Certify does not fetch images. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
 
 ## Issuer identity — configuration, keys & verification (key points)
-* **One issuer/authority per environment.** All **static** issuer config is set in the Certify chart
-  (issuer **DID**, signing-key alias/algo, credential type/scope/template) and seeded into
-  `credential_config` by the schema-init Job — and surfaced in the chart's install **`questions.yaml`**
-  (standalone and under commons-services). Two steps stay operational: keymanager **generates the
-  keypair on first boot**, and (Phase 2 only) you publish `did.json`.
+* **One issuer/authority per environment, configured at Certify install.** The issuer **DID**
+  (`global.vcIssuerDid`) + signing-key alias/algo are set on the **Certify** chart (surfaced in its
+  install **`questions.yaml`**, standalone and under commons-services). Keymanager **generates the
+  keypair on first boot**; (Phase 2 only) you publish `did.json`.
+* **VC definitions are owned by the consuming module — not Certify.** Credential *types, templates,
+  fields, views and scopes* come from the **registry/NSR** chart (`vcDefinitions`), which **registers**
+  each `credential_config` with Certify (the register Job, `POST /credential-configurations`) and
+  **references** the env issuer above. The Certify chart seeds **only** schema + key policies — no
+  `credential_config`. See [Registry Data Connector](registry-data-connector.md).
 * **The issuer identity is a 3-part bundle — back it up together.** The **`.p12`** (master key) + the
   **keymanager key rows in PostgreSQL** (the actual signing keys, encrypted under the master key) + the
   **keystore password** (Secret). All three must be preserved and restored *consistently*; losing or

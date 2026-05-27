@@ -33,7 +33,7 @@ chart**, and a registry can issue **multiple VC types** (e.g. an ID card vs ID +
 | **Source view** (which registry fields, joins, active-only) | the **registry extension** | a `meta_data/vc-views/*.sql` view in `nsr-extension` — **auto-deploys with the models** (the db-seed job applies it after migration) |
 | **`credential_config`** (template, type, scope, DID, key, QR) | the **module's Helm** | a `vcDefinitions[].certifyConfig` list in the registry/NSR chart → registered into Certify on install via a Job (`POST /credential-configurations`) |
 | **Claim mapping** (type → view + columns) | the **module's Helm** | `vcDefinitions[]` → `REGISTRY_AGENT_PORTAL_API_VC_DEFINITIONS` (the Agent Portal API is config-driven and multi-VC) |
-| **Issuer** (DID + signing key) | **env-level** | `vcIssuance.issuer` (one issuer/authority per environment) |
+| **Issuer** (DID + signing key) | **env-level** (one issuer/authority per environment) | set at **Certify install** — `global.vcIssuerDid` (+ the keymanager key alias); the module's register Job **references** this env issuer, it does not define it |
 
 The Inji Certify chart stays **generic** (issuer + schema + keys); it seeds a module `credential_config`
 only behind a `dbSchemaInit.seedDemoCredential` flag (off by default — for standalone demos). Adding a
