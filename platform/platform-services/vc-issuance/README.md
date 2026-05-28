@@ -2,7 +2,7 @@
 description: >-
   Issuing Verifiable Credentials from OpenG2P data (Registry first) with MOSIP
   Inji Certify — and, crucially, how a citizen holds and presents them. Phase 1
-  is paper-based; Phase 2 is self-owned smartphone wallets.
+  is paper-based; Phase 2 is self-owned smartph
 ---
 
 # VC Issuance
@@ -35,39 +35,24 @@ See the full analysis and comparisons in [Custody Options & Strategy](custody-op
 
 ## Strategy (what we are building)
 
-* **Phase 1 — Paper (Option A).** Assisted issuance → signed QR/PDF → offline verification. An
-  **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify
-  (which stays decoupled from the Registry), then prints the signed QR/PDF. The backbone for the
-  device-less majority. **No hosted wallet, no Logto, no Mimoto, no OpenID4VCI device flow** — which
-  removes almost all integration complexity.
-* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens
-  who have smartphones (self-sovereign, online + offline presentation).
-* **Option B (hosted wallet) — considered, not chosen.** Documented for completeness; it would only
-  be adopted as a deliberate **custodial-locker policy**, not as a default tier.
-* **Consent-based data sharing** (department ↔ department / third-party "pull") is a **separate
-  track** (registry partner APIs + consent), not a wallet feature — out of scope here.
+* **Phase 1 — Paper (Option A).** Assisted issuance → signed QR/PDF → offline verification. An **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify (which stays decoupled from the Registry), then prints the signed QR/PDF. The backbone for the device-less majority. **No hosted wallet, no Logto, no Mimoto, no OpenID4VCI device flow** — which removes almost all integration complexity.
+* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens who have smartphones (self-sovereign, online + offline presentation).
+* **Option B (hosted wallet) — considered, not chosen.** Documented for completeness; it would only be adopted as a deliberate **custodial-locker policy**, not as a default tier.
+* **Consent-based data sharing** (department ↔ department / third-party "pull") is a **separate track** (registry partner APIs + consent), not a wallet feature — out of scope here.
 
-**One shared issuance service per environment.** A single **standard Inji Certify** instance (no
-custom plugin — Certify's built-in `PreAuthDataProviderPlugin` turns the pushed claims into the VC)
-serves **all** modules (Registry, PBMS, SPAR …). Each module pushes its own claims; each VC type is a
-`credential_config` row, and each can sign under its own issuer **DID/key** — so one instance hosts
-many credential types and many issuers. See
-[Deployment](deployment.md#one-shared-issuance-service-per-environment).
+**One shared issuance service per environment.** A single **standard Inji Certify** instance (no custom plugin — Certify's built-in `PreAuthDataProviderPlugin` turns the pushed claims into the VC) serves **all** modules (Registry, PBMS, SPAR …). Each module pushes its own claims; each VC type is a `credential_config` row, and each can sign under its own issuer **DID/key** — so one instance hosts many credential types and many issuers. See [Deployment](deployment.md#one-shared-issuance-service-per-environment).
 
 ## Sub-pages
 
 | Page                                                          | Contents                                                                                                                |
 | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | [Custody Options & Strategy](custody-options-and-strategy.md) | Full A/B/C analysis, comparisons, the LCD/feature-phone/custodial-vs-self-sovereign reasoning, and the phasing decision |
-| [Phase 1 — Paper Credential](phase-1-paper-credential.md) | The assisted push-issuance → signed QR/PDF → offline-verify design and architecture (incl. the Agent Portal API) |
-| [Registry Data Connector](registry-data-connector.md) | How Certify gets claims: the Phase-1 **push** path vs. the **pull** connector plugin (used by the Phase-2 wallet flow) |
-| [Deployment](deployment.md) | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL |
-| [Local Developer Trial](local-setup.md) | A verified local run that issues a signed VC + printable QR/PDF from real registry data |
-| [Phase 2 — Device Wallet](phase-2-device-wallet.md) | Future: self-owned smartphone wallets (Inji Mobile) |
+| [Phase 1 — Paper Credential](phase-1-paper-credential.md)     | The assisted push-issuance → signed QR/PDF → offline-verify design and architecture (incl. the Agent Portal API)        |
+| [Registry Data Connector](registry-data-connector.md)         | How Certify gets claims: the Phase-1 **push** path vs. the **pull** connector plugin (used by the Phase-2 wallet flow)  |
+| [Deployment](deployment.md)                                   | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL                        |
+| [Local Developer Trial](local-setup.md)                       | A verified local run that issues a signed VC + printable QR/PDF from real registry data                                 |
+| [Phase 2 — Device Wallet](phase-2-device-wallet.md)           | Future: self-owned smartphone wallets (Inji Mobile)                                                                     |
 
 ## Status
 
-The Phase-1 path is proven end to end (verified locally): the **Agent Portal API** reads a real
-registrant from the OpenG2P registry, **pushes** the claims into **Inji Certify**, which returns an
-**Ed25519-signed** credential, and the API renders a **printable PDF with a QR**. Remaining focus:
-switching to Certify's **compact signed QR** and verifying it offline with **Inji Verify**.
+The Phase-1 path is proven end to end (verified locally): the **Agent Portal API** reads a real registrant from the OpenG2P registry, **pushes** the claims into **Inji Certify**, which returns an **Ed25519-signed** credential, and the API renders a **printable PDF with a QR**. Remaining focus: switching to Certify's **compact signed QR** and verifying it offline with **Inji Verify**.
