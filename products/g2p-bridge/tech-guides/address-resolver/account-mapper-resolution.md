@@ -1,4 +1,4 @@
-# Address resolver - SPAR
+# Address resolver with SPAR
 
 **Specific implementation of Address resolver - where G2P Bridge connects to OpenG2P SPAR to retrieve the Financial Address of a Beneficiary**
 
@@ -8,12 +8,9 @@ Based on this, the G2P Bridge is designed to receive Beneficiary IDs from the up
 
 The following figure illustrates this flow
 
+<figure><img src="../../../../.gitbook/assets/G2P Bridge Account Mapper Resolution.jpg" alt=""><figcaption></figcaption></figure>
 
+The G2P Bridge then passes this resolved financial address to the downstream Sponsor Bank for further processing by the Banking Network.
 
-{% embed url="https://miro.com/app/board/uXjVLOFA-qw=/" %}
-G2P Bridge - interface with ID-Account Mapper
-{% endembed %}
+The financial address in the ID Account Mapper should contain the full financial address in terms of the beneficiary's account number (or mobile number), the required bank/branch code (or mobile service provider code) as applicable in the nation's domestic clearing network (for both bank accounts as well as mobile wallets).
 
-The G2P Bridge then passes this resolved financial address to the downstream Sponsor Bank for further processing by the Banking Network.&#x20;
-
-The financial address in the ID Account Mapper should contain the full financial address in terms of the beneficiary's account number (or mobile number), the required bank/branch code (or mobile service provider code) as applicable in the nation's domestic clearing network (for both bank accounts as well as mobile wallets).&#x20;
