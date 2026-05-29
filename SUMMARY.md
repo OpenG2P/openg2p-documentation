@@ -533,6 +533,8 @@
   * [Registry Tech Architecture](platform/architecture/registry-tech-architecture.md)
   * [PBMS Tech Architecture](platform/architecture/pbms-tech-architecture.md)
   * [Async Processes - Tech Architecture](platform/architecture/async-processes-tech-architecture.md)
+  * [Security Architecture](platform/architecture/security-architecture/README.md)
+    * [Partner APIs](platform/architecture/security-architecture/partner-apis.md)
 * [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
