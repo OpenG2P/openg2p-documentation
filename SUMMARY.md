@@ -488,8 +488,6 @@
     * [Extensibility Layer](products/g2p-bridge/features/extensibility-connect-to-sponsor-banks.md)
     * [Reconciliation with Sponsor Bank](g2p-bridge/features/reconciliation-with-sponsor-bank.md)
     * [Scaling for High Volumes](g2p-bridge/features/scaling-for-high-volumes.md)
-    * [Interoperability](g2p-bridge/features/interoperability.md)
-    * [Privacy & Security](g2p-bridge/features/privacy-and-security.md)
     * [Monitoring & Reporting](g2p-bridge/features/monitoring-and-reporting.md)
   * [Design](products/g2p-bridge/design-specifications/README.md)
     * [Partner APIs](products/g2p-bridge/design-specifications/partner-apis.md)
