@@ -4,6 +4,10 @@ description: Design & Implementation
 
 # Sponsor Bank connector
 
+### Bank Disbursments - Flow
+
+<figure><img src="../../../.gitbook/assets/Flow - Digital Cash Transfers.jpg" alt=""><figcaption></figcaption></figure>
+
 ### Module Information
 
 * **Module Name**: `openg2p-g2p-bridge-bank-connectors`
@@ -315,3 +319,4 @@ The "ExampleBankConnector" is meant for:
 * Development/testing
 * As a template for real bank implementations
 * Mock responses without actual bank integration
+
