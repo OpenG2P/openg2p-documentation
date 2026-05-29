@@ -1,661 +1,301 @@
+---
+description: Design & Implementation
+---
+
 # Notification connector
 
-## Notification Connection - Design and Flow Document
+### Module Information
 
-### Table of Contents
-
-1. Overview
-2. Purpose and Use Case
-3. Interface Definition
-4. Architecture and Design
-5. Process Flow
-6. Reference Implementation
-7. Configuration
-8. Error Handling
-9. Integration with Celery Workers
-10. Usage Examples
-
-***
-
-### Overview
-
-**Notification Connection** sends status notifications to stakeholders (beneficiaries, agencies, warehouses) through multiple channels (SMS, Email, Push, WhatsApp, etc.) about disbursement status, payments, and important updates.
-
-**Module:** `openg2p-g2p-bridge-notification-connectors`
-
-***
-
-### Purpose and Use Case
-
-#### Why Notification Abstraction?
-
-Different stakeholders need different notification methods:
-
-* **Beneficiaries** → SMS (basic phones), WhatsApp, In-app notifications
-* **Agencies** → Email, API callbacks, Portal notifications
-* **Warehouses** → Email, SMS, API webhooks
-* **Administrators** → Email, Dashboards, Alerts
-
-Different deployments prefer different channels:
-
-* India: SMS + WhatsApp (high penetration)
-* Sub-Saharan Africa: SMS + USSD (minimal data)
-* Developed countries: Email + SMS (preferred)
-
-#### Real-World Example
-
-```
-Disbursement Batch Status: Payment Successful
-
-Notifications Sent:
-
-1. Beneficiary (via SMS)
-   "You have received INR 500 under CTP program. 
-    Reference: PAY-12345. For issues: 1800-GOVHELP"
-
-2. Agency (via Email)
-   Subject: Batch BEN-001 Completed - 50k beneficiaries processed
-   Body: Detailed transaction report, reconciliation status, errors
-
-3. Warehouse (via API Webhook)
-   POST /callback
-   {
-     "event": "batch_completed",
-     "batch_id": "BEN-001",
-     "warehouse_id": "WH-001",
-     "beneficiaries_allocated": 25000,
-     "amount": 2500000,
-   }
-
-4. Administrator (via Email + Dashboard Alert)
-   Alert: Batch processing complete with 150 failed payments
-   Action required: Review and reprocess
-```
-
-#### Key Questions It Answers
-
-1. **How to notify beneficiaries?**
-   * Which channel (SMS, WhatsApp, Email)?
-   * What message content?
-   * In which language?
-2. **How to notify agencies?**
-   * Detailed reports or summaries?
-   * Real-time or batch notifications?
-   * Which contact method?
-3. **How to handle notification failures?**
-   * Retry logic
-   * Fallback channels
-   * Alert administrators
-4. **How to track notifications?**
-   * Delivery status
-   * Read receipts
-   * Audit trail
+* **Module Name**: `openg2p-g2p-bridge-notification-connectors`
+* **Location**: `/openg2p-g2p-bridge-notification-connectors/`
+* **Primary Implementation**: `NovuNotifier`
 
 ***
 
 ### Interface Definition
 
-#### Notification Types
+**File**: `interface/notification_interface.py`
 
 ```python
-from enum import Enum
-from typing import Dict, List, Optional
-from datetime import datetime
-from pydantic import BaseModel
-from openg2p_fastapi_common.service import BaseService
+class NotificationInterface(BaseService):
+    def send_notification(
+        self,
+        notification_id: str,
+        payload: Any,
+        notification_type: NotificationType,
+        recipient: Recipient,
+    ) -> None:
+        """
+        Send a notification to a list of recipients.
+        """
+        pass
+```
 
-class NotificationType(str, Enum):
-    """Types of notifications"""
-    PAYMENT_SUCCESS = "PAYMENT_SUCCESS"
-    PAYMENT_FAILED = "PAYMENT_FAILED"
-    PAYMENT_PENDING = "PAYMENT_PENDING"
-    BATCH_INITIATED = "BATCH_INITIATED"
-    BATCH_COMPLETED = "BATCH_COMPLETED"
-    BATCH_FAILED = "BATCH_FAILED"
-    ALLOCATION_COMPLETED = "ALLOCATION_COMPLETED"
-    BATCH_SUMMARY = "BATCH_SUMMARY"
+#### Data Models
 
-class NotificationChannel(str, Enum):
-    """Notification delivery channels"""
-    SMS = "SMS"
-    EMAIL = "EMAIL"
-    WHATSAPP = "WHATSAPP"
-    PUSH_NOTIFICATION = "PUSH"
-    WEBHOOK = "WEBHOOK"
-    USSD = "USSD"
-    IVR = "IVR"
+```python
+class NotificationType(enum.Enum):
+    AGENCY_NOTIFICATION = "AGENCY_NOTIFICATION"
+    WAREHOUSE_NOTIFICATION = "WAREHOUSE_NOTIFICATION"
+    BENEFICIARY_NOTIFICATION = "BENEFICIARY_NOTIFICATION"
 
-class NotificationRecipientType(str, Enum):
-    """Recipient categories"""
-    BENEFICIARY = "BENEFICIARY"
-    AGENCY = "AGENCY"
-    WAREHOUSE = "WAREHOUSE"
-    ADMINISTRATOR = "ADMINISTRATOR"
+class Recipient(BaseModel):
+    recipient_id: str
+    recipient_name: Optional[str] = None
+    recipient_email: Optional[str] = None
+    recipient_phone: Optional[str] = None
 
-class NotificationTemplate(BaseModel):
-    """Notification template"""
-    id: str
-    name: str
-    recipient_type: NotificationRecipientType
-    notification_type: NotificationType
-    channel: NotificationChannel
-    
-    subject: Optional[str] = None  # For email
-    body: str  # Main message
-    template_variables: List[str] = []  # Variables like {amount}, {reference}
-    language: str = "en"
-    
-    retry_count: int = 3
-    retry_delay_minutes: int = 5
-
-class NotificationPayload(BaseModel):
-    """Notification to be sent"""
-    notification_id: str
-    recipient_id: str  # Beneficiary/Agency/Warehouse ID
-    recipient_type: NotificationRecipientType
-    
-    notification_type: NotificationType
-    channel: NotificationChannel
-    
-    recipient_address: str  # Phone number, email, webhook URL
-    
-    template_variables: Dict[str, str]  # Variables for template
-    
-    priority: int = 5  # 1-10, higher = more urgent
-    scheduled_time: Optional[datetime] = None  # Send at specific time
-    
-    retry_count: int = 0
+class NotificationResponseStatus(enum.Enum):
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
 
 class NotificationResponse(BaseModel):
-    """Response from notification sending"""
     notification_id: str
-    status: str  # SENT, FAILED, QUEUED, DELIVERED
-    provider_reference: Optional[str] = None
-    provider_status_code: Optional[str] = None
-    provider_message: Optional[str] = None
-    sent_timestamp: Optional[datetime] = None
-    delivered_timestamp: Optional[datetime] = None
-
-class NotificationConnectorInterface(BaseService):
-    """
-    Interface for sending notifications via various channels.
-    
-    Implementations handle different notification providers and methods.
-    """
-    
-    def send_notification(
-        self,
-        notification: NotificationPayload,
-    ) -> NotificationResponse:
-        """
-        Send single notification.
-        
-        Args:
-            notification: Notification payload with all details
-        
-        Returns:
-            NotificationResponse with delivery status
-        """
-        raise NotImplementedError()
-    
-    def send_notifications_batch(
-        self,
-        notifications: List[NotificationPayload],
-    ) -> List[NotificationResponse]:
-        """
-        Send batch of notifications.
-        
-        Args:
-            notifications: List of notification payloads
-        
-        Returns:
-            List of responses (one per notification)
-        """
-        raise NotImplementedError()
-    
-    def get_notification_status(
-        self,
-        notification_id: str,
-    ) -> NotificationResponse:
-        """
-        Query delivery status of a notification.
-        
-        Returns:
-            Current status including delivery info
-        """
-        raise NotImplementedError()
-    
-    def validate_recipient_address(
-        self,
-        channel: NotificationChannel,
-        address: str,
-    ) -> bool:
-        """
-        Validate recipient address format.
-        
-        Args:
-            channel: Notification channel (SMS, Email, etc.)
-            address: Recipient address to validate
-        
-        Returns:
-            True if valid, False otherwise
-        """
-        raise NotImplementedError()
-    
-    def get_delivery_report(
-        self,
-        batch_id: str,
-        start_date: datetime,
-        end_date: datetime,
-    ) -> Dict:
-        """
-        Get delivery report for a batch.
-        
-        Returns:
-            {
-                'total_sent': int,
-                'successful': int,
-                'failed': int,
-                'pending': int,
-                'by_channel': {...},
-                'by_status': {...},
-            }
-        """
-        raise NotImplementedError()
+    response: Optional[str] = None
+    status: NotificationResponseStatus
 ```
+
+#### Method Parameters
+
+* **notification\_id** (str): Unique identifier for the notification
+* **payload** (Any): Custom payload to include in the notification (can be dict or any JSON-serializable object)
+* **notification\_type** (NotificationType): Type of notification (AGENCY, WAREHOUSE, or BENEFICIARY)
+* **recipient** (Recipient): Recipient details including email, phone, name
+
+#### Return Value
+
+* **NotificationResponse**: Contains notification\_id, response (str from Novu), and status (SUCCESS or FAILURE)
 
 ***
 
-### Architecture and Design
+### Reference Implementation: NovuNotifier
 
-#### Component Diagram
+**File**: `implementations/novu_notifier.py`
 
-```
-┌─────────────────────────────────────────────┐
-│  Celery Workers (Main Bridge)               │
-│  ├─ beneficiary_notification_worker         │
-│  ├─ agency_notification_worker              │
-│  └─ warehouse_notification_worker           │
-└────────────────┬────────────────────────────┘
-                 │
-                 │ Calls Factory
-                 ▼
-┌─────────────────────────────────────────────┐
-│  NotificationFactory                        │
-│  ├─ Reads config (channels, providers)      │
-│  └─ Returns implementation                  │
-└────────────────┬────────────────────────────┘
-                 │
-                 │ Returns implementation
-                 ▼
-┌─────────────────────────────────────────────┐
-│  NotificationConnectorInterface             │
-│  (Abstract)                                 │
-└────────────────▲────────────────────────────┘
-                 │
-        ┌────────┴────────┬──────────────┐
-        │                 │              │
-        ▼                 ▼              ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────┐
-│ Multi-Channel│ │ SMS-Only     │ │ Custom   │
-│ (Reference)  │ │ (Basic)      │ │ Impl     │
-│              │ │              │ │          │
-│ SMS, Email   │ │ SMS only     │ │ Specific │
-│ WhatsApp,    │ │ for areas    │ │ channels │
-│ Push, etc.   │ │ with limited │ │ only     │
-│              │ │ connectivity │ │          │
-└────────┬─────┘ └────────┬─────┘ └────┬─────┘
-         │                │            │
-         │ Calls provider │ Calls API  │ Calls API
-         ▼                ▼            ▼
-    ┌──────────────────────────────────────┐
-    │  External Providers                  │
-    │  ├─ SMS Gateway (Twilio, Local)      │
-    │  ├─ Email Service (SendGrid, SES)    │
-    │  ├─ WhatsApp API                     │
-    │  ├─ Push Notification Service        │
-    │  └─ Webhook/API callbacks            │
-    └──────────────────────────────────────┘
-```
+#### Integration with Novu Platform
 
-#### Notification Flow
+The implementation uses the `novu_py` library to send notifications through the Novu platform.
+
+#### Algorithm
 
 ```
-1. Event Triggered
-   ├─ Payment successful
-   ├─ Batch completed
-   └─ Error occurred
+1. Determine workflow_id based on notification_type
+   - WAREHOUSE_NOTIFICATION -> novu_warehouse_workflow_id from config
+   - AGENCY_NOTIFICATION -> novu_agency_workflow_id from config
+   - BENEFICIARY_NOTIFICATION -> novu_beneficiary_workflow_id from config
+   - Otherwise: Raise ValueError for unsupported type
 
-2. Determine Recipients
-   ├─ Beneficiary
-   ├─ Agency
-   ├─ Warehouse
-   └─ Administrator
+2. Create Novu client
+   - Initialize with novu_url and novu_api_key from config
+   - Context manager (with statement) for resource cleanup
 
-3. Select Channels
-   ├─ Beneficiary → SMS + WhatsApp
-   ├─ Agency → Email + Dashboard
-   ├─ Warehouse → Email + Webhook
-   └─ Admin → Email + Alert
+3. Send notification via Novu
+   - Call novu.trigger() with TriggerEventRequestDto containing:
+     * workflow_id: The workflow ID determined in step 1
+     * payload: The custom payload passed in
+     * to: recipient.recipient_email
+     * overrides: Empty Overrides object
 
-4. Get Templates
-   ├─ Load template by type
-   ├─ Substitute variables
-   └─ Format for channel
+4. Check response status
+   - If novu_response.result.status.value == "processed": status = SUCCESS
+   - Otherwise: status = FAILURE
 
-5. Validate Recipients
-   ├─ Phone number format
-   ├─ Email validity
-   └─ Webhook URL format
-
-6. Send Notifications
-   ├─ Queue for sending
-   ├─ Call provider APIs
-   ├─ Handle failures
-   └─ Track delivery
-
-7. Monitor Delivery
-   ├─ Query provider status
-   ├─ Update local records
-   └─ Generate reports
+5. Return NotificationResponse
+   - notification_id: From input parameter
+   - response: String representation of novu_response.result
+   - status: SUCCESS or FAILURE based on step 4
 ```
+
+#### Key Characteristics
+
+1. **Novu Client Context Manager**: Uses `with Novu(...)` for proper resource cleanup
+2. **Workflow-Based**: Maps notification types to configured Novu workflow IDs
+3. **Email-Based Delivery**: Currently sends to `recipient.recipient_email`
+4. **Response Parsing**: Checks `novu_response.result.status.value` for success/failure determination
+5. **Logging**: Uses logger name "novu\_notifier\_impl"
+   * INFO: Notification sent, API key and workflow ID used, Novu response
+   * No exception raising for Novu failures - returns FAILURE status instead
 
 ***
 
-### Reference Implementation
+### Factory Pattern
+
+**File**: `factory/notification_factory.py`
 
 ```python
-import logging
-from typing import List, Dict
-import smtplib
-from email.mime.text import MIMEText
-from datetime import datetime
-import requests
-
-from ..interface import (
-    NotificationConnectorInterface,
-    NotificationPayload,
-    NotificationResponse,
-    NotificationChannel,
-)
-from ..config import Settings
-
-_logger = logging.getLogger("multi_channel_notification")
-_config = Settings.get_config()
-
-class MultiChannelNotificationConnector(NotificationConnectorInterface):
-    """
-    Reference implementation supporting multiple channels.
-    """
-    
-    def __init__(self):
-        self.sms_gateway = SMSGateway(_config.sms_provider)
-        self.email_service = EmailService(_config.email_provider)
-        self.webhook_client = WebhookClient()
-    
-    def send_notification(
-        self,
-        notification: NotificationPayload,
-    ) -> NotificationResponse:
-        """Send single notification"""
-        
-        _logger.info(
-            f"Sending notification {notification.notification_id} "
-            f"via {notification.channel}"
-        )
-        
-        try:
-            if notification.channel == NotificationChannel.SMS:
-                return self._send_sms(notification)
-            
-            elif notification.channel == NotificationChannel.EMAIL:
-                return self._send_email(notification)
-            
-            elif notification.channel == NotificationChannel.WHATSAPP:
-                return self._send_whatsapp(notification)
-            
-            elif notification.channel == NotificationChannel.WEBHOOK:
-                return self._send_webhook(notification)
-            
-            elif notification.channel == NotificationChannel.PUSH_NOTIFICATION:
-                return self._send_push(notification)
-            
-            else:
-                raise ValueError(f"Unknown channel: {notification.channel}")
-        
-        except Exception as e:
-            _logger.error(f"Notification send failed: {e}")
-            return NotificationResponse(
-                notification_id=notification.notification_id,
-                status="FAILED",
-                provider_message=str(e),
-            )
-    
-    def _send_sms(
-        self,
-        notification: NotificationPayload
-    ) -> NotificationResponse:
-        """Send SMS via gateway"""
-        
-        response = self.sms_gateway.send(
-            phone_number=notification.recipient_address,
-            message=notification.template_variables.get('body', ''),
-            reference_id=notification.notification_id,
-        )
-        
-        return NotificationResponse(
-            notification_id=notification.notification_id,
-            status=response.get('status'),
-            provider_reference=response.get('provider_id'),
-            provider_status_code=response.get('code'),
-            sent_timestamp=datetime.now(),
-        )
-    
-    def _send_email(
-        self,
-        notification: NotificationPayload
-    ) -> NotificationResponse:
-        """Send email via email service"""
-        
-        response = self.email_service.send(
-            to_address=notification.recipient_address,
-            subject=notification.template_variables.get('subject', ''),
-            body=notification.template_variables.get('body', ''),
-            reference_id=notification.notification_id,
-        )
-        
-        return NotificationResponse(
-            notification_id=notification.notification_id,
-            status=response.get('status'),
-            provider_reference=response.get('provider_id'),
-            sent_timestamp=datetime.now(),
-        )
-    
-    def _send_whatsapp(
-        self,
-        notification: NotificationPayload
-    ) -> NotificationResponse:
-        """Send WhatsApp message"""
-        
-        # Implementation would use WhatsApp API (e.g., Twilio)
-        pass
-    
-    def _send_webhook(
-        self,
-        notification: NotificationPayload
-    ) -> NotificationResponse:
-        """Send webhook callback"""
-        
-        response = self.webhook_client.post(
-            url=notification.recipient_address,
-            payload={
-                'notification_id': notification.notification_id,
-                'type': notification.notification_type,
-                'timestamp': datetime.now().isoformat(),
-                'data': notification.template_variables,
-            },
-        )
-        
-        return NotificationResponse(
-            notification_id=notification.notification_id,
-            status="SENT" if response.ok else "FAILED",
-            provider_status_code=str(response.status_code),
-            sent_timestamp=datetime.now(),
-        )
-    
-    def _send_push(
-        self,
-        notification: NotificationPayload
-    ) -> NotificationResponse:
-        """Send push notification"""
-        
-        # Implementation would use push service (e.g., FCM)
-        pass
-    
-    def send_notifications_batch(
-        self,
-        notifications: List[NotificationPayload],
-    ) -> List[NotificationResponse]:
-        """Send batch of notifications"""
-        
-        results = []
-        for notification in notifications:
-            response = self.send_notification(notification)
-            results.append(response)
-        
-        return results
-    
-    def get_notification_status(
-        self,
-        notification_id: str,
-    ) -> NotificationResponse:
-        """Query notification status"""
-        
-        # Would query database/provider for status
-        pass
-    
-    def validate_recipient_address(
-        self,
-        channel: NotificationChannel,
-        address: str,
-    ) -> bool:
-        """Validate recipient address"""
-        
-        if channel == NotificationChannel.SMS:
-            return self._validate_phone(address)
-        elif channel == NotificationChannel.EMAIL:
-            return self._validate_email(address)
-        elif channel == NotificationChannel.WEBHOOK:
-            return self._validate_url(address)
-        
-        return True
-    
-    def _validate_phone(self, phone: str) -> bool:
-        """Validate phone number"""
-        # Remove non-digits
-        digits = ''.join(c for c in phone if c.isdigit())
-        return 10 <= len(digits) <= 15
-    
-    def _validate_email(self, email: str) -> bool:
-        """Validate email"""
-        return '@' in email and '.' in email
-    
-    def _validate_url(self, url: str) -> bool:
-        """Validate webhook URL"""
-        return url.startswith('http')
-    
-    def get_delivery_report(
-        self,
-        batch_id: str,
-        start_date: datetime,
-        end_date: datetime,
-    ) -> Dict:
-        """Get delivery report"""
-        
-        # Query database for delivery stats
-        # Return aggregated metrics
-        pass
+class NotificationFactory(BaseService):
+    @staticmethod
+    def get_notifier() -> NotificationInterface:
+        return NovuNotifier.get_component()
 ```
 
 ***
 
 ### Configuration
 
-```bash
-# Notification Implementation
-NOTIFICATION_IMPL=multi_channel
+**File**: `config.py`
 
-# Enabled Channels
-NOTIFICATION_CHANNELS=SMS,EMAIL,WHATSAPP
-
-# SMS Gateway
-SMS_PROVIDER=twilio  # or local_gateway
-TWILIO_ACCOUNT_SID=xxx
-TWILIO_AUTH_TOKEN=xxx
-TWILIO_FROM_NUMBER=+1234567890
-
-# Email Service
-EMAIL_PROVIDER=sendgrid  # or ses, smtp
-SENDGRID_API_KEY=xxx
-EMAIL_FROM_ADDRESS=noreply@govpayments.org
-
-# WhatsApp
-WHATSAPP_PROVIDER=twilio  # or meta
-WHATSAPP_ACCOUNT_ID=xxx
-
-# Push Notifications
-PUSH_PROVIDER=fcm  # Firebase Cloud Messaging
-FCM_SERVER_KEY=xxx
-
-# Logging
-NOTIFICATION_LOG_LEVEL=INFO
-```
-
-***
-
-### Integration with Celery Workers
+Configuration uses Pydantic Settings with environment variable prefix `g2p_bridge_notification_connectors_`:
 
 ```python
-@shared_task(name="beneficiary_notification_worker")
-def beneficiary_notification_worker(batch_id: str):
-    """Send beneficiary notifications for batch"""
-    
-    connector = NotificationFactory.get_notification_connector()
-    
-    # Get beneficiaries with payments
-    beneficiaries = get_batch_beneficiaries(batch_id)
-    
-    notifications = []
-    
-    for bene in beneficiaries:
-        # Create notification payload
-        notification = NotificationPayload(
-            notification_id=f"NOTIF-{bene.id}",
-            recipient_id=bene.id,
-            recipient_type=NotificationRecipientType.BENEFICIARY,
-            notification_type=NotificationType.PAYMENT_SUCCESS,
-            channel=get_preferred_channel(bene),
-            recipient_address=bene.phone or bene.email,
-            template_variables={
-                'amount': bene.amount,
-                'reference': bene.payment_reference,
-                'program': batch.program_name,
-            }
-        )
-        notifications.append(notification)
-    
-    # Send batch
-    responses = connector.send_notifications_batch(notifications)
-    
-    # Save delivery status
-    for response in responses:
-        save_notification_status(response)
-    
-    return {"sent": len(responses)}
+class Settings(BaseSettings):
+    novu_url: str = "http://localhost:3000"
+    novu_api_key: str = "149f3f3dff5493729136246b9454f315"
+    novu_warehouse_workflow_id: str = "warehouse-notification"
+    novu_agency_workflow_id: str = "agency-notification"
+    novu_beneficiary_workflow_id: str = "beneficiary-notification"
+```
+
+#### Configuration Parameters
+
+| Parameter                      | Default Value                      | Purpose                                   |
+| ------------------------------ | ---------------------------------- | ----------------------------------------- |
+| `novu_url`                     | `http://localhost:3000`            | Novu server URL                           |
+| `novu_api_key`                 | `149f3f3dff5493729136246b9454f315` | Novu API authentication key               |
+| `novu_warehouse_workflow_id`   | `warehouse-notification`           | Workflow ID for warehouse notifications   |
+| `novu_agency_workflow_id`      | `agency-notification`              | Workflow ID for agency notifications      |
+| `novu_beneficiary_workflow_id` | `beneficiary-notification`         | Workflow ID for beneficiary notifications |
+
+***
+
+### Data Models Detail
+
+#### Recipient Model
+
+```python
+{
+    "recipient_id": str,           # Unique recipient identifier
+    "recipient_name": Optional[str],  # Recipient's name (optional)
+    "recipient_email": Optional[str], # Email address for delivery (optional)
+    "recipient_phone": Optional[str]  # Phone number (not currently used) (optional)
+}
+```
+
+#### NotificationResponse Model
+
+```python
+{
+    "notification_id": str,  # From input request
+    "response": Optional[str],  # String representation of Novu response result
+    "status": NotificationResponseStatus  # SUCCESS or FAILURE
+}
 ```
 
 ***
 
-### Summary
+### Supported Notification Types
 
-**Notification Connection** provides flexible, multi-channel notification delivery supporting beneficiaries, agencies, and warehouses through SMS, Email, WhatsApp, Webhooks, and other channels.
+The implementation supports three notification types via enum:
+
+1. **AGENCY\_NOTIFICATION**
+   * Uses workflow\_id from `novu_agency_workflow_id` config
+   * Use case: Notifications sent to agencies/operational partners
+2. **WAREHOUSE\_NOTIFICATION**
+   * Uses workflow\_id from `novu_warehouse_workflow_id` config
+   * Use case: Notifications sent to warehouse operators
+3. **BENEFICIARY\_NOTIFICATION**
+   * Uses workflow\_id from `novu_beneficiary_workflow_id` config
+   * Use case: Notifications sent to direct beneficiaries
+
+***
+
+### Novu Integration Details
+
+#### TriggerEventRequestDto
+
+The implementation creates a `novu_py.TriggerEventRequestDto` with:
+
+* **workflow\_id**: The Novu workflow to trigger
+* **payload**: Custom data for the notification (dict or JSON-serializable)
+* **to**: Recipient email address (recipient.recipient\_email)
+* **overrides**: Empty Overrides object (no custom overrides currently set)
+
+#### Response Handling
+
+Novu response processing:
+
+* Accesses `novu_response.result.status.value` to check if status is "processed"
+* Returns status as SUCCESS if processed, FAILURE otherwise
+* Converts entire result object to string for response field
+
+***
+
+### Error Handling
+
+* **ValueError**: Raised if notification\_type is not one of the three supported types
+* **Novu Exceptions**: Would propagate from novu\_py library if HTTP/network errors occur
+* **Response Status Handling**: Non-"processed" statuses result in FAILURE status, not exceptions
+
+***
+
+### HTTP Client Configuration
+
+* **Library**: `novu_py` (Python SDK for Novu platform)
+* **Server**: Configured via `novu_url` setting
+* **Authentication**: API key via `novu_api_key` setting
+* **Context Manager**: Uses Python context manager for connection lifecycle
+
+***
+
+### Logging
+
+All logging uses logger name: `novu_notifier_impl`
+
+* INFO: Notification sending initiated with recipient email
+* INFO: API key and workflow ID being used
+* INFO: Novu response received and parsed
+* DEBUG: Response details from Novu
+
+***
+
+### Integration Pattern
+
+```python
+# Typical Celery worker usage
+from ..factory.notification_factory import NotificationFactory
+
+notifier = NotificationFactory.get_notifier()
+
+response = notifier.send_notification(
+    notification_id="notif-12345",
+    payload={
+        "disbursement_id": "DISB-001",
+        "amount": 1000,
+        "beneficiary_name": "John Doe"
+    },
+    notification_type=NotificationType.BENEFICIARY_NOTIFICATION,
+    recipient=Recipient(
+        recipient_id="bene-123",
+        recipient_name="John Doe",
+        recipient_email="john@example.com"
+    )
+)
+
+if response.status == NotificationResponseStatus.SUCCESS:
+    # Log success, update database
+    pass
+else:
+    # Handle failure, retry, log error
+    pass
+```
+
+***
+
+### Key Implementation Notes
+
+1. **Email-only Delivery**: Currently only sends to `recipient.recipient_email`. Recipient phone is accepted in model but not used.
+2. **Payload Flexibility**: The payload parameter is `Any` type, allowing flexible data structures
+3. **No Exception on Failure**: Notification failures return FAILURE status in response rather than raising exceptions
+4. **Workflow Mapping**: Notification type maps to pre-configured Novu workflow IDs, allowing different workflows per notification type
+5. **Context Manager**: Novu client uses context manager to ensure proper resource cleanup
+6. **Async-Compatible**: The synchronous implementation can be called from async contexts in Celery workers
+
+***
+
+### Limitations/Considerations
+
+1. Only sends to email addresses; SMS/push notification support would require workflow configuration in Novu
+2. No retry logic in implementation; Celery task retries would handle failed sends
+3. Payload is passed as-is to Novu; no validation or transformation of payload structure
+4. No tracking of notification delivery status beyond initial trigger response
+5. API key is hardcoded in default config; should be overridden via environment variable in production

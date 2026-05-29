@@ -1,19 +1,15 @@
 # Extensibility Layer
 
-As part of its process flow, the G2P Bridge subsystem needs to interact with external systems to fulfill the post disbursement lifecycle processes. These interactions (interfaces) with external systems will surely involve writing custom connectors with the external systems.&#x20;
+As part of its process flow, the G2P Bridge subsystem needs to interact with external systems to fulfill the post disbursement lifecycle processes. These interactions (interfaces) with external systems will surely involve writing custom connectors with the external systems.
 
-In order to facilitate clean and isolated integrations, the g2p bridge subsystem has identified the following extensions.&#x20;
+In order to facilitate clean and isolated integrations, the g2p bridge subsystem has identified the following extensions.
 
-
-
-{% embed url="https://miro.com/app/board/uXjVLOCIexM=/" %}
-Connecting G2P Bridge to Sponsor Banks
-{% endembed %}
+<figure><img src="../../../.gitbook/assets/G2P-Bridge-Extensibility-Layer.jpg" alt=""><figcaption></figcaption></figure>
 
 **For Cash digitally disbursed to Beneficiaries' accounts (or wallets)**
 
 1. Address Resolver - to resolve beneficiary ID to Financial Address, Email address, Phone number, in order to decipher the final account (or wallet) - where the disbursement proceeds need to be credited
-2.  Sponsor Bank Connector  - to connect to the Sponsor Bank to dispatch payment instructions -&#x20;
+2.  Sponsor Bank Connector - to connect to the Sponsor Bank to dispatch payment instructions -
 
     Debit Department (Benefit Program) Account (within Sponsor bank) - Disbursement Amount\
     Credit Beneficiary Account (in another destination bank, within the country) - Disbursement Amount\
@@ -27,6 +23,3 @@ Connecting G2P Bridge to Sponsor Banks
 2. Warehouse Resolver - the G2P Bridge ships with a sample implementation of Warehouse resolution. However, specific implementations can choose to implement their own custom logic for Warehouse resolution.
 3. Agency Resolver - the G2P Bridge ships with a sample implementation of Agency resolution. However, specific implementations can choose to implement their own custom logic for Agency resolution
 4. Notification Connector - The G2P Bridge lifecycle involves dispatching notifications to various stakeholders - warehouses, agencies and beneficiaries. G2P Bridge allows you to write custom connectors to a notification engine
-
-
-
