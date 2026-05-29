@@ -99,7 +99,7 @@ data — every module is its own issuance backend that pushes its own claims.
 ## Helm artifacts (where the charts live)
 * **Inji Certify chart** — `vc-issuance/helm/openg2p-inji-certify` (OpenG2P style: `common` +
   `postgres-init` deps; Certify Deployment/Service/Gateway/VirtualService + a properties ConfigMap, a
-  `.p12` Secret mount, and a **DB-schema-init Job** that seeds the keymanager tables + key policies —
+  `.p12` keystore volume (PVC by default, or a restore Secret), and a **DB-schema-init Job** that seeds the keymanager tables + key policies —
   generic, **no** `credential_config`; modules register those).
   It is packaged into and enabled from **commons-services** (`charts/openg2p-commons-services`, dep
   alias `injiCertify`) — installed **with the commons layer**, reusing the cluster PostgreSQL.
@@ -116,11 +116,37 @@ data — every module is its own issuance backend that pushes its own claims.
   `allowed-audiences` / `oauth.issuer`) at Certify itself (pre-authorized-code flow, no eSignet); set
   the **issuer DID** (`global.vcIssuerDid`) + signing key. The `credential_config` (Velocity template,
   type/fields, **`qr_settings` / `qr_signature_algo`**) is **registered by the module**, not here.
+* **Required plugin-integration properties** (`certify.appConfig.*` → the Certify ConfigMap). The
+  stock image expects these from its config source; the OpenG2P chart sets them explicitly so the app
+  starts without a Spring Cloud Config server. The bundled plugins live in
+  **`io.mosip.certify.mock.integration`** (inside `inji-certify-with-plugins`):
+
+  | Property | Chart value | Default |
+  | --- | --- | --- |
+  | `mosip.certify.integration.scan-base-package` | `appConfig.scanBasePackage` | `io.mosip.certify.mock.integration` |
+  | `mosip.certify.integration.data-provider-plugin` | `appConfig.dataProviderPlugin` | `PreAuthDataProviderPlugin` |
+  | `mosip.certify.integration.audit-plugin` | `appConfig.auditPlugin` | `LoggerAuditService` |
+  | `mosip.certify.integration.vci-plugin` | `appConfig.vciPlugin` | `MockVCIssuancePlugin` |
+  | `mosip.certify.plugin-mode` | _(fixed)_ | `DataProvider` |
+
+  `scan-base-package` is **mandatory** — Spring resolves it during configuration parsing (for the
+  plugin `@ComponentScan`), so an unset value crashes startup *before* any other bean with
+  `Could not resolve placeholder 'mosip.certify.integration.scan-base-package'`. If you swap in a
+  custom plugin jar (e.g. the Phase-2 `RegistryDataProviderPlugin` in package
+  `org.openg2p.certify.registry`), point `scanBasePackage` + `dataProviderPlugin` at it.
 * **Agent Portal API**: configure the read-only registry datasource (`beneficiary_vc_view`), the
   Certify base URL + credential-config id, and the PDF output dir. It owns the only registry connection.
-* **`.p12` keystore (no HSM)**: mount it on durable storage and **back it up** — the `.p12` plus the
-  encrypted key rows **are the issuer identity**; regenerating them invalidates previously issued
-  credentials.
+* **`.p12` keystore (no HSM)** — the Certify chart supports two custody modes (`certify.p12` values):
+  * **Generate-on-first-boot onto a PVC** (default, `p12.persistence.enabled=true`): a durable
+    `PersistentVolumeClaim` (`<release>-inji-certify-p12`) is created and mounted **writable** at
+    `p12.mountPath`; keymanager writes `local.p12` there on first boot. The PVC carries
+    `helm.sh/resource-policy: keep` so an uninstall does not destroy the issuer identity (it is **not**
+    a substitute for a real backup).
+  * **Restore from a Secret** (`p12.existingSecret`): mount a backed-up keystore **read-only** (Secret
+    key `local.p12`). When set, this takes precedence over the PVC. Use this to redeploy with an
+    existing issuer identity.
+  * The connecting role must own the keystore directory; the `.p12` plus the encrypted key rows **are
+    the issuer identity** — regenerating them invalidates previously issued credentials.
 * **Issuer key / trust anchor**: the signed claim-169 QR is a **COSE/CWT**. Per the MOSIP 169 spec,
   verifiers use **COSE** key-discovery (`x5chain` embedded cert, `x5t` hash, or `x5u` URI) and a
   **pre-distributed trust anchor** — *not* `.well-known`/JWKS/DID resolution. So **distribute the
@@ -145,9 +171,10 @@ data — every module is its own issuance backend that pushes its own claims.
 * **The issuer identity is a 3-part bundle — back it up together.** The **`.p12`** (master key) + the
   **keymanager key rows in PostgreSQL** (the actual signing keys, encrypted under the master key) + the
   **keystore password** (Secret). All three must be preserved and restored *consistently*; losing or
-  changing any of them **invalidates every credential already issued**. Persist the `.p12` on durable
-  storage (PVC) and fold the `.p12` + password Secret + Certify DB into the backup system as one
-  critical set. *(Exact `.p12` custody model — PVC vs pre-provisioned Secret — still to be finalised.)*
+  changing any of them **invalidates every credential already issued**. By default the chart persists
+  `local.p12` on a durable **PVC** (generated on first boot); to redeploy with an existing identity,
+  restore it via `p12.existingSecret`. Either way, fold the `.p12` (PVC or Secret) + keystore password
+  + Certify DB into the backup system as **one** critical set.
 * **Verification key hosting differs by phase:**
   * **Phase 1 (paper / claim-169 QR): no hosted `did.json` needed.** Verification uses a
     **pre-distributed trust anchor** (issuer cert/root loaded into Inji Verify) and/or the cert
@@ -160,6 +187,33 @@ data — every module is its own issuance backend that pushes its own claims.
 **Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's key —
 obtained from the QR's COSE header (`x5chain`/`x5t`/`x5u`) and/or a **pre-loaded issuer trust anchor**.
 It does not need access to OpenG2P at scan time (offline-verifiable).
+
+## Teardown / uninstall
+
+`helm uninstall` does **not** fully remove a Certify install: the PostgreSQL **database + role** live
+inside `commons-postgresql` (created by the `postgres-init` subchart, not owned by the release), and
+both the **`.p12` keystore PVC** and the **DB-password Secret** carry `helm.sh/resource-policy: keep`.
+Use the teardown script, which removes all of them in the correct order:
+
+```sh
+# Dry run first — prints every action, changes nothing:
+vc-issuance/scripts/uninstall-inji-certify.sh --namespace <ns> --release inji-certify --dry-run
+
+# For real (prompts for confirmation):
+vc-issuance/scripts/uninstall-inji-certify.sh --namespace <ns> --release inji-certify
+```
+
+It runs: `helm uninstall` → delete leftover hook Jobs/Pods → delete the DB-password Secret → sweep
+release-labelled Secrets/ConfigMaps → drop the Postgres DB + role (`kubectl exec` into
+`commons-postgresql`) → delete the keystore PVC → delete released PVs. Run with no flags to be prompted
+for the namespace and release name.
+
+> **⚠️ This destroys the issuer identity.** The `.p12` PVC + the keymanager key rows in the dropped
+> database together *are* the issuer signing identity — removing them makes **every credential already
+> issued unverifiable**, with no recovery. Only run on throwaway/re-creatable environments, or after a
+> verified backup. Pass **`--keep-pvs`** to drop the workloads + DB while **retaining** the keystore
+> PVC. If Certify was installed as a subchart of commons-services (release name `commons-services`),
+> pass `--release commons-services` so the derived DB/role/Secret names match.
 
 ## Security checklist
 * The **Agent Portal API** calls Certify as a **trusted machine-to-machine** caller

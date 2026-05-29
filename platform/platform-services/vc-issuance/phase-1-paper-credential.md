@@ -120,7 +120,9 @@ with an **offline-verifiable QR**, and a verifier validates it by scanning that 
 Certify signs with its embedded keymanager backed by a **`.p12` keystore** (no HSM). The `.p12` and
 the encrypted key rows **are the issuer identity** — they must be **persisted and backed up**, and
 the issuer's **public key / DID must be published at a stable, resolvable URL** so verifiers can
-validate offline. (See [Deployment](deployment.md).)
+validate offline. By default the Certify chart **generates `local.p12` on first boot onto a durable
+PVC**; to redeploy with an existing identity, restore it from a Secret (`p12.existingSecret`). (See
+[Deployment](deployment.md) for the custody modes.)
 
 ## Status & the remaining linchpin
 **Proven end to end:** the Agent Portal API reads a real registrant from the Registry, pushes the
