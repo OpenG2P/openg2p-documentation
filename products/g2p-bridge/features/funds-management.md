@@ -4,6 +4,10 @@ description: Funds Management with Sponsor Bank
 
 # Funds Management
 
+
+
+<figure><img src="../../../.gitbook/assets/Flow - Digital Cash Transfers.jpg" alt=""><figcaption></figcaption></figure>
+
 #### Verify Fund Availability
 
 Check with sponsor bank that sufficient funds are available for the full disbursement amount.
