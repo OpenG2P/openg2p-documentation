@@ -499,6 +499,7 @@
   * [Developer Zone](g2p-bridge/development/README.md)
     * [Design](g2p-bridge/development/design-specifications/README.md)
       * [Partner APIs](products/g2p-bridge/development/design-specifications/partner-apis.md)
+      * [Celery](products/g2p-bridge/development/design-specifications/celery.md)
       * [Physical Organization](g2p-bridge/development/design-specifications/physical-organization.md)
       * [Example Bank](g2p-bridge/development/design-specifications/example-bank.md)
         * [example-bank-models](g2p-bridge/development/design-specifications/example-bank/openg2p-g2p-bridge-example-bank-models.md)
