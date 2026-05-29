@@ -6,7 +6,7 @@ description: G2P Bridge Master Helm Chart
 
 G2P Bridge and all its dependencies are installed using a single\* [Helm chart](https://github.com/OpenG2P/openg2p-g2p-bridge-deployment/tree/develop/charts). Following dependent components are installed with the option to deselect them:
 
-* G2P Bridge API
+* G2P Bridge Partner API
 * G2P Bridge Celery Beat Producers
 * G2P Bridge Celery Workers
 
