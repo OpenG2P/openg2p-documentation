@@ -1,20 +1,101 @@
 # Organization of Codebase
 
-<div data-full-width="true"><figure><img src="../../../../.gitbook/assets/Code Organization.jpg" alt=""><figcaption><p>Organization of the Registry codebase in github. The labels in green are the repo names</p></figcaption></figure></div>
+{% hint style="warning" %}
+**The Registry codebase has been consolidated.** All platform code — the core
+library, the APIs, the Celery runtimes and the UI — now lives in a **single
+repository, `registry-platform`**. The older split repositories
+(`openg2p-registry-gen2-*`) are being **deprecated**. See
+[Deprecated repositories](#deprecated-repositories) below.
+{% endhint %}
 
-## Deployable runtimes
+## The platform repository: `registry-platform`
 
-The Registry platform is composed of the following deployable runtimes, each packaged as a Docker image:
+[**`registry-platform`**](https://github.com/openg2p/registry-platform) holds
+the entire OpenG2P Registry platform in one place — all libraries, APIs, Celery
+runtimes and UIs:
 
-| Runtime                  | Repository                       | Description                                                                                                                                      |
-| ------------------------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Staff Portal API**     | openg2p-registry-apis            | REST APIs serving the Registry Staff Portal UI                                                                                                   |
-| **Partner API**          | openg2p-registry-apis            | REST APIs for the partner ecosystem and other DPGs                                                                                               |
-| **Celery Beat Producer** | openg2p-registry-celery          | Periodic task scheduler that reads queues and emits tasks to workers. **Must run as exactly one instance (POD)** to avoid duplicate task pickup. |
-| **Celery Workers**       | openg2p-registry-celery          | Process asynchronous tasks (ingestion, outgestion, deduplication, computation). Scale worker PODs horizontally to handle higher volumes.         |
-| **Staff Portal UI**      | openg2p-registry-staff-portal-ui | ReactJS frontend for staff-facing configuration and operations                                                                                   |
+```
+registry-platform/
+├── core/
+│   └── openg2p-registry-core                  Core library: ORM models, Pydantic
+│                                               schemas, core business logic.
+│                                               Packaged INTO each runtime — not
+│                                               deployed on its own.
+├── apis/
+│   ├── openg2p-registry-staff-portal-api       REST APIs for the Staff Portal UI
+│   ├── openg2p-registry-partner-api            REST APIs for the partner ecosystem
+│   └── openg2p-registry-bene-portal-api        REST APIs for the Beneficiary Portal
+├── celery/
+│   ├── openg2p-registry-celery-beat-producers  Periodic task scheduler. Must run as
+│   │                                            exactly ONE instance (POD).
+│   └── openg2p-registry-celery-workers         Async task workers. Scale PODs out
+│                                                to handle higher volumes.
+└── ui/
+    ├── staff-portal-ui                          Next.js Staff Portal UI runtime
+    └── ui-widgets                               Shared UI widget library
+```
 
-The **Deployment Package** (openg2p-registry-deployment) bundles all runtimes into a single Helm chart. Individual runtime versions are specified in the chart values. See [Registry Helm Chart 4.x](../deployment/helm-chart-4.x.md) for deployment details.
+Each runtime above (the APIs, the two Celery runtimes and the Staff Portal UI)
+is built into a Docker image; `openg2p-registry-core` and `ui-widgets` are
+libraries that the runtimes embed rather than deploy separately.
+
+## The platform is not deployable on its own
+
+`registry-platform` is **a platform, not a product**. It carries no domain
+model, no Docker images and no Helm chart of its own. To run it, the platform
+must be **manifested** as a concrete registry product.
+
+```mermaid
+graph LR
+    A["registry-platform<br/>(libraries, APIs, celery, UI)"] --- P((" <b>+</b> ")) --- B["Manifestation<br/>(domain extension + images + helm)"] --- E((" <b>=</b> ")) --- C["Deployable product<br/>(NSR, Farmer Registry, …)"]
+    style A fill:#e8f4fd,stroke:#2196F3,color:#000
+    style B fill:#fff3e0,stroke:#FF9800,color:#000
+    style C fill:#e8f5e9,stroke:#4CAF50,stroke-width:2px,color:#000
+    style P fill:#fff,stroke:#999,color:#000
+    style E fill:#fff,stroke:#999,color:#000
+```
+
+## Manifestations
+
+A **manifestation** is a deployable registry product built on the platform.
+The current manifestations are:
+
+* [**National Social Registry (NSR)**](../../national-social-registry.md)
+* [**Farmer Registry**](../../farmer-registry.md)
+
+Each manifestation is its own repository and is **self-contained**. It provides:
+
+1. **Domain extension** — the registers, supporting tables, schemas and
+   meta-data SQL specific to that product (e.g. NSR's `nsr-extension/`).
+2. **Docker build scripts** — the Dockerfiles and spec files that assemble the
+   platform runtimes + the manifestation's extension into the product's images,
+   along with path-scoped CI workflows that build and push them.
+3. **A complete, self-sufficient Helm chart** — the full set of templates,
+   values and sub-dependencies needed to deploy the product. There is **no
+   shared "base registry chart"** to depend on (see note below); each
+   manifestation owns its chart end-to-end.
+
+{% hint style="info" %}
+**There is no longer a "base registry chart".** Earlier, manifestations
+deployed via a thin wrapper that depended on a published `openg2p-registry`
+base chart. That model has been retired — each manifestation now ships a
+complete Helm chart of its own.
+{% endhint %}
+
+## Deprecated repositories
+
+The following repositories are being **deprecated** in favour of
+`registry-platform` (code) and the per-manifestation repositories (images +
+Helm):
+
+| Deprecated repository | Replaced by |
+| --------------------- | ----------- |
+| `openg2p-registry-gen2-core` | `registry-platform/core/openg2p-registry-core` |
+| `openg2p-registry-gen2-apis` | `registry-platform/apis/*` |
+| `openg2p-registry-gen2-celery` | `registry-platform/celery/*` |
+| `openg2p-registry-gen2-staff-portal-ui` | `registry-platform/ui/staff-portal-ui` |
+| `openg2p-registry-gen2-ui-widgets` | `registry-platform/ui/ui-widgets` |
+| `openg2p-registry-gen2-deployment` | Per-manifestation Helm charts (e.g. NSR's `helm/openg2p-nsr`) |
 
 ## External service dependencies
 
@@ -26,37 +107,13 @@ The Registry platform depends on the following services, deployed separately:
 | **ID Generator Service** | Generates unique Functional IDs for registrants; usage is configurable per Register via Register Metadata                                                                          | [ID Generator](../../../../platform/platform-services/id-generator/)        |
 | **Master Data Service**  | Provides Partner and Geo Lookup data via API                                                                                                                                       | —                                                                           |
 
-## Repositories
+## Versions
 
-The registry codebase is organized into several repositories.
+The **version of the `registry-platform` repository is the platform version** —
+there is no separate base-chart version to track. Each manifestation carries its
+own product version independently.
 
-### openg2p-registry-staff-portal-ui
-
-This repository contains the ReactJS UI <mark style="color:blue;">**runtime**</mark> for the Staff Portal functionalities of the Registry. This UI is available as a Docker image with the docker creation scripts in the repo - openg2p-registry-docker. This runtime is accessible from within the openg2p-staff-portal-ui, a common staff-portal for all the staff functionalities relating to PBMS, Registry, Bridge and SPAR.
-
-### **openg2p-registry-apis**
-
-This repository contains the API <mark style="color:blue;">**runtimes**</mark> for the registry. This houses the following runtimes. These 4 runtimes are made available as Docker images. These docker creation scripts are available in the repo - openg2p-registry-docker.
-
-1. <mark style="color:blue;">openg2p-registry-staff-portal-api</mark> — Providing REST APIs for the Registry Staff Portal UI (openg2p-registry-staff-portal-ui)
-2. <mark style="color:blue;">openg2p-registry-beneficiary-portal-api</mark> — Provding Registry REST APIs for the Unified Beneficiary Beneficiary Portal UI
-3. <mark style="color:blue;">openg2p-registry-agency-portal-api</mark> — Providing Registry REST APIs for the Unified Agency App
-4. <mark style="color:blue;">openg2p-registry-partner-api</mark> — Providing Registry REST APIs for the partner ecosystem.
-
-### **openg2p-registry-celery**
-
-This repository contains the Celery <mark style="color:$success;">**runtimes**</mark> for the registry. OpenG2P Registry uses the Celery framework to perform several asynchronous tasks on the registry. The celery framework consists of two runtimes
-
-1. <mark style="color:blue;">openg2p-registry-celery-beat-producers</mark> — This runtime provides periodic beats for specific tasks. Almost all of these beat producers are based on Queues (implemented as Postgres Tables) with a specific column (typically xyz\_status = "PENDING") serving as the selection criteria for these beats. <mark style="color:orange;">To avoid multiple beats picking up the same records, it is necessary that we provision exactly ONE instance (POD) of the beat producer.</mark>
-2. <mark style="color:blue;">openg2p-registry-celery-workers</mark> — This runtime hosts the workers that receive the tasks emitted by the beat producer. There are multiple workers, each worker processing exactly one business task. The worker typically receives a unique queue\_id from the beat. Each POD is configured to run "NN" workers. <mark style="color:purple;">It is recommended to scale up the worker instances (PODs) to handle higher volumes.</mark>
-
-### openg2p-registry-core
-
-This repository, packaged as a <mark style="color:$success;">**library**</mark>, contains the core registry codebase. It contains the ORM Models, Pydantic schemas and the core business logic of the registry platform. This library need does not require a separate installation. All the runtimes package this as a library within themselves.
-
-### openg2p-registry-deployment
-
-This repository contains the Helm charts for deploying OpenG2P Registry and all the necessary dependent services such as MinIO, Postgres, Keycloak, MOSIP KeyManager etc.
-
-Above these repositories, we have the repositories for Registry Manifestations such as **farmer-registry & national-social-registry**. These manifestations are treated as separate products and have been detailed in their respective sections.
-
+{% hint style="info" %}
+Detailed version mapping (platform ↔ manifestations ↔ image tags) is still being
+clarified and will be documented here later.
+{% endhint %}
