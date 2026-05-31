@@ -1,21 +1,19 @@
 ---
-description: Setting up OpenG2P environments on an existing multi-node infrastructure
+description: Setting up OpenG2P environments on an existing multi-node infrastructure.
 ---
 
-# Environment Setup for Multi-Node
+# Environment Setup
 
-This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes. Note that for a sandbox (single-node) setup the environment is installed as part of the [automation scripts](infrastructure-setup/single-node-automation.md).
+This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes.&#x20;
 
 {% hint style="info" %}
-For single-node deployments where everything runs on a single VM, see [Single-Node Automation](infrastructure-setup/single-node-automation.md).
+Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
 {% endhint %}
 
 {% hint style="warning" %}
-**Sandbox vs production**
+**In-cluster versus External Storage**
 
-Use this script to install **commons modules** only for sandbox deployments where the default Commons parameters are acceptable (in-cluster PostgreSQL, MinIO, Kafka, etc.).
-
-For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
+This script installs [**commons**](../../deployment/concepts/openg2p-commons-helm-chart.md) modules with **in-cluster** PostgreSQL, MinIO, Kafka, etc. This may be used to test the entire system before going for a production rollout.  For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
 
 The script is still useful in production for the namespace, Rancher Project, and Istio Gateway scaffolding.
 {% endhint %}

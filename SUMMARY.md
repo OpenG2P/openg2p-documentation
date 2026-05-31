@@ -685,7 +685,7 @@
     * [Sandbox - Single-Node](operations/deployment/infrastructure-setup/single-node-automation.md)
     * [Production - Three-Node](operations/deployment/infrastructure-setup/three-node-automation/README.md)
       * [Fallback: Two Nginx VMs (single-NIC each)](operations/deployment/infrastructure-setup/three-node-automation/three-node-automation-fallback-second-rp.md)
-  * [Environment Setup for Multi-Node](operations/deployment/environment-setup-multi-node.md)
+  * [Environment Setup](operations/deployment/environment-setup-multi-node.md)
   * [Backups](operations/deployment/backups/README.md)
     * [Architecture](operations/deployment/backups/architecture.md)
     * [What gets backed up](operations/deployment/backups/what-gets-backed-up.md)

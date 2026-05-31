@@ -8,9 +8,9 @@ The Registry is deployed over Kubernetes infrastructure that offers **production
 
 ## Deployment steps
 
-1. [Infrastructure deployment](../../../../operations/deployment/_archive/deployment-instructions/infrastructure-setup.md)
-2. [Environment creation](../../../../operations/deployment/_archive/deployment-instructions/environment-installation.md)
-3. Registry installation
+1. [Infrastructure setup](../../../../operations/deployment/infrastructure-setup/)
+2. [Environment creation](../../../../operations/deployment/environment-setup-multi-node.md)
+3. [Registry installation](./#registry-installation)&#x20;
 
 ## Registry installation
 
