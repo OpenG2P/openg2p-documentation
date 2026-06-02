@@ -10,6 +10,20 @@ in the `g2p-bridge` repository. There are no longer separate charts per service
 or a separate chart for the Example Bank; one `helm install` brings up the
 complete, working subsystem.
 
+{% hint style="info" %}
+This page describes the chart itself. For the end-to-end install flow
+(Infrastructure → Environment → G2P Bridge), follow the
+[Deployment](README.md) guide — it assumes the Kubernetes infrastructure and the
+**commons** environment are already set up. The commons release provides the
+shared **PostgreSQL**, **Keycloak**, **Keymanager** and **Istio** gateway that
+this chart depends on.
+{% endhint %}
+
+## Versions
+
+For the chart version, runtime image tags, last-modified date and change history
+(including legacy versions), see the main [Versions](../versions.md) page.
+
 ## Key features
 
 * **One chart, complete install.** Partner API, Beneficiary-Portal API, Celery
@@ -126,21 +140,12 @@ corresponding questions are hidden in the Rancher form otherwise.
 
 ## How it is run
 
-### Prerequisites
+The recommended path is the **automated, Rancher-driven** flow described in the
+[Deployment](README.md) guide (Infrastructure → Environment → install the
+"OpenG2P Bridge" chart from the Rancher UI). The form is generated from this
+chart's `questions.yaml`, so all changeable values above appear as fields.
 
-* ✅ **Kubernetes cluster** is up and running
-* ✅ **Namespace created** (via Rancher under a Project) with **Istio gateway** set up
-* ✅ Shared **`commons-postgresql`** and **Keycloak** present in the namespace (the commons layer)
-
-### Using the Rancher UI
-
-1. Add the OpenG2P Helm repository (`https://openg2p.github.io/openg2p-helm/rancher`) if not already added.
-2. Enable **Include Prerelease Versions** (Preferences) to see `develop` builds.
-3. Apps → Charts → **OpenG2P Bridge** → choose a version → **Install**.
-4. Give the release a name (e.g. `g2p-bridge`) and tick **Customize Helm options before install**.
-5. Fill the form (it is generated from `questions.yaml`): namespace, hostnames, disbursement mode, sponsor/treasury account, Keycloak, etc.
-6. Disable the **wait** flag on the Helm options page and **Install**.
-7. Watch the pods until they are all `Running` / `Completed`.
+The command-line install below is intended for **advanced / developer** use.
 
 ### Using the CLI
 
