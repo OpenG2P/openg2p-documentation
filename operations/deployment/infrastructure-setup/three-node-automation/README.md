@@ -23,7 +23,9 @@ The three-node deployment model itself — what each node does, why the split ex
 
 ### Why admin tools live behind Wireguard
 
-Rancher, Keycloak, Grafana, Prometheus are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>`, `keycloak.<your-domain>`, `grafana.<your-domain>`, `prometheus.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
+Rancher and Keycloak are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>` and `keycloak.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
+
+Grafana and Prometheus ship as part of the install but are **not** exposed on their own hostnames — they're reached from inside the Rancher UI (**Cluster Explorer → Monitoring**), so no dedicated DNS records or certs are needed for them.
 
 This is deliberate. Government customers almost universally require admin tools to be VPN-only, have security policies that flag publicly exposed admin panels, and procure certs from their own CAs (rarely Let's Encrypt).
 
@@ -36,7 +38,7 @@ For the full discussion of cert formats commonly seen in gov procurement (PEM sp
 The RP has two network interfaces (see [Prerequisites § 2](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)):
 
 * **vNIC-public** — public IP. Wireguard server binds here. Future env-automation will bind public citizen-facing Nginx server blocks here too.
-* **vNIC-internal** — internal IP. Admin Nginx server blocks bind here (rancher, keycloak, grafana, prometheus). The compute and storage nodes also live on this network.
+* **vNIC-internal** — internal IP. Admin Nginx server blocks bind here (rancher, keycloak). The compute and storage nodes also live on this network.
 
 Nginx server blocks for each hostname are bound to a specific IP, so the two channels can't bleed into each other. Public traffic can never reach an admin hostname; only Wireguard peers (whose tunnel exits on the internal interface) can.
 
@@ -106,7 +108,7 @@ The standard pattern is:
 | Interface       | Network                 | Used for                                                           |
 | --------------- | ----------------------- | ------------------------------------------------------------------ |
 | `vNIC-public`   | DMZ / public-facing     | Wireguard UDP, public Nginx server blocks                          |
-| `vNIC-internal` | internal mgmt / cluster | Admin Nginx server blocks (rancher, keycloak, grafana, prometheus) |
+| `vNIC-internal` | internal mgmt / cluster | Admin Nginx server blocks (rancher, keycloak)                       |
 
 Adding the second vNIC is a sysadmin task done **before** running the automation. It's trivial on every common hypervisor:
 
@@ -131,10 +133,12 @@ The automation does NOT install any DNS server. Your authoritative DNS must reso
 | -------------------------- | -------------------------------------------- | ------- | ------------------------------------------------ |
 | `rancher.<your-domain>`    | RP's **internal** IP (the vNIC-internal one) | private | Rancher cluster manager UI                       |
 | `keycloak.<your-domain>`   | RP's **internal** IP                         | private | Keycloak admin SSO (Rancher's identity provider) |
-| `grafana.<your-domain>`    | RP's **internal** IP                         | private | Grafana dashboards (from rancher-monitoring)     |
-| `prometheus.<your-domain>` | RP's **internal** IP                         | private | Prometheus UI (from rancher-monitoring)          |
 
-`<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The four hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
+`<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The two hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, `sso.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
+
+{% hint style="info" %}
+**Why only two?** Grafana and Prometheus run in-cluster as part of `rancher-monitoring`, but they're reached from inside the Rancher UI (**Cluster Explorer → Monitoring → Grafana / Prometheus**) — so they don't need their own DNS records or TLS certs. Any `grafana_hostname` / `prometheus_hostname` / `tls_grafana_*` / `tls_prometheus_*` keys in `prod-config.yaml` are ignored by the automation.
+{% endhint %}
 
 Admin laptops must be able to resolve these hostnames. Three working patterns:
 
@@ -246,23 +250,24 @@ postgres_version: "16"
 wg_subnet: "10.15.0.0/16"
 wg_port: "51820"
 
-# [CUSTOMER] domain (DNS A-records for rancher.<domain>, keycloak.<domain>,
-# grafana.<domain>, prometheus.<domain> must already exist, all pointing
-# at the RP's INTERNAL IP — see Prerequisites § 3)
+# [CUSTOMER] domain (DNS A-records for rancher.<domain> and keycloak.<domain>
+# must already exist, both pointing at the RP's INTERNAL IP — see
+# Prerequisites § 3. Grafana/Prometheus are reached via the Rancher UI, no
+# dedicated DNS needed.)
 public_domain: "openg2p.gov.eth"
 # Override individual hostnames only if your customer uses non-standard names:
 # rancher_hostname:    "k8s-admin.dept.gov"
 # keycloak_hostname:   "sso.dept.gov"
-# ...
 
 # [CUSTOMER] TLS certs (paths on YOUR laptop; uploaded to RP at install time)
-# Either provide one wildcard cert covering all four:
+# Either provide one wildcard cert covering both hostnames:
 tls_wildcard_cert: "./certs/wildcard.fullchain.pem"
 tls_wildcard_key:  "./certs/wildcard.key"
 # OR provide per-FQDN certs (leave wildcard blank, fill these):
 # tls_rancher_cert:    "./certs/rancher.fullchain.pem"
 # tls_rancher_key:     "./certs/rancher.key"
-# ... (similar for keycloak, grafana, prometheus)
+# tls_keycloak_cert:   "./certs/keycloak.fullchain.pem"
+# tls_keycloak_key:    "./certs/keycloak.key"
 
 # [AWS|MANUAL] node networking — auto-populated by AWS provisioning,
 # or fill in manually for on-prem
@@ -378,7 +383,7 @@ Since you're using **real certs from your customer's CA** (see [Prerequisites §
 
 #### 4.3 DNS resolution on your laptop
 
-You need your laptop to resolve the admin hostnames (`rancher.<domain>`, `keycloak.<domain>`, `grafana.<domain>`, `prometheus.<domain>`) to the RP's **internal** IP. Three working patterns:
+You need your laptop to resolve the admin hostnames (`rancher.<domain>` and `keycloak.<domain>`) to the RP's **internal** IP. Three working patterns:
 
 1.  **Customer's DNS reachable through Wireguard** (preferred) — the WG peer config can include the customer's internal DNS resolver. Edit `peer1.conf` after pulling it (or have the customer add it):
 
@@ -390,7 +395,7 @@ You need your laptop to resolve the admin hostnames (`rancher.<domain>`, `keyclo
 2.  **`/etc/hosts` on your laptop** — manual but reliable. The orchestrator's completion summary prints the exact lines. Append once per laptop:
 
     ```
-    <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth grafana.openg2p.gov.eth prometheus.openg2p.gov.eth
+    <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth
     ```
 3. **Public DNS pointing at the private IP** — if the customer's authoritative DNS is public-facing and OK with publishing private-IP A-records, the hostnames resolve from anywhere (but only WG-connected laptops can actually reach the IP).
 
