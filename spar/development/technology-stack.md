@@ -2,17 +2,25 @@
 
 The following technologies and tools are used by SPAR.
 
-| Technology      | Purpose                | Version | License                                                           |
-| --------------- | ---------------------- | ------- | ----------------------------------------------------------------- |
-| Ubuntu Server   | Operating System       | 22.04   | Free                                                              |
-| Python          | Development            | 3.11    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
-| FastAPI         | REST API               |         | MIT                                                               |
-| Postgres        | Database               |         | Postgres License BSD 2-clause "Simplified License"                |
-| Apache Superset | Reporting              |         | Apache 2.0                                                        |
-| Github          | Source code management |         | Commercial (OpenG2P uses Free plan)                               |
-| Docker          | Deployment             |         | Apache 2.0                                                        |
-| Rancher         | Deployment             |         | Apache 2.0                                                        |
-| Kubernetes      | Deployment             |         | Apache 2.0                                                        |
-| Prometheus      | Monitoring             |         | Apache 2.0                                                        |
-| Grafana         | Monitoring             |         | AGPL 3.0                                                          |
-| Nginx           | Web proxy              |         | BSD                                                               |
+| Technology | Purpose | Version | License |
+| --- | --- | --- | --- |
+| Ubuntu Server | Operating System (cluster nodes) | 22.04 | Free |
+| Python | Development language | 3.11 | [PSF License](https://docs.python.org/3/license.html#psf-license) |
+| openg2p-fastapi-common | OpenG2P application framework (base for all SPAR services) | | MPL 2.0 |
+| FastAPI | REST API framework | | MIT |
+| Pydantic | Data validation & schemas | | MIT |
+| SQLAlchemy | ORM (async) | | MIT |
+| Gunicorn | Application server | ~22.0 | MIT |
+| Uvicorn | ASGI worker | | BSD |
+| PostgreSQL | Database (shared `commons-postgresql`) | | PostgreSQL License |
+| Keycloak | Authentication — OIDC / OAuth2 | | Apache 2.0 |
+| MOSIP Keymanager | Partner signature / JWT verification | | MPL 2.0 |
+| Docker | Containerization | | Apache 2.0 |
+| Helm | Packaging & deployment | | Apache 2.0 |
+| Kubernetes | Orchestration | | Apache 2.0 |
+| Istio | Service mesh / ingress | | Apache 2.0 |
+| Rancher | Cluster management & catalog UI | | Apache 2.0 |
+| Nginx | Web proxy / ingress | | BSD |
+| Prometheus | Monitoring | | Apache 2.0 |
+| Grafana | Monitoring dashboards | | AGPL 3.0 |
+| GitHub | Source code management | | Commercial (OpenG2P uses Free plan) |
