@@ -10,6 +10,12 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
 {% endhint %}
 
+{% hint style="danger" %}
+**Before you start — procurement prerequisites**
+
+DNS records, TLS certificates, and server access for this environment must already be in place before `env-cluster.sh` runs. If you have not yet planned and procured these, start with the [**Prerequisites & Procurement**](prerequisites-procurement.md) page — fill out the deployment plan once, generate a single checklist covering every environment, and hand it to your IT / network / cert team. TLS issuance from sovereign or commercial CAs typically takes 2-4 weeks; planning all environments up front avoids serial procurement cycles.
+{% endhint %}
+
 {% hint style="warning" %}
 **In-cluster versus External Storage**
 
@@ -34,7 +40,7 @@ In a multi-node setup, each environment gets its own domain, namespace, and full
 │  Nginx Node                              (manual setup)      │
 │                                                              │
 │  • DNS A records → this node's IP                            │
-│  • Let's Encrypt wildcard cert (certbot)                     │
+│  • Customer-provided wildcard TLS cert (CA-issued)           │
 │  • Nginx server block → proxy to Istio ingress               │
 └──────────────────────┬───────────────────────────────────────┘
                        │ proxy_pass → http://istio_ingress
@@ -66,12 +72,14 @@ The setup has two parts:
 
 ## Prerequisites
 
-| Requirement        | Details                                                                     |
-| ------------------ | --------------------------------------------------------------------------- |
-| **Infrastructure** | Nginx node, K8s cluster, Istio, and Rancher are all running                 |
-| **Nginx node**     | `certbot` installed, `nginx` running, `istio_ingress` upstream configured   |
-| **Workstation**    | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster |
-| **DNS access**     | Ability to create A records and TXT records at your DNS provider            |
+| Requirement                 | Details                                                                                  |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| **Infrastructure**          | Nginx node, K8s cluster, Istio, and Rancher are all running                              |
+| **Procurement complete**    | DNS records, TLS cert, and Nginx access — see [Prerequisites & Procurement](prerequisites-procurement.md) |
+| **DNS records**             | `<base_domain>` and `*.<base_domain>` A records pointing to the Nginx node               |
+| **TLS cert on Nginx node**  | Wildcard cert at `/etc/openg2p/certs/<base_domain>/{fullchain.pem,privkey.pem}` (customer-provided) |
+| **Nginx node**              | `nginx` running, `istio_ingress` upstream configured                                     |
+| **Workstation**             | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster              |
 
 {% hint style="info" %}
 The source code for the automation script lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/environment/`.
@@ -79,9 +87,9 @@ The source code for the automation script lives in the [`openg2p-deployment`](ht
 
 ## Step-by-Step Guide
 
-### Step 1: Create DNS records
+### Step 1: Verify DNS records (procured up front)
 
-At your DNS provider, create two A records pointing to the **Nginx node's public IP**:
+DNS records should have been procured as part of the [Prerequisites & Procurement](prerequisites-procurement.md) step. For this environment you need:
 
 | Type | Name               | Value             |
 | ---- | ------------------ | ----------------- |
@@ -89,7 +97,7 @@ At your DNS provider, create two A records pointing to the **Nginx node's public
 | A    | `*.qa.openg2p.org` | `<nginx_node_ip>` |
 
 {% hint style="warning" %}
-Wait for DNS propagation before proceeding. Verify with:
+Verify DNS resolution before proceeding:
 
 ```bash
 dig qa.openg2p.org
@@ -97,93 +105,60 @@ dig qa.openg2p.org
 ```
 {% endhint %}
 
-### Step 2: Obtain Let's Encrypt wildcard certificate
+### Step 2: Place the customer-provided TLS certificate
 
-SSH into the **Nginx node** and run certbot with DNS-01 challenge:
+The wildcard certificate for `*.<base_domain>` (covering the apex too) is **procured from the customer's chosen CA** — commercial (DigiCert, GlobalSign, Sectigo) or national / sovereign — as listed in the [procurement checklist](prerequisites-procurement.md). Let's Encrypt is acceptable only for sandbox / PoC; see the note at the end of this step.
+
+On the **Nginx node**, place the cert files at the standard path:
+
+```bash
+sudo mkdir -p /etc/openg2p/certs/qa.openg2p.org
+
+# Upload your fullchain + private key
+sudo cp /path/to/wildcard.fullchain.pem  /etc/openg2p/certs/qa.openg2p.org/fullchain.pem
+sudo cp /path/to/wildcard.key            /etc/openg2p/certs/qa.openg2p.org/privkey.pem
+
+# Set correct permissions
+sudo chmod 644 /etc/openg2p/certs/qa.openg2p.org/fullchain.pem
+sudo chmod 600 /etc/openg2p/certs/qa.openg2p.org/privkey.pem
+```
+
+Verify the cert covers the expected hostnames:
+
+```bash
+sudo openssl x509 -noout -ext subjectAltName \
+  -in /etc/openg2p/certs/qa.openg2p.org/fullchain.pem
+# Should include: DNS:*.qa.openg2p.org, DNS:qa.openg2p.org
+```
+
+<details>
+
+<summary>Sandbox / PoC only — Let's Encrypt</summary>
+
+If you're spinning up a quick sandbox and don't have a commercial cert, you can use Let's Encrypt with a DNS-01 challenge:
 
 ```bash
 sudo certbot certonly \
-  --manual \
-  --preferred-challenges dns \
-  --agree-tos \
+  --manual --preferred-challenges dns --agree-tos \
   --email admin@openg2p.org \
-  -d "qa.openg2p.org" \
-  -d "*.qa.openg2p.org"
-```
-
-Certbot will prompt you to create DNS TXT records:
-
-```
-Please deploy a DNS TXT record under the name:
-  _acme-challenge.qa.openg2p.org
-with the following value:
-  <random_string>
-```
-
-**Do this:**
-
-1. Go to your DNS provider
-2. Create a TXT record: `_acme-challenge.qa.openg2p.org` → `<random_string>`
-3. Wait for propagation: `dig TXT _acme-challenge.qa.openg2p.org`
-4. Press Enter in the certbot prompt
-
-{% hint style="info" %}
-Certbot may ask for **two** TXT records (one for each domain). Create both before pressing Enter.
-{% endhint %}
-
-On success, certificates are saved at:
-
-```
-/etc/letsencrypt/live/qa.openg2p.org/fullchain.pem
-/etc/letsencrypt/live/qa.openg2p.org/privkey.pem
-```
-
-{% tabs %}
-{% tab title="Manual DNS (default)" %}
-The manual method shown above works with any DNS provider. You create the TXT record by hand when prompted.
-{% endtab %}
-
-{% tab title="Cloudflare (automated)" %}
-If you use Cloudflare, install the DNS plugin and automate the TXT record:
-
-```bash
-sudo apt install python3-certbot-dns-cloudflare
-
-# Create credentials file
-sudo tee /etc/letsencrypt/cloudflare.ini > /dev/null <<EOF
-dns_cloudflare_api_token = YOUR_CLOUDFLARE_API_TOKEN
-EOF
-sudo chmod 600 /etc/letsencrypt/cloudflare.ini
-
-# Obtain cert (fully automated)
-sudo certbot certonly --dns-cloudflare \
-  --dns-cloudflare-credentials /etc/letsencrypt/cloudflare.ini \
-  --dns-cloudflare-propagation-seconds 30 \
   -d "qa.openg2p.org" -d "*.qa.openg2p.org"
 ```
-{% endtab %}
 
-{% tab title="Route53 (automated)" %}
-If you use AWS Route53, install the DNS plugin:
+Certbot prompts for TXT records you must add at your DNS provider. After issuance, copy the files to the standard path:
 
 ```bash
-sudo apt install python3-certbot-dns-route53
-
-# Ensure AWS credentials are in the environment
-export AWS_ACCESS_KEY_ID=...
-export AWS_SECRET_ACCESS_KEY=...
-
-# Obtain cert (fully automated)
-sudo certbot certonly --dns-route53 \
-  --dns-route53-propagation-seconds 30 \
-  -d "qa.openg2p.org" -d "*.qa.openg2p.org"
+sudo mkdir -p /etc/openg2p/certs/qa.openg2p.org
+sudo cp /etc/letsencrypt/live/qa.openg2p.org/fullchain.pem /etc/openg2p/certs/qa.openg2p.org/
+sudo cp /etc/letsencrypt/live/qa.openg2p.org/privkey.pem   /etc/openg2p/certs/qa.openg2p.org/
 ```
-{% endtab %}
-{% endtabs %}
+
+Cloudflare DNS plugin (`python3-certbot-dns-cloudflare`) or Route53 plugin (`python3-certbot-dns-route53`) can automate the TXT record dance. **Do not use Let's Encrypt for production government deployments** — most procurement policies disallow it.
+
+</details>
 
 ### Step 3: Create Nginx server block
 
-Still on the **Nginx node**, create the server block:
+On the **Nginx node**, create the server block that references the cert you placed in Step 2:
 
 ```bash
 sudo tee /etc/nginx/sites-available/openg2p-env-qa.conf > /dev/null <<'EOF'
@@ -200,8 +175,8 @@ server {
     listen 443 ssl;
     server_name *.qa.openg2p.org qa.openg2p.org;
 
-    ssl_certificate     /etc/letsencrypt/live/qa.openg2p.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/qa.openg2p.org/privkey.pem;
+    ssl_certificate     /etc/openg2p/certs/qa.openg2p.org/fullchain.pem;
+    ssl_certificate_key /etc/openg2p/certs/qa.openg2p.org/privkey.pem;
     ssl_protocols       TLSv1.2 TLSv1.3;
 
     location / {

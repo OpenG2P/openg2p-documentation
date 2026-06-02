@@ -683,6 +683,7 @@
     * [Commons Helm Charts 2.x](deployment/concepts/openg2p-commons-helm-chart.md)
     * [DNS & TLS Certificates](deployment/concepts/dns-and-certificates.md)
   * [Resource Requirements](deployment/resource-requirements.md)
+  * [Prerequisites & Procurement](operations/deployment/prerequisites-procurement.md)
   * [Infrastructure Setup](operations/deployment/infrastructure-setup/README.md)
     * [Sandbox - Single-Node](operations/deployment/infrastructure-setup/single-node-automation.md)
     * [Production - Three-Node](operations/deployment/infrastructure-setup/three-node-automation/README.md)

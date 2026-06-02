@@ -78,6 +78,12 @@ The orchestrator auto-loads `provision-output.yaml` next to `prod-config.yaml`. 
 
 ## Prerequisites
 
+{% hint style="warning" %}
+**Plan all environments up front.** The DNS records and TLS certs listed below cover only the admin tools (Rancher, optional Keycloak). Each environment you intend to bring up (dev, qa, prod, …) needs its own DNS records + wildcard cert too — and TLS issuance from sovereign or commercial CAs typically takes **2-4 weeks**.
+
+Run the [unified procurement workflow](../../prerequisites-procurement.md) at the start of the deployment: fill out one `deployment-plan.yaml` covering infra + every planned environment, generate a single checklist, and hand it to your IT / network / cert team. This avoids serial procurement cycles mid-deployment.
+{% endhint %}
+
 This section is **self-contained** — everything you need to have ready before running the automation. The orchestrator's `--preflight` mode mechanically verifies every item below and refuses to start if any is missing, with a clear error message and a link back to this section.
 
 ### 1. Three Ubuntu 24.04 VMs
@@ -875,6 +881,20 @@ Both passwords are printed live in the orchestrator's completion summary.
 sudo mkdir -p /etc/resolver
 echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 ```
+
+**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match *before* ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's internal IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
+
+The current automation generates the correct `-I` rules. If you have an older install with `-A` baked into `/etc/wireguard/wg0.conf`, hot-fix on the RP without re-running the install:
+
+```bash
+grep PostUp /etc/wireguard/wg0.conf                # see what's there
+# If you see "-A FORWARD ... -j ACCEPT":
+sudo sed -i 's/-A FORWARD/-I FORWARD 1/g' /etc/wireguard/wg0.conf
+sudo systemctl restart wg-quick@wg0
+sudo iptables -L FORWARD -n --line-numbers | head -5   # ACCEPT for wg0 should be on line 1
+```
+
+Then from the laptop: `ping <compute_private_ip>` should answer.
 
 **Browser certificate warning even after trusting the CA** — on macOS the CA must be trusted at the **System** keychain (not Login keychain). Run the `security add-trusted-cert -k /Library/Keychains/System.keychain ...` form, then restart the browser.
 
