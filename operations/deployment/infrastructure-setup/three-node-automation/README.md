@@ -79,9 +79,9 @@ The orchestrator auto-loads `provision-output.yaml` next to `prod-config.yaml`. 
 ## Prerequisites
 
 {% hint style="warning" %}
-**Plan all environments up front.** The DNS records and TLS certs listed below cover only the admin tools (Rancher, optional Keycloak). Each environment you intend to bring up (dev, qa, prod, …) needs its own DNS records + wildcard cert too — and TLS issuance from sovereign or commercial CAs typically takes **2-4 weeks**.
+**Start procurement early.** The DNS records and TLS certs listed below take time to procure — issuance from sovereign or commercial CAs typically runs **2–4 weeks**. If a missing cert is discovered mid-install, that becomes a 2–4 week delay.
 
-Run the [unified procurement workflow](../../prerequisites-procurement.md) at the start of the deployment: fill out one `deployment-plan.yaml` covering infra + every planned environment, generate a single checklist, and hand it to your IT / network / cert team. This avoids serial procurement cycles mid-deployment.
+See the [**Prerequisites & Procurement**](../../prerequisites-procurement.md) page for a single fillable checklist (admin + production hostnames + certs + server access + firewall ports) you can hand to your IT / network / cert team **before** any servers are touched. Procurement then runs in parallel with VM provisioning.
 {% endhint %}
 
 This section is **self-contained** — everything you need to have ready before running the automation. The orchestrator's `--preflight` mode mechanically verifies every item below and refuses to start if any is missing, with a clear error message and a link back to this section.

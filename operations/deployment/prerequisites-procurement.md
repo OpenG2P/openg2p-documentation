@@ -1,214 +1,251 @@
 ---
 description: >-
-  Single source of truth for everything a customer must procure to bring
-  up an OpenG2P deployment — DNS records, TLS certificates, server access.
+  Everything a customer must procure before installing OpenG2P in production —
+  DNS records, TLS certificates, server access. Fill in your values and hand
+  the checklist to your IT / network / cert team.
 ---
 
 # Prerequisites & Procurement
 
-This page is the **single source of truth** for what a customer must procure before any OpenG2P installation runs. Both the [three-node infrastructure automation](infrastructure-setup/three-node-automation/) and the [multi-node environment setup](environment-setup-multi-node.md) link here as the first prerequisite.
+This page is the **single source of truth** for what a customer must procure before any OpenG2P installation runs. The [three-node infrastructure automation](infrastructure-setup/three-node-automation/) and the [environment setup](environment-setup-multi-node.md) both link here as the first prerequisite.
 
 {% hint style="warning" %}
-**Plan all environments up front.** TLS certificate issuance — especially from sovereign or commercial CAs — typically takes **2-4 weeks**. If you discover a missing certificate mid-deployment, that becomes a 2-4 week delay. List every environment you intend to bring up (dev, qa, prod, etc.) in the deployment plan, generate the full checklist once, and start procurement before any servers are touched.
+**Start procurement early.** TLS certificate issuance — especially from sovereign or commercial CAs — typically takes **2–4 weeks**. If a missing certificate is discovered mid-install, that becomes a 2–4 week delay. Fill in the worksheet below and hand the resulting checklist to your IT / network / cert team **before** any servers are touched, so procurement runs in parallel with VM provisioning.
 {% endhint %}
 
-## The two-step procurement workflow
+## How to use this page
 
-1. **Fill out a Deployment Plan** — one YAML file listing infra hostnames + every planned environment.
-2. **Generate the checklist** — one printable document the customer hands to their network/cert/IT team.
+1. **Read the overview** below so you know what's being procured and why.
+2. **Fill in the worksheet** in [Step 1](#step-1-fill-in-your-values) with your real values.
+3. **Copy the checklist** in [Step 2](#step-2-the-procurement-checklist), substitute your worksheet values into the angle-bracket placeholders, print / save as PDF, and email it to your IT / network / cert team.
+4. **A worked example** at the bottom shows what the filled-in checklist looks like.
 
-Procurement then runs in parallel with VM provisioning. By the time infrastructure is ready, certs and DNS are in place too, and the install runs end-to-end without delay.
+## What needs to be procured
 
-### Where this lives
+| Category | What | How many |
+| --- | --- | --- |
+| **DNS A records** | Admin hostnames (`rancher`, `keycloak`) | 2, pointing to the RP's **private** IP |
+| **DNS A records** | Production hostnames (apex + wildcard for citizen services) | 2, pointing to the RP's **public** IP |
+| **TLS certificates** | Wildcard cert covering admin hostnames | 1 |
+| **TLS certificates** | Wildcard cert covering production hostnames | 1 |
+| **Server access** | SSH (+ sudo) to the three VMs | 1 admin workstation CIDR |
+
+A single wildcard cert per domain covers every subdomain — there's no need to procure a separate cert per service. See [Why wildcards](#why-wildcards).
+
+## Step 1 — Fill in your values
+
+Copy this worksheet into a working document (a `.txt` file, a wiki page, anywhere) and fill in the right-hand column. You'll substitute these values into the checklist in Step 2.
+
+| Field | Your value | What it is |
+| --- | --- | --- |
+| `ORG_NAME` | _e.g. "Country X Ministry of Social Welfare"_ | Used on the cert subject line and in the procurement-request header |
+| `ADMIN_DOMAIN` | _e.g. `openg2p.gov.example`_ | Parent domain for admin hostnames. `rancher.<ADMIN_DOMAIN>` and `keycloak.<ADMIN_DOMAIN>` are derived from it |
+| `PROD_DOMAIN` | _e.g. `prod.openg2p.gov.example`_ | Base domain for production citizen-facing services. Usually a subdomain of the admin domain |
+| `RP_PRIVATE_IP` | _e.g. `10.0.1.10`_ | The Reverse-Proxy VM's primary NIC IP. Admin hostnames resolve here; reachable only via VPN or the private network |
+| `RP_PUBLIC_IP` | _e.g. `198.51.100.5`_ | The Reverse-Proxy VM's public IP (Elastic IP on AWS, public IP / NAT'd address on-prem). Production hostnames resolve here; also the Wireguard endpoint |
+| `ADMIN_CIDR` | _e.g. `203.0.113.5/32`_ | Public IP (`/32`) or office CIDR allowed to SSH to the Reverse-Proxy. The deployer's laptop or jump host |
+| `SSH_USER` | _default: `ubuntu`_ | Linux user with sudo on the VMs (Ubuntu 24.04 cloud images default to `ubuntu`) |
+
+{% hint style="info" %}
+**`ADMIN_DOMAIN` vs `PROD_DOMAIN`** — they're often related but distinct:
+* `ADMIN_DOMAIN` = `openg2p.gov.example` → admin URLs become `rancher.openg2p.gov.example`, `keycloak.openg2p.gov.example`
+* `PROD_DOMAIN` = `prod.openg2p.gov.example` → production services live under it (`registry.prod.openg2p.gov.example`, `signet.prod.openg2p.gov.example`, etc.)
+
+`PROD_DOMAIN` is most often a subdomain of `ADMIN_DOMAIN`, but they don't have to be related — pick whatever your organisation already uses.
+{% endhint %}
+
+## Step 2 — The procurement checklist
+
+Copy the block below into an email / document, replace every `<placeholder>` with the value from your worksheet, and send to your IT / network / cert team.
 
 ```
-automation/procurement/
-├── deployment-plan.example.yaml      # Template — copy and edit
-└── generate-procurement-checklist.sh # Reads the plan, prints the checklist
+══════════════════════════════════════════════════════════════════════════════
+  PROCUREMENT REQUEST — OpenG2P Production Deployment
+  Organisation: <ORG_NAME>
+══════════════════════════════════════════════════════════════════════════════
+
+
+─── 1. DNS A RECORDS ─────────────────────────────────────────────────────────
+
+  Admin hostnames — private channel (reachable only via VPN).
+  Point these records at the Reverse-Proxy's PRIVATE IP <RP_PRIVATE_IP>:
+
+      A    rancher.<ADMIN_DOMAIN>      →  <RP_PRIVATE_IP>
+      A    keycloak.<ADMIN_DOMAIN>     →  <RP_PRIVATE_IP>
+
+  Production hostnames — public channel (citizen-facing).
+  Point these records at the Reverse-Proxy's PUBLIC IP <RP_PUBLIC_IP>:
+
+      A    <PROD_DOMAIN>               →  <RP_PUBLIC_IP>
+      A    *.<PROD_DOMAIN>             →  <RP_PUBLIC_IP>
+
+
+─── 2. TLS CERTIFICATES ──────────────────────────────────────────────────────
+
+  Issue ONE wildcard certificate for each of the two domains.
+  Each wildcard MUST also cover the apex (the bare domain).
+
+      • *.<ADMIN_DOMAIN>      SANs must include:   <ADMIN_DOMAIN>
+                                                   rancher.<ADMIN_DOMAIN>
+                                                   keycloak.<ADMIN_DOMAIN>
+
+      • *.<PROD_DOMAIN>       SANs must include:   <PROD_DOMAIN>
+                                                   *.<PROD_DOMAIN>
+
+  Accepted formats (the install scripts auto-detect):
+
+      • PEM fullchain + key                 (*.fullchain.pem + *.key)   — preferred
+      • Separate PEM (cert + chain + key)   (*.cert.pem + *.chain.pem + *.key)
+      • PFX / P12 (password-protected)      (*.pfx / *.p12; supply the password)
+      • ZIP bundle (Sectigo / DigiCert)     (*.zip)
+
+
+─── 3. CERT PLACEMENT ON THE REVERSE-PROXY ───────────────────────────────────
+
+  Once issued, upload the certs to the Reverse-Proxy node at:
+
+      /etc/openg2p/certs/<ADMIN_DOMAIN>/fullchain.pem      (mode 644)
+      /etc/openg2p/certs/<ADMIN_DOMAIN>/privkey.pem        (mode 600)
+
+      /etc/openg2p/certs/<PROD_DOMAIN>/fullchain.pem       (mode 644)
+      /etc/openg2p/certs/<PROD_DOMAIN>/privkey.pem         (mode 600)
+
+
+─── 4. SERVER ACCESS ─────────────────────────────────────────────────────────
+
+  SSH (with sudo) to all three VMs (Reverse-Proxy, Compute, Storage) from:
+
+      <ADMIN_CIDR>     (the deployer's workstation / jump host public IP /32)
+
+  Use the OS user: <SSH_USER>
+
+
+─── 5. NETWORK PORTS / FIREWALL ──────────────────────────────────────────────
+
+  Reverse-Proxy node — INGRESS rules required:
+
+      Port        Proto   Source            Purpose
+      22          TCP     <ADMIN_CIDR>      Admin SSH
+      51820       UDP     0.0.0.0/0         Wireguard VPN endpoint
+      80          TCP     0.0.0.0/0         HTTP → HTTPS redirect (citizen services)
+      443         TCP     0.0.0.0/0         Citizen-facing HTTPS (env services)
+      all         any     private subnet    Intra-cluster traffic
+
+  Compute node — INGRESS rules required:
+
+      22          TCP     <ADMIN_CIDR>      Admin SSH
+      all         any     private subnet    Kubernetes / cluster traffic
+
+  Storage node — INGRESS rules required:
+
+      22          TCP     <ADMIN_CIDR>      Admin SSH
+      2049        TCP     private subnet    NFS (from compute node)
+      5432        TCP     private subnet    PostgreSQL (from compute node)
+
+
+══════════════════════════════════════════════════════════════════════════════
+  END OF REQUEST
+══════════════════════════════════════════════════════════════════════════════
 ```
 
-## Step 1 — Fill out the Deployment Plan
+## Worked example
 
-Copy the example:
-
-```bash
-cd automation/procurement
-cp deployment-plan.example.yaml deployment-plan.yaml
-```
-
-Edit `deployment-plan.yaml` with your real values. The plan covers four areas:
-
-<table><thead><tr><th width="180">Section</th><th>What you fill in</th></tr></thead><tbody><tr><td><strong>Infrastructure</strong></td><td><code>nginx_node_ip</code>, <code>rancher_hostname</code>, optionally <code>keycloak_hostname</code></td></tr><tr><td><strong>Environments</strong></td><td>Comma-separated list of environment names (e.g. <code>dev,qa,prod</code>) and a <code>base_domain</code> per environment</td></tr><tr><td><strong>Cert placement</strong></td><td>Standard path on the Nginx node where certs will be placed (default <code>/etc/openg2p/certs</code>)</td></tr><tr><td><strong>Access</strong></td><td>SSH user, admin CIDR — informational; included in the printed checklist</td></tr></tbody></table>
-
-A minimal plan looks like this:
-
-```yaml
-organization: "Country X Ministry of Social Welfare"
-
-nginx_node_ip: "10.0.1.10"
-rancher_hostname: "rancher.openg2p.gov.example"
-
-environments: "dev,qa,prod"
-
-env_dev_base_domain:  "dev.openg2p.gov.example"
-env_qa_base_domain:   "qa.openg2p.gov.example"
-env_prod_base_domain: "prod.openg2p.gov.example"
-
-cert_base_path: "/etc/openg2p/certs"
-ssh_user: "ubuntu"
-admin_workstation_cidr: "203.0.113.5/32"
-```
-
-## Step 2 — Generate the procurement checklist
-
-```bash
-./generate-procurement-checklist.sh --plan deployment-plan.yaml
-```
-
-To save the checklist to a file (e.g. to email to the customer):
-
-```bash
-./generate-procurement-checklist.sh --plan deployment-plan.yaml --out checklist.txt
-```
-
-The generator prints a six-section document covering everything the customer must arrange:
+Below is the same checklist with realistic values filled in, so you can see what the final artifact looks like.
 
 <details>
 
-<summary>Sample output</summary>
+<summary>Show worked example</summary>
 
 ```
 ══════════════════════════════════════════════════════════════════════════════
-  PROCUREMENT CHECKLIST — OpenG2P Deployment
-  Country X Ministry of Social Welfare
+  PROCUREMENT REQUEST — OpenG2P Production Deployment
+  Organisation: Country X Ministry of Social Welfare
 ══════════════════════════════════════════════════════════════════════════════
 
-─── 1. DNS A RECORDS ─────────────────────────────────────────────────
 
-  All hostnames below must resolve to the Nginx node's public IP:
-      10.0.1.10
+─── 1. DNS A RECORDS ─────────────────────────────────────────────────────────
 
-  Admin hostnames (required):
-      A   rancher.openg2p.gov.example                   → 10.0.1.10
+  Admin hostnames — private channel (reachable only via VPN).
+  Point these records at the Reverse-Proxy's PRIVATE IP 10.0.1.10:
 
-  Environment hostnames (one base + one wildcard per environment):
-      A   dev.openg2p.gov.example                       → 10.0.1.10
-      A   *.dev.openg2p.gov.example                     → 10.0.1.10
-      A   qa.openg2p.gov.example                        → 10.0.1.10
-      A   *.qa.openg2p.gov.example                      → 10.0.1.10
-      A   prod.openg2p.gov.example                      → 10.0.1.10
-      A   *.prod.openg2p.gov.example                    → 10.0.1.10
+      A    rancher.openg2p.gov.example       →  10.0.1.10
+      A    keycloak.openg2p.gov.example      →  10.0.1.10
 
-─── 2. TLS CERTIFICATES TO OBTAIN ────────────────────────────────────
+  Production hostnames — public channel (citizen-facing).
+  Point these records at the Reverse-Proxy's PUBLIC IP 198.51.100.5:
 
-  Admin certificates:
-      • rancher.openg2p.gov.example                   (single-host cert)
+      A    prod.openg2p.gov.example          →  198.51.100.5
+      A    *.prod.openg2p.gov.example        →  198.51.100.5
 
-  Environment certificates (one wildcard per environment):
-      • *.dev.openg2p.gov.example                     (wildcard cert, must include apex)
-      • *.qa.openg2p.gov.example                      (wildcard cert, must include apex)
-      • *.prod.openg2p.gov.example                    (wildcard cert, must include apex)
 
-─── 3. CERT PLACEMENT ON NGINX NODE ──────────────────────────────────
-─── 4. SERVER ACCESS REQUIRED ────────────────────────────────────────
-─── 5. NETWORK PORTS / FIREWALL ──────────────────────────────────────
-─── 6. ADDING MORE ENVIRONMENTS LATER ────────────────────────────────
+─── 2. TLS CERTIFICATES ──────────────────────────────────────────────────────
+
+  Issue ONE wildcard certificate for each of the two domains.
+  Each wildcard MUST also cover the apex (the bare domain).
+
+      • *.openg2p.gov.example     SANs must include:   openg2p.gov.example
+                                                       rancher.openg2p.gov.example
+                                                       keycloak.openg2p.gov.example
+
+      • *.prod.openg2p.gov.example  SANs must include: prod.openg2p.gov.example
+                                                       *.prod.openg2p.gov.example
+
+  Accepted formats: PEM fullchain + key (preferred), Separate PEM, PFX/P12, ZIP.
+
+
+─── 3. CERT PLACEMENT ON THE REVERSE-PROXY ───────────────────────────────────
+
+      /etc/openg2p/certs/openg2p.gov.example/fullchain.pem      (mode 644)
+      /etc/openg2p/certs/openg2p.gov.example/privkey.pem        (mode 600)
+
+      /etc/openg2p/certs/prod.openg2p.gov.example/fullchain.pem (mode 644)
+      /etc/openg2p/certs/prod.openg2p.gov.example/privkey.pem   (mode 600)
+
+
+─── 4. SERVER ACCESS ─────────────────────────────────────────────────────────
+
+  SSH from:  203.0.113.5/32   as user 'ubuntu'.
+
+
+─── 5. NETWORK PORTS / FIREWALL ──────────────────────────────────────────────
+
+  (as listed in the template — same for every deployment)
 ```
 
 </details>
 
-Send this output to the customer's network/cert/IT team. Each section is self-contained and actionable.
+## Reference notes for the cert team
 
-## What gets procured
+### Why wildcards
 
-### DNS A records
+Every microservice in a production environment (registry, e-Signet, ODK, MinIO, Superset, etc.) gets its own subdomain — e.g. `registry.prod.openg2p.gov.example`, `signet.prod.openg2p.gov.example`. A single wildcard cert (`*.prod.openg2p.gov.example`) covers all of them; this keeps procurement to **one cert per domain** instead of one per service.
 
-| Record | Points to | Purpose |
-| --- | --- | --- |
-| `rancher.<your-domain>` | Nginx internal IP (or public, depending on access model) | Admin UI for Rancher |
-| `<env>.<your-domain>` | Nginx public IP | Apex for the environment |
-| `*.<env>.<your-domain>` | Nginx public IP | Wildcard for all services in the env (e.g. `minio.<env>.<your-domain>`, `superset.<env>.<your-domain>`) |
+The wildcard must also be valid for the **apex** (the bare domain) so the same cert serves `prod.openg2p.gov.example` directly. Most CAs include the apex automatically when issuing a wildcard, but always confirm with your CA.
 
-One base + one wildcard A record **per environment** is enough — no per-service records are needed thanks to the wildcard.
+### Cert formats in detail
 
-### TLS certificates
-
-| Type | Required for | Format |
-| --- | --- | --- |
-| Single-host | Admin hostnames (Rancher, optional shared Keycloak) | PEM fullchain + key |
-| Wildcard | Each environment — `*.<env-base-domain>` (must also cover the apex) | PEM fullchain + key |
-
-{% hint style="info" %}
-**Why wildcard for environments?** Every microservice in an environment (MinIO, Superset, eSignet, ODK, etc.) gets its own subdomain — `minio.qa.openg2p.org`, `superset.qa.openg2p.org`, and so on. A single wildcard cert covers all of them. This keeps procurement to one cert per environment instead of ten.
-{% endhint %}
-
-#### Accepted formats
-
-The install scripts auto-detect cert formats. Common ones from government / commercial CA procurement:
-
-* **PEM fullchain + key** — `*.fullchain.pem` + `*.key`
-* **Separate PEM** — `*.cert.pem` + `*.chain.pem` + `*.key`
-* **PFX / P12** (password-protected) — `*.pfx` / `*.p12` (specify the password in the install config)
-* **ZIP bundle** (Sectigo / DigiCert style) — `*.zip`
-
-For more on cert formats in government deployments, see [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md).
+For more on common cert formats from government / sovereign / commercial CA procurement, see [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md).
 
 {% hint style="warning" %}
 **Don't use Let's Encrypt for production.** It's fine for a sandbox or PoC, but most governments require certs from a commercial CA (DigiCert, GlobalSign, Sectigo) or their national / sovereign CA. The install scripts default to customer-provided certs; Let's Encrypt is supported only as a sandbox option.
 {% endhint %}
 
-### Cert placement on the Nginx node
+### After the certs arrive
 
-Each cert must be placed on the Reverse-Proxy (Nginx) node at a predictable path so the install scripts can find it:
+1. The IT / cert team uploads each cert + key pair to the predictable paths under `/etc/openg2p/certs/...` on the Reverse-Proxy node.
+2. The deployer points `prod-config.yaml`'s `tls_wildcard_cert` / `tls_wildcard_key` at the admin-domain cert (the install scripts use this for Nginx admin server blocks).
+3. The production-domain cert is consumed later by the [environment setup](environment-setup-multi-node.md) when citizen-facing services are deployed.
 
-```
-/etc/openg2p/certs/<domain>/fullchain.pem    (mode 644)
-/etc/openg2p/certs/<domain>/privkey.pem      (mode 600)
-```
+You can validate certs at any time without running the full install:
 
-For example, for the plan shown above:
-
-```
-/etc/openg2p/certs/rancher.openg2p.gov.example/
-/etc/openg2p/certs/dev.openg2p.gov.example/
-/etc/openg2p/certs/qa.openg2p.gov.example/
-/etc/openg2p/certs/prod.openg2p.gov.example/
+```bash
+./openg2p-prod.sh --validate-certs --config prod-config.yaml
 ```
 
-The customer's IT team uploads certs to these paths once they're issued.
-
-### Server access
-
-* SSH access (root or sudo) to the Reverse-Proxy / Nginx node
-* SSH access to the Kubernetes control-plane node(s) — only if the operator's workstation isn't the same machine
-* `kubectl` admin access to the cluster (kubeconfig file with cluster-admin rights, retrievable from the cluster node after RKE2 install)
-
-### Network ports
-
-| Node | Port | Direction |
-| --- | --- | --- |
-| Nginx | `443/TCP` | Public — citizen + admin HTTPS (admin via VPN) |
-| Nginx | `80/TCP` | Public — HTTP→HTTPS redirect |
-| Nginx | `22/TCP` | Admin CIDR — SSH |
-| Nginx | `51820/UDP` | Public — Wireguard (if used) |
-| Cluster | `6443/TCP` | Operator workstation — kubectl |
-| Storage | `5432/TCP` | Private subnet only — PostgreSQL |
-| Storage | `2049/TCP` | Private subnet only — NFS |
-
-## Adding more environments later
-
-If a new environment is needed months after initial deployment:
-
-1. Append the new env name to the `environments:` list in your `deployment-plan.yaml` and add the matching `env_<name>_base_domain` entry.
-2. Re-run `./generate-procurement-checklist.sh` — the output will include the same overall checklist, but only the new env's DNS records and cert are still to be procured.
-3. Procure DNS + cert for the new env.
-4. Run `./env-cluster.sh --config <env-config.yaml>` to bring the new environment online.
-
-No infrastructure rebuild is needed — each environment is independent inside the same cluster.
+This checks each cert: parses as PEM, key matches cert, not expired, and the SAN actually covers the configured hostnames.
 
 ## Related pages
 
 * [Three-node infrastructure automation](infrastructure-setup/three-node-automation/) — install the cluster after certs are in place
-* [Environment setup (multi-node)](environment-setup-multi-node.md) — install OpenG2P modules per environment
-* [Single-node automation](infrastructure-setup/single-node-automation.md) — sandbox setup (Let's Encrypt acceptable)
-* [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md) — cert formats commonly seen in gov procurement
+* [Environment setup](environment-setup-multi-node.md) — install OpenG2P modules into the production environment
+* [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md) — cert formats commonly seen in government procurement

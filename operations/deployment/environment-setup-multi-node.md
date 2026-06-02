@@ -13,7 +13,7 @@ Note that for a  single-node setup the environment is installed as part of the [
 {% hint style="danger" %}
 **Before you start — procurement prerequisites**
 
-DNS records, TLS certificates, and server access for this environment must already be in place before `env-cluster.sh` runs. If you have not yet planned and procured these, start with the [**Prerequisites & Procurement**](prerequisites-procurement.md) page — fill out the deployment plan once, generate a single checklist covering every environment, and hand it to your IT / network / cert team. TLS issuance from sovereign or commercial CAs typically takes 2-4 weeks; planning all environments up front avoids serial procurement cycles.
+DNS records, TLS certificates, and server access for this environment must already be in place before `env-cluster.sh` runs. If you have not yet procured these, start with the [**Prerequisites & Procurement**](prerequisites-procurement.md) page — it contains a single fillable checklist (admin + production hostnames + certs + server access + firewall ports) you can hand to your IT / network / cert team. TLS issuance from sovereign or commercial CAs typically takes 2–4 weeks, so do this **before** running any installer.
 {% endhint %}
 
 {% hint style="warning" %}
