@@ -10,12 +10,17 @@ The suggested convention is given below.
 
 \<component>.\<environment>.\<your org domain>.\<tld>
 
-| Component  | Example Domain                  |
-| ---------- | ------------------------------- |
-| SPAR       | spar.dev.openg2p.org            |
-| Keymanager | keymanager-spar.dev.openg2p.org |
+Each SPAR API has its own hostname, set directly in the Helm values (or the
+Rancher form). Defaults below use the `trial` environment segment.
 
-All the above domains point to Nginx IP corresponding to server (virtual host) that routes to Istio Ingress gateway server on [OpenG2P Cluster](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster).
+| Component | Helm value | Example Domain (environment = `trial`) |
+| --- | --- | --- |
+| SPAR Mapper Partner API | `sparMapperAPI.sparHostname` | `spar.trial.openg2p.org` |
+| Beneficiary Portal API | `benePortalAPI.benePortalHostname` | `beneficiary.trial.openg2p.org` |
+
+All the above domains point to the Nginx IP for the server (virtual host) that
+routes to the Istio Ingress gateway on the
+[OpenG2P Cluster](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster).
 
 ## Certificates
 

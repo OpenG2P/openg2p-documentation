@@ -77,6 +77,6 @@ In this option, beneficiaries have to instruct their banks (or mobile wallet ser
 
 In this, all the participant banks (and mobile wallet service providers) have to develop this technology infrastructure to update the Mapper and implement this process in their branches.
 
-#### Option - 2 - Beneficiaries directly access the SPAR Self Service Portal
+#### Option - 2 - Beneficiaries update via the SPAR Beneficiary Portal
 
-In this option, Beneficiaries access the Self Service Portal of SPAR Mapper and update their Account Number (or Wallet ID) against their ID. The Self Service Portal provides flexibility to the beneficiaries to modify this anytime.
+In this option, beneficiaries use the SPAR Beneficiary Portal API to update their Account Number (or Wallet ID) against their ID. Implementing organizations build (or integrate) a front-end on top of this API, giving beneficiaries the flexibility to modify their financial address anytime.

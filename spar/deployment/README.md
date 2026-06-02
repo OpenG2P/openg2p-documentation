@@ -1,80 +1,84 @@
 ---
-description: SPAR Deployment
+description: Deploying OpenG2P SPAR on Kubernetes using Helm charts.
 ---
 
 # Deployment
 
-The instructions here pertain to the deployment of all SPAR components on the Kubernetes cluster using [Helm charts](https://docs.openg2p.org/spar/deployment/helm-charts). The charts install SPAR components along with the Postgresql server specific to SPAR. All the components are installed in the same namespace. The deployment may be achieved by the following methods:
+SPAR is deployed over Kubernetes infrastructure that offers **production-grade**
+deployment along with powerful security, access control and operational features.
+Learn more about the deployment architecture
+[here](../../deployment/concepts/).
 
-* [Using Rancher UI](./#installation-using-rancher-ui)
-* [Using command line](./#installation-using-the-command-line)
+Deployment is **largely automated**. Once the cluster and environment are in
+place, the entire SPAR subsystem — the Mapper Partner API, the Beneficiary Portal
+API, the PostgreSQL database/role and the Keycloak client — installs from a
+**single Helm chart** (`spar`) via the Rancher UI. No manual database, Keycloak
+or post-install configuration is required.
 
-## Prerequisites
+## Deployment steps
 
-Before you deploy, make sure the following are in place:
+1. [Infrastructure setup](../../operations/deployment/infrastructure-setup/)
+2. [Environment creation](../../operations/deployment/environment-setup-multi-node.md)
+3. [SPAR installation](#spar-installation)
 
-* ✅ **Kubernetes cluster** is up and running
-* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
-* ✅ **Namespace is created** (via Rancher under a Project)
-* ✅ **Project Owner access** on the OpenG2P namespace
-* ✅ **Istio gateway** is set up in the namespace
+## SPAR installation
 
-## Installation using Rancher UI
+After steps 1 and 2, Rancher is up and running, so it is recommended to deploy
+SPAR from the **Rancher UI**.
 
-1. Log in to Rancher admin console.
-2. Select your cluster.
-3. Under **Apps -> Repositories** click the **Create** to add a repository.
-4. Provide **Name** as "openg2p" and target HTTPS **Index** **URL** as [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) and click on **Create**.
-5. Select the namespace in which you would like to install PBMS, from the namespace filter on the top-right.
-6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on **Include Prerelease Versions** under **Preferences** below the **Helm Charts**.
-7. Navigate to **Apps->Charts** page on Rancher. You can find the **OpenG2P SPAR** is listed in the dashboard.\
-   ![](<../../.gitbook/assets/image (74).png>)
-8. Click on the Helm chart, select the version to be installed, and click **Install**.
-9. On the next screen, choose a name for installation, like `spar`. Select the checkbox **Customise Helm** before the installation, and then click on **Next**.
-10. Navigate to each app's configuration page, and configure the following:
-    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base hostname is the wildcard hostname chosen during [Istio namespace setup](https://docs.openg2p.org/deployment/base-infrastructure/openg2p-cluster/cluster-setup/istio#namespace-setup). Example: `spar.dev.openg2p.org` etc. `<appname>` is arbitrary - default names have been provided.
-    2. **Keycloak Base Url** is your organization-wide Keycloak URL. (Ex: keycloak.\<your domain>.org)
-    3. OIDC Client details are asked. **Create Keycloak Client**, refer to [Keycloak Client Creation](../../deployment/deployment-guide/keycloak/keycloak-client-creation.md) guide.
-    4. Click on **Next** to navigate to **Helm** **Options** page. Disable `wait` flag. Click on **Install**.
-    5. Watch for every pods to enter a **Running** state. This may take several minutes.\
-       ![](<../../.gitbook/assets/image (63).png>)
+### Prerequisites
 
-## Installation using CLI
+1. Infrastructure and environment are created as given above. The **commons**
+   environment provides the shared services SPAR depends on — **PostgreSQL**,
+   **Keycloak**, **Keymanager** and the **Istio** gateway.
+2. You have full admin rights to the cluster and the Rancher UI.
 
-* Install the following utilities on your machine:
-  * `kubectl`, `istioctl`, `helm`, `jq`, `curl`, `wget`, `git`, `bash`, `envsubst`.
-* Clone the [https://github.com/openg2p/openg2p-spar-deployment](https://github.com/OpenG2P/openg2p-spar-deployment/) repo. Switch to the branch of interest. Navigate to `deployment` directory.
-*   Run.
+### Installation
 
-    ```bash
-    SPAR_HOSTNAME=spar.openg2p.sandbox.net \
-      NS=<namespace> \
-      ./install.sh
-    ```
+1. Login to the Rancher console.
+2. Select the cluster and namespace (environment).
+3. Under **Apps → Repositories**, make sure the repository
+   [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher)
+   is added.
+4. Under **Apps → Charts**, refresh all repositories.
+5. To show moving (pre-release) versions, click your user avatar (top-right) →
+   **Preferences** → enable **Include Prerelease Versions**.
+6. Select the **"OpenG2P SPAR"** chart.
+7. Select the version (_3-digit versions denote frozen releases; versions with a
+   `-develop` tag are moving versions_).
+8. On Install Step 1:
+   1. select the namespace;
+   2. give the installation a name — `spar` recommended (the database and role
+      are derived from this name);
+   3. select **Customize Helm options before install**;
+   4. Next.
+9. Review the variables. You typically set the two **hostnames** (Mapper API and
+   Beneficiary Portal API) and the **Keycloak** settings, and confirm the
+   Keycloak client should be created. See
+   [Helm Chart → Key parameters to change](helm-charts.md#key-parameters-to-change)
+   for the full list.
+10. On the **Helm Options** page, disable the `wait` flag, then **Install**.
+11. Wait for all pods to come up successfully (`Running` / `Completed`).
 
-## Access links
+### Post install check
 
-After installation, SPAR is accessible over following URLs based on the `SPAR_HOSTNAME` given above:
+With the default hostnames shown (namespace `trial`):
 
-* SPAR Self Service UI: `https://spar.openg2p.sandbox.net`
-* SPAR Self Service API: `https://spar.openg2p.sandbox.net/api/selfservice`
-* SPAR Mapper: `https://spar.openg2p.sandbox.net/api/mapper`
+1. Open `https://spar.<namespace>.openg2p.org/api/mapper/docs` — the SPAR Mapper
+   Partner API Swagger UI should load.
+2. Open `https://beneficiary.<namespace>.openg2p.org/api/bene-portal/docs` — the
+   Beneficiary Portal API Swagger UI should load.
 
-## Database
+{% hint style="info" %}
+The bare API base path (e.g. `/api/mapper/`) returns a 404 by design — there is
+no route there. Use `/docs`, or a specific endpoint.
+{% endhint %}
 
-Postgresql is installed as part of the above procedure in the same namespace. The default database created is `spardb` .
+## Reference
 
-## Onboard SPAR on eSignet
-
-* Create OIDC Client for SPAR in eSignet. Follow the method suggested by the ID Provider.
-  * If using mock eSignet, use this API to create OIDC client.
-* During OIDC client creation, you will be asked for (or given) a client ID and private key JWK as client secret.
-* Edit the SPAR DB, `login_provider` table and modify the `authorization_parameters` row of the first entry, with:
-  * appropriate URLs for `authorize_endpoint` , `token_endpoint` , `validate_endpoint`, `jwks_endpoint`, and `redirect_uri` fields.
-  * above client ID under the `client_id` field.
-  * and above private key jwk under the `client_assertion_jwk` field.
-* Seed/edit metadata of banks, wallets, branches, etc for the SPAR self-service portal in database. TODO: Elaborate.
-
-## Sanity testing
-
-TBD
+* [Helm Chart](helm-charts.md) — what the chart contains, all parameters, and the
+  command-line install option (for advanced / developer use).
+* [Keycloak Client](keycloak-client.md) — why the OIDC client is required and how
+  it is created.
+* [Domain Names and Certificates](domain-names-and-certificates.md)
+* [Teardown / Uninstall](teardown.md) — completely remove a release.

@@ -8,10 +8,10 @@ description: SPAR Privacy & Security
 
 SPAR APIs are consumed by two categories of clients
 
-1. Beneficiaries logging on to the Self-Service-Portal (through the Self-Service-Client) and consuming the APIs provided by openg2p-self-service-api
-2. Partner systems consuming the Mapper APIs provided by openg2p-spar-mapper-api. These partner systems can be Banks, National Clearing, PBMS/MIS Systems - systems in the G2P chain, using the lookup (resolve) API of Mapper. \
+1. Beneficiaries (via a front-end built on top of the Beneficiary Portal) consuming the APIs provided by openg2p-spar-bene-portal-api
+2. Partner systems consuming the Mapper APIs provided by openg2p-spar-mapper-partner-api. These partner systems can be Banks, National Clearing, PBMS/MIS Systems - systems in the G2P chain, using the lookup (resolve) API of Mapper. \
    \
-   The openg2p-spar-self-service-api (of point 1) which serves the self-service-ui, in turn has to consume the mapper APIs. In this context, the openg2p-spar-self-service-api will behave like a partner system&#x20;
+   The openg2p-spar-bene-portal-api (of point 1) in turn consumes the mapper APIs. In this context, the openg2p-spar-bene-portal-api will behave like a partner system&#x20;
 
 ### Transport security using a secure tunnel
 
@@ -21,17 +21,17 @@ Security of the payload during transmission (in both cases mentioned above) is h
 
 ### Authentication
 
-#### Case 1 - Authentication of Beneficiaries (Browser Client Application) consuming self-service-apis
+#### Case 1 - Authentication of Beneficiaries consuming bene-portal APIs
 
-This is handled by the Self Service API - integration with an OIDC - OAuth2.0 Login Provider. The beneficiary logs in, into the SPAR Self Service portal, using his/her National ID.
+This is handled by the Beneficiary Portal API - integration with an OIDC - OAuth2.0 Login Provider. The beneficiary logs in using his/her National ID.
 
-The Login Provider authorizes the beneficiary and provides the ID and Access tokens. The subsequent browser requests from the user, then carry these tokens to get access to the APIs.
+The Login Provider authorizes the beneficiary and provides the ID and Access tokens. The subsequent requests from the user then carry these tokens to get access to the APIs.
 
-There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mark style="color:blue;">**oauth**</mark>, in the self-service-api, that fulfil these functionalities.
+There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mark style="color:blue;">**oauth**</mark>, in the bene-portal-api, that fulfil these functionalities.
 
 #### Case 2 - Authentication of Partner Systems consuming mapper-apis
 
-(the self-service application that consumes mapper-apis - In this case, the self-service application is treated like a partner system consuming mapper apis)
+(the Beneficiary Portal API also consumes mapper-apis - In this case, it is treated like a partner system consuming mapper apis)
 
 ### Partner authorization
 

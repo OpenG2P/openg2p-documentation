@@ -1,23 +1,24 @@
 ---
-description: Providing Self Service features for the beneficiaries
+description: Providing self-update features for beneficiaries via the Beneficiary Portal API
 ---
 
-# SPAR Self Service
+# SPAR Beneficiary Portal
 
-The SPAR Self Service has two components - viz.
+The SPAR Beneficiary Portal lets beneficiaries view and update their own
+financial address in the registry. From v2.0 it is delivered as a single
+**API-only** component — `openg2p-spar-bene-portal-api` — that replaces the
+earlier Self-Service API + ReactJS UI. Implementing organizations build (or
+integrate) their own front-end on top of these APIs.
 
-1. SPAR Self Service - Microservice - Serving REST APIs
-2. SPAR Self Service - UI
+The **Beneficiary Portal API** offers the following features:
 
-The **SPAR Self Service Microservice** offers the following features
-
-* Integration with an OIDC-OAuth2.0 Login Provider
-* A Directory of all the financial institutions and their branches - to facilitate a beneficiary to define his/her full financial address
-* Strategy definitions (Construct & De-Construct) to construct Financial Address using the various attributes -
+* Integration with an OIDC-OAuth2.0 Login Provider (the beneficiary logs in with their National ID).
+* A directory of all the financial institutions and their branches - to facilitate a beneficiary to define his/her full financial address.
+* Strategy definitions (Construct & De-Construct) to construct a Financial Address using the various attributes -
   * Bank Name, Bank Code, Branch Code, Branch Name and Account Number in case of Bank Accounts
   * Wallet Provider Code, Wallet Provider Name, Email Address and Phone Number in case of Wallets
+* Search APIs for Banks & their Branches and Wallet Providers, so a beneficiary can construct their complete financial address.
+* APIs that allow a beneficiary to log in and change their destination account (or wallet) any number of times.
 
-The **SPAR Self Service UI** - is a reference UI (based on ReactJS). The government department can use this UI and create an implementation based on its UI strategy.
-
-* The SPAR Self Service UI provides a search functionality for Banks & their Branches, Wallet Providers - to enable a beneficiary&#x20;
-* The UI also allows a beneficiary to log in and change his/her destination account (or wallet) any number of times&#x20;
+The simplified DFSP model behind these APIs uses three entity types: **BANK**,
+**BRANCH** and **WALLET-PROVIDER**.

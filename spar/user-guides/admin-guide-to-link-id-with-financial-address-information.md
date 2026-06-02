@@ -16,7 +16,7 @@ This document contains step-by-step instructions for the administrator to link I
 
 The administrator must follow the following sequence process:
 
-1. The administrator must clone the repository [https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts](https://github.com/OpenG2P/social-payments-account-registry/tree/develop/scripts)
+1. The administrator must clone the SPAR repository [https://github.com/OpenG2P/openg2p-spar](https://github.com/OpenG2P/openg2p-spar) and locate the admin/seed scripts within it.
 2. Click the python script file _**link\_mapper.py**_. The script is displayed.
 
 <figure><img src="../../.gitbook/assets/python-script.png" alt=""><figcaption><p>Python script</p></figcaption></figure>

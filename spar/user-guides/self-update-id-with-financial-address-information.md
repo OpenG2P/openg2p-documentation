@@ -1,5 +1,14 @@
 # Link FA (Self Service)
 
+{% hint style="warning" %}
+This guide describes the legacy SPAR **Self-Service UI**, which was removed in
+SPAR v2.0. SPAR no longer ships a beneficiary UI — beneficiary self-update is now
+provided through the **Beneficiary Portal API**
+(`openg2p-spar-bene-portal-api`), on top of which an implementing organization
+builds its own front-end. The screens below are retained for reference and may
+not match a current deployment.
+{% endhint %}
+
 This document contains step-by-step instructions for the beneficiaries to login self-service portal offered by SPAR (Social Payments Account Registry) and map his/her national ID with their respective bank account, mobile wallet account, and email wallet account.
 
 ## Prerequisites

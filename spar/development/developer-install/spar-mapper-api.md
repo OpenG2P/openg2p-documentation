@@ -12,7 +12,7 @@ description: >-
 ### Prerequisites
 
 * Any machine running Linux (e.g., Ubuntu), macOS, or Windows
-* Python3.10 or later
+* Python 3.11 or later
 * Git
 * PostgreSQL
 * virtualenv
@@ -46,7 +46,7 @@ json-logging==1.3.0
 MarkupSafe==2.1.5
 openg2p-g2pconnect-common-lib==1.0.0
 openg2p-g2pconnect-mapper-lib==1.0.0
--e git+https://github.com/OpenG2P/openg2p-spar-mapper-api.git@00a3f5c3281c9ad113fb939c9c653775f3394546#egg=openg2p_spar_mapper_api
+-e ./core/mapper-partner-api   # openg2p-spar-mapper-partner-api (local, from the openg2p-spar repo)
 openg2p_fastapi_common==1.0.0
 orjson==3.9.15
 packaging==24.0
@@ -87,16 +87,17 @@ websockets==12.0
 sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 ```
 
-* Clone the repository&#x20;
+* Clone the consolidated repository&#x20;
 
 ```sh
-git clone https://github.com/OpenG2P/openg2p-spar-mapper-api.git
+git clone https://github.com/OpenG2P/openg2p-spar.git
 ```
 
-* Navigate to the project root and switch to branch 1.0.0
+* Switch to the branch of interest (e.g. `develop`) and navigate to the mapper partner API project
 
 ```sh
-cd openg2p-spar-mapper-api && git checkout 1.0.0
+cd openg2p-spar && git checkout develop
+cd core/mapper-partner-api
 ```
 
 * Create a virtual environment with Python 3
@@ -114,9 +115,9 @@ source venv/bin/activate
 * Install the necessary dependencies
 
 ```sh
-pip install -r test-requirements.txt &&
-pip install greenlet && 
-pip install -e .
+pip install -r ../test-requirements.txt &&
+pip install greenlet &&
+pip install -e ../models -e ../mapper-core -e .
 ```
 
 * Create a '.env' file and configure database
@@ -124,13 +125,13 @@ pip install -e .
 
       ```xml
       # Application Port
-      SPAR_MAPPER_PORT='8007' 
+      SPAR_MAPPER_PARTNER_API_PORT='8000'
 
       # Database credentials
-      SPAR_MAPPER_DB_HOSTNAME='localhost'
-      SPAR_MAPPER_DB_USERNAME='sparuser'
-      SPAR_MAPPER_DB_PASSWORD='password'
-      SPAR_MAPPER_DB_DBNAME='spardb'
+      SPAR_MAPPER_PARTNER_API_DB_HOSTNAME='localhost'
+      SPAR_MAPPER_PARTNER_API_DB_USERNAME='sparuser'
+      SPAR_MAPPER_PARTNER_API_DB_PASSWORD='password'
+      SPAR_MAPPER_PARTNER_API_DB_DBNAME='spardb'
       ```
   *   Database setup
 
@@ -155,7 +156,7 @@ python main.py run
 ```
 
 * Access Swagger API Documentation
-  * [http://localhost:8007/docs](http://localhost:8007/docs)
+  * [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### Testing
 
@@ -167,4 +168,4 @@ pytest -s
 
 ### Contributing
 
-Contribution guidelines are available [here](https://github.com/OpenG2P/openg2p-spar-mapper-api/blob/develop/CONTRIBUTING.md).
+Contribution guidelines are available [here](https://github.com/OpenG2P/openg2p-spar/blob/develop/CONTRIBUTING.md).

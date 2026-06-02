@@ -23,7 +23,7 @@ The three-node deployment model itself — what each node does, why the split ex
 
 ### Why admin tools live behind Wireguard
 
-Rancher and Keycloak are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private interface (vNIC-internal), served on hostnames the customer provides — `rancher.<your-domain>` and `keycloak.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard, terminated on the RP's public interface; once the tunnel is up, traffic to the admin hostnames routes via the internal interface.
+Rancher and Keycloak are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private IP, served on hostnames the customer provides — `rancher.<your-domain>` and `keycloak.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard; once the tunnel is up, traffic to the admin hostnames is delivered to the RP's private-IP-bound Nginx and forwarded into the cluster.
 
 Grafana and Prometheus ship as part of the install but are **not** exposed on their own hostnames — they're reached from inside the Rancher UI (**Cluster Explorer → Monitoring**), so no dedicated DNS records or certs are needed for them.
 
@@ -35,14 +35,14 @@ For the full discussion of cert formats commonly seen in gov procurement (PEM sp
 
 ### Channel separation: public vs private on the RP
 
-The RP has two network interfaces (see [Prerequisites § 2](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)):
+The RP has **one** network interface. Channel separation between the public Wireguard endpoint and the private admin services is enforced at **two layers**, not by physical NICs:
 
-* **vNIC-public** — public IP. Wireguard server binds here. Future env-automation will bind public citizen-facing Nginx server blocks here too.
-* **vNIC-internal** — internal IP. Admin Nginx server blocks bind here (rancher, keycloak). The compute and storage nodes also live on this network.
+1. **Security group / network firewall** opens only `22/tcp` (admin SSH) and the Wireguard UDP port to the internet. Admin `80/443` is **not** opened externally.
+2. **Nginx bind**: admin server blocks listen on `rp_private_ip:443` — an address that's reachable only from within the private network and via Wireguard-decapsulated traffic. They never bind to the public IP / EIP.
 
-Nginx server blocks for each hostname are bound to a specific IP, so the two channels can't bleed into each other. Public traffic can never reach an admin hostname; only Wireguard peers (whose tunnel exits on the internal interface) can.
+So admin URLs (rancher, keycloak) are reachable only through Wireguard or from inside the private subnet. Future env-automation public server blocks will bind to the same node on different listen ports / hostnames, with the security group opening `80/443` to the world for those.
 
-The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the single-channel admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
+The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
 
 ### Idempotent and resumable
 
@@ -100,36 +100,27 @@ This section is **self-contained** — everything you need to have ready before 
 
 See [Resource Requirements](../../../../deployment/resource-requirements.md) for the full table per deployment model.
 
-### 2. Two network interfaces on the Reverse Proxy VM
+### 2. Reverse Proxy networking
 
-The RP node terminates **two** network channels:
+The RP is a **single-NIC** VM. Channel separation between the public Wireguard endpoint and the private admin services is enforced by the security group / network firewall plus where Nginx binds — not by physical interfaces. You need:
 
-* **Public channel** — Wireguard endpoint + (in env-automation later) citizen-facing services. Reachable from the internet.
-* **Private channel** — Nginx server blocks for the admin tools. Reachable only via Wireguard or the internal network.
+* **One public/reachable address** for the Wireguard endpoint (`rp_public_ip`). On AWS this is an Elastic IP; on-prem it's the public IP of the RP or a DNAT'd address from an upstream firewall. Admin laptops dial in to this.
+* **One private IP** for the host's NIC (`rp_private_ip`). Admin Nginx binds here; Wireguard-decapsulated traffic from admin laptops is delivered here; the customer's DNS records for `rancher.<your-domain>` and `keycloak.<your-domain>` point here.
 
-For the two channels to be enforced cleanly, the RP needs **two separate IPs** — one per channel — and they must be on **different network interfaces**. SNI / Host-header differentiation on a single IP is NOT enough: anyone able to reach the public IP on 443 could set the Host header and bypass the channel separation.
+The two may be the same address (e.g. a bare-metal host with one public IP and no NAT) or different (AWS, on-prem behind NAT) — the automation handles either.
 
-The standard pattern is:
+**Firewall / security-group rules** the RP needs open:
 
-| Interface       | Network                 | Used for                                                           |
-| --------------- | ----------------------- | ------------------------------------------------------------------ |
-| `vNIC-public`   | DMZ / public-facing     | Wireguard UDP, public Nginx server blocks                          |
-| `vNIC-internal` | internal mgmt / cluster | Admin Nginx server blocks (rancher, keycloak)                       |
+| Port      | Proto | Source        | Purpose                                                            |
+| --------- | ----- | ------------- | ------------------------------------------------------------------ |
+| 22        | TCP   | `admin_cidr`  | Admin SSH from your laptop's public IP                             |
+| `wg_port` | UDP   | `0.0.0.0/0`   | Wireguard endpoint                                                 |
+| 80, 443   | TCP   | `0.0.0.0/0`   | (Optional, for future env-automation public services. Admin 443 is **not** exposed here — Nginx binds admin blocks to the private IP only.) |
+| all       | any   | private subnet| Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress) |
 
-Adding the second vNIC is a sysadmin task done **before** running the automation. It's trivial on every common hypervisor:
-
-| Hypervisor                     | How to add the second vNIC                                                    |
-| ------------------------------ | ----------------------------------------------------------------------------- |
-| VMware vSphere / ESXi          | Point-and-click in vCenter; hot-add supported                                 |
-| KVM / libvirt (`virt-manager`) | XML edit or one click; hot-add supported                                      |
-| Proxmox VE                     | Web UI; seconds                                                               |
-| Microsoft Hyper-V              | Hyper-V Manager → Add Hardware → Network Adapter                              |
-| Nutanix AHV                    | Prism Element / Central                                                       |
-| OpenStack                      | Multiple ports per instance — built into the API                              |
-| oVirt / RHV                    | Per-VM NIC management                                                         |
-| Bare metal                     | Use a second physical NIC, or a VLAN-tagged sub-interface on the existing one |
-
-If you genuinely cannot add a second vNIC (rare on modern hypervisors), see [Fallback: two Nginx VMs](three-node-automation-fallback-second-rp.md).
+{% hint style="info" %}
+**Why one NIC?** Earlier versions of this automation used two NICs (one for public WG, one for admin Nginx) for "physical channel separation." In practice — especially on AWS where both ENIs land in the same subnet without policy routing — that produced asymmetric routing and intermittent SSH/HTTPS failures. SG-level separation (only WG + SSH open externally) gives the same effective protection without the kernel-routing fragility, and works identically on-prem and on AWS. If you have an existing two-NIC RP, attach only its primary NIC and leave the second one detached; the automation only consults `rp_private_ip`.
+{% endhint %}
 
 ### 3. Customer-supplied DNS records
 
@@ -137,8 +128,8 @@ The automation does NOT install any DNS server. Your authoritative DNS must reso
 
 | Hostname                   | DNS A-record →                               | Channel | Purpose                                          |
 | -------------------------- | -------------------------------------------- | ------- | ------------------------------------------------ |
-| `rancher.<your-domain>`    | RP's **internal** IP (the vNIC-internal one) | private | Rancher cluster manager UI                       |
-| `keycloak.<your-domain>`   | RP's **internal** IP                         | private | Keycloak admin SSO (Rancher's identity provider) |
+| `rancher.<your-domain>`    | RP's **private** IP (`rp_private_ip`)        | private | Rancher cluster manager UI                       |
+| `keycloak.<your-domain>`   | RP's **private** IP (`rp_private_ip`)        | private | Keycloak admin SSO (Rancher's identity provider) |
 
 `<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The two hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, `sso.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
 
@@ -148,7 +139,7 @@ The automation does NOT install any DNS server. Your authoritative DNS must reso
 
 Admin laptops must be able to resolve these hostnames. Three working patterns:
 
-1. **Split-horizon DNS** (recommended) — your internal DNS resolves these to the RP's internal IP; public DNS doesn't expose them. Admin laptops reach the internal DNS via Wireguard.
+1. **Split-horizon DNS** (recommended) — your internal DNS resolves these to the RP's private IP; public DNS doesn't expose them. Admin laptops reach the internal DNS via Wireguard. The `wg_peer_dns` option in `prod-config.yaml` pushes that resolver's IP to every peer config so the laptop uses it automatically while the tunnel is up.
 2. **Public DNS pointing at the private IP** — anyone can resolve the name, but the IP is private; only Wireguard peers can reach it. Acceptable for many gov setups.
 3. **`/etc/hosts` on the admin laptop** — fully manual. The orchestrator prints the exact lines in the completion summary; you append them once per laptop.
 
@@ -219,9 +210,9 @@ For each item that fails, the error message tells you exactly what's wrong and l
 
 | Preflight error                                                        | Fix                                                                                          |
 | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `RP node has only 1 network interface`                                 | Add a second vNIC (see [section 2](./#id-2.-two-network-interfaces-on-the-reverse-proxy-vm)) |
+| `IP <rp_private_ip> NOT bound on this host`                            | The configured `rp_private_ip` isn't on any local NIC — fix the value or the NIC (see [section 2](./#id-2.-reverse-proxy-networking)) |
 | `DNS: rancher.<domain> does not resolve`                               | Add the A-record (see [section 3](./#id-3.-customer-supplied-dns-records))                   |
-| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP internal is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                |
+| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8`  | DNS points at the wrong IP — fix the A-record                                                |
 | `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`   | Wrong cert for that hostname (see [section 4](./#id-4.-customer-supplied-tls-certificates))  |
 | `Cert ./certs/rancher.pem: key does not match cert`                    | Mismatched cert/key pair                                                                     |
 | `RAM: 3 GB (need ≥4)`                                                  | Resize the VM (see [section 1](./#id-1.-three-ubuntu-24.04-vms))                             |
@@ -257,7 +248,7 @@ wg_subnet: "10.15.0.0/16"
 wg_port: "51820"
 
 # [CUSTOMER] domain (DNS A-records for rancher.<domain> and keycloak.<domain>
-# must already exist, both pointing at the RP's INTERNAL IP — see
+# must already exist, both pointing at the RP's PRIVATE IP — see
 # Prerequisites § 3. Grafana/Prometheus are reached via the Rancher UI, no
 # dedicated DNS needed.)
 public_domain: "openg2p.gov.eth"
@@ -277,11 +268,20 @@ tls_wildcard_key:  "./certs/wildcard.key"
 
 # [AWS|MANUAL] node networking — auto-populated by AWS provisioning,
 # or fill in manually for on-prem
-rp_public_ip:       ""    # vNIC-public address, also the Wireguard endpoint
-rp_internal_ip:     ""    # vNIC-internal address, Nginx binds admin server blocks here
+rp_public_ip:       ""    # Wireguard endpoint (public/reachable address; on AWS = EIP)
+rp_private_ip:      ""    # RP's primary NIC IP; admin Nginx binds here
 compute_private_ip: ""
 storage_private_ip: ""
 private_subnet:     ""
+
+# [USER, optional] Push a DNS resolver to every WG peer. Useful when admin
+# hostnames are resolvable only via the customer's internal DNS (split-
+# horizon DNS, AWS Route53 private zone, etc.). The resolver IP must live
+# inside wg_subnet or private_subnet so queries traverse the tunnel.
+#   On-prem example:  wg_peer_dns: "10.0.0.10"     (internal DNS server)
+#   AWS example:      wg_peer_dns: "172.31.0.2"    (VPC DNS — <vpc-base>.2)
+# Leave blank to skip the push (laptop uses its own resolver or /etc/hosts).
+wg_peer_dns: ""
 # ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr
 ```
 
@@ -323,7 +323,7 @@ Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 | 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                     |
 | 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                 |
 | 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                 |
-| 3 | Reverse Proxy | apt basics, ufw, second-NIC bring-up, Wireguard server + peer configs, customer cert ingest + validate + install, Nginx server blocks bound to vNIC-internal |
+| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip` |
 | 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                            |
 | 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                            |
 
@@ -466,7 +466,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 
 * Provisions a working production OpenG2P infrastructure on three Ubuntu 24.04 VMs.
 * Hard-enforces resource and network requirements via preflight — no surprise failures 18 minutes into an install.
-* Configures Wireguard + Nginx on the RP node with **customer-supplied DNS and TLS certs** (the customer's CA — sovereign, commercial, internal PKI), validates the certs locally before push, and serves the admin tools on a dedicated private network interface (vNIC-internal).
+* Configures Wireguard + Nginx on the RP node with **customer-supplied DNS and TLS certs** (the customer's CA — sovereign, commercial, internal PKI), validates the certs locally before push, and serves the admin tools on the RP's private IP (firewall keeps admin 443 off the internet).
 * Installs Rancher, Keycloak (admin SSO), monitoring (Prometheus + Grafana), and logging (Fluentd + OpenSearch) via Helmfile.
 * Wires Rancher-Keycloak SAML integration so admins log in once via Keycloak.
 * Configures the storage node with NFS export and host PostgreSQL (PG16), ready for environment automation to create per-environment databases on per-environment ports. The auto-generated superuser password is saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (and printed in the orchestrator's completion summary).
@@ -530,7 +530,7 @@ The first command should show the compute node `Ready`. The second should be emp
 sudo systemctl is-active wg-quick@wg0       # active
 sudo systemctl is-active nginx              # active
 sudo nginx -t                               # syntax OK
-sudo ss -tlnp | grep -E ':80|:443'          # nginx bound to vNIC-internal IP
+sudo ss -tlnp | grep -E ':80|:443'          # nginx bound to rp_private_ip
 sudo ls /etc/openg2p/certs/public/          # one dir per admin hostname
 ```
 
@@ -592,7 +592,7 @@ The bundled AWS provisioning is a separate, optional step that creates the three
 | **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`. |
 | **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                  |
 | **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                             |
-| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. An EIP is **required** (not optional) — see [About the Elastic IP](#about-the-elastic-ip) for why. If you're at quota, free one first (see [troubleshooting](#aws-provision-eip-addresslimitexceeded)) before running the provisioner. |
+| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. The provisioner allocates one EIP for the RP (Wireguard endpoint stability across stop/start — see [About the Elastic IP](#about-the-elastic-ip)). If you're at quota, free one first (see [troubleshooting](#aws-provision-eip-addresslimitexceeded)) before running the provisioner. |
 
 ### IAM permissions
 
@@ -641,17 +641,16 @@ If you have full EC2 admin (`AmazonEC2FullAccess` managed policy + `sts:GetCalle
 
 All resources are tagged with `Project=<project>` so the destroy script can find and remove them later.
 
-| Resource           | Default name                          | Configurable          | Notes                                                                                                                                              |
-| ------------------ | ------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Key pair           | `openg2p-prod-key`                    | `key_name`            | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                            |
-| SG: RP (public)    | `openg2p-prod-reverse-proxy-public`   | `rp_sg_public_name`   | Attached to RP's public ENI (Wireguard endpoint + public services from env automation). Reused if exists; rules added if missing.                  |
-| SG: RP (internal)  | `openg2p-prod-reverse-proxy-internal` | `rp_sg_internal_name` | Attached to RP's internal ENI (admin services only, intra-VPC). Reused if exists; rules added if missing.                                          |
-| SG: Compute        | `openg2p-prod-k8s-node`               | `compute_sg_name`     | Same                                                                                                                                               |
-| SG: Storage        | `openg2p-prod-storage`                | `storage_sg_name`     | Same                                                                                                                                               |
-| **Elastic IP**     | tagged `Role=reverse-proxy-eip`       | —                     | **Mandatory** — one EIP allocated and associated with the RP's public ENI. Script **hard-fails** on `AddressLimitExceeded`. See below for why.    |
-| Instance: RP       | `openg2p-prod-reverse-proxy`          | `rp_name`             | `t3a.medium`, 64 GB gp3, **two ENIs** (public + internal)                                                                                          |
-| Instance: Compute  | `openg2p-prod-k8s-node-1`             | `compute_name`        | `m5a.4xlarge`, 128 GB gp3                                                                                                                          |
-| Instance: Storage  | `openg2p-prod-storage`                | `storage_name`        | `t3a.2xlarge`, 256 GB gp3                                                                                                                          |
+| Resource          | Default name                  | Configurable      | Notes                                                                                                                                       |
+| ----------------- | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Key pair          | `openg2p-prod-key`            | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                     |
+| SG: RP            | `openg2p-prod-reverse-proxy`  | `rp_sg_name`      | Single SG with admin SSH, WG endpoint, public 80/443 (for future env automation), and intra-VPC. Reused if exists; rules added if missing. |
+| SG: Compute       | `openg2p-prod-k8s-node`       | `compute_sg_name` | Same                                                                                                                                        |
+| SG: Storage       | `openg2p-prod-storage`        | `storage_sg_name` | Same                                                                                                                                        |
+| **Elastic IP**    | tagged `Role=reverse-proxy-eip` | —               | One EIP allocated and associated with the RP. Script **hard-fails** on `AddressLimitExceeded`. See below for why.                          |
+| Instance: RP      | `openg2p-prod-reverse-proxy`  | `rp_name`         | `t3a.medium`, 64 GB gp3, **single ENI**                                                                                                     |
+| Instance: Compute | `openg2p-prod-k8s-node-1`     | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                                                                                                   |
+| Instance: Storage | `openg2p-prod-storage`        | `storage_name`    | `t3a.2xlarge`, 256 GB gp3                                                                                                                   |
 
 ### Default sizing
 
@@ -669,11 +668,7 @@ All sizes are configurable in `aws-config.yaml` via `*_instance_type`, `*_disk_g
 
 Only the reverse-proxy node gets an Elastic IP. Compute and storage use AWS's auto-assigned dynamic public IPs (which is fine — those public IPs are only used for SSH from your laptop).
 
-**The EIP is mandatory — not optional.** There are two reasons:
-
-1. **AWS multi-ENI launch forbids auto-assigned public IPs.** The RP is launched with **two network interfaces** (public + internal) to enforce channel separation between the Wireguard endpoint and the admin Nginx (see [Channel separation](#channel-separation-public-vs-private-on-the-rp)). AWS's `RunInstances` API rejects `AssociatePublicIpAddress=true` whenever more than one ENI is specified at launch. So the RP comes up with **no public IP at all** unless we explicitly allocate and associate an EIP after launch. Without the EIP, the RP would be unreachable from the internet — no Wireguard, no admin access.
-
-2. **Wireguard endpoint stability across stop/start.** The WG `Endpoint` line in every peer config is the RP's public IP. An EIP survives instance stop/start; a dynamic IP would not. Even if AWS allowed auto-assigned IPs on multi-ENI launches (it doesn't), we'd still want an EIP for this reason.
+**Why an EIP, not a dynamic public IP?** The Wireguard `Endpoint` line in every peer config is the RP's public IP. An EIP survives instance stop/start; a dynamic IP would change after any stop/start and break every peer config you've already distributed. AWS single-NIC launches *do* technically support auto-assigned public IPs, but for production stability we always use an EIP.
 
 **Behaviour when the EIP quota is exhausted:** if your AWS account is at the default 5-EIP per-region limit, `AllocateAddress` returns `AddressLimitExceeded` and the provisioner **hard-fails** at step 2 ("Allocating Elastic IP for RP"). No instances have been launched yet, so there's nothing to clean up — just free an EIP (or request a quota increase) and re-run.
 
@@ -882,7 +877,7 @@ sudo mkdir -p /etc/resolver
 echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 ```
 
-**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match *before* ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's internal IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
+**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match *before* ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's private IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
 
 The current automation generates the correct `-I` rules. If you have an older install with `-A` baked into `/etc/wireguard/wg0.conf`, hot-fix on the RP without re-running the install:
 
@@ -918,7 +913,7 @@ echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 
 **AWS provision: "VPC not found"** — some accounts have no default VPC. Either create one (`aws ec2 create-default-vpc`), set `vpc_id` and `subnet_id` explicitly in `aws-config.yaml`, or run with the default `vpc_id: ""` and pick interactively.
 
-**AWS provision: EIP `AddressLimitExceeded`** — the script **hard-fails** at step 2 (no instances launched yet). The RP uses a multi-ENI launch, which AWS doesn't allow with auto-assigned public IPs, so an EIP is mandatory. Free an unused EIP and re-run, or request a quota increase:
+**AWS provision: EIP `AddressLimitExceeded`** — the script **hard-fails** at step 2 (no instances launched yet). The provisioner allocates one EIP for the RP so the Wireguard endpoint IP survives instance stop/start. Free an unused EIP and re-run, or request a quota increase:
 
 ```bash
 # List EIPs that are allocated but unassociated (safe to release):
@@ -930,7 +925,7 @@ aws service-quotas request-service-quota-increase \
     --service-code ec2 --quota-code L-0263D0A3 --desired-value 10
 ```
 
-See [About the Elastic IP](#about-the-elastic-ip) for the full explanation of why EIP is mandatory.
+See [About the Elastic IP](#about-the-elastic-ip) for why we use an EIP.
 
 **Multiple environments on the same AWS account** — use a different `project:` value in each `aws-config.yaml` (e.g., `openg2p-prod`, `openg2p-staging`). Resources are isolated by tag; the destroy script only touches the configured project.
 

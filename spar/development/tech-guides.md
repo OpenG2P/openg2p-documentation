@@ -1,6 +1,6 @@
 # Tech Guides
 
-### Persistent Entities in openg2p-spar-mapper-api
+### Persistent Entities in openg2p-spar-mapper-partner-api
 
 #### id\_fa\_mappings&#x20;
 
@@ -12,9 +12,17 @@ Contains the records for id\_value (beneficiary Id) and fa\_value (Financial Add
 | fa\_value        | <p>This is the Financial Address of the Beneficiary - Usually will represent the Savings/ Checking /Current account of the beneficiary in a Bank. <br><br>The fa_value should be the full account details, such that this value alone is sufficient to enable a payment transaction into the account using the National Clearing Network. </p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | name             | <p>The name of the beneficiary. <br><br>It is a good idea to have the name of the beneficiary travel back to the upstream systems as part of the "disbursement settlement status" -- The Disbursement settlement status should be sent by the final destination bank (where the beneficiary is credited).</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | phone            | Phone number of the beneficiary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| additional\_info | <p>This is an extensibility feature - to store additional attributes required in an implementation.<br><br>The SPAR Self Service - populates this column with the strategy-Id (specifies the strategy used for constructing the fa_value)</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| additional\_info | <p>This is an extensibility feature - to store additional attributes required in an implementation.<br><br>The SPAR Beneficiary Portal populates this column with the strategy-Id (specifies the strategy used for constructing the fa_value)</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
-### Persistent Entities in openg2p-spar-self-service-api
+### Persistent Entities in openg2p-spar-bene-portal-api
+
+{% hint style="info" %}
+From v2.0 the DFSP model was **simplified** to three entity types — **BANK**,
+**BRANCH** and **WALLET-PROVIDER** (see `openg2p-spar-models`). The generic
+`dfsp_levels` / `dfsp_level_values` hierarchy described below is retained here as
+conceptual background; refer to the `openg2p-spar-models` package for the
+authoritative, current schema.
+{% endhint %}
 
 dfsp\_level and dfsp\_level\_values - are static tables that contain the information pertaining to the Banks (and other financial service providers), their branches.  The use of these two tables are explained below using examples
 
@@ -32,9 +40,9 @@ For a Email Address based Wallet, we can have the following dfsp\_level configur
 
 <table><thead><tr><th width="61">id</th><th width="279">name</th><th width="224">level_type - ENUM</th><th>parent</th></tr></thead><tbody><tr><td>6</td><td>Email Wallet Service Provider</td><td>email_wallet_provider</td><td>0</td></tr><tr><td>7</td><td>Email address</td><td>email_address</td><td>6</td></tr></tbody></table>
 
-The self-service-ui uses the api - "get\_levels (parent)" to paint the UI fields to capture the input for these attributes - parent = 0, will provide the first level for the FA hierarchy
+A Beneficiary Portal front-end uses the api - "get\_levels (parent)" to paint the UI fields to capture the input for these attributes - parent = 0, will provide the first level for the FA hierarchy
 
-<figure><img src="../../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Self Service UI - showing capture of FA information</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/self-service-ui-dfsp-levels.png" alt="" width="372"><figcaption><p>Beneficiary Portal - capture of FA information</p></figcaption></figure>
 
 #### dfsp\_level\_values
 
@@ -50,7 +58,7 @@ The API - get\_level\_values (parent = 1, level\_id = 2) - will yield the UI a d
 
 #### login\_providers
 
-<table><thead><tr><th width="66">id</th><th width="102">name</th><th width="181">login_button_image_url</th><th width="245">authorization_parameters</th><th>strategy_id</th></tr></thead><tbody><tr><td>1</td><td>E-Signet</td><td>The Image that can be shown on the UI for E-Signet</td><td></td><td>1</td></tr><tr><td>2</td><td>Keycloak</td><td></td><td></td><td>2</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+<table><thead><tr><th width="66">id</th><th width="102">name</th><th width="181">login_button_image_url</th><th width="245">authorization_parameters</th><th>strategy_id</th></tr></thead><tbody><tr><td>1</td><td>Keycloak</td><td>The image shown on the UI for the login provider</td><td></td><td>1</td></tr></tbody></table>
 
 The API - get\_login\_providers - will provide the list of configured login\_providers. The UI can then redirect itself to the redirect\_url specified for that login\_provider for the necessary authentication.
 

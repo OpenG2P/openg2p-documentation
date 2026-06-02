@@ -5,7 +5,7 @@ The following technologies and tools are used by SPAR.
 | Technology      | Purpose                | Version | License                                                           |
 | --------------- | ---------------------- | ------- | ----------------------------------------------------------------- |
 | Ubuntu Server   | Operating System       | 22.04   | Free                                                              |
-| Python          | Development            | 3.5+    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
+| Python          | Development            | 3.11    | [PSF License](https://docs.python.org/3/license.html#psf-license) |
 | FastAPI         | REST API               |         | MIT                                                               |
 | Postgres        | Database               |         | Postgres License BSD 2-clause "Simplified License"                |
 | Apache Superset | Reporting              |         | Apache 2.0                                                        |
