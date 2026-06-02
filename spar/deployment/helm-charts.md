@@ -100,6 +100,90 @@ See [Keycloak Client](keycloak-client.md) for why this client is needed.
 The database name, user, secret and password key are derived from the release
 name (see the note above) and normally don't need changing.
 
+## Seeding reference data
+
+SPAR uses **strategies** to construct and deconstruct Financial Addresses (and
+IDs) — see [FA and ID Strategy](../development/tech-guides.md#fa-and-id-strategy)
+for the concept (and the important "never delete a strategy" rule). The chart
+seeds a default set of strategies into the `strategy`
+table so a fresh install is immediately usable.
+
+### Defaults
+
+| `id` | `strategy_type` | Description |
+| --- | --- | --- |
+| 1 | ID | Keycloak — builds the ID from the `sub` auth claim. |
+| 2 | FA | Bank account (bank/branch/account fields). |
+| 3 | FA | Email wallet. |
+| 4 | FA | Phone / mobile wallet. |
+
+These are defined under `seedData.strategies` in `values.yaml`, each with a pinned
+`id` and its `construct_strategy` (format string) and `deconstruct_strategy`
+(regex).
+
+### How the seeding works
+
+`seedData.enabled` (default `true`) renders the strategies into a ConfigMap of
+SQL, and a Job runs it. The Job:
+
+* is a Helm **`post-install` and `post-upgrade` hook**, so it runs on first install
+  **and on every `helm upgrade`** (the Job name carries the release revision, so a
+  fresh Job runs each time);
+* **waits** for the database to be reachable and for the `strategy` table to exist
+  (the table is created by the API `migrate` step), so it is resilient to ordering;
+* inserts each row with **`INSERT … ON CONFLICT (id) DO NOTHING`**, which makes the
+  seeding **additive and idempotent** — existing rows are never modified or
+  deleted, only missing `id`s are inserted.
+
+| Value | Default | Description |
+| --- | --- | --- |
+| `seedData.enabled` | `true` | Seed the `strategy` table on install/upgrade. |
+| `seedData.image` | `jbergknoff/postgresql-client` | Image (with `psql`/`pg_isready`) used by the seed Job. |
+| `seedData.strategies` | (4 defaults) | List of strategies to seed; each item has `id`, `description`, `strategy_type`, `construct_strategy`, `deconstruct_strategy`. |
+
+{% hint style="warning" %}
+The regex (`deconstruct_strategy`) and format string (`construct_strategy`) must
+be **single-quoted** YAML scalars — they contain `\`, `$`, `{` and `:`. (In
+single quotes, backslashes are literal and Helm leaves single-brace `{field}`
+placeholders untouched.)
+{% endhint %}
+
+### Adding a strategy in production
+
+Because strategies are **append-only and never deleted** (existing mappings depend
+on their regex to resolve — see the danger note in the
+[concept](../development/tech-guides.md#fa-and-id-strategy)),
+adding one is a small, safe, two-step change:
+
+1. **Append** a new entry with a **new `id`** to `seedData.strategies` in your values
+   (leave all existing entries unchanged):
+
+   ```yaml
+   seedData:
+     strategies:
+       # ... existing id 1-4 unchanged ...
+       - id: 5
+         description: New Wallet Provider
+         strategy_type: FA
+         construct_strategy: 'mobile_number:{mobile_number}.wallet_provider_code:{wallet_provider_code}.fa_type:{fa_type}'
+         deconstruct_strategy: '^mobile_number:(?P<mobile_number>.*)\.wallet_provider_code:(?P<wallet_provider_code>.*)\.fa_type:(?P<fa_type>.*)$'
+   ```
+
+2. Run **`helm upgrade`**. The seed Job re-runs; ids 1–4 are skipped
+   (`ON CONFLICT DO NOTHING`) and only id 5 is inserted. Nothing is deleted and the
+   API pods are not restarted (their specs are unchanged).
+
+{% hint style="danger" %}
+Never reuse or repurpose an existing `id`, and never remove a strategy that has
+been used — that would break `resolve` for every FA already stored with it. Always
+add a **new** `id`.
+{% endhint %}
+
+There is intentionally **no runtime API to create strategies**: they are
+security-sensitive (the regex parses financial addresses), change rarely, and must
+keep stable ids — so they are managed declaratively via the chart (GitOps), with
+the values file as the single source of truth.
+
 ## How it is run
 
 The recommended path is the **automated, Rancher-driven** flow described in the

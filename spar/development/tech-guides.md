@@ -62,25 +62,53 @@ The API - get\_level\_values (parent = 1, level\_id = 2) - will yield the UI a d
 
 The API - get\_login\_providers - will provide the list of configured login\_providers. The UI can then redirect itself to the redirect\_url specified for that login\_provider for the necessary authentication.
 
-#### strategy
+### FA and ID Strategy
 
-This table contains the construction and deconstruction strategies to be used for id\_value and fa\_value - that will be eventually stored in the mapper.&#x20;
+A **strategy** defines how a structured value — a Financial Address (FA) or an ID — is turned into the single string that is actually stored in the mapper, and how that string is parsed back into its fields. Strategies live in the `strategy` table; each row has:
 
-The strategy ID is mapped to the login\_provider for ID Strategy.
+| Column | Meaning |
+| --- | --- |
+| `id` | Integer primary key. **This is the value partner systems reference** (see below). |
+| `strategy_type` | `ID` or `FA`. |
+| `construct_strategy` | A **Python format string** with `{placeholders}`. Used to build the stored string. |
+| `deconstruct_strategy` | A **regex with named capture groups** `(?P<name>…)`. Used to parse the stored string back into fields. |
+| `description` | Human-readable label. |
+| `active` | Whether the strategy is enabled. |
 
-The strategy ID is mapped to the dfsp\_levels for FA Strategy.
+#### What "construct" and "deconstruct" mean
 
-Many Banks (and possibly all Banks) may use the same FA Strategy. Similarly, all mobile wallet providers may use a single FA Strategy (different from Banks).
+* **Construct** (structured → stored string): the service runs `construct_strategy.format(**fields)`. For a bank FA with fields `bank_code`, `branch_code`, `account_number`, … a construct string like
 
-Some examples of construction and de-construction strategies are as follows
+  ```
+  account_number:{account_number}.branch_name:{branch_name}.branch_code:{branch_code}.bank_name:{bank_name}.bank_code:{bank_code}.fa_type:{fa_type}
+  ```
 
-ID - Construction Strategy --
+  produces a single string such as `account_number:123.branch_name:Main.branch_code:BR2.bank_name:Bank One.bank_code:B1.fa_type:BANK`. The placeholder names must match the FA/ID field names.
+* **Deconstruct** (stored string → structured): the service runs `re.match(deconstruct_strategy, value).groupdict()`. The regex is the mirror of the construct string, with each field captured by a named group, e.g.
 
-ID - Deconstruction Strategy --
+  ```
+  ^account_number:(?P<account_number>.*)\.branch_name:(?P<branch_name>.*)\.branch_code:(?P<branch_code>.*)\.bank_name:(?P<bank_name>.*)\.bank_code:(?P<bank_code>.*)\.fa_type:(?P<fa_type>.*)$
+  ```
 
-FA - Construction Strategy --
+ID strategies work the same way, but the fields come from the login provider's auth claims (e.g. `sub`). For example construct `token:{sub}@nationalId` with deconstruct `^token:(?P<sub>.[^.]*)@nationalId$`.
 
-FA - Deconstruction Strategy --
+#### How a strategy is used by the APIs
+
+The link / update request carries an `fa` object that includes a `strategy_id`. The Mapper Partner API (and the Beneficiary Portal API) then:
+
+1. reads that strategy and **constructs** the FA string for storage,
+2. records the `strategy_id` in the mapping's `additional_info`,
+3. on **resolve**, reads `strategy_id` back and **deconstructs** the stored string into fields for the response.
+
+Because the integer `id` is what callers send in `fa.strategy_id`, the ids must be **stable and identical across all environments**.
+
+{% hint style="danger" %}
+**Never delete (or change) a strategy once it has been used.** Existing mappings were stored using a strategy's `construct_strategy`, and `resolve` depends on the *same* strategy's `deconstruct_strategy` regex to parse them back. Deleting a strategy — or editing its construct/deconstruct after data exists — will break `resolve` for every FA stored with it. To evolve behaviour, **add a new strategy with a new `id`**; treat strategies as append-only and immutable.
+{% endhint %}
+
+#### Default strategies
+
+A standard SPAR install seeds four strategies (id 1–4): an `ID` strategy (Keycloak) and three `FA` strategies (Bank, Email wallet, Phone/mobile wallet). These are provisioned by the Helm chart — see [Deployment → Helm Chart → Seeding reference data](../deployment/helm-charts.md#seeding-reference-data) for the defaults, how seeding works, and how to add a strategy in production.
 
 ### APIs
 
