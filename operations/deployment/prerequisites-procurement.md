@@ -206,21 +206,6 @@ If a new environment is needed months after initial deployment:
 
 No infrastructure rebuild is needed — each environment is independent inside the same cluster.
 
-## Timeline expectations
-
-A realistic order of events:
-
-| Day | Event |
-| --- | --- |
-| 0 | Fill out `deployment-plan.yaml`, generate checklist |
-| 0-1 | Hand checklist to customer's IT / network / cert team |
-| 1-14 | DNS records configured (usually fast — under a week) |
-| 0-30 | TLS cert issuance (sovereign / commercial CA — typically 2-4 weeks) |
-| 14-30 | VMs provisioned, SSH and kubectl access arranged |
-| 30 | All prerequisites in place — run infra automation, then environment automation |
-
-The cert timeline is the long pole. Starting procurement on Day 0 and provisioning servers in parallel keeps the critical path as short as possible.
-
 ## Related pages
 
 * [Three-node infrastructure automation](infrastructure-setup/three-node-automation/) — install the cluster after certs are in place
