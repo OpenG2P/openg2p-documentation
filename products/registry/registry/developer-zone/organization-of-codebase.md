@@ -1,18 +1,12 @@
 # Organization of Codebase
 
 {% hint style="warning" %}
-**The Registry codebase has been consolidated.** All platform code — the core
-library, the APIs, the Celery runtimes and the UI — now lives in a **single
-repository, `registry-platform`**. The older split repositories
-(`openg2p-registry-gen2-*`) are being **deprecated**. See
-[Deprecated repositories](#deprecated-repositories) below.
+**The Registry codebase has been consolidated.** All platform code — the core library, the APIs, the Celery runtimes and the UI — now lives in a **single repository, `registry-platform`**. The older split repositories (`openg2p-registry-gen2-*`) are being **deprecated**. See [Deprecated repositories](organization-of-codebase.md#deprecated-repositories) below.
 {% endhint %}
 
 ## The platform repository: `registry-platform`
 
-[**`registry-platform`**](https://github.com/openg2p/registry-platform) holds
-the entire OpenG2P Registry platform in one place — all libraries, APIs, Celery
-runtimes and UIs:
+[**`registry-platform`**](https://github.com/openg2p/registry-platform) holds the entire OpenG2P Registry platform in one place — all libraries, APIs, Celery runtimes and UIs:
 
 ```
 registry-platform/
@@ -35,15 +29,11 @@ registry-platform/
     └── ui-widgets                               Shared UI widget library
 ```
 
-Each runtime above (the APIs, the two Celery runtimes and the Staff Portal UI)
-is built into a Docker image; `openg2p-registry-core` and `ui-widgets` are
-libraries that the runtimes embed rather than deploy separately.
+Each runtime above (the APIs, the two Celery runtimes and the Staff Portal UI) is built into a Docker image; `openg2p-registry-core` and `ui-widgets` are libraries that the runtimes embed rather than deploy separately.
 
 ## The platform is not deployable on its own
 
-`registry-platform` is **a platform, not a product**. It carries no domain
-model, no Docker images and no Helm chart of its own. To run it, the platform
-must be **manifested** as a concrete registry product.
+`registry-platform` is **a platform, not a product**. It carries no domain model, no Docker images and no Helm chart of its own. To run it, the platform must be **manifested** as a concrete registry product.
 
 ```mermaid
 graph LR
@@ -57,45 +47,33 @@ graph LR
 
 ## Manifestations
 
-A **manifestation** is a deployable registry product built on the platform.
-The current manifestations are:
+A **manifestation** is a deployable registry product built on the platform. The current manifestations are:
 
-* [**National Social Registry (NSR)**](../../national-social-registry.md)
+* [**National Social Registry (NSR)**](../../national-social-registry/)
 * [**Farmer Registry**](../../farmer-registry.md)
 
 Each manifestation is its own repository and is **self-contained**. It provides:
 
-1. **Domain extension** — the registers, supporting tables, schemas and
-   meta-data SQL specific to that product (e.g. NSR's `nsr-extension/`).
-2. **Docker build scripts** — the Dockerfiles and spec files that assemble the
-   platform runtimes + the manifestation's extension into the product's images,
-   along with path-scoped CI workflows that build and push them.
-3. **A complete, self-sufficient Helm chart** — the full set of templates,
-   values and sub-dependencies needed to deploy the product. There is **no
-   shared "base registry chart"** to depend on (see note below); each
-   manifestation owns its chart end-to-end.
+1. **Domain extension** — the registers, supporting tables, schemas and meta-data SQL specific to that product (e.g. NSR's `nsr-extension/`).
+2. **Docker build scripts** — the Dockerfiles and spec files that assemble the platform runtimes + the manifestation's extension into the product's images, along with path-scoped CI workflows that build and push them.
+3. **A complete, self-sufficient Helm chart** — the full set of templates, values and sub-dependencies needed to deploy the product. There is **no shared "base registry chart"** to depend on (see note below); each manifestation owns its chart end-to-end.
 
 {% hint style="info" %}
-**There is no longer a "base registry chart".** Earlier, manifestations
-deployed via a thin wrapper that depended on a published `openg2p-registry`
-base chart. That model has been retired — each manifestation now ships a
-complete Helm chart of its own.
+**There is no longer a "base registry chart".** Earlier, manifestations deployed via a thin wrapper that depended on a published `openg2p-registry` base chart. That model has been retired — each manifestation now ships a complete Helm chart of its own.
 {% endhint %}
 
 ## Deprecated repositories
 
-The following repositories are being **deprecated** in favour of
-`registry-platform` (code) and the per-manifestation repositories (images +
-Helm):
+The following repositories are being **deprecated** in favour of `registry-platform` (code) and the per-manifestation repositories (images + Helm):
 
-| Deprecated repository | Replaced by |
-| --------------------- | ----------- |
-| `openg2p-registry-gen2-core` | `registry-platform/core/openg2p-registry-core` |
-| `openg2p-registry-gen2-apis` | `registry-platform/apis/*` |
-| `openg2p-registry-gen2-celery` | `registry-platform/celery/*` |
-| `openg2p-registry-gen2-staff-portal-ui` | `registry-platform/ui/staff-portal-ui` |
-| `openg2p-registry-gen2-ui-widgets` | `registry-platform/ui/ui-widgets` |
-| `openg2p-registry-gen2-deployment` | Per-manifestation Helm charts (e.g. NSR's `helm/openg2p-nsr`) |
+| Deprecated repository                   | Replaced by                                                   |
+| --------------------------------------- | ------------------------------------------------------------- |
+| `openg2p-registry-gen2-core`            | `registry-platform/core/openg2p-registry-core`                |
+| `openg2p-registry-gen2-apis`            | `registry-platform/apis/*`                                    |
+| `openg2p-registry-gen2-celery`          | `registry-platform/celery/*`                                  |
+| `openg2p-registry-gen2-staff-portal-ui` | `registry-platform/ui/staff-portal-ui`                        |
+| `openg2p-registry-gen2-ui-widgets`      | `registry-platform/ui/ui-widgets`                             |
+| `openg2p-registry-gen2-deployment`      | Per-manifestation Helm charts (e.g. NSR's `helm/openg2p-nsr`) |
 
 ## External service dependencies
 
@@ -109,11 +87,8 @@ The Registry platform depends on the following services, deployed separately:
 
 ## Versions
 
-The **version of the `registry-platform` repository is the platform version** —
-there is no separate base-chart version to track. Each manifestation carries its
-own product version independently.
+The **version of the `registry-platform` repository is the platform version** — there is no separate base-chart version to track. Each manifestation carries its own product version independently.
 
 {% hint style="info" %}
-Detailed version mapping (platform ↔ manifestations ↔ image tags) is still being
-clarified and will be documented here later.
+Detailed version mapping (platform ↔ manifestations ↔ image tags) is still being clarified and will be documented here later.
 {% endhint %}

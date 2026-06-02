@@ -10,7 +10,7 @@ A well-run NSR answers three recurring questions across programmes:
 
 It replaces siloed, per-programme beneficiary databases — where the same household gets registered, mis-targeted and reconciled again and again — with one extensible record that every programme reads from.
 
-**OpenG2P National Social Registry** is a manifestation of the [OpenG2P Registry Platform](registry/) with specifics related to a national-level social registry.
+**OpenG2P National Social Registry** is a manifestation of the [OpenG2P Registry Platform](../registry/) with specifics related to a national-level social registry.
 
 ```mermaid
 graph LR
@@ -22,11 +22,11 @@ graph LR
     style E fill:#fff,stroke:#999,font-size:24px,color:#000
 ```
 
-The NSR inherits all the [features of the registry platform](registry/features/) — change-management & approval workflows, ingestion/outgestion pipelines, consent-aware data sharing, audit-ability, RBAC, deduplication, dynamic UI rendering, meta-data-driven extensibility, cloud-native deployment — and adds a domain model tuned to social protection.
+The NSR inherits all the [features of the registry platform](../registry/features/) — change-management & approval workflows, ingestion/outgestion pipelines, consent-aware data sharing, audit-ability, RBAC, deduplication, dynamic UI rendering, meta-data-driven extensibility, cloud-native deployment — and adds a domain model tuned to social protection.
 
 ## Registers
 
-NSR defines **two [registers](registry/concepts.md#register)** (top-level entities that drive registration, change-requests, and search in the staff portal) plus a set of **supporting tables** (multi-valued or time-series data linked to a register record):
+NSR defines **two** [**registers**](../registry/concepts.md#register) (top-level entities that drive registration, change-requests, and search in the staff portal) plus a set of **supporting tables** (multi-valued or time-series data linked to a register record):
 
 * **Individual Register** — personal demographics, identity evidence, vulnerability & inclusion markers, livelihoods
 * **Household Register** — composition, headship, dwelling conditions, basic services
@@ -37,14 +37,14 @@ The NSR domain models are available in the [NSR repository](https://github.com/O
 
 ## Versions
 
-| Artefact | Current (develop) | Where |
-| -------- | ----------------- | ----- |
-| NSR Helm chart | `0.0.0-develop` | [`helm/openg2p-nsr/`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr) |
-| Docker images (tag) | `develop` | Docker Hub `openg2p/openg2p-nsr-*` |
+| Artefact            | Current (develop) | Where                                                                                                    |
+| ------------------- | ----------------- | -------------------------------------------------------------------------------------------------------- |
+| NSR Helm chart      | `0.0.0-develop`   | [`helm/openg2p-nsr/`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr) |
+| Docker images (tag) | `develop`         | Docker Hub `openg2p/openg2p-nsr-*`                                                                       |
 
 NSR follows the **branch-name-equals-version** convention: the `develop` branch carries `-develop` pre-release tags on the Helm chart and all Docker images.
 
-The underlying **platform version is the version of the [`registry-platform`](https://github.com/openg2p/registry-platform) repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
+The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
 
 {% hint style="info" %}
 The detailed version mapping (platform ↔ NSR ↔ image tags) is still being clarified and will be documented later.
@@ -82,7 +82,7 @@ The **Staff Portal UI image is not built here** — it is a common runtime built
 
 Each register/table below extends the platform's core base classes — `G2PRegister`, `G2PPerson`, `G2PGeo`, `G2PGeoShape` (and their `*History` twins). Inherited fields (`internal_record_id`, `functional_record_id`, `link_internal_record_id`, `record_name`, `search_text`, `record_status`, all person-level and geo fields, audit stamps) are **not repeated below** — only the NSR-specific additions are listed.
 
-For the full inherited schema see the [platform data model](registry/design/data-model.md).
+For the full inherited schema see the [platform data model](../registry/design/data-model.md).
 
 {% hint style="info" %}
 Every concrete table has a corresponding `g2p_register_history_*` snapshot table with the same domain columns, used by the change-management workflow. History tables are not listed separately.
@@ -114,31 +114,31 @@ Extends `G2PRegister`, `G2PGeo`. Group-level register covering composition and l
 
 Multi-valued or time-series data lives in supporting tables. Each is linked to a parent register via `link_internal_record_id` and uses the platform's standard identifier prefixes.
 
-| Table | Parent | NSR-specific fields |
-| ----- | ------ | ------------------- |
-| **Individual Disability** (`g2p_register_individual_disabilities`) | Individual | `disability_domain` (Washington Group Short Set: VISION, HEARING, MOBILITY, COGNITION, SELF_CARE, COMMUNICATION), `disability_severity` — **one row per affected domain** so an individual can carry different severities across functional domains |
-| **Program Participation** (`g2p_register_program_participations`) | Individual _or_ Household | `linked_register_mnemonic`, `program_name`, `program_mnemonic`, `program_start_date`, `program_exit_date`, `legacy_program_id`, `payment_channel_preference`, `payment_account_token`, `payment_verification_status` |
-| **Poverty Score** (`g2p_register_poverty_scores`) | Household | `pmt_score`, `pmt_score_type`, `pmt_variables`, `pmt_calculation_date`, `pmt_model_version` |
-| **Asset** (`g2p_register_assets`) | Household | `asset_type`, `asset_category`, `quantity`, `size_value`, `size_unit`, `size_band`, `details` |
-| **Shock** (`g2p_register_shocks`) | Individual | `shock_type`, `shock_date`, `shock_period`, `coping_strategy` |
-| **Consent** (`g2p_register_consents`) | Individual | `consent_captured`, `consent_date`, `consent_scope`, `consent_method`, `consent_evidence_ref`, `data_sharing_restrictions` |
-| **Grievance** (`g2p_register_grievances`) | Individual | `grievance_case_id`, `grievance_type`, `submission_channel`, `grievance_status`, `submission_date`, `resolution_date`, `resolution_code`, `resolution_rationale`, `protection_referral_flag` |
-| **Verification History** (`g2p_register_verification_history`) | Individual _or_ Household | `linked_register_mnemonic`, `update_trigger`, `data_source`, `enumerator_id`, `office_location_code`, `verification_status`, `verification_method`, `verified_at`, `data_quality_flags` |
+| Table                                                              | Parent                    | NSR-specific fields                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Individual Disability** (`g2p_register_individual_disabilities`) | Individual                | `disability_domain` (Washington Group Short Set: VISION, HEARING, MOBILITY, COGNITION, SELF\_CARE, COMMUNICATION), `disability_severity` — **one row per affected domain** so an individual can carry different severities across functional domains |
+| **Program Participation** (`g2p_register_program_participations`)  | Individual _or_ Household | `linked_register_mnemonic`, `program_name`, `program_mnemonic`, `program_start_date`, `program_exit_date`, `legacy_program_id`, `payment_channel_preference`, `payment_account_token`, `payment_verification_status`                                 |
+| **Poverty Score** (`g2p_register_poverty_scores`)                  | Household                 | `pmt_score`, `pmt_score_type`, `pmt_variables`, `pmt_calculation_date`, `pmt_model_version`                                                                                                                                                          |
+| **Asset** (`g2p_register_assets`)                                  | Household                 | `asset_type`, `asset_category`, `quantity`, `size_value`, `size_unit`, `size_band`, `details`                                                                                                                                                        |
+| **Shock** (`g2p_register_shocks`)                                  | Individual                | `shock_type`, `shock_date`, `shock_period`, `coping_strategy`                                                                                                                                                                                        |
+| **Consent** (`g2p_register_consents`)                              | Individual                | `consent_captured`, `consent_date`, `consent_scope`, `consent_method`, `consent_evidence_ref`, `data_sharing_restrictions`                                                                                                                           |
+| **Grievance** (`g2p_register_grievances`)                          | Individual                | `grievance_case_id`, `grievance_type`, `submission_channel`, `grievance_status`, `submission_date`, `resolution_date`, `resolution_code`, `resolution_rationale`, `protection_referral_flag`                                                         |
+| **Verification History** (`g2p_register_verification_history`)     | Individual _or_ Household | `linked_register_mnemonic`, `update_trigger`, `data_source`, `enumerator_id`, `office_location_code`, `verification_status`, `verification_method`, `verified_at`, `data_quality_flags`                                                              |
 
 ### Identifiers
 
-| Mnemonic | Auto-generated prefix | Auto-gen in config |
-| -------- | --------------------- | ------------------ |
-| `Individual` | `IND-` | ✅ |
-| `Household` | `HH-` | ✅ |
-| `IndividualDisability` | `DIS-` | ✖ (externally supplied) |
-| `ProgramParticipation` | `PP-` | ✖ |
-| `PovertyScore` | `PMT-` | ✖ |
-| `Asset` | `AST-` | ✖ |
-| `Shock` | `SHK-` | ✖ |
-| `Consent` | `CNS-` | ✖ |
-| `Grievance` | `GRV-` | ✖ |
-| `VerificationHistory` | `VER-` | ✖ |
+| Mnemonic               | Auto-generated prefix | Auto-gen in config      |
+| ---------------------- | --------------------- | ----------------------- |
+| `Individual`           | `IND-`                | ✅                       |
+| `Household`            | `HH-`                 | ✅                       |
+| `IndividualDisability` | `DIS-`                | ✖ (externally supplied) |
+| `ProgramParticipation` | `PP-`                 | ✖                       |
+| `PovertyScore`         | `PMT-`                | ✖                       |
+| `Asset`                | `AST-`                | ✖                       |
+| `Shock`                | `SHK-`                | ✖                       |
+| `Consent`              | `CNS-`                | ✖                       |
+| `Grievance`            | `GRV-`                | ✖                       |
+| `VerificationHistory`  | `VER-`                | ✖                       |
 
 `foundational_id` (national ID / alias) is **UNIQUE + INDEXED** on Individual. `grievance_case_id` is **UNIQUE** on Grievance. Other fields carry B-tree indexes where query shapes warrant (e.g. `pmt_score` for targeting thresholds, `shock_date` for time-series analytics) — the full list is documented inline in the model files.
 
@@ -190,7 +190,7 @@ This populates the database with 5 demo households, 15 demo individuals, and dem
 
 ### Tearing down
 
-Standard `helm uninstall` + PVC / secret cleanup applies. See the [Helm chart v4.x deployment guide](registry/deployment/helm-chart-4.x.md) for detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
+Standard `helm uninstall` + PVC / secret cleanup applies. See the [Helm chart v4.x deployment guide](../registry/deployment/helm-chart-4.x.md) for detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
 
 ### Rancher catalog
 
@@ -200,13 +200,13 @@ The `openg2p-nsr` chart carries the `openg2p.org/add-to-rancher` annotation, whi
 
 **Four** images are produced from this repo. The Staff Portal UI image is built separately by [`registry-platform`](https://github.com/openg2p/registry-platform) (it is a common platform runtime, not NSR-specific). Each uses the `develop` tag when built from the `develop` branch:
 
-| Image | Built by | Purpose |
-| ----- | -------- | ------- |
-| `openg2p/openg2p-nsr-staff-portal-api` | this repo | Backend API for the staff portal (migrations + REST) |
-| `openg2p/openg2p-nsr-partner-api` | this repo | Partner-facing REST API for data sharing with other government systems |
-| `openg2p/openg2p-nsr-celery` | this repo | Celery worker / beat (mode selected via env vars at runtime) |
-| `openg2p/openg2p-nsr-db-seed` | this repo | Postgres-client image that applies the meta-data SQL (and optional sample data) to a target database |
-| `openg2p/openg2p-registry-staff-portal-ui` | `registry-platform` | Next.js Staff Portal UI — common platform runtime referenced by the NSR chart |
+| Image                                      | Built by            | Purpose                                                                                              |
+| ------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------------------------- |
+| `openg2p/openg2p-nsr-staff-portal-api`     | this repo           | Backend API for the staff portal (migrations + REST)                                                 |
+| `openg2p/openg2p-nsr-partner-api`          | this repo           | Partner-facing REST API for data sharing with other government systems                               |
+| `openg2p/openg2p-nsr-celery`               | this repo           | Celery worker / beat (mode selected via env vars at runtime)                                         |
+| `openg2p/openg2p-nsr-db-seed`              | this repo           | Postgres-client image that applies the meta-data SQL (and optional sample data) to a target database |
+| `openg2p/openg2p-registry-staff-portal-ui` | `registry-platform` | Next.js Staff Portal UI — common platform runtime referenced by the NSR chart                        |
 
 The NSR backend images assemble the platform runtimes (pulled from `registry-platform`) together with the `nsr-extension` code. CI path-filters ensure each workflow only rebuilds when its own inputs change: the db-seed image rebuilds on SQL changes (`meta_data/`, `sample_data/`), the backend images on Python or spec-file changes (rebuilding only the affected service), and the Helm chart publishes only on `helm/**` changes.
 
@@ -217,11 +217,11 @@ The db-seed image packages the register definitions, schemas, UI tabs, sections,
 * `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` — connection
 * `LOAD_SAMPLE_DATA=true` _(optional)_ — also apply the sample-data SQL
 
-See the [Meta Data Seeding design](registry/design/meta-data-seeding.md) for the platform-level framework.
+See the [Meta Data Seeding design](../registry/design/meta-data-seeding.md) for the platform-level framework.
 
 ## Related
 
-* [OpenG2P Registry Platform](registry/) — the base that NSR extends
-* [Farmer Registry](farmer-registry.md) — sibling manifestation of the same platform, tuned for agricultural-extension use-cases
-* [Registry concepts](registry/concepts.md) — register, table, section, tab, change request, etc.
-* [Registry features](registry/features/) — the full list of capabilities NSR inherits
+* [OpenG2P Registry Platform](../registry/) — the base that NSR extends
+* [Farmer Registry](../farmer-registry.md) — sibling manifestation of the same platform, tuned for agricultural-extension use-cases
+* [Registry concepts](../registry/concepts.md) — register, table, section, tab, change request, etc.
+* [Registry features](../registry/features/) — the full list of capabilities NSR inherits
