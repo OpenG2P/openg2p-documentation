@@ -47,11 +47,19 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 
 4\. Clone the G2P Bridge Repository
 
-*   Clone the `openg2p-g2p-bridge` repository to your local machine.
+*   Clone the consolidated `g2p-bridge` monorepo to your local machine.
 
     ```bash
-    git clone https://github.com/OpenG2P/openg2p-g2p-bridge
+    git clone https://github.com/OpenG2P/g2p-bridge
     ```
+
+{% hint style="info" %}
+The G2P Bridge Python packages are **no longer published to PyPI** — install them
+from local source (editable installs) out of the cloned repo, as shown below.
+Only the external OpenG2P libraries (`openg2p-fastapi-common`,
+`openg2p-fastapi-auth`) come from PyPI. Module folders now live under `core/`,
+`extensions/` and `example-bank/` (the `openg2p-g2p-bridge-` prefix was dropped).
+{% endhint %}
 
 #### 5. Install Python Libraries and G2P Bridge Components <a href="#docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977" id="docs-internal-guid-f8d8e15e-7fff-3872-8a9f-bfbb05735977"></a>
 
@@ -62,7 +70,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Make a new Python virtual environment.
 
     ```bash
-    cd openg2p-g2p-bridge/openg2p-g2p-bridge-api
+    cd g2p-bridge/core/partner-api
     python3 -m venv venv
     ```
 *   Activate the virtual environment.
@@ -73,12 +81,11 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Use `pip` to install the required Python packages, including the core libraries for the G2P Bridge.
 
     ```bash
-    python3 -m pip install \
-        openg2p-fastapi-common==1.1.2 \
-        openg2p-fastapi-auth==1.1.2 \
-        openg2p-g2pconnect-common-lib==1.1.0 \
-        openg2p-g2p-bridge-models==1.1.0 \
-        openg2p-g2p-bridge-api==1.1.0
+    # External OpenG2P libs from PyPI
+    python3 -m pip install openg2p-fastapi-common openg2p-fastapi-auth
+    # In-repo packages from local source (editable)
+    python3 -m pip install -e ../models
+    python3 -m pip install -e .
     ```
 *   Create a .env file
 
@@ -111,7 +118,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Make a new Python virtual environment.
 
     ```bash
-    cd openg2p-g2p-bridge/openg2p-g2p-bridge-celery-beat-producers
+    cd g2p-bridge/core/celery-beat-producers
     python3 -m venv venv
     ```
 *   Activate the virtual environment.
@@ -122,13 +129,11 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Use `pip` to install the required Python packages, including the core libraries for the G2P Bridge.
 
     ```bash
-    python3 -m pip install \
-        openg2p-fastapi-common==1.1.2 \
-        openg2p-fastapi-auth==1.1.2 \
-        openg2p-g2pconnect-common-lib==1.1.0 \
-        openg2p-g2p-bridge-models==1.1.0 \
-        openg2p-g2p-bridge-bank-connectors==1.1.0 \
-        openg2p-g2p-bridge-celery-beat-producers==1.1.0    
+    # External OpenG2P libs from PyPI
+    python3 -m pip install openg2p-fastapi-common openg2p-fastapi-auth
+    # In-repo packages from local source (editable)
+    python3 -m pip install -e ../models -e ../../extensions/bank-connectors
+    python3 -m pip install -e .
     ```
 *   Create a .env file
 
@@ -163,7 +168,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Make a new Python virtual environment.
 
     ```bash
-    cd openg2p-g2p-bridge/openg2p-g2p-bridge-celery-workers
+    cd g2p-bridge/core/celery-workers
     python3 -m venv venv
     ```
 *   Activate the virtual environment.
@@ -174,13 +179,11 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 *   Use `pip` to install the required Python packages, including the core libraries for the G2P Bridge.
 
     ```bash
-    python3 -m pip install \
-        openg2p-fastapi-common==1.1.2 \
-        openg2p-fastapi-auth==1.1.2 \
-        openg2p-g2pconnect-common-lib==1.1.0 \
-        openg2p-g2p-bridge-models==1.1.0 \
-        openg2p-g2p-bridge-bank-connectors==1.1.0 \
-        openg2p-g2p-bridge-celery-workers==1.1.0    
+    # External OpenG2P libs from PyPI
+    python3 -m pip install openg2p-fastapi-common openg2p-fastapi-auth
+    # In-repo packages from local source (editable)
+    python3 -m pip install -e ../models -e ../../extensions/bank-connectors
+    python3 -m pip install -e .
     ```
 *   Create a .env file
 

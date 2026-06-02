@@ -1,104 +1,93 @@
 ---
-description: Deployment of OpenG2P Example Bank Simulator
+description: The bundled Example Bank simulator and the digital-cash treasury account
 ---
 
-# Deployment of Example Bank
+# Example Bank & Treasury Account
 
-### Prerequisites
+The **Example Bank** is a reference simulator of a Sponsor Bank. It exists so the
+**digital cash transfer** flow can be demonstrated end to end without a real
+bank: the Bridge checks funds, blocks funds, initiates payments and reconciles
+against this simulator.
 
-Before you deploy, make sure the following are in place:
+It is **bundled into the single [`openg2p-bridge` chart](helm-charts.md)** — there
+is no separate Example Bank chart or repository any more. Deploy or skip it with
+one toggle.
 
-* ✅ **Kubernetes cluster** is up and running
-* ✅ **Nginx server is configured** (skip this for OpenG2P-in-a-box)
-* ✅ **Namespace is created** (via Rancher under a Project)
-* ✅ **Project Owner access** on the OpenG2P namespace
-* ✅ **Istio gateway** is set up in the namespace
+## Enabling / disabling
 
-## Installation using Rancher UI
+| Value | Default | Description |
+| --- | --- | --- |
+| `exampleBank.enabled` | `true` | Deploy the Example Bank (API + Celery beat/worker). |
+| `global.exampleBankHostname` | `example-bank.<namespace>.openg2p.org` | Example Bank API hostname. |
 
-1. Log in to the Rancher admin console and select your cluster.
-2. Go to Apps -> Repositories and click Create to add a new repository.
-3. Enter "openg2p" as the Name and `https://openg2p.github.io/openg2p-helm/rancher` as the target HTTPS Index URL, then click Create.
-4. Select the desired namespace for installation from the filter on the top-right.
-5. To see prerelease versions of OpenG2P apps, click your user avatar in the upper right corner of the Rancher dashboard and select Include Prerelease Versions under Preferences.
-6. Navigate to the Apps -> Charts page. The OpenG2P-G2P-Bridge-Example-Bank will be listed on the dashboard.
-7. Click on the Helm chart, choose the version you want to install, and click Install.\
-   ![](<../../.gitbook/assets/image (73).png>)
-8. On the next screen, provide a name for the installation (e.g., `example-bank`), check the Customise Helmbox before installation, and click Next.
-9. Configure the following for each app:
-   * Set a hostname for each app in the format `<appname>.<base-hostname>`, where `<base-hostname>` is the wildcard hostname chosen during the Istio namespace setup (e.g., `example-bank.dev.openg2p.org`). The `<appname>` is arbitrary, and default names are provided.
-   * Select all the recommended services you wish to install. The Bridge installation includes API and Celery Background task services.
-10. Click Next to proceed to the Helm Options page. Disable the wait flag and click Install.
-11. Monitor the pods until they all enter a Running state, which may take several minutes.\
-    ![](<../../.gitbook/assets/image (63).png>)
+{% hint style="warning" %}
+**Disable the Example Bank for production** (`exampleBank.enabled: false`) and
+point the Bridge at a real sponsor bank connector instead. The Example Bank is a
+simulator for demos and testing only.
+{% endhint %}
 
-## **Installation using CLI**
+## Digital cash needs no PBMS or Registry
 
-#### 1. Clone the GitHub Repository
+For **pure digital cash transfer** (`global.g2pBridgeInKindEnabled: false`, the
+default), the Bridge needs neither the PBMS database nor the Registry. Instead of
+reading the sponsor-bank configuration from PBMS, the Bridge reads it directly
+from Helm values. The Celery workers and beat tasks for geo/warehouse/agency
+allocation are not scheduled at all in this mode.
 
-```
-# Clone the GitHub repository containing the Helm charts
-$ git clone https://github.com/OpenG2P/openg2p-g2p-bridge-example-bank-deployment
-$ cd openg2p-g2p-bridge-example-bank-deployment/charts
-```
+In-kind benefits (goods/services) still require PBMS + Registry; enable them with
+`global.g2pBridgeInKindEnabled: true`.
 
-#### 2. Install Helm Dependencies
+## One treasury account, two consumers
 
-```
-# Install the dependencies for the Helm chart
-$ helm dependency update
-```
+The sponsor/treasury account is defined **once** in Helm values and is the
+**single source of truth** for both the Bridge and the Example Bank:
 
-#### 3. Install the Helm Chart
-
-```
-# Install the openg2p-g2p-bridge-example-bank chart using Helm
-$ helm install openg2p-g2p-example-bank ./openg2p-g2p-bridge-example-bank -f values.yaml -n <namespace>
-```
-
-* Replace `openg2p-g2p-example-bank` with the desired release name.
-* Replace `namespace` with your kubernetes namespace.
-* Use the `-f` flag to provide custom configurations through a `values.yaml` file.
-
-#### 4. Update Values File (Optional)
-
-To customize the configuration, update the `values.yaml` file. Here's a sample of what you might want to configure:
-
-* Set the hostname, Docker image tags, and various other configurations to match your environment.
-
-#### 5. Check the Deployment
-
-After running the install command, ensure that all pods and services are running correctly.
-
-```
-# Check the status of the Helm release
-$ helm status openg2p-g2p-example-bank
-
-# View the Kubernetes pods and services
-$ kubectl get pods,svc
+```yaml
+global:
+  g2pBridgeInKindEnabled: false      # digital cash mode
+  seedTreasuryAccount: true          # seed the account into the Example Bank
+  sponsorBankConfigurations:
+    default:
+      sponsor_bank_code: EXAMPLE
+      program_account_number: "SPONSOR0001"
+      program_account_branch_code: ""
+      account_currency: USD
+      available_balance: "10000000"   # opening balance
+      account_holder_name: Program Treasury
 ```
 
-#### 6. Updating the Helm Release
+* **The Bridge** uses `sponsor_bank_code` and `program_account_*` as the
+  digital-cash sponsor configuration (replacing what would otherwise come from
+  PBMS).
+* **The Example Bank** uses `program_account_number`, `account_currency`,
+  `available_balance` and `account_holder_name` to **seed a matching account**
+  so the Bridge's calls against `SPONSOR0001` succeed.
 
-If changes are made to the `values.yaml` or any part of the Helm chart, use the following command to upgrade the release:
+`sponsorBankConfigurations` is keyed by `"<benefit_program_id>:<benefit_code_id>"`;
+the `default` entry applies to all programs.
 
+## How the seeding works
+
+The Example Bank has **no account-creation API or UI**, so the account must be
+seeded. When `seedTreasuryAccount: true`, the Example Bank API **self-seeds the
+treasury account on its database migration at startup** — it creates the account
+from the values above only if it does not already exist (idempotent; existing
+balances are left untouched). This keeps Helm values as the single source of
+truth, with no manual SQL step.
+
+To verify after install, call `check_funds` on the Example Bank:
+
+```bash
+curl -s -X POST \
+  https://example-bank.<namespace>.openg2p.org/api/example-bank/check_funds \
+  -H 'Content-Type: application/json' \
+  -d '{"account_number":"SPONSOR0001","account_currency":"USD","total_funds_needed":100}'
 ```
-$ helm upgrade openg2p-g2p-example-bank . -f ./values.yaml -n <namespace>
-```
 
-#### 7. Uninstalling the Chart
+A response with `"has_sufficient_funds": true` confirms the account was seeded.
 
-To remove the deployment, run the following:
+## Database
 
-```
-$ helm uninstall openg2p-g2p-example-bank -n <namespace>
-```
-
-This will delete all Kubernetes resources associated with the release.
-
-## **Post-Installation Configuration**
-
-After deploying the Example Bank, the following database table must be configured to enable the benefit program features:
-
-* **Table**: `accounts`
-* **Purpose**: Stores bank account details, which are essential for the operation of the G2P Bridge.
+The Example Bank uses its own database (`example_bank_db`, user `bankuser`)
+created via `postgres-init` inside the shared `commons-postgresql`, alongside the
+Bridge database. Both are removed by the [uninstall script](teardown.md).

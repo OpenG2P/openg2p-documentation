@@ -1,13 +1,70 @@
 ---
-description: Physical organization of source code in Github repositories
+description: Physical organization of source code in the g2p-bridge monorepo
 ---
 
 # Physical Organization
 
-The G2P-Bridge source code has been organized and baselined in the following manner
+The G2P Bridge source code is consolidated into a **single repository**:
+[**`g2p-bridge`**](https://github.com/OpenG2P/g2p-bridge). What were previously
+seven separate repositories are now folders within this one monorepo, with each
+component's internal structure kept intact.
 
-<figure><img src="../../../.gitbook/assets/G2P Bridge Physical Organization of Application-Code.jpg" alt=""><figcaption></figcaption></figure>
+{% hint style="info" %}
+The redundant `openg2p-g2p-bridge-` prefix has been stripped from folder and file
+names within the repo. Python package names (e.g. `openg2p_g2p_bridge_models`),
+Docker image names, and Helm `Chart.yaml` names are intentionally left unchanged.
+{% endhint %}
 
-### Repositories
+## Repository layout
 
-<table><thead><tr><th width="293">Repository</th><th>Contents</th></tr></thead><tbody><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge.git">openg2p-g2p-bridge</a></td><td><p>This repository has the following python modules<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-partner-api</strong></mark><br>This is fastapi based module - that provides all REST APIs to partner systems. Upstream systems like PBMS should consume this partner api to handover disbursement instructions to Bridge. This module should be deployed as a k8s pod and should be scaled suitably to handle required volumes. Security is implemented using a partner signature validation (uses MOSIP Keymanager)<br></p><p><mark style="color:orange;"><strong>openg2p-g2p-bridge-bene-portal-api</strong></mark><br>This is fastapi based module - that provides all REST APIs to the OpenG2P Beneficiary Portal. This module should be deployed as a k8s pod and should be scaled suitably to handle required volumes. Security is implemented using a Access-Token issued by an identity provider.</p><p><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-celery-beat-producers</strong></mark><br>This uses Celery and produces periodic Celery beats. This module should be deployed as a k8s pod - but should be restricted to only a single pod. The volumes should be handled by scaling the next pod - openg2p-g2p-bridge-celery-workers<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-celery-workers</strong></mark><br>This uses Celery and spawns workers that listen to the beats produced by the celery beat producer. The following workers exist<br>1. check available balance with sponsor bank<br>2. block funds with sponsor bank<br>3. initiate payments with sponsor bank<br>4. reconcile disbursements with mt940<br>This module is a service and should be deployed as a k8s pod and should be scaled suitably to handle the required volumes.<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-models</strong></mark><br>This module is a library (not a service/pod). This library contains the sqlalchemy (persistence) models and pydantic schemas that are shared by the api, the celery beat producer and the celery worker modules.</p></td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge-extensions">openg2p-g2p-bridge-extensions</a></td><td>Contains the part of code that would typically need to be customized in an implementation.<br><br>1. Geo Resolution<br>2. Warehouse Allocation<br>3. Agency Allocation<br>4. Financial Address Resolution<br>5. Sponsor Bank Connectors<br>6. Notification Connector</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge-deployment.git">openg2p-g2p-bridge-deployment</a></td><td>Helm charts and deployment scripts for the g2p-bridge subsystem.<br><br>This repository contains the Helm charts for the 3 services, viz. g2p-bridge-api, g2p-bridge-celery-beat-producers and g2p-bridge-celery-workers.<br><br>Apart from the individual helm charts, there is also a single helm chart - openg2p-g2p-bridge - that installs all the 3 services.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge-example-bank.git">openg2p-g2p-bridge-example-bank</a></td><td>This repository provides an implementation of a Sponsor Bank. This repository will not be used in a Production Deployment. This only simulates a Sponsor Bank so that we can demonstrate end to end working of the g2p-bridge subsystem.<br><br>This repository has 3 python modules<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-example-bank-api</strong></mark><br>This is python module built using fastapi. It provides REST APIs of a fictitous bank - called - "Example Bank". It provides REST APIs for checking available balance, blocking funds and initiating payments.<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-example-bank-celery</strong></mark><br>This is a python module that uses Celery to perform all the asynchronous processing - viz. processing payments and producing MT940 statements based on statement requests.<br><br><mark style="color:orange;"><strong>openg2p-g2p-bridge-example-bank-models</strong></mark><br>This module is a library (not a service/pod). This library contains the sqlalchemy (persistence) models and pydantic schemas that are shared by the api and the celery modules.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge-example-bank-deployment.git">openg2p-g2p-bridge-example-bank-deployment</a></td><td>Helm charts and deployment scripts for the example bank subsystem.<br><br>This repository contains the Helm charts for the 2 services, viz. example-bank-api &#x26; example-bank-celery.<br><br>Apart from the individual helm charts, there is also a single helm chart - openg2p-g2p-bridge-example-bank - that installs the 2 services.</td></tr><tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge-test.git">openg2p-g2p-bridge-test</a></td><td>This repository contains all the test artefacts - organized into Unit Testing, Functional Testing and Performance Testing.<br>Functional Testing is a mix of manual as well as automated testing. Automated testing has been done with the help of Postman API tool.</td></tr></tbody></table>
+| Folder | Origin repo | Contents |
+| --- | --- | --- |
+| [`core/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/core) | `openg2p-g2p-bridge` | Core services and libraries: `models`, `partner-api`, `bene-portal-api`, `celery-beat-producers`, `celery-workers`. |
+| [`extensions/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/extensions) | `openg2p-g2p-bridge-extensions` | Pluggable adapters/connectors meant to be customized per implementation: agency-allocator, bank-connectors, geo-resolver, mapper-connectors, notification-connectors, warehouse-allocator. |
+| [`example-bank/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
+| [`docker/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/docker) | `openg2p-g2p-bridge-docker` | Dockerfiles for the API and Celery service images. |
+| [`deployment/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/deployment) | `openg2p-g2p-bridge-deployment` + `openg2p-g2p-bridge-example-bank-deployment` | The single consolidated Helm chart `charts/openg2p-bridge` (Bridge + bundled Example Bank, toggled via `exampleBank.enabled`) and the `scripts/` (e.g. `uninstall-bridge.sh`). |
+| [`test/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — unit, functional (Postman) and performance tests. |
+
+## Core modules (`core/`)
+
+| Module | Type | Purpose |
+| --- | --- | --- |
+| **partner-api** | service (pod) | FastAPI REST APIs for partner systems. Upstream systems like PBMS call this to hand over disbursement instructions. Secured via partner signature validation (MOSIP Keymanager). Scale horizontally. |
+| **bene-portal-api** | service (pod) | FastAPI REST APIs for the OpenG2P Beneficiary Portal. Secured via an access token from an identity provider. Scale horizontally. |
+| **celery-beat-producers** | service (pod) | Produces periodic Celery beats. Run as a **single** replica. |
+| **celery-workers** | service (pod) | Celery workers that execute the beats (check balance, block funds, initiate payments, reconcile MT940, and — for in-kind — geo/warehouse/agency tasks). Scale horizontally. |
+| **models** | library | SQLAlchemy persistence models and Pydantic schemas shared by the api, beat producer and workers. |
+
+The beat producer and workers ship as a **single Docker image** (`openg2p/openg2p-g2p-bridge-celery`); the Helm chart runs it as beat or worker by configuration.
+
+## Example Bank modules (`example-bank/`)
+
+| Module | Type | Purpose |
+| --- | --- | --- |
+| **example-bank-api** | service (pod) | FastAPI REST APIs of a fictitious "Example Bank" — check balance, block funds, initiate payments. Self-seeds the treasury account on migrate. |
+| **example-bank-celery** (beat-producers + workers) | service (pod) | Asynchronous processing — payments and MT940 statement generation. |
+| **example-bank-models** | library | SQLAlchemy models and Pydantic schemas shared by the api and celery modules. |
+
+{% hint style="warning" %}
+The Example Bank only **simulates** a Sponsor Bank for end-to-end demos and is
+not used in a production deployment.
+{% endhint %}
+
+## CI workflows
+
+GitHub Actions live under `.github/workflows`, each scoped with `paths:` filters
+so it runs only when its component changes:
+
+* `pre-commit.yml` — runs each sub-project's own pre-commit config.
+* `core-test.yml`, `example-bank-test.yml` — test + coverage.
+* `docker-build-apis.yml`, `docker-build-celery.yml`, `docker-build-example-bank.yml` — build/push images. **The image tag matches the `g2p-bridge` repository ref** (branch name or git tag).
+* `helm-publish.yml` — package and publish the Helm chart(s) under `deployment/charts/`.
+
+{% hint style="info" %}
+The Python packages are **not published to PyPI** — every image builds them from
+local in-repo source. On `develop`, each module's `__version__` is `0.0.0.dev0`.
+The only external OpenG2P libraries (`openg2p-fastapi-common`, and
+`openg2p-spar-models` for celery) are overridable inputs on the docker build
+workflows.
+{% endhint %}

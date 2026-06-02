@@ -10,6 +10,17 @@ The **OpenG2P G2P Bridge** is a comprehensive, modular platform for managing and
 
 The architecture follows a **plugin-based extension model** with **asynchronous task processing**, enabling partners to implement custom business logic while the core platform handles orchestration, state management, and integration coordination.
 
+{% hint style="info" %}
+**Disbursement modes and their dependencies.** The diagrams below show the full
+system, including the PBMS and Registry databases. Those are only required for
+**in-kind** disbursements (geo targeting, warehouse and agency allocation). For
+**pure digital cash transfer** — the default deployment mode
+(`global.g2pBridgeInKindEnabled: false`) — the Bridge needs **neither PBMS nor
+the Registry**: the sponsor/treasury account is configured directly in Helm
+values, and the geo/warehouse/agency tasks below are not scheduled. See
+[Example Bank & Treasury Account](../../../g2p-bridge/deployment/deployment-of-example-bank.md).
+{% endhint %}
+
 ***
 
 ### System Context

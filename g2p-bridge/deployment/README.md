@@ -1,9 +1,15 @@
 # Deployment
 
-This guide provides instructions for deploying all G2P Bridge components on a Kubernetes cluster using Helm charts. These charts will install the G2P Bridge components along with a dedicated PostgreSQL server, all within the same namespace. The deployment may be achieved by the following methods:
+This guide explains how to deploy the G2P Bridge on a Kubernetes cluster. The
+**entire subsystem installs from a single Helm chart**, `openg2p-bridge`, which
+also creates the PostgreSQL database/role, a Redis, the Keycloak client and —
+optionally — the bundled Example Bank simulator, all within the same namespace.
 
-* [Using Rancher UI](./#using-rancher-ui)
-* [Using command line](./#using-the-command-line)
+For the full description of the chart (features, contents, all parameters), see
+[Helm Chart](helm-charts.md). Deployment can be done two ways:
+
+* [Using the Rancher UI](#installation-using-rancher-ui)
+* [Using the command line](#installation-using-cli)
 
 ## Prerequisites
 
@@ -14,78 +20,86 @@ Before you deploy, make sure the following are in place:
 * ✅ **Namespace is created** (via Rancher under a Project)
 * ✅ **Project Owner access** on the OpenG2P namespace
 * ✅ **Istio gateway** is set up in the namespace
+* ✅ Shared **`commons-postgresql`** and **Keycloak** present in the namespace (commons layer)
 
-## Installation u**sing Rancher UI**
+## Installation using Rancher UI
 
 1. Log in to the Rancher admin console and select your cluster.
-2. Go to Apps -> Repositories and click Create to add a new repository.
+2. Go to Apps → Repositories and click Create to add a new repository.
 3. Enter "openg2p" as the Name and `https://openg2p.github.io/openg2p-helm/rancher` as the target HTTPS Index URL, then click Create.
 4. Select the desired namespace for installation from the filter on the top-right.
-5. To see prerelease versions of OpenG2P apps, click your user avatar in the upper right corner of the Rancher dashboard and select Include Prerelease Versions under Preferences.
-6. Navigate to the Apps -> Charts page. The OpenG2P G2P-Bridge will be listed on the dashboard.
-7. Click on the Helm chart, choose the version you want to install, and click Install.\
-   ![](<../../.gitbook/assets/image (75).png>)
-8. On the next screen, provide a name for the installation (e.g., `g2p-bridge`), check the Customise Helmbox before installation, and click Next.
-9. Configure the following for each app:
-   * Set a hostname for each app in the format `<appname>.<base-hostname>`, where `<base-hostname>` is the wildcard hostname chosen during the Istio namespace setup (e.g., `g2p-bridge.dev.openg2p.org`). The `<appname>` is arbitrary, and default names are provided.
-   * Select all the recommended services you wish to install. The Bridge installation includes API and Celery Background task services.
-10. Click Next to proceed to the Helm Options page. Disable the wait flag and click Install.
-11. Monitor the pods until they all enter a Running state, which may take several minutes.\
-    ![](<../../.gitbook/assets/image (63).png>)
+5. To see prerelease (`develop`) versions, click your user avatar in the upper right corner and select **Include Prerelease Versions** under Preferences.
+6. Navigate to Apps → Charts. **OpenG2P Bridge** will be listed.
+7. Click the chart, choose the version, and click Install.
+8. Provide a name for the installation (e.g. `g2p-bridge`), tick **Customize Helm options before install**, and click Next.
+9. Fill the form (generated from `questions.yaml`):
+   * Set the **namespace** segment — all hostnames are derived from it (e.g. `g2p-bridge.<namespace>.openg2p.org`). Override individual hostnames if needed.
+   * Choose the **disbursement mode** (digital cash vs in-kind) and, for digital cash, the **sponsor/treasury account**.
+   * Choose whether to deploy the bundled **Example Bank** and create the **Keycloak client**.
+10. On the Helm Options page, disable the **wait** flag and click Install.
+11. Monitor the pods until they all reach `Running` / `Completed` (may take a few minutes).
+
+See [Helm Chart → Key parameters to change](helm-charts.md#key-parameters-to-change)
+for the full list.
 
 ## Installation using CLI
 
-1.  Clone the GitHub Repository:
+1.  Clone the consolidated repository:
 
     ```bash
-    git clone https://github.com/OpenG2P/openg2p-g2p-bridge-deployment.git
-    cd openg2p-g2p-bridge-deployment/charts
+    git clone https://github.com/OpenG2P/g2p-bridge.git
+    cd g2p-bridge/deployment/charts/openg2p-bridge
     ```
-2.  Install Helm Dependencies:
+2.  Build Helm dependencies (common, postgres-init, redis, keycloak-init):
 
     ```bash
-    helm dependency update
+    helm dependency build
     ```
-3.  Install the Helm Chart:
+3.  Install the chart:
 
     ```bash
-    helm install openg2p-g2p-bridge ./openg2p-g2p-bridge -f values.yaml -n <namespace>
+    helm install g2p-bridge . -n <namespace> --set global.namespace=<namespace>
     ```
 
-    * Replace `openg2p-g2p-bridge` with your desired release name.
+    * Replace `g2p-bridge` with your desired release name. The Bridge **database
+      and role are derived from the release name** — release `g2p-bridge` →
+      database `g2p_bridge`, role `g2p_bridge_user`.
     * Replace `<namespace>` with your Kubernetes namespace.
-    * Use the `-f` flag to provide custom configurations through a `values.yaml` file.
-4. Update Values File (Optional): To customize your configuration, you can update the `values.yaml` file. This is where you can set the hostname, Docker image tags, and other configurations to match your environment.
-5.  Check the Deployment: After running the install command, verify that all pods and services are running correctly.
+    * Use `-f my-values.yaml` to provide custom configuration.
+4.  Verify the deployment:
 
     ```bash
-    helm status openg2p-g2p-bridge
-    kubectl get pods,svc
+    helm status g2p-bridge -n <namespace>
+    kubectl get pods,svc -n <namespace>
     ```
-6.  Updating the Helm Release: If you make changes to the `values.yaml` file or any part of the Helm chart, use the following command to upgrade the release:
+5.  Upgrade after changing values:
 
     ```bash
-    # This command will delete all Kubernetes resources associated with the release.
-    helm upgrade openg2p-g2p-bridge ./openg2p-g2p-bridge -f values.yaml -n <namespace>
+    helm upgrade g2p-bridge . -n <namespace> -f my-values.yaml
     ```
 
-### Post-Installation Configuration
+### Access links
 
-After deploying the G2P Bridge, you must configure the following database table to enable the benefit program features:
+With `global.namespace=trial` and the default hostnames:
 
-* Table: `benefit_program_configurations`
-* Purpose: This table stores configuration details for each benefit program, which are essential for the operation of the G2P Bridge.
+* Partner API: `https://g2p-bridge.trial.openg2p.org/api/g2p-bridge` (Swagger at `/api/g2p-bridge/docs`, health at `/api/g2p-bridge/ping`)
+* Bene-Portal API: `https://g2p-bridge-bene-portal.trial.openg2p.org/api/bene-portal`
+* Example Bank API: `https://example-bank.trial.openg2p.org/api/example-bank`
 
-### **Access Links**
+{% hint style="info" %}
+The bare API base path (e.g. `/api/g2p-bridge/`) returns a 404 by design — there
+is no route there. Use `/docs`, `/ping`, or a specific endpoint.
+{% endhint %}
 
-Once the installation is complete, G2P-Bridge will be accessible at the following URL, based on the URL you provided during setup:
+### Database
 
-* G2P-Bridge API: `https://g2p-bridge.openg2p.sandbox.net/api/g2p-bridge`
+The Bridge uses the shared **`commons-postgresql`** in the namespace; it does not
+install its own PostgreSQL. `postgres-init` creates the Bridge database/role
+(derived from the release name) and, when the Example Bank is enabled,
+`example_bank_db` / `bankuser`.
 
-### **Database**
+## Teardown
 
-PostgreSQL is installed as part of this procedure in the same namespace. The default database created is `openg2p_g2p_bridge_db`.
-
-## **Sanity Testing**
-
-TBD
+`helm uninstall` leaves the Postgres database/role behind. To remove a release
+completely, use the bundled uninstall script — see
+[Teardown / Uninstall](teardown.md).
