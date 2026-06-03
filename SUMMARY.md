@@ -682,7 +682,7 @@
     * [OpenG2P Deployment Architecture](deployment/concepts/openg2p-deployment-model.md)
     * [DNS & TLS Certificates](deployment/concepts/dns-and-certificates.md)
   * [Sandbox — Single-Node](operations/deployment/infrastructure-setup/single-node-automation.md)
-  * [Production — Three-Node](operations/deployment/infrastructure-setup/README.md)
+  * [Production](operations/deployment/infrastructure-setup/README.md)
     * [Prerequisites & Procurement](operations/deployment/prerequisites-procurement.md)
     * [Infrastructure Automation](operations/deployment/infrastructure-setup/three-node-automation/README.md)
       * [AWS Provisioning (optional)](operations/deployment/infrastructure-setup/three-node-automation/aws-provisioning.md)
