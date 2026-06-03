@@ -110,6 +110,8 @@ cd openg2p-deployment/automation/production
 cp prod-config.example.yaml prod-config.yaml
 ```
 
+Drop the customer-provided TLS certificate files (received during [procurement](../../prerequisites-procurement.md#tls-certificate)) into a local folder next to your config — e.g. `./certs/wildcard.fullchain.pem` and `./certs/wildcard.key`. You'll reference them by path in `prod-config.yaml` below; the install uploads them to the Reverse-Proxy automatically. No need to copy certs to the server yourself.
+
 Edit `prod-config.yaml`. The example config has every key tagged either `[USER]` (you fill in), `[CUSTOMER]` (provided by customer / govt — hostnames, certs), or `[AWS]` (auto-populated by AWS provisioning, or you fill in for non-AWS installs):
 
 ```yaml

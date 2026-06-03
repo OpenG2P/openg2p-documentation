@@ -1,13 +1,12 @@
 ---
 description: >-
-  What must be in place before installing OpenG2P in production — DNS records,
-  TLS certificate, server access, firewall — plus the steps to install once the
-  certificate is issued.
+  What must be in place before installing OpenG2P in production — compute,
+  DNS records, TLS certificate, server access, firewall.
 ---
 
 # Prerequisites & Procurement
 
-This page assumes a **single production environment** and a DevOps reader. Procurement requirements come first, then the install steps once the certificate arrives; conceptual background is in [Reference notes](prerequisites-procurement.md#reference-notes).
+This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page. Conceptual background is in [Reference notes](prerequisites-procurement.md#reference-notes).
 
 {% hint style="info" %}
 **Production deployment flow:** **1. Procurement** (this page) → [2. Infrastructure](infrastructure-setup/three-node-automation/) → [3. Environment](environment-setup-multi-node.md)
@@ -95,7 +94,7 @@ Accepted formats (the install scripts auto-detect):
 | PFX / P12                       | `<DOMAIN>.pfx` (or `.p12`) + the password                   |
 | ZIP bundle (Sectigo / DigiCert) | `<DOMAIN>.zip`                                              |
 
-The cert team delivers the issued **files** to the deployer (secure transfer — SFTP, encrypted mail, or a secrets vault). They need **no access to the OpenG2P servers** — the install automation places the files on the server. Installing them is covered in [After procurement](prerequisites-procurement.md#after-procurement-installing-with-your-certificate).
+The cert team delivers the issued **files** to the deployer (secure transfer — SFTP, encrypted mail, or a secrets vault). They need **no access to the OpenG2P servers** — the install automation places the files on the server. The deployer then references them by path in `prod-config.yaml`; see [Infrastructure Automation → Step 1](infrastructure-setup/three-node-automation/#step-1-clone-and-configure).
 
 {% hint style="warning" %}
 **Don't use Let's Encrypt for production.** It's fine for a sandbox or PoC, but most governments require certs from a commercial CA (DigiCert, GlobalSign, Sectigo) or their national / sovereign CA. The installer defaults to customer-provided certs; Let's Encrypt is a sandbox-only option.
@@ -125,27 +124,9 @@ Ingress rules at the network boundary. The per-host firewall (`ufw`) is configur
 * Public `80/443` are opened at the **environment-setup** stage, not during infra setup — see [environment setup](environment-setup-multi-node.md). You may open them upfront or defer; either is fine.
 * Apply these as **Security Group** inbound rules (AWS) or **perimeter-firewall / router ACLs** (on-prem).
 
-## After procurement: installing with your certificate
+## Next: install
 
-Once the cert team hands you the issued **files**, the deployer installs them — you never copy certs to the server by hand. On your workstation:
-
-1. Put the received cert + key in a folder next to your config, e.g. `./certs/`.
-2.  Point `prod-config.yaml` at those **local** paths:
-
-    ```yaml
-    tls_wildcard_cert: "./certs/prod.openg2p.gov.example.fullchain.pem"
-    tls_wildcard_key:  "./certs/prod.openg2p.gov.example.key"
-    ```
-3.  Validate the certificate without running the full install:
-
-    ```bash
-    ./openg2p-prod.sh --validate-certs --config prod-config.yaml
-    ```
-
-    This checks each cert: parses as PEM, key matches cert, not expired, and the SAN covers the configured hostnames.
-4. Run the install. The orchestrator uploads the files from your workstation and installs them on the Reverse-Proxy node.
-
-Continue with the [three-node infrastructure automation](infrastructure-setup/three-node-automation/).
+Once everything above is in place — DNS records created, certificate files in hand on the deployer's workstation, server access and firewall confirmed — continue with the [three-node infrastructure automation](infrastructure-setup/three-node-automation/). The install guide takes you through placing the cert files locally, configuring `prod-config.yaml`, validating, and running the install.
 
 ## Reference notes
 
