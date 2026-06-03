@@ -55,147 +55,42 @@ Two things to know before you run it:
 
 ## Prerequisites
 
-{% hint style="warning" %}
-**Start procurement early.** The DNS records and TLS certs listed below take time to procure — issuance from sovereign or commercial CAs typically runs **2–4 weeks**. If a missing cert is discovered mid-install, that becomes a 2–4 week delay.
+Before running the automation, the following must be in place. The canonical list — what to procure, in what shape, and how — lives in **[Prerequisites & Procurement](../../prerequisites-procurement.md)**. This is just the install-time checklist.
 
-See the [**Prerequisites & Procurement**](../../prerequisites-procurement.md) page for a single fillable checklist (admin + production hostnames + certs + server access + firewall ports) you can hand to your IT / network / cert team **before** any servers are touched. Procurement then runs in parallel with VM provisioning.
-{% endhint %}
+| Item | Where it's specified |
+| --- | --- |
+| Three Ubuntu 24.04 LTS VMs (RP / Compute / Storage), same private subnet, internet egress during install | [Compute (the three VMs)](../../prerequisites-procurement.md#compute-the-three-vms) |
+| DNS A records: admin hostnames → RP private IP; apex + wildcard → RP public IP | [DNS records](../../prerequisites-procurement.md#dns-records) |
+| One wildcard TLS certificate covering `*.<your-domain>` + apex (files held on **your laptop**, referenced by path in `prod-config.yaml`) | [TLS certificate](../../prerequisites-procurement.md#tls-certificate) |
+| SSH + passwordless sudo from the admin laptop to all three VMs | [Server access](../../prerequisites-procurement.md#server-access) |
+| Firewall: open `22` (admin CIDR) + WG/UDP to the RP; intra-private-subnet traffic. Public `80/443` are opened only at environment setup. | [Network ports (firewall)](../../prerequisites-procurement.md#network-ports-firewall) |
+| Admin laptop: `bash` 4+, `ssh`, `rsync`, `openssl`, plus a Wireguard client (only needed after install) | — |
 
-This section is **self-contained** — everything you need to have ready before running the automation. The orchestrator's `--preflight` mode mechanically verifies every item below and refuses to start if any is missing, with a clear error message and a link back to this section.
+A few install-specific points:
 
-### 1. Three Ubuntu 24.04 VMs
+* **Single-NIC RP** — channel separation is enforced by the firewall + Nginx allowlist, not by physical interfaces. See [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+* **No Let's Encrypt, no self-signed CA** — production uses customer-provided certs (commercial or sovereign CA) only. Sandbox/PoC uses the single-node automation, which supports Let's Encrypt.
+* **Grafana and Prometheus** run in-cluster and are reached via the Rancher UI (Cluster Explorer → Monitoring). They don't need their own DNS records or certs.
 
-|                       | Reverse Proxy                                    | Compute                 | Storage                  |
-| --------------------- | ------------------------------------------------ | ----------------------- | ------------------------ |
-| **OS**                | Ubuntu Server 24.04 LTS                          | Ubuntu Server 24.04 LTS | Ubuntu Server 24.04 LTS  |
-| **vCPU minimum**      | 2                                                | 16                      | 8                        |
-| **RAM minimum**       | 4 GB                                             | 64 GB                   | 32 GB                    |
-| **Root disk minimum** | 64 GB                                            | 128 GB                  | 256 GB                   |
-| **Disk type**         | SSD recommended                                  | SSD recommended         | SSD strongly recommended |
-| **Network**           | All three on the same private subnet             |                         |                          |
-| **Internet egress**   | Required during install (apt, RKE2, Helm charts) |                         |                          |
+### Validate before you install
 
-See [Prerequisites & Procurement → Compute](../../prerequisites-procurement.md#compute-the-three-vms) for the procurement-stage view of these specs.
-
-### 2. Reverse Proxy networking
-
-The RP is a **single-NIC** VM. Channel separation between the public Wireguard endpoint and the private admin services is enforced by the security group / network firewall plus where Nginx binds — not by physical interfaces. You need:
-
-* **One public/reachable address** for the Wireguard endpoint (`rp_public_ip`). On AWS this is an Elastic IP; on-prem it's the public IP of the RP or a DNAT'd address from an upstream firewall. Admin laptops dial in to this.
-* **One private IP** for the host's NIC (`rp_private_ip`). Admin Nginx binds here; Wireguard-decapsulated traffic from admin laptops is delivered here; the customer's DNS records for `rancher.<your-domain>` and `keycloak.<your-domain>` point here.
-
-The two may be the same address (e.g. a bare-metal host with one public IP and no NAT) or different (AWS, on-prem behind NAT) — the automation handles either.
-
-**Firewall / security-group rules** the RP needs open during infra setup:
-
-| Port      | Proto | Source         | Purpose                                                                                     |
-| --------- | ----- | -------------- | ------------------------------------------------------------------------------------------- |
-| 22        | TCP   | `admin_cidr`   | Admin SSH from your laptop's public IP                                                      |
-| `wg_port` | UDP   | `0.0.0.0/0`    | Wireguard endpoint                                                                          |
-| all       | any   | private subnet | Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress; covers admin 80/443) |
-
-Public `80/443` are **not** opened during infra setup — admin tools stay private (see [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access)). The environment automation opens public `80/443` later, when citizen-facing services exist.
-
-{% hint style="info" %}
-**Why one NIC?** Earlier versions of this automation used two NICs (one for public WG, one for admin Nginx) for "physical channel separation." In practice — especially on AWS where both ENIs land in the same subnet without policy routing — that produced asymmetric routing and intermittent SSH/HTTPS failures. SG-level separation (only WG + SSH open externally) gives the same effective protection without the kernel-routing fragility, and works identically on-prem and on AWS. If you have an existing two-NIC RP, attach only its primary NIC and leave the second one detached; the automation only consults `rp_private_ip`.
-{% endhint %}
-
-### 3. Customer-supplied DNS records
-
-The automation does NOT install any DNS server. Your authoritative DNS must resolve the following hostnames:
-
-| Hostname                 | DNS A-record →                        | Channel | Purpose                                          |
-| ------------------------ | ------------------------------------- | ------- | ------------------------------------------------ |
-| `rancher.<your-domain>`  | RP's **private** IP (`rp_private_ip`) | private | Rancher cluster manager UI                       |
-| `keycloak.<your-domain>` | RP's **private** IP (`rp_private_ip`) | private | Keycloak admin SSO (Rancher's identity provider) |
-
-`<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The two hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, `sso.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
-
-{% hint style="info" %}
-**Why only two?** Grafana and Prometheus run in-cluster as part of `rancher-monitoring`, but they're reached from inside the Rancher UI (**Cluster Explorer → Monitoring → Grafana / Prometheus**) — so they don't need their own DNS records or TLS certs. Any `grafana_hostname` / `prometheus_hostname` / `tls_grafana_*` / `tls_prometheus_*` keys in `prod-config.yaml` are ignored by the automation.
-{% endhint %}
-
-Admin laptops must be able to resolve these hostnames. Three working patterns:
-
-1. **Split-horizon DNS** (recommended) — your internal DNS resolves these to the RP's private IP; public DNS doesn't expose them. Admin laptops reach the internal DNS via Wireguard. The `wg_peer_dns` option in `prod-config.yaml` pushes that resolver's IP to every peer config so the laptop uses it automatically while the tunnel is up.
-2. **Public DNS pointing at the private IP** — anyone can resolve the name, but the IP is private; only Wireguard peers can reach it. Acceptable for many gov setups.
-3. **`/etc/hosts` on the admin laptop** — fully manual. The orchestrator prints the exact lines in the completion summary; you append them once per laptop.
-
-### 4. Customer-supplied TLS certificates
-
-The automation does NOT generate certs. You provide one cert+key per admin hostname (or one wildcard covering all four). Government CAs typically deliver certificates in one of these formats — all are supported:
-
-| Format                  | Files you provide                                       | Notes                                                                                |
-| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **PEM fullchain + key** | `<host>.fullchain.pem`, `<host>.key`                    | Native Nginx format. Most CAs can produce this on request.                           |
-| **Separate PEM**        | `<host>.cert.pem`, `<host>.chain.pem`, `<host>.key.pem` | Auto-concatenated into a fullchain by the script. Common from commercial CAs.        |
-| **PFX / P12**           | `<host>.pfx` (with password)                            | Windows IIS / Microsoft AD CS export. Converted with `openssl pkcs12` by the script. |
-| **ZIP bundle**          | `<host>.zip` (Sectigo/DigiCert layout)                  | Auto-detected and extracted.                                                         |
-
-The customer drops the cert files in a directory on **your laptop** (not the RP). Reference them by path in `prod-config.yaml`. The script:
-
-1. **Validates locally** on your laptop before any push:
-   * Cert covers the declared hostname (SAN/CN match, including wildcards)
-   * Key matches cert (modulus / pubkey hash)
-   * Chain is complete
-   * Expires more than 30 days out (warn at 14, fail at 7)
-   * Issued by a trusted CA (warn-only — sovereign / internal CAs are accepted)
-2. **Normalizes** to PEM fullchain + key.
-3. **Uploads** to `/etc/openg2p/certs/public/<hostname>/` on the RP (`fullchain.pem` 0644, `privkey.pem` 0600, root:root).
-4. **Atomic-swap** into Nginx, with rollback if `nginx -t` fails on the new config.
-
-See [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) for the deeper discussion on cert formats, per-FQDN vs wildcards in gov environments, and the validation pipeline.
-
-You can also pre-validate certs without running an install:
+You can verify everything is in order without touching the nodes:
 
 ```bash
-./openg2p-prod.sh --validate-certs --config prod-config.yaml
+./openg2p-prod.sh --validate-certs --config prod-config.yaml   # cert files on your laptop
+./openg2p-prod.sh --preflight      --config prod-config.yaml   # nodes (resources, IPs, DNS)
 ```
 
-Iterate until every cert reports green before you commit to the install.
+Preflight is non-destructive — it makes no changes. Run until everything reports green, then proceed to the steps below. Typical failures and where to fix them:
 
-### 5. Customer-supplied SSH access
-
-* Key-based SSH from the admin's laptop to each of the three VMs.
-* The SSH user on each VM has **passwordless sudo** (`NOPASSWD:ALL` in `/etc/sudoers.d/<user>`) or you SSH as root directly.
-
-### 6. On the admin's laptop
-
-* **`bash` 4 or later** (`bash --version`). macOS ships `/bin/bash` 3.2 by default — install a newer one with `brew install bash` and make sure it's first in `PATH`. Linux distros ship 4+ by default.
-* `ssh`, `rsync` (preinstalled on macOS and Linux).
-* `openssl` (preinstalled on macOS and Linux) — used by the local cert validator.
-* A Wireguard client (only needed AFTER install, to reach the admin tools).
-* The cert files from your customer / CA, in any of the supported formats above.
-
-### 7. What this automation does NOT need
-
-Explicitly so:
-
-* **No git server, no Docker registry, no backup node.** Deferred to follow-up automation.
-* **No public DNS for the admin hostnames** (point them at private IPs; access is via Wireguard).
-* **No Let's Encrypt or any other ACME client.** Government deployments universally use procured certs from sovereign or commercial CAs.
-* **No local CA / self-signed certs.** Earlier versions of the automation used a self-signed CA for admin tools; this is no longer supported. Real certs only.
-
-### Preflight verification
-
-The orchestrator's `--preflight` mode (and the implicit preflight at the start of an end-to-end run) mechanically validates everything in this section:
-
-```bash
-./openg2p-prod.sh --preflight --config prod-config.yaml
-```
-
-For each item that fails, the error message tells you exactly what's wrong and links back here. Example failures and what to fix:
-
-| Preflight error                                                       | Fix                                                                                                                                   |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `IP <rp_private_ip> NOT bound on this host`                           | The configured `rp_private_ip` isn't on any local NIC — fix the value or the NIC (see [section 2](./#id-2.-reverse-proxy-networking)) |
-| `DNS: rancher.<domain> does not resolve`                              | Add the A-record (see [section 3](./#id-3.-customer-supplied-dns-records))                                                            |
-| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                                                         |
-| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`  | Wrong cert for that hostname (see [section 4](./#id-4.-customer-supplied-tls-certificates))                                           |
-| `Cert ./certs/rancher.pem: key does not match cert`                   | Mismatched cert/key pair                                                                                                              |
-| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [section 1](./#id-1.-three-ubuntu-24.04-vms))                                                                      |
-
-Preflight is non-destructive — it makes no changes. Run it until everything's green, then run the full install.
+| Preflight error                                                       | Fix                                                                                       |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `IP <rp_private_ip> NOT bound on this host`                           | The configured `rp_private_ip` isn't on any local NIC — fix the value or the NIC          |
+| `DNS: rancher.<domain> does not resolve`                              | Add the A-record (see [DNS records](../../prerequisites-procurement.md#dns-records))      |
+| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                             |
+| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`  | Wrong cert for that hostname (see [TLS certificate](../../prerequisites-procurement.md#tls-certificate)) |
+| `Cert ./certs/rancher.pem: key does not match cert`                   | Mismatched cert/key pair                                                                  |
+| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [Compute](../../prerequisites-procurement.md#compute-the-three-vms))   |
 
 ## How to use the script
 
@@ -363,7 +258,7 @@ The peer config uses **split tunnel** by default — only the Wireguard subnet (
 
 #### 4.2 (Skipped — no local CA)
 
-Since you're using **real certs from your customer's CA** (see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)), there's no CA to install on your laptop. Browsers already trust the issuing CA. If you see a cert warning when first opening Rancher, that's a real issue — your cert chain probably isn't complete; re-run `--validate-certs` and the pre-flight will catch it.
+Since you're using **real certs from your customer's CA** (see [TLS certificate](../../prerequisites-procurement.md#tls-certificate)), there's no CA to install on your laptop. Browsers already trust the issuing CA. If you see a cert warning when first opening Rancher, that's a real issue — your cert chain probably isn't complete; re-run `--validate-certs` and the pre-flight will catch it.
 
 #### 4.3 DNS resolution on your laptop
 
