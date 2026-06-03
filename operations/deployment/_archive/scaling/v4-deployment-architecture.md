@@ -4,7 +4,7 @@
 
 The V4 architecture consists of a [Rancher](base-infrastructure/rancher.md) (it requires its own dedicated Kubernetes cluster. [Learn more >>](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli)) and one (or more clusters) for all application modules and supporting components. Rancher is capable of managing several clusters if required. However, in our case it suffices to have one "OpenG2P cluster" which hosts all environments (sandboxes) under separate namespaces. The RBAC of Kubernetes is used to provide users access to namespaces. Further, the secure access to applications can be controlled by the following means:
 
-1. Multiple Wireguard servers enable separate [access channels](../../../../deployment/deployment-guide/private-access-channel.md).
+1. Multiple Wireguard servers enable separate [access channels](../../deployment-guide/private-access-channel.md).
 2. Access control at the application level, where login to dashboards and portals is controlled via authentication and authorisation defined in Keycloak.
 
 The Keycloak inside the Rancher cluster provides **organisation-wide authorisation** and offers single sign-on for all resources.
