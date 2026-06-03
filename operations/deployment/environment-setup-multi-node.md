@@ -67,7 +67,7 @@ The setup has two parts:
 
 | Part                          | Where                             | What                                                   |
 | ----------------------------- | --------------------------------- | ------------------------------------------------------ |
-| **Nginx setup** (Steps 1-3)   | On the Nginx node (manual)        | DNS, TLS certificate, Nginx server block               |
+| **Nginx setup** (Steps 1-3)   | On the Nginx node (manual)        | DNS, TLS certificate, Nginx server block, open public firewall |
 | **Cluster setup** (Steps 4-5) | From your workstation (automated) | Namespace, Rancher project, Istio gateway, Helm charts |
 
 ## Prerequisites
@@ -156,24 +156,54 @@ Cloudflare DNS plugin (`python3-certbot-dns-cloudflare`) or Route53 plugin (`pyt
 
 </details>
 
-### Step 3: Create Nginx server block
+### Step 3: Expose the environment on the Reverse Proxy
 
-On the **Nginx node**, create the server block that references the cert you placed in Step 2:
+This is the step that **opens the system to citizens**. It has two parts: an Nginx server block for the environment's hostnames, and opening the public channel at the firewall. Until now the Reverse Proxy served only the admin tools (Rancher, Keycloak) on the private channel — this step adds the public, citizen-facing channel alongside them.
+
+{% hint style="info" %}
+**Admin stays private — automatically.** The admin server blocks installed by the [infrastructure automation](infrastructure-setup/three-node-automation/) carry a source-IP allowlist (`allow <wg_subnet>; allow <private_subnet>; deny all;`). The citizen block you add below carries **no** allowlist. So even after you open public `80/443` here, a request to `rancher.<domain>` from the internet is still rejected by source IP, while citizen services are served normally. See [Channel separation](infrastructure-setup/three-node-automation/README.md#channel-separation-keeping-admin-tools-off-the-public-internet) for the full three-layer model.
+{% endhint %}
+
+#### 3a. Nginx server block (citizen channel)
+
+On the **Reverse-Proxy / Nginx node**, create the server block that references the cert from Step 2. Note the **listen address** and the **absence of an allowlist** — both deliberate:
+
+{% tabs %}
+{% tab title="AWS / behind NAT" %}
+Bind to the RP's **private** IP. Public traffic to the Elastic IP (AWS) or your DNAT address (on-prem behind a firewall) arrives NAT'd to this private IP, so binding here serves it — and it coexists cleanly with the admin blocks already on `<rp_private_ip>:443` (different `server_name`, same socket — no conflict).
+
+```nginx
+listen <rp_private_ip>:80;
+listen <rp_private_ip>:443 ssl;
+```
+{% endtab %}
+{% tab title="On-prem (public IP on the NIC)" %}
+If the RP holds its public IP **directly** on the NIC (no upstream NAT), bind the citizen block to that public IP. Admin blocks remain on the private IP, so there is no listen conflict.
+
+```nginx
+listen <rp_public_ip>:80;
+listen <rp_public_ip>:443 ssl;
+```
+{% endtab %}
+{% endtabs %}
 
 ```bash
+# Use the listen address from the tab above in place of <listen_ip>.
 sudo tee /etc/nginx/sites-available/openg2p-env-qa.conf > /dev/null <<'EOF'
-# OpenG2P environment: qa
-# Domain: *.qa.openg2p.org
+# OpenG2P environment: qa  ·  Domain: *.qa.openg2p.org  ·  CITIZEN channel (public)
 
 server {
-    listen 80;
+    listen <listen_ip>:80;
     server_name *.qa.openg2p.org qa.openg2p.org;
     return 301 https://$host$request_uri;
 }
 
 server {
-    listen 443 ssl;
+    listen <listen_ip>:443 ssl;
     server_name *.qa.openg2p.org qa.openg2p.org;
+
+    # NO allow/deny here — citizen services must be reachable by the public.
+    # (Admin blocks for rancher/keycloak keep their allowlist and stay private.)
 
     ssl_certificate     /etc/openg2p/certs/qa.openg2p.org/fullchain.pem;
     ssl_certificate_key /etc/openg2p/certs/qa.openg2p.org/privkey.pem;
@@ -200,7 +230,7 @@ EOF
 ```
 
 {% hint style="warning" %}
-The `istio_ingress` upstream must already exist in your Nginx config (typically in `/etc/nginx/conf.d/upstream.conf` or similar). It should point to the cluster node's Istio ingress gateway port:
+The `istio_ingress` upstream must already exist in your Nginx config (the infrastructure automation creates it, pointing at the cluster node's Istio ingress NodePort):
 
 ```nginx
 upstream istio_ingress {
@@ -216,6 +246,36 @@ sudo ln -sf /etc/nginx/sites-available/openg2p-env-qa.conf \
             /etc/nginx/sites-enabled/openg2p-env-qa.conf
 sudo nginx -t && sudo systemctl reload nginx
 ```
+
+#### 3b. Open the public channel (firewall)
+
+The infrastructure setup deliberately left public `80/443` **closed** (only SSH + Wireguard were open). Open them now so citizens can reach the environment. The per-host firewall (`ufw`) already allows `80/443` from the private subnet; this step opens them at the **network boundary**.
+
+{% tabs %}
+{% tab title="AWS" %}
+Add inbound rules to the Reverse-Proxy's Security Group (`<project>-reverse-proxy`):
+
+```bash
+SG=$(aws ec2 describe-security-groups \
+  --filters "Name=group-name,Values=<project>-reverse-proxy" \
+  --query 'SecurityGroups[0].GroupId' --output text)
+
+aws ec2 authorize-security-group-ingress --group-id "$SG" \
+  --ip-permissions \
+    'IpProtocol=tcp,FromPort=80,ToPort=80,IpRanges=[{CidrIp=0.0.0.0/0,Description=citizen HTTP}]' \
+    'IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges=[{CidrIp=0.0.0.0/0,Description=citizen HTTPS}]'
+```
+{% endtab %}
+{% tab title="On-prem" %}
+At your perimeter firewall / router, allow inbound `80/tcp` and `443/tcp` from the internet to the Reverse Proxy. If the RP sits behind NAT, also DNAT those ports to the RP's private IP (the address the Nginx citizen block listens on).
+
+No host-level change is needed — the automation already configured `ufw` to accept `80/443` from the private subnet, and the citizen block's source has no allowlist.
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+**Admin tools are unaffected.** Opening public `80/443` exposes only the citizen `server_name`s. A request to `rancher.<domain>` / `keycloak.<domain>` still hits the admin server blocks, whose source-IP allowlist returns `403` to any client outside the Wireguard + private subnets.
+{% endhint %}
 
 ### Step 4: Configure env-cluster.sh
 
@@ -297,7 +357,7 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 To create additional environments (e.g., `staging`) on the same cluster:
 
 1. Create DNS records for `staging.openg2p.org` and `*.staging.openg2p.org` pointing to the Nginx IP
-2. On the Nginx node: obtain a new certificate and create a server block (repeat Steps 2-3 with the new domain)
+2. On the Nginx node: obtain a new certificate (Step 2) and add a new server block (Step 3a) with the new domain. The firewall (Step 3b) is already open from the first environment — no need to repeat it.
 3. Create a new config file with `environment: staging` and `base_domain: staging.openg2p.org`
 4. Run `env-cluster.sh` from your workstation with the new config
 

@@ -33,16 +33,40 @@ This is deliberate. Government customers almost universally require admin tools 
 For the full discussion of cert formats commonly seen in gov procurement (PEM split bundles, PFX, sovereign CAs) and why per-FQDN dominates over wildcards, see [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md).
 {% endhint %}
 
-### Channel separation: public vs private on the RP
+### Channel separation: keeping admin tools off the public internet
 
-The RP has **one** network interface. Channel separation between the public Wireguard endpoint and the private admin services is enforced at **two layers**, not by physical NICs:
+The RP has **one** network interface, yet admin tools (Rancher, Keycloak) must never be reachable by a citizen on the public internet — only by an admin over the Wireguard VPN or from inside the private network. A single NIC achieves this not with physical separation but with **three independent enforcement layers**. A citizen is stopped by all three; an admin over the VPN passes all three.
 
-1. **Security group / network firewall** opens only `22/tcp` (admin SSH) and the Wireguard UDP port to the internet. Admin `80/443` is **not** opened externally.
-2. **Nginx bind**: admin server blocks listen on `rp_private_ip:443` — an address that's reachable only from within the private network and via Wireguard-decapsulated traffic. They never bind to the public IP / EIP.
+```mermaid
+flowchart LR
+    citizen["Citizen<br/>(public internet)"]
+    admin["Admin laptop<br/>(Wireguard VPN)"]
 
-So admin URLs (rancher, keycloak) are reachable only through Wireguard or from inside the private subnet. Future env-automation public server blocks will bind to the same node on different listen ports / hostnames, with the security group opening `80/443` to the world for those.
+    subgraph RP["Reverse Proxy (single NIC)"]
+        fw["1 · Firewall<br/>cloud SG / perimeter FW<br/>opens only 22 + WG/UDP"]
+        ufw["2 · Host ufw<br/>admin 80/443 only from<br/>private + WG subnets"]
+        nginx["3 · nginx allowlist<br/>admin blocks: allow WG +<br/>private subnets, deny all"]
+        rancher["Rancher / Keycloak"]
+    end
 
-The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) concept page covers the underlying pattern; this automation implements the admin/private channel out of the box, and the public channel becomes meaningful once env automation lands.
+    citizen -->|"rancher.&lt;domain&gt;"| fw
+    fw -. blocked .-> citizen
+    admin -->|"WG tunnel"| ufw --> nginx --> rancher
+```
+
+| Layer | What it does | On-prem | AWS / cloud |
+| --- | --- | --- | --- |
+| **1 — Firewall** | Only `22` (admin CIDR) and Wireguard UDP are open to the internet during infra setup. Public `80/443` is **not** opened. | Perimeter firewall / router ACLs | Security Group inbound rules |
+| **2 — Host ufw** | Configured automatically. Admin `80/443` accepted only from the private subnet and the Wireguard subnet. | identical (automated) | identical (automated) |
+| **3 — nginx allowlist** | Admin server blocks carry `allow <wg_subnet>; allow <private_subnet>; deny all;`. A request from any other source IP gets `403`. | identical (automated) | identical (automated) |
+
+Admin traffic reaches Rancher only after Wireguard **decrypts it inside the host** (it never crosses the firewall as plaintext) or from inside the private network. The nginx allowlist (layer 3) is the **durable** guarantee: it still rejects a citizen even later, once the environment automation opens public `80/443` for citizen-facing services — because a forged `Host: rancher.<domain>` request to the public IP still arrives with the citizen's real source IP, which fails the allowlist.
+
+{% hint style="info" %}
+**Why the nginx bind alone isn't enough on AWS.** An Elastic IP is a 1:1 NAT onto the instance's private IP, so "bind admin to the private IP" does **not** hide it from the internet — the public side maps onto that same private IP. The firewall and the nginx source-allowlist (not the bind) are what actually enforce the boundary. On-prem this is cleaner: your perimeter firewall simply doesn't forward `80/443` to the RP until citizen services exist.
+{% endhint %}
+
+The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) page covers the underlying pattern. The public (citizen) channel becomes active once environment automation lands.
 
 ### Idempotent and resumable
 
@@ -109,14 +133,15 @@ The RP is a **single-NIC** VM. Channel separation between the public Wireguard e
 
 The two may be the same address (e.g. a bare-metal host with one public IP and no NAT) or different (AWS, on-prem behind NAT) — the automation handles either.
 
-**Firewall / security-group rules** the RP needs open:
+**Firewall / security-group rules** the RP needs open during infra setup:
 
-| Port      | Proto | Source        | Purpose                                                            |
-| --------- | ----- | ------------- | ------------------------------------------------------------------ |
-| 22        | TCP   | `admin_cidr`  | Admin SSH from your laptop's public IP                             |
-| `wg_port` | UDP   | `0.0.0.0/0`   | Wireguard endpoint                                                 |
-| 80, 443   | TCP   | `0.0.0.0/0`   | (Optional, for future env-automation public services. Admin 443 is **not** exposed here — Nginx binds admin blocks to the private IP only.) |
-| all       | any   | private subnet| Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress) |
+| Port      | Proto | Source         | Purpose                                                            |
+| --------- | ----- | -------------- | ------------------------------------------------------------------ |
+| 22        | TCP   | `admin_cidr`   | Admin SSH from your laptop's public IP                             |
+| `wg_port` | UDP   | `0.0.0.0/0`    | Wireguard endpoint                                                 |
+| all       | any   | private subnet | Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress; covers admin 80/443) |
+
+Public `80/443` are **not** opened during infra setup — admin tools stay private (see [Channel separation](#channel-separation-keeping-admin-tools-off-the-public-internet)). The environment automation opens public `80/443` later, when citizen-facing services exist.
 
 {% hint style="info" %}
 **Why one NIC?** Earlier versions of this automation used two NICs (one for public WG, one for admin Nginx) for "physical channel separation." In practice — especially on AWS where both ENIs land in the same subnet without policy routing — that produced asymmetric routing and intermittent SSH/HTTPS failures. SG-level separation (only WG + SSH open externally) gives the same effective protection without the kernel-routing fragility, and works identically on-prem and on AWS. If you have an existing two-NIC RP, attach only its primary NIC and leave the second one detached; the automation only consults `rp_private_ip`.
@@ -644,7 +669,7 @@ All resources are tagged with `Project=<project>` so the destroy script can find
 | Resource          | Default name                  | Configurable      | Notes                                                                                                                                       |
 | ----------------- | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Key pair          | `openg2p-prod-key`            | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                     |
-| SG: RP            | `openg2p-prod-reverse-proxy`  | `rp_sg_name`      | Single SG with admin SSH, WG endpoint, public 80/443 (for future env automation), and intra-VPC. Reused if exists; rules added if missing. |
+| SG: RP            | `openg2p-prod-reverse-proxy`  | `rp_sg_name`      | Single SG: admin SSH (`admin_cidr`), Wireguard UDP, and all intra-VPC. Public `80/443` are **not** opened here — admin tools stay private; env automation opens them later. Reused if exists; rules added if missing. |
 | SG: Compute       | `openg2p-prod-k8s-node`       | `compute_sg_name` | Same                                                                                                                                        |
 | SG: Storage       | `openg2p-prod-storage`        | `storage_sg_name` | Same                                                                                                                                        |
 | **Elastic IP**    | tagged `Role=reverse-proxy-eip` | —               | One EIP allocated and associated with the RP. Script **hard-fails** on `AddressLimitExceeded`. See below for why.                          |

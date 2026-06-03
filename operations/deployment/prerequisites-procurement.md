@@ -121,11 +121,11 @@ Replace every `<placeholder>` with your worksheet value, then send the block bel
 ─── 5. NETWORK PORTS (ingress at the network boundary) ───────────────────────
 
   Reverse-Proxy:
-      22     TCP   <ADMIN_CIDR>     Admin SSH
-      51820  UDP   0.0.0.0/0        Wireguard VPN endpoint
-      80     TCP   0.0.0.0/0        HTTP → HTTPS redirect (citizen services)
-      443    TCP   0.0.0.0/0        Citizen-facing HTTPS
-      all    any   private subnet   Intra-cluster traffic
+      22     TCP   <ADMIN_CIDR>     Admin SSH                         (infra setup)
+      51820  UDP   0.0.0.0/0        Wireguard VPN endpoint            (infra setup)
+      all    any   private subnet   Intra-cluster traffic             (infra setup)
+      80     TCP   0.0.0.0/0        HTTP → HTTPS redirect             (environment setup)
+      443    TCP   0.0.0.0/0        Citizen-facing HTTPS              (environment setup)
 
   Compute:
       22     TCP   <ADMIN_CIDR>     Admin SSH
@@ -136,9 +136,13 @@ Replace every `<placeholder>` with your worksheet value, then send the block bel
       2049   TCP   private subnet   NFS (from compute)
       5432   TCP   private subnet   PostgreSQL (from compute)
 
-  Note: admin HTTPS (rancher, keycloak) is NOT exposed publicly — it is bound
-  to the private IP and reached only over the VPN. Public 80/443 is for
-  citizen-facing services only.
+  Notes:
+  • Admin tools (Rancher, Keycloak) are NEVER exposed publicly — reached only
+    over the Wireguard VPN. Public 80/443 serve citizen-facing services only.
+  • Public 80/443 are opened at the ENVIRONMENT-SETUP stage, not during infra
+    setup. You can open them upfront or defer until then — either is fine.
+  • Implement these as Security Group rules (AWS) or perimeter-firewall /
+    router ACLs (on-prem). Per-host firewall (ufw) is configured automatically.
 
 
 ══════════════════════════════════════════════════════════════════════════════
