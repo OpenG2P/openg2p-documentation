@@ -1,28 +1,22 @@
-# Commons Helm Charts 2.x
+# Commons Helm Chart
 
-## Context
-
-* This guide explains the **design rationale** behind the OpenG2P Commons Helm charts.
-* It also provides references for Helm chart development and links to:
-  * The [**source code**](https://github.com/OpenG2P/openg2p-commons-deployment) of the charts.
-  * The [**new architecture**](openg2p-deployment-model.md) documentation.
+The OpenG2P Commons Helm charts ([source code](https://github.com/OpenG2P/openg2p-commons-deployment)) install the shared infrastructure and application services that every OpenG2P environment depends on.
 
 ## Versions
 
-| Chart                                          | Version                                                                         | Date        | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| ---------------------------------------------- | ------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| openg2p-commons-base, openg2p-commons-services | [2.0.1](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.1)      | 08-May-2026 | Substantial additions - dashboards, external postgres configurations.                                                                                                                                                                                                                                                                                                                                                                         |
+| Chart                                          | Version                                                                         | Last Modified | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| openg2p-commons-base, openg2p-commons-services | 0.0.0                                                                           | 02-Jun-2026   |                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| openg2p-commons-base, openg2p-commons-services | [2.0.1](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.1)      | 08-May-2026   | Substantial additions - dashboards, external postgres configurations.                                                                                                                                                                                                                                                                                                                                                                         |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0)      | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS.                                                                                                                                                                                                                                                                                                                                     |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). Audit Manager service added to commons-services. Each chart now owns its own Keycloak clients (no cross-chart hostname duplication). Simplified DB names (e.g. `iam`, `audit_manager`, `master_data` — no release-name prefix). MinIO split into two VirtualServices (`minio.<domain>` for Console, `minio-api.<domain>` for S3 API). |
 
-## Architecture (v2.x onward)
+## Chart structure
 
-From version 2.0, the commons deployment is split into **two Helm charts**:
+The commons deployment is split into **two Helm charts**:
 
 1. **`openg2p-commons-base`** - Infrastructure layer (installed first)
 2. **`openg2p-commons-services`** - Application services layer (depends on base)
-
-This split was necessary because Rancher's Helm integration does not execute Helm hooks, which caused ordering issues with a single chart.
 
 ### openg2p-commons-base
 
@@ -61,7 +55,7 @@ Installs application services:
 | **OpenG2P IAM Service**   | Identity and access management API                                                 |
 | **OpenG2P Audit Manager** | Centralized audit event collector (Kafka-backed, stores audit trail in PostgreSQL) |
 
-## Key Design Decisions
+## Configuration & behaviour
 
 ### Per-environment Keycloak
 
@@ -104,10 +98,6 @@ keycloak-init:
           name: Staff Portal
           redirectUris: ["*"]
 ```
-
-### No Helm Hooks
-
-Neither chart uses Helm hooks. All init jobs (postgres-init, keycloak-init, client-secrets-sync) run as regular Kubernetes resources. This ensures compatibility with Rancher, which skips hooks.
 
 ### Shared PostgreSQL
 
@@ -189,12 +179,6 @@ To scale up for production, override the relevant values:
 * **Application-specific** — OpenSearch `_cluster/health` turning `yellow`/`red`, Kafka consumer lag increasing, Keycloak login latency
 
 Enable Rancher Monitoring (Prometheus + Grafana) to get dashboards and alerts for memory/CPU pressure across all pods.
-
-### Helm `global` value propagation
-
-Helm automatically propagates the parent chart's `global.*` values to all subcharts. When the same `global` key is defined in both the parent and a subchart override, the **parent's value takes precedence**. Subchart-specific `global` overrides only work for keys that do not exist in the parent's `global`.
-
-This means infrastructure names (like `postgresqlHost`, `redisInstallationName`) set in the parent's `global` are automatically available to all subcharts. IAM-specific globals (like `iamDB`, `iamDBUser`) work because they are unique to the IAM subchart.
 
 ## External PostgreSQL
 

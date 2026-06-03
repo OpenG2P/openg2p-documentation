@@ -11,6 +11,10 @@ What must be in place before any OpenG2P installation runs. The [three-node infr
 
 This page assumes a **single production environment** and a DevOps reader. Procurement requirements come first, then the install steps once the certificate arrives; conceptual background is in [Reference notes](#reference-notes).
 
+{% hint style="info" %}
+**Production deployment flow:**  **1. Procurement** (this page)  →  [2. Infrastructure](infrastructure-setup/three-node-automation/)  →  [3. Environment](environment-setup-multi-node.md)
+{% endhint %}
+
 {% hint style="warning" %}
 **Start procurement first — before touching any server.** The two long-lead items are **compute** (capacity approval + VM provisioning) and **TLS certificates** (issuance from a commercial or sovereign CA typically takes **2–4 weeks**). Request both at the very start so neither lands on the critical path.
 {% endhint %}

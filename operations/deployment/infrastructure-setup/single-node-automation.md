@@ -12,6 +12,10 @@ The entire deployment process for a single-node setup has been automated and ava
 For adding environments to an existing multi-node infrastructure, see [Environment Setup for Multi-Node](../environment-setup-multi-node.md).
 {% endhint %}
 
+{% hint style="success" %}
+**Just want to run it?** Jump to [Quick Start](#quick-start). For the deployment model and how single-node compares to production, see [Concepts → OpenG2P Deployment Architecture](../../../deployment/concepts/openg2p-deployment-model.md#sandbox-single-node).
+{% endhint %}
+
 ## Overview
 
 Automated single-node deployment of the complete OpenG2P platform — from bare Ubuntu to running modules. Two scripts handle the entire lifecycle:

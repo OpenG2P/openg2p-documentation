@@ -7,6 +7,10 @@ description: Setting up OpenG2P environments on an existing multi-node infrastru
 This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes.&#x20;
 
 {% hint style="info" %}
+**Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Infrastructure](infrastructure-setup/three-node-automation/)  →  **3. Environment** (this page)
+{% endhint %}
+
+{% hint style="info" %}
 Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
 {% endhint %}
 
