@@ -23,73 +23,16 @@ The three-node automation provisions a complete production OpenG2P infrastructur
 The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/production/`. The optional AWS provisioning lives at `automation/production/aws/`.
 {% endhint %}
 
-## Key concepts
+## How it works (in brief)
 
-The three-node deployment model itself — what each node does, why the split exists, and where it fits between single-node and full-scale — is described in [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md#three-node). This page is about the **automation** that brings it up.
+Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes, Istio, Rancher, Keycloak, monitoring, logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher, Keycloak) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**.
 
-### The three roles
+For the role split, where this sits among the deployment models, and how the two channels are enforced, see [OpenG2P Deployment Architecture → Production — Minimum](../../../../deployment/concepts/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
-<table><thead><tr><th width="180">Role</th><th>What runs on it</th><th>Public-facing?</th></tr></thead><tbody><tr><td><strong>Reverse Proxy</strong></td><td>Nginx (TLS terminator, two-channel: public + private), Wireguard server</td><td>Yes — public IP, Wireguard endpoint</td></tr><tr><td><strong>Compute</strong></td><td>RKE2 single-control-plane Kubernetes, Istio, Rancher, Keycloak (admin SSO), Prometheus + Grafana, Fluentd + OpenSearch, NFS client</td><td>No — only reachable via the reverse proxy or Wireguard</td></tr><tr><td><strong>Storage</strong></td><td>NFS server (cluster persistent storage), host-installed PostgreSQL (ready for environment automation)</td><td>No — private subnet only</td></tr></tbody></table>
+Two things to know before you run it:
 
-### Why admin tools live behind Wireguard
-
-Rancher and Keycloak are **operator tools**, not citizen-facing services. The automation makes them reachable only from the reverse-proxy node's private IP, served on hostnames the customer provides — `rancher.<your-domain>` and `keycloak.<your-domain>`. The customer also provides real certs for those hostnames (commercial CA, sovereign CA, etc. — see [Prerequisites § 4](./#id-4.-customer-supplied-tls-certificates)). Admin laptops connect via Wireguard; once the tunnel is up, traffic to the admin hostnames is delivered to the RP's private-IP-bound Nginx and forwarded into the cluster.
-
-Grafana and Prometheus ship as part of the install but are **not** exposed on their own hostnames — they're reached from inside the Rancher UI (**Cluster Explorer → Monitoring**), so no dedicated DNS records or certs are needed for them.
-
-This is deliberate. Government customers almost universally require admin tools to be VPN-only, have security policies that flag publicly exposed admin panels, and procure certs from their own CAs (rarely Let's Encrypt).
-
-{% hint style="info" %}
-For the full discussion of cert formats commonly seen in gov procurement (PEM split bundles, PFX, sovereign CAs) and why per-FQDN dominates over wildcards, see [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md).
-{% endhint %}
-
-### Channel separation: keeping admin tools off the public internet
-
-The RP has **one** network interface, yet admin tools (Rancher, Keycloak) must never be reachable by a citizen on the public internet — only by an admin over the Wireguard VPN or from inside the private network. A single NIC achieves this not with physical separation but with **three independent enforcement layers**. A citizen is stopped by all three; an admin over the VPN passes all three.
-
-```mermaid
-flowchart LR
-    citizen["Citizen<br/>(public internet)"]
-    admin["Admin laptop<br/>(Wireguard VPN)"]
-
-    subgraph RP["Reverse Proxy (single NIC)"]
-        fw["1 · Firewall<br/>cloud SG / perimeter FW<br/>opens only 22 + WG/UDP"]
-        ufw["2 · Host ufw<br/>admin 80/443 only from<br/>private + WG subnets"]
-        nginx["3 · nginx allowlist<br/>admin blocks: allow WG +<br/>private subnets, deny all"]
-        rancher["Rancher / Keycloak"]
-    end
-
-    citizen -->|"rancher.&lt;domain&gt;"| fw
-    fw -. blocked .-> citizen
-    admin -->|"WG tunnel"| ufw --> nginx --> rancher
-```
-
-| Layer | What it does | On-prem | AWS / cloud |
-| --- | --- | --- | --- |
-| **1 — Firewall** | Only `22` (admin CIDR) and Wireguard UDP are open to the internet during infra setup. Public `80/443` is **not** opened. | Perimeter firewall / router ACLs | Security Group inbound rules |
-| **2 — Host ufw** | Configured automatically. Admin `80/443` accepted only from the private subnet and the Wireguard subnet. | identical (automated) | identical (automated) |
-| **3 — nginx allowlist** | Admin server blocks carry `allow <wg_subnet>; allow <private_subnet>; deny all;`. A request from any other source IP gets `403`. | identical (automated) | identical (automated) |
-
-Admin traffic reaches Rancher only after Wireguard **decrypts it inside the host** (it never crosses the firewall as plaintext) or from inside the private network. The nginx allowlist (layer 3) is the **durable** guarantee: it still rejects a citizen even later, once the environment automation opens public `80/443` for citizen-facing services — because a forged `Host: rancher.<domain>` request to the public IP still arrives with the citizen's real source IP, which fails the allowlist.
-
-{% hint style="info" %}
-**Why the nginx bind alone isn't enough on AWS.** An Elastic IP is a 1:1 NAT onto the instance's private IP, so "bind admin to the private IP" does **not** hide it from the internet — the public side maps onto that same private IP. The firewall and the nginx source-allowlist (not the bind) are what actually enforce the boundary. On-prem this is cleaner: your perimeter firewall simply doesn't forward `80/443` to the RP until citizen services exist.
-{% endhint %}
-
-The [Private Access Channel](../../../../deployment/deployment-guide/private-access-channel.md) page covers the underlying pattern. The public (citizen) channel becomes active once environment automation lands.
-
-### Idempotent and resumable
-
-Each node tracks completed steps in `/var/lib/openg2p/deploy-state/*.done`. Re-running the orchestrator (or any role's phase) skips completed steps and resumes from where it left off. Use `--force` to ignore markers and rerun everything.
-
-### Two-file configuration
-
-| File                    | Author                                                                      | Contains                                                                                                                                 | Loaded                           |
-| ----------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `prod-config.yaml`      | You author it                                                               | preferences: `cluster_name`, `public_domain`, hostnames per service, cert paths, versions, `keycloak_admin_email`, `postgres_*`, `nfs_*` | First                            |
-| `provision-output.yaml` | Auto-generated by AWS provisioning (or filled by hand for non-AWS installs) | provisioning state: IPs, SSH paths, `private_subnet`, `admin_cidr`, `wg_endpoint`                                                        | Second — overrides matching keys |
-
-The orchestrator auto-loads `provision-output.yaml` next to `prod-config.yaml`. Re-running AWS provisioning regenerates `provision-output.yaml` cleanly without touching your hand-edited preferences.
+* **Idempotent & resumable** — each node records completed steps in `/var/lib/openg2p/deploy-state/*.done`; re-running skips done steps. `--force` re-runs everything.
+* **Two config files** — you author `prod-config.yaml`; the AWS provisioner writes `provision-output.yaml` next to it (IPs, SSH paths), auto-loaded as an overlay whose keys win. For non-AWS, fill the `[AWS]`-tagged fields in `prod-config.yaml` yourself.
 
 ## Technology
 
@@ -151,7 +94,7 @@ The two may be the same address (e.g. a bare-metal host with one public IP and n
 | `wg_port` | UDP   | `0.0.0.0/0`    | Wireguard endpoint                                                 |
 | all       | any   | private subnet | Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress; covers admin 80/443) |
 
-Public `80/443` are **not** opened during infra setup — admin tools stay private (see [Channel separation](#channel-separation-keeping-admin-tools-off-the-public-internet)). The environment automation opens public `80/443` later, when citizen-facing services exist.
+Public `80/443` are **not** opened during infra setup — admin tools stay private (see [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access)). The environment automation opens public `80/443` later, when citizen-facing services exist.
 
 {% hint style="info" %}
 **Why one NIC?** Earlier versions of this automation used two NICs (one for public WG, one for admin Nginx) for "physical channel separation." In practice — especially on AWS where both ENIs land in the same subnet without policy routing — that produced asymmetric routing and intermittent SSH/HTTPS failures. SG-level separation (only WG + SSH open externally) gives the same effective protection without the kernel-routing fragility, and works identically on-prem and on AWS. If you have an existing two-NIC RP, attach only its primary NIC and leave the second one detached; the automation only consults `rp_private_ip`.
@@ -995,7 +938,7 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 
 ## Related documentation
 
-* [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (single-node / three-node / full-scale) and where this automation fits.
+* [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (Sandbox, Production — Minimum, Production — High-Availability) and where this automation fits.
 * [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) — why admin tools are internal, why citizen-facing certs are typically per-FQDN, and the cert formats customers actually have.
 * [Prerequisites & Procurement](../../prerequisites-procurement.md) — compute, DNS, certs, access, firewall to arrange before install.
 * [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.

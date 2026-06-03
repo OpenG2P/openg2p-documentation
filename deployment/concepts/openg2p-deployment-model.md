@@ -97,6 +97,44 @@ flowchart TB
 The current automation provisions the **minimum** (single control-plane) configuration. Scaling to the HA layout above — extra control-plane nodes, redundant reverse proxies, PostgreSQL replication — is a supported architecture but a manual/extension step today, not yet automated.
 {% endhint %}
 
+## Channel separation: public vs private access
+
+Across every architecture above, OpenG2P uses exactly **two access channels**:
+
+* **Private channel** — admin tools (Rancher, Keycloak), reached only over the Wireguard VPN or from inside the private network. Never exposed to the public internet.
+* **Public channel** — citizen-facing services, reached over the internet.
+
+The Reverse Proxy has a **single network interface**; the separation is enforced not by physical NICs but by **three independent layers**. A citizen is stopped by all three; an admin over the VPN passes all three.
+
+```mermaid
+flowchart LR
+    citizen["Citizen<br/>(public internet)"]
+    admin["Admin laptop<br/>(Wireguard VPN)"]
+
+    subgraph RP["Reverse Proxy (single NIC)"]
+        fw["1 · Firewall<br/>cloud SG / perimeter FW<br/>opens only 22 + WG/UDP"]
+        ufw["2 · Host ufw<br/>admin 80/443 only from<br/>private + WG subnets"]
+        nginx["3 · nginx allowlist<br/>admin blocks: allow WG +<br/>private subnets, deny all"]
+        rancher["Rancher / Keycloak"]
+    end
+
+    citizen -->|"rancher.&lt;domain&gt;"| fw
+    fw -. blocked .-> citizen
+    admin -->|"WG tunnel"| ufw --> nginx --> rancher
+```
+
+| Layer | What it does | On-prem | AWS / cloud |
+| --- | --- | --- | --- |
+| **1 — Firewall** | Only `22` (admin CIDR) and Wireguard UDP are open to the internet during infra setup. Public `80/443` is **not** opened. | Perimeter firewall / router ACLs | Security Group inbound rules |
+| **2 — Host ufw** | Configured automatically. Admin `80/443` accepted only from the private subnet and the Wireguard subnet. | identical (automated) | identical (automated) |
+| **3 — nginx allowlist** | Admin server blocks carry `allow <wg_subnet>; allow <private_subnet>; deny all;`. A request from any other source IP gets `403`. | identical (automated) | identical (automated) |
+
+Admin traffic reaches Rancher only after Wireguard **decrypts it inside the host** (it never crosses the firewall as plaintext) or from inside the private network. The nginx allowlist (layer 3) is the **durable** guarantee: it still rejects a citizen even after the environment automation opens public `80/443` for citizen-facing services — because a forged `Host: rancher.<domain>` request to the public IP still arrives with the citizen's real source IP, which fails the allowlist.
+
+{% hint style="info" %}
+**Why the nginx bind alone isn't enough on AWS.** An Elastic IP is a 1:1 NAT onto the instance's private IP, so "bind admin to the private IP" does **not** hide it from the internet — the public side maps onto that same private IP. The firewall and the nginx source-allowlist (not the bind) enforce the boundary. On-prem this is cleaner: your perimeter firewall simply doesn't forward `80/443` to the RP until citizen services exist.
+{% endhint %}
+
 ## Role of various components
 
 The deployment utilizes several open source third party components. The concept and role of these components is given below:

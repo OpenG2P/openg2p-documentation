@@ -1029,7 +1029,7 @@ Before producing the Phase 1 report, the advisor verifies:
 2. **Discovered facts** — the complete list of fact keys and their recorded values from Discovery, grouped by the thematic blocks above.
 3. **Requirements vs OpenG2P mapping** — for each entry in `functional_requirements` and each feature surfaced via Product Feature Discovery: the requirement as worded; the OpenG2P feature or module that addresses it; support level (`native`, `configuration`, `partial`, `gap`); a one-sentence description of how it is addressed (sourced from the knowledge base) or, for gaps, a description of what is missing.
 4. **Gaps summary** — all `Gap` and `Partial` items, with the missing capability and the custom work it implies.
-5. **Resource requirements** — recommended deployment architecture (`single-node`, `three-node`, or `full-scale`) and compute specifications for development sandbox, pilot, and production environments. Sourced from the knowledge base only.
+5. **Resource requirements** — recommended deployment architecture (`single-node`, `three-node`, or `high-availability`) and compute specifications for development sandbox, pilot, and production environments. Sourced from the knowledge base only.
 
 ### Common pitfalls
 

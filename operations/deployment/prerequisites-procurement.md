@@ -50,7 +50,7 @@ The requirements below refer to these values. Determine them for your deployment
 
 ### Compute (the three VMs)
 
-Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](infrastructure-setup/three-node-automation/README.md#channel-separation-keeping-admin-tools-off-the-public-internet)).
+Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access)).
 
 | Role | vCPU | RAM | Root disk | Notes |
 | --- | --- | --- | --- | --- |
@@ -152,7 +152,7 @@ Conceptual background. Skip if you just need the requirements.
 
 ### Admin vs citizen hostnames (private vs public)
 
-Rancher and Keycloak are **operator tools**, not citizen-facing. The installer keeps them reachable only over the Wireguard VPN (bound to the private IP, with a firewall + nginx allowlist), which is why `rancher.<DOMAIN>` and `keycloak.<DOMAIN>` point to the **private** IP. Citizen-facing services are reached on the **public** IP, which is why the apex and wildcard point there. Full rationale: [Private Access Channel](../../deployment/deployment-guide/private-access-channel.md) and [Channel separation](infrastructure-setup/three-node-automation/README.md#channel-separation-keeping-admin-tools-off-the-public-internet).
+Rancher and Keycloak are **operator tools**, not citizen-facing. The installer keeps them reachable only over the Wireguard VPN (bound to the private IP, with a firewall + nginx allowlist), which is why `rancher.<DOMAIN>` and `keycloak.<DOMAIN>` point to the **private** IP. Citizen-facing services are reached on the **public** IP, which is why the apex and wildcard point there. Full rationale: [Channel separation](../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 ### Why a single wildcard certificate
 
