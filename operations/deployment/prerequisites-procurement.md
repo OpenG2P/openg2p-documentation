@@ -7,8 +7,6 @@ description: >-
 
 # Prerequisites & Procurement
 
-What must be in place before any OpenG2P installation runs. The [three-node infrastructure automation](infrastructure-setup/three-node-automation/) and the [environment setup](environment-setup-multi-node.md) both link here as the first prerequisite.
-
 This page assumes a **single production environment** and a DevOps reader. Procurement requirements come first, then the install steps once the certificate arrives; conceptual background is in [Reference notes](prerequisites-procurement.md#reference-notes).
 
 {% hint style="info" %}
