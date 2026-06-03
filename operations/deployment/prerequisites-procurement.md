@@ -6,7 +6,7 @@ description: >-
 
 # Prerequisites & Procurement
 
-This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page. Conceptual background is in [Reference notes](prerequisites-procurement.md#reference-notes).
+This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page. Conceptual background lives in [OpenG2P Deployment Architecture](../../deployment/openg2p-deployment-model.md) and [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
 
 {% hint style="info" %}
 **Production deployment flow:** **1. Procurement** (this page) → [2. Infrastructure](infrastructure-setup/three-node-automation/) → [3. Environment](environment-setup-multi-node.md)
@@ -100,6 +100,10 @@ The cert team delivers the issued **files** to the deployer (secure transfer —
 **Don't use Let's Encrypt for production.** It's fine for a sandbox or PoC, but most governments require certs from a commercial CA (DigiCert, GlobalSign, Sectigo) or their national / sovereign CA. The installer defaults to customer-provided certs; Let's Encrypt is a sandbox-only option.
 {% endhint %}
 
+{% hint style="info" %}
+**Advanced — separate admin domain.** This page assumes one domain for both admin and citizen hostnames (the common case). If your organisation requires admin tools on a wholly separate domain, procure a second wildcard cert and set the per-service `*_hostname` / `tls_*` keys in `prod-config.yaml`. See the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page for the config-key details.
+{% endhint %}
+
 ### Server access
 
 SSH with **passwordless sudo** to all three VMs (Reverse-Proxy, Compute, Storage), as `SSH_USER`, from `ADMIN_CIDR`.
@@ -108,17 +112,29 @@ SSH with **passwordless sudo** to all three VMs (Reverse-Proxy, Compute, Storage
 
 Ingress rules at the network boundary. The per-host firewall (`ufw`) is configured automatically by the installer — your team only sets the boundary rules.
 
-| Node          | Port    | Proto | Source         | Purpose                   | Opened at         |
-| ------------- | ------- | ----- | -------------- | ------------------------- | ----------------- |
-| Reverse Proxy | 22      | TCP   | `ADMIN_CIDR`   | Admin SSH                 | infra setup       |
-| Reverse Proxy | 51820   | UDP   | `0.0.0.0/0`    | Wireguard VPN endpoint    | infra setup       |
-| Reverse Proxy | all     | any   | private subnet | Intra-cluster traffic     | infra setup       |
-| Reverse Proxy | 80, 443 | TCP   | `0.0.0.0/0`    | Citizen-facing HTTP/HTTPS | environment setup |
-| Compute       | 22      | TCP   | `ADMIN_CIDR`   | Admin SSH                 | infra setup       |
-| Compute       | all     | any   | private subnet | Kubernetes / cluster      | infra setup       |
-| Storage       | 22      | TCP   | `ADMIN_CIDR`   | Admin SSH                 | infra setup       |
-| Storage       | 2049    | TCP   | private subnet | NFS (from compute)        | infra setup       |
-| Storage       | 5432    | TCP   | private subnet | PostgreSQL (from compute) | infra setup       |
+#### Reverse Proxy
+
+| Port    | Proto | Source         | Purpose                                  | Opened at         |
+| ------- | ----- | -------------- | ---------------------------------------- | ----------------- |
+| 22      | TCP   | `ADMIN_CIDR`   | Admin SSH                                | infra setup       |
+| 51820   | UDP   | `0.0.0.0/0`    | Wireguard VPN endpoint                   | infra setup       |
+| all     | any   | private subnet | Intra-cluster traffic                    | infra setup       |
+| 80, 443 | TCP   | `0.0.0.0/0`    | Citizen-facing HTTP/HTTPS                | environment setup |
+
+#### Compute
+
+| Port | Proto | Source         | Purpose                | Opened at   |
+| ---- | ----- | -------------- | ---------------------- | ----------- |
+| 22   | TCP   | `ADMIN_CIDR`   | Admin SSH              | infra setup |
+| all  | any   | private subnet | Kubernetes / cluster   | infra setup |
+
+#### Storage
+
+| Port | Proto | Source         | Purpose                       | Opened at   |
+| ---- | ----- | -------------- | ----------------------------- | ----------- |
+| 22   | TCP   | `ADMIN_CIDR`   | Admin SSH                     | infra setup |
+| 2049 | TCP   | private subnet | NFS (from compute)            | infra setup |
+| 5432 | TCP   | private subnet | PostgreSQL (from compute)     | infra setup |
 
 * **Admin tools (Rancher, Keycloak) are never exposed publicly** — reached only over the Wireguard VPN. Public `80/443` serve citizen-facing services only.
 * Public `80/443` are opened at the **environment-setup** stage, not during infra setup — see [environment setup](environment-setup-multi-node.md). You may open them upfront or defer; either is fine.
@@ -128,34 +144,6 @@ Ingress rules at the network boundary. The per-host firewall (`ufw`) is configur
 
 Once everything above is in place — DNS records created, certificate files in hand on the deployer's workstation, server access and firewall confirmed — continue with the [three-node infrastructure automation](infrastructure-setup/three-node-automation/). The install guide takes you through placing the cert files locally, configuring `prod-config.yaml`, validating, and running the install.
 
-## Reference notes
-
-Conceptual background. Skip if you just need the requirements.
-
-### Admin vs citizen hostnames (private vs public)
-
-Rancher and Keycloak are **operator tools**, not citizen-facing. The installer keeps them reachable only over the Wireguard VPN (bound to the private IP, with a firewall + nginx allowlist), which is why `rancher.<DOMAIN>` and `keycloak.<DOMAIN>` point to the **private** IP. Citizen-facing services are reached on the **public** IP, which is why the apex and wildcard point there. Full rationale: [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
-
-### Why a single wildcard certificate
-
-Every service is a subdomain of `<DOMAIN>` — `rancher.`, `keycloak.`, and citizen services like `registry.`, `esignet.`, `minio.`, `superset.`. One wildcard cert (`*.<DOMAIN>`, including the apex) covers them all, so procurement is **one cert** instead of one per service.
-
-### How admin hostnames resolve from your laptop
-
-After connecting to the VPN, your laptop resolves the admin hostnames to the RP's private IP. The `wg_peer_dns` setting in `prod-config.yaml` pushes a resolver to every Wireguard peer:
-
-* **On-prem:** your internal DNS server's IP (inside the routed subnet, so the query crosses the tunnel).
-* **On AWS:** the VPC DNS resolver at `<vpc-cidr-base>.2` (e.g. `10.0.0.2` for a `10.0.0.0/16` VPC), which resolves the Route 53 private hosted zone.
-
-A one-time `/etc/hosts` entry on the laptop also works for either topology; the installer prints the exact line in its completion summary.
-
-### Certificate formats in government procurement
-
-For the cert formats commonly delivered by government / sovereign / commercial CAs and how the installer handles each, see [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
-
-### Using a separate admin domain (advanced)
-
-This page uses one domain for both admin and citizen hostnames — the common case. If your organisation requires admin tools on a wholly separate domain, procure a second wildcard cert for that domain and set the per-service `*_hostname` / `tls_*` keys in `prod-config.yaml`. See the [three-node automation](infrastructure-setup/three-node-automation/) page.
 
 ## Related pages
 
