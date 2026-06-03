@@ -685,6 +685,7 @@
   * [Production — Three-Node](operations/deployment/infrastructure-setup/README.md)
     * [Prerequisites & Procurement](operations/deployment/prerequisites-procurement.md)
     * [Infrastructure Automation](operations/deployment/infrastructure-setup/three-node-automation/README.md)
+      * [AWS Provisioning (optional)](operations/deployment/infrastructure-setup/three-node-automation/aws-provisioning.md)
     * [Environment Setup](operations/deployment/environment-setup-multi-node.md)
       * [Commons Helm Chart](deployment/concepts/openg2p-commons-helm-chart.md)
     * [Backups](operations/deployment/backups/README.md)
