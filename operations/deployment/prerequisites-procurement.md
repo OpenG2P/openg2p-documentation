@@ -12,7 +12,7 @@ What must be in place before any OpenG2P installation runs. The [three-node infr
 This page assumes a **single production environment** and a DevOps reader. Procurement requirements come first, then the install steps once the certificate arrives; conceptual background is in [Reference notes](#reference-notes).
 
 {% hint style="warning" %}
-**Start procurement first — before touching any server.** TLS issuance from a commercial or sovereign CA typically takes **2–4 weeks**. Begin DNS + certificate procurement in parallel with VM provisioning so it isn't on the critical path.
+**Start procurement first — before touching any server.** The two long-lead items are **compute** (capacity approval + VM provisioning) and **TLS certificates** (issuance from a commercial or sovereign CA typically takes **2–4 weeks**). Request both at the very start so neither lands on the critical path.
 {% endhint %}
 
 ## On-prem or AWS?
@@ -43,6 +43,22 @@ The requirements below refer to these values. Determine them for your deployment
 | `SSH_USER` | `ubuntu` | Linux user with passwordless sudo on the VMs |
 
 ## What to procure
+
+### Compute (the three VMs)
+
+Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](infrastructure-setup/three-node-automation/README.md#channel-separation-keeping-admin-tools-off-the-public-internet)).
+
+| Role | vCPU | RAM | Root disk | Notes |
+| --- | --- | --- | --- | --- |
+| Reverse Proxy | 2 | 4 GB | 64 GB SSD | TLS termination, Wireguard endpoint. Not expected to be heavily loaded. |
+| Compute | 16 | 64 GB | 128 GB SSD | The Kubernetes node. Fits ~2 environments with all modules; expand for more. |
+| Storage | 8 | 32 GB | 256 GB SSD | Host PostgreSQL + NFS. Expand CPU/RAM if PostgreSQL is heavily loaded. |
+| Backup (optional) | 2 | 8 GB | 512 GB HDD/SSD | Only if you enable the backup node. SSD not required. |
+
+These are minimums; larger is fine and smaller may fail preflight.
+
+* **On-prem:** provision on your hypervisor (capacity approval + VM creation is itself a procurement lead-time item — request early).
+* **On AWS:** equivalent instance types are roughly `t3a.medium` (RP), `m5a.4xlarge` (Compute), `t3a.2xlarge` (Storage), each with a gp3 root volume. You may provision with your own tooling, or use the bundled `openg2p-aws-provision.sh`.
 
 ### DNS records
 

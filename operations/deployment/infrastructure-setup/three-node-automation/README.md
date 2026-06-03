@@ -122,7 +122,7 @@ This section is **self-contained** — everything you need to have ready before 
 | **Network**           | All three on the same private subnet             |                         |                          |
 | **Internet egress**   | Required during install (apt, RKE2, Helm charts) |                         |                          |
 
-See [Resource Requirements](../../../../deployment/resource-requirements.md) for the full table per deployment model.
+See [Prerequisites & Procurement → Compute](../../prerequisites-procurement.md#compute-the-three-vms) for the procurement-stage view of these specs.
 
 ### 2. Reverse Proxy networking
 
@@ -987,5 +987,5 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 
 * [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (single-node / three-node / full-scale) and where this automation fits.
 * [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) — why admin tools are internal, why citizen-facing certs are typically per-FQDN, and the cert formats customers actually have.
-* [Resource Requirements](../../../../deployment/resource-requirements.md) — minimums per node, by deployment model.
+* [Prerequisites & Procurement](../../prerequisites-procurement.md) — compute, DNS, certs, access, firewall to arrange before install.
 * [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.
