@@ -5,18 +5,18 @@ description: >-
   admin's laptop, with optional AWS provisioning.
 ---
 
-# Infrastructure Automation (Three-Node)
+# Infrastructure Automation
 
 The three-node automation provisions a complete production OpenG2P infrastructure across three Ubuntu 24.04 VMs from your laptop, with a single command. It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across three role-specialised machines.
 
 <figure><img src="../../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption><p>Three-node architecture — Reverse Proxy, Compute (Kubernetes), and Storage</p></figcaption></figure>
 
 {% hint style="info" %}
-**Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  **2. Infrastructure** (this page)  →  [3. Environment](../../environment-setup-multi-node.md)
+**Production deployment flow:** [1. Procurement](../../prerequisites-procurement.md) → **2. Infrastructure** (this page) → [3. Environment](../../environment-setup-multi-node.md)
 {% endhint %}
 
 {% hint style="success" %}
-**Just want to run it?** Jump straight to [How to use the script](#how-to-use-the-script). The sections above it explain the architecture (also covered in [Concepts](../../../../deployment/concepts/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
+**Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [Concepts](../../../../deployment/concepts/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
 {% endhint %}
 
 {% hint style="info" %}
@@ -88,10 +88,10 @@ The two may be the same address (e.g. a bare-metal host with one public IP and n
 
 **Firewall / security-group rules** the RP needs open during infra setup:
 
-| Port      | Proto | Source         | Purpose                                                            |
-| --------- | ----- | -------------- | ------------------------------------------------------------------ |
-| 22        | TCP   | `admin_cidr`   | Admin SSH from your laptop's public IP                             |
-| `wg_port` | UDP   | `0.0.0.0/0`    | Wireguard endpoint                                                 |
+| Port      | Proto | Source         | Purpose                                                                                     |
+| --------- | ----- | -------------- | ------------------------------------------------------------------------------------------- |
+| 22        | TCP   | `admin_cidr`   | Admin SSH from your laptop's public IP                                                      |
+| `wg_port` | UDP   | `0.0.0.0/0`    | Wireguard endpoint                                                                          |
 | all       | any   | private subnet | Intra-VPC / cluster traffic (compute, storage, WG-decapsulated egress; covers admin 80/443) |
 
 Public `80/443` are **not** opened during infra setup — admin tools stay private (see [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access)). The environment automation opens public `80/443` later, when citizen-facing services exist.
@@ -104,10 +104,10 @@ Public `80/443` are **not** opened during infra setup — admin tools stay priva
 
 The automation does NOT install any DNS server. Your authoritative DNS must resolve the following hostnames:
 
-| Hostname                   | DNS A-record →                               | Channel | Purpose                                          |
-| -------------------------- | -------------------------------------------- | ------- | ------------------------------------------------ |
-| `rancher.<your-domain>`    | RP's **private** IP (`rp_private_ip`)        | private | Rancher cluster manager UI                       |
-| `keycloak.<your-domain>`   | RP's **private** IP (`rp_private_ip`)        | private | Keycloak admin SSO (Rancher's identity provider) |
+| Hostname                 | DNS A-record →                        | Channel | Purpose                                          |
+| ------------------------ | ------------------------------------- | ------- | ------------------------------------------------ |
+| `rancher.<your-domain>`  | RP's **private** IP (`rp_private_ip`) | private | Rancher cluster manager UI                       |
+| `keycloak.<your-domain>` | RP's **private** IP (`rp_private_ip`) | private | Keycloak admin SSO (Rancher's identity provider) |
 
 `<your-domain>` is whatever your organisation uses (e.g. `openg2p.gov.eth`). The two hostnames don't have to share the exact prefix shown — you can use `rancher-admin.gov.eth`, `sso.gov.eth`, etc. — but the automation defaults expect the `<service>.<domain>` shape; override per-service in `prod-config.yaml` if you need different names.
 
@@ -186,14 +186,14 @@ The orchestrator's `--preflight` mode (and the implicit preflight at the start o
 
 For each item that fails, the error message tells you exactly what's wrong and links back here. Example failures and what to fix:
 
-| Preflight error                                                        | Fix                                                                                          |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `IP <rp_private_ip> NOT bound on this host`                            | The configured `rp_private_ip` isn't on any local NIC — fix the value or the NIC (see [section 2](./#id-2.-reverse-proxy-networking)) |
-| `DNS: rancher.<domain> does not resolve`                               | Add the A-record (see [section 3](./#id-3.-customer-supplied-dns-records))                   |
-| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8`  | DNS points at the wrong IP — fix the A-record                                                |
-| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`   | Wrong cert for that hostname (see [section 4](./#id-4.-customer-supplied-tls-certificates))  |
-| `Cert ./certs/rancher.pem: key does not match cert`                    | Mismatched cert/key pair                                                                     |
-| `RAM: 3 GB (need ≥4)`                                                  | Resize the VM (see [section 1](./#id-1.-three-ubuntu-24.04-vms))                             |
+| Preflight error                                                       | Fix                                                                                                                                   |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `IP <rp_private_ip> NOT bound on this host`                           | The configured `rp_private_ip` isn't on any local NIC — fix the value or the NIC (see [section 2](./#id-2.-reverse-proxy-networking)) |
+| `DNS: rancher.<domain> does not resolve`                              | Add the A-record (see [section 3](./#id-3.-customer-supplied-dns-records))                                                            |
+| `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                                                         |
+| `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`  | Wrong cert for that hostname (see [section 4](./#id-4.-customer-supplied-tls-certificates))                                           |
+| `Cert ./certs/rancher.pem: key does not match cert`                   | Mismatched cert/key pair                                                                                                              |
+| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [section 1](./#id-1.-three-ubuntu-24.04-vms))                                                                      |
 
 Preflight is non-destructive — it makes no changes. Run it until everything's green, then run the full install.
 
@@ -295,15 +295,15 @@ From v1.x the orchestrator also **announces** any pre-existing markers at the st
 
 Total runtime: 25–40 minutes. The orchestrator runs phases in this order:
 
-| # | Where         | What                                                                                                                                                         |
-| - | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0 | Laptop        | SSH + sudo probe on all 3 nodes                                                                                                                              |
-| 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                     |
-| 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                 |
-| 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                 |
+| # | Where         | What                                                                                                                                                                         |
+| - | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 | Laptop        | SSH + sudo probe on all 3 nodes                                                                                                                                              |
+| 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                                     |
+| 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                                 |
+| 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                 |
 | 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip` |
-| 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                            |
-| 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                            |
+| 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                                            |
+| 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                                            |
 
 ### Common command shapes
 
@@ -564,13 +564,13 @@ The bundled AWS provisioning is a separate, optional step that creates the three
 
 ### Prerequisites
 
-|                     |                                                                                                                                                       |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **AWS CLI**         | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`.                                                                              |
-| **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`. |
-| **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                  |
-| **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                             |
-| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. The provisioner allocates one EIP for the RP (Wireguard endpoint stability across stop/start — see [About the Elastic IP](#about-the-elastic-ip)). If you're at quota, free one first (see [troubleshooting](#aws-provision-eip-addresslimitexceeded)) before running the provisioner. |
+|                     |                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AWS CLI**         | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`.                                                                                                                                                                                                                                                                                                                    |
+| **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`.                                                                                                                                                                                                                                       |
+| **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                                                                                                                                                                                                                                                        |
+| **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                                                                                                                                                                                                                                                                   |
+| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. The provisioner allocates one EIP for the RP (Wireguard endpoint stability across stop/start — see [About the Elastic IP](./#about-the-elastic-ip)). If you're at quota, free one first (see [troubleshooting](./#aws-provision-eip-addresslimitexceeded)) before running the provisioner. |
 
 ### IAM permissions
 
@@ -619,16 +619,16 @@ If you have full EC2 admin (`AmazonEC2FullAccess` managed policy + `sts:GetCalle
 
 All resources are tagged with `Project=<project>` so the destroy script can find and remove them later.
 
-| Resource          | Default name                  | Configurable      | Notes                                                                                                                                       |
-| ----------------- | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Key pair          | `openg2p-prod-key`            | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                     |
-| SG: RP            | `openg2p-prod-reverse-proxy`  | `rp_sg_name`      | Single SG: admin SSH (`admin_cidr`), Wireguard UDP, and all intra-VPC. Public `80/443` are **not** opened here — admin tools stay private; env automation opens them later. Reused if exists; rules added if missing. |
-| SG: Compute       | `openg2p-prod-k8s-node`       | `compute_sg_name` | Same                                                                                                                                        |
-| SG: Storage       | `openg2p-prod-storage`        | `storage_sg_name` | Same                                                                                                                                        |
-| **Elastic IP**    | tagged `Role=reverse-proxy-eip` | —               | One EIP allocated and associated with the RP. Script **hard-fails** on `AddressLimitExceeded`. See below for why.                          |
-| Instance: RP      | `openg2p-prod-reverse-proxy`  | `rp_name`         | `t3a.medium`, 64 GB gp3, **single ENI**                                                                                                     |
-| Instance: Compute | `openg2p-prod-k8s-node-1`     | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                                                                                                   |
-| Instance: Storage | `openg2p-prod-storage`        | `storage_name`    | `t3a.2xlarge`, 256 GB gp3                                                                                                                   |
+| Resource          | Default name                    | Configurable      | Notes                                                                                                                                                                                                                 |
+| ----------------- | ------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Key pair          | `openg2p-prod-key`              | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                                                                                               |
+| SG: RP            | `openg2p-prod-reverse-proxy`    | `rp_sg_name`      | Single SG: admin SSH (`admin_cidr`), Wireguard UDP, and all intra-VPC. Public `80/443` are **not** opened here — admin tools stay private; env automation opens them later. Reused if exists; rules added if missing. |
+| SG: Compute       | `openg2p-prod-k8s-node`         | `compute_sg_name` | Same                                                                                                                                                                                                                  |
+| SG: Storage       | `openg2p-prod-storage`          | `storage_sg_name` | Same                                                                                                                                                                                                                  |
+| **Elastic IP**    | tagged `Role=reverse-proxy-eip` | —                 | One EIP allocated and associated with the RP. Script **hard-fails** on `AddressLimitExceeded`. See below for why.                                                                                                     |
+| Instance: RP      | `openg2p-prod-reverse-proxy`    | `rp_name`         | `t3a.medium`, 64 GB gp3, **single ENI**                                                                                                                                                                               |
+| Instance: Compute | `openg2p-prod-k8s-node-1`       | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                                                                                                                                                                             |
+| Instance: Storage | `openg2p-prod-storage`          | `storage_name`    | `t3a.2xlarge`, 256 GB gp3                                                                                                                                                                                             |
 
 ### Default sizing
 
@@ -646,7 +646,7 @@ All sizes are configurable in `aws-config.yaml` via `*_instance_type`, `*_disk_g
 
 Only the reverse-proxy node gets an Elastic IP. Compute and storage use AWS's auto-assigned dynamic public IPs (which is fine — those public IPs are only used for SSH from your laptop).
 
-**Why an EIP, not a dynamic public IP?** The Wireguard `Endpoint` line in every peer config is the RP's public IP. An EIP survives instance stop/start; a dynamic IP would change after any stop/start and break every peer config you've already distributed. AWS single-NIC launches *do* technically support auto-assigned public IPs, but for production stability we always use an EIP.
+**Why an EIP, not a dynamic public IP?** The Wireguard `Endpoint` line in every peer config is the RP's public IP. An EIP survives instance stop/start; a dynamic IP would change after any stop/start and break every peer config you've already distributed. AWS single-NIC launches _do_ technically support auto-assigned public IPs, but for production stability we always use an EIP.
 
 **Behaviour when the EIP quota is exhausted:** if your AWS account is at the default 5-EIP per-region limit, `AllocateAddress` returns `AddressLimitExceeded` and the provisioner **hard-fails** at step 2 ("Allocating Elastic IP for RP"). No instances have been launched yet, so there's nothing to clean up — just free an EIP (or request a quota increase) and re-run.
 
@@ -855,7 +855,7 @@ sudo mkdir -p /etc/resolver
 echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 ```
 
-**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match *before* ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's private IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
+**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match _before_ ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's private IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
 
 The current automation generates the correct `-I` rules. If you have an older install with `-A` baked into `/etc/wireguard/wg0.conf`, hot-fix on the RP without re-running the install:
 
@@ -903,7 +903,7 @@ aws service-quotas request-service-quota-increase \
     --service-code ec2 --quota-code L-0263D0A3 --desired-value 10
 ```
 
-See [About the Elastic IP](#about-the-elastic-ip) for why we use an EIP.
+See [About the Elastic IP](./#about-the-elastic-ip) for why we use an EIP.
 
 **Multiple environments on the same AWS account** — use a different `project:` value in each `aws-config.yaml` (e.g., `openg2p-prod`, `openg2p-staging`). Resources are isolated by tag; the destroy script only touches the configured project.
 

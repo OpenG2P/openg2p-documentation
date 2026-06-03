@@ -4,11 +4,11 @@ description: Deployment of Wireguard Bastion
 
 # Wireguard Bastion
 
-[Wireguard](https://www.wireguard.com/) (WG) is the recommended VPN to enable [private access channel](../../../../../../deployment/deployment-guide/private-access-channel.md) to your clusters and resources. Wireguard is a fast secure & open-source VPN, with P2P traffic encryption.
+[Wireguard](https://www.wireguard.com/) (WG) is the recommended VPN to enable [private access channel](../../../../deployment-guide/private-access-channel.md) to your clusters and resources. Wireguard is a fast secure & open-source VPN, with P2P traffic encryption.
 
 > _Note that the terms WG Bastion and WG server are interchangeably used in this document._
 
-Multiple WG servers will be required to provide a group of users access to certain resources. Multiple WG server may run on the same Virtual Machine (VM). A group of users who access to a particular WG server will have access to all [private access channels](../../../../../../deployment/deployment-guide/private-access-channel.md) that are connected to this WG server.
+Multiple WG servers will be required to provide a group of users access to certain resources. Multiple WG server may run on the same Virtual Machine (VM). A group of users who access to a particular WG server will have access to all [private access channels](../../../../deployment-guide/private-access-channel.md) that are connected to this WG server.
 
 It is recommended to set up at least two channels, one for System Administrators, and one for OpenG2P Application Users (like Program Managers, Service Providers, etc). Further channels may be created based on the need.
 

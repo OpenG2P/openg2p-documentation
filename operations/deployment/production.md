@@ -63,7 +63,7 @@ In the [OpenG2P deployment model ](../../deployment/concepts/openg2p-deployment-
 
 ## Security
 
-* Creation of [private access channels](../../deployment/deployment-guide/private-access-channel.md).
+* Creation of [private access channels](deployment-guide/private-access-channel.md).
 
 ## Nginx & Load balancer
 

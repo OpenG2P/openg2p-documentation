@@ -1,12 +1,12 @@
 # Private Access Channel
 
-A Private Access Channel (PAC) provides control over a user accessing a particular domain. Not all users will be required to control every domain. A PAC implemented as  a tuple of **Wireguard, Load Balancer, and Ingress gateway**.  A channel provides a group of users **access to resources** of the infrastructure. The users assigned to the Wireguard server determine the group of users with access to these channels. All users with access to a Wireguard server have access to all channels to which the Wireguard server is connected. The visual below depicts a high-level view of the PAC setup.
+A Private Access Channel (PAC) provides control over a user accessing a particular domain. Not all users will be required to control every domain. A PAC implemented as a tuple of **Wireguard, Load Balancer, and Ingress gateway**. A channel provides a group of users **access to resources** of the infrastructure. The users assigned to the Wireguard server determine the group of users with access to these channels. All users with access to a Wireguard server have access to all channels to which the Wireguard server is connected. The visual below depicts a high-level view of the PAC setup.
 
-<figure><img src="../../.gitbook/assets/private-access-channel.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/private-access-channel.jpg" alt=""><figcaption></figcaption></figure>
 
-The Wireguard server routes traffic to a specific network interface on Nginx.  The network interface on Nginx is configured to accept traffic for certain domain names only. Nginx forwards traffic to Istio ingress gateway of a cluster which further routes the traffic for these domains to respective resources in the cluster.  Note that a "resource group" is a group of Kubernetes resources, NOT, user groups.  Let's look at an end2end example:
+The Wireguard server routes traffic to a specific network interface on Nginx. The network interface on Nginx is configured to accept traffic for certain domain names only. Nginx forwards traffic to Istio ingress gateway of a cluster which further routes the traffic for these domains to respective resources in the cluster. Note that a "resource group" is a group of Kubernetes resources, NOT, user groups. Let's look at an end2end example:
 
-_**RG1**_ is resource group for _\*.dev.openg2p.org_ and _\*.qa.openg2p.org._  We would like only developers to access these domains. The machine that runs Nginx is assumed to have multiple network interface cards (physical or virtual) with unique IPs for each of them.  In our example, we define an Nginx conf file (under `/etc/ngixn/sites-available`  for the above domains associated with _network interface 1_.  This interface has IP 172.29.16.40.  The conf files looks like below:
+_**RG1**_ is resource group for _\*.dev.openg2p.org_ and _\*.qa.openg2p.org._ We would like only developers to access these domains. The machine that runs Nginx is assumed to have multiple network interface cards (physical or virtual) with unique IPs for each of them. In our example, we define an Nginx conf file (under `/etc/ngixn/sites-available` for the above domains associated with _network interface 1_. This interface has IP 172.29.16.40. The conf files looks like below:
 
 ```
 server {
@@ -62,9 +62,9 @@ server {
 
 ```
 
-Note that we can have multiple server definitions for the same network interface (same IP) and all the traffic is forward to `openg2pClusterUpstream`  which points to nodes of one of the Kubernetes clusters.
+Note that we can have multiple server definitions for the same network interface (same IP) and all the traffic is forward to `openg2pClusterUpstream` which points to nodes of one of the Kubernetes clusters.
 
-Multiple Wireguard servers (bastions) can run on a single Virtual Machine (VM).  Similarly, multiple Nginx servers (vhosts) can run on a single Nginx instance.  Each network interface on Nginx has a unique IP. Each Nginx vhost forwards traffic to an Istio Ingress gateway server which further routes traffic to Kubernetes resources.  On the Istio Ingress gateway server,  gateways (or filters) are defined for each wildcard domain specifying the rule to forward traffic to the respective namespace on the cluster. See the example above.
+Multiple Wireguard servers (bastions) can run on a single Virtual Machine (VM). Similarly, multiple Nginx servers (vhosts) can run on a single Nginx instance. Each network interface on Nginx has a unique IP. Each Nginx vhost forwards traffic to an Istio Ingress gateway server which further routes traffic to Kubernetes resources. On the Istio Ingress gateway server, gateways (or filters) are defined for each wildcard domain specifying the rule to forward traffic to the respective namespace on the cluster. See the example above.
 
 In the above example, Users RG1 can access only RG1 domains.
 
@@ -110,7 +110,7 @@ A single WG server with per-peer iptables rules is possible but adds operational
 Each Nginx `server` block needs its own (or a wildcard-covering) cert. Each block's `ssl_certificate` path must reference a cert that covers its `server_name`. Two patterns work:
 
 * **One wildcard cert covering all hostnames in the channel** — smaller cert inventory, single rotation date. Best when the customer's CA allows wildcards.
-* **One cert per FQDN** — larger inventory, finer rotation control. Common in regulated / government environments where wildcards are restricted by policy or CA. See [DNS & TLS Certificates](../concepts/dns-and-certificates.md) for why per-FQDN dominates gov deployments.
+* **One cert per FQDN** — larger inventory, finer rotation control. Common in regulated / government environments where wildcards are restricted by policy or CA. See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md) for why per-FQDN dominates gov deployments.
 
 ### Multi-NIC setup is non-trivial
 
@@ -153,4 +153,3 @@ The Istio side is identical to a private channel — a `Gateway` CRD with the pu
 A given hostname can be configured in **at most one** channel. If two channels both declare `*.qa.openg2p.org` (different Nginx interfaces, different Wireguard servers, different user groups), the Istio `Gateway` CRD for that hostname is a single cluster-wide resource — whichever `VirtualService` binds the hostname owns it. Channels effectively partition the **hostname namespace**; teams managing different channels must agree on the partition.
 
 If you actually need the same hostname served to two distinct user groups with different backends, that's a separate design (typically traffic-splitting via headers, or two separate Istio ingressgateway Deployments with their own `selector`).
-
