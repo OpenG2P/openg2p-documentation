@@ -29,7 +29,7 @@ Before you deploy, make sure the following are in place:
 8. Proceed to Install `novu` chart select the latest version to be installed, and click Install.
 9. On the next screen, choose a name for installation, like `novu`. Select the checkbox `Customise Helm options` before install, and click Next.
 10. Go through each app's configuration page, and configure the following:
-    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup). Example: `novu-api.qa.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
+    1. Configure a hostname for each app in the following way. `<appname>.<base-hostname>` , where base host name is the wildcard hostname chosen during [Istio namespace setup](../../operations/deployment/_archive/scaling/base-infrastructure/openg2p-cluster/cluster-setup/istio.md#namespace-setup). Example: `novu-api.qa.openg2p.org`, etc. `<appname>` is arbitrary - default names have been provided.
 11. Click Next to reach Helm Options page. Disable `wait` flag. Click on Install.
 12. Wait for all the pods to get into **Running state**. This may take several minutes.
 

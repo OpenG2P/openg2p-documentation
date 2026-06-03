@@ -10,8 +10,8 @@ The instructions here pertain to the deployment of Landing Page for OpenG2P envi
 
 Before you deploy, make sure the following are in place:
 
-* ✅ [Infrastruction setup](../../../../operations/deployment/_archive/deployment-instructions/infrastructure-setup.md) is completed
-* ✅ [Environment](../../../../operations/deployment/_archive/deployment-instructions/environment-installation.md) has been setup with common resources installed.
+* ✅ [Infrastruction setup](../../../deployment-instructions/infrastructure-setup.md) is completed
+* ✅ [Environment](../../../deployment-instructions/environment-installation.md) has been setup with common resources installed.
 * ✅ Domain name `registry.<your environment>.<your domain name>` (e.g. `registry.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
 * ✅ **Project Owner access** on the OpenG2P namespace
 
@@ -25,5 +25,5 @@ Before you deploy, make sure the following are in place:
 6. To display prerelease versions of OpenG2P apps, click on your user avatar in the upper right corner of the Rancher dashboard. Then click on "Include Prerelease Versions" under Preferences under Helm Charts.
 7.  Navigate to Apps->Charts page on Rancher. You should see "Landing Page" Helm charts listed.
 
-    <figure><img src="../../../../.gitbook/assets/image (23) (1).png" alt=""><figcaption></figcaption></figure>
+    <figure><img src="../../../../../../.gitbook/assets/image (23) (1).png" alt=""><figcaption></figcaption></figure>
 8. Click on the Helm chart, provide the necessary URLs in the configuration, click Next, remove the wait flag, and then install it.

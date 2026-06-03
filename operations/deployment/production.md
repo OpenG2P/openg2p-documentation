@@ -104,7 +104,7 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 * Provisioning of VMs across different underlying hardware and subnets for resilience.
 * Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
 
-Refer to the [Scaling](../../deployment/scaling/) guide for multi-VM architecture.
+Refer to the [Scaling](_archive/scaling/) guide for multi-VM architecture.
 
 ### Cluster Kubeconfig
 

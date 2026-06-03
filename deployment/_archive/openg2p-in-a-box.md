@@ -4,7 +4,7 @@ description: Getting started with OpenG2P
 
 # OpenG2P In a Box
 
-This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a **single node/VM/machine**. This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](../scaling/hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](../#deployment-architecture), but a compact version of the same. The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
+This document describes a deployment model wherein the infrastructure and components required by OpenG2P modules can be set up on a **single node/VM/machine**. This will help you to get started with OpenG2P and experience the functionality without having to meet all <mark style="color:blue;">r</mark>[esource requirements](../../operations/deployment/_archive/scaling/hardware-requirements.md) for a production-grade setup. This is based on [V4 architecture](../#deployment-architecture), but a compact version of the same. The essence of the V4 is preserved so that upgrading the infra is easier when more hardware resources are available.
 
 ## Deployment architecture
 
@@ -119,7 +119,7 @@ Install Wireguard Bastion server for secure VPN access:
     ```
 4. Once it finishes, navigate to `/etc/wireguard-app-users`. You will find multiple peer configuration files and CD in to `peer1` folder and copy `peer1.conf` to your notepad.
 5. Follow the link provided below to setup a WireGuard on your system.\
-   [Install WireGuard Client on Desktop](../scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
+   [Install WireGuard Client on Desktop](../../operations/deployment/_archive/scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard service is running on k8s cluster and the Wireguard setup is completed on your machine.</mark>\ <mark style="color:green;">On k8s cluster:</mark>
 
@@ -372,7 +372,7 @@ Set up an Istio gateway on `dev` namespace.
 
 #### **14. Cluster Monitoring installation**
 
-Install [Prometheus and Monitoring](../scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
+Install [Prometheus and Monitoring](../../operations/deployment/_archive/scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once monitoring is installed in Rancher, navigate to the Monitoring section where you'll see options for Alertmanager and Grafana. You can click on these to access their respective dashboards.</mark>
@@ -412,7 +412,7 @@ You can follow the below links to install OpenG2P modules via Rancher UI.
 
 In-a-box is a [deployment mode](../#deployment-modes) of the V4 architecture - it packs almost all components of V4 into a single node.
 
-* In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](../scaling/base-infrastructure/load-balancer/nginx.md).
+* In-a-box does not use the Nginx Load Balancer. The HTTPS traffic directly terminates on the Istio gateway via Wireguard. However, Nginx is required in production as described [here](../../operations/deployment/_archive/scaling/base-infrastructure/load-balancer/nginx.md).
 * The SSL certificates are loaded on the Istio gateway while in V4 the certificates are loaded on the Nginx server.
 * The Wireguard bastion runs inside the Kubernetes cluster itself as a pod. This is not recommended in production where Wireguard must run on a separate node.
 * A single private[ access channel](../deployment-guide/private-access-channel.md) is enabled (via Wireguard). In production, you will typically need several channels for access control.

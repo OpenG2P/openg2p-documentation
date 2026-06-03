@@ -105,7 +105,7 @@ Install Wireguard Bastion server for secure VPN access:
     ```
 4. Once it finishes, navigate to `/etc/wireguard-app-users`. You will find multiple peer configuration files and CD in to `peer1` folder and copy `peer1.conf` to your notepad.
 5. Follow the link provided below to setup a WireGuard on your system.\
-   [Install WireGuard Client on Desktop](../../../../deployment/scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
+   [Install WireGuard Client on Desktop](../scaling/base-infrastructure/wireguard-bastion/install-wireguard-client-on-machine.md)
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\ <mark style="color:green;">Make sure the WireGuard service is running on k8s cluster and the Wireguard setup is completed on your machine.</mark>\ <mark style="color:green;">On k8s cluster:</mark>
 
@@ -306,7 +306,7 @@ Set up an Istio gateway on `dev` namespace.
 
 #### **14. Cluster Monitoring installation**
 
-Install [Prometheus and Monitoring](../../../../deployment/scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
+Install [Prometheus and Monitoring](../scaling/base-infrastructure/openg2p-cluster/prometheus-and-grafana.md) enable cluster monitoring directly from the Rancher UI.
 
 🔍 <mark style="color:red;">Verification Checkpoint:</mark>\
 <mark style="color:green;">Once monitoring is installed in Rancher, navigate to the Monitoring section where you'll see options for Alertmanager and Grafana. You can click on these to access their respective dashboards.</mark>

@@ -1,0 +1,50 @@
+---
+description: Various resources required for deployment
+---
+
+# Resource Requirements for Scaled Up Cluster Setup
+
+The resource requirements pertain to the provisioning of resources for Kubernetes-based infrastructure required to house OpenG2P modules are given below. These requirements are applicable for scaled-up deployment for scale and high availabilty.
+
+## Virtual machines (VMs)
+
+<table><thead><tr><th width="150">Purpose</th><th width="239" align="center">Compute/Memory/Storage</th><th>Notes</th><th>Deployment Mode</th></tr></thead><tbody><tr><td><a href="base-infrastructure/wireguard-bastion/">Wireguard Bastion</a></td><td align="center">2vCPU/4 GB RAM/32 GB storage (<mark style="color:orange;">Minimum 8 GB storage</mark>)<br></td><td>Multiple Wireguard servers can run on a single node</td><td>Development, Production</td></tr><tr><td><a href="base-infrastructure/nfs-server.md">NFS Server</a></td><td align="center">2 vCPU/8 GB RAM/128 GB storage (<mark style="color:orange;">Minimum 64 GB storage</mark>)</td><td>Used for persistence both Rancher and OpenG2P clusters. <strong>The actual size of storage will depend on usage.</strong></td><td>Development, Production</td></tr><tr><td><a href="base-infrastructure/rancher.md">Rancher cluster</a></td><td align="center">8vCPU/32 GB RAM/128 GB storage (<mark style="color:orange;">Minimum 32 GB storage</mark>)</td><td>For high-availability<a href="https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#high-availability-kubernetes-install-with-the-helm-cli"> </a>refer to <a href="../../production.md">production guide.</a></td><td>Development, Production</td></tr><tr><td><a href="base-infrastructure/openg2p-cluster/">OpenG2P cluster</a></td><td align="center">16 vCPU/64 GB RAM/256 GB storage</td><td><p>This is the <strong>minimum requirement</strong>. The requirement may increase based on number of modules installed and need for higher resilience and availability. Refer to the <a href="../../production.md">production guide.</a></p><p>You may provision these resources on more than one VMs with minimum configuration of each VM being 8 vCPU/32 GB RAM/128 GB storage.</p></td><td>Development, Production</td></tr><tr><td><a href="base-infrastructure/load-balancer/nginx.md">Nginx</a></td><td align="center">2 vCPU/8 GB RAM/64 GB storage (<mark style="color:orange;">Minimum 8 GB storage</mark>)</td><td>Multiple Nginx servers can run on a single node.</td><td>Development, Production</td></tr><tr><td><a href="../../../../deployment/deployment-guide/configure-external-database-to-connect-openg2p-environment.md">PostgreSQL Server</a></td><td align="center">TBD</td><td>In Master/Slave configuration.</td><td>Production</td></tr><tr><td><a href="../../../../deployment/deployment-guide/minio-standalone-installation-guide-on-ubuntu-vm.md">MinIO storage</a></td><td align="center">TBD</td><td>High storage machine</td><td>Production</td></tr><tr><td>Backups</td><td align="center">TBD</td><td>High storage for various backups</td><td>Production</td></tr></tbody></table>
+
+> **Note:**\
+> OS for all nodes: **Ubuntu 24.04 Server**\
+> For best practices in creating a Kubernetes cluster for development, testing, and production, refer to the document [here](https://docs.openg2p.org/deployment/deployment-guide/kubernetes-cluster-deployment-guide).
+
+## Networking
+
+* All the machines in the same network
+* Public IP assigned to the Wireguard machine
+
+## Domain names
+
+To access resources on cluster, domain names and mappings are required. The suggested domain name convention is as follows:
+
+\<module>.\<environment>.\<organisation>.\<tld>
+
+Example:
+
+* spar.dev.openg2p.org
+* socialregistry.uat.openg2p.org
+
+### Domain mapping
+
+| Requirement Description      | Domain Name (examples)                                                                             | Mapped to                                                                                                                                             |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Domain mapping to sandbox    | <ul><li>dev.openg2p.net</li><li>uat.openg2p.net</li><li>staging.openg2p.org</li></ul>              | "A" Record mapped to Load Balancer IP (For sandbox, where LB is not used, this can be mapped directly to nodes of the K8s cluster, at least 3 nodes). |
+| Wild card mapping to modules | <ul><li><em>.dev.openg2p.net</em></li><li>.uat.openg2p.net</li><li>*.staging.openg2p.org</li></ul> | "CNAME" Record mapped to the domain of the above "A" record. (This is a wildcard DNS mapping)                                                         |
+
+The domain name mapping needs to be done on your domain service provider. For example, on AWS this is configured on Route 53.
+
+### Local DNS
+
+If your DNS is not publicly available the same has to be accessed with Wireguard.
+
+TBD - configuration
+
+## Certificates
+
+At least one wildcard certificate is required depending on the above domain names used. This can also be generated using Letsencrypt. See guide [here](../../../../deployment/deployment-guide/ssl-certificates-using-letsencrypt.md).

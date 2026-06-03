@@ -86,13 +86,13 @@ Nginx is used as both reverse proxy and load balancing for on-prem deployments.
     sudo systemctl restart nginx
     ```
 
-This is only a one-time installation. Whenever you want to add new servers for each environments on  this Nginx, follow the [Install Servers to Nginx Section](nginx.md#install-servers-to-nginx).
+This is only a one-time installation. Whenever you want to add new servers for each environments on this Nginx, follow the [Install Servers to Nginx Section](nginx.md#install-servers-to-nginx).
 
 ## Install servers to Nginx
 
 ### Prerequisites
 
-* [Create wildcard TLS certificates](../../../deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
+* [Create wildcard TLS certificates](../../../../../../deployment/deployment-guide/ssl-certificates-using-letsencrypt.md) (This certificate can be created each time for all the other servers you can configure later).
 
 ### Installation
 
