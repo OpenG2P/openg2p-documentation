@@ -16,13 +16,13 @@ The deployment is **cloud agnostic** - it does not use cloud specific components
 
 Depening on availability of compute resources and scale of your deploment we recommend the following deployment architectures:
 
-<table><thead><tr><th width="140.9140625">Architecture</th><th>Descripion</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Single-node</strong></td><td>All components including Kubernetes, Wireguard, Nginx, NFS run on the same machine. Multiple environments run in separate Kubernetes namespaces. PostgreSQL runs at Docker within each namespace.</td><td><p><strong>Sandbox</strong></p><p>Well suited for getting started with OpenG2P for creating development sandboxes like dev, qa etc. This setup can also be used for small scale pilots.</p></td></tr><tr><td><strong>Three-node</strong></td><td>The storage server is separated from the compute server (Kubernetes). PostgreSQL server runs on a separate "storage node" that contains large volumes of SSD storage with high througput disk I/O. The NFS also runs on this node. Thus, there is a separate of concerns between compute and data.</td><td><p><strong>Pilots | Small scale production</strong></p><p>For pilots and small scale production setups, specifically where I high uptime is not critical. If systems are predominantly used by administrators and some down time of services and portals is acceptable, then this architecture would be sufficient.</p></td></tr><tr><td><strong>Full-scale</strong></td><td>Multiple separate nodes for each of Wireguard, Nginx, Kubernetes nodes, NFS, PostgreSQL.</td><td><p><strong>Large scale production</strong></p><p>Full scale production deployment for following senarious:</p><ul><li>Multiple applications need to be supported on the cluster and clear separation of concerns is important.</li><li>Fail safety is critical — certain services must continue to run without interruptions. This typically will be the case with registration portals/beneficiary portals that have to be kept up and down time is not acceptable.</li><li>Scale is high in terms of compute requirements.</li><li>Fine grain access control for various resources of the system.</li><li>"Circuit breakers" for traffic control and attacks.</li></ul></td></tr></tbody></table>
+<table><thead><tr><th width="140.9140625">Architecture</th><th>Descripion</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Sandbox (Single-node)</strong></td><td>All components including Kubernetes, Wireguard, Nginx, NFS run on the same machine. Multiple environments run in separate Kubernetes namespaces. PostgreSQL runs at Docker within each namespace.</td><td><p><strong>Sandbox</strong></p><p>Well suited for getting started with OpenG2P for creating development sandboxes like dev, qa etc. This setup can also be used for small scale pilots.</p></td></tr><tr><td><strong>Production — Minimum (Three-node)</strong></td><td>The storage server is separated from the compute server (Kubernetes). PostgreSQL server runs on a separate "storage node" that contains large volumes of SSD storage with high througput disk I/O. The NFS also runs on this node. Thus, there is a separate of concerns between compute and data.</td><td><p><strong>Pilots | Small scale production</strong></p><p>For pilots and small scale production setups, specifically where I high uptime is not critical. If systems are predominantly used by administrators and some down time of services and portals is acceptable, then this architecture would be sufficient.</p></td></tr><tr><td><strong>Production — High-Availability</strong></td><td>The same three-node architecture scaled out by <strong>adding nodes</strong> — additional Kubernetes control-plane nodes (HA), redundant reverse proxies behind a load balancer, PostgreSQL primary/replica, and redundant storage. No new components or channels; just more nodes for redundancy and capacity.</td><td><p><strong>Large-scale production</strong></p><p>For deployments where high availability and near-zero downtime are required — typically citizen-facing portals that must stay up — or where compute scale is high.</p></td></tr></tbody></table>
 
 {% hint style="warning" %}
 Over and above all these, there is minimally one more node required for backups and running local Git and Docker repositories. Refer to [Prerequisites & Procurement → Compute](../../operations/deployment/prerequisites-procurement.md#compute-the-three-vms).
 {% endhint %}
 
-### Single-node
+### Sandbox (Single-node)
 
 <figure><img src="../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption></figcaption></figure>
 
@@ -30,13 +30,13 @@ Over and above all these, there is minimally one more node required for backups 
 * One Kubernetes cluster hosting both Rancher and OpenG2P services
 * Nginx, Wireguard, NFS server running outside the Kubernetes cluster but on the same node
 * Multiple environments like dev, qa, demo etc. as Kubernetes namespaces
-* Access to each environment (namespace) can be controlled via [private access channels](../deployment-guide/private-access-channel.md). (The node needs multiple network interfaces to support the same).
+* Access to each environment (namespace) is controlled via [private access channels](../deployment-guide/private-access-channel.md) — a single network interface is sufficient; channel separation is enforced by the firewall and Nginx, not by extra NICs.
 * SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
 * Firewall is outside the purview of this deployment.
-* Git repo and Docker Registry are assumed externally hosted (public or private). For on-prem hosting you will need more resources to host the same as in [Three-node](openg2p-deployment-model.md#three-node) setup.
-* As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines) as in [Full-scale](openg2p-deployment-model.md#full-scale) setup.
+* Git repo and Docker Registry are assumed externally hosted (public or private). For on-prem hosting you will need more resources to host the same as in the [Production — Minimum](openg2p-deployment-model.md#production-minimum-three-node) setup.
+* As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines) as in the [Production — High-Availability](openg2p-deployment-model.md#production-high-availability) setup.
 
-### Three-node
+### Production — Minimum (Three-node)
 
 <figure><img src="../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption></figcaption></figure>
 
@@ -47,24 +47,55 @@ Over and above all these, there is minimally one more node required for backups 
 * Storage node is expected to have larger SSD disks and not very high compute capability, while Compute node must have high compute power and RAM. See [Prerequisites & Procurement → Compute](../../operations/deployment/prerequisites-procurement.md#compute-the-three-vms).
 * Storage Node can be managed - in terms of access, scale up and backups indendently.
 * Local Git repo and Docker Repositories may be hosted on Storage Node.
-* Access to each environment (namespace) can be controlled via [private access channels](../deployment-guide/private-access-channel.md). (The node needs multiple network interfaces to support the same).
+* Access to each environment (namespace) is controlled via [private access channels](../deployment-guide/private-access-channel.md) — a single network interface is sufficient; channel separation is enforced by the firewall and Nginx, not by extra NICs.
 * SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
 * Firewall is outside the purview of this deployment.
 
-### Full-scale
+### Production — High-Availability
 
-<figure><img src="../../.gitbook/assets/deployment-architecture-v4.jpg" alt=""><figcaption></figcaption></figure>
+The same three-node architecture, scaled out for high availability — **more nodes, not a different design**. The two channels remain (private over Wireguard, public for citizen-facing); Rancher and Keycloak continue to run in-cluster (no separate management cluster).
 
-* For multiple applications, large scale rollout where availability, real-time response is critical
-* The Rancher cluster is separated from OpenG2P cluster as Rancher can manage multiple clusters.
-* Organization wide Keycloak runs on Rancher cluster
-* NFS server is hosted on a separate "Storage node".
-* PostgreSQL (although not shown in the diagram) is also hosted on separate servers for production deployments. The same may be run on the above Storage node. Thus PostgreSQL and NFS may run on the same node if load can be handled.
-* Multiple environments can run within OpenG2P cluster (as in single-node and three-node architectures
-* Miniumum number of OpenG2P cluster nodes recommended is 3 nodes — this is for fail safety of Kubrenetes "master" node.
-* More nodes may be added to the cluster as per scaling requirements
-* Wireguard and Load Balancer (Nginx) run on separate nodes for better separation of concens and management.
-* While OpenG2P departmental apps typically don't need such robust infrastructure, it's essential if you want fast-response, beneficiary-facing websites with zero downtime.
+```mermaid
+flowchart TB
+    citizens["Citizens<br/>(public internet)"]
+    admins["Admins / staff<br/>(Wireguard VPN — private channel)"]
+
+    subgraph RP["Reverse-Proxy tier (redundant)"]
+        lb["Load balancer / VIP"]
+        rp1["Nginx RP #1"]
+        rp2["Nginx RP #2"]
+    end
+
+    subgraph K8S["Compute — RKE2 cluster (HA)"]
+        cp["3x control-plane<br/>(embedded etcd)"]
+        wk["worker nodes<br/>(add for capacity)"]
+        rk["Rancher + Keycloak<br/>(in-cluster)"]
+    end
+
+    subgraph STORE["Storage tier"]
+        pgp["PostgreSQL primary"]
+        pgr["PostgreSQL replica"]
+        nfs["NFS"]
+    end
+
+    citizens -->|"public 443"| lb
+    admins -->|"private / WG"| lb
+    lb --> rp1 & rp2
+    rp1 & rp2 -->|"Istio NodePort"| K8S
+    K8S --> STORE
+    pgp -. replication .-> pgr
+```
+
+* **HA Kubernetes control plane** — 3 RKE2 server nodes (embedded etcd) instead of one; add worker nodes for capacity.
+* **Redundant reverse proxies** — two or more Nginx nodes behind a load balancer / VIP, so both channels survive an RP failure.
+* **PostgreSQL primary/replica** on the storage tier for database high availability.
+* **Redundant storage** (NFS HA, distributed MinIO) as needed.
+* Multiple environments still run as namespaces in the one OpenG2P cluster; Rancher and Keycloak stay in-cluster.
+* Recommended for citizen-facing portals needing near-zero downtime, or where compute scale is high.
+
+{% hint style="info" %}
+The current automation provisions the **minimum** (single control-plane) configuration. Scaling to the HA layout above — extra control-plane nodes, redundant reverse proxies, PostgreSQL replication — is a supported architecture but a manual/extension step today, not yet automated.
+{% endhint %}
 
 ## Role of various components
 
