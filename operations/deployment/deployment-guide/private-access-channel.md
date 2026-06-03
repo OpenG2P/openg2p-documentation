@@ -110,7 +110,7 @@ A single WG server with per-peer iptables rules is possible but adds operational
 Each Nginx `server` block needs its own (or a wildcard-covering) cert. Each block's `ssl_certificate` path must reference a cert that covers its `server_name`. Two patterns work:
 
 * **One wildcard cert covering all hostnames in the channel** — smaller cert inventory, single rotation date. Best when the customer's CA allows wildcards.
-* **One cert per FQDN** — larger inventory, finer rotation control. Common in regulated / government environments where wildcards are restricted by policy or CA. See [DNS & TLS Certificates](../../../deployment/concepts/dns-and-certificates.md) for why per-FQDN dominates gov deployments.
+* **One cert per FQDN** — larger inventory, finer rotation control. Common in regulated / government environments where wildcards are restricted by policy or CA. See [DNS & TLS Certificates](dns-and-certificates.md) for the trade-offs and customer realities.
 
 ### Multi-NIC setup is non-trivial
 

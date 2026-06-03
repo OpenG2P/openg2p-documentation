@@ -2,7 +2,7 @@
 
 ## Context
 
-The Helm Chart for PBMS installation version 4.x and above are aligned new deployment model where a common layer "[OpenG2P Commons](../../deployment/concepts/openg2p-commons-helm-chart.md)" is installed within an environment that is shared by all the modules within the environment. Learn more about the deployment architecture [here](../../deployment/concepts/openg2p-deployment-model.md).
+The Helm Chart for PBMS installation version 4.x and above are aligned new deployment model where a common layer "[OpenG2P Commons](../../deployment/openg2p-commons-helm-chart.md)" is installed within an environment that is shared by all the modules within the environment. Learn more about the deployment architecture [here](../../deployment/openg2p-deployment-model.md).
 
 ## Key updates to the chart
 

@@ -4,7 +4,7 @@ description: Deploying OpenG2P Registry on Kubernetes using Helm charts.
 
 # Deployment
 
-The Registry is deployed over Kubernetes infrastructure that offers **production-grade** deployment along with powerful security, access control and operational features. Learn more about the deployment architecture [here](../../../../deployment/concepts/).
+The Registry is deployed over Kubernetes infrastructure that offers **production-grade** deployment along with powerful security, access control and operational features. Learn more about the deployment architecture [here](../../../../deployment/openg2p-deployment-model.md).
 
 ## Deployment steps
 

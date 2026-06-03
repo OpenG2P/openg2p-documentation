@@ -7,7 +7,7 @@ description: Deploying OpenG2P G2P Bridge on Kubernetes using Helm charts.
 The G2P Bridge is deployed over Kubernetes infrastructure that offers
 **production-grade** deployment along with powerful security, access control and
 operational features. Learn more about the deployment architecture
-[here](../../deployment/concepts/).
+[here](../../deployment/openg2p-deployment-model.md).
 
 Deployment is **largely automated**. Once the cluster and environment are in
 place, the entire G2P Bridge subsystem — APIs, Celery beat & workers, Redis, the

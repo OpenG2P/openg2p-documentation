@@ -22,4 +22,4 @@ OpenG2P supports two deployment shapes. Pick the one that matches your stage, th
 * **Sandbox** → [Single-Node automation](../operations/deployment/infrastructure-setup/single-node-automation.md) (prerequisites are included on that page)
 * **Production** → start with [Prerequisites & Procurement](../operations/deployment/prerequisites-procurement.md), then the [infrastructure automation](../operations/deployment/infrastructure-setup/three-node-automation/)
 
-Shared background for both lives under [Concepts](concepts/README.md).
+For the conceptual picture (deployment models, architecture, channel separation), see [OpenG2P Deployment Architecture](openg2p-deployment-model.md).

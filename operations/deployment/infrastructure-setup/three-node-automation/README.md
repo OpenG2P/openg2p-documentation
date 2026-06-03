@@ -16,7 +16,7 @@ The three-node automation provisions a complete production OpenG2P infrastructur
 {% endhint %}
 
 {% hint style="success" %}
-**Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [Concepts](../../../../deployment/concepts/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
+**Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
 {% endhint %}
 
 {% hint style="info" %}
@@ -27,7 +27,7 @@ The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/o
 
 Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes, Istio, Rancher, Keycloak, monitoring, logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher, Keycloak) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**.
 
-For the role split, where this sits among the deployment models, and how the two channels are enforced, see [OpenG2P Deployment Architecture → Production — Minimum](../../../../deployment/concepts/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+For the role split, where this sits among the deployment models, and how the two channels are enforced, see [OpenG2P Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 Two things to know before you run it:
 
@@ -68,7 +68,7 @@ Before running the automation, the following must be in place. The canonical lis
 
 A few install-specific points:
 
-* **Single-NIC RP** — channel separation is enforced by the firewall + Nginx allowlist, not by physical interfaces. See [Channel separation](../../../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+* **Single-NIC RP** — channel separation is enforced by the firewall + Nginx allowlist, not by physical interfaces. See [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 * **No Let's Encrypt, no self-signed CA** — production uses customer-provided certs (commercial or sovereign CA) only. Sandbox/PoC uses the single-node automation, which supports Let's Encrypt.
 * **Grafana and Prometheus** run in-cluster and are reached via the Rancher UI (Cluster Explorer → Monitoring). They don't need their own DNS records or certs.
 
@@ -350,7 +350,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 These are deferred to follow-up automation, not gaps:
 
 * **Environment automation** — creating `prod`, `staging`, etc. namespaces with their own Postgres, Keycloak, eSignet, Superset, etc. The host PostgreSQL on the storage node sits idle until that lands.
-* **Citizen-facing public domains and certs** — admin tools (the four hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP's public NIC. See [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md).
+* **Citizen-facing public domains and certs** — admin tools (the four hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP. See [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md).
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
@@ -588,7 +588,7 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 
 ## Related documentation
 
-* [OpenG2P Deployment Architecture](../../../../deployment/concepts/openg2p-deployment-model.md) — the deployment models (Sandbox, Production — Minimum, Production — High-Availability) and where this automation fits.
-* [DNS & TLS Certificates](../../../../deployment/concepts/dns-and-certificates.md) — why admin tools are internal, why citizen-facing certs are typically per-FQDN, and the cert formats customers actually have.
+* [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md) — the deployment models (Sandbox, Production — Minimum, Production — High-Availability) and where this automation fits.
+* [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md) — wildcard vs per-FQDN trade-offs in gov procurement, and the cert formats customers actually have.
 * [Prerequisites & Procurement](../../prerequisites-procurement.md) — compute, DNS, certs, access, firewall to arrange before install.
 * [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.

@@ -23,7 +23,7 @@ DNS records, TLS certificates, and server access for this environment must alrea
 {% hint style="warning" %}
 **In-cluster versus External Storage**
 
-This script installs [**commons**](../../deployment/concepts/openg2p-commons-helm-chart.md) modules with **in-cluster** PostgreSQL, MinIO, Kafka, etc. This may be used to test the entire system before going for a production rollout.  For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
+This script installs [**commons**](../../deployment/openg2p-commons-helm-chart.md) modules with **in-cluster** PostgreSQL, MinIO, Kafka, etc. This may be used to test the entire system before going for a production rollout.  For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
 
 The script is still useful in production for the namespace, Rancher Project, and Istio Gateway scaffolding.
 {% endhint %}
@@ -165,7 +165,7 @@ Cloudflare DNS plugin (`python3-certbot-dns-cloudflare`) or Route53 plugin (`pyt
 This is the step that **opens the system to citizens**. It has two parts: an Nginx server block for the environment's hostnames, and opening the public channel at the firewall. Until now the Reverse Proxy served only the admin tools (Rancher, Keycloak) on the private channel — this step adds the public, citizen-facing channel alongside them.
 
 {% hint style="info" %}
-**Admin stays private — automatically.** The admin server blocks installed by the [infrastructure automation](infrastructure-setup/three-node-automation/) carry a source-IP allowlist (`allow <wg_subnet>; allow <private_subnet>; deny all;`). The citizen block you add below carries **no** allowlist. So even after you open public `80/443` here, a request to `rancher.<domain>` from the internet is still rejected by source IP, while citizen services are served normally. See [Channel separation](../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access) for the full three-layer model.
+**Admin stays private — automatically.** The admin server blocks installed by the [infrastructure automation](infrastructure-setup/three-node-automation/) carry a source-IP allowlist (`allow <wg_subnet>; allow <private_subnet>; deny all;`). The citizen block you add below carries **no** allowlist. So even after you open public `80/443` here, a request to `rancher.<domain>` from the internet is still rejected by source IP, while citizen services are served normally. See [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access) for the full three-layer model.
 {% endhint %}
 
 #### 3a. Nginx server block (citizen channel)

@@ -7,7 +7,7 @@ description: Deploying OpenG2P SPAR on Kubernetes using Helm charts.
 SPAR is deployed over Kubernetes infrastructure that offers **production-grade**
 deployment along with powerful security, access control and operational features.
 Learn more about the deployment architecture
-[here](../../deployment/concepts/).
+[here](../../deployment/openg2p-deployment-model.md).
 
 Deployment is **largely automated**. Once the cluster and environment are in
 place, the entire SPAR subsystem — the Mapper Partner API, the Beneficiary Portal

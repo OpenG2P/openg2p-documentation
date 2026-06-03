@@ -50,7 +50,7 @@ The requirements below refer to these values. Determine them for your deployment
 
 ### Compute (the three VMs)
 
-Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access)).
+Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access)).
 
 | Role          | vCPU | RAM   | Root disk      | Notes                                                                         |
 | ------------- | ---- | ----- | -------------- | ----------------------------------------------------------------------------- |
@@ -155,7 +155,7 @@ Conceptual background. Skip if you just need the requirements.
 
 ### Admin vs citizen hostnames (private vs public)
 
-Rancher and Keycloak are **operator tools**, not citizen-facing. The installer keeps them reachable only over the Wireguard VPN (bound to the private IP, with a firewall + nginx allowlist), which is why `rancher.<DOMAIN>` and `keycloak.<DOMAIN>` point to the **private** IP. Citizen-facing services are reached on the **public** IP, which is why the apex and wildcard point there. Full rationale: [Channel separation](../../deployment/concepts/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+Rancher and Keycloak are **operator tools**, not citizen-facing. The installer keeps them reachable only over the Wireguard VPN (bound to the private IP, with a firewall + nginx allowlist), which is why `rancher.<DOMAIN>` and `keycloak.<DOMAIN>` point to the **private** IP. Citizen-facing services are reached on the **public** IP, which is why the apex and wildcard point there. Full rationale: [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 ### Why a single wildcard certificate
 
@@ -172,7 +172,7 @@ A one-time `/etc/hosts` entry on the laptop also works for either topology; the 
 
 ### Certificate formats in government procurement
 
-For the cert formats commonly delivered by government / sovereign / commercial CAs and how the installer handles each, see [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md).
+For the cert formats commonly delivered by government / sovereign / commercial CAs and how the installer handles each, see [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
 
 ### Using a separate admin domain (advanced)
 
@@ -182,5 +182,5 @@ This page uses one domain for both admin and citizen hostnames — the common ca
 
 * [Three-node infrastructure automation](infrastructure-setup/three-node-automation/) — install the cluster once certs are in place
 * [Environment setup](environment-setup-multi-node.md) — install OpenG2P modules into the production environment
-* [DNS & TLS Certificates](../../deployment/concepts/dns-and-certificates.md) — cert formats in government procurement
+* [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md) — cert formats in government procurement
 * [Private Access Channel](deployment-guide/private-access-channel.md) — why admin tools sit behind the VPN

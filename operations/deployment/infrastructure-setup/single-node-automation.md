@@ -13,7 +13,7 @@ For adding environments to an existing multi-node infrastructure, see [Environme
 {% endhint %}
 
 {% hint style="success" %}
-**Just want to run it?** Jump to [Quick Start](#quick-start). For the deployment model and how single-node compares to production, see [Concepts → OpenG2P Deployment Architecture](../../../deployment/concepts/openg2p-deployment-model.md#sandbox-single-node).
+**Just want to run it?** Jump to [Quick Start](#quick-start). For the deployment model and how single-node compares to production, see [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md#sandbox-single-node).
 {% endhint %}
 
 ## Overview

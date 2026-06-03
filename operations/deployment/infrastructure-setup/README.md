@@ -11,7 +11,7 @@ It comes in two configurations, sharing the **same architecture** — the differ
 * **Production — Minimum** (three nodes; one RP, one Compute, one Storage) — pilots and small-scale production where some downtime is acceptable. This is what the automation provisions today.
 * **Production — High-Availability** (more nodes; HA Kubernetes control plane, redundant RPs behind a load balancer, PostgreSQL primary/replica) — large-scale or near-zero-downtime deployments. A supported scaling-up of the same architecture; manual/extension work today, not yet automated.
 
-See [OpenG2P Deployment Architecture](../../../deployment/concepts/openg2p-deployment-model.md) for the full conceptual picture, and [Deployment](../../../deployment/README.md) for choosing between sandbox and production.
+See [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md) for the full conceptual picture, and [Deployment](../../../deployment/README.md) for choosing between sandbox and production.
 
 ## Production setup sequence
 
