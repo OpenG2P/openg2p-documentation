@@ -6,6 +6,8 @@ description: Single-node deployment automation
 
 The entire deployment process for a single-node setup has been automated and available as shell scripts. This is useful for bringing up an OpenG2P sandbox on your own machine — everything (K8s, Istio, Rancher, Keycloak, Nginx, environments) runs on a single VM.
 
+<figure><img src="../../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption><p>Single-node architecture — all services on one VM</p></figcaption></figure>
+
 {% hint style="info" %}
 For adding environments to an existing multi-node infrastructure, see [Environment Setup for Multi-Node](../environment-setup-multi-node.md).
 {% endhint %}

@@ -53,7 +53,7 @@ Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, wit
 | Reverse Proxy | 2 | 4 GB | 64 GB SSD | TLS termination, Wireguard endpoint. Not expected to be heavily loaded. |
 | Compute | 16 | 64 GB | 128 GB SSD | The Kubernetes node. Fits ~2 environments with all modules; expand for more. |
 | Storage | 8 | 32 GB | 256 GB SSD | Host PostgreSQL + NFS. Expand CPU/RAM if PostgreSQL is heavily loaded. |
-| Backup (optional) | 2 | 8 GB | 512 GB HDD/SSD | Only if you enable the backup node. SSD not required. |
+| Backup | 2 | 8 GB | 512 GB HDD/SSD | Holds the backup repository — required before go-live. SSD not needed. |
 
 These are minimums; larger is fine and smaller may fail preflight.
 
