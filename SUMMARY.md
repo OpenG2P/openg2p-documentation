@@ -521,6 +521,7 @@
     * [Testing](g2p-bridge/development/testing/README.md)
       * [Unit Testing](g2p-bridge/development/testing/unit-testing.md)
       * [Functional Testing](g2p-bridge/development/testing/functional-testing.md)
+      * [Regression Sanity Suite](g2p-bridge/development/testing/regression-sanity-suite.md)
       * [Performance Testing](g2p-bridge/development/testing/performance-testing.md)
     * [Developer Install](g2p-bridge/development/developer-install/README.md)
       * [G2P Bridge](g2p-bridge/development/developer-install/installing-openg2p-bridge-on-linux.md)
