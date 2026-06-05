@@ -182,6 +182,17 @@ The suite is also packaged as a Docker image
 (`openg2p/openg2p-g2p-bridge-sanity`) and ships in the `openg2p-bridge` chart as
 an **optional component** (`sanity.enabled`, off by default).
 
+### Ways to run — at a glance
+
+| Method | How | When |
+| --- | --- | --- |
+| **Rancher (no CLI)** | Apps → release → **⋮ → Upgrade** (or **Redeploy**) | The standard path — runs on every install/upgrade |
+| **`helm upgrade`** | `helm upgrade <release> <chart> -n <ns> --reuse-values` | CLI equivalent of the above |
+| **Local (off-cluster)** | `pytest` from `test/sanity` (see [Run](#run)) | Debugging / development |
+
+The in-cluster run is a **post-install/post-upgrade hook Job**, so any deploy of
+the release triggers it; there is no separate "run" button.
+
 * **Trigger** — a **post-install / post-upgrade hook Job**. It runs **every time
   the chart is installed or upgraded** — i.e. each time you click **Install**,
   **Upgrade** (or **Redeploy**) in the Rancher UI. No command line required. To
@@ -243,3 +254,26 @@ pod's logs in Rancher.
 | Machine-readable (CI) | `junit.xml`, alongside each run's `report.html` on the PVC |
 
 The Job pod persists after it finishes (replaced on the next install/upgrade), so its logs stay viewable; the viewer keeps one folder per run on the PVC.
+
+### What happens if a run fails
+
+* **The deploy is not affected** (default, `sanity.failOnError=false`). The Job
+  always exits 0, the pod ends as **Completed**, and the release stays healthy —
+  you find pass/fail in the report, not in the deploy status.
+* Set **`sanity.failOnError=true`** to make a failing run **fail the
+  install/upgrade** (the release shows failed; use for strict CI gating).
+* **`xfail` tests don't count as failures** — they're known gaps tracked in the
+  report, not red.
+* In the **e2e**, each stage is asserted independently, so a failure tells you
+  **exactly where it stalled** (e.g. `stage5_disbursed_to_bank`); the stages after
+  it are reported failed too. A stage that never completes polls until its budget
+  (`e2e_pipeline_timeout_seconds` / `e2e_recon_timeout_seconds`) and then fails.
+* **Where to see it:** the HTML report (red tests, with the failing assertion and
+  the last status it saw) or the Job pod logs.
+
+{% hint style="info" %}
+A failure is almost always **the system under test**, not the suite — the e2e
+walks real Bridge state, so a red stage points at the Bridge/SPAR/bank step that
+didn't complete. The local-run section above lists the same checks for debugging
+off-cluster.
+{% endhint %}
