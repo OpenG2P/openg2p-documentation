@@ -38,6 +38,17 @@ not-found/invalid input instead of a graceful response (a Bridge / Example-Bank
 robustness gap). They are still called and tracked, and will auto-pass once the
 services handle those inputs gracefully.
 
+### Business-rule negatives & error paths
+
+Beyond basic reachability, the suite asserts the Bridge **rejects bad input with
+a graceful G2P `ERROR` envelope** (consolidated from the retired functional-test
+Postman/script artefacts):
+
+| Test module | Covers |
+| --- | --- |
+| `test_l1_partner_negatives` | Disbursement validations: missing beneficiary, negative amount, total over the envelope sum, count over the envelope — all asserted as `ERROR`. Plus `xfail`-tracked gaps the Bridge does **not** yet reject (past schedule date, unknown program, duplicate beneficiary, disburse against a cancelled envelope) and the cancel endpoints' happy-path HTTP 500. |
+| `test_l2_mt940_recon` | Uploads a crafted MT940 whose debit references an unknown reconciliation id and asserts the async processor records an `INVALID_RECONCILIATION_ID` reconciliation error, read back via `get_disbursement_status`. |
+
 ### End-to-end stage verification (L2)
 
 A batch of disbursements is pushed through the whole chain and **each stage is

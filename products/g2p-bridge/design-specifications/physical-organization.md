@@ -24,7 +24,7 @@ Docker image names, and Helm `Chart.yaml` names are intentionally left unchanged
 | [`example-bank/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
 | [`docker/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/docker) | `openg2p-g2p-bridge-docker` | Dockerfiles for the API and Celery service images. |
 | [`deployment/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/deployment) | `openg2p-g2p-bridge-deployment` + `openg2p-g2p-bridge-example-bank-deployment` | The single consolidated Helm chart `charts/openg2p-bridge` (Bridge + bundled Example Bank, toggled via `exampleBank.enabled`) and the `scripts/` (e.g. `uninstall-bridge.sh`). |
-| [`test/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — unit, functional (Postman) and performance tests. |
+| [`test/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — the `sanity/` regression suite (API coverage, full e2e cash flow, business-rule negatives and MT940 reconciliation-error checks). |
 
 ## Core modules (`core/`)
 

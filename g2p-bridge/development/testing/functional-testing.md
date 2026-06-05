@@ -1,5 +1,15 @@
 # Functional Testing
 
+Functional testing of the G2P Bridge has two parts:
+
+* **Manual, PBMS-driven scenarios** — exercised through the PBMS UI and the wider
+  integration (SPAR, Example Bank). These are listed below.
+* **API-level functional scenarios** (Rest API negatives, the downstream batch
+  lifecycle, and MT940 reconciliation-error handling) — these were previously
+  standalone Postman collections and a script under `test/functional-test/`, and
+  have now been **automated in the** [**Regression Sanity Suite**](regression-sanity-suite.md).
+  Run them with the rest of the suite (`pytest`) instead of by hand.
+
 ## Testing scenarios
 
 ### From PBMS (Manual Testing)
@@ -12,54 +22,30 @@
 6. Check payment from PBMS - when SPAR services are not available for some time
 7. Check payment from PBMS - when Example Bank services are not available for some time
 
-### Independent of PBMS
+## API-level scenarios (now automated in the sanity suite)
 
-#### Rest API
+The scenarios below used to be run manually via Postman / a script. They are now
+covered automatically by the [Regression Sanity Suite](regression-sanity-suite.md);
+this table maps each legacy scenario to where it now lives.
 
-1. Create envelope - Path without any errors.
-2. Create envelope - with non-existent Program Mnemonic
-3. Create envelope - with schedule date in the past
-4. Create Disbursements - Happy path - with appropriate inputs - no Errors
-5. Create Disbursements - with invalid envelope ID
-6. Create Disbursements - with cancelled envelope
-7. Create Disbursements - with no beneficiary ID
-8. Create Disbursements - with duplicate beneficiary ID
-9. Create Disbursements - with negative disbursal amount
-10. Create Disbursements - where the total of all disbursements cross the sum specified in the envelope&#x20;
-11. Create Disbursements - where number of disbursements cross the number specified in the envelope
-12. Cancel Envelope - Happy path
-13. Cancel Envelope - Invalid envelope ID
-14. Cancel Envelope - already cancelled envelope
-15. Cancel Disbursements - Happy path
-16. Cancel Disbursements - Invalid disbursement ID in a batch - 1 is invalid whereas other disbursement IDs are valid
+| Legacy scenario | Now covered by |
+| --- | --- |
+| Create envelope — happy path | L2 e2e (`test_l2_e2e_cash`) |
+| Create disbursements — invalid envelope ID | `test_l1_partner_api` |
+| Create disbursements — no beneficiary ID | `test_l1_partner_negatives` (enforced → ERROR) |
+| Create disbursements — negative amount | `test_l1_partner_negatives` (enforced → ERROR) |
+| Create disbursements — total exceeds envelope sum | `test_l1_partner_negatives` (enforced → ERROR) |
+| Create disbursements — count exceeds envelope | `test_l1_partner_negatives` (enforced → ERROR) |
+| Cancel envelope — already cancelled | `test_l1_partner_negatives` (enforced → ERROR) |
+| Create envelope — past schedule date / unknown program; duplicate beneficiary; disburse against cancelled envelope | `test_l1_partner_negatives` (marked **xfail** — the Bridge does not yet validate these; they flip to real passes once it does) |
+| Cancel envelope / cancel disbursements — happy & partial-invalid | `test_l1_partner_negatives` (marked **xfail** — these endpoints currently return HTTP 500 even on success) |
+| Downstream batch lifecycle (create → disburse → reconcile) | L2 e2e, verified stage by stage |
+| MT940 reconciliation error (unmatched debit) | `test_l2_mt940_recon` (asserts `INVALID_RECONCILIATION_ID`) |
 
-#### Downstream Batch Testing - Single Scenario covering multiple use cases
-
-1. Create 1 envelope with 1002 disbursements, totalling upto USD 502,503 - disbursement amounts as 1, 2, 3....upto 1002 - schedule date should be in the future. The disbursement with USD 1002 - should have an invalid Beneficiary ID - Beneficiary ID should not be present in mapper
-2. Cancel 1 disbursement in this envelope, the disbursement with USD 1001
-3. Now check disbursement\_envelope\_status - it should show 1001 disbursements with amount as 500,500 + 1002 = 501,502
-4. Manually update the envelope schedule date to TODAY - so that the downstream batch picks up the envelope for shipment
-5. Give it 5 minutes - Now check disbursement\_envelope\_status - it should show 1000 disbursements as shipped (1 is cancelled, 1 is invalid beneficiary ID)
-6. Wait for 10 minutes
-7. Iteratively check all 1002 - disbursement\_status. Disbursement IDs - 1 to 1000 should show reconciled. Some of them should show reversed (about 30%) -- ID 1001 should show cancelled and ID 1002 - should show ??
-
-#### Negative conditions for MT940
-
-1. In Example Bank for the above Envelope add Wrong entries in accounting log
-2. Add duplicate Debit for Disbursement ID - 1 - DUPLICATE\_DEBIT
-3. Add a Debit for Disbursement ID - 1003 - INVALID\_DISBURSEMENT\_ID
-4. Add a Reversal Debit for Disbursement ID - 1002 (which had invalid beneficiary ID)
-5. Generate Account Statement and upload into Bridge. Check for Reconciliation Errors. There should be these 3 entries that should show up in Recon Errors.
-
-
-
-
-
-
-
-
-
-
-
-
-
+{% hint style="info" %}
+Two legacy MT940 negative cases are **not** reproduced as automated tests, for
+concrete reasons: a **reversal** (`RD`) line is rejected outright by the MT940
+parser (so it cannot be ingested via `upload_mt940`), and **duplicate-debit**
+detection needs a *previously successful* reconciliation, which depends on a
+completed happy-path e2e run. Both are documented in `test_l2_mt940_recon`.
+{% endhint %}
