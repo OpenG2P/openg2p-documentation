@@ -43,7 +43,10 @@ services handle those inputs gracefully.
 A batch of disbursements is pushed through the whole chain and **each stage is
 asserted independently**, so a failure pinpoints exactly where it stalled —
 including the money actually reaching the bank (stage 5) and the bank distributing
-it to beneficiaries (stage 6):
+it to beneficiaries (stage 6). Because each transition is driven by an
+**asynchronous Celery beat/worker** (not a synchronous API call), the suite
+**polls and waits** between stages — so this part takes a few minutes by design
+(see [Run](#run) for expected timing):
 
 | Stage | Verified via |
 | --- | --- |
@@ -147,6 +150,24 @@ pytest -m e2e
 # Point at another environment on the fly:
 SANITY_NAMESPACE=qa SANITY_VERIFY_TLS=false pytest -m smoke
 ```
+
+{% hint style="info" %}
+**Expect the run to take a few minutes — this is normal, not a hang.** Smoke +
+contract tests are quick (seconds), but the **end-to-end flow is intentionally
+slow**: each stage hands work to **asynchronous Celery jobs** that only run on a
+periodic **beat schedule** (e.g. the Bridge funds-check / fund-block / disburse
+beats and the Example Bank batching / payment beats fire roughly every
+**10–30 seconds**). The suite cannot shortcut this — it **polls between every
+stage** until the job has actually run, so you will see repeated log lines like
+`poll 'funds blocked': satisfied on attempt 4` while it waits.
+
+A full `pytest` run (smoke + contract + e2e) typically completes in
+**~2–5 minutes** on a healthy cluster; it can take longer if the Celery beat
+cadence is slower or the workers are busy. If a stage never completes it polls
+until its timeout (`e2e_pipeline_timeout_seconds` / `e2e_recon_timeout_seconds`)
+and then fails with the exact stage that stalled — see
+[What happens if a run fails](#what-happens-if-a-run-fails).
+{% endhint %}
 
 ## Teardown (manual fallback)
 
