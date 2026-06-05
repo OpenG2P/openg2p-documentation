@@ -122,8 +122,9 @@ env wins over the file). The most important values:
 
 | Value | Meaning |
 | --- | --- |
-| `namespace` | Environment segment; all default hostnames derive from it. |
-| `*_base_url` | Override individual service URLs if non-standard. |
+| `namespace` | Environment segment; the Bridge / Bene-Portal / Example-Bank hostnames derive from it. |
+| `bridge_base_url` / `bene_portal_base_url` / `example_bank_base_url` | Override individual service URLs if non-standard. |
+| `spar_mapper_base_url` | **Required for the e2e** and **not** derived — SPAR hostnames vary. The suite runs off-cluster, so this is SPAR's **public** ingress (e.g. `https://spar.<ns>.openg2p.org/api/mapper/mapper`), not the in-cluster service name the Bridge itself uses. |
 | `verify_tls` | `false` for self-signed dev certs. |
 | `treasury_account_number` / `treasury_currency` | Must match the chart's `sponsorBankConfigurations`. |
 | `beneficiary_bank_code` | Use the Example Bank's simulator code for a deterministic happy path. |
@@ -174,3 +175,71 @@ reports by the `TEST_%` filter.
 * Pipeline / reconciliation timeouts (`e2e_pipeline_timeout_seconds`,
   `e2e_recon_timeout_seconds`) are generous defaults; tune them to your Celery beat
   frequencies after observing the first real run.
+
+## Running in-cluster (Rancher, no CLI needed)
+
+The suite is also packaged as a Docker image
+(`openg2p/openg2p-g2p-bridge-sanity`) and ships in the `openg2p-bridge` chart as
+an **optional component** (`sanity.enabled`, off by default).
+
+* **Trigger** — a **post-install / post-upgrade hook Job**. It runs **every time
+  the chart is installed or upgraded** — i.e. each time you click **Install**,
+  **Upgrade** (or **Redeploy**) in the Rancher UI. No command line required. To
+  re-run on demand, just **Upgrade**/Redeploy the release again.
+
+* **Non-failing by default** — `sanity.failOnError=false` means a failing sanity
+  run **never fails the deploy**; you read the report for pass/fail. Set
+  `failOnError=true` only if you want a failed run to fail the install/upgrade
+  (e.g. CI gating).
+
+* **Scope** — the run executes **smoke + contract only** (creates no data), safe
+  in any environment. Set `sanity.runE2e=true` to include the data-creating
+  end-to-end flow (**test environments only**).
+
+* **Config** — built entirely from the release's own values (component hostnames
+  + their `openapiRootPath`, treasury account, SPAR strategy id). The SPAR mapper
+  URL has no chart variable (separate deployment), so set
+  `sanity.sparMapperBaseUrl` per environment. All of these are surfaced in the
+  Rancher form under the **Sanity Suite** group.
+
+* **Reports** — written to a results **PVC**; a small **nginx viewer**
+  (`sanity.viewer.enabled`) serves them at
+  `https://<release>-sanity.<namespace>.<domain>/` (browse runs → open
+  `report.html`). The viewer hostname derives from the **release name**, so two
+  releases in one namespace don't collide. JUnit + a summary are also in the Job
+  pod logs (viewable in Rancher).
+
+Enable it in the Rancher form (Sanity Suite group) or via values:
+
+```yaml
+sanity:
+  enabled: true
+  runE2e: false          # true only in non-prod test environments
+  failOnError: false     # keep false so a sanity failure never breaks the deploy
+  sparMapperBaseUrl: "https://spar.<ns>.openg2p.org/api/mapper/mapper"
+  viewer:
+    enabled: true        # requires ReadWriteMany storage for the results PVC
+```
+
+{% hint style="warning" %}
+The results PVC is shared by the run Job (write) and the nginx viewer (read), so
+with the viewer enabled it needs a **ReadWriteMany** storage class. If RWX is
+unavailable, set `sanity.viewer.enabled=false` and read results from the Job
+pod's logs in Rancher.
+{% endhint %}
+
+### From Rancher (no CLI)
+
+1. In the install/upgrade form → **Sanity Suite** group → **Enable Sanity Suite**; set **SPAR Mapper Base URL**.
+2. Click **Install** / **Upgrade** — the run starts automatically.
+3. **Re-run any time:** **Upgrade** (or **Redeploy**) the release again.
+
+### Viewing reports
+
+| Want | Where |
+| --- | --- |
+| Full HTML report + history of all runs | The **viewer** at `https://<release>-sanity.<namespace>.<domain>/` → click a run folder → `report.html` |
+| Quick pass/fail of the last run | **Rancher → Workloads → Pods → `<release>-sanity-…` → View Logs** |
+| Machine-readable (CI) | `junit.xml`, alongside each run's `report.html` on the PVC |
+
+The Job pod persists after it finishes (replaced on the next install/upgrade), so its logs stay viewable; the viewer keeps one folder per run on the PVC.

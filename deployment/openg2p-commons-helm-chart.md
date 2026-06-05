@@ -18,6 +18,10 @@ The commons deployment is split into **two Helm charts**:
 1. **`openg2p-commons-base`** - Infrastructure layer (installed first)
 2. **`openg2p-commons-services`** - Application services layer (depends on base)
 
+{% hint style="warning" %}
+**Release names are deliberately fixed:** `openg2p-commons-base` must be installed as `commons` and `openg2p-commons-services` as `commons-services`. Cross-chart references (PostgreSQL host, Keycloak admin secret, IAM internal service URL, etc.) hardcode these names. Rancher's `catalog.cattle.io/release-name` annotation pre-fills and locks the field; the CLI install scripts reject any other name.
+{% endhint %}
+
 ### openg2p-commons-base
 
 Installs all infrastructure components:
