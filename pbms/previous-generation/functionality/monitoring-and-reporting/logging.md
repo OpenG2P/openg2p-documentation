@@ -18,11 +18,11 @@ Each module outputs system logs for different levels:
 
 * INFO, ERROR, DEBUG, WARNING
 
-Logs from all modules are channelized and indexed for viewing on dashboards and triggering alerts.  Refer to [Logging](../../../../monitoring-and-reporting/logging.md) for further details.
+Logs from all modules are channelized and indexed for viewing on dashboards and triggering alerts. Refer to [Logging](../../../../platform/platform-services/_archive/logging.md) for further details.
 
 ## Audit logs
 
-For Odoo modules  [Odoo's Audit Log](https://github.com/OCA/server-tools/tree/16.0/auditlog) package is used.
+For Odoo modules [Odoo's Audit Log](https://github.com/OCA/server-tools/tree/16.0/auditlog) package is used.
 
 For FastAPI modules, audit logs are implemented using [MOSIP's Auditmanager Service](https://github.com/mosip/audit-manager/tree/release-1.2.0).
 

@@ -4,7 +4,7 @@ description: Deployment of Logging infrastructure
 
 # Fluentd & OpenSearch
 
-[Fluentd](https://www.fluentd.org/) and [OpenSearch](https://opensearch.org/) are installed as part of the [Logging](../../../../../../../monitoring-and-reporting/logging.md) infrastructure. This infrastructure cuts across all modules installed on Kubernetes and hence part of the base infrastructure. Logs from all dockers are parsed and channelised into OpenSearch for searching and viewing.
+[Fluentd](https://www.fluentd.org/) and [OpenSearch](https://opensearch.org/) are installed as part of the [Logging](../../../../../../../platform/platform-services/_archive/logging.md) infrastructure. This infrastructure cuts across all modules installed on Kubernetes and hence part of the base infrastructure. Logs from all dockers are parsed and channelised into OpenSearch for searching and viewing.
 
 ## Fluentd installation
 

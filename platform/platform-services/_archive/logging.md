@@ -14,8 +14,8 @@ This is a simple method where the Python logging module is used to write system 
 
 Several dashboards can be created using [OpenSearch Dashboards](https://opensearch.org/docs/latest/dashboards/). Some default dashboards are provided by OpenG2P and may be customised.
 
-<figure><img src="../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/opensearch-log-dashboard.png" alt=""><figcaption></figcaption></figure>
 
 ## Installation
 
-Refer to [Deployment->Fluentd & Opensearch](../operations/deployment/_archive/scaling/base-infrastructure/openg2p-cluster/fluentd-and-opensearch/).
+Refer to [Deployment->Fluentd & Opensearch](../../../operations/deployment/_archive/scaling/base-infrastructure/openg2p-cluster/fluentd-and-opensearch/).

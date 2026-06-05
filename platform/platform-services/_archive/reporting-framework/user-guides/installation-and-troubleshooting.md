@@ -2,7 +2,7 @@
 
 ## Installation
 
-Reporting framework is installed as part of the modules' installation via the Helm chart that installs the respective module.  Note that during installation you need to specify the GitHub Repository URL and branch and directory that contains the Debezium and OpenSearch connectors. For example:
+Reporting framework is installed as part of the modules' installation via the Helm chart that installs the respective module. Note that during installation you need to specify the GitHub Repository URL and branch and directory that contains the Debezium and OpenSearch connectors. For example:
 
 [https://github.com/OpenG2P/openg2p-reporting/tree/develop/scripts/social-registry](https://github.com/OpenG2P/openg2p-reporting/tree/develop/scripts/social-registry)
 
@@ -10,15 +10,15 @@ Follow this guide to [creating/updating connectors](connector-creation-guide.md)
 
 #### Assigning roles to users
 
-Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server\_admin/#con-client-roles\_server\_administration\_guide) for the following components and assign them to users:
+Create[ Keycloak client roles](https://www.keycloak.org/docs/latest/server_admin/#con-client-roles_server_administration_guide) for the following components and assign them to users:
 
-<table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for <a href="../">Reporting</a> </td><td><code>admin</code></td></tr><tr><td>Kafka UI for <a href="../">Reporting</a></td><td><code>Admin</code></td></tr></tbody></table>
+<table><thead><tr><th width="336">Component</th><th>Role name</th></tr></thead><tbody><tr><td>OpenSearch Dashboards for <a href="../">Reporting</a></td><td><code>admin</code></td></tr><tr><td>Kafka UI for <a href="../">Reporting</a></td><td><code>Admin</code></td></tr></tbody></table>
 
 ## Post-installation check
 
-To ensure that all Kafka connectors are working login into Kafka UI (domain name is set during installation) and check the connectors' status. &#x20;
+To ensure that all Kafka connectors are working login into Kafka UI (domain name is set during installation) and check the connectors' status.
 
-<figure><img src="../../../.gitbook/assets/kafka-ui-kafka-connect.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../../.gitbook/assets/kafka-ui-kafka-connect.png" alt=""><figcaption></figcaption></figure>
 
 ## Update Connectors
 
