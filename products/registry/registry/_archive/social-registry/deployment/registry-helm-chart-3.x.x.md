@@ -2,7 +2,7 @@
 
 The guide here can be used to understand why[ Registry Helm chart](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry) 3.x has been designed the way it is. There are also several other pointers to developing Helm chart. The source of the chart is available [here](https://github.com/OpenG2P/openg2p-social-registry-deployment/tree/3.0/charts/openg2p-social-registry). Refer to packaing concepts.
 
-Several modules that were installed in 2.x have been moved to ["OpenG2P Commons"](../../../../../../deployment/concepts/openg2p-commons-helm-chart.md). Only the ones specific to Registry have been retained in this chart.
+Several modules that were installed in 2.x have been moved to ["OpenG2P Commons"](../../../../../../deployment/openg2p-commons-helm-chart.md). Only the ones specific to Registry have been retained in this chart.
 
 ## Context
 
@@ -20,7 +20,7 @@ The depencies are listed in `Chart.yaml` file of the Helm Chart.
 
 ### External database
 
-In the current deployment architecture single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](../../../../../../deployment/concepts/openg2p-commons-helm-chart.md)). This implies that the same PostgreSQL server will house databases from all the modules in that environment, including multiple instances of Registry (if any). In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
+In the current deployment architecture single instance of PostgreSQL is installed per environment (refer to [OpenG2P Commons](../../../../../../deployment/openg2p-commons-helm-chart.md)). This implies that the same PostgreSQL server will house databases from all the modules in that environment, including multiple instances of Registry (if any). In [values.yaml ](https://github.com/OpenG2P/openg2p-social-registry-deployment/blob/3.0/charts/openg2p-social-registry/values.yaml)default database has been disabled and external database enabled:
 
 `postgresql:`\
 `enabled: false`

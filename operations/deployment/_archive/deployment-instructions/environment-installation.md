@@ -1,6 +1,6 @@
 # Environment Installation
 
-The instructions here pertain to the deployment of [common components](../../../../deployment/concepts/openg2p-commons-helm-chart.md) for an environment on the Kubernetes cluster. All components are installed in the same namespace using two Helm charts: **openg2p-commons-base** (infrastructure) and **openg2p-commons-services** (applications).
+The instructions here pertain to the deployment of [common components](../../../../deployment/openg2p-commons-helm-chart.md) for an environment on the Kubernetes cluster. All components are installed in the same namespace using two Helm charts: **openg2p-commons-base** (infrastructure) and **openg2p-commons-services** (applications).
 
 ## Prerequisites
 
