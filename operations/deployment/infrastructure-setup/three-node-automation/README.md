@@ -12,8 +12,10 @@ The three-node automation provisions a complete production OpenG2P infrastructur
 <figure><img src="../../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption><p>Three-node architecture — Reverse Proxy, Compute (Kubernetes), and Storage</p></figcaption></figure>
 
 {% hint style="info" %}
-**Production deployment flow:** [1. Procurement](../../prerequisites-procurement.md) → **2. Infrastructure** (this page) → [3. Environment](../../environment-setup-multi-node.md)
+**Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  [2. Provisioning](../provisioning.md)  →  **3. Infrastructure** (this page)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
+
+**Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher, Keycloak admin SSO, the Wireguard endpoint, Nginx with TLS — is up and admins can log in. **Next** is [Stage 4 — Environment](../../environment-setup-multi-node.md), which installs the OpenG2P commons (PostgreSQL, Kafka, MinIO, eSignet, Superset, etc.) into a namespace.
 
 {% hint style="success" %}
 **Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md)) and the prerequisites you must have in place first.

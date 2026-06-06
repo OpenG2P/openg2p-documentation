@@ -9,7 +9,7 @@ description: >-
 This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page. Conceptual background lives in [OpenG2P Deployment Architecture](../../deployment/openg2p-deployment-model.md) and [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
 
 {% hint style="info" %}
-**Production deployment flow:** **1. Procurement** (this page) → [2. Infrastructure](infrastructure-setup/three-node-automation/) → [3. Environment](environment-setup-multi-node.md)
+**Production deployment flow:**  **1. Procurement** (this page)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/three-node-automation/)  →  [4. Environment](environment-setup-multi-node.md)  →  [5. Modules](environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
 {% hint style="warning" %}

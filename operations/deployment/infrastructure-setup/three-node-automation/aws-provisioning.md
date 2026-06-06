@@ -11,6 +11,10 @@ The bundled AWS provisioning is a separate, optional step that creates the three
 
 Use it if you don't already have VMs. If you have your own VMs (other clouds, on-prem, manual EC2), skip this page and go straight to [Step 1 of the infrastructure automation](README.md#step-1-clone-and-configure).
 
+{% hint style="info" %}
+**Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  **2. Provisioning** ([overview](../provisioning.md) · AWS path = this page)  →  [3. Infrastructure](README.md)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
+{% endhint %}
+
 ## Prerequisites
 
 |                     |                                                                                                                                                                                                                                                                                                                                                                                                            |

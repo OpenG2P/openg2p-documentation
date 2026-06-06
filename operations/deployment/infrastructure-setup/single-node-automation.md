@@ -9,6 +9,10 @@ The entire deployment process for a single-node setup has been automated and ava
 <figure><img src="../../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption><p>Single-node architecture — all services on one VM</p></figcaption></figure>
 
 {% hint style="info" %}
+**No staged flow here.** Sandbox collapses what Production splits into five stages — procurement, provisioning, infrastructure, environment, and modules — into a single VM with two scripts. The [staged Production rollout](README.md#the-five-stages) only applies when deploying across role-specialised nodes for production.
+{% endhint %}
+
+{% hint style="info" %}
 For adding environments to an existing multi-node infrastructure, see [Environment Setup for Multi-Node](../environment-setup-multi-node.md).
 {% endhint %}
 

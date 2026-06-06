@@ -7,8 +7,10 @@ description: Setting up OpenG2P environments on an existing multi-node infrastru
 This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes.&#x20;
 
 {% hint style="info" %}
-**Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Infrastructure](infrastructure-setup/three-node-automation/)  →  **3. Environment** (this page)
+**Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/three-node-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
 {% endhint %}
+
+**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher, Keycloak admin SSO, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (in-cluster PostgreSQL/Kafka/MinIO/Redis + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
 
 {% hint style="info" %}
 Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
@@ -327,6 +329,17 @@ The script performs 5 steps automatically:
 {% hint style="info" %}
 Takes approximately 15-20 minutes. The script is idempotent — it checks for existing resources before creating them.
 {% endhint %}
+
+## Next: install your OpenG2P modules
+
+At this point you have a working environment with `commons-base` + `commons-services` installed — the shared infrastructure (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) plus baseline cross-cutting services (eSignet, Superset, ODK). What you **don't** yet have is the OpenG2P product modules a specific deployment actually delivers (registry, payments, beneficiary onboarding, etc.). Each product has its own Helm chart and deployment guide — install whichever modules your rollout requires:
+
+* [**Registry**](../../products/registry/registry/deployment/) — Social / Farmer / generic registry (Gen2). Helm Chart 4.x.
+* [**PBMS**](../../pbms/deployment/) — Payment & Beneficiary Management System.
+* [**SPAR**](../../spar/deployment/) — Single Payee Account Repository.
+* [**G2P Bridge**](../../g2p-bridge/deployment/) — government-to-payer bridge (treasury / bank disbursement integration).
+
+Each product page documents its Helm-chart version, deployment commands, Keycloak client setup, and domain-name requirements. Install only the modules required for your use case — none of them are mandatory infrastructure dependencies of the others.
 
 ## Configuration Reference
 

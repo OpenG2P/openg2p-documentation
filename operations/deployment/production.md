@@ -6,6 +6,10 @@ description: Production Deployment Guide
 
 The guide here provides some useful hints for production and pilot deployments. This guide is NOT intended to be a comprehensive production deployment handbook. Since production environments can vary widely, OpenG2P implementers—such as system integrators—have flexibility in choosing production configurations, orchestration platforms, and components. We also encourage our partners to contribute updates to this guide based on their real-world experiences and insights.
 
+{% hint style="info" %}
+**Ongoing operational concern** — not a one-time deployment stage. Apply these recommendations incrementally, before and after go-live. For the staged Production rollout, see the [Production overview](infrastructure-setup/).
+{% endhint %}
+
 {% hint style="warning" %}
 These best practices may demand **additional hardware and other resources**. Please review all the recommendations carefully and assess your production deployment requirements in addition to those specified under [Prerequisites & Procurement](prerequisites-procurement.md#compute-the-three-vms).
 {% endhint %}

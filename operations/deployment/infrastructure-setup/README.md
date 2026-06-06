@@ -1,5 +1,5 @@
 ---
-description: Production OpenG2P deployment — overview and sequence.
+description: Production OpenG2P deployment — overview, sequence, and operational follow-on.
 ---
 
 # Production
@@ -13,14 +13,37 @@ It comes in two configurations, sharing the **same architecture** — the differ
 
 See [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md) for the full conceptual picture, and [Deployment](../../../deployment/README.md) for choosing between sandbox and production.
 
-## Production setup sequence
+## The five stages
 
-Follow these in order (applies to both Minimum and High-Availability — HA just adds more nodes of the same shape):
+A production rollout happens in five stages. Stage 1 (Procurement) can — and should — start in parallel with Stage 2 (Provisioning), since the cert and DNS items in Stage 1 typically take **2–4 weeks** to deliver. Stages 3, 4, and 5 are strictly serial.
 
-1. **[Prerequisites & Procurement](../prerequisites-procurement.md)** — compute, DNS records, TLS certificate, server access, firewall. Start the long-lead items (compute + certificate) first.
-2. **[Infrastructure Automation](three-node-automation/)** — provision (optional) and install the cluster: RKE2, Istio, Rancher, Keycloak, monitoring, logging.
-3. **[Environment Setup](../environment-setup-multi-node.md)** — install the OpenG2P modules into the production environment and open the public (citizen) channel.
-4. **[Backups](../backups/)** — configure backups before go-live.
-5. **[Production Best Practices](../production.md)** — hardening, HA, and operational recommendations.
+```mermaid
+flowchart LR
+    S1["1. Procurement<br/>compute specs · DNS · TLS cert<br/>server access · firewall plan<br/><i>2-4 weeks lead time</i>"]
+    S2["2. Provisioning<br/>bring up the 3 VMs<br/>on-prem or AWS"]
+    S3["3. Infrastructure<br/>RKE2, Istio, Rancher,<br/>Keycloak, WG, Nginx, NFS,<br/>host PostgreSQL"]
+    S4["4. Environment<br/>namespace, Istio Gateway,<br/>commons-base + commons-services"]
+    S5["5. Modules<br/>per-product Helm charts<br/>(Registry, PBMS, SPAR, …)"]
 
-The sandbox (single-node) path is documented separately under [Sandbox — Single-Node](single-node-automation.md).
+    S1 -. "in parallel" .-> S2
+    S2 --> S3 --> S4 --> S5
+```
+
+| Stage | Page | What you produce |
+| ----- | ---- | ---------------- |
+| **1. Procurement** | [Prerequisites & Procurement](../prerequisites-procurement.md) | A confirmed shopping list — compute specs, DNS records to create, the TLS certificate, server-access plan, firewall rules. Requests have gone to your network / cert / IT team. |
+| **2. Provisioning** | [Provisioning](provisioning.md) (with [AWS Provisioning](three-node-automation/aws-provisioning.md) sub-page for the AWS path) | Three Ubuntu 24.04 VMs running, on one private subnet, SSH-reachable from the deployer's workstation. |
+| **3. Infrastructure** | [Infrastructure Automation](three-node-automation/) | The cluster platform: RKE2, Istio, Rancher, Keycloak (admin SSO), monitoring, logging, Wireguard, Nginx with customer-provided TLS, NFS server + host PostgreSQL. Admin tools reachable over the VPN. |
+| **4. Environment** | [Environment Setup](../environment-setup-multi-node.md) | A working environment namespace with the Rancher Project, Istio Gateway, and `openg2p-commons-base` + `openg2p-commons-services` (PostgreSQL, Kafka, MinIO, Redis, Keycloak realm, Superset, eSignet, ODK, etc.) installed. Public 80/443 opened. |
+| **5. Modules** | Per-product deployment pages — [Registry](../../../products/registry/registry/deployment/), [PBMS](../../../pbms/deployment/), [SPAR](../../../spar/deployment/), [G2P Bridge](../../../g2p-bridge/deployment/) | Your chosen OpenG2P product modules installed into the environment via their own Helm charts. |
+
+## Ongoing operational concerns
+
+These are not deployment stages — they are continuous responsibilities that begin **before go-live** and continue throughout the system's lifetime.
+
+* [**Backups**](../backups/) — configure pgBackRest, etcd snapshots, rancher-backup, and restic for NFS/configs. Set up the backup node, schedule the drills. Must be in place before go-live.
+* [**Production Best Practices**](../production.md) — hardening, HA recommendations, air-gap considerations, RBAC, image-pull policy, Nginx tuning. Apply incrementally; consult per deployment context.
+
+## Sandbox is different
+
+For evaluation, demos, dev/QA, or small pilots, use the [Sandbox — Single-Node](single-node-automation.md) path instead. Sandbox collapses all five stages into a single VM and a pair of scripts — no separate procurement, provisioning, infrastructure, environment, or modules phases. The staged flow described above applies only to Production.

@@ -10,6 +10,10 @@ description: >-
 This page is the entry point for the OpenG2P backup automation that lives at `automation/backups/openg2p-backup.sh` in the deployment repo. It complements the [Three-Node Automation](../infrastructure-setup/three-node-automation/): the 3-node script gets the platform up, the backup automation keeps it recoverable.
 
 {% hint style="info" %}
+**Ongoing operational concern** — not a one-time deployment stage. Configure backups **before go-live** and keep them running throughout the system's lifetime. For the staged Production rollout, see the [Production overview](../infrastructure-setup/).
+{% endhint %}
+
+{% hint style="info" %}
 The whole stack is opt-in. You can deploy the 3-node platform without backups, then add backups later by running aws-provision again with `backup_node.enabled: true` and running `openg2p-backup.sh install`.
 {% endhint %}
 
