@@ -6,12 +6,14 @@ description: Production OpenG2P deployment — overview, sequence, and operation
 
 The production deployment runs OpenG2P across role-specialised VMs — **Reverse Proxy**, **Compute** (Kubernetes), and **Storage** (host PostgreSQL + NFS) — with admin tools behind a Wireguard VPN and citizen-facing services on the public channel.
 
+<figure><img src="../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption></figcaption></figure>
+
 It comes in two configurations, sharing the **same architecture** — the difference is the number of nodes:
 
 * **Production — Minimum** (three nodes; one RP, one Compute, one Storage) — pilots and small-scale production where some downtime is acceptable. This is what the automation provisions today.
 * **Production — High-Availability** (more nodes; HA Kubernetes control plane, redundant RPs behind a load balancer, PostgreSQL primary/replica) — large-scale or near-zero-downtime deployments. A supported scaling-up of the same architecture; manual/extension work today, not yet automated.
 
-See [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md) for the full conceptual picture, and [Deployment](../../../deployment/README.md) for choosing between sandbox and production.
+See [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md) for the full conceptual picture, and [Deployment](../../../deployment/) for choosing between sandbox and production.
 
 ## The five stages
 
@@ -29,13 +31,13 @@ flowchart LR
     S2 --> S3 --> S4 --> S5
 ```
 
-| Stage | Page | What you produce |
-| ----- | ---- | ---------------- |
-| **1. Procurement** | [Prerequisites & Procurement](../prerequisites-procurement.md) | A confirmed shopping list — compute specs, DNS records to create, the TLS certificate, server-access plan, firewall rules. Requests have gone to your network / cert / IT team. |
-| **2. Provisioning** | [Provisioning](provisioning.md) (with [AWS Provisioning](three-node-automation/aws-provisioning.md) sub-page for the AWS path) | Three Ubuntu 24.04 VMs running, on one private subnet, SSH-reachable from the deployer's workstation. |
-| **3. Infrastructure** | [Infrastructure Automation](three-node-automation/) | The cluster platform: RKE2, Istio, Rancher, Keycloak (admin SSO), monitoring, logging, Wireguard, Nginx with customer-provided TLS, NFS server + host PostgreSQL. Admin tools reachable over the VPN. |
-| **4. Environment** | [Environment Setup](../environment-setup-multi-node.md) | A working environment namespace with the Rancher Project, Istio Gateway, and `openg2p-commons-base` + `openg2p-commons-services` (PostgreSQL, Kafka, MinIO, Redis, Keycloak realm, Superset, eSignet, ODK, etc.) installed. Public 80/443 opened. |
-| **5. Modules** | Per-product deployment pages — [Registry](../../../products/registry/registry/deployment/), [PBMS](../../../pbms/deployment/), [SPAR](../../../spar/deployment/), [G2P Bridge](../../../g2p-bridge/deployment/) | Your chosen OpenG2P product modules installed into the environment via their own Helm charts. |
+| Stage                 | Page                                                                                                                                                                                                            | What you produce                                                                                                                                                                                                                                  |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Procurement**    | [Prerequisites & Procurement](../prerequisites-procurement.md)                                                                                                                                                  | A confirmed shopping list — compute specs, DNS records to create, the TLS certificate, server-access plan, firewall rules. Requests have gone to your network / cert / IT team.                                                                   |
+| **2. Provisioning**   | [Provisioning](provisioning.md) (with [AWS Provisioning](three-node-automation/aws-provisioning.md) sub-page for the AWS path)                                                                                  | Three Ubuntu 24.04 VMs running, on one private subnet, SSH-reachable from the deployer's workstation.                                                                                                                                             |
+| **3. Infrastructure** | [Infrastructure Automation](three-node-automation/)                                                                                                                                                             | The cluster platform: RKE2, Istio, Rancher, Keycloak (admin SSO), monitoring, logging, Wireguard, Nginx with customer-provided TLS, NFS server + host PostgreSQL. Admin tools reachable over the VPN.                                             |
+| **4. Environment**    | [Environment Setup](../environment-setup-multi-node.md)                                                                                                                                                         | A working environment namespace with the Rancher Project, Istio Gateway, and `openg2p-commons-base` + `openg2p-commons-services` (PostgreSQL, Kafka, MinIO, Redis, Keycloak realm, Superset, eSignet, ODK, etc.) installed. Public 80/443 opened. |
+| **5. Modules**        | Per-product deployment pages — [Registry](../../../products/registry/registry/deployment/), [PBMS](../../../pbms/deployment/), [SPAR](../../../spar/deployment/), [G2P Bridge](../../../g2p-bridge/deployment/) | Your chosen OpenG2P product modules installed into the environment via their own Helm charts.                                                                                                                                                     |
 
 ## Ongoing operational concerns
 
