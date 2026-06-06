@@ -31,12 +31,13 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 
 **What gets installed and configured:**
 
-* RKE2 single-control-plane Kubernetes, Istio, Rancher (cluster manager), Keycloak (admin SSO), Prometheus + Grafana, Fluentd + OpenSearch — all on the Compute node via Helmfile.
+* RKE2 single-control-plane Kubernetes, Istio, Rancher (cluster manager), Keycloak (admin SSO), Prometheus + Grafana, OpenTelemetry + Grafana Loki (cluster-wide logging) — all on the Compute node via Helmfile.
 * Rancher↔Keycloak SAML wired so admins log in once via Keycloak.
 * Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
-* NFS server + host PostgreSQL 16 on the Storage node (PG sits idle until environment automation creates per-env databases).
+* NFS server + host PostgreSQL 16 on the Storage node.
+* **One OpenG2P environment** (default name `prod`) — namespace, Rancher Project, Istio Gateway, the OpenG2P Helm repo registered in Rancher, and the `commons-base` + `commons-services` charts wired to the Storage node's host PostgreSQL. On by default; toggle with `install_environment`. See [The environment stage](#the-environment-stage).
 
-**What it does NOT do (yet):** environment automation (per-env namespaces / Postgres / eSignet / Superset / etc.), citizen-facing public hostnames and certs (those come with env automation), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](#out-of-scope).
+**What it does NOT do (yet):** product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after the environment is up), citizen-facing public hostnames and certs (the environment uses the same wildcard cert and admin channel; opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](#out-of-scope).
 
 **Two things to know before running:**
 
@@ -136,6 +137,23 @@ private_subnet:     ""
 # Leave blank to skip the push (laptop uses its own resolver or /etc/hosts).
 wg_peer_dns: ""
 # ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr
+
+# [USER] Environment stage — installs one OpenG2P environment after infra.
+install_environment: true           # master switch (false = stop after infra)
+environment:
+  name:            "prod"           # namespace + Rancher Project name
+  base_domain:     ""               # blank → inherits 'public_domain'
+  install_commons: true             # false = scaffolding only, no Helm install
+  commons_version: "0.0.0-develop"  # commons-base + commons-services chart version
+  admin_email:     ""               # optional staff-realm admin (blank = chart default)
+  # Per-service hostname overrides (blank → <service>.<base_domain>):
+  kafka_hostname:            ""     # commons-base: Kafka UI
+  minio_hostname:            ""     # commons-base: MinIO console
+  superset_hostname:         ""     # commons-services: Superset
+  odk_hostname:              ""     # commons-services: ODK Central
+  iam_hostname:              ""     # commons-services: IAM service
+  staff_portal_hostname:     ""     # commons-services: Staff Portal UI
+  staff_portal_api_hostname: ""     # commons-services: Staff Portal API
 ```
 
 ### Step 2 — probe and preflight
@@ -168,7 +186,7 @@ Clear the stale state **before** the first install on fresh machines:
 From v1.x the orchestrator also **announces** any pre-existing markers at the start of a run (which phases will be skipped, with timestamps, plus the `--reset-laptop` hint), so an accidental skip is never silent. If you see that banner and the machines are fresh, run `--reset-laptop` and re-run.
 {% endhint %}
 
-Total runtime: 25–40 minutes. For the exact phase sequence (what runs where, in what order), see [Reference → Phase sequence](#phase-sequence).
+Total runtime: 25–40 minutes for infrastructure. The run ends with the [environment stage](#the-environment-stage); if your laptop isn't on the Wireguard VPN yet it defers that stage with instructions (see [Step 5](#step-5-install-the-environment)). For the exact phase sequence (what runs where, in what order), see [Reference → Phase sequence](#phase-sequence).
 
 ### Common command shapes
 
@@ -177,6 +195,9 @@ Total runtime: 25–40 minutes. For the exact phase sequence (what runs where, i
 ./openg2p-prod.sh --config prod-config.yaml --role storage
 ./openg2p-prod.sh --config prod-config.yaml --role compute
 ./openg2p-prod.sh --config prod-config.yaml --role rp
+
+# Install (or re-run) just the environment stage — laptop-side, needs Wireguard up
+./openg2p-prod.sh --config prod-config.yaml --role environment
 
 # Re-run a single phase on a single role
 ./openg2p-prod.sh --config prod-config.yaml --role compute --phase 2
@@ -305,6 +326,49 @@ kubectl get nodes
 
 Requires Wireguard active — the K8s API listens on the compute node's private IP, only reachable through the VPN.
 
+### Step 5 — install the environment
+
+The install also creates one OpenG2P **environment** (see [The environment stage](#the-environment-stage) for what that means). Because the environment stage talks to the Kubernetes API on the **private channel**, it needs the Wireguard VPN — which you just connected in Step 4.1. So on the first unattended `./openg2p-prod.sh` run, the orchestrator finishes the infrastructure and then **defers** the environment stage with a message like:
+
+```
+[WARN] Environment stage deferred — finish infra, connect Wireguard, then run:
+[WARN]   ./openg2p-prod.sh --role environment --config prod-config.yaml
+```
+
+Once Wireguard is up, run it:
+
+```bash
+./openg2p-prod.sh --role environment --config prod-config.yaml
+```
+
+This is idempotent — re-run it any time something needs fixing. It self-skips the parts already done.
+
+{% hint style="info" %}
+If your laptop is **already** on the VPN when you run the initial install, the environment stage runs automatically at the end — no separate Step 5 needed.
+{% endhint %}
+
+## The environment stage
+
+The infrastructure install ends by standing up one OpenG2P **environment** on the cluster. An environment is a namespace plus its shared services; this is the layer that real OpenG2P modules later install into. It runs **from your laptop** (not on a node) and targets the cluster over the VPN.
+
+{% hint style="info" %}
+This section documents only how the environment stage is **wired into the production automation**. For the full environment model, the per-service breakdown, multi-environment setups, and standalone use, see [Environment Setup](../../environment-setup-multi-node.md).
+{% endhint %}
+
+**What it does**, in two phases:
+
+1. **Scaffolding** — registers the OpenG2P Helm repo in Rancher (a CatalogV2 `ClusterRepo`), creates the namespace and Rancher Project, the Istio Gateway for `*.<base_domain>`, and the external-PostgreSQL secret (auto-read from the Storage node).
+2. **Commons install** — `helm upgrade --install` of **both** `openg2p-commons-base` (PostgreSQL wiring, Kafka, MinIO, Redis, SoftHSM, Keycloak) **and** `openg2p-commons-services` (Superset, ODK Central, eSignet, IAM, Staff Portal, etc.), wired to the Storage node's **host PostgreSQL** (not an in-cluster database).
+
+**Key points:**
+
+* **Same wildcard cert, same domain.** Service URLs are `<service>.<base_domain>` (e.g. `kafka.<domain>`, `minio.<domain>`, `superset.<domain>`, `odk.<domain>`, `staff-portal.<domain>`, `esignet.<domain>`). `base_domain` defaults to your `public_domain`, so the existing wildcard cert already covers them — no new certs.
+* **External PostgreSQL by default.** The chart's in-cluster Postgres is disabled (`postgresql.enabled=false`) for **both** commons-base and commons-services; they connect to host PostgreSQL on the Storage node. The superuser password is pulled from the Storage node automatically and placed in a namespace secret.
+* **Configurable** via the `environment:` block in `prod-config.yaml` (see Step 1): environment `name` (default `prod`), `commons_version` (default `0.0.0-develop`), whether to install commons at all (`install_commons`), and per-service hostname overrides — **commons-base**: Kafka UI, MinIO; **commons-services**: Superset, ODK Central, IAM, Staff Portal UI, Staff Portal API. eSignet derives from `base_domain` (no override key in the chart today).
+* **No OpenSearch in commons.** Cluster-wide logging is handled at the infra layer (OpenTelemetry + Grafana Loki); the commons charts no longer ship OpenSearch.
+* **Idempotent & re-runnable.** `./openg2p-prod.sh --role environment` is safe to repeat; add `--phase 1` or `--phase 2` to run just one phase, `--force` to reinstall.
+* **Skippable.** Set `install_environment: false` to stop after infrastructure, or `install_commons: false` to create only the namespace/project/gateway/secret + repo registration and install commons later through the Rancher UI.
+
 ## How to verify the basic setup is up
 
 After the orchestrator declares success, run these checks. Each is an explicit signal that one layer of the stack is healthy.
@@ -374,7 +438,7 @@ sudo -u postgres psql -c "SELECT version();"            # PG 16 banner
 sudo cat /etc/openg2p/secrets/postgres-superuser.env    # see PG superuser creds
 ```
 
-The PostgreSQL superuser password is auto-generated by storage phase 1 and saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (root-owned, mode `0600`). The file contains `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER` (always `postgres`), and `POSTGRES_PASSWORD`. The orchestrator's completion summary also prints these values directly. **No application uses this database yet** — it sits idle until environment automation creates per-environment databases on per-environment ports.
+The PostgreSQL superuser password is auto-generated by storage phase 1 and saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (root-owned, mode `0600`). The file contains `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER` (always `postgres`), and `POSTGRES_PASSWORD`. The orchestrator's completion summary also prints these values directly. The [environment stage](#the-environment-stage) reads this password automatically (over SSH) to wire commons-base to this host PostgreSQL — you don't copy it by hand.
 
 ## File structure
 
@@ -399,8 +463,13 @@ automation/production/
 └── roles/
     ├── reverse-proxy/{run.sh,phase1.sh,uninstall.sh}
     ├── compute/{run.sh,phase1.sh,phase2.sh,uninstall.sh}
-    └── storage/{run.sh,phase1.sh,uninstall.sh}
+    ├── storage/{run.sh,phase1.sh,uninstall.sh}
+    └── environment/{run.sh,phase1.sh,phase2.sh,uninstall.sh}   # laptop-side
 ```
+
+{% hint style="info" %}
+The environment role reuses `automation/environment/env-cluster.sh` under the hood for the commons install — the orchestrator generates a config for it from your `prod-config.yaml`. See [Environment Setup](../../environment-setup-multi-node.md) for that script's standalone use.
+{% endhint %}
 
 ## Troubleshooting
 
@@ -550,6 +619,10 @@ After uninstall the message "*To start fresh, run: ./openg2p-prod.sh …*" is pr
 The uninstall script is **destructive and idempotent** but it does NOT touch your `prod-config.yaml` or the certificate files on your laptop — those survive so a re-install just works.
 {% endhint %}
 
+{% hint style="info" %}
+**Tearing down just the environment** (commons workloads), without wiping the whole cluster? A full compute uninstall removes the cluster *and* everything in it, including the environment. To remove only the environment's Helm releases — leaving RKE2/Rancher/Istio intact — use the environment teardown documented on the [Environment Setup](../../environment-setup-multi-node.md#uninstallation) page. Either way, the environment's data in host PostgreSQL on the Storage node survives unless you pass `--purge-data`.
+{% endhint %}
+
 ### Options reference
 
 | Flag | Purpose |
@@ -578,7 +651,7 @@ Background detail — not needed to run the install. Useful when something goes 
 | Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                              |
 | Auth            | Keycloak (in-cluster)                       | SSO for Rancher only — embedded Postgres on NFS-backed PVC                      |
 | Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                            |
-| Logging         | Rancher logging 102.0.0                     | Fluentd + OpenSearch                                                            |
+| Logging         | OpenTelemetry + Grafana Loki                | Cluster-wide log pipeline (OTel agent → gateway → Loki, backed by dedicated MinIO); replaces Fluentd/OpenSearch |
 | Storage         | NFS-CSI driver v4.7.0                       | Default StorageClass `nfs-csi`, retain policy                                   |
 | VPN             | Wireguard (kernel + tools)                  | Native systemd service on the RP node                                           |
 | DNS             | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts` |
@@ -597,18 +670,20 @@ The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 | 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip` |
 | 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                                            |
 | 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                                            |
+| 6 | Laptop        | Environment scaffolding — Rancher Helm repo (ClusterRepo), namespace, Rancher Project, Istio Gateway, external-PG secret. Needs Wireguard up; **defers** if not (re-run via `--role environment`) |
+| 7 | Laptop        | Commons install — `commons-base` + `commons-services` wired to host PostgreSQL (skipped if `install_commons: false`)                                                          |
 
 ### Out of scope
 
 The following are deferred to follow-up automation, not gaps:
 
-* **Environment automation** — creating `prod`, `staging`, etc. namespaces with their own Postgres, Keycloak, eSignet, Superset, etc. The host PostgreSQL on the storage node sits idle until that lands.
-* **Citizen-facing public domains and certs** — admin tools (the hostnames in this automation) are private channel only. Public citizen-facing hostnames (`registry.<env>.<domain>`, `payments.<env>.<domain>`, etc.) come with environment automation, on the same RP. See [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md).
+* **Product modules** — Registry, PBMS, SPAR, G2P Bridge, etc. The environment stage installs the shared commons (`commons-base` + `commons-services`); product modules install on top, via their own Helm charts. See the per-product deployment pages.
+* **Citizen-facing public domains and the public channel** — this automation keeps admin + environment tools on the private (VPN) channel. Opening public `80/443` for citizen-facing hostnames is a separate step. See [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md).
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
 * **Backup node and backup automation** — out of scope for v1.
-* **Domain migration script** — single-node has one (`openg2p-migrate-domain.sh`); will be ported when environment automation lands.
+* **Domain migration script** — single-node has one (`openg2p-migrate-domain.sh`); not yet ported.
 
 ### The orchestrator's `.state/` directory
 

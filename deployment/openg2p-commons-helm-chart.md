@@ -6,7 +6,7 @@ The OpenG2P Commons Helm charts ([source code](https://github.com/OpenG2P/openg2
 
 | Chart                                          | Version                                                                         | Last Modified | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------- | ------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| openg2p-commons-base, openg2p-commons-services | 0.0.0                                                                           | 02-Jun-2026   |                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| openg2p-commons-base, openg2p-commons-services | 0.0.0                                                                           | 02-Jun-2026   | **OpenSearch removed from commons** — pod logging is now handled cluster-wide by OpenTelemetry + Grafana Loki at the infrastructure layer (no per-service Fluentd Flow/Output in the charts). External-PostgreSQL configuration matured. This is the line the production automation installs by default. |
 | openg2p-commons-base, openg2p-commons-services | [2.0.1](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.1)      | 08-May-2026   | Substantial additions - dashboards, external postgres configurations.                                                                                                                                                                                                                                                                                                                                                                         |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0](https://github.com/OpenG2P/openg2p-commons-deployment/tree/v2.0.0)      | 21-Apr-2026 | Stable version. Two charts (base + services). Per-environment Keycloak. NOT COMPATIBLE WITH 1.x VERSIONS.                                                                                                                                                                                                                                                                                                                                     |
 | openg2p-commons-base, openg2p-commons-services | [2.0.0-develop](https://github.com/OpenG2P/openg2p-commons-deployment/tree/2.0) | In progress | Default logs saved search added in OpenSearch (with ERROR filter toggle and pod-name substring search). Audit Manager service added to commons-services. Each chart now owns its own Keycloak clients (no cross-chart hostname duplication). Simplified DB names (e.g. `iam`, `audit_manager`, `master_data` — no release-name prefix). MinIO split into two VirtualServices (`minio.<domain>` for Console, `minio-api.<domain>` for S3 API). |
@@ -36,7 +36,6 @@ Installs all infrastructure components:
 | **Redis Auth**          | Cache with authentication (for eSignet)                             |
 | **Kafka**               | Message broker                                                      |
 | **Kafka UI**            | Kafka management dashboard                                          |
-| **OpenSearch**          | Search and analytics engine with dashboards                         |
 | **MinIO**               | Object storage                                                      |
 | **SoftHSM**             | Software HSM for key management                                     |
 | **Mail**                | SMTP relay server (optional)                                        |
@@ -78,8 +77,8 @@ Each environment gets its own Keycloak instance (installed as part of `openg2p-c
 The `keycloak-init` job creates:
 
 * **`master` realm** - with `openg2p-admin` login and admin themes
-* **`staff` realm** - with `staff-portal` login and admin themes, containing OIDC clients:
-  * `openg2p-superset`, `openg2p-opensearch`, `openg2p-kafka`, `openg2p-minio`, `openg2p-odk`, `staff-portal`
+* **`staff` realm** - with `staff-portal` login and admin themes, containing OIDC clients (each chart owns its own — base creates `openg2p-kafka`, `openg2p-minio`; services creates `openg2p-superset`, `openg2p-odk`, `staff-portal`):
+  * `openg2p-kafka`, `openg2p-minio`, `openg2p-superset`, `openg2p-odk`, `staff-portal`
 
 ### Keycloak Themes
 
@@ -125,31 +124,17 @@ The charts maintain two Keycloak URL paths:
 
 This separation ensures backend services work without external DNS, while browsers are correctly redirected to the public Keycloak URL.
 
-### Logging and Log Retention
+### Logging
 
-Pod logs from selected services are shipped to OpenSearch using the Fluent Operator. The **commons-services** chart creates a Flow resource that captures logs from configured containers (master-data, IAM, ODK, eSignet, keymanager, etc.) and routes them to the OpenSearch Output created by commons-base.
+The commons charts **do not handle logging**. Pod logs are collected cluster-wide at the **infrastructure layer** by the OpenTelemetry + Grafana Loki stack (an OTel agent DaemonSet tails every pod automatically and ships to Loki, queried via Grafana). The per-service Fluentd `Flow`/`Output` resources that earlier versions used to ship logs to OpenSearch have been removed — there is no app-level logging configuration in these charts anymore.
 
-Log retention is managed automatically via an OpenSearch **ISM (Index State Management) policy**. By default, logstash indexes older than 7 days are deleted. This is configurable:
-
-```bash
-# Set retention to 30 days
---set opensearch.ismPolicy.retentionDays=30
-
-# Disable automatic log retention
---set opensearch.ismPolicy.enabled=false
-```
-
-The ISM policy is applied by a Job that runs as part of the base chart installation. It auto-attaches to all new `logstash-*` indexes and also applies to any pre-existing indexes on upgrade.
-
-A **default logs saved search** is automatically imported into OpenSearch Dashboards on install and set as the landing page (via `defaultRoute`). It opens a Discover view with columns for timestamp, log level, kubernetes pod, and message, with 10-second auto-refresh enabled and a default time range of the last 1 hour. A pre-saved `level: ERROR` filter pill is shown at the top — it is **disabled by default** and can be **temporarily enabled or disabled with a single click** to toggle an ERROR-only view without touching the query bar. Typing a substring in the query bar (e.g., `odk`) filters to pods whose name contains that substring, thanks to an ngram-indexed subfield on `kubernetes.pod_name` applied via an OpenSearch index template. To disable automatic saved-search import:
-
-```bash
---set opensearch.savedSearch.enabled=false
-```
+{% hint style="info" %}
+This change retired the OpenSearch + OpenSearch Dashboards components and the Fluent Operator from commons. For the cluster-wide logging pipeline (OTel agent → gateway → Loki, with LogQL alert rules), see the [three-node infrastructure automation](../operations/deployment/infrastructure-setup/three-node-automation/).
+{% endhint %}
 
 ### Resource Limits (Sandbox vs Production)
 
-All components are configured with **sandbox-friendly resource limits** by default — designed for development and testing environments where Keycloak, OpenSearch, and Kafka see minimal load. This prevents components like Keycloak from consuming 3GB+ of RAM on idle clusters.
+All components are configured with **sandbox-friendly resource limits** by default — designed for development and testing environments where Keycloak and Kafka see minimal load. This prevents components like Keycloak from consuming 3GB+ of RAM on idle clusters.
 
 **Default sandbox limits:**
 
@@ -157,11 +142,9 @@ All components are configured with **sandbox-friendly resource limits** by defau
 | --------------------------- | ------------ | -------- | --------------------------------------------------------------- |
 | Keycloak                    | 1Gi          | 512m     | Increase to 2Gi / 1g for production                             |
 | PostgreSQL                  | 1Gi          | N/A      | Increase to 2-4Gi for production                                |
-| OpenSearch                  | 1Gi          | 512m     | Heap should be \~50% of limit; increase to 4-8Gi for production |
 | Kafka (controller + broker) | 1Gi each     | 512m     | Increase to 2Gi / 1g for production                             |
 | MinIO                       | 512Mi        | N/A      | Increase to 1-2Gi for heavy S3 usage                            |
 | Redis (x2)                  | 128Mi each   | N/A      | Sufficient for most workloads                                   |
-| OpenSearch Dashboards       | 512Mi        | N/A      | Sufficient for most workloads                                   |
 | Kafka UI                    | 512Mi        | 256m     | Sufficient for most workloads                                   |
 | SoftHSM                     | 128Mi        | N/A      | Sufficient                                                      |
 | Artifactory                 | 512Mi        | N/A      | Sufficient                                                      |
@@ -169,18 +152,16 @@ All components are configured with **sandbox-friendly resource limits** by defau
 To scale up for production, override the relevant values:
 
 ```bash
-# Example: scale Keycloak and OpenSearch for production
+# Example: scale Keycloak for production
 --set keycloak.resources.limits.memory=2Gi \
---set keycloak.extraEnvVars[2].value="-Xms512m -Xmx1g" \
---set opensearch.master.heapSize=2g \
---set opensearch.master.resources.limits.memory=4Gi
+--set keycloak.extraEnvVars[2].value="-Xms512m -Xmx1g"
 ```
 
 **How to detect resource constraints:**
 
 * **OOMKilled** restarts — check `kubectl get pods` for high restart counts
 * **CPU throttling** — check `kubectl top pods` for CPU at limit
-* **Application-specific** — OpenSearch `_cluster/health` turning `yellow`/`red`, Kafka consumer lag increasing, Keycloak login latency
+* **Application-specific** — Kafka consumer lag increasing, Keycloak login latency
 
 Enable Rancher Monitoring (Prometheus + Grafana) to get dashboards and alerts for memory/CPU pressure across all pods.
 
