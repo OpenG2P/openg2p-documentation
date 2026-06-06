@@ -16,6 +16,10 @@ This page assumes a **single production environment** and a DevOps reader. It li
 **Start procurement first — before touching any server.** The two long-lead items are **compute** (capacity approval + VM provisioning) and **TLS certificates** (issuance from a commercial or sovereign CA typically takes **2–4 weeks**). Request both at the very start so neither lands on the critical path.
 {% endhint %}
 
+{% hint style="info" %}
+**Operator's workstation** — while procurement is in flight, the operator running the install (you) should ensure your laptop or jump host is set up. See [Operator's workstation](infrastructure-setup/provisioning.md#operators-workstation) for supported OSes (Linux / macOS / WSL2) and the required tooling per stage.
+{% endhint %}
+
 ## On-prem or AWS?
 
 Both are supported. The requirements are identical **except** for the four points below — each is flagged inline where it applies.

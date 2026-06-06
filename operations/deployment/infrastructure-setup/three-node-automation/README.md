@@ -47,7 +47,7 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 
 All prerequisites — compute, DNS, TLS certificate, server access, firewall — are listed on the [**Prerequisites & Procurement**](../../prerequisites-procurement.md) page. Everything in that checklist must be in place before you run the install. Two install-time specifics not in the procurement page:
 
-* **Admin laptop tooling** — `bash` 4+, `ssh`, `rsync`, `openssl`. A Wireguard client too, but only needed after the install completes.
+* **Operator's workstation** must have the required tooling installed — bash 4+, ssh, rsync, openssl, git, and (for the post-install login) a Wireguard client. See [**Operator's workstation**](../provisioning.md#operators-workstation) on the Provisioning page for the canonical list, supported OSes (Linux / macOS / WSL2), and per-OS install commands.
 * **Single-NIC RP** is the only supported topology — channel separation is enforced by the firewall + Nginx allowlist, not by physical interfaces. Existing two-NIC RPs should leave the secondary detached.
 
 ## Validate before you install

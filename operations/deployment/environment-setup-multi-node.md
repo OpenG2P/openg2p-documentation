@@ -85,7 +85,7 @@ The setup has two parts:
 | **DNS records**             | `<base_domain>` and `*.<base_domain>` A records pointing to the Nginx node               |
 | **TLS cert on Nginx node**  | Wildcard cert at `/etc/openg2p/certs/<base_domain>/{fullchain.pem,privkey.pem}` (customer-provided) |
 | **Nginx node**              | `nginx` running, `istio_ingress` upstream configured                                     |
-| **Workstation**             | `kubectl` and `helm` installed, kubeconfig with admin access to the cluster              |
+| **Workstation**             | `kubectl` and `helm` installed, plus the base toolchain (bash 4+, ssh, openssl, git). See [Operator's workstation](infrastructure-setup/provisioning.md#operators-workstation) for the canonical list, supported OSes, and per-OS install commands. Kubeconfig with admin access to the cluster is also required. |
 
 {% hint style="info" %}
 The source code for the automation script lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/environment/`.
