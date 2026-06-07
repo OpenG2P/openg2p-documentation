@@ -534,3 +534,35 @@ kubectl get gateway -n qa
 kubectl get projects.management.cattle.io -n local -o json | \
   jq '.items[] | {name: .metadata.name, display: .spec.displayName}'
 ```
+
+### eSignet / mock-identity crashloop — `relation "key_alias" does not exist`
+
+After installing commons-services, `esignet` and `mock-identity-system` may be in `CrashLoopBackOff` with this in their logs:
+
+```
+org.postgresql.util.PSQLException: ERROR: relation "key_alias" does not exist
+```
+
+**Cause.** eSignet and mock-identity each embed the keymanager library, which needs the keymanager schema (`key_alias`, `key_store`, …) **in their own database**. Each ships its schema-init as a `helm.sh/hook: post-install` Job, which deadlocks `helm --wait`: the pods can't become Ready until the schema exists, but the post-install hook that creates the schema only runs *after* the release is Ready. So the hook never runs and the release ends as `failed`. (Standalone keymanager is unaffected — its init runs as a regular resource.) This is a chart-level issue in `openg2p-commons-services`.
+
+{% hint style="success" %}
+The OpenG2P **three-node production automation handles this automatically** — its environment stage materialises these hook Jobs as regular Jobs and restarts the affected workloads, so no manual action is needed there.
+{% endhint %}
+
+For a standalone `env-cluster.sh` install, run the schema-init Jobs by hand (replace `qa` with your namespace):
+
+```bash
+# Materialise the post-install hook Jobs as regular Jobs (strips the hook annotations)
+helm get hooks commons-services -n qa \
+  | awk 'BEGIN{RS="\n---\n"} /kind: Job/ && /mosipid\/postgres-init/ {print "---"; print}' \
+  | grep -vE '^[[:space:]]*"?helm\.sh/hook(-delete-policy|-weight)?"?:' \
+  | kubectl apply -n qa -f -
+
+# Wait for them to finish, then restart the crashlooping workloads
+kubectl -n qa wait --for=condition=complete job \
+  -l app.kubernetes.io/name=commons-services-esignet-postgres-init --timeout=5m
+kubectl -n qa rollout restart deploy \
+  commons-services-esignet commons-services-mock-identity-system
+```
+
+The init is idempotent (it skips tables that already exist), so re-running is safe.
