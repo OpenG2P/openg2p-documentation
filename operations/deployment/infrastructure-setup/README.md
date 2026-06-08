@@ -40,7 +40,7 @@ flowchart LR
 | **5. Modules**        | Per-product deployment pages — [Registry](../../../products/registry/registry/deployment/), [PBMS](../../../pbms/deployment/), [SPAR](../../../spar/deployment/), [G2P Bridge](../../../g2p-bridge/deployment/) | Your chosen OpenG2P product modules installed into the environment via their own Helm charts.                                                                                                                                                     |
 
 {% hint style="info" %}
-**Stages 3 and 4 are one command.** The environment install (Stage 4) is built into the infrastructure automation — it runs as the `environment` role at the tail of `openg2p-prod.sh`, not as a separate tool you invoke from another folder. It's listed as its own stage for clarity, and can be re-run on its own (`./openg2p-prod.sh --role environment …`). The [Environment Setup](../environment-setup-multi-node.md) page documents the underlying `env-cluster.sh` and standalone / multi-environment use.
+**Stages 3 and 4 are one command.** The environment install (Stage 4) is built into the infrastructure automation — it runs as the `environment` stage at the tail of `openg2p-prod.sh`, not as a separate tool you invoke from another folder. It's listed as its own stage for clarity, and can be re-run on its own (`./openg2p-prod.sh --stage environment …`). The [Environment Setup](../environment-setup-multi-node.md) page documents the underlying `env-cluster.sh` and standalone / multi-environment use.
 {% endhint %}
 
 ## Ongoing operational concerns
