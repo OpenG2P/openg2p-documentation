@@ -466,6 +466,26 @@ Use `--yes` to skip confirmation for automation/CI.
 The uninstall script never touches the Nginx node, DNS records, certificates, or other namespaces on the cluster. Those are intentionally managed outside this automation.
 {% endhint %}
 
+## Accessing host PostgreSQL from your laptop
+
+Port `5432` on the storage node is firewalled to the **compute node only** (and `pg_hba.conf` allows only that IP). Being on Wireguard does **not** give your laptop an internal IP — your traffic is NAT'd to the reverse-proxy's private IP, which is not allow-listed for 5432. So connect over an **SSH tunnel** rather than hitting the storage IP directly:
+
+```bash
+# Via the storage node (simplest)
+ssh -i <key> <user>@<storage-host> -L 5432:localhost:5432
+# then, in another terminal:
+psql -h localhost -p 5432 -U postgres        # superuser password: see below
+
+# Alternative — via the compute node (already allow-listed for 5432)
+ssh -i <key> <user>@<compute-host> -L 5432:<storage_private_ip>:5432
+```
+
+The PostgreSQL superuser password is on the storage node at `/etc/openg2p/secrets/postgres-superuser.env` (root-owned, mode `0600`) and is also printed in the installer's final summary (`automation/production/setup-output/SETUP-SUMMARY.txt`). Per-service users (`esignetuser`, etc.) and their passwords live in the namespace secrets (`esignet-db-user`, …).
+
+{% hint style="info" %}
+Don't open 5432 to the wider private subnet just to reach it from a laptop — that erodes the private-channel posture. The SSH tunnel needs no firewall changes.
+{% endhint %}
+
 ## File Structure
 
 ```
