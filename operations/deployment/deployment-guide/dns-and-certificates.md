@@ -17,7 +17,7 @@ Every OpenG2P deployment has two categories of URL with different network exposu
 
 | Layer | Audience | Examples | Network exposure |
 | --- | --- | --- | --- |
-| **Admin / operator** | Internal staff, ops team, system integrators | Rancher, Keycloak (admin SSO) | Reachable only over Wireguard VPN — never on the public internet |
+| **Admin / operator** | Internal staff, ops team, system integrators | Rancher (local auth); per-environment app UIs (Keycloak, MinIO, Superset, …) | Reachable only over Wireguard VPN — never on the public internet |
 | **Citizen-facing** | Public users (beneficiaries, applicants, agency staff) | Social registry portal, payments, eSignet, ODK Central | Public internet |
 
 Both layers are served by the same wildcard cert; what differs is the IP the DNS A-records point at (private IP for admin hostnames, public IP for citizen hostnames) and the firewall posture in front of each. Splitting them is the whole point of the [private access channel](private-access-channel.md).
@@ -51,7 +51,7 @@ That said, some customers can't use wildcards. Reasons we see in the field:
 
 <table><thead><tr><th width="180">Reason</th><th>What it looks like in practice</th></tr></thead><tbody><tr><td><strong>Security policy</strong></td><td>Some gov InfoSec teams ban wildcards — a single-key compromise exposes every subdomain. Per-FQDN limits blast radius.</td></tr><tr><td><strong>CA constraints</strong></td><td>Some sovereign CAs (DoD, national PKIs, ministry CAs) don't issue wildcards. One CN per cert, period.</td></tr><tr><td><strong>Procurement</strong></td><td>Certs go through tendering / approval per service. Each service has its own purchase order, owner, rotation date.</td></tr><tr><td><strong>Ownership boundaries</strong></td><td><code>social-registry.moswa.gov.eth</code> may be owned by the Ministry of Social Welfare; <code>payments.moswa.gov.eth</code> by Treasury. Different teams, different certs.</td></tr><tr><td><strong>SAN as middle ground</strong></td><td>Some CAs issue multi-SAN certs (one cert listing 5–10 specific hostnames). From the deployment's perspective, treat these the same as a wildcard.</td></tr></tbody></table>
 
-If wildcards are off the table, the automation supports per-FQDN by setting `tls_rancher_cert` / `tls_keycloak_cert` (and equivalent per-service env-automation keys) explicitly instead of `tls_wildcard_cert`. See `prod-config.example.yaml` for the schema.
+If wildcards are off the table, the automation supports per-FQDN for the admin hostname by setting `tls_rancher_cert` explicitly instead of `tls_wildcard_cert`. Note that per-FQDN mode covers only `rancher`; the per-environment service hostnames (keycloak, minio, superset, …) are served via the wildcard, so those deployments need the wildcard cert. See `prod-config.example.yaml` for the schema.
 
 ## Cert formats customers actually receive
 

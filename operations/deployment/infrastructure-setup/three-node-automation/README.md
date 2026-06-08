@@ -15,7 +15,7 @@ The three-node automation provisions a complete production OpenG2P infrastructur
 **Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  [2. Provisioning](../provisioning.md)  →  **3. Infrastructure** (this page)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
-**Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher, Keycloak admin SSO, the Wireguard endpoint, Nginx with TLS — is up and admins can log in. **Next** is [Stage 4 — Environment](../../environment-setup-multi-node.md), which installs the OpenG2P commons (PostgreSQL, Kafka, MinIO, eSignet, Superset, etc.) into a namespace.
+**Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher (local auth), the Wireguard endpoint, Nginx with TLS — is up and admins can log in. **Next** is [Stage 4 — Environment](../../environment-setup-multi-node.md), which installs the OpenG2P commons (PostgreSQL, Kafka, MinIO, eSignet, Superset, etc.) into a namespace.
 
 {% hint style="success" %}
 **Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
@@ -27,12 +27,12 @@ The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/o
 
 ## How it works (in brief)
 
-Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + Keycloak + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher, Keycloak) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 **What gets installed and configured:**
 
-* RKE2 single-control-plane Kubernetes, Istio, Rancher (cluster manager), Keycloak (admin SSO), Prometheus + Grafana, OpenTelemetry + Grafana Loki (cluster-wide logging) — all on the Compute node via Helmfile.
-* Rancher↔Keycloak SAML wired so admins log in once via Keycloak.
+* RKE2 single-control-plane Kubernetes, Istio, Rancher (cluster manager, **local authentication**), Prometheus + Grafana, OpenTelemetry + Grafana Loki (cluster-wide logging) — all on the Compute node via Helmfile.
+* Rancher uses local auth — admins are created directly in Rancher (no SSO). The OpenG2P apps' Keycloak is installed separately, per environment.
 * Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
 * NFS server + host PostgreSQL 16 on the Storage node.
 * **One OpenG2P environment** (default name `prod`) — namespace, Rancher Project, Istio Gateway, the OpenG2P Helm repo registered in Rancher, and the `commons-base` + `commons-services` charts wired to the Storage node's host PostgreSQL. On by default; toggle with `install_environment`. See [The environment stage](#the-environment-stage).
@@ -96,29 +96,25 @@ Edit `prod-config.yaml`. The example config has every key tagged either `[USER]`
 ```yaml
 # [USER] preferences
 cluster_name: "openg2p"
-keycloak_admin_email: "admin@yourcorp.gov.eth"
 postgres_version: "16"
 wg_subnet: "10.15.0.0/16"
 wg_port: "51820"
 
-# [CUSTOMER] domain (DNS A-records for rancher.<domain> and keycloak.<domain>
-# must already exist, both pointing at the RP's PRIVATE IP — see
-# Prerequisites § 3. Grafana/Prometheus are reached via the Rancher UI, no
-# dedicated DNS needed.)
+# [CUSTOMER] domain (the DNS A-record for rancher.<domain> must already exist,
+# pointing at the RP's PRIVATE IP — see Prerequisites § 3. Rancher uses local
+# auth; Grafana/Prometheus are reached via the Rancher UI, no dedicated DNS.)
 public_domain: "openg2p.gov.eth"
-# Override individual hostnames only if your customer uses non-standard names:
+# Override the hostname only if your customer uses a non-standard name:
 # rancher_hostname:    "k8s-admin.dept.gov"
-# keycloak_hostname:   "sso.dept.gov"
 
 # [CUSTOMER] TLS certs (paths on YOUR laptop; uploaded to RP at install time)
-# Either provide one wildcard cert covering both hostnames:
+# Either provide one wildcard cert covering *.<domain> (recommended — it also
+# covers the per-environment service hostnames like keycloak/minio/superset):
 tls_wildcard_cert: "./certs/wildcard.fullchain.pem"
 tls_wildcard_key:  "./certs/wildcard.key"
-# OR provide per-FQDN certs (leave wildcard blank, fill these):
+# OR provide a per-FQDN cert for rancher (leave wildcard blank, fill these):
 # tls_rancher_cert:    "./certs/rancher.fullchain.pem"
 # tls_rancher_key:     "./certs/rancher.key"
-# tls_keycloak_cert:   "./certs/keycloak.fullchain.pem"
-# tls_keycloak_key:    "./certs/keycloak.key"
 
 # [AWS|MANUAL] node networking — auto-populated by AWS provisioning,
 # or fill in manually for on-prem
@@ -214,7 +210,7 @@ Total runtime: 25–40 minutes for infrastructure. The run ends with the [enviro
 
 ### Step 4 — post-install on your laptop
 
-When the orchestrator finishes it prints a **completion summary** with both passwords (Rancher local admin + Keycloak admin), the URLs, and the exact commands for each step below — keep that summary handy while you go through this section the first time.
+When the orchestrator finishes it prints a **completion summary** with the Rancher local-admin password, the URL, and the exact commands for each step below — keep that summary handy while you go through this section the first time. (It's also saved to `automation/production/setup-output/SETUP-SUMMARY.txt`.)
 
 The four things to do, once, on your laptop:
 
@@ -253,7 +249,7 @@ Since you're using **real certs from your customer's CA** (see [TLS certificate]
 
 #### 4.3 DNS resolution on your laptop
 
-You need your laptop to resolve the admin hostnames (`rancher.<domain>` and `keycloak.<domain>`) to the RP's **internal** IP. Three working patterns:
+You need your laptop to resolve the admin hostname (`rancher.<domain>`) to the RP's **internal** IP. (The per-environment service hostnames — `keycloak.<domain>`, `minio.<domain>`, etc. — resolve the same way once the environment stage has run.) Three working patterns:
 
 1.  **Customer's DNS reachable through Wireguard** (preferred) — the WG peer config can include the customer's internal DNS resolver. Edit `peer1.conf` after pulling it (or have the customer add it):
 
@@ -265,7 +261,7 @@ You need your laptop to resolve the admin hostnames (`rancher.<domain>` and `key
 2.  **`/etc/hosts` on your laptop** — manual but reliable. The orchestrator's completion summary prints the exact lines. Append once per laptop:
 
     ```
-    <RP-internal-IP>  rancher.openg2p.gov.eth keycloak.openg2p.gov.eth
+    <RP-internal-IP>  rancher.openg2p.gov.eth
     ```
 3. **Public DNS pointing at the private IP** — if the customer's authoritative DNS is public-facing and OK with publishing private-IP A-records, the hostnames resolve from anywhere (but only WG-connected laptops can actually reach the IP).
 
@@ -273,13 +269,9 @@ You need your laptop to resolve the admin hostnames (`rancher.<domain>` and `key
 On macOS, don't use `dig` to test — it bypasses the system resolver and will give NXDOMAIN even when everything works. Use `dscacheutil -q host -a name rancher.<domain>`, `ping`, or `curl`.
 {% endhint %}
 
-#### 4.4 Login to Rancher — the recommended flow
+#### 4.4 Login to Rancher (local authentication)
 
-There are two distinct logins. The first time you connect, do them in this order:
-
-**Step A — Login with the LOCAL Rancher admin first**
-
-Open `https://rancher.<your-domain>` in your browser (the hostname you put in `rancher_hostname`). On the Rancher login page, click **"Use a local user"** (the small link below the big "Login with Keycloak" button).
+Open `https://rancher.<your-domain>` in your browser (the hostname you put in `rancher_hostname`).
 
 * **Username**: `admin`
 *   **Password**: shown in the orchestrator's completion summary; or fetch it from the cluster:
@@ -290,25 +282,10 @@ Open `https://rancher.<your-domain>` in your browser (the hostname you put in `r
       -o jsonpath='{.data.adminPassword}' | base64 -d && echo
     ```
 
-You're now in Rancher as the local admin. Use this session to take a quick look around.
+You're now in the Rancher UI as the local `admin`.
 
-**Step B — Find the Keycloak admin password (optional, for confirmation)**
-
-While logged in to Rancher, browse to: **`local` cluster → Storage → Secrets → keycloak-system → keycloak**. Reveal the `admin-password` value. This is the same password the orchestrator's summary printed; the Rancher UI just gives you a click-to-reveal way to find it without using kubectl.
-
-**Step C — Logout, then login again with Keycloak SSO**
-
-In Rancher, click your avatar (top-right) → **Log Out**. You're back at the login screen.
-
-Now click the big **"Login with Keycloak"** button. Your browser is redirected to `https://keycloak.<your-domain>/...` — the URL change confirms you're on the Keycloak login form, not Rancher's.
-
-* **Username**: the email you set in `keycloak_admin_email`.
-* **Password**: the Keycloak admin password (from the orchestrator summary, or step B above).
-
-Keycloak authenticates you, signs a SAML assertion, and redirects you back to Rancher. You should land on the Rancher home page as the Keycloak-authenticated admin. **SAML SSO is now verified working.**
-
-{% hint style="success" %}
-From now on, day-to-day admins should use "Login with Keycloak". Manage user accounts in Keycloak, assign Rancher roles via Rancher's **Members** UI. The local `admin` is a fallback for when Keycloak is unavailable — guard the password accordingly.
+{% hint style="info" %}
+**Rancher uses local authentication — there is no external SSO.** Create additional admin users directly in Rancher: **☰ → Users & Authentication → Users → Create**, then assign cluster/project roles. Guard the `admin` password accordingly. (The OpenG2P apps' Keycloak is a separate, per-environment identity provider for the applications — it is not Rancher's login.)
 {% endhint %}
 
 #### 4.5 (Optional) kubectl from your laptop
@@ -397,7 +374,7 @@ On macOS, `dig` bypasses the system resolver. Use `dscacheutil -q host -a name r
 
 #### 3. Browser to Rancher
 
-Open `https://rancher.<your-domain>`. You should see the Rancher login page with a **Login with Keycloak** button — and **no certificate warning** (your customer-supplied cert chains to a publicly-trusted CA).
+Open `https://rancher.<your-domain>`. You should see the Rancher login page (local auth — `admin` + password) and **no certificate warning** (your customer-supplied cert chains to a publicly-trusted CA).
 
 #### 4. kubectl
 
@@ -449,14 +426,13 @@ automation/production/
 ├── openg2p-prod-env-uninstall.sh      # Laptop orchestrator (reset just the environment)
 ├── prod-config.example.yaml           # Single config file (flat YAML)
 ├── helmfile-infra.yaml.gotmpl         # Platform helmfile (Istio EnvoyFilter,
-│                                       Rancher, Keycloak, monitoring, logging)
+│                                       Rancher, monitoring, logging)
 ├── lib/
 │   ├── ssh-utils.sh                   # ControlMaster SSH, rsync push/pull
 │   └── shared/
 │       ├── utils.sh                   # logging, state, config loader
 │       ├── preflight.sh               # Per-node resource + network checks
-│       ├── hostnames.sh               # Hostname helpers + config-key bridge
-│       └── phase3.sh                  # Vendored Rancher-Keycloak SAML
+│       └── hostnames.sh               # Hostname helpers + config-key bridge
 ├── charts/
 │   ├── raw/                           # Minimal chart for K8s manifests
 │   └── istio-install/                 # Istio operator config
@@ -511,27 +487,15 @@ sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl get events -A --sort-by=.las
 
 Then re-run only that phase: `./openg2p-prod.sh --config prod-config.yaml --role compute --phase 2`.
 
-### Phase 3 (Rancher / Keycloak SAML)
-
-**Phase 3 reports `Cannot reach Rancher at https://rancher.<internal>`** — the compute node can't resolve or connect to the Rancher hostname. Two checks (run on the compute node):
-
-```bash
-grep rancher /etc/hosts                      # entry must point at RP private IP
-curl -kv https://rancher.openg2p.internal/ping 2>&1 | head -30
-```
-
-If `/etc/hosts` is missing the entry, re-run `--role compute --phase 3` — the script self-heals the `/etc/hosts` block via `ensure_admin_hostnames_in_etc_hosts`. If `curl` returns "Connection refused", nginx on the RP isn't listening on 443 — see the next item.
+### Reverse-Proxy Nginx
 
 **Nginx on the RP listens on 0.0.0.0:80 instead of `<rp-private>:443`** — happens when the apt nginx package's default config pre-bound port 80 and a `systemctl reload` didn't transition the listen sockets. Fix: `sudo systemctl restart nginx` on the RP. The current script uses unconditional `restart` (not `reload`) and verifies the bind, so this should not recur.
 
+**`https://rancher.<domain>` doesn't load even with Wireguard up** — check, on the compute node, that `/etc/hosts` has the Rancher hostname pointing at the RP private IP (`grep rancher /etc/hosts`), and that nginx on the RP is listening on `<rp-private>:443` (`sudo ss -tlnp | grep 443`).
+
 ### Login
 
-**Rancher's "Login with Keycloak" rejects the credentials** — the most common mistake is using the wrong password for the wrong username/page:
-
-* On Keycloak's page (URL `keycloak.openg2p.internal/...`), use the **email** from `keycloak_admin_email` and the password from `keycloak-system/keycloak`.
-* On Rancher's local-user page (URL `rancher.openg2p.internal`), use `admin` and the password from `cattle-system/rancher-secret`.
-
-Both passwords are printed live in the orchestrator's completion summary.
+**Rancher login is rejected** — Rancher uses **local authentication** (username `admin`, password from `cattle-system/rancher-secret`, printed in the orchestrator's completion summary). There is no Keycloak/SSO login for Rancher. Create further admin users in Rancher → **Users & Authentication → Users**.
 
 **Wireguard connects but `*.openg2p.internal` doesn't resolve on macOS** — `dig` bypasses the macOS resolver and will give NXDOMAIN even when everything works. Use `dscacheutil -q host -a name rancher.openg2p.internal` instead. For reliable per-domain DNS:
 
@@ -540,7 +504,7 @@ sudo mkdir -p /etc/resolver
 echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 ```
 
-**Wireguard tunnel up, admin URLs work, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` and `https://keycloak.<domain>` load fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match _before_ ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's private IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
+**Wireguard tunnel up, admin URL works, but I can't reach compute/storage by private IP** — `ping 10.15.0.1` answers, `https://rancher.<domain>` loads fine, but `ping <compute_private_ip>`, `ssh ubuntu@<storage_private_ip>`, or `kubectl --server=https://<compute_private_ip>:6443` time out. Cause: Ubuntu's ufw ships with `DEFAULT_FORWARD_POLICY="DROP"` and installs its own policy-enforcement chain in `FORWARD`. wg-quick's `PostUp` rules must be **inserted at the top** of `FORWARD` (`-I FORWARD 1 …`) so they match _before_ ufw's drop; **appending** them (`-A FORWARD …`) puts them after the drop where they never fire. INPUT traffic (laptop → Nginx on the RP's private IP) is unaffected, which is why admin URLs keep working; only forwarded traffic (`wg0 → private subnet`) is silently dropped.
 
 The current automation generates the correct `-I` rules. If you have an older install with `-A` baked into `/etc/wireguard/wg0.conf`, hot-fix on the RP without re-running the install:
 
@@ -620,7 +584,7 @@ You'll be asked to **type the `cluster_name`** to confirm before anything is tou
 
 **What gets removed (per node):**
 
-* **Compute** — RKE2 (via `rke2-uninstall.sh`, which wipes the cluster, etcd, containerd, CNI, and **every helm release** including Istio / Rancher / Keycloak / monitoring / logging); `kubectl`/`helm`/`istioctl`/`helmfile` binaries; NFS client mount; `/etc/hosts` managed block; sysctl tweaks; ufw rules; state markers.
+* **Compute** — RKE2 (via `rke2-uninstall.sh`, which wipes the cluster, etcd, containerd, CNI, and **every helm release** including Istio / Rancher / monitoring / logging and any installed environment workloads); `kubectl`/`helm`/`istioctl`/`helmfile` binaries; NFS client mount; `/etc/hosts` managed block; sysctl tweaks; ufw rules; state markers.
 * **Reverse Proxy** — Wireguard server + peer configs; Nginx admin server blocks; customer certs; ip_forward sysctl; MASQUERADE residue; ufw rules; state markers.
 * **Storage** — host PostgreSQL; NFS server + `/etc/exports`; ufw rules; state markers.
 * **Laptop** — orchestrator `.state/` markers + pulled `artifacts/`.
@@ -667,7 +631,7 @@ Background detail — not needed to run the install. Useful when something goes 
 | Helm            | v3.17.3                                     | + helm-diff plugin                                                              |
 | Helmfile        | v1.1.0                                      | Drives the platform component installs                                          |
 | Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                              |
-| Auth            | Keycloak (in-cluster)                       | SSO for Rancher only — embedded Postgres on NFS-backed PVC                      |
+| Rancher auth    | Local authentication                        | Admin users created directly in Rancher; no external SSO. (The apps' Keycloak is per-environment, installed by the environment stage.) |
 | Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                            |
 | Logging         | OpenTelemetry + Grafana Loki                | Cluster-wide log pipeline (OTel agent → gateway → Loki, backed by dedicated MinIO); replaces Fluentd/OpenSearch |
 | Storage         | NFS-CSI driver v4.7.0                       | Default StorageClass `nfs-csi`, retain policy                                   |
@@ -686,8 +650,7 @@ The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 | 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                                 |
 | 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                 |
 | 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip` |
-| 4 | Compute       | helmfile sync — Istio, Rancher, Keycloak (with NFS-backed embedded Postgres), monitoring, logging                                                                            |
-| 5 | Compute       | Rancher-Keycloak SAML integration                                                                                                                                            |
+| 4 | Compute       | helmfile sync — Istio, Rancher (local auth, NFS-backed embedded Postgres), monitoring, logging                                                                              |
 | 6 | Laptop        | Environment scaffolding — Rancher Helm repo (ClusterRepo), namespace, Rancher Project, Istio Gateway, external-PG secret. Needs Wireguard up; **defers** if not (re-run via `--stage environment`) |
 | 7 | Laptop        | Commons install — `commons-base` + `commons-services` wired to host PostgreSQL (skipped if `install_commons: false`)                                                          |
 

@@ -67,27 +67,26 @@ These are minimums; larger is fine and smaller may fail preflight.
 
 ### DNS records
 
-Four A records. Admin hostnames point to the **private** IP (reachable only over the VPN); the apex and wildcard point to the **public** IP (citizen-facing).
+Three A records. The admin hostname points to the **private** IP (reachable only over the VPN); the apex and wildcard point to the **public** IP (citizen-facing). The per-environment service hostnames (`keycloak.`, `minio.`, `superset.`, …) are covered by the wildcard and reached over the VPN once the environment stage runs.
 
 | Hostname                | Type | Points to       | Channel          |
 | ----------------------- | ---- | --------------- | ---------------- |
 | `rancher.<DOMAIN>`      | A    | `RP_PRIVATE_IP` | Admin (VPN-only) |
-| `keycloak.<DOMAIN>`     | A    | `RP_PRIVATE_IP` | Admin (VPN-only) |
 | `<DOMAIN>` (apex)       | A    | `RP_PUBLIC_IP`  | Citizen          |
 | `*.<DOMAIN>` (wildcard) | A    | `RP_PUBLIC_IP`  | Citizen          |
 
-Explicit records (`rancher.`, `keycloak.`) take precedence over the wildcard, so the two IP targets coexist cleanly.
+The explicit `rancher.` record takes precedence over the wildcard, so the two IP targets coexist cleanly.
 
 **Where to create them:**
 
 * **Admin records** (→ private IP) must resolve for VPN-connected admins. **On-prem:** internal / split-horizon DNS. **On AWS:** a Route 53 **private** hosted zone attached to the VPC.
 * **Citizen records** (→ public IP): public DNS — a Route 53 public zone on AWS, or your public authoritative DNS on-prem.
 
-> Example, for `DOMAIN = prod.openg2p.gov.example`, `RP_PRIVATE_IP = 10.0.1.10`, `RP_PUBLIC_IP = 198.51.100.5`: `rancher.prod.openg2p.gov.example` → `10.0.1.10`, `keycloak.prod.openg2p.gov.example` → `10.0.1.10`, `prod.openg2p.gov.example` → `198.51.100.5`, `*.prod.openg2p.gov.example` → `198.51.100.5`.
+> Example, for `DOMAIN = prod.openg2p.gov.example`, `RP_PRIVATE_IP = 10.0.1.10`, `RP_PUBLIC_IP = 198.51.100.5`: `rancher.prod.openg2p.gov.example` → `10.0.1.10`, `prod.openg2p.gov.example` → `198.51.100.5`, `*.prod.openg2p.gov.example` → `198.51.100.5`.
 
 ### TLS certificate
 
-**One wildcard certificate** for `*.<DOMAIN>`, with SANs covering both `*.<DOMAIN>` and the apex `<DOMAIN>`. This single cert serves the admin hostnames (`rancher`, `keycloak`) and every citizen-facing service, since all are subdomains of `<DOMAIN>` — see [Why a single wildcard certificate](prerequisites-procurement.md#why-a-single-wildcard-certificate).
+**One wildcard certificate** for `*.<DOMAIN>`, with SANs covering both `*.<DOMAIN>` and the apex `<DOMAIN>`. This single cert serves the admin hostname (`rancher`), every per-environment service (`keycloak`, `minio`, `superset`, …), and every citizen-facing service, since all are subdomains of `<DOMAIN>` — see [Why a single wildcard certificate](prerequisites-procurement.md#why-a-single-wildcard-certificate).
 
 Accepted formats (the install scripts auto-detect):
 
@@ -140,7 +139,7 @@ Ingress rules at the network boundary. The per-host firewall (`ufw`) is configur
 | 2049 | TCP   | private subnet | NFS (from compute)            | infra setup |
 | 5432 | TCP   | private subnet | PostgreSQL (from compute)     | infra setup |
 
-* **Admin tools (Rancher, Keycloak) are never exposed publicly** — reached only over the Wireguard VPN. Public `80/443` serve citizen-facing services only.
+* **Admin tools (Rancher) and per-environment service UIs (Keycloak, MinIO, Superset, …) are never exposed publicly** — reached only over the Wireguard VPN. Public `80/443` serve citizen-facing services only.
 * Public `80/443` are opened at the **environment-setup** stage, not during infra setup — see [environment setup](environment-setup-multi-node.md). You may open them upfront or defer; either is fine.
 * Apply these as **Security Group** inbound rules (AWS) or **perimeter-firewall / router ACLs** (on-prem).
 
