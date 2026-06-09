@@ -4,7 +4,11 @@ description: Post-deployment guide
 
 # Access a Database from Outside the Cluster
 
-This guide contains instructions on how to connect to a database from outside the cluster using `kubectl` port-forwarding method.
+This guide covers connecting to a database (or any in-cluster service — MinIO, Redis, Kafka, …) from outside the cluster using `kubectl` port-forwarding.
+
+{% hint style="warning" %}
+**PostgreSQL is different in production.** In the three-node production deployment, PostgreSQL is the **host install on the Storage node** — it is *not* an in-cluster `*-postgresql-0` pod, so `kubectl port-forward` to a PG pod won't work. To reach the host PostgreSQL from your laptop, use the **SSH tunnel** described in [Environment Setup → Accessing host PostgreSQL from your laptop](../../operations/deployment/environment-setup-multi-node.md#accessing-host-postgresql-from-your-laptop). The `kubectl port-forward` method below applies to **in-cluster services** (MinIO, Redis, Kafka, etc.) — and to PostgreSQL only on a sandbox / legacy in-cluster-PG install.
+{% endhint %}
 
 ## Prerequisites
 
@@ -52,27 +56,32 @@ The steps to install and configure kubectl to access the Kubernetes Cluster in y
 2. You must have access to the Kubernetes Cluster.
 3. You must have the necessary permissions to perform port-forwarding to the database service in the Kubernetes Cluster.
 
-## Procedure
+## Procedure (in-cluster services)
 
-Ensure that the cluster kubeconfig is set on your machine and follow the commands below to connect to the respective database.
+Ensure the cluster kubeconfig is set on your machine, then port-forward the in-cluster service you want to reach.
 
-*   Get the database services running in the cluster using the command below.
+*   List the relevant pods/services in the environment namespace:
 
     ```bash
-    kubectl get pods -n <namespace of env> | grep postgresql-0 
-    ex : kubectl get pods -n dev | grep postgresql-0
+    kubectl get pods,svc -n <namespace of env>
+    # e.g. an in-cluster MinIO, Redis, or Kafka service
     ```
-*   Confirm the database you want to connect. Perform port-forwarding for the corresponding service using the `kubectl` command.
+*   Port-forward the service (or pod) to a local port:
 
     ```bash
-    kubectl port-forward pod/<pod-name> <local-port>:<pod-port>
-    ex : kubectl port-forward -n dev pod/social-registry-postgresql-0 5432:5432
+    kubectl -n <namespace> port-forward svc/<service> <local-port>:<service-port>
+    # e.g. MinIO console:  kubectl -n prod port-forward svc/commons-minio 9001:9001
     ```
-*   Connect to the database.
+*   Connect with the appropriate client on `localhost:<local-port>` (e.g. a browser for MinIO, `redis-cli`, etc.).
+
+For an **in-cluster PostgreSQL** (sandbox or a legacy in-cluster-PG install), the same pattern applies:
 
     ```bash
+    kubectl -n <namespace> port-forward svc/<release>-postgresql 5432:5432
     psql -h localhost -p 5432 -U <dbuser> -d <database>
     ```
+
+For the **host PostgreSQL** in three-node production, use the SSH tunnel instead — see the warning at the top of this page.
 
     <br>
 

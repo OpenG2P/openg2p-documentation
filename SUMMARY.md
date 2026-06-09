@@ -734,7 +734,7 @@
     * [Finding URLs in the System](deployment/deployment-guide/finding-urls-in-the-system.md)
     * [Transitioning PostgreSQL From Docker on K8s to Standalone PostgreSQL](deployment/deployment-guide/transitioning-postgresql-from-docker-on-k8s-to-standalone-postgresql.md)
     * [Restore a PVC from an NFS Folder and Attach it to a Pod](deployment/deployment-guide/restore-a-pvc-from-an-nfs-folder-and-attach-it-to-a-pod.md)
-    * [View System Logs on the OpenSearch Dashboard](deployment/deployment-guide/view-system-logs-on-the-opensearch-dashboard.md)
+    * [View System Logs in Grafana (Loki)](deployment/deployment-guide/view-system-logs-in-grafana-loki.md)
     * [Set up Slack alerts for a Kubernetes cluster](deployment/deployment-guide/set-up-slack-alerts-for-a-kubernetes-cluster.md)
     * [Importing Dashboards on the Superset UI for OpenG2P Applications](deployment/deployment-guide/importing-dashboards-on-the-superset-ui-for-openg2p-applications.md)
     * [Scaling Down an Environment to Optimize Resource Usage](deployment/deployment-guide/scaling-down-an-environment-to-optimize-resource-usage.md)

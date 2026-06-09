@@ -40,7 +40,9 @@ This document provides instructions to setup and install external database for O
    1.  Access the postgresql.conf file, locate the parameter below, uncomment it, set it to listen on all IP addresses, and configure it to increase the number of connections.
 
        ```bash
-       vim /etc/postgresql/14/main/postgresql.conf
+       # Replace <version> with your installed PostgreSQL major version
+       # (e.g. 16). Find it with: ls /etc/postgresql/
+       vim /etc/postgresql/<version>/main/postgresql.conf
        listen_addresses = '*'
        max_connections = 500
        wal_level = logical
@@ -48,7 +50,7 @@ This document provides instructions to setup and install external database for O
    2.  Acess pg\_hba.conf file and allow TCP/IP connections (host) to all databases (all) for all users (all) with any IPv4 address (0.0.0.0/0) using an scram-sha-256 encrypted password for authentication and save the file.
 
        ```bash
-       vim /etc/postgresql/14/main/pg_hba.conf
+       vim /etc/postgresql/<version>/main/pg_hba.conf
        ```
 
        <figure><img src="../../.gitbook/assets/postgres1 (2) (2).png" alt=""><figcaption></figcaption></figure>

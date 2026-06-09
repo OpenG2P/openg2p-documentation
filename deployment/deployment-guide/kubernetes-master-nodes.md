@@ -1,6 +1,15 @@
 # Kubernetes Cluster Deployment Guide
 
-This document provides essential guidelines for deploying a Kubernetes cluster, emphasizing the importance of having an odd number of master nodes for high availability. It explains fault tolerance, risks of even-numbered masters, and best practices for production environments. Additionally, it covers the feasibility of having a single master and worker node, highlighting its limitations for production use.
+This document explains how Kubernetes control-plane (master) node count affects high availability — etcd quorum, fault tolerance, and the trade-offs of single vs. multi-master clusters.
+
+{% hint style="info" %}
+**How this maps to OpenG2P.** The two production configurations differ only in control-plane count:
+
+* **Production — Minimum** (the default the automation provisions today) runs a **single RKE2 control-plane** on the Compute node. This is a supported production model for pilots and small-scale deployments where brief downtime during a node failure is acceptable — recovery relies on the backup automation (etcd snapshots, pgBackRest, etc.), not on live redundancy.
+* **Production — High-Availability** scales the *same architecture* out to **3+ control-plane nodes** (odd count) so the cluster survives a node failure with no downtime. This is a manual/extension step today, not yet automated.
+
+The rest of this page is the theory behind that choice — read it when deciding whether a deployment needs HA.
+{% endhint %}
 
 #### **Understanding Kubernetes Master Node Count: Odd vs. Even**
 
@@ -28,28 +37,17 @@ Kubernetes relies on **etcd**, a distributed key-value store, for cluster state 
 * Each master node runs **etcd, the API server, scheduler, and controllers**.
 * If using **3 master nodes**, at least **3 worker nodes** are recommended, though master nodes can schedule workloads in small setups.
 
-#### **Best Practices for Deploying Master Nodes**
+#### **Control-plane counts and where they fit**
 
-* **Single Master (1 Node)** – Suitable for **non-production/testing** (no HA).
-* **Three Masters (3 Nodes)** – Recommended for **small to medium HA clusters**.
-* **Five Masters (5+ Nodes)** – Used for **large-scale enterprise deployments**.
+* **Single control-plane (1 node)** – No live HA. Used by **OpenG2P Production — Minimum** (and sandbox) where brief downtime during a node failure is acceptable; resilience comes from the **backup automation** (etcd snapshots, pgBackRest, rancher-backup, restic), not redundancy. Also the right choice for dev/test.
+* **Three control-planes (3 nodes)** – **OpenG2P Production — High-Availability**. Survives one node failure with no downtime; recommended when near-zero-downtime is a requirement.
+* **Five control-planes (5+ nodes)** – Large-scale deployments tolerating two simultaneous failures.
 
-#### **Is It OK to Have One Master and One Worker?**
+#### **Single control-plane: what to know**
 
-Yes, but it is **not recommended for production**.
+A single control-plane is a legitimate production model for OpenG2P Production — Minimum, with one important caveat to plan around:
 
-**✅ When is it OK?**
+* **No live HA** – if the control-plane node fails, the cluster is unavailable until it's recovered.
+* **Recovery, not redundancy** – etcd is snapshotted by the backup automation, so the cluster can be **restored** after a failure; this trades a recovery window for lower cost and complexity. Ensure backups (etcd snapshots especially) are configured **before go-live**.
 
-* **Development/Testing** – For local development or testing purposes.
-* **Lightweight Workloads** – When applications are not critical and do not require high availability.
-
-**🚨 Why is it NOT Recommended for Production?**
-
-* **No High Availability (HA)** – If the master node fails, the cluster becomes completely unavailable.
-* **Single Point of Failure** – The worker node relies on the master for scheduling, so if the master crashes, new workloads cannot be assigned.
-* **No Redundancy** – etcd (which stores the cluster state) has no backup, increasing the risk of data loss.
-
-**🔹 Recommended Minimum for Production**
-
-* **1 Master, 2+ Workers** – Still not HA but better than a single worker.
-* **3 Masters, 2+ Workers** – Ensures high availability and fault tolerance.
+**Choose HA (3+ control-planes) when** the deployment cannot tolerate any downtime — then run an odd number of control-plane nodes so etcd always has a quorum.
