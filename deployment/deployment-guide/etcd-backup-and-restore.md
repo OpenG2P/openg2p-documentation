@@ -4,6 +4,10 @@ description: Guide to backup Kubernetes Master ETCD
 
 # ETCD Backup and Restore
 
+{% hint style="info" %}
+**RKE2 already takes scheduled etcd snapshots automatically.** By default RKE2 saves an etcd snapshot every 12 hours and retains the last 5, under `/var/lib/rancher/rke2/server/db/snapshots/` on each control-plane node. The three-node production install runs a **single control-plane node** (Production-Minimum), so that node holds the cluster's etcd snapshots — copy them off-node (e.g. to the NFS/Storage node or object storage) so a node loss doesn't take the backups with it. This guide covers taking an **on-demand** snapshot and **restoring** from one.
+{% endhint %}
+
 Backup of the etcd data of all clusters to ensures recovery in case of a complete failure. Here is how to create and restore backups of the etcd data in an RKE2 cluster.\
 **Note:** /var/lib/rancher/rke2 is the default data directory for rke2. In RKE2, snapshots are stored on each etcd node. If you have multiple etcd or etcd + control-plane nodes, you will have multiple copies of local etcd snapshots.
 

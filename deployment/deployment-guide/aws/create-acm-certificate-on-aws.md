@@ -4,6 +4,10 @@ description: (WIP)
 
 # Create ACM Certificate on AWS
 
+{% hint style="info" %}
+**Only needed for the legacy AWS-LB exposure pattern.** In standard three-node production, TLS terminates at the **Reverse-Proxy Nginx** with **customer-supplied certificates** — there is no AWS load balancer in front of the cluster, so no ACM certificate is required. See [DNS & TLS Certificates](../../../operations/deployment/deployment-guide/dns-and-certificates.md) for the supported model. Use ACM only if you are deliberately fronting the environment with an AWS NLB/ALB ([Make Environment Publicly Accessible using AWS LB Configuration](make-environment-publicly-accessible-using-aws-lb-configuration.md)).
+{% endhint %}
+
 Amazon Certificate Manager (ACM) is a service provided by AWS that makes it easy to furnish, manage, and deploy SSL/TLS certificates for use with AWS services and your internal resources.
 
 ## Procedure

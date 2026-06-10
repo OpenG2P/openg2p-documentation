@@ -1,5 +1,9 @@
 # Generate SSL Certificates using Letsencrypt
 
+{% hint style="info" %}
+**Scope: sandbox / single-node and self-managed certs.** This Let's Encrypt + Certbot flow is the convenient way to obtain certificates when you are running the **single-node sandbox** or otherwise issuing your own certificates on the box. In **three-node production**, TLS is **customer-supplied certificates installed at the Reverse-Proxy Nginx** (see [DNS & TLS Certificates](../../operations/deployment/deployment-guide/dns-and-certificates.md)) — many regulated/government deployments must use their own CA, not a public ACME issuer. Use this guide if Let's Encrypt is acceptable for your environment; otherwise drop the customer's certs into the RP and skip it.
+{% endhint %}
+
 This document explains how to generate and renew SSL certificates using Let's Encrypt and how to automate the certificate issuance and renewal process with the AWS Route53 plugin.
 
 ## Procedure for creating a certificate manually
