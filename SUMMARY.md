@@ -473,7 +473,7 @@
           * [Unlink API](spar/development/testing/performance-testing/mapper/unlink-api.md)
           * [Update API](spar/development/testing/performance-testing/mapper/update-api.md)
     * [Developer Install](spar/development/developer-install/README.md)
-      * [SPAR Mapper API](spar/development/developer-install/spar-mapper-api.md)
+      * [SPAR Mapper Partner API](spar/development/developer-install/spar-mapper-api.md)
     * [Repositories](spar/development/repositories.md)
     * [API Reference](spar/development/api-reference.md)
     * [Tech Guides](spar/development/tech-guides.md)
