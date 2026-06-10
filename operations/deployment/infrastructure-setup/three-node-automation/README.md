@@ -664,7 +664,6 @@ The following are deferred to follow-up automation, not gaps:
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
 * **Backup node and backup automation** — out of scope for v1.
-* **Domain migration script** — single-node has one (`openg2p-migrate-domain.sh`); not yet ported.
 
 ### The orchestrator's `.state/` directory
 

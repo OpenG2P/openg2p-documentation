@@ -10,9 +10,9 @@ OpenG2P supports two deployment shapes. Pick the one that matches your stage, th
 | --- | --- | --- |
 | **Use for** | Evaluation, dev/QA, demos, pilots-on-a-budget | Pilots and production rollouts |
 | **Machines** | 1 VM | **Minimum:** 3 VMs (RP, Compute, Storage). **High-Availability:** more nodes of the same shape — HA control plane, redundant RPs, PG primary/replica |
-| **TLS** | Let's Encrypt or self-signed (built in) | Customer CA cert (commercial / sovereign) |
-| **DNS** | Optional / local | Customer DNS (admin + citizen records) |
-| **Admin access** | Direct (optional Wireguard) | Wireguard VPN + private channel |
+| **TLS** | Self-signed local CA (built in) | Customer CA cert (commercial / sovereign) |
+| **DNS** | Local — dnsmasq, `*.<local_domain>` (built in) | Customer DNS (admin + citizen records) |
+| **Admin access** | Wireguard / VPC — private by default; optional public opt-in | Wireguard VPN + private channel |
 | **Procurement lead time** | None — just a machine | Compute + certificate (2–4 weeks) |
 
 {% hint style="info" %}

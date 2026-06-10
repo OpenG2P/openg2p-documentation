@@ -28,11 +28,13 @@ Over and above all these, there is minimally one more node required for backups 
 
 * Single virtual machine running all services
 * One Kubernetes cluster hosting both Rancher and OpenG2P services
+* **Rancher uses local authentication** — there is no infrastructure-level Keycloak/SSO. Admin users are created directly in Rancher. Keycloak is installed **per environment** (by the commons-base chart) only for the OpenG2P applications.
+* **Local DNS + self-signed TLS** — the automation runs `dnsmasq` for `*.<local_domain>` (default `openg2p.test`) and a local CA for self-signed certificates. No public domain names, DNS provider, or Let's Encrypt are involved.
 * Nginx, Wireguard, NFS server running outside the Kubernetes cluster but on the same node
 * Multiple environments like dev, qa, demo etc. as Kubernetes namespaces
 * Access to each environment (namespace) is controlled via [private access channels](../operations/deployment/deployment-guide/private-access-channel.md) — a single network interface is sufficient; channel separation is enforced by the firewall and Nginx, not by extra NICs.
+* **Private by default** — the automation configures the host firewall (`ufw`) so the web UIs (`80/443`) are reachable only over Wireguard or from inside the VPC, even if the VM has a public IP. A `public_access` flag opts into exposing them to the Internet (sandbox-only, with a security warning). The perimeter/cloud firewall remains the operator's responsibility.
 * SSL termination (HTTPS) happens on the Nginx. The traffic further to Ingress gateway is HTTP.
-* Firewall is outside the purview of this deployment.
 * Git repo and Docker Registry are assumed externally hosted (public or private). For on-prem hosting you will need more resources to host the same as in the [Production — Minimum](openg2p-deployment-model.md#production-minimum-three-node) setup.
 * As this deployment is based on Kubernetes, the system can be easily scaled up by adding more nodes (machines) as in the [Production — High-Availability](openg2p-deployment-model.md#production-high-availability) setup.
 
