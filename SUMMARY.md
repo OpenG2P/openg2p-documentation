@@ -516,6 +516,7 @@
     * [Keycloak Client](g2p-bridge/deployment/keycloak-client.md)
     * [Example Bank & Treasury Account](g2p-bridge/deployment/deployment-of-example-bank.md)
     * [Domain Names and Certificates](g2p-bridge/deployment/domain-names-and-certificates.md)
+    * [Dashboards (Superset)](g2p-bridge/deployment/dashboards.md)
     * [Teardown / Uninstall](g2p-bridge/deployment/teardown.md)
   * [Developer Zone](g2p-bridge/development/README.md)
     * [Testing](g2p-bridge/development/testing/README.md)

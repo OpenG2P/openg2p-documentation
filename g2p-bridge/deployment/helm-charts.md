@@ -191,6 +191,28 @@ route there by design. Use `/docs`, `/ping`, or a specific endpoint such as
 `/create_disbursement_envelopes`.
 {% endhint %}
 
+### Post-install: load the dashboards (optional)
+
+If the environment runs the platform Superset and you want the bridge monitoring
+dashboards, enable the read-only analytics role and have an admin import the
+bundle:
+
+```yaml
+# values.yaml — chart creates the superset_ro role + a <release>-superset-ro Secret
+supersetReadOnly:
+  enabled: true
+```
+
+Then, as a Superset admin:
+
+1. Download `g2p-bridge-dashboards.zip` (GitHub Release asset, or `deployment/superset/`).
+2. Read the read-only password:
+   `kubectl -n <ns> get secret <release>-superset-ro -o jsonpath='{.data.password}' | base64 -d`
+3. Superset → **Settings → Import Dashboards** → upload the ZIP → tick **Overwrite existing** → paste the password (only on the first import).
+
+The five dashboards, re-import behaviour and renamed-release notes are documented
+in [Dashboards (Superset)](dashboards.md).
+
 ## Teardown
 
 To completely remove a release — including the PostgreSQL database/role that
