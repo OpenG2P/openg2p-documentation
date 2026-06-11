@@ -29,6 +29,22 @@ G2P WikiLLM follows both principles directly:
 * **No global rewriting on every change.** Updates are incremental. Re-mirroring is SHA-pinned; per-source synthesis skips pages whose input hash is unchanged.
 * **No auto-folding of community content.** Lessons promoted from advisor sessions live in a separate `lessons/` tree and are surfaced *alongside* wiki pages, never silently merged in.
 
+## Elicitation: knowing what you don't know
+
+Ingesting sources captures **codified** knowledge — what is written down in docs and code. It cannot capture **tacit** knowledge: the experiential know-how that lives in senior engineers' heads (sizing rules, failure modes, on-prem vs air-gapped gotchas, site-specific quirks). For a deployment advisor, that tacit layer is the difference between a competent junior and a senior expert.
+
+The **elicitation engine** is the mechanism that captures it. Its governing idea: *you don't become superhuman by loading everything once — you become superhuman by building a system that knows precisely what it knows and what it doesn't, and captures the missing knowledge faster than it decays.*
+
+Three concepts make that tractable:
+
+* **Taxonomy as a completeness spec.** A hand-authored checklist (`elicitation/taxonomy.yaml`) of everything a superhuman OpenG2P deployer must know, organised as *areas → cells*. Each cell is one unit of knowledge with a question, why it matters, and whether it is `tacit_likely`. Without this spec, "are we superhuman yet?" is unanswerable and elicitation is a random walk. The taxonomy is the **ruler**; the wiki is the **material** measured against it — they are independent (changing the repo list changes coverage, not the taxonomy).
+* **The superhuman index.** A single number: the weighted % of taxonomy cells backed by a wiki page at `confidence ≥ medium`. Tracked across snapshots, it is the program's headline progress metric, and calibrated uncertainty is treated as a feature, not a flaw.
+* **Grounded asks.** The engine never hands an expert a blank page. For each gap it shows what the wiki already knows, then asks only the hole — so an expert-hour captures the maximum new knowledge.
+
+This extends the wiki's existing flywheel rather than replacing it: elicited answers are synthesised into `lessons/proposed/`, promoted into `lessons/`, and read by the advisor alongside `wiki/` — never silently merged into entity or concept pages.
+
+For the step-by-step workflow, see the [Elicitation Engine — Operating Guide](elicitation.md).
+
 ## Why this matters for OpenG2P
 
 OpenG2P is a sprawling stack — Registry, PBMS, SPAR, MOSIP integration, dozens of repos, a large GitBook, and an evolving website. Implementers ask questions like *"which repo owns the eligibility engine?"*, *"what's the data model for the Social Registry?"*, *"what are the steps to set up a Registry use case?"* — questions that span repos, modules, and concepts. WikiLLM gives the advisor a single, structured place to read, with citations the implementer can verify.
@@ -36,4 +52,5 @@ OpenG2P is a sprawling stack — Registry, PBMS, SPAR, MOSIP integration, dozens
 ## Related
 
 * [Design](design.md) — how the principle is realised in this repo.
+* [Elicitation Engine — Operating Guide](elicitation.md) — the loop that captures tacit knowledge.
 * [CLAUDE.md vs wiki/index.md](claude-md-vs-index.md) — the contract that synthesis must follow.

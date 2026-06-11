@@ -17,7 +17,7 @@ Operational state (active sessions, message logs, working_case JSON) lives in th
 The single source of truth for what gets ingested is `raw/MANIFEST.yaml`. As of writing, four sources are configured:
 
 1. **OpenG2P documentation (GitBook)** — local clone of the `openg2p-documentation` repo. Skips any path containing `_Archive` (case-insensitive), `node_modules`, or `.git`. Only `.md` files.
-2. **OpenG2P repositories (GitHub)** — public, non-archived repos under [github.com/OpenG2P](https://github.com/OpenG2P). Per repo, only **structural** files are extracted: README, CHANGELOG, `docs/`, OpenAPI specs, GraphQL/Proto schemas, DB migrations, helm charts, Dockerfile, `.env.example`, controllers/routes (signatures only), and package metadata. The current allow-list focuses on Registry Gen2 repos plus farmer-registry, national-social-registry, and ui-widgets.
+2. **OpenG2P repositories (GitHub)** — public, non-archived repos under [github.com/OpenG2P](https://github.com/OpenG2P), filtered by the `allow:` list in `raw/MANIFEST.yaml`. Per repo, only **structural** files are extracted: README, CHANGELOG, `docs/`, OpenAPI specs, GraphQL/Proto schemas, DB migrations, helm charts, Dockerfile, `.env.example`, controllers/routes (signatures only), and package metadata. The allow-list is scoped to the Registry and its supporting platform: `registry-platform` (the consolidated Registry base), `farmer-registry`, `national-social-registry`, the platform services (IAM, AWE, audit-manager, id-generator, VC issuance), and the deployment/helm repos. Edit the `allow:` list to change which repos are ingested (an empty list means "all that pass the deny + auto filters").
 3. **Google Drive** — Google Docs, Sheets, Slides, and folders **auto-discovered** from links found in ingested GitBook content. Fetched via public export URLs (no auth). Folders enumerated via the Drive API (requires `GOOGLE_API_KEY`).
 4. **OpenG2P website** — snapshot of [www.openg2p.org](https://www.openg2p.org), crawled to a configured max depth, converted from HTML to markdown.
 
@@ -40,21 +40,28 @@ g2p-wiki/
 │   ├── entities/         # concrete things (modules, products, services, repos)
 │   ├── sources/          # one-page summaries of each ingested document
 │   ├── comparisons/      # cross-cutting analyses (clusters, contrasts)
+│   ├── flows/            # directed traces of a request/event across entities
 │   ├── playbooks/        # phased implementation guides
 │   ├── index.md          # auto-maintained catalog of every wiki page
 │   ├── log.md            # append-only record of ingests, syntheses, lints
+│   ├── contradictions.md # LLM-detected disagreements across pages (from cross)
 │   ├── overview.md       # short hand-curated map of the knowledge graph
 │   └── research-queue.md # durable list of open questions surfaced during use
-├── lessons/              # promoted, scrubbed digests from advisor sessions
+├── lessons/              # promoted, scrubbed digests (incl. elicited knowledge)
 │   └── proposed/         # admin queue (auto-redacted, not yet approved)
-└── tools/                # ingest, synthesise, lint scripts
+├── elicitation/          # the knowledge-elicitation engine (see Elicitation guide)
+│   ├── taxonomy.yaml     # the completeness spec: areas → cells
+│   ├── gaps/             # generated: gap-ledger.{md,json}, coverage.md
+│   └── interviews/       # generated interview guides; experts fill in answers
+└── tools/                # ingest, synthesise, elicit, lint scripts
     ├── package.json
     ├── update.sh
     └── src/
         ├── cli.ts
-        ├── ingest/   {gitbook, repos, gdrive, sites}.ts
+        ├── ingest/     {gitbook, repos, gdrive, sites}.ts
         ├── synthesise/ {sources, entities, cross}.ts
-        ├── mirror/   {playbooks}.ts
+        ├── mirror/     {playbooks}.ts
+        ├── elicit/     {taxonomy, scan, guide, synthesise}.ts
         └── lint.ts
 ```
 
@@ -94,9 +101,19 @@ Admin-curated digests promoted from advisor sessions. Flow:
 4. An admin reviews and, on approval, moves the file to `lessons/`.
 5. The advisor reads `lessons/` alongside `wiki/` at runtime — they are surfaced together, never silently merged.
 
+### What goes in `elicitation/`
+
+The knowledge-elicitation engine — the part of the system that captures **tacit** knowledge the sources can't carry. It is the measurement-and-capture layer on top of the wiki:
+
+* `taxonomy.yaml` — the durable, hand-authored **completeness spec**: *areas → cells*, where each cell is one unit of knowledge a superhuman OpenG2P deployer must hold. This is the ruler the wiki is measured against; it is independent of which repos are ingested.
+* `gaps/` — generated each scan: a prioritised gap ledger plus `coverage.md`, whose headline number (the **superhuman index**) is the weighted % of cells backed by a page at `confidence ≥ medium`.
+* `interviews/` — generated interview guides for the top gaps; experts fill in answers inline, which are then synthesised into `lessons/proposed/`.
+
+The engine reuses the wiki's existing primitives (`confidence`, `research-queue.md`, `contradictions.md`, the advisor's `content-gaps.md`, and the `lessons/proposed → lessons/` promotion flow) rather than replacing them. See [Concept § Elicitation](concept.md#elicitation-knowing-what-you-dont-know) for the ideas and the [Elicitation Engine — Operating Guide](elicitation.md) for the workflow.
+
 ### What goes in `tools/`
 
-The ingest, synthesis, and lint scripts. See [Scripts](scripts.md).
+The ingest, synthesis, elicit, and lint scripts. See [Scripts](scripts.md).
 
 ## Confidence labelling
 

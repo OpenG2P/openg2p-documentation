@@ -1,6 +1,6 @@
 # Scripts
 
-All scripts live under `tools/` in the [g2p-wiki](https://github.com/OpenG2P/g2p-wiki) repository. They fall into four families: **ingest**, **synthesise**, **mirror**, and **utility** (lint, index, discovery, hash backfill).
+All scripts live under `tools/` in the [g2p-wiki](https://github.com/OpenG2P/g2p-wiki) repository. They fall into five families: **ingest**, **synthesise**, **mirror**, **elicit** (the knowledge-elicitation loop), and **utility** (lint, index, discovery, hash backfill).
 
 ## Setup
 
@@ -46,6 +46,16 @@ Synthesis is **LLM-driven**. It reads `raw/` and writes `wiki/`. This is the onl
 |---|---|
 | `npm run mirror:playbooks` | Copies playbook source pages from `raw/gitbook/` directly into `wiki/playbooks/` **verbatim**, bypassing synthesis. Playbooks are the operating contract for the advisor's project mode and must match the source word-for-word. |
 
+## Elicitation scripts
+
+The knowledge-elicitation loop — measure what the wiki is missing, turn the gaps into expert interview questions, and fold the answers back as lessons. See the [Elicitation Engine — Operating Guide](elicitation.md) for the full workflow.
+
+| Command | What it does |
+|---|---|
+| `npm run elicit:scan` | **No LLM.** Classifies every taxonomy cell (`elicitation/taxonomy.yaml`) as covered/partial/gap against the wiki, scores priority, and writes `elicitation/gaps/{gap-ledger.md,gap-ledger.json,coverage.md}`. `coverage.md` carries the headline **superhuman index**. |
+| `npm run elicit:guide` | Turns the top gaps into grounded interview guides under `elicitation/interviews/<cell>.md`. Flags: `--top N` (default 8), `--area <area>`, `<cell-id>`, and `--sharpen` (LLM-refine the questions — one `claude` call per cell). Without `--sharpen`, questions come verbatim from the taxonomy (no LLM). **Overwrites** the interview file for each cell — run before answers are filled in, never after. |
+| `npm run elicit:synthesise` | Reads a **filled** interview file (pass the filename; auto-found in `elicitation/interviews/` or `elicitation/intake/`), PII-scrubs it, and writes a confidence-scored draft to `lessons/proposed/<slug>.md`. Add `--dry-run` to preview without a model call. Promotion to `lessons/` stays a human/PR step. |
+
 ## Utility scripts
 
 | Command | What it does |
@@ -57,6 +67,22 @@ Synthesis is **LLM-driven**. It reads `raw/` and writes `wiki/`. This is the onl
 | `npm run typecheck` | TypeScript typecheck of the tools themselves. |
 
 You can also invoke the CLI directly: `npx tsx src/cli.ts <command> <subcommand>`.
+
+## When something changes — what to run
+
+A quick decision table. All commands run from `tools/`. The pipeline is two stages: **ingest** (mirror source → `raw/`) then **synthesise** (LLM: `raw/` → `wiki/`).
+
+| What changed | Run | Notes |
+|---|---|---|
+| **GitBook docs** edited / pages added or deleted upstream | `./update.sh` | Incremental; deleted pages are auto-removed from `raw/` and `wiki/sources/`. |
+| **GitBook section scope** (`.env` `GITBOOK_INCLUDE_SECTIONS`) | `rm -rf ../raw/gitbook` → `ingest:gitbook` → `synthesise:sources` → `synthesise:cross` → `lint` | Delete first to force a full re-mirror under the new scope (ingest is SHA-incremental). |
+| **A repo's code** changed | `ingest:repos` → `synthesise:entities` → `synthesise:cross` → `lint` | Each eligible repo is re-cloned fresh every run. |
+| **A repo added** to the `allow:` list in `raw/MANIFEST.yaml` | `ingest:repos` → `synthesise:entities` → `synthesise:cross` | New entity page is created. |
+| **A repo removed** from the `allow:` list | `rm -rf ../raw/repos/<repo> ../wiki/entities/<repo>.md` → `ingest:repos` → `synthesise:entities` → `synthesise:cross` | **Not auto-removed** — repo ingest and entity synthesis do not clean orphans, so delete them by hand. |
+| **You want to rebuild from scratch** | See [First run from empty state](#first-run-from-empty-state) below, after deleting the generated layers | Delete `raw/{gitbook,repos,sites,gdrive}` and `wiki/{sources,entities,concepts,comparisons,flows,playbooks}` + `wiki/{contradictions,index,log}.md`. **Keep** `raw/MANIFEST.yaml`, `wiki/overview.md`, `wiki/research-queue.md`, `lessons/`, and `elicitation/`. |
+| **A knowledge gap** to fill (capture tacit knowledge) | `elicit:scan` → `elicit:guide` → answer → `elicit:synthesise` → promote → `elicit:scan` | See the [Elicitation Engine — Operating Guide](elicitation.md). |
+
+> `wiki/` is git-tracked, so any synthesis run is recoverable with `git checkout -- wiki/` if the output looks wrong. Run the synthesise steps one at a time and check each before continuing.
 
 ## Routine update — `update.sh`
 

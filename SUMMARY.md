@@ -671,6 +671,7 @@
   * [Design](tools/g2p-wikillm/design.md)
   * [CLAUDE.md vs wiki/index.md](tools/g2p-wikillm/claude-md-vs-index.md)
   * [Scripts](tools/g2p-wikillm/scripts.md)
+  * [Elicitation Engine — Operating Guide](tools/g2p-wikillm/elicitation.md)
   * [Roadmap & Automation](tools/g2p-wikillm/automation-todo.md)
 * [G2P Advisor](tools/g2p-advisor/README.md)
   * [Concept](tools/g2p-advisor/concept.md)

@@ -9,9 +9,10 @@ The repository lives at [github.com/OpenG2P/g2p-wiki](https://github.com/OpenG2P
 ## What is here
 
 * `raw/` — immutable mirrors of the source material (GitBook docs, GitHub repos, website snapshot).
-* `wiki/` — LLM-built, cross-referenced markdown pages: concepts, entities, source summaries, comparisons, playbooks.
-* `lessons/` — admin-curated, anonymised digests promoted from advisor sessions.
-* `tools/` — ingest, synthesis, and lint scripts.
+* `wiki/` — LLM-built, cross-referenced markdown pages: concepts, entities, source summaries, comparisons, flows, playbooks.
+* `lessons/` — admin-curated, anonymised digests promoted from advisor sessions and expert elicitation.
+* `elicitation/` — the knowledge-elicitation engine: the taxonomy (completeness spec), gap ledger, and interview guides.
+* `tools/` — ingest, synthesis, elicit, and lint scripts.
 
 ## Why this exists
 
@@ -26,10 +27,11 @@ The advisor reads the wiki; it never queries GitBook or GitHub directly.
 
 ## Sub-pages
 
-* [Concept — WikiLLM](concept.md) — Karpathy's idea and what we adopted from it.
+* [Concept — WikiLLM](concept.md) — Karpathy's idea, the lens-not-mirror principle, and the elicitation concept.
 * [Design](design.md) — sources, folder structure, page types, conventions.
 * [CLAUDE.md vs wiki/index.md](claude-md-vs-index.md) — the two index-like files in the repo and how they differ.
-* [Scripts](scripts.md) — ingest, synthesise, lint, update — what each does and how to run it.
+* [Scripts](scripts.md) — ingest, synthesise, elicit, lint, update — what each does, how to run it, and what to run when something changes.
+* [Elicitation Engine — Operating Guide](elicitation.md) — the step-by-step loop for capturing tacit knowledge (scan → interview → synthesise → promote).
 * [Roadmap & Automation](automation-todo.md) — open TODOs and the plan for automatic updates when sources change.
 
 ## Editing rules

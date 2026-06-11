@@ -15,7 +15,7 @@ It is read by:
 It defines:
 
 * Directory layout and what each layer is for.
-* Page types (`concept`, `entity`, `source`, `comparison`, `playbook`) and the body schema each must follow.
+* Page types (`concept`, `entity`, `source`, `comparison`, `flow`, `playbook`, `glossary`, `lesson`) and the body schema each must follow.
 * Required frontmatter fields (`title`, `type`, `slug`, `sources`, `related`, `tags`, `created`, `updated`, `confidence`).
 * Wiki-link convention (`[[slug]]`).
 * The ingest, synthesis, and lint workflows.
