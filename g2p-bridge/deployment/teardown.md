@@ -79,10 +79,17 @@ cd g2p-bridge/deployment/scripts
 | `--postgres-namespace` | same as `--namespace` | Namespace of the Postgres instance. |
 | `--keep-example-bank-db` | off | Do **not** drop `example_bank_db` / `bankuser` (use when several Bridge releases share one Postgres). |
 | `--keep-pvs` | off | Delete PVCs but keep the PVs. |
+| `--drop-superset-ro` | off | Also drop the `superset_ro` analytics role and its Secret. Without it, they are left for a later reinstall. |
 | `--dry-run` | off | Print actions, change nothing. |
 | `--yes`, `-y` | off | Skip the interactive confirmation. |
 
 Requires: `kubectl` (cluster admin), `helm`, and `bash` 4+.
+
+{% hint style="info" %}
+The Superset **dashboards** are not removed by this script — they live in
+Superset's metadata DB. To remove them, run `remove_dashboards.py` in the Superset
+pod. See [Dashboards (Superset)](dashboards.md#uninstalling-cleanup).
+{% endhint %}
 
 {% hint style="warning" %}
 `example_bank_db` / `bankuser` are **fixed** names (not release-scoped). If
