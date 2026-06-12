@@ -88,7 +88,7 @@ Requires: `kubectl` (cluster admin), `helm`, and `bash` 4+.
 {% hint style="info" %}
 The Superset **dashboards** are not removed by this script — they live in
 Superset's metadata DB. To remove them, run `remove_dashboards.py` in the Superset
-pod. See [Dashboards (Superset)](dashboards.md#uninstalling-cleanup).
+pod. See [Dashboards (Superset) → Uninstalling](dashboards.md#uninstalling-clean-teardown).
 {% endhint %}
 
 {% hint style="warning" %}

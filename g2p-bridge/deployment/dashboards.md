@@ -103,34 +103,33 @@ would point at databases/tables that may not exist (broken charts). So they are
 loaded **only where the bridge data actually exists**, by an admin, against
 whichever database the connection points at.
 
-## Uninstalling / cleanup
+## Uninstalling — clean teardown
 
-Uninstalling the bridge does **not** remove the dashboards — they live in
-Superset's own metadata DB, which the bridge deliberately never touches. After a
-bridge uninstall they remain but become **broken** (they point at the dropped
-`g2p_bridge` database). This is harmless (read-only, no data) and they
-**self-heal on reinstall** — the database names are the same and the
-`<release>-superset-ro` Secret is kept (`resource-policy: keep`) so the password
-stays stable.
+To remove **everything** (nothing left hanging; a later reinstall is fresh), run
+these two commands, in order. Replace `<ns>` with your namespace.
 
-To remove them **permanently**:
+**Step 1 — remove the dashboards from Superset:**
 
-1. **Remove the dashboards from Superset** (the bridge can't reach Superset, so
-   this is a Superset-side step) — run the removal script in the Superset pod. It
-   deletes the five dashboards, their charts/datasets, and the three connections,
-   and touches nothing else:
-   ```bash
-   kubectl cp deployment/superset/remove_dashboards.py <ns>/<superset-pod>:/tmp/
-   kubectl -n <ns> exec <superset-pod> -- python /tmp/remove_dashboards.py
-   ```
-2. **Drop the read-only role + secret** — pass `--drop-superset-ro` to the
-   uninstall script:
-   ```bash
-   ./uninstall-bridge.sh --namespace <ns> --drop-superset-ro
-   ```
-   Without the flag, `superset_ro` and its Secret are left in place (so a later
-   reinstall reuses the same password). See
-   [Teardown / Uninstall](teardown.md).
+```bash
+SP=$(kubectl -n <ns> get pods -o name | grep -E "superset-[0-9a-f]+-" | grep -v worker | grep -v init | head -1)
+kubectl cp deployment/superset/remove_dashboards.py <ns>/${SP#pod/}:/tmp/
+kubectl -n <ns> exec ${SP#pod/} -- python /tmp/remove_dashboards.py
+```
+
+**Step 2 — uninstall the bridge (DBs, roles, the `superset_ro` role + Secret, everything):**
+
+```bash
+deployment/scripts/uninstall-bridge.sh --namespace <ns> --drop-superset-ro --yes
+```
+
+Done — Superset has no bridge dashboards/connections, Postgres has no bridge DBs
+or roles, and Kubernetes has no bridge workloads/secrets.
+
+{% hint style="info" %}
+If you uninstall the bridge **without** Step 1, the dashboards stay in Superset
+but break (they point at the dropped database). They are harmless and reconnect
+automatically if you reinstall. Step 1 simply removes them for good.
+{% endhint %}
 
 ## Maintaining the bundle (for maintainers)
 
