@@ -156,9 +156,7 @@ The IAM service acts as the **central authority for authorization logic**.
 
 #### **Repository**
 
-[`openg2p-iam-service`](https://github.com/OpenG2P/openg2p-iam-service)
-
-[`openg2p-iam-service-deployment`](https://github.com/OpenG2P/openg2p-iam-service-deployment)
+[`iam-service`](https://github.com/OpenG2P/iam-service) — a single consolidated repository containing the IAM source (`iam-core`, `iam-*-portal-api`), the Docker images (`docker/`), and the Helm chart (`deployments/charts/openg2p-iam-service`).
 
 ***
 

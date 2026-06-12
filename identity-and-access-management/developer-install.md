@@ -40,7 +40,7 @@ cd staff-portal
 
 ```sh
 git clone https://github.com/OpenG2P/openg2p-fastapi-common.git
-git clone https://github.com/OpenG2P/openg2p-iam-service.git
+git clone https://github.com/OpenG2P/iam-service.git
 ```
 
 * Create a virtual environment with Python 3.10
@@ -67,14 +67,14 @@ cd ..
 
 ```sh
 pip install -e openg2p-fastapi-common/openg2p-fastapi-common
-pip install -e openg2p-iam-service/iam-core
-pip install -e openg2p-iam-service/iam-staff-portal-api
+pip install -e iam-service/iam-core
+pip install -e iam-service/iam-staff-portal-api
 ```
 
-* Create a `.env` file in the `openg2p-iam-service/iam-staff-portal-api` directory.
+* Create a `.env` file in the `iam-service/iam-staff-portal-api` directory.
 
 ```
-cd openg2p-iam-service/iam-staff-portal-api
+cd iam-service/iam-staff-portal-api
 touch .env
 ```
 
@@ -107,7 +107,7 @@ iam_staff_openapi_root_path= "/"
 * Run migrations to set up the database.
 
 ```
-cd openg2p-iam-service/iam-staff-portal-api
+cd iam-service/iam-staff-portal-api
 python3 -m iam_staff_portal_api.main migrate
 ```
 
@@ -179,7 +179,7 @@ sudo service nginx restart
 * Start the development server.
 
 ```sh
-cd openg2p-iam-service/iam-staff-portal-api
+cd iam-service/iam-staff-portal-api
 uvicorn iam_staff_portal_api.main:app --reload
 ```
 

@@ -69,7 +69,7 @@ Install in this exact order:
 ```bash
 pip install -e $REPOS/openg2p-fastapi-common/openg2p-fastapi-common
 pip install -e $REPOS/openg2p-fastapi-common/openg2p-fastapi-auth
-pip install -e $REPOS/openg2p-iam-service/iam-core
+pip install -e $REPOS/iam-service/iam-core
 pip install -e $REPOS/openg2p-registry-gen2-core/openg2p-registry-core
 
 # IMPORTANT: farmer-extension is installed NON-editable (no -e). See note below.

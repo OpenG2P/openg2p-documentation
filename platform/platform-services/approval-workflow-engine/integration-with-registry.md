@@ -375,9 +375,9 @@ alone.
 | CR controller | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../controllers/g2p_register_change_request_controller.py` |
 | CR service (approval logic) | `openg2p-registry-gen2-core/openg2p-registry-core/.../services/g2p_register_service.py`, `_approve_change_request_core()` |
 | CR model | `openg2p-registry-gen2-core/openg2p-registry-core/.../models/g2p_register_change_request.py` |
-| Auth middleware | `openg2p-iam-service/iam-core/.../user_auth/middleware.py`, `AuthMiddleware` |
-| `AuthPrincipal` schema | `openg2p-iam-service/iam-core/.../schemas/auth_principal.py` |
+| Auth middleware | `iam-service/iam-core/.../user_auth/middleware.py`, `AuthMiddleware` |
+| `AuthPrincipal` schema | `iam-service/iam-core/.../schemas/auth_principal.py` |
 | Outbound httpx pattern | `openg2p-registry-gen2-core/openg2p-registry-core/.../helpers/websub_helper.py` |
-| Inbound signature validation pattern | `openg2p-iam-service/iam-core/.../partner_auth/jwt_signature_validator.py` |
+| Inbound signature validation pattern | `iam-service/iam-core/.../partner_auth/jwt_signature_validator.py` |
 | Staff-portal config | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../config.py` |
 | Staff-portal main / lifespan | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../main.py` |

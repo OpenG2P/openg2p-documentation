@@ -58,7 +58,7 @@ Each backend service has a spec under `docker/{service}/develop.txt`. Line 1 dec
 #!openg2p/openg2p-{variant}-staff-portal-api:develop
 ./{variant}-extension
 git://{pin}//https://github.com/openg2p/openg2p-fastapi-common#subdirectory=openg2p-fastapi-common
-git://{pin}//https://github.com/openg2p/openg2p-iam-service#subdirectory=iam-core
+git://{pin}//https://github.com/openg2p/iam-service#subdirectory=iam-core
 git://{pin}//https://github.com/openg2p/openg2p-registry-gen2-core#subdirectory=openg2p-registry-core
 git://{pin}//https://github.com/openg2p/openg2p-registry-gen2-apis#subdirectory=openg2p-registry-staff-portal-api
 ```
