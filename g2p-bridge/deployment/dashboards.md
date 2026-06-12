@@ -88,12 +88,35 @@ in place** (matched by UUID) — same dashboards, **same URLs**, content replace
 It is not a delete-and-recreate, and it never creates duplicates. Note it is an
 *update*, not a full sync: a chart removed in a newer bundle is not auto-deleted.
 
-## Connection details
+## Connection details (host / database are environment-specific)
 
-The imported connections point at host **`commons-postgresql`** and databases
-**`g2p_bridge`**, **`spar`**, **`example_bank_db`**. If the bridge release was
-**renamed** (e.g. `g2p-bridge2` → DB `g2p_bridge2`), edit that one connection's
-database name during/after import — everything else is unchanged.
+A Superset export stores each connection's **full host + database** — the bundled
+ZIP was generated in-cluster, so its three connections point at host
+**`commons-postgresql`** / databases **`g2p_bridge`**, **`spar`**,
+**`example_bank_db`**. On import Superset keeps host and database and only
+re-prompts for the **password**. So the bundle works as-is **only** when your
+Postgres is the in-cluster `commons-postgresql`. Adjust for your environment:
+
+* **External / non-default Postgres host** — the imported connections will import
+  fine but **fail to connect** (they still say `commons-postgresql`). Fix it one
+  of two ways:
+  * **Edit the connections** after import — Settings → *Database Connections* →
+    edit each of the 3 (`g2p_bridge`, `spar`, `example_bank`) and change the
+    **host:port** to your external Postgres.
+  * **Provision instead of importing** (recommended for external DBs) — run
+    `provision_dashboards.py` with the host passed in, so the connections are
+    built against your actual Postgres:
+    ```bash
+    PG_HOST=<external-host> \
+      RO_PASS=$(kubectl -n <ns> get secret <release>-superset-ro -o jsonpath='{.data.password}' | base64 -d) \
+      python /tmp/provision_dashboards.py     # run inside the Superset pod
+    ```
+* **Renamed release** (e.g. `g2p-bridge2` → DB `g2p_bridge2`) — edit that one
+  connection's **database name** during/after import.
+
+The read-only role itself is created on whatever `global.postgresqlHost` points
+at, so it already works with external Postgres — only the static bundle carries a
+fixed host.
 
 ## Why manual
 

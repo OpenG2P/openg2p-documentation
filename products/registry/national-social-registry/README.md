@@ -164,7 +164,8 @@ The chart contains the full deployment definition — Staff Portal API/UI, Partn
    * `openg2p/openg2p-nsr-db-seed`
    * `openg2p/openg2p-registry-staff-portal-ui` _(the common UI image, built by `registry-platform`)_
 2. **ID Generator `idTypes`** — `individual` (length 12) and `household` (length 10).
-3. **Rancher branding** — `catalog.cattle.io/display-name: OpenG2P NSR` and a `questions.yaml` for the Rancher form.
+3. **`global.registryVariant: nsr`** — informational flag identifying this deployment as the NSR variant of the registry platform.
+4. **Rancher branding** — `catalog.cattle.io/display-name: OpenG2P NSR` and a `questions.yaml` for the Rancher form.
 
 ### Installing
 
