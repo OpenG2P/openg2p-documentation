@@ -26,7 +26,7 @@ The Farmer Profile's key functions include **Data Collection, Data Validation an
 
 **Data Validation and Enrichment** functions are supported through data validation mechanism, national ID-based validation using the farmer's national ID, integration with external databases to enrich the registry, and integration with land registry databases to streamline the collection of land parcel data.
 
-OpenG2P supports the **Data Sharing** function by sharing data from the registry in a standardized manner. Analytics and Reporting includes reporting and dashboards using Apache Superset and the Reporting Framework, real-time system health monitoring, and revision history to track changes and generate reports.
+OpenG2P supports the **Data Sharing** function by sharing data from the registry in a standardized manner. Analytics and Reporting includes reporting and dashboards using Apache Superset, real-time system health monitoring, and revision history to track changes and generate reports.
 
 ## Solution approach
 
@@ -78,9 +78,8 @@ _Data Sharing_: Data stored in the registry can be easily shared in a standardiz
 <summary>Analytics and reporting</summary>
 
 * _Reporting and Dashboards_: OpenG2P's monitoring and logging tools allow program administrators to track the progress of the registry, and keep an eye on system health. They can do this through:
-  1. Visual dashboards for monitoring using Apache Superset
-  2. Generating reports using Reporting Framework&#x20;
-  3. Real-time system health monitoring&#x20;
+  1. Visual dashboards and reports using Apache Superset
+  2. Real-time system health monitoring&#x20;
 * _Revision history_: The system captures any changes or updates to records within the Registry. Administrators have the ability to view information associated with a registry record as it existed on previous dates. Additionally, administrators have the ability to generate reports that aggregate data for a previous period. The Department can use this feature to analyze changes among individual farmers or in a geographic area to understand the impact of natural changes or programmes and policies.&#x20;
 
 </details>

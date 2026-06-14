@@ -53,7 +53,6 @@ Installs application services:
 | **Keymanager**            | Cryptographic key management                                                       |
 | **ODK Central**           | Data collection                                                                    |
 | **OpenG2P Master Data**   | Master data service                                                                |
-| **Reporting**             | Reporting framework                                                                |
 | **Artifactory**           | Artifact repository                                                                |
 | **OpenG2P IAM Service**   | Identity and access management API                                                 |
 | **OpenG2P Audit Manager** | Centralized audit event collector (Kafka-backed, stores audit trail in PostgreSQL) |
