@@ -1,13 +1,14 @@
 ---
 description: >-
-  Optional AWS provisioning for the three-node infrastructure — creates the
-  three EC2 instances, security groups, Elastic IP, and writes provision-output.yaml
-  for the orchestrator to consume.
+  Optional AWS provisioning for the production infrastructure — creates the
+  EC2 instances (Reverse Proxy, Compute, Storage, and the Backup node),
+  security groups, Elastic IP, and writes provision-output.yaml for the
+  orchestrator to consume.
 ---
 
 # AWS Provisioning (optional)
 
-The bundled AWS provisioning is a separate, optional step that creates the three EC2 instances and the supporting AWS resources, then writes `provision-output.yaml` for the orchestrator to consume. Lives at `automation/production/aws/`.
+The bundled AWS provisioning is a separate, optional step that creates the EC2 instances — Reverse Proxy, Compute, Storage, and (with `backup_node.enabled: true`) the Backup node — and the supporting AWS resources, then writes `provision-output.yaml` for the orchestrator to consume. Lives at `automation/production/aws/`.
 
 Use it if you don't already have VMs. If you have your own VMs (other clouds, on-prem, manual EC2), skip this page and go straight to [Step 1 of the infrastructure automation](README.md#step-1-clone-and-configure).
 

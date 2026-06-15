@@ -48,7 +48,7 @@ If a configured passphrase file does not exist when `install` runs, the orchestr
 
 ## Production-side prerequisites
 
-The 3-node platform install (`openg2p-prod.sh`) must be **complete** before backups can install. Specifically:
+The production platform install (`openg2p-prod.sh`) must be **complete** before backups can install. Specifically:
 
 * RKE2 must be running on compute (etcd snapshot config is a `systemctl restart rke2-server` on a working RKE2)
 * Postgres must be running on storage (pgBackRest stanza-create needs a live PG)

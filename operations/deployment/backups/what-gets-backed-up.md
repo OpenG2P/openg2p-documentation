@@ -1,5 +1,5 @@
 ---
-description: Per-component table of what is backed up, plus the rationale for what is lost vs. recreated when you re-run the 3-node automation.
+description: Per-component table of what is backed up, plus the rationale for what is lost vs. recreated when you re-run the production automation.
 ---
 
 # What gets backed up

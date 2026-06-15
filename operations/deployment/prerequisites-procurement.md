@@ -6,10 +6,10 @@ description: >-
 
 # Prerequisites & Procurement
 
-This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page. Conceptual background lives in [OpenG2P Deployment Architecture](../../deployment/openg2p-deployment-model.md) and [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
+This page assumes a **single production environment** and a DevOps reader. It lists the procurement requirements only — install steps live on the [Infrastructure Automation](infrastructure-setup/production-automation/) page. Conceptual background lives in [OpenG2P Deployment Architecture](../../deployment/openg2p-deployment-model.md) and [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md).
 
 {% hint style="info" %}
-**Production deployment flow:**  **1. Procurement** (this page)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/three-node-automation/)  →  [4. Environment](environment-setup-multi-node.md)  →  [5. Modules](environment-setup-multi-node.md#next-install-your-openg2p-modules)
+**Production deployment flow:**  **1. Procurement** (this page)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/production-automation/)  →  [4. Environment](environment-setup-multi-node.md)  →  [5. Modules](environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
 {% hint style="warning" %}
@@ -32,7 +32,7 @@ Both are supported. The requirements are identical **except** for the four point
 | DNS resolver for admin VPN clients  | Your internal DNS server IP                                            | VPC DNS resolver (`<vpc-base>.2`)           |
 
 {% hint style="info" %}
-This page assumes the three VMs (Reverse Proxy, Compute, Storage) are **already provisioned**. On AWS you may use your own Terraform / console / CloudFormation — the bundled `openg2p-aws-provision.sh` is optional.
+This page assumes the four VMs (Reverse Proxy, Compute, Storage, Backup) are **already provisioned**. On AWS you may use your own Terraform / console / CloudFormation — the bundled `openg2p-aws-provision.sh` is optional.
 {% endhint %}
 
 ## Deployment-specific values
@@ -49,9 +49,9 @@ The requirements below refer to these values. Determine them for your deployment
 
 ## What to procure
 
-### Compute (the three VMs)
+### Compute (the four VMs)
 
-Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access)).
+Provision four Ubuntu Server 24.04 LTS machines on the same private subnet, with internet egress available during install (apt, RKE2, Helm charts). Each is **single-NIC** — channel separation is handled by the firewall + nginx, not by extra interfaces (see [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access)).
 
 | Role          | vCPU | RAM   | Root disk      | Notes                                                                         |
 | ------------- | ---- | ----- | -------------- | ----------------------------------------------------------------------------- |
@@ -63,7 +63,7 @@ Provision three Ubuntu Server 24.04 LTS machines on the same private subnet, wit
 These are minimums; larger is fine and smaller may fail preflight.
 
 * **On-prem:** provision on your hypervisor (capacity approval + VM creation is itself a procurement lead-time item — request early).
-* **On AWS:** equivalent instance types are roughly `t3a.medium` (RP), `m5a.4xlarge` (Compute), `t3a.2xlarge` (Storage), each with a gp3 root volume. You may provision with your own tooling, or use the bundled `openg2p-aws-provision.sh`.
+* **On AWS:** equivalent instance types are roughly `t3a.medium` (RP), `m5a.4xlarge` (Compute), `t3a.2xlarge` (Storage), and `t3a.large` (Backup), each with a gp3 root volume (a larger, cheaper volume — `st1`/`sc1` — is fine for the Backup node). You may provision with your own tooling, or use the bundled `openg2p-aws-provision.sh`.
 
 ### DNS records
 
@@ -97,19 +97,19 @@ Accepted formats (the install scripts auto-detect):
 | PFX / P12                       | `<DOMAIN>.pfx` (or `.p12`) + the password                   |
 | ZIP bundle (Sectigo / DigiCert) | `<DOMAIN>.zip`                                              |
 
-The cert team delivers the issued **files** to the deployer (secure transfer — SFTP, encrypted mail, or a secrets vault). They need **no access to the OpenG2P servers** — the install automation places the files on the server. The deployer then references them by path in `prod-config.yaml`; see [Infrastructure Automation → Step 1](infrastructure-setup/three-node-automation/#step-1-clone-and-configure).
+The cert team delivers the issued **files** to the deployer (secure transfer — SFTP, encrypted mail, or a secrets vault). They need **no access to the OpenG2P servers** — the install automation places the files on the server. The deployer then references them by path in `prod-config.yaml`; see [Infrastructure Automation → Step 1](infrastructure-setup/production-automation/#step-1-clone-and-configure).
 
 {% hint style="warning" %}
 **Don't use Let's Encrypt for production.** It's fine for a sandbox or PoC, but most governments require certs from a commercial CA (DigiCert, GlobalSign, Sectigo) or their national / sovereign CA. The installer defaults to customer-provided certs; Let's Encrypt is a sandbox-only option.
 {% endhint %}
 
 {% hint style="info" %}
-**Advanced — separate admin domain.** This page assumes one domain for both admin and citizen hostnames (the common case). If your organisation requires admin tools on a wholly separate domain, procure a second wildcard cert and set the per-service `*_hostname` / `tls_*` keys in `prod-config.yaml`. See the [Infrastructure Automation](infrastructure-setup/three-node-automation/) page for the config-key details.
+**Advanced — separate admin domain.** This page assumes one domain for both admin and citizen hostnames (the common case). If your organisation requires admin tools on a wholly separate domain, procure a second wildcard cert and set the per-service `*_hostname` / `tls_*` keys in `prod-config.yaml`. See the [Infrastructure Automation](infrastructure-setup/production-automation/) page for the config-key details.
 {% endhint %}
 
 ### Server access
 
-SSH with **passwordless sudo** to all three VMs (Reverse-Proxy, Compute, Storage), as `SSH_USER`, from `ADMIN_CIDR`.
+SSH with **passwordless sudo** to all four VMs (Reverse-Proxy, Compute, Storage, Backup), as `SSH_USER`, from `ADMIN_CIDR`.
 
 ### Network ports (firewall)
 
@@ -145,12 +145,12 @@ Ingress rules at the network boundary. The per-host firewall (`ufw`) is configur
 
 ## Next: install
 
-Once everything above is in place — DNS records created, certificate files in hand on the deployer's workstation, server access and firewall confirmed — continue with the [three-node infrastructure automation](infrastructure-setup/three-node-automation/). The install guide takes you through placing the cert files locally, configuring `prod-config.yaml`, validating, and running the install.
+Once everything above is in place — DNS records created, certificate files in hand on the deployer's workstation, server access and firewall confirmed — continue with the [production infrastructure automation](infrastructure-setup/production-automation/). The install guide takes you through placing the cert files locally, configuring `prod-config.yaml`, validating, and running the install.
 
 
 ## Related pages
 
-* [Three-node infrastructure automation](infrastructure-setup/three-node-automation/) — install the cluster once certs are in place
+* [Production infrastructure automation](infrastructure-setup/production-automation/) — install the cluster once certs are in place
 * [Environment setup](environment-setup-multi-node.md) — install OpenG2P modules into the production environment
 * [DNS & TLS Certificates](deployment-guide/dns-and-certificates.md) — cert formats in government procurement
 * [Private Access Channel](deployment-guide/private-access-channel.md) — why admin tools sit behind the VPN

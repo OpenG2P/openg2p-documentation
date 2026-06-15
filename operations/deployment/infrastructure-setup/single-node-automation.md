@@ -433,7 +433,7 @@ The services chart automatically connects to base infrastructure via release nam
 sudo ./openg2p-infra.sh --config infra-config.yaml              # Full setup
 sudo ./openg2p-infra.sh --config infra-config.yaml --phase 1    # Host setup only
 sudo ./openg2p-infra.sh --config infra-config.yaml --phase 2    # Helmfile only
-sudo ./openg2p-infra.sh --config infra-config.yaml --phase 3    # Rancher config only (local admin, cluster name, roles)
+sudo ./openg2p-infra.sh --config infra-config.yaml --phase 3    # Rancher config only (local admin, cluster name, roles, catalog repo)
 sudo ./openg2p-infra.sh --config infra-config.yaml --force       # Re-run everything
 sudo ./openg2p-infra.sh --config infra-config.yaml --dry-run     # Preview
 sudo ./openg2p-infra.sh --reset                                   # Clear state markers
@@ -481,7 +481,7 @@ automation/single-node/
 │   ├── utils.sh          # Shared: logging, state, config, wait helpers
 │   ├── phase1.sh         # Infra Phase 1: tools, firewall (public_access), RKE2, Wireguard, NFS, DNS, TLS, Nginx
 │   ├── phase2.sh         # Infra Phase 2: Istio, Helmfile sync
-│   ├── phase3.sh         # Infra Phase 3: Rancher config (local admin, cluster name, roles)
+│   ├── phase3.sh         # Infra Phase 3: Rancher config (local admin, cluster name, roles, catalog repo)
 │   ├── env-phase1.sh     # Env Phase 1: certs, Nginx, namespace, Rancher project, Istio GW
 │   └── env-phase2.sh     # Env Phase 2: commons helm install (future: more modules)
 ├── aws/
@@ -513,4 +513,6 @@ journalctl -u rke2-server -n 50               # RKE2 logs
 
 {% hint style="info" %}
 This automation does not replace the Rancher UI. Your existing umbrella Helm charts with `questions.yml` continue to work for manual installs via the Rancher App Catalog.
+
+Infra Phase 3 pre-registers the **OpenG2P Helm repository** (`https://openg2p.github.io/openg2p-helm/rancher`) as a Rancher catalog ClusterRepo named `openg2p`, so the OpenG2P charts are available out of the box under **Rancher UI → Apps → Repositories / Charts**.
 {% endhint %}

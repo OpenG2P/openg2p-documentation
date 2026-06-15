@@ -51,7 +51,7 @@ postgresql:
 ```
 
 {% hint style="info" %}
-In **three-node production** the PostgreSQL server is the **external host instance on the Storage node**, so set `host` to that node's address rather than an in-cluster service name. The `commons-postgresql` secret (created by the environment stage) holds the superuser credentials the init Job uses to create databases and roles.
+In **production** the PostgreSQL server is the **external host instance on the Storage node**, so set `host` to that node's address rather than an in-cluster service name. The `commons-postgresql` secret (created by the environment stage) holds the superuser credentials the init Job uses to create databases and roles.
 {% endhint %}
 
 * Add list of databases you wish to create:

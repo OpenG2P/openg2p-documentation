@@ -38,5 +38,5 @@ Grafana ships with the cluster's monitoring stack and is reached **through the R
 Loki's ruler evaluates **LogQL alert rules** (high error rate, fatals/panics/OOM, auth-failure bursts, and a dead-man's-switch if the pipeline goes silent) and forwards firing alerts to the same **Alertmanager** that ships with Rancher monitoring. Tune the thresholds per environment; see the alerting configuration in the production automation.
 
 {% hint style="info" %}
-The three-node production automation installs this whole pipeline (OTel agent → gateway → Loki + dedicated MinIO → Grafana datasource) as part of the infrastructure stage — no manual setup is needed.
+The production automation installs this whole pipeline (OTel agent → gateway → Loki + dedicated MinIO → Grafana datasource) as part of the infrastructure stage — no manual setup is needed.
 {% endhint %}

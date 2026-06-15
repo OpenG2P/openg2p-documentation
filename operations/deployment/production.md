@@ -11,7 +11,7 @@ The guide here provides some useful hints for production and pilot deployments. 
 {% endhint %}
 
 {% hint style="warning" %}
-These best practices may demand **additional hardware and other resources**. Please review all the recommendations carefully and assess your production deployment requirements in addition to those specified under [Prerequisites & Procurement](prerequisites-procurement.md#compute-the-three-vms).
+These best practices may demand **additional hardware and other resources**. Please review all the recommendations carefully and assess your production deployment requirements in addition to those specified under [Prerequisites & Procurement](prerequisites-procurement.md#compute-the-four-vms).
 {% endhint %}
 
 ## Backups
@@ -106,7 +106,7 @@ Carefully assign roles to Rancher users. Pre-defined role templates are availabl
 #### Node replication
 
 * Provisioning of VMs across different underlying hardware and subnets for resilience.
-* Minimum 3 nodes for Rancher and OpenG2P cluster (3 control planes).
+* For high availability, run an odd number of Kubernetes control-plane nodes — minimum 3 (this is the control-plane count for HA, separate from the four-node Production — Minimum topology of Reverse Proxy, Compute, Storage, and Backup).
 
 Refer to the [Scaling](_archive/scaling/) guide for multi-VM architecture.
 

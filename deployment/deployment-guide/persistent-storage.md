@@ -3,7 +3,7 @@
 This document provides information on all the Persistent storages, i.e., PVs (Persistent Volume) and PVCs (Persistent Volume Claim), in OpenG2P deployments. It describes the type of storage, deletion behavior, and how to identify which PV belongs to which pod. It also defines and highlights the specific behavior of the StatefulSets and Deployments.
 
 {% hint style="info" %}
-In **three-node production**, PVs are backed by the **NFS server on the Storage node** (via the `nfs-csi` StorageClass), and **PostgreSQL runs as a host install on the Storage node — it has no in-cluster PVC**. (PostgreSQL only appears as an in-cluster StatefulSet/PVC on a sandbox or a legacy in-cluster-PG install.) Cluster logging is handled by OpenTelemetry + Loki — there is **no OpenSearch** PV.
+In **production**, PVs are backed by the **NFS server on the Storage node** (via the `nfs-csi` StorageClass), and **PostgreSQL runs as a host install on the Storage node — it has no in-cluster PVC**. (PostgreSQL only appears as an in-cluster StatefulSet/PVC on a sandbox or a legacy in-cluster-PG install.) Cluster logging is handled by OpenTelemetry + Loki — there is **no OpenSearch** PV.
 {% endhint %}
 
 ### **Types of persistent storage**

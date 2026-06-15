@@ -7,7 +7,7 @@ description: >-
 # Transitioning PostgreSQL From Docker on K8s to Standalone PostgreSQL
 
 {% hint style="info" %}
-**Legacy migration — new deployments don't need this.** Current OpenG2P production already runs an **external standalone PostgreSQL on the Storage node** out of the box (the in-cluster Docker/StatefulSet PostgreSQL is disabled). This guide is only for **migrating an older installation** that still runs PostgreSQL in-cluster onto an external host. If you are deploying fresh with the three-node automation, the database is already external — start at [Configure External Database](configure-external-database-to-connect-openg2p-environment.md) instead.
+**Legacy migration — new deployments don't need this.** Current OpenG2P production already runs an **external standalone PostgreSQL on the Storage node** out of the box (the in-cluster Docker/StatefulSet PostgreSQL is disabled). This guide is only for **migrating an older installation** that still runs PostgreSQL in-cluster onto an external host. If you are deploying fresh with the production automation, the database is already external — start at [Configure External Database](configure-external-database-to-connect-openg2p-environment.md) instead.
 {% endhint %}
 
 Migrating PostgreSQL from a Kubernetes cluster (running in Docker containers with NFS storage) to an external standalone instance is a strategic move for improving scalability, performance, and manageability in production. Below is a step-by-step guide to performing this transition with minimal disruption.

@@ -40,7 +40,7 @@ cd ../
 ./openg2p-prod.sh --config prod-config.yaml
 ```
 
-This runs the full 3-node automation. Result: a clean OpenG2P install with no customer data, default Rancher/Keycloak/etc.
+This runs the full production automation. Result: a clean OpenG2P install with no customer data, default Rancher/Keycloak/etc.
 
 Verify:
 ```bash

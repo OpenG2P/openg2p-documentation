@@ -7,7 +7,7 @@ description: >-
 # Set up Slack alerts for a Kubernetes cluster
 
 {% hint style="info" %}
-**In three-node production this is already wired up — you just supply the channel.** The infrastructure automation installs Prometheus + Alertmanager (metrics) and Grafana Loki (logs) with alert rules preconfigured. You enable notification channels by setting the corresponding keys in `prod-config.yaml` and re-running the compute stage — no manual `alertmanager.yaml` editing:
+**In production this is already wired up — you just supply the channel.** The infrastructure automation installs Prometheus + Alertmanager (metrics) and Grafana Loki (logs) with alert rules preconfigured. You enable notification channels by setting the corresponding keys in `prod-config.yaml` and re-running the compute stage — no manual `alertmanager.yaml` editing:
 
 * **Slack** — `alert_slack_webhook_url`, `alert_slack_channel`
 * **Email (SMTP)** — `alert_smtp_smarthost`, `alert_smtp_from`, `alert_smtp_username`, `alert_smtp_password`, `alert_smtp_to`

@@ -1,20 +1,20 @@
 ---
 description: >-
-  Backup and restore automation for OpenG2P 3-node production installs —
+  Backup and restore automation for OpenG2P production installs —
   PostgreSQL via pgBackRest, etcd snapshots, rancher-backup for Kubernetes
   resources, restic for NFS data and configs. Pull-based f
 ---
 
 # Backups
 
-This page is the entry point for the OpenG2P backup automation that lives at `automation/backups/openg2p-backup.sh` in the deployment repo. It complements the [Three-Node Automation](../infrastructure-setup/three-node-automation/): the 3-node script gets the platform up, the backup automation keeps it recoverable.
+This page is the entry point for the OpenG2P backup automation that lives at `automation/backups/openg2p-backup.sh` in the deployment repo. It complements the [Production Automation](../infrastructure-setup/production-automation/): the production script gets the platform up, the backup automation keeps it recoverable.
 
 {% hint style="info" %}
 **Ongoing operational concern** — not a one-time deployment stage. Configure backups **before go-live** and keep them running throughout the system's lifetime. For the staged Production rollout, see the [Production overview](../infrastructure-setup/).
 {% endhint %}
 
 {% hint style="info" %}
-The whole stack is opt-in. You can deploy the 3-node platform without backups, then add backups later by running aws-provision again with `backup_node.enabled: true` and running `openg2p-backup.sh install`.
+Backups are **required for production** and must be in place before go-live — the Backup node is the 4th node of the production topology. The platform install and the backup setup are **separate steps**: bring the cluster up first, then provision the Backup node (`backup_node.enabled: true`) and run `openg2p-backup.sh install`. (You *can* stand the platform up first and add backups before go-live, but a production deployment is not complete without them.)
 {% endhint %}
 
 ## What this is, in one paragraph
@@ -82,7 +82,7 @@ All of these are configurable via `backup-config.yaml` schedules. The defaults m
 * **Multi-site / offsite replication.** v1 keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — this is 1/1/0. Plan a second offsite target later via `restic copy` or pgBackRest's secondary repo support.
 * **Mass alerting.** Status is exposed as `/var/lib/openg2p-backup/.status.json` on the backup host. A Phase 2 layer wires that into Prometheus/email/Slack (see [Alerting](alerting.md)).
 * **Full disaster-recovery rehearsal.** Weekly drills do per-component verify + dry-run-restore. Cluster-wide rehearsals into a sandbox VPC are a manual, separately-scheduled operator activity.
-* **Restoring to a different cluster topology.** Restore assumes you're rebuilding into the same 3-node shape. Cross-version or cross-architecture restore is out of scope.
+* **Restoring to a different cluster topology.** Restore assumes you're rebuilding into the same production shape. Cross-version or cross-architecture restore is out of scope.
 
 ## Reference
 

@@ -1,15 +1,15 @@
 ---
 description: >-
-  Three-node production deployment automation — one orchestrator script that
+  Production deployment automation — one orchestrator script that
   drives a Reverse Proxy, Compute (Kubernetes), and Storage node from the
   admin's laptop, with optional AWS provisioning.
 ---
 
 # Infrastructure Automation
 
-The three-node automation provisions a complete production OpenG2P infrastructure across three Ubuntu 24.04 VMs from your laptop, with a single command. It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across three role-specialised machines.
+The production automation provisions the OpenG2P platform across three role-specialised Ubuntu 24.04 VMs — Reverse Proxy, Compute, and Storage — from your laptop, with a single command. (The fourth node, **Backup**, is required for production and is set up by the separate [backup automation](../../backups/).) It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across role-specialised machines.
 
-<figure><img src="../../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption><p>Three-node architecture — Reverse Proxy, Compute (Kubernetes), and Storage</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption><p>The three platform VMs this automation provisions — Reverse Proxy, Compute (Kubernetes), and Storage (the Backup node is set up separately)</p></figcaption></figure>
 
 {% hint style="info" %}
 **Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  [2. Provisioning](../provisioning.md)  →  **3. Infrastructure** (this page)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
@@ -27,7 +27,7 @@ The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/o
 
 ## How it works (in brief)
 
-Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum-three-node) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 **What gets installed and configured:**
 
@@ -69,7 +69,7 @@ Preflight is non-destructive. Run until everything reports green, then proceed t
 | `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                            |
 | `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`  | Wrong cert for that hostname (see [TLS certificate](../../prerequisites-procurement.md#tls-certificate)) |
 | `Cert ./certs/rancher.pem: key does not match cert`                   | Mismatched cert/key pair                                                                                 |
-| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [Compute](../../prerequisites-procurement.md#compute-the-three-vms))                  |
+| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [Compute](../../prerequisites-procurement.md#compute-the-four-vms))                  |
 
 ## How to use the script
 
@@ -663,7 +663,7 @@ The following are deferred to follow-up automation, not gaps:
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.
 * **Local Git repository** — deferred.
 * **Air-gap / offline operation** — initial install requires internet. Self-contained operation is a later phase.
-* **Backup node and backup automation** — out of scope for v1.
+* **Backup node and backup automation** — the Backup node (the 4th node) is **required for production**, but it is set up by a **separate** tool, not this orchestrator. See [Backups](../../backups/).
 
 ### The orchestrator's `.state/` directory
 
@@ -678,4 +678,4 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 * [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md) — the deployment models (Sandbox, Production — Minimum, Production — High-Availability) and where this automation fits.
 * [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md) — wildcard vs per-FQDN trade-offs in gov procurement, and the cert formats customers actually have.
 * [Prerequisites & Procurement](../../prerequisites-procurement.md) — compute, DNS, certs, access, firewall to arrange before install.
-* [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with three-node.
+* [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with production.

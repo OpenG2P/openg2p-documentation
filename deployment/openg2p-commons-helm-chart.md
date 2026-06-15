@@ -128,7 +128,7 @@ This separation ensures backend services work without external DNS, while browse
 The commons charts **do not handle logging**. Pod logs are collected cluster-wide at the **infrastructure layer** by the OpenTelemetry + Grafana Loki stack (an OTel agent DaemonSet tails every pod automatically and ships to Loki, queried via Grafana). The per-service Fluentd `Flow`/`Output` resources that earlier versions used to ship logs to OpenSearch have been removed — there is no app-level logging configuration in these charts anymore.
 
 {% hint style="info" %}
-This change retired the OpenSearch + OpenSearch Dashboards components and the Fluent Operator from commons. For the cluster-wide logging pipeline (OTel agent → gateway → Loki, with LogQL alert rules), see the [three-node infrastructure automation](../operations/deployment/infrastructure-setup/three-node-automation/).
+This change retired the OpenSearch + OpenSearch Dashboards components and the Fluent Operator from commons. For the cluster-wide logging pipeline (OTel agent → gateway → Loki, with LogQL alert rules), see the [production infrastructure automation](../operations/deployment/infrastructure-setup/production-automation/).
 {% endhint %}
 
 ### Resource Limits (Sandbox vs Production)

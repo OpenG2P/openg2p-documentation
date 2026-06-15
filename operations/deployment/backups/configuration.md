@@ -10,7 +10,7 @@ The orchestrator reads two YAML files: `backup-config.yaml` (your preferences) a
 
 ### `prod_config`
 
-Path to the 3-node `prod-config.yaml`. Relative paths resolve against the `automation/backups/` directory. Default: `../production/prod-config.yaml`.
+Path to the production `prod-config.yaml`. Relative paths resolve against the `automation/backups/` directory. Default: `../production/prod-config.yaml`.
 
 ### `backup_*` (host details)
 

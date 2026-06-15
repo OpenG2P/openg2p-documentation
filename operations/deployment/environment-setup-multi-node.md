@@ -7,7 +7,7 @@ description: Setting up OpenG2P environments on an existing multi-node infrastru
 This guide covers creating OpenG2P environments (namespace + services) on an **existing multi-node infrastructure** where Nginx, the Kubernetes cluster, and storage run on separate nodes.&#x20;
 
 {% hint style="info" %}
-**Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/three-node-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
+**Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/production-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
 {% endhint %}
 
 **Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher, Keycloak admin SSO, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (in-cluster PostgreSQL/Kafka/MinIO/Redis + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
@@ -167,7 +167,7 @@ Cloudflare DNS plugin (`python3-certbot-dns-cloudflare`) or Route53 plugin (`pyt
 This is the step that **opens the system to citizens**. It has two parts: an Nginx server block for the environment's hostnames, and opening the public channel at the firewall. Until now the Reverse Proxy served only the admin tools (Rancher, Keycloak) on the private channel — this step adds the public, citizen-facing channel alongside them.
 
 {% hint style="info" %}
-**Admin stays private — automatically.** The admin server blocks installed by the [infrastructure automation](infrastructure-setup/three-node-automation/) carry a source-IP allowlist (`allow <wg_subnet>; allow <private_subnet>; deny all;`). The citizen block you add below carries **no** allowlist. So even after you open public `80/443` here, a request to `rancher.<domain>` from the internet is still rejected by source IP, while citizen services are served normally. See [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access) for the full three-layer model.
+**Admin stays private — automatically.** The admin server blocks installed by the [infrastructure automation](infrastructure-setup/production-automation/) carry a source-IP allowlist (`allow <wg_subnet>; allow <private_subnet>; deny all;`). The citizen block you add below carries **no** allowlist. So even after you open public `80/443` here, a request to `rancher.<domain>` from the internet is still rejected by source IP, while citizen services are served normally. See [Channel separation](../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access) for the full three-layer model.
 {% endhint %}
 
 #### 3a. Nginx server block (citizen channel)
@@ -566,7 +566,7 @@ org.postgresql.util.PSQLException: ERROR: relation "key_alias" does not exist
 **Cause.** eSignet and mock-identity each embed the keymanager library, which needs the keymanager schema (`key_alias`, `key_store`, …) **in their own database**. Each ships its schema-init as a `helm.sh/hook: post-install` Job, which deadlocks `helm --wait`: the pods can't become Ready until the schema exists, but the post-install hook that creates the schema only runs *after* the release is Ready. So the hook never runs and the release ends as `failed`. (Standalone keymanager is unaffected — its init runs as a regular resource.) This is a chart-level issue in `openg2p-commons-services`.
 
 {% hint style="success" %}
-The OpenG2P **three-node production automation handles this automatically** — its environment stage materialises these hook Jobs as regular Jobs and restarts the affected workloads, so no manual action is needed there.
+The OpenG2P **production automation handles this automatically** — its environment stage materialises these hook Jobs as regular Jobs and restarts the affected workloads, so no manual action is needed there.
 {% endhint %}
 
 For a standalone `env-cluster.sh` install, run the schema-init Jobs by hand (replace `qa` with your namespace):

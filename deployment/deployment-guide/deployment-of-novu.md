@@ -6,7 +6,7 @@ The instructions here pertain to the deployment of Novu and associated component
 
 Before you deploy, make sure the following are in place:
 
-* ✅ [Infrastructure setup](../../operations/deployment/infrastructure-setup/three-node-automation/README.md) is completed.
+* ✅ [Infrastructure setup](../../operations/deployment/infrastructure-setup/production-automation/README.md) is completed.
 * ✅ [Environment](../../operations/deployment/environment-setup-multi-node.md) has been setup with common resources installed.
 * ✅ Domain name `novu.<your environment>.<your domain name>` (e.g. `novu.qa.openg2p.org`) is available along with SSL certificate for the domain (_the wild certificate should have already been loaded during Infrastructure setup_)
 * ✅ **Project Owner access** on the OpenG2P namespace

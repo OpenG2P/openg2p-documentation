@@ -5,7 +5,7 @@ A Private Access Channel (PAC) provides control over a user accessing a particul
 <figure><img src="../../../.gitbook/assets/private-access-channel.jpg" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
-**Standard three-node production uses a single-NIC Reverse Proxy.** One Nginx host fronts every channel — citizen-facing public services on its public IP and admin/app traffic over Wireguard — with hostname-based `server` blocks that all forward to the one Istio ingress gateway. The **multiple-network-interface** model described below is an **advanced pattern** for isolating distinct user groups onto separate channels (multi-tenant / regulated deployments). If you don't need that isolation, treat the multi-NIC mechanics as optional — a single interface with one wildcard channel is the common case.
+**Standard production uses a single-NIC Reverse Proxy.** One Nginx host fronts every channel — citizen-facing public services on its public IP and admin/app traffic over Wireguard — with hostname-based `server` blocks that all forward to the one Istio ingress gateway. The **multiple-network-interface** model described below is an **advanced pattern** for isolating distinct user groups onto separate channels (multi-tenant / regulated deployments). If you don't need that isolation, treat the multi-NIC mechanics as optional — a single interface with one wildcard channel is the common case.
 {% endhint %}
 
 The Wireguard server routes traffic to a specific network interface on Nginx. The network interface on Nginx is configured to accept traffic for certain domain names only. Nginx forwards traffic to Istio ingress gateway of a cluster which further routes the traffic for these domains to respective resources in the cluster. Note that a "resource group" is a group of Kubernetes resources, NOT, user groups. Let's look at an end2end example:
@@ -148,7 +148,7 @@ Service in the env namespace
 Two operational differences from private channels:
 
 1. **No Wireguard layer** — public traffic terminates on a public-IP NIC of the Nginx host (private channels sit on a Wireguard-gated interface).
-2. **The cert covers a public hostname**, but it is issued the same way as everything else in production: **customer-supplied** (commercial CA, ACME via DNS-01, or the customer's own CA). Admin tools reached over Wireguard use that **same** customer-supplied cert model — a self-signed / internal CA only appears in the single-node sandbox, not in three-node production.
+2. **The cert covers a public hostname**, but it is issued the same way as everything else in production: **customer-supplied** (commercial CA, ACME via DNS-01, or the customer's own CA). Admin tools reached over Wireguard use that **same** customer-supplied cert model — a self-signed / internal CA only appears in the single-node sandbox, not in production.
 
 The Istio side is identical to a private channel — a `Gateway` CRD with the public hostname, a `VirtualService` pointing at the right service. The shared Envoy doesn't care that one route came in via WG and another from the open internet.
 

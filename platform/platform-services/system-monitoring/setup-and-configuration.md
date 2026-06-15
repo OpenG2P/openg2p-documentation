@@ -5,7 +5,7 @@
 ## Installation
 
 The monitoring stack is **installed automatically** as part of the production
-deployment automation (the 3-node `openg2p-prod` install) — no manual steps. The
+deployment automation (the production `openg2p-prod` install) — no manual steps. The
 infra Helmfile creates the `observability` namespace and deploys the OTel
 collectors, Loki, its MinIO, the Grafana Loki datasource, the alert rules and the
 ready-made dashboard.

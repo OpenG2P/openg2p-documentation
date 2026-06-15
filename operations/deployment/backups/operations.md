@@ -158,9 +158,9 @@ Re-run `install` to apply. The cron file is regenerated and the disabled group's
 
 To reset only the laptop state, delete the `.state/` directory.
 
-## Re-running aws-provision to add the backup node later
+## Re-running aws-provision to add the backup node
 
-If you installed the 3-node platform first without the backup node, you can add it later:
+The Backup node is required for production. If you brought the platform up before provisioning it (the recommended order is to have backups in place before go-live), add it as follows:
 
 ```bash
 cd automation/production/aws/
