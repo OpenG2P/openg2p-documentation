@@ -547,6 +547,7 @@
     * [High Level Design](identity-and-access-management/high-level-design.md)
     * [Authentication - Flow Diagram](identity-and-access-management/authentication-flow-diagram.md)
     * [RBAC in Product APIs](identity-and-access-management/rbac-in-product-apis.md)
+    * [Staff Portal Application Registration](identity-and-access-management/staff-portal-application-registration.md)
     * [Developer Install](identity-and-access-management/developer-install.md)
     * [Security Controls](identity-and-access-management/security-controls.md)
     * [Versions](platform/platform-services/identity-and-access-management/versions.md)
