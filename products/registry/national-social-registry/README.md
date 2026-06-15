@@ -112,35 +112,36 @@ Extends `G2PRegister`, `G2PGeo`. Group-level register covering composition and l
 
 ### Supporting tables
 
-Multi-valued or time-series data lives in supporting tables. Each is linked to a parent register via `link_internal_record_id` and uses the platform's standard identifier prefixes.
+Multi-valued or time-series data lives in supporting tables. Each is linked to a parent register via `link_internal_record_id`. Every register and supporting table has a `*_history` twin for version snapshots.
 
-| Table                                                              | Parent                    | NSR-specific fields                                                                                                                                                                                                                                  |
-| ------------------------------------------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Individual Disability** (`g2p_register_individual_disabilities`) | Individual                | `disability_domain` (Washington Group Short Set: VISION, HEARING, MOBILITY, COGNITION, SELF\_CARE, COMMUNICATION), `disability_severity` — **one row per affected domain** so an individual can carry different severities across functional domains |
-| **Program Participation** (`g2p_register_program_participations`)  | Individual _or_ Household | `linked_register_mnemonic`, `program_name`, `program_mnemonic`, `program_start_date`, `program_exit_date`, `legacy_program_id`, `payment_channel_preference`, `payment_account_token`, `payment_verification_status`                                 |
-| **Poverty Score** (`g2p_register_poverty_scores`)                  | Household                 | `pmt_score`, `pmt_score_type`, `pmt_variables`, `pmt_calculation_date`, `pmt_model_version`                                                                                                                                                          |
-| **Asset** (`g2p_register_assets`)                                  | Household                 | `asset_type`, `asset_category`, `quantity`, `size_value`, `size_unit`, `size_band`, `details`                                                                                                                                                        |
-| **Shock** (`g2p_register_shocks`)                                  | Individual                | `shock_type`, `shock_date`, `shock_period`, `coping_strategy`                                                                                                                                                                                        |
-| **Consent** (`g2p_register_consents`)                              | Individual                | `consent_captured`, `consent_date`, `consent_scope`, `consent_method`, `consent_evidence_ref`, `data_sharing_restrictions`                                                                                                                           |
-| **Grievance** (`g2p_register_grievances`)                          | Individual                | `grievance_case_id`, `grievance_type`, `submission_channel`, `grievance_status`, `submission_date`, `resolution_date`, `resolution_code`, `resolution_rationale`, `protection_referral_flag`                                                         |
-| **Verification History** (`g2p_register_verification_history`)     | Individual _or_ Household | `linked_register_mnemonic`, `update_trigger`, `data_source`, `enumerator_id`, `office_location_code`, `verification_status`, `verification_method`, `verified_at`, `data_quality_flags`                                                              |
+| Mnemonic / Table                                                              | Parent     | NSR-specific fields                                                                                                                                                          |
+| ----------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **IndividualProgram** (`g2p_register_individual_programs`)                    | Individual | `program_name`, `program_start_date`, `program_exit_date`                                                                                                                   |
+| **IndividualLand** (`g2p_register_individual_land`)                           | Individual | `land_access`, `land_size`, `productive_assets`                                                                                                                             |
+| **IndividualLivelihood** (`g2p_register_individual_livelihoods`)              | Individual | `primary_livelihood`, `secondary_livelihood`, `employment_status`, `coping_strategies_index`, `mobile_phone_type`                                                           |
+| **IndividualLivestock** (`g2p_register_individual_livestock`)                 | Individual | `livestock_species`, `livestock_counts`                                                                                                                                     |
+| **IndividualVulnerability** (`g2p_register_individual_vulnerability`)         | Individual | `disability_status`, `orphanhood_flag`, `chronic_illness_flag`, `displacement_status`, `pastoralist_classification`, `high_mobility_indicator`, `plw_status`, `plw_status_date` |
+| **IndividualShock** (`g2p_register_individual_shocks`)                        | Individual | `shock_type`, `shock_date`, `shock_period`, `coping_strategy`                                                                                                               |
+| **IndividualDisability** (`g2p_register_individual_disabilities`)             | Individual | `disability_domain` (Washington Group Short Set: VISION, HEARING, MOBILITY, COGNITION, SELF\_CARE, COMMUNICATION), `disability_severity` — **one row per affected domain**   |
+| **HouseholdProgram** (`g2p_register_household_programs`)                      | Household  | `program_name`, `program_start_date`, `program_exit_date`                                                                                                                   |
+| **HouseholdHousingAndServices** (`g2p_register_household_housing_and_services`) | Household | `dwelling_type`, `roof_material`, `wall_material`, `floor_material`, `tenure_status`, `water_source_type`, `water_distance_minutes`, `sanitation_type`, `lighting_source`, `cooking_fuel_type` |
+| **HouseholdAsset** (`g2p_register_household_assets`)                          | Household  | `asset_type`, `asset_category`, `quantity`, `size_value`, `size_unit`, `size_band`, `details`                                                                               |
+| **Score** (`g2p_register_scores`, core table)                                | Household  | Latest computed poverty / vulnerability scores; `score_type` (e.g. `POVERTY`)                                                                                               |
+
+{% hint style="info" %}
+Verification / audit trail is provided by the registry-core platform itself (`g2p_register_verifications`); NSR does not duplicate it.
+{% endhint %}
 
 ### Identifiers
 
-| Mnemonic               | Auto-generated prefix | Auto-gen in config      |
-| ---------------------- | --------------------- | ----------------------- |
-| `Individual`           | `IND-`                | ✅                       |
-| `Household`            | `HH-`                 | ✅                       |
-| `IndividualDisability` | `DIS-`                | ✖ (externally supplied) |
-| `ProgramParticipation` | `PP-`                 | ✖                       |
-| `PovertyScore`         | `PMT-`                | ✖                       |
-| `Asset`                | `AST-`                | ✖                       |
-| `Shock`                | `SHK-`                | ✖                       |
-| `Consent`              | `CNS-`                | ✖                       |
-| `Grievance`            | `GRV-`                | ✖                       |
-| `VerificationHistory`  | `VER-`                | ✖                       |
+Only the two registers receive an auto-generated functional ID (`functional_id_generation_required = TRUE`). Supporting-table rows are keyed by the platform's `internal_record_id` and linked to their parent — they are not assigned a functional-ID prefix.
 
-`foundational_id` (national ID / alias) is **UNIQUE + INDEXED** on Individual. `grievance_case_id` is **UNIQUE** on Grievance. Other fields carry B-tree indexes where query shapes warrant (e.g. `pmt_score` for targeting thresholds, `shock_date` for time-series analytics) — the full list is documented inline in the model files.
+| Mnemonic     | Auto-generated prefix |
+| ------------ | --------------------- |
+| `Individual` | `IN-`                 |
+| `Household`  | `HH-`                 |
+
+`foundational_id` (national ID / alias) is **UNIQUE + INDEXED** on Individual. Other fields carry B-tree indexes where query shapes warrant (e.g. `shock_date` for time-series analytics) — the full list is documented inline in the model files.
 
 ## Helm chart
 
@@ -213,10 +214,14 @@ The NSR backend images assemble the platform runtimes (pulled from `registry-pla
 
 ## Meta-data seeding
 
-The db-seed image packages the register definitions, schemas, UI tabs, sections, attribute lookups and registry configuration as ordered SQL files. At install time the chart runs it as a Kubernetes Job against the target Postgres; at runtime it reads:
+The db-seed image packages the register definitions, schemas, UI tabs, sections, attribute lookups and registry configuration as ordered SQL files. These live under `nsr-extension/src/openg2p_registry_nsr_extension/meta_data/` (`register-metadata/`, `lookup-data/`, `data-models/`, `registry-configurations/`); the seed container runs **all** `.sql` files under `meta_data/` in sorted path order.
+
+At install time the chart runs it as a Kubernetes Job against the target Postgres; at runtime it reads:
 
 * `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` — connection
 * `LOAD_SAMPLE_DATA=true` _(optional)_ — also apply the sample-data SQL
+
+Demo rows live under `sample_data/register-data/` (`g2p_register_households.sql`, `g2p_register_individuals.sql`, child-table inserts, etc.). When sample data is enabled the seeder loads them in dependency order using `register-data/load_order.txt` (one basename per line; `#` lines are comments); if that file is absent, the `.sql` files run in sorted path order instead.
 
 See the [Meta Data Seeding design](../registry/design/meta-data-seeding.md) for the platform-level framework.
 
