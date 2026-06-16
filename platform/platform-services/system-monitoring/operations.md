@@ -9,20 +9,43 @@ Logs are stored in **Loki**, which keeps its log chunks in a **dedicated MinIO**
 object store installed alongside it (internal-only, in the `observability`
 namespace — not the application MinIO). Buckets: `chunks`, `ruler`, `admin`.
 
-* **Default retention:** 7 days. Change `loki_retention_hours` in `prod-config.yaml`
-  and redeploy.
-* **Disk:** sized by `loki_minio_size` (default `50Gi`). Increase if you raise
-  retention or log volume.
+### Which PVC to watch
+
+| PVC (namespace `observability`) | Size | What it holds |
+| --- | --- | --- |
+| **`loki-minio`** | `loki_minio_size` (default `50Gi`) | **All log chunks — WATCH THIS one** |
+| `storage-loki-0` | 10Gi | Loki WAL / index cache — low risk |
 
 ```bash
-# observability components
-kubectl -n observability get pods
-# disk used by Loki's MinIO
-kubectl -n observability exec deploy/loki-minio -- df -h /export
+kubectl -n observability get pvc                                  # sizes
+kubectl -n observability exec deploy/loki-minio -- df -h /export  # current usage
 ```
 
-> On the single-compute-node deployment Loki runs in **SingleBinary** mode (one
-> pod). It can be scaled out only if compute nodes are added.
+### Retention — why storage does NOT grow forever
+
+Retention is **enabled and capped at 7 days** by default. Loki's **compactor**
+deletes chunks older than the retention period, so usage converges to roughly
+*N days of log volume* rather than growing indefinitely. Verify it's active:
+
+```bash
+kubectl -n observability get cm loki -o yaml | grep -E "retention_period|retention_enabled"
+# expect: retention_period: 168h   and   retention_enabled: true
+```
+
+**To change retention:** set `loki_retention_hours` (default `168` = 7 days) in
+`prod-config.yaml` / `infra-config.yaml` and re-sync the `loki` release.
+
+{% hint style="warning" %}
+**Retention deletes by _age_, not _size_.** The `loki-minio` PVC is a fixed size,
+and the `nfs-csi` StorageClass has `allowVolumeExpansion: false` (can't grow in
+place). So if daily log volume is high enough that *7 days > the PVC size*, the
+PVC fills **before** retention kicks in. **Watch `loki-minio`; if it passes ~70–80%**,
+either **reduce `loki_retention_hours`** or provision a larger PVC. Best practice:
+add a PrometheusRule alerting on `kubelet_volume_stats_used_bytes` for this PVC.
+{% endhint %}
+
+> Loki runs in **SingleBinary** mode (one pod) — the OpenG2P cluster has a single
+> compute node per environment. Scale out only if compute nodes are added.
 
 ## Alerting
 
