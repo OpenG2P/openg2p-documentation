@@ -118,6 +118,27 @@ The read-only role itself is created on whatever `global.postgresqlHost` points
 at, so it already works with external Postgres — only the static bundle carries a
 fixed host.
 
+## Troubleshooting
+
+**`permission denied for table disbursements` (or any table)** — the connection
+authenticated (password is fine) but the `superset_ro` role has no `SELECT` on the
+tables. This happens when the role's grants were applied **before the bridge app
+created its tables** (first install), or on **external Postgres** where the
+database owner differs from the user the app uses to create tables. Fix by
+re-applying the grants now that the tables exist — either:
+
+* re-run the chart job: `helm upgrade <release> … ` (the grant job re-runs), or
+* grant directly (as the Postgres superuser / DB owner), per database:
+  ```sql
+  \connect <db>
+  GRANT USAGE ON SCHEMA public TO superset_ro;
+  GRANT SELECT ON ALL TABLES IN SCHEMA public TO superset_ro;
+  ```
+
+The chart's role Job now **waits for the tables to exist** before granting and
+sets future-table default privileges for **every table-owning role** (not just the
+DB owner), so a fresh or external-Postgres install grants correctly on its own.
+
 ## Why manual
 
 Superset and the bridge have **independent lifecycles** — you may run Superset
