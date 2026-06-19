@@ -522,6 +522,7 @@
     * [Testing](g2p-bridge/development/testing/README.md)
       * [Functional Testing](g2p-bridge/development/testing/functional-testing.md)
       * [Regression Sanity Suite](g2p-bridge/development/testing/regression-sanity-suite.md)
+      * [API Walkthrough (Postman)](g2p-bridge/development/testing/api-walkthrough.md)
     * [Developer Install](g2p-bridge/development/developer-install/README.md)
       * [G2P Bridge](g2p-bridge/development/developer-install/installing-openg2p-bridge-on-linux.md)
       * [Example Bank](g2p-bridge/development/developer-install/example-bank.md)
