@@ -15,17 +15,19 @@ layout:
     visible: true
   tags:
     visible: true
+  actions:
+    visible: true
 ---
 
 # Registry Platform Release Notes - v1.0.0
 
-|                        |                                                                                                                                                                                                                                    |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Version**            | 1.0.0                                                                                                                                                                                                                              |
-| **Source Repository**  | [registry-platform](https://github.com/OpenG2P/registry-platform/tree/v1.0.0)                                                                                                                                                      |
-| **Release Date**       | 19-Jun-2026                                                                                                                                                                                                                        |
-| **Description**        | <p></p><ul><li>First tagged release of the consolidated OpenG2P Registry platform source repository</li><li>Replaces the deprecated openg2p-registry-gen2 split repositories</li></ul>                                            |
-| **Previous Version**   | —                                                                                                                                                                                                                                  |
+|                       |                                                                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Version**           | 1.0.0                                                                                                                                                                           |
+| **Source Repository** | [registry-platform](https://github.com/OpenG2P/registry-platform/tree/v1.0.0)                                                                                                   |
+| **Release Date**      | 19-Jun-2026                                                                                                                                                                     |
+| **Description**       | <ul><li>First tagged release of the consolidated OpenG2P Registry platform source repository</li><li>Replaces the deprecated openg2p-registry-gen2 split repositories</li></ul> |
+| **Previous Version**  | —                                                                                                                                                                               |
 
 ***
 
@@ -39,29 +41,29 @@ registry-platform is a **platform, not a deployable product**. Operators deploy 
 
 ## Key features in this platform line
 
-| Feature                           | Description                                                                           | Details                                                                                           |
-| --------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| **Consolidated codebase**         | Single repository replaces seven deprecated Gen 2 split repos                         | [Organization of Codebase](../developer-zone/organization-of-codebase.md#deprecated-repositories) |
-| **Domain agnosticism**            | Core platform carries no domain model; manifestations supply registers and metadata   | [Metadata-Driven Extensibility](../features/metadata-driven-extensibility.md)                     |
-| **Change request infrastructure** | All writes flow through staged change requests with verification and approval         | [Change Management](../features/change-management-and-approval-workflow.md)                     |
-| **Document handling**             | Change-request supporting documents stored in MinIO with metadata in the platform DB  | [Change Management design](../design/change-management.md)                                        |
-| **Dynamic UI**                    | Declarative widget library renders forms from JSON schema                             | [Dynamic UI Rendering](../features/dynamic-ui-rendering.md)                                       |
-| **AWE readiness**                 | Platform includes hooks and metadata for Approval Workflow Engine integration         | [AWE Integration](../design/awe-integration.md)                                                   |
+| Feature                           | Description                                                                          | Details                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| **Consolidated codebase**         | Single repository replaces seven deprecated Gen 2 split repos                        | [Organization of Codebase](../developer-zone/organization-of-codebase.md#deprecated-repositories) |
+| **Domain agnosticism**            | Core platform carries no domain model; manifestations supply registers and metadata  | [Metadata-Driven Extensibility](../features/metadata-driven-extensibility.md)                     |
+| **Change request infrastructure** | All writes flow through staged change requests with verification and approval        | [Change Management](../features/change-management-and-approval-workflow.md)                       |
+| **Document handling**             | Change-request supporting documents stored in MinIO with metadata in the platform DB | [Change Management design](../design/change-management.md)                                        |
+| **Dynamic UI**                    | Declarative widget library renders forms from JSON schema                            | [Dynamic UI Rendering](../features/dynamic-ui-rendering.md)                                       |
+| **AWE readiness**                 | Platform includes hooks and metadata for Approval Workflow Engine integration        | [AWE Integration](../design/awe-integration.md)                                                   |
 
 ***
 
 ## Components and versions
 
-| Component              | Package / image                          | Version at tag |
-| ---------------------- | ---------------------------------------- | -------------- |
-| Core library           | openg2p-registry-core                    | 1.0.2          |
-| Staff Portal API       | openg2p-registry-staff-portal-api        | v1.0.0         |
-| Partner API            | openg2p-registry-partner-api             | v1.0.0         |
-| Beneficiary Portal API | openg2p-registry-bene-portal-api         | v1.0.0         |
-| Celery beat producers  | openg2p-registry-celery-beat-producers   | v1.0.0         |
-| Celery workers         | openg2p-registry-celery-workers          | v1.0.0         |
-| Staff Portal UI        | registry-staff-portal-ui                 | 1.0.0          |
-| UI widget library      | ui-widgets                               | 1.0.0          |
+| Component              | Package / image                        | Version at tag |
+| ---------------------- | -------------------------------------- | -------------- |
+| Core library           | openg2p-registry-core                  | 1.0.0          |
+| Staff Portal API       | openg2p-registry-staff-portal-api      | 1.0.0          |
+| Partner API            | openg2p-registry-partner-api           | 1.0.0          |
+| Beneficiary Portal API | openg2p-registry-bene-portal-api       | 1.0.0          |
+| Celery beat producers  | openg2p-registry-celery-beat-producers | 1.0.0          |
+| Celery workers         | openg2p-registry-celery-workers        | 1.0.0          |
+| Staff Portal UI        | registry-staff-portal-ui               | 1.0.0          |
+| UI widget library      | ui-widgets                             | 1.1.2          |
 
 Docker images for deployable registry products are built from the platform source plus a domain extension. Image names and tags are owned by each manifestation repository.
 
@@ -72,7 +74,7 @@ Docker images for deployable registry products are built from the platform sourc
 | Release item             | Links                                                                                        |
 | ------------------------ | -------------------------------------------------------------------------------------------- |
 | **Platform source code** | [registry-platform:v1.0.0](https://github.com/OpenG2P/registry-platform/releases/tag/v1.0.0) |
-| **Documentation**        | [OpenG2P Registry docs](https://docs.openg2p.org/products/registry/registry/)               |
+| **Documentation**        | [OpenG2P Registry docs](https://docs.openg2p.org/products/registry/registry/)                |
 | **API reference**        | OpenAPI specs under registry-platform/apis/docs/openapi/                                     |
 
 ***
@@ -81,14 +83,14 @@ Docker images for deployable registry products are built from the platform sourc
 
 This tag marks the consolidation milestone. The following repositories are **deprecated** in favour of registry-platform plus per-manifestation repos:
 
-| Deprecated repository                   | Replaced by                            |
-| --------------------------------------- | -------------------------------------- |
-| openg2p-registry-gen2-core              | registry-platform/core/                |
-| openg2p-registry-gen2-apis            | registry-platform/apis/                |
-| openg2p-registry-gen2-celery          | registry-platform/celery/              |
-| openg2p-registry-gen2-staff-portal-ui | registry-platform/ui/staff-portal-ui   |
-| openg2p-registry-gen2-ui-widgets      | registry-platform/ui/ui-widgets        |
-| openg2p-registry-gen2-deployment      | Per-manifestation Helm charts          |
+| Deprecated repository                 | Replaced by                          |
+| ------------------------------------- | ------------------------------------ |
+| openg2p-registry-gen2-core            | registry-platform/core/              |
+| openg2p-registry-gen2-apis            | registry-platform/apis/              |
+| openg2p-registry-gen2-celery          | registry-platform/celery/            |
+| openg2p-registry-gen2-staff-portal-ui | registry-platform/ui/staff-portal-ui |
+| openg2p-registry-gen2-ui-widgets      | registry-platform/ui/ui-widgets      |
+| openg2p-registry-gen2-deployment      | Per-manifestation Helm charts        |
 
 New deployments should not use the deprecated split repositories or the legacy openg2p-registry base Helm chart.
 
@@ -109,10 +111,10 @@ New deployments should not use the deprecated split repositories or the legacy o
 ## Known issues
 
 1. Platform source tags and manifestation image/chart tags are tracked independently.
-2. Legacy Helm chart version history (4.0.0, 4.1.0) predates this repository consolidation and remains documented under [Versions](README.md) for reference only.
+2. Legacy Helm chart version history (4.0.0, 4.1.0) predates this repository consolidation and remains documented under [Versions](./) for reference only.
 
 ***
 
 ## Roadmap
 
-For in-progress platform work, see [Versions](README.md).
+For in-progress platform work, see [Versions](./).
