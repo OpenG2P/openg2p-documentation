@@ -90,29 +90,32 @@ It is not a delete-and-recreate, and it never creates duplicates. Note it is an
 
 ## Connection details (host / database are environment-specific)
 
-A Superset export stores each connection's **full host + database** — the bundled
-ZIP was generated in-cluster, so its three connections point at host
-**`commons-postgresql`** / databases **`g2p_bridge`**, **`spar`**,
-**`example_bank_db`**. On import Superset keeps host and database and only
-re-prompts for the **password**. So the bundle works as-is **only** when your
-Postgres is the in-cluster `commons-postgresql`. Adjust for your environment:
+A Superset export stores each connection's **full host + database name** — the
+bundled ZIP was generated in-cluster, so its three connections point at host
+**`commons-postgresql`** and databases **`g2p_bridge`**, **`spar`**,
+**`example_bank_db`**. On import, Superset keeps host **and** database and only
+re-prompts for the **password**. Both the host and the database name are
+environment-specific, so for anything other than the default in-cluster setup you
+must adjust them. Two ways:
 
-* **External / non-default Postgres host** — the imported connections will import
-  fine but **fail to connect** (they still say `commons-postgresql`). Fix it one
-  of two ways:
-  * **Edit the connections** after import — Settings → *Database Connections* →
-    edit each of the 3 (`g2p_bridge`, `spar`, `example_bank`) and change the
-    **host:port** to your external Postgres.
-  * **Provision instead of importing** (recommended for external DBs) — run
-    `provision_dashboards.py` with the host passed in, so the connections are
-    built against your actual Postgres:
-    ```bash
-    PG_HOST=<external-host> \
-      RO_PASS=$(kubectl -n <ns> get secret <release>-superset-ro -o jsonpath='{.data.password}' | base64 -d) \
-      python /tmp/provision_dashboards.py     # run inside the Superset pod
-    ```
-* **Renamed release** (e.g. `g2p-bridge2` → DB `g2p_bridge2`) — edit that one
-  connection's **database name** during/after import.
+* **Edit the connections after import** — Settings → *Database Connections* → edit
+  each of the 3 (`g2p_bridge`, `spar`, `example_bank`) and set **all three** of:
+  1. **host:port** → your Postgres (external IP/host),
+  2. **database name** → your actual DB. **The bridge DB name is derived from the
+     Helm release name** (dashes → underscores): release `g2p-bridge` → `g2p_bridge`,
+     release `openg2p-bridge` → **`openg2p_bridge`**. (`spar` / `example_bank_db`
+     are usually unchanged.)
+  3. **password** → the `superset_ro` password (from the `<release>-superset-ro` Secret).
+* **Provision instead of importing** (recommended for external / renamed setups —
+  nothing to edit) — run `provision_dashboards.py`, passing the host and (if the
+  release was renamed) the bridge DB name:
+  ```bash
+  PG_HOST=<external-host> BRIDGE_DB=<your_bridge_db> \
+    RO_PASS=$(kubectl -n <ns> get secret <release>-superset-ro -o jsonpath='{.data.password}' | base64 -d) \
+    python /tmp/provision_dashboards.py     # run inside the Superset pod
+  ```
+  (`BRIDGE_DB` defaults to `g2p_bridge`; `SPAR_DB` / `EXAMPLE_BANK_DB` are also
+  overridable.)
 
 The read-only role itself is created on whatever `global.postgresqlHost` points
 at, so it already works with external Postgres — only the static bundle carries a
