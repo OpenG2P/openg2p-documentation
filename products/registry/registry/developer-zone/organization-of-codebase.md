@@ -89,6 +89,9 @@ The Registry platform depends on the following services, deployed separately:
 
 The **version of the `registry-platform` repository is the platform version** — there is no separate base-chart version to track. Each manifestation carries its own product version independently.
 
-{% hint style="info" %}
-Detailed version mapping (platform ↔ manifestations ↔ image tags) is still being clarified and will be documented here later.
-{% endhint %}
+| Platform tag | Release date | Notes |
+| ------------ | ------------ | ----- |
+| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | First tagged release of the consolidated platform. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
+| `develop` | — | Active development branch. |
+
+Legacy Helm chart history (4.0.0, 4.1.0) is in [Versions](../versions/).

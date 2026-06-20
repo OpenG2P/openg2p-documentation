@@ -1,8 +1,21 @@
 ---
-description: Version history of the OpenG2P Registry (Gen 2) Helm chart.
+description: Version history of the OpenG2P Registry platform and Helm chart releases.
 ---
 
 # Versions
+
+## Platform source repository (`registry-platform`)
+
+The **version of the [registry-platform](https://github.com/OpenG2P/registry-platform) repository is the platform version**. Manifestations build Docker images and Helm charts on top of a tagged platform ref.
+
+| Platform Version | Last Modified | Comments |
+| ---------------- | ------------- | -------- |
+| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | First tagged release of the consolidated platform repository. Replaces the deprecated openg2p-registry-gen2 split repos. [Release notes](registry-platform-release-notes-v1.0.0.md). |
+| [develop](https://github.com/OpenG2P/registry-platform/tree/develop) | 19-Jun-2026 | In progress. Active development branch. |
+
+***
+
+## Helm chart versions (`openg2p-registry`)
 
 This page tracks the released and in-progress versions of the OpenG2P Registry (Gen 2) Helm chart (`openg2p-registry`). For full deployment details of the current line, see [Helm Chart 4.x](../deployment/helm-chart-4.x.md).
 
