@@ -37,18 +37,17 @@ The NSR domain models are available in the [NSR repository](https://github.com/O
 
 ## Versions
 
-| Artefact            | Current (develop) | Where                                                                                                    |
-| ------------------- | ----------------- | -------------------------------------------------------------------------------------------------------- |
-| NSR Helm chart      | `0.0.0-develop`   | [`helm/openg2p-nsr/`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr) |
-| Docker images (tag) | `develop`         | Docker Hub `openg2p/openg2p-nsr-*`                                                                       |
+The table below tracks the **NSR Helm chart** versions and the key changes in each (relative to the previous chart). The published version is derived from the branch name at package time — see [Helm chart versioning](#helm-chart-versioning) for the scheme.
 
-NSR follows the **branch-name-equals-version** convention: the `develop` branch carries `-develop` pre-release tags on the Helm chart and all Docker images.
-
-The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
+| Helm Chart Version | Last Modified | Comments |
+| ------------------ | ------------- | -------- |
+| `0.0.0-develop` | 20-Jun-2026 | **Rolling development version.** Every CI publish appends a unique `.<date>.<run>` suffix; this single row tracks all changes on `develop`. Key changes vs. the previous chart:<br>• Self-sufficient chart — the shared base "registry" wrapper chart was retired; the chart now owns all templates and values directly.<br>• Multiple registries (and AWE) can co-exist in one namespace — the Keycloak staff client, AWE admin clients, MinIO buckets, keymanager app-id and AWE callback-secret id are all release-scoped.<br>• AWE callback-HMAC secret is minted by a dedicated template instead of a duplicate `postgres-init` entry (fixes the Helm 4 server-side-apply `spec.template field is immutable` failure).<br>• Branch-derived chart versioning with a `<date>.<run>` suffix, plus a manual `version` override for ad-hoc builds.<br>• `postgres-init` updated — its Job is a plain resource and the DB-user password is re-synced idempotently on every run.<br>• Redis container resource limits removed. |
 
 {% hint style="info" %}
-The detailed version mapping (platform ↔ NSR ↔ image tags) is still being clarified and will be documented later.
+**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.<date>.<run>`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is cut — capturing that release's final changelog.
 {% endhint %}
+
+The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
 
 ### Helm chart versioning
 
