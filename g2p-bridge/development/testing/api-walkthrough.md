@@ -116,18 +116,31 @@ Select the folder → **Run** (no data file). Creates one `CASH_DIGITAL` envelop
 and stores its `envelope_id`. This also starts a fresh **campaign** (a unique
 `run_id`) so you can re-run the walkthrough without id collisions.
 
-### Folder 3 · Seed SPAR + create disbursements — *run with the CSV*
+### Folder 3 · Link beneficiaries in SPAR — *run with the CSV*
 
 This is **data-driven**. In the **Collection Runner**:
 
-1. Select the **folder** "3 · Seed SPAR + create disbursements".
+1. Select the **folder** "3 · Link beneficiaries in SPAR".
 2. Under **Data**, choose **`beneficiaries.csv`** (Postman shows a preview and the
    iteration count).
 3. **Run**. It iterates once per row — link the beneficiary in SPAR (rows marked
-   `missing_from_spar` are left unmapped on purpose), then create one
-   disbursement against the envelope.
+   `missing_from_spar` are left unmapped on purpose) and **adds that
+   beneficiary's disbursement to the batch** that step 4 will send.
 
-### Folder 4 · Observe the pipeline — *run manually, RE-RUN repeatedly*
+### Folder 4 · Create disbursements (one batch) — *run once*
+
+Select the folder → **Run** (no data file). It sends **all** the disbursements
+built in step 3 in a **single `create_disbursements` call**, under one
+batch-control id.
+
+{% hint style="info" %}
+**Why one call, not one-per-beneficiary?** The Bridge creates **one
+batch-control record per `create_disbursements` call**, so a batch must be sent
+together — calling it once per beneficiary with the same batch id collides and
+fails. Sending the whole batch in one call is also how a real partner integrates.
+{% endhint %}
+
+### Folder 5 · Observe the pipeline — *run manually, RE-RUN repeatedly*
 
 The disbursement pipeline is **asynchronous** — background workers move it
 forward over time — so this folder is meant to be **re-run every ~15–30 seconds**
@@ -139,12 +152,14 @@ FA resolution → funds available → funds blocked → sponsor dispatch
 ```
 
 The five requests show, in order: the batch's **FA-resolution & dispatch**
-status; the envelope's **funds** status and how many disbursements it has
-received; per-disbursement **reconciliation** progress; and whether a
+status (queried by `batch_control_id`); the envelope's **funds** status and how
+many disbursements it has received; per-disbursement **reconciliation** progress
+(reconciled OK / reconciled with an error / not yet); and whether a
 **successful** vs a **bad-account** beneficiary actually got credited.
 
-With the shipped CSV, the end state is: **20 reconciled**, **2** never credited
-to their own account (`bad_account`), **3** never disbursed (`missing_from_spar`).
+With the shipped CSV, the end state is: **~20 reconciled OK**, **up to 2**
+reconciled with an error / never credited to their own account (`bad_account`),
+**3** never disbursed (`missing_from_spar`).
 
 {% hint style="info" %}
 Why re-run instead of "wait"? Postman fires requests back-to-back, but the
@@ -153,7 +168,7 @@ which is the point of the walkthrough. (The automated sanity suite does this
 polling for you.)
 {% endhint %}
 
-### Folder 5 · Cleanup — unlink SPAR — *run with the CSV*
+### Folder 6 · Cleanup — unlink SPAR — *run with the CSV*
 
 Data-driven, same as folder 3: select the folder + `beneficiaries.csv` → **Run**
 to remove the ID→FA links you created. The disbursement records stay in the
@@ -173,10 +188,11 @@ walkthrough is a quick way to populate a fresh environment with demonstrable dat
 | Symptom | Cause / fix |
 | --- | --- |
 | Requests time out or 404 | Wrong base URLs. Re-check the three `*_base_url` variables and your namespace/domain. |
-| Folder 4 never progresses past **FA resolution** | The envelope is not full: `num_disbursements` / `total_amount` don't match the disbursements actually created. They must equal your CSV's row count and amount sum. |
+| Folder 5 never progresses past **FA resolution** | The envelope is not full: `num_disbursements` / `total_amount` don't match the disbursements actually created. They must equal your CSV's row count and amount sum. |
+| Dispatch reaches **PROCESSED** but **nothing reconciles** | Reconciliation parses the MT940 the Example Bank pushes back; the `disbursement_id` rides in the MT940 `:61:` reference (**max 16 chars**). The collection keeps ids short on purpose (`D` + token + index) — only relevant if you change the id scheme. |
 | `SPAR link` fails with an `ERROR` status | Check `spar_strategy_id` (default `5`) matches a BANK strategy whose deconstruct format the Bridge understands — see [Address resolver with SPAR](../../../products/g2p-bridge/tech-guides/address-resolver/account-mapper-resolution.md). |
 | HTTP 401 / signed-request errors | This environment enforces auth. The walkthrough assumes auth is disabled. |
-| Re-running creates duplicate-id errors | Always start a campaign from **folder 2** — it mints a fresh `run_id` used by the disbursement ids. |
+| Re-running creates duplicate-id errors | Always start a campaign from **folder 2** — it mints a fresh `run_id` / `run_token` used by the disbursement ids. |
 
 ## For maintainers
 

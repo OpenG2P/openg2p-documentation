@@ -520,7 +520,6 @@
     * [Teardown / Uninstall](g2p-bridge/deployment/teardown.md)
   * [Developer Zone](g2p-bridge/development/README.md)
     * [Testing](g2p-bridge/development/testing/README.md)
-      * [Functional Testing](g2p-bridge/development/testing/functional-testing.md)
       * [Regression Sanity Suite](g2p-bridge/development/testing/regression-sanity-suite.md)
       * [API Walkthrough (Postman)](g2p-bridge/development/testing/api-walkthrough.md)
     * [Developer Install](g2p-bridge/development/developer-install/README.md)

@@ -50,6 +50,24 @@ The underlying **platform version is the version of the** [**`registry-platform`
 The detailed version mapping (platform ↔ NSR ↔ image tags) is still being clarified and will be documented later.
 {% endhint %}
 
+### Helm chart versioning
+
+The **published Helm chart version is derived from the branch name** by the chart-publish workflow — it is the Helm chart's SemVer only and is **independent of the Docker image tags** (those are driven by their own image-build workflows). A `<date>.<run-number>` pre-release suffix makes every publish a new, monotonically-increasing version, so Rancher and the chart CDN never serve a stale cached chart.
+
+| Branch | Type | Published chart version |
+| --------- | --------------- | ---------------------------------- |
+| `develop` | development | `0.0.0-develop.<date>.<run>` |
+| `N.N` (e.g. `1.0`, `1.1`) | active release line | `N.N.0-develop.<date>.<run>` |
+| `N.N.N` (e.g. `1.0.0`, `1.0.3`) | frozen release | `N.N.N` (no suffix) |
+
+Notes:
+
+* `N.N` branches expand to `N.N.0-…` because Helm requires a three-part SemVer (a bare `1.0` is rejected). A `N.N.N` (three-part) branch is treated as **frozen**: it publishes the exact version with no suffix, and — per SemVer — that release outranks all of its `-develop` builds.
+* **Automatic publishing happens only for `develop`, `N.N` and `N.N.N` branches.** Any other branch is skipped. To publish from such a branch (or to cut a custom version like `1.0.0-g2p5466`), trigger the **Publish Helm Charts** workflow manually (Actions → _Run workflow_) and supply the explicit `version` input — that overrides the branch-derived value.
+* Tag pushes do **not** trigger a chart publish.
+
+The CI workflows in the [`national-social-registry`](https://github.com/OpenG2P/national-social-registry/tree/develop/.github/workflows) repository have been **updated to implement this strategy** (the `helm-publish.yml` workflow computes the version from the branch and packages with `helm package --version`).
+
 ## Source code
 
 {% hint style="info" %}
