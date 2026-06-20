@@ -25,12 +25,7 @@ The Farmer Registry inherits all the [features of the registry platform](registr
 
 ## Versions
 
-| Artefact | Current | Where |
-| -------- | ------- | ----- |
-| Farmer Registry Helm wrapper chart | `1.1.0` | [`helm/openg2p-farmer-registry/`](https://github.com/OpenG2P/farmer-registry/tree/1.1.0/helm/openg2p-farmer-registry) |
-| Base registry chart (dependency) | `4.1.0` | [Registry Release Notes v4.1.0](registry/versions/registry-release-notes-v4.1.0.md) |
-| Docker images (tag) | `1.1.0` | Docker Hub `openg2p/openg2p-farmer-registry-*` |
-| Release date | 08-May-2026 | — |
+<table><thead><tr><th width="131.66796875">Helm version</th><th width="145.51171875">Last modified</th><th>Comments</th></tr></thead><tbody><tr><td>1.1.1</td><td>19-Jun-2026</td><td><mark style="color:$danger;"><strong>UN RELEASED</strong></mark> version. Still under test.<br>Based on new repo structure where the base platform is in <code>registry-platform</code> repo verions <code>develop</code>. The entire helm chart is contained in the farmer-registry repo. This is different from previous packaging where base registry's helm chart was a dependency.  In this case the helm chart is self sufficient. Registry platform does not have any helm chart.  The reason for not calling this version 1.1.0-develop is due Rancher caching problems as it does not seem to update the chart if the version does not change.</td></tr><tr><td>1.1.0</td><td>08-May-2026</td><td>Based on registry helm chart 4.1.0.  <a href="registry/versions/registry-release-notes-v4.1.0.md">Registry Release Notes v4.1.0</a>.   </td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
 
 Farmer Registry follows the **branch-name-equals-version** convention: the `develop` branch carries `-develop` pre-release tags on both the wrapper chart and all Docker images. Release branches drop the suffix and produce versioned artefacts (e.g. `1.1.0`).
 
