@@ -51,12 +51,12 @@ For the chart version, runtime image tags, last-modified date and change history
 
 | Component | Image | Notes |
 | --- | --- | --- |
-| Partner API | `openg2p/openg2p-g2p-bridge-partner-api` | REST API consumed by upstream systems (e.g. PBMS) to hand over disbursement instructions. |
-| Bene-Portal API | `openg2p/openg2p-g2p-bridge-bene-portal-api` | REST API for the OpenG2P Beneficiary Portal. |
-| Celery Beat Producer | `openg2p/openg2p-g2p-bridge-celery` | Single replica. Schedules periodic tasks. |
-| Celery Workers | `openg2p/openg2p-g2p-bridge-celery` | Same image as beat; scale horizontally for volume. |
-| Example Bank API | `openg2p/openg2p-g2p-bridge-example-bank-api` | Bundled simulator (only if `exampleBank.enabled`). |
-| Example Bank Celery (beat + workers) | `openg2p/openg2p-example-bank-celery-beat-producers`, `openg2p/openg2p-example-bank-celery-workers` | Bundled simulator background tasks. |
+| Partner API | `openg2p/openg2p-bridge-partner-api` | REST API consumed by upstream systems (e.g. PBMS) to hand over disbursement instructions. |
+| Bene-Portal API | `openg2p/openg2p-bridge-bene-portal-api` | REST API for the OpenG2P Beneficiary Portal. |
+| Celery Beat Producer | `openg2p/openg2p-bridge-celery` | Single replica. Schedules periodic tasks. |
+| Celery Workers | `openg2p/openg2p-bridge-celery` | Same image as beat; scale horizontally for volume. |
+| Example Bank API | `openg2p/openg2p-bridge-example-bank-api` | Bundled simulator (only if `exampleBank.enabled`). |
+| Example Bank Celery (beat + workers) | `openg2p/openg2p-bridge-example-bank-celery-beat-producers`, `openg2p/openg2p-bridge-example-bank-celery-workers` | Bundled simulator background tasks. |
 
 ### Dependency subcharts
 

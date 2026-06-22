@@ -36,7 +36,7 @@ Docker image names, and Helm `Chart.yaml` names are intentionally left unchanged
 | **celery-workers** | service (pod) | Celery workers that execute the beats (check balance, block funds, initiate payments, reconcile MT940, and — for in-kind — geo/warehouse/agency tasks). Scale horizontally. |
 | **models** | library | SQLAlchemy persistence models and Pydantic schemas shared by the api, beat producer and workers. |
 
-The beat producer and workers ship as a **single Docker image** (`openg2p/openg2p-g2p-bridge-celery`); the Helm chart runs it as beat or worker by configuration.
+The beat producer and workers ship as a **single Docker image** (`openg2p/openg2p-bridge-celery`); the Helm chart runs it as beat or worker by configuration.
 
 ## Example Bank modules (`example-bank/`)
 

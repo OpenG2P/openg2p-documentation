@@ -41,22 +41,22 @@ The table below tracks the **NSR Helm chart** versions and the key changes in ea
 
 | Helm Chart Version | Last Modified | Comments |
 | ------------------ | ------------- | -------- |
-| `0.0.0-develop` | 20-Jun-2026 | **Rolling development version.** Every CI publish appends a unique `.<date>.<run>` suffix; this single row tracks all changes on `develop`. Key changes vs. the previous chart:<br>• Self-sufficient chart — the shared base "registry" wrapper chart was retired; the chart now owns all templates and values directly.<br>• Multiple registries (and AWE) can co-exist in one namespace — the Keycloak staff client, AWE admin clients, MinIO buckets, keymanager app-id and AWE callback-secret id are all release-scoped.<br>• AWE callback-HMAC secret is minted by a dedicated template instead of a duplicate `postgres-init` entry (fixes the Helm 4 server-side-apply `spec.template field is immutable` failure).<br>• Branch-derived chart versioning with a `<date>.<run>` suffix, plus a manual `version` override for ad-hoc builds.<br>• `postgres-init` updated — its Job is a plain resource and the DB-user password is re-synced idempotently on every run.<br>• Redis container resource limits removed. |
+| `0.0.0-develop` | 20-Jun-2026 | **Rolling development version.** Every CI publish appends a unique `.<run>` suffix; this single row tracks all changes on `develop`. Key changes vs. the previous chart:<br>• Self-sufficient chart — the shared base "registry" wrapper chart was retired; the chart now owns all templates and values directly.<br>• Multiple registries (and AWE) can co-exist in one namespace — the Keycloak staff client, AWE admin clients, MinIO buckets, keymanager app-id and AWE callback-secret id are all release-scoped.<br>• AWE callback-HMAC secret is minted by a dedicated template instead of a duplicate `postgres-init` entry (fixes the Helm 4 server-side-apply `spec.template field is immutable` failure).<br>• Branch-derived chart versioning with a `<run>` suffix, plus a manual `version` override for ad-hoc builds.<br>• `postgres-init` updated — its Job is a plain resource and the DB-user password is re-synced idempotently on every run.<br>• Redis container resource limits removed. |
 
 {% hint style="info" %}
-**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.<date>.<run>`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is cut — capturing that release's final changelog.
+**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.<run>`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is cut — capturing that release's final changelog.
 {% endhint %}
 
 The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
 
 ### Helm chart versioning
 
-The **published Helm chart version is derived from the branch name** by the chart-publish workflow — it is the Helm chart's SemVer only and is **independent of the Docker image tags** (those are driven by their own image-build workflows). A `<date>.<run-number>` pre-release suffix makes every publish a new, monotonically-increasing version, so Rancher and the chart CDN never serve a stale cached chart.
+The **published Helm chart version is derived from the branch name** by the chart-publish workflow — it is the Helm chart's SemVer only and is **independent of the Docker image tags** (those are driven by their own image-build workflows). A `<run-number>` pre-release suffix makes every publish a new, monotonically-increasing version, so Rancher and the chart CDN never serve a stale cached chart.
 
 | Branch | Type | Published chart version |
 | --------- | --------------- | ---------------------------------- |
-| `develop` | development | `0.0.0-develop.<date>.<run>` |
-| `N.N` (e.g. `1.0`, `1.1`) | active release line | `N.N.0-develop.<date>.<run>` |
+| `develop` | development | `0.0.0-develop.<run>` |
+| `N.N` (e.g. `1.0`, `1.1`) | active release line | `N.N.0-develop.<run>` |
 | `N.N.N` (e.g. `1.0.0`, `1.0.3`) | frozen release | `N.N.N` (no suffix) |
 
 Notes:
