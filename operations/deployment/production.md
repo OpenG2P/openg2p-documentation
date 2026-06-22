@@ -114,15 +114,15 @@ Refer to the [Scaling](_archive/scaling/) guide for multi-VM architecture.
 
 Download the kubeconfig file of the OpenG2P RKE2 cluster and store it securely. This kubeconfig file allows users to perform any operation on the OpenG2P K8s cluster directly using `kubectl` (bypassing all RBAC set up on Rancher), like downloading K8s secrets, accessing pod logs, executing commands inside the pods, etc, even in case Rancher is not accessible. Hence it is very important to store this securely, so that only super admins of the project are allowed to access it.
 
-## Data cleanup
+### Data cleanup
 
 Make sure any test or stray data in Postgres, OpenSearch or any other persistence is cleaned up completely before rollout. In case of fresh installation of OpenG2P modules, make sure PVCs, and PVs from previous versions are deleted.
 
-## OpenSearch
+### OpenTelemetry + Grafana Loki
 
-In development deployment mode, OpenSearch is installed as a single pod (that runs multiple roles). In production, switch to OpenSearch cluster deployment. OpenSearch cluster involves multiple pods each with different roles (like master, data, coordinating, ingest, etc).
+This logging architecture provides a centralized and scalable way to collect, process, store, and visualize logs from all applications and Kubernetes components across the OpenG2P cluster.
 
-Switching to OpenSearch Cluster deployment can be done directly during deployment of the OpenG2P Module _(TBD Guide)._
+Instead of using the traditional Fluentd + OpenSearch stack, the new architecture leverages OpenTelemetry (OTel) for log collection, Loki for efficient log storage, and MinIO as the object storage backend. This approach reduces infrastructure complexity, lowers resource consumption, and provides better integration with modern observability tools such as Grafana.
 
 ## Add disk alerts to monitor NFS and NGINX
 
