@@ -8,15 +8,15 @@ description: >-
 
 ## Backup node — hardware
 
-|                       | Backup node              | Note                                                                                                                                                                                   |
-| --------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **vCPU minimum**      | 4                        | Hard fail at install. pgBackRest parallelism + restic dedup/encrypt run side-by-side.                                                                                                  |
-| **RAM minimum**       | 8 GB                     | Hard fail at install.                                                                                                                                                                  |
-| **Root disk minimum** | 64 GB                    | Hard fail at install. OS, tooling, logs.                                                                                                                                               |
-| **Backup data disk**  | ≥ 1 TB recommended       | **Warn-only.** Smaller disk = shorter retention before pruning kicks in. The script proceeds and tells you how many days of retention to expect. Mounted at `/var/lib/openg2p-backup`. |
-| **Disk type**         | SSD recommended for repo | HDD acceptable for an archive tier later.                                                                                                                                              |
-| **Network**           | Private subnet only      | No public IP needed. SSH inbound from compute, storage, RP, plus admin laptop.                                                                                                         |
-| **OS**                | Ubuntu 24.04 LTS         | Same as the rest of the platform.                                                                                                                                                      |
+| | Backup node | Note |
+|---|---|---|
+| **vCPU minimum** | 4 | Hard fail at install. pgBackRest parallelism + restic dedup/encrypt run side-by-side. |
+| **RAM minimum** | 8 GB | Hard fail at install. |
+| **Root disk minimum** | 64 GB | Hard fail at install. OS, tooling, logs. |
+| **Backup data disk** | ≥ 1 TB recommended | **Warn-only.** Smaller disk = shorter retention before pruning kicks in. The script proceeds and tells you how many days of retention to expect. Mounted at `/var/lib/openg2p-backup`. |
+| **Disk type** | SSD recommended for repo | HDD acceptable for an archive tier later. |
+| **Network** | Private subnet; SSH-reachable from the admin laptop | The bundled AWS provisioning gives it a public IP (SG-locked to the admin CIDR), like Compute/Storage, so the deployer can SSH in to install. On-prem, reach it over the private subnet / VPN instead. SSH inbound also from compute, storage, RP. |
+| **OS** | Ubuntu 24.04 LTS | Same as the rest of the platform. |
 
 The script enforces vCPU/RAM/root-disk as hard-fails. The data volume size is **warn-and-continue** — the operator can knowingly run with a smaller volume, accepting reduced retention.
 
@@ -77,6 +77,6 @@ The backup host gets `pgbackrest`, `restic`, `nfs-common`, `jq`, `curl`, `etcd-c
 
 ## What does not need to be done
 
-* No customer DNS changes (backup node never gets a public hostname)
+* No customer DNS changes (the backup node gets a public IP for SSH, but no public DNS hostname)
 * No TLS certificate procurement (backup node's only inbound port is SSH)
-* No Wireguard peer config for the backup node (it's reachable on the private subnet directly)
+* No Wireguard peer config for the backup node — the deployer reaches it by SSH (its public IP on the AWS path, SG-restricted to the admin CIDR; or over the private subnet / VPN on-prem)
