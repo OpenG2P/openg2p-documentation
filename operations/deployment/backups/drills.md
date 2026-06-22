@@ -1,5 +1,7 @@
 ---
-description: Weekly automated drill — verify + dry-run-restore + canary checks across every enabled backup group.
+description: >-
+  Weekly automated drill — verify + dry-run-restore + canary checks across every
+  enabled backup group.
 ---
 
 # Drills
@@ -8,13 +10,13 @@ Backups you don't test aren't backups. The orchestrator's `drill` subcommand run
 
 ## What each component's drill does
 
-| Group | Drill steps |
-|---|---|
-| **pg** | `pgbackrest verify` → restore latest full into `/var/lib/openg2p-backup-restore/drill-pg-<timestamp>` on storage → if `pg.canary_table` is set, start a temporary Postgres on port 55432 and run `SELECT count(*) FROM <canary_table>` → tear down |
-| **etcd** | `etcdutl --write-out=table snapshot status <latest>` — verifies snapshot file isn't truncated/corrupt |
+| Group       | Drill steps                                                                                                                                                                                                                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **pg**      | `pgbackrest verify` → restore latest full into `/var/lib/openg2p-backup-restore/drill-pg-<timestamp>` on storage → if `pg.canary_table` is set, start a temporary Postgres on port 55432 and run `SELECT count(*) FROM <canary_table>` → tear down                                                     |
+| **etcd**    | `etcdutl --write-out=table snapshot status <latest>` — verifies snapshot file isn't truncated/corrupt                                                                                                                                                                                                  |
 | **rancher** | Resolves the rancher-backup PVC's NFS path via `kubectl`, then SSHes to the storage node to confirm the latest `*.tar.gz` is present, non-zero size, and passes `gzip -t` integrity check. (Tarballs are encrypted when `encryptionConfigSecretName` is set, so we can't `tar -tzf` to list contents.) |
-| **nfs** | `restic check --read-data-subset=5%` on the NFS repo → `restic restore` of the canary file (`.pvc-mapping.yaml`) into a tempdir |
-| **configs** | `restic check --read-data-subset=5%` on the configs repo → `restic restore` of the smallest tagged snapshot (the `openg2p` tag) into a tempdir |
+| **nfs**     | `restic check --read-data-subset=5%` on the NFS repo → `restic restore` of the canary file (`.pvc-mapping.yaml`) into a tempdir                                                                                                                                                                        |
+| **configs** | `restic check --read-data-subset=5%` on the configs repo → `restic restore` of the smallest tagged snapshot (the `openg2p` tag) into a tempdir                                                                                                                                                         |
 
 `--read-data-subset=5%` re-reads 5% of the actual blob bytes (not just metadata), giving statistical confidence the bytes haven't bit-rotted on disk while keeping drill runtime modest.
 
@@ -53,12 +55,12 @@ Output is human-readable; per-group verdicts go to the screen and aggregated int
 
 ## Reading the results
 
-| Result | Meaning |
-|---|---|
-| `ok` | Drill passed. Backups are restorable. |
-| `fail` | At least one step in the drill failed. **Investigate before the next run.** Common causes: pgBackRest stanza dropped (e.g. PG was reinstalled), restic repo password file modified, etcd snapshot file truncated. |
-| `disabled` | The group is disabled in `backup-config.yaml`. No drill runs. |
-| `-` | The drill has never run for this group (fresh install). |
+| Result     | Meaning                                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ok`       | Drill passed. Backups are restorable.                                                                                                                                                                             |
+| `fail`     | At least one step in the drill failed. **Investigate before the next run.** Common causes: pgBackRest stanza dropped (e.g. PG was reinstalled), restic repo password file modified, etcd snapshot file truncated. |
+| `disabled` | The group is disabled in `backup-config.yaml`. No drill runs.                                                                                                                                                     |
+| `-`        | The drill has never run for this group (fresh install).                                                                                                                                                           |
 
 A failed drill does NOT roll back the broken backup. The latest still-good backup is whatever passed `verify` previously. Restore drills do not modify production data — they restore into temp directories on the storage node and tear them down.
 
@@ -78,17 +80,11 @@ Re-run `install` to update the cron file. We recommend keeping at least the Sund
 * **Network DR** — drills assume the backup host has SSH to compute and storage. They don't simulate a network partition.
 * **Cross-version restore** — drills restore into the same tooling versions that produced the backup. Restoring a backup made on PG 16 into PG 17 needs a manual upgrade dance (see [Postgres PITR](restoration/postgres-pitr.md)).
 * **Full cluster rebuild** — too disruptive to automate weekly. Schedule a manual rehearsal quarterly into a sandbox VPC. See [Full rebuild](restoration/full-rebuild.md).
-* **Encryption key rotation** — drills don't test that you can decrypt with a *new* key. Plan key rotation as a separate exercise.
+* **Encryption key rotation** — drills don't test that you can decrypt with a _new_ key. Plan key rotation as a separate exercise.
 
 ## Common failure modes and what to check
 
-| Drill says | What to check first |
-|---|---|
-| `pg fail` | `pgbackrest --stanza=openg2p info` — is the stanza present? `archive_command` still set? PG running? |
-| `etcd fail` | Is RKE2 actually running on compute? `ls -la /var/lib/rancher/rke2/server/db/snapshots/` on compute — is the latest snapshot recent? |
-| `rancher fail` | `kubectl get backup.resources.cattle.io -A` — did last backup succeed? Is the PVC bound? |
-| `nfs fail` | `mount | grep openg2p-nfs-ro` on backup host — is the read-only mount alive? Storage NFS export still permits backup-host's IP? |
-| `configs fail` | `restic -r /var/lib/openg2p-backup/restic/configs snapshots` on backup host — does it list any snapshots at all? Streaming SSH from RP/compute may have failed. |
+<table><thead><tr><th width="340">Drill says</th><th>What to check first</th></tr></thead><tbody><tr><td><code>pg fail</code></td><td><code>pgbackrest --stanza=openg2p info</code> — is the stanza present? <code>archive_command</code> still set? PG running?</td></tr><tr><td><code>etcd fail</code></td><td>Is RKE2 actually running on compute? <code>ls -la /var/lib/rancher/rke2/server/db/snapshots/</code> on compute — is the latest snapshot recent?</td></tr><tr><td><code>rancher fail</code></td><td><code>kubectl get backup.resources.cattle.io -A</code> — did last backup succeed? Is the PVC bound?</td></tr><tr><td><code>nfs fail</code></td><td><code>mount | grep nfs</code> on backup host — is the NFS export still mounted read-only? If not, check connectivity to the storage node. Also run <code>restic -r /var/lib/openg2p-backup/restic/nfs snapshots</code> — does it list any recent snapshots?</td></tr><tr><td><code>configs fail</code></td><td><code>restic -r /var/lib/openg2p-backup/restic/configs snapshots</code> on backup host — does it list any snapshots at all? Streaming SSH from RP/compute may have failed.</td></tr></tbody></table>
 
 When a drill fails, run the corresponding `verify` subcommand by hand to get more detail:
 

@@ -1,20 +1,22 @@
 ---
-description: Backup-node sizing, network, and secret custody requirements before running openg2p-backup.sh install.
+description: >-
+  Backup-node sizing, network, and secret custody requirements before running
+  openg2p-backup.sh install.
 ---
 
 # Prerequisites
 
 ## Backup node — hardware
 
-| | Backup node | Note |
-|---|---|---|
-| **vCPU minimum** | 4 | Hard fail at install. pgBackRest parallelism + restic dedup/encrypt run side-by-side. |
-| **RAM minimum** | 8 GB | Hard fail at install. |
-| **Root disk minimum** | 64 GB | Hard fail at install. OS, tooling, logs. |
-| **Backup data disk** | ≥ 1 TB recommended | **Warn-only.** Smaller disk = shorter retention before pruning kicks in. The script proceeds and tells you how many days of retention to expect. Mounted at `/var/lib/openg2p-backup`. |
-| **Disk type** | SSD recommended for repo | HDD acceptable for an archive tier later. |
-| **Network** | Private subnet only | No public IP needed. SSH inbound from compute, storage, RP, plus admin laptop. |
-| **OS** | Ubuntu 24.04 LTS | Same as the rest of the platform. |
+|                       | Backup node              | Note                                                                                                                                                                                   |
+| --------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **vCPU minimum**      | 4                        | Hard fail at install. pgBackRest parallelism + restic dedup/encrypt run side-by-side.                                                                                                  |
+| **RAM minimum**       | 8 GB                     | Hard fail at install.                                                                                                                                                                  |
+| **Root disk minimum** | 64 GB                    | Hard fail at install. OS, tooling, logs.                                                                                                                                               |
+| **Backup data disk**  | ≥ 1 TB recommended       | **Warn-only.** Smaller disk = shorter retention before pruning kicks in. The script proceeds and tells you how many days of retention to expect. Mounted at `/var/lib/openg2p-backup`. |
+| **Disk type**         | SSD recommended for repo | HDD acceptable for an archive tier later.                                                                                                                                              |
+| **Network**           | Private subnet only      | No public IP needed. SSH inbound from compute, storage, RP, plus admin laptop.                                                                                                         |
+| **OS**                | Ubuntu 24.04 LTS         | Same as the rest of the platform.                                                                                                                                                      |
 
 The script enforces vCPU/RAM/root-disk as hard-fails. The data volume size is **warn-and-continue** — the operator can knowingly run with a smaller volume, accepting reduced retention.
 
@@ -23,10 +25,12 @@ If you provisioned via `openg2p-aws-provision.sh` with `backup_node.enabled: tru
 ## Network
 
 Inbound to backup node:
+
 * **TCP 22 (SSH)** from admin laptop CIDR (the orchestrator)
-* **TCP 22 (SSH)** from RP, compute, storage SGs (only RP's PG archive_command actually uses this — over the same port)
+* **TCP 22 (SSH)** from RP, compute, storage SGs (only RP's storage's archive\_command actually uses this — over the same port)
 
 Outbound from backup node:
+
 * **TCP 22 (SSH)** to RP, compute, storage (orchestrating per-component backups)
 * **NFS** (TCP 2049 + portmapper) to storage node — backup mounts the NFS export read-only
 
@@ -36,10 +40,10 @@ The storage node's NFS export must permit the backup node's private IP. By defau
 
 The backup automation needs three passphrases. They are loaded from files on the operator's laptop at install time and shipped to the backup host as mode-0600 files under `/etc/openg2p-backup/`. They are **never** committed to the repository.
 
-| File (laptop) | Used for | Loss impact |
-|---|---|---|
-| `restic.pass` | restic NFS + configs repos | NFS data + RP/compute config backups unrecoverable |
-| `pgbackrest.pass` | pgBackRest repo cipher | All Postgres backups unrecoverable |
+| File (laptop)     | Used for                                  | Loss impact                                               |
+| ----------------- | ----------------------------------------- | --------------------------------------------------------- |
+| `restic.pass`     | restic NFS + configs repos                | NFS data + RP/compute config backups unrecoverable        |
+| `pgbackrest.pass` | pgBackRest repo cipher                    | All Postgres backups unrecoverable                        |
 | `etcd-aescbc.key` | etcd encryption-at-rest (only if enabled) | Etcd-stored Secrets unrecoverable from restored snapshots |
 
 OpenG2P's convention is to keep these in a per-project [PKCS#12 keystore](https://en.wikipedia.org/wiki/PKCS_12) that the operator maintains separately from the repo. The keystore itself is password-protected. Custody = operator's responsibility; the automation reads file paths and never modifies them.
@@ -64,6 +68,7 @@ The backup orchestrator reads the live cluster's `prod-config.yaml`. Set `prod_c
 ## Tools required on the operator's laptop
 
 The orchestrator runs on the laptop and needs:
+
 * `bash` 4+ (macOS: `brew install bash`)
 * `ssh` + `rsync`
 * `aws-cli` v2 (only for the optional AWS provisioning step)

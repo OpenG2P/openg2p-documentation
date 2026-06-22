@@ -1,8 +1,8 @@
 ---
 description: >-
-  Backup and restore automation for OpenG2P production installs —
-  PostgreSQL via pgBackRest, etcd snapshots, rancher-backup for Kubernetes
-  resources, restic for NFS data and configs. Pull-based f
+  Backup and restore automation for OpenG2P production - PostgreSQL via
+  pgBackRest, etcd snapshots, rancher-backup for Kubernetes resources, restic
+  for NFS data and configs. Pull-based and encrypted.
 ---
 
 # Backups
@@ -14,7 +14,7 @@ This page is the entry point for the OpenG2P backup automation that lives at `au
 {% endhint %}
 
 {% hint style="info" %}
-Backups are **required for production** and must be in place before go-live — the Backup node is the 4th node of the production topology. The platform install and the backup setup are **separate steps**: bring the cluster up first, then provision the Backup node (`backup_node.enabled: true`) and run `openg2p-backup.sh install`. (You *can* stand the platform up first and add backups before go-live, but a production deployment is not complete without them.)
+Backups are **required for production** and must be in place before go-live — the Backup node is the 4th node of the production topology. The platform install and the backup setup are **separate steps**: bring the cluster up first, then provision the Backup node (`backup_node.enabled: true`) and run `openg2p-backup.sh install`. (You _can_ stand the platform up first and add backups before go-live, but a production deployment is not complete without them.)
 {% endhint %}
 
 ## What this is, in one paragraph
