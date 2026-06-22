@@ -10,9 +10,10 @@ The suggested convention is given below.
 
 \<component>.\<environment>.\<your org domain>.\<tld>
 
-The chart **derives every hostname from `global.namespace`** by default, so you
-usually only set the namespace segment (e.g. `trial`). Each hostname can still be
-overridden individually.
+The chart **derives every hostname from the install namespace** by default
+(`.Release.Namespace`), so you usually set nothing. Override `global.namespace`
+to use a hostname segment that differs from the Kubernetes namespace, or override
+each hostname individually.
 
 | Component | Helm value | Example Domain (namespace = `trial`) |
 | --- | --- | --- |

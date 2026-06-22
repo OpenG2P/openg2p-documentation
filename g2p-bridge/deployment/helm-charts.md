@@ -38,8 +38,10 @@ For the chart version, runtime image tags, last-modified date and change history
   gated behind a single switch, `global.g2pBridgeInKindEnabled`.
 * **Keycloak client provisioning** through the `keycloak-init` subchart (creates
   the `g2p-bridge` OIDC client). See [Keycloak Client](keycloak-client.md).
-* **Namespace-derived hostnames.** Set `global.namespace` and every ingress
-  hostname is derived from it (e.g. `g2p-bridge.<namespace>.openg2p.org`).
+* **Namespace-derived hostnames.** Every ingress hostname is derived from the
+  install namespace by default (e.g. `g2p-bridge.<namespace>.openg2p.org`) — no
+  need to set it. Override `global.namespace` only to use a hostname segment that
+  differs from the Kubernetes namespace.
 * **Single Celery image** run as either beat producer or worker, selected by the
   chart at runtime.
 * **Rancher-ready** — ships a `questions.yaml` so all changeable values are
@@ -84,7 +86,7 @@ documented in `values.yaml`. The most important ones:
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.namespace` | `trial` | Environment segment used to derive all ingress hostnames. |
+| `global.namespace` | _(install namespace)_ | Hostname segment for all ingress hosts. Empty = auto-derived from the release namespace; set only to use a different segment. |
 | `global.g2pBridgeHostname` | `g2p-bridge.<namespace>.openg2p.org` | Partner API hostname. |
 | `global.benePortalHostname` | `g2p-bridge-bene-portal.<namespace>.openg2p.org` | Beneficiary Portal API hostname. |
 
@@ -158,7 +160,9 @@ cd g2p-bridge/deployment/charts/openg2p-bridge
 helm dependency build
 
 # 3. Install (release name 'g2p-bridge' -> DB 'g2p_bridge', role 'g2p_bridge_user')
-helm install g2p-bridge . -n <namespace> --set global.namespace=<namespace>
+helm install g2p-bridge . -n <namespace>
+# Hostnames auto-derive from <namespace>. Add --set global.namespace=<segment>
+# only if the hostname segment must differ from the namespace.
 
 # Override more values with your own file:
 helm install g2p-bridge . -n <namespace> -f my-values.yaml
