@@ -53,7 +53,7 @@ Change-request attribute validation reads rules from metadata JSON in Postgres. 
 
 ***
 
-### Domain services - where core calls you
+### Domain services
 
 ```mermaid
 flowchart LR
@@ -82,6 +82,52 @@ async def validate_domain_attributes(self, change_request_request_payload):
 ```
 
 Child TABLE services can be minimal if they only need display strings. Root registers typically implement full validation and search text construction.
+
+#### **Register hierarchy and domain hook placement**
+
+Registers in an extension form a tree defined in Postgres metadata (`g2p_register_definitions.master_register_id`). Child rows link to their immediate parent via `link_internal_record_id`. When records are saved into the registry, ancestors are persisted before descendants. Domain hooks (`post_approve`, `post_ingest`) run on the domain service for the register being saved only. They do not bubble up the tree automatically.
+
+**Side effects on a parent register should live in the lowest (most specific) child domain service that triggers the change**, not in the parent's service.
+
+**How hierarchy is defined**
+
+<table><thead><tr><th width="201">Column</th><th>Role</th></tr></thead><tbody><tr><td><code>master_register_id</code></td><td>Immediate parent register; <code>NULL</code> = root subject register</td></tr><tr><td><code>register_purpose</code></td><td><code>REGISTER</code> (subject / nested subject) or <code>TABLE</code> (child table)</td></tr><tr><td><code>register_rank</code></td><td>Metadata ordering hint (higher = closer to root)</td></tr></tbody></table>
+
+Example ([NSR Implementation](../../../../national-social-registry/))
+
+```
+Household (root, REGISTER)
+├── Individual (REGISTER)
+│   ├── IndividualProgram (TABLE)
+│   ├── IndividualLand (TABLE)
+│   ├── IndividualShock (TABLE)
+│   └── IndividualDisability (TABLE)
+├── HouseholdProgram (TABLE)
+├── HouseholdAsset (TABLE)
+└── HouseholdHousingAndServices (TABLE)
+```
+
+Child TABLE models typically drop person/geo mixins; the parent link is the inherited `link_internal_record_id` column. `G2PRegisterHierarchicalService` walks this tree via `master_register_id` and `link_internal_record_id`.
+
+**Hook placement rule**
+
+The platform invokes `post_approve` and `post_ingest` only on the register currently being saved. When a child row is saved, its parent row already exists in the live register. Implement parent-updating logic in the **child** register's domain service: the deepest register in the tree whose save event causes the side effect.
+
+<table><thead><tr><th width="181">Scenario</th><th>Wrong placement</th><th>Correct placement</th></tr></thead><tbody><tr><td>Adding a household member should increment <code>size_children_u5</code> on Household</td><td><code>G2PRegisterDomainServiceHousehold.post_ingest</code></td><td><code>G2PRegisterDomainServiceIndividual.post_ingest</code></td></tr><tr><td>Individual marked INACTIVE (Death) should set <code>husband_dead</code> on Household</td><td><code>G2PRegisterDomainServiceHousehold.post_approve</code></td><td><code>G2PRegisterDomainServiceIndividual.post_approve</code></td></tr><tr><td>Adding a shock row should update individual coping index</td><td>Individual domain service</td><td><code>G2PRegisterDomainServiceIndividualShock.post_ingest</code></td></tr></tbody></table>
+
+**Reference from** [**National Social Registry Implementation**](../../../../national-social-registry/)
+
+`G2PRegisterDomainServiceIndividual.post_ingest` loads the parent Household via `register_row.link_internal_record_id` and increments `size_children_u5` when the new member is under 5.
+
+`G2PRegisterDomainServiceIndividual.post_approve` sets `household.husband_dead` when an individual is marked INACTIVE with reason Death.
+
+`G2PRegisterDomainServiceHousehold` validates household-native attributes (`size_total` vs counts on the household form) but does not implement cross-register rollups. That belongs on Individual or deeper TABLE services.
+
+**Domain Service Hooks at a glance**
+
+<table><thead><tr><th width="193">Hook</th><th>Resolved by</th><th>Typical use</th></tr></thead><tbody><tr><td><code>post_ingest</code></td><td><code>register_mnemonic</code> of the saved row</td><td>Rollups and cross-register updates after ingest</td></tr><tr><td><code>post_approve</code></td><td><code>register_mnemonic</code> of the CR's <code>section_register_id</code></td><td>Side effects on UPDATE, DELETE, INACTIVE</td></tr><tr><td><code>pre_approve</code></td><td>Same</td><td>Rare; blocking checks before commit</td></tr><tr><td><code>validate_domain_attributes</code></td><td>Section register mnemonic</td><td>Field validation only (no DB side effects)</td></tr></tbody></table>
+
+Load the parent in either hook via `link_internal_record_id` on the saved row (ingest) or from the change request payload (approve).
 
 ***
 
