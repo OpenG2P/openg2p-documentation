@@ -35,15 +35,16 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy t
 8. On Install Step 1:
    1. select the namespace;
    2. give the installation a name — `g2p-bridge` recommended (the database and role are derived from this name);
-   3. select **Customize Helm options before install**;&#x20;
+   3. select **Customize Helm options before install** — needed so you can review the chart options, including the **sanity test suite** (see the note below);&#x20;
    4. Next.
+
+{% hint style="info" %}
+**Sanity test suite.** The bundled regression sanity suite is **enabled by default** — it runs the read-only **L0 (smoke)** and **L1 (contract)** API checks on each install/upgrade and creates no data. Enable **L2 (end-to-end)** only on **test environments**, as it creates test data and moves treasury funds. See [Regression Sanity Suite](../development/testing/regression-sanity-suite.md) for what each level covers and how to read the report.
+{% endhint %}
+
 9. Review the variables. For a pure **digital cash** deployment you typically only set the **sponsor/treasury account** and choose whether to deploy the bundled **Example Bank** and create the **Keycloak client** — all hostnames are derived automatically from the install namespace. See [Helm Chart → Key parameters to change](helm-charts.md#key-parameters-to-change) for the full list.
 10. Install.
 11. Wait for all pods to come up successfully (`Running` / `Completed`).
-
-{% hint style="info" %}
-**Sanity test suite.** Among the Helm options, the bundled regression sanity suite is **enabled by default** — it runs the read-only **L0 (smoke)** and **L1 (contract)** API checks on each install/upgrade and creates no data. Enable **L2 (end-to-end)** only on **test environments**, as it creates test data and moves treasury funds. See [Regression Sanity Suite](../development/testing/regression-sanity-suite.md) for what each level covers and how to read the report.
-{% endhint %}
 
 ### Post install check
 
