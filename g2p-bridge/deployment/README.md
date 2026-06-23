@@ -37,7 +37,7 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy t
    2. give the installation a name — `g2p-bridge` recommended (the database and role are derived from this name);
    3. select **Customize Helm options before install**;&#x20;
    4. Next.
-9. Review the variables. For a pure **digital cash** deployment you typically only set the **namespace** (all hostnames derive from it) and the **sponsor/treasury account**, and choose whether to deploy the bundled **Example Bank** and create the **Keycloak client**. See [Helm Chart → Key parameters to change](helm-charts.md#key-parameters-to-change) for the full list.
+9. Review the variables. For a pure **digital cash** deployment you typically only set the **sponsor/treasury account** and choose whether to deploy the bundled **Example Bank** and create the **Keycloak client** — all hostnames are derived automatically from the install namespace. See [Helm Chart → Key parameters to change](helm-charts.md#key-parameters-to-change) for the full list.
 10. Install.
 11. Wait for all pods to come up successfully (`Running` / `Completed`).
 
@@ -61,6 +61,21 @@ With the default hostnames (namespace `trial` shown):
 {% hint style="info" %}
 The bare API base path (e.g. `/api/g2p-bridge/`) returns a 404 by design — there is no route there. Use `/docs`, `/ping`, or a specific endpoint.
 {% endhint %}
+
+### Next steps
+
+With the install healthy, finish the rollout in two short steps. Each is a
+self-contained guide — follow the linked page (kept separate so this flow stays
+simple):
+
+1. **Load the monitoring dashboards.** Upload the bundled Superset dashboards
+   (Operations Overview, Failures, Reconciliation, SPAR, Example Bank) so
+   operators can watch disbursements, failures and reconciliation, then open them
+   to confirm they render. → [**Dashboards (Superset)**](dashboards.md)
+2. **Try out the APIs.** Run the guided, CSV-seeded **API Walkthrough** against
+   this install to exercise the full digital-cash disbursement flow end to end and
+   see the results — it also doubles as hands-on training.
+   → [**API Walkthrough (Postman)**](../development/testing/api-walkthrough.md)
 
 ## Reference
 
