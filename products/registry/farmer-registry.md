@@ -25,13 +25,36 @@ The Farmer Registry inherits all the [features of the registry platform](registr
 
 ## Versions
 
-<table><thead><tr><th width="131.66796875">Helm version</th><th width="145.51171875">Last modified</th><th>Comments</th></tr></thead><tbody><tr><td>1.1.1</td><td>19-Jun-2026</td><td><mark style="color:$danger;"><strong>UN RELEASED</strong></mark> version. Still under test.<br>Based on new repo structure where the base platform is in <code>registry-platform</code> repo verions <code>develop</code>. The entire helm chart is contained in the farmer-registry repo. This is different from previous packaging where base registry's helm chart was a dependency.  In this case the helm chart is self sufficient. Registry platform does not have any helm chart.  The reason for not calling this version 1.1.0-develop is due Rancher caching problems as it does not seem to update the chart if the version does not change.</td></tr><tr><td>1.1.0</td><td>08-May-2026</td><td>Based on registry helm chart 4.1.0.  <a href="registry/versions/registry-release-notes-v4.1.0.md">Registry Release Notes v4.1.0</a>.   </td></tr><tr><td></td><td></td><td></td></tr></tbody></table>
+The table below tracks the **Farmer Registry Helm chart** versions and the key changes in each (relative to the previous chart). The published version is derived from the branch name at package time — see [Helm chart versioning](#helm-chart-versioning) for the scheme.
 
-Farmer Registry follows the **branch-name-equals-version** convention: the `develop` branch carries `-develop` pre-release tags on both the wrapper chart and all Docker images. Release branches drop the suffix and produce versioned artefacts (e.g. `1.1.0`).
+| Helm Chart Version | Last Modified | Comments |
+| ------------------ | ------------- | -------- |
+| `0.0.0-develop` | 23-Jun-2026 | **Rolling development version.** Every CI publish appends a unique `.<run>` suffix; this single row tracks all changes on `develop`. Key changes:<br>• Self-sufficient chart — the base "registry" wrapper chart was retired; the chart now owns all templates and values directly (the registry platform lives in [`registry-platform`](https://github.com/openg2p/registry-platform), `develop`, and ships no Helm chart of its own).<br>• Multiple registries (and AWE) can co-exist in one namespace — the Keycloak staff client, AWE admin clients, MinIO buckets (including `registrant-photos`), keymanager app-id and the AWE callback-secret id are all release-scoped.<br>• Legacy Fluentd/OpenSearch logging removed (cluster logging is handled cluster-wide by OpenTelemetry + Grafana Loki).<br>• Branch-derived chart versioning with a `<run>` suffix, plus a manual `version` override for ad-hoc builds. |
+| `1.1.0` | 08-May-2026 | Frozen release built on the registry base Helm chart `4.1.0` (the wrapper-chart era, before the self-sufficient conversion). [Registry Release Notes v4.1.0](registry/versions/registry-release-notes-v4.1.0.md). |
 
-Source code at the `1.1.0` tag: [github.com/OpenG2P/farmer-registry/tree/1.1.0](https://github.com/OpenG2P/farmer-registry/tree/1.1.0)
+{% hint style="info" %}
+**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.<run>`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is cut — capturing that release's final changelog.
+{% endhint %}
 
-For platform-level release notes (which manifest Farmer Registry releases), see [Registry versions](registry/versions/).
+The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** the Farmer Registry is built from. There is no longer a separate "base registry chart" — the Farmer Registry chart is self-sufficient.
+
+### Helm chart versioning
+
+The **published Helm chart version is derived from the branch name** by the chart-publish workflow — it is the Helm chart's SemVer only and is **independent of the Docker image tags** (those are driven by their own image-build workflows). A `<run-number>` pre-release suffix makes every publish a new, monotonically-increasing version, so Rancher and the chart CDN never serve a stale cached chart.
+
+| Branch | Type | Published chart version |
+| --------- | --------------- | ---------------------------------- |
+| `develop` | development | `0.0.0-develop.<run>` |
+| `N.N` (e.g. `1.0`, `1.1`) | active release line | `N.N.0-develop.<run>` |
+| `N.N.N` (e.g. `1.0.0`, `1.0.3`) | frozen release | `N.N.N` (no suffix) |
+
+Notes:
+
+* `N.N` branches expand to `N.N.0-…` because Helm requires a three-part SemVer (a bare `1.0` is rejected). A `N.N.N` (three-part) branch is treated as **frozen**: it publishes the exact version with no suffix, and — per SemVer — that release outranks all of its `-develop` builds.
+* **Automatic publishing happens only for `develop`, `N.N` and `N.N.N` branches.** Any other branch is skipped. To publish from such a branch (or to cut a custom version like `1.0.0-g2p5466`), trigger the **Publish Helm Charts** workflow manually (Actions → _Run workflow_) and supply the explicit `version` input — that overrides the branch-derived value.
+* Tag pushes do **not** trigger a chart publish.
+
+The CI workflows in the [`farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/.github/workflows) repository implement this strategy (the `helm-publish.yml` workflow computes the version from the branch and packages with `helm package --version`).
 
 ## Domain models
 
