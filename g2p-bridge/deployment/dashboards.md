@@ -142,6 +142,34 @@ The chart's role Job now **waits for the tables to exist** before granting and
 sets future-table default privileges for **every table-owning role** (not just the
 DB owner), so a fresh or external-Postgres install grants correctly on its own.
 
+**Dashboards show a connection error after a reinstall** — the `superset_ro`
+password the dashboards' connection stored no longer matches the role. By design
+the password is **kept stable** across uninstall/reinstall (the
+`<release>-superset-ro` Secret has `resource-policy: keep`, a plain `helm
+uninstall` keeps it, and the uninstall script preserves it too), so this normally
+does **not** happen. It only happens if you uninstalled with **`--drop-superset-ro`**,
+deleted the Secret, or moved to a fresh environment — all of which mint a new
+password.
+
+Re-importing the ZIP does **not** fix it and does **not** re-prompt for the
+password: Superset matches the database connection by **UUID** and silently reuses
+the existing connection (with the stale password). To fix, do **one** of:
+
+* **Re-run the provisioner** (recommended — sets the password directly via the
+  ORM, no re-import needed):
+  ```bash
+  RO_PASS=$(kubectl -n <ns> get secret <release>-superset-ro -o jsonpath='{.data.password}' | base64 -d) \
+    python /tmp/provision_dashboards.py     # run inside the Superset pod
+  ```
+* **Edit the connection** in Superset: Settings → *Database Connections* → edit the
+  `g2p_bridge` / `spar` / `example_bank` connection → paste the `superset_ro`
+  password from the Secret.
+* **Fully remove, then re-import:** run `remove_dashboards.py` (it deletes the
+  dashboards **and** the connections), then re-import the ZIP — now it prompts for
+  the password because the connection is new. (Deleting only the dashboards in the
+  Superset UI leaves the connection, which is exactly why a re-import doesn't
+  prompt.)
+
 ## Why manual
 
 Superset and the bridge have **independent lifecycles** — you may run Superset
@@ -173,9 +201,18 @@ Done — Superset has no bridge dashboards/connections, Postgres has no bridge D
 or roles, and Kubernetes has no bridge workloads/secrets.
 
 {% hint style="info" %}
-If you uninstall the bridge **without** Step 1, the dashboards stay in Superset
-but break (they point at the dropped database). They are harmless and reconnect
-automatically if you reinstall. Step 1 simply removes them for good.
+**Planning to reinstall later? Don't use `--drop-superset-ro`.** A plain uninstall
+(or the script without that flag) **keeps the `superset_ro` role + Secret**, so the
+read-only password stays the same and the dashboards reconnect automatically once
+the bridge is reinstalled — no re-import or re-password needed. Use
+`--drop-superset-ro` (the "clean teardown" above) only for a **permanent** removal;
+after it, a later reinstall mints a **new** password and the dashboards show a
+connection error until you reconcile it (see
+[Troubleshooting](#troubleshooting)).
+
+If you uninstall **without** Step 1, the dashboards stay in Superset but break
+(the database is dropped); they are harmless and reconnect on reinstall (password
+permitting). Step 1 removes them for good.
 {% endhint %}
 
 ## Maintaining the bundle (for maintainers)
