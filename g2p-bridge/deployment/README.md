@@ -41,6 +41,10 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy t
 10. Install.
 11. Wait for all pods to come up successfully (`Running` / `Completed`).
 
+{% hint style="info" %}
+**Sanity test suite.** Among the Helm options, the bundled regression sanity suite is **enabled by default** — it runs the read-only **L0 (smoke)** and **L1 (contract)** API checks on each install/upgrade and creates no data. Enable **L2 (end-to-end)** only on **test environments**, as it creates test data and moves treasury funds. See [Regression Sanity Suite](../development/testing/regression-sanity-suite.md) for what each level covers and how to read the report.
+{% endhint %}
+
 ### Post install check
 
 With the default hostnames (namespace `trial` shown):
