@@ -7,7 +7,7 @@ description: Post-deployment guide
 This guide covers connecting to a database (or any in-cluster service — MinIO, Redis, Kafka, …) from outside the cluster using `kubectl` port-forwarding.
 
 {% hint style="warning" %}
-**PostgreSQL is different in production.** In the production deployment, PostgreSQL is the **host install on the Storage node** — it is *not* an in-cluster `*-postgresql-0` pod, so `kubectl port-forward` to a PG pod won't work. To reach the host PostgreSQL from your laptop, use the **SSH tunnel** described in [Environment Setup → Accessing host PostgreSQL from your laptop](../../operations/deployment/environment-setup-multi-node.md#accessing-host-postgresql-from-your-laptop). The `kubectl port-forward` method below applies to **in-cluster services** (MinIO, Redis, Kafka, etc.) — and to PostgreSQL only on a sandbox / legacy in-cluster-PG install.
+**PostgreSQL is different in production.** In the production deployment, PostgreSQL is the **host install on the Storage node** — it is *not* an in-cluster `*-postgresql-0` pod, so `kubectl port-forward` to a PG pod won't work. To reach the host PostgreSQL from your laptop, use the **SSH tunnel** described in [Environment Setup → Accessing host PostgreSQL from your laptop](../../operations/deployment/environment-setup-multi-node.md#accessing-host-postgresql-from-your-laptop). **Being on Wireguard does not grant direct access to port `5432`** either — the SSH tunnel is still required; that section explains why. The `kubectl port-forward` method below applies to **in-cluster services** (MinIO, Redis, Kafka, etc.) — and to PostgreSQL only on a sandbox / legacy in-cluster-PG install.
 {% endhint %}
 
 ## Prerequisites
