@@ -765,6 +765,8 @@
       * [Keycloak Advanced Security](deployment/deployment-guide/keycloak/keycloak-advanced-security.md)
       * [Keycloak Custom Docker Image](deployment/deployment-guide/keycloak/keycloak-custom-docker-image.md)
     * [NFS Migration – Migrating PVC's to a New NFS Server](deployment/deployment-guide/nfs-migration-migrating-pvcs-to-a-new-nfs-server.md)
+    * [Adding and Removing Nodes in Cluster](operations/deployment/deployment-guide/adding-and-removing-nodes-in-cluster.md)
+    * [Single Machine Backup & Restore Guide](operations/deployment/deployment-guide/single-machine-backup-and-restore-guide.md)
   * [Packages](releases/packages.md)
   * [Versioning Conventions](releases/versioning.md)
   * [Helm Charts](releases/helm-charts.md)
