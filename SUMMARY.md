@@ -608,6 +608,7 @@
     * [OpenG2P - IUDX](data-share/openg2p-iudx.md)
   * [Privacy & Security](privacy-and-security/README.md)
     * [Key Manager](privacy-and-security/key-manager.md)
+    * [PyJWTCryptoHelper](platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
     * [Security Audits](privacy-and-security/security-audits/README.md)
       * [Security Audit 2025 March](privacy-and-security/security-audits/security-audit-2025-march.md)
   * [System Monitoring](platform/platform-services/system-monitoring/README.md)
