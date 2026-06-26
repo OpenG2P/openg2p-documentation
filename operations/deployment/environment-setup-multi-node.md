@@ -10,7 +10,7 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 **Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/production-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
 {% endhint %}
 
-**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher, Keycloak admin SSO, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (in-cluster PostgreSQL/Kafka/MinIO/Redis + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
+**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (PostgreSQL on the host + Kafka/MinIO/Redis/Keycloak + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
 
 {% hint style="info" %}
 Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
@@ -29,6 +29,42 @@ This script installs [**commons**](../../deployment/openg2p-commons-helm-chart.m
 
 The script is still useful in production for the namespace, Rancher Project, and Istio Gateway scaffolding.
 {% endhint %}
+
+## How this stage runs — production (automated) vs standalone (manual)
+
+There are **two ways** to run the environment stage. Pick the one that matches how you built the infrastructure — it determines which of the steps below you actually perform by hand.
+
+### Option A — Production automation (`openg2p-prod.sh`) — recommended
+
+If you installed the platform with the production automation, the environment stage is **Stage 4 of the same orchestrator** and is **mostly automated**. From your laptop (on Wireguard):
+
+```bash
+./openg2p-prod.sh --config prod-config.yaml --stage environment
+```
+
+Stage 4 automates: the **cluster scaffolding** (namespace, Rancher Project, Istio Gateway, Helm `ClusterRepo`, external-PG secret), **generating `env-config.yaml`**, and the **commons install** (`commons-base` + `commons-services`, wired to the **host PostgreSQL**). The **TLS certificate** was already installed on the Reverse Proxy back in Stage 3.
+
+**Your only manual actions in this flow are:**
+
+* **Step 1 — DNS records** (a procurement prerequisite; no script creates these).
+* **Step 3 — citizen "go-public" exposure** on the Reverse Proxy (add the public Nginx server block + open public `80/443`), when you're ready to serve citizen traffic.
+
+You do **not** run `env-cluster.sh` by hand and you do **not** write `env-config.yaml` — Stage 4 does both, so **skip Steps 2, 4 and 5 below** (they're reference / standalone). In an unattended `all` run the env stage *defers* if Wireguard isn't connected; just re-run the command above once you're on the VPN.
+
+### Option B — Standalone (`env-cluster.sh`)
+
+If you're setting up an environment **separately** — on infrastructure not built by `openg2p-prod.sh`, or for debugging — follow the full manual step-by-step below using `automation/environment/env-cluster.sh`. **All five steps are manual.**
+
+### Which steps are manual?
+
+| Step | Production flow (`openg2p-prod.sh`) | Standalone flow (`env-cluster.sh`) |
+| --- | --- | --- |
+| **1 — DNS records** | Manual (prerequisite) | Manual |
+| **2 — TLS cert on the RP** | **Automated** (done in Stage 3) — skip | Manual |
+| **3 — Citizen exposure on the RP** | **Manual** (the go-public action) | Manual |
+| **4 — Configure `env-cluster.sh`** | **Automated** (Stage 4 generates it) — skip | Manual |
+| **5 — Run `env-cluster.sh`** | **Automated** (Stage 4 runs it) — skip | Manual |
+| Cluster scaffolding (namespace, project, gateway, repo, PG secret) | **Automated** (Stage 4) | via Steps below / `env-cluster.sh` steps 1–3 |
 
 ## Architecture
 
@@ -95,6 +131,8 @@ The source code for the automation script lives in the [`openg2p-deployment`](ht
 
 ### Step 1: Verify DNS records (procured up front)
 
+_**Production:** manual — a procurement prerequisite (no script creates DNS records). **Standalone:** manual._
+
 DNS records should have been procured as part of the [Prerequisites & Procurement](prerequisites-procurement.md) step. For this environment you need:
 
 | Type | Name               | Value             |
@@ -112,6 +150,8 @@ dig qa.openg2p.org
 {% endhint %}
 
 ### Step 2: Place the customer-provided TLS certificate
+
+_**Production:** automated — the cert was installed on the Reverse Proxy in Stage 3 (Infrastructure); **skip this step**. **Standalone:** manual._
 
 The wildcard certificate for `*.<base_domain>` (covering the apex too) is **procured from the customer's chosen CA** — commercial (DigiCert, GlobalSign, Sectigo) or national / sovereign — as listed in the [procurement checklist](prerequisites-procurement.md). Let's Encrypt is acceptable only for sandbox / PoC; see the note at the end of this step.
 
@@ -163,6 +203,8 @@ Cloudflare DNS plugin (`python3-certbot-dns-cloudflare`) or Route53 plugin (`pyt
 </details>
 
 ### Step 3: Expose the environment on the Reverse Proxy
+
+_**Production & standalone:** manual — this is the citizen "go-public" action on the Reverse Proxy (the env stage is laptop-side and does not touch the RP). Do it when you're ready to serve citizen traffic._
 
 This is the step that **opens the system to citizens**. It has two parts: an Nginx server block for the environment's hostnames, and opening the public channel at the firewall. Until now the Reverse Proxy served only the admin tools (Rancher, Keycloak) on the private channel — this step adds the public, citizen-facing channel alongside them.
 
@@ -285,6 +327,8 @@ No host-level change is needed — the automation already configured `ufw` to ac
 
 ### Step 4: Configure env-cluster.sh
 
+_**Production:** automated — Stage 4 generates `env-config.yaml` from `prod-config.yaml`; **skip this step**. **Standalone:** manual._
+
 On your **workstation**, clone the repo and prepare the config:
 
 ```bash
@@ -309,6 +353,8 @@ modules:
 {% endhint %}
 
 ### Step 5: Run env-cluster.sh
+
+_**Production:** automated — Stage 4 runs the commons install (`env-cluster.sh --step 4/5`); **skip this step**. **Standalone:** manual._
 
 From your **workstation** (with kubectl access to the cluster):
 
@@ -468,47 +514,11 @@ The uninstall script never touches the Nginx node, DNS records, certificates, or
 
 ## Accessing host PostgreSQL from your laptop
 
-Production PostgreSQL is a **host install on the storage node**, locked down by two layers:
+Production PostgreSQL is the **host install on the storage node**, firewalled to the **compute node only** — so you reach it over **SSH**, not a direct connection (which fails even on Wireguard, because WG NATs your traffic to the reverse-proxy's IP). The full how-to — on-box `psql`, the SSH-tunnel routes, GUI clients, and where the credentials live — is the day-2 operational guide:
 
-* **Host firewall (ufw):** port `5432` is open **only to the compute node's IP**.
-* **`pg_hba.conf`:** the only remote rule is `host all all <compute_ip>/32`; PostgreSQL listens on `localhost` + the storage private IP.
+➡️ **[Access a Database from Outside the Cluster → Host PostgreSQL (production)](../../deployment/deployment-guide/access-a-database-from-outside-the-cluster.md#host-postgresql-production)**
 
-So there is **no direct network path to `5432`** from a laptop — and that includes when you're on Wireguard. Connect via SSH instead.
-
-{% hint style="warning" %}
-**Wireguard does _not_ give you direct access to `5432`.** A WG laptop _can_ SSH to the nodes (port `22` is open to the whole private subnet), but a direct `psql` to `<storage_private_ip>:5432` still fails: WG NATs (`MASQUERADE`) your traffic to the **reverse-proxy's** private IP, and `5432` is allow-listed for the **compute** node only — so the packet is rejected at both the firewall and `pg_hba`. Use one of the SSH methods below (over WG they're trivial, since you can reach the storage/compute private IPs on port 22).
-{% endhint %}
-
-**Option 1 — quick admin, on the box** (simplest; peer auth, no password):
-
-```bash
-ssh -i <key> <user>@<storage-host>      # or the storage private IP, if on Wireguard
-sudo -u postgres psql
-```
-
-**Option 2 — SSH tunnel, for `psql` / pgAdmin / DBeaver on your laptop:**
-
-```bash
-# Via the storage node (simplest). On Wireguard, use the storage PRIVATE IP as the host.
-ssh -i <key> -L 5432:localhost:5432 <user>@<storage-host>
-
-# Alternative — via the compute node (which is already allow-listed for 5432):
-ssh -i <key> -L 5432:<storage_private_ip>:5432 <user>@<compute-host>
-```
-
-Leave that SSH session open, then point your client at **`localhost:5432`**:
-
-```bash
-psql -h 127.0.0.1 -p 5432 -U postgres        # superuser password: see below
-```
-
-For a GUI client (pgAdmin, DBeaver), configure the connection as host `127.0.0.1`, port `5432` — or use the client's built-in "SSH tunnel" option with the same hop, which avoids running `ssh` separately.
-
-**Credentials.** The PostgreSQL superuser password is on the storage node at `/etc/openg2p/secrets/postgres-superuser.env` (root-owned, mode `0600`) and is also printed in the installer's final summary (`automation/production/setup-output/SETUP-SUMMARY.txt`). Per-service users (`esignetuser`, etc.) and their passwords live in the namespace secrets (`esignet-db-user`, …).
-
-{% hint style="info" %}
-Don't open `5432` to the wider private subnet (or to the Wireguard subnet) just to reach it from a laptop — that erodes the private-channel posture for the system's most sensitive component. The SSH tunnel needs no firewall changes. If a dedicated DBA/admin host genuinely needs direct access, allow **that one source** in both `ufw` and `pg_hba.conf` (over Wireguard, allow the reverse-proxy's private IP, since WG traffic is NAT'd to it — not the WG subnet) and reload PostgreSQL.
-{% endhint %}
+Quick reference: the superuser password is on the storage node at `/etc/openg2p/secrets/postgres-superuser.env` and in the installer's final summary (`automation/production/setup-output/SETUP-SUMMARY.txt`).
 
 ## File Structure
 

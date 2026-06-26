@@ -1,7 +1,7 @@
 # Configure External Database to Connect OpenG2P Environment
 
 {% hint style="info" %}
-**This is the default in production.** OpenG2P production runs **one external host PostgreSQL on the Storage node** — the in-cluster Bitnami PostgreSQL is disabled (`postgresql.enabled=false`) and every module points at the host instance. The infrastructure and environment automation already provision this server and create the per-environment databases/users for **commons**; you only need this guide to (a) stand up the host PostgreSQL manually, or (b) wire an **additional module** (e.g. SocialRegistry/PBMS, ODK) to the external database from the Rancher UI. For day-to-day access to the host PostgreSQL, see the SSH-tunnel note in [Environment Setup](../../operations/deployment/environment-setup-multi-node.md#accessing-host-postgresql-from-your-laptop).
+**This is the default in production.** OpenG2P production runs **one external host PostgreSQL on the Storage node** — the in-cluster Bitnami PostgreSQL is disabled (`postgresql.enabled=false`) and every module points at the host instance. The infrastructure and environment automation already provision this server and create the per-environment databases/users for **commons**; you only need this guide to (a) stand up the host PostgreSQL manually, or (b) wire an **additional module** (e.g. SocialRegistry/PBMS, ODK) to the external database from the Rancher UI. For day-to-day access to the host PostgreSQL, see [Access a Database from Outside the Cluster → Host PostgreSQL (production)](access-a-database-from-outside-the-cluster.md#host-postgresql-production).
 {% endhint %}
 
 This document provides instructions to setup and install external database for OpenG2P environments.

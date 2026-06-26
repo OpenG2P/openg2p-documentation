@@ -7,7 +7,51 @@ description: Post-deployment guide
 This guide covers connecting to a database (or any in-cluster service — MinIO, Redis, Kafka, …) from outside the cluster using `kubectl` port-forwarding.
 
 {% hint style="warning" %}
-**PostgreSQL is different in production.** In the production deployment, PostgreSQL is the **host install on the Storage node** — it is *not* an in-cluster `*-postgresql-0` pod, so `kubectl port-forward` to a PG pod won't work. To reach the host PostgreSQL from your laptop, use the **SSH tunnel** described in [Environment Setup → Accessing host PostgreSQL from your laptop](../../operations/deployment/environment-setup-multi-node.md#accessing-host-postgresql-from-your-laptop). **Being on Wireguard does not grant direct access to port `5432`** either — the SSH tunnel is still required; that section explains why. The `kubectl port-forward` method below applies to **in-cluster services** (MinIO, Redis, Kafka, etc.) — and to PostgreSQL only on a sandbox / legacy in-cluster-PG install.
+**PostgreSQL is different in production.** It is the **host install on the Storage node** — *not* an in-cluster `*-postgresql-0` pod — so `kubectl port-forward` won't reach it. See **[Host PostgreSQL (production)](#host-postgresql-production)** just below for SSH-based access (required even on Wireguard). The `kubectl port-forward` method later in this guide applies to **in-cluster services** (MinIO, Redis, Kafka, …) and to PostgreSQL only on a sandbox / legacy in-cluster-PG install.
+{% endhint %}
+
+## Host PostgreSQL (production)
+
+Production PostgreSQL is a **host install on the storage node**, locked down by two layers:
+
+* **Host firewall (ufw):** port `5432` is open **only to the compute node's IP**.
+* **`pg_hba.conf`:** the only remote rule is `host all all <compute_ip>/32`; PostgreSQL listens on `localhost` + the storage private IP.
+
+So there is **no direct network path to `5432`** from a laptop — and that includes when you're on Wireguard. Connect via SSH instead.
+
+{% hint style="warning" %}
+**Wireguard does _not_ give you direct access to `5432`.** A WG laptop _can_ SSH to the nodes (port `22` is open to the whole private subnet), but a direct `psql` to `<storage_private_ip>:5432` still fails: WG NATs (`MASQUERADE`) your traffic to the **reverse-proxy's** private IP, and `5432` is allow-listed for the **compute** node only — so the packet is rejected at both the firewall and `pg_hba`. Use one of the SSH methods below (over WG they're trivial, since you can reach the storage/compute private IPs on port 22).
+{% endhint %}
+
+**Option 1 — quick admin, on the box** (simplest; peer auth, no password):
+
+```bash
+ssh -i <key> <user>@<storage-host>      # or the storage private IP, if on Wireguard
+sudo -u postgres psql
+```
+
+**Option 2 — SSH tunnel, for `psql` / pgAdmin / DBeaver on your laptop:**
+
+```bash
+# Via the storage node (simplest). On Wireguard, use the storage PRIVATE IP as the host.
+ssh -i <key> -L 5432:localhost:5432 <user>@<storage-host>
+
+# Alternative — via the compute node (which is already allow-listed for 5432):
+ssh -i <key> -L 5432:<storage_private_ip>:5432 <user>@<compute-host>
+```
+
+Leave that SSH session open, then point your client at **`localhost:5432`**:
+
+```bash
+psql -h 127.0.0.1 -p 5432 -U postgres        # superuser password: see below
+```
+
+For a GUI client (pgAdmin, DBeaver), configure the connection as host `127.0.0.1`, port `5432` — or use the client's built-in "SSH tunnel" option with the same hop, which avoids running `ssh` separately.
+
+**Credentials.** The PostgreSQL superuser password is on the storage node at `/etc/openg2p/secrets/postgres-superuser.env` (root-owned, mode `0600`) and is also printed in the installer's final summary (`automation/production/setup-output/SETUP-SUMMARY.txt`). Per-service users (`esignetuser`, etc.) and their passwords live in the namespace secrets (`esignet-db-user`, …).
+
+{% hint style="info" %}
+Don't open `5432` to the wider private subnet (or to the Wireguard subnet) just to reach it from a laptop — that erodes the private-channel posture for the system's most sensitive component. The SSH tunnel needs no firewall changes. If a dedicated DBA/admin host genuinely needs direct access, allow **that one source** in both `ufw` and `pg_hba.conf` (over Wireguard, allow the reverse-proxy's private IP, since WG traffic is NAT'd to it — not the WG subnet) and reload PostgreSQL.
 {% endhint %}
 
 ## Prerequisites
@@ -81,7 +125,7 @@ For an **in-cluster PostgreSQL** (sandbox or a legacy in-cluster-PG install), th
     psql -h localhost -p 5432 -U <dbuser> -d <database>
     ```
 
-For the **host PostgreSQL** in production, use the SSH tunnel instead — see the warning at the top of this page.
+For the **host PostgreSQL** in production, use SSH instead — see [Host PostgreSQL (production)](#host-postgresql-production) above.
 
     <br>
 
