@@ -72,8 +72,14 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `revoked` | Consent has been revoked |
 | `replay` | Duplicate `jti` or stale `issued_at` |
 
-## Specifications
+## Implementation
 
-A machine-readable OpenAPI 3.1 specification will accompany this contract and be published in
-Stoplight alongside the other OpenG2P services once implementation begins. The pages here are the
-normative source for that spec.
+The service is built on [`openg2p-fastapi-common`](https://github.com/OpenG2P/openg2p-fastapi-common)
+with **PostgreSQL** for storage. It is **stateless and horizontally scalable** — scale by adding
+pods/workers behind a load balancer; the only shared state is Postgres. Consent expiry runs as an
+external CronJob (`python -m openg2p_consent_manager.expire`) rather than an in-pod scheduler, and
+the hot path lazily expires on read. Partner keys/policies are cached per pod with a short TTL to
+keep `/validate` cheap under high request rates.
+
+These pages are the **normative source** for the contract — the API is documented here in GitBook
+directly (FastAPI also serves a live OpenAPI/Swagger UI at `/docs` for the running service).

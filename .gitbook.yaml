@@ -1,3 +1,4 @@
 redirects:
   operations/deployment/infrastructure-setup/three-node-automation: operations/deployment/infrastructure-setup/production-automation/README.md
   operations/deployment/infrastructure-setup/three-node-automation/aws-provisioning: operations/deployment/infrastructure-setup/production-automation/aws-provisioning.md
+  platform/platform-services/consent-management/design/consent-management: consent-management/design/architecture.md
