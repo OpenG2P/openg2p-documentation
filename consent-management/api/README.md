@@ -24,15 +24,18 @@ endpoint follows; the endpoint pages document the individual contracts.
 
 ## Authentication
 
+All protected endpoints use **Keycloak** bearer tokens (validated against the realm JWKS), as in
+the OpenG2P AWE service. Roles come from `realm_access` and every `resource_access.*` block.
+
 | Caller | Mechanism |
 | --- | --- |
-| Registry / PEP → `/validate`, `/consents/{id}/status` | **mTLS** or a signed service token |
-| Administrator → partner &amp; policy endpoints | Admin credentials (elevated), network-restricted |
-| Subject → `/my/*` | OIDC **bearer token**, scoped to the authenticated subject |
-| Anyone → receipts, JWKS, schemas | Public read (signatures make them self-verifying) |
+| Registry / PEP → `/validate`, `/consents/{id}/status` | Keycloak **service-account token** (client-credentials); optionally fronted by mTLS at ingress |
+| Administrator → partner &amp; policy endpoints | Keycloak token with the **`CONSENT_MANAGER_ADMIN`** role |
+| Subject → `/my/*` | Keycloak **bearer token**, scoped to the authenticated subject |
+| Anyone → receipts, JWKS | Public read (signatures make them self-verifying) |
 
 The consent object's own JWS signature is the application-layer proof on the verification path,
-layered on top of transport/service auth.
+layered on top of the caller's token.
 
 ## Conventions
 

@@ -40,6 +40,10 @@ The CM stores the **public** counterpart of each:
 * **Key rotation.** Both partner and CM keys carry `kid`, `not_before`, `not_after`. Rotation =
   publish new key → switch signing → retire old key, with overlap so in-flight objects still
   verify.
+* **Private-key storage.** The CM's signing private key is loaded from a **PKCS#12 (`.p12`)
+  keystore** (key + certificate), mounted from a Kubernetes Secret. The signing algorithm is
+  derived from the key type (Ed25519 → EdDSA, EC → ES256, RSA → RS256). The private key never
+  leaves the pod; only the public half is published via JWKS.
 
 ## ID-token validation (origination)
 
@@ -60,12 +64,22 @@ When an ID token arrives, the CM:
 * Re-presenting the *same* valid object returns the existing `consent_id`/`receipt_id`
   idempotently rather than minting duplicates.
 
-## Transport &amp; service auth
+## Caller authentication (Keycloak)
 
-* Registry → CM (`/validate`) is a service-to-service call secured with **mTLS** or a signed
-  service token; the consent object's signature is the application-layer proof on top.
-* Admin APIs (partner/policy) require elevated credentials and are network-restricted.
-* Subject APIs require a subject bearer token (OIDC) scoped to the authenticated subject.
+Protected endpoints require a **Keycloak-issued bearer token**, validated against the realm
+JWKS (issuer, signature, optional audience). Roles are read from both `realm_access` and every
+`resource_access.*` client block, exactly as in the OpenG2P AWE service.
+
+* **`/validate` and status** — called by the registry/PEP using a Keycloak **service-account
+  token** (client-credentials). The consent object's own signature is the application-layer proof
+  on top; this is defense-in-depth and may also be fronted by mTLS at the ingress.
+* **Partner/policy admin APIs** — require the `CONSENT_MANAGER_ADMIN` role (configurable).
+  Admin endpoints carry **no** consent object, so the signature mechanism does not protect them —
+  role-based auth is essential here.
+* **Subject APIs (`/my/*`)** — require a subject bearer token; every query is scoped to the
+  token's identity, so a subject can only ever see their own consents.
+* **Public** — receipt fetch and `/.well-known/jwks.json` are unauthenticated (signatures make
+  them self-verifying).
 
 ## Privacy by design
 
