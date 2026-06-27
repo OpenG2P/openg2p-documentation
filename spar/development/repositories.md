@@ -8,7 +8,7 @@ All SPAR source code lives in a **single consolidated repository**.
 
 | Repository | Description |
 | --- | --- |
-| [openg2p-spar](https://github.com/OpenG2P/openg2p-spar) | <p>The consolidated SPAR repository. Layout:</p><p><mark style="color:blue;">core/</mark> — the Python projects: <code>models</code>, <code>mapper-core</code>, <code>mapper-partner-api</code>, <code>bene-portal-api</code>.<br><mark style="color:blue;">docker/</mark> — Dockerfiles for the API images.<br><mark style="color:blue;">deployment/</mark> — the <code>spar</code> Helm chart (<code>charts/spar</code>) and the uninstall script (<code>scripts/uninstall-spar.sh</code>).</p> |
+| [spar](https://github.com/OpenG2P/spar) | <p>The consolidated SPAR repository. Layout:</p><p><mark style="color:blue;">core/</mark> — the Python projects: <code>models</code>, <code>mapper-core</code>, <code>mapper-partner-api</code>, <code>bene-portal-api</code>.<br><mark style="color:blue;">docker/</mark> — Dockerfiles for the API images.<br><mark style="color:blue;">deployment/</mark> — the <code>openg2p-spar</code> Helm chart (<code>charts/openg2p-spar</code>) and the uninstall script (<code>scripts/uninstall-spar.sh</code>).</p> |
 
 {% hint style="info" %}
 The previously separate repos — `openg2p-spar-mapper-api`,

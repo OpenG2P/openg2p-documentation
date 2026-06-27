@@ -613,6 +613,8 @@
       * [Partner & Policy API](consent-management/api/partner-and-policy-api.md)
       * [Consent Lifecycle API](consent-management/api/consent-lifecycle-api.md)
       * [Subject API](consent-management/api/subject-api.md)
+    * [Development](consent-management/development/README.md)
+    * [Deployment](consent-management/deployment/README.md)
   * [Data Sharing](data-share/README.md)
     * [OpenG2P - IUDX](data-share/openg2p-iudx.md)
   * [Privacy & Security](privacy-and-security/README.md)
