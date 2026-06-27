@@ -29,6 +29,18 @@ flowchart LR
 The registry never parses or interprets the consent object. It forwards it, receives a decision
 that includes the **effective set of fields**, and releases only those.
 
+## One shared CM across modules
+
+A single Consent Manager is deployed **per environment** and shared by every data-holding module
+(farmer registry, social registry, PBMS, …). This keeps the partner registry, policy engine,
+audit log, and signing key central — one consent authority for the whole installation.
+
+The module a consent concerns is a **per-partner attribute**: each partner is onboarded under a
+`controller_id` (its module), and a consent object's `data_controller` is validated against that
+partner's `controller_id` (check 4 below). There is no single global controller — the same CM
+serves all modules, and a consent issued for one module can never authorise data from another. A
+partner that needs data from two modules is onboarded once per module, each with its own policy.
+
 ## Components
 
 | Component | Responsibility |

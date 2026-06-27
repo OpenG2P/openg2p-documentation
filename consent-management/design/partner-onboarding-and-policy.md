@@ -20,7 +20,9 @@ flowchart LR
 ```
 
 1. **Register the partner** — name, organisation, the `audience` identifier it will use, and the
-   data controller (registry tenant) it is onboarded under.
+   `controller_id` of the **module** it is onboarded under (e.g. farmer registry, social registry).
+   One shared CM serves all modules; a partner that needs data from two modules is registered once
+   per module. A consent object's `data_controller` is later checked against this `controller_id`.
 2. **Register its public key(s)** — one or more keys with a `kid` and algorithm. The partner signs
    consent objects with the matching private key; the CM verifies with the public key.
 3. **Set its policy** — the allowed scopes, purposes, validity ceiling, and fetch semantics.

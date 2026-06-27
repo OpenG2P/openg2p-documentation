@@ -47,7 +47,7 @@ The CM evaluates these checks in order. The first failure short-circuits to `den
 flowchart TD
   A["1. Schema-validate consent object"] --> B["2. Look up partner + key by kid"]
   B --> C["3. Verify JWS signature\n(known party)"]
-  C --> D["4. Audience == partner == controller"]
+  C --> D["4. aud == partner;\ndata_controller == partner's module"]
   D --> E["5. Subject present, id_type allowed"]
   E --> F["6. Purpose ∈ allowed_purposes"]
   F --> G["7. data_scopes ⊆ allowed_data_scopes\ncompute effective = ∩"]
@@ -70,7 +70,7 @@ flowchart TD
 | 1 | Object matches the consent-object JSON-Schema | `malformed_object` |
 | 2 | `partner_id` is onboarded and `active`; `kid` resolves to an active key | `unknown_partner` |
 | 3 | JWS signature verifies against the partner's public key | `signature_invalid` |
-| 4 | `aud` == partner == the data controller making the call | `audience_mismatch` |
+| 4 | `aud` == the partner, and `data_controller` == the module the partner was onboarded under (`Partner.controller_id`) | `audience_mismatch` |
 | 5 | Subject present; `subject_id_type` ∈ `allowed_subject_id_types` | `subject_not_allowed` |
 | 6 | `purpose.code` ∈ `allowed_purposes` | `purpose_not_allowed` |
 | 7 | `data_scopes ⊆ allowed_data_scopes` | `scope_exceeds_policy` |
