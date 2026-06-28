@@ -89,6 +89,45 @@ All three produce the same mounted-file + password-secret the pod consumes — t
 where the key material lives. Setting `signingKey.enabled: false` falls back to an ephemeral
 per-pod key (receipts won't verify across pods — only for throwaway local runs).
 
+#### Replacing the demo key for production (Rancher, step by step)
+
+The demo key ships **only so a fresh install works out of the box for testing**. It is public —
+anyone can forge "valid" receipts with it — so every real deployment **must** replace it. Entirely
+through the Rancher UI, no command line:
+
+**Step A — create the signing Secret** (Rancher → cluster → **Storage → Secrets → Create**):
+
+1. **Namespace**: the one the Consent Manager is (or will be) installed in.
+2. **Type**: `Opaque`.
+3. **Name**: e.g. `consent-manager-signing`.
+4. Under **Data**, add exactly these two entries — **the key names must match exactly**:
+   * `cm_signing.p12` → click the upload/file control and **upload your `.p12`** (Rancher handles
+     the binary; this is the step the app form cannot do).
+   * `password` → type the `.p12` password.
+5. **Create**.
+
+**Step B — point the app at it** (Rancher → **Apps → consent-manager → ⋮ → Edit/Upgrade**, or
+**Install** for a new deployment) → **Signing** group:
+
+1. **Use .p12 Signing Key** = on.
+2. **Signing Key Source** = `existing`.
+3. **Existing Signing Secret** = the name from A.3 (`consent-manager-signing`).
+4. **Upgrade / Install**.
+
+**Verify**: open a pod's logs — you should see `Loaded CM signing key from PKCS#12 keystore
+/app/secrets/cm_signing.p12` (not the ephemeral-key warning), and `/.well-known/jwks.json` serves
+your key's `kid`.
+
+> **Gotchas** (each will make it silently fail): the Secret must exist **before** the upgrade; it
+> must be in the **same namespace** as the app; and the data keys must be named **exactly**
+> `cm_signing.p12` and `password`. To **rotate** later: update the Secret, advertise a new `kid`
+> (Signing Key ID in the form), and redeploy so pods reload — keep the old key valid during the
+> rolling restart.
+
+> **Alternative (`inline`)**: if you'd rather not pre-create a Secret, set **Signing Key Source =
+> `inline`** and paste the **base64 of the `.p12`** + the password into the form; the chart creates
+> the Secret. The trade-off is that the key + password then live in the Helm release values.
+
 ## Uninstall / cleanup
 
 `deployment/scripts/uninstall-consent-manager.sh` cleanly removes a release and everything it
