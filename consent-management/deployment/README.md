@@ -41,7 +41,9 @@ Rendered resources for the API component (`templates/api/`):
 * **Service** (`ClusterIP`) and an Istio **VirtualService** routing
   `/<openapiRootPath>/` to the service.
 * **HorizontalPodAutoscaler** — opt-in (off by default; a single replica suffices). Enable it for
-  high consent-verification load (1–10 replicas, 80% CPU/memory targets).
+  high consent-verification load (1–10 replicas, **CPU-only** target at 80% — memory-based
+  autoscaling is deliberately off, as a Python process's memory baseline would make it scale up
+  and never come back down).
 * **CronJob** — runs `python -m openg2p_consent_manager.expire` on a schedule (default every 15
   min) so expiry runs once per tick regardless of replica count.
 
