@@ -93,8 +93,10 @@ chooses the source (all selectable in the Rancher form's **Signing** group, no c
   creates the Secret. Fully in-form, but the material then lives in the Helm release values.
 
 All three produce the same mounted-file + password-secret the pod consumes — the only difference is
-where the key material lives. Setting `signingKey.enabled: false` falls back to an ephemeral
-per-pod key (receipts won't verify across pods — only for throwaway local runs).
+where the key material lives. **Receipts are always signed; the form only asks for the source
+(`mode`)** — there is no on/off toggle. (An advanced values-only flag, `signingKey.enabled: false`,
+falls back to an ephemeral per-pod key for a throwaway local pod; it is not exposed in Rancher and
+should be left on for any real deployment.)
 
 #### Replacing the demo key for production (Rancher, step by step)
 
@@ -116,10 +118,9 @@ through the Rancher UI, no command line:
 **Step B — point the app at it** (Rancher → **Apps → consent-manager → ⋮ → Edit/Upgrade**, or
 **Install** for a new deployment) → **Signing** group:
 
-1. **Use .p12 Signing Key** = on.
-2. **Signing Key Source** = `existing`.
-3. **Existing Signing Secret** = the name from A.3 (`consent-manager-signing`).
-4. **Upgrade / Install**.
+1. **Signing Key Source** = `existing`.
+2. **Existing Signing Secret** = the name from A.3 (`consent-manager-signing`).
+3. **Upgrade / Install**.
 
 **Verify**: open a pod's logs — you should see `Loaded CM signing key from PKCS#12 keystore
 /app/secrets/cm_signing.p12` (not the ephemeral-key warning), and `/.well-known/jwks.json` serves
@@ -190,11 +191,37 @@ and user and stores the password in a Secret that the Deployment references via
 
 The chart includes a **sanity suite** that runs **automatically on every install/upgrade** as a
 Helm `post-install,post-upgrade` Job — so a broken image or misconfiguration is flagged the moment
-you Install/Upgrade/Redeploy in Rancher, **no command line needed**. Read results in the
-`<release>-sanity` pod's logs (Rancher → Workloads/Jobs → logs).
+you Install/Upgrade/Redeploy in Rancher, **no command line needed**.
 
-It is **non-blocking by default**: the Job exits 0 even if tests fail (the deploy still succeeds —
-you just see the failures in the logs). Two levels:
+### Where to see the results
+
+Read the **`<release>-sanity` Job pod's logs** — in Rancher: **Workloads → Jobs →
+`<release>-sanity` → the pod → Logs** (or `kubectl -n <ns> logs job/<release>-sanity`). The tail
+summarises it, e.g. `7 passed` (all green) or `5 passed, 2 failed` with the failing assertions
+above. The finished pod is kept until the next install/upgrade so the logs stay viewable.
+
+### Pass/fail behaviour
+
+**If sanity runs, it gates the deploy.** The Job is a Helm hook, so a failing run **fails the Job
+and therefore the release** — Helm marks the release failed and Rancher shows the app in an error
+state. So a deploy is only "successful" when sanity passes. There is no separate "fail the deploy"
+switch — failing the job *is* failing the deploy.
+
+**Leave sanity on everywhere — including production.** The default smoke+contract level **creates no
+data** and is safe in every environment, so there's no data-related reason to disable it. Turn it
+off (`Run Sanity Tests` / `sanity.enabled = false`) **only where the test infra itself can't run** —
+e.g. the sanity image isn't mirrored into an air-gapped registry, or the cluster forbids hook Jobs.
+(Data is created only by the e2e, which is its own opt-in — see below.)
+
+Two caveats:
+* The gate **flags** a bad deploy rather than reverting it — a post-upgrade hook runs **after** the
+  new pods are rolled out, so the failed pods keep running until you act. For automatic rollback,
+  the upgrade must be **atomic** (`helm upgrade --atomic`), which Rancher does not do by default.
+* An **advanced, values-only** escape hatch exists for report-only behaviour
+  (`sanity.failOnError: false` → the Job exits 0 on failure, deploy succeeds, read the logs). It is
+  **not** in the Rancher form, because running sanity is meant to gate.
+
+Two levels:
 
 * **Smoke + contract** (default) — `/ping`, `/.well-known/jwks.json`, OpenAPI served, and that auth
   is enforced (protected endpoints return 401 without a token). Needs no token and **creates no
@@ -210,9 +237,8 @@ own throwaway key (onboarded on the test partner), and it verifies the CM's rece
 **live** `/.well-known/jwks.json` — handling EdDSA/ES256/RS256 — so it works the same whether the
 CM runs the demo key or your production key. It never needs the CM's private key or password.
 
-Form options (**Sanity** group): `Run Sanity Tests` (`sanity.enabled`), `Run Full E2E`
-(`sanity.runE2e`), and `Fail Install On Sanity Failure` (`sanity.failOnError` — set on to make a
-failing run **block** the upgrade, i.e. a CD gate). The suite ships as a separate image
+Form options (**Sanity** group): `Run Sanity Tests (gates the deploy)` (`sanity.enabled`) and
+`Run Full E2E` (`sanity.runE2e`). The suite ships as a separate image
 (`openg2p/openg2p-consent-manager-sanity`) built by the same CI workflow.
 
 > A **Postman collection** for hands-on/manual API exploration is maintained separately (for
