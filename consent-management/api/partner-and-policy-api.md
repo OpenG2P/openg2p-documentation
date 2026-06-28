@@ -26,11 +26,13 @@ Onboard a new partner.
   "audience": "PARTNER_SYSTEM_A", "controller_id": "REGISTRY_TENANT_1",
   "jwks_url": "https://partner-a.example.org/.well-known/jwks.json" }
 // response 201
-{ "partner_id": "8c0b...", "name": "Partner A", "org_name": "Partner A Pvt Ltd",
+{ "id": "8c0b...", "name": "Partner A", "org_name": "Partner A Pvt Ltd",
   "audience": "PARTNER_SYSTEM_A", "controller_id": "REGISTRY_TENANT_1",
   "jwks_url": "https://partner-a.example.org/.well-known/jwks.json",
   "status": "active", "created_at": "2025-04-01T00:00:00Z" }
 ```
+
+> The partner's identifier is returned as `id` (used as `{partner_id}` in the key/policy paths).
 
 ### `GET /partners/{partner_id}`
 

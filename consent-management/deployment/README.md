@@ -71,6 +71,13 @@ as the `CONSENT_MANAGER_CM_SIGNING_P12_PASSWORD` env var. The app opens the file
 — file-as-mount, password-as-secret, the standard pattern. The signing algorithm is auto-detected
 from the key type, and only the public half is published at `/.well-known/jwks.json`.
 
+**The key id (`kid`) is a label you set, _not_ something read from the `.p12`.** It is configured
+separately (chart **Signing Key ID** → `global.consentSigningKid` → `CONSENT_MANAGER_CM_SIGNING_KID`,
+default `cm-2025-01`) and is stamped into the JWKS and every receipt so verifiers know which key
+signed. When you bring your own `.p12`, give it your own `kid`, and **change the `kid` on every key
+rotation** — that lets the old and new public keys coexist in the JWKS under different `kid`s so
+in-flight receipts keep verifying. (Reusing one `kid` across different keys breaks verification.)
+
 Signing is **on by default** using a **bundled demo key**, so a fresh install signs receipts with a
 fixed, consistent key out of the box — no setup needed for testing. The `consentManagerApi.signingKey.mode`
 chooses the source (all selectable in the Rancher form's **Signing** group, no command line):
@@ -178,3 +185,36 @@ The service is designed to scale out under a high rate of consent verification:
 The chart targets the shared commons PostgreSQL. `postgres-init` creates a per-release database
 and user and stores the password in a Secret that the Deployment references via
 `secretKeyRef`. Tables are created at startup by the `migrate` step.
+
+## Sanity tests (in-cluster)
+
+The chart includes a **sanity suite** that runs **automatically on every install/upgrade** as a
+Helm `post-install,post-upgrade` Job — so a broken image or misconfiguration is flagged the moment
+you Install/Upgrade/Redeploy in Rancher, **no command line needed**. Read results in the
+`<release>-sanity` pod's logs (Rancher → Workloads/Jobs → logs).
+
+It is **non-blocking by default**: the Job exits 0 even if tests fail (the deploy still succeeds —
+you just see the failures in the logs). Two levels:
+
+* **Smoke + contract** (default) — `/ping`, `/.well-known/jwks.json`, OpenAPI served, and that auth
+  is enforced (protected endpoints return 401 without a token). Needs no token and **creates no
+  data**. This catches a broken/booting-wrong image immediately.
+* **Full e2e** (`Run Full E2E` / `sanity.runE2e`) — onboards a `TEST_SANITY_*` partner, signs a
+  consent object, and exercises a real `POST /validate` (permit + the `signature_invalid` and
+  `scope_exceeds_policy` denials), then verifies the CM's receipt signature against its JWKS. It
+  obtains a client-credentials token from Keycloak (the `consent-manager` client) and **suspends**
+  the test partner afterwards (there is no delete endpoint).
+
+The suite is **independent of which `.p12` the deployment uses**: it signs consent objects with its
+own throwaway key (onboarded on the test partner), and it verifies the CM's receipt against the
+**live** `/.well-known/jwks.json` — handling EdDSA/ES256/RS256 — so it works the same whether the
+CM runs the demo key or your production key. It never needs the CM's private key or password.
+
+Form options (**Sanity** group): `Run Sanity Tests` (`sanity.enabled`), `Run Full E2E`
+(`sanity.runE2e`), and `Fail Install On Sanity Failure` (`sanity.failOnError` — set on to make a
+failing run **block** the upgrade, i.e. a CD gate). The suite ships as a separate image
+(`openg2p/openg2p-consent-manager-sanity`) built by the same CI workflow.
+
+> A **Postman collection** for hands-on/manual API exploration is maintained separately (for
+> integrators trying the API by hand); it is complementary to — not a replacement for — this
+> automated in-cluster gate.
