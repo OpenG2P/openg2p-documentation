@@ -17,13 +17,18 @@ Administrative endpoints used to onboard and govern partners. See
 
 Onboard a new partner.
 
+`jwks_url` is optional — set it to have the CM poll the partner's JWKS endpoint for verifying keys
+(in addition to keys registered below).
+
 ```json
 // request
 { "name": "Partner A", "org_name": "Partner A Pvt Ltd",
-  "audience": "PARTNER_SYSTEM_A", "controller_id": "REGISTRY_TENANT_1" }
+  "audience": "PARTNER_SYSTEM_A", "controller_id": "REGISTRY_TENANT_1",
+  "jwks_url": "https://partner-a.example.org/.well-known/jwks.json" }
 // response 201
 { "partner_id": "8c0b...", "name": "Partner A", "org_name": "Partner A Pvt Ltd",
   "audience": "PARTNER_SYSTEM_A", "controller_id": "REGISTRY_TENANT_1",
+  "jwks_url": "https://partner-a.example.org/.well-known/jwks.json",
   "status": "active", "created_at": "2025-04-01T00:00:00Z" }
 ```
 

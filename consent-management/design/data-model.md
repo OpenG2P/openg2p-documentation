@@ -39,7 +39,8 @@ erDiagram
 | org_name | str | |
 | status | enum | `active`, `suspended` |
 | audience | str | The identifier the partner appears as in a consent object's `aud` |
-| controller_id | UUID | The data controller (registry tenant) this partner is onboarded under |
+| controller_id | UUID | The data controller / module this partner is onboarded under |
+| jwks_url | str | Optional. A partner JWKS endpoint the CM polls for verifying keys, in addition to stored `PartnerKey` rows |
 | created_at / updated_at | datetime | |
 
 ### PartnerKey

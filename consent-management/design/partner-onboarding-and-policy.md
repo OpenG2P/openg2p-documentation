@@ -32,13 +32,22 @@ Only an administrator (or the controller's onboarding service) may perform these
 
 ## Key management
 
+A partner's verifying keys come from **two sources, merged by `kid`** — the CM resolves the
+verifying key by the `kid` in the consent object's signature, looking across both:
+
+1. **Stored keys** — public keys (PEM) registered at onboarding and held in the CM database as
+   `PartnerKey` rows. Each carries `kid`, `algorithm`, `status`, and `not_before` / `not_after`.
+2. **JWKS endpoint** — a partner may instead (or also) set a **`jwks_url`**; the CM polls it,
+   parses the JWKS (OKP/EC/RSA), and uses those keys. This lets partners **self-manage rotation**
+   on their own endpoint, mirroring OIDC. The poll is cached per pod (short TTL) and best-effort —
+   if the endpoint is unreachable the CM falls back to any stored keys.
+
+On a `kid` collision, the **stored key wins**. Notes:
+
 * A partner may have **multiple active keys** to support **rotation** without downtime: publish
-  the new key, switch signing, then revoke the old key.
-* Each key carries `not_before` / `not_after`. The CM resolves the verifying key by the `kid` in
-  the consent object's JWS header.
-* Revoking a key (`DELETE /partners/{id}/keys/{kid}`) immediately invalidates objects signed with
-  it — useful on key compromise.
-* Partners may instead expose a **JWKS URL** the CM polls, mirroring OIDC key rotation.
+  the new key, switch signing, then retire the old one.
+* Revoking a stored key (`DELETE /partners/{id}/keys/{kid}`) immediately invalidates objects signed
+  with it — useful on key compromise. (JWKS-sourced keys are controlled by the partner's endpoint.)
 
 ## Policy model
 
