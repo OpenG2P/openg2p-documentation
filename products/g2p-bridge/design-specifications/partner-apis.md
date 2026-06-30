@@ -19,6 +19,17 @@ All API endpoints (except account statement upload) require JWT signature valida
 * **Validator**: `JWTSignatureValidator()`
 * **Requirement**: All requests must include valid JWT signatures
 * **Error Code on Invalid Signature**: Request validation error
+* **Enforcement gate**: only enforced when `signature_validation_enabled` is set (off by default; useful for demos)
+
+#### How the signature is verified
+
+The signature mechanism is **not implemented in the Bridge** — it lives entirely in `openg2p-fastapi-common` behind the `CryptoHelper` interface, and the Bridge selects a backend via `crypto_backend` (default **`local`**; `keymanager` is the alternative). See [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md) for the full design. In brief:
+
+* The partner sends a **detached JWS** (`header..signature`) in the **`Signature`** header; the JSON business payload is the request body (the signature is over `base64url(header) + "." + base64url(canonical_json(body))`).
+* The Bridge verifies it against the partner's **public certificate**, looked up by `PARTNER_<sender_app_mnemonic>` in the `partner_keys` table (onboarded by seeding). **Signature validity only** — no trusted-root / CA-chain check.
+* **RS256 only**; `none` and HMAC (`HS*`) are always rejected.
+
+The Bridge's only crypto wiring is one line in its `Initializer` — `build_crypto_helper()` — which registers the configured backend; controllers and `JWTSignatureValidator` are unchanged.
 
 ***
 
