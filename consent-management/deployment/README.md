@@ -208,10 +208,12 @@ state. So a deploy is only "successful" when sanity passes. There is no separate
 switch — failing the job *is* failing the deploy.
 
 **Leave sanity on everywhere — including production.** The default smoke+contract level **creates no
-data** and is safe in every environment, so there's no data-related reason to disable it. Turn it
-off (`Run Sanity Tests` / `sanity.enabled = false`) **only where the test infra itself can't run** —
-e.g. the sanity image isn't mirrored into an air-gapped registry, or the cluster forbids hook Jobs.
-(Data is created only by the e2e, which is its own opt-in — see below.)
+data** and is safe in every environment, so there's no data-related reason to disable it. The
+disable (`Run Sanity Tests` / `sanity.enabled = false`) is a **break-glass** for one narrow case:
+the sanity **image itself** can't run (it wasn't mirrored, or a bad build crashes on startup), which
+blocks the gated deploy at the **pod level** — and the report-only flag can't rescue that, because
+the container never reaches the tests. Then `sanity.enabled=false` (don't create the Job) lets you
+ship the app and fix the test infra separately. (Data is created only by the e2e — its own opt-in.)
 
 Two caveats:
 * The gate **flags** a bad deploy rather than reverting it — a post-upgrade hook runs **after** the
@@ -221,16 +223,20 @@ Two caveats:
   (`sanity.failOnError: false` → the Job exits 0 on failure, deploy succeeds, read the logs). It is
   **not** in the Rancher form, because running sanity is meant to gate.
 
-Two levels:
+Two levels — **both run by default** when sanity is enabled; turn the e2e off individually if you
+don't want test data:
 
-* **Smoke + contract** (default) — `/ping`, `/.well-known/jwks.json`, OpenAPI served, and that auth
-  is enforced (protected endpoints return 401 without a token). Needs no token and **creates no
-  data**. This catches a broken/booting-wrong image immediately.
-* **Full e2e** (`Run Full E2E` / `sanity.runE2e`) — onboards a `TEST_SANITY_*` partner, signs a
-  consent object, and exercises a real `POST /validate` (permit + the `signature_invalid` and
-  `scope_exceeds_policy` denials), then verifies the CM's receipt signature against its JWKS. It
-  obtains a client-credentials token from Keycloak (the `consent-manager` client) and **suspends**
-  the test partner afterwards (there is no delete endpoint).
+* **Smoke + contract** (always, when sanity is on) — `/ping`, `/.well-known/jwks.json`, OpenAPI
+  served, and that auth is enforced (protected endpoints return 401 without a token). Needs no token
+  and **creates no data**. Catches a broken/booting-wrong image immediately.
+* **Full e2e** (`Run Full E2E` / `sanity.runE2e`, **default on**) — onboards a `TEST_SANITY_*`
+  partner, signs a consent object, and exercises a real `POST /validate` (permit + the
+  `signature_invalid` and `scope_exceeds_policy` denials), then verifies the CM's receipt signature
+  against its JWKS. It obtains a client-credentials token from Keycloak (the `consent-manager`
+  client) and **suspends** the test partner afterwards (there is no delete endpoint). **Turn this
+  off for production** to avoid creating test data; smoke + contract still run and gate. Because it
+  runs by default and gates, **Keycloak must be reachable at deploy time** for the token — if it
+  isn't, the e2e fails the deploy (turn the e2e off, or fix Keycloak).
 
 The suite is **independent of which `.p12` the deployment uses**: it signs consent objects with its
 own throwaway key (onboarded on the test partner), and it verifies the CM's receipt against the
