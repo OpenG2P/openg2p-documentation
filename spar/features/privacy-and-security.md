@@ -47,6 +47,35 @@ There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mar
 
 <figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-02.jpg" alt=""><figcaption><p>OpenG2P - JWT Schematic</p></figcaption></figure>
 
-#### Validation of JWT using MOSIP Key Manager
+#### Validation of the partner signature
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager</p></figcaption></figure>
+The signature mechanism is **not implemented in SPAR** — it lives in
+`openg2p-fastapi-common` behind the `CryptoHelper` interface, and SPAR selects a
+backend via `crypto_backend`:
+
+* **`local`** (default) — SPAR verifies the partner's JWS **in-process** with
+  `PyJWTCryptoHelper` (PyJWT + cryptography), against the partner's **public
+  certificate** held in the `partner_keys` database table. No Key Manager service.
+* **`keymanager`** — delegates verification to the remote MOSIP Key Manager (the
+  flow in the diagram below).
+
+See [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
+for the full design. SPAR-specific notes:
+
+* **SPAR only verifies — it never signs** (no private key / `.p12` is configured).
+  Outbound signing is a concern of the *caller* (e.g. the G2P Bridge signs its
+  resolve requests).
+* A partner sends a **detached JWS** (`header..signature`) in the **`Signature`**
+  header; the JSON business payload is the request body. SPAR rebuilds the signing
+  input from the body and verifies it against the partner's cert, looked up by
+  `PARTNER_<sender_app_mnemonic>`. **Signature validity only** — no trusted-root /
+  CA-chain check. **RS256 only**; `none` and HMAC (`HS*`) are always rejected.
+* Verification is enforced when `SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED` is on
+  (the trial default). Partners are onboarded by **seeding** their public cert into
+  `partner_keys` (`global.sparPartnerCerts`). The bundled trial seeds the G2P
+  Bridge's test certificate as `PARTNER_G2P_BRIDGE` so a signed Bridge → SPAR
+  resolve call is verified out of the box.
+
+The MOSIP Key Manager validation flow (used only with the `keymanager` backend):
+
+<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager (keymanager backend)</p></figcaption></figure>

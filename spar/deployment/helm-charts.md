@@ -85,11 +85,30 @@ documented in `values.yaml`. The most important ones:
 
 See [Keycloak Client](keycloak-client.md) for why this client is needed.
 
-### Keymanager
+### Partner Signatures
+
+SPAR verifies the JWS signature on inbound Mapper Partner API requests. The
+mechanism lives in `openg2p-fastapi-common` (see
+[PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)).
+SPAR **only verifies — it never signs**, so there is no signing key / `.p12`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name of the shared MOSIP Keymanager, used by the Mapper API for partner signature (JWT) verification. |
+| `global.sparCryptoBackend` | `local` | Verify backend: `local` (in-process PyJWT; partner certs from the `partner_keys` DB table) or `keymanager` (remote MOSIP Keymanager). |
+| `global.sparJwtAuthEnabled` | `true` | Verify a partner JWS signature on every Mapper Partner API request. |
+| `global.sparCryptoAllowedAlgorithms` | `RS256` | Allowed JWS algorithms (RS256 only; `none`/HMAC always rejected). |
+| `global.sparPartnerCerts` | `[]` | Seed-based onboarding: list of `{referenceId, publicKey}` partner certs upserted into `partner_keys` at migrate-time. |
+
+The bundled trial seeds the G2P Bridge's test certificate as `PARTNER_G2P_BRIDGE`
+(plus `PARTNER_TEST_SANITY` / `PARTNER_TRAINING`) so a signed Bridge → SPAR resolve
+call verifies out of the box. Onboard a real partner by appending their public cert
+to `global.sparPartnerCerts` and running `helm upgrade`.
+
+### Keymanager (only for `sparCryptoBackend=keymanager`)
+
+| Value | Default | Description |
+| --- | --- | --- |
+| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name of the shared MOSIP Keymanager, used for partner signature (JWT) verification when the backend is `keymanager`. Unused for the default `local` backend. |
 
 ### Database
 
