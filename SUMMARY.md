@@ -515,6 +515,7 @@
   * [Deployment](g2p-bridge/deployment/README.md)
     * [Helm Chart](g2p-bridge/deployment/helm-charts.md)
     * [Keycloak Client](g2p-bridge/deployment/keycloak-client.md)
+    * [Partner Signing Key (.p12)](g2p-bridge/deployment/partner-signing-key.md)
     * [Example Bank & Treasury Account](g2p-bridge/deployment/deployment-of-example-bank.md)
     * [Domain Names and Certificates](g2p-bridge/deployment/domain-names-and-certificates.md)
     * [Dashboards (Superset)](g2p-bridge/deployment/dashboards.md)
