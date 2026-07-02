@@ -1,21 +1,23 @@
 ---
-description: Why SPAR needs a Keycloak (OIDC) client
+description: Legacy — Keycloak client for the Keymanager crypto backend (1.0.0)
 ---
 
-# Keycloak Client
+# Keycloak Client (legacy — Keymanager backend)
 
-The SPAR chart provisions a Keycloak OIDC client through the `keycloak-init`
-subchart. This page explains **why** that client is required and how it is
-created.
+{% hint style="warning" %}
+**Legacy page — not used by the current SPAR.** With the default
+`global.sparCryptoBackend=local`, the Mapper API verifies partner signatures
+**in-process** (against the `partner_keys` DB table) and needs **no Keymanager and
+no OIDC client**. `keycloak-init.enabled` is therefore **`false`** by default. This
+page applies only if you deliberately switch to the legacy `keymanager` backend
+(SPAR 1.0.0's mechanism). For the current setup see
+[Privacy & Security](../features/privacy-and-security.md).
+{% endhint %}
 
-> **Only relevant for the `keymanager` crypto backend.** With the default
-> `global.sparCryptoBackend=local`, the Mapper API verifies partner signatures
-> in-process (against the `partner_keys` DB table) and needs **no** Keymanager and
-> **no** client-credentials client for signature validation — see
-> [Privacy & Security](../features/privacy-and-security.md). The client below is
-> needed only when you switch the backend to `keymanager`.
+The SPAR chart can provision a Keycloak OIDC client through the `keycloak-init`
+subchart. This page explains **when** that client is needed and how it is created.
 
-## Why a Keycloak client is required (keymanager backend)
+## Why a Keycloak client is needed (keymanager backend)
 
 The SPAR Mapper Partner API can protect its endpoints with **partner signature
 validation** performed by MOSIP **Keymanager**. To obtain tokens and call

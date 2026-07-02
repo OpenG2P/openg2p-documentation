@@ -15,8 +15,8 @@ This page describes the chart itself. For the end-to-end install flow
 (Infrastructure → Environment → G2P Bridge), follow the
 [Deployment](README.md) guide — it assumes the Kubernetes infrastructure and the
 **commons** environment are already set up. The commons release provides the
-shared **PostgreSQL**, **Keycloak**, **Keymanager** and **Istio** gateway that
-this chart depends on.
+shared **PostgreSQL** and **Istio** gateway that this chart depends on. (The Bridge
+verifies and signs partner requests in-process, so it needs no Keycloak or Keymanager.)
 {% endhint %}
 
 ## Versions
@@ -134,23 +134,24 @@ single block drives both the Bridge and the Example Bank.
 | `exampleBank.enabled` | `true` | Deploy the bundled simulator. **Disable for production** (you connect a real sponsor bank instead). |
 | `global.exampleBankHostname` | `example-bank.<namespace>.openg2p.org` | Example Bank API hostname. |
 
-### Keycloak / authentication
+### Keycloak / Keymanager (legacy backend only)
+
+**Not used by the default `local` backend.** These apply only if you switch
+`global.g2pBridgeCryptoBackend` to the legacy `keymanager` backend (1.0.0's
+mechanism) — otherwise leave `keycloak-init.enabled: false`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `keycloak-init.enabled` | `true` | Create the `g2p-bridge` OIDC client + secret. |
-| `global.keycloakBaseUrl` | `https://keycloak.<namespace>.openg2p.org` | Keycloak base URL. |
-| `global.keycloakRealm` | `staff` | Realm in which the client lives. |
-| `global.g2pBridgeAuthClientId` | `g2p-bridge` | OIDC client id. |
-| `global.g2pBridgeKeymanagerAuthEnabled` | `false` | When `true`, the Bridge authenticates to Keymanager using the client above. Enable in production. |
+| `keycloak-init.enabled` | `false` | Create the `g2p-bridge` OIDC client + secret (Keymanager backend only). |
+| `global.g2pBridgeKeymanagerAuthEnabled` | `false` | Authenticate to Keymanager using that client. |
 
-See [Keycloak Client](keycloak-client.md) for why this client is needed.
+See [Keycloak Client](keycloak-client.md) (legacy) for details.
 
 ### Partner signatures (signing key)
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.g2pBridgeCryptoBackend` | `local` | JWS backend: `local` (in-process, no Keymanager) or `keymanager`. |
+| `global.g2pBridgeCryptoBackend` | `local` | Crypto backend. The Bridge uses `local` (in-process JWS, no Keymanager); `keymanager` is the legacy 1.0.0 backend. |
 | `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
 | `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound). |
 | `global.g2pBridgeSigningKey.mode` | `demo` | Where the outbound `.p12` comes from: `demo` / `inline` / `existing`. |

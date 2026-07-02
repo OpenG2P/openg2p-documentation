@@ -50,14 +50,10 @@ There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mar
 #### Validation of the partner signature
 
 The signature mechanism is **not implemented in SPAR** — it lives in
-`openg2p-fastapi-common` behind the `CryptoHelper` interface, and SPAR selects a
-backend via `crypto_backend`:
-
-* **`local`** (default) — SPAR verifies the partner's JWS **in-process** with
-  `PyJWTCryptoHelper` (PyJWT + cryptography), against the partner's **public
-  certificate** held in the `partner_keys` database table. No Key Manager service.
-* **`keymanager`** — delegates verification to the remote MOSIP Key Manager (the
-  flow in the diagram below).
+`openg2p-fastapi-common` behind the `CryptoHelper` interface. SPAR verifies the
+partner's JWS **in-process** with `PyJWTCryptoHelper` (PyJWT + cryptography),
+against the partner's **public certificate** held in the `partner_keys` database
+table. **No MOSIP Key Manager.**
 
 See [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
 for the full design. SPAR-specific notes:
@@ -76,6 +72,11 @@ for the full design. SPAR-specific notes:
   Bridge's test certificate as `PARTNER_G2P_BRIDGE` so a signed Bridge → SPAR
   resolve call is verified out of the box.
 
-The MOSIP Key Manager validation flow (used only with the `keymanager` backend):
+{% hint style="info" %}
+**Legacy:** SPAR 1.0.0 validated signatures via the remote MOSIP Key Manager (a
+`keymanager` backend still exists in `openg2p-fastapi-common` for backward
+compatibility, but is not used by the current deployment). The diagram below shows
+that legacy flow.
+{% endhint %}
 
-<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager (keymanager backend)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Gitbook-OpenG2P-API-Security-L3-03.jpg" alt=""><figcaption><p>OpenG2P - Validation of JWT in MOSIP Key Manager (legacy / 1.0.0)</p></figcaption></figure>

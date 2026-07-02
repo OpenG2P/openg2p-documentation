@@ -29,7 +29,7 @@ and [Onboarding Partners](../../../g2p-bridge/deployment/onboarding-partners.md)
 
 #### How the signature is verified
 
-The signature mechanism is **not implemented in the Bridge** — it lives entirely in `openg2p-fastapi-common` behind the `CryptoHelper` interface, and the Bridge selects a backend via `crypto_backend` (default **`local`**; `keymanager` is the alternative). See [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md) for the full design. In brief:
+The signature mechanism is **not implemented in the Bridge** — it lives entirely in `openg2p-fastapi-common` behind the `CryptoHelper` interface. The Bridge uses the **in-process local** implementation (`PyJWTCryptoHelper`) — **no MOSIP Keymanager** (1.0.0 used Keymanager; from `develop` it is in-process). See [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md) for the full design. In brief:
 
 * The partner sends a **detached JWS** (`header..signature`) in the **`Signature`** header; the JSON business payload is the request body (the signature is over `base64url(header) + "." + base64url(canonical_json(body))`).
 * The Bridge verifies it against the partner's **public certificate**, looked up by `PARTNER_<sender_app_mnemonic>` in the `partner_keys` table (onboarded by seeding). **Signature validity only** — no trusted-root / CA-chain check.

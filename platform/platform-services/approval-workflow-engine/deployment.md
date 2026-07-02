@@ -184,32 +184,57 @@ kcadm.sh update clients/$(kcadm.sh get clients -r staff -q clientId=awe-admin-po
 
 ### Install
 
+AWE is deployed as **one shared instance per environment** — a single
+AWE serves all caller modules (Registry, PBMS, …). This is the commons
+deployment model; see
+[Architecture → deployment topology](technical-architecture.md#deployment-topology-shared-per-environment-default)
+for the trade-offs and when a dedicated per-module instance is warranted
+instead.
+
 ```bash
 helm repo add openg2p https://openg2p.github.io/openg2p-helm
 helm repo update
 
-# Per-module install (one AWE deployment per caller — see Architecture).
-helm install registry-awe openg2p/openg2p-awe \
+# One shared AWE per environment, serving all modules.
+helm install awe openg2p/openg2p-awe \
   --namespace openg2p --create-namespace \
-  --values values-registry-awe.yaml
+  --values values-awe.yaml
 ```
 
-Example `values-registry-awe.yaml`:
+Example `values-awe.yaml`:
 
 ```yaml
 global:
-  aweHostname: awe.registry.trial.openg2p.org
+  aweHostname: awe.trial.openg2p.org
   postgresqlHost: commons-postgresql
   keycloakBaseUrl: https://keycloak.trial.openg2p.org
-
-awe:
-  appConfig:
-    module: registry
 ```
 
 That's the whole override. The Keycloak client's `redirectUris` template references `global.aweHostname`, so changing that one value propagates through to the `awe-admin-portal` client's valid redirects and CORS Web Origins automatically.
 
 Most other settings (issuer URL, JWKS URL, audience, resolver client ID) are also derived from the `global.*` values — no further per-environment overrides needed unless you diverge from the staff-realm convention. See [`helm/openg2p-awe/values.yaml`](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) for the full set.
+
+> **Note:** the AWE Helm chart is expected to become part of the OpenG2P
+> commons bundle (deployed once alongside `commons-postgresql`,
+> `commons-keycloak`, etc.). That packaging work is pending — until then,
+> install AWE as the standalone release shown above.
+
+#### Operating a shared instance — what to agree up front
+
+Because one AWE serves every module, a few conventions matter:
+
+* **Namespace `policy_key` by module.** `policy_key` is globally unique
+  across the shared instance, so each module must prefix its keys
+  (`registry.*`, `pbms.*`, …) to avoid collisions. This is a naming
+  convention — AWE does not enforce it.
+* **AWE admin is global.** `AWE_ADMIN` / `AWE_VIEWER` grant access to
+  *every* module's policies and a combined audit log. Hold the admin role
+  with a single central (commons) team; don't hand it to individual
+  module teams. (If modules need isolated admin, use a dedicated
+  per-module instance instead — see the architecture note.)
+* **Use UUID idempotency keys.** `Idempotency-Key` is global to the
+  instance; callers should use UUIDs so keys from different modules never
+  collide.
 
 > **Why explicit redirect URIs (not `*`)?** A wildcard `*` works for Keycloak's _login redirect_ check, but it breaks CORS: Keycloak's `webOrigins: ["+"]` shorthand expands to the non-wildcard entries in the redirect URI list — so with `["*"]` the allowed-origins set ends up empty and the browser silently blocks the SPA's token-exchange POST. The chart ships with a host-templated URL to avoid this footgun.
 

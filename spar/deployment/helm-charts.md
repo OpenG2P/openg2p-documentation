@@ -13,8 +13,9 @@ per service; one `helm install` brings up the complete, working subsystem.
 This page describes the chart itself. For the end-to-end install flow
 (Infrastructure → Environment → SPAR), follow the [Deployment](README.md) guide —
 it assumes the Kubernetes infrastructure and the **commons** environment are
-already set up. The commons release provides the shared **PostgreSQL**,
-**Keycloak**, **Keymanager** and **Istio** gateway that this chart depends on.
+already set up. The commons release provides the shared **PostgreSQL** and
+**Istio** gateway that this chart depends on. (SPAR verifies partner signatures
+in-process, so it needs no Keycloak or Keymanager.)
 {% endhint %}
 
 ## Versions
@@ -94,7 +95,7 @@ SPAR **only verifies — it never signs**, so there is no signing key / `.p12`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.sparCryptoBackend` | `local` | Verify backend: `local` (in-process PyJWT; partner certs from the `partner_keys` DB table) or `keymanager` (remote MOSIP Keymanager). |
+| `global.sparCryptoBackend` | `local` | Verify backend. SPAR uses `local` (in-process PyJWT; partner certs from the `partner_keys` DB table, no Keymanager); `keymanager` is the legacy 1.0.0 backend. |
 | `global.sparJwtAuthEnabled` | `true` | Verify a partner JWS signature on every Mapper Partner API request. |
 | `global.sparCryptoAllowedAlgorithms` | `RS256` | Allowed JWS algorithms (RS256 only; `none`/HMAC always rejected). |
 | `global.sparPartnerCerts` | `[]` | Seed-based onboarding: list of `{referenceId, publicKey}` partner certs upserted into `partner_keys` at migrate-time. |
@@ -104,11 +105,15 @@ The bundled trial seeds the G2P Bridge's test certificate as `PARTNER_G2P_BRIDGE
 call verifies out of the box. Onboard a real partner by appending their public cert
 to `global.sparPartnerCerts` and running `helm upgrade`.
 
-### Keymanager (only for `sparCryptoBackend=keymanager`)
+### Keymanager (legacy backend only)
+
+Not used by the default `local` backend. Applies only if you switch
+`global.sparCryptoBackend` to the legacy `keymanager` backend (SPAR 1.0.0's
+mechanism), which also requires `keycloak-init.enabled: true`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name of the shared MOSIP Keymanager, used for partner signature (JWT) verification when the backend is `keymanager`. Unused for the default `local` backend. |
+| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name of the shared MOSIP Keymanager (legacy `keymanager` backend only). |
 
 ### Database
 

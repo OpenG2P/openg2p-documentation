@@ -648,7 +648,7 @@ prioritised.
 | **Auto-escalation on SLA** | AWE marks tasks `expired` and fires a webhook, but doesn't auto-reassign or re-route. Caller decides response.                                                                                | Caller's webhook handler invokes `/v1/awe/requests/{id}/cancel` or creates a new request.   |
 | **Parallel stages**     | Strictly sequential staging in v1. No BPMN-style gateways.                                                                                                                                      | Model parallel reviewers as multiple rules within a single stage in `all` mode.             |
 | **Delegation / OOO**    | No "delegate to substitute when primary is away" support.                                                                                                                                       | Adjust the policy or add the substitute as an additional rule.                              |
-| **Cross-module unified inbox** | One AWE per module → approver acting across modules has separate inboxes.                                                                                                                | Approver UIs in each Caller surface their own inbox via proxied `/v1/awe/tasks?assignee=me`. |
+| **Cross-module unified inbox** | Each Caller surfaces its own inbox in its own frontend, so an approver acting across modules sees them separately.                                                                                                                | Approver UIs in each Caller surface their own inbox via proxied `/v1/awe/tasks?assignee=me`. |
 | **Attachments**         | Only `attachments_ref` URL stored; no upload/download.                                                                                                                                          | Files live in the Caller's storage; AWE just records the URL.                               |
 | **Notification channels in AWE** | SMTP scaffold exists but is `enabled: false`; no SMS / push / in-app.                                                                                                                  | Notifications are the Caller's responsibility — see Notifications section.                  |
 | **`expected_context_keys`** | No schema validation on the `context` blob sent in `POST /requests`.                                                                                                                      | Out-of-band coordination between policy author and Caller — see "Who decides what context to send?" |
@@ -657,11 +657,16 @@ prioritised.
 
 ## FAQ
 
-**Can one AWE serve multiple modules?** The design deliberately runs one
-AWE per module (`registry-awe`, `pbms-awe`, …). This keeps policy
-namespaces clean, isolates load, and avoids a "tenant" dimension on
-every table. The tradeoff is that approvers who act across modules have
-separate inboxes.
+**Can one AWE serve multiple modules?** Yes — the default deployment is
+**one shared instance per environment** serving all modules. The engine
+is single-tenant (no `module` column); modules are separated by
+`policy_key` namespacing (`registry.*`, `pbms.*`) rather than a schema
+dimension, and webhooks route per-request. The trade-off is that admin is
+global — any `AWE_ADMIN` can edit every module's policies — so a shared
+instance suits a single central (commons) owner. Where modules need
+isolated administration or blast-radius separation, deploy a dedicated
+per-module instance instead. See
+[Architecture → deployment topology](technical-architecture.md#deployment-topology-shared-per-environment-default).
 
 **What does the `201` response from `POST /tasks/{id}/decision`
 actually contain?** The newly-created decision row — its id, the
@@ -740,10 +745,11 @@ provisioned automatically by `keycloak-init`. Admin implies viewer
 where it matters (a token with only `AWE_ADMIN` can hit read endpoints
 that nominally accept `AWE_VIEWER`).
 
-**Why isn't there a unified approver inbox?** See "one AWE per module"
-above — deliberate tradeoff. The approver's home is the caller's own
-UI, which proxies `/v1/awe/tasks?assignee=me` and renders the artifact
-alongside.
+**Why isn't there a unified approver inbox?** Deliberate — the approver's
+home is the caller's own UI, which proxies `/v1/awe/tasks?assignee=me`
+and renders the artifact alongside. Each Caller surfaces its own inbox,
+so an approver working across modules sees them separately regardless of
+whether AWE is deployed shared or per-module.
 
 **How do I support parallel approvals (e.g. two stages in parallel)?** v1
 is strictly sequential. You can approximate parallelism by modeling both

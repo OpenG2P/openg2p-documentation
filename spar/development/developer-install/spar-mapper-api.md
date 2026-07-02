@@ -215,7 +215,7 @@ SPAR_MAPPER_PARTNER_API_DEFAULT_JWKS_URLS=["http://localhost:8080/realms/openg2p
 # Partner signature verification (openg2p-fastapi-common). SPAR only VERIFIES —
 # it never signs — so no signing key is configured.
 SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED=true
-SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND=local           # local | keymanager
+SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND=local           # in-process; keymanager is legacy (1.0.0)
 SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS=RS256
 # Seed-based onboarding: JSON list of partner public certs upserted into the
 # partner_keys table at migrate-time (referenceId = PARTNER_<MNEMONIC>).

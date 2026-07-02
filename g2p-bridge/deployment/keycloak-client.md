@@ -1,21 +1,22 @@
 ---
-description: Why the G2P Bridge needs a Keycloak (OIDC) client
+description: Legacy — Keycloak client for the Keymanager crypto backend (1.0.0)
 ---
 
-# Keycloak Client
+# Keycloak Client (legacy — Keymanager backend)
+
+{% hint style="warning" %}
+**Legacy page — not used by the current Bridge.** The default `local` crypto backend
+verifies and signs partner requests **in-process** (against the `partner_keys` table)
+and needs **no Keycloak and no Keymanager**. `keycloak-init.enabled` is therefore
+**`false`** by default. This page applies only if you deliberately switch
+`global.g2pBridgeCryptoBackend` to the legacy `keymanager` backend (1.0.0's
+mechanism). For the current setup see [Partner Signing Key](partner-signing-key.md)
+and [Onboarding Partners](onboarding-partners.md).
+{% endhint %}
 
 The G2P Bridge chart can provision a Keycloak OIDC client through the
 `keycloak-init` subchart. This page explains **when** that client is needed and
 how it is created.
-
-{% hint style="info" %}
-**Only needed for the `keymanager` crypto backend.** With the default
-`global.g2pBridgeCryptoBackend: local`, partner signatures are verified in-process
-against the `partner_keys` table — **no Keymanager and no OIDC client are required**
-for signature validation (see [Partner Signing Key](partner-signing-key.md) /
-[Onboarding Partners](onboarding-partners.md)). Provision this client only if you
-switch the backend to `keymanager`.
-{% endhint %}
 
 ## Why a Keycloak client is needed (keymanager backend)
 

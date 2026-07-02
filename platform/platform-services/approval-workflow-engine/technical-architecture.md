@@ -99,52 +99,49 @@ Kafka / Redis would add operational complexity for no measurable gain
 at our volume. If volume grows 100×, we can introduce them later
 without reshaping the API.
 
-### Why one AWE deployment per caller module?
+### Deployment topology: shared per environment (default)
 
-Alternatives considered:
+**The engine is deliberately single-tenant** — there is no `module`
+column on any table, and no per-module filtering in queries. That
+simplicity is intentional and is what makes both deployment models below
+possible; module separation, where needed, is achieved by `policy_key`
+namespacing (`registry.*`, `pbms.*`) rather than by a schema dimension.
 
-* **Shared AWE with multi-tenant keying.** Every policy, request, task
-  row carries a `module` column; every API call filters on it.
-  Rejected because: (a) adds a cross-cutting concern to the schema and
-  every query, (b) blast radius of an ops incident is all modules, (c)
-  load from one module can throttle others.
-* **Per-deployment with a tenant dimension.** Strictly worse — still has
-  the schema overhead, without the operational isolation.
+**Default: one shared instance per environment.** A single AWE serves all
+caller modules. This works cleanly because webhooks route per-request via
+each request's `callback_url`, `policy_key` namespaces policies by module,
+and approver authorities are just policy data. It's the natural fit for a
+commons deployment — one release, one database, one admin surface — and
+avoids N deployments + N databases.
 
-Per-module deployment gives:
+The cost of sharing, given the single-tenant schema, is **admin
+isolation**: `AWE_ADMIN` / `AWE_VIEWER` are global roles, so any admin can
+edit *every* module's policies and the audit log mixes all modules. That
+is fine when a single central (commons) team owns all approvals; it is a
+governance risk when modules have separate owners.
 
-* **Clean blast radius.** `registry-awe` outage affects Registry only.
+**Alternative: a dedicated per-module instance.** Deploying a separate AWE
+per module (`registry-awe`, `pbms-awe`, …) buys:
+
+* **Clean blast radius.** A `registry-awe` outage affects Registry only.
 * **Independent scaling.** PBMS can run 2 replicas, Registry 8.
-* **Trivially simple schema.** No `module` column anywhere.
+* **Admin isolation.** Each module's admins see only their own policies
+  and audit log — no global-role bleed.
 
-The accepted tradeoff: approvers who work across modules see separate
-inboxes (one per module). This is acceptable because approver UIs are
-already in the caller's own frontend.
-
-#### When a single shared instance is acceptable
-
-The per-module default is about **isolation**, not about differing
-approval authorities — those are handled by policy data and work
-identically whether AWE is shared or dedicated. A shared "commons" AWE
-serving all modules is technically viable (webhooks route per-request via
-each request's `callback_url`, and `policy_key` can namespace by module),
-and is attractive for small or pilot deployments that don't want N
-deployments + N databases.
-
-The real cost of sharing, given the current single-tenant schema, is
-**admin isolation**: `AWE_ADMIN` / `AWE_VIEWER` are global roles, so any
-admin on a shared instance can edit *every* module's policies, and the
-audit log mixes all modules. That is fine when a single central team owns
-all approvals; it is a governance risk when modules have separate owners.
+The tradeoff either way: approvers who work across modules see separate
+inboxes when instances are separate — acceptable because approver UIs live
+in the caller's own frontend regardless.
 
 Guidance:
 
-* **Separate governance owners per module** → keep per-module (default).
-* **Single owner, or small/pilot deployment** → a shared instance is
-  acceptable, accepting that one admin group controls everything.
-* **Shared *with* strict isolation** → requires adding a `module` column,
-  module-scoped admin roles, audit filtering, and policy-key namespacing.
-  Only worth it if you need one deployment *and* hard separation.
+* **Single owner / commons deployment** → shared per environment
+  (default). Hold `AWE_ADMIN` with the central team; namespace
+  `policy_key` by module.
+* **Separate governance owners per module** → dedicated per-module
+  instance for admin + blast-radius isolation.
+* **Shared *with* strict isolation** → would require adding a `module`
+  column, module-scoped admin roles, and audit filtering. Not built
+  today; only worth it if you need one deployment *and* hard separation.
 * **Hybrid** → dedicated AWE for high-stakes modules (e.g. PBMS
   disbursements), shared for the rest.
 

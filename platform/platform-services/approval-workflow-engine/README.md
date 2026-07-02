@@ -13,7 +13,7 @@ The Approval Workflow Engine (AWE) is the platform-level service that governs mu
 
 It is **not** a BPMN engine or a workflow orchestrator for arbitrary business processes. It does exactly one thing well: **resolve a chain of approvers, gate a caller-owned artifact on their decisions, and signal the caller when the outcome is known**.
 
-Built with **FastAPI** + **async SQLAlchemy** + **PostgreSQL**. Designed for **horizontal scaling on Kubernetes**, with **one AWE deployment per caller module** (`registry-awe`, `pbms-awe`, …) for clean isolation.
+Built with **FastAPI** + **async SQLAlchemy** + **PostgreSQL**. Designed for **horizontal scaling on Kubernetes** and deployed as **one shared instance per environment** serving all caller modules (Registry, PBMS, …). A dedicated per-module deployment remains an option where modules need isolated administration — see [Architecture → deployment topology](technical-architecture.md#deployment-topology-shared-per-environment-default).
 
 > **Looking for "what scenarios can I model?"** — see the
 > [Scenarios catalog](scenarios.md) for a one-page index of every
@@ -47,7 +47,7 @@ Built with **FastAPI** + **async SQLAlchemy** + **PostgreSQL**. Designed for **h
                                                       │  │
                                                       │  ▼
                                           ┌───────────────────────┐
-                                          │  AWE (per module)     │
+                                          │  AWE (shared)         │
                                           │                       │
                                           │  Policy   Engine      │
                                           │  Resolver Webhook     │

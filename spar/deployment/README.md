@@ -20,7 +20,7 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy S
 
 ### Prerequisites
 
-1. Infrastructure and environment are created as given above. The **commons** environment provides the shared services SPAR depends on — **PostgreSQL**, **Keycloak**, **Keymanager** and the **Istio** gateway.
+1. Infrastructure and environment are created as given above. The **commons** environment provides the shared services SPAR depends on — **PostgreSQL** and the **Istio** gateway. SPAR verifies partner signatures **in-process**, so it needs **no Keycloak or Keymanager**.
 2. You have full admin rights to the cluster and the Rancher UI.
 
 ### Installation
