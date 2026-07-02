@@ -37,8 +37,12 @@ Worker Tasks (Execute actual business logic)
 
 ### Module Locations
 
-* **Beat Producers**: `/openg2p-g2p-bridge-celery-beat-producers/`
-* **Workers**: `/openg2p-g2p-bridge-celery-workers/`
+In the consolidated `g2p-bridge` monorepo:
+
+* **Beat Producers**: `core/celery-beat-producers/`
+* **Workers**: `core/celery-workers/`
+
+Both ship as a **single** Docker image (`openg2p/openg2p-bridge-celery`), run as beat or worker by Helm configuration.
 
 ***
 

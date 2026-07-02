@@ -133,7 +133,7 @@ Only `openg2p-fastapi-common` / `openg2p-fastapi-auth` come from PyPI.
 *   Run redis-server (if not already started)
 
     ```
-    bash sudo systemctl start redis
+    sudo systemctl start redis
     ```
 *   Create a .env file
 

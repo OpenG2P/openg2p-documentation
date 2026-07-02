@@ -30,9 +30,11 @@ each stage. Use the sanity suite to verify; use the walkthrough to learn and dem
 * **G2P Bridge + SPAR + Example Bank** installed and reachable on public URLs.
 * **[Postman](https://www.postman.com/downloads/)** (desktop app). No other local
   installation is required.
-* **Auth disabled** — the walkthrough assumes signature / keymanager validation
-  is **off** (the default for a try-out environment). If your environment
-  enforces signed requests, this walkthrough will not pass as-is.
+* **Signed requests (default).** The walkthrough **signs** every Bridge and SPAR
+  request as a detached JWS, so it works against the secure-by-default deployment
+  (**Verify Partner Signatures** ON). It ships with the bundled **test-partner** key,
+  which the trial already trusts — no setup needed. To run against **your own** key,
+  or against an **unsigned** environment, see [Request signing](#request-signing).
 
 ## Files
 
@@ -99,6 +101,51 @@ walkthrough checks. The explicit reversals you may also see in reconciliation
 5. *(Optional)* set `schedule_date` (defaults to today), and
    `sample_happy_account` / `sample_bad_account` to two account numbers from your
    CSV for the "was it credited?" checks in step 4.
+
+## Request signing
+
+The G2P Bridge (and SPAR) verify a **detached JWS** signature on every request when
+signature validation is on — which is the **secure-by-default** setting. A collection
+**pre-request script** signs each request automatically, so the walkthrough works
+against a default install with no extra steps.
+
+**How it works:** the script signs the canonical JSON body with an RSA key and sends
+the signature in the **`Signature`** header as `base64url(header)..base64url(sig)`
+(empty payload segment), `alg: RS256`. The Bridge derives the partner from
+`sender_app_mnemonic` and verifies against that partner's onboarded public
+certificate (`PARTNER_<MNEMONIC>` in the `partner_keys` table).
+
+Controlled by these environment variables:
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `sign_requests` | `true` | Set `false` to send **unsigned** (only for an environment with validation off). |
+| `signing_private_pem` | bundled **test-partner** PEM | The RSA private key used to sign. |
+| `signing_kid` | test-partner thumbprint | JWS `kid` header (the cert's SHA-256 thumbprint). |
+| `sender_app` | `TRAINING` | The partner mnemonic → Bridge verifies `PARTNER_TRAINING`. |
+| `jsrsasign_url` | CDN | The signing library the pre-request script loads. |
+
+The shipped key signs as `sender_app = TRAINING`, and the bundled trial seeds that
+test certificate as `PARTNER_TRAINING`, so it verifies out of the box.
+
+### Use your own key
+
+1. Export your `.p12`'s **private key** to PEM (Postman's sandbox can't read a
+   password-protected `.p12`):
+   ```bash
+   openssl pkcs12 -in your-key.p12 -nodes -nocerts -out your-key.key.pem
+   ```
+2. Paste the PEM into `signing_private_pem`, and set `signing_kid` to your cert's
+   SHA-256 thumbprint (and `sender_app` to your mnemonic).
+3. **Onboard your public certificate on the Bridge** as `PARTNER_<sender_app>` — add
+   it to `global.g2pBridgePartnerCerts` (see
+   [Onboarding Partners](../../deployment/onboarding-partners.md#onboard-a-partner-that-calls-the-bridge-inbound)).
+   Without this the Bridge rejects the signature.
+
+### Unsigned environment
+
+If your deployment has **Verify Partner Signatures** off, set `sign_requests` to
+`false` and the pre-request script sends plain requests.
 
 ## Run it (in order)
 
@@ -191,7 +238,7 @@ walkthrough is a quick way to populate a fresh environment with demonstrable dat
 | Folder 5 never progresses past **FA resolution** | The envelope is not full: `num_disbursements` / `total_amount` don't match the disbursements actually created. They must equal your CSV's row count and amount sum. |
 | Dispatch reaches **PROCESSED** but **nothing reconciles** | Reconciliation parses the MT940 the Example Bank pushes back; the `disbursement_id` rides in the MT940 `:61:` reference (**max 16 chars**). The collection keeps ids short on purpose (`D` + token + index) — only relevant if you change the id scheme. |
 | `SPAR link` fails with an `ERROR` status | Check `spar_strategy_id` (default `5`) matches a BANK strategy whose deconstruct format the Bridge understands — see [Address resolver with SPAR](../../../products/g2p-bridge/tech-guides/address-resolver/account-mapper-resolution.md). |
-| HTTP 401 / signed-request errors | This environment enforces auth. The walkthrough assumes auth is disabled. |
+| Requests rejected with an invalid-signature / `rjct.jwt.invalid` error | The Bridge doesn't trust the signing key. Either the partner cert for `sender_app` (`PARTNER_<sender_app>`) isn't onboarded on the Bridge, or `signing_private_pem` / `signing_kid` don't match it — see [Request signing](#request-signing). For an unsigned environment set `sign_requests=false`. |
 | Re-running creates duplicate-id errors | Always start a campaign from **folder 2** — it mints a fresh `run_id` / `run_token` used by the disbursement ids. |
 
 ## For maintainers

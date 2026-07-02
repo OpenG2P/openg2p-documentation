@@ -19,7 +19,13 @@ All API endpoints (except account statement upload) require JWT signature valida
 * **Validator**: `JWTSignatureValidator()`
 * **Requirement**: All requests must include valid JWT signatures
 * **Error Code on Invalid Signature**: Request validation error
-* **Enforcement gate**: only enforced when `signature_validation_enabled` is set (off by default; useful for demos)
+* **Enforcement gate**: enforced when `signature_validation_enabled` is set. The
+  Helm chart turns this **on by default** (secure-by-default); disable it only for an
+  unauthenticated demo.
+
+For the operational steps — supplying the Bridge's signing `.p12` and onboarding
+partner certificates — see [Partner Signing Key](../../../g2p-bridge/deployment/partner-signing-key.md)
+and [Onboarding Partners](../../../g2p-bridge/deployment/onboarding-partners.md).
 
 #### How the signature is verified
 

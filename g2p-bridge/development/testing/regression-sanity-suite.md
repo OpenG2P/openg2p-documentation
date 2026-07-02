@@ -144,7 +144,8 @@ env wins over the file). The most important values:
 | `beneficiary_bank_code` | Use the Example Bank's simulator code for a deterministic happy path. |
 | `spar_bank_strategy_id` | **Environment-dependent** — the id of SPAR's BANK construct/deconstruct strategy. Required for e2e seeding. |
 | `run_e2e` | `false` to run only L0/L1 (zero data created). |
-| `keymanager_auth_enabled` | Keep `false` (sanity profile). If the system enforces inbound signature validation, the write tests skip. |
+| `sign_requests` | `true` (default) — sign Bridge/SPAR requests as a detached JWS so they pass when signature validation is on. Set `false` only for an environment with validation off. |
+| `signing_key_path` / `signing_key_password` / `signing_key_kid` | The signing key the suite uses (defaults to the bundled test `.p12`, trusted by the trial as `PARTNER_TEST_SANITY`). |
 
 ## Run
 
@@ -230,14 +231,20 @@ the release triggers it; there is no separate "run" button.
   **Upgrade** (or **Redeploy**) in the Rancher UI. No command line required. To
   re-run on demand, just **Upgrade**/Redeploy the release again.
 
-* **Non-failing by default** — `sanity.failOnError=false` means a failing sanity
-  run **never fails the deploy**; you read the report for pass/fail. Set
-  `failOnError=true` only if you want a failed run to fail the install/upgrade
-  (e.g. CI gating).
+* **Fails the deploy by default** — `sanity.failOnError=true` (secure-by-default):
+  a failing sanity run **fails the install/upgrade**, so a broken deployment is
+  caught immediately. Set `failOnError=false` to make it advisory (read pass/fail
+  from the report instead).
 
-* **Scope** — the run executes **smoke + contract only** (creates no data), safe
-  in any environment. Set `sanity.runE2e=true` to include the data-creating
-  end-to-end flow (**test environments only**).
+* **Full suite by default** — the run executes **smoke + contract + the
+  data-creating end-to-end flow** (`sanity.runE2e=true`). Set `sanity.runE2e=false`
+  for **smoke + contract only** (creates no data) where you don't want test data
+  written.
+
+* **Signed by default** — the suite signs its Bridge and SPAR requests (detached
+  JWS) with the bundled test key, so it passes against the secure-by-default
+  deployment (partner signature validation ON). It also waits for all app services
+  to be ready before running.
 
 * **Config** — built entirely from the release's own values (component hostnames
   + their `openapiRootPath`, treasury account, SPAR strategy id). The SPAR mapper
@@ -245,23 +252,22 @@ the release triggers it; there is no separate "run" button.
   `sanity.sparMapperBaseUrl` per environment. All of these are surfaced in the
   Rancher form under the **Sanity Suite** group.
 
-* **Reports** — written to a results **PVC**; a small **nginx viewer**
-  (`sanity.viewer.enabled`) serves them at
-  `https://<release>-sanity.<namespace>.<domain>/` (browse runs → open
-  `report.html`). The viewer hostname derives from the **release name**, so two
-  releases in one namespace don't collide. JUnit + a summary are also in the Job
-  pod logs (viewable in Rancher).
+* **Reports** — always in the **Job pod logs** (JUnit + summary; viewable in
+  Rancher). Optionally an **nginx viewer** (`sanity.viewer.enabled`, **off by
+  default**) serves the HTML report + run history at
+  `https://<release>-sanity.<namespace>.<domain>/`; enabling it needs a
+  **ReadWriteMany** results PVC.
 
 Enable it in the Rancher form (Sanity Suite group) or via values:
 
 ```yaml
 sanity:
   enabled: true
-  runE2e: false          # true only in non-prod test environments
-  failOnError: false     # keep false so a sanity failure never breaks the deploy
+  runE2e: true           # full e2e (creates data); set false for smoke+contract only
+  failOnError: true      # a sanity failure fails the install/upgrade; false = advisory
   sparMapperBaseUrl: "https://spar.<ns>.openg2p.org/api/mapper/mapper"
   viewer:
-    enabled: true        # requires ReadWriteMany storage for the results PVC
+    enabled: false       # enable for the nginx report viewer (needs ReadWriteMany PVC)
 ```
 
 {% hint style="warning" %}
@@ -289,11 +295,11 @@ The Job pod persists after it finishes (replaced on the next install/upgrade), s
 
 ### What happens if a run fails
 
-* **The deploy is not affected** (default, `sanity.failOnError=false`). The Job
-  always exits 0, the pod ends as **Completed**, and the release stays healthy —
-  you find pass/fail in the report, not in the deploy status.
-* Set **`sanity.failOnError=true`** to make a failing run **fail the
-  install/upgrade** (the release shows failed; use for strict CI gating).
+* **The deploy fails** (default, `sanity.failOnError=true`). The Job exits
+  non-zero, the hook fails, and the **install/upgrade is marked failed** — so a
+  broken deployment surfaces immediately instead of silently.
+* Set **`sanity.failOnError=false`** to make the run **advisory**: the Job exits 0,
+  the release stays healthy, and you read pass/fail from the report.
 * **`xfail` tests don't count as failures** — they're known gaps tracked in the
   report, not red.
 * In the **e2e**, each stage is asserted independently, so a failure tells you

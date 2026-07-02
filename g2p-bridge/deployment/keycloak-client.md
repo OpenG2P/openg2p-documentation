@@ -4,20 +4,27 @@ description: Why the G2P Bridge needs a Keycloak (OIDC) client
 
 # Keycloak Client
 
-The G2P Bridge chart provisions a Keycloak OIDC client through the
-`keycloak-init` subchart. This page explains **why** that client is required and
+The G2P Bridge chart can provision a Keycloak OIDC client through the
+`keycloak-init` subchart. This page explains **when** that client is needed and
 how it is created.
 
-## Why a Keycloak client is required
+{% hint style="info" %}
+**Only needed for the `keymanager` crypto backend.** With the default
+`global.g2pBridgeCryptoBackend: local`, partner signatures are verified in-process
+against the `partner_keys` table — **no Keymanager and no OIDC client are required**
+for signature validation (see [Partner Signing Key](partner-signing-key.md) /
+[Onboarding Partners](onboarding-partners.md)). Provision this client only if you
+switch the backend to `keymanager`.
+{% endhint %}
 
-The G2P Bridge does not talk to sponsor banks (or, in in-kind mode, to PBMS and
-the Registry) with anonymous calls. Several of its outbound and inbound
-interactions are secured, and the security model is **OAuth2 / OIDC backed by
-Keycloak**:
+## Why a Keycloak client is needed (keymanager backend)
 
-1. **Authenticating to MOSIP Keymanager.** Partner API requests are protected by
-   partner **signature validation**, which uses MOSIP Keymanager. To call
-   Keymanager, the Bridge authenticates as a confidential OIDC client using the
+When `global.g2pBridgeCryptoBackend: keymanager`, the security model is **OAuth2 /
+OIDC backed by Keycloak**:
+
+1. **Authenticating to MOSIP Keymanager.** With the keymanager backend, partner
+   **signature validation** is delegated to MOSIP Keymanager. To call Keymanager,
+   the Bridge authenticates as a confidential OIDC client using the
    **client-credentials** grant. The credentials come from the `g2p-bridge`
    Keycloak client. This is controlled by `global.g2pBridgeKeymanagerAuthEnabled`.
 2. **A single, named service identity.** Giving the Bridge its own client
@@ -64,13 +71,14 @@ is the one place the Bridge differs from NSR's naming.
 | `global.g2pBridgeAuthClientSecretKey` | `client_secret` | Key inside that secret. |
 | `global.g2pBridgeKeymanagerAuthEnabled` | `false` | When `true`, the Bridge authenticates to Keymanager using this client. |
 
-## Enabling for production
+## Enabling the Keymanager backend
 
-On `develop`/demo, `global.g2pBridgeKeymanagerAuthEnabled` is `false` — the
-client is still created (so it is ready), but the Bridge does not yet enforce
-Keymanager authentication. **In production**, set
+Partner signature validation is **on by default** using the local backend, which
+needs no Keymanager — this is the recommended setup for production too. Switch to
+Keymanager only if your environment mandates it: set
+`global.g2pBridgeCryptoBackend: keymanager` and
 `global.g2pBridgeKeymanagerAuthEnabled: true` (with `keycloak-init.enabled: true`)
-so Partner API signature validation against Keymanager is active.
+so the Bridge authenticates to Keymanager via this client.
 
 {% hint style="info" %}
 The Keycloak realm/client lives in Keycloak, not in the release namespace, so it

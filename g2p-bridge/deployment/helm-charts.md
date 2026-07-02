@@ -77,6 +77,18 @@ release named `g2p-bridge` gets the database `g2p_bridge` and role
 uses the shared `commons-postgresql` in the namespace.
 {% endhint %}
 
+{% hint style="info" %}
+**DB migration & password-sync (self-healing).** The API images run `migrate &&`
+serve — a **fail-loud** startup: if the schema migration fails the pod crash-loops
+(and the install is marked failed) rather than silently serving an un-migrated DB.
+Because `commons-postgresql` is persistent, a role's password can drift from its
+regenerated Secret across reinstalls; a **pre-upgrade `db-password-sync` hook**
+(`dbPasswordSync.enabled`, default `true`) re-syncs the Bridge (and Example Bank)
+DB role passwords to their Secrets before the apps start, so migrations always
+authenticate. So a pod stuck in `CrashLoopBackOff` on install usually means a DB
+problem, not an infra one.
+{% endhint %}
+
 ## Key parameters to change
 
 All changeable values are surfaced in `questions.yaml` (the Rancher form) and
@@ -133,6 +145,22 @@ single block drives both the Bridge and the Example Bank.
 | `global.g2pBridgeKeymanagerAuthEnabled` | `false` | When `true`, the Bridge authenticates to Keymanager using the client above. Enable in production. |
 
 See [Keycloak Client](keycloak-client.md) for why this client is needed.
+
+### Partner signatures (signing key)
+
+| Value | Default | Description |
+| --- | --- | --- |
+| `global.g2pBridgeCryptoBackend` | `local` | JWS backend: `local` (in-process, no Keymanager) or `keymanager`. |
+| `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
+| `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound). |
+| `global.g2pBridgeSigningKey.mode` | `demo` | Where the outbound `.p12` comes from: `demo` / `inline` / `existing`. |
+| `global.g2pBridgePartnerCerts` | `[]` | Public certs of partners to trust (inbound), seeded into `partner_keys`. |
+
+The bundled `demo` signing key is **public/test-only** — supply your own for
+production and onboard partner certs. See [Partner Signing Key](partner-signing-key.md)
+(generating a `.p12`, feeding it via Rancher, demo → production) and
+[Onboarding Partners](onboarding-partners.md) (trusting partners that call the Bridge,
+and registering the Bridge with SPAR).
 
 ### Databases (in-kind only)
 
