@@ -6,6 +6,8 @@ The OpenG2P Registry integrates with the [Approval Workflow Engine (AWE)](https:
 
 AWE handles all approval-routing logic — stage modes, approver resolution, SLA enforcement, and delegation. The registry retains full ownership of its data and business logic; AWE is an external gate, not an internal workflow engine.
 
+> **Deployment note:** AWE is **installed once per environment as part of `commons-services`**, not bundled with each registry. A registry (NSR, Farmer Registry) consumes this shared instance — it points `global.aweBaseUrl` at the environment's AWE (`https://awe.<baseDomain>`) and registers its own per-registry callback secret into the shared AWE database (via its `db-seed` job and `awe-callback-hmac-secret`). Because callbacks are addressed per request (each registry passes its own callback URL and `callback_secret_id`), one shared AWE can serve multiple registries in the same environment.
+
 ## Key design principles
 
 | Principle                                 | Description                                                                                                                                                                                                                                   |
