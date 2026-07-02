@@ -121,6 +121,33 @@ The accepted tradeoff: approvers who work across modules see separate
 inboxes (one per module). This is acceptable because approver UIs are
 already in the caller's own frontend.
 
+#### When a single shared instance is acceptable
+
+The per-module default is about **isolation**, not about differing
+approval authorities — those are handled by policy data and work
+identically whether AWE is shared or dedicated. A shared "commons" AWE
+serving all modules is technically viable (webhooks route per-request via
+each request's `callback_url`, and `policy_key` can namespace by module),
+and is attractive for small or pilot deployments that don't want N
+deployments + N databases.
+
+The real cost of sharing, given the current single-tenant schema, is
+**admin isolation**: `AWE_ADMIN` / `AWE_VIEWER` are global roles, so any
+admin on a shared instance can edit *every* module's policies, and the
+audit log mixes all modules. That is fine when a single central team owns
+all approvals; it is a governance risk when modules have separate owners.
+
+Guidance:
+
+* **Separate governance owners per module** → keep per-module (default).
+* **Single owner, or small/pilot deployment** → a shared instance is
+  acceptable, accepting that one admin group controls everything.
+* **Shared *with* strict isolation** → requires adding a `module` column,
+  module-scoped admin roles, audit filtering, and policy-key namespacing.
+  Only worth it if you need one deployment *and* hard separation.
+* **Hybrid** → dedicated AWE for high-stakes modules (e.g. PBMS
+  disbursements), shared for the rest.
+
 ## Scalability model
 
 ```
