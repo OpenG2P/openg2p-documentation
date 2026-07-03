@@ -1,30 +1,29 @@
 ---
 description: >-
-  Optional AWS provisioning for the production infrastructure — creates the
-  EC2 instances (Reverse Proxy, Compute, Storage, and the Backup node),
-  security groups, Elastic IP, and writes provision-output.yaml for the
-  orchestrator to consume.
+  Optional AWS provisioning for the production infrastructure — creates the EC2
+  instances (Reverse Proxy, Compute, Storage, and the Backup node), security
+  groups, Elastic IP, and writes provision-output
 ---
 
-# AWS Provisioning (optional)
+# AWS Provisioning
 
 The bundled AWS provisioning is a separate, optional step that creates the EC2 instances — Reverse Proxy, Compute, Storage, and (with `backup_node.enabled: true`) the Backup node — and the supporting AWS resources, then writes `provision-output.yaml` for the orchestrator to consume. Lives at `automation/production/aws/`.
 
-Use it if you don't already have VMs. If you have your own VMs (other clouds, on-prem, manual EC2), skip this page and go straight to [Step 1 of the infrastructure automation](README.md#step-1-clone-and-configure).
+Use it if you don't already have VMs. If you have your own VMs (other clouds, on-prem, manual EC2), skip this page and go straight to [Step 1 of the infrastructure automation](./#step-1-clone-and-configure).
 
 {% hint style="info" %}
-**Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  **2. Provisioning** ([overview](../provisioning.md) · AWS path = this page)  →  [3. Infrastructure](README.md)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
+**Production deployment flow:** [1. Procurement](../../prerequisites-procurement.md) → **2. Provisioning** ([overview](../provisioning.md) · AWS path = this page) → [3. Infrastructure](./) → [4. Environment](../../environment-setup-multi-node.md) → [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
 ## Prerequisites
 
-|                     |                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **AWS CLI**         | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`.                                                                                                                                                                                                                                                                                                                                   |
-| **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`.                                                                                                                                                                                                                                                      |
-| **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                                                                                                                                                                                                                                                                       |
-| **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                                                                                                                                                                                                                                                                                  |
-| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. The provisioner allocates one EIP for the RP (Wireguard endpoint stability across stop/start — see [About the Elastic IP](#about-the-elastic-ip)). If you're at quota, free one first (see [About the Elastic IP](#about-the-elastic-ip)) before running the provisioner. |
+|                     |                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AWS CLI**         | v2 installed on your laptop. `aws --version` should print `aws-cli/2.x`.                                                                                                                                                                                                                                                                                                                                         |
+| **AWS credentials** | Configured via `aws configure`, environment variables, or an `AWS_PROFILE`. The script honours `AWS_REGION`, `AWS_PROFILE`, and `AWS_DEFAULT_REGION`.                                                                                                                                                                                                                                                            |
+| **`jq`**            | Not required (we deliberately avoid the dependency).                                                                                                                                                                                                                                                                                                                                                             |
+| **Permissions**     | The IAM user/role needs the EC2 permissions listed below.                                                                                                                                                                                                                                                                                                                                                        |
+| **EIP quota**       | At least **one Elastic IP free** in the target region. AWS's default per-region quota is 5 EIPs. The provisioner allocates one EIP for the RP (Wireguard endpoint stability across stop/start — see [About the Elastic IP](aws-provisioning.md#about-the-elastic-ip)). If you're at quota, free one first (see [About the Elastic IP](aws-provisioning.md#about-the-elastic-ip)) before running the provisioner. |
 
 ## IAM permissions
 
@@ -257,6 +256,6 @@ aws service-quotas request-service-quota-increase \
     --service-code ec2 --quota-code L-0263D0A3 --desired-value 10
 ```
 
-See [About the Elastic IP](#about-the-elastic-ip) for why we use an EIP.
+See [About the Elastic IP](aws-provisioning.md#about-the-elastic-ip) for why we use an EIP.
 
 **Multiple environments on the same AWS account** — use a different `project:` value in each `aws-config.yaml` (e.g., `openg2p-prod`, `openg2p-staging`). Resources are isolated by tag; the destroy script only touches the configured project.

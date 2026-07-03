@@ -225,6 +225,7 @@
     * [Reporting & Dashboards](pbms/features/reporting-and-dashboards.md)
   * [Design](pbms/design/README.md)
     * [Concept](pbms/design/concept.md)
+    * [PBMS Tech Architecture](products/pbms/design/pbms-tech-architecture.md)
     * [Static definitions](pbms/design/pbms-odoo.md)
     * [Rule definitions](pbms/design/rule-definitions.md)
     * [Enrolment & Disbursement Cycles](pbms/design/enrolment-and-disbursement-cycles.md)
@@ -539,8 +540,6 @@
 
 * [Platform Architecture](platform/architecture/README.md)
   * [Platform Tech Architecture](platform/architecture/platform-tech-architecture.md)
-  * [Registry Tech Architecture](platform/architecture/registry-tech-architecture.md)
-  * [PBMS Tech Architecture](platform/architecture/pbms-tech-architecture.md)
   * [Async Processes - Tech Architecture](platform/architecture/async-processes-tech-architecture.md)
   * [Security Architecture](platform/architecture/security-architecture/README.md)
     * [Partner APIs](platform/architecture/security-architecture/partner-apis.md)
