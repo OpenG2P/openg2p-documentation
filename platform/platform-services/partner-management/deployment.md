@@ -51,7 +51,7 @@ helm install partner-management openg2p/partner-management \
 | `global.authClientId` | `<release>-staff-portal` | Keycloak client the role lives under. |
 | `global.iamServiceUrl` | `http://commons-services-iam-staff-portal-api` | Shared IAM the UI logs in against. |
 | `global.auditEnabled` | `true` | Ship admin API calls to the central Audit Manager (non-blocking). |
-| `global.auditManagerUrl` | `http://audit-manager` | Audit Manager base URL. |
+| `global.auditManagerUrl` | `http://commons-services-auditmanager:80` | Shared Audit Manager (commons-services release). |
 | `staffPortalApi.image.tag` | `develop` | staff-portal-api image tag. |
 | `partnerApi.image.tag` | `develop` | partner-api image tag. |
 | `staffPortalUi.image.tag` | `develop` | UI image tag. |
