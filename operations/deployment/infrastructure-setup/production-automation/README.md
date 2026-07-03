@@ -1,18 +1,18 @@
 ---
 description: >-
-  Production deployment automation — one orchestrator script that
-  drives a Reverse Proxy, Compute (Kubernetes), and Storage node from the
-  admin's laptop, with optional AWS provisioning.
+  Production deployment automation — one orchestrator script that drives a
+  Reverse Proxy, Compute (Kubernetes), and Storage node from the admin's laptop,
+  with optional AWS provisioning.
 ---
 
 # Infrastructure Automation
 
 The production automation provisions the OpenG2P platform across three role-specialised Ubuntu 24.04 VMs — Reverse Proxy, Compute, and Storage — from your laptop, with a single command. (The fourth node, **Backup**, is required for production and is set up by the separate [backup automation](../../backups/).) It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across role-specialised machines.
 
-<figure><img src="../../../../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption><p>The three platform VMs this automation provisions — Reverse Proxy, Compute (Kubernetes), and Storage (the Backup node is set up separately)</p></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/Deployment Architecture - Three Node.jpg" alt=""><figcaption><p>The three platform VMs this automation provisions — Reverse Proxy, Compute (Kubernetes), and Storage (the Backup node is set up separately)</p></figcaption></figure>
 
 {% hint style="info" %}
-**Production deployment flow:**  [1. Procurement](../../prerequisites-procurement.md)  →  [2. Provisioning](../provisioning.md)  →  **3. Infrastructure** (this page)  →  [4. Environment](../../environment-setup-multi-node.md)  →  [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
+**Production deployment flow:** [1. Procurement](../../prerequisites-procurement.md) → [2. Provisioning](../provisioning.md) → **3. Infrastructure** (this page) → [4. Environment](../../environment-setup-multi-node.md) → [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
 **Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher (local auth), the Wireguard endpoint, Nginx with TLS — is up and admins can log in. **Next** is [Stage 4 — Environment](../../environment-setup-multi-node.md), which installs the OpenG2P commons (PostgreSQL, Kafka, MinIO, eSignet, Superset, etc.) into a namespace.
@@ -35,9 +35,9 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 * Rancher uses local auth — admins are created directly in Rancher (no SSO). The OpenG2P apps' Keycloak is installed separately, per environment.
 * Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
 * NFS server + host PostgreSQL 16 on the Storage node.
-* **One OpenG2P environment** (default name `prod`) — namespace, Rancher Project, Istio Gateway, the OpenG2P Helm repo registered in Rancher, and the `commons-base` + `commons-services` charts wired to the Storage node's host PostgreSQL. On by default; toggle with `install_environment`. See [The environment stage](#the-environment-stage).
+* **One OpenG2P environment** (default name `prod`) — namespace, Rancher Project, Istio Gateway, the OpenG2P Helm repo registered in Rancher, and the `commons-base` + `commons-services` charts wired to the Storage node's host PostgreSQL. On by default; toggle with `install_environment`. See [The environment stage](./#the-environment-stage).
 
-**What it does NOT do (yet):** product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after the environment is up), citizen-facing public hostnames and certs (the environment uses the same wildcard cert and admin channel; opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](#out-of-scope).
+**What it does NOT do (yet):** product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after the environment is up), citizen-facing public hostnames and certs (the environment uses the same wildcard cert and admin channel; opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](./#out-of-scope).
 
 **Two things to know before running:**
 
@@ -60,7 +60,7 @@ Verify everything's in order without touching the nodes:
 ./openg2p-prod.sh --preflight      --config prod-config.yaml   # nodes (resources, IPs, DNS)
 ```
 
-Preflight is non-destructive. Run until everything reports green, then proceed to [How to use the script](#how-to-use-the-script). Typical failures and where to fix them:
+Preflight is non-destructive. Run until everything reports green, then proceed to [How to use the script](./#how-to-use-the-script). Typical failures and where to fix them:
 
 | Preflight error                                                       | Fix                                                                                                      |
 | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -69,7 +69,7 @@ Preflight is non-destructive. Run until everything reports green, then proceed t
 | `DNS: rancher.<domain> resolves to 1.2.3.4 but RP private is 5.6.7.8` | DNS points at the wrong IP — fix the A-record                                                            |
 | `Cert ./certs/rancher.pem: does not cover hostname rancher.<domain>`  | Wrong cert for that hostname (see [TLS certificate](../../prerequisites-procurement.md#tls-certificate)) |
 | `Cert ./certs/rancher.pem: key does not match cert`                   | Mismatched cert/key pair                                                                                 |
-| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [Compute](../../prerequisites-procurement.md#compute-the-four-vms))                  |
+| `RAM: 3 GB (need ≥4)`                                                 | Resize the VM (see [Compute](../../prerequisites-procurement.md#compute-the-four-vms))                   |
 
 ## How to use the script
 
@@ -182,7 +182,7 @@ Clear the stale state **before** the first install on fresh machines:
 From v1.x the orchestrator also **announces** any pre-existing markers at the start of a run (which phases will be skipped, with timestamps, plus the `--reset-laptop` hint), so an accidental skip is never silent. If you see that banner and the machines are fresh, run `--reset-laptop` and re-run.
 {% endhint %}
 
-Total runtime: 25–40 minutes for infrastructure. The run ends with the [environment stage](#the-environment-stage); if your laptop isn't on the Wireguard VPN yet it defers that stage with instructions (see [Step 5](#step-5-install-the-environment)). For the exact phase sequence (what runs where, in what order), see [Reference → Phase sequence](#phase-sequence).
+Total runtime: 25–40 minutes for infrastructure. The run ends with the [environment stage](./#the-environment-stage); if your laptop isn't on the Wireguard VPN yet it defers that stage with instructions (see [Step 5](./#step-5-install-the-environment)). For the exact phase sequence (what runs where, in what order), see [Reference → Phase sequence](./#phase-sequence).
 
 ### Common command shapes
 
@@ -305,7 +305,7 @@ Requires Wireguard active — the K8s API listens on the compute node's private 
 
 ### Step 5 — install the environment
 
-The install also creates one OpenG2P **environment** (see [The environment stage](#the-environment-stage) for what that means). Because the environment stage talks to the Kubernetes API on the **private channel**, it needs the Wireguard VPN — which you just connected in Step 4.1. So on the first unattended `./openg2p-prod.sh` run, the orchestrator finishes the infrastructure and then **defers** the environment stage with a message like:
+The install also creates one OpenG2P **environment** (see [The environment stage](./#the-environment-stage) for what that means). Because the environment stage talks to the Kubernetes API on the **private channel**, it needs the Wireguard VPN — which you just connected in Step 4.1. So on the first unattended `./openg2p-prod.sh` run, the orchestrator finishes the infrastructure and then **defers** the environment stage with a message like:
 
 ```
 [WARN] Environment stage deferred — finish infra, connect Wireguard, then run:
@@ -415,7 +415,7 @@ sudo -u postgres psql -c "SELECT version();"            # PG 16 banner
 sudo cat /etc/openg2p/secrets/postgres-superuser.env    # see PG superuser creds
 ```
 
-The PostgreSQL superuser password is auto-generated by storage phase 1 and saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (root-owned, mode `0600`). The file contains `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER` (always `postgres`), and `POSTGRES_PASSWORD`. The orchestrator's completion summary also prints these values directly. The [environment stage](#the-environment-stage) reads this password automatically (over SSH) to wire commons-base to this host PostgreSQL — you don't copy it by hand.
+The PostgreSQL superuser password is auto-generated by storage phase 1 and saved at `/etc/openg2p/secrets/postgres-superuser.env` on the storage node (root-owned, mode `0600`). The file contains `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER` (always `postgres`), and `POSTGRES_PASSWORD`. The orchestrator's completion summary also prints these values directly. The [environment stage](./#the-environment-stage) reads this password automatically (over SSH) to wire commons-base to this host PostgreSQL — you don't copy it by hand.
 
 ## File structure
 
@@ -544,12 +544,12 @@ echo "nameserver 10.15.0.1" | sudo tee /etc/resolver/openg2p.internal
 
 When an install fails, you usually do **not** need to re-provision the VMs. Try these in order:
 
-| # | When | Command |
-| - | ---- | ------- |
-| 1 | **Transient failure** — network blip, slow apt mirror, Ctrl-C, dropped SSH. The install left a partial state but nothing semantically wrong. | `./openg2p-prod.sh --config prod-config.yaml` (just re-run; completed steps are skipped via state markers) |
-| 2 | **Need to re-run a completed phase** — you fixed a config value, or a previous step landed wrong but its marker got set. | `./openg2p-prod.sh --config prod-config.yaml --force` |
-| 3 | **VMs were re-provisioned but you reused the same `prod-config.yaml`** — stale laptop markers will make the orchestrator skip everything. | `./openg2p-prod.sh --reset-laptop --config prod-config.yaml`  then re-run install. |
-| 4 | **Install left the VMs in an unrecoverable state** — RKE2 cluster confused, helm releases half-applied, configs inconsistent. You want to start over without re-provisioning. | `./openg2p-prod-uninstall.sh --config prod-config.yaml`  then re-run install. |
+| # | When                                                                                                                                                                          | Command                                                                                                    |
+| - | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1 | **Transient failure** — network blip, slow apt mirror, Ctrl-C, dropped SSH. The install left a partial state but nothing semantically wrong.                                  | `./openg2p-prod.sh --config prod-config.yaml` (just re-run; completed steps are skipped via state markers) |
+| 2 | **Need to re-run a completed phase** — you fixed a config value, or a previous step landed wrong but its marker got set.                                                      | `./openg2p-prod.sh --config prod-config.yaml --force`                                                      |
+| 3 | **VMs were re-provisioned but you reused the same `prod-config.yaml`** — stale laptop markers will make the orchestrator skip everything.                                     | `./openg2p-prod.sh --reset-laptop --config prod-config.yaml` then re-run install.                          |
+| 4 | **Install left the VMs in an unrecoverable state** — RKE2 cluster confused, helm releases half-applied, configs inconsistent. You want to start over without re-provisioning. | `./openg2p-prod-uninstall.sh --config prod-config.yaml` then re-run install.                               |
 
 There are **two uninstall scopes**: reset just the **environment** (`openg2p-prod-env-uninstall.sh`), or wipe the **whole platform** off the VMs (`openg2p-prod-uninstall.sh`).
 
@@ -585,7 +585,7 @@ You'll be asked to **type the `cluster_name`** to confirm before anything is tou
 **What gets removed (per node):**
 
 * **Compute** — RKE2 (via `rke2-uninstall.sh`, which wipes the cluster, etcd, containerd, CNI, and **every helm release** including Istio / Rancher / monitoring / logging and any installed environment workloads); `kubectl`/`helm`/`istioctl`/`helmfile` binaries; NFS client mount; `/etc/hosts` managed block; sysctl tweaks; ufw rules; state markers.
-* **Reverse Proxy** — Wireguard server + peer configs; Nginx admin server blocks; customer certs; ip_forward sysctl; MASQUERADE residue; ufw rules; state markers.
+* **Reverse Proxy** — Wireguard server + peer configs; Nginx admin server blocks; customer certs; ip\_forward sysctl; MASQUERADE residue; ufw rules; state markers.
 * **Storage** — host PostgreSQL; NFS server + `/etc/exports`; ufw rules; state markers.
 * **Laptop** — orchestrator `.state/` markers + pulled `artifacts/`.
 
@@ -595,26 +595,26 @@ You'll be asked to **type the `cluster_name`** to confirm before anything is tou
 * Generic OS tools — `curl`, `jq`, `openssl`, `ssh`, `ufw`, `ca-certificates`.
 * **Postgres data dir and NFS export contents** on the storage node (the actual data). Pass `--purge-data` to delete those too — there is no undo.
 
-After uninstall the message "*To start fresh, run: ./openg2p-prod.sh …*" is printed. Re-run the install in the normal way.
+After uninstall the message "_To start fresh, run: ./openg2p-prod.sh …_" is printed. Re-run the install in the normal way.
 
 {% hint style="warning" %}
 The uninstall script is **destructive and idempotent** but it does NOT touch your `prod-config.yaml` or the certificate files on your laptop — those survive so a re-install just works.
 {% endhint %}
 
 {% hint style="info" %}
-**Tearing down just the environment** (commons workloads), without wiping the whole cluster? A full compute uninstall removes the cluster *and* everything in it, including the environment. To remove only the environment's Helm releases — leaving RKE2/Rancher/Istio intact — use the environment teardown documented on the [Environment Setup](../../environment-setup-multi-node.md#uninstallation) page. Either way, the environment's data in host PostgreSQL on the Storage node survives unless you pass `--purge-data`.
+**Tearing down just the environment** (commons workloads), without wiping the whole cluster? A full compute uninstall removes the cluster _and_ everything in it, including the environment. To remove only the environment's Helm releases — leaving RKE2/Rancher/Istio intact — use the environment teardown documented on the [Environment Setup](../../environment-setup-multi-node.md#uninstallation) page. Either way, the environment's data in host PostgreSQL on the Storage node survives unless you pass `--purge-data`.
 {% endhint %}
 
 ### Options reference
 
-| Flag | Purpose |
-| ---- | ------- |
-| `--config <file>` | Path to `prod-config.yaml` (required) |
-| `--role <name>` | `all` (default) \| `rp` \| `compute` \| `storage` — wipe one node only |
-| `--purge-data` | Also delete PostgreSQL data dir + NFS export contents on storage |
-| `--yes` / `-y` | Skip the typed-name confirmation prompt |
-| `--skip-ssh` | Laptop-side cleanup only (`.state/`, `artifacts/`) — useful for fixing stale markers without touching the VMs |
-| `--help` | Show help |
+| Flag              | Purpose                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| `--config <file>` | Path to `prod-config.yaml` (required)                                                                         |
+| `--role <name>`   | `all` (default) \| `rp` \| `compute` \| `storage` — wipe one node only                                        |
+| `--purge-data`    | Also delete PostgreSQL data dir + NFS export contents on storage                                              |
+| `--yes` / `-y`    | Skip the typed-name confirmation prompt                                                                       |
+| `--skip-ssh`      | Laptop-side cleanup only (`.state/`, `artifacts/`) — useful for fixing stale markers without touching the VMs |
+| `--help`          | Show help                                                                                                     |
 
 ## Reference
 
@@ -622,37 +622,37 @@ Background detail — not needed to run the install. Useful when something goes 
 
 ### Technology stack
 
-| Component       | Version                                     | Notes                                                                           |
-| --------------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
-| OS              | Ubuntu Server 24.04 LTS                     | All three nodes                                                                 |
-| Orchestrator    | bash + ssh + rsync                          | Runs on your laptop, no extra dependencies                                      |
-| Kubernetes      | RKE2 v1.33.6                                | Single control-plane on the compute node                                        |
-| Service mesh    | Istio 1.24.1                                | Installed via `istioctl`                                                        |
-| Helm            | v3.17.3                                     | + helm-diff plugin                                                              |
-| Helmfile        | v1.1.0                                      | Drives the platform component installs                                          |
-| Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                              |
+| Component       | Version                                     | Notes                                                                                                                                  |
+| --------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| OS              | Ubuntu Server 24.04 LTS                     | All three nodes                                                                                                                        |
+| Orchestrator    | bash + ssh + rsync                          | Runs on your laptop, no extra dependencies                                                                                             |
+| Kubernetes      | RKE2 v1.33.6                                | Single control-plane on the compute node                                                                                               |
+| Service mesh    | Istio 1.24.1                                | Installed via `istioctl`                                                                                                               |
+| Helm            | v3.17.3                                     | + helm-diff plugin                                                                                                                     |
+| Helmfile        | v1.1.0                                      | Drives the platform component installs                                                                                                 |
+| Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                                                                                     |
 | Rancher auth    | Local authentication                        | Admin users created directly in Rancher; no external SSO. (The apps' Keycloak is per-environment, installed by the environment stage.) |
-| Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                            |
-| Logging         | OpenTelemetry + Grafana Loki                | Cluster-wide log pipeline (OTel agent → gateway → Loki, backed by dedicated MinIO); replaces Fluentd/OpenSearch |
-| Storage         | NFS-CSI driver v4.7.0                       | Default StorageClass `nfs-csi`, retain policy                                   |
-| VPN             | Wireguard (kernel + tools)                  | Native systemd service on the RP node                                           |
-| DNS             | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts` |
-| Database (host) | PostgreSQL 16                               | On the storage node, ready for environment automation                           |
+| Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                                                                                   |
+| Logging         | OpenTelemetry + Grafana Loki                | Cluster-wide log pipeline (OTel agent → gateway → Loki, backed by dedicated MinIO); replaces Fluentd/OpenSearch                        |
+| Storage         | NFS-CSI driver v4.7.0                       | Default StorageClass `nfs-csi`, retain policy                                                                                          |
+| VPN             | Wireguard (kernel + tools)                  | Native systemd service on the RP node                                                                                                  |
+| DNS             | Customer-provided (no DNS server installed) | Hostnames resolved by customer's authoritative DNS or admin-laptop `/etc/hosts`                                                        |
+| Database (host) | PostgreSQL 16                               | On the storage node, ready for environment automation                                                                                  |
 
 ### Phase sequence
 
 The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 
-| # | Where         | What                                                                                                                                                                         |
-| - | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 | Laptop        | SSH + sudo probe on all 3 nodes                                                                                                                                              |
-| 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                                     |
-| 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                                 |
-| 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                 |
-| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip` |
-| 4 | Compute       | helmfile sync — Istio, Rancher (local auth, NFS-backed embedded Postgres), monitoring, logging                                                                              |
+| # | Where         | What                                                                                                                                                                                               |
+| - | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 | Laptop        | SSH + sudo probe on all 3 nodes                                                                                                                                                                    |
+| 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                                                           |
+| 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                                                       |
+| 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                                       |
+| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip`                       |
+| 4 | Compute       | helmfile sync — Istio, Rancher (local auth, NFS-backed embedded Postgres), monitoring, logging                                                                                                     |
 | 6 | Laptop        | Environment scaffolding — Rancher Helm repo (ClusterRepo), namespace, Rancher Project, Istio Gateway, external-PG secret. Needs Wireguard up; **defers** if not (re-run via `--stage environment`) |
-| 7 | Laptop        | Commons install — `commons-base` + `commons-services` wired to host PostgreSQL (skipped if `install_commons: false`)                                                          |
+| 7 | Laptop        | Commons install — `commons-base` + `commons-services` wired to host PostgreSQL (skipped if `install_commons: false`)                                                                               |
 
 ### Out of scope
 

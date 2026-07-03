@@ -2,14 +2,14 @@
 description: Single-node deployment automation
 ---
 
-# Sandbox - Single-Node
+# Sandbox — Single-Node
 
 The entire deployment process for a single-node setup has been automated and available as shell scripts. This is useful for bringing up an OpenG2P sandbox on your own machine — everything (K8s, Istio, Rancher, Nginx, per-environment Keycloak, environments) runs on a single VM.
 
-<figure><img src="../../../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption><p>Single-node architecture — all services on one VM</p></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/Deployment Architecture - Single Node.jpg" alt=""><figcaption><p>Single-node architecture — all services on one VM</p></figcaption></figure>
 
 {% hint style="info" %}
-**No staged flow here.** Sandbox collapses what Production splits into five stages — procurement, provisioning, infrastructure, environment, and modules — into a single VM with two scripts. The [staged Production rollout](README.md#the-five-stages) only applies when deploying across role-specialised nodes for production.
+**No staged flow here.** Sandbox collapses what Production splits into five stages — procurement, provisioning, infrastructure, environment, and modules — into a single VM with two scripts. The [staged Production rollout](./#the-five-stages) only applies when deploying across role-specialised nodes for production.
 {% endhint %}
 
 {% hint style="info" %}
@@ -17,47 +17,42 @@ For adding environments to an existing multi-node infrastructure, see [Environme
 {% endhint %}
 
 {% hint style="success" %}
-**Just want to run it?** Jump to [Quick Start](#quick-start). For the deployment model and how single-node compares to production, see [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md#sandbox-single-node).
+**Just want to run it?** Jump to [Quick Start](single-node-automation.md#quick-start). For the deployment model and how single-node compares to production, see [OpenG2P Deployment Architecture](../../../deployment/openg2p-deployment-model.md#sandbox-single-node).
 {% endhint %}
 
 ## Overview
 
 Automated single-node deployment of the complete OpenG2P platform — from bare Ubuntu to running modules. Two scripts handle the entire lifecycle:
 
-| Script                   | Purpose                                                              | Run when             |
-| ------------------------ | -------------------------------------------------------------------- | -------------------- |
+| Script                   | Purpose                                                                                 | Run when             |
+| ------------------------ | --------------------------------------------------------------------------------------- | -------------------- |
 | `openg2p-infra.sh`       | Base infrastructure (K8s, Istio, Rancher, monitoring, logging via OpenTelemetry + Loki) | Once per machine     |
-| `openg2p-environment.sh` | Environment + modules (namespace, commons, Registry, PBMS, etc.)     | Once per environment |
+| `openg2p-environment.sh` | Environment + modules (namespace, commons, Registry, PBMS, etc.)                        | Once per environment |
 
 {% hint style="info" %}
 The source code for all automation scripts lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/single-node/`.
 {% endhint %}
 
 {% hint style="info" %}
-Cluster logging uses **OpenTelemetry + Grafana Loki** (no Fluentd/OpenSearch). It
-is installed automatically by `openg2p-infra.sh`, collects logs from all pods, and
-is viewed in Grafana — including a ready-made **OpenG2P — Logs & Health** dashboard.
-See [System Monitoring](../../../platform/platform-services/system-monitoring/README.md)
-for architecture and usage.
+Cluster logging uses **OpenTelemetry + Grafana Loki** (no Fluentd/OpenSearch). It is installed automatically by `openg2p-infra.sh`, collects logs from all pods, and is viewed in Grafana — including a ready-made **OpenG2P — Logs & Health** dashboard. See [System Monitoring](../../../platform/platform-services/system-monitoring/) for architecture and usage.
 {% endhint %}
 
 ### Authentication Architecture
 
-There is **no Keycloak at the infrastructure level**. Rancher uses its own **local authentication** — administrators create Rancher users directly in the Rancher UI (see [User Access & Roles](#user-access--roles)).
+There is **no Keycloak at the infrastructure level**. Rancher uses its own **local authentication** — administrators create Rancher users directly in the Rancher UI (see [User Access & Roles](single-node-automation.md#user-access--roles)).
 
 Keycloak is installed **per environment** for the OpenG2P applications:
 
-| Component            | Deployed by                  | Namespace             | Authentication           | Purpose                                                                                              |
-| -------------------- | ---------------------------- | --------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| **Rancher**          | `openg2p-infra.sh` Phase 2   | `cattle-system`       | Local users (no SSO)     | Cluster management UI — create users directly in Rancher                                             |
+| Component            | Deployed by                  | Namespace             | Authentication           | Purpose                                                                                  |
+| -------------------- | ---------------------------- | --------------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
+| **Rancher**          | `openg2p-infra.sh` Phase 2   | `cattle-system`       | Local users (no SSO)     | Cluster management UI — create users directly in Rancher                                 |
 | **Per-env Keycloak** | `openg2p-commons-base` chart | environment namespace | `keycloak.<base_domain>` | Auth for all OpenG2P services (Superset, Kafka UI, MinIO, ODK, etc.) in that environment |
 
 The per-environment Keycloak has its own admin account, database, users, realms, and clients. Its admin credentials are auto-generated by the chart and stored in the `commons-keycloak` K8s secret. It is unrelated to Rancher login.
 
 ## Domain & TLS
 
-This is a **local-only sandbox** — no public domain names, DNS provider, or
-Let's Encrypt are involved. The infrastructure script always:
+This is a **local-only sandbox** — no public domain names, DNS provider, or Let's Encrypt are involved. The infrastructure script always:
 
 * Installs `dnsmasq` on the VM to resolve `*.<local_domain>` to the VM's IP (default `openg2p.test`)
 * Generates a local Certificate Authority and self-signed certificates
@@ -67,40 +62,30 @@ Let's Encrypt are involved. The infrastructure script always:
   * Infra: `rancher.openg2p.test`
   * Per-env: `keycloak.<env>.openg2p.test`, `superset.<env>.openg2p.test`, etc.
 
-You only set `local_domain` (optional — defaults to `openg2p.test`). There is no
-custom/production domain mode in this automation.
+You only set `local_domain` (optional — defaults to `openg2p.test`). There is no custom/production domain mode in this automation.
 
 ## Access Model — Private by Default
 
-The sandbox is **not exposed to the public Internet by default, even if the VM
-has a public IP.** The host firewall (and the AWS security group) restrict the
-web ports (80/443) so they are reachable only:
+The sandbox is **not exposed to the public Internet by default, even if the VM has a public IP.** The host firewall (and the AWS security group) restrict the web ports (80/443) so they are reachable only:
 
 * over **Wireguard** (the recommended path — DNS resolves automatically), or
 * from **inside the VPC**.
 
-Administrative/data-plane ports (Kubernetes API, NodePorts, etcd, NFS) are
-always VPC/Wireguard-only, so `kubectl`/`helm` access requires the VPN.
+Administrative/data-plane ports (Kubernetes API, NodePorts, etcd, NFS) are always VPC/Wireguard-only, so `kubectl`/`helm` access requires the VPN.
 
 {% hint style="danger" %}
-**Opening the sandbox to the public Internet (`public_access: true`)** exposes
-the Rancher cluster-admin UI and every environment service to anyone who can
-reach the public IP, protected only by a self-signed certificate and local
-passwords. This is a sandbox, not a hardened deployment. Only enable it if you
-understand and accept the risk — and prefer restricting the source IPs (ufw /
-security group) to the specific addresses that need access. See
-[Optional: Public Access](#optional-public-direct-access-without-wireguard).
+**Opening the sandbox to the public Internet (`public_access: true`)** exposes the Rancher cluster-admin UI and every environment service to anyone who can reach the public IP, protected only by a self-signed certificate and local passwords. This is a sandbox, not a hardened deployment. Only enable it if you understand and accept the risk — and prefer restricting the source IPs (ufw / security group) to the specific addresses that need access. See [Optional: Public Access](single-node-automation.md#optional-public-direct-access-without-wireguard).
 {% endhint %}
 
 ## Prerequisites
 
-| Requirement  | Needed                                            |
-| ------------ | ------------------------------------------------- |
-| **VM**       | Ubuntu 24.04 LTS, 16 vCPU, 64 GB RAM, 128 GB SSD  |
-| **Access**   | Root/sudo on the VM                               |
-| **Internet** | Required for downloading packages and Helm charts |
-| **DNS**      | Not needed — dnsmasq + your laptop handle it      |
-| **TLS**      | Not needed — local CA handles it                  |
+| Requirement  | Needed                                                |
+| ------------ | ----------------------------------------------------- |
+| **VM**       | Ubuntu 24.04 LTS, 16 vCPU, 64 GB RAM, 128 GB SSD      |
+| **Access**   | Root/sudo on the VM                                   |
+| **Internet** | Required for downloading packages and Helm charts     |
+| **DNS**      | Not needed — dnsmasq + your laptop handle it          |
+| **TLS**      | Not needed — local CA handles it                      |
 | **VPN**      | Wireguard client on your laptop (default access path) |
 
 ## Quick Start
@@ -311,63 +296,44 @@ sudo KUBECONFIG=/etc/rancher/rke2/rke2.yaml kubectl -n cattle-system \
 ```
 
 {% hint style="info" %}
-**Additional Rancher users must be created directly in Rancher.** There is no external identity provider — see [User Access & Roles](#user-access--roles) below.
+**Additional Rancher users must be created directly in Rancher.** There is no external identity provider — see [User Access & Roles](single-node-automation.md#user-access--roles) below.
 {% endhint %}
 
 ## Optional: Public (Direct) Access Without Wireguard
 
-By default the sandbox is reachable only over Wireguard or from inside the VPC.
-If you want to reach it **directly over a public IP — without the VPN** — you can
-opt in. The client just needs to map the hostnames to the public IP and accept
-the self-signed certificate.
+By default the sandbox is reachable only over Wireguard or from inside the VPC. If you want to reach it **directly over a public IP — without the VPN** — you can opt in. The client just needs to map the hostnames to the public IP and accept the self-signed certificate.
 
 {% hint style="danger" %}
-**This exposes the Rancher cluster-admin UI and every environment service to the
-public Internet**, protected only by a self-signed certificate and local
-passwords. This is a sandbox, not a hardened deployment. Prefer restricting the
-opened ports to the specific source IPs that need access (see step 1/2 notes),
-and never enable this for a deployment holding real data.
+**This exposes the Rancher cluster-admin UI and every environment service to the public Internet**, protected only by a self-signed certificate and local passwords. This is a sandbox, not a hardened deployment. Prefer restricting the opened ports to the specific source IPs that need access (see step 1/2 notes), and never enable this for a deployment holding real data.
 {% endhint %}
 
 **On the server — open the web ports:**
 
-1. Set `public_access: true` in `infra-config.yaml` and re-run phase 1 (this
-   rewrites the firewall; it is the durable way — a manually-added `ufw` rule
-   would be wiped on the next run):
+1.  Set `public_access: true` in `infra-config.yaml` and re-run phase 1 (this rewrites the firewall; it is the durable way — a manually-added `ufw` rule would be wiped on the next run):
 
-   ```bash
-   sudo ./openg2p-infra.sh --config infra-config.yaml --phase 1
-   ```
+    ```bash
+    sudo ./openg2p-infra.sh --config infra-config.yaml --phase 1
+    ```
+2.  **On AWS, also open 80/443 in the security group.** Either recreate it with `./create-security-group.sh --vpc-id <VPC_ID> --public-web`, or add the rules to the existing group (ideally scoped to your client's IP rather than `0.0.0.0/0`):
 
-2. **On AWS, also open 80/443 in the security group.** Either recreate it with
-   `./create-security-group.sh --vpc-id <VPC_ID> --public-web`, or add the rules
-   to the existing group (ideally scoped to your client's IP rather than
-   `0.0.0.0/0`):
-
-   ```bash
-   aws ec2 authorize-security-group-ingress --group-id sg-xxx \
-     --protocol tcp --port 443 --cidr <your-client-ip>/32
-   aws ec2 authorize-security-group-ingress --group-id sg-xxx \
-     --protocol tcp --port 80  --cidr <your-client-ip>/32
-   ```
+    ```bash
+    aws ec2 authorize-security-group-ingress --group-id sg-xxx \
+      --protocol tcp --port 443 --cidr <your-client-ip>/32
+    aws ec2 authorize-security-group-ingress --group-id sg-xxx \
+      --protocol tcp --port 80  --cidr <your-client-ip>/32
+    ```
 
 **On the client laptop — resolve the hostnames + trust the CA:**
 
-3. Add `/etc/hosts` entries pointing each hostname at the **public** IP (one line
-   per environment hostname — wildcards are not supported in `/etc/hosts`):
+3.  Add `/etc/hosts` entries pointing each hostname at the **public** IP (one line per environment hostname — wildcards are not supported in `/etc/hosts`):
 
-   ```
-   <public-ip>  rancher.openg2p.test
-   <public-ip>  keycloak.dev.openg2p.test  superset.dev.openg2p.test
-   ```
+    ```
+    <public-ip>  rancher.openg2p.test
+    <public-ip>  keycloak.dev.openg2p.test  superset.dev.openg2p.test
+    ```
+4. Install/trust the CA certificate (`/etc/openg2p/ca/ca.crt`, see step 3 above) or click through the browser warning. Always browse by **hostname** — the cert has no IP SAN, so `https://<public-ip>` will fail validation.
 
-4. Install/trust the CA certificate (`/etc/openg2p/ca/ca.crt`, see step 3 above)
-   or click through the browser warning. Always browse by **hostname** — the
-   cert has no IP SAN, so `https://<public-ip>` will fail validation.
-
-No other changes are required: Nginx already listens on all interfaces and
-routes by hostname, so once the firewall/security-group allow the traffic and
-the client resolves the names, access works exactly as it does over the VPN.
+No other changes are required: Nginx already listens on all interfaces and routes by hostname, so once the firewall/security-group allow the traffic and the client resolves the names, access works exactly as it does over the VPN.
 
 ## User Access & Roles
 
@@ -377,7 +343,7 @@ Rancher uses **local authentication** — all users that need access to the Ranc
 
 1. Log in to Rancher as the local `admin`.
 2. Go to **☰ → Users & Authentication → Users → Create**.
-3. Set a username and password, and assign a global role (e.g. *Standard User*, or *Administrator* for a super admin).
+3. Set a username and password, and assign a global role (e.g. _Standard User_, or _Administrator_ for a super admin).
 
 Rancher ships with built-in project roles, but all include full Secrets access. The automation script creates two additional custom roles that exclude secrets:
 
@@ -402,24 +368,24 @@ The Rancher `admin` global role (super admin) has access to everything. The init
 
 ### Phase 1: Environment Infrastructure
 
-| Step | What                   | Details                                                                   |
-| ---- | ---------------------- | ------------------------------------------------------------------------- |
-| E1.1 | Validate prerequisites | Infra completed, kubeconfig works, base domain available                  |
-| E1.2 | TLS certificate        | Wildcard cert for `*.<base_domain>` signed by the local CA                |
-| E1.3 | Nginx server block     | `*.dev.openg2p.test` → Istio ingress                                      |
-| E1.4 | K8s namespace          | Creates the namespace                                                     |
-| E1.5 | Rancher Project        | Creates project and moves namespace into it (RBAC)                        |
-| E1.6 | Istio Gateway          | Gateway resource for hostname routing                                     |
+| Step | What                   | Details                                                    |
+| ---- | ---------------------- | ---------------------------------------------------------- |
+| E1.1 | Validate prerequisites | Infra completed, kubeconfig works, base domain available   |
+| E1.2 | TLS certificate        | Wildcard cert for `*.<base_domain>` signed by the local CA |
+| E1.3 | Nginx server block     | `*.dev.openg2p.test` → Istio ingress                       |
+| E1.4 | K8s namespace          | Creates the namespace                                      |
+| E1.5 | Rancher Project        | Creates project and moves namespace into it (RBAC)         |
+| E1.6 | Istio Gateway          | Gateway resource for hostname routing                      |
 
 ### Phase 2: Module Installation
 
 openg2p-commons is split into two Helm charts installed sequentially:
 
-| Step       | Chart                            | Details                                                                                   |
-| ---------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
+| Step       | Chart                            | Details                                                                       |
+| ---------- | -------------------------------- | ----------------------------------------------------------------------------- |
 | E2.1       | **openg2p-commons-base**         | PostgreSQL, Kafka, MinIO, Redis, SoftHSM, **per-env Keycloak**, keycloak-init |
-| E2.2       | **openg2p-commons-services**     | eSignet, KeyManager, Superset, ODK, master-data, reporting                                |
-| _(future)_ | Registry, PBMS, SPAR, G2P Bridge | Will be added as separate Helm installs                                                   |
+| E2.2       | **openg2p-commons-services**     | eSignet, KeyManager, Superset, ODK, master-data, reporting                    |
+| _(future)_ | Registry, PBMS, SPAR, G2P Bridge | Will be added as separate Helm installs                                       |
 
 {% hint style="info" %}
 The services chart automatically connects to base infrastructure via release name references (`commons-postgresql`, `commons-redis`, etc.).

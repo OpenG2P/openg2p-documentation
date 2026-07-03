@@ -24,7 +24,7 @@ Over and above all these, there is minimally one more node required for backups 
 
 ### Sandbox (Single-node)
 
-<figure><img src="../.gitbook/assets/single-node-deployment.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Deployment Architecture - Single Node.jpg" alt=""><figcaption></figcaption></figure>
 
 * Single virtual machine running all services
 * One Kubernetes cluster hosting both Rancher and OpenG2P services
@@ -40,7 +40,7 @@ Over and above all these, there is minimally one more node required for backups 
 
 ### Production — Minimum
 
-<figure><img src="../.gitbook/assets/three-node-deployment (1).jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/Deployment Architecture - Three Node.jpg" alt=""><figcaption></figcaption></figure>
 
 * Separation of concerns - storage and reverse proxy on separate nodes
 * PostgreSQL server runs on the Storage Node.
