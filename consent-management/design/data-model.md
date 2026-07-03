@@ -20,7 +20,6 @@ timestamps are never overwritten, and the decision log is immutable.
 
 ```mermaid
 erDiagram
-  PARTNER ||--o{ PARTNER_KEY : has
   PARTNER ||--o{ PARTNER_POLICY : "has (versioned)"
   PARTNER ||--o{ CONSENT_ARTEFACT : "is audience of"
   CONSENT_REQUEST ||--o| AUTH_CONTEXT : "bound by (origination)"
@@ -30,37 +29,33 @@ erDiagram
   CONSENT_ARTEFACT ||--o{ DECISION_LOG : "evaluated in"
 ```
 
-### Partner
+### Partner (policy binding)
+
+Partner **identity and signing keys live in the Partner Management (PM) service**, not in the CM.
+The CM's `Partner` record is a **thin policy binding** — it maps a PM partner to a CM authorization
+context and carries nothing more. There is **no local `PartnerKey` table** and the CM does **not**
+poll a `jwks_url`; at verification time the CM fetches the partner's public key (PEM) from PM by
+`partner_mgmt_id` + the object's `kid`. See
+[Partner Management Integration](partner-management-integration.md).
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| partner_id | UUID | Primary key |
-| name | str | |
-| org_name | str | |
-| status | enum | `active`, `suspended` |
-| audience | str | The identifier the partner appears as in a consent object's `aud` |
+| partner_id | UUID | Primary key (the CM-local binding id) |
+| partner_mgmt_id | str | Reference to the partner in PM; falls back to `audience` if not set |
+| name | str | Optional display name, for the admin UI only |
+| status | enum | `active`, `suspended` — whether this binding is active in the CM |
+| audience | str | The `aud` value the partner's consent objects must carry |
 | controller_id | UUID | The data controller / module this partner is onboarded under |
-| jwks_url | str | Optional. A partner JWKS endpoint the CM polls for verifying keys, in addition to stored `PartnerKey` rows |
 | created_at / updated_at | datetime | |
-
-### PartnerKey
-
-Public keys used to verify partner-signed consent objects.
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| key_id | UUID | Primary key |
-| partner_id | UUID | FK → Partner |
-| kid | str | Key id referenced by the consent object's JWS header |
-| algorithm | enum | `EdDSA` (ed25519), `ES256`, `RS256` |
-| public_key | text | PEM or JWK |
-| status | enum | `active`, `rotated`, `revoked` |
-| not_before / not_after | datetime | Validity window for rotation |
 
 ### PartnerPolicy
 
-The contract a partner was onboarded under. **Consent can never grant more than the policy.**
-Versioned; every decision records the version used.
+The data-share contract a partner was onboarded under. **Consent can never grant more than the
+policy.** Versioned; every decision records the version used, and the hot path only evaluates the
+`active` version. A **widening** change sits `pending` until approved via the
+[Approval Workflow Engine](approval-workflow-integration.md), then becomes `active` and supersedes
+the prior version; a rejected/cancelled request marks the new version `rejected` and the prior
+active version stays in force.
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -70,12 +65,13 @@ Versioned; every decision records the version used.
 | allowed_data_scopes | list[str] | Fields/registers the partner may ever receive |
 | allowed_purposes | list[str] | Purpose codes the partner may assert |
 | allowed_subject_id_types | list[str] | e.g. `national_id`, `farmer_id` |
-| max_validity_duration | duration | Upper bound on consent validity (e.g. `P1Y`) |
+| allowed_signing_algs | list[str] | Acceptable JWS algorithms |
+| max_validity_duration | duration | ISO-8601 upper bound on consent validity (e.g. `P1Y`) |
 | fetch_type | enum | `oneshot`, `periodic` (DEPA-style) |
 | max_fetch_frequency | duration | For `periodic` — minimum interval between fetches |
 | data_life | duration | How long the partner may retain data after fetch |
-| allowed_signing_algs | list[str] | Acceptable JWS algorithms |
-| status | enum | `active`, `superseded` |
+| status | enum | `pending`, `active`, `superseded`, `rejected` |
+| awe_request_id | str | The AWE request id for the approval of a widening change (null for narrowing / AWE-disabled) |
 | effective_from | datetime | |
 
 ### ConsentArtefact (CM-issued, canonical)
@@ -118,14 +114,16 @@ Created after the CM validates an ID token. The raw token is **never** persisted
 
 ### ConsentReceipt
 
-Kantara/ISO-27560-aligned, **signed by the CM's private key**. See the JSON below.
+Kantara/ISO-27560-aligned, **signed with the CM's own `.p12` key**. The CM is self-verifying — it
+publishes its signing public keys at `GET /.well-known/jwks.json`, so any party can verify a receipt
+without PM. (The CM is **not** a PM partner.) See the JSON below.
 
 | Field | Type | Notes |
 | --- | --- | --- |
 | receipt_id | UUID | Primary key |
 | consent_id | UUID | FK → ConsentArtefact |
 | artefact_hash | str | `sha256:…` over the canonical artefact |
-| algorithm | enum | `EdDSA` (ed25519) by default |
+| algorithm | enum | `EdDSA` (ed25519), `ES256`, or `RS256` — the CM `.p12` key's alg |
 | kid | str | CM key id used to sign |
 | signature | text | Detached/compact JWS over the artefact hash |
 | version | str | Receipt schema version |
@@ -166,7 +164,9 @@ Received from the identity provider after subject authentication (origination fl
 ### Consent object (partner-embedded, the primary flow)
 
 The **partner signs this** and embeds it in the registry request. The CM verifies the signature
-with the partner's onboarded public key. `jti` + `issued_at` give replay protection.
+locally, using the partner's public key **fetched from Partner Management** by `partner_mgmt_id` +
+the object's `kid` (see [Partner Management Integration](partner-management-integration.md)).
+`jti` + `issued_at` give replay protection.
 
 ```json
 {
@@ -237,7 +237,7 @@ The CM's canonical decision document. Stored, and checked before any data is rel
 
 ### Consent Receipt (Kantara / ISO 27560)
 
-Generated alongside the artefact and **signed by the CM's private key**. It is both
+Generated alongside the artefact and **signed with the CM's own `.p12` key**. It is both
 cryptographic proof and a human-readable consent record for the subject, audit, and disputes.
 
 ```json

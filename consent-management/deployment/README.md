@@ -34,12 +34,27 @@ Chart: `deployment/charts/openg2p-consent-manager/`. Dependencies (from the Open
 | `postgres-init` | Creates the database, user, and password Secret on the commons Postgres. |
 | `keycloak-init` | Provisions the Consent Manager Keycloak client and admin role (see below). |
 
-Rendered resources for the API component (`templates/api/`):
+### API audiences (one chart, one image, a Deployment per audience)
 
-* **Deployment** — a `postgres-checker` init container waits for the DB; the app container mounts
-  the `.p12` signing key from a Secret and exposes `/ping` for startup/liveness/readiness probes.
+Following the platform's 4-API pattern, the **one** chart runs a separate Deployment + Service +
+VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AUDIENCE`):
+
+| Deployment | Audience | Auth | Hosts |
+| --- | --- | --- | --- |
+| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | policy bindings + policy admin, AWE approvals inbox (proxy) + webhook, decisions/audit view |
+| `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — trust is the partner-signed consent object verified against Partner Management keys (`jti` replay-guarded); registry↔CM is Istio mTLS at transport | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key) |
+| `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination — **scaffolded, `enabled: false`** |
+
+`extraApis[]` entries are merged over `consentManagerApi`, so each only states its differences
+(audience, auth, signing, hostname). Only the **partner-api** mounts the signing key.
+
+Rendered resources per audience:
+
+* **Deployment** — a `postgres-checker` init container waits for the DB; the app container exposes
+  `/ping` for startup/liveness/readiness probes. The partner-api additionally mounts the `.p12`
+  signing key from a Secret.
 * **Service** (`ClusterIP`) and an Istio **VirtualService** routing
-  `/<openapiRootPath>/` to the service.
+  `/<openapiRootPath>/` on that audience's hostname to the service.
 * **HorizontalPodAutoscaler** — opt-in (off by default; a single replica suffices). Enable it for
   high consent-verification load (1–10 replicas, **CPU-only** target at 80% — memory-based
   autoscaling is deliberately off, as a Python process's memory baseline would make it scale up
@@ -226,22 +241,25 @@ Two caveats:
 Two levels — **both run by default** when sanity is enabled; turn the e2e off individually if you
 don't want test data:
 
-* **Smoke + contract** (always, when sanity is on) — `/ping`, `/.well-known/jwks.json`, OpenAPI
-  served, and that auth is enforced (protected endpoints return 401 without a token). Needs no token
-  and **creates no data**. Catches a broken/booting-wrong image immediately.
-* **Full e2e** (`Run Full E2E` / `sanity.runE2e`, **default on**) — onboards a `TEST_SANITY_*`
-  partner, signs a consent object, and exercises a real `POST /validate` (permit + the
+* **Smoke + contract** (always, when sanity is on) — `/ping` (both apis), the partner-api's
+  `/.well-known/jwks.json` + OpenAPI, and that the auth model holds: the partner-api's `/validate`
+  is open (no Keycloak), while the staff-api's admin endpoints reject an unauthenticated call.
+  Needs no token and **creates no data**. Catches a broken/booting-wrong image immediately.
+* **Full e2e** (`Run Full E2E` / `sanity.runE2e`, **default on**) — ensures a persistent test
+  partner + key exist in **Partner Management** (a `pm-seed` Job registers them if absent), creates a
+  CM policy **binding** to that PM partner on the **staff-api**, signs a consent object with the
+  matching private key, and exercises a real `POST /validate` on the **partner-api** (permit + the
   `signature_invalid` and `scope_exceeds_policy` denials), then verifies the CM's receipt signature
-  against its JWKS. It obtains a client-credentials token from Keycloak (the `consent-manager`
-  client) and **suspends** the test partner afterwards (there is no delete endpoint). **Turn this
-  off for production** to avoid creating test data; smoke + contract still run and gate. Because it
-  runs by default and gates, **Keycloak must be reachable at deploy time** for the token — if it
-  isn't, the e2e fails the deploy (turn the e2e off, or fix Keycloak).
+  against the partner-api's JWKS. It obtains a client-credentials token from Keycloak (the
+  `consent-manager` client) for the staff calls and **suspends** the test binding afterwards.
+  **Turn this off for production** to avoid creating test data; smoke + contract still run and gate.
+  Because it runs by default and gates, **Keycloak and Partner Management must be reachable at deploy
+  time** — if they aren't, the e2e fails/skips (turn the e2e off, or fix the dependency).
 
-The suite is **independent of which `.p12` the deployment uses**: it signs consent objects with its
-own throwaway key (onboarded on the test partner), and it verifies the CM's receipt against the
-**live** `/.well-known/jwks.json` — handling EdDSA/ES256/RS256 — so it works the same whether the
-CM runs the demo key or your production key. It never needs the CM's private key or password.
+The suite is **independent of which `.p12` the deployment uses**: it signs consent objects with a
+bundled TEST key (whose public half is seeded into Partner Management), and verifies the CM's receipt
+against the **live** partner-api `/.well-known/jwks.json` — handling EdDSA/ES256/RS256 — so it works
+the same whether the CM runs the demo key or your production key. It never needs the CM's private key.
 
 Form options (**Sanity** group): `Run Sanity Tests (gates the deploy)` (`sanity.enabled`) and
 `Run Full E2E` (`sanity.runE2e`). The suite ships as a separate image

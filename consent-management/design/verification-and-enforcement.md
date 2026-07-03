@@ -16,7 +16,7 @@ This is the **primary** use case. A partner already holds consent (collected out
 
 ## Request shape
 
-The partner calls a registry endpoint and embeds the consent object (e.g. in a header, a `consent` body field, or per the interop protocol). The registry forwards it unchanged to:
+The partner calls a registry endpoint and embeds the consent object (e.g. in a header, a `consent` body field, or per the interop protocol). The registry forwards it unchanged to the CM's `/validate` endpoint. `/validate` is on the **partner API** and requires **no Keycloak token** — trust rests on the partner-signed object (verified with keys from Partner Management) plus the `jti` replay guard; the registry↔CM hop is transport-secured (Istio mTLS).
 
 ```
 POST /consent/v1/validate
@@ -38,8 +38,8 @@ The CM evaluates these checks in order. The first failure short-circuits to `den
 
 ```mermaid
 flowchart TD
-  A["1. Schema-validate consent object"] --> B["2. Look up partner + key by kid"]
-  B --> C["3. Verify JWS signature\n(known party)"]
+  A["1. Schema-validate consent object"] --> B["2. Resolve partner binding;\nfetch key from PM by partner_mgmt_id + kid"]
+  B --> C["3. Alg-confusion guard +\nverify JWS signature locally"]
   C --> D["4. aud == partner;\ndata_controller == partner's module"]
   D --> E["5. Subject present, id_type allowed"]
   E --> F["6. Purpose ∈ allowed_purposes"]
@@ -49,7 +49,8 @@ flowchart TD
   I --> J["10. Replay: jti unseen, issued_at fresh"]
   J --> K["persist artefact + signed receipt + decision log"]
   K --> L["return permit + effective_data_scopes"]
-  C -. fail .-> X["deny + reason_code"]
+  B -. "PM 404 (fail closed)" .-> X["deny + reason_code"]
+  C -. fail .-> X
   D -. fail .-> X
   F -. fail .-> X
   G -. fail .-> X
@@ -61,8 +62,8 @@ flowchart TD
 | #  | Check                                                                                                               | Reason code on failure                |
 | -- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | 1  | Object matches the consent-object JSON-Schema                                                                       | `malformed_object`                    |
-| 2  | `partner_id` is onboarded and `active`; `kid` resolves to an active key                                             | `unknown_partner`                     |
-| 3  | JWS signature verifies against the partner's public key                                                             | `signature_invalid`                   |
+| 2  | `partner_id` resolves to an `active` binding; the key for its `partner_mgmt_id` + `kid` is fetched from PM (a `404` — unknown/disabled/no active key — is a **fail-closed reject**) | `unknown_partner`                     |
+| 3  | Declared `signature.algorithm` matches the PM key's `algorithm` (**algorithm-confusion guard**), and the JWS signature verifies **locally** against that key | `signature_invalid`                   |
 | 4  | `aud` == the partner, and `data_controller` == the module the partner was onboarded under (`Partner.controller_id`) | `audience_mismatch`                   |
 | 5  | Subject present; `subject_id_type` ∈ `allowed_subject_id_types`                                                     | `subject_not_allowed`                 |
 | 6  | `purpose.code` ∈ `allowed_purposes`                                                                                 | `purpose_not_allowed`                 |
@@ -72,6 +73,8 @@ flowchart TD
 | 10 | `jti` not seen before; `issued_at` within the freshness window                                                      | `replay`                              |
 
 > **Policy is a ceiling, consent is a request.** Step 7 never widens scope. The effective scope is `requested_scopes ∩ data_scopes ∩ allowed_data_scopes`. If that intersection is empty, the result is `deny` with `scope_exceeds_policy`.
+
+> **The verifying key comes from Partner Management, not a CM table.** At step 2 the CM fetches the partner's public key (PEM) from PM by `partner_mgmt_id` + `kid`, caching it per pod (soft/hard/negative TTL, unknown-`kid` refresh). The signature check itself is always **local** to the CM. A `404` from PM fails closed. See [Partner Management Integration](partner-management-integration.md).
 
 ## Decision object (CM → registry)
 
@@ -112,13 +115,13 @@ Because the CM returns the field list, the registry needs **no consent logic** �
 On every evaluation (permit or deny) the CM writes an immutable **DecisionLog** entry. On a permit it additionally:
 
 * re-canonicalises the embedded object into a **ConsentArtefact** (`source = embedded`),
-* signs a **ConsentReceipt** with its own private key, and
+* signs a **ConsentReceipt** with its own `.p12` key (self-verifying via the CM's published JWKS), and
 * stores both, returning `consent_id` + `receipt_id`.
 
 This gives non-repudiable proof — independently verifiable via the CM's published JWKS — for audit and dispute resolution.
 
 ## Idempotency & performance
 
-* The hot path is a single round trip; partner keys and policies are cached (invalidated on key rotation / policy change).
+* The hot path is a single round trip; partner keys (fetched from PM) are cached per pod, and the active policy version is cached (refreshed on an unknown `kid` / policy change).
 * Re-validating the same object (same `jti`) within its validity returns the same `consent_id` / `receipt_id` rather than minting duplicates.
 * Revocation is checked live (see [Consent lifecycle](consent-lifecycle.md)); enforcement points that cache decisions must respect the status endpoint.

@@ -10,11 +10,17 @@ The hot path used by the registry (and any PEP) to authorise outbound data shari
 [Verification &amp; enforcement](../design/verification-and-enforcement.md) for the flow and
 [API conventions](README.md) for auth and reason codes.
 
+**Audience:** **partner-api** — the CM **PDP** deployment. There is **no Keycloak** on this path.
+Trust rests entirely on the **partner-signed consent object**, whose JWS signature is verified
+against the partner's keys in **Partner Management (PM)** and replay-guarded by its `jti`. The
+Registry↔CM transport is secured by **Istio mTLS**.
+
 ## `POST /consent/v1/validate`
 
 Validate a partner-embedded consent object and return a decision with the effective fields.
 
-**Auth:** mTLS / signed service token (registry → CM).
+**Auth:** **none** — no bearer token. The signed consent object is the proof (verified via PM
+keys); Istio mTLS authenticates the Registry↔CM transport.
 
 **Request**
 
@@ -77,7 +83,7 @@ Validate a partner-embedded consent object and return a decision with the effect
 
 A lightweight, OCSP-like status check for enforcement points that cache decisions.
 
-**Auth:** mTLS / service token. **Response (HTTP 200)**
+**Auth:** none (Istio mTLS at transport). **Response (HTTP 200)**
 
 ```json
 { "consent_id": "CONSENT-123456", "status": "active",

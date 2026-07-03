@@ -9,12 +9,12 @@ description: >-
 The Consent Manager exposes a versioned REST API. This page defines the conventions every
 endpoint follows; the endpoint pages document the individual contracts.
 
-| Group | Page | Audience |
+| Group | Page | API audience |
 | --- | --- | --- |
-| Verification &amp; enforcement | [Verification API](verification-api.md) | Registry / PEPs (machine-to-machine) |
-| Partner onboarding &amp; policy | [Partner &amp; Policy API](partner-and-policy-api.md) | Administrators / controller onboarding |
-| Consent lifecycle | [Consent Lifecycle API](consent-lifecycle-api.md) | Origination clients (apps, staff portal) |
-| Subject rights (GDPR) | [Subject API](subject-api.md) | Authenticated subjects (UI later) |
+| Verification &amp; enforcement | [Verification API](verification-api.md) | **partner-api** — Registry / PEPs (partner-signed, machine-to-machine) |
+| Partner onboarding &amp; policy | [Partner &amp; Policy API](partner-and-policy-api.md) | **staff-api** — Administrators / controller onboarding |
+| Consent lifecycle | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary-api** — origination clients (scaffolded/later) |
+| Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary-api** — authenticated subjects (scaffolded/later) |
 
 ## Base path &amp; versioning
 
@@ -22,20 +22,22 @@ endpoint follows; the endpoint pages document the individual contracts.
 * Well-known: `/.well-known/jwks.json` (CM signing keys, unversioned)
 * Breaking changes increment the path version (`/consent/v2`).
 
-## Authentication
+## Audiences &amp; deployment
 
-All protected endpoints use **Keycloak** bearer tokens (validated against the realm JWKS), as in
-the OpenG2P AWE service. Roles come from `realm_access` and every `resource_access.*` block.
+The CM ships as a **single chart** but is deployed once **per API audience** — separate
+Deployments that share the same code and Postgres, differing only in which router/audience they
+serve and how they authenticate callers. Authentication therefore differs by audience:
 
-| Caller | Mechanism |
-| --- | --- |
-| Registry / PEP → `/validate`, `/consents/{id}/status` | Keycloak **service-account token** (client-credentials); optionally fronted by mTLS at ingress |
-| Administrator → partner &amp; policy endpoints | Keycloak token with the **`CONSENT_MANAGER_ADMIN`** role |
-| Subject → `/my/*` | Keycloak **bearer token**, scoped to the authenticated subject |
-| Anyone → receipts, JWKS | Public read (signatures make them self-verifying) |
+| Audience | Endpoints | Auth model |
+| --- | --- | --- |
+| **staff-api** | partner &amp; policy, AWE approver proxy, audit `/decisions` | Keycloak, **staff realm**. Roles `CONSENT_MANAGER_ADMIN` (onboarding/policy) and `CONSENT_MANAGER_APPROVER` (approval decisions), from `realm_access` / `resource_access.*` |
+| **partner-api** | `/validate`, `/consents/{id}/status`, `/receipts/{id}`, JWKS | **No Keycloak.** Trust is the **partner-signed consent object**, verified against Partner Management (PM) keys and replay-guarded by `jti`. The Registry↔CM link is secured at transport (**Istio mTLS**). This deployment is the **PDP** |
+| **beneficiary-api** | `/my/*`, `/consent-requests/*` | Keycloak, **beneficiary realm**, scoped to the authenticated subject (scaffolded/later) |
+| any | receipts, JWKS | Public read (signatures make them self-verifying) |
 
-The consent object's own JWS signature is the application-layer proof on the verification path,
-layered on top of the caller's token.
+On **partner-api** there is no caller token: the consent object's own JWS signature (verified via
+PM keys) is the sole application-layer proof, with Istio mTLS providing transport authentication
+between the Registry and CM.
 
 ## Conventions
 
@@ -64,7 +66,7 @@ Used in decisions (`reason_code`) and errors (`error`):
 | --- | --- |
 | `ok` | Permit — all checks passed |
 | `malformed_object` | Consent object failed schema validation |
-| `unknown_partner` | Partner not onboarded / suspended, or `kid` not found |
+| `unknown_partner` | Partner not onboarded / suspended, or `kid` not found in Partner Management |
 | `signature_invalid` | JWS signature did not verify |
 | `audience_mismatch` | `aud` is not this partner / controller |
 | `subject_not_allowed` | Subject missing or `subject_id_type` not permitted |
