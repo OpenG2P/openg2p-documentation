@@ -143,6 +143,48 @@ immediately, legacy behaviour). Relevant keys:
 | `awe_client_id` / `awe_client_secret` (or a static token) | Client-credentials creds for the service token used on `create_request`. |
 | `auth_approver_role` | The CM role that gates the approver inbox / proxy routes (`CONSENT_MANAGER_APPROVER`). |
 
+## Enabling AWE approval — required AWE-side setup
+
+AWE approval is an **optional add-on**. CM is fully usable with it off (policy changes just take
+effect immediately, still admin-only). Turning it on (`global.aweEnabled: true`) needs setup that CM
+does **not** auto-provision — only the callback secret + callback URL are wired automatically:
+
+1. **Register the approval policy in AWE** for `awe_policy_change_policy_key`
+   (`consent-manager.policy_change.v1`). AWE policies are created as a draft and then **activated**
+   (both require an `AWE_ADMIN` token). A minimal single-stage, role-based policy:
+
+   ```bash
+   # create draft v1
+   curl -X POST "$AWE/v1/awe/policies" -H "Authorization: Bearer $AWE_ADMIN_TOKEN" \
+     -H 'Content-Type: application/json' -d '{
+       "policy_key": "consent-manager.policy_change.v1",
+       "version": 1,
+       "stages": [{
+         "mode": "any-n", "mode_value": 1,
+         "rules": [{"rule_type": "role", "rule_value": {"role": "CONSENT_MANAGER_APPROVER"}, "kind": "approver"}]
+       }]
+     }'
+   # activate it
+   curl -X POST "$AWE/v1/awe/policies/consent-manager.policy_change.v1/versions/1/activate" \
+     -H "Authorization: Bearer $AWE_ADMIN_TOKEN"
+   ```
+
+   Adjust the stage(s)/rules to your governance (roles, groups, quorum, multi-stage). Without an
+   **active** policy for this key, `create_request` returns 404 and CM leaves the widening `pending`
+   with no AWE request id.
+
+2. **Designate approvers** — users the policy's rule resolves (here, anyone with the
+   `CONSENT_MANAGER_APPROVER` role), who also need that role to open CM's approvals inbox.
+
+3. **Token issuer alignment** — the `consent-manager` client's token (used for `create_request`)
+   must be issued by the issuer AWE trusts (`AWE`'s `keycloak.issuer`). A mismatch surfaces as AWE
+   rejecting the call with `Invalid issuer`; make sure CM's `awe_token_url` and AWE's configured
+   issuer resolve to the **same** Keycloak realm URL.
+
+> The sanity e2e is AWE-aware: with approval on, its first (widening) policy goes `pending`, so the
+> signed permit round-trip is skipped (it can't complete without a human approval) — smoke + contract
+> still run.
+
 ## Related pages
 
 * [Partner policy binding &amp; approval](partner-onboarding-and-policy.md) — the policy model and
