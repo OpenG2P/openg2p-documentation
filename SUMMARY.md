@@ -600,6 +600,7 @@
     * [Functional Specifications](platform/platform-services/partner-management/functional-specifications.md)
     * [API Reference](platform/platform-services/partner-management/api-reference.md)
     * [Technical Architecture](platform/platform-services/partner-management/technical-architecture.md)
+    * [Integration — consuming partner keys](platform/platform-services/partner-management/integration.md)
     * [Deployment](platform/platform-services/partner-management/deployment.md)
     * [Testing](platform/platform-services/partner-management/testing.md)
   * [VC Issuance](platform/platform-services/vc-issuance/README.md)
