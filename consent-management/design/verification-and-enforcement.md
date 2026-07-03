@@ -2,26 +2,21 @@
 description: >-
   The primary flow — a partner embeds a signed consent object in a registry
   request, the Consent Manager validates it against the partner's policy, and
-  returns the effective fields the registry may release.
+  returns the effective fields the registry may rele
 ---
 
-# Verification &amp; enforcement
+# Verification & enforcement
 
-This is the **primary** use case. A partner already holds consent (collected out-of-band or via
-the origination flow) and embeds a **partner-signed consent object** when it calls a registry
-API. The registry enforces; the Consent Manager (CM) decides.
+This is the **primary** use case. A partner already holds consent (collected out-of-band or via the origination flow) and embeds a **partner-signed consent object** when it calls a registry API. The registry enforces; the Consent Manager (CM) decides.
 
 ## Roles
 
-* **Registry (PEP)** — holds the data, extracts the embedded consent object, calls the CM,
-  and releases only the fields the CM returns. It does not interpret consent.
-* **Consent Manager (PDP)** — verifies the object, evaluates policy, and returns a decision with
-  the **effective set of fields**.
+* **Registry (PEP)** — holds the data, extracts the embedded consent object, calls the CM, and releases only the fields the CM returns. It does not interpret consent.
+* **Consent Manager (PDP)** — verifies the object, evaluates policy, and returns a decision with the **effective set of fields**.
 
 ## Request shape
 
-The partner calls a registry endpoint and embeds the consent object (e.g. in a header, a
-`consent` body field, or per the interop protocol). The registry forwards it unchanged to:
+The partner calls a registry endpoint and embeds the consent object (e.g. in a header, a `consent` body field, or per the interop protocol). The registry forwards it unchanged to:
 
 ```
 POST /consent/v1/validate
@@ -35,13 +30,11 @@ POST /consent/v1/validate
 }
 ```
 
-`requested_scopes` lets the CM intersect three sets: what the partner is **asking for now**, what
-the subject **consented to**, and what **policy allows**.
+`requested_scopes` lets the CM intersect three sets: what the partner is **asking for now**, what the subject **consented to**, and what **policy allows**.
 
 ## Validation pipeline (the PDP)
 
-The CM evaluates these checks in order. The first failure short-circuits to `deny` with a precise
-`reason_code`; the denial is still logged.
+The CM evaluates these checks in order. The first failure short-circuits to `deny` with a precise `reason_code`; the denial is still logged.
 
 ```mermaid
 flowchart TD
@@ -65,22 +58,20 @@ flowchart TD
   J -. fail .-> X
 ```
 
-| # | Check | Reason code on failure |
-| --- | --- | --- |
-| 1 | Object matches the consent-object JSON-Schema | `malformed_object` |
-| 2 | `partner_id` is onboarded and `active`; `kid` resolves to an active key | `unknown_partner` |
-| 3 | JWS signature verifies against the partner's public key | `signature_invalid` |
-| 4 | `aud` == the partner, and `data_controller` == the module the partner was onboarded under (`Partner.controller_id`) | `audience_mismatch` |
-| 5 | Subject present; `subject_id_type` ∈ `allowed_subject_id_types` | `subject_not_allowed` |
-| 6 | `purpose.code` ∈ `allowed_purposes` | `purpose_not_allowed` |
-| 7 | `data_scopes ⊆ allowed_data_scopes` | `scope_exceeds_policy` |
-| 8 | `now ∈ [valid_from, valid_until]` and `(valid_until − valid_from) ≤ max_validity_duration` | `expired` / `validity_exceeds_policy` |
-| 9 | `consent_id` not in revocation store | `revoked` |
-| 10 | `jti` not seen before; `issued_at` within the freshness window | `replay` |
+| #  | Check                                                                                                               | Reason code on failure                |
+| -- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| 1  | Object matches the consent-object JSON-Schema                                                                       | `malformed_object`                    |
+| 2  | `partner_id` is onboarded and `active`; `kid` resolves to an active key                                             | `unknown_partner`                     |
+| 3  | JWS signature verifies against the partner's public key                                                             | `signature_invalid`                   |
+| 4  | `aud` == the partner, and `data_controller` == the module the partner was onboarded under (`Partner.controller_id`) | `audience_mismatch`                   |
+| 5  | Subject present; `subject_id_type` ∈ `allowed_subject_id_types`                                                     | `subject_not_allowed`                 |
+| 6  | `purpose.code` ∈ `allowed_purposes`                                                                                 | `purpose_not_allowed`                 |
+| 7  | `data_scopes ⊆ allowed_data_scopes`                                                                                 | `scope_exceeds_policy`                |
+| 8  | `now ∈ [valid_from, valid_until]` and `(valid_until − valid_from) ≤ max_validity_duration`                          | `expired` / `validity_exceeds_policy` |
+| 9  | `consent_id` not in revocation store                                                                                | `revoked`                             |
+| 10 | `jti` not seen before; `issued_at` within the freshness window                                                      | `replay`                              |
 
-> **Policy is a ceiling, consent is a request.** Step 7 never widens scope. The effective scope is
-> `requested_scopes ∩ data_scopes ∩ allowed_data_scopes`. If that intersection is empty, the
-> result is `deny` with `scope_exceeds_policy`.
+> **Policy is a ceiling, consent is a request.** Step 7 never widens scope. The effective scope is `requested_scopes ∩ data_scopes ∩ allowed_data_scopes`. If that intersection is empty, the result is `deny` with `scope_exceeds_policy`.
 
 ## Decision object (CM → registry)
 
@@ -112,30 +103,22 @@ The registry's contract is intentionally tiny:
 
 1. Call `POST /consent/v1/validate`.
 2. If `decision != "permit"` → return nothing (HTTP 403 with `reason_code`).
-3. Otherwise project the requested record down to `effective_data_scopes` and return only those
-   fields, echoing `receipt_id` for the partner's audit trail.
+3. Otherwise project the requested record down to `effective_data_scopes` and return only those fields, echoing `receipt_id` for the partner's audit trail.
 
-Because the CM returns the field list, the registry needs **no consent logic** — only a
-field-projection step. This is the deliberate division of labour decided in the design:
-**CM returns the effective fields; the registry is a dumb enforcement point.**
+Because the CM returns the field list, the registry needs **no consent logic** — only a field-projection step. This is the deliberate division of labour decided in the design: **CM returns the effective fields; the registry is a dumb enforcement point.**
 
 ## What the CM persists
 
-On every evaluation (permit or deny) the CM writes an immutable **DecisionLog** entry. On a
-permit it additionally:
+On every evaluation (permit or deny) the CM writes an immutable **DecisionLog** entry. On a permit it additionally:
 
 * re-canonicalises the embedded object into a **ConsentArtefact** (`source = embedded`),
 * signs a **ConsentReceipt** with its own private key, and
 * stores both, returning `consent_id` + `receipt_id`.
 
-This gives non-repudiable proof — independently verifiable via the CM's published JWKS — for
-audit and dispute resolution.
+This gives non-repudiable proof — independently verifiable via the CM's published JWKS — for audit and dispute resolution.
 
-## Idempotency &amp; performance
+## Idempotency & performance
 
-* The hot path is a single round trip; partner keys and policies are cached (invalidated on key
-  rotation / policy change).
-* Re-validating the same object (same `jti`) within its validity returns the same `consent_id` /
-  `receipt_id` rather than minting duplicates.
-* Revocation is checked live (see [Consent lifecycle](consent-lifecycle.md)); enforcement points
-  that cache decisions must respect the status endpoint.
+* The hot path is a single round trip; partner keys and policies are cached (invalidated on key rotation / policy change).
+* Re-validating the same object (same `jti`) within its validity returns the same `consent_id` / `receipt_id` rather than minting duplicates.
+* Revocation is checked live (see [Consent lifecycle](consent-lifecycle.md)); enforcement points that cache decisions must respect the status endpoint.
