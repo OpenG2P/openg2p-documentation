@@ -547,6 +547,7 @@
   * [OpenG2P FastAPI Common](platform/architecture/openg2p-fastapi-common/README.md)
     * [Versions](platform/architecture/openg2p-fastapi-common/versions.md)
 * [Platform Services](platform-services/README.md)
+  * [Creating a New Platform Service](platform/platform-services/creating-a-new-service.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
     * [Authentication - Flow Diagram](identity-and-access-management/authentication-flow-diagram.md)
