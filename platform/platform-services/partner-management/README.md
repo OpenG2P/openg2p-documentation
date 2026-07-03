@@ -40,8 +40,13 @@ managing partners locally and simply **read keys from a shared API**.
 * The key-fetch APIs require **no caller signature** — they return only
   non-secret public material and are exposed on the cluster-internal gateway.
 
+## Built on
+
+The two backend services are built on **[`openg2p-fastapi-common`](https://github.com/OpenG2P/openg2p-fastapi-common)** (with `openg2p-fastapi-auth` for staff-realm JWT validation), tracked at the `develop` ref. See [Technical Architecture → Framework](technical-architecture.md#framework).
+
 ## Pages
 
+* [Versions](versions.md)
 * [Functional Specifications](functional-specifications.md)
 * [API Reference](api-reference.md)
 * [Technical Architecture](technical-architecture.md)

@@ -15,6 +15,10 @@ The two API images are built from the same `openg2p-partner-management-api`
 package with different entrypoints (`staff_portal_main` / `partner_main`); both
 run the same idempotent migrations against the shared DB.
 
+### Framework
+
+Both backend services are built on **[`openg2p-fastapi-common`](https://github.com/OpenG2P/openg2p-fastapi-common)** — the shared OpenG2P FastAPI framework — reusing its `Initializer` app bootstrap, `BaseController` / `BaseService` base classes, `Settings` config system, async SQLAlchemy 2.0 data layer, and the standard `{code, message}` error envelope. Staff-realm JWT validation comes from its companion `openg2p-fastapi-auth`. The images track commons at the **`develop`** git ref (via the `FASTAPI_COMMON_REF` build-arg / `fastapi_common_ref` workflow input), which can be pinned to a release tag when cutting a versioned release.
+
 ```
                           ┌──────────────────────────────┐
    staff admin ──────────▶│  staff-portal-ui (Next BFF)   │
@@ -100,10 +104,28 @@ system-of-record for domain changes; Audit Manager is the cross-platform
 aggregate. The local table is a deliberate divergence from the (central-only)
 OpenG2P reference, justified by PM's low-volume, high-sensitivity change set.
 
-## How other modules consume it (v1)
+## How other modules consume it
 
-Modules call the **partner-api** key-fetch endpoints directly (server-to-server,
-in-cluster). A documented follow-up adds a `crypto_backend="partner-mgmt"` option
-to `openg2p-fastapi-common` so g2p-bridge and consent-manager fetch-and-cache
-from this service by flipping a config flag — turning their local `partner_keys`
-table into a cache rather than a source of truth.
+Consumers do **not** call the fetch API on every verification. `openg2p-fastapi-common`
+ships a **`crypto_backend="partner-mgmt"`** option (`PartnerMgmtKeyStore`): on a
+cache miss it does `GET {partner_mgmt_api_url}/keys/{reference_id}` against the
+**partner-api** and caches the keys in-process, so a service verifies partner
+signatures with at most one HTTP call per partner per refresh window — not per
+request. The cache honours PM's `Cache-Control`, refreshes on an unknown `kid`
+(rotation), serves last-known-good keys if PM is briefly unreachable (bounded by a
+hard TTL, then fails closed), and negative-caches disabled/unknown partners.
+
+A commons-based service opts in with **config only** (its own env prefix, e.g.
+`G2P_BRIDGE_`):
+
+```
+<PREFIX>_CRYPTO_BACKEND=partner-mgmt
+<PREFIX>_PARTNER_MGMT_API_URL=http://partner-management-partner-api
+```
+
+It then stops seeding a local `partner_keys` table (`crypto_partner_certs`), and
+the partner is onboarded once, centrally, in Partner Management under
+`partner_id == reference_id` (`PARTNER_<MNEMONIC>`). No application code changes.
+See [OpenG2P FastAPI Common → JWS crypto](../../architecture/openg2p-fastapi-common/README.md#jws-crypto)
+for the full backend/cache reference. (consent-manager keys on `audience` and uses
+its own model, so it is a separate integration.)

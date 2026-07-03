@@ -545,6 +545,8 @@
   * [Security Architecture](platform/architecture/security-architecture/README.md)
     * [Partner APIs](platform/architecture/security-architecture/partner-apis.md)
     * [Portal APIs](platform/architecture/security-architecture/portal-apis.md)
+  * [OpenG2P FastAPI Common](platform/architecture/openg2p-fastapi-common/README.md)
+    * [Versions](platform/architecture/openg2p-fastapi-common/versions.md)
 * [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
