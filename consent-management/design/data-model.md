@@ -76,8 +76,8 @@ active version stays in force.
 
 ### ConsentArtefact (CM-issued, canonical)
 
-The CM's canonical representation of a consent decision — whether re-canonicalised from a
-partner-embedded object or produced by the origination flow.
+The CM's canonical representation of a consent decision — whether derived from the verified
+claims of a partner-embedded consent JWS or produced by the origination flow.
 
 | Field | Type | Notes |
 | --- | --- | --- |

@@ -128,8 +128,8 @@ sequenceDiagram
       CM-->>R: deny (unknown_partner) — fail closed
     end
   end
-  CM->>CM: alg-confusion guard (declared alg == PM key alg)
-  CM->>CM: verify inline signature over canonical bytes (local)
+  CM->>CM: alg-confusion guard (JWS alg == PM key alg, in allowed set)
+  CM->>CM: verify consent JWS signature against the PM key
   CM->>CM: evaluate policy (authorization)
   CM-->>R: permit + effective_data_scopes  |  deny + reason_code
 ```
