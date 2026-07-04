@@ -24,21 +24,14 @@ keys); Istio mTLS authenticates the Registry↔CM transport.
 
 **Request**
 
+`consent_jws` is a **compact JWS** (RFC 7515): `base64url(header).base64url(payload).base64url(signature)`.
+The payload holds the consent claims (jti, subject_id, data_controller, aud, purpose, data_scopes,
+fetch_type, validity, issued_at); the protected header carries `alg` + `kid`. The CM verifies it
+against the partner's Partner-Management key referenced by `kid`.
+
 ```json
 {
-  "consent_object": {
-    "@type": "ConsentObject",
-    "jti": "b2f1-unique",
-    "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-    "data_controller": "my.registry.org",
-    "aud": "PARTNER_SYSTEM_A",
-    "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
-    "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"],
-    "fetch_type": "oneshot",
-    "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
-    "issued_at": "2025-05-01T11:59:50Z",
-    "signature": { "algorithm": "EdDSA", "kid": "partnerA-2025-01", "value": "BASE64URL(...)" }
-  },
+  "consent_jws": "eyJhbGciOiJFZERTQSIsImtpZCI6InBhcnRuZXJBLTIwMjUtMDEifQ.eyJqdGkiOiJiMmYxLXVuaXF1ZS...}.<signature>",
   "partner_id": "PARTNER_SYSTEM_A",
   "request_context": {
     "requested_scopes": ["farmer_profile.basic", "farmer_profile.crops"],

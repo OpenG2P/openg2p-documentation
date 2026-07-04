@@ -163,12 +163,15 @@ Received from the identity provider after subject authentication (origination fl
 
 ### Consent object (partner-embedded, the primary flow)
 
-The **partner signs this** and embeds it in the registry request. The CM verifies the signature
-locally, using the partner's public key **fetched from Partner Management** by `partner_mgmt_id` +
-the object's `kid` (see [Partner Management Integration](partner-management-integration.md)).
-`jti` + `issued_at` give replay protection.
+The **partner signs this as a compact JWS** (RFC 7515) and embeds it in the registry request. The
+claims below are the **JWS payload**; the JWS protected header carries `alg` + `kid`. The CM
+recovers the claims from the payload and verifies the signature using the partner's public key
+**fetched from Partner Management** by `partner_mgmt_id` + the JWS `kid` (see
+[Partner Management Integration](partner-management-integration.md)). `jti` + `issued_at` give
+replay protection.
 
 ```json
+// JWS payload (claims). Wire form: base64url(header).base64url(payload).base64url(signature)
 {
   "@context": "https://openg2p.org/contexts/consent_object.jsonld",
   "@type": "ConsentObject",
@@ -181,10 +184,11 @@ the object's `kid` (see [Partner Management Integration](partner-management-inte
   "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
-  "issued_at": "2025-05-01T11:59:50Z",
-  "signature": { "algorithm": "EdDSA", "kid": "partnerA-2025-01", "value": "BASE64URL(...)" }
+  "issued_at": "2025-05-01T11:59:50Z"
 }
 ```
+
+There is no inline `signature` field — the JWS wrapper carries it (header `alg`/`kid` + the signature segment).
 
 ### Auth Context
 

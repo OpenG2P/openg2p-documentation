@@ -54,8 +54,8 @@ The primary response:
 ```
 
 * `algorithm` is one of **`RS256`**, **`ES256`**, **`EdDSA`**.
-* `public_key` is a **PEM** — the CM verifies the consent object's inline signature against it
-  locally (the crypto happens in CM; only the key is sourced from PM).
+* `public_key` is a **PEM** — the CM verifies the consent object's JWS signature against it
+  (via the shared `CryptoHelper`; the key is sourced from PM by the JWS `kid`).
 * PM sets **`Cache-Control: public, max-age=300`** so caches — including the CM's — know how long the
   key set is fresh.
 

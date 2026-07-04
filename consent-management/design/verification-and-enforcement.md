@@ -21,7 +21,7 @@ The partner calls a registry endpoint and embeds the consent object (e.g. in a h
 ```
 POST /consent/v1/validate
 {
-  "consent_object": { ...partner-signed JSON-LD... },
+  "consent_jws": "eyJhbGciOiJFZERTQS...<compact JWS>...",
   "partner_id": "PARTNER_SYSTEM_A",
   "request_context": {
     "requested_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
@@ -29,6 +29,8 @@ POST /consent/v1/validate
   }
 }
 ```
+
+The consent object is a **compact JWS** (RFC 7515); the CM recovers the claims from its payload and verifies the signature against the partner's Partner-Management key referenced by the JWS `kid`.
 
 `requested_scopes` lets the CM intersect three sets: what the partner is **asking for now**, what the subject **consented to**, and what **policy allows**.
 
@@ -61,9 +63,9 @@ flowchart TD
 
 | #  | Check                                                                                                               | Reason code on failure                |
 | -- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| 1  | Object matches the consent-object JSON-Schema                                                                       | `malformed_object`                    |
-| 2  | `partner_id` resolves to an `active` binding; the key for its `partner_mgmt_id` + `kid` is fetched from PM (a `404` — unknown/disabled/no active key — is a **fail-closed reject**) | `unknown_partner`                     |
-| 3  | Declared `signature.algorithm` matches the PM key's `algorithm` (**algorithm-confusion guard**), and the JWS signature verifies **locally** against that key | `signature_invalid`                   |
+| 1  | The consent JWS decodes and its claims match the consent-object schema                                              | `malformed_object`                    |
+| 2  | `aud` (from the JWS claims) resolves to an `active` binding; the key for its `partner_mgmt_id` + JWS `kid` is fetched from PM (a `404` — unknown/disabled/no active key — is a **fail-closed reject**) | `unknown_partner`                     |
+| 3  | The JWS `alg` is permitted (allowed set + policy `allowed_signing_algs`, matched to the PM key — **algorithm-confusion guard**), and the JWS signature verifies against that key | `signature_invalid`                   |
 | 4  | `aud` == the partner, and `data_controller` == the module the partner was onboarded under (`Partner.controller_id`) | `audience_mismatch`                   |
 | 5  | Subject present; `subject_id_type` ∈ `allowed_subject_id_types`                                                     | `subject_not_allowed`                 |
 | 6  | `purpose.code` ∈ `allowed_purposes`                                                                                 | `purpose_not_allowed`                 |
@@ -114,7 +116,7 @@ Because the CM returns the field list, the registry needs **no consent logic** �
 
 On every evaluation (permit or deny) the CM writes an immutable **DecisionLog** entry. On a permit it additionally:
 
-* re-canonicalises the embedded object into a **ConsentArtefact** (`source = embedded`),
+* records the verified consent claims as a **ConsentArtefact** (`source = embedded`),
 * signs a **ConsentReceipt** with its own `.p12` key (self-verifying via the CM's published JWKS), and
 * stores both, returning `consent_id` + `receipt_id`.
 

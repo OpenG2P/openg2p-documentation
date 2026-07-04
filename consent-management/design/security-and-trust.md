@@ -40,22 +40,18 @@ The CM uses the **public** counterpart of each, but stores only its own:
 * **Canonicalisation.** Artefacts are serialised canonically (stable key ordering, normalised JSON-LD) before hashing/signing so the same logical artefact always yields the same bytes.
 * **Key rotation.** Both partner keys (in PM) and CM keys carry `kid`, `not_before`, `not_after`. Rotation = publish new key → switch signing → retire old key, with overlap so in-flight objects still verify.
 
-### Verifying the partner's consent object (local)
+### Verifying the partner's consent object
 
-Verification is **local to the CM** — the CM does the crypto itself; it only _sources_ the verifying key from PM. The consent object carries a **custom inline signature block** over its canonical bytes:
+The consent object is a **compact JWS** (RFC 7515) — `base64url(header).base64url(payload).base64url(signature)`. The **payload** is the consent claims (jti, subject, aud, data_scopes, purpose, validity, …); the **protected header** carries `alg` and `kid`. This is the same signature format the platform uses everywhere else — the Registry DCI envelope and G2P Bridge requests — so a single verify path covers all of them.
 
-```json
-"signature": { "algorithm": "ES256", "kid": "partner-key-1", "value": "<base64 signature>" }
-```
+Verification runs through the shared **openg2p-fastapi-common `CryptoHelper`** (`build_crypto_helper`, `partner-mgmt` backend). To verify, the CM:
 
-This is an **inline** block, **not a detached JWS**. To verify, the CM:
+1. recovers the claims from the JWS payload (unverified) to identify the partner by `aud` and read the requested scopes/validity,
+2. reads `kid` + `alg` from the JWS protected header and fetches the matching partner key from PM (`GET {pm}/keys/{reference_id}` — reference `PARTNER_<sender_id>` / the partner's `partner_mgmt_id` — served from the per-pod cache),
+3. enforces **algorithm safety** — `alg` must be in the allowed set and must match a key PM registered under that `kid` (prevents alg-confusion / downgrade), and additionally `alg` must be permitted by the partner's policy (`allowed_signing_algs`),
+4. verifies the JWS signature against the PM-supplied public key.
 
-1. reads `signature.kid` and fetches the matching partner key from PM (`GET {pm}/keys/{partner_id}/{kid}`, served from the per-pod cache),
-2. checks the key is within its `not_before` / `not_after` window,
-3. runs an **algorithm-confusion guard** — the declared `signature.algorithm` must **equal** the `algorithm` PM reports for that key; a mismatch is rejected outright (prevents an attacker downgrading or swapping the alg to forge against a differently-typed key),
-4. verifies `signature.value` over the canonical object bytes using the PM-supplied PEM.
-
-Any failure — unknown/expired key, `404` from PM, algorithm mismatch, or bad signature — is a **REJECT** (fail-closed). See [Verification & enforcement](verification-and-enforcement.md).
+Because a JWS carries its signed bytes verbatim in the payload segment, there is **no canonical-JSON byte-matching** between signer and verifier to get wrong. Any failure — unknown/expired key, `404` from PM, algorithm not allowed, or a bad signature — is a **REJECT** (fail-closed). See [Verification & enforcement](verification-and-enforcement.md) and [Registry integration](registry-integration.md).
 
 ### Signing CM receipts
 
