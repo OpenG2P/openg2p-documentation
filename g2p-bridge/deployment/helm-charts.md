@@ -154,7 +154,7 @@ See [Keycloak Client](keycloak-client.md) (legacy) for details.
 | Value | Default | Description |
 | --- | --- | --- |
 | `global.g2pBridgeCryptoBackend` | `partner-mgmt` | Crypto backend. `partner-mgmt` = verify inbound signatures against keys fetched from the Partner Manager (PM) service. (`local`/`keymanager` are legacy.) |
-| `global.partnerManagementApiUrl` | `http://partner-management-partner-api` | PM key-fetch base URL (unauthenticated) the Bridge verifies against. |
+| `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM key-fetch base URL (unauthenticated) the Bridge verifies against. |
 | `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
 | `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound, uses the `.p12`). |
 | `global.g2pBridgeSigningKey.mode` | `demo` | Where the outbound `.p12` comes from: `demo` / `inline` / `existing`. |

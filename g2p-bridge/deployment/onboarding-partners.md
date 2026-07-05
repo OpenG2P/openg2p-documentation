@@ -57,7 +57,7 @@ Partner Manager with its public key.
    ```
 
    (`$PM_ADMIN` = the PM staff-portal-api base, e.g.
-   `http://partner-management-staff-portal-api`.)
+   `http://commons-services-pm-staff-portal-api`.)
 3. **Verify** PM serves the key: `GET $PM_PARTNER_API/keys/PARTNER_MY_PSP` returns 200
    with the key. From then on the Bridge verifies that partner's signed calls
    automatically — nothing to configure on the Bridge.

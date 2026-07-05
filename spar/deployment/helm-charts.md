@@ -96,7 +96,7 @@ SPAR **only verifies — it never signs**, so there is no signing key / `.p12`.
 | Value | Default | Description |
 | --- | --- | --- |
 | `global.sparCryptoBackend` | `partner-mgmt` | Verify backend. SPAR fetches partner public keys from the Partner Manager (PM) service — no local key store, no Keymanager. (`local`/`keymanager` are legacy.) |
-| `global.partnerManagementApiUrl` | `http://partner-management-partner-api` | PM key-fetch base URL (unauthenticated) SPAR verifies against. |
+| `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM key-fetch base URL (unauthenticated) SPAR verifies against. |
 | `global.sparJwtAuthEnabled` | `true` | Verify a partner JWS signature on every Mapper Partner API request. |
 | `global.sparCryptoAllowedAlgorithms` | `RS256` | Allowed JWS algorithms (RS256 only; `none`/HMAC always rejected). |
 

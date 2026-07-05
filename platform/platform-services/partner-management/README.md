@@ -17,6 +17,12 @@ Before Partner Management, partner keys lived in two disconnected places:
 Partner Management consolidates these into one system of record. Modules stop
 managing partners locally and simply **read keys from a shared API**.
 
+{% hint style="info" %}
+Partner Management is installed **as part of `openg2p-commons-services`** (the
+shared platform-services layer), deployed as `commons-services-pm-*`. See
+[Deployment](deployment.md).
+{% endhint %}
+
 ## What it does (v1)
 
 * **Onboarding** — an admin registers a partner (`partner_id`, name, free-text

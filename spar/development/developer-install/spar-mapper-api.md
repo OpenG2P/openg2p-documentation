@@ -219,7 +219,7 @@ SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND=partner-mgmt    # fetch partner keys from
 SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS=RS256
 # Partner Manager key-fetch base (unauthenticated): GET {url}/keys/PARTNER_<MNEMONIC>.
 # Partners are onboarded in Partner Manager, not here.
-SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL=http://partner-management-partner-api
+SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL=http://commons-services-pm-partner-api
 
 # KeyManager — only used when CRYPTO_BACKEND=keymanager.
 SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID=SPAR

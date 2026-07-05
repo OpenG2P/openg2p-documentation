@@ -4,6 +4,22 @@ Partner Management ships a single Helm chart (`partner-management`) with three
 components — the staff-portal-api, the partner-api, and the staff portal UI —
 plus the standard OpenG2P init dependencies.
 
+{% hint style="info" %}
+**Installed as part of commons-services.** In an OpenG2P environment, Partner
+Management is deployed **as a subchart of `openg2p-commons-services`** (the shared
+platform services layer) — not installed separately. There it runs alongside the
+IAM staff-portal API, Audit Manager and AWE, and its components are named
+`commons-services-pm-staff-portal-api`, `commons-services-pm-partner-api`, and
+`commons-services-pm-staff-portal-ui`. The `partner-management` dependency in
+commons-services is pinned to a specific published PM version and bumped on each
+PM update while both are on `develop`. See
+[Commons Helm Chart](../../../deployment/openg2p-commons-helm-chart.md).
+
+The standalone chart below is for local/dev or isolated installs; the sections
+that follow describe that standalone chart, which commons-services embeds and
+re-wires (component names, DB names, and the Keycloak issuer split).
+{% endhint %}
+
 ## Images
 
 | Image | Built from |
