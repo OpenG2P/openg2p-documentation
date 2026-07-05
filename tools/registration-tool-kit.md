@@ -1,6 +1,6 @@
 # Registration Tool Kit
 
-According to the World Bank, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from registrants while recording is adding this information to the [Registry](../pbms/previous-generation/functionality/beneficiary-management/beneficiary-registry/). Verification is the process of authenticating those registrants whose information has been recorded.
+According to the World Bank, registration is a series of three processes - intake, recording, and verification. Intake is the process of gathering information from registrants while recording is adding this information to the [Registry](../products/pbms/_archive/previous-generation/functionality/beneficiary-management/beneficiary-registry/). Verification is the process of authenticating those registrants whose information has been recorded.
 
 In the OpenG2P platform, intake is carried out via offline/online forms, and recording via form submission. Verification (authentication) of registrants can be done prior to intake or after recording depending on the mode of registration (online/offline).
 
@@ -20,7 +20,7 @@ Registration can be done for individuals or groups like families, households, sc
 
 ### Registration Process
 
-Registration aims to collect detailed records from the Registry for [Eligibility Assessment](../pbms/previous-generation/functionality/eligibility/). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion, they become eligible to enroll in the program and are referred to as beneficiaries.
+Registration aims to collect detailed records from the Registry for [Eligibility Assessment](../products/pbms/_archive/previous-generation/functionality/eligibility/). It must be noted that at this stage, the people are referred to as applicants or registrants. Once the applicants/registrants pass the eligibility criterion, they become eligible to enroll in the program and are referred to as beneficiaries.
 
 While on-demand and administrative-driven approaches are distinct models described by the World Bank, the registration process operates in a spectrum between these two models. For example, a program may allow the applicants to register individually (on-demand) but only in a specific time window (administrative-driven). OpenG2P platform has a flexible implementation and caters to varied approaches across different registration modalities and programs through its various Registration Interfaces.
 

@@ -18,13 +18,13 @@ The three steps involved in the registration process using the ODK Collect App a
 
 * ODK Central Configuration
 * Field Registration
-* Use [**ODK Importer**](../../pbms/previous-generation/functionality/odk-importer/) or [**MTS Connector**](../../pbms/previous-generation/developer-zone/odoo-modules/mts-connector.md)
+* Use [**ODK Importer**](../../products/pbms/_archive/previous-generation/functionality/odk-importer/) or [**MTS Connector**](../../products/pbms/_archive/previous-generation/developer-zone/odoo-modules/mts-connector.md)
 
 ### ODK Central Configuration
 
 A program administrator/manager performs the configuration. The program administrator/manager must perform these necessary configurations to enable the field registration agent to collect information on the ODK Collect App.
 
-* Program creation - To learn the steps, click [here](../../guides/user-guides/pbms/create-a-program.md).
+* Program creation - To learn the steps, click [here](../../resources/_archive/guides/user-guides/pbms/create-a-program.md).
 * Create ODK form in ODK Central - To learn the steps, click [here](user-guides/create-a-form.md).
 * Provide ODK form access to the field registration agent - To learn the steps, click [here](user-guides/provide-form-access-to-field-agent.md).
 
@@ -57,7 +57,7 @@ A program administrator must create an ODK MTS Connector to map the ODK forms in
 
 _Note: The OpenG2P registry accepts the individual or group KYC data only in JSON format._
 
-To learn the steps to create an ODK MTS Connector, click [here](../../pbms/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md).
+To learn the steps to create an ODK MTS Connector, click [here](../../products/pbms/_archive/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md).
 
 ## ODK language support
 
@@ -69,7 +69,7 @@ To learn the steps to create an ODK MTS Connector, click [here](../../pbms/previ
 
 ## Related user guides
 
-:notebook\_with\_decorative\_cover:[Create Program](../../guides/user-guides/pbms/create-a-program.md)
+:notebook\_with\_decorative\_cover:[Create Program](../../resources/_archive/guides/user-guides/pbms/create-a-program.md)
 
 :notebook\_with\_decorative\_cover:[Create ODK Form](user-guides/create-a-form.md)
 
@@ -77,4 +77,4 @@ To learn the steps to create an ODK MTS Connector, click [here](../../pbms/previ
 
 :notebook\_with\_decorative\_cover:[Download Form on ODK Collect](user-guides/download-form-on-odk-collect.md)
 
-:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../../pbms/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md)
+:notebook\_with\_decorative\_cover:[Create ODK MTS Connector](../../products/pbms/_archive/previous-generation/functionality/mts-connector/user-guides/create-mts-connector/create-odk-mts-connector.md)

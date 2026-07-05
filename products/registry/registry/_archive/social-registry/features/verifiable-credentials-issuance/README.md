@@ -21,8 +21,8 @@ Bulk VC issuance is not supported.
 
 VCI uses Odoo modules:
 
-* [G2P OpenID VCI: Base](../../../../../../../pbms/previous-generation/developer-zone/odoo-modules/g2p-openid-vci-base.md)
-* [G2P OpenID VCI: Rest API](../../../../../../../pbms/previous-generation/developer-zone/odoo-modules/g2p-openid-vci-rest-api.md)
+* [G2P OpenID VCI: Base](../../../../../../pbms/_archive/previous-generation/developer-zone/odoo-modules/g2p-openid-vci-base.md)
+* [G2P OpenID VCI: Rest API](../../../../../../pbms/_archive/previous-generation/developer-zone/odoo-modules/g2p-openid-vci-rest-api.md)
 
 ## Related user guides
 

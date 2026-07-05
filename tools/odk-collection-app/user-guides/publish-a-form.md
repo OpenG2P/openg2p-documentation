@@ -8,7 +8,7 @@ This document provides instructions to publish a form available in a project usi
 
 * [ODK Central](https://docs.getodk.org/central-intro/) must be deployed and available
 * The user must have valid credentials to login **ODK Central**
-* The user must have an Administrator role in **ODK Central**. See [Create User and Assign Role](../../../pbms/previous-generation/functionality/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.
+* The user must have an Administrator role in **ODK Central**. See [Create User and Assign Role](../../../products/pbms/_archive/previous-generation/functionality/administration/role-based-access-control/user-guides/assign-roles-to-users.md) guide.
 
 ## Procedure
 

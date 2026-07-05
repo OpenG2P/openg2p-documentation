@@ -29,7 +29,7 @@ By maintaining separate databases under a shared PostgreSQL service, the Helm ch
 
 ## Running the Helm Chart
 
-Follow the instructions given [here](../previous-generation/deployment/pbms-deployment-instructions.md).
+Follow the instructions given [here](../../products/pbms/_archive/previous-generation/deployment/pbms-deployment-instructions.md).
 
 ## Work items
 

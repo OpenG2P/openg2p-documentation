@@ -53,13 +53,13 @@ The Key Manager in OpenG2P serves as a centralized entity responsible for the se
 
 Consider integrating with Hardware Security Modules for enhanced physical and logical key protection.
 
-## Integration process&#x20;
+## Integration process
 
 The integration process involves making calls to the KeyManager service deployed in the Kubernetes cluster of OpenG2P. Keycloak provides an access token, which is used as a header for each API request. The primary functionalities are encapsulated within the `g2p_encryption` module.
 
 ### **Key components**
 
-1. **Keycloak  access token:**
+1. **Keycloak access token:**
    * Obtained from keycloak authentication.
    * Serves as an authorization header for API requests
 2. **KeyManager service:**
@@ -95,7 +95,7 @@ The integration process involves making calls to the KeyManager service deployed
 
 ## Code module
 
-The system employs a key manager to handle the encryption of registry data. All registry information is stored in an encrypted form, represented as a string. To access the original data, admin must utilize the "decrypt fields" option available in the settings. The key manager is responsible for generating, storing, and managing the encryption keys required for securing and decrypting the registry information. This approach enhances security by ensuring that sensitive data remains unreadable without the appropriate decryption process.&#x20;
+The system employs a key manager to handle the encryption of registry data. All registry information is stored in an encrypted form, represented as a string. To access the original data, admin must utilize the "decrypt fields" option available in the settings. The key manager is responsible for generating, storing, and managing the encryption keys required for securing and decrypting the registry information. This approach enhances security by ensuring that sensitive data remains unreadable without the appropriate decryption process.
 
 ### **Future considerations**
 
@@ -110,7 +110,7 @@ Refer the following links for deeper understanding of the API's structure [Kerne
 
 ## Source code
 
-[openg2p-security](../pbms/previous-generation/developer-zone/repositories/openg2p-security.md)
+[openg2p-security](../products/pbms/_archive/previous-generation/developer-zone/repositories/openg2p-security.md)
 
 ## Conclusion
 
