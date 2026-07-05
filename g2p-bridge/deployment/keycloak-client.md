@@ -5,13 +5,17 @@ description: Legacy — Keycloak client for the Keymanager crypto backend (1.0.0
 # Keycloak Client (legacy — Keymanager backend)
 
 {% hint style="warning" %}
-**Legacy page — not used by the current Bridge.** The default `local` crypto backend
-verifies and signs partner requests **in-process** (against the `partner_keys` table)
-and needs **no Keycloak and no Keymanager**. `keycloak-init.enabled` is therefore
-**`false`** by default. This page applies only if you deliberately switch
-`global.g2pBridgeCryptoBackend` to the legacy `keymanager` backend (1.0.0's
-mechanism). For the current setup see [Partner Signing Key](partner-signing-key.md)
-and [Onboarding Partners](onboarding-partners.md).
+**Legacy page — not the current model.** The current Bridge verifies partner
+signatures against the **Partner Manager (PM)** service (`GET /keys`, unauthenticated)
+and needs **no Keycloak or Keymanager at runtime**; `keycloak-init.enabled` is
+therefore **`false`** by default. This page's `g2p-bridge` OIDC client applies only to
+the legacy `keymanager` backend (1.0.0's mechanism). For the current setup see
+[Onboarding Partners](onboarding-partners.md) and [Partner Signing Key](partner-signing-key.md).
+
+Note: the trial's **`pm-seed` Job** does need a Keycloak client with the
+`partner_manager` role to *onboard* partners into PM — but that is the
+`partner-management-staff-portal` client owned by Partner Manager, **not** the
+`g2p-bridge` client described here.
 {% endhint %}
 
 The G2P Bridge chart can provision a Keycloak OIDC client through the

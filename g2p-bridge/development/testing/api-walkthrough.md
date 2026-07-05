@@ -113,7 +113,7 @@ against a default install with no extra steps.
 the signature in the **`Signature`** header as `base64url(header)..base64url(sig)`
 (empty payload segment), `alg: RS256`. The Bridge derives the partner from
 `sender_app_mnemonic` and verifies against that partner's onboarded public
-certificate (`PARTNER_<MNEMONIC>` in the `partner_keys` table).
+public key (fetched from the Partner Manager service as `PARTNER_<MNEMONIC>`).
 
 Controlled by these environment variables:
 
@@ -137,10 +137,9 @@ test certificate as `PARTNER_TRAINING`, so it verifies out of the box.
    ```
 2. Paste the PEM into `signing_private_pem`, and set `signing_kid` to your cert's
    SHA-256 thumbprint (and `sender_app` to your mnemonic).
-3. **Onboard your public certificate on the Bridge** as `PARTNER_<sender_app>` — add
-   it to `global.g2pBridgePartnerCerts` (see
-   [Onboarding Partners](../../deployment/onboarding-partners.md#onboard-a-partner-that-calls-the-bridge-inbound)).
-   Without this the Bridge rejects the signature.
+3. **Onboard your public certificate in Partner Manager** as `PARTNER_<sender_app>`
+   (see [Onboarding Partners](../../deployment/onboarding-partners.md#onboard-a-partner-that-calls-the-bridge-inbound)).
+   Without this the Bridge can't fetch your key and rejects the signature.
 
 ### Unsigned environment
 

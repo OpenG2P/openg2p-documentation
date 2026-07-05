@@ -50,10 +50,10 @@ There are two API paths, viz. <mark style="color:blue;">**auth**</mark> and <mar
 #### Validation of the partner signature
 
 The signature mechanism is **not implemented in SPAR** — it lives in
-`openg2p-fastapi-common` behind the `CryptoHelper` interface. SPAR verifies the
-partner's JWS **in-process** with `PyJWTCryptoHelper` (PyJWT + cryptography),
-against the partner's **public certificate** held in the `partner_keys` database
-table. **No MOSIP Key Manager.**
+`openg2p-fastapi-common` behind the `CryptoHelper` interface. SPAR uses the
+**`partner-mgmt`** backend (`PyJWTCryptoHelper` + `PartnerMgmtKeyStore`): it fetches
+the partner's public key from the **Partner Manager (PM)** service to verify the JWS.
+**No local key store, no MOSIP Key Manager.**
 
 See [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
 for the full design. SPAR-specific notes:
@@ -63,14 +63,15 @@ for the full design. SPAR-specific notes:
   resolve requests).
 * A partner sends a **detached JWS** (`header..signature`) in the **`Signature`**
   header; the JSON business payload is the request body. SPAR rebuilds the signing
-  input from the body and verifies it against the partner's cert, looked up by
-  `PARTNER_<sender_app_mnemonic>`. **Signature validity only** — no trusted-root /
-  CA-chain check. **RS256 only**; `none` and HMAC (`HS*`) are always rejected.
+  input from the body and verifies it against the partner's public key, fetched from
+  PM as `GET {partner_mgmt_api_url}/keys/PARTNER_<sender_app_mnemonic>` (matching the
+  JWS `kid`, short-cached). **Signature validity only** — no trusted-root / CA-chain
+  check. **RS256 only**; `none` and HMAC (`HS*`) are always rejected.
 * Verification is enforced when `SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED` is on
-  (the trial default). Partners are onboarded by **seeding** their public cert into
-  `partner_keys` (`global.sparPartnerCerts`). The bundled trial seeds the G2P
-  Bridge's test certificate as `PARTNER_G2P_BRIDGE` so a signed Bridge → SPAR
-  resolve call is verified out of the box.
+  (the trial default). Partners are onboarded **in Partner Manager**, not in SPAR —
+  the bundled trial's G2P Bridge chart runs a `pm-seed` Job that onboards the Bridge
+  as `PARTNER_G2P_BRIDGE` (plus the sanity/walkthrough test partners) in PM, so a
+  signed Bridge → SPAR resolve call is verified out of the box.
 
 {% hint style="info" %}
 **Legacy:** SPAR 1.0.0 validated signatures via the remote MOSIP Key Manager (a

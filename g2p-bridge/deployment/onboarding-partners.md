@@ -5,9 +5,10 @@ description: How to onboard a partner so its signed requests are trusted
 # Onboarding Partners
 
 The Bridge (and SPAR) verify a **detached JWS** signature on every partner request.
-"Onboarding a partner" means **registering that partner's public certificate** so the
-receiver trusts its signature. Nothing else (no shared secret, no account) is needed —
-verification is **signature-validity only** (no CA / trust-root check).
+Partners and their public keys live in the **Partner Manager (PM)** service — the
+Bridge does **not** store partner keys. To verify a signature, the Bridge fetches the
+signer's public key from PM (`GET /keys/PARTNER_<MNEMONIC>`). "Onboarding a partner"
+therefore means **registering that partner (and its public key) in Partner Manager**.
 
 For the concept and wire format, see the design page
 [Partner APIs → Authentication](../../products/g2p-bridge/design-specifications/partner-apis.md#authentication)
@@ -16,83 +17,86 @@ This page is the **operational steps**.
 
 {% hint style="info" %}
 **Certificates are public — private keys never leave the owner.** A partner keeps its
-`.p12`/private key; it gives you only its **`.crt`** (public certificate, PEM). You give
-partners only **your** `.crt`. See [Partner Signing Key](partner-signing-key.md) for
-generating a keypair.
+private key; it gives you only its public **certificate/key**. Verification is
+**signature-validity only** (no CA / trust-root check). Onboarding happens in **Partner
+Manager**, not the Bridge — the Bridge just reads PM at runtime.
 {% endhint %}
 
 ## The rule to remember
 
-The receiver looks the signer up by **`PARTNER_<MNEMONIC>`**, where `<MNEMONIC>` is the
-caller's **`sender_app_mnemonic`** (upper-cased) sent in the request envelope. So the
-`referenceId` you register **must equal `PARTNER_` + the mnemonic the partner signs
-with**, or verification fails with `rjct.jwt.invalid`.
+PM serves keys under an id of the form **`PARTNER_<MNEMONIC>`**, where `<MNEMONIC>` is
+the caller's **`sender_app_mnemonic`** (upper-cased) sent in the request envelope. So
+the partner id you register in PM **must equal `PARTNER_` + the mnemonic the partner
+signs with**, or verification fails with `rjct.jwt.invalid`. The JWS header `kid` must
+match a `kid` registered for that partner in PM.
 
 ## Onboard a partner that calls the Bridge (inbound)
 
-A partner (bank, PSP, PBMS, …) that calls the Bridge Partner API must have its public
-cert seeded into the Bridge's `partner_keys` table.
+A partner (bank, PSP, PBMS, …) that calls the Bridge Partner API must be registered in
+Partner Manager with its public key.
 
-1. **Get the partner's public certificate** (PEM `-----BEGIN CERTIFICATE-----…`) and
-   the **mnemonic** it will use as `sender_app_mnemonic` (e.g. `MY_PSP`).
-2. **Add it to `global.g2pBridgePartnerCerts`** in your values (one entry per partner):
-
-   ```yaml
-   global:
-     g2pBridgePartnerCerts:
-       - referenceId: PARTNER_MY_PSP          # PARTNER_ + the sender mnemonic (upper-case)
-         publicKey: |
-           -----BEGIN CERTIFICATE-----
-           MIID...snip...
-           -----END CERTIFICATE-----
-       # add more partners as additional list items
-   ```
-3. **`helm upgrade`.** The certs are upserted into `partner_keys` at migrate-time
-   (idempotent — re-running is safe; existing entries are updated).
-4. **Verify.** A signed call from that partner should succeed; the API logs
-   `JWS signature verified for partner 'PARTNER_MY_PSP'`. You can also check the row:
+1. **Collect** the partner's public **certificate or key** (PEM / X.509 / JWK), its
+   **mnemonic** (used as `sender_app_mnemonic`, e.g. `MY_PSP`), and optionally a `kid`.
+2. **Register it in Partner Manager.** Use PM's **staff portal UI**, or its admin API
+   (requires a Keycloak staff-realm token with the **`partner_manager`** role). It is a
+   two-step **request → approve** flow:
 
    ```bash
-   kubectl exec -n <ns> commons-postgresql-0 -- \
-     psql -U postgres -d <release-underscored> \
-     -c "select reference_id, status from partner_keys;"
+   # 1) create the onboarding request
+   curl -X POST "$PM_ADMIN/partners/requests/onboarding" \
+     -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+     -d '{"partner_id":"PARTNER_MY_PSP","name":"My PSP",
+          "keys":[{"public_key":"-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n",
+                   "kid":"my-psp-1","algorithm":"RS256"}]}'
+   # → returns {"id": "<request_id>", ...}
+
+   # 2) approve it → partner + key become active
+   curl -X POST "$PM_ADMIN/partners/requests/<request_id>/approve" \
+     -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+     -d '{"notes":"approved"}'
    ```
+
+   (`$PM_ADMIN` = the PM staff-portal-api base, e.g.
+   `http://partner-management-staff-portal-api`.)
+3. **Verify** PM serves the key: `GET $PM_PARTNER_API/keys/PARTNER_MY_PSP` returns 200
+   with the key. From then on the Bridge verifies that partner's signed calls
+   automatically — nothing to configure on the Bridge.
 
 {% hint style="warning" %}
 **Enforcement.** Inbound verification is active when
 `global.g2pBridgeSignatureValidationEnabled` is `true` (the default) — or whenever the
-test partner is enabled. Onboard partners **before** turning it on, or their calls are
-rejected.
+trial test partner is enabled. Onboard partners in PM **before** turning it on, or
+their calls are rejected.
 {% endhint %}
 
 ## Register the Bridge with SPAR (outbound)
 
-The Bridge **signs** its resolve requests to SPAR, so SPAR must trust the Bridge's
-public cert. The Bridge signs as mnemonic **`g2p_bridge`**, so SPAR must hold it as
-**`PARTNER_G2P_BRIDGE`**.
+The Bridge **signs** its resolve requests to SPAR, so SPAR must be able to fetch the
+Bridge's public key from PM. Because both the Bridge and SPAR read the **same** Partner
+Manager, you register the Bridge **once** in PM and both sides work. The Bridge signs as
+mnemonic **`g2p_bridge`**, so register it as **`PARTNER_G2P_BRIDGE`**:
 
 1. Take the Bridge's **public cert** (`g2p-bridge.crt` from
    [Partner Signing Key → Step 1](partner-signing-key.md#step-1-generate-your-own-keypair)).
-2. Hand it to the **SPAR operator**, who adds it to the SPAR chart's
-   `global.sparPartnerCerts` as `PARTNER_G2P_BRIDGE` and runs `helm upgrade` (see the
-   SPAR **Privacy & Security** / Helm docs).
+2. Onboard `PARTNER_G2P_BRIDGE` in PM with that cert (same request → approve flow as
+   above), using the same `kid` the Bridge signs with (`global.g2pBridgeSigningKeyKid`).
 
 {% hint style="info" %}
-The bundled **trial** does both sides automatically with the public demo cert (seeded
-as `PARTNER_TEST_SANITY` / `PARTNER_TRAINING` on the Bridge and `PARTNER_G2P_BRIDGE` on
-SPAR), so an out-of-the-box install verifies end-to-end with no manual onboarding.
+The bundled **trial** does this automatically: the chart's **`pm-seed` Job** onboards
+`PARTNER_G2P_BRIDGE` (plus `PARTNER_TEST_SANITY` / `PARTNER_TRAINING`) in PM with the
+committed test cert on every install/upgrade — so an out-of-the-box install verifies
+end-to-end with no manual onboarding. It authenticates to PM with the
+`partner-management-staff-portal` client (which must hold the `partner_manager` role).
 {% endhint %}
 
 ## Rotating or removing a partner
 
-* **Rotate:** replace that partner's `publicKey` with the new cert and `helm upgrade`
-  (the entry is matched by `referenceId` and updated in place).
-* **Remove:** drop the entry and `helm upgrade`. (Seed-based onboarding upserts; it does
-  not delete stale rows automatically — delete the `partner_keys` row directly if you
-  need immediate revocation.)
+All of this is done **in Partner Manager**, not the Bridge:
 
-{% hint style="info" %}
-Onboarding is currently **seed-based** (applied at chart install/upgrade). A runtime
-admin API for partner onboarding is planned; until then, changes go through
-`helm upgrade` (or a direct DB update for emergency revocation).
-{% endhint %}
+* **Rotate / add a key:** `POST /partners/requests/key-update` with the new key (and any
+  `revoke_kids`), then approve. Multiple active keys (kids) per partner are supported.
+* **Disable / revoke:** `POST /partners/{partner_id}/disable` (PM then serves no keys →
+  the partner's signatures stop verifying) or revoke individual kids via `key-update`.
+
+Because keys are fetched live from PM (with a short cache), changes take effect within
+the cache TTL — no Bridge redeploy needed.

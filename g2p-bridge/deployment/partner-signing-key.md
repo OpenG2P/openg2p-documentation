@@ -7,8 +7,8 @@ description: Steps to supply the Bridge's own outbound signing key (.p12) at ins
 This is the operational how-to for the Bridge's **own outbound signing key** — the
 PKCS#12 (`.p12`) it uses to sign its resolve requests to SPAR.
 
-* For **how partner signatures work** (detached JWS, in-process local crypto,
-  the `partner_keys` store), see the design page
+* For **how partner signatures work** (detached JWS, verified against keys served by
+  the Partner Manager service), see the design page
   [Partner APIs → Authentication](../../products/g2p-bridge/design-specifications/partner-apis.md#authentication)
   and [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md).
 * To **trust partners that call the Bridge**, or to **register the Bridge with SPAR**,

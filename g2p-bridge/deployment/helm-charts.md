@@ -15,8 +15,10 @@ This page describes the chart itself. For the end-to-end install flow
 (Infrastructure → Environment → G2P Bridge), follow the
 [Deployment](README.md) guide — it assumes the Kubernetes infrastructure and the
 **commons** environment are already set up. The commons release provides the
-shared **PostgreSQL** and **Istio** gateway that this chart depends on. (The Bridge
-verifies and signs partner requests in-process, so it needs no Keycloak or Keymanager.)
+shared **PostgreSQL** and **Istio** gateway that this chart depends on. Partner
+signatures are verified against the **Partner Manager (PM)** service (`GET /keys`, no
+Keycloak/Keymanager at runtime); the trial's `pm-seed` Job onboards the test partners
+in PM (which does require a `partner_manager` Keycloak client for the onboarding step).
 {% endhint %}
 
 ## Versions
@@ -151,11 +153,12 @@ See [Keycloak Client](keycloak-client.md) (legacy) for details.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.g2pBridgeCryptoBackend` | `local` | Crypto backend. The Bridge uses `local` (in-process JWS, no Keymanager); `keymanager` is the legacy 1.0.0 backend. |
+| `global.g2pBridgeCryptoBackend` | `partner-mgmt` | Crypto backend. `partner-mgmt` = verify inbound signatures against keys fetched from the Partner Manager (PM) service. (`local`/`keymanager` are legacy.) |
+| `global.partnerManagementApiUrl` | `http://partner-management-partner-api` | PM key-fetch base URL (unauthenticated) the Bridge verifies against. |
 | `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
-| `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound). |
+| `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound, uses the `.p12`). |
 | `global.g2pBridgeSigningKey.mode` | `demo` | Where the outbound `.p12` comes from: `demo` / `inline` / `existing`. |
-| `global.g2pBridgePartnerCerts` | `[]` | Public certs of partners to trust (inbound), seeded into `partner_keys`. |
+| `global.testPartnerEnabled` | `true` | Trial: run the `pm-seed` Job to onboard the test partners (incl. `PARTNER_G2P_BRIDGE`) in PM. Set `false` for production. |
 
 The bundled `demo` signing key is **public/test-only** — supply your own for
 production and onboard partner certs. See [Partner Signing Key](partner-signing-key.md)

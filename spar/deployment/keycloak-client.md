@@ -5,13 +5,12 @@ description: Legacy — Keycloak client for the Keymanager crypto backend (1.0.0
 # Keycloak Client (legacy — Keymanager backend)
 
 {% hint style="warning" %}
-**Legacy page — not used by the current SPAR.** With the default
-`global.sparCryptoBackend=local`, the Mapper API verifies partner signatures
-**in-process** (against the `partner_keys` DB table) and needs **no Keymanager and
-no OIDC client**. `keycloak-init.enabled` is therefore **`false`** by default. This
-page applies only if you deliberately switch to the legacy `keymanager` backend
-(SPAR 1.0.0's mechanism). For the current setup see
-[Privacy & Security](../features/privacy-and-security.md).
+**Legacy page — not the current model.** The current SPAR (`sparCryptoBackend=partner-mgmt`)
+verifies partner signatures against public keys fetched from the **Partner Manager (PM)**
+service and needs **no Keymanager and no OIDC client** at runtime. `keycloak-init.enabled`
+is therefore **`false`** by default. This page's `openg2p-spar` client applies only if you
+deliberately switch to the legacy `keymanager` backend (SPAR 1.0.0's mechanism). For the
+current setup see [Privacy & Security](../features/privacy-and-security.md).
 {% endhint %}
 
 The SPAR chart can provision a Keycloak OIDC client through the `keycloak-init`

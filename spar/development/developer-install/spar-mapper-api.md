@@ -215,11 +215,11 @@ SPAR_MAPPER_PARTNER_API_DEFAULT_JWKS_URLS=["http://localhost:8080/realms/openg2p
 # Partner signature verification (openg2p-fastapi-common). SPAR only VERIFIES —
 # it never signs — so no signing key is configured.
 SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED=true
-SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND=local           # in-process; keymanager is legacy (1.0.0)
+SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND=partner-mgmt    # fetch partner keys from Partner Manager
 SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS=RS256
-# Seed-based onboarding: JSON list of partner public certs upserted into the
-# partner_keys table at migrate-time (referenceId = PARTNER_<MNEMONIC>).
-SPAR_MAPPER_PARTNER_API_CRYPTO_PARTNER_CERTS=[{"reference_id":"PARTNER_G2P_BRIDGE","public_key":"-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"}]
+# Partner Manager key-fetch base (unauthenticated): GET {url}/keys/PARTNER_<MNEMONIC>.
+# Partners are onboarded in Partner Manager, not here.
+SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL=http://partner-management-partner-api
 
 # KeyManager — only used when CRYPTO_BACKEND=keymanager.
 SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID=SPAR
@@ -242,9 +242,9 @@ SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID=SPAR
 | `SPAR_MAPPER_PARTNER_API_DEFAULT_ISSUERS`        | —             | JSON array of trusted JWT issuers |
 | `SPAR_MAPPER_PARTNER_API_DEFAULT_JWKS_URLS`      | —             | JSON array of JWKS endpoint URLs  |
 | `SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED`       | `false`       | Verify the partner JWS signature on every request |
-| `SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND`         | `keymanager`  | Verify backend: `local` (in-process PyJWT, partner_keys DB) or `keymanager` |
+| `SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND`         | `partner-mgmt` | Verify backend: `partner-mgmt` (fetch keys from Partner Manager). `local`/`keymanager` are legacy |
 | `SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS` | `RS256`    | Allowed JWS algorithms (RS256 only; `none`/HMAC rejected) |
-| `SPAR_MAPPER_PARTNER_API_CRYPTO_PARTNER_CERTS`   | `[]`          | Seed-based onboarding: JSON list of `{reference_id, public_key}` partner certs (local backend) |
+| `SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL`   | —             | Partner Manager key-fetch base URL (`GET {url}/keys/PARTNER_<MNEMONIC>`) |
 | `SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID` | `SPAR`        | App ID for KeyManager (only when backend=`keymanager`) |
 
 > **Local dev tip:** For development without Keycloak, you can configure the JWT validation to accept a self-signed token by pointing `DEFAULT_JWKS_URLS` at a local mock JWKS endpoint.

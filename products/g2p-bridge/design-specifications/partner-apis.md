@@ -29,13 +29,13 @@ and [Onboarding Partners](../../../g2p-bridge/deployment/onboarding-partners.md)
 
 #### How the signature is verified
 
-The signature mechanism is **not implemented in the Bridge** — it lives entirely in `openg2p-fastapi-common` behind the `CryptoHelper` interface. The Bridge uses the **in-process local** implementation (`PyJWTCryptoHelper`) — **no MOSIP Keymanager** (1.0.0 used Keymanager; from `develop` it is in-process). See [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md) for the full design. In brief:
+The signature mechanism is **not implemented in the Bridge** — it lives entirely in `openg2p-fastapi-common` behind the `CryptoHelper` interface. The Bridge uses the **`partner-mgmt`** backend (`PyJWTCryptoHelper` + `PartnerMgmtKeyStore`): it fetches the signer's public key from the **Partner Manager (PM)** service — **no local key store, no MOSIP Keymanager** (1.0.0 used Keymanager; earlier `develop` builds used a local `partner_keys` table; both are superseded by PM). See [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md) for the full design. In brief:
 
 * The partner sends a **detached JWS** (`header..signature`) in the **`Signature`** header; the JSON business payload is the request body (the signature is over `base64url(header) + "." + base64url(canonical_json(body))`).
-* The Bridge verifies it against the partner's **public certificate**, looked up by `PARTNER_<sender_app_mnemonic>` in the `partner_keys` table (onboarded by seeding). **Signature validity only** — no trusted-root / CA-chain check.
+* The Bridge fetches the partner's **public key** from PM — `GET {partner_mgmt_api_url}/keys/PARTNER_<sender_app_mnemonic>` (unauthenticated, in-cluster) — matching on the JWS `kid`, and caches it (short TTL, refresh-on-unknown-kid). **Signature validity only** — no trusted-root / CA-chain check.
 * **RS256 only**; `none` and HMAC (`HS*`) are always rejected.
 
-The Bridge's only crypto wiring is one line in its `Initializer` — `build_crypto_helper()` — which registers the configured backend; controllers and `JWTSignatureValidator` are unchanged.
+The Bridge's only crypto wiring is one line in its `Initializer` — `build_crypto_helper()` — which registers the configured backend; controllers and `JWTSignatureValidator` are unchanged. Partners are registered in PM (see [Onboarding Partners](../../../g2p-bridge/deployment/onboarding-partners.md)), not in the Bridge.
 
 ***
 

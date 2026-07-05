@@ -95,15 +95,16 @@ SPAR **only verifies — it never signs**, so there is no signing key / `.p12`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.sparCryptoBackend` | `local` | Verify backend. SPAR uses `local` (in-process PyJWT; partner certs from the `partner_keys` DB table, no Keymanager); `keymanager` is the legacy 1.0.0 backend. |
+| `global.sparCryptoBackend` | `partner-mgmt` | Verify backend. SPAR fetches partner public keys from the Partner Manager (PM) service — no local key store, no Keymanager. (`local`/`keymanager` are legacy.) |
+| `global.partnerManagementApiUrl` | `http://partner-management-partner-api` | PM key-fetch base URL (unauthenticated) SPAR verifies against. |
 | `global.sparJwtAuthEnabled` | `true` | Verify a partner JWS signature on every Mapper Partner API request. |
 | `global.sparCryptoAllowedAlgorithms` | `RS256` | Allowed JWS algorithms (RS256 only; `none`/HMAC always rejected). |
-| `global.sparPartnerCerts` | `[]` | Seed-based onboarding: list of `{referenceId, publicKey}` partner certs upserted into `partner_keys` at migrate-time. |
 
-The bundled trial seeds the G2P Bridge's test certificate as `PARTNER_G2P_BRIDGE`
-(plus `PARTNER_TEST_SANITY` / `PARTNER_TRAINING`) so a signed Bridge → SPAR resolve
-call verifies out of the box. Onboard a real partner by appending their public cert
-to `global.sparPartnerCerts` and running `helm upgrade`.
+Partners are onboarded **in Partner Manager**, not in SPAR. For the trial, the G2P
+Bridge chart's `pm-seed` Job onboards the Bridge as `PARTNER_G2P_BRIDGE` (plus the
+sanity/walkthrough test partners) in PM, so a signed Bridge → SPAR resolve call
+verifies out of the box. To trust a real partner, onboard it in PM (see the G2P
+Bridge **Onboarding Partners** guide).
 
 ### Keymanager (legacy backend only)
 
