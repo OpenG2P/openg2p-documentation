@@ -10,10 +10,12 @@ Bridge does **not** store partner keys. To verify a signature, the Bridge fetche
 signer's public key from PM (`GET /keys/PARTNER_<MNEMONIC>`). "Onboarding a partner"
 therefore means **registering that partner (and its public key) in Partner Manager**.
 
-For the concept and wire format, see the design page
-[Partner APIs → Authentication](../../products/g2p-bridge/design-specifications/partner-apis.md#authentication)
-and [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md).
-This page is the **operational steps**.
+For the concept and wire format — including **sequence diagrams** of how the Bridge
+self-registers its own key and how it fetches partner keys to verify signatures — see
+the design page
+[Partner APIs → Integration with Partner Manager (PM)](../../products/g2p-bridge/design-specifications/partner-apis.md#integration-with-partner-manager-pm)
+(and [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
+for the crypto engine). This page is the **operational steps**.
 
 {% hint style="info" %}
 **Certificates are public — private keys never leave the owner.** A partner keeps its

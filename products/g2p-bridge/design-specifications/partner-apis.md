@@ -39,6 +39,137 @@ The Bridge's only crypto wiring is one line in its `Initializer` — `build_cryp
 
 ***
 
+### Integration with Partner Manager (PM)
+
+The **Partner Manager (PM)** service is the shared registry of partners and their
+**public** signing keys. It is the single source of truth that replaced both MOSIP
+Keymanager (1.0.0) and the Bridge's short-lived local `partner_keys` table. The
+Bridge integrates with PM in **two directions**:
+
+1. **As a partner** — the Bridge registers its **own** public key in PM (id
+   `PARTNER_G2P_BRIDGE`) so that downstream services (notably **SPAR**) can verify
+   the Bridge's signed calls.
+2. **As a verifier** — the Bridge **fetches partner public keys** from PM to verify
+   the signature on every inbound Partner API request.
+
+All of this uses `openg2p-fastapi-common` (`PyJWTCryptoHelper` + `PartnerMgmtKeyStore`);
+there is no crypto or partner-key storage in the Bridge itself.
+
+#### PM's two API surfaces
+
+| Surface | Config value | Auth | Used by the Bridge for |
+| --- | --- | --- | --- |
+| **Read** — partner-api | `global.partnerManagementApiUrl` (`…-pm-partner-api`) | none (in-cluster) | Fetching partner public keys at runtime (`GET /keys/…`) |
+| **Admin** — staff-portal-api | `global.partnerManagementAdminApiUrl` (`…-pm-staff-portal-api`) | Keycloak **staff-realm** token holding the **`partner_manager`** role | Onboarding / approving / updating partners (the `pm-register` Job) |
+
+#### 1. Seeding the Bridge's own public key (self-registration)
+
+Done **once per install/upgrade** by the chart's **`pm-register` Job** (it derives
+the Bridge's public certificate + `kid` from the same signing `.p12` the Bridge
+signs with). This is the Bridge's own responsibility — customers do not register it
+by hand. The onboarding flow is a two-step **request → approve** (idempotent):
+
+```text
+Seeding PARTNER_G2P_BRIDGE            chart Job: <release>-pm-register
+────────────────────────────────────────────────────────────────────────────
+
+ pm-register Job     Keycloak (staff)   PM staff-portal-api    PM partner-api
+ (signing .p12)      (admin token)      (admin, authorized)    (read, public)
+      │                    │                    │                    │
+      │ derive public cert │                    │                    │
+      │ + kid from .p12    │                    │                    │
+      │                    │                    │                    │
+      │ (1) already servable? GET /keys/PARTNER_G2P_BRIDGE/{kid} ────►│
+      │◄──────────────────────────────────────────────── 200 | 404 ──│
+      │      200 → "exists", stop.   404 → onboard (below).           │
+      │                    │                    │                    │
+      │ (2) client-creds token (role partner_manager)                 │
+      │  ─────────────────►│                    │                    │
+      │◄── access_token ───│                    │                    │
+      │                    │                    │                    │
+      │ (3) POST /partners/requests/onboarding ►│  partner_id =      │
+      │   {partner_id, name, keys:[{public_key, │  PARTNER_G2P_BRIDGE │
+      │    kid, algorithm:"RS256"}]}            │                    │
+      │◄────────────── {request_id} ───────────│  (409 if it exists  │
+      │                    │                    │   → enable +        │
+      │ (4) POST /partners/requests/{id}/approve►│   key-update)      │
+      │◄──────────────────── 200 ──────────────│  partner+key ACTIVE │
+      │                    │                    │                    │
+      │ (5) verify servable: GET /keys/PARTNER_G2P_BRIDGE/{kid} ─────►│
+      │◄──────────────────────────────────────────────────── 200 ────│
+      ▼
+  For the trial, the same Job also onboards the test partners
+  PARTNER_TEST_SANITY / PARTNER_TRAINING from the committed test cert
+  (only when testPartnerEnabled + signature validation are on).
+```
+
+The admin client is `commons-services-staff-portal` (PM provisions this
+`<release>-staff-portal` client; its **service account** must hold the
+`partner_manager` role for the client-credentials grant to be authorized).
+
+#### 2. Verifying an inbound partner signature
+
+At runtime, every signed Partner API request is verified against the signer's public
+key fetched from PM's **read** surface — no admin token, no local key store:
+
+```text
+Verifying an inbound partner signature          runtime, per signed request
+────────────────────────────────────────────────────────────────────────────
+
+ Partner (signs)     Bridge Partner API                       PM partner-api
+                     (JWTSignatureValidator →                 (read, public)
+                      PyJWTCryptoHelper + PartnerMgmtKeyStore)
+      │                    │                                        │
+      │ POST /create_…     │                                        │
+      │  body: G2PConnect envelope                                  │
+      │  header Signature: b64url(hdr)..b64url(sig)                 │
+      │   hdr = {alg:"RS256", kid}                                  │
+      │   sender_app_mnemonic = MY_PSP                              │
+      │  ─────────────────►│                                        │
+      │                    │ key for PARTNER_MY_PSP + kid cached?   │
+      │                    │  ├─ hit  → use cache                   │
+      │                    │  └─ miss → GET /keys/PARTNER_MY_PSP ──►│
+      │                    │◄────────── {public_key, kid, alg} ─────│
+      │                    │   cache: soft TTL 300s · refresh on    │
+      │                    │   unknown kid · negative-cache 404 ·   │
+      │                    │   serve-stale if PM briefly down       │
+      │                    │                                        │
+      │                    │ check alg ∈ allow-list (RS256 only)    │
+      │                    │ verify RS256 signature over            │
+      │                    │  b64url(hdr) "." b64url(canonical_json(body))
+      │                    │                                        │
+      │◄─ 200 SUCCESS ─────│  signature valid                       │
+      │◄─ 200 ERROR ───────│  invalid → rjct.jwt.invalid            │
+```
+
+The partner id PM is queried under is **`PARTNER_` + the upper-cased
+`sender_app_mnemonic`** from the request envelope, so a partner must be onboarded in
+PM under exactly that id, with a `kid` matching the JWS header.
+
+#### 3. Why both directions matter (Bridge → SPAR)
+
+The Bridge **signs** its own resolve calls to SPAR (as `PARTNER_G2P_BRIDGE`). SPAR
+runs the **same** `PartnerMgmtKeyStore` verification as flow **2**, fetching
+`PARTNER_G2P_BRIDGE` from the **same** PM. So step **1** (self-registration) is what
+makes the Bridge → SPAR call verify — the Bridge is simultaneously a *verifier* of
+inbound partners and a *registered partner* of SPAR, both through one PM.
+
+#### Caching & resilience
+
+`PartnerMgmtKeyStore` holds an in-memory cache so PM is not hit on every request:
+soft TTL (`partner_key_cache_ttl_seconds`, 300s) with background refresh, a hard TTL,
+**refresh-on-unknown-kid** (so key rotation is picked up without a redeploy), a short
+**negative cache** for 404s, and **serve-stale-on-outage** so a brief PM outage does
+not immediately fail verification. Key changes in PM therefore take effect within the
+cache TTL — no Bridge restart needed.
+
+See the [Partner Manager service docs](../../../platform/platform-services/partner-management/README.md)
+for PM itself, [Onboarding Partners](../../../g2p-bridge/deployment/onboarding-partners.md)
+for the operational steps, and [PyJWTCryptoHelper](../../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
+for the crypto engine.
+
+***
+
 ### API Endpoints
 
 #### 1. Disbursement Controller

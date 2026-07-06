@@ -156,7 +156,9 @@ See [Keycloak Client](keycloak-client.md) (legacy) for details.
 | `global.g2pBridgeCryptoBackend` | `partner-mgmt` | Crypto backend. `partner-mgmt` = verify inbound signatures against keys fetched from the Partner Manager (PM) service. (`local`/`keymanager` are legacy.) |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM key-fetch base URL (unauthenticated) the Bridge verifies against. |
 | `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
+| `global.g2pBridgeCryptoAllowedAlgorithms` | `RS256` | Allowed JWS signature algorithms (verification allow-list). RS256 only by default; `none` and HMAC (`HS*`) are always rejected. PM can store `ES256`/`EdDSA` keys, but the Bridge accepts a signature only if its `alg` is in this list. |
 | `global.g2pBridgeSparSignRequestsEnabled` | `true` | Sign the Bridge's resolve requests to SPAR (outbound, uses the `.p12`). |
+| `global.g2pBridgeSigningAlgorithm` | `RS256` | Algorithm the Bridge signs its outbound SPAR requests with (must be one SPAR accepts). |
 | `global.g2pBridgeSigningKey.mode` | `demo` | Where the outbound `.p12` comes from: `demo` / `inline` / `existing`. |
 | `global.testPartnerEnabled` | `true` | Trial: run the `pm-seed` Job to onboard the test partners (incl. `PARTNER_G2P_BRIDGE`) in PM. Set `false` for production. |
 
@@ -164,7 +166,9 @@ The bundled `demo` signing key is **public/test-only** — supply your own for
 production and onboard partner certs. See [Partner Signing Key](partner-signing-key.md)
 (generating a `.p12`, feeding it via Rancher, demo → production) and
 [Onboarding Partners](onboarding-partners.md) (trusting partners that call the Bridge,
-and registering the Bridge with SPAR).
+and registering the Bridge with SPAR). For **how** the Bridge registers its own key and
+verifies partner signatures against Partner Manager — with sequence diagrams — see
+[Partner APIs → Integration with Partner Manager (PM)](../../products/g2p-bridge/design-specifications/partner-apis.md#integration-with-partner-manager-pm).
 
 ### Databases (in-kind only)
 

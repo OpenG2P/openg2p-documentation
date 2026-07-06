@@ -73,6 +73,23 @@ for the full design. SPAR-specific notes:
   as `PARTNER_G2P_BRIDGE` (plus the sanity/walkthrough test partners) in PM, so a
   signed Bridge → SPAR resolve call is verified out of the box.
 
+#### Integration with Partner Manager (PM)
+
+SPAR's PM integration is **verify-only** and touches **only PM's read surface**
+(`GET /keys/…`, unauthenticated, in-cluster): SPAR never onboards partners, holds no
+admin token, and registers no key of its own. The runtime verify flow — fetch the
+signer's key by `PARTNER_<mnemonic>` + `kid`, cache it (soft TTL / refresh-on-unknown-kid
+/ negative-cache / serve-stale), then check the RS256 signature over the canonical
+body — is **identical** to the G2P Bridge's inbound verification.
+
+Rather than duplicate it, see the **"Verifying an inbound partner signature"** sequence
+diagram and the caching details in
+[G2P Bridge → Partner APIs → Integration with Partner Manager (PM)](../../products/g2p-bridge/design-specifications/partner-apis.md#integration-with-partner-manager-pm).
+The only differences for SPAR: the caller is typically the **G2P Bridge**
+(`PARTNER_G2P_BRIDGE`, which the Bridge chart self-registers in the **same** PM), and
+SPAR uses **none** of PM's admin/onboarding surface (it has no `pm-register` Job and
+no `partner_manager` credentials).
+
 {% hint style="info" %}
 **Legacy:** SPAR 1.0.0 validated signatures via the remote MOSIP Key Manager (a
 `keymanager` backend still exists in `openg2p-fastapi-common` for backward
