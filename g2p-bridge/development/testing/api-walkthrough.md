@@ -43,7 +43,7 @@ Download these three from
 
 | File | What it is |
 | --- | --- |
-| `G2P-Bridge-API-Walkthrough.postman_collection.json` | The collection (5 folders, ready to import). |
+| `G2P-Bridge-API-Walkthrough.postman_collection.json` | The collection (6 folders, ready to import). |
 | `G2P-Bridge.postman_environment.json` | The environment template (URLs + run settings). |
 | `beneficiaries.csv` | The **seed data** — edit this. One row per beneficiary. |
 
@@ -252,3 +252,19 @@ After editing it, regenerate:
 cd test/api-walkthrough
 python3 build_collection.py
 ```
+
+The collection also runs **headless** (for a quick end-to-end check / CI) with
+[newman](https://github.com/postmanlabs/newman) — the signing pre-request works in
+newman's sandbox as well as the Postman app. Point it at a live deployment and drive
+the data-driven folders with the CSV:
+
+```bash
+npx newman run G2P-Bridge-API-Walkthrough.postman_collection.json \
+  -e G2P-Bridge.postman_environment.json -d beneficiaries.csv \
+  --env-var num_disbursements=1 --env-var total_amount=1000
+```
+
+(One CSV row per iteration behaves as a self-contained mini-campaign — envelope →
+link → disburse — so it exercises every signed Bridge **and** SPAR call and asserts
+each response. For the full "one batch of N" flow, run the folders in order in the
+Postman **Collection Runner** as described above.)
