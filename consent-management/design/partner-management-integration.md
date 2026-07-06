@@ -27,8 +27,8 @@ The CM is **not** onboarded as a PM partner — it is a verifier, not a partner.
 
 ## PM key API contract
 
-PM exposes an **unauthenticated** read API for partner public keys. In-cluster the base URL is
-`http://partner-management-partner-api`.
+PM exposes an **unauthenticated** read API for partner public keys. PM is part of
+commons-services, so in-cluster the base URL is `http://commons-services-pm-partner-api`.
 
 ```
 GET {pm}/keys/{partner_id}
@@ -84,7 +84,7 @@ All under the `consent_manager_` prefix:
 
 | Key | Purpose |
 | --- | --- |
-| `consent_manager_partner_mgmt_api_url` | Base URL of the PM key API (in-cluster: `http://partner-management-partner-api`) |
+| `consent_manager_partner_mgmt_api_url` | Base URL of the PM key API (in-cluster: `http://commons-services-pm-partner-api`) |
 | `consent_manager_partner_key_cache_ttl_seconds` | Soft TTL (min'd with the response `max-age`) |
 | `consent_manager_partner_key_hard_ttl_seconds` | Hard TTL — how long last-known-good is served during a PM outage before failing closed |
 | `consent_manager_partner_key_negative_ttl_seconds` | How long a `404` (negative result) is cached |
