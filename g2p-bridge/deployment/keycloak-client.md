@@ -14,8 +14,8 @@ the legacy `keymanager` backend (1.0.0's mechanism). For the current setup see
 
 Note: the trial's **`pm-seed` Job** does need a Keycloak client with the
 `partner_manager` role to *onboard* partners into PM — but that is the
-`partner-management-staff-portal` client owned by Partner Manager, **not** the
-`g2p-bridge` client described here.
+`commons-services-staff-portal` client owned by Partner Manager (its
+`<release>-staff-portal` client), **not** the `g2p-bridge` client described here.
 {% endhint %}
 
 The G2P Bridge chart can provision a Keycloak OIDC client through the

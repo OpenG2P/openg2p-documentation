@@ -85,8 +85,9 @@ mnemonic **`g2p_bridge`**, so register it as **`PARTNER_G2P_BRIDGE`**:
 The bundled **trial** does this automatically: the chart's **`pm-seed` Job** onboards
 `PARTNER_G2P_BRIDGE` (plus `PARTNER_TEST_SANITY` / `PARTNER_TRAINING`) in PM with the
 committed test cert on every install/upgrade — so an out-of-the-box install verifies
-end-to-end with no manual onboarding. It authenticates to PM with the
-`partner-management-staff-portal` client (which must hold the `partner_manager` role).
+end-to-end with no manual onboarding. It authenticates to PM with the staff-realm
+Keycloak client `commons-services-staff-portal` (Partner Manager provisions this
+`<release>-staff-portal` client and it must hold the `partner_manager` role).
 {% endhint %}
 
 ## Rotating or removing a partner
