@@ -1,3 +1,7 @@
+---
+noIndex: true
+---
+
 # G2P Advisor
 
 A hosted, login-based web app that walks an implementer through deploying OpenG2P. It collects requirements through guided conversation, generates a working baseline of customised code in a local sandbox, and hands the artefacts off to the implementer when they're satisfied.
@@ -15,7 +19,7 @@ A user can have multiple projects open simultaneously, each with its own state, 
 
 ## How it works at a glance
 
-The Advisor reads from a curated knowledge base — [G2P WikiLLM](../g2p-wikillm/README.md) — at runtime; it never queries GitBook or GitHub directly. The wiki carries a structured **playbook** (the [Registry use-case-implementation page](../../products/registry/registry/use-case-implementation.md)) that defines every phase, every Discovery item, and every Activity in a machine-consumable format. The Advisor reads the playbook at runtime; the orchestrator's behaviour is driven by the playbook, not by hardcoded prompts.
+The Advisor reads from a curated knowledge base — [G2P WikiLLM](../g2p-wikillm/) — at runtime; it never queries GitBook or GitHub directly. The wiki carries a structured **playbook** (the [Registry use-case-implementation page](../../products/registry/registry/use-case-implementation.md)) that defines every phase, every Discovery item, and every Activity in a machine-consumable format. The Advisor reads the playbook at runtime; the orchestrator's behaviour is driven by the playbook, not by hardcoded prompts.
 
 When an implementer starts a project, the Advisor walks them through the phases in order, captures their answers in a per-project working case, and (in Phase 2) generates a complete customised registry — extension code, Helm chart, Docker images — pushed to the implementer's GitLab namespace.
 
@@ -31,5 +35,5 @@ When an implementer starts a project, the Advisor walks them through the phases 
 
 ## Related
 
-* [G2P WikiLLM](../g2p-wikillm/README.md) — the knowledge base the Advisor reads at runtime.
+* [G2P WikiLLM](../g2p-wikillm/) — the knowledge base the Advisor reads at runtime.
 * [Registry implementation playbook](../../products/registry/registry/use-case-implementation.md) — the operating contract for Project mode.
