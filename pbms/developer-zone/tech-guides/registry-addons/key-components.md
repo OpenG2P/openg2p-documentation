@@ -2,8 +2,8 @@
 
 Within the repository you’ll find the following relevant sub-directories:
 
-* [`g2p_registry_addon`](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions/tree/3.0/) — core registry models, access rights, views etc.
-* [`g2p_registry_type_addon`](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions/tree/3.0/) — registry “types” or variants that act as a base for viewing the core registry modules over PBMS.
+* [`g2p_registry_addon`](https://github.com/OpenG2P/pbms/tree/develop/odoo/extensions/) — core registry models, access rights, views etc.
+* [`g2p_registry_type_addon`](https://github.com/OpenG2P/pbms/tree/develop/odoo/extensions/) — registry “types” or variants that act as a base for viewing the core registry modules over PBMS.
 
 Each module follows the typical Odoo addon structure: manifest file (`__manifest__.py`), Python models, XML views, security/access files, possibly data or demo CSVs.
 

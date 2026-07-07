@@ -1,6 +1,6 @@
 # Example Implementation Workflow
 
-The [`RegistryFarmer` class](https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions/blob/3.0/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/computations/registry_farmer.py) demonstrates a **custom implementation** of the `RegistryInterface`, tailored for integrating with a [**Farmer Registry**](https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions/blob/3.0/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_farmer.py) data source.
+The [`RegistryFarmer` class](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/computations/registry_farmer.py) demonstrates a **custom implementation** of the `RegistryInterface`, tailored for integrating with a [**Farmer Registry**](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_farmer.py) data source.
 
 Below is the typical workflow for building a similar registry connector:
 
@@ -70,9 +70,9 @@ class BeneficiaryListSummaryFarmer(BeneficiaryListSummary):
     # computaion logic is expected in registry connector implementation
 ```
 
-After new model creation you are expected to update the migration script in [`migrate.py`](https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions/blob/3.0/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/migrate.py) with the new models.
+After new model creation you are expected to update the migration script in [`migrate.py`](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/migrate.py) with the new models.
 
-Similarly, `/models` and `/schema` should also be populated by adding the registry views created as models and related payloads. These models will be used in lookup from the registry database. [`registry_type.py`](https://github.com/OpenG2P/openg2p-pbms-bg-tasks-extensions/blob/3.0/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_type.py) should house all the target model mappings.
+Similarly, `/models` and `/schema` should also be populated by adding the registry views created as models and related payloads. These models will be used in lookup from the registry database. [`registry_type.py`](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_type.py) should house all the target model mappings.
 
 <pre class="language-python"><code class="lang-python"># /schema/registry_farmer.py
 <strong>class G2PFarmerRegistryPayload(G2PRegistryPayload):
@@ -82,7 +82,7 @@ Similarly, `/models` and `/schema` should also be populated by adding the regist
 
 <pre class="language-python"><code class="lang-python"># /models/registry_farmer.py
 <strong>class G2PFarmerRegistry(G2PRegistry):
-</strong>    __tablename__ = "g2p_farmer_registry"    # table name in registry view
+</strong>    __tablename__ = "g2p_register_farmer"    # table name in registry view
 
     ## ... add fields from registry view defined ...
 </code></pre>

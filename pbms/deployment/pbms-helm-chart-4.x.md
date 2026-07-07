@@ -13,8 +13,8 @@ The changes made PBMS Helm Chart w.r.t previous versions (3.x and below) are sim
 {% @jira/embed url="https://openg2p.atlassian.net/browse/G2P-3614" %}
 
 2. [Postgres-init Helm chart ](../../products/registry/registry/_archive/social-registry/deployment/registry-helm-chart-3.x.x.md#postgres-init)added to initialize PBMS DB and Background Task DB (like in Registry)
-3. Hard coding removed on several resource names and consequently templating used to resolve the names. Refer to the variables under 'globals' in [values.yaml](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/blob/4.0/charts/openg2p-pbms/values.yaml).
-4. Odoo Helm Chart version updated. This version was customized by OpenG2P to support overriding of templates. [Learn more>>](../../products/registry/registry/_archive/social-registry/deployment/registry-helm-chart-3.x.x.md#modifications-to-the-original-odoo-chart). The [\_helpers.tpl](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/blob/4.0/charts/openg2p-pbms/templates/_helper.tpl) template file was updated accordingly.
+3. Hard coding removed on several resource names and consequently templating used to resolve the names. Refer to the variables under 'globals' in [values.yaml](https://github.com/OpenG2P/pbms/blob/develop/deployment/charts/openg2p-pbms/values.yaml).
+4. Odoo Helm Chart version updated. This version was customized by OpenG2P to support overriding of templates. [Learn more>>](../../products/registry/registry/_archive/social-registry/deployment/registry-helm-chart-3.x.x.md#modifications-to-the-original-odoo-chart). The [\_helpers.tpl](https://github.com/OpenG2P/pbms/blob/develop/deployment/charts/openg2p-pbms/templates/_helper.tpl) template file was updated accordingly.
 5. External DB initialized in Odoo. [Learn more>>](../../products/registry/registry/_archive/social-registry/deployment/registry-helm-chart-3.x.x.md#odoo).
 6. Utlities like MinIO, Keymanager removed as they are now installed as common shared resources using OpenG2P Commons.
 7. Separate users and their secrets created for PBMS DB and Background Task DB.
@@ -25,7 +25,7 @@ By maintaining separate databases under a shared PostgreSQL service, the Helm ch
 
 ## Source code
 
-[Helm Chart source code](https://github.com/OpenG2P/openg2p-pbms-gen2-deployment/tree/4.0)
+[Helm Chart source code](https://github.com/OpenG2P/pbms/tree/develop/deployment/charts/openg2p-pbms)
 
 ## Running the Helm Chart
 

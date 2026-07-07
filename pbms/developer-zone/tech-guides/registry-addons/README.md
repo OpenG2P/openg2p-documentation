@@ -1,6 +1,6 @@
 # Registry Addons
 
-This guide provides details on implementing the [Registry Addon Odoo Modules](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions) for integration with PBMS Odoo.
+This guide provides details on implementing the [Registry Addon Odoo Modules](https://github.com/OpenG2P/pbms/tree/develop/odoo/extensions) for integration with PBMS Odoo.
 
 ## Overview
 
@@ -14,7 +14,7 @@ The registry modules, namely `g2p_registry_addon` and `g2p_registry_type_addon` 
 These registry add-ons do not reflect the data stored in G2P Registry, these are present in PBMS for viewing and ideation purposes only.
 {% endhint %}
 
-You can find the the entire set of odoo addons' implementation [here](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions), which also includes custom implementation for [`farmer` and `student` registries](https://github.com/OpenG2P/openg2p-pbms-odoo-extensions/tree/3.0/g2p_registry_addon/models).
+You can find the the entire set of odoo addons' implementation [here](https://github.com/OpenG2P/pbms/tree/develop/odoo/extensions), which also includes custom implementation for [`farmer` and `households` registries](https://github.com/OpenG2P/pbms/tree/develop/odoo/extensions/g2p_registry_addon/models).
 
 {% content-ref url="key-components.md" %}
 [key-components.md](key-components.md)

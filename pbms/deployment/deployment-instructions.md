@@ -36,11 +36,11 @@ Before you deploy, make sure the following are in place:
     <figure><img src="../../.gitbook/assets/image (81).png" alt=""><figcaption></figcaption></figure>
 5.  Navigate to **Apps → Charts** and locate the chart:
 
-    * **Name:** _OpenG2P PBMS (3.0.0)_
+    * **Name:** _OpenG2P PBMS_
     * **Description:** A Helm chart for OpenG2P PBMS
 
     <figure><img src="../../.gitbook/assets/image (80).png" alt=""><figcaption></figcaption></figure>
-6. Click the chart, choose **version 3.0.0**, and click **Install**.
+6. Click the chart, choose the desired **version** (the latest is a `0.0.0-develop.<n>` prerelease — enable *Include Prerelease Versions* to see it), and click **Install**.
 7. On the next screen:
    * **Installation Name:** `openg2p-pbms` (or any preferred name)
    * Enable **Customise Helmbox before installation** → click **Next**
@@ -66,11 +66,11 @@ Before you deploy, make sure the following are in place:
 
 ## Installation using CLI
 
-1.  Clone the [OpenG2P PBMS Deployment Repository](/broken/pages/haoN7hIUMM9RRDGXMp7S)
+1.  Clone the [OpenG2P PBMS repository](https://github.com/OpenG2P/pbms)
 
     ```
-    git clone https://github.com/OpenG2P/openg2p-pbms-gen2-deployment.git
-    cd openg2p-pbms-gen2-deployment/charts
+    git clone https://github.com/OpenG2P/pbms.git
+    cd pbms/deployment/charts
     ```
 2.  Update Helm Dependencies
 

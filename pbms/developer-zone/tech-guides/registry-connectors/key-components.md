@@ -118,7 +118,7 @@ Used primarily in background tasks or async workflows.
 * `search_query`: _\[Placeholder: Expected structure or type, e.g., dict or SQL clause]_
 * `page (int)`: Page number for pagination (default: `1`).
 * `page_size (int)`: Results per page (default: `10`).
-* `order_by (str)`: Sorting order (default: `"id asc"`).
+* `order_by (str)`: Sorting order (default: `"internal_record_id asc"`).
 
 **Returns:** `BeneficiarySearchResponsePayload` - Paginated list of beneficiaries matching the query.
 
@@ -192,7 +192,7 @@ Custom implementations can directly use these methods by passing `target_registr
 
 ### Data Models, Schemas and Dependencies
 
-To implement this interface, the following models and schemas are typically imported from the G2P [PBMS](https://github.com/OpenG2P/openg2p-pbms-bg-tasks/tree/3.0/openg2p-pbms-models) and [PBMS Background Task](https://github.com/OpenG2P/openg2p-pbms-bg-tasks/tree/3.0/openg2p-bg-task-models) ecosystem:
+To implement this interface, the following models and schemas are typically imported from the G2P [PBMS](https://github.com/OpenG2P/pbms/tree/develop/core/openg2p-pbms-models) and [PBMS Background Task](https://github.com/OpenG2P/pbms/tree/develop/core/openg2p-bg-task-models) ecosystem:
 
 * `G2PRegistry`: Core registry ORM model.
 * `BeneficiaryListDetails`: Details of beneficiaries linked to lists.
