@@ -1,3 +1,8 @@
+---
+hidden: true
+noIndex: true
+---
+
 # G2P WikiLLM
 
 A knowledge base for OpenG2P, structured for consumption by an LLM-based assistant — the [G2P Advisor](https://github.com/OpenG2P/g2p-advisor-v2).
