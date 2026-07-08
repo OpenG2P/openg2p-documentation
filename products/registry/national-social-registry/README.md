@@ -229,6 +229,10 @@ The `openg2p-nsr` chart carries the `openg2p.org/add-to-rancher` annotation, whi
 
 The NSR backend images assemble the platform runtimes (pulled from `registry-platform`) together with the `nsr-extension` code. CI path-filters ensure each workflow only rebuilds when its own inputs change: the db-seed image rebuilds on SQL changes (`meta_data/`, `sample_data/`), the backend images on Python or spec-file changes (rebuilding only the affected service), and the Helm chart publishes only on `helm/**` changes.
 
+{% hint style="info" %}
+**Security — non-root containers.** The backend images (staff-portal-api, partner-api, celery) run as a non-root user (`USER 1001`, matching the chart's `runAsUser`/`fsGroup`), so a restricted pod `securityContext` can be enabled without breakage. See the platform [service-creation guide](../../../platform/platform-services/creating-a-new-service.md) for the pattern.
+{% endhint %}
+
 ## Meta-data seeding
 
 The db-seed image packages the register definitions, schemas, UI tabs, sections, attribute lookups and registry configuration as ordered SQL files. These live under `nsr-extension/src/openg2p_registry_nsr_extension/meta_data/` (`register-metadata/`, `lookup-data/`, `data-models/`, `registry-configurations/`); the seed container runs **all** `.sql` files under `meta_data/` in sorted path order.

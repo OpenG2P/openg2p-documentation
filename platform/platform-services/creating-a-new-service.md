@@ -71,6 +71,28 @@ Build the API on **openg2p-fastapi-common** (see the
 - Expose `/ping` (via `PingInitializer`) for probes.
 - **Do not** invent a bespoke auth or crypto layer — use the commons + the
   patterns below.
+- **Run the container as non-root.** In the Dockerfile, create a dedicated user
+  and switch to it before `CMD` — use uid/gid **1001** to match the chart's
+  `runAsUser`/`fsGroup`, and `chown` the app dir so runtime writes succeed:
+
+  ```dockerfile
+  RUN addgroup -g 1001 openg2p \
+   && adduser -D -u 1001 -G openg2p -h /home/openg2p openg2p \
+   && chown -R 1001:1001 /app
+  USER 1001
+  ENV HOME=/home/openg2p
+  ```
+
+  Bind on a port `>1024` (e.g. `8000`) so no `NET_BIND_SERVICE` capability is
+  needed. Baking non-root into the image (rather than only forcing it from the
+  chart) means the pod `securityContext` can be enabled cleanly — the image
+  already runs as `1001`, so `runAsNonRoot`/`runAsUser` are consistent and writes
+  don't break. Root containers fail Pod Security Standards "restricted" / CIS and
+  enlarge the container-escape blast radius. Pair this with a **restricted pod
+  `securityContext`** in the chart (`runAsNonRoot: true`, `runAsUser: 1001`,
+  `allowPrivilegeEscalation: false`, `capabilities.drop: [ALL]`,
+  `seccompProfile: RuntimeDefault`); add `readOnlyRootFilesystem: true` last, with
+  an `emptyDir` mounted at each temp/cache path.
 
 ---
 
@@ -412,6 +434,9 @@ external hostnames.
       e2e is **AWE-aware**.
 - [ ] Migrations are **idempotent** (`IF NOT EXISTS`) and safe under concurrent
       replicas.
+- [ ] Container image runs as **non-root** (`USER 1001` + `chown`, port `>1024`);
+      the chart enables a **restricted `securityContext`** (`runAsNonRoot`, drop
+      caps, no priv-esc).
 - [ ] HPA is **CPU-only**; scheduled work is a **CronJob**, not an in-process timer.
 - [ ] Signing uses a **.p12** + JWKS; the **demo key** is loudly flagged and
       replaceable.
