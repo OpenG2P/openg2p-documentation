@@ -27,7 +27,7 @@ The Dockerfiles live under [`docker/`](https://github.com/OpenG2P/pbms/tree/deve
 PBMS's own code is built from the repo; a few **shared** OpenG2P libraries and base images are pulled at build time and are overridable via build args / workflow inputs:
 
 * `FASTAPI_COMMON_REF` (default `develop`) — [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common), for the API and Celery images.
-* `G2P_BRIDGE_REF` — [openg2p-g2p-bridge](https://github.com/OpenG2P/openg2p-g2p-bridge) models, for the Celery worker image.
+* `G2P_BRIDGE_REF` — [g2p-bridge](https://github.com/OpenG2P/g2p-bridge) models, for the Celery worker image.
 * `ODOO_COMMONS_REF` (default `v1.4.0`) — [openg2p-odoo-commons](https://github.com/OpenG2P/openg2p-odoo-commons), cloned into the Odoo (`core`) image at build time.
 * `BASE_VERSION` — the upstream `odoo:` base image tag for the Odoo image.
 

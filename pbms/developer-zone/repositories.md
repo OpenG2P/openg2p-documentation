@@ -22,12 +22,12 @@ Besides its own repository, PBMS builds on a small number of shared OpenG2P libr
 <table><thead><tr><th width="300">Repository</th><th>Used for</th></tr></thead><tbody>
 <tr><td><a href="https://github.com/OpenG2P/openg2p-fastapi-common">openg2p-fastapi-common</a></td><td>Shared FastAPI base libraries (configuration, controllers, authentication, and crypto/signing) used by the portal APIs and the background-task engine.</td></tr>
 <tr><td><a href="https://github.com/OpenG2P/openg2p-odoo-commons">openg2p-odoo-commons</a></td><td>Shared Odoo addons baked into the PBMS Odoo (<code>core</code>) image at build time.</td></tr>
-<tr><td><a href="https://github.com/OpenG2P/openg2p-g2p-bridge">openg2p-g2p-bridge</a></td><td>Provides the G2P Bridge data models used by the Celery workers, and is the downstream component PBMS hands disbursements to.</td></tr>
+<tr><td><a href="https://github.com/OpenG2P/g2p-bridge">g2p-bridge</a></td><td>Provides the G2P Bridge data models used by the Celery workers, and is the downstream component PBMS hands disbursements to.</td></tr>
 <tr><td><a href="https://github.com/OpenG2P/openg2p-helm">openg2p-helm</a></td><td>The OpenG2P Helm chart repository from which the published PBMS chart is served.</td></tr>
 </tbody></table>
 
 {% hint style="info" %}
-PBMS also depends at runtime on shared OpenG2P **commons** services (PostgreSQL, Keycloak, MinIO, Keymanager, mail) and reads from a **Social Registry** (e.g. [openg2p-nsr](https://github.com/OpenG2P/national-social-registry)). These are deployed separately and are not part of the PBMS build.
+PBMS also depends at runtime on shared OpenG2P **commons** services (PostgreSQL, Keycloak, MinIO, Keymanager, mail) and reads from a **Social Registry** (e.g. [national-social-registry](https://github.com/OpenG2P/national-social-registry)). These are deployed separately and are not part of the PBMS build.
 {% endhint %}
 
 ## Previous (pre-consolidation) repositories
