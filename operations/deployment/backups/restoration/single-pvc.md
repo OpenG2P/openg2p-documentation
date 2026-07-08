@@ -8,7 +8,7 @@ Use this when one application's data is corrupt or accidentally wiped, but the c
 
 ## How the mapping works
 
-Each PVC's data lives in a UUID-named directory under the NFS export (e.g. `/srv/nfs/openg2p/pvc-abc123-def456/...`). On its own restic just sees opaque UUIDs. The sidecar manifest at `/var/lib/openg2p-backup/nfs/.pvc-mapping.yaml` joins each UUID against `kubectl get pv` so restore knows which app a UUID belongs to. This file is regenerated every NFS run — always inspect the latest version.
+Each PVC's data lives in a per-volume subdirectory under the NFS export (e.g. `/srv/nfs/openg2p/<namespace>-<pvc>-<pv-uuid>/` on the `nfs-csi` StorageClass, or a native NFS PV path). On its own restic just sees opaque directory names. The sidecar manifest at `/var/lib/openg2p-backup/nfs/.pvc-mapping.yaml` joins each directory against `kubectl get pv` (including CSI `volumeAttributes.subdir`) so restore knows which app a path belongs to. This file is regenerated every NFS run — always inspect the latest version.
 
 ## Step 1 — Find the PVC
 

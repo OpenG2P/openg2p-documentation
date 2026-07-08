@@ -10,7 +10,7 @@ description: Per-component table of what is backed up, plus the rationale for wh
 |---|---|---|---|---|
 | PostgreSQL | pgBackRest | storage → backup (SSH) | full Sun 02:00, diff Mon-Sat 02:00, **WAL streaming continuous** | 4 full + 7 diff + 30 days WAL |
 | etcd snapshots | RKE2 built-in + rsync | compute → backup | every 6h | 28 snapshots (~7 days) |
-| Kubernetes resources | rancher-backup operator | NFS PVC → restic via NFS | nightly 03:00 | 14 days (operator) + restic retention downstream |
+| Kubernetes resources | rancher-backup operator | static NFS PV → `/srv/nfs/<cluster>/rancher-backup` (`*.tar.gz.enc`) → restic via NFS | nightly 03:00 (in-cluster Schedule CR) | 14 days (operator) + restic retention downstream |
 | NFS data | restic | NFS export RO mount → backup | nightly 03:30 | 7 daily + 4 weekly + 6 monthly |
 | Wireguard config | restic over SSH-tar | RP `/etc/wireguard` → backup | nightly 03:30 | same as NFS |
 | Nginx config | restic over SSH-tar | RP `/etc/nginx` → backup | nightly 03:30 | same as NFS |
@@ -62,7 +62,7 @@ Captured by: `rancher-backup` ResourceSet (curated CR groups in `manifests/ranch
 
 Critical — these hold the binding between a UUID directory on NFS and the namespace/pod/app that owns it. Without these, restic's restored NFS folders are orphan UUIDs.
 
-Captured by: `rancher-backup` ResourceSet (`persistentvolumes`, `persistentvolumeclaims`) **plus** the NFS sidecar manifest (`.pvc-mapping.yaml`) generated nightly. The sidecar adds a human-readable record of `nfs_path → (namespace, pvc, size, storage_class, app_label)` for every directory, so an operator can answer "what's in `pvc-abc123`?" without booting a cluster.
+Captured by: `rancher-backup` ResourceSet (`persistentvolumes`, `persistentvolumeclaims`) **plus** the NFS sidecar manifest (`.pvc-mapping.yaml`) generated nightly. The sidecar adds a human-readable record of `nfs_path → (namespace, pvc, size, storage_class, app_label)` for every directory on the export, including CSI-provisioned subdirs from the `nfs-csi` StorageClass, so an operator can answer "what's in `cattle-resources-system-myapp-pvc-abc…`?" without booting a cluster.
 
 ### ConfigMaps that operators mutate
 

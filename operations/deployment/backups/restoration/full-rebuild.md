@@ -92,7 +92,7 @@ The fresh helmfile install recreated the platform's own resources. We now layer 
     --target cluster
 ```
 
-This selects the most recent backup tarball available on the (now restored) NFS PVC and applies a `Restore` CR. The operator handles:
+This selects the most recent backup tarball on the operator's static NFS volume (`/srv/nfs/<cluster>/rancher-backup`, file pattern `*.tar.gz.enc`) and applies a `Restore` CR. The operator handles:
 * Recreating Secrets (incl. Helm release secrets — restoring these means `helm list` will show your prior releases again)
 * Recreating CRs (Rancher state, cert-manager Issuers + Certificates, Istio configs, Keycloak realms if operator-managed, monitoring rules)
 * Recreating PV + PVC objects with their original `claimRef` bindings

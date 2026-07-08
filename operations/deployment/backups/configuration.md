@@ -125,31 +125,54 @@ System logs are excluded by default because OpenSearch already retains them.
 
 ## ResourceSet
 
+The live `ResourceSet` CR applied at install is `automation/backups/manifests/rancher-backup-resourceset.yaml` in the deployment repo. **Edit that manifest** to change what is captured. At install time, the orchestrator validates each `apiVersion` entry against the live cluster (`kubectl api-resources`) and warns about any unknown API group — it does not fail install if optional operators (cert-manager, Istio, Keycloak, etc.) are not yet deployed.
+
+The operator v8.x CRD uses strict decoding:
+
+* There is **no** top-level `namespaceRegexp` or boolean `controllerReferences` field.
+* Namespace scoping is per `resourceSelector` entry (`namespaces` / `namespaceRegexp`, Go RE2 only — no negative lookahead).
+* The shipped manifest captures all namespaces for DR completeness; system-namespace objects are small and mostly helmfile-recreatable.
+
+The `resource_set:` block in `backup-config.example.yaml` documents the **intended** policy for operators customizing the manifest — it is not rendered into the CR at install time.
+
+Example selectors (see the manifest for the full list):
+
 ```yaml
-resource_set:
-  include_namespaces: ["*"]
-  exclude_namespaces:
-    - kube-system
-    - kube-public
-    - kube-node-lease
-  include_resources:
-    - secrets
-    - configmaps
-    - persistentvolumes
-    - persistentvolumeclaims
-    - namespaces
-    - serviceaccounts
-  include_groups:
-    - management.cattle.io
-    - cert-manager.io
-    - monitoring.coreos.com
-    - networking.istio.io
-    - security.istio.io
-    - keycloak.org
-    - logging.banzaicloud.io
+resourceSelectors:
+  - apiVersion: "v1"
+    kindsRegexp: "^(secrets|configmaps|namespaces|serviceaccounts|persistentvolumes|persistentvolumeclaims)$"
+  - apiVersion: "management.cattle.io/v3"
+    kindsRegexp: "."
+  - apiVersion: "cert-manager.io/v1"
+    kindsRegexp: "."
 ```
 
-The actual ResourceSet CR lives at `manifests/rancher-backup-resourceset.yaml` in the deployment repo. At install time, the orchestrator validates each entry against the live cluster (`kubectl api-resources`) and warns about any unknown GVK. Add custom CRD groups here if your environment installs additional operators (e.g. `eventing.knative.dev` if you've added Knative).
+Add custom CRD groups in the manifest if your environment installs additional operators (e.g. `eventing.knative.dev`).
+
+## rancher-backup operator storage
+
+```yaml
+rancher:
+  pvc_storage_class: "nfs-csi"   # StorageClass used to read NFS server/share
+  pvc_size: "50Gi"               # capacity of the static backup PV/PVC
+```
+
+The backup-restore-operator writes encrypted tarballs to a PVC mounted at `/var/lib/backups` inside the operator pod. **Do not** set `storageLocation` on `Backup` / `Restore` CRs — the operator only supports explicit `storageLocation` for S3; PVC storage is configured at the Helm chart level.
+
+**Static NFS PV (stable location).** The chart's default dynamic persistence names the PVC `<release>-<helm-revision>`, so every `helm upgrade` provisions a fresh empty volume and strands prior backups. Install therefore:
+
+1. Reads the NFS `server` + `share` from the cluster's `pvc_storage_class` StorageClass.
+2. Creates `/srv/nfs/<cluster>/rancher-backup` on the storage node (mode `0777` so the operator pod can write).
+3. Applies a static NFS `PersistentVolume` named `openg2p-rancher-backup-store`.
+4. Installs the chart with `persistence.enabled=true`, `persistence.storageClass=-` (no dynamic provisioning), and `persistence.volumeName=openg2p-rancher-backup-store`.
+
+Tarballs land at **`/srv/nfs/<cluster>/rancher-backup/`** on the NFS export (captured downstream by the nfs restic job). With `encryptionConfigSecretName` set, files are named `*.tar.gz.enc`.
+
+To re-provision rancher storage after a chart/config change without re-running the full install (which restarts RKE2 for etcd):
+
+```bash
+./openg2p-backup.sh install --config backup-config.yaml --component rancher
+```
 
 ## Etcd encryption-at-rest
 
@@ -166,7 +189,14 @@ Default: disabled. To turn it on, run `./openg2p-backup.sh install --enable-secr
 versions:
   pgbackrest: ""                  # blank = use distro package
   restic: "0.17.3"
-  rancher_backup_chart: "7.0.0"
+  # Helm CHART version from charts.rancher.io — scheme <chartVersion>+up<appVersion>.
+  # This is the CHART version, NOT the operator app version (there is no plain "7.0.0").
+  # 107.1.5+up8.1.5 → Rancher 2.12.x, Kubernetes 1.31–1.33.
+  rancher_backup_chart: "107.1.5+up8.1.5"
 ```
 
-Pinned to known-good versions. Bump after testing in a non-production environment. The `rancher_backup_chart` version must be compatible with the running Rancher version — check the [chart compatibility matrix](https://github.com/rancher/charts/tree/release-v2.12/charts/rancher-backup) before changing.
+Pinned to known-good versions. Bump after testing in a non-production environment. Choose a `rancher_backup_chart` whose `rancher-version` / `kube-version` annotations match your cluster:
+
+```bash
+helm search repo rancher-charts/rancher-backup --versions
+```
