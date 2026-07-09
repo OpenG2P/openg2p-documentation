@@ -641,7 +641,7 @@
     * [Key Manager](privacy-and-security/key-manager.md)
     * [PyJWTCryptoHelper](platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
     * [Security Audits](privacy-and-security/security-audits/README.md)
-      * [Security Audit 2025 March](privacy-and-security/security-audits/security-audit-2025-march.md)
+      * [Security Audit 2025 June](privacy-and-security/security-audits/security-audit-2025-march.md)
   * [System Monitoring](platform/platform-services/system-monitoring/README.md)
     * [Setup & Configuration](platform/platform-services/system-monitoring/setup-and-configuration.md)
     * [Dashboards & Viewing Logs](platform/platform-services/system-monitoring/dashboards.md)
