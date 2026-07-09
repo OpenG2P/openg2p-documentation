@@ -1,6 +1,34 @@
-# Privacy and Security
+# Privacy & Security
 
-OpenG2P is a robust and versatile platform built upon the Odoo framework, providing governments and organisations with a comprehensive solution for delivering benefits efficiently. As OpenG2P handles sensitive beneficiary information including personally identifiable information (PII), maintaining the highest standards of security is paramount.
+OpenG2P is a robust and versatile platform, providing governments and organisations with a comprehensive solution for delivering benefits efficiently. As OpenG2P handles sensitive beneficiary information including personally identifiable information (PII), maintaining the highest standards of security is paramount.
+
+
+
+1. Applicability&#x20;
+
+This privacy policy applies to the users of the OpenG2P platform which collects, stores and transfers data at various levels during the course of implementation of government-to-person benefits delivery by various Government departments in the country where the platform is being deployed.&#x20;
+
+
+
+2. Information collected and why&#x20;
+
+Information is collected for benefits delivery and varies per department, on whose request OpenG2P platform is adopted by a country. OpenG2P uses the data which is collected by the social registry, at this stage consent is taken by the registry. For collection of data offline, OpenG2P takes consent via a consent form while using ODK. Scanned consent documents are also collected and stored while collecting data from the field. If OpenG2P platform’s self service portal is used or if the registry data is imported from 3rd Party, the PII is encrypted using the Mosip key manager to safeguard the data.&#x20;
+
+Information collected:&#x20;
+
+Demographic data- Name, Gender, Age, Address, Contact Number, E-Mail ID and other household information regarding family structure.
+
+
+
+3. Sharing and Disclosure&#x20;
+
+OpenG2P does not disclose or share any data stored on our platforms with any third party or private entity. OpenG2P uses an inbuilt consent sharing mechanism. OpenG2P may share the information with government bodies or law enforcement agencies pursuant to a legal obligation. Data from the registry is sharable, and the department has to take consent to share.
+
+
+
+4. Security Practices
+
+We follow industry-standard best practices with respect to encryption and storage of users’ information. The security measures are as follows:&#x20;
 
 ## User authentication and access Control
 
@@ -24,8 +52,8 @@ Input security is handled in the following ways:
 
 * Input validation
 * Memory safe programming language (Python)
-* Type safe programming using Python Pydantic&#x20;
-* ORM capabilities to avoid SQL Injection threats&#x20;
+* Type safe programming using Python Pydantic
+* ORM capabilities to avoid SQL Injection threats
 
 ## Document Encryption
 
@@ -37,20 +65,42 @@ The Document Encryption module in OpenG2P safeguards all documents uploaded to t
 * **Key Management:**
   * OpenG2P utilizes a secure and reliable Key Manager module to manage encryption keys efficiently.
   * The Key Manager ensures keys are safely stored, periodically rotated, and accessed securely.
-* &#x20;**Secure** **Decryption**:
+* **Secure** **Decryption**:
   * Only authorized users with valid permissions can access and see decrypted documents.
 
 ## Secure deployment
 
-OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [ Learn more >>](/broken/pages/tDNeRfLR3IBWdGnZI5X1)
+OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [Learn more >>](/broken/pages/tDNeRfLR3IBWdGnZI5X1)
+
+
+
+5. Rights of the Users (consent taken, withdraw consent, update information) :&#x20;
+
+User login is provided to update information. OpenG2P uses OpenID connect (OIDC) interface an authentication protocol that verifies user identities, only the user is giving consent and also can update data on the social registry. Withdrawal of consent is planned for future implementation.&#x20;
+
+\
+6\. Data Retention&#x20;
+
+The OpenG2P platform allows data retention for as long as the scheme requires and is goal oriented. Upon request, the administrator can remove data, we do not have a policy as such to remove data, but can be customised as per the policy of the country or department.
+
+
+
+7. Grievance Redressal&#x20;
+
+Our Legal Counsel is our designated grievance officer, and may be contacted through the following means:
+
+Email: conduct@openg2p.org\
+Address: 26/C, Electronics City,\
+Hosur Road, Bangalore - 560100\
+Phone: +91 80 4140 7777/ 2852 7627
 
 ## FAQ
 
 <details>
 
-<summary>OpenG2P is an open-source software.  How secure is it?</summary>
+<summary>OpenG2P is an open-source software. How secure is it?</summary>
 
-In general, for any product, security is handled at multiple levels.&#x20;
+In general, for any product, security is handled at multiple levels.
 
 * Product security features
 
@@ -66,6 +116,6 @@ While deployment infrastructure is a choice of the implementer/system integrator
 
 * Security policies and processes
 
-OpenG2P team can help review security policies defined by the government/system Integrator. <br>
+OpenG2P team can help review security policies defined by the government/system Integrator.<br>
 
 </details>
