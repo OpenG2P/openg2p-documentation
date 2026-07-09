@@ -27,6 +27,8 @@ The backup stack is a hybrid of well-established tools, glued together by a thin
 
 Pull-based — the backup node SSHes outward to the production nodes, never the other way around. A compromised production node can't reach back and erase its own backups.
 
+Remote commands run under `sudo bash -lc` with `TERM=dumb` so login-shell profile hooks (`clear_console`, etc.) do not pollute captured stdout over non-interactive SSH.
+
 ## Tools and why each is here
 
 ### pgBackRest — PostgreSQL
@@ -47,6 +49,8 @@ Pull-based — the backup node SSHes outward to the production nodes, never the 
 
 **Why this and not Velero:** Velero needs an object store. We don't have S3, and adding MinIO is more moving parts than the gain warrants. Velero's strength is volume snapshots — we handle volume data via restic on the NFS export directly. rancher-backup does exactly what we need: a curated `ResourceSet` of GVKs, encrypted tarball output, schedules. Despite the "rancher-" name, it backs up arbitrary GVKs — we use it for Secrets, ConfigMaps, PV/PVCs, and curated CRD groups (cert-manager, monitoring, Istio, Keycloak, Logging) in addition to Rancher's own state.
 
+**Storage model:** The operator writes to a PVC mounted at `/var/lib/backups` inside its pod. We provision a **static NFS PV** (`openg2p-rancher-backup-store`) bound to `/srv/nfs/<cluster>/rancher-backup` on the storage export — not dynamic per-helm-revision PVCs (which rotate empty on every `helm upgrade`). `Backup` / `Restore` CRs omit `storageLocation` (the operator only supports explicit S3 there). Tarballs are AES-encrypted (`*.tar.gz.enc`) via an `encryptionConfigSecretName` Secret applied at install.
+
 [Backup-restore-operator](https://github.com/rancher/backup-restore-operator) · [Rancher docs](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery)
 
 ### restic — NFS data and config files
@@ -59,7 +63,7 @@ The NFS export is mounted **read-only** on the backup host — a compromised bac
 
 ### Sidecar PVC manifest — UUID → app mapping
 
-NFS data is stored under directories named after the PV's UUID (e.g. `/exports/pvc-abc123`). On its own, restic just sees opaque dirs. Each backup run writes a sidecar YAML manifest (`<repo>/nfs/.pvc-mapping.yaml`) joining `kubectl get pv -o json` against the live NFS file listing, so restore knows which UUID belongs to which `(namespace, pvc, app)` triple. The manifest is restic'd alongside the data.
+NFS data is stored under directories named after the PV's CSI `subdir` or native NFS path (e.g. `cattle-resources-system-<pvc>-<pv-uuid>` under `/srv/nfs/<cluster>/` on the `nfs-csi` StorageClass). On its own, restic just sees opaque dirs. Each backup run writes a sidecar YAML manifest (`<repo>/nfs/.pvc-mapping.yaml`) joining `kubectl get pv -o json` against the live NFS file listing. The jq filter matches both native NFS PVs (`spec.nfs.path`) and CSI PVs (`spec.csi.volumeAttributes.subdir` / reconstructed `<namespace>-<pvc>-<pv>` names), so restore knows which directory belongs to which `(namespace, pvc, app)` triple.
 
 ## Tools we considered and rejected
 

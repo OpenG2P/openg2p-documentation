@@ -22,8 +22,14 @@ The orchestrator is `automation/backups/openg2p-backup.sh`. Every subcommand tak
 ## install
 
 ```bash
+# Full bootstrap (all enabled groups + cron)
 ./openg2p-backup.sh install --config backup-config.yaml
+
+# Re-run a single group's install steps (e.g. after changing rancher storage)
+./openg2p-backup.sh install --config backup-config.yaml --component rancher
 ```
+
+`--component` is supported for `install` as well as `run` / `verify` / `list`. Per-group install skips the other groups — useful when re-provisioning rancher storage without triggering `etcd_install`'s `rke2-server` restart. Steps 1–4 (SSH probes, backup-host bootstrap, cron) still run on every `install` invocation.
 
 What it does, in order:
 
@@ -31,11 +37,11 @@ What it does, in order:
 2. **Backup-host preflight** — Ubuntu version, CPU (≥4, hard), RAM (≥8 GB, hard), root disk (≥64 GB, hard), repo data volume (≥1 TB, **warn-only**).
 3. **Passphrase resolution** — reads each `*_passphrase_file` from the keystore. Generates if missing (with a banner reminder to move into the keystore).
 4. **Backup-host bootstrap** — apt installs, repo dirs, lib files pushed to `/opt/openg2p-backup/`, SSH key generated for orchestrating compute/storage/RP, authorized on those nodes, wrapper scripts (`/usr/local/bin/openg2p-backup-{run,drill,status}`) installed.
-5. **Per-group install** — gated by `groups.<name>` toggle:
+5. **Per-group install** — gated by `groups.<name>` toggle and `--component` (when not `all`):
    * `pg`: pgBackRest on backup + storage, archive_command on PG, stanza-create, first full backup
    * `etcd`: RKE2 snapshot schedule, rsync-pull SSH trust
-   * `rancher`: rancher-backup operator, ResourceSet validation, ResourceSet + Schedule CRs applied
-   * `nfs`: read-only NFS mount, restic repo init
+   * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
+   * `nfs`: storage-node NFS export + `ufw` allow for backup host, read-only NFS mount on backup host, restic repo init
    * `configs`: restic repo for configs
 6. **Optional encryption-at-rest** — only if `--enable-secret-encryption` flag is passed. Restarts kube-apiserver.
 7. **Cron deploy** — renders `cron.template` with active schedules, installs at `/etc/cron.d/openg2p-backup`.
@@ -74,13 +80,13 @@ Failures don't stop other groups — `run` attempts every enabled group and surf
 ./openg2p-backup.sh verify --config backup-config.yaml [--component X]
 ```
 
-Cheap integrity checks. No data restored. Per group:
+Cheap integrity checks. No data restored. When `--component all`, every enabled group is checked; a failure in one group does not stop the others (the orchestrator exits non-zero if any group failed).
 
 | Group | Verify command |
 |---|---|
 | pg | `pgbackrest verify` |
-| etcd | `etcdutl --write-out=table snapshot status <latest>` |
-| rancher | `kubectl run` ephemeral pod that mounts the backup PVC and runs `tar -tzf` on the latest tarball |
+| etcd | Finds the latest `etcd-snapshot-*` on the backup host (auto-pulls from compute once if empty). Runs `etcdctl`/`etcdutl snapshot status` locally; if the distro `etcd-client` cannot read RKE2's snapshot format, falls back to RKE2-bundled tools on compute and confirms the backup copy is present |
+| rancher | Resolves the static NFS path (`/srv/nfs/<cluster>/rancher-backup` by default), SSHes to the storage node, confirms the latest `*.tar.gz` or `*.tar.gz.enc` is present and non-zero. Encrypted tarballs skip `gzip -t` (ciphertext, not plain gzip) |
 | nfs | `restic check --read-data-subset=5%` on the NFS repo |
 | configs | `restic check --read-data-subset=5%` on the configs repo |
 

@@ -56,6 +56,7 @@ cp backup-config.example.yaml backup-config.yaml
 
 # 3. Smoke-test.
 ./openg2p-backup.sh run --config backup-config.yaml --component all
+./openg2p-backup.sh verify --config backup-config.yaml --component all
 ./openg2p-backup.sh status --config backup-config.yaml
 
 # 4. (Optional, separate maintenance window) Enable encryption-at-rest for

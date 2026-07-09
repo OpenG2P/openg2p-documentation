@@ -34,7 +34,7 @@ Outbound from backup node:
 * **TCP 22 (SSH)** to RP, compute, storage (orchestrating per-component backups)
 * **NFS** (TCP 2049 + portmapper) to storage node — backup mounts the NFS export read-only
 
-The storage node's NFS export must permit the backup node's private IP. By default the production install exports to the whole private subnet, which already covers the backup node. If your install has restricted exports, add the backup node's IP to `/etc/exports` on the storage node before running `install`.
+The storage node's NFS export must permit the backup node's private IP. By default the production install exports to the whole private subnet, which already covers the backup node. If your install has restricted exports (e.g. `ufw` on the storage node only allows the compute node), the `nfs` install step adds `ufw allow from <backup_ip>` rules for NFS (TCP 2049) and rpcbind (TCP/UDP 111) when `ufw` is active. If NFS mount still times out, confirm those rules exist before re-running `install --component nfs`.
 
 ## Secret custody
 
@@ -73,7 +73,7 @@ The orchestrator runs on the laptop and needs:
 * `ssh` + `rsync`
 * `aws-cli` v2 (only for the optional AWS provisioning step)
 
-The backup host gets `pgbackrest`, `restic`, `nfs-common`, `jq`, `curl`, `etcd-client` apt-installed automatically by `roles/backup-host/install.sh`.
+The backup host gets `pgbackrest`, `restic`, `nfs-common`, `jq`, `curl`, `etcd-client` apt-installed automatically by `roles/backup-host/install.sh`. The distro `etcd-client` provides `etcdctl` (not always `etcdutl`); etcd verify falls back to RKE2-bundled tools on the compute node when the local binary cannot read the snapshot format.
 
 ## What does not need to be done
 
