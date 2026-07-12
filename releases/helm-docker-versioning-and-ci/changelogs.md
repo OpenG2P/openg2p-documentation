@@ -22,6 +22,11 @@ The changelog is only as good as your commit subjects. The existing
 the range readable, but a bare `fix` commit produces a bare `fix` line.
 {% endhint %}
 
+**Jira links.** Any `G2P-####` reference in a commit message (and in the AI
+summary) is rendered as a link to
+`https://openg2p.atlassian.net/browse/G2P-####`. The base URL and project key are
+set in `ci/changelog/config.yml` (`jira_base`, `jira_project`).
+
 ## Where they are published
 
 Not into the service repo (that would bump the commit-count version and loop).
