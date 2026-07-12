@@ -47,7 +47,7 @@ and derive everything from it consistently:
 | Keycloak roles | `<SLUG_UPPER>_ADMIN`, `<SLUG_UPPER>_APPROVER`, … | `CONSENT_MANAGER_ADMIN` |
 | REST route prefix | `/<domain>/v1/...` (versioned, on `BaseController`) | `/consent/v1/validate` |
 
-Hostnames and API-service names are covered in **§19**.
+Hostnames and API-service names are covered in **§18**.
 
 ---
 
@@ -62,7 +62,7 @@ Build the API on **openg2p-fastapi-common** (see the
   `self.router.prefix += "/<domain>/v1/..."`). Services subclass `BaseService`
   (singletons via `get_component()`), models subclass the common ORM base.
 - **Postgres** via the framework's async engine (`dbengine`); one session per unit
-  of work; the app is **stateless** (§15).
+  of work; the app is **stateless** (§14).
 - **Migrations**: use `model.create_migrate()` (create-if-not-exists) in
   `migrate_database`. It does NOT alter existing tables — for schema changes on an
   existing DB add **idempotent** `ALTER TABLE … ADD COLUMN IF NOT EXISTS` /
@@ -122,7 +122,7 @@ and, for a worked implementation, [CM's API-audience split](../../consent-manage
 - Only build the audiences you need now; **scaffold** the rest disabled (e.g.
   beneficiary `enabled: false`) so they're a config flip away.
 - Each audience is its own Deployment + Service + VirtualService **inside the one
-  chart** (§10) with its own hostname (§19) and per-deployment auth env.
+  chart** (§10) with its own hostname (§18) and per-deployment auth env.
 
 > **Nuance:** don't split into multiple charts — it's one chart with multiple
 > Deployments (like G2P Bridge's partner-api + bene-portal-api). Give each
@@ -274,49 +274,44 @@ react-router + keycloak-js**, plain CSS on OpenG2P design tokens.
   differences (audience, auth, hostname, whether it mounts the signing key).
 - Config via a shared `envVars` map (+ `envVarsFrom` for `secretKeyRef`s); per-audience
   overrides (`API_AUDIENCE`, `AUTH_ENABLED`) set on each Deployment.
-- HPA (§15), an expiry/maintenance **CronJob** if needed (§15), the sanity Job (§16).
+- HPA (§14), an expiry/maintenance **CronJob** if needed (§14), the sanity Job (§15).
 
 ---
 
-## 11. Chart versioning — `0.0.0-develop.N`
+## 11. Versioning & CI — the central pipeline
 
-Follow the platform [versioning conventions](../../releases/versioning.md). Charts
-use SemVer; the **helm-publish** workflow derives the published version from the
-branch and appends a unique **run-number** suffix (`N = GITHUB_RUN_NUMBER`) so the
-CDN/Rancher never serve a stale cached chart:
+**Do not** hand-write `docker-build.yml` / `helm-publish.yml`. Images and the chart
+are versioned and published by the **central reusable workflow**; the new repo
+only needs a ~40-line caller stub. This gives every artifact **one immutable
+version per commit** (`0.0.0-develop.N`, `1.0.0-rc.N`, frozen `1.0.0`), with the
+chart and images always in lockstep.
 
-| Branch/tag | Published version |
-| --- | --- |
-| `develop` | `0.0.0-develop.<N>` |
-| `X.Y` (release branch) | `X.Y.0-develop.<N>` |
-| `X.Y.Z` (git tag `vX.Y.Z`) | `X.Y.Z` (frozen) |
+Full details — the versioning table, the frozen-tag convention (bare `1.0.0`, no
+`v`, tag-don't-branch), the CI diagram, and how the chart injects versions — are on
+**[Helm & Docker Versioning Strategy and CI](../../releases/helm-docker-versioning-and-ci/README.md)**.
 
-`Chart.yaml` keeps a **static placeholder** `version: 0.0.0-develop`; the workflow
-overrides it at package time (`helm package --version`). Only 3-digit, suffix-less
-versions are "frozen"/traceable.
+**To set it up in the new repo,** follow
+[Onboarding a repo](../../releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)
+— it includes a **copy-paste prompt** you can hand to an AI agent to generate the
+stub. Use `consent-manager`'s `build-publish.yml` as the exemplar.
 
----
+Key points to get right for a new service:
 
-## 12. CI workflows — triggered by what changed
-
-Two GitHub Actions workflows, both **path-filtered** so a change only rebuilds what
-it affects:
-
-- **`docker-build.yml`** — a **matrix** of images (api, sanity, ui, …), each with its
-  `dockerfile` + build `context`. Triggered on pushes touching `backend/**`,
-  `ui/**`, `docker/**`, `test/sanity/**`, or the workflow file. Tag = branch/ref.
-- **`helm-publish.yml`** — packages the chart (§11) and publishes it to the
-  **central** `openg2p/openg2p-helm` gh-pages, and **merges** Rancher-annotated
-  charts into that repo's `rancher/index.yaml`. Runs only under the OpenG2P org
-  (needs the bot PAT); triggered on chart/`deployment/**` changes.
-
-> **Nuance:** keep the path filters honest — when you add a new build input (e.g. a
-> `ui/` dir), add it to the `paths:` filter or that component silently stops
-> rebuilding.
+- `Chart.yaml` keeps the placeholder `version: 0.0.0-develop`; CI overrides it at
+  package time. `values.yaml` image tags are placeholders too — CI injects the real
+  version.
+- Declare **one `images` entry per Docker image** (api, sanity, ui, …) with its
+  `dockerfile`/`context`, and add a **per-image `pin`** for any build-arg that is a
+  git ref (e.g. `FASTAPI_COMMON_REF`).
+- List the chart's OpenG2P image-tag `yq` paths in `chart-image-paths` (exclude
+  third-party images).
+- The changelog is generated from **commit messages** automatically — write clear
+  `G2P-#### <subject>` commit messages. See
+  [Changelogs](../../releases/helm-docker-versioning-and-ci/changelogs.md).
 
 ---
 
-## 13. `questions.yaml` — surface the right parameters in Rancher
+## 12. `questions.yaml` — surface the right parameters in Rancher
 
 Provide `questions.yaml` in the chart so operators configure the service from the
 **Rancher form** without editing YAML. Surface the **applicable** parameters
@@ -327,17 +322,18 @@ URLs) grouped logically. Keep **break-glass / advanced** switches OUT of the for
 
 ---
 
-## 14. Adding the service to the Rancher catalog
+## 13. Adding the service to the Rancher catalog
 
 - Add the `openg2p.org/add-to-rancher: ""` **annotation** + `catalog.cattle.io/*`
   annotations to `Chart.yaml`, plus an **`app-readme.md`** (the catalog card
-  description) and `questions.yaml` (§13).
-- `helm-publish` (§12) merges annotated charts into `rancher/index.yaml` in the
-  central helm repo. See [Helm charts](../../releases/helm-charts.md).
+  description) and `questions.yaml` (§12).
+- The central workflow's chart job merges annotated charts into
+  `rancher/index.yaml` in the central helm repo. See
+  [Helm charts](../../releases/helm-charts.md).
 
 ---
 
-## 15. Scalability (high-traffic services)
+## 14. Scalability (high-traffic services)
 
 - **Stateless pods** — no per-pod state, no session affinity; any replica serves any
   request. Scale by adding pods.
@@ -356,7 +352,7 @@ URLs) grouped logically. Keep **break-glass / advanced** switches OUT of the for
 
 ---
 
-## 16. Sanity test job (smoke + brief e2e), with `TEST` tags
+## 15. Sanity test job (smoke + brief e2e), with `TEST` tags
 
 Ship an **in-cluster sanity suite** (a separate small pytest image) run as a Helm
 `post-install,post-upgrade` **hook Job**:
@@ -377,7 +373,7 @@ Ship an **in-cluster sanity suite** (a separate small pytest image) run as a Hel
 
 ---
 
-## 17. Full clean uninstall script
+## 16. Full clean uninstall script
 
 Provide `deployment/scripts/uninstall-<slug>.sh` that fully removes the service:
 `helm uninstall`, **drop the Postgres DB + role** (via `kubectl exec` into the
@@ -388,7 +384,7 @@ secret, keep PVs). Mirror the reference services' uninstall scripts.
 
 ---
 
-## 18. Documentation in GitBook only (no local READMEs)
+## 17. Documentation in GitBook only (no local READMEs)
 
 - **No content in local `README.md`s** — everything goes in GitBook. A repo README,
   if present, is a thin pointer to the docs site.
@@ -402,7 +398,7 @@ secret, keep PVs). Mirror the reference services' uninstall scripts.
 
 ---
 
-## 19. API service & UI hostnames
+## 18. API service & UI hostnames
 
 Per-audience Services and hostnames follow the platform convention (see the
 reference services for exact strings):

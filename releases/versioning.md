@@ -4,6 +4,15 @@ description: Version and branch conventions followed in OpenG2P
 
 # Versioning conventions
 
+{% hint style="info" %}
+**For Docker images and Helm charts, the automated pipeline is now the source of
+truth** — see [Helm & Docker Versioning Strategy and CI](helm-docker-versioning-and-ci/README.md).
+For repos on that pipeline, two conventions on this page are superseded: release
+tags are the **bare** `1.0.0` (no `v` prefix), and you **tag** `1.0.0` on the
+`1.0` release line rather than creating a `1.0.0` branch. The general conventions
+below still apply to Git repos, Odoo modules, and non-pipeline artifacts.
+{% endhint %}
+
 In general, OpenG2P follows  [Semantic Versioning 2.0](https://semver.org/spec/v2.0.0.html). However,  there are exceptions concerning Oodo modules which follow [Odoo Versioning](https://setuptools-odoo.readthedocs.io/en/latest/#versioning). &#x20;
 
 ## Versioning conventions for artifacts
