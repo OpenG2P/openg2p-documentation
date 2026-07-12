@@ -58,6 +58,45 @@ Instead:
 
 The tag is the "peg". You never work _on_ a tag; you tag a commit the release line already produced.
 
+### How versions flow — a worked example
+
+One release line, from the first RC to the second patch, all on the **same** branch `1.0`:
+
+| Step | Ref / action | Published version |
+| --- | --- | --- |
+| work toward the release | branch `1.0` | `1.0.0-rc.3` |
+| …more commits | branch `1.0` | `1.0.0-rc.4` |
+| cut the release | **tag `1.0.0`** | `1.0.0` (promoted from the tested RC — not rebuilt) |
+| fix a bug (same branch) | branch `1.0` | `1.0.1-rc.5` |
+| …more commits | branch `1.0` | `1.0.1-rc.6` |
+| cut the patch | **tag `1.0.1`** | `1.0.1` |
+
+Two things to note:
+
+* **The RC target advances automatically the instant `1.0.0` is tagged** — the next
+  build on the same branch is `1.0.1-rc.N`, **not** another `1.0.0-rc.N`. The pipeline
+  reads the highest `1.0.x` tag reachable from `HEAD` and targets the next patch. There
+  is nothing to configure.
+* You **keep using the same `1.0` branch** for the whole `1.0.x` series — one branch,
+  many tags. You never create a branch per patch.
+
+This ordering is deliberate and required for correctness:
+
+```
+1.0.0-rc.4  <  1.0.0  <  1.0.1-rc.5  <  1.0.1
+```
+
+By SemVer a pre-release sorts **below** its release. If the branch kept emitting
+`1.0.0-rc.N` after `1.0.0` shipped, every bugfix build would sort as **older than the
+release it fixes**, and `helm upgrade` would read it as a downgrade. Targeting
+`1.0.1-rc.N` keeps every build newer than the last release and older than the next.
+
+{% hint style="info" %}
+The `rc.N` number is the commit ordinal (`git rev-list --count HEAD`) — it climbs
+monotonically across the whole branch and **does not reset** per patch. Meanwhile
+`develop` is unaffected and keeps publishing `0.0.0-develop.N` in parallel.
+{% endhint %}
+
 {% hint style="warning" %}
 The pipeline **rejects a branch named `1.0.0`** with guidance to use branch `1.0`
 
