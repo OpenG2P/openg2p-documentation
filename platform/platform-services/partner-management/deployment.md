@@ -28,10 +28,15 @@ re-wires (component names, DB names, and the Keycloak issuer split).
 | `openg2p/partner-management-partner-api` | `docker/partner-api/Dockerfile` |
 | `openg2p/partner-management-staff-portal-ui` | `docker/staff-portal-ui/Dockerfile` |
 
-All three are built and pushed by the `docker-build` GitHub workflow (matrix;
-tag = git ref), which mirrors g2p-bridge's build (OCI labels,
-`FASTAPI_COMMON_REF` build-arg). The `helm-publish` workflow derives the chart
-version from the branch (`develop` → `0.0.0-develop.<run>`), matching g2p-bridge.
+Images **and** the Helm chart are built and published by a single
+`build-publish` GitHub workflow — a thin stub that calls the central reusable
+pipeline `openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1`. All
+versioning policy (image/chart versions per branch, e.g. `develop` →
+`0.0.0-develop.<run>`; the `FASTAPI_COMMON_REF` git-ref → SHA pin; changelog
+generation) lives centrally in `openg2p-packaging` behind the `@v1` tag, so the
+repo carries no versioning logic of its own. The stub declares only the repo's
+images and the chart's image-tag paths. See
+[Helm & Docker Versioning and CI](../../../releases/helm-docker-versioning-and-ci/README.md).
 
 ## Helm chart
 
