@@ -22,6 +22,9 @@ The changelog is only as good as your commit subjects. The existing
 the range readable, but a bare `fix` commit produces a bare `fix` line.
 {% endhint %}
 
+Each entry shows the commit's short SHA as a **link to the commit on GitHub**, so
+you can click through to the exact diff. `G2P-####` references link to Jira.
+
 **Jira links.** Any `G2P-####` reference in a commit message (and in the AI
 summary) is rendered as a link to
 `https://openg2p.atlassian.net/browse/G2P-####`. The base URL and project key are
@@ -74,6 +77,16 @@ each is just a commit range, exact because a version's `N` is the commit ordinal
 header names its baseline — _"changes since release 1.0.0"_ — and `CHANGELOG.md`
 lists them newest-first. Scrolling the page **is** the release history; when it grows
 large the per-version pages under `versions/` can be split by major line.
+
+{% hint style="info" %}
+**Migrating a repo with old releases.** The baseline is the nearest release **tag**
+reachable from `HEAD` — and both the new bare `N.N.N` **and** the legacy `vN.N.N`
+tags are recognised, so a repo moving off the old convention baselines against its
+last old release (e.g. _"since v1.2.0"_) and follows the new scheme forward. A repo
+with **no tags at all** shows _"the start"_ (full history) until its first release is
+tagged — that self-corrects, or you can anchor it by creating a baseline tag. A
+`1.0` *branch* is not a release; only a tag anchors the baseline.
+{% endhint %}
 
 **Develop is a single rolling page**, regenerated each build, showing both diffs at
 once:
