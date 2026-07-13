@@ -100,16 +100,23 @@ A single call to [OpenRouter](https://openrouter.ai) turns the commit list into
 `openg2p-packaging/ci/changelog/config.yml` (non-secret); the API key is the
 **`OPENROUTER_API_KEY`** org-level Actions secret.
 
-The AI **summarises the human-written commit notes** — it does not invent content
-from code diffs, so the summary stays grounded in what developers actually stated.
+The AI is given two inputs: the **developer commit notes** (the primary source of
+*intent*) and a **structural change digest** derived from `git` — changed-file
+stats and signals (new files, migrations, dependency and config changes), never
+raw diff content. The digest is always small regardless of how large the diff is,
+so it grounds the summary in *what actually changed* and lets it surface changes
+the commit messages omitted — without the cost or context limits of feeding whole
+diffs to the model.
 
 {% hint style="info" %}
-**Cost is negligible.** One check-in is a single call of a few hundred tokens. With
-the default `google/gemini-2.5-flash-lite` (~$0.10 / $0.40 per 1M input/output
-tokens) each summary costs roughly **$0.0001–0.0004**, so a **USD $10** OpenRouter
-credit covers on the order of **30,000–100,000 check-ins**. Only develop builds and
-release tags call the model; RC and feature branches skip it. (Prices approximate —
-confirm on [openrouter.ai/models](https://openrouter.ai/models).)
+**Cost is negligible.** One check-in is a single call of roughly **1,000 tokens**
+(the commit notes plus the bounded change digest — the digest is file stats and
+signals, not diff content, so it adds only ~100–400 tokens and never blows up).
+With the default `google/gemini-2.5-flash-lite` (~$0.10 / $0.40 per 1M
+input/output tokens) each summary costs about **$0.00015–0.0004**, so a **USD $10**
+OpenRouter credit covers on the order of **25,000–65,000 check-ins**. Only develop
+builds and release tags call the model; RC and feature branches skip it. (Prices
+approximate — confirm on [openrouter.ai/models](https://openrouter.ai/models).)
 {% endhint %}
 
 ## What happens if AI fails
