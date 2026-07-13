@@ -2,13 +2,13 @@
 description: Developer Installation for Openg2p Registry Staff Portal UI
 ---
 
-# Openg2p Registry Staff Portal UI
+# Staff Portal UI
 
 ### Setup
 
 Follow these steps to set up Openg2p Registry Staff Portal UI:
 
-* **Clone the Repository**: Clone the Openg2p Registry Staff Portal UI repository from the source:&#x20;
+* **Clone the Repository**: Clone the Openg2p Registry Staff Portal UI repository from the source:
 
 ```
 git clone git@github.com:OpenG2P/openg2p-registry-staff-portal-ui.git
@@ -23,23 +23,35 @@ npm install
 * **Configuration**: Configure the OpenG2P Registry Staff Portal UI to connect to the APIs by setting the required environment variables.
 
 ```
+IAM_URL="http://iam.dev.openg2p.my"
 BACKEND_API_URL="https://staff-farmer-registry-gen2.dev.openg2p.org"
-MASTERDATA_BACKEND_API_URL="https://gen2-master-data.dev.openg2p.org/"
-
-APP_MNEMONIC="registry-ui"
-APP_URL="http://localhost:3000"
-
-PARTNER_IMPORT_EXPORT_ENABLE="true"
-PARTNER_INGEST_URL="https://partner-farmer-registry-gen2.dev.openg2p.org/partner/ingest_data?data_model=dcivc"
+MASTERDATA_BACKEND_API_URL="https://gen2-master-data.dev.openg2p.org"
 
 VERIFY_SERVICE_URL="https://registry-farmer.dev.openg2p.org/v1/verify"
 VP_CLIENT_ID="did:web:registry-farmer.dev.openg2p.org:v1:verify"
-VP_PRESENTATION_ID="vp_id"
-VP_PURPOSE="Digital identity verification for registry onboarding"
+
+PARTNER_IMPORT_EXPORT_ENABLE="true"
+
 PAGE_SIZE=10
 
-IAM_URL="http://iam.openg2p.my"
-KEYCLOAK_LOGOUT_URL="https://keycloak2.openg2p.org/realms/{realmname}/protocol/openid-connect/logout"
+LOGIN_PROVIDER_ID="1"
+APPLICATION_MNEMONIC="registry-staff-portal"
+COOKIE_DOMAIN=".dev.openg2p.org"
+
+DEFAULT_LOCALE="en"
+
+# Content-Security-Policy — one env var per directive (space-separated sources).
+CSP_SRC_DEFAULT=self
+CSP_SRC_SCRIPT=self unsafe-inline
+CSP_SRC_STYLE=self unsafe-inline
+CSP_SRC_IMG="self blob: data: https://minio-api.dev.openg2p.org"
+CSP_SRC_FONT=self
+CSP_SRC_CONNECT=self
+CSP_SRC_FRAME=self
+CSP_SRC_OBJECT=none
+CSP_SRC_BASE_URI=self
+CSP_SRC_FORM_ACTION=self
+CSP_SRC_FRAME_ANCESTORS=none
 ```
 
 **Nginx Configuration**: Configure Nginx to act as a reverse proxy for Openg2p Registry Staff Portal UI
@@ -53,7 +65,7 @@ sudo apt-get install nginx -y
 sudo nano /etc/nginx/sites-available/staff-portal.conf
 ```
 
-* &#x20;Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).&#x20;
+* Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).
 
 ```
 server {
