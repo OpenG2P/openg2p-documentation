@@ -46,6 +46,12 @@ gh-pages (openg2p-packaging)
 This is the single URL to reference from GitBook or anywhere else — always current,
 no diffing, no command line.
 
+The site root — [`openg2p.github.io/openg2p-packaging`](https://openg2p.github.io/openg2p-packaging/)
+— lists every repo that has a published changelog (a landing page regenerated on
+each publish). The Jekyll-rendered view of a repo's changelog is at
+`…/<repo>/CHANGELOG` (drop the `.md`); the raw markdown for GitBook is the `.md`
+URL above.
+
 ## What triggers an entry
 
 | Channel | Changelog |
