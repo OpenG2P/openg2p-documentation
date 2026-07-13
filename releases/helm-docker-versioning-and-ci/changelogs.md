@@ -57,21 +57,38 @@ URL above.
 
 ## What triggers an entry
 
-| Channel | Changelog |
-| --- | --- |
-| `develop` | regenerates the rolling **Unreleased** page (see below) |
-| release tag `N.N.N` | writes a durable **version page**, clears Unreleased |
-| RC (release line `1.0`) | skipped — the release tag will capture the whole range |
-| feature branch (e.g. `g2p-5563`) | skipped — throwaway; builds images only, no chart, no changelog |
+**Changelog follows the chart.** Anything deployable — anything that publishes a
+chart to Rancher/helm — gets a changelog entry:
+
+| Channel | Chart? | Changelog |
+| --- | --- | --- |
+| `develop` | ✓ | rolling **Unreleased** page |
+| RC (release line `1.0`) | ✓ | **durable per-RC page** (`1.0.0-rc.18`, `1.0.0-rc.19`, …) — kept, so you can see exactly what changed between candidates |
+| release tag `N.N.N` | ✓ | durable **release page** |
+| feature branch (e.g. `g2p-5563`) | ✗ | none — images only |
 
 A build with no new commits in its range publishes nothing.
 
 {% hint style="info" %}
-A feature branch never appears in the changelog (no page, no dashboard row) — that
-would flood it with disposable entries. Its work surfaces in develop's **Unreleased**
-section once the branch is **merged to develop** (and, if you squash-merge, under a
-clean commit message).
+A **feature branch** publishes no chart (not deployable to Rancher), so it gets no
+changelog page — that would flood it with disposable entries. Its work surfaces in
+develop's **Unreleased** section once the branch is **merged to develop** (and, if
+you squash-merge, under a clean commit message). It remains traceable meanwhile via
+the image's commit-SHA label.
 {% endhint %}
+
+## Release candidates get durable pages
+
+Because an RC is on its way to a release, **every RC build keeps its own page**
+(`versions/1.0.0-rc.19.md`) showing both diffs — **New in this build** (vs the
+previous RC) and **Since last release** (cumulative). So you can see precisely what
+changed from `rc.18` to `rc.19`, which is what release QA needs. They appear under a
+**Release candidates (in progress)** section in `CHANGELOG.md`. Once you tag
+`1.0.0`, its RC pages drop out of that section (the release is done) but **remain as
+files**, browsable by URL, as the historical record of the release run.
+
+develop stays a **single rolling page** by contrast — it's the integration stream,
+not a release candidate, so durably paging every push would be noise.
 
 ## How versions accumulate, and the two diffs
 
