@@ -800,7 +800,6 @@
     * [NFS Migration – Migrating PVC's to a New NFS Server](deployment/deployment-guide/nfs-migration-migrating-pvcs-to-a-new-nfs-server.md)
     * [Adding and Removing Nodes in Cluster](operations/deployment/deployment-guide/adding-and-removing-nodes-in-cluster.md)
     * [Single Machine Backup & Restore Guide](operations/deployment/deployment-guide/single-machine-backup-and-restore-guide.md)
-  * [Packages](releases/packages.md)
   * [Helm & Docker Versioning Strategy and CI](releases/helm-docker-versioning-and-ci/README.md)
     * [CI pipeline](releases/helm-docker-versioning-and-ci/ci-pipeline.md)
     * [Changelogs](releases/helm-docker-versioning-and-ci/changelogs.md)
@@ -839,6 +838,7 @@
           * [Nginx](operations/deployment/_archive/scaling/base-infrastructure/load-balancer/nginx.md)
           * [AWS](operations/deployment/_archive/scaling/base-infrastructure/load-balancer/aws.md)
     * [Versioning Conventions](operations/deployment/_archive/versioning.md)
+    * [Packages](operations/deployment/_archive/packages.md)
 
 ## Resources
 
