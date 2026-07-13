@@ -4,13 +4,19 @@ OpenG2P is a robust and versatile platform, providing governments and organisati
 
 
 
-1. Applicability&#x20;
+### 1. Applicability&#x20;
 
 This privacy policy applies to the users of the OpenG2P platform which collects, stores and transfers data at various levels during the course of implementation of government-to-person benefits delivery by various Government departments in the country where the platform is being deployed.&#x20;
 
 
 
-2. Information collected and why&#x20;
+### 2. Regulatory Alignment&#x20;
+
+OpenG2P is designed as a country-agnostic platform deployed across multiple jurisdictions. Its privacy and security architecture is built to support alignment with recognised data protection frameworks, including (but not limited to) the EU General Data Protection Regulation (GDPR), India's Digital Personal Data Protection Act (DPDP Act) and the Information Technology Act, and the Sensitive Personal Data or Information (SPDI) Rules. Each deployment is configured to meet the specific legal and regulatory requirements applicable in its country of operation, and implementing agencies are responsible for ensuring their deployment-specific configuration satisfies local law.
+
+
+
+### 3. Information collected and why&#x20;
 
 Information is collected for benefits delivery and varies per department, on whose request OpenG2P platform is adopted by a country. OpenG2P uses the data which is collected by the social registry, at this stage consent is taken by the registry. For collection of data offline, OpenG2P takes consent via a consent form while using ODK. Scanned consent documents are also collected and stored while collecting data from the field. If OpenG2P platform’s self service portal is used or if the registry data is imported from 3rd Party, the PII is encrypted using the Mosip key manager to safeguard the data.&#x20;
 
@@ -20,24 +26,24 @@ Demographic data- Name, Gender, Age, Address, Contact Number, E-Mail ID and othe
 
 
 
-3. Sharing and Disclosure&#x20;
+### 4. Sharing and Disclosure&#x20;
 
 OpenG2P does not disclose or share any data stored on our platforms with any third party or private entity. OpenG2P uses an inbuilt consent sharing mechanism. OpenG2P may share the information with government bodies or law enforcement agencies pursuant to a legal obligation. Data from the registry is sharable, and the department has to take consent to share.
 
 
 
-4. Security Practices
+### 5. Security Practices
 
 We follow industry-standard best practices with respect to encryption and storage of users’ information. The security measures are as follows:&#x20;
 
-## User authentication and access Control
+#### User authentication and access Control
 
 * **Multi-factor Authentication (MFA)**: Building on Odoo's MFA capabilities, OpenG2P allows users to strengthen their authentication process by requiring multiple factors such as passwords, one-time codes, and biometric verification. This includes built-in support for Two-Factor Authentication (2FA), where users must enter both a password and a time-based code from an authenticator app—greatly enhancing account security and giving users greater confidence in protecting their data.
 * **Role-Based Access Control (RBAC)**: Administrators define roles and permissions within OpenG2P, ensuring authorised personnel have access to specific functionalities and beneficiary data while preventing unauthorised access.
 * **User Groups and Access Rules**: OpenG2P builds upon Odoo's user groups and access rules to provide granular control over beneficiary data access, ensuring data confidentiality is maintained.
 * **OAuth and OpenID Connect**: Additionally, OpenG2P's implementation of OAuth and OpenID Connect offers the option to seamlessly connect with Identity platforms such as MOSIP (Modular Open Source Identity Platform). This integration empowers OpenG2P to leverage established identity systems, enabling beneficiaries and users to authenticate securely using their MOSIP credentials. By bridging the gap between OpenG2P and MOSIP, this feature enhances security, reduces authentication friction, and fosters a unified and trusted user experience. This also extends the usage of bio-metric and VC (Verifiable Credentials) based authentications.
 
-## Encryption and data protection
+#### Encryption and data protection
 
 * **Data Encryption**: OpenG2P utilizes Odoo's data encryption protocols to secure data transmission between users' browsers and the server, safeguarding beneficiary data during communication.
 * **Database Encryption**: Sensitive beneficiary data stored in the database is encrypted using established encryption algorithms, providing an additional layer of protection.
@@ -46,7 +52,7 @@ We follow industry-standard best practices with respect to encryption and storag
 
 Encryption of data is achieved with production-grade Key Manager module. Learn more >>
 
-## Secure input handling
+#### Secure input handling
 
 Input security is handled in the following ways:
 
@@ -55,7 +61,7 @@ Input security is handled in the following ways:
 * Type safe programming using Python Pydantic
 * ORM capabilities to avoid SQL Injection threats
 
-## Document Encryption
+#### Document Encryption
 
 The Document Encryption module in OpenG2P safeguards all documents uploaded to the registry through secure encryption. This functionality protects sensitive data using advanced encryption techniques, reliable key management, and stringent access controls. Key features include:
 
@@ -68,24 +74,23 @@ The Document Encryption module in OpenG2P safeguards all documents uploaded to t
 * **Secure** **Decryption**:
   * Only authorized users with valid permissions can access and see decrypted documents.
 
-## Secure deployment
+#### Secure deployment
 
 OpenG2P offers support for Kubernetes-based production grade deployment with security features like [Wireguard](https://www.wireguard.com/), [Istio](https://istio.io/), access control, traffic control etc. [Learn more >>](/broken/pages/tDNeRfLR3IBWdGnZI5X1)
 
 
 
-5. Rights of the Users (consent taken, withdraw consent, update information) :&#x20;
+### 6. Rights of the Users (consent taken, withdraw consent, update information) :&#x20;
 
-User login is provided to update information. OpenG2P uses OpenID connect (OIDC) interface an authentication protocol that verifies user identities, only the user is giving consent and also can update data on the social registry. Withdrawal of consent is planned for future implementation.&#x20;
+User login is provided to update information. OpenG2P uses OpenID connect (OIDC) interface - an authentication protocol that verifies user identities - in which only the user is giving consent and also can update data on the social registry. Withdrawal of consent is planned for future implementation.&#x20;
 
-\
-6\. Data Retention&#x20;
+### &#x20;7. Data Retention&#x20;
 
-The OpenG2P platform allows data retention for as long as the scheme requires and is goal oriented. Upon request, the administrator can remove data, we do not have a policy as such to remove data, but can be customised as per the policy of the country or department.
-
+The OpenG2P platform does not store data beyond the purpose required and will ensure alignment with storage limitation/ minimization policies of the client country as required. OpenG2P deployments are hosted within the deploying country's chosen infrastructure, and personal data is processed and stored within that jurisdiction by default.
 
 
-7. Grievance Redressal&#x20;
+
+### 8. Grievance Redressal&#x20;
 
 Our Legal Counsel is our designated grievance officer, and may be contacted through the following means:
 
