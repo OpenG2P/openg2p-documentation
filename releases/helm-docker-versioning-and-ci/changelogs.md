@@ -103,6 +103,15 @@ A single call to [OpenRouter](https://openrouter.ai) turns the commit list into
 The AI **summarises the human-written commit notes** — it does not invent content
 from code diffs, so the summary stays grounded in what developers actually stated.
 
+{% hint style="info" %}
+**Cost is negligible.** One check-in is a single call of a few hundred tokens. With
+the default `google/gemini-2.5-flash-lite` (~$0.10 / $0.40 per 1M input/output
+tokens) each summary costs roughly **$0.0001–0.0004**, so a **USD $10** OpenRouter
+credit covers on the order of **30,000–100,000 check-ins**. Only develop builds and
+release tags call the model; RC and feature branches skip it. (Prices approximate —
+confirm on [openrouter.ai/models](https://openrouter.ai/models).)
+{% endhint %}
+
 ## What happens if AI fails
 
 AI is **never load-bearing.** If OpenRouter (or the key) is unavailable, the job:
