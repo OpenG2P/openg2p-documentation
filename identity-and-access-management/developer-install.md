@@ -30,7 +30,7 @@ sudo apt install -y python3-pip python3-dev build-essential libpq-dev
 mkdir staff-portal
 ```
 
-* Navigate to the  Portal folder.
+* Navigate to the Portal folder.
 
 ```sh
 cd staff-portal
@@ -79,7 +79,7 @@ touch .env
 ```
 
 ```
-iam_staff_db_username=odoo_user
+iam_staff_db_username=postgres
 iam_staff_db_password=admin
 iam_staff_db_hostname=localhost
 iam_staff_db_port=5432
@@ -91,15 +91,16 @@ iam_staff_login_providers_table_enabled=true
 iam_staff_login_providers_table_name="login_providers"
 iam_staff_auth_enabled=true
 
-iam_staff_auth_default_issuers=["https://keycloak2.openg2p.org/realms/master"]
-iam_staff_auth_default_jwks_urls=["https://keycloak2.openg2p.org/realms/master/protocol/openid-connect/certs"]
-
 iam_staff_auth_cookie_httponly=true
 iam_staff_auth_cookie_secure=false
 iam_staff_auth_cookie_path=/
-iam_staff_auth_cookie_domain=".openg2p.my"
+iam_staff_auth_cookie_domain="..dev.openg2p.org"
 iam_staff_auth_cookie_max_age=1800
 iam_staff_auth_cookie_set_expires=true
+
+# AUTH SESSION (Redis — shared with registry for refresh token flow)
+iam_staff_auth_redis_url=redis://localhost:6379/0
+iam_staff_auth_transaction_store_backend=redis
 
 iam_staff_openapi_root_path= "/"
 ```
@@ -128,7 +129,7 @@ sudo apt-get install nginx -y
 sudo nano /etc/nginx/sites-available/staff-portal.conf
 ```
 
-* &#x20;Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).
+* Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).
 
 ```
 server {
