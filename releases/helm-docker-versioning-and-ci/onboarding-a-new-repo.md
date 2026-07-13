@@ -9,7 +9,18 @@ description: >-
 Adding a repo to the pipeline is almost entirely **replacing its CI workflows with
 one thin stub** that calls the central reusable workflow. Use
 [`consent-manager`](https://github.com/openg2p/consent-manager/blob/develop/.github/workflows/build-publish.yml)
-as the working exemplar.
+as the working exemplar, or the canonical template
+[`ci/samples/caller-stub.yml`](https://github.com/openg2p/openg2p-packaging/blob/main/ci/samples/caller-stub.yml)
+in the packaging repo.
+
+{% hint style="info" %}
+**Why some boilerplate is repeated in every stub.** The **Run workflow** dialog is
+rendered from a repo's own `workflow_dispatch` inputs — a reusable (imported)
+workflow **cannot** supply them. So the two changelog inputs and their wording
+live in each stub, not centrally. Keep that block **byte-identical** across repos
+(copy it from the canonical template) so every repo's dialog reads the same; the
+per-repo bits are only `images` / `chart-path` / `chart-image-paths` / `pins`.
+{% endhint %}
 
 ## Steps
 
@@ -42,7 +53,12 @@ Paste this to an AI agent working in the new repo (fill the one bracketed line):
 > 1. Create `.github/workflows/build-publish.yml` that triggers on `push` to
 >    `branches: ["**"]` and `tags: ["**"]`, plus `workflow_dispatch` with boolean
 >    input `changelog_skip_ai` (default false) and string input
->    `changelog_regenerate` (default ""). It must have one job that calls
+>    `changelog_regenerate` (default ""). Give them clear descriptions:
+>    `changelog_skip_ai` → "Skip the AI summary — publish the changelog from commit
+>    messages only (use when AI is unavailable). Leave OFF for a normal run.";
+>    `changelog_regenerate` → "Backfill the AI summary for a release that published
+>    without one: enter its frozen version e.g. 1.0.1 (not a develop version). Leave
+>    EMPTY for a normal run." It must have one job that calls
 >    `uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1` and
 >    passes `packaging-ref: v1`.
 > 2. Under `with:`, set `images` to a JSON array — one entry per Docker image this

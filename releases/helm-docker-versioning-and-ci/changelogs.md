@@ -80,13 +80,37 @@ AI is **never load-bearing.** If OpenRouter (or the key) is unavailable, the job
 * **still publishes** the changelog with the full commit-message list,
 * writes `_AI summary unavailable…_` in the Summary section.
 
-The build and the changelog succeed regardless. Two knobs (run the service repo's
-workflow via **Run workflow** in the Actions tab):
+The build and the changelog succeed regardless.
 
-| Input | Effect |
-| --- | --- |
-| `changelog_skip_ai: true` | publish commit messages only, no API call (clean success) |
-| `changelog_regenerate: 1.0.1` | backfill the AI summary for an already-published version — reads its commit list back and rewrites **only** the Summary; the commit list is immutable after release |
+### The two manual knobs (Run workflow dialog)
+
+The service repo's workflow has two `workflow_dispatch` inputs, shown when you
+click **Run workflow** in the Actions tab. **Neither is needed for normal runs** —
+regular pushes handle everything. For a plain manual run, leave the checkbox
+**off** and the text box **empty** (it rebuilds and publishes the selected branch
+as usual).
+
+| I want to… | ☑ Skip AI checkbox | Version text box |
+| --- | --- | --- |
+| Normal run (rebuild/publish current state) | off | *(empty)* |
+| Publish the changelog **without** the AI summary (AI down / save cost) | **on** | *(empty)* |
+| Add the AI summary to a **release that shipped without one** | off | e.g. `1.0.1` |
+
+Details and caveats:
+
+* **Skip-AI checkbox** (`changelog_skip_ai`) — builds the changelog from the commit
+  list only, no OpenRouter call; the Summary shows the placeholder.
+* **Version text box** (`changelog_regenerate`) — finds that version's existing
+  page, reads its commit list back, and rewrites **only** the Summary (the commit
+  list is immutable after release). It must be a **frozen release version**
+  (`1.0.0`, `1.0.1`) that has a published page — a `0.0.0-develop.N` won't work,
+  because develop's changelog is the rolling *Unreleased* page, not a per-version
+  one.
+* **Don't combine them** — backfilling needs AI, so ticking "skip AI" while filling
+  the version box just errors.
+* A `workflow_dispatch` run builds whichever **branch** you select in the dialog
+  (default `develop`), i.e. it publishes that branch's current version — not only
+  the changelog.
 
 So an AI outage is fully recoverable after the fact, and you can always produce
 the human changelog without AI.
