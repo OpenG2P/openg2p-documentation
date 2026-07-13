@@ -56,11 +56,42 @@ URL above.
 
 | Channel | Changelog |
 | --- | --- |
-| `develop` | updates the rolling **Unreleased** section (notes since the last release) |
-| release tag `N.N.N` | writes a frozen **version page**, clears Unreleased |
+| `develop` | regenerates the rolling **Unreleased** page (see below) |
+| release tag `N.N.N` | writes a durable **version page**, clears Unreleased |
 | RC (`1.0`), feature branch | skipped — the release tag captures the whole range |
 
 A build with no new commits in its range publishes nothing.
+
+## How versions accumulate, and the two diffs
+
+"Previous version" means two different things, and the changelog shows **both** —
+each is just a commit range, exact because a version's `N` is the commit ordinal:
+
+* **Incremental** — vs the *previous build on the same branch* (what this build added).
+* **Cumulative** — vs the *last released version* (everything unreleased so far).
+
+**Releases are the durable trace.** Every frozen `N.N.N` gets a permanent page whose
+header names its baseline — _"changes since release 1.0.0"_ — and `CHANGELOG.md`
+lists them newest-first. Scrolling the page **is** the release history; when it grows
+large the per-version pages under `versions/` can be split by major line.
+
+**Develop is a single rolling page**, regenerated each build, showing both diffs at
+once:
+
+```
+## consent-manager — Unreleased (0.0.0-develop.40, 2026-07-13)
+_commit `326edee` · baseline: release 1.0.0 · previous build 0.0.0-develop.39_
+
+### Summary                              (AI, cumulative since 1.0.0)
+### New in this build (since 0.0.0-develop.39)   ← incremental diff
+### Since last release (1.0.0)                    ← cumulative diff
+```
+
+So you always see what *this* build changed and what has piled up since the release,
+without a page per build. (Develop builds are transient — only releases are kept
+durably; any older develop delta is recoverable from git, since the version number
+is the commit ordinal.) At release time the whole Unreleased range folds into the new
+version's page and Unreleased resets.
 
 ## The role of AI
 
