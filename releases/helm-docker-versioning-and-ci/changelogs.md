@@ -61,9 +61,17 @@ URL above.
 | --- | --- |
 | `develop` | regenerates the rolling **Unreleased** page (see below) |
 | release tag `N.N.N` | writes a durable **version page**, clears Unreleased |
-| RC (`1.0`), feature branch | skipped — the release tag captures the whole range |
+| RC (release line `1.0`) | skipped — the release tag will capture the whole range |
+| feature branch (e.g. `g2p-5563`) | skipped — throwaway; builds images only, no chart, no changelog |
 
 A build with no new commits in its range publishes nothing.
+
+{% hint style="info" %}
+A feature branch never appears in the changelog (no page, no dashboard row) — that
+would flood it with disposable entries. Its work surfaces in develop's **Unreleased**
+section once the branch is **merged to develop** (and, if you squash-merge, under a
+clean commit message).
+{% endhint %}
 
 ## How versions accumulate, and the two diffs
 
@@ -79,13 +87,21 @@ lists them newest-first. Scrolling the page **is** the release history; when it 
 large the per-version pages under `versions/` can be split by major line.
 
 {% hint style="info" %}
-**Migrating a repo with old releases.** The baseline is the nearest release **tag**
-reachable from `HEAD` — and both the new bare `N.N.N` **and** the legacy `vN.N.N`
-tags are recognised, so a repo moving off the old convention baselines against its
-last old release (e.g. _"since v1.2.0"_) and follows the new scheme forward. A repo
-with **no tags at all** shows _"the start"_ (full history) until its first release is
-tagged — that self-corrects, or you can anchor it by creating a baseline tag. A
-`1.0` *branch* is not a release; only a tag anchors the baseline.
+**Migrating a repo with old releases.** The baseline is the last release **tag**,
+and both the new bare `N.N.N` **and** the legacy `vN.N.N` tags are recognised, so a
+repo moving off the old convention baselines against its last old release (e.g.
+_"since v1.2.0"_) and follows the new scheme forward. Resolution order:
+
+1. **Nearest release tag that is an ancestor of `HEAD`** (the clean case — the
+   release is in develop's history).
+2. **Diverged release line:** if the release tag lives only on a separate line (a
+   `1.2` branch never merged back into develop), the baseline is the **merge-base**
+   — i.e. "develop changes since it branched from the release line" — labelled with
+   that release version. This avoids dumping the entire history.
+3. **No release tags at all** → _"the start"_ (full history) until the first release
+   is tagged. Self-corrects, or anchor it with a baseline tag.
+
+A `1.0` *branch* is not a release; only a tag anchors the baseline.
 {% endhint %}
 
 **Develop is a single rolling page**, regenerated each build, showing both diffs at
