@@ -16,9 +16,9 @@ This roadmap is indicative, not a commitment to dates. Items shift as we learn f
 
 | Horizon | Theme | Focus |
 | --- | --- | --- |
-| **2026** | Consolidate & harden | Mature the Gen2 modules, deepen interoperability, and stand up new registries and services |
+| **2026** | Consolidate & harden | Mature and enhance the Gen2 modules, complete DCI interoperability, and launch new registries and services |
 | **2027** | Intelligence & inclusion | Bring AI and verifiable credentials into everyday use, and unify the product architecture |
-| **2028** | Scale & reach | Grow into an advisory role and extend G2P technology beyond government to humanitarian use |
+| **2028** | Scale & reach | Expand into solutioning and advisory roles, and extend G2P technology beyond government to humanitarian use |
 
 ***
 
