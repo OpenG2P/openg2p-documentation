@@ -21,6 +21,29 @@ Two forms of that version exist for every build:
 * an **immutable** version (e.g. `0.0.0-develop.39`) that is never overwritten — this is what deployments pin to;
 * a **moving alias** (`develop`) that always points at the newest build — a convenience for humans, never referenced by anything that needs to be stable.
 
+## Two properties, kept separate
+
+The word "frozen" used to bundle two different ideas together. Under this scheme they come apart, so keep them separate:
+
+* **Immutable vs moving.** *Every published version is immutable* — `0.0.0-develop.39`, `1.0.0-rc.5` and `1.0.0` each resolve to the same bytes forever and are never overwritten. The only thing that *moves* is an **alias**: the `develop` docker tag, meaning "the newest develop build" (i.e. `latest`). Deployments pin immutable versions; the alias is a human convenience.
+* **Release status.** Tagging `1.0.0` does **not** *make* the artifact immutable — it already was (the tag build **promotes the exact digest**, it does not rebuild). The tag adds *meaning*: "this is a supported, stable release." This matches SemVer — a bare `X.Y.Z` is a **stable release**; anything with a `-suffix` (`-develop.N`, `-rc.M`) is a **pre-release**, lower precedence, with no stability promise.
+
+| Reference | Immutable? | What it is |
+| --- | --- | --- |
+| `develop` (docker tag) | no — moving alias | pointer to the newest develop build ("latest") |
+| `0.0.0-develop.39` | **yes** | an immutable **develop build** (pre-release) |
+| `1.0.0-rc.5` | **yes** | an immutable **release candidate** |
+| `1.0.0` | **yes** | an immutable **release** — declared stable/supported |
+
+So there is no "unfrozen version" — only **immutable versions** and **moving aliases**. What a bare `N.N.N` tag marks is a **release** (a semantic status), not the moment content stops changing.
+
+{% hint style="info" %}
+Internally the pipeline still emits a flag called `frozen=true` for a bare
+`N.N.N`. Read it as **"is a release"** — it's what tells the build to *promote an
+existing digest* rather than build a new one. The name is legacy; the meaning is
+"release", not "the point at which it becomes immutable".
+{% endhint %}
+
 ## Why we changed
 
 The previous method had two problems that made "freezing" a release unreliable:
@@ -28,28 +51,28 @@ The previous method had two problems that made "freezing" a release unreliable:
 1. **Everything on `develop` was a moving target.** Images were tagged `develop` and overwritten on every push. A chart that referenced `develop` therefore changed underneath you even after you "froze" the chart version.
 2. **Images and charts could drift apart.** The old dual workflows were _path-filtered_ — a backend change rebuilt the image but not the chart, so the newest chart kept pointing at a previous image. Freezing the chart version froze the label on the box, not its contents.
 
-The new scheme fixes both: the moving tag still exists for convenience, but every build **also** publishes an immutable version, and images + chart are always produced **together at one version**, so a frozen chart genuinely freezes the whole tree.
+The new scheme fixes both: the moving alias still exists for convenience, but every build **also** publishes an immutable version, and images + chart are always produced **together at one version** — so pinning a chart version genuinely pins the whole tree (the chart and every image it references are immutable, together).
 
 ## The versioning, with examples
 
 `N` below is `git rev-list --count HEAD` — the commit's ordinal. It is one-to-one with the commit, so `…​.39` and a specific commit are interchangeable (see [tracing a version](./#tracing-a-version-to-code)).
 
-| You are on…                       | Version produced                             | Frozen? | Chart published?     |
-| --------------------------------- | -------------------------------------------- | ------- | -------------------- |
-| `develop`                         | `0.0.0-develop.39`                           | no      | yes (rolling)        |
-| release line branch `1.0`         | `1.0.0-rc.41` → after `1.0.0`, `1.0.1-rc.42` | no      | yes                  |
-| **tag** `1.0.0`                   | `1.0.0`                                      | **yes** | yes                  |
-| any other branch, e.g. `g2p-4567` | `0.0.0-g2p-4567.44`                          | no      | **no** (images only) |
+| You are on…                       | Version produced                             | Kind                | Chart published?     |
+| --------------------------------- | -------------------------------------------- | ------------------- | -------------------- |
+| `develop`                         | `0.0.0-develop.39`                           | develop build       | yes (rolling)        |
+| release line branch `1.0`         | `1.0.0-rc.41` → after `1.0.0`, `1.0.1-rc.42` | release candidate   | yes                  |
+| **tag** `1.0.0`                   | `1.0.0`                                      | **release** (stable)| yes                  |
+| any other branch, e.g. `g2p-4567` | `0.0.0-g2p-4567.44`                          | test build          | **no** (images only) |
 
-Every value is valid [SemVer](https://semver.org) **and** a valid Docker tag. By the SemVer spec a bare `X.Y.Z` (no suffix) is a stable release, and anything with a `-suffix` sorts strictly below it — so **"a 3-digit version with no suffix is frozen" is enforced by tooling, not just convention.**
+Every one of these is **immutable** once published (see [above](#two-properties-kept-separate)); the `Kind` column is *release status*, not mutability. Every value is valid [SemVer](https://semver.org) **and** a valid Docker tag. By the SemVer spec a bare `X.Y.Z` is a **stable release** and anything with a `-suffix` sorts strictly below it — so **"bare `N.N.N` means a release" is enforced by tooling, not just convention.**
 
 {% hint style="info" %}
-**No `v` prefix.** Release tags are the bare version, `1.0.0` — **not** `v1.0.0`. The bare 3-digit form _is_ the frozen signal. (The `v`-prefix is reserved for the packaging repo's own workflow tags like `v1`; see [CI pipeline](ci-pipeline.md).) The pipeline rejects a `v1.0.0` tag.
+**No `v` prefix.** Release tags are the bare version, `1.0.0` — **not** `v1.0.0`. The bare 3-digit form _is_ the release signal. (The `v`-prefix is reserved for the packaging repo's own workflow tags like `v1`; see [CI pipeline](ci-pipeline.md).) The pipeline rejects a `v1.0.0` tag.
 {% endhint %}
 
-## Frozen versions: tag, don't branch
+## Releases: tag, don't branch
 
-You do **not** create a `1.0.0` branch to cut a release. A branch is mutable — publishing a frozen `1.0.0` from one would let a later push overwrite a released artifact.
+You do **not** create a `1.0.0` branch to cut a release. A branch is mutable — cutting the release `1.0.0` from one would let a later push overwrite an already-released artifact. A release must come from an **immutable ref** — a tag.
 
 Instead:
 
@@ -100,7 +123,7 @@ monotonically across the whole branch and **does not reset** per patch. Meanwhil
 {% hint style="warning" %}
 The pipeline **rejects a branch named `1.0.0`** with guidance to use branch `1.0`
 
-* tag `1.0.0`. A frozen version may only come from an immutable ref.
+* tag `1.0.0`. A release may only come from an **immutable ref** (a tag), never a mutable branch.
 {% endhint %}
 
 ## The version lives in git, not in the code

@@ -57,7 +57,7 @@ Paste this to an AI agent working in the new repo (fill the one bracketed line):
 >    `changelog_skip_ai` → "Skip the AI summary — publish the changelog from commit
 >    messages only (use when AI is unavailable). Leave OFF for a normal run.";
 >    `changelog_regenerate` → "Backfill the AI summary for a release that published
->    without one: enter its frozen version e.g. 1.0.1 (not a develop version). Leave
+>    without one: enter its release version e.g. 1.0.1 (a bare N.N.N, not a develop version). Leave
 >    EMPTY for a normal run." It must have one job that calls
 >    `uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1` and
 >    passes `packaging-ref: v1`.

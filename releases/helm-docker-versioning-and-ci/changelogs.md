@@ -40,7 +40,7 @@ gh-pages (openg2p-packaging)
   <repo>/
     CHANGELOG.md          ← the page to link; Unreleased first, releases newest-first
     versions/
-      1.0.0.md            ← one page per frozen release
+      1.0.0.md            ← one page per release
       unreleased.md       ← rolling; regenerated each build, never grows
 ```
 
@@ -98,7 +98,7 @@ each is just a commit range, exact because a version's `N` is the commit ordinal
 * **Incremental** — vs the *previous build on the same branch* (what this build added).
 * **Cumulative** — vs the *last released version* (everything unreleased so far).
 
-**Releases are the durable trace.** Every frozen `N.N.N` gets a permanent page whose
+**Releases are the durable trace.** Every release `N.N.N` gets a permanent page whose
 header names its baseline — _"changes since release 1.0.0"_ — and `CHANGELOG.md`
 lists them newest-first. Scrolling the page **is** the release history; when it grows
 large the per-version pages under `versions/` can be split by major line.
@@ -196,7 +196,7 @@ Details and caveats:
   list only, no OpenRouter call; the Summary shows the placeholder.
 * **Version text box** (`changelog_regenerate`) — finds that version's existing
   page, reads its commit list back, and rewrites **only** the Summary (the commit
-  list is immutable after release). It must be a **frozen release version**
+  list is immutable after release). It must be a **release version**
   (`1.0.0`, `1.0.1`) that has a published page — a `0.0.0-develop.N` won't work,
   because develop's changelog is the rolling *Unreleased* page, not a per-version
   one.
