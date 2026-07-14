@@ -81,6 +81,12 @@ Instead:
 
 The tag is the "peg". You never work _on_ a tag; you tag a commit the release line already produced.
 
+{% hint style="info" %}
+**The `1.0` release-line branch is optional.** For a **one-off** release you can skip it and **tag `1.0.0` directly on `develop`** — the tag build promotes the `0.0.0-develop.N` build at that commit in exactly the same way. Create a `1.0` branch only when you need a **maintenance line** to cut later patches (`1.0.1`, `1.0.2`) independently while `develop` moves on.
+
+Either way there is one requirement: tag a commit CI has **already built** (an existing `…-rc.N` or `0.0.0-develop.N`), because the release **promotes that digest** rather than rebuilding. So: push, let the build go green, then tag that commit and push the tag. Tagging a commit CI never built fails with _"nothing to promote."_ (This applies to image repos; a chart-only repo like commons repackages fresh, so no prior build is needed.)
+{% endhint %}
+
 ### How versions flow — a worked example
 
 One release line, from the first RC to the second patch, all on the **same** branch `1.0`:

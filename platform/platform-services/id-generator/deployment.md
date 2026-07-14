@@ -224,7 +224,9 @@ docker buildx build \
 
 ### Publishing to Docker Hub
 
-Normally, images are built and pushed to Docker Hub automatically by the [GitHub Actions workflow](https://github.com/OpenG2P/id-generator/blob/main/.github/workflows/docker-build.yml) on every push. For manual multi-arch publishing (e.g., hotfix releases):
+Normally, images are built and pushed to Docker Hub automatically by the [GitHub Actions workflow](https://github.com/OpenG2P/id-generator/blob/main/.github/workflows/build-publish.yml) on every push. This is a thin stub that delegates to the central reusable workflow in [`openg2p-packaging`](https://github.com/OpenG2P/openg2p-packaging), which handles versioning, Helm chart publishing, and changelog generation. See the [CI onboarding guide](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci/onboarding-a-new-repo) for details.
+
+For manual multi-arch publishing (e.g., hotfix releases):
 
 ```bash
 # Login to Docker Hub first
