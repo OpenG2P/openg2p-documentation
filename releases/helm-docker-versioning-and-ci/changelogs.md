@@ -155,14 +155,15 @@ the commit messages omitted — without the cost or context limits of feeding wh
 diffs to the model.
 
 {% hint style="info" %}
-**Cost is negligible.** One check-in is a single call of roughly **1,000 tokens**
-(the commit notes plus the bounded change digest — the digest is file stats and
-signals, not diff content, so it adds only ~100–400 tokens and never blows up).
-With the default `google/gemini-2.5-flash-lite` (~$0.10 / $0.40 per 1M
-input/output tokens) each summary costs about **$0.00015–0.0004**, so a **USD $10**
-OpenRouter credit covers on the order of **25,000–65,000 check-ins**. Only develop
-builds and release tags call the model; RC and feature branches skip it. (Prices
-approximate — confirm on [openrouter.ai/models](https://openrouter.ai/models).)
+**Cost is negligible.** One check-in is a single call of ~1,000–1,500 tokens (the
+commit notes plus the bounded change digest). The default model is
+`openai/gpt-4o-mini` (~$0.15 / $0.60 per 1M input/output tokens) — chosen over the
+cheapest tier because that one flattened large ranges into vague filler. Each
+summary costs roughly **$0.0003–0.001**, so a **USD $10** OpenRouter credit still
+covers **~10,000–30,000 check-ins**. Bump the model to `sonnet`/`gpt-4o` in
+`config.yml` for richer notes; only develop builds and release tags call the
+model. (Prices approximate — confirm on
+[openrouter.ai/models](https://openrouter.ai/models).)
 {% endhint %}
 
 ## What happens if AI fails
