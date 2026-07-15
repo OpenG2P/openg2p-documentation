@@ -801,6 +801,7 @@
     * [NFS Migration – Migrating PVC's to a New NFS Server](deployment/deployment-guide/nfs-migration-migrating-pvcs-to-a-new-nfs-server.md)
     * [Adding and Removing Nodes in Cluster](operations/deployment/deployment-guide/adding-and-removing-nodes-in-cluster.md)
     * [Single Machine Backup & Restore Guide](operations/deployment/deployment-guide/single-machine-backup-and-restore-guide.md)
+  * [OpenG2P GitLab Repositories](operations/deployment/gitlab-repositories.md)
   * [Helm & Docker Versioning Strategy and CI](releases/helm-docker-versioning-and-ci/README.md)
     * [CI pipeline](releases/helm-docker-versioning-and-ci/ci-pipeline.md)
     * [Changelogs](releases/helm-docker-versioning-and-ci/changelogs.md)

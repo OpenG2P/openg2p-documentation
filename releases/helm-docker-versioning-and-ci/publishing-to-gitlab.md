@@ -242,6 +242,7 @@ one self-hosted platform.
 
 ## See also
 
+* [OpenG2P GitLab Repositories](../../operations/deployment/gitlab-repositories.md) — the overview: what's on GitLab, org/customer groups, and moving a repo there.
 * [CI pipeline](ci-pipeline.md) — the reusable workflow, jobs, and the `@v1` rollout model.
 * [Onboarding a repo](onboarding-a-new-repo.md) — putting a repo on the pipeline (classic target).
 * [Strategy & versioning](README.md) — one-version-per-commit and promotion.
