@@ -16,7 +16,7 @@ Before you start, gather:
 * [ ] Any customer-supplied TLS cert + key files (if `tls.method: provided`)
 * [ ] Working network access to the backup host's surviving repo
 
-If the backup host itself is also destroyed, recovery isn't possible — backups are gone with it. This is why the [Architecture](../architecture.md) page calls out 3-2-1 as Phase 2 work.
+If the backup host itself is also destroyed, recovery isn't possible — backups are gone with it. Offsite / 3-2-1 replication is still an operator plan (see [Backups — what this does not do](../README.md#what-this-does-not-do)); protect the backup volume accordingly.
 
 ## Step 1 — Provision fresh nodes
 

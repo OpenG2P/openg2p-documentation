@@ -19,6 +19,8 @@ description: Per-component table of what is backed up, plus the rationale for wh
 | RKE2 cred (incl. encryption-config) | restic over SSH-tar | compute `/var/lib/rancher/rke2/server/cred` | nightly 03:30 | same as NFS |
 | RKE2 server token | restic over SSH-tar | compute `/var/lib/rancher/rke2/server/token` | nightly 03:30 | same as NFS |
 | RKE2 config | restic over SSH-tar | compute `/etc/rancher/rke2` | nightly 03:30 | same as NFS |
+| Object store (opt-in) | rclone RO mount + restic | MinIO/S3 → backup `objectstore-restic` | nightly 04:00 | 7 daily + 4 weekly (configurable) |
+| WAL health (not a backup) | probe → metrics | storage `pg_wal` + `pg_stat_archiver` | every 5m | n/a — alerting only |
 
 ## What survives a fresh `openg2p-prod.sh` install
 
@@ -75,6 +77,10 @@ Captured by: `rancher-backup` ResourceSet (`configmaps`).
 The actual bytes that apps write — Postgres on Keycloak's PVC (when Keycloak uses an embedded DB; OpenG2P uses the host PG, so this matters less for Keycloak), MinIO data if any environment installs MinIO, uploaded files, theme assets.
 
 Captured by: `restic` on the NFS export. Excludes `**/logs/**` and `**/tmp/**` by default.
+
+### Object store buckets (opt-in)
+
+When an environment exposes MinIO/S3 over the S3 API (not only as NFS-backed PVCs) and `groups.objectstore: true`, bucket contents are snapshotted via rclone + restic onto the backup host. Leave the group disabled if you have no object store or already protect it elsewhere.
 
 ### Compute-node filesystem state — separate from etcd
 

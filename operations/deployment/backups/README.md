@@ -2,7 +2,8 @@
 description: >-
   Backup and restore automation for OpenG2P production - PostgreSQL via
   pgBackRest, etcd snapshots, rancher-backup for Kubernetes resources, restic
-  for NFS data and configs. Pull-based and encrypted.
+  for NFS data and configs. Pull-based and encrypted. Optional MinIO/S3 via
+  rclone+restic, plus Prometheus/email alerting.
 ---
 
 # Backups
@@ -19,7 +20,7 @@ Backups are **required for production** and must be in place before go-live — 
 
 ## What this is, in one paragraph
 
-A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of an OpenG2P production install — PostgreSQL via pgBackRest with WAL streaming for \~1-minute RPO, etcd snapshots from RKE2's built-in mechanism, Kubernetes resources via the [rancher-backup operator](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery), NFS data via [restic](https://restic.net/) with a sidecar manifest that maps NFS UUID directories back to their PVC/namespace/app, and the small but critical filesystem state (Wireguard config, Nginx config, RKE2 TLS material) via restic over SSH-tar. All repos are encrypted at rest. Drills run weekly. Restores are deliberate — staged into temp dirs, never overwriting live data without an operator's runbook step.
+A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of an OpenG2P production install — PostgreSQL via pgBackRest with WAL streaming for \~1-minute RPO, etcd snapshots from RKE2's built-in mechanism, Kubernetes resources via the [rancher-backup operator](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery), NFS data via [restic](https://restic.net/) with a sidecar manifest that maps NFS UUID directories back to their PVC/namespace/app, filesystem state (Wireguard, Nginx, RKE2 TLS) via restic over SSH-tar, and (opt-in) MinIO/S3 object data via rclone read-only mount + restic. All repos are encrypted at rest. Install also wires Prometheus textfile metrics, an independent WAL-health probe, optional SMTP daily/failure mail, and a PrometheusRule into `cattle-monitoring-system`. Drills run weekly. Restores are deliberate — staged into temp dirs, never overwriting live data without an operator's runbook step.
 
 ## Sub-pages
 
@@ -27,14 +28,14 @@ A 4th "backup" node, on the same VPC, runs cron-driven backups of every part of 
 * [What gets backed up](what-gets-backed-up.md) — the per-component table and the rationale for what's lost vs. recreated on a fresh install
 * [Prerequisites](prerequisites.md) — backup-node sizing, network, secret custody (p12 keystore model)
 * [Configuration](configuration.md) — `backup-config.yaml` reference
-* [Operations](operations.md) — `install`, `run`, `verify`, `list`, `status`, group toggles
+* [Operations](operations.md) — `install`, `run`, `verify`, `list`, `status`, `wal-health`, `daily-report`, group toggles
 * [Drills](drills.md) — weekly verify + dry-run-restore harness, interpreting `.status.json`
 * [Restoration](restoration/) — index of restore scenarios
   * [Postgres PITR](restoration/postgres-pitr.md)
   * [Single PVC](restoration/single-pvc.md)
   * [Etcd in-place](restoration/etcd-in-place.md)
   * [Full rebuild](restoration/full-rebuild.md)
-* [Alerting (Phase 2)](alerting.md) — candidate mechanisms, deferred from v1
+* [Alerting](alerting.md) — Prometheus dead-man's switch, WAL probes, operator email
 
 ## TL;DR — get backups running
 
@@ -49,7 +50,8 @@ cd automation/production/aws/
 cd ../../backups/
 cp backup-config.example.yaml backup-config.yaml
 # Edit backup-config.yaml — passphrase paths in your p12 keystore,
-# group toggles (default: all on), retention, schedules.
+# group toggles (default: all on except objectstore), retention, schedules,
+# monitoring/alerting if you want mail + Prometheus rules.
 
 # 2. Bootstrap.
 ./openg2p-backup.sh install --config backup-config.yaml
@@ -58,13 +60,14 @@ cp backup-config.example.yaml backup-config.yaml
 ./openg2p-backup.sh run --config backup-config.yaml --component all
 ./openg2p-backup.sh verify --config backup-config.yaml --component all
 ./openg2p-backup.sh status --config backup-config.yaml
+./openg2p-backup.sh wal-health --config backup-config.yaml
 
 # 4. (Optional, separate maintenance window) Enable encryption-at-rest for
 #    Kubernetes Secrets in etcd. Apiserver restarts (~30-60s).
 ./openg2p-backup.sh install --config backup-config.yaml --enable-secret-encryption
 ```
 
-After install, cron on the backup host runs the daily/weekly schedule. Operators interact with the system via the orchestrator from their laptop for ad-hoc runs, status checks, and restores.
+After install, cron on the backup host runs the daily/weekly schedule plus WAL-health (every 5m) and daily-report (morning email when SMTP is enabled). Operators interact via the orchestrator from their laptop for ad-hoc runs, status checks, and restores. See [Alerting](alerting.md) to confirm PrometheusRule + metrics scrape.
 
 ## Recovery objectives
 
@@ -75,13 +78,14 @@ After install, cron on the backup host runs the daily/weekly schedule. Operators
 | NFS data                                          | 24h           | minutes per PVC, hours for full export        |
 | etcd snapshots                                    | 6h            | 5–10 min (cluster-reset restore)              |
 | RP/compute filesystem state (WG, Nginx, RKE2 TLS) | 24h           | minutes per subsystem                         |
+| Object store (MinIO/S3, if `groups.objectstore`)  | 24h (nightly) | minutes (restic restore from backup host)     |
 
 All of these are configurable via `backup-config.yaml` schedules. The defaults match a 6-month retention window and assume a 1 TB backup volume; smaller volumes work but shorten retention before pruning.
 
 ## What this does not do
 
-* **Multi-site / offsite replication.** v1 keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — this is 1/1/0. Plan a second offsite target later via `restic copy` or pgBackRest's secondary repo support.
-* **Mass alerting.** Status is exposed as `/var/lib/openg2p-backup/.status.json` on the backup host. A Phase 2 layer wires that into Prometheus/email/Slack (see [Alerting](alerting.md)).
+* **Multi-site / offsite replication.** The default keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — plan a second offsite target later via `restic copy` or pgBackRest's secondary repo. Opt-in `objectstore` backs *up* MinIO/S3 *onto* the backup host; it is not itself an offsite copy.
+* **Scraping the backup host for you.** `install` writes textfile metrics and applies a PrometheusRule into `cattle-monitoring-system`, but Prometheus only sees those metrics if node_exporter (or Pushgateway) on the backup host is scraped. See [Alerting](alerting.md).
 * **Full disaster-recovery rehearsal.** Weekly drills do per-component verify + dry-run-restore. Cluster-wide rehearsals into a sandbox VPC are a manual, separately-scheduled operator activity.
 * **Restoring to a different cluster topology.** Restore assumes you're rebuilding into the same production shape. Cross-version or cross-architecture restore is out of scope.
 
@@ -89,6 +93,7 @@ All of these are configurable via `backup-config.yaml` schedules. The defaults m
 
 * [pgBackRest user guide](https://pgbackrest.org/user-guide.html)
 * [restic documentation](https://restic.readthedocs.io/)
+* [rclone documentation](https://rclone.org/docs/)
 * [RKE2 backup and restore](https://docs.rke2.io/backup_restore)
 * [Rancher Backup Operator](https://ranchermanager.docs.rancher.com/integrations-in-rancher/backup-restore-and-disaster-recovery)
 * [Kubernetes encryption at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)

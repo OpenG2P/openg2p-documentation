@@ -45,6 +45,8 @@ The backup automation needs three passphrases. They are loaded from files on the
 | `restic.pass`     | restic NFS + configs repos                | NFS data + RP/compute config backups unrecoverable        |
 | `pgbackrest.pass` | pgBackRest repo cipher                    | All Postgres backups unrecoverable                        |
 | `etcd-aescbc.key` | etcd encryption-at-rest (only if enabled) | Etcd-stored Secrets unrecoverable from restored snapshots |
+| `smtp.env`        | optional operator email (daily + failure) | Email alerts stop; backups themselves still work          |
+| `rclone.conf` + objectstore restic pass | optional `groups.objectstore` | Object-store restic repo unrecoverable                    |
 
 OpenG2P's convention is to keep these in a per-project [PKCS#12 keystore](https://en.wikipedia.org/wiki/PKCS_12) that the operator maintains separately from the repo. The keystore itself is password-protected. Custody = operator's responsibility; the automation reads file paths and never modifies them.
 
@@ -58,6 +60,7 @@ The production platform install (`openg2p-prod.sh`) must be **complete** before 
 * Postgres must be running on storage (pgBackRest stanza-create needs a live PG)
 * NFS export must be active on storage and reachable on the cluster
 * Helm + the rancher-charts repo must be available on compute (operator install uses them)
+* Rancher Monitoring (`cattle-monitoring-system`) should be present if you want `install` to apply the backup PrometheusRule (otherwise install warns and skips the rule)
 
 Run `./openg2p-prod.sh --probe --config prod-config.yaml` first to confirm cluster health.
 
@@ -73,7 +76,7 @@ The orchestrator runs on the laptop and needs:
 * `ssh` + `rsync`
 * `aws-cli` v2 (only for the optional AWS provisioning step)
 
-The backup host gets `pgbackrest`, `restic`, `nfs-common`, `jq`, `curl`, `etcd-client` apt-installed automatically by `roles/backup-host/install.sh`. The distro `etcd-client` provides `etcdctl` (not always `etcdutl`); etcd verify falls back to RKE2-bundled tools on the compute node when the local binary cannot read the snapshot format.
+The backup host gets `pgbackrest`, `restic`, `nfs-common`, `jq`, `curl`, `etcd-client` apt-installed automatically by `roles/backup-host/install.sh`. The distro `etcd-client` provides `etcdctl` (not always `etcdutl`); etcd verify falls back to RKE2-bundled tools on the compute node when the local binary cannot read the snapshot format. When `groups.objectstore` is enabled, install also ensures `rclone` and `restic` are available for the object-store path.
 
 ## What does not need to be done
 
