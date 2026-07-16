@@ -1,14 +1,63 @@
 # Consent-Aware data sharing
 
-The Base Registry supports a consent governance model for data sharing, implemented through a dedicated **Consent Management microservice** rather than embedded in the registry core. When personal data is requested by an external partner, the registry does not evaluate consent locally; instead, it delegates all consent verification to the Consent Management service. Consent decisions are tied to the data subject identity, the requesting partner system, the specific data categories being shared, and an expiry period.
+The Registry shares personal data with an external partner only when a **positive
+authorization decision** comes back from the dedicated **Consent Manager (CM)**
+microservice. Consent logic is deliberately *not* embedded in the registry: the registry
+is the **Policy Enforcement Point (PEP)**, the Consent Manager is the **Policy Decision
+Point (PDP)**. The registry never interprets consent semantics, never holds partner
+signing keys, and never evaluates consent policy.
 
-The registry invokes the Consent Management service in two ways:
+{% hint style="info" %}
+The full contract — consent object format, signatures, key handling, configuration and
+request flow — is specified **once**, on the Consent Manager side:
+[Registry integration (the PEP side)](../../../../consent-management/design/registry-integration.md).
+This page covers only what the *registry* does.
+{% endhint %}
 
-1. **Consent records stored in the Consent Management service**\
-   When the individual has previously granted consent for the same partner and data category, the registry passes the request context (subject identifier, partner identifier, data categories, and purpose) to the Consent Management service. The service validates the existing consent artefact and returns an authorization decision to the registry.
-2. **Consent payload received as part of interoperable request standards**\
-   Some interoperability protocols allow the consent artefact to be included directly by the requesting partner (e.g., DCI/UNDP-style payloads). In this case, the registry forwards the received consent payload to the Consent Management service. The service validates the consent, generates a canonical consent artefact and a signed consent certificate, stores them, and returns an authorization decision.
+## How it works
 
-The Consent Management service issues both the **consent artefact** (the structured representation of consent intent) and the **consent certificate** (a cryptographically signed, timestamped proof of consent suitable for audit or dispute resolution). This model ensures that outbound data flows are consent-aware without the registry having to interpret consent semantics or manage signature validation.
+Consent travels **with the request**. A partner calling the registry's DCI search API
+embeds its consent object — a compact JWS signed with the partner's own key — in the
+DCI-standard `authorize` block:
 
-No outbound data is shared from the registry until a **positive authorization decision** is returned by the Consent Management service. This externalized consent enforcement model simplifies the registry architecture while ensuring compliance with privacy-by-design and interoperable data exchange standards.
+```
+message.search_request[i].search_criteria.authorize.consent_jws
+```
+
+The registry partner-api then:
+
+1. **Verifies the caller** — checks the DCI envelope signature against the partner's
+   public key fetched from **Partner Management**. The registry stores no partner keys.
+2. **Delegates the decision** — forwards the consent JWS verbatim to the Consent
+   Manager's `/validate`. CM verifies the signature against the same Partner Management
+   key, evaluates the partner's data-share policy, and returns a decision plus the
+   **effective data scopes** (consent scope ∩ policy).
+3. **Enforces the decision** — clamps every returned record to those effective scopes.
+   A narrower consent or policy can only ever *remove* fields, never add them. Any
+   non-permit decision rejects the request (**fail-closed**).
+
+CM separately records a canonical **consent artefact** and issues a signed **consent
+receipt** — the audit / non-repudiation evidence. The registry keeps none of it.
+
+## Configuration
+
+Enforcement is governed by two **independent** switches on the partner-api. Both default
+**off**, so the feature is opt-in per deployment and existing behaviour is unchanged
+until you enable it:
+
+| Switch | Effect when ON |
+| --- | --- |
+| **Verify Partner Signature** | verify the DCI envelope signature against Partner Management keys |
+| **Enforce Consent** | call the Consent Manager and clamp returned fields to the consented scopes |
+
+When a switch is OFF the bypass is logged and stamped into the DCI response header
+`meta`, so a bypassed response can never be mistaken for an authorised one. The exact
+env vars and Helm values are listed in
+[Registry integration](../../../../consent-management/design/registry-integration.md#configuration-registry-partner-api).
+
+## Related
+
+* [Consent Management](../../../../consent-management/README.md) — the service, its design and APIs
+* [Registry integration (the PEP side)](../../../../consent-management/design/registry-integration.md) — the full contract
+* [Partner integration guide](../../../../consent-management/partner-integration-guide.md) — for partners: onboarding, keys, obtaining consent, signing
+* [Partner APIs](../design/partner-apis.md) — the registry's DCI search API

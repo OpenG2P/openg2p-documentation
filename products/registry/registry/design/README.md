@@ -53,6 +53,10 @@ The following sub-pages cover individual design topics in detail:
 [architecture.md](../../../../consent-management/design/architecture.md)
 {% endcontent-ref %}
 
+{% content-ref url="../../../../consent-management/design/registry-integration.md" %}
+[registry-integration.md](../../../../consent-management/design/registry-integration.md)
+{% endcontent-ref %}
+
 {% content-ref url="encryption-at-rest.md" %}
 [encryption-at-rest.md](encryption-at-rest.md)
 {% endcontent-ref %}

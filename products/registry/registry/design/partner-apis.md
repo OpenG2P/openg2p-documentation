@@ -246,7 +246,23 @@ Each hit is rendered through the register's DCI outgoing Jinja template into `da
 
 ### Consent, encryption, item statuses
 
-`consent` and `authorize` blocks are accepted (permissive JSON-LD schema) but **do not gate search** today — add policy in gateway or extension if required. Cleartext messages only (`is_msg_encrypted = false`); `DciEncryptedMessage` is not supported on this path.
+The `authorize` block carries the partner's **consent object** — a compact JWS at
+`search_criteria.authorize.consent_jws`. When **consent enforcement is enabled**, it
+**does gate search**: the partner-api forwards the JWS to the Consent Manager's
+`/validate` and clamps each returned record to the **effective data scopes** it returns;
+a non-permit decision rejects the item (fail-closed). Independently, the DCI envelope
+`signature` is verified against the partner's **Partner Management** key when signature
+validation is enabled. Both switches default **off**, in which case the blocks are
+accepted but not enforced (the bypass is stamped into the response header `meta`).
+
+The `consent` block remains a permissive JSON-LD descriptor and is not itself evaluated.
+
+See [Consent-Aware data sharing](../features/consent-aware-data-sharing.md) for the
+feature overview, and
+[Registry integration (the PEP side)](../../../../consent-management/design/registry-integration.md)
+for the full contract (embedding, signatures, keys, config).
+
+Cleartext messages only (`is_msg_encrypted = false`); `DciEncryptedMessage` is not supported on this path.
 
 | Status         | Meaning on this endpoint                                      |
 | -------------- | ------------------------------------------------------------- |
