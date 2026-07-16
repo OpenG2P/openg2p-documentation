@@ -85,6 +85,57 @@ registry can return (e.g. `first_name`, `birth_date`, and farmer-extension field
 `crop`, `livestock`). Fields the partner may *filter* on are separately bounded by
 `dci_expression_allowed_fields`.
 
+## Data-scope catalog — design (NOT yet implemented) — handover note
+
+> **Status:** design agreed, implementation deferred. This section is the handover
+> note for whoever implements the scope catalog later. Nothing here is built yet;
+> today `data_scopes` are opaque strings and the clamp is structural only.
+
+**The decision: the catalog is owned by the data source (the registry), NOT the
+Consent Manager.** CM is a generic PDP — it only does set math on opaque scope
+strings (`consent.data_scopes ⊆ policy.allowed_data_scopes`;
+`effective = consent ∩ policy`). It never needs to know what a scope maps to. So a
+registry adding/renaming a field must **never** require a CM code change or release.
+Baking a per-registry field taxonomy into CM would be wrong — it's data, and it
+belongs to the source that owns the schema and changes it.
+
+**Ownership split:**
+
+| Concern | Owner | Form |
+| --- | --- | --- |
+| Field taxonomy / scope vocabulary | **Registry (PEP)** | data/config, changes with the registry schema — no CM release |
+| Scope → field mapping (for the clamp) | **Registry (PEP)** | data/config (a config table, or derived from the DCI outgoing template already in MinIO) |
+| Publishing the scope catalog (discovery) | **Registry (PEP)** | a discovery endpoint / documented list |
+| Set-math authorization (`⊆`, `∩`) | **Consent Manager** | opaque strings — unchanged, no catalog |
+| Knowing which scopes to request/grant | **Partner + CM policy admin** | read the registry's published catalog |
+
+**The only shared contract is the scope-name vocabulary** — CM policies and the
+registry's mapping must use the same strings. That is a naming convention, not a code
+dependency. The registry **publishes** its catalog so partners and policy admins know
+the vocabulary; CM's admin UI *may* fetch it dynamically to populate a scope picker,
+but must never hardcode it.
+
+**Recommended model — scopes ARE the registry's published field/bundle names.** Then
+the "mapping" is identity and the clamp already written (`record.keys() ⊆ scopes`)
+needs no mapping table. Adding a farmer field = a registry data/config change, zero CM
+impact.
+
+**To implement (registry side, later):**
+- Define the scope → field mapping as **config/data** in the registry
+  (registry-platform / farmer-extension) — or make scope = field name (identity).
+- Add a small **discovery endpoint** publishing the scope catalog (alongside the DCI
+  capabilities).
+- Extend `dci_expression_allowed_fields` with the farmer-extension fields.
+- The existing `_clamp_record_fields` stays; it reads the mapping instead of guessing.
+- **CM: no structural change** (optionally, the admin UI fetches the registry catalog).
+- Document the scope naming convention in GitBook as the shared contract.
+
+**Open decision (registry-side, pick when implementing):** scope **granularity** —
+field-level (`first_name`, `crops`; scope = field name, no mapping table) vs coarse
+**bundles** (`farmer_profile.basic`; needs a bundle→fields mapping, still registry-owned).
+Lean: **field-level to start**, add bundles later if raw field lists prove tedious for
+partners.
+
 ## Two kill-switches (testing)
 
 Two **independent** flags gate the two checks. Both default **on** in code (safe PII
