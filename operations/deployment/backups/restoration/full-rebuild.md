@@ -11,7 +11,7 @@ The disaster scenario: nodes destroyed or unreachable, hardware lost, region-dow
 Before you start, gather:
 * [ ] Original `aws-config.yaml` and `prod-config.yaml` (or equivalents for non-AWS)
 * [ ] `backup-config.yaml` from before the disaster
-* [ ] All three keystore passphrases: `restic.pass`, `pgbackrest.pass`, `etcd-aescbc.key` (if encryption-at-rest was enabled)
+* [ ] All keystore passphrases: `restic.pass`, `pgbackrest.pass`, `etcd-aescbc.key` (if encryption-at-rest was enabled); plus `objectstore-restic.pass` / `rclone.conf` if `groups.objectstore` was enabled
 * [ ] Wireguard admin client `.conf` files (these aren't in backups by design)
 * [ ] Any customer-supplied TLS cert + key files (if `tls.method: provided`)
 * [ ] Working network access to the backup host's surviving repo
@@ -128,7 +128,18 @@ For lots of PVCs, script it. The sidecar manifest at `/var/lib/openg2p-backup/nf
 
 Plan A is the default. Restore the data, then bounce the consuming workload.
 
-## Step 7 — Restore platform-level config (optional)
+## Step 7 — Object store (opt-in)
+
+Only if `groups.objectstore` was enabled before the disaster and the backup host (or its `objectstore-restic` repo) survived:
+
+```bash
+./openg2p-backup.sh restore --config backup-config.yaml --component objectstore
+# Stages under /var/lib/openg2p-backup/restore/objectstore on the backup host.
+```
+
+Then sync the restored tree into the new MinIO/S3 (see [Restoration index — Object store](README.md#object-store-restore-opt-in)). PVC-backed bucket data under NFS is already covered by Step 6.
+
+## Step 8 — Restore platform-level config (optional)
 
 The fresh install regenerated:
 * The local CA on the RP node (different cert!)
@@ -144,7 +155,7 @@ If you want to keep the **original** identities (so admin laptops' Wireguard con
 
 Then copy onto the RP node and restart the affected services. This is optional — most operators accept regenerating these and re-distributing to admin laptops.
 
-## Step 8 — Bounce workloads + verify
+## Step 9 — Bounce workloads + verify
 
 ```bash
 # Restart all pods to pick up restored Secrets/ConfigMaps.
@@ -160,7 +171,7 @@ Sanity tests:
 * Check at least one PVC-consuming app's data (e.g. browse Keycloak admin themes, list MinIO buckets)
 * Confirm a known-recent-but-pre-disaster Postgres row exists
 
-## Step 9 — Re-establish backup automation
+## Step 10 — Re-establish backup automation
 
 ```bash
 ./openg2p-backup.sh run --config backup-config.yaml --component all

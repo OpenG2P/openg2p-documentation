@@ -46,21 +46,38 @@ The staged Postgres data directory is a complete, valid `PGDATA` for the target 
 
 ## Step 3 — Verify the restore
 
-On the storage node:
+On the storage node, start a **temporary** Postgres against the staged `PGDATA`. On Ubuntu packaging, cluster config lives under `/etc/postgresql/…`, not inside `PGDATA`, so a bare `pg_ctl -D <staged>` often needs a few local files before it will start:
 
 ```bash
+STAGED=/var/lib/openg2p-backup-restore/pg-<timestamp>
+
+# Minimal config in the staged dir (Ubuntu keeps the real conf under /etc/postgresql).
+sudo -u postgres tee "$STAGED/postgresql.conf" >/dev/null <<EOF
+listen_addresses = ''
+port = 55432
+unix_socket_directories = '/tmp'
+max_connections = 100
+shared_buffers = 128MB
+EOF
+# Raise max_connections to at least the live primary's value if recovery complains.
+sudo -u postgres touch "$STAGED/pg_ident.conf"
+# If recovery needs archive-get, set restore_command to the real pgBackRest
+# archive-get (empty restore_command will stall if local WAL is incomplete).
+
 sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl \
-    -D /var/lib/openg2p-backup-restore/pg-<timestamp> \
+    -D "$STAGED" \
     -o '-p 55432' \
-    -l /var/lib/openg2p-backup-restore/pg-<timestamp>/pg.log start
+    -l "$STAGED/pg.log" start
 
-sudo -u postgres psql -p 55432 -d postgres -c '\l'      # list databases
-sudo -u postgres psql -p 55432 -d <db> -c 'SELECT now();'  # confirm time
-sudo -u postgres psql -p 55432 -d <db> -c 'SELECT count(*) FROM <some_table>;'
+# Prefer -h /tmp so psql uses the unix socket you configured.
+sudo -u postgres psql -h /tmp -p 55432 -d postgres -c '\l'
+sudo -u postgres psql -h /tmp -p 55432 -d <db> -c 'SELECT now();'
+sudo -u postgres psql -h /tmp -p 55432 -d <db> -c 'SELECT count(*) FROM <some_table>;'
 
-sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl \
-    -D /var/lib/openg2p-backup-restore/pg-<timestamp> stop
+sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D "$STAGED" stop
 ```
+
+`pgBackRest` path-mismatch warnings (`[032]`) during recovery are often noisy but harmless if archive recovery still completes.
 
 ## Step 4 — Cutover (live PG replacement)
 
@@ -101,7 +118,7 @@ If only some tables are affected:
 ```bash
 # Start the staged PG on a different port (Step 3 above).
 # Dump the affected tables.
-sudo -u postgres pg_dump -p 55432 -d <db> -t <schema>.<table> -F c -f /tmp/restore.pgdump
+sudo -u postgres pg_dump -h /tmp -p 55432 -d <db> -t <schema>.<table> -F c -f /tmp/restore.pgdump
 
 # On live PG, drop or truncate the bad data, then restore.
 sudo -u postgres pg_restore -d <db> -t <table> /tmp/restore.pgdump

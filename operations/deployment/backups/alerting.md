@@ -1,10 +1,10 @@
 ---
-description: Backup health monitoring — Prometheus dead-man's switch, WAL probes, and operator email.
+description: Backup health monitoring — Prometheus dead-man's switch, WAL probes, operator email, and Slack via Alertmanager.
 ---
 
 # Alerting
 
-The backup automation emits Prometheus metrics, runs an independent WAL probe outside the nightly `pg` job, can email operators who do not have SSH access, and applies a PrometheusRule into Rancher Monitoring (`cattle-monitoring-system`).
+The backup automation emits Prometheus metrics, runs an independent WAL probe outside the nightly `pg` job, can email operators who do not have SSH access, and applies a PrometheusRule into Rancher Monitoring (`cattle-monitoring-system`). Slack (and other Alertmanager receivers) are configured on the **platform** monitoring stack, not in `smtp.env`.
 
 Status JSON at `/var/lib/openg2p-backup/.status.json` remains the source of truth for per-component last-run / last-drill results.
 
@@ -12,12 +12,16 @@ Status JSON at `/var/lib/openg2p-backup/.status.json` remains the source of trut
 
 | Event | Mechanism | Severity |
 |---|---|---|
-| Any backup component last run failed | `openg2p_backup_run_status == 0` + failure email | critical |
-| No successful backup in >26h (dead-man) | `openg2p_backup_master_last_success_timestamp` | critical |
-| Component hasn't run in >48h | `openg2p_backup_run_timestamp_seconds` | warning |
-| Backup disk &lt;25GiB / &lt;10GiB | `openg2p_backup_disk_available_bytes` | warning / critical |
-| WAL archive stalled / failing / growing | independent `wal-health` cron | critical / warning |
+| Any backup component last run failed | `OpenG2PBackupRunFailed` + failure email | critical |
+| No successful backup in >26h (dead-man) | `OpenG2PBackupMissed` | critical |
+| Component hasn't run in >48h | `OpenG2PBackupComponentStale` | warning |
+| Backup disk &lt;25GiB / &lt;10GiB | `OpenG2PBackupDiskLow` / `OpenG2PBackupDiskCritical` | warning / critical |
+| Backup metrics missing from Prometheus | `OpenG2PBackupMetricsAbsent` | warning |
+| WAL archive stalled / failing / growing | `OpenG2PWAL*` + optional WAL threshold email | critical / warning |
+| WAL metrics missing | `OpenG2PWALMetricsAbsent` | warning |
 | Daily operator summary | SMTP `daily-report` cron | info |
+
+Prometheus-named alerts fire only when metrics are scraped (or pushed). Failure / daily **emails** work from the backup host alone once SMTP is configured.
 
 ## Prometheus rules (automated)
 
@@ -138,7 +142,7 @@ alert_slack_webhook_url: "https://hooks.slack.com/services/…"
 alert_slack_channel: "#alerts"
 ```
 
-Re-apply the monitoring/alerting values so Alertmanager picks up the receiver. Then firing rules such as `OpenG2PBackupMissed`, `OpenG2PBackupRunFailed`, and `OpenG2PWAL*` can notify Slack.
+Re-apply the monitoring/alerting values so Alertmanager picks up the receiver (see also `alerting/` in the deployment repo for webhook / Alertmanager secret patching patterns). Then firing rules such as `OpenG2PBackupMissed`, `OpenG2PBackupRunFailed`, and `OpenG2PWAL*` can notify Slack.
 
 | Channel | Configured where | Covers |
 |---|---|---|
@@ -146,10 +150,6 @@ Re-apply the monitoring/alerting values so Alertmanager picks up the receiver. T
 | Slack | `prod-config.yaml` → `alert_slack_*` + Alertmanager | Prometheus-fired backup / WAL alerts |
 
 You can enable both; they complement each other.
-
-## Object store (MinIO/S3)
-
-Opt-in group (`groups.objectstore: true`) using rclone read-only mount + restic. See [Configuration — Object store](configuration.md#object-store-minios3).
 
 ## How to test
 
@@ -160,7 +160,7 @@ Opt-in group (`groups.objectstore: true`) using rclone read-only mount + restic.
 | PrometheusRule | `kubectl -n cattle-monitoring-system get prometheusrule \| grep openg2p-backup` | rule object exists |
 | Prom scrape | Query `openg2p_backup_master_last_success_timestamp` in Prometheus | series returned (if empty, fix scrape/Pushgateway first) |
 | Failed-run alert | Force one group to fail, wait ≥5m | `OpenG2PBackupRunFailed` in Alertmanager (and Slack if configured) |
-| Daily email | `./openg2p-backup.sh daily-report --config …` | `MAIL_SENT` **and** message in inbox (if only `MAIL_SENT`, check relay logs / use port 587) |
+| Daily email | `./openg2p-backup.sh daily-report --config …` | `MAIL_SENT` **and** message in inbox — also check Spam / Promotions / Updates; if only `MAIL_SENT`, check relay logs / use port 587 |
 
 Email works without scrape. Cluster / Slack alerts need **rule + scrape** both.
 
@@ -170,4 +170,4 @@ Email works without scrape. Cluster / Slack alerts need **rule + scrape** both.
 2. Re-run `install` (refreshes cron wrappers + libs under `/opt/openg2p-backup`, re-applies PrometheusRule).
 3. Point node_exporter at `$backup_repo_root/metrics` (or set Pushgateway).
 4. Confirm PrometheusRule: `kubectl -n cattle-monitoring-system get prometheusrule | grep openg2p-backup`.
-5. Optionally enable email (prefer SMTP :587) and/or Slack via Alertmanager; optionally enable objectstore.
+5. Optionally enable email (prefer SMTP :587) and/or Slack via Alertmanager.
