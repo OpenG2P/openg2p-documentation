@@ -79,24 +79,43 @@ alerting:
 ```
 
 1. Copy `automation/backups/roles/backup-host/smtp.env.example` → `~/.openg2p/keystore/smtp.env` (mode 0600).
-2. Fill `SMTP_*` and `MAIL_TO`.
+2. Fill `SMTP_*` and `MAIL_TO`. **Always quote `SMTP_FROM`** when it contains spaces or angle brackets — the file is `source`d by bash (`SMTP_FROM="OpenG2P Backup <ops@example.org>"`). Unquoted `<…>` causes a syntax error.
 3. Set `email_enabled: true` and re-run `install` (copies to `/etc/openg2p-backup/smtp.env` on the backup host).
 
-Failures from cron wrappers and laptop `run` send `[OpenG2P Backup] FAILED — …`. Daily cron at `schedules.daily_report` sends a `.status.json` summary.
+**Automatic vs manual**
+
+| Event | When it fires |
+|---|---|
+| Daily `.status.json` summary | Cron on the backup host (`schedules.daily_report`, default `0 7 * * *`) — no laptop action needed |
+| Backup / drill failure | Automatic on non-zero exit from `openg2p-backup-run` / `drill` (and laptop `run`) |
+| Ad-hoc test | `./openg2p-backup.sh daily-report --config backup-config.yaml` |
+
+`MAIL_SENT` in the log means the backup host handed the message to `SMTP_HOST`. It does **not** guarantee the recipient inbox received it — check the SMTP/relay logs if mail is missing.
+
+### Recommended: authenticated smarthost (port 587)
+
+On AWS and many clouds, **outbound TCP 25 is blocked**. The in-cluster `mail` chart (Exim) can accept mail from the backup host and then fail when delivering to Gmail/Google Workspace MX (`Network is unreachable` / `Connection timed out` on `:25`). Prefer a real smarthost:
 
 ```bash
-./openg2p-backup.sh daily-report --config backup-config.yaml
+SMTP_HOST=smtp.gmail.com          # or org SES/SendGrid/relay
+SMTP_PORT=587
+SMTP_STARTTLS=true
+SMTP_USER=your-account@example.org
+SMTP_PASS=your-app-or-smtp-password
+SMTP_FROM="OpenG2P Backup <your-account@example.org>"
+MAIL_TO=ops@example.org
 ```
 
 ### Email with in-cluster OpenG2P `mail`
 
 The platform `mail` chart (`openg2p/smtp`) exposes SMTP as **ClusterIP port 25** and typically allows relay only from the pod CIDR (`RELAY_NETWORKS: :10.0.0.0/8`). That works for **Alertmanager inside the cluster** (`mail.<ns>.svc.cluster.local:25`), but the **backup host** (VPC `172.29.x`) cannot use ClusterIP DNS.
 
-For backup emails:
+For backup emails via that pod (only if outbound :25 works in your environment):
 
 1. Include the VPC in relay, e.g. `RELAY_NETWORKS: ':10.0.0.0/8:172.29.0.0/16'`.
 2. Expose the Service (NodePort is simplest) and point `smtp.env` at the **compute private IP + NodePort**.
 3. Use plain SMTP (`SMTP_STARTTLS=false`, empty `SMTP_USER` / `SMTP_PASS`).
+4. If `MAIL_SENT` appears but no inbox mail, check `kubectl -n <mail-ns> logs deploy/mail` for MX/:25 timeouts — then switch to a **587 smarthost** (above).
 
 ```bash
 SMTP_HOST=172.29.1.177          # compute private IP
@@ -104,9 +123,29 @@ SMTP_PORT=<mail-NodePort>
 SMTP_STARTTLS=false
 SMTP_USER=
 SMTP_PASS=
-SMTP_FROM=OpenG2P Backup <backup@YOUR_MAILNAME>
+SMTP_FROM="OpenG2P Backup <backup@YOUR_MAILNAME>"
 MAIL_TO=you@your-org.com
 ```
+
+## Slack (via Alertmanager)
+
+Backup scripts do **not** post to Slack themselves. Slack is configured on **Rancher Monitoring Alertmanager**, which receives the backup PrometheusRules once metrics are scraped.
+
+In `prod-config.yaml` (production automation):
+
+```yaml
+alert_slack_webhook_url: "https://hooks.slack.com/services/…"
+alert_slack_channel: "#alerts"
+```
+
+Re-apply the monitoring/alerting values so Alertmanager picks up the receiver. Then firing rules such as `OpenG2PBackupMissed`, `OpenG2PBackupRunFailed`, and `OpenG2PWAL*` can notify Slack.
+
+| Channel | Configured where | Covers |
+|---|---|---|
+| Email | `backup-config.yaml` → `alerting.*` + `smtp.env` | Daily summary + script failure mails |
+| Slack | `prod-config.yaml` → `alert_slack_*` + Alertmanager | Prometheus-fired backup / WAL alerts |
+
+You can enable both; they complement each other.
 
 ## Object store (MinIO/S3)
 
@@ -120,10 +159,10 @@ Opt-in group (`groups.objectstore: true`) using rclone read-only mount + restic.
 | WAL probe | `./openg2p-backup.sh wal-health --config …` | WAL size / archiver gauges written |
 | PrometheusRule | `kubectl -n cattle-monitoring-system get prometheusrule \| grep openg2p-backup` | rule object exists |
 | Prom scrape | Query `openg2p_backup_master_last_success_timestamp` in Prometheus | series returned (if empty, fix scrape/Pushgateway first) |
-| Failed-run alert | Force one group to fail, wait ≥5m | `OpenG2PBackupRunFailed` in Alertmanager |
-| Daily email | `./openg2p-backup.sh daily-report --config …` | inbox gets `[OpenG2P Backup] DAILY …` |
+| Failed-run alert | Force one group to fail, wait ≥5m | `OpenG2PBackupRunFailed` in Alertmanager (and Slack if configured) |
+| Daily email | `./openg2p-backup.sh daily-report --config …` | `MAIL_SENT` **and** message in inbox (if only `MAIL_SENT`, check relay logs / use port 587) |
 
-Email works without scrape. Cluster alerts need **rule + scrape** both.
+Email works without scrape. Cluster / Slack alerts need **rule + scrape** both.
 
 ## Operator checklist after upgrade
 
@@ -131,4 +170,4 @@ Email works without scrape. Cluster alerts need **rule + scrape** both.
 2. Re-run `install` (refreshes cron wrappers + libs under `/opt/openg2p-backup`, re-applies PrometheusRule).
 3. Point node_exporter at `$backup_repo_root/metrics` (or set Pushgateway).
 4. Confirm PrometheusRule: `kubectl -n cattle-monitoring-system get prometheusrule | grep openg2p-backup`.
-5. Optionally enable email + objectstore.
+5. Optionally enable email (prefer SMTP :587) and/or Slack via Alertmanager; optionally enable objectstore.
