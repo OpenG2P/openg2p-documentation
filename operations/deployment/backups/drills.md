@@ -17,6 +17,7 @@ Backups you don't test aren't backups. The orchestrator's `drill` subcommand run
 | **rancher** | Resolves the rancher-backup NFS path (`openg2p-rancher-backup-store` static PV → `/srv/nfs/<cluster>/rancher-backup`), then SSHes to the storage node to confirm the latest `*.tar.gz` or `*.tar.gz.enc` is present, non-zero size, and passes `gzip -t` when not encrypted. (Encrypted tarballs cannot be listed with `tar -tzf`.) |
 | **nfs**     | `restic check --read-data-subset=5%` on the NFS repo → `restic restore` of the canary file (`.pvc-mapping.yaml`) into a tempdir                                                                                                                                                                        |
 | **configs** | `restic check --read-data-subset=5%` on the configs repo → `restic restore` of the smallest tagged snapshot (the `openg2p` tag) into a tempdir                                                                                                                                                         |
+| **objectstore** | (When enabled) restic restore of the latest objectstore-tagged snapshot into a tempdir on the backup host, confirm non-empty, tear down |
 
 `--read-data-subset=5%` re-reads 5% of the actual blob bytes (not just metadata), giving statistical confidence the bytes haven't bit-rotted on disk while keeping drill runtime modest.
 
@@ -46,12 +47,13 @@ Output is human-readable; per-group verdicts go to the screen and aggregated int
     "etcd":   { "last_run": "...", "last_drill": "...", ... },
     "rancher": { ... },
     "nfs":    { ... },
-    "configs": { ... }
+    "configs": { ... },
+    "objectstore": { ... }
   }
 }
 ```
 
-`./openg2p-backup.sh status --config backup-config.yaml` reads this file via the backup host and tabulates it.
+`./openg2p-backup.sh status --config backup-config.yaml` reads this file via the backup host and tabulates it. When `alerting.email_enabled` is true, `daily-report` emails the same summary; Prometheus gauges under `$backup_repo_root/metrics/` mirror last-run outcomes for Alertmanager — see [Alerting](alerting.md).
 
 ## Reading the results
 

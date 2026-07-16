@@ -34,11 +34,12 @@ etcd_at_rest_key_file:      "~/.openg2p/keystore/etcd-aescbc.key"
 
 ```yaml
 groups:
-  pg:       true
-  etcd:     true
-  rancher:  true
-  nfs:      true
-  configs:  true
+  pg:          true
+  etcd:        true
+  rancher:     true
+  nfs:         true
+  configs:     true
+  objectstore: false   # opt-in — MinIO/S3 via rclone + restic
 ```
 
 Each group is independently switchable. Disabling a group:
@@ -46,6 +47,8 @@ Each group is independently switchable. Disabling a group:
 * Comments out its cron entries on the backup host
 * Causes `run`/`verify`/`drill` to skip it
 * Reports it as `disabled` in `status` output
+
+`objectstore` defaults to **false** when the key is missing (unlike the other groups, which default to on). Enable it only after rclone credentials and a restic password file are in place — see [Object store](#object-store-minios3) below.
 
 You can disable a group later by editing `backup-config.yaml` and re-running `install` — the orchestrator regenerates the cron file.
 
@@ -69,20 +72,23 @@ Defaults give roughly 6 months of granular history. Government data-retention po
 
 ```yaml
 schedules:
-  pg_full:    "0 2 * * 0"
-  pg_diff:    "0 2 * * 1-6"
-  etcd_pull:  "15 */6 * * *"
-  rancher:    "0 3 * * *"        # consumed by the in-cluster Schedule CR
-  nfs:        "30 3 * * *"
-  configs:    "30 3 * * *"
-  drill:      "0 5 * * 0"
+  pg_full:       "0 2 * * 0"
+  pg_diff:       "0 2 * * 1-6"
+  etcd_pull:     "15 */6 * * *"
+  rancher:       "0 3 * * *"        # consumed by the in-cluster Schedule CR
+  nfs:           "30 3 * * *"
+  configs:       "30 3 * * *"
+  objectstore:   "0 4 * * *"        # MinIO/S3 (when groups.objectstore=true)
+  wal_health:    "*/5 * * * *"      # independent of pg backup runs
+  daily_report:  "0 7 * * *"        # SMTP summary (when email enabled)
+  drill:         "0 5 * * 0"
 ```
 
 Standard cron syntax. The orchestrator renders these into `/etc/cron.d/openg2p-backup` on the backup host at install time. Edit the cron file directly to test changes; commit them back to `backup-config.yaml` so the next `install` re-applies them.
 
-The defaults stagger: PG at 02:00, etcd every 6h offset by 15 minutes, rancher and NFS at 03:00–03:30 (rancher writes a tarball that NFS then captures, so order matters), drill on Sunday at 05:00 after Saturday's runs.
+The defaults stagger: PG at 02:00, etcd every 6h offset by 15 minutes, rancher and NFS at 03:00–03:30 (rancher writes a tarball that NFS then captures, so order matters), objectstore at 04:00 when enabled, drill on Sunday at 05:00 after Saturday's runs, daily email at 07:00, WAL probe every 5 minutes.
 
-**About `schedules.rancher`**: nightly rancher backups are driven by the in-cluster `Schedule` CR (`manifests/rancher-backup-schedule.yaml`), not by a cron entry on the backup host. The `schedules.rancher` value is informational only today — it documents the intended cadence. (Wiring it into the Schedule CR's `.spec.schedule` is a Phase 2 nicety.) Ad-hoc rancher backups can still be triggered from the laptop with `./openg2p-backup.sh run --component rancher`.
+**About `schedules.rancher`**: nightly rancher backups are driven by the in-cluster `Schedule` CR (`manifests/rancher-backup-schedule.yaml`), not by a cron entry on the backup host. The `schedules.rancher` value is informational only today — it documents the intended cadence. Ad-hoc rancher backups can still be triggered from the laptop with `./openg2p-backup.sh run --component rancher`.
 
 ## PostgreSQL
 
@@ -199,4 +205,64 @@ Pinned to known-good versions. Bump after testing in a non-production environmen
 
 ```bash
 helm search repo rancher-charts/rancher-backup --versions
+```
+
+## Monitoring
+
+```yaml
+monitoring:
+  enabled: true
+  instance: ""                         # blank → cluster_name or backup_private_ip
+  namespace: "cattle-monitoring-system" # Rancher Monitoring
+  apply_prometheusrule: true           # install applies the PrometheusRule template
+  pushgateway_url: ""                  # optional; use when node_exporter cannot scrape the backup host
+  wal:
+    max_size_bytes: 10737418240        # 10 GiB — email warn threshold
+    max_archive_age_seconds: 3600      # 1h
+    max_failed_count: 1
+```
+
+When `enabled: true`, each successful/failed `run` writes Prometheus textfile metrics under `$backup_repo_root/metrics/`. `install` applies `manifests/prometheusrule-backup.yaml.template` into `monitoring.namespace` (default `cattle-monitoring-system`). If the CRD or namespace is missing, install warns and continues — re-run after Rancher Monitoring is up.
+
+Prometheus only *fires* those rules if it scrapes the backup host metrics (node_exporter textfile collector or Pushgateway). Details and how to test: [Alerting](alerting.md).
+
+## Alerting (email)
+
+```yaml
+alerting:
+  email_enabled: false
+  smtp_env_file: "~/.openg2p/keystore/smtp.env"
+  cron_mailto: "root"                  # /etc/cron.d MAILTO
+  mail_to: "ops@example.gov"           # informational; real To: is MAIL_TO in smtp.env
+```
+
+Copy `automation/backups/roles/backup-host/smtp.env.example` to the path in `smtp_env_file`, fill SMTP settings, set `email_enabled: true`, and re-run `install`. That copies the file to `/etc/openg2p-backup/smtp.env` (mode 0600) on the backup host.
+
+`daily-report` and failure notifications use Python `smtplib` on the backup host. For the in-cluster OpenG2P `mail` chart (`openg2p/smtp`), the Service is ClusterIP:25 and typically only relays from the pod CIDR — the backup host on the VPC usually needs a NodePort (or equivalent) plus `RELAY_NETWORKS` including `172.29.0.0/16`. See [Alerting](alerting.md#email-with-in-cluster-openg2p-mail).
+
+## Object store (MinIO/S3)
+
+```yaml
+groups:
+  objectstore: true
+
+objectstore:
+  rclone_conf: "~/.openg2p/keystore/rclone.conf"   # see roles/backup-host/rclone.conf.example
+  rclone_remote: "minio"                           # [section] in rclone.conf
+  bucket: "openg2p-bucket"
+  mount_point: "/mnt/openg2p-rclone"
+  restic_password_file: "~/.openg2p/keystore/objectstore-restic.pass"
+  restic_tag: "openg2p-objectstore"
+  keep_daily: 7
+  keep_weekly: 4
+```
+
+Opt-in. Installs rclone + restic on the backup host, mounts `remote:bucket` read-only, and takes a restic snapshot into `$backup_repo_root/objectstore-restic`. Repositories and credentials:
+
+* `/etc/openg2p-backup/rclone.conf`
+* `/etc/openg2p-backup/restic-objectstore.env` (`RESTIC_PASSWORD=…`)
+
+```bash
+./openg2p-backup.sh install --config backup-config.yaml --component objectstore
+./openg2p-backup.sh run --config backup-config.yaml --component objectstore
 ```
