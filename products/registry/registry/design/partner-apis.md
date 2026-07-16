@@ -85,7 +85,7 @@ Both ingest and DCI controllers currently return HTTP 200 for business failures 
 
 The partner-api image installs the domain extension (`openg2p_registry_extensions`) alongside core. Helm values configure database URLs, MinIO buckets, Keymanager endpoints, and audit URLs per environment. The service shares the registry database with workers; ingest acceptance only requires raw-data tables to be writable — pipeline workers must be running for records to reach register tables.
 
-For local development, copy `.env.example` from the service repo and point `REGISTRY_PARTNER_API_DB_*` and MinIO settings at your stack. Signature verification is disabled in source until Keymanager is available — do not deploy to production without re-enabling (see Authentication and signature verification).
+For local development, copy `.env.example` from the service repo and point `REGISTRY_PARTNER_API_DB_*` and MinIO settings at your stack. Signature verification differs per endpoint: **DCI search** verification is implemented and Partner-Management-backed (gated by `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED`, which the Helm values ship **off**), while **ingest** signature verification is still commented out in source — do not treat ingest as authenticated (see [Authentication and signature verification](#authentication-and-signature-verification)).
 
 ***
 
@@ -251,11 +251,18 @@ The `authorize` block carries the partner's **consent object** — a compact JWS
 **does gate search**: the partner-api forwards the JWS to the Consent Manager's
 `/validate` and clamps each returned record to the **effective data scopes** it returns;
 a non-permit decision rejects the item (fail-closed). Independently, the DCI envelope
-`signature` is verified against the partner's **Partner Management** key when signature
-validation is enabled. Both switches default **off**, in which case the blocks are
-accepted but not enforced (the bypass is stamped into the response header `meta`).
+`signature` is verified against the partner's
+[**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
+key when signature validation is enabled. Both switches default **off** in the Helm
+values, in which case the blocks are accepted but not enforced (the bypass is stamped
+into the response header `meta`).
 
 The `consent` block remains a permissive JSON-LD descriptor and is not itself evaluated.
+
+The partner-api holds **no** partner keys of its own: it fetches them from Partner
+Management (`crypto_backend=partner-mgmt`), keyed by `PARTNER_<sender_id>` — the same
+reference convention used across g2p-bridge and the rest of the platform. See
+[Integration — consuming partner keys](../../../../platform/platform-services/partner-management/integration.md).
 
 See [Consent-Aware data sharing](../features/consent-aware-data-sharing.md) for the
 feature overview, and
@@ -274,21 +281,60 @@ Cleartext messages only (`is_msg_encrypted = false`); `DciEncryptedMessage` is n
 
 ## Authentication and signature verification
 
-The Partner API does **not** use Keycloak or staff JWT middleware. Trust is **Keymanager-backed JWT** over agreed payload bytes.
+The Partner API does **not** use Keycloak or staff JWT middleware — trust is
+**signature-based**, over agreed payload bytes. The two endpoints use **different**
+mechanisms and different key sources, described below.
 
-### Keymanager configuration
+### DCI search signatures — keys from Partner Management
 
-Primary settings in `config.py` (env prefix `REGISTRY_PARTNER_API_KEYMANAGER_*`):
+The DCI envelope `signature` is a **detached JWS** over `{header, message}`. The
+registry **holds no partner keys**: it fetches the caller's public key from
+[**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
+and caches it in-process.
 
-* `keymanager_api_base_url`, `keymanager_api_timeout`, `keymanager_ssl_verify`
-* OAuth to Keymanager itself: `keymanager_auth_enabled`, `keymanager_auth_url`, client id/secret
-* Signing defaults: `keymanager_sign_app_id` (e.g. `REGISTRY`), `keymanager_sign_ref_id`
+* **Key lookup** — the partner reference is derived from the DCI
+  `header.sender_id` as **`PARTNER_<SENDER_ID>`** (upper-cased, `-` → `_`). This is
+  the same reference convention used by `openg2p-fastapi-partner-auth` and
+  g2p-bridge, so a partner's key resolves identically across the platform. The
+  partner must be onboarded in Partner Management under exactly that `partner_id`.
+* **Backend** — `crypto_backend` selects the key source via
+  `openg2p-fastapi-common`'s `build_crypto_helper`:
+  `partner-mgmt` (**default**) fetches from PM; `keymanager` is the legacy Mosip
+  service; `local` uses seeded keys for tests.
+* **Caching / failure** — PM keys are cached per partner with a short TTL, refreshed
+  on an unknown `kid` (rotation), and served stale within a bounded window if PM is
+  briefly unreachable. A disabled/unknown partner returns no keys and the request is
+  **rejected (fail-closed)**.
+* **Verification input** — the raw `{header, message}` exactly as sent, never
+  re-serialised pydantic models.
 
-Each `incoming_partners` row carries **`keymanager_reference_id`** for ingest verification key selection.
+Settings (env prefix `REGISTRY_PARTNER_API_`):
 
-### Ingestion signatures
+| Setting | Notes |
+| --- | --- |
+| `CRYPTO_BACKEND` | `partner-mgmt` (default), `keymanager`, or `local` |
+| `PARTNER_MGMT_API_URL` | PM partner-api, e.g. `http://commons-services-pm-partner-api` — **required** when the backend is `partner-mgmt` |
+| `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` (widened from fastapi-common's RS256-only) |
+| `SIGNATURE_VALIDATION_ENABLED` | gates the check; the Helm values ship it **off** |
 
-Not HTTP `Authorization` headers. JSONPath extracts signature string and signed payload object from the partner body. When enabled, `G2PIngestService._validate_signature` calls `KeymanagerCryptoHelper.verify_jwt` with `km_ref_id = partner.keymanager_reference_id`. Mismatch → `REQUEST_VALIDATION_ERROR`.
+See [Integration — consuming partner keys](../../../../platform/platform-services/partner-management/integration.md)
+for the fetch/caching contract.
+
+### Ingestion signatures — Keymanager (legacy, not currently enforced)
+
+Ingestion uses a different scheme: not an HTTP `Authorization` header, but JSONPath
+(`key_path_for_signature`, `key_path_for_signature_payload`) extracting the signature
+string and the signed payload object from the partner body. Each ingestion
+configuration row carries a **`keymanager_reference_id`** selecting the verification
+key, and verification is **Keymanager**-backed (`REGISTRY_PARTNER_API_KEYMANAGER_*`:
+`keymanager_api_base_url`, `keymanager_api_timeout`, OAuth settings, `sign_app_id`).
+
+{% hint style="warning" %}
+The ingest verification call is **commented out in source**
+(`G2PIngestService`) — ingestion signatures are **not enforced** today. Do not treat
+ingest as authenticated until it is re-enabled (and, ideally, moved to the same
+Partner Management key source as DCI search).
+{% endhint %}
 
 Partners must sign the exact object the registry reconstructs from key paths.
 

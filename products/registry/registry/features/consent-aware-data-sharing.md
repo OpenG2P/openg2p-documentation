@@ -27,7 +27,10 @@ message.search_request[i].search_criteria.authorize.consent_jws
 The registry partner-api then:
 
 1. **Verifies the caller** — checks the DCI envelope signature against the partner's
-   public key fetched from **Partner Management**. The registry stores no partner keys.
+   public key fetched from
+   [**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
+   (looked up as `PARTNER_<sender_id>`, cached in-process). The registry stores no
+   partner keys.
 2. **Delegates the decision** — forwards the consent JWS verbatim to the Consent
    Manager's `/validate`. CM verifies the signature against the same Partner Management
    key, evaluates the partner's data-share policy, and returns a decision plus the
