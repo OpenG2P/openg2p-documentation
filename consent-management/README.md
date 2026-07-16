@@ -7,6 +7,10 @@ description: >-
 
 # Consent Management
 
+{% hint style="info" %}
+**Source code:** [https://gitlab.com/openg2p/consent-manager](https://gitlab.com/openg2p/consent-manager) (GitLab). The former GitHub repository is frozen/read-only.
+{% endhint %}
+
 ## Overview
 
 OpenG2P includes a dedicated **Consent Management** microservice (the "Consent Manager", or **CM**) that governs how personal data leaves the registry. The registry never interprets consent itself — it **delegates every consent decision to the CM**.
