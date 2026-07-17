@@ -564,6 +564,8 @@
     * [Developer Install](identity-and-access-management/developer-install.md)
     * [Security Controls](identity-and-access-management/security-controls.md)
     * [Versions](platform/platform-services/identity-and-access-management/versions.md)
+    * [Staff UI](platform/platform-services/identity-and-access-management/staff-ui/README.md)
+      * [Requirements](platform/platform-services/identity-and-access-management/staff-ui/requirements.md)
   * [Audit Manager](platform/platform-services/audit-manager/README.md)
     * [Functional Specifications](platform/platform-services/audit-manager/functional-specifications.md)
     * [API Reference](platform/platform-services/audit-manager/api-reference.md)
