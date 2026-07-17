@@ -31,7 +31,7 @@ layout:
 
 ## Summary
 
-OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectural principle. The platform ships with a [**Farmer Registry**](../../farmer-registry.md) as the first domain manifestation, built entirely using the extension framework without modifying core platform code. This release also includes performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
+OpenG2P Registry v4.0.0 implements **domain agnosticism** as the core architectural principle. The platform ships with a [**Farmer Registry**](../../farmer-registry/README.md) as the first domain manifestation, built entirely using the extension framework without modifying core platform code. This release also includes performance optimizations, expanded authentication capabilities, enhanced data validation, and refined user management workflows.
 
 <div align="center" data-with-frame="true"><figure><img src="../../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure></div>
 
@@ -57,7 +57,7 @@ For the complete feature list, see [Features](../features/).
 
 ## Components & versions
 
-Refer to [Helm Chart](../deployment/helm-chart-4.x.md) for details on components, dependent services and compability.
+Refer to [Helm Chart](../_archive/deployment/helm-chart-4.x.md) for details on components, dependent services and compability.
 
 ## Component architecture
 

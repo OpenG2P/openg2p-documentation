@@ -1,5 +1,13 @@
 # Registry Helm Chart 4.x
 
+{% hint style="warning" %}
+**Archived.** The registry platform does not ship a Helm chart of its own — each registry builds and publishes its own self-sufficient chart. Deployment documentation now lives with the registry you are installing:
+
+* [**Farmer Registry → Deployment**](../../../farmer-registry/deployment/README.md)
+
+This page describes the retired `openg2p-registry` 4.x wrapper chart and is kept for historical reference only.
+{% endhint %}
+
 ## Overview
 
 The **OpenG2P Registry Helm Chart** (`openg2p-registry`) is a comprehensive Kubernetes deployment package that installs the Registry module along with all its required services. Chart version 4.x is designed for the Gen2 architecture of the Registry.
@@ -339,7 +347,7 @@ These must match the `nameOverride` values of the corresponding components. If y
 
 Available from chart **4.1.0** with `staff-portal-api 1.1.x`. Earlier chart/image versions ignore the env vars (no harm in leaving them configured).
 
-The chart wires three env vars into `staff-portal-api` so that every authenticated API call — and every rejected anonymous attempt — emits a CloudEvent to the [OpenG2P Audit Manager](../../../../platform/platform-services/audit-manager/). Emission is fire-and-forget; the audit pipeline cannot delay or fail a user request.
+The chart wires three env vars into `staff-portal-api` so that every authenticated API call — and every rejected anonymous attempt — emits a CloudEvent to the [OpenG2P Audit Manager](../../../../../platform/platform-services/audit-manager/). Emission is fire-and-forget; the audit pipeline cannot delay or fail a user request.
 
 **Parameters:**
 
@@ -368,7 +376,7 @@ global:
 
 **What gets audited.** Every authenticated `POST` to staff-portal-api endpoints (`/registry-config/*`, `/register-metadata/*`, `/change-requests/*`, `/ingestion-config/*`, `/outgestion-config/*`, etc.) plus rejected anonymous attempts. Health probes (`/ping`), OpenAPI surfaces (`/docs`, `/redoc`, `/openapi.json`), and OPTIONS preflight are always skipped.
 
-For the full schema, query examples, and middleware design, see the audit-manager [Integration with Registry](../../../../platform/platform-services/audit-manager/integration-with-registry/) section.
+For the full schema, query examples, and middleware design, see the audit-manager [Integration with Registry](../../../../../platform/platform-services/audit-manager/integration-with-registry/) section.
 
 **Disabling.** Set `global.auditEnabled=false` (or omit `auditManagerUrl`). The middleware becomes a no-op — no per-pod restart logic needed beyond the standard `helm upgrade`.
 
@@ -376,7 +384,7 @@ For the full schema, query examples, and middleware design, see the audit-manage
 
 After all application pods are running, the chart seeds mandatory configuration meta data (register definitions, lookup data, VC configurations, etc.) into the database. Sample/demo data can optionally be loaded as well.
 
-For full details on what gets seeded, the extensions repository structure, and the Docker image lifecycle, see [Meta Data Seeding](../design/meta-data-seeding.md).
+For full details on what gets seeded, the extensions repository structure, and the Docker image lifecycle, see [Meta Data Seeding](../../design/meta-data-seeding.md).
 
 The seeding runs as a Helm `post-install` / `post-upgrade` hook Job. Two init containers ensure readiness before execution:
 
@@ -656,7 +664,7 @@ All variants publish to the same Helm repository: `https://openg2p.github.io/ope
 * Base chart repo: [openg2p-registry-gen2-deployment](https://github.com/OpenG2P/openg2p-registry-gen2-deployment)
 * Published Helm repo: `https://openg2p.github.io/openg2p-helm` (gh-pages of [openg2p/openg2p-helm](https://github.com/OpenG2P/openg2p-helm))
 * Variant meta-data seed SQL: [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) — one `openg2p-registry-<variant>-extension/` folder per variant
-* [Meta Data Seeding design](../design/meta-data-seeding.md)
+* [Meta Data Seeding design](../../design/meta-data-seeding.md)
 
 ## Source code and references
 

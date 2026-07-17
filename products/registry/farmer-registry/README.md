@@ -1,8 +1,8 @@
 # Farmer Registry
 
-<figure><img src="../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure>
 
-Farmer Registry is a manifestation of [OpenG2P Registry Platform](registry/) with specifics related to a farmer registry.
+Farmer Registry is a manifestation of [OpenG2P Registry Platform](../registry/) with specifics related to a farmer registry.
 
 ```mermaid
 graph LR
@@ -14,48 +14,29 @@ graph LR
     style E fill:#fff,stroke:#999,font-size:24px,color:#000
 ```
 
-This registry contains the following [**registers**](registry/concepts.md#register):
+This registry contains the following [**registers**](../registry/concepts.md#register):
 
 1. Farmer Register
 2. Household Register
 
 The domain models for these registers are available in the [extensions repository](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/tree/develop/openg2p-registry-farmer-extension).
 
-The Farmer Registry inherits all the [features of the registry platform](registry/features/).
+The Farmer Registry inherits all the [features of the registry platform](../registry/features/).
+
+## Deployment
+
+* [**Deployment**](deployment/README.md) — prerequisites, installing from Rancher or the Helm CLI, and post-install checks.
+* [**Helm chart**](deployment/helm-chart.md) — components, dependencies, parameters, Consent Manager / Partner Management integration and versions.
+* [**Data seeding**](deployment/data-seeding.md) — where the seed data comes from, the db-seed image, and the flags that drive it.
 
 ## Versions
 
-The table below tracks the **Farmer Registry Helm chart** versions and the key changes in each (relative to the previous chart). Every image and the chart built from a commit share one git-derived version, published by the central CI pipeline — see [Build, versioning and CI](farmer-registry.md#build-versioning-and-ci) for the scheme.
+Chart and image versions — and what changed in each — are published by the central CI pipeline:
 
-| Helm Chart Version | Last Modified | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `0.0.0-develop`    | 25-Jun-2026   | <p><strong>Rolling development version.</strong> Every CI publish appends a unique <code>.&#x3C;run></code> suffix; this single row tracks all changes on <code>develop</code>. Key changes:<br>• Self-sufficient chart — the base "registry" wrapper chart was retired; the chart now owns all templates and values directly (the registry platform lives in <a href="https://github.com/openg2p/registry-platform"><code>registry-platform</code></a>, <code>develop</code>, and ships no Helm chart of its own).<br>• <strong>AWE is no longer bundled with the registry</strong> — it is installed once per environment as part of <strong>commons-services</strong>. The registry consumes that shared instance via <code>global.aweBaseUrl</code> and registers its own per-registry callback secret into the shared AWE database, instead of deploying its own AWE + admin clients.<br>• Multiple registries can co-exist in one namespace — the Keycloak staff client, MinIO buckets (including <code>registrant-photos</code>), keymanager app-id and the AWE callback-secret id remain release-scoped.<br>• Legacy Fluentd/OpenSearch logging removed (cluster logging is handled cluster-wide by OpenTelemetry + Grafana Loki).<br>• Adopted the OpenG2P <strong>central build/versioning/publish pipeline</strong> — a single <code>build-publish.yml</code> stub calling <code>openg2p-packaging @v1</code> replaces the per-repo docker-build + helm-publish workflows. Image and chart share one git-derived version per commit, and the <code>registry-platform</code> / <code>fastapi-common</code> / <code>iam-core</code> git refs are pinned to commit SHAs and recorded as <code>org.openg2p.pin.*</code> image labels for traceability.</p> |
-| `1.1.0`            | 08-May-2026   | Frozen release built on the registry base Helm chart `4.1.0` (the wrapper-chart era, before the self-sufficient conversion). [Registry Release Notes v4.1.0](registry/versions/registry-release-notes-v4.1.0.md).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+* **Changelog:** [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG)
+* **How versions are derived and frozen:** [Helm chart → Versions and CI](deployment/helm-chart.md#versions-and-ci)
 
-{% hint style="info" %}
-**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.N`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is tagged — capturing that release's final changelog.
-{% endhint %}
-
-The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** the Farmer Registry is built from. There is no longer a separate "base registry chart" — the Farmer Registry chart is self-sufficient.
-
-### Build, versioning and CI
-
-The Farmer Registry is built and published by the **OpenG2P central build/versioning/publish pipeline** — see [Helm & Docker Versioning Strategy and CI](../../releases/helm-docker-versioning-and-ci/) for the authoritative description. The repo carries a single thin CI stub, [`.github/workflows/build-publish.yml`](https://github.com/OpenG2P/farmer-registry/blob/develop/.github/workflows/build-publish.yml), that calls the central reusable workflow `openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1`. All versioning, image build/promote, chart publish and changelog logic lives centrally behind `@v1`; the stub only declares what this repo contains (its images, chart path and pins). This replaced the earlier per-repo pair of `docker-build-*.yml` + `helm-publish.yml` workflows.
-
-**One version per commit.** Every image and the chart built from a given commit carry the **same** version, derived purely from git — the branch/tag and the commit count `N` (`git rev-list --count HEAD`) — never from a file in the working tree:
-
-| You are on…               | Version produced                                              | Frozen? | Chart published?     |
-| ------------------------- | ------------------------------------------------------------ | ------- | -------------------- |
-| `develop`                 | `0.0.0-develop.N`                                            | no      | yes (rolling)        |
-| release line branch `1.0` | `1.0.0-rc.N` (then `1.0.1-rc.N` after `1.0.0` is tagged)     | no      | yes                  |
-| **tag** `1.0.0`           | `1.0.0` (promoted from the tested RC — a retag, not a rebuild) | **yes** | yes                |
-| any other branch          | `0.0.0-<branch>.N`                                          | no      | **no** (images only) |
-
-Release tags are the **bare** version (`1.0.0`, no `v` prefix); a three-digit version with no suffix is the frozen signal and — per SemVer — outranks all its pre-releases. To cut a release you create a release-line branch (`1.0`, which publishes `1.0.0-rc.N`) and then **tag** the blessed commit `1.0.0` — you do not create a `1.0.0` branch. Each immutable version is published exactly once and never overwritten. (This supersedes the earlier per-repo scheme, which suffixed with `GITHUB_RUN_NUMBER` and packaged from a local `helm-publish.yml`.)
-
-**Pinning the moving platform dependencies (traceability).** The registry images install `registry-platform`, `openg2p-fastapi-common` and `iam-core` from their **`develop`** branches (and the db-seed image clones `openg2p-data`). Because those refs move, each image's build declares them as Dockerfile `ARG`s and the stub lists them as **pins**: the central pipeline resolves each ref to a **commit SHA before the build**, passes it as the build-arg, and records it as an `org.openg2p.pin.<arg>` OCI image label. So `docker inspect` on any Farmer Registry image reveals the exact `registry-platform` (and `fastapi-common` / `iam-core` / `openg2p-data`) commit it was built from, and a given commit always reproduces the same image.
-
-**Images this repo builds:** `openg2p/openg2p-farmer-registry-{staff-portal-api, partner-api, celery, db-seed, sanity}`. The Staff Portal UI and Beneficiary Portal API images are built by `registry-platform`, not here, and are referenced by the chart at their own tags.
+The underlying **platform version** is the version of the [`registry-platform`](https://github.com/openg2p/registry-platform) repository the Farmer Registry is built from. There is no separate "base registry chart" — the Farmer Registry chart is self-sufficient. Each image records the exact platform commit it was built from as an `org.openg2p.pin.*` label.
 
 ## Domain models
 

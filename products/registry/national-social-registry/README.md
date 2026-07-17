@@ -209,7 +209,7 @@ This populates the database with 5 demo households, 15 demo individuals, and dem
 
 ### Tearing down
 
-Standard `helm uninstall` + PVC / secret cleanup applies. See the [Helm chart v4.x deployment guide](../registry/deployment/helm-chart-4.x.md) for detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
+Standard `helm uninstall` + PVC / secret cleanup applies. See the [Helm chart v4.x deployment guide](../registry/_archive/deployment/helm-chart-4.x.md) for detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
 
 ### Rancher catalog
 
@@ -249,6 +249,6 @@ See the [Meta Data Seeding design](../registry/design/meta-data-seeding.md) for 
 ## Related
 
 * [OpenG2P Registry Platform](../registry/) — the base that NSR extends
-* [Farmer Registry](../farmer-registry.md) — sibling manifestation of the same platform, tuned for agricultural-extension use-cases
+* [Farmer Registry](../farmer-registry/README.md) — sibling manifestation of the same platform, tuned for agricultural-extension use-cases
 * [Registry concepts](../registry/concepts.md) — register, table, section, tab, change request, etc.
 * [Registry features](../registry/features/) — the full list of capabilities NSR inherits

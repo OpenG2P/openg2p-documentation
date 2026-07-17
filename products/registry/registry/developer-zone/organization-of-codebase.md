@@ -50,7 +50,7 @@ graph LR
 A **manifestation** is a deployable registry product built on the platform. The current manifestations are:
 
 * [**National Social Registry (NSR)**](../../national-social-registry/)
-* [**Farmer Registry**](../../farmer-registry.md)
+* [**Farmer Registry**](../../farmer-registry/README.md)
 
 Each manifestation is its own repository and is **self-contained**. It provides:
 

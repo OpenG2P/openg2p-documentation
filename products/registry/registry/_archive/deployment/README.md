@@ -4,12 +4,20 @@ description: Deploying OpenG2P Registry on Kubernetes using Helm charts.
 
 # Deployment
 
-The Registry is deployed over Kubernetes infrastructure that offers **production-grade** deployment along with powerful security, access control and operational features. Learn more about the deployment architecture [here](../../../../deployment/openg2p-deployment-model.md).
+{% hint style="warning" %}
+**Archived.** The registry platform does not ship a Helm chart of its own — each registry builds and publishes its own self-sufficient chart. Deployment documentation now lives with the registry you are installing:
+
+* [**Farmer Registry → Deployment**](../../../farmer-registry/deployment/README.md)
+
+This page describes the retired `openg2p-registry` 4.x wrapper chart and is kept for historical reference only.
+{% endhint %}
+
+The Registry is deployed over Kubernetes infrastructure that offers **production-grade** deployment along with powerful security, access control and operational features. Learn more about the deployment architecture [here](../../../../../deployment/openg2p-deployment-model.md).
 
 ## Deployment steps
 
-1. [Infrastructure setup](../../../../operations/deployment/infrastructure-setup/)
-2. [Environment creation](../../../../operations/deployment/environment-setup-multi-node.md)
+1. [Infrastructure setup](../../../../../operations/deployment/infrastructure-setup/)
+2. [Environment creation](../../../../../operations/deployment/environment-setup-multi-node.md)
 3. [Registry installation](./#registry-installation)&#x20;
 
 ## Registry installation

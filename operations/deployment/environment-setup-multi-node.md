@@ -380,7 +380,7 @@ Takes approximately 15-20 minutes. The script is idempotent — it checks for ex
 
 At this point you have a working environment with `commons-base` + `commons-services` installed — the shared infrastructure (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) plus baseline cross-cutting services (eSignet, Superset, ODK). What you **don't** yet have is the OpenG2P product modules a specific deployment actually delivers (registry, payments, beneficiary onboarding, etc.). Each product has its own Helm chart and deployment guide — install whichever modules your rollout requires:
 
-* [**Registry**](../../products/registry/registry/deployment/) — Social / Farmer / generic registry (Gen2). Helm Chart 4.x.
+* [**Farmer Registry**](../../products/registry/farmer-registry/deployment/README.md) — Social / Farmer / generic registry (Gen2). Helm Chart 4.x.
 * [**PBMS**](../../pbms/deployment/) — Payment & Beneficiary Management System.
 * [**SPAR**](../../spar/deployment/) — Single Payee Account Repository.
 * [**G2P Bridge**](../../g2p-bridge/deployment/) — government-to-payer bridge (treasury / bank disbursement integration).

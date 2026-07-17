@@ -269,7 +269,7 @@ global:
 
 For the full registry-side documentation (dependency table, version
 matrix, the 4.1.0 release entry that introduces this feature), see the
-[registry Helm chart 4.x doc — Audit Manager integration](../../../../products/registry/registry/deployment/helm-chart-4.x.md#audit-manager-integration).
+[registry Helm chart 4.x doc — Audit Manager integration](../../../../products/registry/registry/_archive/deployment/helm-chart-4.x.md#audit-manager-integration).
 
 **Enabling without redeploying staff-portal-api code.** Because every
 audit env var is no-op-by-default, you can ship the chart change first

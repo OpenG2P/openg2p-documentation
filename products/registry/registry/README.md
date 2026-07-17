@@ -100,7 +100,7 @@ This Registry is internally referred to as **Gen 2**. It is a major evolution fr
 {% endcontent-ref %}
 
 {% content-ref url="deployment/" %}
-[deployment](deployment/)
+[deployment](_archive/deployment/)
 {% endcontent-ref %}
 
 {% content-ref url="developer-zone/" %}
