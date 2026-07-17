@@ -161,11 +161,17 @@ you never archive GitHub before knowing GitLab works:
 ```bash
 # dry-run, then --apply
 bash ci/migrate/github-to-gitlab.sh \
-  --source openg2p/<repo> --target openg2p/pbms/<name> --retire-source [--apply]
+  --source openg2p/<repo> --target openg2p/pbms/<name> --retire-source [--apply] \
+  [--title "OpenG2P SPAR"] [--docs "Platform Services → SPAR"]
 ```
 
-It replaces the README with a "moved to GitLab, read-only" note (nothing else),
-**deletes `build-publish.yml` in the same commit**, pushes, then archives the repo.
+It replaces the README with a *"moved to GitLab"* note (a `> [!IMPORTANT]` callout,
+nothing else), **deletes `build-publish.yml` in the same commit**, pushes, then
+archives the repo.
+
+The note's title comes from **`--title`**, else the existing README's H1, else a
+title-cased slug. Pass `--title` when the slug has an acronym (`spar` → *"Spar"*,
+so use `--title "OpenG2P SPAR"`); `--docs` adds a documentation breadcrumb.
 
 {% hint style="info" %}
 Deleting the workflow **in the same commit** is what stops that very push from
