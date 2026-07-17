@@ -157,7 +157,11 @@ Independent of `pg` backup runs. SSHes to the storage node, measures `pg_wal` si
 ./openg2p-backup.sh daily-report --config backup-config.yaml
 ```
 
-Emails operators a summary of `.status.json` when `alerting.email_enabled: true`. Cron default: `schedules.daily_report` (`0 7 * * *`). No-op when email is disabled.
+Emails operators a summary of `.status.json` when `alerting.email_enabled: true`.
+
+After `install`, this runs **automatically** on the backup host via cron (`schedules.daily_report`, default `0 7 * * *` → `/usr/local/bin/openg2p-backup-daily-report`). The laptop command above is for smoke-testing only.
+
+Failure mails are separate: they are sent automatically when a backup/drill run fails (no need to invoke `daily-report`). See [Alerting](alerting.md).
 
 ## Group toggles
 
