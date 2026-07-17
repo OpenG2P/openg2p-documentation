@@ -153,6 +153,32 @@ and sets the default branch + visibility.
 * **Always dry-run first** and read the generated `.gitlab-ci.yml` (especially `pins`).
 {% endhint %}
 
+### Retiring the GitHub source
+
+Once the GitLab pipeline is **green**, retire the old repo — a **separate step**, so
+you never archive GitHub before knowing GitLab works:
+
+```bash
+# dry-run, then --apply
+bash ci/migrate/github-to-gitlab.sh \
+  --source openg2p/<repo> --target openg2p/pbms/<name> --retire-source [--apply]
+```
+
+It replaces the README with a "moved to GitLab, read-only" note (nothing else),
+**deletes `build-publish.yml` in the same commit**, pushes, then archives the repo.
+
+{% hint style="info" %}
+Deleting the workflow **in the same commit** is what stops that very push from
+building and publishing a new docker/helm version — GitHub evaluates workflows from
+the pushed commit, so a workflow that isn't there can't run. Archiving afterwards
+disables Actions entirely.
+
+Needs `gh` authenticated with **admin** on the repo. If the default branch is
+**protected** the push is rejected — unprotect it or apply the note by hand.
+Archiving is reversible (un-archive), but it is outward-facing: only do it after
+the GitLab side is verified.
+{% endhint %}
+
 ### Once per group (not per repo)
 
 The `charts` and `versions` projects, the group deploy token, and the group CI/CD
