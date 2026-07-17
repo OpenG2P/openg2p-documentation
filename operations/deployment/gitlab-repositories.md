@@ -235,6 +235,115 @@ values). Otherwise, prefer the script above.
 Group setup (projects, deploy tokens, CI/CD variables, Rancher URL) is a one-time
 step per group — see [Publishing to GitLab → *What you set up on GitLab*](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md#what-you-set-up-on-gitlab-one-time).
 
+## Handing a customer group over to a customer-hosted GitLab
+
+When a customer takes their `cusN` group onto **their own GitLab**, there are two
+shapes, and they differ almost entirely in **transport**:
+
+* **Cloud** — their own GitLab.com account/namespace. Both ends are reachable, so
+  everything can be copied in one hop.
+* **On-prem / air-gapped** — their GitLab lives inside their network. It is
+  **reachable from their cluster**, so once artifacts are in it everything resolves
+  normally. Only two things are hard: getting data *in*, and build-time fetches to
+  the **public internet**.
+
+The procedure below is **manual** — do it once, carefully. (Automation can come
+later; the fiddly parts are enumeration and transport, not logic.)
+
+### What GitLab moves — and what it doesn't
+
+| Moves via group export/import | Does **not** move |
+| ----------------------------- | ----------------- |
+| subgroups, repos (**all branches + tags**), issues, MRs, labels, members | **container images**, **Helm charts**, **CI/CD variables**, **tokens**, Pages |
+
+{% hint style="warning" %}
+**Copy the artifacts — do not rebuild them.** A rebuild is not the digest that was
+tested, and a release tag **promotes an existing RC digest**: against an empty
+registry it fails with *"nothing to promote"*.
+{% endhint %}
+
+### Step 1 — Mirror the shared pipeline
+
+Their instance needs **`openg2p/packaging` at the same path**, with the `v1` tag —
+otherwise every repo's `include:` fails. Because the wrapper uses `CI_*` variables
+and a project-path `include:`, this is what lets every `.gitlab-ci.yml` work
+**unchanged** on the new host.
+
+```bash
+git clone --mirror https://gitlab.com/openg2p/packaging.git packaging.git
+# air-gapped: carry packaging.git in, then run this inside
+git -C packaging.git push --mirror https://<their-host>/openg2p/packaging.git
+```
+
+### Step 2 — Move the group
+
+* **Cloud:** their GitLab → *Groups → New group → **Import group*** ("direct
+  transfer"), pointing at `gitlab.com` with a PAT.
+* **Air-gapped:** `cusN` → *Settings → General → Advanced → **Export group*** →
+  download the tarball → carry it in → *New group → Import*.
+
+### Step 3 — Move the container images
+
+List every image and tag per project (`Deploy → Container Registry`), skipping any
+`-deletion_scheduled-` project — those are soft-deleted and their artifacts are dead
+weight.
+
+```bash
+# Cloud — one hop
+skopeo copy \
+  --src-creds  <user>:<read-token>  --dest-creds <user>:<write-token> \
+  docker://registry.gitlab.com/cus1/<project>/<image>:<tag> \
+  docker://registry.<their-host>/cus1/<project>/<image>:<tag>
+
+# Air-gapped — export to a portable OCI layout, carry it in, then load
+skopeo copy --src-creds <user>:<read-token> \
+  docker://registry.gitlab.com/cus1/<project>/<image>:<tag> oci:./bundle/<image>:<tag>
+skopeo copy --dest-creds <user>:<write-token> \
+  oci:./bundle/<image>:<tag> docker://registry.<their-host>/cus1/<project>/<image>:<tag>
+```
+
+Repeat per tag. Include the immutable versions **and** the `develop` alias.
+
+### Step 4 — Move the Helm charts
+
+List the versions in `cusN/charts` (*Deploy → Package Registry*), then download and
+re-upload each:
+
+```bash
+curl -H "PRIVATE-TOKEN: <read-token>" \
+  "https://gitlab.com/api/v4/projects/<charts-id>/packages/helm/stable/charts/<name>-<version>.tgz" \
+  -o <name>-<version>.tgz
+
+curl --user oauth2:<write-token> --form "chart=@<name>-<version>.tgz" \
+  "https://<their-host>/api/v4/projects/<their-charts-id>/packages/helm/api/stable/charts"
+```
+
+### Step 5 — Recreate tokens and variables
+
+They are secrets, so nothing exports them. On their group: a **deploy token**
+(`read/write_registry`, `read/write_package_registry`), a token with
+`write_repository` for the changelog, and the group CI/CD variables
+(`HELM_PUBLISH_USER` / `HELM_PUBLISH_TOKEN`, `CHANGELOG_PROJECT` /
+`CHANGELOG_BRANCH` / `CHANGELOG_TOKEN`, `OPENROUTER_API_KEY`). Register **runners**.
+
+### Step 6 — Repoint Rancher
+
+Their `charts` project gets a **new numeric id**, so the repo URL changes:
+`https://<their-host>/api/v4/projects/<their-charts-id>/packages/helm/stable`.
+
+### Air-gapped only — mirror the build-time internet dependencies
+
+Their GitLab is reachable from their cluster, so anything already in it is fine.
+Only these reach the public internet during a build — mirror them in, then repoint:
+
+| Dependency | Used by | Fix |
+| ---------- | ------- | --- |
+| `openg2p-fastapi-common` (GitHub) | image `pins` | mirror it in; update the pin's `repo` |
+| Dockerfile base images | every build | dependency proxy / mirror |
+| `common`, `postgres-init` charts | `helm dep up` | mirror into their chart registry |
+| `yq`, `marked` downloads | chart + Pages jobs | pre-bake a CI image |
+| OpenRouter | AI changelog | set `CHANGELOG_SKIP_AI=true` (degrades to human notes) |
+
 ## See also
 
 * [**Publishing to GitLab**](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md) — the full technical detail: CI wrapper, registries, tokens, Rancher.
