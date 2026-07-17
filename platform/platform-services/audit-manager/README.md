@@ -76,13 +76,21 @@ It is built with **FastAPI**, uses **Kafka** as a durable buffer, and **PostgreS
 
 ## Versions
 
-| Helm Chart Version                                                     | Docker Image                            | Date        | Comments           |
-| ---------------------------------------------------------------------- | --------------------------------------- | ----------- | ------------------ |
-| [0.0.0-develop](https://github.com/OpenG2P/audit-manager/tree/develop) | `openg2p/openg2p-audit-manager:develop` | in progress | Active development |
+| Helm Chart Version                                                       | Docker Image                                                              | Date        | Comments           |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------- | ------------------ |
+| [0.0.0-develop](https://gitlab.com/openg2p/audit-manager/-/tree/develop) | `registry.gitlab.com/openg2p/audit-manager/openg2p-audit-manager:develop` | in progress | Active development |
 
 ## Source code
 
-* GitHub: [https://github.com/OpenG2P/audit-manager](https://github.com/OpenG2P/audit-manager)
+* **GitLab:** [https://gitlab.com/openg2p/audit-manager](https://gitlab.com/openg2p/audit-manager)
+
+{% hint style="info" %}
+Audit Manager has **moved to GitLab**. The GitHub repository is archived and
+read-only — it is no longer built or released. Images publish to this project's
+GitLab Container Registry, and the chart to the shared
+[`openg2p/charts`](https://gitlab.com/openg2p/charts) catalogue — see
+[OpenG2P GitLab Repositories](../../../operations/deployment/gitlab-repositories.md).
+{% endhint %}
 
 ## Technology stack
 

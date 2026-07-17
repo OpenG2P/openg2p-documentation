@@ -7,7 +7,7 @@ description: >-
 # API Reference
 
 Base path: `/v1/auditmanager/`. The spec below is rendered from the live
-[`docs/openapi.json`](https://github.com/OpenG2P/audit-manager/blob/develop/docs/openapi.json).
+[`docs/openapi.json`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/docs/openapi.json).
 CI regenerates it from the FastAPI app on every `src/`-touching push, so
 endpoint signatures, response shapes, status-code descriptions, and the
 error-code catalog stay in lockstep with the code. This page does **not**
