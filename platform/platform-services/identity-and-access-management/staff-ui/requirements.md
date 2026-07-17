@@ -155,3 +155,5 @@ All models extend `BaseORMModelWithTimes`, so every record also carries platform
 * `iam-staff-portal-api` currently exposes auth-only endpoints (auth, identity provider, OAuth callback, user access). CRUD endpoints for Applications, Roles, Permissions, and mappings will need to be added to support this UI.
 * `client_secret` and `client_private_key` on Login Providers are sensitive — confirm the UI should mask/never redisplay secrets after save.
 * Pagination page size and default sort order to be confirmed with the backend team, per list.
+
+{% file src="../../../../.gitbook/assets/iam-staff-ui-requirements.pdf" %}

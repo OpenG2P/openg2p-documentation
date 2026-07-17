@@ -2,8 +2,7 @@
 description: >-
   Backup and restore automation for OpenG2P production - PostgreSQL via
   pgBackRest, etcd snapshots, rancher-backup for Kubernetes resources, restic
-  for NFS data and configs. Pull-based and encrypted. Optional MinIO/S3 via
-  rclone+restic, plus Prometheus/email alerting.
+  for NFS data and configs. Pull-based and encrypted. Op
 ---
 
 # Backups
@@ -84,8 +83,8 @@ All of these are configurable via `backup-config.yaml` schedules. The defaults m
 
 ## What this does not do
 
-* **Multi-site / offsite replication.** The default keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — plan a second offsite target later via `restic copy` or pgBackRest's secondary repo. Opt-in `objectstore` backs *up* MinIO/S3 *onto* the backup host; it is not itself an offsite copy.
-* **Scraping the backup host for you.** `install` writes textfile metrics and applies a PrometheusRule into `cattle-monitoring-system`, but Prometheus only sees those metrics if node_exporter (or Pushgateway) on the backup host is scraped. See [Alerting](alerting.md).
+* **Multi-site / offsite replication.** The default keeps one copy on one volume on the backup node. The 3-2-1 rule says 3 copies on 2 media with 1 offsite — plan a second offsite target later via `restic copy` or pgBackRest's secondary repo. Opt-in `objectstore` backs _up_ MinIO/S3 _onto_ the backup host; it is not itself an offsite copy.
+* **Scraping the backup host for you.** `install` writes textfile metrics and applies a PrometheusRule into `cattle-monitoring-system`, but Prometheus only sees those metrics if node\_exporter (or Pushgateway) on the backup host is scraped. See [Alerting](alerting.md).
 * **Full disaster-recovery rehearsal.** Weekly drills do per-component verify + dry-run-restore. Cluster-wide rehearsals into a sandbox VPC are a manual, separately-scheduled operator activity.
 * **Restoring to a different cluster topology.** Restore assumes you're rebuilding into the same production shape. Cross-version or cross-architecture restore is out of scope.
 
