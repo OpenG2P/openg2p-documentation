@@ -24,8 +24,8 @@ layout:
 |                       |                                                                                                                                                                                                 |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Version**           | 1.1.0                                                                                                                                                                                           |
-| **Source Repository** | [registry-platform](https://github.com/OpenG2P/registry-platform/tree/1.1)                                                                                                                      |
-| **Release Date**      | Pending tag (active release line as of 17-Jul-2026)                                                                                                                                             |
+| **Source Repository** | [registry-platform](https://github.com/OpenG2P/registry-platform/tree/1.1.0)                                                                                                                    |
+| **Release Date**      | 06-Jul-2026                                                                                                                                                                                     |
 | **Description**       | <ul><li>Second platform release line — builds on v1.0.0 with AWE integration, document handling refactor, Partner Management integration, and Staff Portal security hardening</li></ul>             |
 | **Previous Version**  | [v1.0.0](registry-platform-release-notes-v1.0.0.md)                                                                                                                                             |
 
@@ -33,7 +33,7 @@ layout:
 
 ## Summary
 
-registry-platform v1.1.0 is the active release line on the `1.1` branch. All platform modules carry version `1.1.0`; the UI widget library (`@openg2p/registry-widgets`, source at `ui/ui-widgets`) is at `1.1.4-dev.2`. Manifestations (Farmer Registry, NSR) pin their Docker builds to this branch.
+registry-platform v1.1.0 is a **tagged release** on the `1.1.0` branch. All platform modules carry version `1.1.0`; the UI widget library (`@openg2p/registry-widgets`, source at `ui/ui-widgets`) is at `1.1.4-dev.2`. Ongoing fixes for the 1.1.x line land on the [`1.1`](https://github.com/OpenG2P/registry-platform/tree/1.1) branch before patch tags (e.g. `v1.1.1`).
 
 This release deepens AWE integration, refactors document storage and handling, repoints Partner Management to commons-services, and hardens Staff Portal authentication (CSRF, cookie domain, CSP).
 
@@ -65,7 +65,7 @@ This release deepens AWE integration, refactors document storage and handling, r
 | Celery beat producers  | openg2p-registry-celery-beat-producers | 1.1.0          |
 | Celery workers         | openg2p-registry-celery-workers        | 1.1.0          |
 | Staff Portal UI        | registry-staff-portal-ui               | 1.1.0          |
-| UI widget library      | @openg2p/registry-widgets (`ui/ui-widgets`) | 1.1.4-dev.2    |
+| UI widget library      | @openg2p/registry-widgets (`ui/ui-widgets`) | 1.1.4    |
 
 ***
 
@@ -143,8 +143,7 @@ This release deepens AWE integration, refactors document storage and handling, r
 
 ## Known issues
 
-1. The `v1.1.0` git tag has not been cut yet — manifests pin to the `1.1` branch ref.
-2. The `develop` branch is one commit ahead of `1.1` (permission decorator on one API); it will merge back before the tag.
+1. The `develop` branch carries in-progress work ahead of the `1.1` support line (currently one commit: permission decorator on one API).
 
 ***
 

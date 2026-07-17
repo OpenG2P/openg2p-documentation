@@ -117,4 +117,4 @@ New deployments should not use the deprecated split repositories or the legacy o
 
 ## Roadmap
 
-The active release line is [v1.1.0](registry-platform-release-notes-v1.1.0.md) on the `1.1` branch. For in-progress platform work, see [Versions](./).
+The current tagged release is [v1.1.0](registry-platform-release-notes-v1.1.0.md); ongoing 1.1.x fixes land on the `1.1` branch and latest work on `develop`. See [Versions](./).

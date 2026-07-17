@@ -8,14 +8,21 @@ description: Version history of the OpenG2P Registry platform and Helm chart rel
 
 The **version of the [registry-platform](https://github.com/OpenG2P/registry-platform) repository is the platform version**. Manifestations build Docker images and Helm charts on top of a tagged platform ref.
 
+| Branch / tag | Type | Role |
+| ------------ | ---- | ---- |
+| `develop` | Running | Latest in-progress work |
+| `N.N` (e.g. `1.1`) | Running | Active release line — fixes and support for `N.N.x` land here before a patch tag |
+| `N.N.N` / `vN.N.N` (e.g. `1.1.0`) | Tagged | Frozen release — tagged the moment the three-part version is cut |
+
 | Platform Version | Last Modified | Comments |
 | ---------------- | ------------- | -------- |
-| [1.1](https://github.com/OpenG2P/registry-platform/tree/1.1) (`v1.1.0`, tag pending) | 17-Jul-2026 | **Active release line.** All platform modules at `1.1.0`; `@openg2p/registry-widgets` at `1.1.4-dev.2`. Manifestations (Farmer Registry, NSR) pin Docker builds to this branch. [Release notes](registry-platform-release-notes-v1.1.0.md). Key changes vs v1.0.0:<br>• **AWE integration** — task list UI, `list_tasks_for_request`, assignee name, CR rollback on failed terminal approval, pre-approve hook.<br>• **Document handling refactor** — unified document controller, abstract MinIO client, upload validation profiles, Docs widget.<br>• **Staff Portal security** — CSRF validation, `cookieDomain`, CSP hardening, IAM cookie/permission refactor.<br>• **Partner Management** — repointed to commons-services; WJS support; PM-seed auth aligned to `g2p-bridge` pattern.<br>• **Reference data & data policy** — attribute search, administrative-area policies, attribute labels renamed to reference data.<br>• **Intake forms** — application reference field, configurable reference generator.<br>• **UI widgets** — geo hierarchy, logo/favicon, conditional visibility fixes.<br>• **Record-level access** — `BaseRepository` generics approach. |
-| [develop](https://github.com/OpenG2P/registry-platform/tree/develop) | 08-Jul-2026 | **In progress.** One commit ahead of `1.1`: permission decorator enabled on one API (G2P-5319). |
-| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | First tagged release of the consolidated platform repository. Replaces the deprecated openg2p-registry-gen2 split repos. [Release notes](registry-platform-release-notes-v1.0.0.md). |
+| [develop](https://github.com/OpenG2P/registry-platform/tree/develop) | 08-Jul-2026 | **Latest running version.** In progress. Changes ahead of `1.1`: permission decorator enabled on one API (G2P-5319). |
+| [1.1](https://github.com/OpenG2P/registry-platform/tree/1.1) | 17-Jul-2026 | **Running release line** for 1.1.x — fixes and support for issues found in tagged 1.1.x releases land here before a patch tag (e.g. `v1.1.1`). Currently at the same commit as [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0). |
+| [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0) | 06-Jul-2026 | **Tagged release.** All platform modules at `1.1.0`; `@openg2p/registry-widgets` at `1.1.4-dev.2`. [Release notes](registry-platform-release-notes-v1.1.0.md). Key changes vs v1.0.0:<br>• **AWE integration** — task list UI, `list_tasks_for_request`, assignee name, CR rollback on failed terminal approval, pre-approve hook.<br>• **Document handling refactor** — unified document controller, abstract MinIO client, upload validation profiles, Docs widget.<br>• **Staff Portal security** — CSRF validation, `cookieDomain`, CSP hardening, IAM cookie/permission refactor.<br>• **Partner Management** — repointed to commons-services; WJS support; PM-seed auth aligned to `g2p-bridge` pattern.<br>• **Reference data & data policy** — attribute search, administrative-area policies, attribute labels renamed to reference data.<br>• **Intake forms** — application reference field, configurable reference generator.<br>• **UI widgets** — geo hierarchy, logo/favicon, conditional visibility fixes.<br>• **Record-level access** — `BaseRepository` generics approach. |
+| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | **Tagged release.** First tagged release of the consolidated platform repository. Replaces the deprecated openg2p-registry-gen2 split repos. [Release notes](registry-platform-release-notes-v1.0.0.md). |
 
 {% hint style="info" %}
-On `develop` and active release lines (`N.N`), the **Last Modified** date is updated as work continues. Add a new row only when a version is frozen (i.e. when a `vN.N.N` git tag is cut). Released tags carry the date of their tag.
+**Maintaining this table.** `develop` is always the first row (latest running version). The `N.N` row tracks the active support line. Add a new tagged row only when a three-part `N.N.N` version is cut — at that moment it is tagged. Update the **Last Modified** date on running rows (`develop`, `N.N`) as work continues; tagged rows carry the date of their tag.
 {% endhint %}
 
 ***
