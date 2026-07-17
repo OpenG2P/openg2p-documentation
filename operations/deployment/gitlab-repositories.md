@@ -107,38 +107,63 @@ the group boundary (it's public), so there is **no per-customer copy of the CI
 logic** — only their artifacts are private and isolated. A group deploy token
 scoped to the customer group governs who can pull.
 
-## Moving a GitHub repo to GitLab
-
-The reference migration is **`consent-manager`** — its GitLab form
-(`openg2p/consent-manager`, with `.gitlab-ci.yml` at the repo root) is the working
-exemplar to copy from.
+## Migrating a GitHub repo to GitLab
 
 The change is small: **bring the code over, then swap only the build/publish CI.**
 Everything else (chart, Dockerfiles, `values.yaml` structure) stays identical.
+`openg2p/consent-manager` is the working exemplar.
 
-### Steps
+### Use the script (repos already on the central pipeline)
 
-1. **Create the GitLab projects** (GitLab does not auto-create them on push): the
-   product project for images, and — for the shared catalogue — reuse
-   `openg2p/charts` (or a per-customer `charts`).
-2. **Bring the code over.** Transplant the `develop` branch (with history) into
-   the GitLab project — e.g. add the GitHub clone as a temporary remote and push
-   `develop` + tags — or use GitLab's *Import from GitHub*.
-3. **Swap the CI:**
-   * **remove** `.github/workflows/build-publish.yml` (the GitHub Actions caller),
-   * **add** `.gitlab-ci.yml` at the repo root that `include:`s
-     `openg2p/packaging@v1`'s GitLab wrapper and declares this repo's images/chart.
-4. **Point `values.yaml`** image `registry`/`repository` at the GitLab paths
-   (`registry.gitlab.com/<group>/<project>/<image>`). CI still overwrites the
-   tags at package time.
-5. **Ensure the group CI/CD variables** exist (once per group): `HELM_PUBLISH_USER`
-   / `HELM_PUBLISH_TOKEN` (deploy token with `write_package_registry`, for the
-   cross-project chart push), `CHANGELOG_PROJECT` / `CHANGELOG_BRANCH` /
-   `CHANGELOG_TOKEN` (a token with `write_repository`), and `OPENROUTER_API_KEY`.
+A repo on the [central pipeline](../../releases/helm-docker-versioning-and-ci/ci-pipeline.md)
+already declares its images/pins/chart in its GitHub caller's `with:` block, so the
+migration is a **mechanical translation** — no AI, no re-derivation. Run
+**`ci/migrate/github-to-gitlab.sh`** from `openg2p/packaging`:
 
-### Copy-paste prompt
+```bash
+# dry-run (default): prints the generated .gitlab-ci.yml + diff, changes nothing
+bash ci/migrate/github-to-gitlab.sh \
+  --source openg2p/<repo> \            # a GitHub owner/repo, or a local checkout path
+  --target openg2p/pbms/<name> \       # the GitLab project to create
+  --branch develop --visibility public
 
-Paste this to an AI agent working in the repository (fill the bracketed values):
+# do it for real
+GITLAB_TOKEN=<PAT with 'api' scope> bash ci/migrate/github-to-gitlab.sh … --apply
+```
+
+It creates the project, transplants the branch **with history** (+ tags), translates
+the caller into `.gitlab-ci.yml`, repoints `values.yaml` at the GitLab image paths,
+and sets the default branch + visibility.
+
+{% hint style="warning" %}
+**Caveats.**
+
+* **Create the group/subgroup first** — the script creates the *project*, not the group.
+* **Only repos on the central pipeline.** Anything still on old-style workflows
+  (`docker-build*.yml` / `helm-publish.yml`) is **refused** — there is no `with:`
+  block to translate. Onboard it first
+  ([Onboarding a repo](../../releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)),
+  or hand-write `.gitlab-ci.yml` using the prompt below.
+* **`--apply` force-pushes** the branch. It is meant for a fresh/empty target.
+* **Other GitHub workflows are left alone** (tests, pre-commit). They are **inert on
+  GitLab** — port them to `.gitlab-ci.yml` jobs separately or lose that CI.
+* **Flagged image paths are never guessed.** The link from a `chart-image-paths`
+  entry to an image name isn't declared anywhere; the script infers it from the
+  current `repository` value and **flags** whatever it can't match — fix by hand.
+* **Always dry-run first** and read the generated `.gitlab-ci.yml` (especially `pins`).
+{% endhint %}
+
+### Once per group (not per repo)
+
+The `charts` and `versions` projects, the group deploy token, and the group CI/CD
+variables — see [Publishing to GitLab → *What you set up on GitLab*](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md#what-you-set-up-on-gitlab-one-time).
+
+### Fallback: the manual prompt
+
+Only for repos the script refuses (**not on the central pipeline**, so there is
+nothing to translate) — here the config must be *derived* from the Dockerfiles and
+chart. Paste this to an AI agent working in the repository (fill the bracketed
+values). Otherwise, prefer the script above.
 
 > Move this repository from GitHub to GitLab, exactly like `consent-manager`
 > (`openg2p/consent-manager` on GitLab is the reference).
