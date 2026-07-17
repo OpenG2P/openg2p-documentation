@@ -63,7 +63,7 @@ registry-platform is a **platform, not a deployable product**. Operators deploy 
 | Celery beat producers  | openg2p-registry-celery-beat-producers | 1.0.0          |
 | Celery workers         | openg2p-registry-celery-workers        | 1.0.0          |
 | Staff Portal UI        | registry-staff-portal-ui               | 1.0.0          |
-| UI widget library      | ui-widgets                             | 1.1.2          |
+| UI widget library      | @openg2p/registry-widgets (`ui/ui-widgets`) | 1.1.2          |
 
 Docker images for deployable registry products are built from the platform source plus a domain extension. Image names and tags are owned by each manifestation repository.
 
@@ -117,4 +117,4 @@ New deployments should not use the deprecated split repositories or the legacy o
 
 ## Roadmap
 
-For in-progress platform work, see [Versions](./).
+The active release line is [v1.1.0](registry-platform-release-notes-v1.1.0.md) on the `1.1` branch. For in-progress platform work, see [Versions](./).

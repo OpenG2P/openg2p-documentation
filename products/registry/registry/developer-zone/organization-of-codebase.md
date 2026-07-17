@@ -91,7 +91,8 @@ The **version of the `registry-platform` repository is the platform version** â€
 
 | Platform tag | Release date | Notes |
 | ------------ | ------------ | ----- |
+| [1.1](https://github.com/OpenG2P/registry-platform/tree/1.1) (`v1.1.0`, tag pending) | 17-Jul-2026 | Active release line. All modules at 1.1.0; `@openg2p/registry-widgets` at 1.1.4-dev.2. [Release notes](../versions/registry-platform-release-notes-v1.1.0.md). |
 | [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | First tagged release of the consolidated platform. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
-| `develop` | â€” | Active development branch. |
+| `develop` | 08-Jul-2026 | Active development branch; one commit ahead of `1.1`. |
 
 Legacy Helm chart history (4.0.0, 4.1.0) is in [Versions](../versions/).
