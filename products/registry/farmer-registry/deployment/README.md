@@ -34,7 +34,7 @@ Since Rancher is already running after steps 1–2, installing from the Rancher 
 5. Select the **OpenG2P Farmer Registry** chart.
 6. Select the version. *Three-digit versions are frozen; versions carrying a `-develop` suffix are moving.* Rancher hides pre-release versions by default — tick **Show pre-release versions** to see `0.0.0-develop.N`.
 7. On Install step 1: select the namespace, give the installation a name (`farmer-registry` is a reasonable default — the name is free, and it scopes the resources so more than one registry can share a namespace), tick **Customize Helm options before install**, then **Next**.
-8. Review the values. Typically only **ID Generator** (your ID types) and the **Consent Manager / Partner Management** switches need changing.
+8. Review the values. Typically only **ID Generator** (your ID types) needs changing — the Consent Manager / Partner Management switches are on by default and should stay on.
 9. **Install**, and wait for all pods to come up.
 
 ### Using Helm CLI
@@ -61,5 +61,5 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 
 ## Before going to production
 
-* Turn **on** both `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` — they default OFF and govern real PII egress. See [Helm chart](helm-chart.md#integrating-consent-manager-and-partner-management).
+* Leave `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` **on** (the default) — they govern real PII egress, and the chart fails closed. Only disable them for performance testing or a bring-up install without commons-services. See [Helm chart](helm-chart.md#integrating-consent-manager-and-partner-management).
 * Turn **off** the sample-data seeding flags (`dbSeed.loadSampleData`, `loadImages`, `loadGeoData`) — see [Data seeding](data-seeding.md).

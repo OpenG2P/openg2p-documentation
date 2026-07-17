@@ -43,9 +43,10 @@ Ordered `post-install,post-upgrade` hooks:
 | 10 | `db-seed` | Register definitions, geo, sample data, templates, AWE seed |
 | 11 | `sanity-pm-seed` | Register the sanity test partner's key in Partner Management |
 | 12 | `sanity-cm-seed` | Create the sanity partner's Consent Manager binding + policy |
+| 13 | `sanity-data-seed` | Provision the sanity test user, inject its test farmer, register it as an AWE approver |
 | 15 | `sanity` | Run the in-cluster sanity suite against the partner-api |
 
-Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
+The three `sanity-*-seed` Jobs only render when `sanity.runE2e` is on — which it is **not** by default, so a normal install creates no test fixtures at all and runs only the suite's smoke tier. Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
 
 ## Integrating Consent Manager and Partner Management
 
@@ -58,15 +59,17 @@ Both are installed once per environment as part of commons-services; the registr
 
 | Parameter | Default | Purpose |
 | --------- | ------- | ------- |
-| `global.partnerSignatureValidationEnabled` | `false` | Verify the DCI envelope signature against the partner's PM key |
-| `global.consentEnforcementEnabled` | `false` | Call CM `/validate` and clamp fields to the consented scopes |
+| `global.partnerSignatureValidationEnabled` | `true` | Verify the DCI envelope signature against the partner's PM key |
+| `global.consentEnforcementEnabled` | `true` | Call CM `/validate` and clamp fields to the consented scopes |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM partner-api — partner key lookup |
 | `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | CM partner-api — the `/validate` PDP endpoint |
 | `global.consentManagerTimeoutSeconds` | `5` | CM call timeout |
 | `global.registryCryptoBackend` | `partner-mgmt` | Partner-key backend: `partner-mgmt` \| `keymanager` \| `local` |
 
 {% hint style="warning" %}
-**Both switches default to `false`, and both govern real PII egress.** They are defaulted off only so a fresh install works before CM/PM are wired. When off, the bypass is logged and stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`). **Turn both on for any production deployment.**
+**Both switches default to `true` — the chart fails closed**, matching the registry platform's own defaults. Turning either off is a deliberate choice that opens real PII egress: with signature validation off the `signature` field is required but never inspected (any string passes), and with consent enforcement off the Consent Manager is never called and records are returned **unclamped** — every field the DCI template emits, to any caller. Either bypass is logged and stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.
+
+Legitimate reasons to disable are performance testing, or a bring-up install where commons-services is not yet deployed — until it is, the DCI search will reject requests.
 {% endhint %}
 
 A further set — `global.partnerManagementAdminApiUrl`, `global.consentManagerStaffUrl`, `global.consentManagerAuthClientId` and `global.pmSeedClientId` — is used **only by the sanity e2e**, to seed its test partner into PM and its binding into CM. These are not needed for normal registry operation.
