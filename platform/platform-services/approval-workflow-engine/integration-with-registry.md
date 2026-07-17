@@ -1,383 +1,335 @@
 # Integration with Registry
 
-This page describes the design for wiring AWE into the OpenG2P Registry as
-the first concrete Caller integration. The Registry's "Change Request"
-(CR) machinery is the natural integration seam — every staged mutation
-already passes through it; AWE inserts as the multi-stage approval gate
-between "CR created" and "CR applied to the live register."
+This page describes how AWE is wired into the OpenG2P Registry as the first concrete Caller integration. Registry integrates with AWE through **two artifact types**:
 
-> **Status:** design only — no code has been written in the Registry
-> repos yet. Open design choices are flagged at the end.
+1. **Change requests** (`registry.change_request`) - staged mutations to existing register records.
+2. **Intake form submissions** (`registry.intake_form`) - new registrations submitted via configurable intake forms.
 
-## Why Change Request is the right seam
+Both use the same Caller contract (create request → task decisions → webhook terminal events) and share the same proxy, webhook handler, and policy-configuration machinery.
 
-Today the Registry already has:
+***
 
-* `G2PRegisterChangeRequest` with `approval_status: PENDING | APPROVED | REJECTED`,
-  `approved_by`, `approved_at`.
+### Why Change Request is the right seam
+
+The Registry already has:
+
+* `G2PRegisterChangeRequest` with `approval_status: PENDING | APPROVED | REJECTED | CANCELLED`, `approved_by`, `approved_at`.
 * `G2PRegisterChangeRequestPayload` with the proposed mutation as JSON.
-* A `POST /change-requests/approve_change_request` endpoint that, today,
-  flips a CR to `APPROVED` and writes to the live register in one step
-  for anyone holding the `changeRequest:approve` permission.
-* A `POST /change-requests/reject_change_request` endpoint that closes
-  the CR without applying it.
+* `POST /change-requests/approve_change_request` - historically flips a CR to `APPROVED` and writes to the live register in one step for anyone holding `changeRequest:approve`.
+* `POST /change-requests/reject_change_request` - closes the CR without applying it.
 
-What's missing is a **multi-stage** approval gate. AWE provides exactly
-that. The integration replaces the single-step approval with an AWE-
-mediated workflow, while leaving the rest of the CR machinery (history
-inserts, register upserts, document handling, domain `post_approve`
-hooks) untouched.
+AWE adds the **multi-stage approval gate** between creation and register write. The core CR machinery (history inserts, register upserts, document handling, domain `post_approve` hooks) is unchanged - terminal approval still runs through `_approve_change_request_core()`.
 
-## End-to-end flow
+#### Why Intake Form is the second seam
+
+Intake forms capture **new beneficiary registrations** before they exist in the live register:
+
+* `G2PIntakeFormSubmission` with `draft_status: DRAFT | FINAL` and `approval_status: PENDING | APPROVED | REJECTED | CANCELLED`.
+* Staff or agents fill sections while the submission is a **draft**; no AWE flow runs yet.
+* On **finalize**, the submission moves to `FINAL` + `PENDING` approval and - if a policy is configured - AWE is opened.
+* Terminal **`request_approved`** webhook sets `APPROVED` and enqueues **register ingest** (`register_ingest_process_status = PENDING`); a worker writes the record into the live register.
+* Reject/cancel webhooks close the submission without ingest.
+
+Intake and change requests share the approval UI components (`IntakeApprovalCard`, `useApprovalTasks`, `useSubmitApprovalDecision`) but differ in **when** AWE is opened (finalize vs create) and **what** happens on approval (ingest vs register upsert).
+
+***
+
+### End-to-end flow (as implemented)
 
 ```
-      Caller-staff submits a change                    Approvers act in Registry UI
-                │                                                   │
-                ▼                                                   ▼
-  ┌──────────────────────────┐                       ┌──────────────────────────┐
-  │ POST /change-requests/   │                       │ POST /change-requests/   │
-  │   create_change_request  │                       │   approve_change_request │
-  └──────────┬───────────────┘                       └──────────┬───────────────┘
-             │ (existing)                                       │ (rewire)
-             ▼                                                  ▼
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │ G2PRegisterService                                                          │
-  │   create_change_request()  ──new──►  AWE: create approval request          │
-  │   approve_change_request() ──new──►  AWE: record decision (forward JWT)    │
-  │   reject_change_request()  ──new──►  AWE: record decision (forward JWT)    │
-  └────────────────────────────────────────────────────────────────────────────┘
-                                       │
-                                       │ HTTPS (bearer = the user's JWT)
-                                       ▼
-                        ┌──────────────────────────────┐
-                        │ AWE                          │
-                        └──────┬───────────────────────┘
-                               │ webhook (HMAC) on terminal state
-                               ▼
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │ NEW Registry controller: POST /awe/webhooks/decision                     │
-  │   request_approved   → G2PRegisterService._approve_change_request_core() │
-  │                        (skip_verification=True; AWE already gated it)    │
-  │   request_rejected   → G2PRegisterService._reject_change_request_core()  │
-  │   request_cancelled  → mark CR cancelled, no register write              │
-  └──────────────────────────────────────────────────────────────────────────┘
+  Staff submits CR / finalizes intake          Approver acts in Registry UI
+              │                                           │
+              ▼                                           ▼
+  POST /change-requests/create_change_request    Approval sidebar (CR detail /
+  or intake finalize                             IntakeApprovalCard)
+              │                                           │
+              ▼                                           ▼
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │ G2PAweIntegrationService                                                │
+  │   start_change_request_workflow()  ──►  POST /v1/awe/requests           │
+  │   start_intake_submission_workflow()                                    │
+  │   stores awe_request_id + awe_request_status_summary on artifact row    │
+  └─────────────────────────────────────────────────────────────────────────┘
+              │                                           │
+              │                                           ▼
+              │                              POST /awe/submit-task-decision (proxy)
+              │                                           │
+              │                                           ▼
+              │                              POST /v1/awe/tasks/{id}/decision
+              │                              (approver JWT forwarded)
+              ▼                                           │
+  ┌──────────────────────────────┐                        │
+  │ AWE                          │◄───────────────────────┘
+  └──────────────┬───────────────┘
+                 │ webhook (HMAC) on terminal / stage events
+                 ▼
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │ POST /awe/webhooks/decision  (G2PAWEWebhookController)                  │
+  │   request_approved   → CR: approve_change_request_from_awe_webhook()    │
+  │                        → _approve_change_request_core(skip_verification)│
+  │                        → Intake: approve_submission_with_session()      │
+  │                        → enqueue register ingest                        │
+  │   request_rejected   → CR/submission REJECTED, no register write        │
+  │   request_cancelled  → CR/submission CANCELLED, no register write       │
+  │   other events       → log + update awe_request_status_summary          │
+  └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Mapping AWE concepts to Registry concepts
+### Mapping AWE concepts to Registry concepts
 
-| AWE concept | Registry concept | Source field |
-|--|--|--|
-| `policy_key` | "which workflow governs this CR" | derived from `register_mnemonic + section_id`, e.g. `farmer.section-farmer-edit`. Template-driven. |
-| `artifact_type` | constant | `"registry.change_request"` |
-| `artifact_id` | CR id | `change_request_id` |
-| `context` | resolution data the policy needs | small subset: `register`, `section`, `edit_action`, plus any policy-relevant business fields lifted from `change_payload` (district, amount, etc.). The section config picks which fields. |
-| `requester` | who submitted the CR | `request.state.auth.sub` |
-| `callback_url` | Registry webhook | configured `awe_default_callback_url` |
-| `callback_secret_id` | HMAC secret reference | configured `awe_callback_secret_id` |
-| approver bearer to AWE | the approver's own JWT | `request.state.auth.credentials` — **forwarded as-is** since both services trust the same Keycloak realm |
+| AWE concept            | Registry concept                     | Source                                                                                                                    |
+| ---------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `policy_key`           | Which workflow governs this artifact | `g2p_registry_awe_policy_configurations.policy_key` - resolved by register + section / intake form / register scope       |
+| `artifact_type`        | Constant                             | `"registry.change_request"` or `"registry.intake_form"`                                                                   |
+| `artifact_id`          | CR or submission id                  | `change_request_id` / `submission_id`                                                                                     |
+| `context`              | Data for policy rules                | Base fields (`register_mnemonic`, `section_mnemonic`, etc.) plus keys listed in `context_field_names` lifted from payload |
+| `requester`            | Who submitted                        | `request.state.auth.sub`                                                                                                  |
+| `callback_url`         | Registry webhook                     | Configured `awe_default_callback_url`                                                                                     |
+| `callback_secret_id`   | HMAC secret reference                | Configured `awe_callback_secret_id`                                                                                       |
+| Approver bearer to AWE | Approver's own JWT                   | Forwarded via staff-portal proxy (`/awe/submit-task-decision`)                                                            |
 
-## Authentication and the token model
+#### Policy configuration
 
-Two **different** tokens flow across the integration, on two different
-calls. Getting this right is the crux of the integration — the table
-below is the contract.
+| Field                           | Purpose                                               |
+| ------------------------------- | ----------------------------------------------------- |
+| `policy_scope`                  | `REGISTER`, `INTAKE_FORM`, or `SECTION`               |
+| `register_id`                   | Which register                                        |
+| `section_id` / `intake_form_id` | Scope-specific id (when applicable)                   |
+| `policy_type`                   | `registry.change_request` or `registry.intake_form`   |
+| `policy_key`                    | Must match an **active policy** in AWE                |
+| `context_field_names`           | JSON list of payload keys to include in AWE `context` |
 
-| Call | `Authorization` header | What it proves | Verified by AWE? |
-|--|--|--|--|
-| `POST /v1/awe/requests` (open a flow) | Registry's **service-account token** (client_credentials) | The *Registry system* is creating this flow | Yes — JWKS signature + issuer (+ audience, see below) |
-| `requester` field in the `POST /requests` body | — (not a token; a plain string, e.g. `u-alice`) | Who *submitted* the CR — provenance only | **No** — stored as-is, never checked against Keycloak |
-| `POST /v1/awe/tasks/{id}/decision` (approve / reject) | The **approver's own user JWT**, forwarded by Registry | That *this specific human* is deciding | Yes — JWKS-verified, and `sub` must match the task's assignee |
+**Context fields by artifact type**
 
-Key consequences:
+| Artifact       | Base `context` keys (always sent)                                           | Optional keys from `context_field_names`                   |
+| -------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Change request | `record_name`, `section_mnemonic`, `register_mnemonic`, `change_request_id` | Any keys from `change_payload` (e.g. `district`, `amount`) |
+| Intake form    | `record_name`, `intake_form_mnemonic`, `register_mnemonic`, `submission_id` | Any keys from section `records` in the finalized payload   |
 
-* **Create is system-acting-for-a-human.** The human (`requester`) is
-  data, not the caller. A string is enough because at create time
-  nobody is *acting as* that user — the Registry is recording who
-  initiated. AWE uses `requester` for guards like `forbid_self_approval`,
-  but never trusts it as an authenticated identity.
-* **Decide is the human acting directly.** This is the actual security
-  gate — a forged "Alice approved" applies a real mutation. So AWE
-  requires a proven identity (a real, signed token whose `sub` matches
-  the assignee), not an assertion.
-* **No AWE role is needed to approve.** The decision endpoint is gated on
-  *being the task's assignee*, not on holding `AWE_VIEWER` / `AWE_ADMIN`.
-  Those roles are only for the admin portal (policy CRUD, audit,
-  deliveries). An approver's authority comes from having been resolved
-  into the stage's approver set.
+**Example policy keys**
 
-### This depends on a design choice
+| Scope        | `policy_type`             | Example `policy_key`                 |
+| ------------ | ------------------------- | ------------------------------------ |
+| REGISTER     | `registry.change_request` | `registry.change_request.individual` |
+| INTAKE\_FORM | `registry.intake_form`    | `registry.intake_form.individual`    |
 
-The table above reflects the **default model: forward the approver's
-JWT.** It is not the only option — see
-[Open design choices](#open-design-choices-to-confirm-before-coding),
-item 1. The alternative ("trust the Registry's assertion of who
-approved") collapses the decision row to a service token plus an
-asserted user id. The trade-off:
+Each `policy_key` must have a matching **active policy** in AWE admin.
 
-* **Forward JWT (default):** strongest audit / non-repudiation; a
-  compromised Registry cannot forge approvals; AWE stays an independent
-  control. Cost: Registry must forward live user tokens, and the
-  audience claim must line up (next section).
-* **Trust the caller:** simplest; one service token does everything;
-  works for approvals arriving over non-Keycloak channels (SMS, IVR,
-  batch). Cost: AWE is only as trustworthy as the Registry — the
-  independent gate becomes a caller-controlled bookkeeping table.
+***
 
-For OpenG2P, where approvals are a governance control, the default
-(forward JWT) is recommended. If a "trusted-caller" mode is ever needed,
-the clean shape is: a caller holding a specific role may pass
-`acting_as: "<user_id>"` on the decision call, and AWE records the
-decision as that user while logging that it was *asserted by* the
-Registry (not directly proven).
+### Integration with Intake Forms
 
-### The audience claim — current decision and the path to tighten it
+#### Lifecycle and when AWE opens
 
-AWE verifies the inbound token's `aud` against its configured
-`awe.keycloak.audience`. A **forwarded approver token was minted for the
-Registry's client** (e.g. `registry-staff-portal`), so its `aud` is the
-Registry client — **not** `awe-admin-portal`. If audience verification
-were on, AWE would reject every forwarded approver token with `401`, even
-though the user is valid and is the correct assignee.
+```
+  Draft editing (no AWE)              Finalize                      Approval
+        │                                  │                            │
+        ▼                                  ▼                            ▼
+  submission.draft_status=DRAFT    finalize_submission()        Approver uses
+  (sections editable)              draft_status=FINAL           IntakeApprovalCard
+                                   approval_status=PENDING              │
+                                   awe_request_id set ◄── AWE create    │
+                                                                        ▼
+                                                              submit-task-decision
+                                                                        │
+                                   request_approved webhook ◄───────────┘
+                                   → approve_submission_with_session()
+                                   → register_ingest_process_status=PENDING
+                                   → worker ingests into live register
+```
 
-`keycloak-init` already auto-adds an audience mapper to every client it
-provisions, but it hardcodes the audience to the client's **own** id. So
-Registry tokens carry `aud: registry-staff-portal` and nothing else —
-there is no values-level hook today to add a second audience.
+AWE is **not** called when a draft is first created or while it is edited. It is called inside `finalize_submission_with_session()` after the submission is marked `FINAL`.
 
-> **Decision (v1): we have gone with Option 2 — audience verification is
-> disabled.** `awe.keycloak.audience` is set to `""` in AWE's Helm
-> values, so AWE accepts any validly-signed token from the trusted
-> `staff`-realm issuer. Signature and issuer are still enforced; only the
-> audience pin is relaxed. This is a deliberate trade-off: it's the
-> one-line change that lets forwarded approver tokens through without
-> touching Registry's Keycloak setup. It is acceptable for v1 because
-> every client lives in the same trusted realm.
+#### Intake-specific mapping
 
-The three options, for reference:
+| AWE field       | Intake source                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `artifact_type` | `"registry.intake_form"`                                                                                                                  |
+| `artifact_id`   | `submission_id`                                                                                                                           |
+| `policy_key`    | From `g2p_registry_awe_policy_configurations` where `policy_scope=INTAKE_FORM` and `intake_form_id` matches, else REGISTER-level fallback |
+| `requester`     | Finalizing user's `sub` (or `submission.created_by`)                                                                                      |
+| Idempotency key | `intake-{submission_id}`                                                                                                                  |
 
-| Option | Where it's configured | Effort | Notes |
-|--|--|--|--|
-| **1. Add `awe` to Registry's token audience** | **Registry** Helm chart's `keycloak-init` | Higher | The stricter, "correct" fix — *deferred*. See "Tightening later" below. |
-| **2. Relax AWE's audience check** *(chosen for v1)* | **AWE** Helm values: `awe.keycloak.audience: ""` | One line | AWE accepts any validly-signed token from the trusted `staff`-realm issuer. Simplest; weaker (any realm token is accepted). |
-| **3. Token exchange** | Registry side | Highest | Registry exchanges the user token for an AWE-audienced token before forwarding. Cleanest in theory, most moving parts. |
+#### Webhook terminal actions (intake)
 
-#### Tightening later (moving to Option 1)
+| Event                                    | Registry action                                                                                                          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `request_approved`                       | `G2PIntakeFormDataService.approve_submission_with_session()` - sets `APPROVED`, `register_ingest_process_status=PENDING` |
+| `request_rejected`                       | `reject_submission_with_session()` - sets `REJECTED`, no ingest                                                          |
+| `request_cancelled`                      | `cancel_submission_with_session()` - sets `CANCELLED`, no ingest                                                         |
+| `stage_started`, `stage_completed`, etc. | Log + update `awe_request_status_summary` only                                                                           |
 
-When stronger control is wanted, switch to Option 1. This is **not** an
-AWE-side change alone — AWE doesn't own the Registry client. It requires:
+Webhook lookup resolves the submission by `artifact_id` (UUID) or falls back to `awe_request_id`.
 
-1. **AWE side:** set `awe.keycloak.audience` back to the AWE client id
-   (e.g. `awe-admin-portal`) in AWE's Helm values, re-enabling the
-   audience pin.
-2. **Registry side — the keycloak-init enhancement:** the Registry's
-   tokens must carry `awe` (or `awe-admin-portal`) in their `aud` claim.
-   keycloak-init currently emits only each client's *self-audience*
-   mapper (`configure_mappers()` hardcodes `included.client.audience` to
-   the client's own id), so it would need to grow one of:
-   * support for **custom/extra protocol mappers** declared per-client in
-     the keycloak-init values (so an `oidc-audience-mapper` adding `awe`
-     can be attached to the Registry client), **or**
-   * support for assigning a shared **client scope** that carries the
-     audience mapper to the Registry client, **or**
-   * a documented **manual/post-install** step that adds the mapper via
-     the Keycloak admin API.
+#### Staff portal UI (intake)
 
-Until keycloak-init gains one of those, Option 1 cannot be expressed
-declaratively — which is precisely why v1 uses Option 2.
+* **Submission detail:** `IntakeFormSubmissionView` - shows form sections on the left; **`IntakeApprovalCard`** on the right when `draft_status != DRAFT`.
+* **Approval card:** uses `useApprovalTasks(awe_request_id)` and `useSubmitApprovalDecision` with `artifact_type: registry.intake_form`.
+* **Inbox:** `useMyTasks` supports `artifact_type=registry.intake_form` filter; task stats expose `intake_form_count`.
+* **Permissions:** `approvalIntakeForm:view` / `approvalIntakeForm:create` gate the intake approval panel.
 
-## Code changes in the Registry
+Decisions go through the **same AWE proxy** as change requests (`/awe/submit-task-decision`) - not through direct `approve_submission` / `reject_submission` API endpoints.
 
-### 1. `G2PRegisterChangeRequest` model — one new column
+### Implementation in the Registry
 
-* `awe_request_id: str | None` — the AWE request UUID; null if the CR
-  was auto-approved (no AWE flow). Distinguishes AWE-gated CRs from
-  legacy direct-approval CRs and lets the webhook handler look up the
-  CR by AWE id.
+#### 1. Model columns
 
-### 2. New helper — `AWEClient`
+**`G2PRegisterChangeRequest`** and **`G2PIntakeFormSubmission`**:
 
-Thin async httpx wrapper, mirroring the existing `WebsubHelper` style in
-`openg2p_registry_core/helpers/websub_helper.py`:
+* `awe_request_id: str | None` - AWE request UUID; null if no AWE flow.
+* `awe_request_status_summary: str | None` - Human-readable stage/status; updated from webhook event log.
+
+#### 2. HTTP client - `AweHelper`
+
+Location: `openg2p_registry_core/helpers/awe_helper.py`
+
+Async httpx wrapper (in **registry-core**, reusable across APIs):
 
 ```python
-class AWEClient:
-    async def create_request(policy_key, artifact_id, context, requester, bearer) -> dict
-    async def list_my_open_tasks(awe_request_id, bearer) -> list[dict]
-    async def submit_decision(task_id, action, comment, bearer) -> dict
-    async def cancel_request(awe_request_id, reason, bearer) -> dict
+# Key methods
+create_request(...)
+list_my_tasks(...) / list_tasks_for_request(...)
+submit_decision(...)
+cancel_request(...)          # requires AWE_ADMIN token
+get_request(...) / get_request_events(...)
+search_requests(...)
+claim_task(...)
 ```
 
-Config-driven base URL (`_config.awe_base_url`). Same error-handling
-style as existing httpx code (`raise_for_status`, propagate as a domain
-exception).
+Config: `awe_base_url`, `awe_http_timeout_seconds` (via `get_awe_settings()`).
 
-### 3. `G2PRegisterService` — wire AWE in three places
+#### 3. Orchestration - `G2PAweIntegrationService`
 
-**`create_change_request()`** — after the existing INSERTs:
+Location: `openg2p_registry_core/services/g2p_awe_integration_service.py`
 
-* Look up the section's `awe_policy_key` (new section field, optional).
-  If null and section has `auto_approval=True`, behave as today.
-  Otherwise:
-* Build `context` from `awe_context_fields` + base fields.
-* Call `AWEClient.create_request(...)` using the requester's JWT.
-* Store `awe_request_id` on the CR row.
+**On CR create** (`G2PRegisterChangeRequestService.create_change_request`):
 
-**`approve_change_request()` / `reject_change_request()`** — when
-`cr.awe_request_id` is set:
+1. Resolve policy via `G2PAwePolicyConfigurationService.find_effective_policy_configuration()`.
+2. If no policy or `awe_enabled=false`, skip AWE.
+3. Build `context` from base fields + `context_field_names`.
+4. `POST /v1/awe/requests` with idempotency key `cr-{change_request_id}`.
+5. Store `awe_request_id` and status summary on the CR row.
+6. On AWE failure: transaction rolls back (fail-the-whole-thing for v1).
 
-* Don't write `approval_status` directly.
-* Find the approver's open task on this AWE request via
-  `AWEClient.list_my_open_tasks`.
-* Submit decision via `AWEClient.submit_decision`.
-* Return the AWE response shape mapped into the Registry's existing
-  response shape. The CR stays `PENDING` in Registry's view; the
-  webhook is what flips it.
+**On intake finalize** (`G2PIntakeFormDataService.finalize_submission_with_session`):
 
-When `cr.awe_request_id` is null (legacy CR, or section without
-`awe_policy_key`), the existing direct-approval path runs unchanged.
+1. Mark submission `draft_status=FINAL`, flush.
+2. Resolve policy with `policy_type=registry.intake_form` and `intake_form_id=submission.form_id`.
+3. Build `context` from section records + `context_field_names`.
+4. `POST /v1/awe/requests` with idempotency key `intake-{submission_id}`.
+5. Store `awe_request_id` and status summary on the submission row.
+6. On AWE failure: transaction rolls back (same fail-the-whole-thing rule as CR).
 
-### 4. New controller — `G2PAWEWebhookController`
+**Decisions:** handled by **`G2PAweProxyControllerService`** + staff portal UI - **not** by rewiring `approve_change_request()` / `reject_change_request()` or `approve_submission()` / `reject_submission()`.
 
-One endpoint:
+#### 4. Webhook controller - `G2PAWEWebhookController`
 
-* `POST /awe/webhooks/decision` — body is AWE's `WebhookEvent` schema;
-  validates `X-Approval-Signature` HMAC and dedups on
-  `X-Approval-Event-Id` against an `AWEWebhookEventLog` table.
-* Dispatches by `event_type`:
-  * `request_approved` →
-    `G2PRegisterService._approve_change_request_core(cr_id, session, skip_verification=True, skip_sequence_check=False, approved_by=event.payload.actor)`.
-    `skip_verification=True` is the key — AWE has already enforced the
-    approval gate; the legacy verification counters don't apply.
-  * `request_rejected` →
-    `G2PRegisterService._reject_change_request_core(cr_id, reason=event.payload.reason, rejected_by=event.payload.actor)`
-  * `request_cancelled` → mark CR `CANCELLED` (new enum value), no
-    register write.
-  * All other events (`stage_started`, `task_expired`, etc.) → log
-    only, no state change.
-* No permission decorator — auth = signature validation. Mirrors the
-  JWT-signature pattern in
-  `iam_core/partner_auth/jwt_signature_validator.py`.
+* `POST /awe/webhooks/decision`
+* Validates `X-Approval-Signature` HMAC, dedups on `X-Approval-Event-Id`
+* No JWT - auth is signature only
 
-### 5. New table — `AWEWebhookEventLog`
+**`G2PAweWebhookService` dispatch:**
 
-* `event_id PK`, `request_id`, `event_type`, `received_at`, `applied`,
-  `error`.
-* Purpose: dedup repeated webhook deliveries; audit trail. Tiny.
+| Event               | `registry.change_request`                                     | `registry.intake_form`                                       |
+| ------------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| `request_approved`  | `approve_change_request_from_awe_webhook()` → register upsert | `approve_submission_with_session()` → register ingest queued |
+| `request_rejected`  | CR `REJECTED`                                                 | Submission `REJECTED`                                        |
+| `request_cancelled` | CR `CANCELLED`                                                | Submission `CANCELLED`                                       |
+| Other events        | Log + reconcile `awe_request_status_summary`                  | Same                                                         |
 
-### 6. UI surface (Registry staff portal)
+#### 5. Event log - `awe_req_events`
 
-The existing CR list and detail pages keep working. To show "stages
-and current approver" inline for AWE-gated CRs, add a small read-only
-sidebar that calls
-`GET /v1/awe/requests/{awe_request_id}` and
-`GET /v1/awe/requests/{awe_request_id}/events` and renders inline.
-This preserves the federated model (Caller owns UI; AWE owns state).
+Table: `G2PAweReqEvent` - `event_id` PK, `request_id`, `event_type`, `artifact_type`, `artifact_id`, `status`, `stage_order`, `actor`, `occurred_at`, `received_at`, `applied`, `error`.
 
-The approve/reject buttons stay where they are — they now proxy to AWE
-under the hood.
+Purpose: webhook dedup, audit trail, status summary replay.
 
-### 7. Config additions to `Settings` (staff-portal `config.py`)
+#### 6. AWE proxy (staff portal API)
+
+`G2PAweProxyController` - JWT-authenticated proxy so approvers never call AWE directly:
+
+| Registry route                     | AWE endpoint                              |
+| ---------------------------------- | ----------------------------------------- |
+| `POST /awe/list_my_tasks`          | `GET /v1/awe/tasks?assignee=me`           |
+| `POST /awe/list_tasks_for_request` | `GET /v1/awe/tasks` (assignee=`me` + `*`) |
+| `POST /awe/submit-task-decision`   | `POST /v1/awe/tasks/{id}/decision`        |
+| `POST /awe/my_task_stats`          | `GET /v1/awe/tasks/stats`                 |
+| `POST /awe/get_request`            | `GET /v1/awe/requests/{id}`               |
+| `POST /awe/get_request_events`     | `GET /v1/awe/requests/{id}/events`        |
+| `POST /awe/claim_task`             | `POST /v1/awe/tasks/{id}/claim`           |
+
+Proxy validates artifact is still in-flight in Registry DB before calling AWE (stage guard, terminal status check).
+
+#### 7. UI (staff portal)
+
+**Shared (both artifact types):**
+
+* **Inbox:** `useMyTasks` → `/api/awe/my-tasks` - filter by `registry.change_request` or `registry.intake_form`.
+* **Decisions:** `useSubmitApprovalDecision` → `/api/awe/submit-task-decision` (passes `artifact_id`, `artifact_type`, `current_stage`).
+* **Policy admin:** Configuration → AWE Policy Configuration.
+
+**Change request:**
+
+* `ChangeRequestDetailsView` - `ApprovalList` sidebar via `useApprovalTasks(awe_request_id)`.
+
+**Intake form:**
+
+* `IntakeFormSubmissionView` - `IntakeApprovalCard` sidebar (visible only when not draft).
+* Artifact constant: `registry.intake_form` (`REGISTRY_INTAKE_FORM_ARTIFACT`).
+
+#### 8. Configuration (`Settings`)
 
 ```python
 awe_enabled: bool = False
-awe_base_url: str | None = None                       # e.g. http://awe:80
+awe_base_url: str = "http://localhost:8000"           # host only, no /v1/awe
+awe_http_timeout_seconds: float = 30.0
 awe_default_callback_url: str | None = None           # e.g. https://registry/awe/webhooks/decision
-awe_callback_secret_id: str | None = None             # passed to AWE on create_request
-awe_callback_hmac_secret: SecretStr | None = None     # local secret to verify inbound
-awe_policy_key_template: str = "{register}.{section}"
+awe_callback_secret_id: str | None = None
+awe_callback_hmac_secret: str | None = None
+awe_webhook_timestamp_tolerance_seconds: int = 300
 ```
 
-### 8. Permissions
+Env prefix: `registry_core_*` and/or `registry_staff_portal_api_*` (merged by `get_awe_settings()`).
 
-* Approvers acting on AWE-gated CRs need `changeRequest:decide` (new
-  permission) — strictly distinct from `changeRequest:approve`, which
-  becomes "direct admin override; bypasses AWE."
-* The legacy `changeRequest:approve` should be tightened to admin-only
-  and used only as break-glass.
+### Deployment checklist
 
-### 9. Section-level toggle
+1. Set all `awe_*` env vars on staff-portal-api.
+2. Create and **activate** AWE policies whose `policy_key` matches registry config rows.
+3. Seed `g2p_registry_awe_policy_configurations` (per register variant).
+4. Register callback secret in AWE; align `awe_callback_secret_id` + `awe_callback_hmac_secret`.
+5. AWE Helm: `awe.keycloak.audience: ""` for v1 forwarded tokens.
+6. Grant Registry service account `AWE_ADMIN` if outbound cancel is enabled.
 
-Section config (`g2p_register_sections`) needs two small additions:
+***
 
-* `awe_policy_key: str | None` — if set, CRs on this section route
-  through AWE; if null, the existing `auto_approval` / direct flow
-  applies.
-* `awe_context_fields: list[str]` — which keys to lift from
-  `change_payload` into the AWE `context`.
+### Reference: source-code pointers
 
-This makes adoption gradual: turn AWE on per section, leave the rest
-alone.
+(Paths relative to `registry-platform/` in the GEN2 OpenG2P monorepo.)
 
-## What we explicitly do not touch
+| Aspect                                      | Location                                                                                           |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| AWE HTTP client                             | `core/openg2p-registry-core/.../helpers/awe_helper.py`                                             |
+| Create orchestration                        | `core/openg2p-registry-core/.../services/g2p_awe_integration_service.py`                           |
+| Policy resolution                           | `core/openg2p-registry-core/.../services/g2p_awe_policy_configuration_service.py`                  |
+| CR service + webhook approve                | `core/openg2p-registry-core/.../services/g2p_register_change_request_service.py`                   |
+| Intake service + finalize + webhook approve | `core/openg2p-registry-core/.../services/intake_form_data_service.py`                              |
+| Webhook service                             | `core/openg2p-registry-core/.../services/g2p_awe_webhook_service.py`                               |
+| Intake submission model                     | `core/openg2p-registry-core/.../models/g2p_intake_form.py`                                         |
+| Event log model                             | `core/openg2p-registry-core/.../models/g2p_awe_req_event.py`                                       |
+| CR model                                    | `core/openg2p-registry-core/.../models/g2p_register_change_request.py`                             |
+| Policy config model                         | `core/openg2p-registry-core/.../models/g2p_registry_awe_policy_configuration.py`                   |
+| Webhook controller                          | `apis/openg2p-registry-staff-portal-api/.../controllers/g2p_awe_webhook_controller.py`             |
+| AWE proxy controller                        | `apis/openg2p-registry-staff-portal-api/.../controllers/g2p_awe_proxy_controller.py`               |
+| CR controller                               | `apis/openg2p-registry-staff-portal-api/.../controllers/g2p_register_change_request_controller.py` |
+| Staff portal approval UI (shared)           | `ui/staff-portal-ui/src/features/approval/`                                                        |
+| Intake submission + approval UI             | `ui/staff-portal-ui/src/features/intake-form/components/IntakeFormSubmissionView.tsx`              |
+| Intake approval card                        | `ui/staff-portal-ui/src/features/approval/components/IntakeApprovalCard.tsx`                       |
+| AWE policy config UI                        | `ui/staff-portal-ui/src/app/[locale]/configuration/awe-policy-config/`                             |
+| NSR intake policy seed example              | `national-social-registry/nsr-extension/.../g2p_registry_awe_policy_configurations.sql`            |
+| AWE service                                 | `awe/src/awe/` (separate repo path in monorepo: `awe/`)                                            |
+| AWE audience config                         | `awe/helm/openg2p-awe/values.yaml`                                                                 |
 
-* `G2PRegisterService._approve_change_request_core()` internals — we
-  still want all the section-hierarchy + history-insert + register-
-  upsert logic, just called from the webhook handler instead of the
-  approve endpoint.
-* `G2PChangeRequestWorkerService` auto-approval flows — these keep
-  working for CRs that don't go through AWE.
-* The CR lifecycle exposed externally — to consumers,
-  `approval_status` is still `PENDING → APPROVED | REJECTED`. The AWE
-  detour is internal; the public field reflects only the final
-  outcome.
-* IAM / Keycloak setup — both services already share the same `staff`
-  realm; AWE was provisioned with that in mind.
-* WebSub publishing — orthogonal. Whatever publishes today on a CR
-  approval keeps firing on the webhook-driven approval.
+***
 
-## Open design choices to confirm before coding
+### Related pages
 
-1. **Bearer-token forwarding vs. service-to-service token.**
-   Forwarding the user JWT is simplest (Registry → AWE both trust
-   Keycloak), but couples token lifetime to user session. A service
-   token is more decoupled but loses approver identity unless we pass
-   it explicitly in the request body. See
-   [Authentication and the token model](#authentication-and-the-token-model)
-   for the full trade-off (non-repudiation, blast radius, trusted-caller
-   mode) and the audience-claim configuration this requires.
-   **Recommendation:** forward user tokens for v1.
-
-2. **Where `AWEClient` lives.**
-   Adding it to `openg2p-registry-core` makes it reusable across
-   staff-portal AND any partner API. Keeping it in staff-portal-api is
-   simpler for v1.
-   **Recommendation:** staff-portal-api for v1, promote to core later.
-
-3. **Cancel propagation.**
-   If a CR is cancelled in Registry, the Registry's cancel endpoint
-   should call `AWEClient.cancel_request` when the CR has
-   `awe_request_id`. Conversely, if AWE is cancelled by an admin in
-   AWE's UI, the Registry reacts via the `request_cancelled` webhook
-   handler. **Both directions need to work.**
-
-4. **Failure modes of the `create_request` call.**
-   If `POST /change-requests/create_change_request` succeeds at the
-   Registry side but the subsequent AWE call fails, what state is the
-   CR in? Options:
-   * Fail the whole thing — rollback the CR. Cleanest; the Caller's
-     existing idempotency handles the retry.
-   * Create the CR with `awe_request_id=null` and a new
-     `PENDING_AWE_PUSH` status, retry asynchronously. More complex;
-     needs a worker.
-
-   **Recommendation:** fail the whole thing for v1.
-
-5. **Section migration.**
-   Existing sections won't have `awe_policy_key`. The default behaviour
-   stays "no AWE." Operators turn it on per section explicitly. Safe.
-
-## Reference: Registry source-code pointers
-
-(File paths relative to `/Users/puneet/Documents/OpenG2P/repos/openg2p-registry-gen2-docker/`.)
-
-| Aspect | Location |
-|--|--|
-| CR controller | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../controllers/g2p_register_change_request_controller.py` |
-| CR service (approval logic) | `openg2p-registry-gen2-core/openg2p-registry-core/.../services/g2p_register_service.py`, `_approve_change_request_core()` |
-| CR model | `openg2p-registry-gen2-core/openg2p-registry-core/.../models/g2p_register_change_request.py` |
-| Auth middleware | `iam-service/iam-core/.../user_auth/middleware.py`, `AuthMiddleware` |
-| `AuthPrincipal` schema | `iam-service/iam-core/.../schemas/auth_principal.py` |
-| Outbound httpx pattern | `openg2p-registry-gen2-core/openg2p-registry-core/.../helpers/websub_helper.py` |
-| Inbound signature validation pattern | `iam-service/iam-core/.../partner_auth/jwt_signature_validator.py` |
-| Staff-portal config | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../config.py` |
-| Staff-portal main / lifespan | `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../main.py` |
+* [API Reference](https://docs.openg2p.org/platform/platform-services/approval-workflow-engine/api-reference) - full AWE HTTP contract; Caller surface is five endpoints + one inbound webhook.
