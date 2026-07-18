@@ -1,6 +1,6 @@
 ---
-
-## description: Version history of the OpenG2P Registry platform and Helm chart releases.
+description: Version history of the OpenG2P Registry platform and Helm chart releases.
+---
 
 # Versions
 
