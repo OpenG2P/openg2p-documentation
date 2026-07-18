@@ -209,6 +209,7 @@
     * [Deployment](products/registry/farmer-registry/deployment/README.md)
       * [Helm chart](products/registry/farmer-registry/deployment/helm-chart.md)
       * [Data seeding](products/registry/farmer-registry/deployment/data-seeding.md)
+      * [Sanity testing](products/registry/farmer-registry/deployment/sanity-testing.md)
   * [National Social Registry](products/registry/national-social-registry/README.md)
     * [PMT Score](products/registry/national-social-registry/pmt-score.md)
 * [PBMS](pbms/README.md)

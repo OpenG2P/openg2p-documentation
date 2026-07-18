@@ -8,6 +8,7 @@ The Farmer Registry is deployed on Kubernetes from its own **self-sufficient** H
 
 * [**Helm chart**](helm-chart.md) — components, dependencies, parameters, CM/PM integration and versions.
 * [**Data seeding**](data-seeding.md) — seed sources, the db-seed image and the flags that drive it.
+* [**Sanity testing**](sanity-testing.md) — the in-cluster sanity suite: what it tests, how fixtures are seeded, and how to run it.
 
 ## Deployment steps
 

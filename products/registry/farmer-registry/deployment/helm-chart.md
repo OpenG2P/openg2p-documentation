@@ -44,7 +44,7 @@ Ordered `post-install,post-upgrade` hooks:
 | 11 | `sanity-pm-seed` | Register the sanity test partner's key in Partner Management |
 | 12 | `sanity-cm-seed` | Create the sanity partner's Consent Manager binding + policy |
 | 13 | `sanity-data-seed` | Provision the sanity test user, inject its test farmer, register it as an AWE approver |
-| 15 | `sanity` | Run the in-cluster sanity suite against the partner-api |
+| 15 | `sanity` | Run the in-cluster [sanity suite](sanity-testing.md) against the partner-api |
 
 The three `sanity-*-seed` Jobs only render when `sanity.runE2e` is on — which it is **not** by default, so a normal install creates no test fixtures at all and runs only the suite's smoke tier. Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
 
