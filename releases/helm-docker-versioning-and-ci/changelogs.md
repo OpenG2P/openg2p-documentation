@@ -30,6 +30,34 @@ summary) is rendered as a link to
 `https://openg2p.atlassian.net/browse/G2P-####`. The base URL and project key are
 set in `ci/changelog/config.yml` (`jira_base`, `jira_project`).
 
+## Release notes: the annotated-tag message
+
+For a release, you can add a curated blurb — "what's in 1.0.0" — by cutting the
+release with an **annotated tag** instead of a lightweight one:
+
+```bash
+git tag -a 1.0.0 -m "First GA release.
+
+Highlights:
+
+- Redesigned onboarding (G2P-100)
+- Drops the legacy /v0 endpoints
+
+Upgrade notes: run the 1.0 migration before deploying."
+git push origin 1.0.0
+```
+
+The tag message is rendered **verbatim as a `Release notes` section at the top of
+the `1.0.0` page** (above the auto-generated Summary and the commit list), and it
+shows on the repo's aggregate `CHANGELOG` too. `G2P-####` refs in it are linkified
+like everywhere else. The message is plain **markdown**, so leave a blank line
+before a bullet list, as above.
+
+This is core git — the annotated tag is a real object carrying the message; both
+GitHub and GitLab read the same object. A **lightweight** tag (`git tag 1.0.0`)
+carries no message, so the page simply omits the section — nothing breaks. Only
+release tags are read this way; release candidates and develop builds are unaffected.
+
 ## Where they are published
 
 Not into the service repo (that would bump the commit-count version and loop).
