@@ -68,11 +68,11 @@ Notes that matter for reading the assertions:
 
 ## Flow 2 — Change-request e2e
 
-The suite acts as a **staff user**. It logs into staff-portal-api, raises a change request on the seeded farmer, approves it through the AWE proxy, then verifies the change landed, was versioned, and was audited.
+The suite acts as a **staff user**. It logs into staff-portal-api, raises a change request on the seeded farmer, approves every task through the AWE proxy, then verifies the change landed, was versioned, and was audited.
 
 ```mermaid
 sequenceDiagram
-    participant S as Sanity (staff user "sanity-e2e")
+    participant S as Sanity (staff user "sanity-e2e", holds AWE_ADMIN)
     participant SP as Registry staff-portal-api
     participant AWE as Approval Workflow Engine
     participant DB as Registry DB
@@ -82,12 +82,10 @@ sequenceDiagram
     SP->>DB: store change request = PENDING
     SP->>AWE: start workflow (policy: registry.change_request.farmer)
     Note over S,DB: middle_name still SANITYMID (nothing applied)
-    S->>SP: POST /awe/list_my_tasks
-    SP->>AWE: list tasks for sanity-e2e
-    AWE-->>S: task(s), one per stage
-    loop each stage
-        S->>SP: POST /awe/submit_task_decision (approve)
-        SP->>AWE: forward decision (user's bearer)
+    loop until change applied
+        S->>AWE: (read AWE DB) list OPEN tasks for this request, all assignees
+        S->>SP: POST /awe/submit_task_decision (approve) — for each task
+        SP->>AWE: forward decision (AWE_ADMIN allows deciding any task)
     end
     AWE->>SP: HMAC-signed webhook POST /awe/webhooks/decision
     SP->>DB: apply change (middle_name → SANITYMOD) + write history row
@@ -98,9 +96,10 @@ sequenceDiagram
 
 Notes:
 
+* **The sanity user approves *every* task, not just its own.** The shipped policy's stages are `mode='all'` and include demo approvers (`alex.carter` / `nina.patel`) whose temporary passwords the suite can't use. So the sanity user is granted the **AWE_ADMIN** role — AWE lets that role decide any task regardless of assignee — and the test enumerates all open tasks for the request (from the AWE DB) and approves each. This exercises the real shipped policy end to end.
 * The suite approves **only through the AWE proxy** (`/awe/submit_task_decision`). The registry also has `/change-requests/approve_change_request`, but that path does not consult the AWE workflow — approving through it would bypass the policy and prove nothing.
 * AWE does **not** apply the change itself; it posts an **HMAC-signed webhook** back to the registry, which applies it and writes history. So the change lands **asynchronously** — the test polls for it (up to `sanity.aweSettleTimeout`, default 90 s).
-* Audit Manager has **no query API**, so the audit assertion reads its `audit_events` table directly, with polling (the write path is fire-and-forget → Kafka → Postgres).
+* Audit Manager has **no query API**, so the audit assertion reads its `audit_events` table directly, with polling (the write path is fire-and-forget → Kafka → Postgres). The staff-portal-api audit middleware keys events by the caller's `actor_id` (the user's sub) and does not populate `resource_id`, so the assertion finds the trail by the sanity user's subject.
 
 ## Test data & seeding
 
@@ -111,14 +110,19 @@ The e2e needs identities and a record in several systems. These are seeded by **
 | 10 | `db-seed` | the **AWE approval policy** (`registry.change_request.farmer`, 2 stages) | shipped SQL in `farmer-extension/.../awe_meta_data`, applied by `psql` into the AWE DB |
 | 11 | `sanity-pm-seed` | the sanity **partner key** in Partner Management | `pm_seed` via PM's admin API |
 | 12 | `sanity-cm-seed` | the sanity partner's **CM binding + policy** | `cm_seed` via CM's staff API |
-| 13 | `sanity-data-seed` | the **Keycloak user**, the **test farmer**, the **AWE approver rule** | `keycloak_seed` + `data_seed` + `awe_seed` (see below) |
-| 15 | `sanity` | — (runs the suite) | pytest |
+| 13 | `sanity-data-seed` | the **Keycloak user** (+ AWE_ADMIN), the **test farmer**, the **AWE approver rule** | `keycloak_seed` + `data_seed` + `awe_seed` (see below) |
+| 20 | `iam-register` | this registry's **roles → permissions catalog** in the IAM service | *not part of sanity* — the registry's own setup Job |
+| **25** | `sanity` | — (runs the suite) | pytest |
+
+{% hint style="warning" %}
+**Ordering matters.** The `sanity` test Job runs at hook-weight **25 — after `iam-register` (weight 20)**. `iam-register` pushes the registry's roles→permissions catalog to the IAM service; until it has run, the change-request tests' permission checks resolve to *no* permissions and fail with `403 "Insufficient resource_access roles"`. This is why the sanity test is the very last hook. (It also carries a short retry on that 403 as a safety net for the moment right after iam-register completes.)
+{% endhint %}
 
 `sanity-data-seed` runs three steps:
 
-1. **`keycloak_seed`** — creates the `sanity-e2e` user in the `staff` realm via the Keycloak **Admin API**, with a **non-temporary** password and the roles it needs, and ensures `directAccessGrantsEnabled` on the registry client. (The shipped demo users can't be reused — keycloak-init gives them a *temporary* password, so their password grant fails with "Account is not fully set up".)
+1. **`keycloak_seed`** — creates the `sanity-e2e` user in the `staff` realm via the Keycloak **Admin API**, with a **non-temporary** password and the registry roles it needs, grants it the **AWE_ADMIN** role (so it can approve every task on the change request), and ensures `directAccessGrantsEnabled` on the registry client. (The shipped demo users can't be reused — keycloak-init gives them a *temporary* password, so their password grant fails with "Account is not fully set up".)
 2. **`data_seed`** — **SQL-injects** the sanity farmer directly into the registry DB. Injected by SQL because every staff-portal-api register write is a change request, and the DCI tests need a record already in an approved, `ACTIVE` state. Injected rather than reusing sample data so the e2e also passes when `dbSeed.loadSampleData=false`. It writes `search_text` explicitly (ORM listeners that normally build it don't fire on raw SQL).
-3. **`awe_seed`** — **SQL-inserts** an `approver_rule` naming `sanity-e2e` on each stage of the shipped policy (additive — the shipped `alex.carter`/`nina.patel` rules are left alone), so the sanity user is offered the approval tasks.
+3. **`awe_seed`** — **SQL-inserts** an `approver_rule` naming `sanity-e2e` on each stage of the shipped policy (additive — the shipped `alex.carter`/`nina.patel` rules are left alone). Combined with the AWE_ADMIN role above, this lets the sanity user clear every `mode='all'` stage single-handedly.
 
 ### Markers
 
@@ -212,3 +216,5 @@ The **Partner Management key** (`PARTNER_CM_SANITY`) and **Consent Manager bindi
 * **AWE issuer prerequisite.** Because the change-request approval forwards the user's token to AWE, AWE must validate it against the **external** Keycloak issuer (the same one user tokens carry). If AWE is configured with the internal issuer, approvals fail with `AWE-ERR-006: Invalid issuer` — a common misconfiguration to check if the change-request tests fail at the AWE hop.
 * **AWE must be enabled** (`global.aweEnabled=true`, the default). With it off, the change request never reaches a workflow and the approval test **skips** with an explanatory message rather than giving a false green.
 * **Templates must be seeded.** DCI records render through a MinIO-hosted Jinja template uploaded by db-seed when `dbSeed.loadTemplates=true` (default). With it off, DCI search returns an empty result and the retrieval test fails — check this if a healthy-looking registry returns no records.
+* **The e2e races a fresh install.** Run as a post-install hook, the full e2e depends on the registry (and IAM) being fully up. The Job waits for the partner-api and staff-portal-api and runs after `iam-register`, and the change-request test retries the first permission-gated call for `sanity.authReadyTimeout` (default 120 s) while the permission path warms up. On a slow cluster these may still not be enough — if so, either raise those timeouts, or leave `runE2e=false` at install and run the e2e **on demand** afterward (see [Running the e2e from the command line](#running-the-e2e-from-the-command-line)), which is the better home for a heavy, dependency-rich test.
+* **Re-running needs a clean slate.** A previous e2e leaves a change request; the registry's sequence check blocks a new one for the same record until it's removed — run the [teardown](#teardown) registry deletes before a re-run.

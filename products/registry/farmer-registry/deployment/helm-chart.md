@@ -43,10 +43,11 @@ Ordered `post-install,post-upgrade` hooks:
 | 10 | `db-seed` | Register definitions, geo, sample data, templates, AWE seed |
 | 11 | `sanity-pm-seed` | Register the sanity test partner's key in Partner Management |
 | 12 | `sanity-cm-seed` | Create the sanity partner's Consent Manager binding + policy |
-| 13 | `sanity-data-seed` | Provision the sanity test user, inject its test farmer, register it as an AWE approver |
-| 15 | `sanity` | Run the in-cluster [sanity suite](sanity-testing.md) against the partner-api |
+| 13 | `sanity-data-seed` | Provision the sanity test user (+ AWE_ADMIN), inject its test farmer, register it as an AWE approver |
+| 19–20 | `iam-register` | Push this registry's roles → permissions catalog to the IAM service |
+| 25 | `sanity` | Run the in-cluster [sanity suite](sanity-testing.md) — **last**, after iam-register |
 
-The three `sanity-*-seed` Jobs only render when `sanity.runE2e` is on — which it is **not** by default, so a normal install creates no test fixtures at all and runs only the suite's smoke tier. Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
+The three `sanity-*-seed` Jobs only render when `sanity.runE2e` is on — which it is **not** by default, so a normal install creates no test fixtures at all and runs only the suite's smoke tier. The `sanity` test Job runs **last (weight 25), after `iam-register`** — its change-request tests need the registry's roles→permissions catalog registered in IAM first, or they 403. Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
 
 ## Integrating Consent Manager and Partner Management
 
