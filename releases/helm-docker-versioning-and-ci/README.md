@@ -77,9 +77,30 @@ You do **not** create a `1.0.0` branch to cut a release. A branch is mutable —
 Instead:
 
 1. Create the **release line** branch `1.0` off `develop`. Every push there publishes an `1.0.0-rc.N` (image + chart) that is fully built and testable.
-2. When an RC is blessed, **tag that commit `1.0.0`**. The tag build **promotes** the already-tested image digest to `1.0.0` (a retag — no rebuild) and packages the chart at `1.0.0`.
+2. When an RC is blessed, **tag that commit `1.0.0` with an annotated tag** and push it. The tag build **promotes** the already-tested image digest to `1.0.0` (a retag — no rebuild) and packages the chart at `1.0.0`.
+
+   ```bash
+   git tag -a 1.0.0 -m "First GA release.
+
+   Highlights:
+
+   - Redesigned onboarding (G2P-100)
+   - Drops the legacy /v0 endpoints"
+   git push origin 1.0.0
+   ```
 
 The tag is the "peg". You never work _on_ a tag; you tag a commit the release line already produced.
+
+{% hint style="warning" %}
+**Always tag releases with `git tag -a` (annotated), not a bare `git tag 1.0.0`.** An
+annotated tag is a real git object that carries a **message** — and the changelog
+engine renders that message **verbatim as a `Release notes` block at the top of the
+release's page** (and on the repo's `CHANGELOG`). It's your one chance to say, in your
+own words, *what this release is* — highlights, breaking changes, upgrade steps —
+right where users look. A **lightweight** tag carries no message, so the page falls
+back to just the commit list and AI summary. The message is markdown (leave a blank
+line before a bullet list). See [Changelogs → Release notes](changelogs.md#release-notes-the-annotated-tag-message).
+{% endhint %}
 
 {% hint style="info" %}
 **The `1.0` release-line branch is optional.** For a **one-off** release you can skip it and **tag `1.0.0` directly on `develop`** — the tag build promotes the `0.0.0-develop.N` build at that commit in exactly the same way. Create a `1.0` branch only when you need a **maintenance line** to cut later patches (`1.0.1`, `1.0.2`) independently while `develop` moves on.
@@ -95,10 +116,10 @@ One release line, from the first RC to the second patch, all on the **same** bra
 | --- | --- | --- |
 | work toward the release | branch `1.0` | `1.0.0-rc.3` |
 | …more commits | branch `1.0` | `1.0.0-rc.4` |
-| cut the release | **tag `1.0.0`** | `1.0.0` (promoted from the tested RC — not rebuilt) |
+| cut the release | **`git tag -a 1.0.0`** (annotated) | `1.0.0` (promoted from the tested RC — not rebuilt) |
 | fix a bug (same branch) | branch `1.0` | `1.0.1-rc.5` |
 | …more commits | branch `1.0` | `1.0.1-rc.6` |
-| cut the patch | **tag `1.0.1`** | `1.0.1` |
+| cut the patch | **`git tag -a 1.0.1`** (annotated) | `1.0.1` |
 
 Two things to note:
 
