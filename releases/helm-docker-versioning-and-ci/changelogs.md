@@ -58,41 +58,50 @@ GitHub and GitLab read the same object. A **lightweight** tag (`git tag 1.0.0`)
 carries no message, so the page simply omits the section — nothing breaks. Only
 release tags are read this way; release candidates and develop builds are unaffected.
 
-### Editing release notes later — without moving the tag
+### Editing release notes later — without moving the tag (GitLab)
 
 You often want to refine the notes *after* the release is out — add a link, expand
-a highlight, fix a typo. You do **not** re-tag for this. The changelog reads release
-notes from **two sources, in priority order**:
+a highlight, fix a typo. You do **not** re-tag for this. On GitLab the changelog reads
+release notes from **two sources, in priority order**:
 
-1. The platform **Release description** — a GitLab **Release** / GitHub **Release**,
-   which has its own **editable** description field, separate from the tag.
+1. The **GitLab Release** description — an editable field, separate from the tag.
 2. Otherwise, the **annotated-tag message** (above).
+
+**The Release is created for you.** When you tag an **annotated** release, the pipeline
+**auto-creates a GitLab Release** for that tag, seeded from your tag message — so it
+shows up on the project's **Releases** page with no manual step. (A lightweight tag has
+no message, so no Release is created.) The Release also gets a small footer with a
+**one-click "Publish to the changelog" link** (that footer never appears on the
+changelog page itself — it's only in the Release, to make step 2 below obvious).
 
 So the edit-later flow is:
 
-1. Open the release in the UI. A GitLab **Release** is a **project-level** object (not
+1. **Edit the Release** in the UI. A GitLab Release is a **project-level** object (not
    group-level — the group view only aggregates the _package_ registry). Inside the
-   **project** (e.g. `openg2p/spar/spar`):
-   - **GitLab:** _Deploy → Releases_ (older instances: _Deployments → Releases_). If no
-     release exists for the tag yet — pushing a tag does **not** auto-create one — make
-     it with _New release_ → pick the existing tag, or from _Code → Tags →_ the tag →
-     _Create/Edit release_. (Scriptable: `glab api -X PUT projects/:id/releases/1.0.0 -f description="…"`.)
-   - **GitHub:** _Releases → edit_.
-
-   Update the description and save.
-2. **Re-run the pipeline on the tag** — **GitLab:** _Build → Pipelines → Run pipeline_,
-   set the ref to the tag (e.g. `1.0.0`); **GitHub:** re-run the tag's workflow.
+   **project** (e.g. `openg2p/spar/spar`): _Deploy → Releases_ (older instances:
+   _Deployments → Releases_) → the release for your tag → **edit (pencil)**. Update the
+   description and save. _(Scriptable: `glab api -X PUT projects/:id/releases/1.0.0 -f description="…"`.)_
+2. **Re-publish**: click the **Publish to the changelog** link in the Release footer —
+   it opens _Run pipeline_ with the tag already selected; press **Run pipeline**.
+   (Equivalent manual route: _Build → Pipelines → Run pipeline_, ref = the tag.)
 
 That's it. The release page is rewritten from the edited description. **The tag never
 moves**, and because a release build only ever **promotes** an existing digest, the
 re-run is a safe no-op for the image and chart jobs (they detect the version is already
-published and skip) — only the changelog page changes.
+published and skip) — only the changelog page changes. Because the auto-create is
+**create-if-absent**, re-running **never overwrites** the description you edited.
 
 {% hint style="info" %}
-**Which wins.** If a Release description exists, it is used; otherwise the annotated-tag
-message is used. A common pattern: seed the notes at cut time with `git tag -a` (so the
-first page is never empty), then, if you later need to touch them up, create/edit the
-Release description and re-run — no force-push, no re-tag.
+**Which wins.** If a GitLab Release description exists, it is used; otherwise the
+annotated-tag message is used. So: cut the release with `git tag -a` (the Release is
+created and the first changelog page is populated automatically), and only touch the
+Release description later if you need to refine the notes — no force-push, no re-tag.
+{% endhint %}
+
+{% hint style="info" %}
+On **GitHub** the same two-source precedence applies (Release **body** over tag
+message), but GitHub Releases are **not** auto-created — create/edit the Release
+manually, then re-run the tag's workflow.
 {% endhint %}
 
 ## Where they are published
