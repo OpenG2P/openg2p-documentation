@@ -186,14 +186,18 @@ The suite **deliberately does not clean up after itself** — the fixtures (test
 `test/sanity/sanity/fixtures.py` carries the removal predicates. To tear down:
 
 ```sql
--- Registry DB
-DELETE FROM g2p_register_history_farmers WHERE created_by = 'sanity-e2e';
-DELETE FROM g2p_register_change_requests  WHERE created_by = 'sanity-e2e';
-DELETE FROM g2p_register_farmers          WHERE created_by = 'sanity-e2e';
+-- Registry DB — keyed on the farmer's internal_record_id, the one reliable
+-- marker: the change-request and history rows are stamped with the user's
+-- display name ("Sanity E2E"), not the created_by marker.
+DELETE FROM g2p_register_history_farmers WHERE internal_record_id = '00000000-5a11-4e2e-8000-000000000001';
+DELETE FROM g2p_register_change_requests  WHERE internal_record_id = '00000000-5a11-4e2e-8000-000000000001';
+DELETE FROM g2p_register_farmers          WHERE internal_record_id = '00000000-5a11-4e2e-8000-000000000001';
 
 -- AWE DB
 DELETE FROM approver_rule WHERE rule_value::text LIKE '%sanity-e2e%';
 ```
+
+Re-running the e2e requires a clean slate: a partially-completed run can leave a **pending** change request for the farmer, and the registry's sequence check blocks a new one until it's cleared — so run the registry deletes above before a re-run.
 
 ```bash
 # Keycloak (admin API, not SQL): delete the test user from the staff realm
