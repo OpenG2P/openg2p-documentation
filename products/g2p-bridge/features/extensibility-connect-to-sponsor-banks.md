@@ -2,6 +2,10 @@
 
 As part of its process flow, the G2P Bridge subsystem needs to interact with external systems to fulfill the post disbursement lifecycle processes. These interactions (interfaces) with external systems will surely involve writing custom connectors with the external systems.
 
+{% hint style="info" %}
+**➡️ How to write your own connector:** see [Connectors & Extensibility](../design-specifications/connectors-and-extensibility.md) — the end-to-end guide. You implement the interface in your own package, extend the **published Bridge Docker image** (`FROM … + pip install`), and select it via config — **no fork** of the core. Per-interface method contracts are in [Tech Guides → Extensions](../tech-guides/README.md).
+{% endhint %}
+
 In order to facilitate clean and isolated integrations, the g2p bridge subsystem has identified the following extensions.
 
 <figure><img src="../../../.gitbook/assets/G2P-Bridge-Extensibility-Layer.jpg" alt=""><figcaption></figcaption></figure>

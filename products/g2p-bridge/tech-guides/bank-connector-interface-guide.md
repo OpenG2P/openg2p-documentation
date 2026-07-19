@@ -4,6 +4,10 @@ description: Design & Implementation
 
 # Sponsor Bank connector
 
+{% hint style="info" %}
+Part of writing a connector — for the end-to-end flow (implement the interface → extend the published Bridge Docker image → configure → deploy) see [How to write your own connector](../design-specifications/connectors-and-extensibility.md).
+{% endhint %}
+
 ### Bank Disbursments - Flow
 
 <figure><img src="../../../.gitbook/assets/Flow - Digital Cash Transfers.jpg" alt=""><figcaption></figcaption></figure>

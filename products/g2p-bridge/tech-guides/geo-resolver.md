@@ -4,6 +4,10 @@ description: Design & Implementation
 
 # Geo resolver
 
+{% hint style="info" %}
+Part of writing a connector — for the end-to-end flow (implement the interface → extend the published Bridge Docker image → configure → deploy) see [How to write your own connector](../design-specifications/connectors-and-extensibility.md).
+{% endhint %}
+
 ### Module Information
 
 * **Module Name**: `openg2p-g2p-bridge-geo-resolver`
