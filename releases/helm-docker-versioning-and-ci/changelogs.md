@@ -104,6 +104,62 @@ message), but GitHub Releases are **not** auto-created — create/edit the Relea
 manually, then re-run the tag's workflow.
 {% endhint %}
 
+## Library repos (no image, no chart)
+
+Some repos are **libraries** — code consumed **directly by git reference** (a branch,
+tag, or commit), with **no Docker image and no Helm chart** to build. Examples:
+`openg2p-fastapi-commons`, `registry-platform`, `g2p-bridge-connectors`. They still
+need change tracking, so they use the **same catalogue** in a **library mode**:
+
+- **A moving branch** (e.g. `develop`) gets **one rolling page** — its current tip, the
+  **last 5 commits**, and an AI summary of changes **since the last tag**. The identity
+  of "what you get" from a branch is the **commit SHA** (that's what you pin), so there
+  is no synthetic `0.0.0-develop.N` version here.
+- **A tag** gets a **durable release page**, summarised since the previous tag — exactly
+  like a service release (annotated-tag release notes and auto-created Releases apply too).
+- On the catalogue's landing page these repos appear under a **Libraries** heading,
+  separate from **Services**.
+
+Onboarding is just the normal pipeline with **`kind: library`** and **no** `images` /
+chart. On **GitLab**:
+
+```yaml
+# .gitlab-ci.yml in the library repo
+include:
+  - project: 'openg2p/packaging'
+    ref: v1
+    file: '/ci/gitlab/build-publish.yml'
+variables:
+  PACKAGING_REF: v1
+  CHANGELOG_KIND: library
+  # CHANGELOG_PROJECT (e.g. openg2p/versions) is normally already a group CI/CD variable.
+```
+
+On **GitHub**:
+
+```yaml
+# .github/workflows/publish.yml in the library repo
+on:
+  push:
+    branches: [develop]
+    tags: ['[0-9]+.[0-9]+.[0-9]+']
+jobs:
+  publish:
+    uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1
+    with:
+      changelog_kind: library
+      changelog-repo: openg2p/openg2p-packaging
+      changelog-branch: gh-pages
+    secrets:
+      OPENG2P_BOT_GITHUB_PAT: ${{ secrets.OPENG2P_BOT_GITHUB_PAT }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+```
+
+That's the whole setup — `build`/`promote`/`chart` are skipped automatically; only the
+version + changelog run. Out of the box this tracks the **default branch** (`develop`)
+and **tags**. On **GitHub**, track more branches by adding them under `branches:`. On
+**GitLab**, `develop`, release-line branches (`1.0`, `2.1`, …) and tags are tracked.
+
 ## Where they are published
 
 Not into the service repo (that would bump the commit-count version and loop).
