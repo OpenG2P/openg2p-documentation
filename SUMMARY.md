@@ -507,6 +507,7 @@
     * [Scaling for High Volumes](g2p-bridge/features/scaling-for-high-volumes.md)
   * [Design](products/g2p-bridge/design-specifications/README.md)
     * [Partner APIs](products/g2p-bridge/design-specifications/partner-apis.md)
+    * [Connectors & Extensibility](products/g2p-bridge/design-specifications/connectors-and-extensibility.md)
     * [Celery](products/g2p-bridge/design-specifications/celery.md)
     * [Physical Organization](products/g2p-bridge/design-specifications/physical-organization.md)
     * [Example Bank](products/g2p-bridge/design-specifications/example-bank/README.md)

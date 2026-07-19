@@ -19,12 +19,20 @@ Docker image names, and Helm `Chart.yaml` names are intentionally left unchanged
 
 | Folder | Origin repo | Contents |
 | --- | --- | --- |
-| [`core/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/core) | `openg2p-g2p-bridge` | Core services and libraries: `models`, `partner-api`, `bene-portal-api`, `celery-beat-producers`, `celery-workers`. |
-| [`extensions/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/extensions) | `openg2p-g2p-bridge-extensions` | Pluggable adapters/connectors meant to be customized per implementation: agency-allocator, bank-connectors, geo-resolver, mapper-connectors, notification-connectors, warehouse-allocator. |
-| [`example-bank/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
+| [`core/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/core) | `openg2p-g2p-bridge` | Core services and libraries: `models`, `partner-api`, `bene-portal-api`, `celery-beat-producers`, `celery-workers`. |
+| [`example-bank/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
 | [`docker/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/docker) | `openg2p-g2p-bridge-docker` | Dockerfiles for the API and Celery service images. |
 | [`deployment/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/deployment) | `openg2p-g2p-bridge-deployment` + `openg2p-g2p-bridge-example-bank-deployment` | The single consolidated Helm chart `charts/openg2p-bridge` (Bridge + bundled Example Bank, toggled via `exampleBank.enabled`) and the `scripts/` (e.g. `uninstall-bridge.sh`). |
-| [`test/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — the `sanity/` regression suite (API coverage, full e2e cash flow, business-rule negatives and MT940 reconciliation-error checks). |
+| [`test/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — the `sanity/` regression suite (API coverage, full e2e cash flow, business-rule negatives and MT940 reconciliation-error checks). |
+
+{% hint style="info" %}
+The pluggable **connectors** (bank, mapper, notification, geo, agency, warehouse) no
+longer live in this repo. They were moved to a separate repository,
+[**`g2p-bridge-connectors`**](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors),
+so this platform repo stays standard and versioned and adopters extend it without
+forking. The Celery image pulls the reference connectors from there by git ref at
+build time. See [Connectors & Extensibility](connectors-and-extensibility.md).
+{% endhint %}
 
 ## Core modules (`core/`)
 
