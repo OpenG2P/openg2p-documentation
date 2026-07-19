@@ -110,6 +110,36 @@ not even in the connectors repo.
 The adopter's image inherits the entrypoint, the core install, and all the build
 logic from the base image — they can only *add* a layer, never modify the platform.
 
+### Which connectors version is in an image
+
+Because the connectors are pulled by git ref, every published Celery image records the
+**exact connectors commit** it was built from — the CI resolves the pinned ref (e.g.
+`develop`) to a commit SHA at build time, passes that SHA as the build arg (so the
+build is reproducible), and stamps it as an OCI image label. You can therefore read the
+connectors commit straight off the image, without running it:
+
+```bash
+# from the registry, without pulling the image
+docker buildx imagetools inspect \
+  registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/celery:<version> \
+  --format '{{ json .Image.Config.Labels }}'
+```
+
+The relevant labels:
+
+| Label | Meaning |
+| --- | --- |
+| `org.openg2p.pin.g2p-bridge-connectors-ref` | connectors commit SHA baked into this image |
+| `org.openg2p.pin.fastapi-common-ref` / `org.openg2p.pin.spar-ref` | the other pinned dependency SHAs |
+| `org.opencontainers.image.revision` | the `g2p-bridge` (platform) commit the image was built from |
+| `org.opencontainers.image.version` | the published version (e.g. `0.0.0-develop.41`) |
+
+The SHA is frozen at build time, so a given image tag always resolves to the same
+connectors commit even after `develop` moves on. As a second, always-exact source, each
+connector package inside the image also carries pip's PEP 610 record —
+`…/openg2p_g2p_bridge_bank_connectors-*.dist-info/direct_url.json` — whose `commit_id`
+is the same SHA.
+
 ## 4. Writing and integrating a new connector
 
 An adopter never forks core. The end-to-end steps:
