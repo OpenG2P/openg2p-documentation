@@ -42,7 +42,7 @@ In the consolidated `g2p-bridge` monorepo:
 * **Beat Producers**: `core/celery-beat-producers/`
 * **Workers**: `core/celery-workers/`
 
-Both ship as a **single** Docker image (`openg2p/openg2p-bridge-celery`), run as beat or worker by Helm configuration.
+Both ship as a **single** Docker image (`registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/celery`), run as beat or worker by Helm configuration.
 
 ***
 

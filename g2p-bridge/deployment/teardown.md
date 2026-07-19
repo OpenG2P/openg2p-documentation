@@ -11,7 +11,7 @@ subchart hook Jobs (`postgres-init`, `keycloak-init`) and any retained PVs also
 linger. The repository ships an **uninstall script** that cleans all of this up
 safely.
 
-Script: [`deployment/scripts/uninstall-bridge.sh`](https://github.com/OpenG2P/g2p-bridge/blob/develop/deployment/scripts/uninstall-bridge.sh)
+Script: [`deployment/scripts/uninstall-bridge.sh`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/blob/develop/deployment/scripts/uninstall-bridge.sh)
 
 ## What it does
 

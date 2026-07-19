@@ -27,7 +27,7 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy t
 
 1. Login to the Rancher console.
 2. Select the cluster and namespace (environment).
-3. Under **Apps → Repositories**, make sure the repository [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) is added.
+3. Under **Apps → Repositories**, make sure the OpenG2P charts Helm repository is added. **This has changed:** the G2P Bridge chart now publishes to the shared **GitLab** `openg2p/charts` Helm registry, not the old GitHub-Pages `openg2p.github.io/openg2p-helm/rancher` repo. The GitLab Helm-repo URL is `https://gitlab.com/api/v4/projects/<CHARTS_PROJECT_ID>/packages/helm/stable` — see [Publishing to GitLab → Adding the catalogue to Rancher](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md#adding-the-catalogue-to-rancher) for the exact URL and how to find `<CHARTS_PROJECT_ID>`.
 4. In Rancher, to display prerelease versions of OpenG2P apps, under your user avatar in upper right corner of the Rancher dashboard enable **Preferences-> Helm Charts-> Include Prerelease Versions.**
 5. Under **Apps → Charts**, refresh all repositories.
 6. Select the **"OpenG2P Bridge"** chart.

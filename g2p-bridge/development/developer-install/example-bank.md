@@ -49,7 +49,7 @@ sudo apt install -y python3-pip python3-dev build-essential
     Example Bank now lives under its `example-bank/` folder.
 
     ```bash
-    git clone https://github.com/OpenG2P/g2p-bridge
+    git clone https://gitlab.com/openg2p/g2p-bridge/g2p-bridge
     ```
 
 {% hint style="info" %}
