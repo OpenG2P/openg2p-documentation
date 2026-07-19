@@ -38,7 +38,7 @@ build time. See [Connectors & Extensibility](connectors-and-extensibility.md).
 
 | Module | Type | Purpose |
 | --- | --- | --- |
-| **partner-api** | service (pod) | FastAPI REST APIs for partner systems. Upstream systems like PBMS call this to hand over disbursement instructions. Secured via partner signature validation — **in-process local JWS** (no Keymanager); see [Partner APIs → Authentication](partner-apis.md#authentication). Scale horizontally. |
+| **partner-api** | service (pod) | FastAPI REST APIs for partner systems. Upstream systems like PBMS call this to hand over disbursement instructions. Secured via partner signature validation — **in-process local JWS**; see [Partner APIs → Authentication](partner-apis.md#authentication). Scale horizontally. |
 | **bene-portal-api** | service (pod) | FastAPI REST APIs for the OpenG2P Beneficiary Portal. Secured via an access token from an identity provider. Scale horizontally. |
 | **celery-beat-producers** | service (pod) | Produces periodic Celery beats. Run as a **single** replica. |
 | **celery-workers** | service (pod) | Celery workers that execute the beats (check balance, block funds, initiate payments, reconcile MT940, and — for in-kind — geo/warehouse/agency tasks). Scale horizontally. |

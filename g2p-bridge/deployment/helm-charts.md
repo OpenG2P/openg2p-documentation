@@ -17,7 +17,7 @@ This page describes the chart itself. For the end-to-end install flow
 **commons** environment are already set up. The commons release provides the
 shared **PostgreSQL** and **Istio** gateway that this chart depends on. Partner
 signatures are verified against the **Partner Manager (PM)** service (`GET /keys`, no
-Keycloak/Keymanager at runtime); the trial's `pm-seed` Job onboards the test partners
+Keycloak at runtime); the trial's `pm-seed` Job onboards the test partners
 in PM (which does require a `partner_manager` Keycloak client for the onboarding step).
 {% endhint %}
 
@@ -142,24 +142,11 @@ single block drives both the Bridge and the Example Bank.
 | `exampleBank.enabled` | `true` | Deploy the bundled simulator. **Disable for production** (you connect a real sponsor bank instead). |
 | `global.exampleBankHostname` | `example-bank.<namespace>.openg2p.org` | Example Bank API hostname. |
 
-### Keycloak / Keymanager (legacy backend only)
-
-**Not used by the default `local` backend.** These apply only if you switch
-`global.g2pBridgeCryptoBackend` to the legacy `keymanager` backend (1.0.0's
-mechanism) — otherwise leave `keycloak-init.enabled: false`.
-
-| Value | Default | Description |
-| --- | --- | --- |
-| `keycloak-init.enabled` | `false` | Create the `g2p-bridge` OIDC client + secret (Keymanager backend only). |
-| `global.g2pBridgeKeymanagerAuthEnabled` | `false` | Authenticate to Keymanager using that client. |
-
-See [Keycloak Client](keycloak-client.md) (legacy) for details.
-
 ### Partner signatures (signing key)
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.g2pBridgeCryptoBackend` | `partner-mgmt` | Crypto backend. `partner-mgmt` = verify inbound signatures against keys fetched from the Partner Manager (PM) service. (`local`/`keymanager` are legacy.) |
+| `global.g2pBridgeCryptoBackend` | `partner-mgmt` | Crypto backend. `partner-mgmt` = verify inbound signatures against keys fetched from the Partner Manager (PM) service. (`local` is a legacy option.) |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM key-fetch base URL (unauthenticated) the Bridge verifies against. |
 | `global.g2pBridgeSignatureValidationEnabled` | `true` | Verify partner signatures on the Partner API (inbound). |
 | `global.g2pBridgeCryptoAllowedAlgorithms` | `RS256` | Allowed JWS signature algorithms (verification allow-list). RS256 only by default; `none` and HMAC (`HS*`) are always rejected. PM can store `ES256`/`EdDSA` keys, but the Bridge accepts a signature only if its `alg` is in this list. |

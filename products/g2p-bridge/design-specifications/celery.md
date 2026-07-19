@@ -586,17 +586,6 @@ db_datasource_pbms: "postgresql://user:pass@host:5432/pbmsdb"
 mapper_request_jwt_enabled: true
 mapper_request_sender_id: "openg2p-g2p-bridge"
 
-# Key Management
-sign_key_keymanager_app_id: "G2PBRIDGE"
-sign_key_keymanager_ref_id: ""
-keymanager_api_timeout: 10
-keymanager_api_base_url: ""
-
-# OAuth Configuration
-oauth_enabled: true
-oauth_url: ""
-oauth_client_id: "openg2p-g2p-bridge"
-
 # Financial Address Parsing
 bank_fa_deconstruct_strategy: "regex pattern for bank FA"
 mobile_wallet_deconstruct_strategy: "regex pattern for mobile wallet"
