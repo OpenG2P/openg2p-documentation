@@ -79,7 +79,7 @@ brew services start postgresql@15
 ### Repository Setup
 
 ```bash
-git clone https://github.com/OpenG2P/spar.git
+git clone https://gitlab.com/openg2p/spar/spar.git
 cd spar
 git checkout develop
 ```
@@ -220,9 +220,6 @@ SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS=RS256
 # Partner Manager key-fetch base (unauthenticated): GET {url}/keys/PARTNER_<MNEMONIC>.
 # Partners are onboarded in Partner Manager, not here.
 SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL=http://commons-services-pm-partner-api
-
-# KeyManager — only used when CRYPTO_BACKEND=keymanager.
-SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID=SPAR
 ```
 
 #### Configuration Reference
@@ -242,10 +239,9 @@ SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID=SPAR
 | `SPAR_MAPPER_PARTNER_API_DEFAULT_ISSUERS`        | —             | JSON array of trusted JWT issuers |
 | `SPAR_MAPPER_PARTNER_API_DEFAULT_JWKS_URLS`      | —             | JSON array of JWKS endpoint URLs  |
 | `SPAR_MAPPER_PARTNER_API_JWT_AUTH_ENABLED`       | `false`       | Verify the partner JWS signature on every request |
-| `SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND`         | `partner-mgmt` | Verify backend: `partner-mgmt` (fetch keys from Partner Manager). `local`/`keymanager` are legacy |
+| `SPAR_MAPPER_PARTNER_API_CRYPTO_BACKEND`         | `partner-mgmt` | Verify backend: `partner-mgmt` (fetch keys from Partner Manager). `local` is a legacy option |
 | `SPAR_MAPPER_PARTNER_API_CRYPTO_ALLOWED_ALGORITHMS` | `RS256`    | Allowed JWS algorithms (RS256 only; `none`/HMAC rejected) |
 | `SPAR_MAPPER_PARTNER_API_PARTNER_MGMT_API_URL`   | —             | Partner Manager key-fetch base URL (`GET {url}/keys/PARTNER_<MNEMONIC>`) |
-| `SPAR_MAPPER_PARTNER_API_KEYMANAGER_SIGN_APP_ID` | `SPAR`        | App ID for KeyManager (only when backend=`keymanager`) |
 
 > **Local dev tip:** For development without Keycloak, you can configure the JWT validation to accept a self-signed token by pointing `DEFAULT_JWKS_URLS` at a local mock JWKS endpoint.
 

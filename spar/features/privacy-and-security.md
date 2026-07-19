@@ -53,7 +53,7 @@ The signature mechanism is **not implemented in SPAR** — it lives in
 `openg2p-fastapi-common` behind the `CryptoHelper` interface. SPAR uses the
 **`partner-mgmt`** backend (`PyJWTCryptoHelper` + `PartnerMgmtKeyStore`): it fetches
 the partner's public key from the **Partner Manager (PM)** service to verify the JWS.
-**No local key store, no MOSIP Key Manager.**
+**No local key store.**
 
 See [PyJWTCryptoHelper](../../platform/platform-services/privacy-and-security/pyjwtcryptohelper.md)
 for the full design. SPAR-specific notes:

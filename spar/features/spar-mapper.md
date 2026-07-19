@@ -21,7 +21,7 @@ description: aka ID Account Mapper
   * unlink - unlink the existing mapping (delete the existing mapping)
   * modify - update the Financial Address&#x20;
   * resolve - given a beneficiary Id, query to retrieve the Financial Address
-* Signature verification for clients (partners)  via integrations with MOSIP's Partnermanager & Keymanager - **TBD**
+* Signature verification for clients (partners) via integration with the Partner Manager (PM) service
 
 #### The Mapper can be visualized in a tabular depiction as follows - (More Clarity on Structure of ID required)
 

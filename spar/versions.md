@@ -4,41 +4,57 @@ description: SPAR Versions
 
 # Versions
 
-{% hint style="warning" %}
-**Two similarly-named Helm charts — make sure you pick the right one.**
-
-* The **current, consolidated** chart is named **`openg2p-spar`** and appears in the **Rancher** catalog as **“OpenG2P SPAR”**. This is the one to install for any new deployment (see [SPAR Helm Package](versions.md#spar-helm-package) below).
-* The **legacy** chart is named **`spar`** (see [Legacy Versions](versions.md#legacy-versions) below).
-
-The two differ by the chart name — **`openg2p-spar`** vs **`spar`** — so they are easy to confuse in the Rancher app list, and they are **not compatible** with each other. For a fresh install, always choose **`openg2p-spar` (“OpenG2P SPAR”)**. (Both lines use the same `openg2p-spar-*` Docker images, so the chart name is what distinguishes them.)
-{% endhint %}
-
-## SPAR Helm Package
-
-SPAR is now installed from a **single, consolidated Helm chart** — [`openg2p-spar`](https://github.com/OpenG2P/spar/tree/develop/deployment/charts/openg2p-spar). One chart installs the complete subsystem: the Mapper Partner API, the Beneficiary Portal API, the PostgreSQL database/role (via `postgres-init`), the Keycloak realms/clients (via `keycloak-init`), and the SPAR reference (strategy) seed data. All source lives in one repository, [`spar`](https://github.com/OpenG2P/spar).
-
-<table><thead><tr><th width="180">Helm Chart &#x26; Version</th><th>SPAR Runtimes</th><th width="123">Last modified</th><th>Contents</th></tr></thead><tbody><tr><td><strong><code>openg2p-spar</code></strong><br>(Rancher: “OpenG2P SPAR”)<br><br><a href="https://github.com/OpenG2P/spar/tree/develop">0.0.0-develop.26</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-partner-api/tags">openg2p-spar-mapper-partner-api:develop</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-spar-bene-portal-api/tags">openg2p-spar-bene-portal-api:develop</a></td><td>01-Jul-2026</td><td><p><strong>Rolling <code>develop</code> build.</strong> Major changes vs 1.0.0:</p><ol><li><strong>Partner signatures verified via the Partner Manager (PM) service</strong> (<code>openg2p-fastapi-common</code> <code>PartnerMgmtKeyStore</code>) — no MOSIP Keymanager and no local key store. SPAR only verifies (no signing key).</li><li><strong>Partner signature verification ON by default</strong>, against public keys fetched from the <strong>Partner Manager (PM)</strong> service (no local key store). Partners are onboarded in PM; the trial's G2P Bridge chart onboards <code>PARTNER_G2P_BRIDGE</code> there, so signed Bridge→SPAR resolve verifies out of the box.</li><li>Branch-derived rolling Helm chart versioning (<code>0.0.0-develop.&#x3C;run></code>).</li></ol></td></tr><tr><td><strong><code>openg2p-spar</code></strong><br>(Rancher: “OpenG2P SPAR”)<br><br><a href="https://github.com/OpenG2P/spar/tree/1.0.0">1.0.0</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-partner-api/tags">openg2p-spar-mapper-partner-api:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-spar-bene-portal-api/tags">openg2p-spar-bene-portal-api:1.0.0</a></td><td>27-Jun-2026</td><td><p><strong>Stable version</strong></p><p></p><ol><li>Signature verification via <strong>MOSIP Keymanager</strong>; added Keycloak client provisioning via the <code>keycloak-init</code> subchart (the <code>openg2p-spar</code> OIDC client in the <code>staff</code> realm authenticates the Mapper API to Keymanager). From <code>develop</code> this is replaced by in-process local verification.</li><li>Aligned Keycloak/auth configuration with NSR conventions — shared settings moved under <code>global</code> to avoid duplication.</li><li>Fixed Helm rendering errors (<code>sparMapperAPI</code> values key, ingress host, env-var handling) and bumped Istio VirtualServices to <code>networking.istio.io/v1beta1</code>.</li><li>Added an uninstall script that fully removes the release and its Postgres database/role while keeping Keycloak client secrets intact.</li></ol></td></tr></tbody></table>
-
 {% hint style="info" %}
-On the `develop` branch the chart is published as `0.0.0-develop.<run-number>` (the row above shows the latest such build). Docker images are tagged independently by their own build workflows — `develop` on the develop branch (the tag matches the `openg2p-spar` repo ref). See [How the chart version is assigned](versions.md#how-the-chart-version-is-assigned) below.
+**For the current versions, changelogs, and the exact Helm chart & Docker image links, go here:**
+
+## 👉 [SPAR — Versions & Changelog](https://openg2p.gitlab.io/versions/spar-spar/CHANGELOG.html)
+
+That page is **generated on every build and is always up to date**. The
+[historical tables](#historical-versions) further down are kept only as a record of the
+pre-GitLab builds.
 {% endhint %}
 
-### How the chart version is assigned
+## How versioning & publishing work
 
-The **published Helm chart version is derived from the branch name** at publish time and injected via `helm package --version`; the `version:` field in `Chart.yaml` is only a placeholder. A unique **run-number suffix** on development builds guarantees Rancher and the GitHub-Pages CDN never serve a stale, cached chart (they cache by chart-name + version).
+SPAR is now built and published **entirely on GitLab** (previously GitHub + Docker
+Hub), using OpenG2P's shared Helm & Docker packaging pipeline. In brief:
 
-| Branch                 | Published chart version                                   |
-| ---------------------- | --------------------------------------------------------- |
-| `develop`              | `0.0.0-develop.<run-number>`                              |
-| `N.N` (e.g. `1.0`)     | `N.N.0-develop.<run-number>` (Helm needs a 3-part SemVer) |
-| `N.N.N` (e.g. `1.0.0`) | `N.N.N` — frozen release, no suffix                       |
-| anything else          | not published (unless overridden — see below)             |
+* **One immutable version per commit** — `0.0.0-develop.<n>` on `develop` (by commit
+  ordinal) and a frozen `N.N.N` on release (promote-on-release). A version is never
+  rebuilt or overwritten.
+* **Helm charts** are published to the **shared OpenG2P Helm registry**, so one
+  Rancher/Helm repo lists every OpenG2P chart (SPAR included):
+  [gitlab.com/groups/openg2p/-/packages](https://gitlab.com/groups/openg2p/-/packages).
+* **Docker images** live in **each repo's own Container Registry** — SPAR's are at
+  `registry.gitlab.com/openg2p/spar/spar/<name>` (`mapper-partner-api`, `bene-portal-api`).
+* **Changelogs** are generated from commit messages onto the changelog page linked above.
 
-This is the **Helm chart version only** — independent of the Docker image tags in the table above. A few notes:
+This scheme is the same across all OpenG2P repos and is documented once — for the full
+details see
+**[Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci)**.
 
-* **Pre-releases are hidden by default:** `helm search` / `helm install` need `--devel` to see `*-develop.*` builds. Rancher lists them but only treats a frozen `N.N.N` as "latest".
-* **One-off / custom version:** run the **Publish SPAR Helm chart** workflow manually (Actions → _Run workflow_) with an explicit `version` (e.g. `1.0.0-g2p5466`) to bypass the branch gate. CLI equivalent: `gh workflow run "Publish SPAR Helm chart" --ref <branch> -f version=1.0.0-g2p5466`.
-* The table above lists the **current `0.0.0-develop.<run>` build** for the dev line (updated on notable dev changes; intermediate suffixed builds are not listed individually); a frozen `N.N.N` row is added on release.
+***
+
+## Historical versions
+
+The tables below are a **read-only record of builds published before the GitLab move** —
+Docker Hub images and the GitHub `openg2p-helm` chart. They are **not** updated for GitLab
+builds; for those, always use the [changelog page](https://openg2p.gitlab.io/versions/spar-spar/CHANGELOG.html) above.
+
+{% hint style="warning" %}
+**Two similarly-named charts — don't confuse them.** The **current** chart is
+**`openg2p-spar`** (Rancher: “OpenG2P SPAR”). The **legacy** line is the chart named
+**`spar`**. Both use the same `openg2p-spar-*` Docker images, so the **chart name** is
+what distinguishes them, and they are **not compatible**. For any new install use
+**`openg2p-spar`**.
+{% endhint %}
+
+### Previous versions
+
+The last builds of the **current** `openg2p-spar` chart under the old (Docker Hub +
+GitHub) scheme, up to `1.0.0` and the final `0.0.0-develop.<run>` dev build:
+
+<table><thead><tr><th width="180">Helm Chart &#x26; Version</th><th>SPAR Runtimes</th><th width="123">Last modified</th><th>Contents</th></tr></thead><tbody><tr><td><strong><code>openg2p-spar</code></strong><br>(Rancher: “OpenG2P SPAR”)<br><br><a href="https://gitlab.com/openg2p/spar/spar/-/tree/develop">0.0.0-develop.26</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-partner-api/tags">openg2p-spar-mapper-partner-api:develop</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-spar-bene-portal-api/tags">openg2p-spar-bene-portal-api:develop</a></td><td>01-Jul-2026</td><td><p><strong>Rolling <code>develop</code> build.</strong> Major changes vs 1.0.0:</p><ol><li><strong>Partner signatures verified via the Partner Manager (PM) service</strong> (<code>openg2p-fastapi-common</code> <code>PartnerMgmtKeyStore</code>) — no MOSIP Keymanager and no local key store. SPAR only verifies (no signing key).</li><li><strong>Partner signature verification ON by default</strong>, against public keys fetched from the <strong>Partner Manager (PM)</strong> service (no local key store). Partners are onboarded in PM; the trial's G2P Bridge chart onboards <code>PARTNER_G2P_BRIDGE</code> there, so signed Bridge→SPAR resolve verifies out of the box.</li><li>Branch-derived rolling Helm chart versioning (<code>0.0.0-develop.&#x3C;run></code>).</li></ol></td></tr><tr><td><strong><code>openg2p-spar</code></strong><br>(Rancher: “OpenG2P SPAR”)<br><br><a href="https://gitlab.com/openg2p/spar/spar/-/tree/1.0.0">1.0.0</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-spar-mapper-partner-api/tags">openg2p-spar-mapper-partner-api:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-spar-bene-portal-api/tags">openg2p-spar-bene-portal-api:1.0.0</a></td><td>27-Jun-2026</td><td><p><strong>Stable version</strong></p><p></p><ol><li>Signature verification via <strong>MOSIP Keymanager</strong>; added Keycloak client provisioning via the <code>keycloak-init</code> subchart (the <code>openg2p-spar</code> OIDC client in the <code>staff</code> realm authenticates the Mapper API to Keymanager). From <code>develop</code> this is replaced by in-process local verification.</li><li>Aligned Keycloak/auth configuration with NSR conventions — shared settings moved under <code>global</code> to avoid duplication.</li><li>Fixed Helm rendering errors (<code>sparMapperAPI</code> values key, ingress host, env-var handling) and bumped Istio VirtualServices to <code>networking.istio.io/v1beta1</code>.</li><li>Added an uninstall script that fully removes the release and its Postgres database/role while keeping Keycloak client secrets intact.</li></ol></td></tr></tbody></table>
 
 ***
 

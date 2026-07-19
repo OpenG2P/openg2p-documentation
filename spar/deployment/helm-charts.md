@@ -5,7 +5,7 @@ description: The single, consolidated SPAR Helm chart
 # Helm Chart
 
 The entire SPAR subsystem — and everything it depends on — installs from a
-**single Helm chart**, [`openg2p-spar`](https://github.com/OpenG2P/spar/tree/develop/deployment/charts/openg2p-spar),
+**single Helm chart**, [`openg2p-spar`](https://gitlab.com/openg2p/spar/spar/-/tree/develop/deployment/charts/openg2p-spar),
 in the consolidated `spar` repository. There are no longer separate charts
 per service; one `helm install` brings up the complete, working subsystem.
 
@@ -15,7 +15,7 @@ This page describes the chart itself. For the end-to-end install flow
 it assumes the Kubernetes infrastructure and the **commons** environment are
 already set up. The commons release provides the shared **PostgreSQL** and
 **Istio** gateway that this chart depends on. (SPAR verifies partner signatures
-in-process, so it needs no Keycloak or Keymanager.)
+in-process, so it needs no runtime key service.)
 {% endhint %}
 
 ## Versions
@@ -32,8 +32,6 @@ current moving version is `0.0.0-develop`.
 * **Uses the shared commons PostgreSQL.** SPAR does **not** install its own
   database server; the `postgres-init` subchart creates the SPAR database and
   role inside the namespace's `commons-postgresql`.
-* **Keycloak client provisioning** through the `keycloak-init` subchart (creates
-  the `openg2p-spar` OIDC client). See [Keycloak Client](keycloak-client.md).
 * **Rancher-ready** — ships a `questions.yaml` so all changeable values are
   exposed as a form in the Rancher catalog UI.
 
@@ -52,7 +50,6 @@ current moving version is `0.0.0-develop`.
 | --- | --- | --- |
 | `common` | OpenG2P common Helm library (naming, images, istio helpers). | always |
 | `postgres-init` | Creates the SPAR database + role inside the shared `commons-postgresql`. | `postgres-init.enabled` |
-| `keycloak-init` | Creates the `openg2p-spar` OIDC client and stores its secret. | `keycloak-init.enabled` |
 
 {% hint style="info" %}
 **Database naming follows the NSR convention.** The SPAR database and role are
@@ -74,18 +71,6 @@ documented in `values.yaml`. The most important ones:
 | `sparMapperAPI.sparHostname` | `spar.trial.openg2p.org` | Mapper Partner API hostname. |
 | `benePortalAPI.benePortalHostname` | `beneficiary.trial.openg2p.org` | Beneficiary Portal API hostname. |
 
-### Keycloak / authentication
-
-| Value | Default | Description |
-| --- | --- | --- |
-| `keycloak-init.enabled` | `true` | Create the `openg2p-spar` OIDC client + secret. |
-| `global.keycloakBaseUrl` | `https://keycloak.<namespace>.openg2p.org` | Keycloak base URL used for the OIDC issuer/token URL. |
-| `global.keycloakRealm` | `staff` | Realm in which the client lives / tokens are issued. |
-| `global.authClientId` | `openg2p-spar` | OIDC client id (also the name of the K8s secret holding its password). |
-| `global.authClientSecretKey` | `client_secret` | Key inside that secret. |
-
-See [Keycloak Client](keycloak-client.md) for why this client is needed.
-
 ### Partner Signatures
 
 SPAR verifies the JWS signature on inbound Mapper Partner API requests. The
@@ -95,7 +80,7 @@ SPAR **only verifies — it never signs**, so there is no signing key / `.p12`.
 
 | Value | Default | Description |
 | --- | --- | --- |
-| `global.sparCryptoBackend` | `partner-mgmt` | Verify backend. SPAR fetches partner public keys from the Partner Manager (PM) service — no local key store, no Keymanager. (`local`/`keymanager` are legacy.) |
+| `global.sparCryptoBackend` | `partner-mgmt` | Verify backend. SPAR fetches partner public keys from the Partner Manager (PM) service — no local key store. (`local` is a legacy option.) |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM key-fetch base URL (unauthenticated) SPAR verifies against. |
 | `global.sparJwtAuthEnabled` | `true` | Verify a partner JWS signature on every Mapper Partner API request. |
 | `global.sparCryptoAllowedAlgorithms` | `RS256` | Allowed JWS algorithms (RS256 only; `none`/HMAC always rejected). |
@@ -105,16 +90,6 @@ Bridge chart's `pm-seed` Job onboards the Bridge as `PARTNER_G2P_BRIDGE` (plus t
 sanity/walkthrough test partners) in PM, so a signed Bridge → SPAR resolve call
 verifies out of the box. To trust a real partner, onboard it in PM (see the G2P
 Bridge **Onboarding Partners** guide).
-
-### Keymanager (legacy backend only)
-
-Not used by the default `local` backend. Applies only if you switch
-`global.sparCryptoBackend` to the legacy `keymanager` backend (SPAR 1.0.0's
-mechanism), which also requires `keycloak-init.enabled: true`.
-
-| Value | Default | Description |
-| --- | --- | --- |
-| `global.keymanagerInstallationName` | `commons-services-keymanager` | Internal service name of the shared MOSIP Keymanager (legacy `keymanager` backend only). |
 
 ### Database
 
@@ -222,10 +197,10 @@ The command-line install below is intended for **advanced / developer** use.
 
 ```bash
 # 1. Clone the consolidated repo
-git clone https://github.com/OpenG2P/spar.git
+git clone https://gitlab.com/openg2p/spar/spar.git
 cd spar/deployment/charts/openg2p-spar
 
-# 2. Build chart dependencies (common, postgres-init, keycloak-init)
+# 2. Build chart dependencies (common, postgres-init)
 helm dependency build
 
 # 3. Install (release name 'spar' -> DB 'spar', role 'spar_user')

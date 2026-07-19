@@ -14,7 +14,6 @@ The following technologies and tools are used by SPAR.
 | Uvicorn | ASGI worker | | BSD |
 | PostgreSQL | Database (shared `commons-postgresql`) | | PostgreSQL License |
 | Keycloak | Authentication — OIDC / OAuth2 | | Apache 2.0 |
-| MOSIP Keymanager | Partner signature / JWT verification (legacy 1.0.0 backend; current versions verify in-process) | | MPL 2.0 |
 | Docker | Containerization | | Apache 2.0 |
 | Helm | Packaging & deployment | | Apache 2.0 |
 | Kubernetes | Orchestration | | Apache 2.0 |

@@ -20,14 +20,14 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy S
 
 ### Prerequisites
 
-1. Infrastructure and environment are created as given above. The **commons** environment provides the shared services SPAR depends on — **PostgreSQL** and the **Istio** gateway. SPAR verifies partner signatures **in-process**, so it needs **no Keycloak or Keymanager**.
+1. Infrastructure and environment are created as given above. The **commons** environment provides the shared services SPAR depends on — **PostgreSQL** and the **Istio** gateway. SPAR verifies partner signatures **in-process**, so it needs **no runtime key service**.
 2. You have full admin rights to the cluster and the Rancher UI.
 
 ### Installation
 
 1. Login to the Rancher console.
 2. Select the cluster and namespace (environment).
-3. Under **Apps → Repositories**, make sure the repository [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) is added.
+3. Under **Apps → Repositories**, make sure the **OpenG2P charts** repository is added — the shared **GitLab Helm registry** (`https://gitlab.com/api/v4/projects/<CHARTS_PROJECT_ID>/packages/helm/stable`), not the old `openg2p.github.io/openg2p-helm` GitHub Pages repo. See [Helm & Docker Versioning and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the exact URL.
 4. Under **Apps → Charts**, refresh all repositories.
 5. To show moving (pre-release) versions, click your user avatar (top-right) → **Preferences** → enable **Include Prerelease Versions**.
 6. Select the **"OpenG2P SPAR"** chart.
