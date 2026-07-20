@@ -476,7 +476,7 @@ The orchestrator now prints a banner listing pre-existing markers (with timestam
 
 ### SSH and host-key prompts
 
-**SSH probe fails with a host-key prompt** — should not happen anymore (the orchestrator uses `StrictHostKeyChecking=no` for ephemeral cloud VMs), but if it does, the SSH error is surfaced verbatim in the `log_error` block. The most common real cause is the laptop's public IP not being in `admin_cidr` on the cloud security group — check what the script set, vs `curl -s https://checkip.amazonaws.com`.
+**SSH probe fails / connection timed out** — the most common cause used to be the laptop's public IP no longer matching an auto-detected `admin_cidr` `/32` on the cloud security group. Blank `admin_cidr` now defaults to `0.0.0.0/0` so network changes do not lock you out. If you set a custom CIDR, confirm it still covers this laptop (`curl -s https://checkip.amazonaws.com`) or widen/`0.0.0.0/0` and re-run AWS provision (adds missing ingress; does not revoke old rules). Also check key path/perms and that instances are `running`.
 
 **Compute helmfile sync hangs or errors** — SSH into the compute node:
 
