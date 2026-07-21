@@ -1,24 +1,24 @@
 # Performance Testing
 
-### 1. Physical Server Specification (x2 identical units)
+### Physical Server Specification (x2 identical units)
 
 <table><thead><tr><th width="232.65301513671875">Component</th><th>Specification</th></tr></thead><tbody><tr><td>Model</td><td>DL380 Gen10</td></tr><tr><td>Processor</td><td>2x 32-core Intel Xeon Platinum </td></tr><tr><td>RAM</td><td>16 x 64 GB (1024 GB total)</td></tr><tr><td>Storage</td><td>4x 7.68 TB NVMe</td></tr><tr><td>RAID Controller</td><td>4x-4GB Trimode RAID card</td></tr><tr><td>Drive Cage</td><td>8SFF Trimode cage</td></tr><tr><td>Power Supply</td><td>Dual 1600W</td></tr><tr><td>FC Card</td><td>16GB dual port</td></tr><tr><td>Network (primary)</td><td>10/25GB NIC card</td></tr><tr><td>Network (secondary)</td><td>4x 10/100/1000 NIC</td></tr><tr><td>Management</td><td>iLO port</td></tr></tbody></table>
 
-### 2. Virtualization Strategy
+### Virtualization Strategy
 
 #### Machine 1 (DL380 Gen10)
 
-<table><thead><tr><th width="258.184814453125">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Production Postgres DB</td><td>16</td><td>64 GB</td><td>500 GB</td></tr><tr><td>NFS Server</td><td>8</td><td>32 GB</td><td>3 TB</td></tr><tr><td>OpenG2P Cluster Node 3</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 4</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>Rancher Cluster Node 2</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Data Lake</td><td>32</td><td>256 GB</td><td>3 TB</td></tr><tr><td><strong>Total</strong></td><td><strong>76 vCPU</strong></td><td><strong>432 GB</strong></td><td><strong>~6.9 TB</strong></td></tr></tbody></table>
+<table><thead><tr><th width="258.184814453125">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Production Postgres DB</td><td>8</td><td>32 GB</td><td>500 GB</td></tr><tr><td>NFS Server</td><td>8</td><td>32 GB</td><td>3 TB</td></tr><tr><td>OpenG2P Cluster Node 3</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 4</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>Rancher Cluster Node 2</td><td>4</td><td>16 GB</td><td>128 GB</td></tr></tbody></table>
 
 #### Machine 2 (DL380 Gen10)
 
-<table><thead><tr><th width="261.48773193359375">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Rancher Cluster Node 1</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Postgres DB Data Warehouse</td><td>32</td><td>512 GB</td><td>3 TB</td></tr><tr><td>Nginx</td><td>2</td><td>8 GB</td><td>64 GB</td></tr><tr><td>OpenG2P Cluster Node 1</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 2</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td><strong>Total</strong></td><td><strong>54 vCPU</strong></td><td><strong>600 GB</strong></td><td><strong>~3.45 TB</strong></td></tr></tbody></table>
+<table><thead><tr><th width="261.48773193359375">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Rancher Cluster Node 1</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Nginx</td><td>2</td><td>8 GB</td><td>64 GB</td></tr><tr><td>OpenG2P Cluster Node 1</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 2</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td><strong>Total</strong></td><td><strong>54 vCPU</strong></td><td><strong>600 GB</strong></td><td><strong>~3.45 TB</strong></td></tr></tbody></table>
 
-## **Data Overview**
+### **Data Overview**
 
 The main registry table - 'res\_partner" was populated with 50,000,000 (50 million) records. This 50 million records consisted of 40,000,000 (40 million) individuals and 10,000,000 million groups.
 
-## **User Interface (UI) Performance**
+### **User Interface (UI) Performance**
 
 * Inserts and Updates: The current system handles record inserts and updates effectively with no significant delay or latency.
 * Search Performance:
@@ -27,7 +27,7 @@ The main registry table - 'res\_partner" was populated with 50,000,000 (50 milli
   * We created a **trigram index** (using the **pg\_trgm** extension) This improves search functionality dramatically. Both LIKE '%CARL%' and LIKE 'CARL%' queries leverage this index effectively, providing results within approximately one second. This also ensured UI search responses remain quick - typically within one to two seconds.
   * We added an index on res\_partner.email – Similar performance observed (similar to complete\_name mentioned above) – both from UI as well as SQL Query sessions.
 
-## **Unique ID (like Aadhaar ID) Search Performance**
+### **Unique ID (like Aadhaar ID) Search Performance**
 
 * We created an index on **g2p\_reg\_id.value** column. UI Search for ID\_VALUE = ‘123456789012” and ID\_TYPE = ‘AADHAAR’. The resulting Query is
 
@@ -43,20 +43,19 @@ The main registry table - 'res\_partner" was populated with 50,000,000 (50 milli
 
 * Nested queries executed by the Odoo UI are suboptimal and do not utilize the index on g2p\_reg\_id.value – Queries are always on “res\_partner” with nested subqueries on child tables
 
-**Postgres Parallel Queries - Measurements**<br>
-------------------------------------------------
+### **Postgres Parallel Queries - Measurements**
 
 Queries were fired in parallel on the Postgres database to measure the performance of the postgres database server.
 
-### **Idle Time**
+#### **Idle Time**
 
-#### **CPU Measurements**
+**CPU Measurements**
 
 <table><thead><tr><th width="344.9088134765625">Metric</th><th>Value</th></tr></thead><tbody><tr><td>Uptime</td><td>7d 01:28:34</td></tr><tr><td>Avg CPU/core</td><td>~0.2%</td></tr><tr><td>Load average (1/5/15m)</td><td>1.49 / 5.93 / 3.40</td></tr><tr><td>Memory used</td><td>678M / 31.1G</td></tr><tr><td>Tasks running</td><td>1</td></tr></tbody></table>
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Idle-Time.001.jpeg" alt=""><figcaption></figcaption></figure>
 
-### <mark style="color:$primary;">**Test 01 - LIKE query on Non Indexed Text Column (20 threads)**</mark>
+#### <mark style="color:$primary;">**Test 01 - LIKE query on Non Indexed Text Column (20 threads)**</mark>
 
 Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
@@ -68,7 +67,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 `LIMIT 80;`
 
-#### **CPU Utilizations**
+**CPU Utilizations**
 
 | Metric                 | Value                          |
 | ---------------------- | ------------------------------ |
@@ -83,7 +82,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-20.jpg" alt=""><figcaption><p>Total execution time: 3m 39.881448458s</p></figcaption></figure>
 
-### <mark style="color:$primary;">Test 02 - LIKE query on Indexed Text Column (20 threads)</mark>
+#### <mark style="color:$primary;">Test 02 - LIKE query on Indexed Text Column (20 threads)</mark>
 
 Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)<br>
 
@@ -95,7 +94,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 `LIMIT 80;`
 
-#### CPU Utilizations
+**CPU Utilizations**
 
 | Metric                 | Value                |
 | ---------------------- | -------------------- |
@@ -108,11 +107,11 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-20.jpg" alt=""><figcaption><p>Total execution time: 1.714154125s</p></figcaption></figure>
 
-### <mark style="color:$primary;">Test 03 - LIKE query on Indexed Text Column (100 threads)</mark>
+#### <mark style="color:$primary;">Test 03 - LIKE query on Indexed Text Column (100 threads)</mark>
 
 Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
-#### CPU Utilizations
+**CPU Utilizations**
 
 | Metric                 | Value                |
 | ---------------------- | -------------------- |
@@ -125,11 +124,11 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 2.435852958s</p></figcaption></figure>
 
-### <mark style="color:$primary;">Test 04 - LIKE query on Non Indexed Text Column (100 threads)</mark>
+#### <mark style="color:$primary;">Test 04 - LIKE query on Non Indexed Text Column (100 threads)</mark>
 
 Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
-#### CPU Utilizations
+**CPU Utilizations**
 
 | Metric                 | Value                |
 | ---------------------- | -------------------- |
@@ -142,21 +141,19 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 5.696620167s</p></figcaption></figure>
 
-#### Consolidated Comparison Table (across the 4 tests)
+#### <mark style="color:$primary;">Consolidated Comparison Table (across the 4 tests)</mark>
 
-<table><thead><tr><th>Test</th><th width="101.8902587890625">Threads</th><th>Exec Time</th><th width="109.486328125">Avg CPU/core</th><th width="104.3323974609375">Load Avg (1m)</th><th>Cache State</th></tr></thead><tbody><tr><td>Idle</td><td>—</td><td>—</td><td>~0.2%</td><td>1.49</td><td>—</td></tr><tr><td>Non-indexed</td><td>20</td><td>3m 39.88s</td><td>95.7%</td><td>15.02</td><td>Cold </td></tr><tr><td>Indexed</td><td>20</td><td>1.71s</td><td>14.9%</td><td>0.62</td><td>Warm, close to Test 1</td></tr><tr><td>Indexed</td><td>100</td><td>2.44s</td><td>41.9%</td><td>0.19</td><td>Likely cache usage</td></tr><tr><td>Non-indexed</td><td>100</td><td>5.70s</td><td>63.5%</td><td>0.02</td><td>Likely cache usage</td></tr></tbody></table>
+<table><thead><tr><th>Test</th><th width="101.8902587890625">Threads</th><th width="118.41400146484375">Exec Time</th><th width="109.486328125">Avg CPU/core</th><th width="104.3323974609375">Load Avg (1m)</th><th>Cache State</th></tr></thead><tbody><tr><td>Idle</td><td>—</td><td>—</td><td>~0.2%</td><td>1.49</td><td>—</td></tr><tr><td>Non-indexed</td><td>20</td><td>3m 39.88s</td><td>95.7%</td><td>15.02</td><td>Cold </td></tr><tr><td>Indexed</td><td>20</td><td>1.71s</td><td>14.9%</td><td>0.62</td><td>Warm, close to Test 1</td></tr><tr><td>Indexed</td><td>100</td><td>2.44s</td><td>41.9%</td><td>0.19</td><td>Likely cache usage</td></tr><tr><td>Non-indexed</td><td>100</td><td>5.70s</td><td>63.5%</td><td>0.02</td><td>Likely cache usage</td></tr></tbody></table>
 
-##
-
-## DB Storage (Tables)
+#### DB Storage (Tables)
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-DB-Storage-Tables.jpg" alt=""><figcaption></figcaption></figure>
 
-## DB Storage (Indexes)
+#### DB Storage (Indexes)
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-DB-Storage-Indexes.jpg" alt=""><figcaption></figcaption></figure>
 
-## Recommendations
+#### Recommendations
 
 1. Leverage pg\_trgm extension and trigram indexes for text substring searches to improve postgres text searches
 2. Odoo Search - Explore if we can insert custom queries for "unique\_id" lookups (implemented as child tables) instead of relying on Odoo’s generic ORM queries. If this is not possible, then it is recommended to add these columns (like unique\_id, aadhaar\_id) into the res\_partner table itself.
