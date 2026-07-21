@@ -56,7 +56,7 @@ Queries were fired in parallel on the Postgres database to measure the performan
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Idle-Time.001.jpeg" alt=""><figcaption></figcaption></figure>
 
-### **Test 01 - LIKE query on Non Indexed Text Column (20 threads):**
+### <mark style="color:$primary;">**Test 01 - LIKE query on Non Indexed Text Column (20 threads)**</mark>
 
 Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
@@ -83,7 +83,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-20.jpg" alt=""><figcaption><p>Total execution time: 3m 39.881448458s</p></figcaption></figure>
 
-### LIKE query on Indexed Text Column (20 threads):
+### <mark style="color:$primary;">Test 02 - LIKE query on Indexed Text Column (20 threads)</mark>
 
 Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)<br>
 
@@ -108,11 +108,7 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-20.jpg" alt=""><figcaption><p>Total execution time: 1.714154125s</p></figcaption></figure>
 
-###
-
-<figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 5.696620167s</p></figcaption></figure>
-
-### LIKE query on Indexed Text Column (100 threads):
+### <mark style="color:$primary;">Test 03 - LIKE query on Indexed Text Column (100 threads)</mark>
 
 Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
@@ -129,7 +125,7 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 2.435852958s</p></figcaption></figure>
 
-### LIKE query on Non Indexed Text Column (100 threads):
+### <mark style="color:$primary;">Test 04 - LIKE query on Non Indexed Text Column (100 threads)</mark>
 
 Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
@@ -145,6 +141,12 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 | Tasks running          | 8 / 8                |
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 5.696620167s</p></figcaption></figure>
+
+#### Consolidated Comparison Table (across the 4 tests)
+
+<table><thead><tr><th>Test</th><th width="101.8902587890625">Threads</th><th>Exec Time</th><th width="109.486328125">Avg CPU/core</th><th width="104.3323974609375">Load Avg (1m)</th><th>Cache State</th></tr></thead><tbody><tr><td>Idle</td><td>—</td><td>—</td><td>~0.2%</td><td>1.49</td><td>—</td></tr><tr><td>Non-indexed</td><td>20</td><td>3m 39.88s</td><td>95.7%</td><td>15.02</td><td>Cold </td></tr><tr><td>Indexed</td><td>20</td><td>1.71s</td><td>14.9%</td><td>0.62</td><td>Warm, close to Test 1</td></tr><tr><td>Indexed</td><td>100</td><td>2.44s</td><td>41.9%</td><td>0.19</td><td>Likely cache usage</td></tr><tr><td>Non-indexed</td><td>100</td><td>5.70s</td><td>63.5%</td><td>0.02</td><td>Likely cache usage</td></tr></tbody></table>
+
+##
 
 ## DB Storage (Tables)
 
