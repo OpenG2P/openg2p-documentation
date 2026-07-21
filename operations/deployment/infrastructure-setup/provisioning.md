@@ -147,7 +147,7 @@ If any required line errors or shows the wrong version, install/fix it before co
 
 * Compute specs decided — see [Procurement → Compute](../prerequisites-procurement.md#compute-the-four-vms) (RP, Compute, Storage minimums + backup node).
 * Network plan in place — one private subnet for all four VMs; the RP needs an internet-reachable address (public IP, NAT/DNAT, or AWS Elastic IP).
-* SSH key + admin CIDR ready — the install orchestrator on your laptop needs SSH + passwordless sudo to each VM.
+* SSH key ready — the install orchestrator on your laptop needs SSH + passwordless sudo to each VM. On the AWS path, blank `admin_cidr` defaults to `0.0.0.0/0` so SSH survives public-IP changes; lock it down for long-lived production (see [AWS Provisioning → admin_cidr](production-automation/aws-provisioning.md#admin_cidr--ssh--ping-from-the-admin-laptop)).
 
 ## On-prem provisioning
 

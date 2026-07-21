@@ -75,9 +75,9 @@ All resources are tagged with `Project=<project>` so the destroy script can find
 | Resource          | Default name                    | Configurable      | Notes                                                                                                                                                                                                                 |
 | ----------------- | ------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Key pair          | `openg2p-prod-key`              | `key_name`        | Created if missing; .pem saved to `aws/keys/` mode 0400                                                                                                                                                               |
-| SG: RP            | `openg2p-prod-reverse-proxy`    | `rp_sg_name`      | Single SG: admin SSH (`admin_cidr`), Wireguard UDP, and all intra-VPC. Public `80/443` are **not** opened here — admin tools stay private; env automation opens them later. Reused if exists; rules added if missing. |
-| SG: Compute       | `openg2p-prod-k8s-node`         | `compute_sg_name` | Same                                                                                                                                                                                                                  |
-| SG: Storage       | `openg2p-prod-storage`          | `storage_sg_name` | Same                                                                                                                                                                                                                  |
+| SG: RP            | `openg2p-prod-reverse-proxy`    | `rp_sg_name`      | Single SG: admin SSH (`admin_cidr`, default `0.0.0.0/0`), Wireguard UDP, and all intra-VPC. Public `80/443` are **not** opened here — admin tools stay private; env automation opens them later. Reused if exists; rules added if missing. |
+| SG: Compute       | `openg2p-prod-k8s-node`         | `compute_sg_name` | Same (admin SSH from `admin_cidr`)                                                                                                                                                                                                          |
+| SG: Storage       | `openg2p-prod-storage`          | `storage_sg_name` | Same (admin SSH from `admin_cidr`)                                                                                                                                                                                                          |
 | **Elastic IP**    | tagged `Role=reverse-proxy-eip` | —                 | One EIP allocated and associated with the RP. Script **hard-fails** on `AddressLimitExceeded`. See below for why.                                                                                                     |
 | Instance: RP      | `openg2p-prod-reverse-proxy`    | `rp_name`         | `t3a.medium`, 64 GB gp3, **single ENI**                                                                                                                                                                               |
 | Instance: Compute | `openg2p-prod-k8s-node-1`       | `compute_name`    | `m5a.4xlarge`, 128 GB gp3                                                                                                                                                                                             |
@@ -125,6 +125,8 @@ cd automation/production/aws
 cp aws-config.example.yaml aws-config.yaml
 # Edit aws-config.yaml — minimum: project, region.
 # Leave vpc_id, subnet_id, key_mode blank to be prompted interactively.
+# admin_cidr: leave blank (or set 0.0.0.0/0) so SSH works when your
+# public IP changes; lock to an office/VPN CIDR for long-lived production.
 
 ./openg2p-aws-provision.sh --config aws-config.yaml
 # ~5–8 minutes. Creates resources, waits for status checks AND SSH on
@@ -138,6 +140,20 @@ cp prod-config.example.yaml prod-config.yaml
 ./openg2p-prod.sh --preflight --config prod-config.yaml
 ./openg2p-prod.sh             --config prod-config.yaml
 ```
+
+## `admin_cidr` — SSH / ping from the admin laptop
+
+Security groups allow inbound SSH (TCP/22) and ICMP from `admin_cidr` on every node (RP, compute, storage, and the backup node when enabled).
+
+| Value in `aws-config.yaml` | Behaviour |
+|---|---|
+| `""` (blank) | Defaults to **`0.0.0.0/0`** — SSH reachable from any public IP. Survives ISP / network changes. |
+| `"0.0.0.0/0"` | Same as blank, explicit. |
+| Custom CIDR (e.g. `"203.0.113.0/24"`) | Restricts admin SSH/ping to that range (office, VPN egress, etc.). |
+
+Blank no longer auto-detects the laptop's current public `/32` (that behaviour broke login whenever the operator changed networks). Prefer `0.0.0.0/0` for bring-up and labs; **tighten to a known CIDR for stable production** once Wireguard / VPN admin access is in place.
+
+Intra-VPC traffic is always allowed separately (VPC CIDR), independent of `admin_cidr`.
 
 ## Interactive selection (default)
 
@@ -167,8 +183,8 @@ If your infra team has already created security groups, point the `*_sg_name` fi
 Per-rule status is logged so you can see what was added vs already present:
 
 ```
-+ TCP/22  from 203.0.113.5/32: added
-· ICMP    from 203.0.113.5/32: already present
++ TCP/22  from 0.0.0.0/0: added
+· ICMP    from 0.0.0.0/0: already present
 · UDP/51820 (Wireguard) from 0.0.0.0/0: already present
 ```
 
@@ -187,7 +203,7 @@ compute_private_ip:  "10.0.1.51"
 compute_ssh_host:    "<dynamic-public>"
 # ... etc
 private_subnet:  "10.0.0.0/16"
-admin_cidr:      "203.0.113.5/32"
+admin_cidr:      "0.0.0.0/0"     # blank in aws-config → this default; or your locked CIDR
 wg_endpoint:     "13.x.x.x"
 ```
 
@@ -241,6 +257,8 @@ The destroy script only touches resources tagged `Project=<project>`. If you've 
 Stop instances when not using them to drop EC2 charges to near-zero (you still pay for EBS). The EIP stays attached to the (stopped) RP, so the Wireguard endpoint survives stop/start when present.
 
 ## Troubleshooting
+
+**SSH times out after changing Wi‑Fi / ISP** — with the default `admin_cidr` (`0.0.0.0/0`) this should not happen. If you locked `admin_cidr` to a previous `/32`, either set `admin_cidr: "0.0.0.0/0"` (or your new network's CIDR) in `aws-config.yaml` and re-run the provisioner so it **adds** the missing ingress rule, or update the security group in the AWS console. The provisioner never removes existing rules.
 
 **AWS provision: "VPC not found"** — some accounts have no default VPC. Either create one (`aws ec2 create-default-vpc`), set `vpc_id` and `subnet_id` explicitly in `aws-config.yaml`, or run with the default `vpc_id: ""` and pick interactively.
 
