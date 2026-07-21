@@ -1,20 +1,6 @@
 # Performance Testing
 
-### Physical Server Specification (x2 identical units)
-
-<table data-search="false"><thead><tr><th width="232.65301513671875">Component</th><th>Specification</th></tr></thead><tbody><tr><td>Model</td><td>DL380 Gen10</td></tr><tr><td>Processor</td><td>2x 32-core Intel Xeon Platinum </td></tr><tr><td>RAM</td><td>16 x 64 GB (1024 GB total)</td></tr><tr><td>Storage</td><td>4x 7.68 TB NVMe</td></tr><tr><td>RAID Controller</td><td>4x-4GB Trimode RAID card</td></tr><tr><td>Drive Cage</td><td>8SFF Trimode cage</td></tr><tr><td>Power Supply</td><td>Dual 1600W</td></tr><tr><td>FC Card</td><td>16GB dual port</td></tr><tr><td>Network (primary)</td><td>10/25GB NIC card</td></tr><tr><td>Network (secondary)</td><td>4x 10/100/1000 NIC</td></tr><tr><td>Management</td><td>iLO port</td></tr></tbody></table>
-
-### Virtualization Strategy
-
-#### Machine 1 (DL380 Gen10)
-
-<table><thead><tr><th width="258.184814453125">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Production Postgres DB</td><td>8</td><td>32 GB</td><td>500 GB</td></tr><tr><td>NFS Server</td><td>8</td><td>32 GB</td><td>3 TB</td></tr><tr><td>OpenG2P Cluster Node 3</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 4</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>Rancher Cluster Node 2</td><td>4</td><td>16 GB</td><td>128 GB</td></tr></tbody></table>
-
-#### Machine 2 (DL380 Gen10)
-
-<table><thead><tr><th width="261.48773193359375">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Rancher Cluster Node 1</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Nginx</td><td>2</td><td>8 GB</td><td>64 GB</td></tr><tr><td>OpenG2P Cluster Node 1</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 2</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td><strong>Total</strong></td><td><strong>54 vCPU</strong></td><td><strong>600 GB</strong></td><td><strong>~3.45 TB</strong></td></tr></tbody></table>
-
-### **Data Overview**
+**Data Overview**
 
 The main registry table - 'res\_partner" was populated with 50,000,000 (50 million) records. This 50 million records consisted of 40,000,000 (40 million) individuals and 10,000,000 million groups.
 
