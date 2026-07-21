@@ -1,5 +1,19 @@
 # Performance Testing
 
+### 1. Physical Server Specification (x2 identical units)
+
+<table><thead><tr><th width="232.65301513671875">Component</th><th>Specification</th></tr></thead><tbody><tr><td>Model</td><td>DL380 Gen10</td></tr><tr><td>Processor</td><td>2x 32-core Intel Xeon Platinum </td></tr><tr><td>RAM</td><td>16 x 64 GB (1024 GB total)</td></tr><tr><td>Storage</td><td>4x 7.68 TB NVMe</td></tr><tr><td>RAID Controller</td><td>4x-4GB Trimode RAID card</td></tr><tr><td>Drive Cage</td><td>8SFF Trimode cage</td></tr><tr><td>Power Supply</td><td>Dual 1600W</td></tr><tr><td>FC Card</td><td>16GB dual port</td></tr><tr><td>Network (primary)</td><td>10/25GB NIC card</td></tr><tr><td>Network (secondary)</td><td>4x 10/100/1000 NIC</td></tr><tr><td>Management</td><td>iLO port</td></tr></tbody></table>
+
+### 2. Virtualization Strategy
+
+#### Machine 1 (DL380 Gen10)
+
+<table><thead><tr><th width="258.184814453125">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Production Postgres DB</td><td>16</td><td>64 GB</td><td>500 GB</td></tr><tr><td>NFS Server</td><td>8</td><td>32 GB</td><td>3 TB</td></tr><tr><td>OpenG2P Cluster Node 3</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 4</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>Rancher Cluster Node 2</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Data Lake</td><td>32</td><td>256 GB</td><td>3 TB</td></tr><tr><td><strong>Total</strong></td><td><strong>76 vCPU</strong></td><td><strong>432 GB</strong></td><td><strong>~6.9 TB</strong></td></tr></tbody></table>
+
+#### Machine 2 (DL380 Gen10)
+
+<table><thead><tr><th width="261.48773193359375">VM Purpose</th><th>vCPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody><tr><td>Rancher Cluster Node 1</td><td>4</td><td>16 GB</td><td>128 GB</td></tr><tr><td>Postgres DB Data Warehouse</td><td>32</td><td>512 GB</td><td>3 TB</td></tr><tr><td>Nginx</td><td>2</td><td>8 GB</td><td>64 GB</td></tr><tr><td>OpenG2P Cluster Node 1</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td>OpenG2P Cluster Node 2</td><td>8</td><td>32 GB</td><td>128 GB</td></tr><tr><td><strong>Total</strong></td><td><strong>54 vCPU</strong></td><td><strong>600 GB</strong></td><td><strong>~3.45 TB</strong></td></tr></tbody></table>
+
 ## **Data Overview**
 
 The main registry table - 'res\_partner" was populated with 50,000,000 (50 million) records. This 50 million records consisted of 40,000,000 (40 million) individuals and 10,000,000 million groups.
@@ -38,9 +52,11 @@ Queries were fired in parallel on the Postgres database to measure the performan
 
 #### **CPU Measurements**
 
+<table><thead><tr><th width="344.9088134765625">Metric</th><th>Value</th></tr></thead><tbody><tr><td>Uptime</td><td>7d 01:28:34</td></tr><tr><td>Avg CPU/core</td><td>~0.2%</td></tr><tr><td>Load average (1/5/15m)</td><td>1.49 / 5.93 / 3.40</td></tr><tr><td>Memory used</td><td>678M / 31.1G</td></tr><tr><td>Tasks running</td><td>1</td></tr></tbody></table>
+
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Idle-Time.001.jpeg" alt=""><figcaption></figcaption></figure>
 
-### **LIKE query on Non Indexed Text Column (20 threads):**
+### **Test 01 - LIKE query on Non Indexed Text Column (20 threads):**
 
 Number of Parallel threads: 20 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
@@ -53,6 +69,17 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 `LIMIT 80;`
 
 #### **CPU Utilizations**
+
+| Metric                 | Value                          |
+| ---------------------- | ------------------------------ |
+| Uptime                 | 7d 01:32:34 (+4m from idle)    |
+| Total execution time   | **3m 39.88s**                  |
+| Avg CPU/core           | **\~95.7%** (93.3–98.7% range) |
+| Load average (1/5/15m) | **15.02** / 8.01 / 4.55        |
+| Memory used            | 1.45G / 31.1G                  |
+| Tasks running          | 8 / 8                          |
+
+
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-20.jpg" alt=""><figcaption><p>Total execution time: 3m 39.881448458s</p></figcaption></figure>
 
@@ -68,15 +95,20 @@ Number of Parallel threads: 20 (from a client machine that supports 20 threads -
 
 `LIMIT 80;`
 
-#### CPU Utilizations:
+#### CPU Utilizations
+
+| Metric                 | Value                |
+| ---------------------- | -------------------- |
+| Uptime                 | 7d 01:37:52 (+5m18s) |
+| Total execution time   | **1.71s**            |
+| Avg CPU/core           | **\~14.9%**          |
+| Load average (1/5/15m) | 0.62 / 5.56 / 4.82   |
+| Memory used            | 711M / 31.1G         |
+| Tasks running          | 8 / 8                |
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-20.jpg" alt=""><figcaption><p>Total execution time: 1.714154125s</p></figcaption></figure>
 
-### LIKE query on Non Indexed Text Column (100 threads):
-
-Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
-
-#### CPU Utilizations:
+###
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 5.696620167s</p></figcaption></figure>
 
@@ -84,9 +116,35 @@ Number of Parallel threads: 100 (from a client machine that supports 20 threads 
 
 Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
 
-#### CPU Utilizations:
+#### CPU Utilizations
+
+| Metric                 | Value                |
+| ---------------------- | -------------------- |
+| Uptime                 | 7d 01:42:02 (+4m10s) |
+| Total execution time   | 2.44s                |
+| Avg CPU/core           | \~41.9%              |
+| Load average (1/5/15m) | 0.19 / 2.42 / 3.68   |
+| Memory used            | 756M / 31.1G         |
+| Tasks running          | 1 / 8                |
 
 <figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-IC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 2.435852958s</p></figcaption></figure>
+
+### LIKE query on Non Indexed Text Column (100 threads):
+
+Number of Parallel threads: 100 (from a client machine that supports 20 threads - 10 Cores with 2 threads per core)
+
+#### CPU Utilizations
+
+| Metric                 | Value                |
+| ---------------------- | -------------------- |
+| Uptime                 | 7d 01:51:15 (+9m13s) |
+| Total execution time   | 5.70s                |
+| Avg CPU/core           | \~63.5%              |
+| Load average (1/5/15m) | 0.02 / 0.45 / 2.06   |
+| Memory used            | 1.27G / 31.1G        |
+| Tasks running          | 8 / 8                |
+
+<figure><img src="../../../../../../.gitbook/assets/SR-Scale-Postgres-CPU-Like-Q-NIC-100-Threads.jpg" alt=""><figcaption><p>Total execution time: 5.696620167s</p></figcaption></figure>
 
 ## DB Storage (Tables)
 
