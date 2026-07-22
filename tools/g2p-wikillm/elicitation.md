@@ -102,7 +102,55 @@ The newly promoted lesson now backs its taxonomy cell, so the cell flips toward 
 | `lessons/proposed/<slug>.md` | Synthesised draft, awaiting review. | `elicit:synthesise` |
 | `lessons/<slug>.md` | Promoted lesson the advisor reads. | Admin via PR |
 
+## Persona elicitation — testing the live advisor
+
+The interview loop above finds gaps by scanning the **static wiki**. Persona elicitation finds gaps by running questions through the **real advisor answer path** — it catches cases where a page exists but the advisor still can't produce a usable answer. The two are complementary; run both.
+
+The unit of audience is a **persona**. The taxonomy is now persona-tagged (`persona:` on each area); the original deployment areas are the `implementer` persona, and there is a new set of **operator** areas — a government administrator running the deployed system ("how do I do X", no devops, no concepts).
+
+### Step A — generate the question bank (`elicit:persona-generate`)
+
+```bash
+npm run elicit:persona-generate -- operator --per-cell 4   # ~4 phrasings per operator cell
+npm run elicit:persona-generate -- operator --dry-run      # list cells, no LLM
+```
+
+Reads the taxonomy cells for that persona and generates realistic questions in that persona's voice (one Claude CLI call per area). Writes `elicitation/personas/<persona>.json`. Because the questions derive from the taxonomy, the bank is comprehensive by construction. **Review and freeze the bank** — a stable bank is what makes it a usable regression/eval set across model changes.
+
+### Step B — run the bank through the advisor (in the advisor repo)
+
+```bash
+npm run persona -- operator            # answers each question via the REAL advisor, critic judges
+```
+
+This lives in **g2p-advisor**, not here, because it must exercise the deployed answer path. The **answerer** uses the advisor's OpenRouter model (it has to reproduce what a real user gets); the **critic** uses the Claude CLI (offline QA). Weak answers become `GapRecord`s in `data/persona-gaps/<persona>.json`. See the advisor's [Gap & feedback loop](../g2p-advisor/gap-feedback-loop.md).
+
+### Step C — triage the gaps (`elicit:triage`)
+
+```bash
+npm run elicit:triage                  # collect + classify + rollup
+npm run elicit:triage -- --no-llm      # collect + report only, skip classification
+```
+
+One pass does three things:
+
+1. **Collect** — merge every producer's gap records into one ledger, `elicitation/gaps/gap-records.json`. Idempotent: prior triage and hand edits are preserved; only evidence refreshes.
+2. **Triage** — for each untriaged gap, classify it into a **sink** (`source-fix` / `synthesis-fix` / `lesson` / `not-a-gap`) via the Claude CLI, using the retrieval trace as the key signal. Sets `sink`, `target`, `triage_rationale`.
+3. **Rollup** — write `elicitation/gaps/gap-report.md`: source-fix gaps clustered by area into **proposed Documentation-epic stories**, synthesis-fixes as no-ticket prompt tweaks, lessons separately.
+
+**Filing the Jira stories is manual by design** — the rollup proposes them; a human reviews the report and files them, because creating tickets is an external action. The `sink` in `gap-records.json` is hand-editable; a re-run keeps your overrides.
+
+### Where the persona/triage files live
+
+| Path | What it is | Written by |
+|---|---|---|
+| `elicitation/personas/<persona>.json` | Generated question bank (freeze after review). | `elicit:persona-generate` |
+| `elicitation/gaps/gap-records.json` | Unified gap ledger (durable, hand-editable). | `elicit:triage` |
+| `elicitation/gaps/gap-report.md` | Triage report — Jira proposal + prompt-fix list + lessons. | `elicit:triage` |
+| `data/persona-gaps/<persona>.json` (advisor) | Raw gap records from a persona run. | advisor `npm run persona` |
+
 ## See also
 
-* [Concept — WikiLLM § Elicitation](concept.md#elicitation-knowing-what-you-dont-know) — the ideas behind the loop.
+* [Concept — WikiLLM § Elicitation](concept.md#elicitation-knowing-what-you-dont-know) — the ideas behind the loop, including the two-producers/three-sinks model.
+* [G2P Advisor — Gap & feedback loop](../g2p-advisor/gap-feedback-loop.md) — the persona harness and answer feedback, from the advisor side.
 * [Scripts § When something changes](scripts.md#when-something-changes--what-to-run) — how elicitation fits with the ingest/synthesis commands.

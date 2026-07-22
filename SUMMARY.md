@@ -97,6 +97,10 @@
           * [Staff Portal API](products/registry/registry/developer-zone/api-documentation/1.1.0/staff-portal-api.md)
           * [Partner API](products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api.md)
       * [Non Functional Requirements](products/registry/registry/developer-zone/non-functional-requirements.md)
+    * [Deployment and Extension](products/registry/registry/deployment-and-extension/README.md)
+      * [Packaging & the reference registry](products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md)
+      * [Extending into a new registry](products/registry/registry/deployment-and-extension/extending-into-a-new-registry.md)
+      * [Testing & the sanity suite](products/registry/registry/deployment-and-extension/testing-and-sanity-suite.md)
     * [Versions](products/registry/registry/versions/README.md)
       * [Registry Platform Release Notes - v1.0.0](products/registry/registry/versions/registry-platform-release-notes-v1.0.0.md)
       * [Registry Release Notes - v4.0.0](products/registry/registry/versions/registry-release-notes-v4.0.0.md)
@@ -725,6 +729,7 @@
   * [Phases](tools/g2p-advisor/phases.md)
   * [Running](tools/g2p-advisor/running.md)
   * [Scripts](tools/g2p-advisor/scripts.md)
+  * [Gap & Feedback Loop](tools/g2p-advisor/gap-feedback-loop.md)
   * [Roadmap](tools/g2p-advisor/roadmap.md)
 
 ## Operations

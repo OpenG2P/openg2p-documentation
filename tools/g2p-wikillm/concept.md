@@ -43,6 +43,21 @@ Three concepts make that tractable:
 
 This extends the wiki's existing flywheel rather than replacing it: elicited answers are synthesised into `lessons/proposed/`, promoted into `lessons/`, and read by the advisor alongside `wiki/` — never silently merged into entity or concept pages.
 
+### Two producers, one ledger
+
+A "gap" — a fact the knowledge base failed to deliver — can be discovered two ways, and both feed the same pipeline:
+
+* **Taxonomy-scan (spec vs static wiki).** The original producer: scan every taxonomy cell against the wiki and ask *"is there a page covering this?"*. Finds structural holes.
+* **Persona elicitation (spec vs live advisor).** A newer producer: the AI takes on a real audience — starting with the **operator** (a government administrator running the deployed system, asking "how do I do X", no devops or concepts) — and fires that persona's questions at the **real advisor answer path**, then a critic judges the reply. Finds where the advisor *cannot actually answer*, even when a page exists. The question bank is generated from the taxonomy, so coverage is comprehensive by construction, and because it runs the real path it doubles as an eval set. Personas are a dimension of the taxonomy (`persona:` on each area); the existing deployment areas are the `implementer` persona.
+
+Both emit the same record (`GapRecord`), carrying the **retrieval trace** — which wiki pages ranked, and which the advisor actually opened. That trace is what lets triage tell three failure modes apart, routing every gap to exactly one **sink**:
+
+* **source-fix** — the fact is in no doc or code → author documentation (the only sink that earns a Documentation-epic Jira; the wiki re-derives once the doc lands).
+* **synthesis-fix** — the fact *is* in a source but the wiki lens surfaced it badly, or the advisor ranked the right page yet never opened it → fix the synthesis prompt and regenerate (no ticket).
+* **lesson** — tacit/operational knowledge in no source → capture as a lesson.
+
+Nothing of value lives permanently in a gap record — it is transient triage state. The knowledge always lands in the docs, the synthesis prompt, or a promoted lesson.
+
 For the step-by-step workflow, see the [Elicitation Engine — Operating Guide](elicitation.md).
 
 ## Why this matters for OpenG2P

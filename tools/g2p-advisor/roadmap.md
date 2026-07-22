@@ -9,7 +9,7 @@ Status of the Advisor as of v0.x. Items are roughly ordered by priority within e
 * **Project mode Phase 2 (Build)** — shipped through step 10 (image build + push). Steps 11–13 (test gen + sandbox + smoke) still stubbed.
 * **Phases 3–5** — UI stub only. Designed; not built.
 * **Auth** — mock user from env vars. Keycloak integration deferred.
-* **Lesson feedback into wiki** — designed; not built. Sessions don't yet emit a digest.
+* **Gap & feedback loop** — persona harness (`npm run persona`) and wiki-side triage (`elicit:triage`) are built and produce classified gap records; see [Gap & Feedback Loop](gap-feedback-loop.md). The in-app 👍/👎 feedback UI (writing to `answer_feedback`) is the remaining piece.
 
 ## In-progress
 
