@@ -1,45 +1,50 @@
 ---
-description: Version history of the OpenG2P Registry platform and Helm chart releases.
+description: Where to find Registry Platform chart and image versions, and what changed in each.
 ---
 
 # Versions
 
-## Platform source repository (`registry-platform`)
-
-The **version of the [registry-platform](https://github.com/OpenG2P/registry-platform) repository is the platform version**. Manifestations build Docker images and Helm charts on top of a tagged platform ref.
-
-```
-           |
-```
-
-
-| Platform Version                                                     | Last Modified | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| -------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [develop](https://github.com/OpenG2P/registry-platform/tree/develop) | 08-Jul-2026   | **Latest running version.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0)    | 06-Jul-2026   | **Tagged release.** All platform modules at `1.1.0`; `@openg2p/registry-widgets` at `1.1.4-dev.2`. [Release notes](registry-platform-release-notes-v1.1.0.md). Key changes vs v1.0.0: • **AWE integration** — task list UI, `list_tasks_for_request`, assignee name, CR rollback on failed terminal approval, pre-approve hook. • **Document handling refactor** — unified document controller, abstract MinIO client, upload validation profiles, Docs widget. • **Staff Portal security** — CSRF validation, `cookieDomain`, CSP hardening, IAM cookie/permission refactor. • **Partner Management** — repointed to commons-services; WJS support; PM-seed auth aligned to `g2p-bridge` pattern. • **Reference data & data policy** — attribute search, administrative-area policies, attribute labels renamed to reference data. • **Intake forms** — application reference field, configurable reference generator. • **UI widgets** — geo hierarchy, logo/favicon, conditional visibility fixes. • **Record-level access** — `BaseRepository` generics approach. |
-| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0)   | 19-Jun-2026   | **Tagged release.** First tagged release of the consolidated platform repository. Replaces the deprecated openg2p-registry-gen2 split repos. [Release notes](registry-platform-release-notes-v1.0.0.md).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-
+The Registry Platform now **publishes its own Docker images and Helm chart**. Every image and the chart built from a commit carry the same version, derived from git by the central pipeline, so a chart version tells you exactly which images it deploys.
 
 {% hint style="info" %}
-**Maintaining this table.** `develop` is always the first row (latest running version). The `N.N` row tracks the active support line. Add a new tagged row only when a three-part `N.N.N` version is cut — at that moment it is tagged. Update the **Last Modified** date on running rows (`develop`, `N.N`) as work continues; tagged rows carry the date of their tag.
+**Changelog — every released version and what changed in it:**
+[**openg2p-packaging/registry-platform/CHANGELOG**](https://openg2p.github.io/openg2p-packaging/registry-platform/CHANGELOG)
+
+This is generated by CI on every publish and is the single source of truth. Current versions are no longer listed on this site.
 {% endhint %}
 
----
+## What is published
 
+| Artifact | Where |
+|---|---|
+| Helm chart `openg2p-registry` | [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
+| Docker images `openg2p/openg2p-registry-*` | Docker Hub |
 
+For what these artifacts are and how a domain registry extends them, see [Deployment and Extension](../deployment-and-extension/README.md). How versions are derived, frozen and promoted is documented org-wide in [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci).
 
-## Helm chart versions (`openg2p-registry`)
+***
 
-This page tracks the released and in-progress versions of the OpenG2P Registry (Gen 2) Helm chart (`openg2p-registry`). For full deployment details of the current line, see [Helm Chart 4.x](../_archive/deployment/helm-chart-4.x.md).
+## Previous versions
 
-
-| Helm Chart Version                                                                    | Components                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Last Modified | Comments                                                                                                                                                                                        |
-| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [4.2.0-develop](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/4.2) | Same as 4.1.0, plus: openg2p-awe:develop openg2p-awe-ui:develop                                                                                                                                                                                                                                                                                                                                                                                                | 12 May 2026   | **In progress.** Key difference vs 4.1.0:                                                                                                                                                       |
-| [4.1.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.1.0)      | Same as 4.0.0.                                                                                                                                                                                                                                                                                                                                                                                                                                                 | 08 May 2026   | Changes vs 4.0.0:                                                                                                                                                                               |
-| [4.0.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.0.0)      | [farmer-registry-staff-portal-api:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-staff-portal-api) [farmer-registry-partner-api:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-partner-api) [farmer-registry-celery:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-celery) (beat-producer + worker) [registry-staff-portal-ui:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-registry-staff-portal-ui) | 21 Apr 2026   | First release of Registry Gen 2 — the domain-agnostic registry platform. 4.0.0 manifests the **Farmer Registry** (farmer domain models supplied via the extensions repository). Stable version. |
-
-
-{% hint style="info" %}
-The **Last Modified** date for in-progress (`-develop`) versions is updated as work continues. Released versions carry the date of their tag.
+{% hint style="warning" %}
+The versions below belong to the **previous architecture**, in which the registry platform was published as a **library** that each registry implementation consumed and re-assembled into its own images and Helm chart. That model has been inverted — the platform is now a complete, installable registry that domain registries extend. These entries are retained for reference only; they do not describe the artifacts published today.
 {% endhint %}
+
+### Platform source repository (`registry-platform`)
+
+Under the previous model the **version of the [registry-platform](https://github.com/OpenG2P/registry-platform) repository was the platform version**, and manifestations built their own Docker images and Helm charts on top of a tagged platform ref.
+
+| Platform Version | Last Modified | Comments |
+| ---------------- | ------------- | -------- |
+| [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0) | 06-Jul-2026 | **Tagged release.** All platform modules at `1.1.0`; `@openg2p/registry-widgets` at `1.1.4-dev.2`. [Release notes](registry-platform-release-notes-v1.1.0.md). Key changes vs v1.0.0: • **AWE integration** — task list UI, `list_tasks_for_request`, assignee name, CR rollback on failed terminal approval, pre-approve hook. • **Document handling refactor** — unified document controller, abstract MinIO client, upload validation profiles, Docs widget. • **Staff Portal security** — CSRF validation, `cookieDomain`, CSP hardening, IAM cookie/permission refactor. • **Partner Management** — repointed to commons-services; WJS support; PM-seed auth aligned to `g2p-bridge` pattern. • **Reference data & data policy** — attribute search, administrative-area policies, attribute labels renamed to reference data. • **Intake forms** — application reference field, configurable reference generator. • **UI widgets** — geo hierarchy, logo/favicon, conditional visibility fixes. • **Record-level access** — `BaseRepository` generics approach. |
+| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | **Tagged release.** First tagged release of the consolidated platform repository. Replaces the deprecated openg2p-registry-gen2 split repos. [Release notes](registry-platform-release-notes-v1.0.0.md). |
+
+### Helm chart versions (`openg2p-registry`, 4.x line)
+
+The 4.x charts were built and released from the separate `openg2p-registry-gen2-deployment` repository, and each one manifested a specific registry. For deployment details of that line see [Helm Chart 4.x](../_archive/deployment/helm-chart-4.x.md).
+
+| Helm Chart Version | Components | Last Modified | Comments |
+| ------------------ | ---------- | ------------- | -------- |
+| [4.2.0-develop](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/4.2) | Same as 4.1.0, plus: openg2p-awe:develop openg2p-awe-ui:develop | 12 May 2026 | Key difference vs 4.1.0: AWE. |
+| [4.1.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.1.0) | Same as 4.0.0. | 08 May 2026 | Changes vs 4.0.0. |
+| [4.0.0](https://github.com/OpenG2P/openg2p-registry-gen2-deployment/tree/v4.0.0) | [farmer-registry-staff-portal-api:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-staff-portal-api) [farmer-registry-partner-api:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-partner-api) [farmer-registry-celery:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-farmer-registry-celery) (beat-producer + worker) [registry-staff-portal-ui:v1.0.2](https://hub.docker.com/r/openg2p/openg2p-registry-staff-portal-ui) | 21 Apr 2026 | First release of Registry Gen 2 — the domain-agnostic registry platform. 4.0.0 manifests the **Farmer Registry** (farmer domain models supplied via the extensions repository). Stable version. |

@@ -1,42 +1,90 @@
+---
+description: >-
+  How the Farmer Registry is seeded at install — the seed content this repo owns
+  and the seeding machinery it inherits from the platform.
+---
+
 # Data seeding
 
-The Farmer Registry ships a **db-seed** image that prepares a working registry at install time: it applies the register definitions, loads the geo hierarchy, and (optionally) fills the registry with ~500 sample farmers, their profile photos and document templates. A default install seeds all of it.
+Seeding follows the same split as everything else: the **machinery** is inherited from the platform's `db-seed` image, and the Farmer Registry supplies only its **content**.
 
-## Where the seed data comes from
+{% hint style="info" %}
+The `db-seed` image and the rest of the published artifact set are described in the platform docs: [**Packaging & the reference registry**](../../registry/deployment-and-extension/packaging-and-reference-registry.md).
+{% endhint %}
 
-Seed content comes from **three** places — the sample people are deliberately **not** in this repo:
+## What comes from where
 
-| Source | Provides | Location |
-| ------ | -------- | -------- |
-| [`openg2p/openg2p-data`](https://github.com/OpenG2P/openg2p-data) (branch `2.0`) | Shared demography — `demography/individuals.csv`, `demography/households.csv`, ~500 `demography/images/*.jpg`, and `geo/geo.csv` | External repo, fetched at **image build time** |
-| `docker/db-seed/seed-data/*.json` | Farmer-domain data — `farmers`, `household_members`, `lands`, `crops`, `livestocks`, `farm_inputs`, `membership_details`, `scores` | [In this repo](https://github.com/OpenG2P/farmer-registry/tree/develop/docker/db-seed/seed-data) |
-| `farmer-extension/src/.../` | `meta_data/` and `awe_meta_data/` SQL, plus `templates/*.j2` | [The extension](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) — schema/config only, **no sample data** |
+The platform image `openg2p/openg2p-registry-db-seed` is a postgres-client image carrying the generic loaders and nothing farmer-specific:
 
-**Why the split.** The demography half is registry-agnostic and shared: person `i0001` is the same individual in the Farmer Registry and the [National Social Registry](../../national-social-registry/README.md), so cross-registry scenarios line up and the 500 people + images are maintained once rather than forked per registry. Each registry commits only its **domain overlay** — which is why `openg2p-data/scripts/` holds both `generate_farmer_data.py` and `generate_nsr_data.py`.
+| Inherited from the platform | Purpose |
+|---|---|
+| `entrypoint.sh` | Applies the SQL and drives the ordered steps below, entirely from env |
+| `load_geo_data.py` | Geo hierarchy → the **master-data** DB |
+| `load_sample_data.py` | Demography CSV + registry sub-table JSON → `g2p_register_*` |
+| `upload_images.py` | Profile photos → MinIO |
+| `upload_templates.py` | Jinja templates → MinIO |
+| `openg2p-data` clone | Shared demography (`individuals.csv`, `households.csv`, ~500 images, `geo/geo.csv`) baked in at image build |
 
-The two halves are joined on `internal_record_id`:
+The platform image also ships the **reference registry's** seed. The Farmer Registry's `db-seed` image is a thin `FROM` of it that clears those directories and copies its own:
+
+```dockerfile
+FROM openg2p/openg2p-registry-db-seed:${RP_VERSION}
+RUN rm -rf /seed/meta_data/* /seed/awe_meta_data/* /seed/templates/* /seed/seed-data/*
+COPY farmer-extension/src/openg2p_registry_farmer_extension/meta_data/     /seed/meta_data/
+COPY farmer-extension/src/openg2p_registry_farmer_extension/awe_meta_data/ /seed/awe_meta_data/
+COPY farmer-extension/src/openg2p_registry_farmer_extension/templates/     /seed/templates/
+COPY docker/db-seed/seed-data/                                             /seed/seed-data/
+```
+
+So the farmer seed content is exactly four things:
+
+| Content | Source in this repo |
+|---|---|
+| `meta_data/` SQL — register definitions, schemas, UI tabs/sections, attributes, score definitions, registry configuration | [`farmer-extension/.../meta_data`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension/src/openg2p_registry_farmer_extension/meta_data) |
+| `awe_meta_data/` SQL — approval policy, stages, approver rules, callback-secret template | [`farmer-extension/.../awe_meta_data`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension/src/openg2p_registry_farmer_extension/awe_meta_data) |
+| `templates/` — the DCI Jinja templates (`openg2p_farmer_to_dci`, `dci_to_openg2p_farmer`, `dci_commons_response`) | [`farmer-extension/.../templates`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension/src/openg2p_registry_farmer_extension/templates) |
+| `seed-data/*.json` — farmer-domain sample rows: `farmers`, `household_members`, `lands`, `crops`, `livestocks`, `farm_inputs`, `membership_details`, `scores` | [`docker/db-seed/seed-data`](https://github.com/OpenG2P/farmer-registry/tree/develop/docker/db-seed/seed-data) |
+
+### Why the sample people are not in this repo
+
+The demography half is registry-agnostic and shared: person `i0001` is the same individual in the Farmer Registry and the [National Social Registry](../../national-social-registry/README.md), so cross-registry scenarios line up and the 500 people and images are maintained once rather than forked per registry. Each registry commits only its **domain overlay**.
+
+The two halves join on `internal_record_id`:
 
 * `individuals.csv` supplies the person core (name, gender, birth date, phone, geo, photo).
 * `farmers.json` supplies the farmer-only columns (`source_of_income`, `language_spoken`, disability fields …) — a 1:1 overlay merged **onto** the CSV row to form one `g2p_register_farmers` row.
-* The remaining JSON files are **sub-tables** with 1..N rows per farmer (509 lands, 757 crops, 471 livestock …), linked by `link_internal_record_id`.
+* The remaining JSON files are **sub-tables** with 1..N rows per farmer, linked by `link_internal_record_id`.
 
-## The db-seed image
+The `openg2p-data` fetch is **pinned**: the `OPENG2P_DATA_BRANCH` build-arg is resolved from ref `2.0` to a commit SHA before the build and recorded as an `org.openg2p.pin.*` image label, so a moving `2.0` cannot silently change your seed data.
 
-Built from [`docker/db-seed/Dockerfile`](https://github.com/OpenG2P/farmer-registry/blob/develop/docker/db-seed/Dockerfile) and published as `openg2p/openg2p-farmer-registry-db-seed` by the central CI pipeline (see [Build, versioning and CI](helm-chart.md#versions-and-ci)). At build time it copies the extension's SQL and templates, copies the local farmer JSON, and fetches `openg2p-data` into `/openg2p-data`.
+## What runs, in what order
 
-That fetch is **pinned**: the `OPENG2P_DATA_BRANCH` build-arg is resolved from ref `2.0` to a commit SHA before the build and recorded as the `org.openg2p.pin.openg2p-data-branch` image label — so any db-seed image tells you exactly which dataset commit is baked in, and a moving `2.0` can't silently change your seed data.
+The chart runs db-seed as a `post-install,post-upgrade` hook Job. An init container first waits for the registry APIs and for **AWE** to be healthy; then the entrypoint executes:
 
-## How it runs, and how the chart drives it
+| # | Step | Controlled by | Notes |
+|---|---|---|---|
+| 1 | **meta-data SQL** → registry DB | *always runs* | Register definitions, UI metadata, AWE integration mappings |
+| 2 | **geo** → master-data DB | `loadGeoData` | Runs before sample data so the geo ids the registry rows derive already resolve. Master-data is a generic commons service and ships no seed data, so geo is loaded here over the network |
+| 3 | **sample data** → `g2p_register_*` | `loadSampleData` | Joins the demography CSV with the farmer JSON |
+| 4 | **images** → MinIO | `loadImages` | Profile photos, linked to farmers — needs step 3 |
+| 5 | **templates** → MinIO | `loadTemplates` | The extension's `.j2` files |
+| 6 | **AWE seed** → AWE DB | `aweDbSeed` | Approval policy, stages, approver rules, and the per-release `callback_secret` row |
 
-The chart runs db-seed as a **`post-install,post-upgrade` hook Job** (`hook-weight: 10`, so it precedes the [sanity jobs](helm-chart.md#install-time-jobs)). [`entrypoint.sh`](https://github.com/OpenG2P/farmer-registry/blob/develop/docker/db-seed/entrypoint.sh) executes in a deliberate order:
+{% hint style="warning" %}
+**Only step 1 is unconditional.** In the platform chart every loader defaults to **off**, because the reference registry is deliberately minimal. The Farmer Registry ships demo records, geo and images, so its overlay turns them on:
 
-1. **meta\_data SQL** → registry DB (always).
-2. **geo** (`loadGeoData`) → `geo.csv` into the **master-data** DB. Runs first so the geo ids the registry rows derive already resolve. Master-data is a generic commons service and ships no seed data, so geo is loaded here over the network.
-3. **sample data** (`loadSampleData`) → joins demography CSV with farmer JSON into the `g2p_register_*` tables.
-4. **images** (`loadImages`) → profile photos to MinIO, linked to farmers (needs step 3 first).
-5. **templates** (`loadTemplates`) → the extension's `.j2` files to MinIO.
-6. **AWE seed** (`aweDbSeed`) → policies, stages and the per-release `callback_secret` row into the AWE DB.
+```yaml
+registry:
+  dbSeed:
+    loadGeoData: true
+    loadSampleData: true
+    loadImages: true
+    loadTemplates: true
+```
 
-Each step is a flag in [`values.yaml`](https://github.com/OpenG2P/farmer-registry/blob/develop/helm/openg2p-farmer-registry/values.yaml) under `dbSeed` — all default to `true`. **For a production install, set `loadSampleData`, `loadImages` and `loadGeoData` to `false`**: the meta-data SQL is required, but the sample farmers and demo geo are not.
+Note these are `registry.dbSeed.*`, **not** `global.*` — the db-seed Job reads `.Values.dbSeed.load*` and there is no global fallback, so setting them under `global` silently does nothing.
+{% endhint %}
 
-> Seeding is idempotent enough to re-run on upgrade, but it is **sample data for demos and testing** — it is not a migration tool and the seeded records are not meant to coexist with real registrant data.
+**For a production install set `loadSampleData`, `loadImages` and `loadGeoData` to `false`.** The meta-data SQL is required; the sample farmers and demo geo are not. Keep `loadTemplates: true` — without the DCI templates in MinIO, every record fails to render and a DCI search returns an empty result.
+
+> Seeding is idempotent enough to re-run on upgrade, but it is **sample data for demos and testing**. It is not a migration tool, and the seeded records are not meant to coexist with real registrant data.

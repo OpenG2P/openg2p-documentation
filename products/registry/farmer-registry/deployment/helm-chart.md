@@ -1,109 +1,88 @@
 ---
-description: The openg2p-farmer-registry Helm chart — components, parameters and versions.
+description: >-
+  The openg2p-farmer-registry chart — a thin wrapper over the platform chart,
+  its images, and the values that make it the Farmer Registry.
 ---
 
 # Helm chart
 
-The Farmer Registry is deployed by a single self-sufficient chart, **`openg2p-farmer-registry`**, in [`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry). "Self-sufficient" means the chart installs the registry outright — there is no base registry wrapper chart to install first, and the [registry platform](https://github.com/openg2p/registry-platform) ships no chart of its own.
+The Farmer Registry is deployed by **`openg2p-farmer-registry`** ([`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry)), published to the [OpenG2P Helm repo](https://openg2p.github.io/openg2p-helm).
 
-Published to the [OpenG2P Helm repo](https://openg2p.github.io/openg2p-helm) by the central CI pipeline.
+The chart **owns no templates**. It declares the platform chart as a pinned dependency and supplies a values overlay:
+
+```yaml
+# Chart.yaml
+dependencies:
+  - name: openg2p-registry
+    alias: registry              # overlay nests under .Values.registry
+    version: 0.0.0-develop.286   # HARDCODED — moved deliberately
+    repository: https://openg2p.github.io/openg2p-helm
+```
+
+Every service template, IAM/Keycloak wiring and db-seed mechanism comes from that subchart. See [Packaging & the reference registry](../../registry/deployment-and-extension/packaging-and-reference-registry.md) for what the platform chart contains.
+
+{% hint style="info" %}
+**Why a wrapper and not just a values file.** A values-only install works, but the Farmer Registry needs its own catalogue entry, branding and version line in Rancher. The wrapper gives that without copying the ~50 template files.
+{% endhint %}
+
+## Two kinds of value
+
+| Where | What | Why |
+|---|---|---|
+| `global.*` | Shared settings — hostnames, DB hosts, Keycloak, CM/PM/AWE/Audit URLs, the enforcement switches | Helm propagates `global` into subcharts automatically, so these are set at the top level |
+| `registry.*` | Everything else — images, component toggles, `dbSeed.*`, `sanity.*` | These are the **subchart's** values, so they nest under the `registry` alias |
+
+This is the one thing to remember when writing a values file for the Farmer Registry: a platform setting that was `dbSeed.loadSampleData` when installing the platform chart directly becomes `registry.dbSeed.loadSampleData` here.
 
 ## What it deploys
 
 | Component | Image | Built in this repo? |
-| --------- | ----- | ------------------- |
-| Staff Portal API | `openg2p-farmer-registry-staff-portal-api` | Yes |
+|---|---|---|
+| Staff Portal API | `openg2p-farmer-registry-staff-api` | Yes |
 | Partner API (DCI) | `openg2p-farmer-registry-partner-api` | Yes |
-| Celery worker + beat producer | `openg2p-farmer-registry-celery` | Yes (one image, mode selected at runtime) |
+| Celery worker + beat | `openg2p-farmer-registry-celery` | Yes (one image, role selected by `CELERY_APP`) |
 | DB seed | `openg2p-farmer-registry-db-seed` | Yes — see [Data seeding](data-seeding.md) |
-| Sanity | `openg2p-farmer-registry-sanity` | Yes |
-| Staff Portal UI | `openg2p-registry-staff-portal-ui` | No — platform image |
-| Beneficiary Portal API | `openg2p-registry-bene-portal-api` | No — platform image |
+| Sanity tests | `openg2p-farmer-registry-sanity-tests` | Yes — see [Sanity testing](sanity-testing.md) |
+| Staff Portal UI | `openg2p-registry-staff-ui` | **No** — platform image, used as-is |
+| Beneficiary Portal API | `openg2p-registry-bene-api` | **No** — platform image, used as-is |
 
-The registry code is not vendored: each backend image installs the [registry-platform](https://github.com/OpenG2P/registry-platform) packages plus this repo's `farmer-extension` at build time, from pinned git refs.
+Each farmer image is a few lines: `FROM` the matching platform image, `pip install farmer-extension`, and set `REGISTRY_EXTENSION_MODULE=openg2p_registry_farmer_extension`. The platform code is never vendored — it is already in the base image.
 
-## Dependencies
+## Configuration form (Rancher)
 
-Pulled from the [OpenG2P Helm repo](https://openg2p.github.io/openg2p-helm):
+The chart ships **no `questions.yaml` of its own**. Rancher reads questions only from the root of the chart being installed and ignores a subchart's, so the file is **generated at packaging time** from the pinned `openg2p-registry` dependency: every non-`global.` variable is prefixed with `registry.`, and each question's default is resolved from this chart's overlay first, then the platform's.
 
-* **common** — shared templates/helpers
-* **postgres-init** — creates the registry databases and users
-* **redis** — Celery broker/result backend
-* **openg2p-id-generator** (alias `idgenerator`) — functional ID generation
-* **keycloak-init** — realms, clients and demo users
+The practical effect: the Farmer Registry form offers exactly the platform's settings, already showing the farmer images and toggles, and it cannot drift from the pinned platform version.
 
-All except `common` sit behind an `enabled` condition, so they can be switched off when the environment already provides them. Shared services — **Keycloak**, **master-data**, **Consent Manager**, **Partner Management** and the **Approval Workflow Engine (AWE)** — are *not* bundled: they come from **commons-services** and the chart is pointed at them via `global.*` URLs.
+## Consent Manager and Partner Management
 
-## Install-time jobs
-
-Ordered `post-install,post-upgrade` hooks:
-
-| Weight | Job | Purpose |
-| ------ | --- | ------- |
-| 10 | `db-seed` | Register definitions, geo, sample data, templates, AWE seed |
-| 11 | `sanity-pm-seed` | Register the sanity test partner's key in Partner Management |
-| 12 | `sanity-cm-seed` | Create the sanity partner's Consent Manager binding + policy |
-| 13 | `sanity-data-seed` | Provision the sanity test user (+ AWE_ADMIN), inject its test farmer, register it as an AWE approver |
-| 19–20 | `iam-register` | Push this registry's roles → permissions catalog to the IAM service |
-| 25 | `sanity` | Run the in-cluster [sanity suite](sanity-testing.md) — **last**, after iam-register |
-
-The three `sanity-*-seed` Jobs only render when `sanity.runE2e` is on — which it is **not** by default, so a normal install creates no test fixtures at all and runs only the suite's smoke tier. The `sanity` test Job runs **last (weight 25), after `iam-register`** — its change-request tests need the registry's roles→permissions catalog registered in IAM first, or they 403. Finished pods are retained (`hook-delete-policy: before-hook-creation`) so their logs stay readable. By default the sanity Job exits 0 even when tests fail, so it never blocks an install — set `sanity.failOnError: true` to gate a deployment on it.
-
-## Integrating Consent Manager and Partner Management
-
-The **partner-api** is the policy-enforcement point for DCI requests, and it depends on two commons-services components:
-
-* **Partner Management (PM)** — the source of partner **public keys**. The partner-api fetches the key named by the request's `kid` and verifies the DCI envelope signature against it.
-* **Consent Manager (CM)** — the policy decision point. The partner-api calls CM `/validate` with the consent object embedded in the request, and **clamps the returned fields to the consented data scopes**.
-
-Both are installed once per environment as part of commons-services; the registry only needs the URLs.
+The **partner-api** is the policy-enforcement point for DCI requests and depends on two commons-services components: **Partner Management** (source of partner public keys, used to verify the DCI envelope signature) and **Consent Manager** (the decision point — the partner-api calls `/validate` and clamps the response to the consented scopes).
 
 | Parameter | Default | Purpose |
-| --------- | ------- | ------- |
+|---|---|---|
 | `global.partnerSignatureValidationEnabled` | `true` | Verify the DCI envelope signature against the partner's PM key |
 | `global.consentEnforcementEnabled` | `true` | Call CM `/validate` and clamp fields to the consented scopes |
-| `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM partner-api — partner key lookup |
-| `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | CM partner-api — the `/validate` PDP endpoint |
-| `global.consentManagerTimeoutSeconds` | `5` | CM call timeout |
+| `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Partner key lookup |
+| `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | The `/validate` endpoint |
 | `global.registryCryptoBackend` | `partner-mgmt` | Partner-key backend: `partner-mgmt` \| `keymanager` \| `local` |
 
 {% hint style="warning" %}
-**Both switches default to `true` — the chart fails closed**, matching the registry platform's own defaults. Turning either off is a deliberate choice that opens real PII egress: with signature validation off the `signature` field is required but never inspected (any string passes), and with consent enforcement off the Consent Manager is never called and records are returned **unclamped** — every field the DCI template emits, to any caller. Either bypass is logged and stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.
+**Both switches default to `true` — the chart fails closed.** Turning either off opens real PII egress: with signature validation off the `signature` field is required but never inspected, and with consent enforcement off records are returned **unclamped** — every field the DCI template emits, to any caller. Either bypass is stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.
 
-Legitimate reasons to disable are performance testing, or a bring-up install where commons-services is not yet deployed — until it is, the DCI search will reject requests.
+Legitimate reasons to disable are performance testing, or a bring-up install before commons-services exists.
 {% endhint %}
-
-A further set — `global.partnerManagementAdminApiUrl`, `global.consentManagerStaffUrl`, `global.consentManagerAuthClientId` and `global.pmSeedClientId` — is used **only by the sanity e2e**, to seed its test partner into PM and its binding into CM. These are not needed for normal registry operation.
 
 ## Running more than one registry in a namespace
 
-Names that would otherwise collide are scoped to the release, so a Farmer Registry and a [National Social Registry](../../national-social-registry/README.md) can coexist in one namespace: the Keycloak staff client, the MinIO buckets (including `registrant-photos`), the keymanager app-id and the AWE callback-secret id all derive from `{{ .Release.Name }}`. The release name is freely choosable — the chart pins neither the release name nor a display name.
-
-## Configuration
-
-Everything is in [`values.yaml`](https://github.com/OpenG2P/farmer-registry/blob/develop/helm/openg2p-farmer-registry/values.yaml), which is commented throughout. The blocks worth knowing before a real install:
-
-* **`global.*`** — external service URLs (Keycloak, master-data, CM, PM, AWE), database hosts, shared secrets, and the CM/PM switches above.
-* **`idgenerator.*`** — your ID types; usually the one block that must change.
-* **`dbSeed.*`** — seeding flags; set the sample-data flags to `false` in production (see [Data seeding](data-seeding.md)).
-* **`sanity.*`** — `enabled`, `runE2e`, `failOnError`.
-* **per-component** — `replicaCount`, `resources`, `autoscaling`, `envVars` and worker counts for each API and the Celery pods.
+Names that would otherwise collide are scoped to the release, so a Farmer Registry and a [National Social Registry](../../national-social-registry/README.md) can coexist: the Keycloak staff client, the MinIO buckets, the keymanager app-id and the AWE callback-secret id all derive from `{{ .Release.Name }}`.
 
 ## Versions and CI
 
-**Changelog — what changed in each version:** [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG).
+The chart and all farmer images are built by the **OpenG2P central pipeline** at **one version per commit** — see [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the authoritative rules. The repo carries a single thin stub, [`.github/workflows/build-publish.yml`](https://github.com/OpenG2P/farmer-registry/blob/develop/.github/workflows/build-publish.yml), calling `openg2p-packaging@v1`.
 
-The chart and images are built and published by the **OpenG2P central build/versioning/publish pipeline** — see [Helm & Docker Versioning Strategy and CI](../../../../releases/helm-docker-versioning-and-ci/) for the authoritative description. The repo carries a single thin stub, [`.github/workflows/build-publish.yml`](https://github.com/OpenG2P/farmer-registry/blob/develop/.github/workflows/build-publish.yml), calling `openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1`; all versioning, build/promote, publish and changelog logic lives centrally behind `@v1`.
+Two version lines meet in this chart, and they move independently:
 
-**One version per commit.** Every image and the chart built from a commit carry the **same** version, derived purely from git — the branch/tag and the commit count `N` (`git rev-list --count HEAD`) — never from a file in the working tree:
+* **The Farmer Registry version** — the chart and the five farmer images, locked together and stamped by CI on every commit.
+* **The platform version** — `RP_VERSION` in the Dockerfiles and the `openg2p-registry` dependency in `Chart.yaml`. These are **hardcoded and changed deliberately**, always as a pair.
 
-| You are on…               | Version produced                                              | Frozen? | Chart published?     |
-| ------------------------- | ------------------------------------------------------------ | ------- | -------------------- |
-| `develop`                 | `0.0.0-develop.N`                                             | no      | yes (rolling)        |
-| release line branch `1.0` | `1.0.0-rc.N` (then `1.0.1-rc.N` after `1.0.0` is tagged)       | no      | yes                  |
-| **tag** `1.0.0`           | `1.0.0` (promoted from the tested RC — a retag, not a rebuild) | **yes** | yes                  |
-| any other branch          | `0.0.0-<branch>.N`                                            | no      | **no** (images only) |
-
-Release tags are the **bare** version (`1.0.0`, no `v` prefix). To cut a release you create a release-line branch (`1.0`, publishing `1.0.0-rc.N`) and then **tag** the blessed commit `1.0.0` — you do not create a `1.0.0` branch. Each immutable version is published exactly once and never overwritten.
-
-The underlying **platform version** is the version of the [`registry-platform`](https://github.com/openg2p/registry-platform) repository the registry is built from. Because the images track its moving `develop` branch, each build **pins** it: the Dockerfiles declare `REGISTRY_PLATFORM_REF`, `FASTAPI_COMMON_REF` and `IAM_CORE_REF` (and `OPENG2P_DATA_BRANCH` for db-seed) as `ARG`s, and the pipeline resolves each ref to a **commit SHA before the build**, passes it as the build-arg, and records it as an `org.openg2p.pin.<arg>` OCI label. So `docker inspect` on any Farmer Registry image reveals the exact platform commits it was built from, and a given commit always reproduces the same image.
+Released versions and what changed in each: [**Versions**](../versions/README.md).

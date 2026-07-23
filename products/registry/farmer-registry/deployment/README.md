@@ -1,14 +1,41 @@
 ---
-description: Deploying the Farmer Registry on Kubernetes using its Helm chart.
+description: >-
+  How the Farmer Registry is packaged as an extension of the Registry Platform,
+  and how to deploy it on Kubernetes.
 ---
 
 # Deployment
 
-The Farmer Registry is deployed on Kubernetes from its own **self-sufficient** Helm chart, [`openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry) — there is no base registry chart to install first. See the [deployment architecture](../../../../deployment/openg2p-deployment-model.md) for the wider picture.
+The Farmer Registry is **not** a registry built from scratch. It is a thin **extension** of the [OpenG2P Registry Platform](../../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the farmer domain on top.
 
-* [**Helm chart**](helm-chart.md) — components, dependencies, parameters, CM/PM integration and versions.
-* [**Data seeding**](data-seeding.md) — seed sources, the db-seed image and the flags that drive it.
-* [**Sanity testing**](sanity-testing.md) — the in-cluster sanity suite: what it tests, how fixtures are seeded, and how to run it.
+{% hint style="info" %}
+The packaging model — why the platform publishes the artifacts and a domain registry extends them — is described once, in the platform docs: [**Deployment and Extension**](../../registry/deployment-and-extension/README.md). This section covers only what is farmer-specific.
+{% endhint %}
+
+## How the Farmer Registry is packaged
+
+Three layers, each inherited from the platform and narrowed by this repo:
+
+| Layer | Platform provides | Farmer Registry adds |
+|---|---|---|
+| **Code** | The runtime images (`openg2p-registry-*`) — core, APIs, celery, UI | `farmer-extension` — domain models, schemas, services, seed metadata. Thin `FROM`-image Dockerfiles select it at runtime via `REGISTRY_EXTENSION_MODULE`. |
+| **Deployment** | The `openg2p-registry` chart — every template, service, IAM/Keycloak wiring | `openg2p-farmer-registry` — a wrapper chart with **no templates**: a pinned dependency plus a values overlay. See [Helm chart](helm-chart.md). |
+| **Tests** | The sanity harness + the extension-independent tests | Only the farmer **field-specific** tests. See [Sanity testing](sanity-testing.md). |
+
+The platform version is **pinned in two places that move together**: `RP_VERSION` in each Dockerfile (the base image tag) and the `openg2p-registry` dependency version in the wrapper chart's `Chart.yaml`. Nothing about the platform is vendored or copied.
+
+* [**Helm chart**](helm-chart.md) — the wrapper chart, what it deploys, and how it is configured.
+* [**Data seeding**](data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
+* [**Sanity testing**](sanity-testing.md) — the two-part test model and what the Farmer Registry contributes.
+
+## Where the artifacts are
+
+| Artifact | Location |
+|---|---|
+| Source | [`OpenG2P/farmer-registry`](https://github.com/OpenG2P/farmer-registry) |
+| Helm chart | [`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry), published to [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
+| Docker images | Docker Hub, the `openg2p/openg2p-farmer-registry-*` repositories |
+| Versions & changelog | [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG) — see [Versions](../versions/README.md) |
 
 ## Deployment steps
 
@@ -20,23 +47,24 @@ The Farmer Registry is deployed on Kubernetes from its own **self-sufficient** H
 
 1. Infrastructure and environment created as above.
 2. Full admin rights to the cluster and the Rancher UI.
-3. **commons-services** deployed in the environment — the Farmer Registry does not bundle Keycloak, master-data, Consent Manager, Partner Management or the Approval Workflow Engine; it points at those shared services. See [Helm chart → Integrating Consent Manager and Partner Management](helm-chart.md#integrating-consent-manager-and-partner-management).
+3. **commons-services** deployed in the environment. The registry bundles none of the shared services — Keycloak, master-data, Consent Manager, Partner Management, the Approval Workflow Engine (AWE) and Audit Manager all come from commons-services and are reached through `global.*` URLs.
+
+{% hint style="warning" %}
+The db-seed Job waits for AWE to be healthy before it runs. If AWE is down, db-seed blocks, Helm's install timeout expires, and the release is marked failed **before the sanity Job is ever created**. Confirm commons-services is healthy first.
+{% endhint %}
 
 ## Installation
 
-Since Rancher is already running after steps 1–2, installing from the Rancher UI is recommended.
-
 ### Using Rancher (recommended)
 
-1. Log in to the Rancher console.
-2. Select the cluster and namespace (environment).
-3. Under **Apps → Repositories**, ensure the repository [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) is added.
-4. Under **Apps → Charts**, refresh all repositories.
-5. Select the **OpenG2P Farmer Registry** chart.
-6. Select the version. *Three-digit versions are frozen; versions carrying a `-develop` suffix are moving.* Rancher hides pre-release versions by default — tick **Show pre-release versions** to see `0.0.0-develop.N`.
-7. On Install step 1: select the namespace, give the installation a name (`farmer-registry` is a reasonable default — the name is free, and it scopes the resources so more than one registry can share a namespace), tick **Customize Helm options before install**, then **Next**.
-8. Review the values. Typically only **ID Generator** (your ID types) needs changing — the Consent Manager / Partner Management switches are on by default and should stay on.
-9. **Install**, and wait for all pods to come up.
+1. Log in to the Rancher console and select the cluster and namespace.
+2. Under **Apps → Repositories**, ensure [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) is added.
+3. Under **Apps → Charts**, refresh repositories and select **OpenG2P Farmer Registry**.
+4. Choose the version. Three-digit versions are frozen; `-develop` versions are moving — tick **Show pre-release versions** to see `0.0.0-develop.N`.
+5. Give the installation a name (the release name is free and scopes the resources, so more than one registry can share a namespace), tick **Customize Helm options before install**, then **Next**.
+6. Review the values and **Install**.
+
+The configuration form shows the **same questions as the platform chart** — they are inherited from the pinned `openg2p-registry` dependency at packaging time rather than duplicated here, so they never drift. Platform-level settings appear under the `registry` key; `global.*` settings are unchanged.
 
 ### Using Helm CLI
 
@@ -54,13 +82,12 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 
 ## Post-install check
 
-1. The install runs ordered hook Jobs — `db-seed`, the sanity seeds, then the `sanity` suite. Check they completed: `kubectl -n <namespace> get jobs`.
-2. Open `farmer-registry.<your-domain>` in a browser. This should present the Keycloak login page.
+1. The install runs ordered hook Jobs — `db-seed`, then `iam-register`, then `sanity`. Check they completed: `kubectl -n <namespace> get jobs`.
+2. Open `<release>.<your-domain>` in a browser; you should get the Keycloak login page.
 3. Log in with the credentials provisioned by `keycloak-init` and change the password when prompted.
-4. You should land on the Farmer Registry home/dashboard page.
-5. Review the sanity Job logs — by default it reports results but never fails the install: `kubectl -n <namespace> logs job/<release>-sanity`.
+4. Review the sanity Job logs — by default it reports results but never fails the install: `kubectl -n <namespace> logs job/<release>-sanity`.
 
 ## Before going to production
 
-* Leave `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` **on** (the default) — they govern real PII egress, and the chart fails closed. Only disable them for performance testing or a bring-up install without commons-services. See [Helm chart](helm-chart.md#integrating-consent-manager-and-partner-management).
-* Turn **off** the sample-data seeding flags (`dbSeed.loadSampleData`, `loadImages`, `loadGeoData`) — see [Data seeding](data-seeding.md).
+* Leave `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` **on** (the default) — they govern real PII egress and the chart fails closed. See [Helm chart](helm-chart.md#consent-manager-and-partner-management).
+* Turn **off** the sample-data loaders (`registry.dbSeed.loadSampleData`, `loadImages`, `loadGeoData`) — see [Data seeding](data-seeding.md).

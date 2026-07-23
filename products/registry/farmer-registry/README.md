@@ -19,24 +19,22 @@ This registry contains the following [**registers**](../registry/concepts.md#reg
 1. Farmer Register
 2. Household Register
 
-The domain models for these registers are available in the [extensions repository](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/tree/develop/openg2p-registry-farmer-extension).
+The domain models for these registers live in the [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) package in this repository.
 
 The Farmer Registry inherits all the [features of the registry platform](../registry/features/).
 
-## Deployment
+## How it is packaged
 
-* [**Deployment**](deployment/README.md) — prerequisites, installing from Rancher or the Helm CLI, and post-install checks.
-* [**Helm chart**](deployment/helm-chart.md) — components, dependencies, parameters, Consent Manager / Partner Management integration and versions.
-* [**Data seeding**](deployment/data-seeding.md) — where the seed data comes from, the db-seed image, and the flags that drive it.
+The Farmer Registry is a thin **extension** of the [Registry Platform](../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the farmer domain — the extension package, its seed content, a field-specific test set, and a wrapper chart that pins the platform chart and overlays farmer values. Nothing from the platform is copied or vendored.
+
+* [**Deployment**](deployment/README.md) — how it is packaged, prerequisites, and installing from Rancher or the Helm CLI.
+* [**Helm chart**](deployment/helm-chart.md) — the wrapper chart, what it deploys and how it is configured.
+* [**Data seeding**](deployment/data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
+* [**Sanity testing**](deployment/sanity-testing.md) — the two-part test model and the farmer field tests.
 
 ## Versions
 
-Chart and image versions — and what changed in each — are published by the central CI pipeline:
-
-* **Changelog:** [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG)
-* **How versions are derived and frozen:** [Helm chart → Versions and CI](deployment/helm-chart.md#versions-and-ci)
-
-The underlying **platform version** is the version of the [`registry-platform`](https://github.com/openg2p/registry-platform) repository the Farmer Registry is built from. There is no separate "base registry chart" — the Farmer Registry chart is self-sufficient. Each image records the exact platform commit it was built from as an `org.openg2p.pin.*` label.
+Chart and image versions — and what changed in each — are published by the central CI pipeline. See [**Versions**](versions/README.md), or go straight to the [changelog](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG).
 
 ## Domain models
 
@@ -53,7 +51,7 @@ Each domain model below represents a database table in the Farmer Registry. The 
 | `G2PRegisterHistory` | Abstract base for history/version snapshot tables                                                                                                                         | [g2p\_register\_history.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_history.py) |
 
 {% hint style="info" %}
-Every register model has a corresponding **History** table (e.g., `g2p_register_history_farmers`) with the same domain columns, used for version snapshots. History tables are not listed separately below.
+Every register model also declares a **History** table (e.g. `g2p_register_history_farmers`) for version snapshots and an **Intake form** table (e.g. `g2p_intake_form_farmers`) for submissions awaiting intake, both carrying the same domain columns. Neither is listed separately below.
 {% endhint %}
 
 ***
@@ -193,13 +191,12 @@ Captures cooperative and farmer cluster membership information. Linked to a Farm
 
 ***
 
-### Poverty Score (`g2p_register_poverty_scores`)
+### Poverty score
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+The poverty score is **not a register table**. It is a score computation the extension contributes to the platform's scoring mechanism:
 
-Stores poverty assessment scores for a household. Linked to a Household via `link_internal_record_id`.
+* `G2PScoreComputeServicePoverty` ([`score_compute/services/poverty.py`](https://github.com/OpenG2P/farmer-registry/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/score_compute/services/poverty.py)) implements the core `G2PScoreComputeInterface` and computes a vulnerability score for **Household** records — a higher score means higher vulnerability.
+* It is bound to the Household register by seed metadata: `g2p_register_score_definitions.sql` (score type `POVERTY`) and `g2p_register_score_contributing_attributes.sql`, which name the attributes that feed the calculation.
+* `G2PRegisterSchemaPovertyScore` exposes `poverty_score` and `poverty_score_type` on the API.
 
-| Column               | Data type | Description                                            |
-| -------------------- | --------- | ------------------------------------------------------ |
-| `poverty_score`      | String    | Computed or assessed poverty score value               |
-| `poverty_score_type` | String    | Type/methodology of the poverty score (e.g., PMT, PPI) |
+Because the score is defined in seed metadata rather than code, the contributing attributes and their weights can be changed without a code release.
