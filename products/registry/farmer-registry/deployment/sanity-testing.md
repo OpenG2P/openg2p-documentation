@@ -44,7 +44,9 @@ The change-request flow deliberately never calls `approve_change_request` direct
 |---|---|---|
 | `registry.sanity.enabled` | `true` (farmer overlay) | Create the sanity Job at all |
 | `registry.sanity.runE2e` | `false` | `false` → smoke only, creates no data. `true` → the full e2e, which seeds a persistent test partner and test user |
-| `registry.sanity.failOnError` | `false` | `false` → the Job exits 0 even when tests fail, so it never blocks an install. `true` → gate the deployment on it |
+| `registry.sanity.failOnError` | `true` | `true` → the Job propagates pytest's exit code, so a failing suite fails the install. `false` → always exit 0 (opt-out). Gates on **failures**, not skips: tests whose dependencies are unconfigured still skip and stay green |
+
+A dependency that is **configured but broken** now fails rather than skips — a green run that had silently dropped every consent and signature test was worse than a red one.
 
 The sanity Job runs **last**, after `db-seed` and `iam-register` — its change-request tests need the registry's roles→permissions catalog registered in IAM first, or they get a 403. Finished pods are retained so their logs stay readable:
 
