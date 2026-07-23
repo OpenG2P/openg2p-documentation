@@ -35,65 +35,20 @@ An Individual may exist independently or belong to a Household, linked via `link
 
 The NSR domain models are available in the [NSR repository](https://github.com/OpenG2P/national-social-registry/tree/develop/nsr-extension).
 
+## How it is packaged
+
+The NSR is a thin **extension** of the [Registry Platform](../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the NSR domain — the extension package, its seed content, and a wrapper chart that pins the platform chart and overlays NSR values. Nothing from the platform is copied or vendored.
+
+* [**Deployment**](deployment/README.md) — how it is packaged, prerequisites, and installing from Rancher or the Helm CLI.
+* [**Helm chart**](deployment/helm-chart.md) — the wrapper chart, what it deploys and how it is configured.
+* [**Data seeding**](deployment/data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
+* [**Sanity testing**](deployment/sanity-testing.md) — why NSR inherits the whole suite unchanged.
+
+All NSR source — the Python extension, the thin Dockerfiles, the wrapper chart and the single CI workflow — lives in one repository: [**github.com/OpenG2P/national-social-registry**](https://github.com/OpenG2P/national-social-registry).
+
 ## Versions
 
-The table below tracks the **NSR Helm chart** versions and the key changes in each (relative to the previous chart). The published version is derived from the branch name at package time — see [Helm chart versioning](#helm-chart-versioning) for the scheme.
-
-| Helm Chart Version | Last Modified | Comments |
-| ------------------ | ------------- | -------- |
-| `0.0.0-develop` | 20-Jun-2026 | **Rolling development version.** Every CI publish appends a unique `.<run>` suffix; this single row tracks all changes on `develop`. Key changes vs. the previous chart:<br>• Self-sufficient chart — the shared base "registry" wrapper chart was retired; the chart now owns all templates and values directly.<br>• **AWE is no longer bundled with the registry** — it is installed once per environment as part of **commons-services**. The registry consumes that shared instance via `global.aweBaseUrl` and registers its own per-registry callback secret into the shared AWE database, instead of deploying its own AWE + admin clients.<br>• Multiple registries can co-exist in one namespace — the Keycloak staff client, MinIO buckets, keymanager app-id and the AWE callback-secret id remain release-scoped.<br>• AWE callback-HMAC secret is minted by a dedicated template instead of a duplicate `postgres-init` entry (fixes the Helm 4 server-side-apply `spec.template field is immutable` failure).<br>• Branch-derived chart versioning with a `<run>` suffix, plus a manual `version` override for ad-hoc builds.<br>• `postgres-init` updated — its Job is a plain resource and the DB-user password is re-synced idempotently on every run.<br>• Redis container resource limits removed. |
-
-{% hint style="info" %}
-**Maintaining this table.** Do **not** add a row for every suffixed develop build (`0.0.0-develop.<run>`) — there would be hundreds, and they are intentionally not listed. Keep a **single `0.0.0-develop` row** and append bullets to its _Comments_ as changes land (bumping _Last Modified_). Add a **new row only when a version is frozen** — i.e. when a three-part `N.N.N` release is cut — capturing that release's final changelog.
-{% endhint %}
-
-The underlying **platform version is the version of the** [**`registry-platform`**](https://github.com/openg2p/registry-platform) **repository** NSR is built from. There is no longer a separate "base registry chart" — the NSR chart is self-sufficient.
-
-### Helm chart versioning
-
-The **published Helm chart version is derived from the branch name** by the chart-publish workflow — it is the Helm chart's SemVer only and is **independent of the Docker image tags** (those are driven by their own image-build workflows). A `<run-number>` pre-release suffix makes every publish a new, monotonically-increasing version, so Rancher and the chart CDN never serve a stale cached chart.
-
-| Branch | Type | Published chart version |
-| --------- | --------------- | ---------------------------------- |
-| `develop` | development | `0.0.0-develop.<run>` |
-| `N.N` (e.g. `1.0`, `1.1`) | active release line | `N.N.0-develop.<run>` |
-| `N.N.N` (e.g. `1.0.0`, `1.0.3`) | frozen release | `N.N.N` (no suffix) |
-
-Notes:
-
-* `N.N` branches expand to `N.N.0-…` because Helm requires a three-part SemVer (a bare `1.0` is rejected). A `N.N.N` (three-part) branch is treated as **frozen**: it publishes the exact version with no suffix, and — per SemVer — that release outranks all of its `-develop` builds.
-* **Automatic publishing happens only for `develop`, `N.N` and `N.N.N` branches.** Any other branch is skipped. To publish from such a branch (or to cut a custom version like `1.0.0-g2p5466`), trigger the **Publish Helm Charts** workflow manually (Actions → _Run workflow_) and supply the explicit `version` input — that overrides the branch-derived value.
-* Tag pushes do **not** trigger a chart publish.
-
-The CI workflows in the [`national-social-registry`](https://github.com/OpenG2P/national-social-registry/tree/develop/.github/workflows) repository have been **updated to implement this strategy** (the `helm-publish.yml` workflow computes the version from the branch and packages with `helm package --version`).
-
-## Source code
-
-{% hint style="info" %}
-All NSR source — Python extension, Docker build definitions, the complete Helm chart, CI workflows — lives in one repository:\
-[**github.com/OpenG2P/national-social-registry**](https://github.com/OpenG2P/national-social-registry)
-{% endhint %}
-
-NSR is a **manifestation** of the [`registry-platform`](https://github.com/openg2p/registry-platform): its Docker builds assemble the platform runtimes (pulled from `registry-platform`) together with the NSR extension, and its Helm chart deploys the result. The platform itself is not deployable on its own.
-
-Layout at a glance:
-
-```
-national-social-registry/
-├── nsr-extension/        Python package (SQLAlchemy models, Pydantic schemas,
-│                         domain services, ID generator, meta-data + sample SQL)
-├── docker/               Dockerfile + spec file for each backend image
-│   ├── staff-portal-api/
-│   ├── partner-api/
-│   ├── celery/
-│   └── db-seed/
-├── helm/openg2p-nsr/     Complete, self-sufficient Helm chart for NSR
-└── .github/workflows/    Path-scoped CI for docker images and the helm chart
-```
-
-{% hint style="info" %}
-The **Staff Portal UI image is not built here** — it is a common runtime built by the [`registry-platform`](https://github.com/openg2p/registry-platform) repository and published as `openg2p/openg2p-registry-staff-portal-ui`. The NSR Helm chart simply references that image.
-{% endhint %}
+Chart and image versions — and what changed in each — are published by the central CI pipeline. See [**Versions**](versions/README.md), or go straight to the [changelog](https://openg2p.github.io/openg2p-packaging/national-social-registry/CHANGELOG).
 
 ## Domain model
 
@@ -159,92 +114,6 @@ Only the two registers receive an auto-generated functional ID (`functional_id_g
 | `Household`  | `HH-`                 |
 
 `foundational_id` (national ID / alias) is **UNIQUE + INDEXED** on Individual. Other fields carry B-tree indexes where query shapes warrant (e.g. `shock_date` for time-series analytics) — the full list is documented inline in the model files.
-
-## Helm chart
-
-NSR ships a **complete, self-sufficient Helm chart** ([`helm/openg2p-nsr`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr)). It owns all of its templates and values directly — there is **no dependency on a shared "base registry chart"** (that wrapper model has been retired).
-
-```mermaid
-graph TD
-    B["openg2p-nsr Helm chart<br/>(self-sufficient: templates, values,<br/>sub-dependencies)"] -->|helm install| C["Running NSR stack"]
-    style B fill:#fff3e0,stroke:#FF9800,color:#000
-    style C fill:#e8f5e9,stroke:#4CAF50,color:#000
-```
-
-The chart contains the full deployment definition — Staff Portal API/UI, Partner API, Celery beat/worker, db-seed, ID Generator, Keycloak/Postgres init, ingress/gateways and resource profiles — plus its sub-dependencies (`common`, `redis`, `postgres-init`, `openg2p-id-generator`, `keycloak-init`, `openg2p-awe`), fetched from the OpenG2P Helm repo at package time.
-
-**NSR-specific configuration in the chart values:**
-
-1. **Docker images** — NSR-branded images for the components built by this repo:
-   * `openg2p/openg2p-nsr-staff-portal-api`
-   * `openg2p/openg2p-nsr-partner-api`
-   * `openg2p/openg2p-nsr-celery` _(same image runs as worker or beat, selected at runtime)_
-   * `openg2p/openg2p-nsr-db-seed`
-   * `openg2p/openg2p-registry-staff-portal-ui` _(the common UI image, built by `registry-platform`)_
-2. **ID Generator `idTypes`** — `individual` (length 12) and `household` (length 10).
-3. **`global.registryVariant: nsr`** — informational flag identifying this deployment as the NSR variant of the registry platform.
-4. **Rancher branding** — `catalog.cattle.io/display-name: OpenG2P NSR` and a `questions.yaml` for the Rancher form.
-
-### Installing
-
-```bash
-# From this repo (dev / CI)
-cd helm/openg2p-nsr
-helm dependency build
-helm install nsr . \
-  --namespace openg2p-nsr \
-  --create-namespace \
-  --set global.registryHostname=nsr.example.com
-```
-
-Component URLs are auto-computed from `global.registryHostname` (default `{{ .Release.Name }}.{{ .Release.Namespace }}.openg2p.org`).
-
-For dev/test environments, toggle sample-data seeding:
-
-```bash
---set dbSeed.loadSampleData=true
-```
-
-This populates the database with 5 demo households, 15 demo individuals, and demo rows for every supporting table.
-
-### Tearing down
-
-Standard `helm uninstall` + PVC / secret cleanup applies. See the [Helm chart v4.x deployment guide](../registry/_archive/deployment/helm-chart-4.x.md) for detailed steps and caveats (database-secret persistence, `resource-policy: keep` annotations, password-mismatch recovery on reinstall).
-
-### Rancher catalog
-
-The `openg2p-nsr` chart carries the `openg2p.org/add-to-rancher` annotation, which makes it appear in the Rancher-specific sub-index at `https://openg2p.github.io/openg2p-helm/rancher/` alongside the other OpenG2P charts. Rancher users install it directly from the Apps catalog; the chart's `questions.yaml` renders a branded form for the common knobs (domain, namespace, image tags, seeder toggle, individual-ID prefix/length).
-
-## Docker images
-
-**Four** images are produced from this repo. The Staff Portal UI image is built separately by [`registry-platform`](https://github.com/openg2p/registry-platform) (it is a common platform runtime, not NSR-specific). Each uses the `develop` tag when built from the `develop` branch:
-
-| Image                                      | Built by            | Purpose                                                                                              |
-| ------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------------------------- |
-| `openg2p/openg2p-nsr-staff-portal-api`     | this repo           | Backend API for the staff portal (migrations + REST)                                                 |
-| `openg2p/openg2p-nsr-partner-api`          | this repo           | Partner-facing REST API for data sharing with other government systems                               |
-| `openg2p/openg2p-nsr-celery`               | this repo           | Celery worker / beat (mode selected via env vars at runtime)                                         |
-| `openg2p/openg2p-nsr-db-seed`              | this repo           | Postgres-client image that applies the meta-data SQL (and optional sample data) to a target database |
-| `openg2p/openg2p-registry-staff-portal-ui` | `registry-platform` | Next.js Staff Portal UI — common platform runtime referenced by the NSR chart                        |
-
-The NSR backend images assemble the platform runtimes (pulled from `registry-platform`) together with the `nsr-extension` code. CI path-filters ensure each workflow only rebuilds when its own inputs change: the db-seed image rebuilds on SQL changes (`meta_data/`, `sample_data/`), the backend images on Python or spec-file changes (rebuilding only the affected service), and the Helm chart publishes only on `helm/**` changes.
-
-{% hint style="info" %}
-**Security — non-root containers.** The backend images (staff-portal-api, partner-api, celery) run as a non-root user (`USER 1001`, matching the chart's `runAsUser`/`fsGroup`), so a restricted pod `securityContext` can be enabled without breakage. See the platform [service-creation guide](../../../platform/platform-services/creating-a-new-service.md) for the pattern.
-{% endhint %}
-
-## Meta-data seeding
-
-The db-seed image packages the register definitions, schemas, UI tabs, sections, attribute lookups and registry configuration as ordered SQL files. These live under `nsr-extension/src/openg2p_registry_nsr_extension/meta_data/` (`register-metadata/`, `lookup-data/`, `data-models/`, `registry-configurations/`); the seed container runs **all** `.sql` files under `meta_data/` in sorted path order.
-
-At install time the chart runs it as a Kubernetes Job against the target Postgres; at runtime it reads:
-
-* `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` — connection
-* `LOAD_SAMPLE_DATA=true` _(optional)_ — also apply the sample-data SQL
-
-Demo rows live under `sample_data/register-data/` (`g2p_register_households.sql`, `g2p_register_individuals.sql`, child-table inserts, etc.). When sample data is enabled the seeder loads them in dependency order using `register-data/load_order.txt` (one basename per line; `#` lines are comments); if that file is absent, the `.sql` files run in sorted path order instead.
-
-See the [Meta Data Seeding design](../registry/design/meta-data-seeding.md) for the platform-level framework.
 
 ## Related
 
