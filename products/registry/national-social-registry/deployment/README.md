@@ -20,15 +20,13 @@ Three layers, each inherited from the platform and narrowed by this repo:
 |---|---|---|
 | **Code** | The runtime images (`openg2p-registry-*`) — core, APIs, celery, UI | `nsr-extension` — Individual and Household registers, their sub-registers, schemas, services, seed metadata. Thin `FROM`-image Dockerfiles select it at runtime via `REGISTRY_EXTENSION_MODULE`. |
 | **Deployment** | The `openg2p-registry` chart — every template, service, IAM/Keycloak wiring | `openg2p-nsr` — a wrapper chart with **no templates**: a pinned dependency plus a values overlay. See [Helm chart](helm-chart.md). |
-| **Tests** | The sanity harness, the extension-independent tests **and** the field tests | **Nothing** — see [Sanity testing](sanity-testing.md) |
-
-That last row is the unusual one. The platform's reference registry was derived from NSR, so NSR's registers, tables, DCI template shape, register id, UI tab and section are the ones the platform already ships. The published sanity image therefore applies unchanged and NSR carries no test code at all.
+| **Tests** | The sanity harness + the extension-independent tests | Only the NSR **field-specific** tests. See [Sanity testing](sanity-testing.md). |
 
 The platform version is **pinned in two places that move together**: `RP_VERSION` in each Dockerfile (the base image tag) and the `openg2p-registry` dependency version in the wrapper chart's `Chart.yaml`. Nothing about the platform is vendored or copied.
 
 * [**Helm chart**](helm-chart.md) — the wrapper chart, what it deploys, and how it is configured.
 * [**Data seeding**](data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
-* [**Sanity testing**](sanity-testing.md) — why NSR inherits the whole suite.
+* [**Sanity testing**](sanity-testing.md) — the two-part test model and what the NSR contributes.
 
 ## Where the artifacts are
 

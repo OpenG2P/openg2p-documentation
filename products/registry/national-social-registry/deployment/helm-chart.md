@@ -15,7 +15,7 @@ The chart **owns no templates**. It declares the platform chart as a pinned depe
 dependencies:
   - name: openg2p-registry
     alias: registry              # overlay nests under .Values.registry
-    version: 0.0.0-develop.286   # HARDCODED — moved deliberately
+    version: 0.0.0-develop.288   # HARDCODED — moved deliberately
     repository: https://openg2p.github.io/openg2p-helm
 ```
 
@@ -44,20 +44,20 @@ A platform setting that was `dbSeed.loadSampleData` when installing the platform
 | DB seed | `openg2p-nsr-db-seed` | Yes — see [Data seeding](data-seeding.md) |
 | Staff Portal UI | `openg2p-registry-staff-ui` | **No** — platform image, used as-is |
 | Beneficiary Portal API | `openg2p-registry-bene-api` | **No** — platform image, used as-is |
-| Sanity tests | `openg2p-registry-sanity-tests` | **No** — platform image, used as-is ([why](sanity-testing.md)) |
+| Sanity tests | `openg2p-nsr-sanity-tests` | Yes — see [Sanity testing](sanity-testing.md) |
 
-Each NSR image is a few lines: `FROM` the matching platform image, `pip install nsr-extension`, and set `REGISTRY_EXTENSION_MODULE=openg2p_registry_nsr_extension`. The platform code is never vendored — it is already in the base image.
+Each NSR backend image is a few lines: `FROM` the matching platform image, `pip install nsr-extension`, and set `REGISTRY_EXTENSION_MODULE=openg2p_registry_nsr_extension`. The platform code is never vendored — it is already in the base image.
 
 ## What the overlay actually sets
 
 Deliberately small:
 
-* **Images** — the four NSR-built repositories above.
+* **Images** — the five NSR-built repositories above.
 * **`global.registryVariant: nsr`** and the ingress hostname.
 * **`registry.dbSeed.load*`** — the loaders, which the platform defaults off.
 * **`registry.iamRegister.applicationDescription`** — the name of this registry's tile in IAM. The roles/permissions catalog itself is registry-agnostic and comes from the subchart.
 * **`registry.idgenerator...idTypes`** — the functional-ID pools, `individual` (12) and `household` (10).
-* **`registry.sanity.enabled`** — nothing else; every other sanity value is already correct.
+* **`registry.sanity`** — the NSR sanity image and the seeded record's search text; the register id, tab and section are already correct as subchart defaults.
 
 ## Configuration form (Rancher)
 
@@ -88,7 +88,7 @@ The chart and all NSR images are built by the **OpenG2P central pipeline** at **
 
 Two version lines meet in this chart, and they move independently:
 
-* **The NSR version** — the chart and the four NSR images, locked together and stamped by CI on every commit.
+* **The NSR version** — the chart and the five NSR images, locked together and stamped by CI on every commit.
 * **The platform version** — `RP_VERSION` in the Dockerfiles and the `openg2p-registry` dependency in `Chart.yaml`. These are **hardcoded and changed deliberately**, always as a pair.
 
 Released versions and what changed in each: [**Versions**](../versions/README.md).
