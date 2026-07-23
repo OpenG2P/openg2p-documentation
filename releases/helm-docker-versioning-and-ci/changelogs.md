@@ -210,28 +210,37 @@ the image's commit-SHA label.
 ## Release candidates get durable pages
 
 Because an RC is on its way to a release, **every RC build keeps its own page**
-(`versions/1.0.0-rc.19.md`) showing both diffs — **New in this build** (vs the
-previous RC) and **Since last release** (cumulative). So you can see precisely what
-changed from `rc.18` to `rc.19`, which is what release QA needs. They appear under a
+(`versions/1.0.0-rc.19.md`) showing the **delta since the previous RC** — precisely
+what changed from `rc.18` to `rc.19`, which is what release QA needs. The **first**
+RC on a new line diffs against its **branch point** instead. They appear under a
 **Release candidates (in progress)** section in `CHANGELOG.md`. Once you tag
-`1.0.0`, its RC pages drop out of that section (the release is done) but **remain as
-files**, browsable by URL, as the historical record of the release run.
+`1.0.0`, its RC pages drop out of that section — the release supersedes them.
 
-develop stays a **single rolling page** by contrast — it's the integration stream,
-not a release candidate, so durably paging every push would be noise.
+Develop builds are paged the same way: each build gets its own durable page.
 
-## How versions accumulate, and the two diffs
+## What each page shows
 
-"Previous version" means two different things, and the changelog shows **both** —
-each is just a commit range, exact because a version's `N` is the commit ordinal:
+Every page is just a commit range, exact because a version's `N` is the commit
+ordinal. The rule:
 
-* **Incremental** — vs the *previous build on the same branch* (what this build added).
-* **Cumulative** — vs the *last released version* (everything unreleased so far).
+* **develop / RC pages show ONE delta** — what changed **since the previous build**.
+  They are deliberately **not** cumulative: repeating "everything since the last
+  release" on every build makes each page (and its AI summary) longer and less
+  readable the further you drift from a release.
+* **A release `N.N.N` page is cumulative** — everything since the **previous release
+  tag**. That is the "what shipped" view, and it is where the full picture belongs.
+
+How a develop/RC page picks its baseline:
+
+1. the **previous page of the same kind** (previous develop build / previous RC);
+2. for the **first RC on a new line**, the newest develop build that is an
+   **ancestor** — the branch point. It must be an ancestor, not merely the newest
+   develop build, because develop keeps moving after the line is cut;
+3. otherwise the **last release tag**, else the start of history.
 
 **Releases are the durable trace.** Every release `N.N.N` gets a permanent page whose
 header names its baseline — _"changes since release 1.0.0"_ — and `CHANGELOG.md`
-lists them newest-first. Scrolling the page **is** the release history; when it grows
-large the per-version pages under `versions/` can be split by major line.
+lists them newest-first.
 
 {% hint style="info" %}
 **Migrating a repo with old releases.** The baseline is the last release **tag**,
@@ -251,23 +260,29 @@ _"since v1.2.0"_) and follows the new scheme forward. Resolution order:
 A `1.0` *branch* is not a release; only a tag anchors the baseline.
 {% endhint %}
 
-**Develop is a single rolling page**, regenerated each build, showing both diffs at
-once:
+A develop page therefore reads:
 
 ```
-## consent-manager — Unreleased (0.0.0-develop.40, 2026-07-13)
-_commit `326edee` · baseline: release 1.0.0 · previous build 0.0.0-develop.39_
+## consent-manager — develop 0.0.0-develop.40 (2026-07-13)
+_commit `326edee` · changes since 0.0.0-develop.39_
 
-### Summary                              (AI, cumulative since 1.0.0)
-### New in this build (since 0.0.0-develop.39)   ← incremental diff
-### Since last release (1.0.0)                    ← cumulative diff
+### Summary                          (AI, scoped to THIS delta)
+### Changes since 0.0.0-develop.39
 ```
 
-So you always see what *this* build changed and what has piled up since the release,
-without a page per build. (Develop builds are transient — only releases are kept
-durably; any older develop delta is recoverable from git, since the version number
-is the commit ordinal.) At release time the whole Unreleased range folds into the new
-version's page and Unreleased resets.
+{% hint style="info" %}
+**Trivial deltas skip the AI summary.** A develop/RC build with 0–1 new commits
+renders **no Summary section at all** — the commit list already *is* the summary.
+Releases always get one. And a release line cut at the same commit as the last
+develop build shows an explicit _"No new commits since 0.0.0-develop.40."_ rather
+than an empty section.
+{% endhint %}
+
+**Retention.** The last **10 develop builds** and the last **10 RCs per release
+line** are kept — RCs as deep as develop, because they are the audit trail for a
+release. **Every release is kept forever.** RC pages are deleted once their release
+ships. Older develop deltas remain recoverable from git, since the version number is
+the commit ordinal.
 
 ## The role of AI
 
