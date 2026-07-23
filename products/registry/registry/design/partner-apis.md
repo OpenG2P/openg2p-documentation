@@ -169,7 +169,7 @@ Success and error responses serialise to G2P objects, then render through the da
 
 ## DCI search endpoint
 
-Endpoint reference: [`POST /dci/registry/sync/search`](../developer-zone/api-documentation/1.1.0/partner-api.md#post-dci-registry-sync-search).
+Endpoint reference: [`POST /dci/registry/sync/search`](../developer-zone/api-documentation/partner-api.md).
 
 ### Role
 

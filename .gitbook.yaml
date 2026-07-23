@@ -2,3 +2,7 @@ redirects:
   operations/deployment/infrastructure-setup/three-node-automation: operations/deployment/infrastructure-setup/production-automation/README.md
   operations/deployment/infrastructure-setup/three-node-automation/aws-provisioning: operations/deployment/infrastructure-setup/production-automation/aws-provisioning.md
   platform/platform-services/consent-management/design/consent-management: consent-management/design/architecture.md
+  products/registry/registry/developer-zone/api-documentation/1.0.0: products/registry/registry/developer-zone/api-documentation/README.md
+  products/registry/registry/developer-zone/api-documentation/1.1.0: products/registry/registry/developer-zone/api-documentation/README.md
+  products/registry/registry/developer-zone/api-documentation/1.1.0/staff-portal-api: products/registry/registry/developer-zone/api-documentation/staff-portal-api.md
+  products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api: products/registry/registry/developer-zone/api-documentation/partner-api.md
