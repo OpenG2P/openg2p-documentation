@@ -6,301 +6,226 @@ The **Registry UI Widget Library** (`@openg2p/registry-widgets`) is a comprehens
 
 At its core, the library transforms JSON-based UI schemas into fully functional React components, enabling developers to build sophisticated registry interfaces without writing repetitive form code. The library is built with TypeScript, Redux for state management, and follows a plugin-based architecture that allows for easy extension and customization.
 
-Change Request-Based Design: The library is fundamentally designed around the change request workflow pattern, which is central to OpenG2P registry operations. This design enables a clear separation between viewing existing registry data and proposing changes, with built-in support for audit trails, approval workflows, and change tracking. This architectural approach ensures data integrity and provides transparency in registry modifications.
+The library is built with **TypeScript**, **React 19**, and **Redux Toolkit**. It uses a plugin-based widget registry, schema-driven layout (Section → Panel → Widget), and host-provided API handlers so registry apps stay in control of auth, CORS, and backend services.
 
-## Purpose and use cases
+## Purpose
 
-The Registry UI Widget Library serves as the foundation for building user interfaces in OpenG2P registry applications, where complex data entry, validation, and display requirements are common. It is particularly well-suited for:
+The library is the UI foundation for OpenG2P registry applications. It powers staff-portal flows where forms are driven by JSON schemas instead of one-off UI code—especially for registers, intake, change requests, and program-specific beneficiary data.
+
+## Use cases
 
 {% stepper %}
 {% step %}
-**Beneficiary registration forms**
+**Register form (`RegistryView`)**
 
-* Dynamic form generation based on program requirements
-* Multi-step registration workflows
-* Conditional field visibility based on beneficiary type or status
-* Document upload and verification
+* Schema-driven section → panel → widget layouts for register records
+* Read-only registry views with optional section-level edit and save
+* Multi-path binding for identity, geo hierarchy, documents, and linked records
+* Header, profile, scores, and display widgets for record context
 {% endstep %}
 
 {% step %}
-**Data entry and management**
+**Change request (`CRView`)**
 
-* Structured data entry with validation
-* Table-based data editing with inline operations
-* Repeating data structures (arrays, accordions)
-* Bulk data operations
+* Review proposed registry changes before approval
+* Audit trail metadata (`createdBy`, `createdDate`, `approvedBy`, `approvedDate`)
+* Side-by-side or section-based comparison of old and new values
+* Read-only CR review aligned with staff-portal change-request and approval flows
 {% endstep %}
 
 {% step %}
-**Registry viewing and editing with change request workflow**
+**Intake form (`IntakeForm`)**
 
-* Read-only registry views with section-based layouts
-* Edit-in-place functionality with section-level save operations
-* CRView mode with audit trail display
-* Change request creation and submission workflows
-* Comparison views for data changes
-* Approval workflow support with metadata tracking
+* Multi-section accordion intake for new registrant / user registration
+* Draft vs locked editing, validation, and structured submit payloads
+* Conditional fields, multi-select attributes, geo hierarchy, and document uploads
+* Used for intake submissions before records land in the register
+{% endstep %}
+
+{% step %}
+**Beneficiary form**
+
+* Program-specific schemas (attributes, tabs, and sections configured per register or program)
+* Capture beneficiary data required by a program without rewriting form UI
+* Tables and dialog-tables for repeating household/member-style records
+* Register lookup and ID authentication for cross-register and foundational ID flows
 {% endstep %}
 {% endstepper %}
 
 ## Unique features for OpenG2P Registry
 
-The Registry UI Widget Library brings several unique and powerful features that distinguish it from generic form libraries and make it particularly valuable for OpenG2P registry implementations. Central to the library's design is the change request-based architecture, which enables proper workflow management for registry data modifications.
+### Section-based architecture with three render modes
 
-### Section-based architecture with flexible layouts
+Layouts follow **Section → Panel → Widget**:
 
-Unlike traditional form libraries, the widget system uses a hierarchical Section → Panel → Widget structure that provides exceptional layout flexibility:
+* **Sections**: Independently editable containers; optional supporting documents; column span; per-section hide-edit
+* **Panels**: Horizontal or vertical nesting with column span
+* **Widgets**: Registered React components bound to data paths
 
-* Sections: Top-level containers that can be independently editable or read-only
-* Panels: Nested containers supporting both horizontal and vertical orientations
-* CSS Grid Integration: Automatic grid-based layout that ensures proper alignment across sections
-* Responsive Design: Adaptive layouts that work across different screen sizes
-* Column Spanning: Sections and widgets can span multiple columns for complex layouts
+`SectionsContainer` / `SectionRenderer` support three modes:
 
-This architecture enables the creation of sophisticated, multi-column registry views that maintain consistent alignment and professional appearance.
+| Mode | Role |
+| --- | --- |
+| `RegistryView` | View registry data; edit one section at a time; save produces old/new change sets |
+| `CRView` | Review a change request; audit footer (`createdBy`, `createdDate`, `approvedBy`, `approvedDate`) |
+| `IntakeForm` | Accordion multi-section intake; draft vs locked; form handle for validate / get data |
+
+CSS grid alignment, responsive stacking, and `section-column-span` / `widget-column-span` support multi-column registry layouts.
 
 ### Multi-path data binding
 
-The library supports both single-path and multi-path data binding, allowing widgets to read from and write to multiple data locations simultaneously:
+`widget-data-path` accepts either a single dot-notation path (most input widgets) or a map of **logical keys → store paths** for widgets that compose several fields into one UI block.
+
+Single path:
 
 ```json
 {
+  "widget": "text",
+  "widget-id": "full_name",
+  "widget-data-path": "register-id.full_name"
+}
+```
+
+Multi-path — the widget defines which logical keys it understands, and the schema maps each to a store path. The `profile` widget composes an identity card from three fields:
+
+```json
+{
+  "widget": "profile",
+  "widget-id": "user_profile",
   "widget-data-path": {
-    "firstName": "person.fname",
-    "lastName": "person.lname"
+    "image": "register-id.photo",
+    "name": "register-id.display_name",
+    "id": "register-id.national_id"
   }
 }
 ```
 
-This feature is particularly useful for:
+The `geo-hierarchy` widget uses multi-path to separate what it **writes** from what it **reads**: only the deepest selected level id is persisted to `value`, while `hierarchy` is a read path used to hydrate the cascading selects in view/edit mode:
 
-* Complex data structures where a single widget needs to aggregate multiple fields
-* Profile widgets that display identity information from various sources
-* Form fields that need to update multiple related data points
+```json
+{
+  "widget": "geo-hierarchy",
+  "widget-id": "individual_geo_hierarchy",
+  "widget-data-path": {
+    "value": "register-id.geo_lowest_level_value_id",
+    "hierarchy": "register-id.geo_code_hierarchy_json"
+  }
+}
+```
+
+Other multi-path widgets follow the same pattern:
+
+* **`header-section`** — maps record summary fields (`name`, `functionalId`, `status`, `completionScore`, `createdBy`, `lastApprovedAt`, …) to record columns
+* **`id-authentication`** — maps auth fields (`foundationalId`, `lastAuthenticatedOn`, `lastAuthenticationStatus`, `expiryDate`, …) used for both display and API calls
+
+### Host-driven data sources and API access
+
+Option widgets load data from:
+
+* **Static** options in the schema
+* **API** sources via `service` + `endpoint` (or legacy `url`), resolved by the host’s `dataSourceRequestHandler`
+* **Schema** references inside `schemaData`
+
+Dependent loading uses `dependsOn` and/or **`widget-cascade`** (event bus: clear/reload child options when a parent changes). Geo hierarchy uses a dedicated API shape (`levelsEndpoint` + `valuesEndpoint`).
 
 ### Internationalization (i18n)
 
-The library includes a sophisticated translation system that works seamlessly with UI schemas:
-
-* Translation Key Support: Widget labels, placeholders, help text, and tooltips can use translation keys (e.g., "sections.personalDetails")
-* Automatic Translation: The `translateUISchema` utility automatically translates entire schemas
-* Auto-Loading: Automatically attempts to load translations from common project directory structures
-* Nested Translation: Recursively translates nested widgets, panels, and data source options
-* Fallback Support: Graceful fallback to default values when translations are missing
-
-This enables OpenG2P implementations to support multiple languages without code changes, simply by providing translation files.
+Translation is host-owned. Pass a `t` function to `WidgetProvider` (for example from `react-i18next`). Use `translateUISchema` / `translateWidgetConfig` / `translatePanelConfig` to resolve label, placeholder, help text, tooltip, and static option keys before render. Missing keys fall back to the original string.
 
 ### Advanced conditional logic
 
-The widget system provides powerful conditional logic capabilities that go beyond simple show/hide:
+`widget-data-options` supports `show`, `hide`, `enable`, `disable`, and **`require`**, either as a single rule or an `actions` array. Operators: `equals`, `notEquals`, `notEmpty`, `empty`, `greaterThan`, `lessThan`, `contains`, `notContains`. Conditions use dot-notation field paths and re-evaluate as values change. Dialog-table columns can condition on sibling row fields.
 
-* Multiple Actions: Show, hide, enable, or disable widgets based on conditions
-* Rich Operators: Supports equals, notEquals, notEmpty, empty, greaterThan, lessThan, contains, and notContains
-* Cross-Field Dependencies: Conditions can reference any field in the form using dot-notation paths
-* Dynamic Behavior: Conditions are evaluated reactively as form values change
+### Comprehensive widget registry (22 default widgets)
 
-This enables the creation of intelligent forms that adapt to user input, reducing errors and improving user experience.
+| Category | Widgets |
+| --- | --- |
+| Input | `text`, `textarea`, `number`, `phone`, `date`, `datetime`, `file`, `select`, `multi-select`, `radio`, `checkbox`, `boolean`, `geo-hierarchy`, `docs` |
+| Selection / lookup | `register-lookup` |
+| Display / identity | `display`, `profile`, `header-section`, `scores-display` |
+| Tables | `table`, `dialog-table` |
+| Domain | `id-authentication` |
 
-### Multiple data source types
+Custom widgets register through `widgetRegistry` without changing core code.
 
-The library supports three types of data sources for dropdowns, selects, and other option-based widgets:
+### Validation and formatting
 
-* Static Data: Hardcoded options defined in the schema
-* API Data Sources: Dynamic options fetched from REST APIs with support for:
-  * Dependency-based loading (e.g., load states when country is selected)
-  * Custom headers and request bodies
-  * Response transformation (value/label key mapping)
-* Schema Reference Data: Options pulled from reference data within the schema itself
+* Built-in rules: required, pattern, min/max length, min/max value
+* `validationType`: `email`, `phone`, `url`
+* Zod schemas via `widget-data-validation.zodSchema`
+* Real-time validation on change/blur with touched-state error display
+* Formatting for dates, datetime, phone, numbers, and text (case, charset, mask, char counter)
 
-This flexibility allows registry forms to work with both static reference data and dynamic, context-aware options.
+### File and document handling
 
-### Comprehensive widget registry system
+* **`file`**: single/multiple upload, preview, serialization for storage
+* **`docs`**: fixed upload slots in a three-column layout, per-slot accept/max-size/required
+* **Section supporting documents**: section-level document config rendered alongside panels
 
-The library includes a plugin-based widget registry that enables:
+### Change request design and CRView
 
-* Extensibility: Easy registration of custom widgets without modifying core library code
-* Default Widgets: 19 pre-built widgets covering common use cases
-* Widget Discovery: Runtime widget lookup and fallback mechanisms
-* Type Safety: Full TypeScript support for widget registration and configuration
+* Section save callbacks receive structured old/new values
+* Dirty tracking and cancel/revert of in-progress edits
+* CRView audit trail and read-only review
+* Integration points for backend CR create/approve workflows
 
-Pre-built widgets include:
+### Registry-specific widgets
 
-* Text inputs (with masking, character restrictions, case control)
-* Number inputs (with precision, formatting, thousand separators)
-* Date and DateTime inputs (with picker/manual/hybrid modes)
-* Phone inputs (with country code support)
-* Currency inputs (with locale-aware formatting)
-* File inputs (with preview and serialization)
-* Tables (simple display and editable with record operations)
-* Arrays and Accordions (for repeating data structures)
-* Profile widgets (for identity display)
-* Boolean widgets (checkbox, radio, toggle variants)
-* Display widgets (read-only text display)
+* **`header-section`**: Record image, name, functional ID, status, scores, audit stamps
+* **`scores-display`**: Sorted list of computed scores (type, value, time, triggering CR)
+* **`id-authentication`**: Initiate OIDC/provider auth; show status, expiry, foundational ID
+* **`register-lookup`**: Paginated search of another register; store linked record id
+* **`geo-hierarchy`**: Cascading geo levels with optional multi-column layout
 
-### Advanced validation system
+### Section builder tooling
 
-The validation system supports multiple validation strategies:
+`SectionBuilder`, `VisualBuilderPanel`, `JSONEditorPanel`, `SectionTree`, and `PropertyEditor` help author and edit UI schemas visually or as JSON during development.
 
-* Built-in Validators: Required, pattern (regex), min/max length, min/max values
-* Zod Integration: Full support for Zod schemas for complex validation logic
-* Validation Types: Pre-configured validators for email, phone, URL
-* Custom Validators: Support for custom validation functions
-* Real-time Validation: Validation runs on blur and value change
-* Error Display: Comprehensive error message display with touch state tracking
+### Redux state, events, and theming
 
-### Rich formatting capabilities
-
-The library provides extensive formatting options for different data types:
-
-* Date Formatting: Customizable date formats with locale support
-* Currency Formatting: Locale-aware currency formatting with symbol placement
-* Phone Formatting: Country-specific phone number formatting
-* Number Formatting: Decimal places, thousand separators, rounding modes
-* Text Formatting: Case control (uppercase, lowercase, capitalize), character restrictions, input masking
-* Format on Blur: Optional formatting that applies when fields lose focus
-
-### File handling with preview
-
-The file input widget includes advanced file management features:
-
-* File Preview: Modal-based preview for images and documents
-* File Serialization: Automatic conversion to base64 or other formats for storage
-* File Validation: Size limits, type restrictions, and custom validation
-* Multiple File Support: Support for single or multiple file uploads
-* Supporting Documents: Section-level document management with type-specific handling
-
-### Change request-based design and change request view mode
-
-This is a core architectural feature that sets the Registry UI Widget Library apart from generic form libraries. The entire library is designed around the change request workflow pattern, which is fundamental to OpenG2P registry operations:
-
-* Change Request Workflow Support: Built-in support for creating, viewing, and managing change requests
-* CRView Mode: Special viewing mode specifically designed for change requests with:
-  * Audit Trail Display: Automatic display of who created and approved records with timestamps
-  * Read-Only Mode: Prevents accidental modifications during change request review
-  * Metadata Display: Automatic display of `createdBy`, `createdDate`, `approvedBy`, `approvedDate`
-  * Flexible Data Sources: Reads audit data from schema data or Redux store
-* Change Tracking: Tracks old and new values for each section, enabling comparison views
-* Workflow Integration: Designed to integrate with backend change request approval workflows
-* Data Integrity: Ensures that registry modifications go through proper approval processes
-
-This change request-based design enables proper governance in registry operations, where all modifications must be reviewed and approved before being applied to the master registry. This is critical for maintaining data quality and audit compliance in government-to-person (G2P) payment systems.
-
-### Section-level editing with save operations
-
-The library supports granular editing at the section level, which aligns with the change request workflow:
-
-* Independent Sections: Each section can be independently editable or read-only
-* Section Save Callbacks: Custom save handlers for section-level data persistence
-* Change Tracking: Tracks old and new values for each section (essential for change requests)
-* Edit Mode Toggle: Sections can switch between view and edit modes
-* Batch Operations: Multiple sections can be edited and saved independently
-* Change Request Integration: Section-level changes can be packaged as change requests for approval
-
-This is particularly valuable for large registry forms where users may only need to edit specific sections, and where those changes need to be tracked and approved through the change request workflow.
-
-### Table widgets with record operations
-
-Two types of table widgets provide different levels of functionality:
-
-* Simple Table: Display-only tables for showing structured data
-* Editable Table: Full CRUD operations (add, remove, edit) at the record level
-* Column Configuration: Each column can have its own widget type, validation, and formatting
-* Column Spanning: Tables can span multiple columns in the grid layout
-* Inline Editing: Edit records directly within the table
-
-### Array and accordion widgets
-
-Specialized widgets for handling repeating data structures:
-
-* Array Widget: Simple list-based repeating data entry
-* Iterable Accordion: Accordion-based interface for repeating data with expand/collapse
-* Item Templates: Define widget configuration once, apply to all items
-* Add/Remove Operations: Dynamic addition and removal of items
-* Collapsed State: Optional default collapsed state for accordions
-
-### Profile widget for identity display
-
-A specialized widget for displaying beneficiary or user identity:
-
-* Multi-Field Display: Combines image, name, and ID in a single widget
-* Customizable Styling: Configurable image size, colors, and label display
-* Multi-Path Binding: Reads from multiple data paths to compose the profile
-* Read-Only Display: Optimized for identity verification and display
-
-### Redux-based state management
-
-The library uses Redux for centralized state management:
-
-* Centralized State: All widget values, errors, and touched states in one store
-* Path-Based Access: Values accessed using dot-notation paths
-* Reactive Updates: Components automatically update when state changes
-* Store Integration: Can integrate with existing Redux stores or use isolated widget store
-* DevTools Support: Full Redux DevTools support for debugging
+* Centralized values, errors, touched, loading, and data-source options
+* `WidgetEventBus` + `useWidgetCascade` for cross-widget reload/clear
+* Optional `theme` on `WidgetProvider` (CSS variables for colors, section, panel, button, widget chrome)
+* Tailwind-friendly class hooks; host controls overall look
 
 ### TypeScript-first design
 
-The entire library is built with TypeScript:
-
-* Full Type Definitions: Complete type coverage for all configurations and APIs
-* Type Safety: Catch configuration errors at compile time
-* IntelliSense Support: Rich autocomplete and documentation in IDEs
-* Type Inference: Automatic type inference for widget configurations
-
-### Unstyled base with style flexibility
-
-The library provides unstyled base components:
-
-* No CSS Dependencies: No opinionated styling framework
-* Tailwind Ready: Designed to work seamlessly with Tailwind CSS
-* Custom Styling: Full control over appearance through className props
-* Style Isolation: Widgets don't interfere with application styles
+Full types for configs, data sources, section modes, theme, and store. Zod peer dependency for schema validation.
 
 ## Architecture Overview
 
 {% embed url="https://miro.com/app/board/uXjVGPIon0M=/?share_link_id=859507579636" %}
 
-**Application Layer** - The top-level entry point where UI schemas (JSON configurations) are parsed and rendered. This layer handles the hierarchical structure of Sections → Panels → Widgets, managing layout, orientation, and section-level operations like editing and saving.
+**Application layer** — Host apps pass UI schemas into `SectionsContainer` / `SectionRenderer` / `WidgetRenderer`, choose mode (`RegistryView` | `CRView` | `IntakeForm`), and supply `dataSourceRequestHandler`, `schemaData`, `onSectionSave`, and optional `t` / `theme`.
 
-**Widget Registry Layer** - A plugin system that maintains a catalog of available widgets. When a widget is requested by name, the registry looks it up and returns the corresponding React component. This enables dynamic widget loading and easy extensibility - new widgets can be registered without modifying core library code.
+**Widget registry layer** — Maps widget names to React components. Defaults register on import; apps can add custom widgets.
 
-**Widget Components Layer** - The actual React components that render UI elements (text inputs, selects, tables, etc.). These are the 19+ pre-built widgets that come with the library. Each widget is a React component that receives configuration and renders the appropriate UI. Custom widgets can be added by registering them in the registry.
+**Widget components layer** — Twenty-two built-in widgets plus any registered customs.
 
-**Core Hooks Layer** - React hooks that provide all the business logic for widgets. The `useBaseWidget` hook handles state management, validation, conditional logic, data source loading, and formatting. The `useWidgetTranslation` hook provides internationalization support. Widget components use these hooks to get values, errors, visibility states, and change handlers without directly interacting with Redux or utilities.
+**Core hooks layer** — `useBaseWidget` (state, validation, conditions, data sources, formatting), `useWidgetCascade`, `useWidgetEventBus`, `useWidgetTheme`, and specialized hooks (for example `useGeoHierarchy`).
 
-**State Management Layer** - Redux store and widget slice that maintain centralized state for all widgets. The Redux Store holds all widget values, errors, touched states, loading states, and data source options. The Widget Slice defines the state structure and provides actions (setValue, setError, setTouched, etc.) to update state. This ensures a single source of truth and enables efficient re-renders.
+**State management layer** — Redux store / widget slice as the single source of truth for form values and UI state.
 
-**Utility Layer** - Pure functions that handle cross-cutting concerns:
+**Utility layer** — Path utilities, validation, formatting, conditions, data-source helpers, file serialization/preview, schema translation, section validate/revert/snapshot.
 
-* **Validation**: Validates widget values using built-in rules, regex patterns, or Zod schemas
-* **Formatting**: Formats values for display (dates, currency, phone numbers, numbers, text)
-* **Data Sources**: Loads options for select/dropdown widgets from static data, APIs, or schema references
-* **Conditional Logic**: Evaluates conditions to determine widget visibility and enablement
-* **Path Utilities**: Handles dot-notation path resolution for reading/writing nested data structures
+#### Data flow
 
-#### Data Flow <a href="#data-flow" id="data-flow"></a>
-
-1. **Top-Down (Rendering)**: Application receives UISchema → Registry looks up widgets → Components render using hooks → Hooks read from Redux store → Utilities process data
-2. **Bottom-Up (Updates)**: User interacts with widget → Component calls hook's onChange → Hook dispatches Redux action → Store updates → Hooks re-evaluate → Components re-render
-
-This layered architecture provides clear separation of concerns, making the library maintainable, testable, and extensible.
+1. **Top-down (render):** UISchema → registry lookup → components + hooks → Redux + utilities
+2. **Bottom-up (update):** User input → hook `onChange` → Redux → cascade/events → re-render
+3. **Section save:** Snapshot old/new → host `onSectionSave` → optional CR pipeline
 
 ## Benefits for OpenG2P Registry
 
-* Rapid Development: Schema-driven development means forms can be created by configuring JSON rather than writing code
-* Consistency: Standardized widget behavior ensures consistent user experience across the registry
-* Maintainability: Centralized widget logic means bug fixes and improvements benefit all forms
-* Internationalization: Built-in i18n support enables multi-language registries without code changes
-* Extensibility: Plugin architecture allows custom widgets for domain-specific needs
-* Type Safety: TypeScript support reduces runtime errors and improves developer experience
-* Performance: Redux-based state management ensures efficient updates and minimal re-renders
-* Accessibility: Semantic HTML and proper form structure support accessibility requirements
-* Flexibility: Multiple layout options and conditional logic enable complex, adaptive forms
-* Developer Experience: Comprehensive documentation, type definitions, and examples accelerate development
+* **Rapid development** — JSON schemas instead of one-off form code
+* **Consistency** — Shared widgets and section behaviors across portals
+* **Governance** — Change-request–oriented edit/save and CRView audit
+* **Extensibility** — Registry plugins, cascade, and host API handler
+* **Type safety** — TypeScript + Zod
+* **i18n-ready** — Host `t` + schema translation utilities
+* **Domain fit** — Geo hierarchy, docs, register lookup, ID auth, scores, header
 
 ## Conclusion
 
-The Registry UI Widget Library is a powerful, purpose-built solution for OpenG2P registry interfaces. Its combination of section-based architecture, multi-path data binding, schema-based internationalization, advanced conditional logic, and comprehensive widget ecosystem makes it an ideal foundation for building complex, maintainable, and user-friendly registry applications.
+`@openg2p/registry-widgets` is a purpose-built foundation for OpenG2P registry UIs. Section modes, multi-path binding, host-driven APIs, conditional logic, and a registry-focused widget set (including geo hierarchy, documents, lookup, and authentication) cover registration, intake, viewing, and change-request review without sacrificing extensibility.
 
-By providing a declarative, schema-driven approach to form building, the library enables rapid development while maintaining flexibility and extensibility. The change request-based design is central to the library's architecture, ensuring that all registry modifications go through proper workflows with audit trails and approval processes.
-
-The focus on OpenG2P-specific features like change request workflows, section-level editing, and profile widgets ensures that the library addresses real-world registry requirements out of the box. Whether building beneficiary registration forms, change request interfaces, or data viewing tools, the Registry UI Widget Library provides the building blocks needed to create sophisticated, production-ready registry applications that maintain data integrity and governance.
+Use it when you need schema-driven forms that stay aligned with registry governance: section-level edits, auditable change sets, and production-ready widgets for identity, location, documents, and linked records.
