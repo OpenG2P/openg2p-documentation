@@ -83,6 +83,6 @@ The chart and all farmer images are built by the **OpenG2P central pipeline** at
 Two version lines meet in this chart, and they move independently:
 
 * **The Farmer Registry version** — the chart and the five farmer images, locked together and stamped by CI on every commit.
-* **The platform version** — `RP_VERSION` in the Dockerfiles and the `openg2p-registry` dependency in `Chart.yaml`. These are **hardcoded and changed deliberately**, always as a pair.
+* **The platform version** — `RP_VERSION` in the Dockerfiles and the `openg2p-registry` dependency in `Chart.yaml`. These are **hardcoded and changed deliberately**, always as a pair. Move both together with `./scripts/bump-rp-version.sh` (`-n` to preview the latest published version, `<version>` to pin a specific one); a CI check fails the build if the two ever drift.
 
 Released versions and what changed in each: [**Versions**](../versions/README.md).
