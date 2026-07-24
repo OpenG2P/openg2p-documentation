@@ -9,14 +9,25 @@ Use this when you need to roll the database back to a specific moment — typica
 ## Pre-flight
 
 * Know the **target time** (ISO-8601, e.g. `'2026-04-26 14:00:00 IST'`) and the time zone.
-* Know whether you want PITR (a specific moment) or just the latest backup (`--type=immediate`).
+* Know whether you want PITR (a specific moment) or just the **latest** backup set.
 * Have the `pgbackrest.pass` passphrase from your keystore.
+
+{% hint style="info" %}
+`--type=immediate` / `--type=time` are **pgBackRest** flags set by the orchestrator. They are **not** arguments to `openg2p-backup.sh`. Omit `--point-in-time` for latest; pass `--point-in-time '…'` for PITR. Both paths always include `--target-action=promote` together with `--type`.
+{% endhint %}
 
 ## Step 1 — Dry-run
 
 Confirms the orchestrator can find the right backup and constructs the right command:
 
 ```bash
+# Latest (no PITR)
+./openg2p-backup.sh restore \
+    --config backup-config.yaml \
+    --component pg \
+    --dry-run
+
+# Point-in-time
 ./openg2p-backup.sh restore \
     --config backup-config.yaml \
     --component pg \
@@ -24,9 +35,21 @@ Confirms the orchestrator can find the right backup and constructs the right com
     --dry-run
 ```
 
-Reads the timestamp, prints the pgBackRest command, exits without touching anything.
+Reads the options, prints the pgBackRest command, exits without touching anything.
 
 ## Step 2 — Staged restore
+
+**Latest backup** (full rebuild / “give me the newest set”):
+
+```bash
+./openg2p-backup.sh restore \
+    --config backup-config.yaml \
+    --component pg
+```
+
+Runs `pgbackrest --type=immediate --target-action=promote --pg1-path=<staged> restore`.
+
+**Point-in-time:**
 
 ```bash
 ./openg2p-backup.sh restore \
@@ -38,11 +61,11 @@ Reads the timestamp, prints the pgBackRest command, exits without touching anyth
 What this does:
 
 1. Creates `/var/lib/openg2p-backup-restore/pg-<timestamp>/` on the storage node, owned by `postgres`.
-2. Runs `pgbackrest --type=time --target=... --target-action=promote --pg1-path=<above> restore`.
-3. Replays WAL up to the target time.
+2. Runs `pgbackrest --type=time --target=... --target-action=promote --pg1-path=<above> restore` (or `--type=immediate` when no PIT was supplied).
+3. Replays WAL up to the target time when using `--type=time`.
 4. **Stops there.** Does not touch the live Postgres instance.
 
-The staged Postgres data directory is a complete, valid `PGDATA` for the target time. You can start a temporary Postgres against it on a different port to inspect, dump tables, or verify before cutting over.
+The staged Postgres data directory is a complete, valid `PGDATA`. You can start a temporary Postgres against it on a different port to inspect, dump tables, or verify before cutting over.
 
 ## Step 3 — Verify the restore
 

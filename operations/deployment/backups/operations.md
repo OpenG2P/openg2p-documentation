@@ -50,7 +50,7 @@ What it does, in order:
    * `pg`: pgBackRest on backup + storage, archive_command on PG, stanza-create, first full backup
    * `etcd`: RKE2 snapshot schedule, rsync-pull SSH trust
    * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
-   * `nfs`: storage-node NFS export + `ufw` allow for backup host, read-only NFS mount on backup host (idempotent if already mounted), restic repo init
+   * `nfs`: storage-node NFS export + `ufw` allow for backup host; read-only NFS mount on backup host via `_nfs_ensure_ro_mount` (stops stale automounts, rewrites fstab without `x-systemd.automount`, remounts; falls back to `/mnt/openg2p-nfs-ro-dr` after DR IP changes); restic repo init
    * `configs`: restic repo for configs
    * `objectstore` (opt-in): rclone + restic for MinIO/S3 — skipped when `groups.objectstore: false` (default)
 6. **SMTP install** (optional) — copies `alerting.smtp_env_file` to `/etc/openg2p-backup/smtp.env` when present.
@@ -113,8 +113,8 @@ Inventory per repo:
 
 * **pg** → `pgbackrest info` (backup sets, dates, sizes)
 * **etcd** → `ls -lh` of pulled snapshots
-* **rancher** → `kubectl get backup.resources.cattle.io -A`
-* **nfs / configs / objectstore** → `restic snapshots --compact`
+* **rancher** → `kubectl get backup.resources.cattle.io -A` (CR inventory; tarballs live on NFS under `/srv/nfs/<cluster>/rancher-backup/`)
+* **nfs / configs / objectstore** → `restic snapshots --compact` (for NFS, prefer `--tag nfs` for data; `pvc-manifest` snapshots are sidecar-only)
 
 For NFS, the sidecar `.pvc-mapping.yaml` is what tells you which PVC each UUID belongs to. Read it directly:
 

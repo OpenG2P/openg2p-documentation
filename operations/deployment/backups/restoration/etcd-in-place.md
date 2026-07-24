@@ -17,7 +17,7 @@ If the compute node is destroyed or unreachable, use [Full rebuild](full-rebuild
 
 * Have the backup host reachable from your laptop.
 * Have the `restic.pass` passphrase from your keystore (needed if you have to also restore the `cred/` and `tls/` dirs).
-* Pick the target snapshot. List with `./openg2p-backup.sh list --component etcd`. The most recent valid snapshot is usually correct.
+* Pick the target snapshot. List with `./openg2p-backup.sh list --config backup-config.yaml --component etcd`. The most recent valid snapshot is usually correct.
 * Decide if you also need to restore RKE2 filesystem state. See "When also restore the FS state" below.
 
 ## Step 1 — Stage the snapshot on the compute node
@@ -34,7 +34,7 @@ This `scp`s the chosen snapshot to `/tmp/openg2p-etcd-restore/` on the compute n
 For a specific snapshot file:
 
 ```bash
-./openg2p-backup.sh restore --component etcd --target etcd-snapshot-compute-1-1714000000.zip
+./openg2p-backup.sh restore --config backup-config.yaml --component etcd --target etcd-snapshot-compute-1-1714000000.zip
 ```
 
 ## Step 2 — When also restore the FS state
@@ -46,9 +46,9 @@ If the FS state on the compute node is intact and matches the era of the snapsho
 If the FS state is broken (compute node had a partial wipe, or you're not sure it matches), restore from the configs repo:
 
 ```bash
-./openg2p-backup.sh restore --component configs --target rke2-tls
-./openg2p-backup.sh restore --component configs --target rke2-cred
-./openg2p-backup.sh restore --component configs --target rke2-token
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target rke2-tls
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target rke2-cred
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target rke2-token
 ```
 
 Each lands in `/tmp/openg2p-configs-restore/<tag>-<ts>/extracted/` on the **backup host**. Copy them onto the compute node:

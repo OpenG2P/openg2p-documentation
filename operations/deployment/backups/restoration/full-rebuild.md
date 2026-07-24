@@ -63,6 +63,26 @@ If your backup host survived: re-run `install` so the backup host learns the new
 ./openg2p-backup.sh install --config backup-config.yaml --force
 ```
 
+{% hint style="info" %}
+**Kept the backup node with old repos?** The fresh platform install created a **new empty Postgres** whose system-id does not match the surviving pgBackRest stanza. `install` may log pgBackRest error `[028]` ("backup and archive info files exist but do not match the database") and then **skip the first full backup** on purpose — do **not** delete or re-init `/var/lib/openg2p-backup/pg`; you need those files for Step 4 restore. Tooling and SSH trust are still installed. After you restore + cutover PG, run `./openg2p-backup.sh run --component pg` to take a new full of the restored database.
+
+**NFS mount I/O error on `/mnt/openg2p-nfs-ro`?** The backup host may still have a stale mount (and, on older installs, a systemd automount) to the **old** storage private IP. Re-run `install --force` with current scripts: they stop any leftover automount/mount units, force-unmount via `/proc/mounts`, rewrite `/etc/fstab` **without** `x-systemd.automount` (`ro,soft,timeo=30,retrans=2,noauto,_netdev`), remount, and fall back to `/mnt/openg2p-nfs-ro-dr` (marker: `/var/lib/openg2p-backup/.nfs-mount-point`) if the canonical path stays poisoned. Manual clear on the backup host if needed:
+
+```bash
+sudo systemctl stop mnt-openg2p\\x2dnfs\\x2dro.automount mnt-openg2p\\x2dnfs\\x2dro.mount 2>/dev/null || true
+sudo umount -f -l /mnt/openg2p-nfs-ro /mnt/openg2p-nfs-ro-dr 2>/dev/null || true
+sudo rm -f /var/lib/openg2p-backup/.nfs-mount-point
+```
+{% endhint %}
+
+If `install` still hard-fails on an older script build before that skip existed, finish tooling without touching the PG repo:
+```bash
+# Temporarily disable pg for this install pass, then re-enable for restore/run.
+# Or pull the latest lib/pgbackrest.sh and re-run install --force.
+./openg2p-backup.sh install --config backup-config.yaml --force --component etcd
+# …or set groups.pg: false once, install, set true again before restore.
+```
+
 ## Step 4 — Restore PostgreSQL
 
 The platform install just laid down a clean Postgres on the storage node. You need to replace it with the restored data.
@@ -71,7 +91,7 @@ The platform install just laid down a clean Postgres on the storage node. You ne
 ./openg2p-backup.sh restore \
     --config backup-config.yaml \
     --component pg
-    # No --point-in-time = restore latest
+    # No --point-in-time → script uses pgBackRest --type=immediate
 ```
 
 This stages the restored Postgres data dir at `/var/lib/openg2p-backup-restore/pg-<ts>/` on the storage node. Follow the cutover steps in [Postgres PITR — Step 4](postgres-pitr.md#step-4-cutover-live-pg-replacement) to replace the live PG.
@@ -85,6 +105,36 @@ ssh ubuntu@<storage> "sudo -u postgres psql -d postgres -c '\\l'"
 
 The fresh helmfile install recreated the platform's own resources. We now layer the user-state on top via a rancher-backup `Restore` CR.
 
+{% hint style="warning" %}
+**After a storage rebuild the live NFS `rancher-backup/` dir only has post-DR tarballs** (often an empty/new-cluster nightly). The orchestrator's `restore --component rancher` picks the **newest Backup CR `status.filename`**, not “the best pre-disaster file on disk.” `--target cluster` means cluster-wide restore; it does **not** select which tarball.
+{% endhint %}
+
+### 5a — Put the pre-disaster tarball back on NFS
+
+On the **backup host**, find the on-demand / nightly file inside NFS restic (captured under the export):
+
+```bash
+export RESTIC_REPOSITORY=/var/lib/openg2p-backup/restic/nfs
+# unlock with restic.pass
+restic snapshots --tag nfs --compact
+restic find openg2p-ondemand   # or openg2p-nightly / a known date
+restic restore <snapshot-id> --target /tmp/rancher-old \
+  --include '**/rancher-backup/*.tar.gz.enc'
+```
+
+Copy the chosen `*.tar.gz.enc` onto the **new** storage export (same path the static PV uses):
+
+```bash
+# ubuntu SSH + sudo — do not scp as root (MOTD breaks scp) or as ubuntu into /srv/nfs directly
+scp -i <key> /tmp/rancher-old/.../openg2p-ondemand-….tar.gz.enc ubuntu@<storage>:/tmp/
+ssh -i <key> ubuntu@<storage> \
+  'sudo cp /tmp/openg2p-ondemand-….tar.gz.enc /srv/nfs/openg2p/rancher-backup/'
+```
+
+### 5b — Apply Restore for that filename
+
+If no newer Backup CR exists, the script may pick the file you just copied:
+
 ```bash
 ./openg2p-backup.sh restore \
     --config backup-config.yaml \
@@ -92,21 +142,49 @@ The fresh helmfile install recreated the platform's own resources. We now layer 
     --target cluster
 ```
 
-This selects the most recent backup tarball on the operator's static NFS volume (`/srv/nfs/<cluster>/rancher-backup`, file pattern `*.tar.gz.enc`) and applies a `Restore` CR. The operator handles:
+If a newer nightly already exists (or you must pin a specific file), apply the Restore CR yourself:
+
+```bash
+kubectl --kubeconfig ~/.kube/openg2p-prod apply -f - <<EOF
+apiVersion: resources.cattle.io/v1
+kind: Restore
+metadata:
+  name: openg2p-restore-from-ondemand
+spec:
+  backupFilename: openg2p-ondemand-<exact-basename>.tar.gz.enc
+  encryptionConfigSecretName: openg2p-backup-encryption
+  prune: false
+  ignoreErrors: true   # recommended on full rebuild — see below
+EOF
+```
+
+The operator handles:
 * Recreating Secrets (incl. Helm release secrets — restoring these means `helm list` will show your prior releases again)
 * Recreating CRs (Rancher state, cert-manager Issuers + Certificates, Istio configs, Keycloak realms if operator-managed, monitoring rules)
-* Recreating PV + PVC objects with their original `claimRef` bindings
+* Recreating PV + PVC objects with their original `claimRef` bindings (NFS paths = **pre-disaster UUIDs**)
 
 Watch progress:
 ```bash
 kubectl --kubeconfig ~/.kube/openg2p-prod get restore.resources.cattle.io -A -w
+kubectl --kubeconfig ~/.kube/openg2p-prod -n cattle-resources-system \
+  logs -l app.kubernetes.io/name=rancher-backup --tail=100
 ```
 
-The Restore CR transitions through `Pending` → `Running` → `Done`. If it errors, the `kubectl describe restore.resources.cattle.io <name>` output points at the offending GVK. Most errors are caused by the cluster being in a state where the resource already exists with different fields — investigate per-resource.
+The Restore CR transitions through `Pending` → `Running` → `Done`. Common **full-rebuild** failures:
+
+| Log / status | What to do |
+|---|---|
+| `PersistentVolume "openg2p-rancher-backup-store" … spec.persistentvolumesource is immutable` (old vs new storage IP) | Keep the **new** PV (`172.29.x` current). Do not let restore rewrite NFS `server`. Use `ignoreErrors: true`, or delete the stuck Restore and re-apply with that flag. Confirm afterward: `kubectl get pv openg2p-rancher-backup-store -o jsonpath='{.spec.nfs.server}{"\n"}'` |
+| `users.management.cattle.io` / “username already exists” | Duplicate Rancher user vs fresh install — usually safe to ignore with `ignoreErrors: true`, or delete the conflicting User before re-running |
+| Other “already exists” / immutable fields | Inspect the GVK in operator logs; fix or ignore per resource |
+
+{% hint style="info" %}
+The orchestrator-generated Restore CR sets `prune: false` only — it does **not** set `ignoreErrors`. On DR, prefer the manual CR above once the pre-disaster tarball is on NFS.
+{% endhint %}
 
 ## Step 6 — Restore NFS data
 
-Now the cluster knows about every original PV and PVC, but their NFS-backed data dirs are empty (the new storage node has a fresh NFS export).
+Now the cluster knows about every original PV and PVC, but their NFS-backed data dirs are empty (or newly created empty UUID dirs) on the new storage node.
 
 For each PVC that needs data:
 
@@ -115,15 +193,19 @@ For each PVC that needs data:
     --config backup-config.yaml \
     --component nfs \
     --target <namespace>/<pvc>
+# After DR, pin a pre-disaster snapshot if latest --tag nfs is empty:
+#   --point-in-time <restic-snapshot-id>
 ```
 
-This restores the data into a staging dir on the **backup host**. Then copy it to the live NFS export on the new storage node — see [single-pvc.md](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export).
+Details ( `--tag nfs` vs `pvc-manifest`, empty-restore failure, UUID matching ) are in [single-pvc.md](single-pvc.md). Staging lands on the **backup host** under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`.
 
-For lots of PVCs, script it. The sidecar manifest at `/var/lib/openg2p-backup/nfs/.pvc-mapping.yaml` is your inventory.
+Copy **the inner UUID directory contents** onto storage at `/srv/nfs/openg2p/<same-uuid>/` — not the outer timestamped wrapper. Prefer the tar pipe (`ubuntu` + `sudo`) from [single-pvc.md Step 4](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export). Match ownership to the app (e.g. Bitnami MinIO needs `chown -R 1001:1001`).
 
-**Important**: the *new* NFS UUIDs (those just created by the fresh helmfile install) won't match the *backup* UUIDs. The Restore CR in Step 5 recreated PVs that point at the *original* UUIDs — meaning the new PVs reference NFS paths that don't exist yet. Two options:
+For lots of PVCs, script it. Prefer the sidecar from a **pre-disaster** NFS/pvc-manifest snapshot if the live `.pvc-mapping.yaml` was regenerated against empty new dirs.
 
-* **A — Move the data**. Restore from restic into the path the recreated PV expects. Cleanest.
+**Important**: the *new* NFS UUIDs (those just created by the fresh helmfile install) won't match the *backup* UUIDs. The Restore CR in Step 5 recreated PVs that point at the *original* UUIDs — meaning the new PVs reference NFS paths that don't exist yet (or exist empty). Two options:
+
+* **A — Move the data**. Restore from restic into the path the recreated PV expects. Cleanest. Same UUID in staging and under `/srv/nfs/openg2p/` is expected.
 * **B — Edit the recreated PV**. Patch the PV's `spec.nfs.path` to match a new UUID, and either restic-restore into that path or symlink. More fragile.
 
 Plan A is the default. Restore the data, then bounce the consuming workload.
@@ -149,11 +231,25 @@ The fresh install regenerated:
 If you want to keep the **original** identities (so admin laptops' Wireguard configs and trusted CA cert still work), restore the configs group:
 
 ```bash
-./openg2p-backup.sh restore --component configs --target wireguard
-./openg2p-backup.sh restore --component configs --target openg2p   # local CA, dnsmasq
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target wireguard
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target openg2p   # local CA, dnsmasq
 ```
 
-Then copy onto the RP node and restart the affected services. This is optional — most operators accept regenerating these and re-distributing to admin laptops.
+Each command stages on the **backup host** at `/tmp/openg2p-configs-restore/<tag>-<ts>/` and extracts the tarball to `extracted/` when present. Copy onto the RP node and restart:
+
+```bash
+# Example — Wireguard (adjust <ts> from the restore log)
+ssh ubuntu@<backup-host> sudo tar -C /tmp/openg2p-configs-restore/wireguard-<ts>/extracted -czf - . | \
+  ssh ubuntu@<rp-host> "sudo tar -C /etc/wireguard -xzf -"
+ssh ubuntu@<rp-host> "sudo systemctl restart wg-quick@wg0"   # unit name may vary
+
+# Local CA / dnsmasq tree
+ssh ubuntu@<backup-host> sudo tar -C /tmp/openg2p-configs-restore/openg2p-<ts>/extracted -czf - . | \
+  ssh ubuntu@<rp-host> "sudo tar -C /etc/openg2p -xzf -"
+# restart dnsmasq / nginx as needed for your install
+```
+
+This is optional — most operators accept regenerating these and re-distributing Wireguard client configs to admin laptops.
 
 ## Step 9 — Bounce workloads + verify
 

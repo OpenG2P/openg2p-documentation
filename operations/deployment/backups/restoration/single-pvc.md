@@ -52,8 +52,27 @@ Confirms the manifest entry and prints the staging path it would use.
 
 This:
 1. Reads the sidecar manifest, finds the NFS path for that PVC.
-2. `restic restore latest --include /<nfs-path>` into `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<timestamp>/` on the **backup host**.
-3. Stops there.
+2. `restic restore latest --tag nfs --include *<nfs-path>*` into `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<timestamp>/` on the **backup host**. The `--tag nfs` filter is required: each nightly run also writes a separate `pvc-manifest` snapshot (only `.pvc-mapping.yaml`); without the tag, `latest` often selects that empty sidecar and you get a “successful” restore of 0 bytes.
+3. Stops there. Fails if the staged directory is empty or the path is missing from the snapshot.
+
+### After a full rebuild (DR)
+
+Post-rebuild NFS cron may have already taken a new (empty) `--tag nfs` snapshot. Pin a **pre-disaster** snapshot:
+
+```bash
+./openg2p-backup.sh list --config backup-config.yaml --component nfs
+# on backup host:
+restic snapshots --tag nfs --compact
+restic ls <snapshot-id> | grep commons-services-keymanager
+
+./openg2p-backup.sh restore \
+    --config backup-config.yaml \
+    --component nfs \
+    --target prod/commons-services-keymanager \
+    --point-in-time <snapshot-id>
+```
+
+Also confirm the sidecar `nfs_path` is the **old** UUID (from the rancher-restored PV), not a new empty dir created by the fresh helmfile install.
 
 ## Step 4 — Push the data to the live NFS export
 
@@ -110,7 +129,7 @@ kubectl --kubeconfig ~/.kube/openg2p-prod -n keycloak logs deploy/keycloak --tai
 If the PVC itself was deleted (not just the data):
 
 1. Check `.pvc-mapping.yaml` for the PV/PVC names + size + storage class.
-2. Restore Kubernetes objects via the rancher-backup `Restore` CR — see [full-rebuild.md](full-rebuild.md). You can target a single namespace with rancher-backup's restore filters.
+2. Restore Kubernetes objects via a rancher-backup `Restore` CR — see [full-rebuild.md](full-rebuild.md). The orchestrator always restores cluster-wide (`--target cluster` does not filter by namespace). For a single namespace, apply a manual `Restore` CR with rancher-backup's restore filters.
 3. The restored PVC will bind to a freshly-provisioned PV (because the old PV is also gone). The new PV's `nfs.path` won't match the original. Two options:
    * Move the restic-restored data into the new PV's NFS path.
    * Edit the restored PV manifest (before applying) to point at the original NFS path, so it binds to the existing data.
@@ -119,7 +138,8 @@ The second is faster but requires manual YAML edits. Operate carefully.
 
 ## Common gotchas
 
-* **Permissions** — NFS exports often run with `root_squash`. The restored files may end up as `nobody:nogroup`. Check what the live directory had before the swap and match it.
-* **Trailing slashes in `tar -C`** — the path is the *destination* directory. If the live PVC dir has files at the root and a trailing slash mismatches, you can end up with files inside a subdirectory. Always test with `find ... -ls | head` after the copy.
+* **Permissions** — NFS exports often run with `root_squash`. Restored files may show up as `nobody:nogroup` (or `nobody:1001`). Match what the workload expects: Bitnami MinIO needs `chown -R 1001:1001` on the PVC dir or the pod fails with `Permission denied` on `.root_user`.
+* **Same UUID on live NFS and in staging** — after rancher restore, the PV still points at the pre-disaster path name. Staging nests data under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`. Copy/move that **inner** directory onto `/srv/nfs/<cluster>/<nfs-path>/`, not the outer timestamped folder.
+* **Trailing slashes in `tar -C`** — the path is the *destination* directory. If the live PVC dir has files at the root and a trailing slash mismatches, you can end up with files inside a subdirectory. Always test with `find ... -ls` after the copy (avoid `find | head` under `set -o pipefail` on the backup scripts — use `sed -n '1,40p'` or `du -sh` instead).
 * **Forgetting to scale the app down** — you can corrupt new files mid-restore. Always pause the consuming Deployment/StatefulSet first.
 * **The restored data is older** — by definition. Anything written after the last NFS backup snapshot is gone. Check the restored snapshot timestamp in `.pvc-mapping.yaml` (`backed_up_at`).
