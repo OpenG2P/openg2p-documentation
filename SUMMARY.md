@@ -818,6 +818,7 @@
     * [Single Machine Backup & Restore Guide](operations/deployment/deployment-guide/single-machine-backup-and-restore-guide.md)
   * [OpenG2P GitLab Repositories](operations/deployment/gitlab-repositories.md)
   * [Helm & Docker Versioning Strategy and CI](releases/helm-docker-versioning-and-ci/README.md)
+    * [Cutting a release (how to tag)](releases/helm-docker-versioning-and-ci/cutting-a-release.md)
     * [CI pipeline](releases/helm-docker-versioning-and-ci/ci-pipeline.md)
     * [Changelogs](releases/helm-docker-versioning-and-ci/changelogs.md)
     * [Onboarding a repo](releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)

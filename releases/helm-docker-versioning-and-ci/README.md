@@ -72,6 +72,11 @@ Every one of these is **immutable** once published (see [above](#two-properties-
 
 ## Releases: tag, don't branch
 
+{% hint style="success" %}
+**Just want the steps?** See **[Cutting a release (how to tag)](cutting-a-release.md)** —
+plain instructions, no concepts. This section explains *why* it works that way.
+{% endhint %}
+
 You do **not** create a `1.0.0` branch to cut a release. A branch is mutable — cutting the release `1.0.0` from one would let a later push overwrite an already-released artifact. A release must come from an **immutable ref** — a tag.
 
 Instead:
@@ -105,7 +110,7 @@ line before a bullet list). See [Changelogs → Release notes](changelogs.md#rel
 {% hint style="info" %}
 **The `1.0` release-line branch is optional.** For a **one-off** release you can skip it and **tag `1.0.0` directly on `develop`** — the tag build promotes the `0.0.0-develop.N` build at that commit in exactly the same way. Create a `1.0` branch only when you need a **maintenance line** to cut later patches (`1.0.1`, `1.0.2`) independently while `develop` moves on.
 
-Either way there is one requirement: tag a commit CI has **already built** (an existing `…-rc.N` or `0.0.0-develop.N`), because the release **promotes that digest** rather than rebuilding. So: push, let the build go green, then tag that commit and push the tag. Tagging a commit CI never built fails with _"nothing to promote."_ (This applies to image repos; a chart-only repo like commons repackages fresh, so no prior build is needed.)
+Either way there is one requirement: tag a commit CI has **already built** (an existing `…-rc.N` or `0.0.0-develop.N`), because the release **promotes that digest** rather than rebuilding. So: **push the branch, let its build go GREEN, and only then tag that commit and push the tag.** Pushing the branch and the tag together starts two pipelines at once — the tag's promote step usually wins the race against the still-running build and fails with _"nothing to promote"_ (harmless: re-run it once the branch build is green). Tagging a commit CI never built fails the same way. (This applies to image repos; a chart-only repo like commons repackages fresh, so no prior build is needed.)
 {% endhint %}
 
 ### How versions flow — a worked example
@@ -180,6 +185,7 @@ git rev-list --reverse origin/develop | sed -n '39p'   # -> the commit for .39
 
 ## What's on the rest of these pages
 
+* [**Cutting a release (how to tag)**](cutting-a-release.md) — the step-by-step instructions for tagging and publishing a release. Start here when you actually need to ship one.
 * [**CI pipeline**](ci-pipeline.md) — how the reusable workflow builds, versions, promotes and publishes; the `@v1` rollout model; a diagram.
 * [**Changelogs**](changelogs.md) — where change notes are published, how to link them, the role of AI, and what happens when AI is unavailable.
 * [**Onboarding a repo**](onboarding-a-new-repo.md) — a step-by-step guide **and a copy-paste prompt** to add this to any new repo, plus moving the `v1` tag.
