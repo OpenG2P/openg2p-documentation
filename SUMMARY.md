@@ -734,6 +734,14 @@
   * [Scripts](tools/g2p-advisor/scripts.md)
   * [Gap & Feedback Loop](tools/g2p-advisor/gap-feedback-loop.md)
   * [Roadmap](tools/g2p-advisor/roadmap.md)
+* [OpenG2P Developer Setup](tools/openg2p-developer-setup/README.md)
+  * [Farmer Registry](tools/openg2p-developer-setup/farmer-registry.md)
+  * [National Social Registry](tools/openg2p-developer-setup/national-social-registry.md)
+  * [Custom Registry Gen2 extension](tools/openg2p-developer-setup/custom-registry-gen2-extension.md)
+  * [PBMS](tools/openg2p-developer-setup/pbms.md)
+  * [SPAR](tools/openg2p-developer-setup/spar.md)
+  * [G2P Bridge](tools/openg2p-developer-setup/g2p-bridge.md)
+  * [PBMS + SPAR + G2P Bridge](tools/openg2p-developer-setup/pbms-+-spar-+-g2p-bridge.md)
 
 ## Operations
 
