@@ -48,7 +48,7 @@ What it does, in order:
    * `/usr/local/bin/openg2p-backup-daily-report`
 5. **Per-group install** — gated by `groups.<name>` toggle and `--component` (when not `all`):
    * `pg`: pgBackRest on backup + storage, archive_command on PG, stanza-create, first full backup
-   * `etcd`: RKE2 snapshot schedule, rsync-pull SSH trust
+   * `etcd`: RKE2 snapshot schedule (every 6h), initial on-demand snapshot, rsync-pull SSH trust + first pull to backup host
    * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
    * `nfs`: storage-node NFS export + `ufw` allow for backup host; read-only NFS mount on backup host via `_nfs_ensure_ro_mount` (stops stale automounts, rewrites fstab without `x-systemd.automount`, remounts; falls back to `/mnt/openg2p-nfs-ro-dr` after DR IP changes); restic repo init
    * `configs`: restic repo for configs
@@ -89,7 +89,7 @@ Cheap integrity checks. No data restored. When `--component all`, every enabled 
 | Group | Verify command |
 |---|---|
 | pg | `pgbackrest verify` |
-| etcd | Finds the latest `etcd-snapshot-*` on the backup host (auto-pulls from compute once if empty). Runs `etcdctl`/`etcdutl snapshot status` locally; if the distro `etcd-client` cannot read RKE2's snapshot format, falls back to RKE2-bundled tools on compute and confirms the backup copy is present |
+| etcd | Finds the latest `etcd-snapshot-*` / `on-demand-*` on the backup host (auto-pulls from compute if empty; if compute also has none — common before the first 6h schedule tick — takes `rke2 etcd-snapshot save` then pulls). Runs `etcdctl`/`etcdutl snapshot status` locally; if the distro `etcd-client` cannot read RKE2's snapshot format, falls back to RKE2-bundled tools on compute |
 | rancher | Resolves the static NFS path (`/srv/nfs/<cluster>/rancher-backup` by default), SSHes to the storage node, confirms the latest `*.tar.gz` or `*.tar.gz.enc` is present and non-zero. Encrypted tarballs skip `gzip -t` (ciphertext, not plain gzip) |
 | nfs | `restic check --read-data-subset=5%` on the NFS repo |
 | configs | `restic check --read-data-subset=5%` on the configs repo |

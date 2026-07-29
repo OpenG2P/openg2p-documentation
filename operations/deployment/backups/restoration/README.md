@@ -43,7 +43,7 @@ For a full rebuild:
 
 1. Provision fresh nodes + run `openg2p-prod.sh install` to get the platform back
 2. Restore Postgres ([postgres-pitr.md](postgres-pitr.md) — omit `--point-in-time` for latest; the script uses pgBackRest `--type=immediate`)
-3. Restore Kubernetes resources via rancher-backup `Restore` CR ([full-rebuild.md](full-rebuild.md) Step 5 — restore the **pre-disaster** tarball onto NFS first after a storage rebuild)
+3. Restore Kubernetes resources via rancher-backup `Restore` CR ([full-rebuild.md](full-rebuild.md) Step 5 — tarball from **backup host restic**, fix **new** storage NFS IP first, manual `Restore` CR with `ignoreErrors`)
 4. Restore NFS data + reconcile PVC mappings via the sidecar manifest ([single-pvc.md](single-pvc.md); pin `--point-in-time <snapshot-id>` if needed)
 5. If `groups.objectstore` was enabled, restore object-store snapshots ([below](#object-store-restore-opt-in))
 6. Restart workloads, verify

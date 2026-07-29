@@ -106,43 +106,103 @@ ssh ubuntu@<storage> "sudo -u postgres psql -d postgres -c '\\l'"
 The fresh helmfile install recreated the platform's own resources. We now layer the user-state on top via a rancher-backup `Restore` CR.
 
 {% hint style="warning" %}
-**After a storage rebuild the live NFS `rancher-backup/` dir only has post-DR tarballs** (often an empty/new-cluster nightly). The orchestrator's `restore --component rancher` picks the **newest Backup CR `status.filename`**, not “the best pre-disaster file on disk.” `--target cluster` means cluster-wide restore; it does **not** select which tarball.
+**Kept the backup node but rebuilt storage/compute?** The **new** NFS export is empty. Pre-disaster rancher tarballs are **not** on the new storage node — they live in the **NFS restic repo on the backup host** (`/var/lib/openg2p-backup/restic/nfs`). Do **not** run `./openg2p-backup.sh restore --component rancher` first: it picks the newest `Backup` CR filename, which points at a **post-rebuild** tarball on the empty new NFS (or fails). For DR, always: **(1) fix NFS IPs → (2) copy tarball from backup host → (3) manual `Restore` CR**.
 {% endhint %}
 
-### 5a — Put the pre-disaster tarball back on NFS
+### 5a — Note the new storage NFS IP
 
-On the **backup host**, find the on-demand / nightly file inside NFS restic (captured under the export):
+After reprovision, the storage private IP changed. You need it for every NFS PV and for copying the tarball.
 
 ```bash
+# From your laptop — new IP is in provision-output.yaml
+grep storage_private_ip automation/production/provision-output.yaml
+
+# Or from the cluster StorageClass (what install used for the static rancher-backup PV)
+kubectl --kubeconfig ~/.kube/openg2p-prod get sc nfs-csi -o jsonpath='{.parameters.server}{"\n"}'
+```
+
+Write down:
+
+| Item | Example |
+|------|---------|
+| **New** storage private IP | `172.29.7.49` |
+| **Old** storage private IP (pre-disaster) | `172.29.0.104` (from your old notes / restored PV YAML) |
+| Rancher tarball path on NFS | `/srv/nfs/openg2p/rancher-backup/` |
+
+The pre-disaster rancher **backup tarball** and the **PV objects inside it** still reference the **old** NFS server IP. The new cluster's live PVs must use the **new** IP before and after restore.
+
+### 5b — Point the rancher-backup store PV at the new NFS IP
+
+`install` creates static PV `openg2p-rancher-backup-store` with the **current** storage IP. Confirm it **before** you restore — do not let the Restore CR try to rewrite this PV back to the old IP (that field is immutable and will fail).
+
+```bash
+kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
+  -o jsonpath='server={.spec.nfs.server} path={.spec.nfs.path}{"\n"}'
+```
+
+If `server` is wrong, patch it to the **new** storage IP (only safe when the PV is not bound to a running operator pod, or delete/recreate per your runbook):
+
+```bash
+NEW_STORAGE_IP=172.29.7.49   # your new private IP
+
+kubectl --kubeconfig ~/.kube/openg2p-prod patch pv openg2p-rancher-backup-store --type=merge -p "
+spec:
+  nfs:
+    server: ${NEW_STORAGE_IP}
+    path: /srv/nfs/openg2p/rancher-backup
+"
+```
+
+If patch fails with **immutable**, delete any stuck `Restore` CR, keep the PV with the new IP, and use `ignoreErrors: true` on the Restore (Step 5d) so restore does not try to replace this PV.
+
+### 5c — Extract the pre-disaster tarball from the **backup host** (not new NFS)
+
+On the **backup host** (`backup_private_ip` in config), the nightly NFS restic job captured the whole export, including `rancher-backup/*.tar.gz.enc` from the **old** cluster.
+
+```bash
+ssh ubuntu@<backup-host>
+
 export RESTIC_REPOSITORY=/var/lib/openg2p-backup/restic/nfs
-# unlock with restic.pass
-restic snapshots --tag nfs --compact
-restic find openg2p-ondemand   # or openg2p-nightly / a known date
-restic restore <snapshot-id> --target /tmp/rancher-old \
+export RESTIC_PASSWORD_FILE=/etc/openg2p-backup/restic.pass
+
+# List data snapshots (not pvc-manifest-only)
+sudo -E restic snapshots --tag nfs --compact
+
+# Find your pre-disaster rancher file (adjust date / name)
+sudo -E restic ls <snapshot-id> --tag nfs | grep -i rancher-backup
+# or:
+sudo -E restic find openg2p-ondemand
+sudo -E restic find openg2p-nightly
+
+# Restore only the tarball(s) you need into a temp dir
+SNAP=<pre-disaster-snapshot-id>
+sudo -E restic restore "$SNAP" --tag nfs --target /tmp/rancher-old \
   --include '**/rancher-backup/*.tar.gz.enc'
+
+sudo find /tmp/rancher-old -name '*.tar.gz.enc' -ls
+# Note the exact basename, e.g. openg2p-ondemand-20260721….tar.gz.enc
 ```
 
-Copy the chosen `*.tar.gz.enc` onto the **new** storage export (same path the static PV uses):
+This is the **only** source for the old rancher backup when the new storage NFS is empty.
+
+### 5d — Copy the tarball onto the **new** storage NFS
+
+The operator reads tarballs from `/srv/nfs/openg2p/rancher-backup/` on the **new** storage node (same path the static PV uses).
 
 ```bash
-# ubuntu SSH + sudo — do not scp as root (MOTD breaks scp) or as ubuntu into /srv/nfs directly
-scp -i <key> /tmp/rancher-old/.../openg2p-ondemand-….tar.gz.enc ubuntu@<storage>:/tmp/
-ssh -i <key> ubuntu@<storage> \
-  'sudo cp /tmp/openg2p-ondemand-….tar.gz.enc /srv/nfs/openg2p/rancher-backup/'
+# From backup host — stream to new storage (ubuntu + sudo; do not scp as root)
+TARBALL=/tmp/rancher-old/.../openg2p-ondemand-<exact>.tar.gz.enc
+NEW_STORAGE=ubuntu@<new-storage-ip>
+
+sudo tar -C "$(dirname "$TARBALL")" -czf - "$(basename "$TARBALL")" | \
+  ssh -i <key> "$NEW_STORAGE" 'sudo tar -C /srv/nfs/openg2p/rancher-backup -xzf -'
+
+ssh -i <key> "$NEW_STORAGE" 'sudo ls -lh /srv/nfs/openg2p/rancher-backup/'
 ```
 
-### 5b — Apply Restore for that filename
+### 5e — Apply `Restore` for that exact file (manual CR)
 
-If no newer Backup CR exists, the script may pick the file you just copied:
-
-```bash
-./openg2p-backup.sh restore \
-    --config backup-config.yaml \
-    --component rancher \
-    --target cluster
-```
-
-If a newer nightly already exists (or you must pin a specific file), apply the Restore CR yourself:
+Use the **basename** you copied. Set `ignoreErrors: true` on full rebuild (duplicate Users, immutable PVs, etc.).
 
 ```bash
 kubectl --kubeconfig ~/.kube/openg2p-prod apply -f - <<EOF
@@ -154,32 +214,62 @@ spec:
   backupFilename: openg2p-ondemand-<exact-basename>.tar.gz.enc
   encryptionConfigSecretName: openg2p-backup-encryption
   prune: false
-  ignoreErrors: true   # recommended on full rebuild — see below
+  ignoreErrors: true
 EOF
 ```
 
-The operator handles:
-* Recreating Secrets (incl. Helm release secrets — restoring these means `helm list` will show your prior releases again)
-* Recreating CRs (Rancher state, cert-manager Issuers + Certificates, Istio configs, Keycloak realms if operator-managed, monitoring rules)
-* Recreating PV + PVC objects with their original `claimRef` bindings (NFS paths = **pre-disaster UUIDs**)
+Do **not** rely on `./openg2p-backup.sh restore --component rancher` for DR — it does not select a pre-disaster file from restic and may pick a new-cluster nightly instead.
 
 Watch progress:
+
 ```bash
 kubectl --kubeconfig ~/.kube/openg2p-prod get restore.resources.cattle.io -A -w
 kubectl --kubeconfig ~/.kube/openg2p-prod -n cattle-resources-system \
   logs -l app.kubernetes.io/name=rancher-backup --tail=100
 ```
 
-The Restore CR transitions through `Pending` → `Running` → `Done`. Common **full-rebuild** failures:
+The operator recreates Secrets, CRs, and PV/PVC objects from the tarball. Those PVs still carry the **old** NFS `server` IP inside the backup.
+
+### 5f — Fix NFS server IP on restored PVs (old IP → new IP)
+
+After restore, patch application PVs that still point at the dead storage IP:
+
+```bash
+OLD_IP=172.29.0.104    # pre-disaster storage private IP
+NEW_IP=172.29.7.49     # new storage private IP from Step 5a
+
+kubectl --kubeconfig ~/.kube/openg2p-prod get pv -o json \
+  | jq -r --arg old "$OLD_IP" '.items[] | select(.spec.nfs.server==$old) | .metadata.name'
+
+# Patch each (or script). Example for one PV:
+kubectl --kubeconfig ~/.kube/openg2p-prod patch pv <pv-name> --type=merge -p "
+spec:
+  nfs:
+    server: ${NEW_IP}
+"
+```
+
+If patch fails with **immutable** on an existing PV, delete the empty new PV/PVC pair from the fresh install and let restore recreate it, or delete the conflicting object and re-apply restore with `ignoreErrors: true`. **Do not** change `openg2p-rancher-backup-store` back to the old IP — keep it on the new storage IP.
+
+Confirm rancher-backup store still correct:
+
+```bash
+kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
+  -o jsonpath='{.spec.nfs.server}{"\n"}'
+# must print the NEW storage IP
+```
+
+### Common Step 5 failures
 
 | Log / status | What to do |
 |---|---|
-| `PersistentVolume "openg2p-rancher-backup-store" … spec.persistentvolumesource is immutable` (old vs new storage IP) | Keep the **new** PV (`172.29.x` current). Do not let restore rewrite NFS `server`. Use `ignoreErrors: true`, or delete the stuck Restore and re-apply with that flag. Confirm afterward: `kubectl get pv openg2p-rancher-backup-store -o jsonpath='{.spec.nfs.server}{"\n"}'` |
-| `users.management.cattle.io` / “username already exists” | Duplicate Rancher user vs fresh install — usually safe to ignore with `ignoreErrors: true`, or delete the conflicting User before re-running |
-| Other “already exists” / immutable fields | Inspect the GVK in operator logs; fix or ignore per resource |
+| Restore used wrong / empty tarball | You skipped 5c–5d — tarball must come from **backup host restic**, not new NFS |
+| `openg2p-rancher-backup-store` … `spec.nfs` is immutable (old vs new IP) | Keep PV on **new** IP (5b); use `ignoreErrors: true` (5e) |
+| `users.management.cattle.io` / username already exists | Safe to ignore with `ignoreErrors: true` |
+| App PVCs Pending / wrong NFS | Run 5f — patch `spec.nfs.server` on restored PVs to **new** storage IP |
 
 {% hint style="info" %}
-The orchestrator-generated Restore CR sets `prune: false` only — it does **not** set `ignoreErrors`. On DR, prefer the manual CR above once the pre-disaster tarball is on NFS.
+The orchestrator-generated Restore CR sets `prune: false` only — no `ignoreErrors`, and no restic tarball pick. On DR, use the manual flow above.
 {% endhint %}
 
 ## Step 6 — Restore NFS data
