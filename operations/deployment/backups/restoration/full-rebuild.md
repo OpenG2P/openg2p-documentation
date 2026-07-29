@@ -106,7 +106,7 @@ ssh ubuntu@<storage> "sudo -u postgres psql -d postgres -c '\\l'"
 The fresh helmfile install recreated the platform's own resources. We now layer the user-state on top via a rancher-backup `Restore` CR.
 
 {% hint style="warning" %}
-**Kept the backup node but rebuilt storage/compute?** The **new** NFS export is empty. Pre-disaster rancher tarballs are **not** on the new storage node — they live in the **NFS restic repo on the backup host** (`/var/lib/openg2p-backup/restic/nfs`). Do **not** run `./openg2p-backup.sh restore --component rancher` first: it picks the newest `Backup` CR filename, which points at a **post-rebuild** tarball on the empty new NFS (or fails). For DR, always: **(1) fix NFS IPs → (2) copy tarball from backup host → (3) manual `Restore` CR**.
+**Kept the backup node but rebuilt storage/compute?** The **new** NFS export is empty. Pre-disaster rancher tarballs live in the **NFS restic repo on the backup host** (`/var/lib/openg2p-backup/restic/nfs`). For DR you **must** pass `--point-in-time <cutoff>` so the orchestrator picks a **pre-disaster** tarball from restic, copies it onto the new NFS, and applies a Restore CR with `ignoreErrors: true`. Without a cutoff, `restore --component rancher` uses the newest Backup CR filename on the cluster (often a useless post-rebuild nightly).
 {% endhint %}
 
 ### 5a — Note the new storage NFS IP
@@ -137,7 +137,7 @@ The pre-disaster rancher **backup tarball** and the **PV objects inside it** sti
 
 Confirm it before you restore:
 - If `server` already equals the **new** storage private IP, you can **skip the patch** in this step.
-- Even if it’s correct, the restore tarball still contains old PV definitions; on full rebuilds the restore operator may hit immutable-field conflicts. That's why Step 5e uses `ignoreErrors: true`.
+- Even if it’s correct, the restore tarball still contains old PV definitions; on full rebuilds the restore operator may hit immutable-field conflicts. That's why Step 5c uses `ignoreErrors: true`.
 
 ```bash
 kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
@@ -159,70 +159,27 @@ spec:
 
 If patch fails with **immutable**, delete any stuck `Restore` CR, keep the PV with the new IP, and use `ignoreErrors: true` on the Restore (Step 5d) so restore does not try to replace this PV.
 
-### 5c — Extract the pre-disaster tarball from the **backup host** (not new NFS)
+### 5c — Orchestrator: restic → new NFS → Restore CR
 
-On the **backup host** (`backup_private_ip` in config), the nightly NFS restic job captured the whole export, including `rancher-backup/*.tar.gz.enc` from the **old** cluster.
+Like postgres restore, DR rancher restore now pulls from the **backup host** restic repo, places the tarball on the **new** storage NFS (`/srv/nfs/openg2p/rancher-backup/`), and applies a Restore CR (`ignoreErrors: true`).
 
-```bash
-ssh ubuntu@<backup-host>
-
-export RESTIC_REPOSITORY=/var/lib/openg2p-backup/restic/nfs
-export RESTIC_PASSWORD_FILE=/etc/openg2p-backup/restic.pass
-
-# List data snapshots (not pvc-manifest-only)
-sudo -E restic snapshots --tag nfs --compact
-
-# Find your pre-disaster rancher file (adjust date / name)
-sudo -E restic ls <snapshot-id> --tag nfs | grep -i rancher-backup
-# or:
-sudo -E restic find openg2p-ondemand
-sudo -E restic find openg2p-nightly
-
-# Restore only the tarball(s) you need into a temp dir
-SNAP=<pre-disaster-snapshot-id>
-sudo -E restic restore "$SNAP" --tag nfs --target /tmp/rancher-old \
-  --include '**/rancher-backup/*.tar.gz.enc'
-
-sudo find /tmp/rancher-old -name '*.tar.gz.enc' -ls
-# Note the exact basename, e.g. openg2p-ondemand-20260721….tar.gz.enc
-```
-
-This is the **only** source for the old rancher backup when the new storage NFS is empty.
-
-### 5d — Copy the tarball onto the **new** storage NFS
-
-The operator reads tarballs from `/srv/nfs/openg2p/rancher-backup/` on the **new** storage node (same path the static PV uses).
+`--point-in-time` is a **cutoff** (not a restic snapshot id): the newest `rancher-backup/*.tar.gz.enc` whose filename timestamp is **strictly before** the cutoff is selected.
 
 ```bash
-# From backup host — stream to new storage (ubuntu + sudo; do not scp as root)
-TARBALL=/tmp/rancher-old/.../openg2p-ondemand-<exact>.tar.gz.enc
-NEW_STORAGE=ubuntu@<new-storage-ip>
+# Cutoff = disaster time (or just before). Date-only ⇒ 00:00:00Z that day.
+./openg2p-backup.sh restore \
+    --config backup-config.yaml \
+    --component rancher \
+    --target cluster \
+    --point-in-time '2026-07-22T00:00:00' \
+    --dry-run    # optional: print selected tarball only
 
-sudo tar -C "$(dirname "$TARBALL")" -czf - "$(basename "$TARBALL")" | \
-  ssh -i <key> "$NEW_STORAGE" 'sudo tar -C /srv/nfs/openg2p/rancher-backup -xzf -'
-
-ssh -i <key> "$NEW_STORAGE" 'sudo ls -lh /srv/nfs/openg2p/rancher-backup/'
+./openg2p-backup.sh restore \
+    --config backup-config.yaml \
+    --component rancher \
+    --target cluster \
+    --point-in-time '2026-07-22T00:00:00'
 ```
-
-### 5e — Apply `Restore` for that exact file (manual CR)
-
-Use the **basename** you copied. Set `ignoreErrors: true` on full rebuild (duplicate Users, immutable PVs, etc.).
-
-```bash
-kubectl --kubeconfig ~/.kube/openg2p-prod apply -f - <<EOF
-apiVersion: resources.cattle.io/v1
-kind: Restore
-metadata:
-  name: openg2p-restore-from-ondemand
-spec:
-  backupFilename: openg2p-ondemand-<exact-basename>.tar.gz.enc
-  encryptionConfigSecretName: openg2p-backup-encryption
-  prune: false
-  ignoreErrors: true
-EOF
-```
-
-Do **not** rely on `./openg2p-backup.sh restore --component rancher` for DR — it does not select a pre-disaster file from restic and may pick a new-cluster nightly instead.
 
 Watch progress:
 
@@ -232,9 +189,13 @@ kubectl --kubeconfig ~/.kube/openg2p-prod -n cattle-resources-system \
   logs -l app.kubernetes.io/name=rancher-backup --tail=100
 ```
 
-The operator recreates Secrets, CRs, and PV/PVC objects from the tarball. Those PVs still carry the **old** NFS `server` IP inside the backup.
+{% hint style="info" %}
+**Manual fallback** (if the orchestrator cannot reach storage SSH): on the backup host, `restic snapshots --tag nfs`, `restic restore … --include '**/rancher-backup/*.tar.gz.enc'`, stream the file to `ubuntu@<new-storage>:/srv/nfs/openg2p/rancher-backup/`, then apply a Restore CR with `backupFilename: <basename>`, `prune: false`, `ignoreErrors: true`.
+{% endhint %}
 
-### 5f — Fix NFS server IP on restored PVs (old IP → new IP)
+The operator recreates Secrets, CRs, and PV/PVC objects from the tarball. Those PVs may still carry the **old** NFS `server` IP inside the backup.
+
+### 5d — Fix NFS server IP on restored PVs (old IP → new IP)
 
 After restore, some **native NFS** PVs may still point at the dead storage IP. Patch those if `spec.nfs` is present:
 
@@ -253,7 +214,7 @@ spec:
 "
 ```
 
-**`nfs-csi` PVs cannot be patched** this way (`spec.csi` / volume source is immutable). For CSI volumes, leave the Bound PV alone and put restored data under its `subDir` on the new NFS (Step 6). Delete unused **Released** PVs after cutover.
+**`nfs-csi` PVs cannot be patched** this way (`spec.csi` / volume source is immutable). For CSI volumes, leave the Bound PV alone — Step 6 (`nfs` restore) pushes data under its `subDir`. Delete unused **Released** PVs after cutover.
 
 If a native NFS patch fails with **immutable**, delete the conflicting empty PV/PVC from the fresh install and re-apply restore with `ignoreErrors: true`, or recreate the PV. **Do not** change `openg2p-rancher-backup-store` back to the old IP — keep it on the new storage IP.
 
@@ -269,45 +230,39 @@ kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
 
 | Log / status | What to do |
 |---|---|
-| Restore used wrong / empty tarball | You skipped 5c–5d — tarball must come from **backup host restic**, not new NFS |
-| `openg2p-rancher-backup-store` … `spec.nfs` is immutable (old vs new IP) | Keep PV on **new** IP (5b); use `ignoreErrors: true` (5e) |
+| Restore used wrong / empty tarball | Re-run 5c with a cutoff **before** disaster; confirm file under `/srv/nfs/openg2p/rancher-backup/` on **new** storage |
+| `openg2p-rancher-backup-store` … `spec.nfs` is immutable (old vs new IP) | Keep PV on **new** IP (5b); Restore CR already sets `ignoreErrors: true` |
 | `users.management.cattle.io` / username already exists | Safe to ignore with `ignoreErrors: true` |
-| App PVCs Pending / wrong NFS | Native NFS: patch `spec.nfs.server` (5f). CSI: put data under Bound `subDir` (Step 6); do not patch CSI attributes |
-
-{% hint style="info" %}
-The orchestrator-generated Restore CR sets `prune: false` only — no `ignoreErrors`, and no restic tarball pick. On DR, use the manual flow above.
-{% endhint %}
+| App PVCs Pending / wrong NFS | Native NFS: patch `spec.nfs.server` (5d). CSI: nfs restore pushes under Bound `subDir` (Step 6); do not patch CSI attributes |
 
 ## Step 6 — Restore NFS data
 
 Now the cluster knows about every original PV and PVC, but their NFS-backed data dirs are empty (or newly created empty UUID dirs) on the new storage node.
 
-For each PVC that needs data:
+Like postgres restore, `restore --component nfs` stages from restic on the backup host **and pushes** onto the **Bound** PV path on the new storage node (CSI `subDir` or native NFS basename).
+
+For each PVC that needs data (scale the workload down first):
 
 ```bash
 ./openg2p-backup.sh restore \
     --config backup-config.yaml \
     --component nfs \
     --target <namespace>/<pvc>
-# After DR, pin a pre-disaster snapshot if latest --tag nfs is empty:
+# After DR, pin a pre-disaster snapshot if latest --tag nfs is empty/new:
 #   --point-in-time <restic-snapshot-id>
 ```
 
-Details (`--tag nfs` vs `pvc-manifest`, empty-restore failure, UUID matching) are in [single-pvc.md](single-pvc.md). Staging lands on the **backup host** under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`.
+Details (`--tag nfs` vs `pvc-manifest`, empty-restore failure, UUID matching) are in [single-pvc.md](single-pvc.md).
 
-### Where to put the data on the new NFS (`nfs-csi`)
-
-After a full rebuild you usually have **two** UUID trees:
+### Bound vs restored UUID (`nfs-csi`)
 
 | Tree | Origin | What uses it |
 |------|--------|--------------|
-| **Bound** PV `subDir` (new UUID from helmfile) | Fresh install | Running pods |
-| **Restored** dir (old UUID from restic / rancher tarball) | Pre-disaster backup | Nothing, until you copy into the Bound path |
-
-Pods follow the **Bound** PV. Putting restored bytes only under the old UUID leaves the app on an empty new path.
+| **Bound** PV `subDir` (new UUID from helmfile) | Fresh install | Running pods — **orchestrator push target** |
+| **Restored** dir (old UUID from restic) | Pre-disaster backup | Staging only; then pushed into Bound path |
 
 ```bash
-# See the path each Bound PVC actually mounts
+# Confirm Bound destinations
 kubectl --kubeconfig ~/.kube/openg2p-prod get pv -o json | jq -r '
   .items[]
   | select(.status.phase=="Bound" and .spec.csi!=null)
@@ -315,25 +270,11 @@ kubectl --kubeconfig ~/.kube/openg2p-prod get pv -o json | jq -r '
 '
 ```
 
-**Recommended:** scale the app down, then put restored contents into the Bound `subDir` name (replace the whole directory, or `rsync -a` after clearing the empty new tree). Do **not** use `mv chunks …/chunks/` into a non-empty destination — `mv` will not merge (`Directory not empty`), and `mv` has no `-r`.
-
-```bash
-# Example on storage — replace Bound path with restored tree
-NEW=observability-loki-minio-pvc-<bound-uuid>
-OLD=observability-loki-minio-pvc-<restored-uuid>   # or under old/
-
-mv "$NEW" "${NEW}.precrash"
-mv "$OLD" "$NEW"
-chown -R 1001:1001 "$NEW"   # Bitnami MinIO; match the app otherwise
-```
-
-Copy from backup host with the tar pipe (`ubuntu` + `sudo`) from [single-pvc.md Step 4](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export). **Create the destination directory first** (`sudo mkdir -p …`) or tar fails with `Cannot open: No such file or directory`.
-
 {% hint style="warning" %}
-**CSI PVs cannot be patched** to change `server` / `subDir` (`spec.persistentvolumesource` is immutable). Native `spec.nfs` patches also often fail. Prefer putting data under the Bound path. Delete leftover **Released** PVs after cutover if they are unused.
+**CSI PVs cannot be patched** to change `server` / `subDir` (`spec.persistentvolumesource` is immutable). Prefer the orchestrator push. Delete leftover **Released** PVs after cutover if unused.
 {% endhint %}
 
-For lots of PVCs, script the mapping. Prefer a **pre-disaster** sidecar / restic snapshot if the live `.pvc-mapping.yaml` was regenerated against empty new dirs.
+Manual tar/rsync fallback (only if SSH push fails) is in [single-pvc.md](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export-manual-fallback).
 
 ## Step 7 — Object store (opt-in)
 
@@ -353,26 +294,15 @@ The fresh install regenerated:
 * Wireguard server keys (different pubkey!)
 * RKE2 cluster CA
 
-If you want to keep the **original** identities (so admin laptops' Wireguard configs and trusted CA cert still work), restore the configs group:
+If you want to keep the **original** identities (so admin laptops' Wireguard configs and trusted CA cert still work), restore the configs group — the orchestrator pushes onto the **RP** node and restarts the matching service:
 
 ```bash
 ./openg2p-backup.sh restore --config backup-config.yaml --component configs --target wireguard
+./openg2p-backup.sh restore --config backup-config.yaml --component configs --target nginx
 ./openg2p-backup.sh restore --config backup-config.yaml --component configs --target openg2p   # local CA, dnsmasq
 ```
 
-Each command stages on the **backup host** at `/tmp/openg2p-configs-restore/<tag>-<ts>/` and extracts the tarball to `extracted/` when present. Copy onto the RP node and restart:
-
-```bash
-# Example — Wireguard (adjust <ts> from the restore log)
-ssh ubuntu@<backup-host> sudo tar -C /tmp/openg2p-configs-restore/wireguard-<ts>/extracted -czf - . | \
-  ssh ubuntu@<rp-host> "sudo tar -C /etc/wireguard -xzf -"
-ssh ubuntu@<rp-host> "sudo systemctl restart wg-quick@wg0"   # unit name may vary
-
-# Local CA / dnsmasq tree
-ssh ubuntu@<backup-host> sudo tar -C /tmp/openg2p-configs-restore/openg2p-<ts>/extracted -czf - . | \
-  ssh ubuntu@<rp-host> "sudo tar -C /etc/openg2p -xzf -"
-# restart dnsmasq / nginx as needed for your install
-```
+Prior contents are moved aside to `*.precrash` on the RP. RKE2 tags (`rke2-tls`, `rke2-cred`, …) push onto **compute** instead (pair with etcd in-place restore when needed).
 
 This is optional — most operators accept regenerating these and re-distributing Wireguard client configs to admin laptops.
 

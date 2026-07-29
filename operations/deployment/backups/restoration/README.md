@@ -22,7 +22,11 @@ PVC-backed object data under the NFS export is restored via [single-pvc.md](sing
 
 ## General principles
 
-**Restore is always staged first.** The orchestrator never overwrites live data. Every restore lands in a `/var/lib/openg2p-backup-restore/` (storage / backup host) or `/tmp/openg2p-*-restore/` directory and the operator follows a runbook step to make the cutover.
+**Where restore lands depends on the component:**
+* **nfs / rancher / configs (RP tags)** — orchestrator places data on the live target (new storage NFS or RP).
+* **etcd** — snapshot is copied onto compute; cluster-reset remains a manual maintenance step.
+* **pg** — staged on storage; cutover follows the postgres runbook.
+* **objectstore** — staged on the **backup host** only (no push into MinIO).
 
 **Use `--dry-run` first.** Every restore subcommand supports `--dry-run`, which prints what would happen without doing it.
 
@@ -43,12 +47,12 @@ For a full rebuild:
 
 1. Provision fresh nodes + run `openg2p-prod.sh install` to get the platform back
 2. Restore Postgres ([postgres-pitr.md](postgres-pitr.md) — omit `--point-in-time` for latest; the script uses pgBackRest `--type=immediate`)
-3. Restore Kubernetes resources via rancher-backup `Restore` CR ([full-rebuild.md](full-rebuild.md) Step 5 — tarball from **backup host restic**, fix **new** storage NFS IP first, manual `Restore` CR with `ignoreErrors`)
-4. Restore NFS data + reconcile PVC mappings via the sidecar manifest ([single-pvc.md](single-pvc.md); pin `--point-in-time <snapshot-id>` if needed)
-5. If `groups.objectstore` was enabled, restore object-store snapshots ([below](#object-store-restore-opt-in))
-6. Restart workloads, verify
-   * After a storage rebuild, update **Keycloak** and **Superset** ConfigMaps/Secrets to the **new** Postgres private IP before expecting those apps to stay healthy ([full-rebuild.md Step 9](full-rebuild.md#step-9-bounce-workloads--verify)).
-   * For `nfs-csi`, put restored PVC data under each **Bound** PV’s `subDir`, not only under the old UUID path ([single-pvc.md](single-pvc.md)).
+3. Restore Kubernetes resources ([full-rebuild.md](full-rebuild.md) Step 5 — `restore --component rancher --point-in-time <cutoff>` pulls tarball from backup-host restic onto new NFS)
+4. Restore NFS PVC data ([single-pvc.md](single-pvc.md); `restore --component nfs` pushes onto each **Bound** PV `subDir`; pin `--point-in-time <snapshot-id>` if needed)
+5. If `groups.objectstore` was enabled, restore object-store snapshots onto the **backup host** ([below](#object-store-restore-opt-in)), then sync into MinIO yourself
+6. Optionally restore RP configs (`wireguard` / `nginx` / `openg2p`) — they push onto the RP node
+7. Restart workloads, verify
+   * After a storage rebuild, update **Keycloak** and **Superset** ConfigMaps/Secrets to the **new** Postgres private IP ([full-rebuild.md Step 9](full-rebuild.md#step-9-bounce-workloads--verify)).
 
 For control-plane recovery without rebuilding:
 

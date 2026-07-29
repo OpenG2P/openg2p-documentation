@@ -29,7 +29,9 @@ If the compute node is destroyed or unreachable, use [Full rebuild](full-rebuild
     --target latest
 ```
 
-This `scp`s the chosen snapshot to `/tmp/openg2p-etcd-restore/` on the compute node. It does **not** apply it. The orchestrator prints the next commands to run.
+This copies the chosen snapshot to `/tmp/openg2p-etcd-restore/` on the **current** compute node from config (`compute_private_ip` — after a rebuild that is the **new** compute). It does **not** apply the snapshot. The orchestrator prints the cluster-reset commands to run next.
+
+Uses the backup-host orch SSH path (`Host openg2p-compute` / `openg2p-backup-orch`), so `install --force` after DR rewires the destination IP automatically.
 
 For a specific snapshot file:
 
@@ -43,7 +45,7 @@ Skip if: you're rolling back to a snapshot taken *after* the most recent change 
 
 If the FS state on the compute node is intact and matches the era of the snapshot, **skip this step** and go to Step 3. The cluster CA in `tls/` is what signed all the certs etcd refers to.
 
-If the FS state is broken (compute node had a partial wipe, or you're not sure it matches), restore from the configs repo:
+If the FS state is broken (compute node had a partial wipe, or you're not sure it matches), restore from the configs repo — the orchestrator pushes onto **compute**:
 
 ```bash
 ./openg2p-backup.sh restore --config backup-config.yaml --component configs --target rke2-tls
@@ -51,14 +53,7 @@ If the FS state is broken (compute node had a partial wipe, or you're not sure i
 ./openg2p-backup.sh restore --config backup-config.yaml --component configs --target rke2-token
 ```
 
-Each lands in `/tmp/openg2p-configs-restore/<tag>-<ts>/extracted/` on the **backup host**. Copy them onto the compute node:
-
-```bash
-ssh ubuntu@<backup-host> sudo tar -C /tmp/openg2p-configs-restore/rke2-tls-<ts>/extracted -czf - . | \
-    ssh ubuntu@<compute-host> "sudo tar -C /var/lib/rancher/rke2/server/tls -xzf -"
-
-# Same for cred/ and (if restored) the token files.
-```
+Each writes under the live RKE2 paths on compute (prior trees → `*.precrash`). Do **not** restart `rke2-server` here — continue to Step 3 (cluster reset).
 
 ## Step 3 — Cluster reset and restore
 

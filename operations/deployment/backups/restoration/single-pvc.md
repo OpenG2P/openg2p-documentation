@@ -39,21 +39,27 @@ You'll see entries like:
     --dry-run
 ```
 
-Confirms the manifest entry and prints the staging path it would use.
+Confirms the restic source and the **Bound** PV destination on storage it would push to.
 
-## Step 3 — Stage the restore
+## Step 3 — Restore (restic → Bound path on storage)
+
+Scale the app down first, then:
 
 ```bash
+kubectl --kubeconfig ~/.kube/openg2p-prod scale deploy keycloak -n keycloak --replicas=0
+
 ./openg2p-backup.sh restore \
     --config backup-config.yaml \
     --component nfs \
     --target keycloak/keycloak-data
+
+kubectl --kubeconfig ~/.kube/openg2p-prod scale deploy keycloak -n keycloak --replicas=1
 ```
 
 This:
-1. Reads the sidecar manifest, finds the NFS path for that PVC.
-2. `restic restore latest --tag nfs --include *<nfs-path>*` into `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<timestamp>/` on the **backup host**. The `--tag nfs` filter is required: each nightly run also writes a separate `pvc-manifest` snapshot (only `.pvc-mapping.yaml`); without the tag, `latest` often selects that empty sidecar and you get a “successful” restore of 0 bytes.
-3. Stops there. Fails if the staged directory is empty or the path is missing from the snapshot.
+1. Resolves the live **Bound** PV `subDir` (or native NFS basename) for `namespace/pvc`.
+2. `restic restore … --tag nfs` on the backup host (fails if empty).
+3. Pushes the restored tree over SSH onto `${nfs.export_root}/<Bound-subdir>` on storage (moves any existing contents aside to `.precrash`). Bitnami MinIO dirs get `chown 1001:1001`.
 
 ### After a full rebuild (DR)
 
@@ -72,53 +78,45 @@ restic ls <snapshot-id> | grep commons-services-keymanager
     --point-in-time <snapshot-id>
 ```
 
-Also confirm the sidecar `nfs_path` is the **old** UUID (from the rancher-restored PV), not a new empty dir created by the fresh helmfile install.
+The push still targets the **Bound** (new) UUID, even when restic contains the old UUID path.
 
-## Step 4 — Push the data to the live NFS export
+## Step 4 — Push the data to the live NFS export (manual fallback)
 
-The NFS export is mounted **read-only** on the backup host. To replace the live data, copy from the backup host to the storage node.
+Only needed if the orchestrator SSH push failed. The NFS export is mounted **read-only** on the backup host.
 
-### Plan A — replace the whole PVC's contents (most common)
+### Plan A — replace the whole PVC's contents
 
 ```bash
 # Pause the app so it's not writing during the swap.
 kubectl --kubeconfig ~/.kube/openg2p-prod scale deploy keycloak -n keycloak --replicas=0
 
-# Find the live NFS path on storage. The export root + UUID:
-ssh ubuntu@<storage-host> ls -la /srv/nfs/openg2p/pvc-abc123-def456/
+# Bound subDir (post-DR this is the NEW uuid):
+BOUND=$(kubectl --kubeconfig ~/.kube/openg2p-prod get pv -o json | jq -r '
+  .items[] | select(.status.phase=="Bound"
+    and .spec.claimRef.namespace=="keycloak"
+    and .spec.claimRef.name=="keycloak-data")
+  | .spec.csi.volumeAttributes.subDir')
 
-# Create the destination if it does not exist yet (tar -C fails otherwise).
-ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/pvc-abc123-def456
+ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/"$BOUND"
+ssh ubuntu@<storage-host> sudo mv /srv/nfs/openg2p/"$BOUND" /srv/nfs/openg2p/"$BOUND".precrash
+ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/"$BOUND"
 
-# Backup the current state aside (don't delete!).
-ssh ubuntu@<storage-host> sudo mv /srv/nfs/openg2p/pvc-abc123-def456 /srv/nfs/openg2p/pvc-abc123-def456.precrash
-ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/pvc-abc123-def456
-
-# Copy from backup host to storage. Use tar over SSH (ubuntu + sudo; not root@ scp).
+# Staging path from a prior restic restore on the backup host
 ssh ubuntu@<backup-host> "sudo tar -C /tmp/openg2p-nfs-restore/keycloak-keycloak-data-<ts>/<nfs-path> -czf - ." | \
-    ssh ubuntu@<storage-host> "sudo tar -C /srv/nfs/openg2p/pvc-abc123-def456 -xzf -"
+    ssh ubuntu@<storage-host> "sudo tar -C /srv/nfs/openg2p/$BOUND -xzf -"
 
-ssh ubuntu@<storage-host> sudo chown -R nobody:nogroup /srv/nfs/openg2p/pvc-abc123-def456
-# (chown depends on your NFS export's no_root_squash settings — match what the
-# original directory had.)
+ssh ubuntu@<storage-host> sudo chown -R 1001:1001 /srv/nfs/openg2p/"$BOUND"   # Bitnami MinIO; else match the app
 
-# Bring the app back.
 kubectl --kubeconfig ~/.kube/openg2p-prod scale deploy keycloak -n keycloak --replicas=1
 ```
 
-After verifying the app is healthy, remove the `.precrash` aside.
-
 ### Plan B — selective file restore
 
-For when you just need a few files back:
-
 ```bash
-# Inspect what restic restored.
 ssh ubuntu@<backup-host> sudo find /tmp/openg2p-nfs-restore/keycloak-keycloak-data-<ts> -type f
 
-# Copy just the file you need.
 ssh ubuntu@<backup-host> "sudo cat /tmp/openg2p-nfs-restore/.../themes/openg2p/login.ftl" | \
-    ssh ubuntu@<storage-host> "sudo tee /srv/nfs/openg2p/pvc-abc123-def456/themes/openg2p/login.ftl"
+    ssh ubuntu@<storage-host> "sudo tee /srv/nfs/openg2p/\$BOUND/themes/openg2p/login.ftl"
 ```
 
 ## Step 5 — Verify
