@@ -47,6 +47,8 @@ For a full rebuild:
 4. Restore NFS data + reconcile PVC mappings via the sidecar manifest ([single-pvc.md](single-pvc.md); pin `--point-in-time <snapshot-id>` if needed)
 5. If `groups.objectstore` was enabled, restore object-store snapshots ([below](#object-store-restore-opt-in))
 6. Restart workloads, verify
+   * After a storage rebuild, update **Keycloak** and **Superset** ConfigMaps/Secrets to the **new** Postgres private IP before expecting those apps to stay healthy ([full-rebuild.md Step 9](full-rebuild.md#step-9-bounce-workloads--verify)).
+   * For `nfs-csi`, put restored PVC data under each **Bound** PV’s `subDir`, not only under the old UUID path ([single-pvc.md](single-pvc.md)).
 
 For control-plane recovery without rebuilding:
 

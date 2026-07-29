@@ -133,7 +133,11 @@ The pre-disaster rancher **backup tarball** and the **PV objects inside it** sti
 
 ### 5b — Point the rancher-backup store PV at the new NFS IP
 
-`install` creates static PV `openg2p-rancher-backup-store` with the **current** storage IP. Confirm it **before** you restore — do not let the Restore CR try to rewrite this PV back to the old IP (that field is immutable and will fail).
+`install` creates static PV `openg2p-rancher-backup-store` with the **current** storage IP.
+
+Confirm it before you restore:
+- If `server` already equals the **new** storage private IP, you can **skip the patch** in this step.
+- Even if it’s correct, the restore tarball still contains old PV definitions; on full rebuilds the restore operator may hit immutable-field conflicts. That's why Step 5e uses `ignoreErrors: true`.
 
 ```bash
 kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
@@ -232,7 +236,7 @@ The operator recreates Secrets, CRs, and PV/PVC objects from the tarball. Those 
 
 ### 5f — Fix NFS server IP on restored PVs (old IP → new IP)
 
-After restore, patch application PVs that still point at the dead storage IP:
+After restore, some **native NFS** PVs may still point at the dead storage IP. Patch those if `spec.nfs` is present:
 
 ```bash
 OLD_IP=172.29.0.104    # pre-disaster storage private IP
@@ -249,7 +253,9 @@ spec:
 "
 ```
 
-If patch fails with **immutable** on an existing PV, delete the empty new PV/PVC pair from the fresh install and let restore recreate it, or delete the conflicting object and re-apply restore with `ignoreErrors: true`. **Do not** change `openg2p-rancher-backup-store` back to the old IP — keep it on the new storage IP.
+**`nfs-csi` PVs cannot be patched** this way (`spec.csi` / volume source is immutable). For CSI volumes, leave the Bound PV alone and put restored data under its `subDir` on the new NFS (Step 6). Delete unused **Released** PVs after cutover.
+
+If a native NFS patch fails with **immutable**, delete the conflicting empty PV/PVC from the fresh install and re-apply restore with `ignoreErrors: true`, or recreate the PV. **Do not** change `openg2p-rancher-backup-store` back to the old IP — keep it on the new storage IP.
 
 Confirm rancher-backup store still correct:
 
@@ -266,7 +272,7 @@ kubectl --kubeconfig ~/.kube/openg2p-prod get pv openg2p-rancher-backup-store \
 | Restore used wrong / empty tarball | You skipped 5c–5d — tarball must come from **backup host restic**, not new NFS |
 | `openg2p-rancher-backup-store` … `spec.nfs` is immutable (old vs new IP) | Keep PV on **new** IP (5b); use `ignoreErrors: true` (5e) |
 | `users.management.cattle.io` / username already exists | Safe to ignore with `ignoreErrors: true` |
-| App PVCs Pending / wrong NFS | Run 5f — patch `spec.nfs.server` on restored PVs to **new** storage IP |
+| App PVCs Pending / wrong NFS | Native NFS: patch `spec.nfs.server` (5f). CSI: put data under Bound `subDir` (Step 6); do not patch CSI attributes |
 
 {% hint style="info" %}
 The orchestrator-generated Restore CR sets `prune: false` only — no `ignoreErrors`, and no restic tarball pick. On DR, use the manual flow above.
@@ -287,18 +293,47 @@ For each PVC that needs data:
 #   --point-in-time <restic-snapshot-id>
 ```
 
-Details ( `--tag nfs` vs `pvc-manifest`, empty-restore failure, UUID matching ) are in [single-pvc.md](single-pvc.md). Staging lands on the **backup host** under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`.
+Details (`--tag nfs` vs `pvc-manifest`, empty-restore failure, UUID matching) are in [single-pvc.md](single-pvc.md). Staging lands on the **backup host** under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`.
 
-Copy **the inner UUID directory contents** onto storage at `/srv/nfs/openg2p/<same-uuid>/` — not the outer timestamped wrapper. Prefer the tar pipe (`ubuntu` + `sudo`) from [single-pvc.md Step 4](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export). Match ownership to the app (e.g. Bitnami MinIO needs `chown -R 1001:1001`).
+### Where to put the data on the new NFS (`nfs-csi`)
 
-For lots of PVCs, script it. Prefer the sidecar from a **pre-disaster** NFS/pvc-manifest snapshot if the live `.pvc-mapping.yaml` was regenerated against empty new dirs.
+After a full rebuild you usually have **two** UUID trees:
 
-**Important**: the *new* NFS UUIDs (those just created by the fresh helmfile install) won't match the *backup* UUIDs. The Restore CR in Step 5 recreated PVs that point at the *original* UUIDs — meaning the new PVs reference NFS paths that don't exist yet (or exist empty). Two options:
+| Tree | Origin | What uses it |
+|------|--------|--------------|
+| **Bound** PV `subDir` (new UUID from helmfile) | Fresh install | Running pods |
+| **Restored** dir (old UUID from restic / rancher tarball) | Pre-disaster backup | Nothing, until you copy into the Bound path |
 
-* **A — Move the data**. Restore from restic into the path the recreated PV expects. Cleanest. Same UUID in staging and under `/srv/nfs/openg2p/` is expected.
-* **B — Edit the recreated PV**. Patch the PV's `spec.nfs.path` to match a new UUID, and either restic-restore into that path or symlink. More fragile.
+Pods follow the **Bound** PV. Putting restored bytes only under the old UUID leaves the app on an empty new path.
 
-Plan A is the default. Restore the data, then bounce the consuming workload.
+```bash
+# See the path each Bound PVC actually mounts
+kubectl --kubeconfig ~/.kube/openg2p-prod get pv -o json | jq -r '
+  .items[]
+  | select(.status.phase=="Bound" and .spec.csi!=null)
+  | "\(.spec.claimRef.namespace)/\(.spec.claimRef.name) -> \(.spec.csi.volumeAttributes.subDir)"
+'
+```
+
+**Recommended:** scale the app down, then put restored contents into the Bound `subDir` name (replace the whole directory, or `rsync -a` after clearing the empty new tree). Do **not** use `mv chunks …/chunks/` into a non-empty destination — `mv` will not merge (`Directory not empty`), and `mv` has no `-r`.
+
+```bash
+# Example on storage — replace Bound path with restored tree
+NEW=observability-loki-minio-pvc-<bound-uuid>
+OLD=observability-loki-minio-pvc-<restored-uuid>   # or under old/
+
+mv "$NEW" "${NEW}.precrash"
+mv "$OLD" "$NEW"
+chown -R 1001:1001 "$NEW"   # Bitnami MinIO; match the app otherwise
+```
+
+Copy from backup host with the tar pipe (`ubuntu` + `sudo`) from [single-pvc.md Step 4](single-pvc.md#step-4-push-the-data-to-the-live-nfs-export). **Create the destination directory first** (`sudo mkdir -p …`) or tar fails with `Cannot open: No such file or directory`.
+
+{% hint style="warning" %}
+**CSI PVs cannot be patched** to change `server` / `subDir` (`spec.persistentvolumesource` is immutable). Native `spec.nfs` patches also often fail. Prefer putting data under the Bound path. Delete leftover **Released** PVs after cutover if they are unused.
+{% endhint %}
+
+For lots of PVCs, script the mapping. Prefer a **pre-disaster** sidecar / restic snapshot if the live `.pvc-mapping.yaml` was regenerated against empty new dirs.
 
 ## Step 7 — Object store (opt-in)
 
@@ -343,8 +378,34 @@ This is optional — most operators accept regenerating these and re-distributin
 
 ## Step 9 — Bounce workloads + verify
 
+### Update Postgres host for Keycloak and Superset (new storage IP)
+
+The new storage node has a **new private IP**. Postgres now listens there, but rancher-restored (or previously rendered) app config may still embed the **old** storage IP.
+
+**Keycloak** and **Superset** commonly keep failing until you point them at the new Postgres address:
+
+1. Find the new storage private IP (`provision-output.yaml` / `storage_private_ip`, or the live Postgres host you cut over to).
+2. Search ConfigMaps and Secrets for the old IP / old JDBC/DSN host.
+3. Update Keycloak and Superset DB connection settings (ConfigMaps and Secrets — Superset often stores the SQLAlchemy URI in a Secret).
+4. Restart those workloads and confirm they reach Postgres.
+
 ```bash
-# Restart all pods to pick up restored Secrets/ConfigMaps.
+NEW_PG_IP=172.29.7.49   # your new storage private IP
+OLD_PG_IP=172.29.0.104  # pre-disaster storage private IP
+
+kubectl --kubeconfig ~/.kube/openg2p-prod get cm,secret -A -o yaml \
+  | grep -nE "${OLD_PG_IP}|jdbc:postgresql|DATABASE_HOST|SQLALCHEMY" || true
+
+# Edit the Keycloak / Superset ConfigMaps and Secrets that still reference OLD_PG_IP,
+# then restart those deployments/statefulsets.
+```
+
+Until those values use the new IP, Keycloak and Superset will keep connecting to the dead address and stay CrashLooping / Not Ready.
+
+### Restart and sanity-check
+
+```bash
+# Restart all pods to pick up restored Secrets/ConfigMaps (and the Postgres IP edits above).
 kubectl --kubeconfig ~/.kube/openg2p-prod rollout restart deployment -A
 
 # Give it a few minutes, then check.
@@ -353,8 +414,9 @@ kubectl --kubeconfig ~/.kube/openg2p-prod get pods -A | grep -v Running
 
 Sanity tests:
 * Log into Rancher with original SAML credentials
-* Log into Keycloak with admin email
-* Check at least one PVC-consuming app's data (e.g. browse Keycloak admin themes, list MinIO buckets)
+* Log into Keycloak with admin email (fails if still on old Postgres IP)
+* Open Superset (same — confirm DB host is the new storage IP)
+* Check at least one PVC-consuming app's data (e.g. MinIO buckets / Loki after NFS cutover)
 * Confirm a known-recent-but-pre-disaster Postgres row exists
 
 ## Step 10 — Re-establish backup automation

@@ -87,10 +87,14 @@ kubectl --kubeconfig ~/.kube/openg2p-prod scale deploy keycloak -n keycloak --re
 # Find the live NFS path on storage. The export root + UUID:
 ssh ubuntu@<storage-host> ls -la /srv/nfs/openg2p/pvc-abc123-def456/
 
+# Create the destination if it does not exist yet (tar -C fails otherwise).
+ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/pvc-abc123-def456
+
 # Backup the current state aside (don't delete!).
 ssh ubuntu@<storage-host> sudo mv /srv/nfs/openg2p/pvc-abc123-def456 /srv/nfs/openg2p/pvc-abc123-def456.precrash
+ssh ubuntu@<storage-host> sudo mkdir -p /srv/nfs/openg2p/pvc-abc123-def456
 
-# Copy from backup host to storage. Use rsync to preserve perms.
+# Copy from backup host to storage. Use tar over SSH (ubuntu + sudo; not root@ scp).
 ssh ubuntu@<backup-host> "sudo tar -C /tmp/openg2p-nfs-restore/keycloak-keycloak-data-<ts>/<nfs-path> -czf - ." | \
     ssh ubuntu@<storage-host> "sudo tar -C /srv/nfs/openg2p/pvc-abc123-def456 -xzf -"
 
@@ -139,7 +143,12 @@ The second is faster but requires manual YAML edits. Operate carefully.
 ## Common gotchas
 
 * **Permissions** — NFS exports often run with `root_squash`. Restored files may show up as `nobody:nogroup` (or `nobody:1001`). Match what the workload expects: Bitnami MinIO needs `chown -R 1001:1001` on the PVC dir or the pod fails with `Permission denied` on `.root_user`.
-* **Same UUID on live NFS and in staging** — after rancher restore, the PV still points at the pre-disaster path name. Staging nests data under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`. Copy/move that **inner** directory onto `/srv/nfs/<cluster>/<nfs-path>/`, not the outer timestamped folder.
-* **Trailing slashes in `tar -C`** — the path is the *destination* directory. If the live PVC dir has files at the root and a trailing slash mismatches, you can end up with files inside a subdirectory. Always test with `find ... -ls` after the copy (avoid `find | head` under `set -o pipefail` on the backup scripts — use `sed -n '1,40p'` or `du -sh` instead).
+* **Bound UUID ≠ restored UUID after full rebuild** — helmfile creates new `nfs-csi` PVs; restic restores old UUID dirs. Put restored data under the **Bound** PV’s `subDir` (see `kubectl get pv … volumeAttributes.subDir`). Leaving data only under the old UUID leaves pods empty/failing.
+* **CSI volume source is immutable** — you cannot `kubectl patch pv` to change `spec.csi.volumeAttributes.server` / `subDir`, and you cannot add `spec.nfs` onto a CSI PV. Recreate the PV or (preferred) copy data into the Bound path.
+* **`mv` into a non-empty directory** — `mv chunks dest/chunks` fails with `Directory not empty`. `mv` has no `-r`. Replace the whole Bound directory, or `rm -rf dest/*` then `rsync -a src/ dest/`.
+* **Destination must exist before `tar -C`** — create with `mkdir -p` on storage or extract fails with `Cannot open: No such file or directory`.
+* **Same UUID on live NFS and in staging** — after rancher restore of native NFS PVs, staging nests data under `/tmp/openg2p-nfs-restore/<ns>-<pvc>-<ts>/<nfs-path>/`. Copy/move that **inner** directory, not the outer timestamped folder.
+* **Trailing slashes in `tar -C`** — the path is the *destination* directory. Always verify with `du -sh` / `ls` after the copy.
 * **Forgetting to scale the app down** — you can corrupt new files mid-restore. Always pause the consuming Deployment/StatefulSet first.
 * **The restored data is older** — by definition. Anything written after the last NFS backup snapshot is gone. Check the restored snapshot timestamp in `.pvc-mapping.yaml` (`backed_up_at`).
+* **Keycloak / Superset still CrashLoop after PG cutover** — on a storage rebuild they often still point at the **old** Postgres private IP in ConfigMaps/Secrets. Update those to the new storage IP, then restart — see [full-rebuild.md Step 9](full-rebuild.md#step-9-bounce-workloads--verify).
