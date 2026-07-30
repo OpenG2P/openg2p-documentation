@@ -75,7 +75,7 @@ schedules:
   pg_full:       "0 2 * * 0"
   pg_diff:       "0 2 * * 1-6"
   etcd_pull:     "15 */6 * * *"
-  rancher:       "0 3 * * *"        # consumed by the in-cluster Schedule CR
+  rancher:       "0 3 * * *"        # informational only — Schedule CR hardcodes cadence
   nfs:           "30 3 * * *"
   configs:       "30 3 * * *"
   objectstore:   "0 4 * * *"        # MinIO/S3 (when groups.objectstore=true)

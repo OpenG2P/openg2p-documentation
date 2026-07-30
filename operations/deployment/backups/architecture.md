@@ -57,7 +57,7 @@ Remote commands run under `sudo bash -lc` with `TERM=dumb` so login-shell profil
 
 **Why this and not borg/duplicity:** single Go binary (air-gap friendly), encrypted-by-default, content-addressed dedup, supports backup from stdin (we use this for SSH-tar streams of remote config dirs). restic's local-filesystem repo backend works fine without S3.
 
-The NFS export is mounted **read-only** on the backup host — a compromised backup process cannot accidentally write into the live NFS volume.
+The NFS export is mounted **read-only** on the backup host — a compromised backup process cannot accidentally write into the live NFS volume. Install refreshes `/etc/fstab` with `noauto,_netdev` (no `x-systemd.automount`). After a DR rebuild that changes the storage private IP, `_nfs_ensure_ro_mount` force-unmounts stale mounts and may fall back to `/mnt/openg2p-nfs-ro-dr`.
 
 [Documentation](https://restic.readthedocs.io/)
 
