@@ -186,6 +186,7 @@ git rev-list --reverse origin/develop | sed -n '39p'   # -> the commit for .39
 ## What's on the rest of these pages
 
 * [**Cutting a release (how to tag)**](cutting-a-release.md) — the step-by-step instructions for tagging and publishing a release. Start here when you actually need to ship one.
+* [**Withdrawing a version**](withdrawing-a-version.md) — deleting a published develop build (chart + images) when it piles up in Rancher or turns out to be bad, and how it is recorded.
 * [**CI pipeline**](ci-pipeline.md) — how the reusable workflow builds, versions, promotes and publishes; the `@v1` rollout model; a diagram.
 * [**Changelogs**](changelogs.md) — where change notes are published, how to link them, the role of AI, and what happens when AI is unavailable.
 * [**Onboarding a repo**](onboarding-a-new-repo.md) — a step-by-step guide **and a copy-paste prompt** to add this to any new repo, plus moving the `v1` tag.

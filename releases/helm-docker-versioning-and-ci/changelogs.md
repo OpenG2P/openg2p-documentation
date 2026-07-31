@@ -284,6 +284,14 @@ release. **Every release is kept forever.** RC pages are deleted once their rele
 ships. Older develop deltas remain recoverable from git, since the version number is
 the commit ordinal.
 
+{% hint style="info" %}
+**Withdrawn versions.** A develop build whose artifacts have been deleted (see
+[Withdrawing a version](withdrawing-a-version.md)) keeps its page — the pages chain
+to each other, so removing one would break the "changes since &lt;previous build&gt;"
+thread. It is flagged in the summary table and listed, with the reason, under a
+**Withdrawn** heading at the end of the page.
+{% endhint %}
+
 ## The role of AI
 
 A single call to [OpenRouter](https://openrouter.ai) turns the commit list into
