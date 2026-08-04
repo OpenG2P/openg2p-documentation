@@ -6,6 +6,12 @@ description: >-
 
 # Helm chart
 
+{% hint style="info" %}
+**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 The National Social Registry is deployed by **`openg2p-nsr`** ([`helm/openg2p-nsr`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr)), published to the [OpenG2P Helm repo](https://openg2p.github.io/openg2p-helm).
 
 The chart **owns no templates**. It declares the platform chart as a pinned dependency and supplies a values overlay:

@@ -6,6 +6,12 @@ description: >-
 
 # Data seeding
 
+{% hint style="info" %}
+**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 Seeding follows the same split as everything else: the **machinery** is inherited from the platform's `db-seed` image, and the NSR supplies only its **content**.
 
 {% hint style="info" %}

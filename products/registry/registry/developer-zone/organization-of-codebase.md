@@ -1,5 +1,11 @@
 # Organization of Codebase
 
+{% hint style="info" %}
+**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 {% hint style="warning" %}
 **The Registry codebase has been consolidated.** All platform code — the core library, the APIs, the Celery runtimes and the UI — now lives in a **single repository, `registry-platform`**. The older split repositories (`openg2p-registry-gen2-*`) are being **deprecated**. See [Deprecated repositories](organization-of-codebase.md#deprecated-repositories) below.
 {% endhint %}

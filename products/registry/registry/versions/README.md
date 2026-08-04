@@ -4,6 +4,12 @@ description: Where to find Registry Platform chart and image versions, and what 
 
 # Versions
 
+{% hint style="info" %}
+**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 The Registry Platform now **publishes its own Docker images and Helm chart**. Every image and the chart built from a commit carry the same version, derived from git by the central pipeline, so a chart version tells you exactly which images it deploys.
 
 {% hint style="info" %}

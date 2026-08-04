@@ -7,6 +7,12 @@ description: >-
 
 # OpenG2P Registry (Platform)
 
+{% hint style="info" %}
+**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 **OpenG2P Registry** is an open-source platform for building **functional registries** -- not mere databases -- of individuals, non-human entities, and groups. It is designed to fit naturally into a country's digital public infrastructure (DPI), providing an authoritative, interoperable data platform that can serve multiple government agencies and programmes simultaneously.
 
 A single deployment of the Registry can host one or more **Registers** (such as a Farmer Register, Individual Register, or Household Register), each governed by change-management workflows, version history, and consent-aware data sharing. Whether you are building a national social registry, a farmer registry, or a vehicle registry, the underlying principles and platform remain the same.

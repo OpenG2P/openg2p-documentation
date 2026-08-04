@@ -7,6 +7,15 @@ description: >-
 
 # Reference Implementations
 
+{% hint style="info" %}
+**New home: GitLab.** These repositories are now developed on GitLab:
+> * [`national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry)
+> * [`farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry)
+>
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 ### Platform Modules
 
 Not to be forked for new domain implementations

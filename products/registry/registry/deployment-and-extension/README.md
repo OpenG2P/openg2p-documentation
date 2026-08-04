@@ -8,6 +8,12 @@ description: >-
 
 # Deployment and Extension
 
+{% hint style="info" %}
+**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 This section explains **how the OpenG2P Registry is packaged, published, deployed and extended** under the current model. It is self-contained: read it to understand how the images and Helm chart are produced, how the platform runs out of the box, and how you turn it into a domain-specific registry.
 
 ## The model, and how it changed

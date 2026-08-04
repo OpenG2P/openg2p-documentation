@@ -6,6 +6,12 @@ description: >-
 
 # Sanity testing
 
+{% hint style="info" %}
+**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+
+Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
+{% endhint %}
+
 The National Social Registry is verified end-to-end in-cluster by a pytest suite run as a post-install/upgrade Helm Job. As with the chart and the images, the suite is **inherited from the platform and narrowed here**.
 
 {% hint style="info" %}
