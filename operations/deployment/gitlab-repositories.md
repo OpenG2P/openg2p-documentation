@@ -103,7 +103,7 @@ It creates the project, transplants the branch **with history** (+ tags), transl
 
 ### Retiring the GitHub source
 
-Once the GitLab pipeline is **green**, retire the old repo — a **separate step**, so you never archive GitHub before knowing GitLab works:
+Once the GitLab pipeline is **green**, retire the old repo — a **separate step**, so you never freeze GitHub before knowing GitLab works:
 
 ```bash
 # dry-run, then --apply
@@ -112,14 +112,18 @@ bash ci/migrate/github-to-gitlab.sh \
   [--title "OpenG2P SPAR"] [--docs "Platform Services → SPAR"]
 ```
 
-It replaces the README with a _"moved to GitLab"_ note (a `> [!IMPORTANT]` callout, nothing else), **deletes `build-publish.yml` in the same commit**, pushes, then archives the repo.
+It replaces the README with a _"moved to GitLab"_ note (a `> [!IMPORTANT]` callout, nothing else), **deletes `build-publish.yml` in the same commit**, pushes, then **freezes** the repo with rulesets.
+
+**Frozen, not archived.** The repo keeps its normal appearance — no _"Public archive"_ banner — and stays browsable and clonable, but every branch and tag becomes read-only for **everyone, including org owners**: nothing can be pushed, and a pull request can be opened but never merged (merging is a push to the base branch). A repo that is already archived is un-archived and frozen instead.
 
 The note's title comes from **`--title`**, else the existing README's H1, else a title-cased slug. Pass `--title` when the slug has an acronym (`spar` → _"Spar"_, so use `--title "OpenG2P SPAR"`); `--docs` adds a documentation breadcrumb.
 
 {% hint style="info" %}
-Deleting the workflow **in the same commit** is what stops that very push from building and publishing a new docker/helm version — GitHub evaluates workflows from the pushed commit, so a workflow that isn't there can't run. Archiving afterwards disables Actions entirely.
+Deleting the workflow **in the same commit** is what stops that very push from building and publishing a new docker/helm version — GitHub evaluates workflows from the pushed commit, so a workflow that isn't there can't run. Freezing afterwards means no later push can reintroduce it.
 
-Needs `gh` authenticated with **admin** on the repo. If the default branch is **protected** the push is rejected — unprotect it or apply the note by hand. Archiving is reversible (un-archive), but it is outward-facing: only do it after the GitLab side is verified.
+Needs `gh` authenticated with **admin** on the repo. If the default branch is **protected** the push is rejected — unprotect it or apply the note by hand. Freezing is reversible (set the rulesets to _Disabled_ under **Settings → Rules → Rulesets**, which is lighter than un-archiving), but it is outward-facing: only do it after the GitLab side is verified.
+
+On a **private** repo, rulesets need a paid GitHub plan; there the script stops and tells you to archive by hand instead.
 {% endhint %}
 
 ### Once per group (not per repo)

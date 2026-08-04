@@ -362,15 +362,23 @@ From your **workstation** (with kubectl access to the cluster):
 ./env-cluster.sh --config env-config.yaml
 ```
 
-The script performs 5 steps automatically:
+The script performs 5 internal steps automatically:
 
-| Step | What it does                                                                      |
-| ---- | --------------------------------------------------------------------------------- |
-| 1    | Creates the K8s namespace                                                         |
-| 2    | Creates a Rancher Project and associates the namespace                            |
-| 3    | Creates the Istio Gateway for `*.qa.openg2p.org`                                  |
-| 4    | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
-| 5    | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.)                |
+| Internal step | What it does                                                                      |
+| ------------- | --------------------------------------------------------------------------------- |
+| 1             | Creates the K8s namespace                                                         |
+| 2             | Creates a Rancher Project and associates the namespace                            |
+| 3             | Creates the Istio Gateway for `*.qa.openg2p.org`                                  |
+| 4             | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
+| 5             | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.)                |
+
+{% hint style="danger" %}
+**These internal step numbers are not the guide's step numbers.**
+
+This guide's Steps 1-3 are the manual Nginx-node work (DNS, TLS cert, Reverse Proxy); Steps 4-5 are configuring and running the script. The `--step` flag refers to the **script's own** steps in the table above — so `--step 3` creates the Istio Gateway, it does **not** re-do the Reverse Proxy step.
+
+Normally you should **omit `--step` entirely** and let all five internal steps run in order. Only reach for `--step` when resuming a specific part after a failure.
+{% endhint %}
 
 {% hint style="info" %}
 Takes approximately 15-20 minutes. The script is idempotent — it checks for existing resources before creating them.
@@ -408,12 +416,16 @@ Each product page documents its Helm-chart version, deployment commands, Keycloa
 ./env-cluster.sh --config env-config.yaml [options]
 ```
 
-| Option            | Description                                |
-| ----------------- | ------------------------------------------ |
-| `--config <file>` | Path to environment config file (required) |
-| `--step <N>`      | Run only a specific step (1-5)             |
-| `--force`         | Uninstall and reinstall Helm charts        |
-| `--help`          | Show help message                          |
+| Option             | Description                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `--config <file>`  | Path to environment config file (required)                                                      |
+| `--step <spec>`    | Run only the given internal step(s). Accepts a single step (`3`), a range (`1-3`), or a list (`1,4`). Omit to run all five. |
+| `--force`          | Uninstall and reinstall Helm charts                                                             |
+| `--help`           | Show help message                                                                               |
+
+{% hint style="warning" %}
+Internal steps 2-5 all operate inside the environment namespace, which internal step 1 creates. If you run a later step on its own before step 1, the script fails immediately with a clear message rather than a raw `namespaces "<env>" not found` error from kubectl.
+{% endhint %}
 
 ## Creating Multiple Environments
 
@@ -535,7 +547,7 @@ automation/environment/
 ## Troubleshooting
 
 {% hint style="info" %}
-`env-cluster.sh` is idempotent — re-run it on failure. Use `--step <N>` to run a specific step, or `--force` to tear down and reinstall Helm charts.
+`env-cluster.sh` is idempotent — re-run it on failure. Use `--step <spec>` (e.g. `--step 4`, `--step 1-3`) to resume a specific internal step, or `--force` to tear down and reinstall Helm charts. Remember that `--step` numbers refer to the script's internal steps, not this guide's steps.
 {% endhint %}
 
 ### Certificate issues (on Nginx node)
