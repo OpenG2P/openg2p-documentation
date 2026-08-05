@@ -24,7 +24,7 @@ This guide walks through adding a **new Kubernetes node** to an existing OpenG2P
 
 | Phase | Where it runs | Script / action |
 | --- | --- | --- |
-| **0. Provision VM** (optional) | Your laptop | [AWS add-node provisioning](aws-provisioning.md) — only if you need a new EC2 instance |
+| **0. Provision VM** (optional) | Your laptop | [AWS add-node provisioning](aws-provisioning.md) — `openg2p-aws-provision.sh` |
 | **1. Prepare config** | Your laptop → copy to new node | Edit `add-node-config.yaml` |
 | **2. Join cluster** | **On the new node** | `sudo ./openg2p-add-node.sh --config add-node-config.yaml` |
 | **3. Verify** | Control-plane node | `kubectl get nodes` |
@@ -206,6 +206,9 @@ Still on the **new node**, as root:
 ```bash
 cd ~/add-node
 sudo ./openg2p-add-node.sh --config add-node-config.yaml
+
+# Optional: preview steps without changing the node
+sudo ./openg2p-add-node.sh --config add-node-config.yaml --dry-run
 ```
 
 Optional flags:
@@ -214,7 +217,9 @@ Optional flags:
 | --- | --- |
 | `--role worker` / `--role server` | Override `node_role` from config |
 | `--force` | Clear step markers and re-run all steps (after a partial failure) |
+| `--dry-run` | Print the steps that would run; do not change the node (same pattern as `openg2p-prod.sh`) |
 | `--reset` | Clear state markers and exit (does not join) |
+| `--help`, `-h` | Show help |
 
 The script runs five steps:
 
@@ -301,13 +306,16 @@ Removal is a separate workflow. Run `openg2p-remove-node.sh` on a **control-plan
 ```bash
 cd ~/add-node   # copy the directory to the control-plane if needed
 sudo ./openg2p-remove-node.sh --node <node_name>
+
+# Optional: preview without draining/deleting
+sudo ./openg2p-remove-node.sh --node <node_name> --dry-run
 ```
 
 This cordons, drains, and deletes the Kubernetes node object. The script prints manual cleanup commands to run on the removed machine (RKE2 uninstall, state cleanup, optional Nginx upstream edit).
 
 If the node was provisioned with the optional AWS script, tear down the EC2 instance separately:
 
-➡️ [AWS add-node provisioning → Teardown](aws-provisioning.md#teardown)
+➡️ [AWS add-node provisioning → Tearing down](aws-provisioning.md#tearing-down)
 
 For the legacy manual RKE2 procedure, see [Adding and Removing Nodes in Cluster](../adding-and-removing-nodes-in-cluster.md).
 
