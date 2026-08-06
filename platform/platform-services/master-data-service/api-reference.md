@@ -63,7 +63,17 @@ stores them, but registries load them database-to-database during seeding, not
 through these endpoints.
 {% endhint %}
 
-## Endpoints
+{% hint style="warning" %}
+**If the endpoints below appear blank**, the OpenAPI specification has not been
+registered in GitBook. These blocks render from a spec registered under the name
+`master-data-api`; add it once (GitBook → API references → hosted URL, pointing at
+[`master-data.json`](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json))
+and every block on this page fills in and re-syncs automatically.
+{% endhint %}
+
+## Geo
+
+The administrative hierarchy and its units.
 
 {% openapi-operation spec="master-data-api" path="/geo/get_g2p_geo_levels" method="post" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
@@ -77,13 +87,10 @@ through these endpoints.
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
 {% endopenapi-operation %}
 
-{% openapi-operation spec="master-data-api" path="/partner/get_all_partners" method="post" %}
-[OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
-{% endopenapi-operation %}
 
-{% openapi-operation spec="master-data-api" path="/partner/get_partner" method="post" %}
-[OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
-{% endopenapi-operation %}
+## Attributes
+
+The country's code lists and their values.
 
 {% openapi-operation spec="master-data-api" path="/attributes/get_all_attributes" method="post" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
@@ -93,9 +100,30 @@ through these endpoints.
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
 {% endopenapi-operation %}
 
+
+## Partner
+
+Partner organisations used for inter-service trust and routing.
+
+{% openapi-operation spec="master-data-api" path="/partner/get_all_partners" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/partner/get_partner" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
+{% endopenapi-operation %}
+
+
+## Health
+
+Liveness probe.
+
 {% openapi-operation spec="master-data-api" path="/ping" method="get" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
 {% endopenapi-operation %}
+
+
+## Schemas
 
 {% openapi-schemas spec="master-data-api" schemas="AttributeData,AttributeValueData,ErrorListResponse,ErrorResponse,G2PPaginationRequest,G2PPaginationResponse,G2PPartnerData,G2PPartnerResponse,G2PPartnerResponseBody,G2PPartnersResponse,G2PPartnersResponseBody,G2PRequestHeader,G2PResponseHeader,G2PResponseStatus,GeoLevelData,GeoLevelValueData,GetAllGeoLevelsRequest,GetAllGeoLevelsRequestBody,GetAllGeoLevelsRequestPayload,GetAllGeoLevelsResponse,GetAllGeoLevelsResponseBody,GetAllPartnersRequest,GetAllPartnersRequestBody,GetAllPartnersRequestPayload,GetAttributeValuesRequest,GetAttributeValuesRequestBody,GetAttributeValuesRequestPayload,GetAttributeValuesResponse,GetAttributeValuesResponseBody,GetAttributeValuesResponsePayload,GetAttributesRequest,GetAttributesRequestBody,GetAttributesRequestPayload,GetAttributesResponse,GetAttributesResponseBody,GetAttributesResponsePayload,GetGeoLevelValuesRequest,GetGeoLevelValuesRequestBody,GetGeoLevelValuesRequestPayload,GetGeoLevelValuesResponse,GetGeoLevelValuesResponseBody,GetGeoLevelsRequest,GetGeoLevelsRequestBody,GetGeoLevelsRequestPayload,GetGeoLevelsResponse,GetGeoLevelsResponseBody,GetPartnerRequest,GetPartnerRequestBody,GetPartnerRequestPayload,HTTPValidationError,ValidationError" grouped="true" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/openg2p/openg2p-documentation/latest/platform/platform-services/master-data-service/openapi/master-data.json)
