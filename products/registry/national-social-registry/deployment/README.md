@@ -82,7 +82,10 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 
 ## Post-install check
 
-1. The install runs ordered hook Jobs — `db-seed`, then `iam-register`, then `sanity`. Check they completed: `kubectl -n <namespace> get jobs`.
+1. The install runs ordered hook Jobs — `db-seed` → the sanity seeds → `iam-register` → `sanity` → and, when analytics is on,
+   `bulk-sample` → `reporting-views` → `dashboards`. Check they all completed: `kubectl -n <namespace> get jobs`.
+   Helm stops at the first failure, so a job that never appears means an **earlier** one failed — see the
+   [install sequence](data-seeding.md#install-sequence) for the full order and what each step does.
 2. Open `<release>.<your-domain>` in a browser; you should get the Keycloak login page.
 3. Log in with the credentials provisioned by `keycloak-init` and change the password when prompted.
 4. Review the sanity Job logs: `kubectl -n <namespace> logs job/<release>-sanity`.

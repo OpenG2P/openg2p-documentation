@@ -154,6 +154,40 @@ Everything below runs as Helm **post-install / post-upgrade hooks**, in hook-wei
 order. Helm waits for each weight to succeed before creating the next, so this is a
 strict sequence — and **a failure at any step blocks everything after it**.
 
+```mermaid
+flowchart TD
+    A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
+
+    B["<b>10 · db-seed</b><br/>meta-data · code lists · geo widgets<br/><b>sample data</b> · images · templates"] --> C
+
+    subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
+        direction TB
+        C["<b>11 · sanity-pm-seed</b><br/>partner in Partner Management"] --> D
+        D["<b>12 · sanity-cm-seed</b><br/>Consent Manager binding + policy"] --> E
+        E["<b>13 · sanity-data-seed</b><br/><b>test record · Keycloak user · approver rule</b><br/><i>never deleted afterwards</i>"]
+    end
+
+    E --> F["<b>20 · iam-register</b><br/>roles + permissions into IAM"]
+    F --> G["<b>25 · sanity</b><br/>smoke, plus the e2e when runE2e = true"]
+
+    subgraph AN ["Analytics — only when analytics.* enabled"]
+        direction TB
+        H["<b>40 · bulk-sample</b><br/><b>250,000 individuals</b>"] --> I
+        I["<b>45 · reporting-views</b><br/>views the dashboards read"] --> J
+        J["<b>50 · dashboards</b><br/><b>import into Superset</b>"]
+    end
+
+    G --> H
+
+    MD(["Master Data<br/><i>separate release</i>"]) -.->|"must be seeded first"| B
+    MD -.->|"geo hierarchy"| H
+    SS(["Superset<br/><i>separate release</i>"]) -.->|"must be reachable"| J
+```
+
+Read the diagram top to bottom: each box only starts once the one above it has
+succeeded. The two dotted arrows are the dependencies Helm cannot order, because
+they belong to other releases — see [Cross-release dependencies](#cross-release-dependencies).
+
 | Weight | Job | What it does | Runs when |
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
