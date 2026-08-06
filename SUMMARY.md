@@ -96,6 +96,7 @@
     * [Deployment and Extension](products/registry/registry/deployment-and-extension/README.md)
       * [Packaging & the reference registry](products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md)
       * [Extending into a new registry](products/registry/registry/deployment-and-extension/extending-into-a-new-registry.md)
+      * [Country data & seeding](products/registry/registry/deployment-and-extension/country-data-and-seeding.md)
       * [Testing & the sanity suite](products/registry/registry/deployment-and-extension/testing-and-sanity-suite.md)
     * [Versions](products/registry/registry/versions/README.md)
       * [Registry Platform Release Notes - v1.1.0](products/registry/registry/versions/registry-platform-release-notes-v1.1.0.md)
