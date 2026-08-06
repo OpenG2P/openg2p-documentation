@@ -133,6 +133,13 @@ So during seeding:
 The database therefore holds the *reference*; MinIO holds the *file*.
 
 {% hint style="info" %}
+**Who reads this copy today: nobody.** MDS publishes the shapes to MinIO and
+exposes their URLs, but the tool that currently draws maps takes its own copy from
+the pack when its image is built (see [How the data flows](#how-the-data-flows)).
+The MinIO copy is there for consumers that need to resolve shapes at runtime.
+{% endhint %}
+
+{% hint style="info" %}
 The GeoJSON is also **simplified** before upload — coarser at national level,
 finer further down. Full-resolution administrative boundaries are far too large to
 send to a browser (a simplified national ADM3 layer was still ~2.6 MB in testing).
@@ -212,11 +219,28 @@ Two things in that picture are easy to get wrong:
 needs into its own tables and thereafter validates and serves from its own copy.
 MDS is an install-time dependency, never a per-write one.
 
-**The map surface gets its shapes from the pack at build time, not from MinIO at
-runtime.** The site build copies the pack's GeoJSON into the site's own static
-assets, so the browser fetches them from the site it already loaded. The MinIO
-copy is published by MDS and exposed on its API for consumers that want to resolve
-shapes dynamically — nothing does so today.
+**The map shapes reach a map by two independent routes, and today only one of them
+is used.**
+
+_Route 1 — the pack, at build time (this is the one in use)._ The reporting and
+analytics tool that renders maps and drill-downs is built as a container image.
+During that build it clones `openg2p-data`, copies the chosen pack's GeoJSON into
+its own static assets, and ships them inside the image. At runtime the browser
+fetches those files from the site it has already loaded. MDS is not involved, and
+neither is MinIO.
+
+_Route 2 — MinIO, at runtime (published, not yet consumed)._ MDS uploads the same
+GeoJSON to MinIO during seeding and exposes each unit's URL on its geo API, so a
+consumer could resolve shapes dynamically instead of baking them in. Nothing does
+so today.
+
+{% hint style="warning" %}
+Because the shapes are baked into the image, **changing a deployment's country pack
+means rebuilding the reporting image as well as reseeding MDS.** The two must
+agree: the map joins its figures to its shapes on P-code, so a map built from one
+country's pack sitting beside an MDS seeded with another renders empty rather than
+raising an error.
+{% endhint %}
 
 ### Install sequence
 
