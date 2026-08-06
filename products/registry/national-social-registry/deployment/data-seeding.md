@@ -148,6 +148,55 @@ the run, so an environment that has ever had `runE2e: true` carries them
 permanently. Keep it off for production.
 {% endhint %}
 
+## Install sequence
+
+Everything below runs as Helm **post-install / post-upgrade hooks**, in hook-weight
+order. Helm waits for each weight to succeed before creating the next, so this is a
+strict sequence — and **a failure at any step blocks everything after it**.
+
+| Weight | Job | What it does | Runs when |
+|---|---|---|---|
+| — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
+| 10 | `nsr-db-seed` | Meta-data SQL, code lists from Master Data, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
+| 11 | `nsr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
+| 12 | `nsr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
+| 13 | `nsr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
+| 20 | `nsr-iam-register` | Registers the registry's roles and permissions in IAM | always |
+| 25 | `nsr-sanity` | Runs the sanity suite | `sanity.enabled` |
+| 40 | `nsr-nsr-bulk-sample` | Generates **250,000 individuals** | `analytics.bulkSample.enabled` |
+| 45 | `nsr-nsr-reporting-views` | Creates the reporting views the dashboards read | `analytics.reportingViews.enabled` |
+| 50 | `nsr-nsr-dashboards` | **Imports the dashboards into Superset** | `analytics.dashboards.enabled` |
+
+{% hint style="info" %}
+**The dashboards are loaded by this registry, not by the analytics platform.** The
+dashboard bundle ships in this repository, and the weight-50 job imports it into the
+environment's Superset, points its database connection at this registry, publishes
+the dashboards and enables embedding on them.
+
+The ordering is the point: dashboards are imported **after** bulk data and **after**
+the reporting views exist, so that a dashboard opened straight after install already
+has data behind it rather than rendering empty.
+{% endhint %}
+
+### Cross-release dependencies
+
+Two of these steps depend on releases Helm cannot order against, because they are
+separate installs:
+
+* **Master Data** must be seeded before weight 10 (code lists, geo, sample people)
+  and before weight 40 (the bulk generator reads its geo hierarchy). The db-seed and
+  bulk jobs each wait for it and fail with a clear message rather than producing
+  records that point nowhere.
+* **Superset** must be reachable before weight 50. That job waits for it rather
+  than failing immediately, so a Superset that is merely restarting does not lose
+  the dashboard import.
+
+{% hint style="warning" %}
+Because Helm stops at a failed hook, a failure in bulk generation (weight 40) also
+prevents the reporting views and the dashboard import from ever running. If Superset
+has no dashboards after an install, check the **earlier** jobs first.
+{% endhint %}
+
 ## What NSR's image contains
 
 NSR's `db-seed` image is a thin `FROM` of the platform's, which clears the

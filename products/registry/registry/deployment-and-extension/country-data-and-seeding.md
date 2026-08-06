@@ -96,6 +96,26 @@ generator writes its registry's own extension tables and has to move in lockstep
 with that registry's reporting views. Each registry keeps its own copy.
 {% endhint %}
 
+## What lives in the platform, and what does not
+
+The platform is machinery only. Everything that produces or presents *data* lives
+in the individual registry:
+
+| | Registry Platform | NSR / Farmer Registry |
+|---|---|---|
+| Seeding machinery, hook order, switches | **yes** | inherited |
+| Code-list SQL fixtures | reference registry's own | **its own** |
+| Sample-data loader | **none** | **its own** |
+| Sample content (the domain overlay) | **none** | **its own** |
+| Bulk data generator | **none** | **its own** |
+| Reporting views | **none** | **its own** (`reporting_views.sql`) |
+| Superset dashboards | **none** | **its own** (bundle + import job) |
+| `analytics.*` chart values | **not defined** | **defined** |
+
+So a bare platform install creates no sample data, no bulk data, no reporting views
+and no dashboards. Each registry defines all four, because each writes its own
+tables and its dashboards read its own views.
+
 ## Code lists
 
 ### Where they are defined
