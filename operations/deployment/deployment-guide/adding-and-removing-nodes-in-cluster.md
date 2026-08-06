@@ -4,6 +4,10 @@ description: Guide to Adding and Removing Nodes from an Existing Kubernetes Clus
 
 # Adding and Removing Nodes in Cluster
 
+{% hint style="info" %}
+**Updated automation guide:** For the current OpenG2P production add-node workflow (bundled scripts, step-by-step), see **[Add Node](add-node/README.md)**. Optional AWS EC2 provisioning is documented separately at **[AWS Add-Node Provisioning (optional)](add-node/aws-provisioning.md)**.
+{% endhint %}
+
 ## Adding Nodes to Cluster
 
 Below are the steps to add new nodes to an existing Kubernetes cluster.
