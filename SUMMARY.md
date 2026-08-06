@@ -556,7 +556,6 @@
 ## Platform
 
 * [Roadmap](platform/roadmap.md)
-* [Country Data Architecture](platform/country-data-architecture.md)
 * [Platform Architecture](platform/architecture/README.md)
   * [Platform Tech Architecture](platform/architecture/platform-tech-architecture.md)
   * [Async Processes - Tech Architecture](platform/architecture/async-processes-tech-architecture.md)
@@ -678,6 +677,7 @@
     * [Monitoring & Reporting](platform/platform-services/_archive/monitoring-and-reporting.md)
   * [Interoperability](interoperability.md)
   * [Creating a New Platform Service](platform/platform-services/creating-a-new-service.md)
+* [Country Data Architecture](platform/country-data-architecture.md)
 * [Portals & Apps](portals-and-apps/README.md)
   * [Staff Portal](staff-portal/README.md)
     * [Authentication - Staff Portal](staff-portal/authentication-staff-portal.md)
