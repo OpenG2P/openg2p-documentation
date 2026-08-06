@@ -593,6 +593,7 @@
     * [Deployment](platform/platform-services/id-generator/deployment.md)
     * [Testing](platform/platform-services/id-generator/testing.md)
   * [Master Data Service](platform/platform-services/master-data-service/README.md)
+    * [API Reference](platform/platform-services/master-data-service/api-reference.md)
   * [Approval Workflow Engine (AWE)](platform/platform-services/approval-workflow-engine/README.md)
     * [Versions](platform/platform-services/approval-workflow-engine/versions.md)
     * [Releases](platform/platform-services/approval-workflow-engine/releases/README.md)
