@@ -104,6 +104,29 @@ message), but GitHub Releases are **not** auto-created — create/edit the Relea
 manually, then re-run the tag's workflow.
 {% endhint %}
 
+#### "I edited the tag's annotation instead — why hasn't the page changed?"
+
+Because on GitLab the **Release description shadows the tag message**, and the Release
+was auto-created from your original annotation the moment you tagged. Re-writing the
+annotation (`git tag -a -f …` + `git push -f`) therefore changes nothing the catalogue
+reads — the Release description still wins, and you have force-moved a release tag for
+no benefit.
+
+| Where you edit | GitLab | GitHub |
+| --- | --- | --- |
+| **Release description / body** | ✅ used — the supported path | ✅ used |
+| **Tag annotation** (re-tag) | ❌ ignored once a Release exists | ✅ used, if no Release body exists |
+
+So on **GitLab, always edit the Release**; on **GitHub** either works. If you genuinely
+want the tag annotation to be the source again on GitLab, clear the Release description
+first — then the next run falls back to the tag message.
+
+{% hint style="warning" %}
+**Nothing updates until the pipeline runs again.** The catalogue is written by the
+`changelog` job, so after editing the notes you must re-run the pipeline **on the tag**
+— that is what rewrites the page. Editing the notes alone changes nothing.
+{% endhint %}
+
 ## Library repos (no image, no chart)
 
 Some repos are **libraries** — code consumed **directly by git reference** (a branch,

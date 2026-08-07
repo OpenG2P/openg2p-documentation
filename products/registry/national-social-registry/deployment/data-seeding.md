@@ -166,15 +166,26 @@ psql -v ON_ERROR_STOP=1 -f /seed/reporting_views.sql
 Switched by `analytics.reportingViews.enabled`.
 
 {% hint style="warning" %}
-**They are MATERIALIZED views, and this chart only ever builds them once.** The
-JSONB unpacking is far too slow to run per chart, so the views hold a snapshot
-taken at install. Nothing in this chart refreshes it afterwards.
+**They are MATERIALIZED views — Postgres does not update them when the register
+changes.** The JSONB unpacking is far too slow to run per chart, so each view
+holds a snapshot, and it stays exactly as it was until something runs `REFRESH
+MATERIALIZED VIEW`. Nothing else makes that happen.
 
-The refresh is done by **G2P Insights**, before each maps build
-(`REFRESH MATERIALIZED VIEW CONCURRENTLY nsr_rpt_household, nsr_rpt_individual`). Without Insights installed,
-the reporting views — and therefore the dashboards — stay frozen at whatever the
-last install produced. Refresh them on a schedule of your own if you need them
-current without Insights.
+So this chart refreshes them itself, on a schedule:
+
+```yaml
+analytics:
+  reportingViews:
+    refreshSchedule: "0 * * * *"   # hourly; empty disables the CronJob
+```
+
+A `<release>-nsr-reporting-views-refresh` CronJob rebuilds every
+`nsr_rpt_*` view, in dependency order resolved from the catalog, using `REFRESH
+MATERIALIZED VIEW CONCURRENTLY` so dashboards keep reading the previous snapshot
+while it runs. The cadence is on the Rancher form under **Analytics**.
+
+Between refreshes, households and individuals registered since the last run do not appear in any
+report. Choose the interval accordingly.
 {% endhint %}
 
 ## Install sequence
