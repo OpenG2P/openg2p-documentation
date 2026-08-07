@@ -750,7 +750,8 @@
 
 * [Deployment](deployment/README.md)
   * [OpenG2P Deployment Architecture](deployment/openg2p-deployment-model.md)
-  * [Sandbox — Single-Node](operations/deployment/infrastructure-setup/single-node-automation.md)
+  * [Sandbox — Single-Node](operations/deployment/infrastructure-setup/single-node-automation/README.md)
+    * [AWS Provisioning](operations/deployment/infrastructure-setup/single-node-automation/aws-provisioning.md)
   * [Production](operations/deployment/infrastructure-setup/README.md)
     * [Prerequisites & Procurement](operations/deployment/prerequisites-procurement.md)
     * [Provisioning](operations/deployment/infrastructure-setup/provisioning.md)

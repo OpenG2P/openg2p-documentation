@@ -33,7 +33,7 @@ kubectl -n observability get cm loki -o yaml | grep -E "retention_period|retenti
 ```
 
 **To change retention:** set `loki_retention_hours` (default `168` = 7 days) in
-`prod-config.yaml` / `infra-config.yaml` and re-sync the `loki` release.
+`prod-config.yaml` / `single-node-config.yaml` and re-sync the `loki` release.
 
 {% hint style="warning" %}
 **Retention deletes by _age_, not _size_.** The `loki-minio` PVC is a fixed size,

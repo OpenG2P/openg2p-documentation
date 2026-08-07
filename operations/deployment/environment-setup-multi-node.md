@@ -13,7 +13,7 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 **Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (PostgreSQL on the host + Kafka/MinIO/Redis/Keycloak + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
 
 {% hint style="info" %}
-Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation.md).
+Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation/).
 {% endhint %}
 
 {% hint style="danger" %}
