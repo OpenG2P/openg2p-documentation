@@ -135,6 +135,35 @@ the run, so an environment that has ever had `runE2e: true` carries them
 permanently. Keep it off for production.
 {% endhint %}
 
+## Reporting views
+
+The dashboards and the Insights map never read the register tables directly —
+they read **reporting views** (`fr_rpt_farmer`, `fr_rpt_land`, `fr_rpt_crop`), which flatten the JSONB
+and the sub-tables into something a chart can group by.
+
+**Who creates them:** a job of this chart, `<release>-fr-reporting-views`, at
+hook weight 45 — after bulk data so the first build has rows behind it. It is not
+part of the bulk generator; it is a separate Job running the **same db-seed
+image** with a single command:
+
+```sh
+psql -v ON_ERROR_STOP=1 -f /seed/reporting_views.sql
+```
+
+Switched by `analytics.reportingViews.enabled`.
+
+{% hint style="warning" %}
+**They are MATERIALIZED views, and this chart only ever builds them once.** The
+JSONB unpacking is far too slow to run per chart, so the views hold a snapshot
+taken at install. Nothing in this chart refreshes it afterwards.
+
+The refresh is done by **G2P Insights**, before each maps build
+(`REFRESH MATERIALIZED VIEW CONCURRENTLY fr_rpt_farmer, fr_rpt_land`). Without Insights installed,
+the reporting views — and therefore the dashboards — stay frozen at whatever the
+last install produced. Refresh them on a schedule of your own if you need them
+current without Insights.
+{% endhint %}
+
 ## Install sequence
 
 Everything below runs as Helm **post-install / post-upgrade hooks**, in hook-weight
