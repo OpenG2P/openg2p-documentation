@@ -108,7 +108,7 @@ in the individual registry:
 | Sample-data loader | **none** | **its own** |
 | Sample content (the domain overlay) | **none** | **its own** |
 | Bulk data generator | **none** | **its own** |
-| Reporting views | **none** | **its own** (`reporting_views.sql`) |
+| Reporting views | the generator (`generate_reporting_views.py`) | its declaration (`reporting.yaml`) and any hand-written SQL |
 | Superset dashboards | **none** | **its own** (bundle + import job) |
 | `analytics.*` chart values | **not defined** | **defined** |
 
@@ -278,6 +278,36 @@ in MinIO every record fails to render and a DCI search returns an empty result.
 smoke-only — it checks that the Partner API is live and the DCI route is served,
 and creates nothing. It is `runE2e: true` that seeds fixtures, and those are
 **never cleaned up**.
+
+## The reporting layer
+
+Seeding puts data *in*; reporting is how it comes back out, and the platform ships
+the machinery for that too.
+
+`generate_reporting_views.py` lives in this platform's **db-seed image**, beside
+`load_attributes_from_mds.py` and `load_sample_data.py`, and follows the same
+principle: the platform supplies the mechanism, the registry supplies what is
+specific to it.
+
+At install it reads the registry's own schema and Master Data's country pack, and
+creates a view per entity — geography inherited from the parent, workflow columns
+carried, personal data withheld and then verified absent. A registry that declares
+nothing still gets a complete reporting layer.
+
+What each registry supplies is a short `reporting.yaml`: which entity hangs off
+which, what its columns *mean*, and which views it maintains by hand.
+
+{% hint style="info" %}
+**Why generated rather than written.** Each registry used to hand-write its
+reporting SQL, so coverage was whatever somebody thought of, and the geographic
+unpacking — identical in intent everywhere — had already drifted between two
+registries. See
+[Reporting views](../../../../platform/platform-services/reporting-and-analytics/reporting-views.md).
+{% endhint %}
+
+Everything about the reporting layer — the declaration, dashboards, the map
+drill-down, and what to do when a country pack or a schema changes — is under
+[**Reporting & Analytics**](../../../../platform/platform-services/reporting-and-analytics/README.md).
 
 ## What runs, in what order
 

@@ -150,28 +150,42 @@ permanently. Keep it off for production.
 
 ## Reporting views
 
-The dashboards and the Insights map never read the register tables directly —
-they read **reporting views** (`nsr_rpt_household`, `nsr_rpt_individual`), which flatten the JSONB
-and the sub-tables into something a chart can group by.
+Dashboards and the map never read the register tables directly — they read
+**reporting views**, `nsr_rpt_*`, one per entity, with geography and
+workflow columns and personal data withheld.
 
-**Who creates them:** a job of this chart, `<release>-nsr-reporting-views`, at
-hook weight 45 — after bulk data so the first build has rows behind it. It is not
-part of the bulk generator; it is a separate Job running the **same db-seed
-image** with a single command:
+**Most of them are generated**, at install, by the platform's
+`generate_reporting_views.py` reading this registry's schema and the country's
+hierarchy from Master Data. This registry supplies two things:
 
-```sh
-psql -v ON_ERROR_STOP=1 -f /seed/reporting_views.sql
-```
+* **`reporting_views.sql`** — the views it maintains by hand: `nsr_rpt_household` and `nsr_rpt_individual`,
+  because they pair household with individual and derive the bands and flags the dashboards group by. Nothing can infer those from a schema.
+* **`reporting.yaml`** — a short declaration: which entity hangs off which, which
+  views are hand-written, and what its own columns mean.
+  ([this registry's copy](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/docker/db-seed/reporting.yaml))
 
-Switched by `analytics.reportingViews.enabled`.
+Everything else is generated: vulnerability, livelihood, disability, land, livestock, programmes, shocks, housing and services, household assets, scores, change requests and record history.
 
-{% hint style="warning" %}
-**They are MATERIALIZED views — Postgres does not update them when the register
-changes.** The JSONB unpacking is far too slow to run per chart, so each view
-holds a snapshot, and it stays exactly as it was until something runs `REFRESH
-MATERIALIZED VIEW`. Nothing else makes that happen.
+**Who runs it:** a job of this chart, `<release>-nsr-reporting-views`, at
+hook weight 45 — after bulk data, so the first build has rows behind it. It runs
+the hand-written SQL first and the generator second, because a generated child
+reads its parent's columns.
 
-So this chart refreshes them itself, on a schedule:
+Switched by `analytics.reportingViews.enabled`; generation alone by
+`analytics.reportingViews.generate`.
+
+{% hint style="info" %}
+**Why this changed.** The reporting SQL used to be hand-written in full, here, so
+coverage was whatever somebody had thought of — vulnerability and livelihood — 259,328 and 165,625 rows respectively, with no reporting view of any kind before this. Generation makes
+coverage structural instead. The reasoning, the declaration reference and the
+`--discover` workflow are in
+[Reporting views](../../../../platform/platform-services/reporting-and-analytics/reporting-views.md).
+{% endhint %}
+
+### Keeping them current
+
+Some views are materialized, and **Postgres never updates a materialized view when
+its base tables change**. This chart therefore refreshes its own, on a schedule:
 
 ```yaml
 analytics:
@@ -179,14 +193,13 @@ analytics:
     refreshSchedule: "0 * * * *"   # hourly; empty disables the CronJob
 ```
 
-A `<release>-nsr-reporting-views-refresh` CronJob rebuilds every
-`nsr_rpt_*` view, in dependency order resolved from the catalog, using `REFRESH
+`<release>-nsr-reporting-views-refresh` rebuilds every `nsr_rpt_*`
+materialized view in dependency order resolved from the catalog, using `REFRESH
 MATERIALIZED VIEW CONCURRENTLY` so dashboards keep reading the previous snapshot
 while it runs. The cadence is on the Rancher form under **Analytics**.
 
 Between refreshes, households and individuals registered since the last run do not appear in any
 report. Choose the interval accordingly.
-{% endhint %}
 
 ## Install sequence
 
@@ -322,3 +335,14 @@ analytics:
 
 For a production install, see
 [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).
+
+---
+
+{% hint style="info" %}
+**Beyond seeding.** What is built on these views — the dashboards, the map
+drill-down, how to add your own, and what to do when a country pack or this
+registry's schema changes — is under
+[**Reporting & Analytics**](../../../../platform/platform-services/reporting-and-analytics/README.md). Start with
+[Setting up reporting](../../../../platform/platform-services/reporting-and-analytics/setting-up-reporting.md) if you are bringing this
+registry up for a country.
+{% endhint %}

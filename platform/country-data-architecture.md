@@ -133,10 +133,11 @@ So during seeding:
 The database therefore holds the *reference*; MinIO holds the *file*.
 
 {% hint style="info" %}
-**Who reads this copy today: nobody.** MDS publishes the shapes to MinIO and
-exposes their URLs, but the tool that currently draws maps takes its own copy from
-the pack when its image is built (see [How the data flows](#how-the-data-flows)).
-The MinIO copy is there for consumers that need to resolve shapes at runtime.
+**Who reads this copy: the map build.** It fetches the boundary files for this
+deployment's country from MinIO and publishes them with the figures it extracts
+from the reporting views — which is what keeps a deployment's shapes following
+its country pack rather than an image. See
+[Map drill-down](platform-services/reporting-and-analytics/map-drill-down.md).
 {% endhint %}
 
 {% hint style="info" %}
@@ -219,27 +220,23 @@ Two things in that picture are easy to get wrong:
 needs into its own tables and thereafter validates and serves from its own copy.
 MDS is an install-time dependency, never a per-write one.
 
-**The map shapes reach a map by two independent routes, and today only one of them
-is used.**
+**Map shapes reach a map from MinIO, at build time.**
 
-_Route 1 — the pack, at build time (this is the one in use)._ The reporting and
-analytics tool that renders maps and drill-downs is built as a container image.
-During that build it clones `openg2p-data`, copies the chosen pack's GeoJSON into
-its own static assets, and ships them inside the image. At runtime the browser
-fetches those files from the site it has already loaded. MDS is not involved, and
-neither is MinIO.
+Master Data uploads the pack's GeoJSON to MinIO during seeding and exposes each
+unit's URL on its geo API. The map build fetches the boundary files for this
+deployment's country from there and publishes them alongside the figures it
+extracts from the reporting views.
 
-_Route 2 — MinIO, at runtime (published, not yet consumed)._ MDS uploads the same
-GeoJSON to MinIO during seeding and exposes each unit's URL on its geo API, so a
-consumer could resolve shapes dynamically instead of baking them in. Nothing does
-so today.
+So a deployment's shapes follow its country pack: reseeding Master Data with a
+different pack, and rebuilding the map, is enough — nothing is baked into an
+image and no image is rebuilt to change country.
 
 {% hint style="warning" %}
-Because the shapes are baked into the image, **changing a deployment's country pack
-means rebuilding the reporting image as well as reseeding MDS.** The two must
-agree: the map joins its figures to its shapes on P-code, so a map built from one
-country's pack sitting beside an MDS seeded with another renders empty rather than
-raising an error.
+**Shapes and figures must come from the same pack.** The map joins its figures to
+its shapes on **P-code**. A map built against one country's boundaries beside a
+Master Data seeded with another renders empty rather than raising an error —
+every join simply misses. This is the failure mode P-codes exist to make
+detectable, and it is still worth checking after any pack change.
 {% endhint %}
 
 ### Install sequence
@@ -314,6 +311,11 @@ reporting views.
 {% hint style="info" %}
 Bulk seeding is a demo and reporting aid. A production install should turn it off —
 it exists so that a freshly installed environment has something to show.
+
+Note that turning it off does **not** affect whether reporting views exist: they
+are built from the registry's schema, not its data, so a production install still
+gets the full set — they simply return nothing until real registration begins. See
+[Setting up reporting](platform-services/reporting-and-analytics/setting-up-reporting.md).
 {% endhint %}
 
 ## Configuring the platform for a new country
@@ -440,8 +442,17 @@ true the day a woreda is renamed.
 ---
 
 {% hint style="info" %}
-**Reporting and dashboards.** How this data is turned into reports, dashboards and
-map visualisations is covered under
-[Reporting & Analytics](platform-services/reporting-and-analytics/README.md). This
-page is about where the data comes from and how it reaches each service.
+**Reporting and dashboards.** How this data is turned into reports is covered
+under [Reporting & Analytics](platform-services/reporting-and-analytics/README.md):
+
+* [Reporting views](platform-services/reporting-and-analytics/reporting-views.md)
+  — generated from each registry's schema and this country's hierarchy
+* [Dashboards](platform-services/reporting-and-analytics/dashboards.md) — shipped
+  and imported by each registry
+* [Map drill-down](platform-services/reporting-and-analytics/map-drill-down.md) —
+  figures joined to the boundary shapes above, on P-code
+* [Setting up reporting](platform-services/reporting-and-analytics/setting-up-reporting.md)
+  — the path for a new deployment
+
+This page is about where the data comes from and how it reaches each service.
 {% endhint %}
