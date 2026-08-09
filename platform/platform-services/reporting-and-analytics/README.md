@@ -6,6 +6,8 @@ description: >-
 
 # Reporting & Analytics
 
+<figure><img src="../../../.gitbook/assets/apache-superset-dashboard.png" alt="An OpenG2P dashboard in Apache Superset"><figcaption><p>A registry's dashboards, in Apache Superset</p></figcaption></figure>
+
 A registry stores records so that people can be registered. Reporting asks a
 different question of the same data — how many, where, how has it changed — and
 the shapes that suit one suit the other badly. A register is normalised, keyed by
@@ -41,6 +43,12 @@ behind them.
 clicking down from region to district to ward. It reads the same views, joins to
 boundary shapes on P-code, and is driven by a handful of SQL files the registry
 supplies.
+
+## Restricting what each viewer sees
+
+[Row-level security](row-level-security.md) filters a dataset by attributes
+carried on the viewer's own login — region, district, department — so one
+dashboard serves every office without a role per office.
 
 ## Where to start
 

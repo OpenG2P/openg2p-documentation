@@ -101,4 +101,5 @@ level names and depths — and drive the chart from that.
 
 **See also:** [Reporting views](reporting-views.md) ·
 [Setting up reporting](setting-up-reporting.md) ·
-[Apache Superset](apache-superset/README.md) for the installation itself.
+[Row-level security](row-level-security.md) to filter a dashboard by who is
+looking at it.
