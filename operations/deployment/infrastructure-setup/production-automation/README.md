@@ -7,7 +7,7 @@ description: >-
 
 # Infrastructure Automation
 
-The production automation provisions the OpenG2P platform across three role-specialised Ubuntu 24.04 VMs — Reverse Proxy, Compute, and Storage — from your laptop, with a single command. (The fourth node, **Backup**, is required for production and is set up by the separate [backup automation](../../backups/).) It is the production counterpart to [Single-Node Automation](../single-node-automation.md): same logging, same idempotency, same general structure, but split across role-specialised machines.
+The production automation provisions the OpenG2P platform across three role-specialised Ubuntu 24.04 VMs — Reverse Proxy, Compute, and Storage — from your laptop, with a single command. (The fourth node, **Backup**, is required for production and is set up by the separate [backup automation](../../backups/).) It is the production counterpart to [Single-Node Automation](../single-node-automation/): same logging, same idempotency, same general structure, but split across role-specialised machines.
 
 <figure><img src="../../../../.gitbook/assets/Deployment Architecture - Three Node.jpg" alt=""><figcaption><p>The three platform VMs this automation provisions — Reverse Proxy, Compute (Kubernetes), and Storage (the Backup node is set up separately)</p></figcaption></figure>
 
@@ -678,4 +678,4 @@ The orchestrator keeps **laptop-side bookkeeping** under `automation/production/
 * [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md) — the deployment models (Sandbox, Production — Minimum, Production — High-Availability) and where this automation fits.
 * [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md) — wildcard vs per-FQDN trade-offs in gov procurement, and the cert formats customers actually have.
 * [Prerequisites & Procurement](../../prerequisites-procurement.md) — compute, DNS, certs, access, firewall to arrange before install.
-* [Single-Node Automation](../single-node-automation.md) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with production.
+* [Single-Node Automation](../single-node-automation/) — the simpler counterpart, useful for sandboxes and reading source code patterns shared with production.

@@ -52,4 +52,4 @@ These are not deployment stages — they are continuous responsibilities that be
 
 ## Sandbox is different
 
-For evaluation, demos, dev/QA, or small pilots, use the [Sandbox — Single-Node](single-node-automation.md) path instead. Sandbox collapses all five stages into a single VM and a pair of scripts — no separate procurement, provisioning, infrastructure, environment, or modules phases. The staged flow described above applies only to Production.
+For evaluation, demos, dev/QA, or small pilots, use the [Sandbox — Single-Node](single-node-automation/) path instead. Sandbox collapses all five stages into a single VM driven by the laptop orchestrator (`openg2p-single-node.sh`) — no separate procurement, provisioning, infrastructure, environment, or modules phases. The staged flow described above applies only to Production.
