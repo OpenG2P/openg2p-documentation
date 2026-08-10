@@ -41,12 +41,20 @@ The following sub-pages cover individual design topics in detail:
 [change-management.md](change-management.md)
 {% endcontent-ref %}
 
+{% content-ref url="file-attachments.md" %}
+[file-attachments.md](file-attachments.md)
+{% endcontent-ref %}
+
 {% content-ref url="ingestion-pipeline.md" %}
 [ingestion-pipeline.md](ingestion-pipeline.md)
 {% endcontent-ref %}
 
 {% content-ref url="outgestion-pipeline.md" %}
 [outgestion-pipeline.md](outgestion-pipeline.md)
+{% endcontent-ref %}
+
+{% content-ref url="version-history.md" %}
+[version-history.md](version-history.md)
 {% endcontent-ref %}
 
 {% content-ref url="../../../../consent-management/design/architecture.md" %}

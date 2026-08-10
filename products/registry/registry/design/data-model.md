@@ -1,5 +1,7 @@
 ---
-description: Core data model of OpenG2P Registry -- registers, records, versioning, and domain extension patterns.
+description: >-
+  Core data model of OpenG2P Registry -- registers, records, versioning, and
+  domain extension patterns.
 ---
 
 # Data Model
@@ -12,13 +14,13 @@ The OpenG2P Registry data model is built around a small set of abstract base cla
 
 The `g2p_register_definition` table stores metadata about every register in the instance.
 
-| Column | Description |
-| --- | --- |
-| `register_id` | Primary key |
-| `register_mnemonic` | Short unique name (e.g. `farmer`, `crop`, `worker`) |
-| `register_description` | Human-readable description |
-| `master_register_id` | Foreign key to the parent register. `NULL` for primary registers. |
-| `program_application` | Boolean flag indicating whether this register holds program application data |
+| Column                 | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `register_id`          | Primary key                                                                  |
+| `register_mnemonic`    | Short unique name (e.g. `farmer`, `crop`, `worker`)                          |
+| `register_description` | Human-readable description                                                   |
+| `master_register_id`   | Foreign key to the parent register. `NULL` for primary registers.            |
+| `program_application`  | Boolean flag indicating whether this register holds program application data |
 
 Key methods on the definition model:
 
@@ -30,31 +32,36 @@ Key methods on the definition model:
 
 `g2p_register` is the abstract base class extended by every domain register model (e.g. `farmer_register`, `crop_register`). It defines the common columns present in all register tables.
 
-| Column | Notes |
-| --- | --- |
-| `internal_record_id` | Primary key -- UUID |
-| `functional_record_id` | Unique index. External-facing identifier (e.g. a national ID). |
-| `link_record_id` | Foreign key to the parent register record (`internal_record_id`). Applicable only for child registers, not primary registers. Non-unique index. |
-| `created_at` | Timestamp of record creation |
-| `last_updated_at` | Timestamp of last approved update |
-| `last_approved_by` | Identity of the last approver |
-| `search_text` | `TEXT` column with trigram indexing for full-text search across the record |
+| Column                 | Notes                                                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `internal_record_id`   | Primary key -- UUID                                                                                                                             |
+| `functional_record_id` | Unique index. External-facing identifier (e.g. a national ID).                                                                                  |
+| `link_record_id`       | Foreign key to the parent register record (`internal_record_id`). Applicable only for child registers, not primary registers. Non-unique index. |
+| `created_at`           | Timestamp of record creation                                                                                                                    |
+| `last_updated_at`      | Timestamp of last approved update                                                                                                               |
+| `last_approved_by`     | Identity of the last approver                                                                                                                   |
+| `search_text`          | `TEXT` column with trigram indexing for full-text search across the record                                                                      |
 
 ## Version history
 
-`g2p_register_history` is the abstract base class for per-register history tables. Each time a change request is approved, the approved state is written to the corresponding history table, creating a complete audit trail.
+`g2p_register_history` is the abstract base class for per-register history tables. Each time a change request is approved - or an intake submission is ingested into live tables - a snapshot is written to the corresponding history table, creating an append-only audit trail of committed states.
 
-| Column | Notes |
-| --- | --- |
-| `history_record_id` | Primary key -- UUID |
-| `internal_record_id` | Non-unique index linking to the register record |
-| `change_log_id` | Non-unique index linking to the originating change request |
-| `link_record_id` | Non-unique index. Only for child registers. |
-| `created_by` | Identity of the user or system that created the change |
-| `approved_by` | Identity of the approver |
+| Column                       | Notes                                                                                                             |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `history_record_id`          | Primary key - UUID                                                                                                |
+| `internal_record_id`         | Non-unique index linking to the register record                                                                   |
+| `change_request_id`          | Non-unique index linking to the originating change request. **Nullable** for intake ingest (use `submission_id`). |
+| `submission_id`              | Intake submission id when the row was not created from a change request                                           |
+| `subject_internal_record_id` | De-normalized master subject id for hierarchical version-history queries (including after child deletes)          |
+| `link_internal_record_id`    | Non-unique index. Only for child registers.                                                                       |
+| `tab_id` / `section_id`      | Section context for the change                                                                                    |
+| `created_by` / `approved_by` | Identities of the initiator and approver                                                                          |
+| `created_at` / `approved_at` | Timestamps for create and approval                                                                                |
+
+Domain history tables follow the mnemonic pattern, e.g. `g2p_register_history_farmers` for mnemonic `Farmer`.
 
 {% hint style="info" %}
-Program application registers do not have history tables. History tracking applies only to primary and child registers.
+Program application registers do not have history inserts. History tracking applies only to primary and child registers.
 {% endhint %}
 
 ## Sections and tabs
@@ -79,5 +86,5 @@ The `change_log` and `verifications` tables are shared across all registers and 
 A **`register_factory`** is provided that accepts a `register_mnemonic` and returns the appropriate register class instance. Controllers use this factory to dispatch operations without hard-coding domain knowledge.
 
 {% content-ref url="../developer-zone/building-a-registry/" %}
-building-a-registry
+[building-a-registry](../developer-zone/building-a-registry/)
 {% endcontent-ref %}
