@@ -38,7 +38,7 @@ The extension installs under a **fixed import alias** configured in `pyproject.t
 Only one extension wheel per deployment. Staff portal API loads it via `ExtensionsInitializer()` from `openg2p_registry_extensions.app` after core is initialized.
 
 {% hint style="info" %}
-See [Extensions contract](extensions-contract.md) for required classes and hooks.
+See [Extensions contract](../../developer-zone/building-a-registry/concepts/registry-extensions/extensions-contract.md) for required classes and hooks.
 {% endhint %}
 
 ***

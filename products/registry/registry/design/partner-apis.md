@@ -404,8 +404,8 @@ Common codes: `DATA_MODEL_NOT_FOUND`, `PARTNER_NOT_REGISTERED`, `INVALID_REQUEST
 [outgestion-pipeline.md](outgestion-pipeline.md)
 {% endcontent-ref %}
 
-{% content-ref url="../developer-zone/building-a-registry/concepts/registry-extensions/platform-and-extensions-model.md" %}
-[platform-and-extensions-model.md](../developer-zone/building-a-registry/concepts/registry-extensions/platform-and-extensions-model.md)
+{% content-ref url="../deployment-and-extension/README.md" %}
+[Deployment and Extension](../deployment-and-extension/README.md)
 {% endcontent-ref %}
 
 Link to some [sample metadata](https://github.com/OpenG2P/national-social-registry/blob/develop/nsr-extension/src/openg2p_registry_nsr_extension/meta_data/registry-inbound-message-rules/incoming_model_register_semantic_patterns.sql) for a look at some key paths and semantic patterns
