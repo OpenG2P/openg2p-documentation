@@ -4,7 +4,7 @@ description: g2p_register_schemas - JSON schemas for datasets
 
 # G2PRegisterSchema
 
-The [`G2PRegisterSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_schema.py) metadata table stores **JSON-based configuration schemas** used by the platform to control **deduplication, search results, and filtering behavior** for each register.
+The [`G2PRegisterSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_schema.py) metadata table stores **JSON-based configuration schemas** used by the platform to control **deduplication, search results, and filtering behavior** for each register.
 
 While ORM models define the structure of the data and Pydantic schemas define validation and API contracts, this metadata table allows the platform to **dynamically configure UI behavior and search functionality** without requiring changes to application code.
 
@@ -48,4 +48,4 @@ Applicable to datasets classified as **REGISTER** or **PROGRAM\_REGISTER**.
 
 ## Reference Implementation
 
-A reference implementation of `G2PRegisterSchema` can be found [here](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_schemas.sql) in the Farmer Extension repository.
+A reference implementation of `G2PRegisterSchema` can be found [here](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_schemas.sql) in the Farmer Extension repository.

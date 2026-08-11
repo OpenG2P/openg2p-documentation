@@ -4,7 +4,7 @@ description: g2p_registry_configuration
 
 # G2PRegistryConfiguration
 
-The [`g2p_registry_configuration`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_registry_configuration.py) table stores the **high-level configuration for a Registry instance**. This configuration defines the **identity and branding of the registry deployment**, which is primarily used by the Registry Staff Portal.
+The [`g2p_registry_configuration`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_registry_configuration.py) table stores the **high-level configuration for a Registry instance**. This configuration defines the **identity and branding of the registry deployment**, which is primarily used by the Registry Staff Portal.
 
 A registry instance typically represents a **domain-specific registry operated by a government department or organization**, such as:
 
@@ -28,4 +28,4 @@ The information stored in this table is used by the platform to display **regist
 
 Reference Implementation
 
-Database scripts for g2p\_registry\_configuration for a Reference Farmer Registry are available [here](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/registry-configurations/g2p_registry_configuration.sql).
+Database scripts for g2p\_registry\_configuration for a Reference Farmer Registry are available [here](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/registry-configurations/g2p_registry_configuration.sql).

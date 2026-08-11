@@ -6,7 +6,7 @@ description: >-
 
 # G2PRegisterUITab
 
-The [`g2p_register_tabs`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) table stores **tab definitions for registers** within the OpenG2P Registry platform.
+The [`g2p_register_tabs`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) table stores **tab definitions for registers** within the OpenG2P Registry platform.
 
 This configuration is applicable only to datasets classified as:
 
@@ -71,4 +71,4 @@ Sections are linked to tabs through G2PRegisterUITabSection.
 
 ## Reference Implementation
 
-Reference implementation of this table for a Farmer Registry can be found in the Farmer Extension repository - [here](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_ui_tabs.sql).
+Reference implementation of this table for a Farmer Registry can be found in the Farmer Extension repository - [here](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_ui_tabs.sql).

@@ -2,8 +2,6 @@
 
 {% hint style="info" %}
 **New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
 <figure><img src="../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure>
@@ -25,7 +23,7 @@ This registry contains the following [**registers**](../registry/concepts.md#reg
 1. Farmer Register
 2. Household Register
 
-The domain models for these registers live in the [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) package in this repository.
+The domain models for these registers live in the [`farmer-extension`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/farmer-extension) package in this repository.
 
 The Farmer Registry inherits all the [features of the registry platform](../registry/features/).
 
@@ -44,17 +42,17 @@ Chart and image versions — and what changed in each — are published by the c
 
 ## Domain models
 
-Each domain model below represents a database table in the Farmer Registry. The Farmer and Household models are **registers** (extending the core [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py) base); the remaining models are supporting tables that store related data linked to a register record. All models extend core platform base classes and add domain-specific columns. Fields inherited from the base classes (such as `internal_record_id`, `functional_record_id`, `record_name`, `status`, name fields, date of birth, gender, geo coordinates, address etc.) are not repeated here.
+Each domain model below represents a database table in the Farmer Registry. The Farmer and Household models are **registers** (extending the core [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py) base); the remaining models are supporting tables that store related data linked to a register record. All models extend core platform base classes and add domain-specific columns. Fields inherited from the base classes (such as `internal_record_id`, `functional_record_id`, `record_name`, `status`, name fields, date of birth, gender, geo coordinates, address etc.) are not repeated here.
 
 **Core base classes:**
 
 | Base class           | Description                                                                                                                                                               | Source                                                                                                                                                                     |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `G2PRegister`        | Abstract base for all registers — provides `internal_record_id`, `functional_record_id`, `record_name`, `status`, `link_internal_record_id`, and change management fields | [g2p\_register.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
-| `G2PPerson`          | Mixin for person-level fields — given name, family name, additional name, date of birth, gender, marital status, foundational ID, email, phone                            | [g2p\_register.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
-| `G2PGeo`             | Mixin for point-location fields — latitude, longitude, address components                                                                                                 | [g2p\_register.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
-| `G2PGeoShape`        | Mixin for polygon/boundary geometry data                                                                                                                                  | [g2p\_register.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
-| `G2PRegisterHistory` | Abstract base for history/version snapshot tables                                                                                                                         | [g2p\_register\_history.py](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_history.py) |
+| `G2PRegister`        | Abstract base for all registers — provides `internal_record_id`, `functional_record_id`, `record_name`, `status`, `link_internal_record_id`, and change management fields | [g2p\_register.py](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
+| `G2PPerson`          | Mixin for person-level fields — given name, family name, additional name, date of birth, gender, marital status, foundational ID, email, phone                            | [g2p\_register.py](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
+| `G2PGeo`             | Mixin for point-location fields — latitude, longitude, address components                                                                                                 | [g2p\_register.py](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
+| `G2PGeoShape`        | Mixin for polygon/boundary geometry data                                                                                                                                  | [g2p\_register.py](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)                  |
+| `G2PRegisterHistory` | Abstract base for history/version snapshot tables                                                                                                                         | [g2p\_register\_history.py](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_history.py) |
 
 {% hint style="info" %}
 Every register model also declares a **History** table (e.g. `g2p_register_history_farmers`) for version snapshots and an **Intake form** table (e.g. `g2p_intake_form_farmers`) for submissions awaiting intake, both carrying the same domain columns. Neither is listed separately below.
@@ -64,7 +62,7 @@ Every register model also declares a **History** table (e.g. `g2p_register_histo
 
 ### Farmer (`g2p_register_farmers`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PPerson`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PPerson`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 The primary register for individual farmer records. Inherits person-level fields (name, date of birth, gender, foundational ID) from `G2PPerson` and location fields from `G2PGeo`.
 
@@ -85,7 +83,7 @@ The primary register for individual farmer records. Inherits person-level fields
 
 ### Household (`g2p_register_households`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Represents a farmer's household. Does not extend `G2PPerson` since a household is a group, not an individual.
 
@@ -102,7 +100,7 @@ Represents a farmer's household. Does not extend `G2PPerson` since a household i
 
 ### Household Member (`g2p_register_household_members`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PPerson`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PPerson`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Individual members of a household. Inherits person-level fields (name, date of birth, gender) from `G2PPerson`. Linked to a Household via `link_internal_record_id`.
 
@@ -114,7 +112,7 @@ Individual members of a household. Inherits person-level fields (name, date of b
 
 ### Land (`g2p_register_lands`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeoShape`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeo`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py), [`G2PGeoShape`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Represents a land parcel associated with a farmer. Linked to a Farmer via `link_internal_record_id`. Extends `G2PGeoShape` for polygon/boundary data in addition to point-location from `G2PGeo`.
 
@@ -134,7 +132,7 @@ Represents a land parcel associated with a farmer. Linked to a Farmer via `link_
 
 ### Crop (`g2p_register_crops`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Represents a crop cultivated by a farmer. Linked to a Farmer via `link_internal_record_id`.
 
@@ -149,7 +147,7 @@ Represents a crop cultivated by a farmer. Linked to a Farmer via `link_internal_
 
 ### Livestock (`g2p_register_livestocks`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Represents livestock owned by a farmer. Linked to a Land via `link_internal_record_id`.
 
@@ -164,7 +162,7 @@ Represents livestock owned by a farmer. Linked to a Land via `link_internal_reco
 
 ### Farm Inputs (`g2p_register_farm_inputs`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Captures the agricultural inputs and resources available to a farmer. Linked to a Farmer via `link_internal_record_id`.
 
@@ -182,7 +180,7 @@ Captures the agricultural inputs and resources available to a farmer. Linked to 
 
 ### Membership Details (`g2p_register_membership_details`)
 
-Extends: [`G2PRegister`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/1.0/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
+Extends: [`G2PRegister`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register.py)
 
 Captures cooperative and farmer cluster membership information. Linked to a Farmer via `link_internal_record_id`.
 
@@ -201,7 +199,7 @@ Captures cooperative and farmer cluster membership information. Linked to a Farm
 
 The poverty score is **not a register table**. It is a score computation the extension contributes to the platform's scoring mechanism:
 
-* `G2PScoreComputeServicePoverty` ([`score_compute/services/poverty.py`](https://github.com/OpenG2P/farmer-registry/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/score_compute/services/poverty.py)) implements the core `G2PScoreComputeInterface` and computes a vulnerability score for **Household** records — a higher score means higher vulnerability.
+* `G2PScoreComputeServicePoverty` ([`score_compute/services/poverty.py`](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/score_compute/services/poverty.py)) implements the core `G2PScoreComputeInterface` and computes a vulnerability score for **Household** records — a higher score means higher vulnerability.
 * It is bound to the Household register by seed metadata: `g2p_register_score_definitions.sql` (score type `POVERTY`) and `g2p_register_score_contributing_attributes.sql`, which name the attributes that feed the calculation.
 * `G2PRegisterSchemaPovertyScore` exposes `poverty_score` and `poverty_score_type` on the API.
 

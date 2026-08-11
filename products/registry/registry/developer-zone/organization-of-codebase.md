@@ -37,19 +37,25 @@ registry-platform/
 
 Each runtime above (the APIs, the two Celery runtimes and the Staff Portal UI) is built into a Docker image; `openg2p-registry-core` and `ui-widgets` are libraries that the runtimes embed rather than deploy separately.
 
-## The platform is not deployable on its own
+## The platform is installable, and registries extend it
 
-`registry-platform` is **a platform, not a product**. It carries no domain model, no Docker images and no Helm chart of its own. To run it, the platform must be **manifested** as a concrete registry product.
+`registry-platform` **publishes its own Docker images and Helm chart**, and ships a
+runnable **reference registry** (Individual + Household) so it can be installed and
+tested on its own. A domain registry does not re-assemble the platform — it
+**extends** the published artifacts with its own domain.
 
 ```mermaid
 graph LR
-    A["registry-platform<br/>(libraries, APIs, celery, UI)"] --- P((" <b>+</b> ")) --- B["Manifestation<br/>(domain extension + images + helm)"] --- E((" <b>=</b> ")) --- C["Deployable product<br/>(NSR, Farmer Registry, …)"]
+    A["registry-platform<br/>(images + Helm chart + reference registry)"] --- P((" <b>+</b> ")) --- B["Domain extension<br/>(models, seed, tests, values overlay)"] --- E((" <b>=</b> ")) --- C["A registry<br/>(NSR, Farmer Registry, …)"]
     style A fill:#e8f4fd,stroke:#2196F3,color:#000
     style B fill:#fff3e0,stroke:#FF9800,color:#000
     style C fill:#e8f5e9,stroke:#4CAF50,stroke-width:2px,color:#000
     style P fill:#fff,stroke:#999,color:#000
     style E fill:#fff,stroke:#999,color:#000
 ```
+
+How that works: [Deployment and Extension](../deployment-and-extension/README.md).
+To build one: [Building a Registry](building-a-registry/README.md).
 
 ## Manifestations
 
@@ -77,7 +83,7 @@ The following repositories are being **deprecated** in favour of `registry-platf
 | `openg2p-registry-gen2-core`            | `registry-platform/core/openg2p-registry-core`                |
 | `openg2p-registry-gen2-apis`            | `registry-platform/apis/*`                                    |
 | `openg2p-registry-gen2-celery`          | `registry-platform/celery/*`                                  |
-| `openg2p-registry-gen2-staff-portal-ui` | `registry-platform/ui/staff-portal-ui`                        |
+| `openg2p-registry-gen2-staff-portal-ui` | `registry-platform/ui/staff-ui`                        |
 | `openg2p-registry-gen2-ui-widgets`      | `registry-platform/ui/ui-widgets`                             |
 | `openg2p-registry-gen2-deployment`      | Per-manifestation Helm charts (e.g. NSR's `helm/openg2p-nsr`) |
 
@@ -98,8 +104,8 @@ The **version of the `registry-platform` repository is the platform version** �
 | Branch / tag | Release date | Notes |
 | ------------ | ------------ | ----- |
 | `develop` | 08-Jul-2026 | Latest running version; in progress. |
-| [1.1](https://github.com/OpenG2P/registry-platform/tree/1.1) | 17-Jul-2026 | Running release line for 1.1.x patches and support. |
-| [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0) | 06-Jul-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.1.0.md). |
-| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
+| [1.1](https://gitlab.com/openg2p/registry/registry-platform/-/tree/1.1) | 17-Jul-2026 | Running release line for 1.1.x patches and support. |
+| [v1.1.0](https://gitlab.com/openg2p/registry/registry-platform/-/tree/1.1.0) | 06-Jul-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.1.0.md). |
+| [v1.0.0](https://gitlab.com/openg2p/registry/registry-platform/-/tree/v1.0.0) | 19-Jun-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
 
 Legacy Helm chart history (4.0.0, 4.1.0) is in [Versions](../versions/).

@@ -22,7 +22,7 @@ The design follows the same **metadata → trigger → queue → beat/worker →
 * Score computation is available **only for registers with `register_purpose = RegisterPurposeEnum.REGISTER`**. Registers with purpose `PROGRAM_REGISTER` or `TABLE` are excluded.
 * Every insert or update to a domain register table is **always mediated through a Change Request** — there are no direct writes. Score computation therefore triggers on **Change Request approval**, not on CR creation.
 * The feature is **fully asynchronous**: the approval API returns immediately; the score is computed in the background by a Celery worker.
-* The base registry (`openg2p-registry-gen2-core` and `openg2p-registry-gen2-celery`) provides all infrastructure. The **actual computation formula** lives entirely in `openg2p-registry-gen2-extensions`.
+* The base registry (`registry-platform/core/openg2p-registry-core` and `registry-platform/celery`) provides all infrastructure. The **actual computation formula** lives entirely in the registry's own extension package.
 
 ***
 
@@ -30,11 +30,11 @@ The design follows the same **metadata → trigger → queue → beat/worker →
 
 | Repository                         | What changes                                              |
 | ---------------------------------- | --------------------------------------------------------- |
-| `openg2p-registry-gen2-core`       | New models, interface, factory, controller service        |
-| `openg2p-registry-gen2-celery`     | New beat producer, worker, Workers constant, config keys  |
-| `openg2p-registry-gen2-apis`       | New API endpoint on staff portal                          |
-| `openg2p-registry-gen2-ui-widgets` | New `scores-display` widget                               |
-| `openg2p-registry-gen2-extensions` | Concrete compute service implementations (per score type) |
+| `registry-platform/core/openg2p-registry-core`       | New models, interface, factory, controller service        |
+| `registry-platform/celery`     | New beat producer, worker, Workers constant, config keys  |
+| `registry-platform/apis`       | New API endpoint on staff portal                          |
+| `registry-platform/ui/ui-widgets` | New `scores-display` widget                               |
+| The registry's extension package | Concrete compute service implementations (per score type) |
 
 ***
 
@@ -44,7 +44,7 @@ The design follows the same **metadata → trigger → queue → beat/worker →
 
 Stores the score types configured for a register, and which attributes contribute to each score. One register may have multiple score definitions (one per score type).
 
-**Location:** `openg2p-registry-gen2-core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_score_definition.py`
+**Location:** `registry-platform/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_score_definition.py`
 
 ```python
 class G2PRegisterScoreDefinition(BaseORMModel):
@@ -80,7 +80,7 @@ class G2PRegisterScoreDefinition(BaseORMModel):
 
 One queue item per `(internal_record_id, score_type)` per trigger event. Follows the same pattern as `G2PFunctionalIdGenerationQueue`.
 
-**Location:** `openg2p-registry-gen2-core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_score_compute_queue.py`
+**Location:** `registry-platform/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_score_compute_queue.py`
 
 ```python
 class G2PScoreComputeQueue(BaseORMModel):
@@ -118,7 +118,7 @@ class G2PScoreComputeQueue(BaseORMModel):
 
 Stores the latest computed score per record per score type. One row per `(internal_record_id, score_type)`, upserted on every computation.
 
-**Location:** `openg2p-registry-gen2-core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_score.py`
+**Location:** `registry-platform/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_score.py`
 
 ```python
 class G2PRegisterScore(BaseORMModel):
@@ -211,7 +211,7 @@ await self._enqueue_score_computations(
 
 #### 6.1 `G2PScoreComputeInterface`
 
-**Location:** `openg2p-registry-gen2-core/.../interfaces/g2p_score_compute_interface.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../interfaces/g2p_score_compute_interface.py`
 
 ```python
 from abc import ABC, abstractmethod
@@ -243,7 +243,7 @@ class G2PScoreComputeInterface(ABC):
 
 #### 6.2 `G2PScoreComputeFactory`
 
-**Location:** `openg2p-registry-gen2-core/.../interfaces/g2p_score_compute_factory.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../interfaces/g2p_score_compute_factory.py`
 
 Mirrors `G2PPayloadEnricherFactory` exactly. Uses `importlib` to load the implementation from the extensions namespace at runtime.
 
@@ -285,7 +285,7 @@ class G2PScoreComputeFactory(BaseService):
 
 #### 7.1 Beat Producer
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/score_compute_beat_producer.py`
+**Location:** `registry-platform/celery/.../tasks/score_compute_beat_producer.py`
 
 Follows the exact pattern of `deduplication_register_beat_producer.py`.
 
@@ -319,7 +319,7 @@ def score_compute_beat_producer():
 
 #### 7.2 Worker
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/score_compute_worker.py`
+**Location:** `registry-platform/celery/.../tasks/score_compute_worker.py`
 
 The worker is stateless — it reads everything it needs from the queue item (including the attribute snapshot and the `change_request_id`). The worker delegates to the factory; it never contains formula logic.
 
@@ -373,7 +373,7 @@ def score_compute_worker(self, queue_id: str):
 
 #### 7.3 `Workers` constants update
 
-Add to `openg2p-registry-gen2-celery/.../utils/workers.py`:
+Add to `registry-platform/celery/.../utils/workers.py`:
 
 ```python
 SCORE_COMPUTE_WORKER = "score_compute_worker"
@@ -401,7 +401,7 @@ score_compute_beat_producer_frequency: Optional[int] = None
 
 ### 8. Core Service
 
-**Location:** `openg2p-registry-gen2-core/.../services/g2p_score_compute_service.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../services/g2p_score_compute_service.py`
 
 Provides the `_enqueue_score_computations` method (called from `G2PRegisterService.approve_change_request`) and manages the score definition CRUD. This is a `BaseService` singleton.
 
@@ -438,7 +438,7 @@ class G2PScoreComputeService(BaseService):
 
 #### 9.1 Controller Service
 
-**Location:** `openg2p-registry-gen2-core/.../controller_services/g2p_score_controller_service.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../controller_services/g2p_score_controller_service.py`
 
 ```python
 class G2PScoreControllerService(BaseService):
@@ -454,7 +454,7 @@ class G2PScoreControllerService(BaseService):
 
 #### 9.2 Staff Portal API Controller
 
-**Location:** `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../controllers/g2p_score_controller.py`
+**Location:** `registry-platform/apis/openg2p-registry-staff-portal-api/.../controllers/g2p_score_controller.py`
 
 ```
 POST /register-data/get_scores
@@ -487,7 +487,7 @@ POST /register-metadata/update_score_definition
 
 ### 10. Extension Implementation
 
-#### Directory structure in `openg2p-registry-gen2-extensions`
+#### Directory structure in the registry's extension package
 
 ```
 openg2p-registry-{domain}-extension/
@@ -547,7 +547,7 @@ This ensures the factory's `importlib.import_module("openg2p_registry_extensions
 
 #### 11.1 New widget: `scores-display`
 
-**Location:** `openg2p-registry-gen2-ui-widgets/src/widgets/ScoresDisplayWidget.tsx`
+**Location:** `registry-platform/ui/ui-widgets/src/widgets/ScoresDisplayWidget.tsx`
 
 A read-only widget that fetches and displays all computed scores for the current record.
 
@@ -683,7 +683,7 @@ await G2PRegisterScoreHistory.create_migrate()
 
 ### 14. Summary of All New Artifacts
 
-#### `openg2p-registry-gen2-core`
+#### `registry-platform/core/openg2p-registry-core`
 
 | Type      | File                                                  | Description                    |
 | --------- | ----------------------------------------------------- | ------------------------------ |
@@ -696,7 +696,7 @@ await G2PRegisterScoreHistory.create_migrate()
 | Service   | `services/g2p_score_compute_service.py`               | Enqueue logic, CRUD, results   |
 | Ctrl Svc  | `controller_services/g2p_score_controller_service.py` | HTTP layer                     |
 
-#### `openg2p-registry-gen2-celery`
+#### `registry-platform/celery`
 
 | Type     | File                                   | Description                             |
 | -------- | -------------------------------------- | --------------------------------------- |
@@ -705,13 +705,13 @@ await G2PRegisterScoreHistory.create_migrate()
 | Constant | `utils/workers.py`                     | `SCORE_COMPUTE_WORKER`                  |
 | Config   | `config.py`                            | `score_compute_beat_producer_frequency` |
 
-#### `openg2p-registry-gen2-apis`
+#### `registry-platform/apis`
 
 | Type       | File                      | Description     |
 | ---------- | ------------------------- | --------------- |
 | Controller | `g2p_score_controller.py` | 5 new endpoints |
 
-#### `openg2p-registry-gen2-ui-widgets`
+#### `registry-platform/ui/ui-widgets`
 
 | Type     | File                              | Description                    |
 | -------- | --------------------------------- | ------------------------------ |
@@ -719,7 +719,7 @@ await G2PRegisterScoreHistory.create_migrate()
 | Types    | `types/index.ts`                  | `ScoresDisplayConfig` type     |
 | Registry | `registry/defaultWidgets.ts`      | Auto-register `scores-display` |
 
-#### `openg2p-registry-gen2-extensions`
+#### The registry's extension package
 
 | Type | File                                                            | Description |
 | ---- | --------------------------------------------------------------- | ----------- |

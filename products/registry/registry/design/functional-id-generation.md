@@ -48,7 +48,7 @@ The design follows a **queue + beat producer + worker** pattern with **two separ
 
 Two-stage queue item tracking both allocation and updation phases. The same row transitions through both pipelines sequentially.
 
-**Location:** `openg2p-registry-gen2-core/.../models/g2p_functional_id_generation_queue.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../models/g2p_functional_id_generation_queue.py`
 
 ```python
 class ProcessStatusEnum(str, enum.Enum):
@@ -206,7 +206,7 @@ class IdAffix(BaseModel):
 
 #### 6.2 `G2PIdGeneratorInterface`
 
-**Location:** `openg2p-registry-gen2-core/.../interfaces/g2p_id_generator_interface.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../interfaces/g2p_id_generator_interface.py`
 
 ```python
 from abc import ABC, abstractmethod
@@ -239,7 +239,7 @@ class G2PIdGeneratorInterface(ABC):
 
 #### 6.3 `G2PIdGeneratorFactory`
 
-**Location:** `openg2p-registry-gen2-core/.../interfaces/g2p_id_generator_factory.py` or in extensions
+**Location:** `registry-platform/core/openg2p-registry-core/.../interfaces/g2p_id_generator_factory.py` or in extensions
 
 Actually implemented in extensions (discovered dynamically). The factory is a `BaseService` singleton:
 
@@ -275,7 +275,7 @@ class G2PIdGeneratorFactory(BaseService):
 
 #### 7.1 Allocation Beat Producer
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/functional_id_allocation_beat_producer.py`
+**Location:** `registry-platform/celery/.../tasks/functional_id_allocation_beat_producer.py`
 
 Polls for `PENDING` allocation items and queues them to the allocation worker.
 
@@ -311,7 +311,7 @@ def functional_id_allocation_beat_producer():
 
 #### 7.2 Allocation Worker
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/functional_id_allocation_worker.py`
+**Location:** `registry-platform/celery/.../tasks/functional_id_allocation_worker.py`
 
 The critical worker. Does the following:
 
@@ -445,7 +445,7 @@ The `{id_type}` placeholder is replaced with the resolved prefix (e.g., `"FAR-"`
 
 #### 8.1 Updation Beat Producer
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/functional_id_updation_beat_producer.py`
+**Location:** `registry-platform/celery/.../tasks/functional_id_updation_beat_producer.py`
 
 Polls for `PENDING` updation items and queues them to the updation worker. Triggered only after allocation completes.
 
@@ -481,7 +481,7 @@ def functional_id_updation_beat_producer():
 
 #### 8.2 Updation Worker
 
-**Location:** `openg2p-registry-gen2-celery/.../tasks/functional_id_updation_worker.py`
+**Location:** `registry-platform/celery/.../tasks/functional_id_updation_worker.py`
 
 Notifies the external service that an ID has been used. Currently a placeholder implementation.
 

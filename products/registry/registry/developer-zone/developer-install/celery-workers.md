@@ -58,7 +58,7 @@ sudo systemctl enable --now redis
 #### 5. Clone the Registry Celery Repository
 
 ```bash
-git clone https://github.com/OpenG2P/openg2p-registry-gen2-celery
+git clone https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/celery
 ```
 
 #### 6. Install Python Libraries and Run Celery Workers
@@ -66,7 +66,7 @@ git clone https://github.com/OpenG2P/openg2p-registry-gen2-celery
 * Create a new Python virtual environment:
 
 ```bash
-cd openg2p-registry-gen2-celery/openg2p-registry-celery-workers
+cd registry-platform/celery/openg2p-registry-celery-workers
 python3 -m venv venv
 ```
 

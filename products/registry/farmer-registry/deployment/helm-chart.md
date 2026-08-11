@@ -8,21 +8,19 @@ description: >-
 
 {% hint style="info" %}
 **New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
-The Farmer Registry is deployed by **`openg2p-farmer-registry`** ([`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry)), published to the [OpenG2P Helm repo](https://openg2p.github.io/openg2p-helm).
+The Farmer Registry is deployed by **`openg2p-farmer-registry`** ([`helm/openg2p-farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/helm/openg2p-farmer-registry)), published to the `openg2p/charts` GitLab Helm registry.
 
-The chart **owns no templates**. It declares the platform chart as a pinned dependency and supplies a values overlay:
+The chart declares the platform chart as a **pinned dependency** and supplies a values overlay. It owns **no service templates** — every API, worker, job and ingress comes from the subchart — but it does carry a few templates of its own for things the platform has no concept of (see [What this chart owns](#what-this-chart-owns)):
 
 ```yaml
 # Chart.yaml
 dependencies:
   - name: openg2p-registry
     alias: registry              # overlay nests under .Values.registry
-    version: 0.0.0-develop.286   # HARDCODED — moved deliberately
-    repository: https://openg2p.github.io/openg2p-helm
+    version: 0.0.0-develop.383   # HARDCODED — moved deliberately
+    repository: https://gitlab.com/api/v4/projects/84460547/packages/helm/stable
 ```
 
 Every service template, IAM/Keycloak wiring and db-seed mechanism comes from that subchart. See [Packaging & the reference registry](../../registry/deployment-and-extension/packaging-and-reference-registry.md) for what the platform chart contains.
@@ -54,11 +52,34 @@ This is the one thing to remember when writing a values file for the Farmer Regi
 
 Each farmer image is a few lines: `FROM` the matching platform image, `pip install farmer-extension`, and set `REGISTRY_EXTENSION_MODULE=openg2p_registry_farmer_extension`. The platform code is never vendored — it is already in the base image.
 
+## What this chart owns
+
+Beyond the values overlay, the wrapper carries templates for the **analytics and
+reporting layer** — capabilities the platform chart has no concept of, because
+they depend on this registry's own schema and dashboards:
+
+| Template | What it does |
+|---|---|
+| `analytics-jobs.yaml` | Bulk sample generation, reporting-view build, dashboard import |
+| `reporting-views-refresh.yaml` | CronJob that refreshes the `fr_rpt_*` views |
+| `dashboard-bundle-configmap.yaml` | Ships the dashboard bundle from `files/` |
+| `maps-content-configmap.yaml`, `_maps-content.tpl` | Map boundary content for drill-down |
+| `superset-service-account-secret.yaml` | Credentials the importer uses |
+
+These are driven by the chart's own `analytics.*` and `mapsContent.*` values.
+Background: [Reporting views](../../../../platform/platform-services/reporting-and-analytics/reporting-views.md),
+[Dashboards](../../../../platform/platform-services/reporting-and-analytics/dashboards.md),
+[Map drill-down](../../../../platform/platform-services/reporting-and-analytics/map-drill-down.md).
+
 ## Configuration form (Rancher)
 
 The chart ships **no `questions.yaml` of its own**. Rancher reads questions only from the root of the chart being installed and ignores a subchart's, so the file is **generated at packaging time** from the pinned `openg2p-registry` dependency: every non-`global.` variable is prefixed with `registry.`, and each question's default is resolved from this chart's overlay first, then the platform's.
 
 The practical effect: the Farmer Registry form offers exactly the platform's settings, already showing the farmer images and toggles, and it cannot drift from the pinned platform version.
+
+Keys this chart owns and the platform does not — the `analytics.*` and
+`mapsContent.*` switches above — cannot be inherited, so questions for them live
+in **`questions.own.yaml`** and CI appends them verbatim to the generated file.
 
 ## Consent Manager and Partner Management
 
@@ -84,7 +105,7 @@ Names that would otherwise collide are scoped to the release, so a Farmer Regist
 
 ## Versions and CI
 
-The chart and all farmer images are built by the **OpenG2P central pipeline** at **one version per commit** — see [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the authoritative rules. The repo carries a single thin stub, [`.github/workflows/build-publish.yml`](https://github.com/OpenG2P/farmer-registry/blob/develop/.github/workflows/build-publish.yml), calling `openg2p-packaging@v1`.
+The chart and all farmer images are built by the **OpenG2P central pipeline** at **one version per commit** — see [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the authoritative rules. The repo carries a single thin stub, [`.gitlab-ci.yml`](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/.gitlab-ci.yml), calling `openg2p/packaging@v1`.
 
 Two version lines meet in this chart, and they move independently:
 

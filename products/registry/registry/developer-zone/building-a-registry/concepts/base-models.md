@@ -75,7 +75,7 @@ This attribute represents the **human-readable name of the record**.
 
 Domains can configure how the `record_name` is constructed based on attributes within the register. The platform provides **extensibility hooks** that allow implementation teams to define custom logic for generating this value.
 
-Customizations should be implemented in the domain service layer by extending the [g2p\_register\_domain\_service](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/services/g2p_register_domain_service.py). Reference implementation is available in [g2p\_register\_domain\_service\_farmer](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/register_domain/services/g2p_register_domain_service_farmer.py)
+Customizations should be implemented in the domain service layer by extending the [g2p\_register\_domain\_service](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/services/g2p_register_domain_service.py). Reference implementation is available in [g2p\_register\_domain\_service\_farmer](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/register_domain/services/g2p_register_domain_service_farmer.py)
 
 which demonstrates how the `record_name` attribute can be populated using domain-specific attributes.
 
@@ -95,7 +95,7 @@ This capability makes it easier for users to locate records even when the exact 
 
 The platform provides **extensibility** that allows domain implementations to determine which attributes should be combined to populate the `search_text` field. For example, implementations may choose to include fields such as names, phone numbers, identifiers, or other searchable attributes relevant to the domain.
 
-Customizations should be implemented in the domain service layer by extending the [g2p\_register\_domain\_service](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/services/g2p_register_domain_service.py). Reference implementation is available in [g2p\_register\_domain\_service\_farmer](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/blob/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/register_domain/services/g2p_register_domain_service_farmer.py)
+Customizations should be implemented in the domain service layer by extending the [g2p\_register\_domain\_service](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/services/g2p_register_domain_service.py). Reference implementation is available in [g2p\_register\_domain\_service\_farmer](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/register_domain/services/g2p_register_domain_service_farmer.py)
 
 which demonstrates how the `search_text` attribute can be populated using domain-specific attributes.
 
@@ -175,17 +175,17 @@ In addition to the ORM models, the OpenG2P Registry platform also provides a set
 
 The platform provides the following base schemas:
 
-* [`G2PRegisterBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
-* [`G2PTableBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
-* [`G2PProgramRegisterBaseSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
-* [`G2PPersonSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
-* [`G2PGeoSchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
-* [`G2PRegisterHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
-* [`G2PTableHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
-* [`G2PProgramRegisterHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
-* [`G2PPersonHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
-* [`G2PGeoHistorySchema`](https://github.com/OpenG2P/openg2p-registry-gen2-core/blob/develop/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PRegisterBaseSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PTableBaseSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PProgramRegisterBaseSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PPersonSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PGeoSchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register.py)
+* [`G2PRegisterHistorySchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PTableHistorySchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PProgramRegisterHistorySchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PPersonHistorySchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
+* [`G2PGeoHistorySchema`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/schemas/g2p_register_history.py)
 
 Domain implementations must define their **domain-specific schemas** by extending the appropriate base schemas listed above. This ensures that all domain schemas inherit the **core attributes and validation rules** required by the registry platform.
 
-Implementation teams can refer to the [**Farmer Registry reference implementation**](https://github.com/OpenG2P/openg2p-registry-gen2-extensions/tree/develop/openg2p-registry-farmer-extension/src/openg2p_registry_farmer_extension/register_domain/schemas) for an example of how domain schemas are defined by extending these base schemas.ORM Models for Defining Registry Domain Models
+Implementation teams can refer to the [**Farmer Registry reference implementation**](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/farmer-extension/src/openg2p_registry_farmer_extension/register_domain/schemas) for an example of how domain schemas are defined by extending these base schemas.ORM Models for Defining Registry Domain Models

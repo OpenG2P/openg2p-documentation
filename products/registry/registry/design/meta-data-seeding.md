@@ -23,14 +23,14 @@ The seed data is split into two categories:
 Configuration meta data (the `configurations/` folder) is **mandatory**. The registry will not work correctly without it. Sample data is optional and is disabled by default.
 {% endhint %}
 
-## Source: Extensions repository
+## Source: the registry's extension package
 
-The SQL scripts live in the [openg2p-registry-gen2-extensions](https://github.com/OpenG2P/openg2p-registry-gen2-extensions) repository. Each registry variant (farmer, family, etc.) has its own extension folder containing the scripts specific to that variant:
+The SQL scripts live in each registry's **own repository**, inside its extension package — for example [`farmer-extension`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/farmer-extension) in the Farmer Registry and [`nsr-extension`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/nsr-extension) in the National Social Registry:
 
 ```
-openg2p-registry-gen2-extensions/
-├── openg2p-registry-farmer-extension/
-│   └── src/openg2p_registry_farmer_extension/
+farmer-registry/                      ← the registry's own repo
+└── farmer-extension/
+    └── src/openg2p_registry_farmer_extension/
 │       ├── configurations/          ← mandatory meta data
 │       │   ├── data-models/
 │       │   ├── lookup-data/

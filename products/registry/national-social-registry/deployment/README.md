@@ -8,8 +8,6 @@ description: >-
 
 {% hint style="info" %}
 **New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
 The National Social Registry is **not** a registry built from scratch. It is a thin **extension** of the [OpenG2P Registry Platform](../../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the NSR domain on top.
@@ -25,7 +23,7 @@ Three layers, each inherited from the platform and narrowed by this repo:
 | Layer | Platform provides | NSR adds |
 |---|---|---|
 | **Code** | The runtime images (`openg2p-registry-*`) — core, APIs, celery, UI | `nsr-extension` — Individual and Household registers, their sub-registers, schemas, services, seed metadata. Thin `FROM`-image Dockerfiles select it at runtime via `REGISTRY_EXTENSION_MODULE`. |
-| **Deployment** | The `openg2p-registry` chart — every template, service, IAM/Keycloak wiring | `openg2p-nsr` — a wrapper chart with **no templates**: a pinned dependency plus a values overlay. See [Helm chart](helm-chart.md). |
+| **Deployment** | The `openg2p-registry` chart — every template, service, IAM/Keycloak wiring | `openg2p-nsr` — a wrapper chart: a pinned dependency plus a values overlay, and templates only for the analytics/reporting layer. See [Helm chart](helm-chart.md). |
 | **Tests** | The sanity harness + the extension-independent tests | Only the NSR **field-specific** tests. See [Sanity testing](sanity-testing.md). |
 
 The platform version is **pinned in two places that move together**: `RP_VERSION` in each Dockerfile (the base image tag) and the `openg2p-registry` dependency version in the wrapper chart's `Chart.yaml`. Nothing about the platform is vendored or copied.
@@ -38,9 +36,9 @@ The platform version is **pinned in two places that move together**: `RP_VERSION
 
 | Artifact | Location |
 |---|---|
-| Source | [`OpenG2P/national-social-registry`](https://github.com/OpenG2P/national-social-registry) |
-| Helm chart | [`helm/openg2p-nsr`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr), published to [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
-| Docker images | Docker Hub, the `openg2p/openg2p-nsr-*` repositories |
+| Source | [`openg2p/registry/national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry) |
+| Helm chart | [`helm/openg2p-nsr`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/helm/openg2p-nsr), published to the `openg2p/charts` GitLab Helm registry |
+| Docker images | `registry.gitlab.com/openg2p/registry/national-social-registry/<name>` |
 | Versions & changelog | [openg2p-packaging/national-social-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/national-social-registry/CHANGELOG) — see [Versions](../versions/README.md) |
 
 ## Prerequisites
@@ -58,7 +56,7 @@ The db-seed Job waits for AWE to be healthy before it runs. If AWE is down, db-s
 ### Using Rancher (recommended)
 
 1. Log in to the Rancher console and select the cluster and namespace.
-2. Under **Apps → Repositories**, ensure [https://openg2p.github.io/openg2p-helm/rancher](https://openg2p.github.io/openg2p-helm/rancher) is added.
+2. Under **Apps → Repositories**, ensure the OpenG2P catalogue repository is added.
 3. Under **Apps → Charts**, refresh repositories and select **OpenG2P National Social Registry**.
 4. Choose the version. Three-digit versions are frozen; `-develop` versions are moving — tick **Show pre-release versions** to see `0.0.0-develop.N`.
 5. Give the installation a name (the release name is free and scopes the resources, so more than one registry can share a namespace), tick **Customize Helm options before install**, then **Next**.
@@ -69,10 +67,9 @@ The configuration form shows the **same questions as the platform chart** — th
 ### Using Helm CLI
 
 ```bash
-helm repo add openg2p https://openg2p.github.io/openg2p-helm
-helm repo update
+helm dependency update ./helm/openg2p-nsr
 
-helm install nsr openg2p/openg2p-nsr \
+helm install nsr ./helm/openg2p-nsr \
   --namespace <namespace> --create-namespace \
   --version <chart-version> \
   --set global.registryHostname=nsr.example.org
@@ -92,7 +89,7 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 
 ## Tearing down
 
-`helm uninstall` leaves behind hook Jobs, PVCs and secrets carrying `resource-policy: keep`. The repo ships [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/national-social-registry/blob/develop/scripts/uninstall-registry.sh), which removes the release, its leftover Jobs and Pods, and the registry databases.
+`helm uninstall` leaves behind hook Jobs, PVCs and secrets carrying `resource-policy: keep`. The repo ships [`scripts/uninstall-registry.sh`](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/scripts/uninstall-registry.sh), which removes the release, its leftover Jobs and Pods, and the registry databases.
 
 ## Before going to production
 

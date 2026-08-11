@@ -10,8 +10,6 @@ description: >-
 
 {% hint style="info" %}
 **New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
 This section explains **how the OpenG2P Registry is packaged, published, deployed and extended** under the current model. It is self-contained: read it to understand how the images and Helm chart are produced, how the platform runs out of the box, and how you turn it into a domain-specific registry.
@@ -40,7 +38,7 @@ A domain registry (social registry, farmer registry, disability registry, …) i
 
 | Artifact | Location |
 |---|---|
-| Platform + reference registry source | [`OpenG2P/registry-platform`](https://github.com/OpenG2P/registry-platform) |
+| Platform + reference registry source | [`openg2p/registry/registry-platform`](https://gitlab.com/openg2p/registry/registry-platform) |
 | Dockerfiles | `registry-platform/docker/*` (+ `ui/staff-ui/Dockerfile`) |
 | Helm chart | `registry-platform/helm/openg2p-registry`, published to the OpenG2P Helm repository — [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
 | Docker images | Docker Hub, the `openg2p/openg2p-registry-*` repositories |

@@ -22,7 +22,7 @@ AWE handles all approval-routing logic — stage modes, approver resolution, SLA
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  Staff Portal UI (openg2p-registry-gen2-staff-portal-ui)         │
+│  Staff Portal UI (registry-platform/ui/staff-ui)         │
 │                                                                  │
 │  My Tasks.       ──── GET /registry/awe/tasks ──────────────────┐│
 │  Task Detail     ──── POST /registry/awe/tasks/{id}/decision ───┘│

@@ -50,7 +50,7 @@ Registrant Authentication is a feature that allows staff operating the registry 
 
 Configuration table for registrant authentication providers. Multiple providers can be active simultaneously, allowing registrants to choose their preferred authentication method.
 
-**Location:** `openg2p-registry-gen2-core/.../models/g2p_registrant_authentication_provider.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../models/g2p_registrant_authentication_provider.py`
 
 ```python
 class G2PRegistrantAuthenticationProvider(BaseORMModel):
@@ -114,7 +114,7 @@ class G2PRegistrantAuthenticationProvider(BaseORMModel):
 
 Audit trail table. Records every authentication attempt (success or failure) for every registrant.
 
-**Location:** `openg2p-registry-gen2-core/.../models/g2p_registrant_authentication.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../models/g2p_registrant_authentication.py`
 
 ```python
 class AuthenticationStatusEnum(str, enum.Enum):
@@ -209,7 +209,7 @@ class G2PRegisterDefinition(BaseORMModel):
 
 Abstract base class for register types that support authentication. Domain registers opt-in to authentication by extending this mixin.
 
-**Location:** `openg2p-registry-gen2-core/.../models/g2p_register_authentication.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../models/g2p_register_authentication.py`
 
 ```python
 class G2PRegisterAuthentication(BaseORMModel):
@@ -277,7 +277,7 @@ class G2PRegisterFarmer(G2PRegister, G2PRegisterAuthentication):
 
 Orchestrates the registrant authentication flow with support for multiple providers.
 
-**Location:** `openg2p-registry-gen2-core/.../services/g2p_registrant_authentication_service.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../services/g2p_registrant_authentication_service.py`
 
 ```python
 class G2PRegistrantAuthenticationService(BaseService):
@@ -602,7 +602,7 @@ class EsignetAdapter(OIDCBase):
 
 #### 7.1 Controller Service
 
-**Location:** `openg2p-registry-gen2-core/.../controller_services/g2p_registrant_authentication_controller_service.py`
+**Location:** `registry-platform/core/openg2p-registry-core/.../controller_services/g2p_registrant_authentication_controller_service.py`
 
 ```python
 class G2PRegistrantAuthenticationControllerService(BaseService):
@@ -640,7 +640,7 @@ class G2PRegistrantAuthenticationControllerService(BaseService):
 
 #### 7.2 Staff Portal API Endpoints
 
-**Location:** `openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api/.../g2p_registrant_authentication_controller.py`
+**Location:** `registry-platform/apis/openg2p-registry-staff-portal-api/.../g2p_registrant_authentication_controller.py`
 
 ```
 GET /register-data/get-available-authentication-providers
@@ -693,7 +693,7 @@ POST /register-data/get-registrant-authentication-history
 
 #### 8.1 Registrant Authentication Widget
 
-**Location:** `openg2p-registry-gen2-ui-widgets/src/widgets/RegistrantAuthenticationWidget.tsx`
+**Location:** `registry-platform/ui/ui-widgets/src/widgets/RegistrantAuthenticationWidget.tsx`
 
 A new React widget for the staff portal with provider selection:
 

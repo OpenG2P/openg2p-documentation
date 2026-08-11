@@ -2,8 +2,6 @@
 
 {% hint style="info" %}
 **New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
 This page is the operating contract for the OpenG2P Advisor when it walks an implementer through deploying OpenG2P Registry. It is structured for machine consumption: every Discovery item, Activity, Gap-analysis check, and Output element has a deterministic shape, and the advisor relies on that shape. Human readers will find the format unusually rigid; that is intentional.
@@ -1262,7 +1260,7 @@ Reserve the GitLab namespace early so we know the image-registry path before the
 * **Side effects:** workspace — fresh clone of Farmer Registry into `<workspace>/reference/`.
 * **On failure:** abort. Network / git-clone errors.
 
-Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) at the configured branch into the project workspace. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
+Clone Farmer Registry (`https://gitlab.com/openg2p/registry/farmer-registry`) at the configured branch into the project workspace. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
 
 #### 4. generate_extension_files
 
@@ -1409,7 +1407,7 @@ Phase 2 generates and runs a real test suite — it's not a smoke check that's t
 
 ### References
 
-* Farmer Registry reference repository: `https://github.com/OpenG2P/farmer-registry` — the structural baseline this phase substitutes against.
+* Farmer Registry reference repository: `https://gitlab.com/openg2p/registry/farmer-registry` — the structural baseline this phase substitutes against.
 * Registry extensions package conventions and the extension build contract (multiple-inheritance pattern: `G2PRegister<Entity>(G2PRegister, G2PPerson, G2PGeo, G2P<Entity>)`).
 * Registry deployment repository conventions: per-service `Dockerfile` + `develop.txt`, wrapper Helm chart over `openg2p-registry` base chart, sample-data SQL seeds keyed per Register/Table.
 * `g2p_register_definitions` schema and master-register hierarchy.

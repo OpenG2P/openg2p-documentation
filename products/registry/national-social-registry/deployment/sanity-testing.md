@@ -8,8 +8,6 @@ description: >-
 
 {% hint style="info" %}
 **New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
-
-Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
 
 The National Social Registry is verified end-to-end in-cluster by a pytest suite run as a post-install/upgrade Helm Job. As with the chart and the images, the suite is **inherited from the platform and narrowed here**.
@@ -22,7 +20,7 @@ The two-part test model — what is extension-independent, what is field-specifi
 
 The platform publishes `openg2p/openg2p-registry-sanity-tests` containing the **harness** (signing, DCI envelope building, PM/CM/Keycloak/AWE seeding, DB helpers, step logging, the run entrypoint) and **Set 1 — the extension-independent tests**: liveness and wiring, and the fail-closed cases (a search without consent, with a bad signature, or with an unknown consent audience must all be rejected). Those run unchanged on every registry.
 
-The NSR image is a thin `FROM` of it that layers on **Set 2 — the field-specific parts**, four files in [`test/sanity`](https://github.com/OpenG2P/national-social-registry/tree/develop/test/sanity):
+The NSR image is a thin `FROM` of it that layers on **Set 2 — the field-specific parts**, four files in [`test/sanity`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/test/sanity):
 
 | File | What is NSR-specific |
 |---|---|

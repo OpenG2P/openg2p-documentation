@@ -47,7 +47,7 @@ exit
 #### 4. Clone the Registry APIs Repository
 
 ```bash
-git clone https://github.com/OpenG2P/openg2p-registry-gen2-apis
+git clone https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/apis
 ```
 
 #### 5. Install Python Libraries and Run the API
@@ -55,7 +55,7 @@ git clone https://github.com/OpenG2P/openg2p-registry-gen2-apis
 * Create a new Python virtual environment:
 
 ```bash
-cd openg2p-registry-gen2-apis/openg2p-registry-staff-portal-api
+cd registry-platform/apis/openg2p-registry-staff-portal-api
 python3 -m venv venv
 ```
 

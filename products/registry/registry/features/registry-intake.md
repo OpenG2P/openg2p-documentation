@@ -114,7 +114,7 @@ stateDiagram-v2
 
 #### Step 2.4: Configure UI Schema
 
-* Define and update the [UI Schema](https://github.com/OpenG2P/openg2p-registry-gen2-ui-widgets/blob/develop/UISchema.json) for each section
+* Define and update the [UI Schema](https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/ui/ui-widgets/UISchema.json) for each section
 
 This controls:
 

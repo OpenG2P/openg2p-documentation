@@ -4,7 +4,7 @@
 
 ### Repositories
 
-* openg2p-registry-gen2-core
+* registry-platform/core/openg2p-registry-core
 * registry-gen2-apis
 
 ***

@@ -16,8 +16,6 @@ The **platform is itself installable** and ships a runnable reference registry. 
 * [`registry-platform`](https://gitlab.com/openg2p/registry/registry-platform)
 * [`national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry)
 * [`farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry)
-
-`github.com` links in these pages refer to the **earlier GitHub repositories**, now read-only. They are kept so references to previous versions keep working.
 {% endhint %}
 
 ## In this section

@@ -8,9 +8,7 @@ description: >-
 
 {% hint style="info" %}
 **New home: GitLab.** The registry repositories are now developed at
-[gitlab.com/openg2p/registry](https://gitlab.com/openg2p/registry). Any
-`github.com` links refer to the **earlier GitHub repositories**, which are now
-read-only and kept so older references keep working.
+[gitlab.com/openg2p/registry](https://gitlab.com/openg2p/registry).
 {% endhint %}
 
 A registry's **structure** — its tables, fields, validation rules and reports — is
