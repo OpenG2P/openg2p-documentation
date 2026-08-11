@@ -121,6 +121,7 @@ cp single-node-config.example.yaml single-node-config.yaml
 cp env-config.example.yaml   env-config.yaml
 # With AWS: node_ip / wireguard.endpoint / ssh_* come from provision-output.yaml
 # Without AWS: set node_ip, ssh_host, ssh_user, ssh_key in single-node-config.yaml
+# Optional: install_environment: false  — infra only; run --stage environment later
 
 ./openg2p-single-node.sh --config single-node-config.yaml --probe
 ```
@@ -135,6 +136,7 @@ cluster_name: "openg2p"
 node_name: "node1"
 local_domain: "openg2p.test"
 public_access: false
+install_environment: true     # false = stop after infra
 ssh_host: "54.x.x.x"          # reachable from your laptop
 ssh_user: "ubuntu"
 ssh_key:  "~/.ssh/my-vm.pem"
@@ -158,7 +160,7 @@ When `provision-output.yaml` sits next to `single-node-config.yaml`, leave the `
 ./openg2p-single-node.sh --config single-node-config.yaml
 ```
 
-This SSHes into the VM, stages `automation/single-node/` under `/tmp/openg2p-deploy/`, and runs `roles/infra/run.sh` then `openg2p-environment.sh` under sudo. Artifacts (`peer1.conf`, CA cert, kubeconfig) are pulled back to `./artifacts/`.
+This SSHes into the VM, stages `automation/single-node/` under `/tmp/openg2p-deploy/`, and runs `roles/infra/run.sh` then (when `install_environment: true`) `openg2p-environment.sh` under sudo. Artifacts (`peer1.conf`, CA cert, kubeconfig) are pulled back to `./artifacts/`. A summary is written to `setup-output/SETUP-SUMMARY.txt` — it states clearly whether the environment was installed and lists service URLs when it was.
 
 Takes \~30–45 minutes total. Idempotent — re-run on failure.
 
@@ -167,7 +169,8 @@ Useful flags:
 ```bash
 ./openg2p-single-node.sh --config single-node-config.yaml --stage infra          # infra only
 ./openg2p-single-node.sh --config single-node-config.yaml --stage environment    # env only
-./openg2p-single-node.sh --config single-node-config.yaml --skip-environment
+./openg2p-single-node.sh --config single-node-config.yaml --skip-environment    # one-shot skip env
+# Or set install_environment: false in single-node-config.yaml to skip env by default
 ./openg2p-single-node.sh --config single-node-config.yaml --force
 ```
 
@@ -208,7 +211,7 @@ To remove one environment (keeps infrastructure):
 
 ## Post-Infrastructure Steps (on your laptop)
 
-After the orchestrator completes, follow these steps to access the cluster. If you used `openg2p-single-node.sh`, artifacts are already under `./artifacts/`.
+After the orchestrator completes, follow these steps to access the cluster. If you used `openg2p-single-node.sh`, artifacts are already under `./artifacts/` and `setup-output/SETUP-SUMMARY.txt` tells you whether the environment was installed (and its URLs) or how to install it next.
 
 ### 1. Wireguard VPN
 
@@ -525,6 +528,7 @@ automation/single-node/
 │   ├── create-security-group.sh      # Standalone SG helper
 │   └── lib/aws-utils.sh
 ├── artifacts/                        # Pulled peer1.conf, CA, kubeconfig
+├── setup-output/                     # SETUP-SUMMARY.txt (infra + optional env)
 ├── .state/                           # Laptop orchestrator markers
 └── charts/
     ├── raw/
