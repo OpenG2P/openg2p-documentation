@@ -86,7 +86,7 @@ Administrative/data-plane ports (Kubernetes API, NodePorts, etcd, NFS) are alway
 
 | Requirement  | Needed                                                                  |
 | ------------ | ----------------------------------------------------------------------- |
-| **Laptop**   | bash 4+, SSH client, rsync, AWS CLI (if using AWS provisioning)         |
+| **Laptop**   | bash 4+, SSH client, rsync, AWS CLI (if using AWS provisioning). Works on **WSL2** and **Git Bash** (SSH multiplexing is auto-disabled on Git Bash). |
 | **VM**       | Ubuntu 24.04 LTS, 16 vCPU, 64 GB RAM, 128 GB SSD, passwordless sudo     |
 | **Access**   | SSH from laptop to the VM (`ubuntu@` + `.pem`)                          |
 | **Internet** | Required on the VM for packages and Helm charts                         |
@@ -511,7 +511,7 @@ automation/single-node/
 │       ├── run.sh                    # On-box: base infrastructure
 │       └── uninstall.sh              # On-box uninstall: tears down entire infra
 ├── lib/
-│   ├── ssh-utils.sh      # Laptop: ControlMaster SSH, stage, push/pull
+│   ├── ssh-utils.sh      # Laptop: SSH (ControlMaster on WSL/Linux; plain SSH on Git Bash), stage, push/pull
 │   ├── utils.sh          # On-box: logging, state, config, wait helpers
 │   ├── phase1.sh         # Infra Phase 1: tools, firewall, RKE2, Wireguard, NFS, DNS, TLS, Nginx
 │   ├── phase2.sh         # Infra Phase 2: Istio, Helmfile sync
