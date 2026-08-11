@@ -201,7 +201,7 @@ Run additional environments later with:
 ./openg2p-single-node.sh --config single-node-config.yaml --stage environment
 ```
 
-Takes \~15-20 minutes per environment.
+Takes \~15-20 minutes per environment. The orchestrator refreshes `setup-output/SETUP-SUMMARY.txt` with the environment URLs when the env stage runs.
 
 To remove one environment (keeps infrastructure):
 
@@ -422,9 +422,10 @@ The services chart automatically connects to base infrastructure via release nam
 
 ```bash
 ./openg2p-single-node.sh --config single-node-config.yaml --probe
-./openg2p-single-node.sh --config single-node-config.yaml                    # infra + environment
+./openg2p-single-node.sh --config single-node-config.yaml                    # infra + env (if install_environment: true)
 ./openg2p-single-node.sh --config single-node-config.yaml --stage infra
 ./openg2p-single-node.sh --config single-node-config.yaml --stage environment
+./openg2p-single-node.sh --config single-node-config.yaml --skip-environment # one-shot: infra only
 ./openg2p-single-node.sh --config single-node-config.yaml --phase 1          # pass --phase to on-box script
 ./openg2p-single-node.sh --config single-node-config.yaml --force
 ./openg2p-single-node.sh --config single-node-config.yaml --dry-run
@@ -433,6 +434,8 @@ The services chart automatically connects to base infrastructure via release nam
 ./openg2p-single-node-uninstall.sh --config single-node-config.yaml    # tear down infra (keeps VM)
 ./openg2p-single-node-uninstall.sh --config single-node-config.yaml -y # skip typed confirmation
 ```
+
+After a successful run, open `setup-output/SETUP-SUMMARY.txt`. If the environment was installed it lists service URLs and says you do not need to run the env stage again; if it was skipped it tells you how to install it next.
 
 ### On-box infrastructure (advanced / direct SSH)
 
@@ -503,7 +506,7 @@ Infrastructure uninstall is irreversible. Removes: RKE2 cluster, all environment
 automation/single-node/
 ├── openg2p-single-node.sh            # Laptop orchestrator (SSH → on-box scripts)
 ├── openg2p-single-node-uninstall.sh  # Laptop: tear down infra (keeps VM)
-├── single-node-config.example.yaml   # Main config (+ SSH keys for orchestrator)
+├── single-node-config.example.yaml   # Main config (SSH keys, install_environment, …)
 ├── provision-output.yaml             # AWS-derived overlay (from aws/ provisioner)
 ├── helmfile-infra.yaml.gotmpl        # Helmfile for platform components
 ├── openg2p-environment.sh            # Laptop (SSH → VM) or on-box: environment setup
@@ -543,6 +546,8 @@ automation/single-node/
 
 **`Kubeconfig not found` / `must be run as root` on your laptop?** You ran an on-box path without SSH. From the laptop use (no sudo):
 `./openg2p-environment.sh --config env-config.yaml` or `./openg2p-environment-uninstall.sh --config env-config.yaml` — they SSH into the VM. Infra install/uninstall: `./openg2p-single-node.sh` / `./openg2p-single-node-uninstall.sh`.
+
+**Git Bash SSH / `ControlMaster` / `mux_client` errors?** Supported on Git Bash and WSL2. Multiplexing is auto-disabled on Git Bash. If you still see mux errors, clear stale sockets and retry: `rm -rf ~/.ssh/openg2p-single-node-ctrl`. Prefer WSL2 if issues persist. Force plain SSH anytime with `OPENG2P_SSH_NO_MUX=1`.
 
 **Local DNS not resolving on your laptop?** Ensure Wireguard VPN is connected. Configure per-domain DNS on your laptop (see Step 2 above). On macOS, `dig` bypasses the resolver system — use `ping` or `dscacheutil` to test.
 
