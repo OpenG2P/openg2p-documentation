@@ -161,9 +161,11 @@ kubectl get nodes -o wide
 From the **laptop** (needs `primary_ssh_*` in config):
 
 ```bash
-./openg2p-remove-node.sh --config add-node-config.yaml --node worker
 ./openg2p-remove-node.sh --config add-node-config.yaml --node worker --dry-run
+./openg2p-remove-node.sh --config add-node-config.yaml --node worker
 ```
+
+The script asks for confirmation before cordoning / draining / deleting the node. Type `yes` to proceed, or pass `--yes` (`-y`) to skip the prompt (CI / automation).
 
 Then clean RKE2 on the removed machine (commands printed by the script). If it was an AWS add-node instance:
 

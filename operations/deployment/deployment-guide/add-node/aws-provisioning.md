@@ -171,11 +171,11 @@ This terminates the add-node instance and removes `provision-output.yaml`. It do
 
 * Delete the security group, VPC, or subnet
 * Delete your SSH key pair
-* Remove the node from the Kubernetes cluster (run `openg2p-remove-node.sh` on the control-plane first — see [Add Node → Removing a node](README.md#removing-a-node))
+* Remove the node from the Kubernetes cluster (run `openg2p-remove-node.sh` from the laptop first — see [Add Node → Removing a node](README.md#removing-a-node))
 
 Recommended order when decommissioning:
 
-1. [Remove from cluster](README.md#removing-a-node) (`openg2p-remove-node.sh` on control-plane)
+1. [Remove from cluster](README.md#removing-a-node) (`openg2p-remove-node.sh` from the laptop; confirms before proceeding)
 2. Clean up RKE2 on the node (commands printed by remove script)
 3. Destroy EC2 instance (`openg2p-aws-destroy.sh` on laptop)
 
