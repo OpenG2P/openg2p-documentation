@@ -15,10 +15,10 @@ Use it if you need a new EC2 instance. If you already have a VM (on-prem, anothe
 {% endhint %}
 
 {% hint style="info" %}
-**Source code:** [`automation/add-node/aws/`](https://github.com/OpenG2P/openg2p-deployment/tree/main/automation/add-node/aws) in the `openg2p-deployment` repository. Pattern and helpers mirror [production AWS provisioning](../../infrastructure-setup/production-automation/aws-provisioning.md).
+**Source code:** [`automation/add-node/aws/`](https://github.com/OpenG2P/openg2p-deployment/tree/main/automation/add-node/aws) in the `openg2p-deployment` repository.
 {% endhint %}
 
-This script **only provisions the VM**. Joining the cluster is a separate step — [Add Node](README.md) — run **on the new instance** after SSH is working.
+This script **only provisions the VM**. Joining the cluster is a separate step — [Add Node](README.md) — run from your **admin laptop** after SSH is working.
 
 ## Prerequisites
 
@@ -30,11 +30,11 @@ This script **only provisions the VM**. Joining the cluster is a separate step �
 | **Existing AWS resources** | VPC, subnet (public if you SSH from the internet), security group, EC2 key pair |
 | **Permissions** | `ec2:Describe*`, `ec2:RunInstances`, `ec2:TerminateInstances`, `ec2:CreateTags`, `sts:GetCallerIdentity` |
 
-Use the **same `project` tag value** as your production AWS config so resources stay grouped.
+Use a **`project` tag value** that matches the Project tag on your existing cluster resources so they stay grouped.
 
 ### Security group
 
-Reuse the production **Compute** security group (`<project>-k8s-node`) or any SG that allows:
+Reuse your cluster **Compute** security group (`<project>-k8s-node`) or any SG that allows:
 
 * SSH (TCP 22) from your admin CIDR
 * **All intra-VPC traffic** (required for RKE2 ports 9345, 6443, 10250, etc.)
@@ -43,7 +43,7 @@ The add-node provisioner does **not** create or modify security group rules.
 
 ## What gets created
 
-All resources are tagged with `Project=<project>` and `ManagedBy=openg2p-aws-add-node` so destroy / `--force` never touch the production fleet (`ManagedBy=openg2p-aws-provision`).
+All resources are tagged with `Project=<project>` and `ManagedBy=openg2p-aws-add-node` so destroy / `--force` never touch instances tagged `ManagedBy=openg2p-aws-provision`.
 
 | Resource | Notes |
 | --- | --- |
@@ -60,7 +60,7 @@ All resources are tagged with `Project=<project>` and `ManagedBy=openg2p-aws-add
 | Root disk | 128 GiB gp3, encrypted | `disk_gb` |
 | OS | Ubuntu 24.04 LTS (latest Canonical AMI) | `ubuntu_ami` (blank = auto-resolve) |
 
-Match or exceed the [Compute node minimums](../../prerequisites-procurement.md#compute-the-four-vms) for production workloads.
+Match or exceed the [Compute node minimums](../../prerequisites-procurement.md#compute-the-four-vms) for your cluster workloads.
 
 ## Workflow
 
@@ -78,16 +78,17 @@ cp aws-config.example.yaml aws-config.yaml
 # Writes ./provision-output.yaml.
 ```
 
-Then continue with the cluster join:
+Then continue with the cluster join from your **laptop** (no sudo):
 
 ➡️ **[Add Node](README.md)**
 
-| `provision-output.yaml` | `add-node-config.yaml` |
-| --- | --- |
-| `private_ip` | `node_ip` |
-| `instance_name` | `node_name` |
+```bash
+cd automation/add-node
+./openg2p-add-node.sh --config add-node-config.yaml --probe
+./openg2p-add-node.sh --config add-node-config.yaml
+```
 
-You still need `server_url`, `rke2_token`, and `rke2_version` from an existing control-plane node — see [Add Node → Step 1](README.md#step-1-gather-cluster-details-from-the-control-plane).
+`aws/provision-output.yaml` is auto-loaded for `ssh_host`, `ssh_user`, `ssh_key`, `node_ip`, and `node_name`. You still need `server_url`, `rke2_token`, and `rke2_version` from a control-plane — see [Add Node → Step 1](README.md#step-1-gather-cluster-details-from-a-control-plane).
 
 ## Interactive selection (default)
 
@@ -111,7 +112,7 @@ For CI / automation, pass `--non-interactive` and pre-fill all required values.
 | `--dry-run` | Resolve selection and print what would be launched; create nothing |
 | `--help`, `-h` | Show help |
 
-**`--dry-run`** (same pattern as `openg2p-prod.sh`): still checks credentials and resolves VPC / SG / AMI / etc., then prints the planned launch and exits. Does not call `RunInstances`, terminate, wait for SSH, or write `provision-output.yaml`.
+**`--dry-run`**: still checks credentials and resolves VPC / SG / AMI / etc., then prints the planned launch and exits. Does not call `RunInstances`, terminate, wait for SSH, or write `provision-output.yaml`.
 
 **`--force`** is useful when a previous launch failed mid-way. It only replaces instances tagged `ManagedBy=openg2p-aws-add-node` (or listed in `provision-output.yaml`).
 
@@ -170,11 +171,11 @@ This terminates the add-node instance and removes `provision-output.yaml`. It do
 
 * Delete the security group, VPC, or subnet
 * Delete your SSH key pair
-* Remove the node from the Kubernetes cluster (run `openg2p-remove-node.sh` on the control-plane first — see [Add Node → Removing a node](README.md#removing-a-node))
+* Remove the node from the Kubernetes cluster (run `openg2p-remove-node.sh` from the laptop first — see [Add Node → Removing a node](README.md#removing-a-node))
 
 Recommended order when decommissioning:
 
-1. [Remove from cluster](README.md#removing-a-node) (`openg2p-remove-node.sh` on control-plane)
+1. [Remove from cluster](README.md#removing-a-node) (`openg2p-remove-node.sh` from the laptop; confirms before proceeding)
 2. Clean up RKE2 on the node (commands printed by remove script)
 3. Destroy EC2 instance (`openg2p-aws-destroy.sh` on laptop)
 
@@ -204,5 +205,4 @@ See [Add Node → Troubleshooting](README.md#troubleshooting). The AWS script on
 ## Related guides
 
 * [Add Node](README.md) — main cluster join guide
-* [Production AWS provisioning](../../infrastructure-setup/production-automation/aws-provisioning.md) — initial three-node fleet
 * [Prerequisites & Procurement](../../prerequisites-procurement.md)

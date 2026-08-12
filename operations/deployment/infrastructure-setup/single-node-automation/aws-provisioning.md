@@ -118,8 +118,10 @@ cp aws-config.example.yaml aws-config.yaml
 cd ..
 cp single-node-config.example.yaml single-node-config.yaml
 cp env-config.example.yaml   env-config.yaml
+# Optional: install_environment: false  — infra only; install env later
 ./openg2p-single-node.sh --config single-node-config.yaml --probe
 ./openg2p-single-node.sh --config single-node-config.yaml
+# Writes setup-output/SETUP-SUMMARY.txt (env URLs if install_environment: true)
 # Stages automation/single-node/ to /tmp/openg2p-deploy/ on the VM,
 # runs roles/infra/run.sh then openg2p-environment.sh under sudo,
 # pulls peer1.conf / CA / kubeconfig into ./artifacts/
