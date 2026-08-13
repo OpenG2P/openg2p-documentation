@@ -37,10 +37,38 @@ Dedup logic is **inherited**, configure via `g2p_register_schemas.deduplicate_sc
 | `G2PRegisterDomainFactory` | Standard boilerplate resolves `G2PRegisterDomainService{Mnemonic}` via `importlib` |
 | `app.py` Initializer       | `CoreInitializer()` → factory → optional eager domain services                     |
 | `migrate_database()`       | Must call `create_migrate()` on **every** domain ORM class                         |
-| `pyproject.toml`           | Hatch source map to `openg2p_registry_extensions`                                  |
+| `pyproject.toml`           | `name` and `[tool.hatch.version]` point at **your own** package. No source map — see below. A `readme = "README.md"` line means the file must exist, or the build fails |
 
 {% hint style="warning" %}
 Celery workers do not run `migrate_database()`, API containers must start first.
+{% endhint %}
+
+### The module alias — two halves that look contradictory
+
+1. **Your package installs under its own import name**
+   (`openg2p_registry_<domain>_extension`). Do **not** add a
+   `[tool.hatch.build.targets.wheel.sources]` map onto
+   `openg2p_registry_extensions`. That was the pre-1.0 mechanism; it prevents
+   your extension from coexisting with the platform's reference extension in one
+   image.
+
+2. **Code the platform resolves must nevertheless import the alias.** The
+   container entrypoint (`openg2p_registry_staff_api/main.py` and its siblings)
+   installs the module named by `REGISTRY_EXTENSION_MODULE` into `sys.modules` as
+   `openg2p_registry_extensions` before any platform import runs. So the
+   factories do:
+
+   ```python
+   importlib.import_module("openg2p_registry_extensions.register_domain.services")
+   ```
+
+   Changing that to your own package name works in your image and breaks the
+   moment the reference extension is the one selected. **Copy the factories
+   unchanged** — the only thing you adjust is which services exist.
+
+{% hint style="danger" %}
+Rule of thumb: **package name → yours. Import target inside the factories →
+`openg2p_registry_extensions`.**
 {% endhint %}
 
 ***

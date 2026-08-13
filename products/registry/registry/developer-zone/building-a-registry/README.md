@@ -83,6 +83,9 @@ rather than do something, they link here — read these when you want the *why*:
 
 * [**Anatomy of an extension**](anatomy-of-an-extension.md) — every folder in an
   extension package and what belongs in it. Keep this open during Phase 1.
+* [**Contracts that fail silently**](contracts-that-fail-silently.md) — the names
+  that must match across files nothing type-checks, and what breaks when they do
+  not. Read it before writing metadata; it is where the time goes otherwise.
 * [**Concepts**](concepts/README.md) — registry vs register, base models, register
   metadata, the extensions contract.
 * [**Deployment and Extension**](../../deployment-and-extension/README.md) — how
@@ -92,10 +95,17 @@ rather than do something, they link here — read these when you want the *why*:
 
 ## Worked examples
 
-Two complete registries are built exactly this way. When a phase says "see how a
-real registry does this", it means these:
+Complete registries built exactly this way. When a phase says "see how a real
+registry does this", it means these:
 
-| | |
-|---|---|
-| [**Farmer Registry**](../../../farmer-registry/README.md) | Farmer + Household, with land, crop, livestock and cooperative sub-registers. [Source](https://gitlab.com/openg2p/registry/farmer-registry) |
-| [**National Social Registry**](../../../national-social-registry/README.md) | Individual + Household, with the socio-economic sub-registers used for targeting. [Source](https://gitlab.com/openg2p/registry/national-social-registry) |
+| | Shape | |
+|---|---|---|
+| [**Farmer Registry**](../../../farmer-registry/README.md) | Two registers | Farmer + Household, with land, crop, livestock and cooperative sub-registers. [Source](https://gitlab.com/openg2p/registry/farmer-registry) |
+| [**National Social Registry**](../../../national-social-registry/README.md) | Two registers | Individual + Household, with the socio-economic sub-registers used for targeting. [Source](https://gitlab.com/openg2p/registry/national-social-registry) |
+| [**Disability Registry**](../../../disability-registry/README.md) | **One register** | A single `PersonWithDisability` register with eight sub-registers and no group register — the example to follow if your domain has one subject. Built to the SPDCI Disability Registry data objects. [Source](https://gitlab.com/openg2p/registry/disability-registry) |
+
+{% hint style="info" %}
+The two-register examples make a household register look mandatory. It is not —
+a registry with a single register is a normal shape and needs no special
+handling.
+{% endhint %}

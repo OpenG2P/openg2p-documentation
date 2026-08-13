@@ -19,6 +19,16 @@ registers, several sub-registers) or
 Every step below has a working example in both.
 {% endhint %}
 
+{% hint style="success" %}
+**Every step ends with a `Done when` block.** It is a short list of commands that
+exit non-zero on failure and touch nothing. Run them before moving on.
+
+They exist so this page works two ways: a person reads the prose and uses the
+block as a checklist; an automated agent can execute the blocks directly and
+treat a non-zero exit as "this step is not finished". Substitute your slug for
+`<domain>` throughout — it is the only variable in the page.
+{% endhint %}
+
 ## 1. Decide your registers
 
 Write this down before touching code — it drives everything after it.
@@ -33,8 +43,24 @@ Write this down before touching code — it drives everything after it.
 3. **Freeze a UUID per register** now. Metadata rows reference each other by these.
 4. **List the fields per register**, marking which are code lists (dropdowns) and
    which are free text.
+5. **Decide which registers mint functional IDs.** Only those get
+   `functional_id_generation_required = TRUE`, an ID pool in the chart
+   (`registry.idgenerator.idGenerator.appConfig.idTypes.<mnemonic-lowercase>`)
+   and a branch in `id_generator/`. Sub-registers reached through a parent
+   normally need none of the three.
 
-Unsure whether something is a register: [Registry vs Register](concepts/registry-vs-register.md).
+A single-register registry is a perfectly good shape — do not add a household
+register because the worked examples have one. Unsure whether something is a
+register: [Registry vs Register](concepts/registry-vs-register.md).
+
+**Done when** you can fill in this table for your domain, because every later
+step reads from it:
+
+| Mnemonic | `register_purpose` | `master_register_id` | Mints functional IDs | Frozen UUID |
+|---|---|---|---|---|
+| `Farmer` | `REGISTER` | `NULL` | yes | `a0000000-…-0001` |
+| `Land` | `TABLE` | the Farmer UUID | no | `b0000000-…-0010` |
+| `Score` | `CORE_TABLE` | the master UUID | no | `c0000000-…-0001` |
 
 ## 2. Create the repository
 
@@ -61,6 +87,17 @@ under `src/`, the `name` in `pyproject.toml`, and the `[tool.hatch.version]` pat
 {% hint style="danger" %}
 Do **not** add a `[tool.hatch.build.targets.wheel.sources]` alias onto
 `openg2p_registry_extensions`. The package must install under its own name.
+
+The factories are the exception and stay as they are: they import
+`openg2p_registry_extensions...`, which the entrypoint aliases at startup. Copy
+them unchanged. See
+[Extensions Contract](concepts/registry-extensions/extensions-contract.md#the-module-alias-two-halves-that-look-contradictory).
+{% endhint %}
+
+{% hint style="warning" %}
+Write `<domain>-extension/README.md` now. `pyproject.toml` declares
+`readme = "README.md"`, and a missing file fails the **Docker build** in step 4
+with `OSError: Readme file does not exist` — a long way from the cause.
 {% endhint %}
 
 **Everything derives from one slug.** `<domain>` is the repo name, the Python
@@ -69,6 +106,17 @@ clients — pick it once and use it verbatim everywhere. This is the OpenG2P nam
 convention for any service; see
 [Creating a New Platform Service](../../../../../platform/platform-services/creating-a-new-service.md)
 for the full set of conventions a registry inherits.
+
+**Done when:**
+
+```bash
+test -f <domain>-extension/pyproject.toml
+test -f <domain>-extension/README.md          # required by pyproject
+test -d <domain>-extension/src/openg2p_registry_<domain>_extension
+! grep -q "wheel.sources" <domain>-extension/pyproject.toml   # no alias
+grep -q "openg2p_registry_extensions" \
+  <domain>-extension/src/openg2p_registry_<domain>_extension/register_domain/factory/*.py
+```
 
 ## 3. Write the domain
 
@@ -92,11 +140,40 @@ for class names, [Base models](concepts/base-models.md) for inherited fields,
 [Register metadata](concepts/registry-and-register-metadata/README.md) for each
 metadata table.
 
-{% hint style="warning" %}
-**The field names must agree in three places** — the ORM column, the section JSON
-in `g2p_register_sections.sql`, and the DCI template. A mismatch shows up as a
-blank field in the portal or an empty DCI response, not as an error.
+{% hint style="danger" %}
+**This is where the platform's one real hazard lives.** Almost everything in this
+step is names matching across files that never import one another, and when they
+do not match **nothing raises**:
+
+| Mismatch | What you see |
+|---|---|
+| widget path ↔ ORM column | a permanently blank field that accepts no input |
+| dropdown `attribute_id` ↔ code list | an empty dropdown; the field cannot be filled |
+| enum value ↔ code-list value | the field refuses to save, or the value is unreachable |
+| inbound template key ↔ section mnemonic | ingested records arrive with empty tables |
+| consent scope ↔ template top-level key | every shared record clamps to `{}` |
+| seed `INSERT` with no `ON CONFLICT` | the second install half-applies metadata and exits `0` |
+
+Read [Contracts that fail silently](contracts-that-fail-silently.md) **before**
+writing the metadata, and add its check suite as `test/test_metadata_consistency.py`
+while you go. It needs no cluster and no database, so it runs on every push and
+catches all six on the first `pytest`.
 {% endhint %}
+
+Two habits that remove whole categories of this:
+
+* **Generate the code lists from the enums** rather than maintaining both, and
+  fail CI when the checked-in SQL is stale.
+* **Generate the translation keys from the section metadata** — every
+  `widget-label` is a translation key, and a missing one renders as the raw key.
+
+**Done when:**
+
+```bash
+# every register named in the metadata has its three ORM classes and a service
+pytest test/test_metadata_consistency.py -q
+python -m compileall -q <domain>-extension/src
+```
 
 ## 4. Build thin images
 
@@ -131,6 +208,42 @@ COPY docker/db-seed/seed-data/                                                 /
 **`sanity-tests`** layers your field tests onto the platform suite — see step 6.
 
 `staff-ui` and `bene-api` carry no domain code: use the platform images as-is.
+
+{% hint style="warning" %}
+**The build context is the repository root**, not the Dockerfile's directory —
+every image copies `<domain>-extension/` from it:
+
+```bash
+docker build -f docker/staff-api/Dockerfile -t <domain>/staff-api:dev .
+```
+{% endhint %}
+
+**db-seed also needs your own loaders.** The base image's
+`load_sample_data.py` and `upload_images.py` are written against the reference
+registry's tables and will crash-loop against yours; the entrypoint hard-fails if
+`LOAD_SAMPLE_DATA=true` and no variant loader is present.
+
+```dockerfile
+COPY docker/db-seed/load_sample_data.py /seed/load_sample_data.py
+COPY docker/db-seed/upload_images.py    /seed/upload_images.py
+```
+
+Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`,
+`load_geo_data.py`, `load_attributes_from_mds.py`, `sync_geo_widgets.py`,
+`upload_templates.py`.
+
+A variant loader has three obligations the ORM would otherwise meet for it —
+write `search_text` explicitly, resolve and write geography explicitly, and read
+the target table's columns from `information_schema` rather than hard-coding
+them. See [Contracts that fail silently](contracts-that-fail-silently.md).
+
+**Done when** all five images build from a clean checkout:
+
+```bash
+for i in staff-api partner-api celery db-seed sanity-tests; do
+  docker build -f "docker/${i}/Dockerfile" -t "<domain>/${i}:dev" . || exit 1
+done
+```
 
 ## 5. Write the chart
 
@@ -173,7 +286,43 @@ as `dbSeed.loadSampleData` becomes `registry.dbSeed.loadSampleData` here.
 You do **not** write a `questions.yaml`. CI generates it from the pinned platform
 chart so your Rancher form matches the platform's. If your chart owns keys the
 platform has no concept of, put questions for those in `questions.own.yaml` and CI
-appends them.
+appends them. Gitignore the generated `questions.yaml` — it rots against the pin.
+
+**The chart owns no *service* templates — but it does own analytics.** The
+reporting views and dashboards are written against *your* schema, so they cannot
+come from the subchart. Expect to copy roughly five templates from a reference
+registry and rename them:
+
+| Template | Purpose |
+|---|---|
+| `analytics-jobs.yaml` | reporting-views and dashboard-import hook Jobs |
+| `reporting-views-refresh.yaml` | CronJob refreshing the materialized views |
+| `dashboard-bundle-configmap.yaml` | ships the Superset bundle into the cluster |
+| `maps-content-configmap.yaml` + `_maps-content.tpl` | maps content for G2P Insights |
+| `superset-service-account-secret.yaml` | the Superset service account |
+
+A registry that ships none of these installs cleanly and has **no reporting at
+all**, with nothing to indicate anything is missing. Hook weights matter: the
+analytics chain sits above the sanity suite (25) so that rebuilding the views
+cannot change what the sanity tests asserted against.
+
+{% hint style="info" %}
+The Superset bundle is produced by `docker/dashboards/build_bundle.py`, which
+reads the reporting views' real column list — so the views must exist when you
+build it. Consider building it as a release step and gitignoring the ZIP rather
+than committing a binary nobody can diff, and defaulting
+`analytics.dashboards.enabled` to `false` when you ship no bundle.
+{% endhint %}
+
+**Done when:**
+
+```bash
+helm dependency update ./helm/openg2p-<domain>
+helm lint ./helm/openg2p-<domain>
+helm template test ./helm/openg2p-<domain> > /tmp/render.yaml
+# the overlay actually took effect — not the subchart's defaults
+grep -q "registry.gitlab.com/openg2p/registry/<your-repo>/staff-api" /tmp/render.yaml
+```
 
 ## 6. Narrow the sanity tests
 
@@ -196,6 +345,34 @@ COPY test/sanity/tests/test_e2e_change_request.py /app/tests/test_e2e_change_req
 record"). Change the *values*, never the *names*, or the whole suite dies at
 collection.
 {% endhint %}
+
+**The chart side is a contract too, and three of its keys mislead.** The suite is
+configured entirely through `registry.sanity.*`; left at the defaults, these are
+the *reference registry's* values, and the suite then passes or fails for reasons
+that have nothing to do with your registry:
+
+| Key | Note |
+|---|---|
+| `farmerRegisterId` | **This is the register id**, whatever your registry is about. Same historical naming as `fixtures.py`; the subchart helpers and every variant use this spelling |
+| `dataScopes`, `deniedScopes` | **Comma-separated strings**, not YAML lists — a list renders into the env var as Go map syntax. Both must name real top-level keys of your outbound DCI template |
+| `regType`, `regRecordType` | Your register mnemonic and DCI record type |
+| `crTabId`, `crSectionId` | A real, **editable** section of yours, or the change-request test's write is rejected |
+| `searchText` | The injected record's `functional_record_id` — must equal what your `data_seed.py` writes |
+
+**Also write the repository guards.** The sanity suite proves a *deployed*
+registry works and needs a cluster, commons-services and Keycloak admin. A second,
+much cheaper set proves the *repository* is coherent — field names resolving, code
+lists existing, scopes matching the template, seed SQL re-runnable — and runs in
+CI on every push, before anything is published. Those are the checks that catch
+the silent failures listed in step 3.
+
+**Done when:**
+
+```bash
+pytest test/test_rp_pin_lockstep.py test/test_metadata_consistency.py -q
+helm template test ./helm/openg2p-<domain> \
+  | grep -E "SANITY_FARMER_REGISTER_ID|SANITY_DCI_REG_TYPE"   # your values, not the defaults
+```
 
 Full model: [Testing & the sanity suite](../../deployment-and-extension/testing-and-sanity-suite.md).
 
@@ -253,6 +430,16 @@ the project's own registry are all the pipeline needs.
   reinstall into the same namespace inherits stale state. Every OpenG2P service is
   expected to ship one.
 
+**Done when:**
+
+```bash
+test -f .gitlab-ci.yml
+test -x scripts/bump-rp-version.sh
+test -x scripts/uninstall-registry.sh
+test -f test/test_rp_pin_lockstep.py
+pytest test/test_rp_pin_lockstep.py -q      # chart pin == every Dockerfile pin
+```
+
 Versioning rules: [Helm & Docker versioning and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci).
 
 ## 8. Publish and check
@@ -264,10 +451,19 @@ Confirm before moving on:
 * [ ] All five images published at the same version
 * [ ] The chart published at that same version
 * [ ] `./scripts/bump-rp-version.sh -n` reports no pin drift
-* [ ] `helm template` renders your chart without error
+* [ ] The repository guards pass
+* [ ] Any generated files are current (code lists, translations)
+* [ ] `helm template` renders your chart **and carries your overrides**
+
+**Done when** this exits zero from a clean checkout:
 
 ```bash
+# --ignore=test/sanity is required: the sanity tests import the platform
+# harness, which only exists inside the sanity image. They run in-cluster.
+pytest test/ --ignore=test/sanity -q               # pin lockstep + metadata guards
+./scripts/bump-rp-version.sh -n                    # no drift
 helm dependency update ./helm/openg2p-<domain>
+helm lint  ./helm/openg2p-<domain>
 helm template test ./helm/openg2p-<domain> > /dev/null && echo OK
 ```
 

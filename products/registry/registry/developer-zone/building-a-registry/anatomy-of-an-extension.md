@@ -40,8 +40,10 @@ as they are built today.
 ```
 <domain>-extension/
 ├── pyproject.toml
+├── README.md                  ← REQUIRED — pyproject declares readme = "README.md"
+├── LICENSE
 └── src/openg2p_registry_<domain>_extension/
-    ├── __init__.py            ← version string
+    ├── __init__.py            ← version string + __variant__
     ├── app.py                 ← wires the extension into the platform app
     ├── config.py              ← extension settings
     ├── register_domain/       ← the domain model  (REQUIRED)
@@ -52,11 +54,27 @@ as they are built today.
     └── ingestion_pipeline/    ← optional: inbound enrichers
 ```
 
+{% hint style="danger" %}
+**`README.md` is not optional.** The `pyproject.toml` you copy declares
+`readme = "README.md"`, and Hatchling validates it while generating metadata — so
+a missing file fails the **Docker build**, not at runtime, with:
+
+```
+OSError: Readme file does not exist: README.md
+error: metadata-generation-failed
+```
+{% endhint %}
+
 {% hint style="warning" %}
 The package installs under **its own import name** and is selected at runtime by
 `REGISTRY_EXTENSION_MODULE`. Do **not** alias it onto `openg2p_registry_extensions`
 in `pyproject.toml` — that was the previous mechanism and it prevents your
 extension from coexisting with the platform's reference extension in one image.
+
+The mirror of that rule: the **factories must still import the alias**
+(`openg2p_registry_extensions.register_domain.services`), because the entrypoint
+installs it into `sys.modules` before any platform import runs. See
+[Extensions Contract](concepts/registry-extensions/extensions-contract.md#the-module-alias-two-halves-that-look-contradictory).
 {% endhint %}
 
 ### `register_domain/` — the domain model
@@ -67,9 +85,15 @@ The heart of the extension. One set of files per register.
 |---|---|---|
 | `models/` | SQLAlchemy ORM models — one file per register, plus `enums.py`. Each declares three tables: the register, its `history`, and its `intake_form` | 9 files |
 | `schemas/` | Pydantic mirrors of the models, used by the APIs | 9 files |
-| `services/` | `G2PRegisterDomainService{Mnemonic}` — the per-register behaviour the platform calls into | 10 files |
-| `factory/` | `g2p_register_domain_factory.py` and `g2p_id_generator_factory.py` — resolve mnemonic → your classes. Copy and adjust the mapping | 2 files |
+| `services/` | `G2PRegisterDomainService{Mnemonic}` — the per-register behaviour the platform calls into. `services/utils/` holds anything shared between them (validation helpers, recompute logic) | 10 files |
+| `factory/` | `g2p_register_domain_factory.py` and `g2p_id_generator_factory.py` — resolve mnemonic → your classes. **Copy unchanged**; the only thing you adjust is which services exist | 2 files |
 | `id_generator/` | Functional-ID generation, if your registers need it | 1 file |
+
+{% hint style="info" %}
+**Declare each register's columns once.** Put them on a plain mixin class and
+compose the register, history and intake-form tables from it. A column added to
+only the live table makes approval fail when it copies the record into history.
+{% endhint %}
 
 The class names are a contract the platform resolves by **register mnemonic** —
 see [Extensions contract](concepts/registry-extensions/extensions-contract.md)
@@ -128,6 +152,18 @@ The **top-level keys your outbound template emits are the consent scopes** a
 partner can be granted — get them right or clamping silently returns `{}`. See
 [Partner APIs](../../design/partner-apis.md).
 
+Two key contracts you cannot infer from the templates themselves:
+
+* **Outbound** — child registers arrive under the *snake_case of the register
+  mnemonic* (`AssistiveTechnology` → `assistive_technology`).
+* **Inbound** — the keys you emit are registry field names for the **master
+  register only**. Everything else is keyed by the **`section_mnemonic`** of the
+  section that owns those fields. A key matching no section mnemonic is dropped
+  silently.
+
+Both are spelled out in
+[Contracts that fail silently](contracts-that-fail-silently.md).
+
 ### `score_compute/` and `ingestion_pipeline/` — optional
 
 * `score_compute/services/` — implementations of `G2PScoreComputeInterface`, bound
@@ -145,7 +181,10 @@ A frequent source of confusion — these live in the repo but outside the packag
 | Thing | Where it actually lives |
 |---|---|
 | Sample data (demo records) | `docker/db-seed/seed-data/*.json` |
-| Sample-data loader, image uploader | `docker/db-seed/*.py` — only if the platform's is not shape-compatible |
+| Sample-data loader, image uploader | `docker/db-seed/*.py` — **always yours.** The platform's are written against the reference registry's tables and will crash-loop against yours; the entrypoint hard-fails if `LOAD_SAMPLE_DATA=true` and no variant loader is present |
 | Reporting views, `reporting.yaml` | `docker/db-seed/` |
-| Dashboards, maps | `docker/dashboards/`, `helm/openg2p-<domain>/files/` |
+| Dashboards (the **builder**), maps | `docker/dashboards/`, `helm/openg2p-<domain>/files/` |
+| Analytics jobs, maps ConfigMap, reporting-refresh CronJob | `helm/openg2p-<domain>/templates/` — the umbrella chart owns no *service* templates, but it does own the analytics layer |
 | Sanity field tests | `test/sanity/` |
+| Repository guards (metadata consistency, pin lockstep) | `test/` — see [Contracts that fail silently](contracts-that-fail-silently.md) |
+| Domain translations | `translation/domain.json` — **advisory copy only.** Nothing reads it; the values reach the database via `registry_languages.domain_translation` in `meta_data/registry-configurations/g2p_registry_languages.sql` |

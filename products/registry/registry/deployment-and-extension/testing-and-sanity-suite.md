@@ -32,10 +32,16 @@ Set 1 is written once, in the platform, and **runs unchanged on any registry** �
 The sanity image mirrors the app's base-and-extension shape. The **harness** (clients, signing, consent/partner/keycloak/AWE seeding, DB helpers) and **Set 1** are baked into `openg2p-registry-sanity-tests`. A domain registry builds its own sanity image **FROM** it and supplies only its **Set 2** — the field-specific tests and config — while Set 1 and the harness are inherited and run as-is:
 
 ```dockerfile
-FROM openg2p/openg2p-registry-sanity-tests:<version>
-COPY tests_fields/   /app/tests_fields/     # your field-specific tests (Set 2)
-COPY sanity.env      /app/sanity.env        # your register id, fields, scopes, UI tab/section
+ARG RP_VERSION=<version>
+FROM registry.gitlab.com/openg2p/registry/registry-platform/sanity-tests:${RP_VERSION}
+
+COPY test/sanity/sanity/fixtures.py               /app/sanity/fixtures.py
+COPY test/sanity/sanity/data_seed.py              /app/sanity/data_seed.py
+COPY test/sanity/tests/test_e2e_dci.py            /app/tests/test_e2e_dci.py
+COPY test/sanity/tests/test_e2e_change_request.py /app/tests/test_e2e_change_request.py
 ```
+
+Four files overwrite the reference registry's versions at the same paths. Nothing else about the image changes — no `sanity.env`, no extra test directory.
 
 Concretely, adapting Set 2 for a new registry means pointing the suite at your domain:
 
@@ -44,6 +50,34 @@ Concretely, adapting Set 2 for a new registry means pointing the suite at your d
 * the **UI tab / section** the change-request test edits, and the field it changes.
 
 Most of this is configuration; genuinely new scenarios are a few small pytest files that reuse the shipped harness fixtures. Set 1 is not touched.
+
+### The configuration, exactly
+
+Everything above is supplied as env from the chart's `registry.sanity.*` values rather than baked into the image — which is what lets one image run against any environment. Three of the keys mislead, so they are worth stating precisely:
+
+| Value | Type | Note |
+|---|---|---|
+| `farmerRegisterId` | string | **This is the register id**, whatever the registry is about — the subchart helpers, the suite's `cfg` object and every variant's override use this spelling. See *inherited names* below |
+| `regType` | string | Your register mnemonic; goes into the DCI envelope as `reg_type` |
+| `regRecordType` | string | The DCI record type |
+| `searchText` | string | The injected record's `functional_record_id`. Must equal what your `data_seed.py` writes — the DCI search matches `search_text ILIKE '%…%'` |
+| `dataScopes` | **comma-separated string** | Not a YAML list. Must name real **top-level keys** of your outbound DCI template |
+| `deniedScopes` | **comma-separated string** | Scopes deliberately not consented to; the clamping test asserts they never come back |
+| `crTabId` / `crSectionId` | string | A real, **editable** section, or the change-request write is rejected |
+
+{% hint style="warning" %}
+Left at their defaults these carry the **reference registry's** values, so the suite passes or fails for reasons unrelated to your registry. A mistyped values key renders happily with the subchart default and gives no warning — after `helm template`, grep the output for `SANITY_FARMER_REGISTER_ID` and `SANITY_DCI_REG_TYPE` and check they are yours.
+{% endhint %}
+
+{% hint style="info" %}
+**Inherited names.** `farmerRegisterId` in the chart, and `FARMER_INTERNAL_ID` / `farmer_seeded` / `cfg.farmer_register_id` in the suite, are named for the registry the harness was first written against. They mean *"the seeded registrant"*. Renaming them means changing the platform harness, `conftest.py` and every variant's overlay in one commit, so they stay — treat them as generic.
+{% endhint %}
+
+### The tests that need no cluster
+
+The sanity suite proves a **deployed** registry works, and needs commons-services, Keycloak admin and a namespace. A second, much cheaper set proves the **repository** is coherent — field names resolving to real columns, dropdowns having code lists, consent scopes existing in the DCI template, seed SQL being re-runnable — and runs in CI on every push, before anything is published.
+
+Those checks catch a class of failure the sanity suite cannot see early enough, because it is silent: see [Contracts that fail silently](../developer-zone/building-a-registry/contracts-that-fail-silently.md). Every registry should ship both.
 
 ## Running it
 
