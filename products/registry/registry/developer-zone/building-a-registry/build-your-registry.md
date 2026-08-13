@@ -63,6 +63,13 @@ Do **not** add a `[tool.hatch.build.targets.wheel.sources]` alias onto
 `openg2p_registry_extensions`. The package must install under its own name.
 {% endhint %}
 
+**Everything derives from one slug.** `<domain>` is the repo name, the Python
+package, the image names, the chart, the DB schema prefix and the Keycloak
+clients — pick it once and use it verbatim everywhere. This is the OpenG2P naming
+convention for any service; see
+[Creating a New Platform Service](../../../../../platform/platform-services/creating-a-new-service.md)
+for the full set of conventions a registry inherits.
+
 ## 3. Write the domain
 
 In `src/openg2p_registry_<domain>_extension/`:
@@ -217,9 +224,34 @@ variables:
   CHART_GITLAB_PROJECT: openg2p/charts
 ```
 
-Also copy `scripts/bump-rp-version.sh` and `test/test_rp_pin_lockstep.py` from a
-reference registry. The script moves the platform pin in the Dockerfiles and the
-chart **together**; the test fails your build if they ever drift.
+**What the pipeline does.** Four stages — `version`, `build`, `chart`,
+`changelog`. It derives **one version from git** for the whole commit, builds
+every image in `IMAGES`, rewrites each `CHART_IMAGE_PATHS` entry to that version
+so the chart can never reference a tag it did not ship with, generates
+`questions.yaml` from the pinned platform chart, packages, and publishes.
+
+**Where the artifacts land:**
+
+| Artifact | Destination |
+|---|---|
+| Images | This project's GitLab container registry — `registry.gitlab.com/openg2p/registry/<your-repo>/<name>` |
+| Helm chart | The shared `openg2p/charts` Helm registry (one Rancher catalogue for all of OpenG2P) |
+| Changelog | Published per component and indexed at [openg2p.gitlab.io/versions](https://openg2p.gitlab.io/versions/index.html) |
+
+You configure no runners, credentials or registries — `CHART_GITLAB_PROJECT` and
+the project's own registry are all the pipeline needs.
+
+**Also copy three scripts** from a reference registry:
+
+* `scripts/bump-rp-version.sh` — moves the platform pin in the Dockerfiles **and**
+  the chart dependency together (`-n` previews, `<version>` pins explicitly).
+* `test/test_rp_pin_lockstep.py` — fails the build if those two ever drift. This
+  has caught real breakage: a chart on one platform version with images built
+  against another produces an overlay landing on a harness it does not match.
+* `scripts/uninstall-registry.sh` — a **clean** teardown. `helm uninstall` leaves
+  the PVCs, the database, the MinIO buckets and the Keycloak clients behind, so a
+  reinstall into the same namespace inherits stale state. Every OpenG2P service is
+  expected to ship one.
 
 Versioning rules: [Helm & Docker versioning and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci).
 

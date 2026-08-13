@@ -49,6 +49,33 @@ model.
 | Access to an **OpenG2P environment** with commons-services | Needed only from Phase 2 |
 | A **country pack** (or the intent to use the sample one) | Decides what geography and code lists your registry carries |
 
+## Standards this follows
+
+Every OpenG2P service is built to one set of conventions —
+[**Creating a New Platform Service**](../../../../../platform/platform-services/creating-a-new-service.md)
+— covering naming, IAM separation, Keycloak clients and roles, AWE, audit,
+one Helm chart, versioning/CI, `questions.yaml`, the Rancher catalogue, sanity
+tests, a clean uninstall script and docs-in-GitBook.
+
+A registry is a **variant built by extension**, so most of that is already
+satisfied by the platform images and chart you inherit. The split:
+
+| Inherited — you get it by extending | Yours to uphold |
+|---|---|
+| Backend on `openg2p-fastapi-common`; staff / partner / beneficiary API separation | **Naming** — derive everything from one slug: repo, Python package, images, chart, DB, Keycloak clients ([§1](../../../../../platform/platform-services/creating-a-new-service.md)) |
+| Keycloak clients and roles, partner keys and caching, audit integration | **Your roles → permissions catalog**, registered into IAM by the inherited `iam-register` job |
+| Non-root images, restricted `securityContext`, CPU-only HPA, CronJobs | Nothing — these come with the base images and chart |
+| One Helm chart, the central versioning/CI pipeline, generated `questions.yaml` | **Pin discipline** — `RP_VERSION` and the chart dependency move together (Phase 1 step 7) |
+| The sanity harness and the extension-independent tests | **Your field-specific tests**, and keeping the e2e **off** in production (Phase 3) |
+| Idempotent migrations and seeding | **Idempotent seed SQL** — your `meta_data/` re-runs on every upgrade |
+| — | **A clean uninstall script** (copy `scripts/uninstall-registry.sh`) and **docs in GitBook**, not repo READMEs |
+
+{% hint style="info" %}
+The **nuance checklist** at the end of that page is worth reading before you ship
+— several of its items (AWE opt-in, fail-closed partner-key fetch, `TEST_`-tagged
+data, prod-safe-off e2e) are exactly the ones a new registry gets wrong.
+{% endhint %}
+
 ## Reference material
 
 The phases are **instructions**. When they need you to understand something
