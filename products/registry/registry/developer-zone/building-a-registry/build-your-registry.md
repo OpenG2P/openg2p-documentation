@@ -129,6 +129,10 @@ In `src/openg2p_registry_<domain>_extension/`:
 3. **`register_domain/services/`** — `G2PRegisterDomainService{Mnemonic}` per
    register.
 4. **`register_domain/factory/`** — map each mnemonic to your classes.
+   Alongside it, `register_domain/id_generator/` returns the prefix/suffix for
+   each register that mints functional IDs. It branches on the **lowercased
+   mnemonic**, and those branches must match the ID pools you declare in the
+   chart — see [Functional-ID pools](#functional-id-pools) in step 5.
 5. **`meta_data/register-metadata/`** — the seed SQL, in this order: register
    definitions → sections → schemas → UI tabs → tab-sections → intake equivalents.
 6. **`meta_data/lookup-data/`** — your code lists.
@@ -282,6 +286,80 @@ automatically, so shared settings stay at the top level. Everything else is the
 *subchart's* value and must nest under `registry.` — a platform setting written
 as `dbSeed.loadSampleData` becomes `registry.dbSeed.loadSampleData` here.
 {% endhint %}
+
+### Functional-ID pools
+
+The platform runs a MOSIP ID generator as a subchart, and it allocates from a
+**pool per register**. You declare one pool for each register that mints
+functional IDs — the registers you marked in step 1, and no others. A
+single-register registry needs exactly one.
+
+```yaml
+registry:
+  idgenerator:
+    idGenerator:
+      appConfig:
+        idTypes:
+          <mnemonic-lowercase>:
+            idLength: 12
+```
+
+Three rules, and each of them is a silent failure if you get it wrong:
+
+* **The pool key is the register mnemonic, lowercased.** It must match what your
+  `G2PIdGeneratorService.generate_prefix_suffix()` branches on — that method
+  receives the mnemonic and returns the prefix/suffix. A key that matches nothing
+  means records are created with no functional ID.
+* **Declare your pools explicitly.** Defaults exist at two levels below you and
+  neither is yours.
+* **You cannot remove an inherited pool.** Helm **merges** maps, and a `null` in
+  a parent's `values.yaml` does not delete a subchart default.
+
+That second rule has a consequence worth seeing before it surprises you. Pools
+accumulate from three layers:
+
+| Layer | Pools it contributes |
+|---|---|
+| `openg2p-id-generator` subchart defaults | `farmer` (12), `household` (10) |
+| `openg2p-registry` chart defaults | `individual` (12), `household` (10) |
+| **your overlay** | whatever you declare |
+
+So a single-register registry that declares one pool still renders **four**:
+
+```
+farmer                {'id_length': 12}
+household             {'id_length': 10}
+individual            {'id_length': 12}
+personwithdisability  {'id_length': 12}      ← the only one it uses
+```
+
+Each unused pool is an empty table and nothing more — it costs nothing at
+runtime and allocates no IDs, because nothing ever asks it for one. But it is
+alarming when you first see it, so expect it rather than debugging it.
+
+{% hint style="info" %}
+**The Rancher form's "ID Types Configuration" note is a static string** from the
+platform chart, not a reading of your values — it cannot know which registers
+your registry has, and it describes only the deepest layer's defaults. Switch to
+*Edit YAML* to see and change the real
+`idgenerator.idGenerator.appConfig.idTypes` block.
+{% endhint %}
+
+Verify what actually rendered, rather than what you wrote:
+
+```bash
+helm template test ./helm/openg2p-<domain> \
+  | python -c "
+import sys, yaml
+for d in yaml.safe_load_all(sys.stdin):
+    if d and d.get('kind') == 'ConfigMap' and 'id-generator-config' in d['metadata']['name']:
+        cfg = yaml.safe_load(d['data']['config.yaml'])['id_generator']
+        print(cfg.get('id_types') or cfg.get('idTypes'))
+"
+```
+
+Confirm your own pool is present and its name matches your `G2PIdGeneratorService`
+branch. Ignore the inherited ones.
 
 You do **not** write a `questions.yaml`. CI generates it from the pinned platform
 chart so your Rancher form matches the platform's. If your chart owns keys the
