@@ -418,6 +418,68 @@ so the chart can never reference a tag it did not ship with, generates
 You configure no runners, credentials or registries — `CHART_GITLAB_PROJECT` and
 the project's own registry are all the pipeline needs.
 
+### Adding your own job — the stage trap
+
+The included file declares the stage list, and it is the only one:
+
+```yaml
+stages: [version, build, chart, changelog]
+```
+
+**There is no `test` stage.** If you add a job — the repository guards from
+step 6 are the usual reason — it must name one of those four.
+
+{% hint style="danger" %}
+Naming a stage that does not exist is **not** a per-job error. GitLab rejects the
+whole config, and the pipeline fails **instantly with zero jobs**, `yaml_errors:
+null` and an empty `failure_reason`. The UI shows a failed pipeline with nothing
+in it, which looks like an infrastructure problem rather than a typo.
+
+Worse: GitLab's **default** stage is `test`. A job that omits `stage:` altogether
+fails exactly the same way.
+{% endhint %}
+
+Put the guards in **`version`** — it is the first stage, so a failure there stops
+`build` and `chart` before any image or chart is published:
+
+```yaml
+checks:
+  stage: version          # NOT `test` — see above
+  image: python:3.11-slim
+  script:
+    # test/sanity is excluded: those tests import the platform sanity harness,
+    # which only exists inside the sanity image. They run in-cluster.
+    - pip install --no-cache-dir pytest pyyaml
+    - pytest test/ --ignore=test/sanity -v
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_MERGE_REQUEST_IID
+```
+
+Validate before you push — a rejected config costs a full round trip, and the
+error it gives you does not name the cause:
+
+```bash
+# needs a token, but gives the definitive answer
+glab ci lint
+
+# or, with no credentials: check every job against the included stage list
+python - <<'EOF'
+import urllib.request, yaml
+local = yaml.safe_load(open('.gitlab-ci.yml'))
+inc = yaml.safe_load(urllib.request.urlopen(
+    "https://gitlab.com/api/v4/projects/openg2p%2Fpackaging/repository/files/"
+    "ci%2Fgitlab%2Fbuild-publish.yml/raw?ref=v1").read())
+stages = local.get('stages') or inc['stages']
+reserved = {'include','variables','stages','default','workflow','image',
+            'before_script','after_script','cache','services'}
+bad = [(n, b.get('stage', 'test')) for n, b in local.items()
+       if n not in reserved and isinstance(b, dict)
+       and b.get('stage', 'test') not in stages]
+raise SystemExit(f"jobs on an undeclared stage: {bad}" if bad else 0)
+EOF
+```
+
 **Also copy three scripts** from a reference registry:
 
 * `scripts/bump-rp-version.sh` — moves the platform pin in the Dockerfiles **and**
@@ -438,7 +500,19 @@ test -x scripts/bump-rp-version.sh
 test -x scripts/uninstall-registry.sh
 test -f test/test_rp_pin_lockstep.py
 pytest test/test_rp_pin_lockstep.py -q      # chart pin == every Dockerfile pin
+# and every job you added sits on a declared stage — see the snippet above
 ```
+
+{% hint style="warning" %}
+A pipeline that fails with **zero jobs** is almost always a rejected config, not
+a broken runner. Check `stage:` on every job you added before looking anywhere
+else:
+
+```bash
+curl -s "https://gitlab.com/api/v4/projects/<id>/pipelines/<pipeline-id>" \
+  | grep -o '"status":"[^"]*"\|"yaml_errors":[^,]*'
+```
+{% endhint %}
 
 Versioning rules: [Helm & Docker versioning and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci).
 
