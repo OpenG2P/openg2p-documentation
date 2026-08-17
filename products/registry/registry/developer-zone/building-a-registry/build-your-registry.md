@@ -241,13 +241,52 @@ write `search_text` explicitly, resolve and write geography explicitly, and read
 the target table's columns from `information_schema` rather than hard-coding
 them. See [Contracts that fail silently](contracts-that-fail-silently.md).
 
-**Done when** all five images build from a clean checkout:
+**Done when** all five images build from a clean checkout **and the three Python
+images actually boot**:
 
 ```bash
 for i in staff-api partner-api celery db-seed sanity-tests; do
   docker build -f "docker/${i}/Dockerfile" -t "<domain>/${i}:dev" . || exit 1
 done
+
+# Building only proves pip succeeded. Import each image's OWN app module the
+# way its entrypoint does — this is what catches a missing dependency.
+boot() {
+  docker run --rm --entrypoint python3 "<domain>/$1:dev" -c "
+import os, sys, importlib
+sys.modules['openg2p_registry_extensions'] = importlib.import_module(
+    os.environ['REGISTRY_EXTENSION_MODULE'])
+importlib.import_module('$2')
+print('$1 boots')
+" || { echo "$1 DOES NOT BOOT"; exit 1; }
+}
+boot staff-api   openg2p_registry_staff_api.app
+boot partner-api openg2p_registry_partner_api.app
+boot celery      openg2p_registry_celery_worker.main
+boot celery      openg2p_registry_celery_beat.main
 ```
+
+{% hint style="info" %}
+The celery image carries **both** codebases — `openg2p_registry_celery_worker`
+and `openg2p_registry_celery_beat` (singular, both of them). Which one runs is
+chosen at deploy time by `CELERY_APP`, so both are worth importing here.
+{% endhint %}
+
+{% hint style="danger" %}
+**"It builds" is not "it runs", and the two fail in different images.** Every
+image `pip install`s the same extension, so a build succeeds everywhere — but the
+platform packages differ per image, and only `staff-api` carries
+`openg2p_registry_staff_api`. An import that reaches across packages therefore
+breaks `partner-api` and `celery` while `staff-api` stays green, and you find out
+in a `CrashLoopBackOff` two steps later.
+
+Import each image's own app module — `openg2p_registry_staff_api.app`,
+`openg2p_registry_partner_api.app`, `openg2p_registry_celery_workers.main` —
+after aliasing the extension, exactly as the entrypoint does.
+
+This also smoke-tests the **base image you pinned**, so a broken platform build
+is caught here rather than in a cluster.
+{% endhint %}
 
 ## 5. Write the chart
 
