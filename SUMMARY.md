@@ -221,6 +221,7 @@
     * [Dashboards and maps](products/registry/disability-registry/dashboards.md)
     * [Deployment](products/registry/disability-registry/deployment/README.md)
       * [Deploying on Rancher](products/registry/disability-registry/deployment/rancher.md)
+    * [Versions](products/registry/disability-registry/versions/README.md)
 * [PBMS](pbms/README.md)
   * [Features](pbms/features/README.md)
     * [Decoupled yet Registry-Aware](pbms/features/decoupled-yet-registry-aware.md)

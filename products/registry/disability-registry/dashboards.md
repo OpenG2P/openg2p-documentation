@@ -42,6 +42,8 @@ views static.
 
 Seven dashboards, 59 charts, ordered as a caseworker's questions are.
 
+<figure><img src="../../../.gitbook/assets/dr-dashboard.png" alt="Superset dashboard showing unmet support need by domain, severity and area"><figcaption><p>Every chart reads a reporting view, so geography and age bands mean the same thing on all of them</p></figcaption></figure>
+
 | Dashboard | Charts | Answers |
 |---|---|---|
 | **Unmet Support Need** | 8 | How many people need support they are not getting, of what kind, and where? Includes "unmet need, no programme" — a work list, not an indicator |

@@ -28,44 +28,60 @@ graph LR
     style E fill:#fff,stroke:#999,font-size:24px,color:#000
 ```
 
-It inherits every [feature of the registry platform](../registry/features/) —
-change-management and approval workflows, ingestion/outgestion pipelines,
-consent-aware data sharing, audit-ability, RBAC, deduplication, dynamic UI
-rendering, metadata-driven extensibility, cloud-native deployment — and adds a
-domain model tuned to disability.
+## What makes this registry distinct
 
-## The question it is built to answer
+Six things characterise this manifestation. The rest of the page expands on each.
 
-**Who needs support they are not getting, and where are they?**
+| | |
+|---|---|
+| **One register: the person** | The subject is the individual with a disability. There is no household or group register — see [A registry about people, not households](#a-registry-about-people-not-households) |
+| **It tracks the support gap** | Every support record says whether it is *needed* or *received*. The difference is the number the registry exists to produce — see [Need versus provision](#need-versus-provision) |
+| **Standards-aligned** | Built to the SPDCI Disability Registry data objects, so records are shareable without translation — see [Standards alignment](#standards-alignment) |
+| **Works in any country** | No country, administrative level or national programme is named anywhere in it — see [Works in any country](#works-in-any-country) |
+| **Usable by the people it registers** | Communication needs, contact preferences and screen contrast are treated as data and design requirements — see [Usable by the people it registers](#usable-by-the-people-it-registers) |
+| **Everything the platform gives** | Approval workflows, consent-aware data sharing, audit, RBAC, deduplication, version history, dynamic UI — see [platform features](../registry/features/) |
 
-That single question shapes the whole design. Every support record carries a
-status, and the gap between *required* and *receiving* is the **unmet need**:
+## Need versus provision
 
-* the count is denormalised onto the person (`unmet_support_needs_count`,
-  `has_unmet_support_need`), so the headline figure is a single-table scan rather
-  than a fan-out across five child tables;
-* the `SUPPORT_NEED` score weights that count most heavily — an unmet need is an
+The registry's central purpose is to make one number visible: **how many people
+need support they are not getting**, and where they are.
+
+Every support record — a wheelchair, a caregiver, a home adaptation, regular
+medication — carries a status saying whether the person *needs* it or is
+*receiving* it. The gap between the two is unmet need, and everything is built
+around measuring it:
+
+* each person carries a running count of their unmet needs, so "how many people
+  have an unmet need" is answered instantly rather than assembled from five
+  separate tables;
+* the triage score weights that count most heavily — an unmet need is an
   observed service gap, whereas severity is a clinical judgement that says
   nothing about whether the person is already supported;
-* the reporting layer unions all five support tables into one view, so "unmet
-  need by domain" is one query with **one** definition of unmet, not five.
+* the reporting layer combines all five kinds of support into a single view, so
+  every chart uses **one** definition of "unmet" rather than five slightly
+  different ones.
+
+The headline measure that falls out of this is *"people with an unmet need who
+are enrolled in no programme"* — a work list an administrator can act on, rather
+than a coverage percentage.
 
 {% hint style="warning" %}
-The `SUPPORT_NEED` score is a **triage aid** — it orders a caseload so the most
+The support-need score is a **triage aid** — it orders a caseload so the most
 support-dependent people are reached first. It is deliberately **not** an
 eligibility rule. In a rights-based system entitlement follows from assessment
 and law; a score used as a gate quietly becomes one.
 {% endhint %}
 
-## A single-register registry
+## A registry about people, not households
 
 One [register](../registry/concepts.md#register) — `PersonWithDisability` — with
 eight supporting tables and **no group register**.
 
 That is a deliberate fit to the domain, not a simplification. The relationships
 that matter in a disability case — a guardian, a primary caregiver, an emergency
-contact — are frequently **not** co-resident, so a household roster would miss
-exactly the people who matter. They are recorded as related persons instead.
+contact — are frequently **not** people the registrant lives with, so a household
+roster would miss exactly the ones who matter. They are recorded as *related
+persons* instead, each flagged for the role they actually play.
 
 | Register | Purpose | Holds |
 |---|---|---|
@@ -78,7 +94,12 @@ exactly the people who matter. They are recorded as related persons instead.
 | Animal Assistance | `TABLE` | Assistance animals and their certification |
 | Related Persons | `TABLE` | Family, guardians, caregivers, emergency contacts |
 | Programme Enrolments | `TABLE` | Other programmes the person already benefits from |
-| Scores | `CORE_TABLE` | The computed `SUPPORT_NEED` triage score |
+| Scores | `CORE_TABLE` | The computed support-need triage score |
+
+Because a person may have several impairments and several kinds of support at
+once, each of those is a **list** rather than a field — co-occurring impairments
+are the norm, and collapsing them to a single "primary" loses the combination
+that actually determines what someone needs.
 
 It is therefore also the worked example to follow if **your** domain has a single
 subject — see [Building a Registry](../registry/developer-zone/building-a-registry/README.md).
@@ -102,45 +123,61 @@ social protection system expects.
 {% hint style="info" %}
 DO.DR.05 is the one object with no table behind it. In the standard it is a
 grouping of the five support objects, so it is modelled as exactly that — and
-reassembled into a single `disability_support` block by the outbound DCI
-template.
+reassembled into a single `disability_support` block when a record is shared.
 {% endhint %}
 
 Vocabularies are international rather than national: the
 [Washington Group](https://www.washingtongroup-disability.com/) functional-difficulty
 scale for impairment level, the
 [WHO Priority Assistive Products List](https://www.who.int/publications/i/item/priority-assistive-products-list)
-for assistive technology, and ICF-based impairment groupings.
+for assistive technology, and ICF-based impairment groupings. A registry seeded
+from census or household-survey data therefore needs no re-coding.
 
-## Country-agnostic by construction
+## Works in any country
 
 Nothing in the registry names a country, an administrative level, or a national
 programme:
 
 * **geography** comes from whatever country pack the environment's Master Data
-  Service holds, and the reporting views unpack it positionally;
-* **code lists** ship as defaults derived from the vocabularies above, and a
-  country pack replaces any list it also defines;
-* **programme names** are a code list, not an enum.
+  Service holds, and reports address administrative levels by depth rather than
+  by name — so the same chart works for a country with regions and districts and
+  one with provinces and communes;
+* **code lists** ship as defaults drawn from the international vocabularies
+  above, and a country pack replaces any list it also defines;
+* **programme names** are a configurable list, not fixed values in code.
 
-## Accessibility is part of the domain
+One image therefore serves any country. See
+[Customisation](customisation.md) for how to point it at yours.
 
-This registry's own registrants include people with visual, hearing and cognitive
-impairments, so accessibility is a data requirement rather than a UI
-afterthought:
+## Usable by the people it registers
 
-* `communication_needs` is a first-class, **multi-valued** field — sign language,
-  braille, easy-read, captioning, interpreter required — because these co-occur;
-* `preferred_contact_method` includes sign-language video call and contact via a
-  caregiver;
-* the shipped theme is chosen to clear WCAG 2.1 AA contrast against its own
-  background rather than inheriting brand colours untested.
+A disability registry has an obligation ordinary registries do not: many of the
+people whose records it holds will also **use** it, or be contacted through it.
+So accessibility is treated as data, not decoration.
+
+* **Communication needs are recorded and acted on.** Sign language, braille,
+  easy-read, captioning, tactile signing, "interpreter required" — held as a
+  multi-valued field, because these co-occur. A deafblind registrant may need
+  both tactile signing and large print, and a single-choice field would force a
+  wrong answer.
+* **How to reach someone is part of the record.** Preferred contact method
+  includes sign-language video call and contact via a caregiver — so an outreach
+  campaign can honour it rather than defaulting to SMS.
+* **Legal capacity is explicit.** Whether a person makes their own decisions, is
+  supported in making them, or has a guardian, is recorded following
+  [UNCRPD Article 12](https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-persons-disabilities)
+  — with at most one legal guardian and one primary caregiver enforced, so there
+  is never an unresolved question about who acts.
+* **The screen itself is legible.** The shipped colour scheme is chosen to clear
+  WCAG 2.1 AA contrast against its own background rather than inheriting brand
+  colours untested.
 
 ## In this section
 
 | | |
 |---|---|
 | [**Customisation**](customisation.md) | Adapting the registry to your country or use case — what is configuration, what is a code change |
+| [**Dashboards and maps**](dashboards.md) | The seven Superset dashboards and the Insights map surface |
 | [**Deployment**](deployment/README.md) | How it is packaged, where the source and artifacts live, and what each image contains |
 | [**Deploying on Rancher**](deployment/rancher.md) | Step-by-step install |
-| [**Dashboards and maps**](dashboards.md) | The seven Superset dashboards and the Insights map surface |
+| [**Versions**](versions/README.md) | Where releases and changelogs are published |
