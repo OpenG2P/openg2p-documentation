@@ -16,7 +16,7 @@ For **in-kind** benefits and services, G2P Bridge issues disbursement instructio
 * A service provider delivering food aid in disaster-affected areas
 {% endhint %}
 
-<figure><img src="../.gitbook/assets/G2P Bridge Overview.jpg" alt=""><figcaption><p>G2P Bridge Overview</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/G2P Bridge Overview (1).jpg" alt=""><figcaption><p>G2P Bridge Overview</p></figcaption></figure>
 
 ## **Nationwide deployment & benefits**
 
