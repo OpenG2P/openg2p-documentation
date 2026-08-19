@@ -74,14 +74,15 @@ are evaluated but **not delivered**.
 kubectl -n observability get pods                 # Loki, MinIO, OTel agent/gateway
 kubectl -n observability logs ds/otel-agent-opentelemetry-collector-agent --tail=20
 # is Loki receiving logs? (run from inside the cluster)
-# GET http://loki-gateway.observability.svc/loki/api/v1/labels  -> should list k8s_* labels
+# GET http://loki.observability.svc:3100/loki/api/v1/labels  -> should list k8s_* labels
 ```
 
 ## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| No logs in Grafana | OTel agent pod running? Loki pod `2/2`? Time range set and not in Live mode? |
+| No logs in Grafana | OTel agent running? Loki pod `1/1` Ready? Time range set and not in Live mode? |
+| Loki panels **No data** (pink warning), Prometheus panels OK | Grafana must query Loki at `http://loki.observability.svc:3100` (not the nginx gateway). Hard-refresh; restart `rancher-monitoring-grafana` if the datasource was just updated. |
 | "Loki" missing in Grafana | Hard-refresh the browser; confirm you're an Editor (via Rancher) |
 | Live tail error `undefined` | Expected — use a range query + auto-refresh (proxy blocks WebSockets) |
 | Loki pod `CrashLoopBackOff` | Usually MinIO buckets or DNS — check `kubectl -n observability logs loki-0 -c loki` |

@@ -21,14 +21,14 @@ Grafana ships with the cluster's monitoring stack and is reached **through the R
 ## View and filter logs
 
 1. **Open Explore** — in Grafana's left menu, click **Explore**, then select the **Loki** data source (top-left dropdown).
-2. **Pick the logs you want** with a LogQL label selector. Labels include `namespace`, `pod`, `container`, and `app`:
-   * `{namespace="prod"}` — all logs in the `prod` environment namespace.
-   * `{namespace="prod", pod=~"commons-services-esignet.*"}` — a specific service.
-   * `{namespace="cattle-system"}` — Rancher's own logs.
+2. **Pick the logs you want** with a LogQL label selector. Labels include `k8s_namespace_name`, `k8s_pod_name`, `k8s_container_name`, and `service_name`:
+   * `{k8s_namespace_name="prod"}` — all logs in the `prod` environment namespace.
+   * `{k8s_namespace_name="prod", k8s_pod_name=~"commons-services-esignet.*"}` — a specific service.
+   * `{k8s_namespace_name="cattle-system"}` — Rancher's own logs.
 3. **Filter by content / severity** with pipeline filters:
-   * `{namespace="prod"} |= "ERROR"` — lines containing `ERROR`.
-   * `{namespace="prod"} |~ "(?i)exception|panic|oom"` — case-insensitive regex match.
-   * `{namespace="prod"} |= "ERROR" != "healthcheck"` — include `ERROR`, exclude `healthcheck`.
+   * `{k8s_namespace_name="prod"} |= "ERROR"` — lines containing `ERROR`.
+   * `{k8s_namespace_name="prod"} |~ "(?i)exception|panic|oom"` — case-insensitive regex match.
+   * `{k8s_namespace_name="prod"} |= "ERROR" != "healthcheck"` — include `ERROR`, exclude `healthcheck`.
 4. **Set the time range** — use the time picker (top-right): Last 15 minutes, Last 1 hour, Today, or a custom range.
 5. **Save / share** — pin a useful query to a dashboard panel, or use **Share** to copy a link that reproduces the query + time range.
 6. **Inspect a line** — expand any log line to see its labels and the full message; click a label value to add it to the query.
