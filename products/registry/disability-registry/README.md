@@ -38,7 +38,7 @@ Six things characterise this manifestation. The rest of the page expands on each
 | **It tracks the support gap** | Every support record says whether it is *needed* or *received*. The difference is the number the registry exists to produce — see [Need versus provision](#need-versus-provision) |
 | **Standards-aligned** | Built to the SPDCI Disability Registry data objects, so records are shareable without translation — see [Standards alignment](#standards-alignment) |
 | **Works in any country** | No country, administrative level or national programme is named anywhere in it — see [Works in any country](#works-in-any-country) |
-| **Usable by the people it registers** | Communication needs, contact preferences and screen contrast are treated as data and design requirements — see [Usable by the people it registers](#usable-by-the-people-it-registers) |
+| **Access needs are structured data** | Communication needs, contact preferences and legal capacity are recorded so departments can serve people accessibly — see [Who uses it, and what it records about access](#who-uses-it-and-what-it-records-about-access) |
 | **Everything the platform gives** | Approval workflows, consent-aware data sharing, audit, RBAC, deduplication, version history, dynamic UI — see [platform features](../registry/features/) |
 
 ## Need versus provision
@@ -149,28 +149,35 @@ programme:
 One image therefore serves any country. See
 [Customisation](customisation.md) for how to point it at yours.
 
-## Usable by the people it registers
+## Who uses it, and what it records about access
 
-A disability registry has an obligation ordinary registries do not: many of the
-people whose records it holds will also **use** it, or be contacted through it.
-So accessibility is treated as data, not decoration.
+The registry is an **administrative system**. Its users are staff of the
+government departments that operate it — registration officers, assessment
+boards, caseworkers, programme administrators — plus, through the partner API,
+other systems that are entitled to query it. People with disabilities are the
+**subjects** of the records, not users of the software.
 
-* **Communication needs are recorded and acted on.** Sign language, braille,
-  easy-read, captioning, tactile signing, "interpreter required" — held as a
-  multi-valued field, because these co-occur. A deafblind registrant may need
-  both tactile signing and large print, and a single-choice field would force a
-  wrong answer.
-* **How to reach someone is part of the record.** Preferred contact method
-  includes sign-language video call and contact via a caregiver — so an outreach
-  campaign can honour it rather than defaulting to SMS.
-* **Legal capacity is explicit.** Whether a person makes their own decisions, is
-  supported in making them, or has a guardian, is recorded following
+That distinction matters for how the data is designed. A department cannot serve
+someone accessibly unless the record tells it how, so the registry captures
+access requirements as **structured data** that downstream services and outreach
+can act on:
+
+* **Communication needs.** Sign language, braille, easy-read, captioning,
+  tactile signing, "interpreter required" — held as a multi-valued field,
+  because these co-occur. A deafblind person may need both tactile signing and
+  large print, and a single-choice field would force a wrong answer. An office
+  scheduling an assessment can see that an interpreter must be booked.
+* **How to make contact.** Preferred contact method includes sign-language video
+  call and contact via a caregiver — so a department's outreach can honour it
+  rather than defaulting to SMS.
+* **Legal capacity.** Whether a person makes their own decisions, is supported in
+  making them, or has a guardian, recorded following
   [UNCRPD Article 12](https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-persons-disabilities)
-  — with at most one legal guardian and one primary caregiver enforced, so there
-  is never an unresolved question about who acts.
-* **The screen itself is legible.** The shipped colour scheme is chosen to clear
-  WCAG 2.1 AA contrast against its own background rather than inheriting brand
-  colours untested.
+  — with at most one legal guardian and one primary caregiver enforced, so a
+  caseworker is never left with an unresolved question about who may act.
+
+None of this is decoration: it is the difference between a department knowing a
+person needs an interpreter and finding out when they fail to attend.
 
 ## In this section
 

@@ -139,7 +139,8 @@ registry_theme_id = '68721343-ea47-4675-94da-0437d688e9fe'   -- OpenG2P-Theme
 
 {% hint style="warning" %}
 If you replace the palette with national brand colours, **check the contrast**.
-This registry's users include people with low vision; the OpenG2P yellow
+Caseworkers read these screens all day, and many public-sector bodies are bound
+by an accessibility standard for their internal systems. The OpenG2P yellow
 `#EABB13` on white is about 1.8:1, well under the 4.5:1 needed for body text.
 {% endhint %}
 
