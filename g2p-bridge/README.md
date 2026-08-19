@@ -6,7 +6,7 @@ The G2P Bridge enables a standardised and efficient mechanism for dispatching **
 
 For **digital cash transfers**—such as payments to beneficiaries' bank accounts or mobile wallets—the G2P Bridge interfaces with the Sponsor Bank (which manages program funding) to initiate transfers. The Sponsor Bank then communicates with the National Switch/Clearing network to execute these payments.
 
-For **in-kind** benefits and services, G2P Bridge issues disbursement instructions to the respective agencies, who are expected to send back the status of disbursements for reconciliation. &#x20;
+For **in-kind** benefits and services, G2P Bridge issues disbursement instructions to the respective agencies, who are expected to send back the status of disbursements for reconciliation.
 
 {% hint style="info" %}
 \* Disbursement Service Provider examples:
@@ -16,7 +16,7 @@ For **in-kind** benefits and services, G2P Bridge issues disbursement instructio
 * A service provider delivering food aid in disaster-affected areas
 {% endhint %}
 
-<figure><img src="../.gitbook/assets/g2p-bridge-overview.png" alt=""><figcaption><p>G2P Bridge Overview</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/G2P Bridge Overview (1).jpg" alt=""><figcaption><p>G2P Bridge Overview</p></figcaption></figure>
 
 ## **Nationwide deployment & benefits**
 
@@ -52,4 +52,3 @@ The following figure shows how the G2P Bridge digital cash transfer subsystem fi
 ## G2P Bridge technical overview
 
 <figure><img src="../.gitbook/assets/g2p-bridge-tech-architecture.jpg" alt=""><figcaption></figcaption></figure>
-

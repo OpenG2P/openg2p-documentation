@@ -22,7 +22,7 @@ Some of the key benefits for a country or an organisation using PBMS are:
 
 The functional architecture of PBMS is shown below.
 
-<figure><img src="../.gitbook/assets/functional-architecture.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/PBMS DPI Block.jpg" alt=""><figcaption></figcaption></figure>
 
 ## Benefit disbursement process flow
 

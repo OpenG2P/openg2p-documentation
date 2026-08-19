@@ -238,7 +238,8 @@
     * [Reconciliation with Warehouses & Agencies](pbms/features/reconciliation-with-warehouses-and-agencies.md)
     * [Reporting & Dashboards](pbms/features/reporting-and-dashboards.md)
   * [Design](pbms/design/README.md)
-    * [Concept](pbms/design/concept.md)
+    * [High Level Design](products/pbms/design/high-level-design.md)
+    * [Component Notes](pbms/design/concept.md)
     * [Architecture](pbms/design/architecture.md)
     * [PBMS Tech Architecture](pbms/design/pbms-tech-architecture.md)
     * [Static definitions](pbms/design/pbms-odoo.md)
@@ -560,7 +561,7 @@
 
 * [Roadmap](platform/roadmap.md)
 * [Platform Architecture](platform/architecture/README.md)
-  * [Platform Tech Architecture](platform/architecture/platform-tech-architecture.md)
+  * [Platform Architecture](platform/architecture/platform-architecture.md)
   * [Async Processes - Tech Architecture](platform/architecture/async-processes-tech-architecture.md)
   * [Security Architecture](platform/architecture/security-architecture/README.md)
     * [Partner APIs](platform/architecture/security-architecture/partner-apis.md)
