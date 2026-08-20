@@ -51,7 +51,9 @@ All run on the OpenG2P **Kubernetes** cluster.
 | 5 | **Agent Portal API** (Registry Platform chart) | set `agentPortalApi.enabled=true` **and** `agentPortalApi.vcIssuance.enabled=true`; resolves the record, pushes claims, renders the PDF/QR, logs the issuance |
 | 6 | **Agent Portal UI** | talks **only** to the Agent Portal API — never to Certify |
 | 7 | **Registry VC view** keyed on `internal_record_id` + least-privilege read-only DB user | supplied by the **manifestation** (NSR, Farmer Registry, …), since the claim fields differ |
-| 8 | **Keycloak `agent` realm** + `iam-agent-portal-api` | agents are a distinct audience from staff; the realm is created idempotently by `keycloak-init` |
+| 7a | **`credential_config` registration** | The registry chart's `credential-config-register` Job POSTs (or PUTs, on re-run) each `vcDefinitions[].certifyConfig` to Certify on install/upgrade. Certify can only issue a type it already knows, so without this the first issuance fails on an unknown `credential_configuration_id`. Set **`global.vcIssuer.did`** to the same DID as Certify's — the chart refuses to install with it empty, rather than signing credentials with a blank issuer. The `vcTemplate` is authored as readable JSON (`vcTemplateJson`) and base64-encoded by the Job. |
+| 8 | **Keycloak `agent` realm** | Uncomment the `keycloak-init.realms.agent` block in the registry chart's values (shipped commented out — a static `realms` map would otherwise create the realm on every install). Creates clients `agent-portal` (confidential; carries the `register:issue_credential` role) and `agent-portal-ui` (public, for the SPA). Idempotent. |
+| 8a | **`iam-agent-portal-api`** (IAM chart) | set `iamAgentPortalApi.enabled=true`. Agent *login*, in the `agent` realm — nothing to do with eSignet. Its `IAM_AGENT_KEYCLOAK_CLIENT_ID` must equal the registry's `global.agentKeycloakClientId` (`agent-portal`), or an agent authorised at login is unauthorised at issuance. |
 | 8b | **eSignet provider row** for registrant authentication | `adapter_name = esignet`; eSignet must be configured to **release `individual_id`**, which is matched against the record's `foundational_id` |
 | 9 | **Inji Verify** (helm) | verifier side — needed to scan/validate, not to issue |
 | 10 | **Trust distribution** | publish issuer cert/DID; push the issuer cert to verifiers' trust list |
@@ -70,7 +72,7 @@ caller) and Certify is **not exposed publicly**.
    URL; the **beneficiary** authenticates (biometric at the counter, or OTP). eSignet's own UI performs
    the capture.
 4. On callback the API checks the binding (**`individual_id` == `foundational_id`**) and the **VC
-   window** (`COMPLETED` and within `authWindowSeconds`, default 300).
+   window** (`SUCCESS` and within `authWindowSeconds`, default 300).
 5. API reads the claims **by `internal_record_id`**, then → Certify **pre-authorized-code 4-call
    flow**: `POST /pre-authorized-data` (claims) → `GET /credential-offer-data/{id}` →
    `POST /oauth/token` → `POST /issuance/credential` (Bearer + proof JWT) → **signed VC**
@@ -272,7 +274,7 @@ for the namespace and release name.
 
 ## Security checklist
 * **Both parties are authenticated.** The **agent** holds a Keycloak token in the **`agent` realm** and
-  the issuance endpoint is permission-gated; the **beneficiary** must have a `COMPLETED` eSignet
+  the issuance endpoint is permission-gated; the **beneficiary** must have a successful eSignet
   authentication inside the VC window. Neither alone is sufficient.
 * **The authentication is bound to the record.** eSignet's `individual_id` is matched against the
   record's `foundational_id`, so one person's authentication cannot be used to issue another person's

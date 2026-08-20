@@ -44,7 +44,7 @@ requires nothing of the citizen) or by **OTP** to their phone.
    │ ◄── authorization_url ──────────────────────────────────  │                  │
    │ 5. beneficiary authenticates (biometric at the counter, or OTP)             │
    │ ═══════════════════════════════════════════════════════►│                  │
-   │                     │ 6. callback → authentication COMPLETED                │
+   │                     │ 6. callback → authentication SUCCESS                │
    │                     │ ◄──────────────────────────────────│                  │
    │                     │ 7. bind: individual_id == foundational_id             │
    │                     │    window: now − completed_at ≤ 5 min                 │
@@ -73,7 +73,7 @@ requires nothing of the citizen) or by **OTP** to their phone.
   checked against the `foundational_id` of the record being issued. Without this check an agent could
   pair one person's authentication with another person's record.
 * **The authorisation is short-lived.** Issuance proceeds only while the authentication is
-  `COMPLETED` **and** within the configured VC window (default **5 minutes**) measured from
+  `SUCCESS` **and** within the configured VC window (default **5 minutes**) measured from
   `completed_at`. The window is **VC configuration**, deliberately independent of any expiry the
   authentication record carries for other consumers.
 * **Issuance is keyed on `internal_record_id`**, not on a value the agent typed. The national ID only
