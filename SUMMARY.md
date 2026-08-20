@@ -628,7 +628,7 @@
     * [Integration — consuming partner keys](platform/platform-services/partner-management/integration.md)
     * [Deployment](platform/platform-services/partner-management/deployment.md)
     * [Testing](platform/platform-services/partner-management/testing.md)
-  * [VC Issuance](platform/platform-services/vc-issuance/README.md)
+  * [Verifiable Credentials](platform/platform-services/vc-issuance/README.md)
     * [Custody Options & Strategy](platform/platform-services/vc-issuance/custody-options-and-strategy.md)
     * [Phase 1 — Paper Credential](platform/platform-services/vc-issuance/phase-1-paper-credential.md)
     * [Registry Data Connector](platform/platform-services/vc-issuance/registry-data-connector.md)

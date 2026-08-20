@@ -10,14 +10,25 @@ description: >-
 Phase 1 is intentionally small: an **Agent Portal API** (issuance backend) + **Inji Certify** (issuer)
 signing to a **`.p12`** keystore, reusing the cluster **PostgreSQL**, plus **Inji Verify** for the
 verification side. The Agent Portal API reads the Registry and **pushes** claims to Certify, so
-Certify stays decoupled from the Registry. **No Logto, no Mimoto, no Inji Web** (those belong to the
-wallet options).
+Certify stays decoupled from the Registry. **No Mimoto, no Inji Web** (those belong to the wallet
+options).
+
+Two authentications must be wired, and they are **not** the same thing: the **agent** logs in against
+Keycloak's **`agent` realm**, while the **beneficiary** authenticates against **eSignet** (biometric or
+OTP) to authorise each issuance. Agents are distinct from registry **staff** — separate realm, separate
+API, separate portal.
+
+The Agent Portal API ships **as part of the Registry Platform chart** and is **disabled by default**,
+so every registry manifestation inherits the capability without being affected until it opts in.
 
 ## Components
 
 | Component | Image / source | Role |
 |---|---|---|
-| **Agent Portal API** | `agent-portal-api` (FastAPI; built in `openg2p-registry-gen2-apis`) | Reads the Registry view, **pushes** claims to Certify, renders the PDF/QR |
+| **Agent Portal API** | `agent-portal-api` (FastAPI; built in the **Registry Platform** repo) | Resolves the record, drives the beneficiary's eSignet authentication, **pushes** claims to Certify, renders the PDF/QR, logs the issuance |
+| **Agent Portal UI** | reference web client (Registry Platform) | The agent's screen; talks only to the Agent Portal API |
+| **Agent login API** | `iam-agent-portal-api` (IAM service) | Authenticates the **agent** against Keycloak's `agent` realm |
+| **eSignet** | existing deployment | Authenticates the **beneficiary** (biometric at the counter, or OTP) — issues nothing |
 | **Inji Certify** | `injistack/inji-certify-with-plugins` (**stock**, no custom plugin) | Issues + signs the VC (+ QR payload); the built-in `PreAuthDataProviderPlugin` makes the pushed claims the subject |
 | **Inji Verify** | `injistack/inji-verify-*` | Scans + validates the QR (offline) — verifier side |
 | **PostgreSQL** | existing cluster instance | Reused: a dedicated DB/schema for Certify; the Agent Portal API reads the registry DB read-only |
@@ -37,10 +48,11 @@ All run on the OpenG2P **Kubernetes** cluster.
 | 2 | **Certify DB/schema** on the cluster PostgreSQL | run Certify's init SQL once (keymanager tables, key policies, caches) — **no** `credential_config` (modules register those) |
 | 3 | **`.p12` keystore** on a persistent volume | the issuer identity — persist + back up (no HSM) |
 | 4 | **Certify config** | Certify-as-AS (`authn.*` / `oauth.issuer` → itself); `data-provider-plugin=PreAuthDataProviderPlugin`; add `credentialOfferCache`; **issuer DID** (`global.vcIssuerDid`) + signing key. The `credential_config` rows are registered by the **module** (registry/NSR). |
-| 5 | **Agent Portal API** (docker/helm) | reads `beneficiary_vc_view`, pushes claims, renders PDF/QR; holds the **only** Registry + MINIO connections |
+| 5 | **Agent Portal API** (Registry Platform chart) | set `agentPortalApi.enabled=true` **and** `agentPortalApi.vcIssuance.enabled=true`; resolves the record, pushes claims, renders the PDF/QR, logs the issuance |
 | 6 | **Agent Portal UI** | talks **only** to the Agent Portal API — never to Certify |
-| 7 | **Registry** `beneficiary_vc_view` + `certify_ro` user | read-only, least-privilege |
-| 8 | **MINIO access** for the Agent Portal API | only if the VC embeds a face thumbnail |
+| 7 | **Registry VC view** keyed on `internal_record_id` + least-privilege read-only DB user | supplied by the **manifestation** (NSR, Farmer Registry, …), since the claim fields differ |
+| 8 | **Keycloak `agent` realm** + `iam-agent-portal-api` | agents are a distinct audience from staff; the realm is created idempotently by `keycloak-init` |
+| 8b | **eSignet provider row** for registrant authentication | `adapter_name = esignet`; eSignet must be configured to **release `individual_id`**, which is matched against the record's `foundational_id` |
 | 9 | **Inji Verify** (helm) | verifier side — needed to scan/validate, not to issue |
 | 10 | **Trust distribution** | publish issuer cert/DID; push the issuer cert to verifiers' trust list |
 
@@ -51,13 +63,21 @@ single replica uses the in-memory cache. Ingress/TLS as usual.
 The **UI never touches Certify**; the **Agent Portal API** is the OpenID4VCI client (trusted M2M
 caller) and Certify is **not exposed publicly**.
 
-1. Agent logs into the UI and verifies the citizen (LoA1); UI → `POST /agent_portal/issue_vc {phone}`.
-2. Agent Portal API reads `beneficiary_vc_view` (and, if used, fetches + compresses the MINIO face).
-3. API → Certify **pre-authorized-code 4-call flow**: `POST /pre-authorized-data` (claims) →
-   `GET /credential-offer-data/{id}` → `POST /oauth/token` → `POST /issuance/credential` (Bearer +
-   proof JWT) → **signed VC** (+ claim-169 QR).
-4. API renders the PDF and returns VC + PDF to the UI; the agent prints it for the citizen.
-5. Later: a verifier scans the QR with **Inji Verify** → validates the COSE signature **offline**.
+1. Agent logs into the UI against Keycloak's **`agent` realm** (via `iam-agent-portal-api`).
+2. Agent enters/scans the beneficiary's **national ID**; the API matches it to the register's
+   **`foundational_id`** and requires `record_status = ACTIVE`, resolving the **`internal_record_id`**.
+3. API initiates **registrant authentication** with the eSignet provider and returns the authorization
+   URL; the **beneficiary** authenticates (biometric at the counter, or OTP). eSignet's own UI performs
+   the capture.
+4. On callback the API checks the binding (**`individual_id` == `foundational_id`**) and the **VC
+   window** (`COMPLETED` and within `authWindowSeconds`, default 300).
+5. API reads the claims **by `internal_record_id`**, then → Certify **pre-authorized-code 4-call
+   flow**: `POST /pre-authorized-data` (claims) → `GET /credential-offer-data/{id}` →
+   `POST /oauth/token` → `POST /issuance/credential` (Bearer + proof JWT) → **signed VC**
+   (+ claim-169 QR).
+6. API renders the PDF, **streams it to the agent's browser** as a download, and writes the **issuance
+   event log** row. The agent prints it and hands it to the citizen.
+7. Later: a verifier scans the QR with **Inji Verify** → validates the COSE signature **offline**.
 
 Nuances: with no citizen device, the **API generates an ephemeral holder key** for the proof JWT
 (`credentialSubject.id` = a throwaway `did:jwk`; trust comes from the issuer signature, not holder
@@ -92,7 +112,8 @@ data — every module is its own issuance backend that pushes its own claims.
   PostgreSQL; do not co-mingle with `registrydb`.
 * Run Certify's init SQL once (keymanager tables, `credential_config`, key policies).
 * The **Agent Portal API** connects to the registry DB **read-only** via a least-privilege user
-  against a dedicated `beneficiary_vc_view`. Certify does **not** connect to the registry in Phase 1
+  against the manifestation's dedicated **VC view** (keyed on `internal_record_id`). It also writes the
+  **issuance event log**. Certify does **not** connect to the registry in Phase 1
   (the pull connector — see [Registry Data Connector](registry-data-connector.md) — is for the wallet
   flow).
 
@@ -103,11 +124,12 @@ data — every module is its own issuance backend that pushes its own claims.
   generic, **no** `credential_config`; modules register those).
   It is packaged into and enabled from **commons-services** (`charts/openg2p-commons-services`, dep
   alias `injiCertify`) — installed **with the commons layer**, reusing the cluster PostgreSQL.
-* **Agent Portal API image** — built from `openg2p-registry-gen2-apis/agent-portal-api` (Dockerfile +
-  `docker-build.yml`), e.g. `openg2p/openg2p-registry-agent-portal-api:<branch>`. Wired into the
-  **registry** chart (`openg2p-registry-gen2-deployment`, `agentPortalApi` block) so it installs **with
-  the registry**, pointed at the commons Certify service. (The agent portal **UI** follows the same
-  pattern once its image exists.)
+* **Agent Portal API + UI** — built in the **Registry Platform** repo (`apis/`, `ui/`, `docker/`) and
+  shipped in the **`openg2p-registry`** chart under the `agentPortalApi` block, pointed at the commons
+  Certify service. Because it lives in the platform chart, **every registry manifestation inherits it**;
+  it stays inert until switched on.
+* **Agent login API** — `iam-agent-portal-api`, deployed from the **IAM service** chart against the
+  Keycloak `agent` realm.
 
 ## Configuration highlights
 * **Certify** (stock image, no custom plugin): set
@@ -134,8 +156,9 @@ data — every module is its own issuance backend that pushes its own claims.
   `Could not resolve placeholder 'mosip.certify.integration.scan-base-package'`. If you swap in a
   custom plugin jar (e.g. the Phase-2 `RegistryDataProviderPlugin` in package
   `org.openg2p.certify.registry`), point `scanBasePackage` + `dataProviderPlugin` at it.
-* **Agent Portal API**: configure the read-only registry datasource (`beneficiary_vc_view`), the
-  Certify base URL + credential-config id, and the PDF output dir. It owns the only registry connection.
+* **Agent Portal API**: configure the read-only registry datasource (the manifestation's VC view), the
+  Certify base URL + credential-config id, the eSignet provider used for beneficiary authentication, and
+  the VC authentication window (`authWindowSeconds`, default 300). It owns the only registry connection.
 * **`.p12` keystore (no HSM)** — the Certify chart supports two custody modes (`certify.p12` values):
   * **Generate-on-first-boot onto a PVC** (default, `p12.persistence.enabled=true`): a durable
     `PersistentVolumeClaim` (`<release>-inji-certify-p12`) is created and mounted **writable** at
@@ -183,6 +206,38 @@ data — every module is its own issuance backend that pushes its own claims.
     `/.well-known/jwks.json` after first boot) at `https://<issuer-host>/.well-known/did.json`, either
     self-hosted on the cluster under the Certify domain or on an external static host. Deferred to Phase 2.
 
+## Enabling and disabling the capability
+
+VC issuance ships **off**. Two independent switches in the `openg2p-registry` chart:
+
+| Value | Default | Effect |
+|---|---|---|
+| `agentPortalApi.enabled` | `false` | Deploys (or removes) the Agent Portal API and its Service/route entirely. |
+| `agentPortalApi.vcIssuance.enabled` | `false` | Feature switch **inside** the service — the issuance endpoints are not mounted when off. |
+
+With both off, the chart renders **exactly** what it rendered before the capability existed. The only
+always-present addition is the issuance event-log table, created by an additive migration; it stays
+empty and is referenced by nothing when the feature is off. Nothing else in the registry changes, so
+an existing deployment can take the new chart version with no behavioural difference.
+
+Turning it on additionally requires the manifestation's **VC view** and **VC definitions**, the
+Keycloak **`agent` realm**, and an **eSignet provider** row — see the install checklist above.
+
+## Sanity and end-to-end tests
+
+The chart runs a **sanity Job** as a `post-install,post-upgrade` hook, so a broken wiring fails the
+install rather than surfacing later in the field.
+
+* **Smoke + contract (always on).** `/ping` reachable, OpenAPI served, the issuance routes present
+  only when the feature is enabled, and protected endpoints reject unauthenticated calls. **No data is
+  created.**
+* **End-to-end (opt-in, `runE2e`).** Walks the real chain — agent token → record lookup by
+  `foundational_id` → registrant authentication → issuance → PDF — against the deployed components, to
+  prove the wiring between the Agent Portal API, the Registry, eSignet and Certify. Any entity it
+  creates is tagged with a `TEST_` prefix. **Turn it off for production.**
+
+Gating is `failOnError: true` by default, with a values-only escape hatch.
+
 ## Verifier side
 **Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's key —
 obtained from the QR's COSE header (`x5chain`/`x5t`/`x5u`) and/or a **pre-loaded issuer trust anchor**.
@@ -216,14 +271,24 @@ for the namespace and release name.
 > pass `--release commons-services` so the derived DB/role/Secret names match.
 
 ## Security checklist
-* The **Agent Portal API** calls Certify as a **trusted machine-to-machine** caller
-  (agent-authenticated context); Certify is not exposed publicly for issuance.
+* **Both parties are authenticated.** The **agent** holds a Keycloak token in the **`agent` realm** and
+  the issuance endpoint is permission-gated; the **beneficiary** must have a `COMPLETED` eSignet
+  authentication inside the VC window. Neither alone is sufficient.
+* **The authentication is bound to the record.** eSignet's `individual_id` is matched against the
+  record's `foundational_id`, so one person's authentication cannot be used to issue another person's
+  credential. This requires eSignet to release `individual_id`.
+* **Issuance is keyed on `internal_record_id`**, never on a value typed by the agent — the typed ID
+  only locates the record.
+* The **Agent Portal API** calls Certify as a **trusted machine-to-machine** caller; Certify is not
+  exposed publicly for issuance.
 * The Agent Portal API → Registry connection is **read-only** via a dedicated view and a
-  least-privilege `certify_ro` user — never raw registry tables. Certify itself has **no** Registry
-  connection in Phase 1.
+  least-privilege user — never raw registry tables. Certify itself has **no** Registry connection in
+  Phase 1.
+* **KYC claims are not retained.** Whatever eSignet returns is used for the issuance and then purged;
+  the registry keeps the issuance *event*, not the credential, its claims or the citizen's KYC data.
 * Signing keys never leave Certify; the `.p12` + key tables are persisted, backed up, access-controlled.
-* Decide a **revocation/validity** posture for paper (short validity and/or an optional online
-  status-list check when the verifier is connected).
+* **Revocation is deferred to Phase 2** — paper is verified offline, so short credential validity is
+  the compensating control. See [Phase 2 — Device Wallet](phase-2-device-wallet.md).
 
 ## Notes (environment)
 * The cluster already runs much of the OpenG2P/Inji stack (eSignet, keymanager, mock-identity,

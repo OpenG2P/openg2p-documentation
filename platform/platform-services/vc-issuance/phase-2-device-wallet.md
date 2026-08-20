@@ -13,6 +13,17 @@ holds their own keys and credentials on their device.
 > This is a forward-looking section. Phase 1 (paper) is the implementation focus; Phase 2 is added
 > as smartphone adoption in the target population grows.
 
+## Carried over — capabilities deferred from Phase 1
+
+These are **not** wallet features; they were consciously sequenced out of Phase 1 and are picked up
+here so nothing is lost track of.
+
+| Deferred capability | Why it was deferred | What taking it up involves |
+|---------------------|---------------------|-----------------------------|
+| **Photograph in the claim-169 QR** | Sequenced behind the core issuance chain. | Request the photo as part of the **eSignet KYC** response (the ID system's own photograph, matching what the beneficiary authenticated against), downscale it to a **~1–2 KB** WEBP/AVIF thumbnail, and push it as the **`face`** claim so Certify embeds it in the signed QR. Needs a hard size budget: the whole QR is capped at **~2.9 KB**, shared with the signature and any embedded certificate. Certify never fetches images — the bytes must be pushed. |
+| **Revocation / status lists** | A paper credential is verified **offline**, so a status list cannot be consulted at scan time; short credential validity is the Phase-1 compensating control. | Certify already ships the status-list tables (`status_list_credential`, `credential_status_transaction`, `status_list_available_indices`) and `allowed-status-purposes={'revocation'}`. A device wallet **can** be online at presentation, so revocation becomes genuinely checkable — which is why it belongs here. Decide the posture (revocation vs suspension) and who may revoke. |
+| **Android agent app** | The reference **web** portal came first, against the same API. | A native client adds field-grade capability for roaming agents — most importantly **Bluetooth printing**, which a browser cannot do. The eSignet redirect is handled with a Custom Tab plus polling of the authentication status, so no deep-link plumbing is required. |
+
 ## What it adds over paper
 
 * **Holder-bound presentation** — bound to a key on the device, so a credential can't simply be

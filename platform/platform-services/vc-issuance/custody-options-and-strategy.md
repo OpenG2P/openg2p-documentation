@@ -19,10 +19,10 @@ Ranked by **what the citizen must own** (least → most):
 
 ### Option A — Paper credential (lowest common denominator)
 
-* **Citizen owns:** nothing.
-* **Issuance:** **assisted** — at a kiosk/CSC, an authenticated agent looks the citizen up by their **functional ID**, Certify issues and signs the credential, and it is **printed as a PDF with an offline-verifiable signed QR**.
+* **Citizen owns:** nothing — no device is needed to *hold* the credential.
+* **Issuance:** **assisted** — at a kiosk/CSC, an agent (authenticated in the `agent` realm) looks the citizen up by their **national ID**, the citizen **authenticates themselves through eSignet** (biometric at the counter, or OTP to a phone), and only then does Certify issue and sign the credential, which is **printed as a PDF with an offline-verifiable signed QR**.
 * **Presentation:** the citizen hands over the paper; a verifier scans the QR with **Inji Verify** and validates the signature **offline** against the issuer's published key/DID.
-* **Needs from the citizen:** no device, no login, no connectivity.
+* **Needs from the citizen:** no device to carry or present it, and no connectivity afterwards — but they **must be able to authenticate once at issuance**. Biometric capture at the counter is what keeps this available to citizens with no phone at all.
 
 ### Option B — Hosted wallet (custodial locker)
 
@@ -40,7 +40,7 @@ Ranked by **what the citizen must own** (least → most):
 
 | Dimension                          | A — Paper           | B — Hosted                | C — Device                   |
 | ---------------------------------- | ------------------- | ------------------------- | ---------------------------- |
-| Citizen device required            | **none**            | browser access            | smartphone                   |
+| Citizen device required            | **none** to hold¹   | browser access            | smartphone                   |
 | Works fully offline (citizen side) | ✅                   | ❌ (needs login)           | ✅                            |
 | In-person verification             | ✅ scan QR           | ✅                         | ✅                            |
 | Remote / online presentation       | ❌                   | ✅                         | ✅                            |
@@ -49,6 +49,8 @@ Ranked by **what the citizen must own** (least → most):
 | Live revocation at presentation    | ❌ offline           | ✅                         | ✅                            |
 | Recovery if lost                   | re-issue at kiosk   | ✅ re-login                | ❌ unless backup              |
 | Keys held by                       | n/a                 | **operator (custodial)**  | **citizen (self-sovereign)** |
+
+¹ Holding and presenting paper needs no device. **Issuance** does require the citizen to authenticate once via eSignet — biometric at the counter needs nothing of them; OTP needs a phone.
 
 ## Who each option actually serves
 
@@ -83,4 +85,4 @@ So "skip B, go A → C?" is really: _does the program want a government-run cust
 | —           | **B — Hosted wallet**              | "browser-no-smartphone" minority       | **Considered, not chosen** — adopt only as a deliberate custodial-locker policy              |
 | separate    | Consent-based data sharing         | dept ↔ dept / third parties            | Registry partner APIs + consent — not a wallet feature                                       |
 
-**Consequence:** Phase 1 needs only an **Agent Portal API** (reads the Registry, pushes claims) + **Certify (issue + sign)** + a **signed QR/PDF** + **Inji Verify**. No Logto, no Mimoto, no hosted-wallet login, no OpenID4VCI device flow — i.e. none of the integration complexity those paths require. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).
+**Consequence:** Phase 1 needs an **Agent Portal API** (reads the Registry, pushes claims) + **eSignet** (authenticates the beneficiary) + **Certify (issue + sign)** + a **signed QR/PDF** + **Inji Verify**. No Mimoto, no hosted-wallet login, no OpenID4VCI device flow, and no citizen wallet — i.e. none of the integration complexity those paths require. eSignet authenticates the beneficiary at the counter; the citizen never logs in to anything afterwards. See [Phase 1 — Paper Credential](phase-1-paper-credential.md).

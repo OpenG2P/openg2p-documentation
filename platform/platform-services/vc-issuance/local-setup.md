@@ -7,13 +7,23 @@ description: >-
 
 # Local Developer Trial
 
-This page records a **working, verified** local run of the **Phase-1 push flow** end to end: the **Agent Portal API** reads a real registrant from the OpenG2P Registry, **pushes** the claims into **Inji Certify** (pre-authorized-code), Certify returns an **Ed25519-signed** credential, and the API renders a **printable PDF with a QR**. No eSignet, no wallet app. Verified with **Inji Certify 0.14.0**.
+This page records a **working, verified** local run of the **issuance and signing chain**: claims are read from a real registrant in the OpenG2P Registry, **pushed** into **Inji Certify** (pre-authorized-code), Certify returns an **Ed25519-signed** credential, and a **printable PDF with a QR** is rendered. Verified with **Inji Certify 0.14.0**.
+
+{% hint style="warning" %}
+**This trial predates the current Phase-1 design and is narrower than it.** It proves the
+*issuance and signing* half only. It looks the registrant up **by phone** and performs **no
+authentication of anyone** — whereas Phase 1 now resolves the record by **national ID →
+`foundational_id` → `internal_record_id`**, requires the **agent** to be logged in to the `agent`
+realm, and requires the **beneficiary** to authenticate via **eSignet** before anything is issued.
+Treat this page as the record of the signing chain working, not as the issuance flow. See
+[Phase 1 — Paper Credential](phase-1-paper-credential.md).
+{% endhint %}
 
 ## What runs
 
 * `database` — PostgreSQL 15 (local stand-in for the cluster PostgreSQL; holds Certify's `inji_certify` DB)
 * `certify` — `injistack/inji-certify-with-plugins:0.14.0` on `http://localhost:8090` (**stock**, no custom plugin)
-* **OpenG2P Registry** — the real registry DB (e.g. reached on `localhost:5432`), exposing the read-only `beneficiary_vc_view` (`phone`, `functionalRecordId`, `fullName`, `dateOfBirth`)
+* **OpenG2P Registry** — the real registry DB (e.g. reached on `localhost:5432`), exposing a read-only VC view (`phone`, `functionalRecordId`, `fullName`, `dateOfBirth`) — the current design keys this view on `internal_record_id` instead
 * **Agent Portal API** — the `agent-portal-api` FastAPI service (the issuance backend)
 
 The wallet UI, Mimoto and nginx services are not needed.
@@ -83,4 +93,4 @@ For registrant `+91…` → `IND-NSR-0001`, the API returned an **Ed25519-signed
 
 ## Working repository
 
-The runnable artifacts — the modified Certify compose config, `issue_vc.py`, a sample issued PDF, and the (Phase-2) custom pull connector project — are maintained in the internal **`vc-issuance`** working repository (and the `agent-portal-api` service under `openg2p-registry-gen2-apis`). These GitBook pages are the canonical design documentation; the working repos hold the runnable artifacts.
+The runnable artifacts — the Certify compose config, `issue_vc.py`, a sample issued PDF, the Certify Helm chart and the (Phase-2) custom pull connector project — live in the **`verifiable-credentials`** repository; the `agent-portal-api` service lives in the **Registry Platform** repository. These GitBook pages are the canonical design documentation; the working repos hold the runnable artifacts.
