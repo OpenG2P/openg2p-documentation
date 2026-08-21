@@ -38,7 +38,10 @@ Alert channels are **inert until you fill in their credentials** — see the
 
 Grafana is reached through the **Rancher UI → cluster → Monitoring → Grafana**
 (it is not exposed on its own hostname). You are signed in automatically via your
-Rancher session as an **Editor** — no separate Grafana login.
+Rancher session as an **Editor** — no separate Grafana login. That link should
+open Grafana Home directly.
 
-> If a bookmarked Grafana URL shows "page not found", make sure it includes the
-> Rancher cluster prefix: `…/k8s/clusters/local/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/`.
+> If Grafana shows **Page not found** on first load, click **Home** in the
+> Grafana bar (or hard-refresh). Do **not** add `/k8s/clusters/local` to the
+> URL — for this stack the Rancher proxy path is
+> `…/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/`.
