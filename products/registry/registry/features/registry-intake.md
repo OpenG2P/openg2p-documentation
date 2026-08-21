@@ -51,6 +51,7 @@ stateDiagram-v2
 
 * Form is created or edited
 * Users can save and update multiple times
+* Each submission is assigned an **Application Reference** and **Submission id**
 * **Status:** `intake_form_status = DRAFT`
 
 #### Submission Stage
@@ -81,12 +82,9 @@ stateDiagram-v2
 
 #### Completion Stage
 
-*   Final outcome of the process:
-
-    * **Success** → Record stored in registry
-    * **Failure** → Processing failed after retries
-
-
+* Final outcome of the process:
+  * **Success** → Record stored in registry
+  * **Failure** → Processing failed after retries
 
 ***
 
@@ -131,4 +129,3 @@ This controls:
 * Fill and test the form end-to-end
 
 ***
-

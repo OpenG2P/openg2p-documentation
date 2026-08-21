@@ -45,6 +45,7 @@
         * [Widget Library](products/registry/registry/design/ui-engineering-design/registry-ui-widget-library.md)
         * [Widget Reference](products/registry/registry/design/ui-engineering-design/widget-reference.md)
       * [Score Computation framework](products/registry/registry/design/score-computation-framework.md)
+      * [Application Reference](products/registry/registry/design/application-reference.md)
       * [Functional ID generation](products/registry/registry/design/functional-id-generation.md)
       * [Audit trail for Write Operations](products/registry/registry/design/audit-trail-for-write-operations.md)
       * [Registry themes](products/registry/registry/design/registry-themes.md)

@@ -105,35 +105,9 @@ This document details the architectural changes to decouple sections from tabs, 
 
 **Table:** `g2p_intake_form_submission`
 
-| Field                                            | Type      | Constraint       | Notes                                               |
-| ------------------------------------------------ | --------- | ---------------- | --------------------------------------------------- |
-| submission\_id                                   | UUID      | PRIMARY KEY      | Unique submission identifier                        |
-| form\_id                                         | UUID      | NON UNIQUE INDEX | Associated form                                     |
-| register\_id                                     | UUID      | NON UNIQUE INDEX | Associated register                                 |
-| draft\_status                                    | ENUM      | -                | DRAFT, FINAL                                        |
-| approval\_status                                 | ENUM      | -                | PENDING, APPROVED, REJECTED                         |
-| approved\_by                                     | UUID      | -                | User who approved                                   |
-| approved\_at                                     | TIMESTAMP | -                | Approval timestamp                                  |
-| finalized\_at                                    | TIMESTAMP | -                | Finalization timestamp                              |
-| first\_created\_at                               | TIMESTAMP | -                | Initial creation timestamp                          |
-| last\_updated\_at                                | TIMESTAMP | -                | Last update timestamp                               |
-| created\_by                                      | UUID      | -                | User who created                                    |
-| submission\_source                               | ENUM      | -                | BENE\_PORTAL, AGENT\_PORTAL, STAFF\_PORTAL, PARTNER |
-| partner\_id                                      | UUID      | NON UNIQUE INDEX | Partner reference (if applicable)                   |
-| register\_ingest\_process\_status                | ENUM      | -                | PENDING, PROCESSED, NOT\_APPLICABLE                 |
-| register\_ingest\_processed\_timestamp           | TIMESTAMP | -                | Ingest completion timestamp                         |
-| register\_ingest\_process\_attempts              | INTEGER   | -                | Ingest attempt count                                |
-| register\_ingest\_process\_last\_error\_code     | STRING    | -                | Last ingest error                                   |
-| number\_of\_verifications\_required              | INTEGER   | -                | Required verification count                         |
-| number\_of\_verifications\_done                  | INTEGER   | -                | Completed verifications                             |
-| deduplication\_status\_vs\_intake\_forms         | ENUM      | -                | PENDING, PROCESSED, FAILED                          |
-| deduplication\_intake\_forms\_process\_timestamp | TIMESTAMP | -                | Dedup completion                                    |
-| deduplication\_intake\_forms\_attempts           | INTEGER   | -                | Dedup attempt count                                 |
-| deduplication\_intake\_forms\_error              | STRING    | -                | Dedup error message                                 |
-| deduplication\_status\_vs\_register              | ENUM      | -                | PENDING, PROCESSED, FAILED                          |
-| deduplication\_register\_process\_timestamp      | TIMESTAMP | -                | Register dedup completion                           |
-| deduplication\_register\_attempts                | INTEGER   | -                | Register dedup attempt count                        |
-| deduplication\_register\_error                   | STRING    | -                | Register dedup error message                        |
+<table><thead><tr><th width="160">Field</th><th>Type</th><th>Constraint</th><th>Notes</th></tr></thead><tbody><tr><td>submission_id</td><td>UUID</td><td>PRIMARY KEY</td><td>Unique submission identifier</td></tr><tr><td>application_reference</td><td>STRING</td><td>UNIQUE, NOT NULL</td><td>Human-readable Application Reference generated on insert. Format is configurable</td></tr><tr><td>form_id</td><td>UUID</td><td>NON UNIQUE INDEX</td><td>Associated form</td></tr><tr><td>register_id</td><td>UUID</td><td>NON UNIQUE INDEX</td><td>Associated register</td></tr><tr><td>draft_status</td><td>ENUM</td><td>-</td><td>DRAFT, FINAL</td></tr><tr><td>approval_status</td><td>ENUM</td><td>-</td><td>PENDING, APPROVED, REJECTED</td></tr><tr><td>approved_by</td><td>UUID</td><td>-</td><td>User who approved</td></tr><tr><td>approved_at</td><td>TIMESTAMP</td><td>-</td><td>Approval timestamp</td></tr><tr><td>finalized_at</td><td>TIMESTAMP</td><td>-</td><td>Finalization timestamp</td></tr><tr><td>first_created_at</td><td>TIMESTAMP</td><td>-</td><td>Initial creation timestamp</td></tr><tr><td>last_updated_at</td><td>TIMESTAMP</td><td>-</td><td>Last update timestamp</td></tr><tr><td>created_by</td><td>UUID</td><td>-</td><td>User who created</td></tr><tr><td>submission_source</td><td>ENUM</td><td>-</td><td>BENE_PORTAL, AGENT_PORTAL, STAFF_PORTAL, PARTNER</td></tr><tr><td>partner_id</td><td>UUID</td><td>NON UNIQUE INDEX</td><td>Partner reference (if applicable)</td></tr><tr><td>register_ingest_process_status</td><td>ENUM</td><td>-</td><td>PENDING, PROCESSED, NOT_APPLICABLE</td></tr><tr><td>register_ingest_processed_timestamp</td><td>TIMESTAMP</td><td>-</td><td>Ingest completion timestamp</td></tr><tr><td>register_ingest_process_attempts</td><td>INTEGER</td><td>-</td><td>Ingest attempt count</td></tr><tr><td>register_ingest_process_last_error_code</td><td>STRING</td><td>-</td><td>Last ingest error</td></tr><tr><td>number_of_verifications_required</td><td>INTEGER</td><td>-</td><td>Required verification count</td></tr><tr><td>number_of_verifications_done</td><td>INTEGER</td><td>-</td><td>Completed verifications</td></tr><tr><td>deduplication_status_vs_intake_forms</td><td>ENUM</td><td>-</td><td>PENDING, PROCESSED, FAILED</td></tr><tr><td>deduplication_intake_forms_process_timestamp</td><td>TIMESTAMP</td><td>-</td><td>Dedup completion</td></tr><tr><td>deduplication_intake_forms_attempts</td><td>INTEGER</td><td>-</td><td>Dedup attempt count</td></tr><tr><td>deduplication_intake_forms_error</td><td>STRING</td><td>-</td><td>Dedup error message</td></tr><tr><td>deduplication_status_vs_register</td><td>ENUM</td><td>-</td><td>PENDING, PROCESSED, FAILED</td></tr><tr><td>deduplication_register_process_timestamp</td><td>TIMESTAMP</td><td>-</td><td>Register dedup completion</td></tr><tr><td>deduplication_register_attempts</td><td>INTEGER</td><td>-</td><td>Register dedup attempt count</td></tr><tr><td>deduplication_register_error</td><td>STRING</td><td>-</td><td>Register dedup error message</td></tr></tbody></table>
+
+Intake section tables that extend `G2PIntakeForm` carry a null-able indexed `application_reference`, copied from the submission header on save so display names and search can read it from the row.
 
 #### 3.3 Deduplication Results Models (New)
 

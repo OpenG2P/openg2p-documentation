@@ -47,12 +47,12 @@ Similar to Registers, records in a Programme Register undergo verification and a
 
 ### Comparison: Register vs Table vs Programme Register
 
-| Aspect                  | Register                  | Table                     | Programme Register                     |
-| ----------------------- | ------------------------- | ------------------------- | -------------------------------------- |
-| **Has functional ID**   | Yes (e.g. Farmer ID)     | No                        | Yes (e.g. Application ID)             |
-| **Change management**   | Full approval workflow    | Follows parent register   | Full approval workflow                 |
-| **Version history**     | Yes                       | Follows parent register   | No                                     |
-| **Deduplication**       | Supported                 | Not applicable            | Supported                              |
+| Aspect                | Register               | Table                   | Programme Register        |
+| --------------------- | ---------------------- | ----------------------- | ------------------------- |
+| **Has functional ID** | Yes (e.g. Farmer ID)   | No                      | Yes (e.g. Application ID) |
+| **Change management** | Full approval workflow | Follows parent register | Full approval workflow    |
+| **Version history**   | Yes                    | Follows parent register | No                        |
+| **Deduplication**     | Supported              | Not applicable          | Supported                 |
 
 ## Records and identifiers
 
@@ -61,6 +61,8 @@ Every record in the Registry is identified by a combination of system-generated 
 **internal\_record\_id** -- A UUID generated automatically by the system for every record. This is the primary key used internally for all database operations, relationships, and history tracking. It is stable and never changes once assigned.
 
 **functional\_record\_id** -- A domain-meaningful identifier assigned to records in Registers and Programme Registers. This is the identifier that has significance in the real world -- for example, a Farmer ID, a Household ID, or an Application ID. The functional ID is unique within its Register and can be generated according to configurable rules.
+
+**application\_reference** -- A human-readable unique identifier assigned when an **intake-form submission** is created. Staff Portal labels it **Application Reference**. It is how operators track a draft or submitted form before (and after) the record exists in a Register. It is not a Functional ID: `functional_record_id` is assigned later, after approval and ingest. The format is configurable; see [Application Reference](design/application-reference.md).
 
 **link\_internal\_record\_id** -- Used to establish a parent-child relationship between records in different Registers within the same Registry. A record in a child Register uses this field to point to the `internal_record_id` of its parent record in the primary Register. For example, a record in the Land Holdings Register would use `link_internal_record_id` to reference the Farmer it belongs to.
 
