@@ -55,11 +55,34 @@ All run on the OpenG2P **Kubernetes** cluster.
 | 8 | **Keycloak `agent` realm** | Created automatically by the registry chart's `keycloak-init` (`keycloak-init.realms.agent`), alongside the `staff` realm — no manual step. Creates clients `agent-portal` (confidential; carries the `register:issue_credential` role) and `agent-portal-ui` (public, for the SPA), plus a demo `agent` user (`global.agentUserPassword`, change it). Both clients register `https://<agentPortalHostname>/*` as their redirect URI. Idempotent, and created even when the agent portal is switched off — a static `realms` map cannot be made conditional, and an unused realm costs less than a portal that cannot log anyone in. |
 | 8a | **`iam-agent-portal-api`** (IAM chart) | set `iamAgentPortalApi.enabled=true`. Agent *login*, in the `agent` realm — nothing to do with eSignet. Its `IAM_AGENT_KEYCLOAK_CLIENT_ID` must equal the registry's `global.agentKeycloakClientId` (`agent-portal`), or an agent authorised at login is unauthorised at issuance. |
 | 8b | **eSignet provider row** for registrant authentication | `adapter_name = esignet`; eSignet must be configured to **release `individual_id`**, which is matched against the record's `foundational_id` |
+| 8c | **eSignet OIDC client** | Register a client (e.g. `openg2p-registry-vc`) whose `redirect_uris` is the **staff** API's `/registrant-auth/callback`, with `private_key_jwt` (the only method eSignet advertises) and `individual_id` among its claims. Store the matching private key on the provider row. |
+| 8d | **IAM role → permission** | The agent portal resolves permissions through IAM's `/user-access/get_permissions_for_roles`. An application with the `register:issue_credential` **permission**, a role of the same mnemonic, and the mapping between them must exist, or every issuance call is refused. |
+| 8e | **IAM login provider for the `agent` realm** | Token validation looks the issuer up in IAM's `login_providers`. Without a row whose `issuer` is `<keycloak>/realms/agent`, every agent token is rejected as *Unknown Issuer*. |
+| 8f | **Enable authentication on the register** | Set `requires_registrant_authentication` on the register definition. Core refuses to start an authentication otherwise. |
 | 9 | **Inji Verify** (helm) | verifier side — needed to scan/validate, not to issue |
 | 10 | **Trust distribution** | publish issuer cert/DID; push the issuer cert to verifiers' trust list |
 
 Optional infra: **Redis** only if Certify runs multi-replica/HA (the pre-auth offer/claims cache); a
 single replica uses the in-memory cache. Ingress/TLS as usual.
+
+
+### Two settings that silently break the beneficiary authentication
+
+**eSignet must release `individual_id`.** Its discovery document advertises
+`subject_types_supported: ["pairwise"]`, so the `sub` in the token is a *pseudonymous,
+per-client* identifier — never the national ID. The adapter falls back to `sub` when
+`individual_id` is absent, and the binding check then compares a pairwise pseudonym against
+the record's `foundational_id` and fails every time. Request it explicitly through the
+provider's `extra_authorize_params.claims.userinfo.individual_id`.
+
+**The registrant-auth session store must be shared.** The eSignet transaction (state, nonce,
+PKCE verifier and the record context) is created when authentication *starts* and read back at
+the *callback*. In the agent flow those are two different services — the agent portal starts it,
+the staff API receives the redirect — and each API also runs several gunicorn workers. With the
+default in-process store the callback has never seen the state. Point
+`registry_core_registrant_auth_session_store_backend=redis` and
+`registry_core_registrant_auth_redis_url` at one Redis for both services; the registry chart now
+does this by default.
 
 ## End-to-end call sequence (who calls whom)
 The **UI never touches Certify**; the **Agent Portal API** is the OpenID4VCI client (trusted M2M
