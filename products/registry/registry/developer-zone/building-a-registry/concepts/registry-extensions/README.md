@@ -2,14 +2,15 @@
 
 Understanding the registry architecture is necessary before you write code. These pages explain **how the platform loads your extension**, what metadata drives the UI, and how async pipelines interact with domain code.
 
-| Document                      | Summary                                                                |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| Platform and extension model  | Core vs extension, API vs Celery startup, import map, end-to-end flows |
-| Registers and metadata        | Register types, hierarchy, register-metadata tables, section flags     |
-| Extension contract            | Required classes, factories, enrichers, score compute, ID generator    |
-| Section UI schema and widgets | Authoring `section_ui_schema` JSON — panels, widgets, data paths       |
-| Ingestion and outgestion      | Partner pipeline, enrichers, Jinja templates, ADD/UPDATE               |
-| Background jobs and Celery    | Which workers call extension code; beat vs worker                      |
+| Document                      | Summary                                                                                                          |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Platform and extension model  | Core vs extension, API vs Celery startup, import map, end-to-end flows                                           |
+| Registers and metadata        | Register types, hierarchy, register-metadata tables, section flags                                               |
+| Extension contract            | Required classes, factories, enrichers, score compute, ID generator                                              |
+| Section UI schema and widgets | Authoring `section_ui_schema` JSON — panels, widgets, data paths                                                 |
+| Ingestion and outgestion      | Partner pipeline, enrichers, Jinja templates, ADD/UPDATE                                                         |
+| Background jobs and Celery    | Which workers call extension code; beat vs worker                                                                |
+| Domain Services               | Implementer contract for `G2PRegisterDomainService{Mnemonic}` — naming, search text, validation, lifecycle hooks |
 
 Register-metadata table field reference: Register metadata index (10 G2P\* pages aligned with `meta_data/register-metadata/` SQL files).
 
