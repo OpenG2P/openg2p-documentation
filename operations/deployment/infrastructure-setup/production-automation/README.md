@@ -15,7 +15,7 @@ The production automation provisions the OpenG2P platform across three role-spec
 **Production deployment flow:** [1. Procurement](../../prerequisites-procurement.md) → [2. Provisioning](../provisioning.md) → **3. Infrastructure** (this page) → [4. Environment](../../environment-setup-multi-node.md) → [5. Modules](../../environment-setup-multi-node.md#next-install-your-openg2p-modules)
 {% endhint %}
 
-**Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher (local auth), the Wireguard endpoint, Nginx with TLS — is up, and **environment scaffolding** (namespace, Rancher Project, Istio Gateway, external-PG secret, Helm repos) is in place. **Commons** (`openg2p-commons-base` + `openg2p-commons-services`) is installed separately — recommended via the Rancher UI; see [Stage 4 — Environment](../../environment-setup-multi-node.md).
+**Where you are in the flow.** You arrive at this stage with three Ubuntu VMs running and reachable (Stage 2 complete), DNS records and the TLS certificate ready, and SSH+sudo access from the deployer's workstation (Stage 1 complete). After this stage, the platform — Kubernetes, Rancher (local auth), the Wireguard endpoint, Nginx with TLS — is up, and **environment scaffolding** (namespace, Rancher Project, Istio Gateway, external-PG secret, Helm repos) is in place. **Commons** (`openg2p-commons-base` + `openg2p-commons-services`) is installed separately — from the **Rancher UI only**; see [Stage 4 — Environment](../../environment-setup-multi-node.md).
 
 {% hint style="success" %}
 **Just want to run it?** Jump straight to [How to use the script](./#how-to-use-the-script). The sections above it explain the architecture (also covered in [OpenG2P Deployment Architecture](../../../../deployment/openg2p-deployment-model.md)) and the prerequisites you must have in place first.
@@ -35,9 +35,9 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 * Rancher uses local auth — admins are created directly in Rancher (no SSO). The OpenG2P apps' Keycloak is installed separately, per environment.
 * Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
 * NFS server + host PostgreSQL 16 on the Storage node.
-* **One OpenG2P environment scaffolding** (default name `prod`) — namespace, Rancher Project, Istio Gateway, OpenG2P Helm repos registered in Rancher (`openg2p` + `openg2p-gitlab`), and the external-PostgreSQL secret. On by default; toggle with `install_environment`. **Commons charts are not installed here** — use the Rancher UI (recommended) or optionally `automation/environment/`. See [The environment stage](./#the-environment-stage).
+* **One OpenG2P environment scaffolding** (default name `prod`) — namespace, Rancher Project, Istio Gateway, OpenG2P Helm repos registered in Rancher (`openg2p` + `openg2p-gitlab`), and the external-PostgreSQL secret. On by default; toggle with `install_environment`. **Commons charts are not installed here** — install them from the **Rancher UI only**. See [The environment stage](./#the-environment-stage).
 
-**What it does NOT do (yet):** Commons Helm install (Rancher UI or optional `env-cluster.sh`), product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after Commons is up), citizen-facing public hostnames and certs (opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](./#out-of-scope).
+**What it does NOT do (yet):** Commons Helm install (**Rancher UI only**), product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after Commons is up), citizen-facing public hostnames and certs (opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](./#out-of-scope).
 
 **Two things to know before running:**
 
@@ -135,7 +135,7 @@ wg_peer_dns: ""
 # ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr
 
 # [USER] Environment stage — scaffolds one OpenG2P environment after infra.
-# Commons is NOT installed here (use Rancher UI or automation/environment/).
+# Commons is NOT installed here (install from the Rancher UI only).
 install_environment: true           # master switch (false = stop after infra)
 environment:
   name:            "prod"           # namespace + Rancher Project name
@@ -143,7 +143,7 @@ environment:
 ```
 
 {% hint style="info" %}
-**Commons version.** When you install Commons later from Rancher (or via scripts), pick the chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
+**Commons version.** When you install Commons from Rancher, pick the chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
 {% endhint %}
 
 ### Step 2 — probe and preflight
@@ -301,18 +301,16 @@ kubectl get nodes
 
 Requires Wireguard active — the kubeconfig points at the compute node's private IP.
 
-### Step 5 — install Commons (after environment scaffolding)
+### Step 5 — install Commons via Rancher UI
 
 The orchestrator scaffolds the environment (namespace, project, gateway, PG secret, Helm repos) during the install when `install_environment: true`. **It does not install Commons.**
 
-**Recommended — Rancher UI** (Wireguard connected, logged into Rancher):
+**Install Commons from the Rancher UI only** (Wireguard connected, logged into Rancher):
 
 1. Apps → Charts → **openg2p-commons-base**
 2. Then install **openg2p-commons-services** in the same namespace
 3. Point PostgreSQL at the storage node's private IP using the `commons-postgresql` secret created by scaffolding
 4. Pick the chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html)
-
-**Optional — scripts:** go to `openg2p-deployment/automation/environment`, set the same Commons version in `env-config.yaml`, then run `./env-cluster.sh --config env-config.yaml`. See [Environment Setup](../../environment-setup-multi-node.md).
 
 If you skipped scaffolding (`install_environment: false`), run it first (SSH tunnel; Wireguard not required):
 
@@ -325,7 +323,7 @@ If you skipped scaffolding (`install_environment: false`), run it first (SSH tun
 The infrastructure install ends by **scaffolding** one OpenG2P **environment** on the cluster (when `install_environment: true`). An environment is a namespace plus shared services that product modules later install into. Scaffolding runs **from your laptop** and reaches the API through an **SSH tunnel to compute** — Wireguard is not required for this step.
 
 {% hint style="info" %}
-This section documents how the environment stage is **wired into the production automation**. For Commons install details, multi-environment setups, and standalone `env-cluster.sh`, see [Environment Setup](../../environment-setup-multi-node.md).
+This section documents how the environment stage is **wired into the production automation**. For Commons install (Rancher UI) and multi-environment setups, see [Environment Setup](../../environment-setup-multi-node.md).
 {% endhint %}
 
 **What production scaffolding does (phase 1 only):**
@@ -334,7 +332,7 @@ This section documents how the environment stage is **wired into the production 
 2. Registers Helm ClusterRepos: `openg2p` (GitHub Rancher index) and `openg2p-gitlab` (GitLab Helm registry)
 3. Creates the namespace and Rancher Project, the Istio Gateway for `*.<base_domain>`, and the external-PostgreSQL secret (password auto-read from the Storage node)
 
-**What it does _not_ do:** install `openg2p-commons-base` / `openg2p-commons-services`. That is a separate step (Rancher UI recommended).
+**What it does _not_ do:** install `openg2p-commons-base` / `openg2p-commons-services`. That is done from the **Rancher UI only**.
 
 **Key points:**
 
@@ -445,7 +443,7 @@ automation/production/
 ```
 
 {% hint style="info" %}
-Optional Commons install scripts live under `automation/environment/` (`env-cluster.sh`). Production scaffolding does **not** call them. See [Environment Setup](../../environment-setup-multi-node.md).
+Standalone scaffolding scripts live under `automation/environment/` (`env-cluster.sh`) for clusters not built by the production orchestrator. They do **not** install Commons. See [Environment Setup](../../environment-setup-multi-node.md).
 {% endhint %}
 
 ## Troubleshooting
@@ -576,7 +574,7 @@ Removes the environment namespace scaffolding (and optionally Commons workloads 
 * **Preserves:** the 3 VMs, the platform, the NFS + PostgreSQL **servers**, and the PostgreSQL **superuser** credentials.
 * **Flags:** `--full` (also delete the namespace, Istio Gateway, Rancher Project), `--keep-databases` (K8s only), `--yes`, `--dry-run`.
 
-Re-create scaffolding with `./openg2p-prod.sh --stage environment --config prod-config.yaml`, then install Commons again via Rancher (or `automation/environment/`).
+Re-create scaffolding with `./openg2p-prod.sh --stage environment --config prod-config.yaml`, then install Commons again from the Rancher UI.
 
 ### `openg2p-prod-uninstall.sh` — in-place uninstall
 
@@ -667,7 +665,7 @@ The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 
 The following are deferred to follow-up automation, not gaps:
 
-* **Commons** — `openg2p-commons-base` + `openg2p-commons-services`. Production scaffolding prepares the namespace and secrets; install Commons via the **Rancher UI** (recommended) or optionally `automation/environment/`. See [Environment Setup](../../environment-setup-multi-node.md).
+* **Commons** — `openg2p-commons-base` + `openg2p-commons-services`. Production scaffolding prepares the namespace and secrets; install Commons from the **Rancher UI only**. See [Environment Setup](../../environment-setup-multi-node.md).
 * **Product modules** — Registry, PBMS, SPAR, G2P Bridge, etc. Install on top of Commons via their own Helm charts. See the per-product deployment pages.
 * **Citizen-facing public domains and the public channel** — this automation keeps admin tools on the private (VPN) channel. Opening public `80/443` for citizen-facing hostnames is a separate step. See [DNS & TLS Certificates](../../deployment-guide/dns-and-certificates.md).
 * **Local Docker registry** — RKE2 pulls images from upstream. A pull-through cache mirror will come in a later phase.

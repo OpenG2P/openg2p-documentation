@@ -36,7 +36,7 @@ The operator (you) drives the install from a workstation — your laptop or a ju
 | `git`               | ✓          |                    |                | To clone the `openg2p-deployment` repo                               |
 | Wireguard client    | ✓ (after install) | |                | To log in to Rancher (and, after the environment stage, the app UIs — Keycloak, MinIO, Superset, …) over the VPN. GUI client recommended — Tunnelblick-style apps don't work; use the official **WireGuard.app** (macOS), **WireGuard for Windows**, or `wg-quick` (Linux). |
 | **AWS CLI v2**      |            | ✓                  |                | Used by `openg2p-aws-provision.sh`. Skip if not on AWS.              |
-| `kubectl`           |            |                    | ✓              | `env-cluster.sh` and module installs target the cluster              |
+| `kubectl`           |            |                    | ✓              | Day-2 cluster access; Commons is installed from Rancher UI           |
 | `helm` ≥ 3.x        |            |                    | ✓              | Module Helm-chart installs                                           |
 
 ### Install commands by OS

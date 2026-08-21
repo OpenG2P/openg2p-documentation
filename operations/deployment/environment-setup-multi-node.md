@@ -10,10 +10,10 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 **Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/production-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
 {% endhint %}
 
-**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. Production automation also **scaffolds** the environment (namespace, Istio Gateway, Helm repos, external-PG secret). This stage finishes by installing **Commons** — recommended via the Rancher UI; optionally via `automation/environment/`. After Commons, install the [product modules](#next-install-your-openg2p-modules) your rollout delivers (Registry, PBMS, SPAR, G2P Bridge).
+**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. Production automation also **scaffolds** the environment (namespace, Istio Gateway, Helm repos, external-PG secret). This stage finishes by installing **Commons from the Rancher UI only**. After Commons, install the [product modules](#next-install-your-openg2p-modules) your rollout delivers (Registry, PBMS, SPAR, G2P Bridge).
 
 {% hint style="info" %}
-Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation/).
+Note that for a  single-node setup the environment (including Commons) is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation/).
 {% endhint %}
 
 {% hint style="danger" %}
@@ -23,16 +23,14 @@ DNS records, TLS certificates, and server access for this environment must alrea
 {% endhint %}
 
 {% hint style="warning" %}
-**In-cluster versus External Storage**
+**Commons — Rancher UI only**
 
-The optional `env-cluster.sh` script can install [**commons**](../../deployment/openg2p-commons-helm-chart.md) with **in-cluster** PostgreSQL, MinIO, Kafka, etc. That is useful for tests. For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters. Production scaffolding (`openg2p-prod.sh`) already creates the namespace, Rancher Project, Istio Gateway, and `commons-postgresql` secret.
+Install `openg2p-commons-base` and `openg2p-commons-services` from the **Rancher UI** (Apps → Charts), where the chart's `questions.yml` provides a guided form for production parameters (external PostgreSQL, hostnames, storage classes, replicas, and so on). Scripts under `automation/environment/` scaffold the namespace only — they do **not** install Commons. Production scaffolding (`openg2p-prod.sh`) already creates the namespace, Rancher Project, Istio Gateway, and `commons-postgresql` secret.
 {% endhint %}
 
-## How this stage runs — production (automated) vs standalone (manual)
+## How this stage runs — production vs standalone scaffolding
 
-There are **two ways** to complete the environment stage. Pick the one that matches how you built the infrastructure.
-
-### Option A — Production automation scaffolding + Rancher UI Commons — recommended
+### Option A — Production automation scaffolding + Rancher UI Commons (recommended)
 
 If you installed the platform with the production automation:
 
@@ -43,30 +41,28 @@ If you installed the platform with the production automation:
 # or: ./openg2p-prod-env-install.sh --config prod-config.yaml
 ```
 
-2. **Commons** is **not** installed by production scripts. Connect Wireguard, open Rancher, and install **openg2p-commons-base** then **openg2p-commons-services** in the environment namespace (use the `commons-postgresql` secret and host PostgreSQL on storage). Chart versions: [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
+2. **Commons** — connect Wireguard, open Rancher, and install **openg2p-commons-base** then **openg2p-commons-services** in the environment namespace (use the `commons-postgresql` secret and host PostgreSQL on storage). Chart versions: [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
 
 **Your only other manual actions:**
 
 * **Step 1 — DNS records** (a procurement prerequisite; no script creates these).
 * **Step 3 — citizen "go-public" exposure** on the Reverse Proxy (add the public Nginx server block + open public `80/443`), when you're ready to serve citizen traffic.
 
-You do **not** need to write `env-config.yaml` for scaffolding. Optionally you can still run Commons via `automation/environment/env-cluster.sh` (Steps 4–5 below) instead of the Rancher UI.
+You do **not** need to write `env-config.yaml` for production scaffolding.
 
-### Option B — Standalone (`env-cluster.sh`)
+### Option B — Standalone scaffolding (`env-cluster.sh`) + Rancher UI Commons
 
-If you're setting up an environment **separately** — on infrastructure not built by `openg2p-prod.sh`, or for debugging — follow the full manual step-by-step below using `automation/environment/env-cluster.sh`. **All five steps are manual.**
+If you're setting up an environment **separately** — on infrastructure not built by `openg2p-prod.sh` — use `automation/environment/env-cluster.sh` for **scaffolding only** (namespace, Rancher Project, Istio Gateway), then install Commons from the Rancher UI. Follow the step-by-step below for DNS / TLS / Nginx; skip any Commons Helm CLI steps.
 
 ### Which steps are manual?
 
-| Step | Production flow (`openg2p-prod.sh` + Rancher) | Standalone flow (`env-cluster.sh`) |
+| Step | Production flow (`openg2p-prod.sh` + Rancher) | Standalone flow |
 | --- | --- | --- |
 | **1 — DNS records** | Manual (prerequisite) | Manual |
 | **2 — TLS cert on the RP** | **Automated** (done in Stage 3) — skip | Manual |
 | **3 — Citizen exposure on the RP** | **Manual** (the go-public action) | Manual |
-| **4 — Configure `env-cluster.sh`** | Skip if using Rancher UI for Commons | Manual |
-| **5 — Run `env-cluster.sh`** | Skip if using Rancher UI for Commons | Manual |
-| Cluster scaffolding (namespace, project, gateway, repo, PG secret) | **Automated** (`openg2p-prod.sh` env stage) | via Steps below / `env-cluster.sh` steps 1–3 |
-| Commons (`commons-base` + `commons-services`) | **Rancher UI** (recommended) or optional Scripts | via `env-cluster.sh` |
+| Cluster scaffolding (namespace, project, gateway, repo, PG secret) | **Automated** (`openg2p-prod.sh` env stage) | `env-cluster.sh` (scaffolding only) or manual |
+| Commons (`commons-base` + `commons-services`) | **Rancher UI only** | **Rancher UI only** |
 
 ## Architecture
 
@@ -92,12 +88,12 @@ In a multi-node setup, each environment gets its own domain, namespace, and full
 ┌──────────────────────────────────────────────────────────────┐
 │  Kubernetes Cluster Node(s)                                  │
 │                                                              │
-│  env-cluster.sh targets here (via kubectl from workstation): │
+│  Scaffolding + Rancher UI Commons:                           │
 │    • Namespace                                               │
 │    • Rancher Project                                         │
 │    • Istio Gateway                                           │
-│    • Helm: openg2p-commons-base                              │
-│    • Helm: openg2p-commons-services                          │
+│    • Helm (Rancher UI): openg2p-commons-base                 │
+│    • Helm (Rancher UI): openg2p-commons-services             │
 └──────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────┐
@@ -112,7 +108,8 @@ The setup has two parts:
 | Part                          | Where                             | What                                                   |
 | ----------------------------- | --------------------------------- | ------------------------------------------------------ |
 | **Nginx setup** (Steps 1-3)   | On the Nginx node (manual)        | DNS, TLS certificate, Nginx server block, open public firewall |
-| **Cluster setup** (Steps 4-5) | From your workstation (automated) | Namespace, Rancher project, Istio gateway, Helm charts |
+| **Cluster scaffolding**       | Workstation / production scripts  | Namespace, Rancher project, Istio gateway              |
+| **Commons**                   | Rancher UI only                   | `openg2p-commons-base` then `openg2p-commons-services` |
 
 ## Prerequisites
 
@@ -126,7 +123,7 @@ The setup has two parts:
 | **Workstation**             | `kubectl` and `helm` installed, plus the base toolchain (bash 4+, ssh, openssl, git). See [Operator's workstation](infrastructure-setup/provisioning.md#operators-workstation) for the canonical list, supported OSes, and per-OS install commands. Kubeconfig with admin access to the cluster is also required. |
 
 {% hint style="info" %}
-The source code for the automation script lives in the [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) repository under `automation/environment/`.
+Scaffolding scripts live in [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) under `automation/environment/`. Commons is installed from the Rancher UI only.
 {% endhint %}
 
 ## Step-by-Step Guide
@@ -327,64 +324,46 @@ No host-level change is needed — the automation already configured `ufw` to ac
 **Admin tools are unaffected.** Opening public `80/443` exposes only the citizen `server_name`s. A request to `rancher.<domain>` / `keycloak.<domain>` still hits the admin server blocks, whose source-IP allowlist returns `403` to any client outside the Wireguard + private subnets.
 {% endhint %}
 
-### Step 4: Configure env-cluster.sh
+### Step 4: Scaffold the cluster environment (if needed)
 
-_**Production (Rancher UI):** skip — install Commons from Apps → Charts instead. **Production (optional scripts) / Standalone:** manual._
+_**Production:** skip — already done by `openg2p-prod.sh`. **Standalone:** run scaffolding only._
 
-On your **workstation**, clone the repo and prepare the config:
+If the namespace / Rancher Project / Istio Gateway are not already present:
 
 ```bash
 git clone https://github.com/OpenG2P/openg2p-deployment.git
 cd openg2p-deployment/automation/environment
 cp env-config.example.yaml env-config.yaml
-```
-
-Edit `env-config.yaml` with your values:
-
-```yaml
-environment: "qa"
-base_domain: "qa.openg2p.org"
-admin_email: "admin@openg2p.org"
-
-modules:
-  commons: true
-```
-
-{% hint style="info" %}
-`admin_email` is passed to the commons-base chart as `keycloak-init.realms.staff.users[0].email` — it becomes the default admin user in the per-env Keycloak `staff` realm. Leave it empty to accept the chart's default. Set the Commons chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
-{% endhint %}
-
-### Step 5: Run env-cluster.sh
-
-_**Production (Rancher UI):** skip. **Production (optional scripts) / Standalone:** manual — Wireguard (or other kubectl access) required._
-
-From your **workstation** (with kubectl access to the cluster):
-
-```bash
+# Edit environment + base_domain
 ./env-cluster.sh --config env-config.yaml
 ```
 
-The script performs 5 internal steps automatically:
+`env-cluster.sh` creates the namespace, Rancher Project, and Istio Gateway only. It does **not** install Commons.
 
-| Internal step | What it does                                                                      |
-| ------------- | --------------------------------------------------------------------------------- |
-| 1             | Creates the K8s namespace                                                         |
-| 2             | Creates a Rancher Project and associates the namespace                            |
-| 3             | Creates the Istio Gateway for `*.qa.openg2p.org`                                  |
-| 4             | Installs `openg2p-commons-base` (PostgreSQL, Kafka, MinIO, Redis, Keycloak, etc.) |
-| 5             | Installs `openg2p-commons-services` (eSignet, Superset, ODK, etc.)                |
+### Step 5: Install Commons from the Rancher UI
 
-{% hint style="danger" %}
-**These internal step numbers are not the guide's step numbers.**
+_**Production and standalone:** required — Commons is installed from Rancher only._
 
-This guide's Steps 1-3 are the manual Nginx-node work (DNS, TLS cert, Reverse Proxy); Steps 4-5 are configuring and running the script. The `--step` flag refers to the **script's own** steps in the table above — so `--step 3` creates the Istio Gateway, it does **not** re-do the Reverse Proxy step.
-
-Normally you should **omit `--step` entirely** and let all five internal steps run in order. Only reach for `--step` when resuming a specific part after a failure.
-{% endhint %}
+1. Connect Wireguard (or otherwise reach Rancher) and open `https://rancher.<domain>`.
+2. Select the environment namespace / project.
+3. **Apps → Charts → openg2p-commons-base** — install with production values (external PostgreSQL via the `commons-postgresql` secret when using production scaffolding, hostnames, storage class, and so on).
+4. Then install **openg2p-commons-services** in the same namespace.
+5. Pick chart versions from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
 
 {% hint style="info" %}
-Takes approximately 15-20 minutes. The script is idempotent — it checks for existing resources before creating them.
+Do not use Helm CLI scripts under `automation/environment/` to install Commons. Those scripts are scaffolding-only.
 {% endhint %}
+
+## Configuration reference (scaffolding)
+
+When using standalone `env-cluster.sh`, `env-config.yaml` needs:
+
+| Key | Purpose |
+| --- | --- |
+| `environment` | Namespace and Rancher project name |
+| `base_domain` | Domain for the Istio Gateway hosts |
+
+Commons chart options are configured in the Rancher Apps UI (not in `env-config.yaml`).
 
 ## Next: install your OpenG2P modules
 
@@ -397,52 +376,20 @@ At this point you have a working environment with `commons-base` + `commons-serv
 
 Each product page documents its Helm-chart version, deployment commands, Keycloak client setup, and domain-name requirements. Install only the modules required for your use case — none of them are mandatory infrastructure dependencies of the others.
 
-## Configuration Reference
-
-| Key                                | Description                                                                                                                                        |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `environment`                      | Environment name — used as namespace and Rancher project (e.g., `qa`)                                                                              |
-| `base_domain`                      | Full base domain for this environment (e.g., `qa.openg2p.org`)                                                                                     |
-| `admin_email`                      | Email for the default Keycloak `staff`-realm admin user. Maps to `keycloak-init.realms.staff.users[0].email`. Leave empty to accept chart default. |
-| `commons_base.chart_version`       | Helm chart version for openg2p-commons-base                                                                                                        |
-| `commons_base.chart_path`          | Local chart path (leave empty to use remote repo)                                                                                                  |
-| `commons_base.extra_helm_args`     | Additional `--set` flags for the base chart                                                                                                        |
-| `commons_services.chart_version`   | Helm chart version for openg2p-commons-services                                                                                                    |
-| `commons_services.chart_path`      | Local chart path (leave empty to use remote repo)                                                                                                  |
-| `commons_services.extra_helm_args` | Additional `--set` flags for the services chart                                                                                                    |
-| `modules.commons`                  | Enable/disable commons installation (`true`/`false`)                                                                                               |
-
-## CLI Options
-
-```bash
-./env-cluster.sh --config env-config.yaml [options]
-```
-
-| Option             | Description                                                                                     |
-| ------------------ | ----------------------------------------------------------------------------------------------- |
-| `--config <file>`  | Path to environment config file (required)                                                      |
-| `--step <spec>`    | Run only the given internal step(s). Accepts a single step (`3`), a range (`1-3`), or a list (`1,4`). Omit to run all five. |
-| `--force`          | Uninstall and reinstall Helm charts                                                             |
-| `--help`           | Show help message                                                                               |
-
-{% hint style="warning" %}
-Internal steps 2-5 all operate inside the environment namespace, which internal step 1 creates. If you run a later step on its own before step 1, the script fails immediately with a clear message rather than a raw `namespaces "<env>" not found` error from kubectl.
-{% endhint %}
-
 ## Creating Multiple Environments
 
 To create additional environments (e.g., `staging`) on the same cluster:
 
 1. Create DNS records for `staging.openg2p.org` and `*.staging.openg2p.org` pointing to the Nginx IP
 2. On the Nginx node: obtain a new certificate (Step 2) and add a new server block (Step 3a) with the new domain. The firewall (Step 3b) is already open from the first environment — no need to repeat it.
-3. Create a new config file with `environment: staging` and `base_domain: staging.openg2p.org`
-4. Run `env-cluster.sh` from your workstation with the new config
+3. Create a new config file with `environment: staging` and `base_domain: staging.openg2p.org` and run `env-cluster.sh` for scaffolding (or use production `--stage environment` with a different `environment.name`)
+4. Install Commons for that environment from the **Rancher UI**
 
-Each environment gets its own namespace, Rancher project, Istio gateway, and full set of services.
+Each environment gets its own namespace, Rancher project, Istio gateway, and Commons install.
 
 ## Uninstallation
 
-To tear down an environment, use `env-cluster-uninstall.sh` (the reverse of `env-cluster.sh`). It has two modes.
+To tear down an environment's Helm releases (including Commons installed from Rancher), use `env-cluster-uninstall.sh` or production's `openg2p-prod-env-uninstall.sh`. Reinstall Commons afterward from the Rancher UI.
 
 {% hint style="info" %}
 The uninstall script takes only `--namespace <name>` — it does **not** read `env-config.yaml`. All cleanup is namespace-scoped, so it doesn't matter which apps or chart versions were originally installed. Every Helm release, Secret, PVC, and (in `--full` mode) the namespace itself is removed.
@@ -450,7 +397,7 @@ The uninstall script takes only `--namespace <name>` — it does **not** read `e
 
 {% tabs %}
 {% tab title="Default — Helm + data" %}
-Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets, PVCs, PVs). Preserves the namespace, Istio Gateway, and Rancher Project so the environment can be reinstalled quickly.
+Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets, PVCs, PVs). Preserves the namespace, Istio Gateway, and Rancher Project so you can reinstall Commons quickly from the Rancher UI.
 
 ```bash
 ./env-cluster-uninstall.sh --namespace qa
@@ -538,9 +485,10 @@ Quick reference: the superuser password is on the storage node at `/etc/openg2p/
 
 ```
 automation/environment/
-├── env-cluster.sh              # Install: run from workstation (kubectl/helm)
-├── env-cluster-uninstall.sh    # Uninstall: reverse of env-cluster.sh
-├── env-config.example.yaml     # Example config — copy and edit
+├── env-cluster.sh              # Scaffolding only (namespace / project / gateway)
+├── env-cluster-uninstall.sh    # Tear down Helm releases in a namespace
+├── env-refresh.sh              # Uninstall releases; reinstall Commons from Rancher UI
+├── env-config.example.yaml     # Scaffolding config — copy and edit
 ├── lib/
 │   └── utils.sh                # Shared utilities (logging, config parser)
 └── .gitignore                  # Ignores env-config.yaml
@@ -549,7 +497,7 @@ automation/environment/
 ## Troubleshooting
 
 {% hint style="info" %}
-`env-cluster.sh` is idempotent — re-run it on failure. Use `--step <spec>` (e.g. `--step 4`, `--step 1-3`) to resume a specific internal step, or `--force` to tear down and reinstall Helm charts. Remember that `--step` numbers refer to the script's internal steps, not this guide's steps.
+`env-cluster.sh` is scaffolding-only and idempotent — re-run it on failure. Use `--step <spec>` (e.g. `--step 1-3`) for scaffolding steps only. Install or reinstall Commons from the Rancher UI.
 {% endhint %}
 
 ### Certificate issues (on Nginx node)
@@ -614,10 +562,10 @@ org.postgresql.util.PSQLException: ERROR: relation "key_alias" does not exist
 **Cause.** eSignet and mock-identity each embed the keymanager library, which needs the keymanager schema (`key_alias`, `key_store`, …) **in their own database**. Each ships its schema-init as a `helm.sh/hook: post-install` Job, which deadlocks `helm --wait`: the pods can't become Ready until the schema exists, but the post-install hook that creates the schema only runs *after* the release is Ready. So the hook never runs and the release ends as `failed`. (Standalone keymanager is unaffected — its init runs as a regular resource.) This is a chart-level issue in `openg2p-commons-services`.
 
 {% hint style="info" %}
-If you install Commons with **`env-cluster.sh`**, that script materialises these hook Jobs as regular Jobs and restarts the affected workloads. If you install Commons from the **Rancher UI**, apply the manual fix below after the release fails.
+After installing Commons from the **Rancher UI**, if eSignet / mock-identity crashloop with this error, apply the manual fix below.
 {% endhint %}
 
-For a Rancher UI or standalone install where the hooks did not run, materialise the schema-init Jobs by hand (replace `qa` with your namespace):
+Materialise the schema-init Jobs by hand (replace `qa` with your namespace):
 
 ```bash
 # Materialise the post-install hook Jobs as regular Jobs (strips the hook annotations)
