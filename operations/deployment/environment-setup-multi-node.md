@@ -10,7 +10,7 @@ This guide covers creating OpenG2P environments (namespace + services) on an **e
 **Production deployment flow:**  [1. Procurement](prerequisites-procurement.md)  →  [2. Provisioning](infrastructure-setup/provisioning.md)  →  [3. Infrastructure](infrastructure-setup/production-automation/)  →  **4. Environment** (this page)  →  [5. Modules](#next-install-your-openg2p-modules)
 {% endhint %}
 
-**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. This stage stands up the **environment-scoped layer** — a namespace, Istio Gateway, and the shared OpenG2P commons (PostgreSQL on the host + Kafka/MinIO/Redis/Keycloak + cross-cutting services like eSignet, Superset, ODK). After this stage, you install the [product modules](#next-install-your-openg2p-modules) your rollout actually delivers (Registry, PBMS, SPAR, G2P Bridge).
+**Where you are in the flow.** Stages 1–3 are done: VMs are provisioned, DNS+TLS are in place, and the platform (RKE2, Istio, Rancher with local auth, Wireguard, Nginx, NFS, host PostgreSQL) is installed and reachable. Production automation also **scaffolds** the environment (namespace, Istio Gateway, Helm repos, external-PG secret). This stage finishes by installing **Commons** — recommended via the Rancher UI; optionally via `automation/environment/`. After Commons, install the [product modules](#next-install-your-openg2p-modules) your rollout delivers (Registry, PBMS, SPAR, G2P Bridge).
 
 {% hint style="info" %}
 Note that for a  single-node setup the environment is installed as part of the [single node sandbox installation](infrastructure-setup/single-node-automation/).
@@ -19,37 +19,38 @@ Note that for a  single-node setup the environment is installed as part of the [
 {% hint style="danger" %}
 **Before you start — procurement prerequisites**
 
-DNS records, TLS certificates, and server access for this environment must already be in place before `env-cluster.sh` runs. If you have not yet procured these, start with the [**Prerequisites & Procurement**](prerequisites-procurement.md) page — it contains a single fillable checklist (admin + production hostnames + certs + server access + firewall ports) you can hand to your IT / network / cert team. TLS issuance from sovereign or commercial CAs typically takes 2–4 weeks, so do this **before** running any installer.
+DNS records, TLS certificates, and server access for this environment must already be in place before Commons install. If you have not yet procured these, start with the [**Prerequisites & Procurement**](prerequisites-procurement.md) page — it contains a single fillable checklist (admin + production hostnames + certs + server access + firewall ports) you can hand to your IT / network / cert team. TLS issuance from sovereign or commercial CAs typically takes 2–4 weeks, so do this **before** running any installer.
 {% endhint %}
 
 {% hint style="warning" %}
 **In-cluster versus External Storage**
 
-This script installs [**commons**](../../deployment/openg2p-commons-helm-chart.md) modules with **in-cluster** PostgreSQL, MinIO, Kafka, etc. This may be used to test the entire system before going for a production rollout.  For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — disable module installation in the config (`modules.commons: false`) and install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters.
-
-The script is still useful in production for the namespace, Rancher Project, and Istio Gateway scaffolding.
+The optional `env-cluster.sh` script can install [**commons**](../../deployment/openg2p-commons-helm-chart.md) with **in-cluster** PostgreSQL, MinIO, Kafka, etc. That is useful for tests. For **production deployments** — where you typically need external PostgreSQL, custom hostnames, storage classes, replicas, image registry settings, and other overrides — install `openg2p-commons-base` and `openg2p-commons-services` via the **Rancher UI**, where the chart's `questions.yml` provides a guided form for all production parameters. Production scaffolding (`openg2p-prod.sh`) already creates the namespace, Rancher Project, Istio Gateway, and `commons-postgresql` secret.
 {% endhint %}
 
 ## How this stage runs — production (automated) vs standalone (manual)
 
-There are **two ways** to run the environment stage. Pick the one that matches how you built the infrastructure — it determines which of the steps below you actually perform by hand.
+There are **two ways** to complete the environment stage. Pick the one that matches how you built the infrastructure.
 
-### Option A — Production automation (`openg2p-prod.sh`) — recommended
+### Option A — Production automation scaffolding + Rancher UI Commons — recommended
 
-If you installed the platform with the production automation, the environment stage is **Stage 4 of the same orchestrator** and is **mostly automated**. From your laptop (on Wireguard):
+If you installed the platform with the production automation:
+
+1. **Scaffolding** is Stage 4 of `openg2p-prod.sh` (runs at the end of a full install when `install_environment: true`). It creates the namespace, Rancher Project, Istio Gateway, Helm ClusterRepos (`openg2p` + `openg2p-gitlab`), and the external-PG secret. It uses an **SSH tunnel** to the Kubernetes API — **Wireguard is not required** for scaffolding.
 
 ```bash
 ./openg2p-prod.sh --config prod-config.yaml --stage environment
+# or: ./openg2p-prod-env-install.sh --config prod-config.yaml
 ```
 
-Stage 4 automates: the **cluster scaffolding** (namespace, Rancher Project, Istio Gateway, Helm `ClusterRepo`, external-PG secret), **generating `env-config.yaml`**, and the **commons install** (`commons-base` + `commons-services`, wired to the **host PostgreSQL**). The **TLS certificate** was already installed on the Reverse Proxy back in Stage 3.
+2. **Commons** is **not** installed by production scripts. Connect Wireguard, open Rancher, and install **openg2p-commons-base** then **openg2p-commons-services** in the environment namespace (use the `commons-postgresql` secret and host PostgreSQL on storage). Chart versions: [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
 
-**Your only manual actions in this flow are:**
+**Your only other manual actions:**
 
 * **Step 1 — DNS records** (a procurement prerequisite; no script creates these).
 * **Step 3 — citizen "go-public" exposure** on the Reverse Proxy (add the public Nginx server block + open public `80/443`), when you're ready to serve citizen traffic.
 
-You do **not** run `env-cluster.sh` by hand and you do **not** write `env-config.yaml` — Stage 4 does both, so **skip Steps 2, 4 and 5 below** (they're reference / standalone). In an unattended `all` run the env stage *defers* if Wireguard isn't connected; just re-run the command above once you're on the VPN.
+You do **not** need to write `env-config.yaml` for scaffolding. Optionally you can still run Commons via `automation/environment/env-cluster.sh` (Steps 4–5 below) instead of the Rancher UI.
 
 ### Option B — Standalone (`env-cluster.sh`)
 
@@ -57,14 +58,15 @@ If you're setting up an environment **separately** — on infrastructure not bui
 
 ### Which steps are manual?
 
-| Step | Production flow (`openg2p-prod.sh`) | Standalone flow (`env-cluster.sh`) |
+| Step | Production flow (`openg2p-prod.sh` + Rancher) | Standalone flow (`env-cluster.sh`) |
 | --- | --- | --- |
 | **1 — DNS records** | Manual (prerequisite) | Manual |
 | **2 — TLS cert on the RP** | **Automated** (done in Stage 3) — skip | Manual |
 | **3 — Citizen exposure on the RP** | **Manual** (the go-public action) | Manual |
-| **4 — Configure `env-cluster.sh`** | **Automated** (Stage 4 generates it) — skip | Manual |
-| **5 — Run `env-cluster.sh`** | **Automated** (Stage 4 runs it) — skip | Manual |
-| Cluster scaffolding (namespace, project, gateway, repo, PG secret) | **Automated** (Stage 4) | via Steps below / `env-cluster.sh` steps 1–3 |
+| **4 — Configure `env-cluster.sh`** | Skip if using Rancher UI for Commons | Manual |
+| **5 — Run `env-cluster.sh`** | Skip if using Rancher UI for Commons | Manual |
+| Cluster scaffolding (namespace, project, gateway, repo, PG secret) | **Automated** (`openg2p-prod.sh` env stage) | via Steps below / `env-cluster.sh` steps 1–3 |
+| Commons (`commons-base` + `commons-services`) | **Rancher UI** (recommended) or optional Scripts | via `env-cluster.sh` |
 
 ## Architecture
 
@@ -327,7 +329,7 @@ No host-level change is needed — the automation already configured `ufw` to ac
 
 ### Step 4: Configure env-cluster.sh
 
-_**Production:** automated — Stage 4 generates `env-config.yaml` from `prod-config.yaml`; **skip this step**. **Standalone:** manual._
+_**Production (Rancher UI):** skip — install Commons from Apps → Charts instead. **Production (optional scripts) / Standalone:** manual._
 
 On your **workstation**, clone the repo and prepare the config:
 
@@ -349,12 +351,12 @@ modules:
 ```
 
 {% hint style="info" %}
-`admin_email` is passed to the commons-base chart as `keycloak-init.realms.staff.users[0].email` — it becomes the default admin user in the per-env Keycloak `staff` realm. Leave it empty to accept the chart's default.
+`admin_email` is passed to the commons-base chart as `keycloak-init.realms.staff.users[0].email` — it becomes the default admin user in the per-env Keycloak `staff` realm. Leave it empty to accept the chart's default. Set the Commons chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
 {% endhint %}
 
 ### Step 5: Run env-cluster.sh
 
-_**Production:** automated — Stage 4 runs the commons install (`env-cluster.sh --step 4/5`); **skip this step**. **Standalone:** manual._
+_**Production (Rancher UI):** skip. **Production (optional scripts) / Standalone:** manual — Wireguard (or other kubectl access) required._
 
 From your **workstation** (with kubectl access to the cluster):
 
@@ -611,11 +613,11 @@ org.postgresql.util.PSQLException: ERROR: relation "key_alias" does not exist
 
 **Cause.** eSignet and mock-identity each embed the keymanager library, which needs the keymanager schema (`key_alias`, `key_store`, …) **in their own database**. Each ships its schema-init as a `helm.sh/hook: post-install` Job, which deadlocks `helm --wait`: the pods can't become Ready until the schema exists, but the post-install hook that creates the schema only runs *after* the release is Ready. So the hook never runs and the release ends as `failed`. (Standalone keymanager is unaffected — its init runs as a regular resource.) This is a chart-level issue in `openg2p-commons-services`.
 
-{% hint style="success" %}
-The OpenG2P **production automation handles this automatically** — its environment stage materialises these hook Jobs as regular Jobs and restarts the affected workloads, so no manual action is needed there.
+{% hint style="info" %}
+If you install Commons with **`env-cluster.sh`**, that script materialises these hook Jobs as regular Jobs and restarts the affected workloads. If you install Commons from the **Rancher UI**, apply the manual fix below after the release fails.
 {% endhint %}
 
-For a standalone `env-cluster.sh` install, run the schema-init Jobs by hand (replace `qa` with your namespace):
+For a Rancher UI or standalone install where the hooks did not run, materialise the schema-init Jobs by hand (replace `qa` with your namespace):
 
 ```bash
 # Materialise the post-install hook Jobs as regular Jobs (strips the hook annotations)
