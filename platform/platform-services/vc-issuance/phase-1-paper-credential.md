@@ -192,7 +192,7 @@ redeploy with an existing identity, restore it from a Secret (`p12.existingSecre
 **Ed25519-signed** `OpenG2PBeneficiaryCredential`, and a **printable PDF with a QR** is rendered (see
 [Local Developer Trial](local-setup.md)).
 
-**In progress:** the agent-facing service and `agent` realm, eSignet beneficiary authentication as a
+**In progress:** eSignet beneficiary authentication as a
 mandatory gate, issuance keyed on `internal_record_id`, the issuance event log, and the reference agent
 portal. Then: switch the QR to Certify's **compact signed** form (`qr_settings` + `qr_signature_algo`)
 and confirm **Inji Verify validates it offline** against the issuer's trust anchor.

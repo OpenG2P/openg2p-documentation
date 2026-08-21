@@ -236,10 +236,73 @@ Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`,
 `load_geo_data.py`, `load_attributes_from_mds.py`, `sync_geo_widgets.py`,
 `upload_templates.py`.
 
-A variant loader has three obligations the ORM would otherwise meet for it —
-write `search_text` explicitly, resolve and write geography explicitly, and read
-the target table's columns from `information_schema` rather than hard-coding
-them. See [Contracts that fail silently](contracts-that-fail-silently.md).
+#### Where sample people come from
+
+This is the decision that most often gets made wrong, because both sources work
+and only one is country-coherent.
+
+| Source | Table / file | Use it |
+|---|---|---|
+| **Master Data country samples** | `g2p_sample_individuals`, `g2p_sample_households` in the master-data DB | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and code lists |
+| Shared demography CSV | `/openg2p-data/demography/individuals.csv` | Fallback only |
+
+**Read Master Data first and fall back to the CSV**, exactly as the reference
+registries do. Your loader's job is to add *your* fields to the country's people,
+not to invent a second population.
+
+{% hint style="danger" %}
+**The CSV describes one fixture country.** Its five fixed level names
+(country/region/district/ward/village) are that country's shape. Load it into a
+deployment configured for another country and you get people with the wrong
+names sitting in administrative units that do not exist there — and it does not
+error, because there is nothing to error against. Say so in the log when you
+fall back, or nobody will notice.
+{% endhint %}
+
+Two things the Master Data path gives you for free:
+
+* **Geography by p-code.** A sample row carries `geo_pcode` — the unit's own id.
+  Walk its ancestry through `parent_level_value_id` and write the chain
+  directly. No name matching, and no chance of the slug-path mismatch the CSV
+  path has to guard against. Read the **depth and the level names** from
+  `g2p_geo_levels` rather than assuming five: Ethiopia has four and calls the
+  middle ones zone and woreda.
+* **The country's own attributes.** `disability_status`, `employment_status`,
+  `relationship_to_head` and friends are on the sample row. If a pack marks who
+  it considers disabled, or employed, prefer that over any selection rule of
+  your own — the country has already decided.
+
+{% hint style="warning" %}
+**Sizing.** A pack's sample set is a curated fixture — tens of people, not
+thousands. Applying a prevalence rate to it ("register 16% of them") yields two
+or three records and a demo with nothing in it. Take a share of the CSV's
+population-shaped set if you must, but take a pack's samples whole, or select
+them on an attribute the pack actually carries.
+{% endhint %}
+
+{% hint style="info" %}
+**Dates.** Older packs carry only `birth_year`, not `birth_date`. Falling back to
+1 January puts every sample person on the same birthday, so any chart binned by
+month shows one enormous January spike. Age bands are unaffected. Use
+`birth_date` when the pack has it, and know which you got.
+{% endhint %}
+
+#### The four obligations
+
+A variant loader has to do four things the ORM would otherwise do for it:
+
+1. **Write `search_text` explicitly** — the SQLAlchemy listeners do not fire for
+   raw SQL, and a record without it cannot be found by search or by DCI.
+2. **Resolve and write geography explicitly** — `geo_lowest_level_value_id` *and*
+   `geo_code_hierarchy_json`. The `@validates` hook that normally builds the
+   second is ORM-only.
+3. **Read the target table's columns from `information_schema`** rather than
+   hard-coding them, so a renamed column degrades to a clear error instead of a
+   silently skipped insert.
+4. **Wrap optional inserts in a `SAVEPOINT`** — without one, a failed statement
+   poisons the transaction and the final `COMMIT` rolls back everything.
+
+See [Contracts that fail silently](contracts-that-fail-silently.md).
 
 **Done when** all five images build from a clean checkout **and the three Python
 images actually boot**:

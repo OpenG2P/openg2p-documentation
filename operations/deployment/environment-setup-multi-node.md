@@ -409,6 +409,9 @@ Uninstalls **all** Helm releases in the namespace and deletes all data (Secrets,
 * All Jobs (hook leftovers)
 * All Secrets in the namespace
 * All PVCs + associated PVs
+* **Chart-owned ConfigMaps only** — those labelled `app.kubernetes.io/managed-by: Helm`, those carrying a `meta.helm.sh/release-name` annotation, or those named `<release>-*`
+
+**Preserved ConfigMaps:** hand-created ConfigMaps (seed data, migration payloads, debug patches) are **kept** and listed in the output, so a shared namespace does not lose operator artifacts. Cluster- and mesh-owned ConfigMaps (`kube-root-ca.crt`, `istio-*`) are never touched.
 
 **Preserves:**
 
@@ -471,6 +474,14 @@ Use `--yes` to skip confirmation for automation/CI.
 
 {% hint style="info" %}
 The uninstall script never touches the Nginx node, DNS records, certificates, or other namespaces on the cluster. Those are intentionally managed outside this automation.
+{% endhint %}
+
+{% hint style="warning" %}
+**Why ConfigMaps are filtered rather than wiped**
+
+Helm-labelled ConfigMaps that have lost their `meta.helm.sh/release-name` annotation are not removed by `helm uninstall` — it cannot associate them with any release. Left behind, they cause `invalid ownership metadata` failures the next time a chart tries to create a ConfigMap of the same name, so the uninstall script removes them explicitly.
+
+It deliberately stops short of `kubectl delete configmap --all`: on a shared namespace that would silently destroy hand-applied seed data and migration payloads that no chart will ever recreate. Anything not chart-owned is listed in the output so you can remove it by hand if you want.
 {% endhint %}
 
 ## Accessing host PostgreSQL from your laptop
