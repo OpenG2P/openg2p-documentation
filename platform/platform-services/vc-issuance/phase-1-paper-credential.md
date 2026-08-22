@@ -91,13 +91,34 @@ requires nothing of the citizen) or by **OTP** to their phone.
 * **Re-issue on demand.** A lost or stale credential is simply **re-issued** — a fresh authentication,
   a new credential, linked to the previous one in the issuance log.
 
-## Presentation & verification (offline)
+## Presentation & verification
 
 ```
- Citizen ──(hands paper)──► Verifier ──(scans QR with Inji Verify)──► validates signature
-                                                                       against issuer's published
-                                                                       key / DID  → ✅/❌
+ Citizen ──(hands paper)──► Verifier ──(scans/uploads QR)──► checks COSE signature
+                                                              against a PRE-LOADED
+                                                              trust anchor  → ✅/❌
 ```
+
+**What "offline" does and does not mean here.** The *signature check* needs no
+call back to OpenG2P: the verifier holds the issuer key already. But **Inji
+Verify is a web portal**, not a phone app — the verifying organisation hosts it
+and a verifier uses it in a browser, by webcam or by uploading a photo of the
+paper. A browser still has to load that page. A genuinely disconnected counter
+needs Inji Verify's **SDK** (a React/NPM module) embedded in an installed
+application. Inji **Wallet** is the phone app, and it is a *holder* app: it
+stores the owner's own credentials and does not verify someone else's paper.
+
+**Before any of this works, two things must be true**, and neither happens on
+its own:
+
+1. a verifier deployment exists (nothing verifies a credential until a relying
+   party stands one up); and
+2. the OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor** —
+   take it from `/v1/certify/.well-known/jwks.json`.
+
+> **Unverified.** Whether a stock Inji Verify accepts a claim-169 CWT from a
+> non-MOSIP issuer has not been tested end to end. Until it has, treat
+> third-party verification as unproven rather than assumed.
 
 * **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
   **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used
@@ -156,7 +177,13 @@ images. See [Phase 2 — Device Wallet](phase-2-device-wallet.md).
   **no Registry access**. (A custom pull connector exists for the wallet flow; see
   [Registry Data Connector](registry-data-connector.md).)
 * **Agent web portal** — a thin reference client proving the chain, following OpenG2P UI conventions.
-* **Inji Verify** — the verifier app that scans and validates the QR offline.
+* **Inji Verify** — the verifier side. NOT a phone app: it is a **web portal** the
+  verifying organisation deploys (scan by webcam, or upload a photo/scan of the
+  paper), plus an **SDK** (a React/NPM module) for embedding the same
+  scan-and-verify into a relying party's own application. The citizen installs
+  nothing; the *verifier* runs it. Inji **Wallet** is the phone app, and it is a
+  holder app — it stores your own credentials, it does not verify someone
+  else's paper.
 
 ## What a registry manifestation must supply
 
@@ -167,6 +194,88 @@ Registry, …) supplies what is specific to it, because the fields differ:
 * its **VC definitions** — credential type, template, fields, scope;
 * the **card design** for the printed PDF;
 * the **issuer DID** value for the environment.
+
+## Two documents, two signatures, two keys
+
+This surprises people, so it is worth being explicit. An issuance produces **two
+separate signed things**, not one signed thing shown two ways:
+
+| | The credential | The QR |
+|---|---|---|
+| What it is | the full **JSON-LD VC** (~1.5 KB) | a compact **CBOR** identity payload (~470 B) |
+| Signature | `Ed25519Signature2020` (a Linked-Data proof) | `COSE_Sign1`, wrapped as a **CWT** (CBOR tag 61 → 18) |
+| Algorithm | **EdDSA** (Ed25519) | **ES256** (ECDSA P-256) |
+| Key alias | `CERTIFY_VC_SIGN_ED25519` / `ED25519_SIGN` | `CERTIFY_VC_SIGN_EC_R1` / `EC_SECP256R1_SIGN` |
+| Set by | `credentialConfig.signatureAlgo` | `credentialConfig.qrSignatureAlgo` |
+| Encoding | JSON | zlib → **Base45** (the `NCF…` string) |
+
+**Why the QR needs its own signature.** The QR does **not** contain the JSON-LD
+credential — it contains a different, much smaller document. A signature only
+covers the exact bytes it was made over, so the Ed25519 proof over the JSON says
+nothing about the CBOR payload. The compact form therefore carries its own
+signature or it cannot be trusted at all.
+
+**Why not simply put the signed JSON in the QR?** That is the fallback the
+renderer uses when no `qrSettings` are configured, and it does work — but it is
+roughly four times the data (1760 characters against 396), it crowds a QR whose
+practical ceiling is about 2.9 KB, and it is not a shape claim-169 verifiers
+recognise.
+
+**Why two keys rather than one?** COSE also supports EdDSA, so the credential
+key *could* sign both and there is no security objection to that — the two
+structures cannot be confused. It is deliberately not done:
+
+* **Compatibility.** ES256 is what the mDL / EU-DCC / claim-169 ecosystem
+  actually implements. EdDSA is a registered COSE algorithm but less widely
+  supported in verifier stacks, and the QR is the artefact most likely to meet a
+  third-party verifier.
+* **Key separation.** A compromised or rotated QR key does not disturb
+  credential signing, and the QR algorithm can change without touching it.
+* **Hardware.** P-256 is universally supported in secure elements and HSMs;
+  Ed25519 support is patchier — worth preserving even though Phase 1 uses a
+  `.p12`.
+
+**Which signature is actually checked, and when.** The two are not
+paper-versus-wallet — they are *transfer* versus *presentation*:
+
+| | Signature 1 (Ed25519, on the VC) | Signature 2 (ES256, on the QR) |
+|---|---|---|
+| Paper (Phase 1) | not used — the citizen never receives the JSON | **the only thing verified** |
+| Wallet, scanned at a counter | checked when the wallet **receives** the credential | **verified at the counter** |
+| Wallet, OpenID4VP to a relying party | **the one verified** | not used in that exchange |
+
+A wallet does not hand a shopkeeper a JSON-LD document: it **displays the
+claim-169 QR on screen** and the verifier scans it — the same artefact as the
+paper, the same scanner, the same trust anchor. So the QR signature is needed on
+both paths, not only on paper.
+
+The inversion is worth noticing: **in Phase 1 the Ed25519 signature is the one
+nothing checks**, because the JSON is never handed out. It is not wasted — it is
+what makes this a W3C Verifiable Credential, it is what a wallet validates on
+receipt in Phase 2, and Certify produces it as part of issuing at all. It cannot
+meaningfully be switched off.
+
+Note also the nesting: Certify signs the compact CBOR payload FIRST, embeds the
+resulting Base45 blob at `credentialSubject.claim169.qrCode`, and only then signs
+the whole credential. Signature 2 therefore sits inside the bytes signature 1
+covers — which is exactly why the credential proof cannot stand in for the QR's:
+the QR travels alone, detached from the JSON that carried it.
+
+**Where each key is published.**
+
+* `GET /.well-known/did.json` — the **DID document**, resolving
+  `did:web:<certify-host>`. It carries the **Ed25519** key only. Certify builds
+  this document from the registered credential configs' `signatureAlgo`; it does
+  not consult `qrSignatureAlgo`, so the QR key never appears here.
+* `GET /v1/certify/.well-known/jwks.json` — **all** of Certify's public keys,
+  the ES256 QR key included. This is where a verifier obtains the QR key.
+
+That split is not a defect, because **claim-169 verification does not resolve
+DIDs**. The COSE header carries only an `alg` and a `kid`; there is no
+`x5chain`. A verifier is expected to already hold the issuer's key, from a
+**pre-distributed trust list** — exactly as EU DCC and mDL work. Publishing the
+key is therefore necessary but not sufficient: it must be **loaded into the
+verifier as a trust anchor**. See [Deployment](deployment.md).
 
 ## Key management
 

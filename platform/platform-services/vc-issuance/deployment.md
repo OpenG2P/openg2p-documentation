@@ -30,7 +30,7 @@ so every registry manifestation inherits the capability without being affected u
 | **Agent login API** | `iam-agent-portal-api` (IAM service) | Authenticates the **agent** against Keycloak's `agent` realm |
 | **eSignet** | existing deployment | Authenticates the **beneficiary** (biometric at the counter, or OTP) — issues nothing |
 | **Inji Certify** | `injistack/inji-certify-with-plugins` (**stock**, no custom plugin) | Issues + signs the VC (+ QR payload); the built-in `PreAuthDataProviderPlugin` makes the pushed claims the subject |
-| **Inji Verify** | `injistack/inji-verify-*` | Scans + validates the QR (offline) — verifier side |
+| **Inji Verify** | `injistack/inji-verify-*` | Verifier side. A **web portal** the verifying organisation hosts (webcam scan or upload), plus an SDK for embedding it. Not a phone app, and not installed by the citizen. |
 | **PostgreSQL** | existing cluster instance | Reused: a dedicated DB/schema for Certify; the Agent Portal API reads the registry DB read-only |
 
 All run on the OpenG2P **Kubernetes** cluster.
@@ -102,7 +102,12 @@ caller) and Certify is **not exposed publicly**.
    (+ claim-169 QR).
 6. API renders the PDF, **streams it to the agent's browser** as a download, and writes the **issuance
    event log** row. The agent prints it and hands it to the citizen.
-7. Later: a verifier scans the QR with **Inji Verify** → validates the COSE signature **offline**.
+7. Later: a verifier scans the QR with **Inji Verify** (its hosted web portal, or
+   the SDK embedded in their own app) → validates the COSE signature against a
+   **pre-loaded trust anchor**. The signature check needs no call back to
+   OpenG2P, but the portal itself is a web page, so a browser-based verifier
+   still needs the page loaded. A genuinely offline counter needs the SDK
+   embedded in an installed application.
 
 Nuances: with no citizen device, the **API generates an ephemeral holder key** for the proof JWT
 (`credentialSubject.id` = a throwaway `did:jwk`; trust comes from the issuer signature, not holder
