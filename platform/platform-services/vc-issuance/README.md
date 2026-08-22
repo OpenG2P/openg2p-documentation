@@ -73,3 +73,21 @@ Agents and staff are **entirely distinct**: a separate realm, a separate API, an
 The **issuance and signing chain** is proven end to end (verified locally): claims are read from a real registrant in the OpenG2P registry, **pushed** into **Inji Certify**, which returns an **Ed25519-signed** credential, and a **printable PDF with a QR** is rendered.
 
 Currently being built on the Registry Platform: the **agent-facing service** (`agent` realm), **beneficiary authentication via eSignet** as a mandatory gate, issuance keyed on the registry's `internal_record_id`, an **issuance event log**, and the reference **agent web portal**. Deferred to Phase 2: the **photograph in the QR** (MOSIP claim 169) and **revocation / status lists**.
+
+## Guides still to be written
+
+Three things are configurable today but have no guide, so each is currently done
+by reading someone else's `values.yaml`:
+
+* **Authoring a credential template.** What `type` actually means (the second
+  entry is the credential's own type and must match `credentialConfigKeyId`, the
+  `@context` term and the Certify `credentialTypes`), where `${validFrom}` /
+  `${validUntil}` / `${_holderId}` / `${_issuer}` come from, and which names are
+  free to invent. A wrong name is not an error — Velocity emits it verbatim — so
+  the rules need writing down.
+* **Adding agents.** Creating real agents in the `agent` realm, granting
+  `register:issue_credential`, and retiring one. The chart seeds a single demo
+  `agent` user, which is not how a deployment runs.
+* **Changing what a credential contains.** The claim fields, the JSON-LD body and
+  the printed card are edited in four different places that must agree; that is
+  worth one page with the order to change them in.
