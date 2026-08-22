@@ -91,3 +91,17 @@ by reading someone else's `values.yaml`:
 * **Changing what a credential contains.** The claim fields, the JSON-LD body and
   the printed card are edited in four different places that must agree; that is
   worth one page with the order to change them in.
+
+## Known limitations
+
+* **One issuer per Certify deployment.** Certify itself can hold several signing
+  keys and a `credential_config` names its own `didUrl` / `keyManagerAppId`, so
+  several issuing authorities in one Certify is possible in principle — but the
+  charts expose a single `global.vcIssuerDid` and a single questions entry.
+  Supporting a second authority (a different department signing its own
+  credentials) needs the chart widened first. **TODO.**
+* **Credential validity is per deployment, not per credential type.** It is
+  `appConfig.vcExpiryDuration` on the Certify chart (ISO-8601, default `P730D`),
+  read once by the data-provider plugin, and it fills `${validUntil}`. A registry
+  wanting a 1-year card and a 5-year card from the same Certify cannot express
+  that today; it needs per-`credential_config` support upstream. **TODO.**
