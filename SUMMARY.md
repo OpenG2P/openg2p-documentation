@@ -632,6 +632,7 @@
   * [Verifiable Credentials](platform/platform-services/vc-issuance/README.md)
     * [Custody Options & Strategy](platform/platform-services/vc-issuance/custody-options-and-strategy.md)
     * [Phase 1 — Paper Credential](platform/platform-services/vc-issuance/phase-1-paper-credential.md)
+    * [Signatures, Keys and the QR](platform/platform-services/vc-issuance/signatures-keys-and-the-qr.md)
     * [Registry Data Connector](platform/platform-services/vc-issuance/registry-data-connector.md)
     * [Deployment](platform/platform-services/vc-issuance/deployment.md)
     * [Local Developer Trial](platform/platform-services/vc-issuance/local-setup.md)

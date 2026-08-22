@@ -203,8 +203,9 @@ data — every module is its own issuance backend that pushes its own claims.
 * **Issuer key / trust anchor**: the signed claim-169 QR is a **COSE/CWT**. Per the MOSIP 169 spec,
   verifiers use **COSE** key-discovery (`x5chain` embedded cert, `x5t` hash, or `x5u` URI) and a
   **pre-distributed trust anchor** — *not* `.well-known`/JWKS/DID resolution. So **distribute the
-  issuer's signing cert / root to verifiers** (a trust list). Optionally embed `x5chain` in the QR for
-  self-contained offline verification, trading off QR space. (The separate **JSON-LD VC** still uses
+  issuer's signing cert / root to verifiers** (a trust list). The spec allows embedding `x5chain` in the
+  QR for self-contained verification, at a cost in QR space; **OpenG2P does not** — our COSE header
+  carries only `alg` and `kid`, so a pre-distributed trust anchor is the ONLY way our QR verifies. (The separate **JSON-LD VC** still uses
   `did:web` → `https://<host>/.well-known/did.json` for `proof.verificationMethod`; publish that too if
   JSON-LD VCs are issued.)
 * **Photograph**: if the credential embeds a face in the QR, the **Agent Portal API** must push a
@@ -215,26 +216,63 @@ data — every module is its own issuance backend that pushes its own claims.
 * **One issuer/authority per environment, configured at Certify install.** The issuer **DID**
   (`global.vcIssuerDid`) + signing-key alias/algo are set on the **Certify** chart (surfaced in its
   install **`questions.yaml`**, standalone and under commons-services). Keymanager **generates the
-  keypair on first boot**; (Phase 2 only) you publish `did.json`.
+  keypairs on first boot**, and `did.json` is **already served** at
+  `https://<certify-host>/.well-known/did.json` — see the key-hosting bullet below.
 * **VC definitions are owned by the consuming module — not Certify.** Credential *types, templates,
   fields, views and scopes* come from the **registry/NSR** chart (`vcDefinitions`), which **registers**
   each `credential_config` with Certify (the register Job, `POST /credential-configurations`) and
   **references** the env issuer above. The Certify chart seeds **only** schema + key policies — no
   `credential_config`. See [Registry Data Connector](registry-data-connector.md).
-* **The issuer identity is a 3-part bundle — back it up together.** The **`.p12`** (master key) + the
-  **keymanager key rows in PostgreSQL** (the actual signing keys, encrypted under the master key) + the
-  **keystore password** (Secret). All three must be preserved and restored *consistently*; losing or
-  changing any of them **invalidates every credential already issued**. By default the chart persists
-  `local.p12` on a durable **PVC** (generated on first boot); to redeploy with an existing identity,
-  restore it via `p12.existingSecret`. Either way, fold the `.p12` (PVC or Secret) + keystore password
-  + Certify DB into the backup system as **one** critical set.
-* **Verification key hosting differs by phase:**
-  * **Phase 1 (paper / claim-169 QR): no hosted `did.json` needed.** Verification uses a
-    **pre-distributed trust anchor** (issuer cert/root loaded into Inji Verify) and/or the cert
-    **embedded in the QR** (`x5chain`). Distribute the issuer signing cert to verifiers.
-  * **Phase 2 (wallet / JSON-LD VC): a resolvable `did:web` is required** — host `did.json` (built from
-    `/.well-known/jwks.json` after first boot) at `https://<issuer-host>/.well-known/did.json`, either
-    self-hosted on the cluster under the Certify domain or on an external static host. Deferred to Phase 2.
+* **Where the two signing keys actually live.** An issuance uses **two** keys (see
+  [Signatures, Keys and the QR](signatures-keys-and-the-qr.md)), and they are **not stored the same
+  way** — which matters entirely for backup:
+
+  | | Signs | Key alias | Private key stored in |
+  |---|---|---|---|
+  | **Ed25519** | the JSON-LD credential | `CERTIFY_VC_SIGN_ED25519` / `ED25519_SIGN` | **PostgreSQL**, `inji_certify` → `certify.key_store`, **encrypted** under a master key |
+  | **ES256** | the claim-169 QR | `CERTIFY_VC_SIGN_EC_R1` / `EC_SECP256R1_SIGN` | **the `.p12` keystore**, directly |
+
+  The master key that unwraps the Ed25519 row is `CERTIFY_VC_SIGN_ED25519` with **no** `ref_id`, and it
+  is a `PrivateKeyEntry` inside the same `.p12`. So the chain for the credential key is:
+
+  ```
+  certify.key_store row (encrypted)  ──unwrapped by──►  master key in local.p12
+  ```
+
+  Of the nine key aliases keymanager creates, **exactly one — the Ed25519 credential key — is a database
+  row**; every other key, the ES256 QR key included, sits in the keystore. PKCS12/JCE handles EC and RSA
+  natively but not Ed25519, which is why that one is held as an encrypted blob instead.
+
+  Keystore file: `/home/inji/CERTIFY_PKCS12/local.p12` (`p12.mountPath`), on the PVC. Its password is
+  currently the fixed value `local` (`mosip.kernel.keymanager.hsm.keystore-pass`) and is **not yet
+  chart-configurable** — treat it as part of the identity regardless.
+
+* **Back the `.p12` and the key rows up together, from the same moment.** The `.p12` is on the critical
+  path for **both** signatures — one key is *in* it, the other is *unlocked by* it. Consequently:
+
+  * `.p12` alone → you recover the **QR** key, but the credential key stays undecryptable.
+  * database alone → you recover an **encrypted** credential key and nothing to unwrap it with.
+  * a `.p12` restored against a **mismatched** database → the QR key keeps working while the Ed25519 row
+    fails to decrypt. The failure looks partial and is actually a lost issuer identity.
+
+  Treat `.p12` + `certify.key_store` + the keystore password as **one** backup set, captured together.
+  The Certify chart can copy the keystore into a Secret for you (`p12.backupToSecret`, on by default) so
+  it lands in whatever backs up the namespace — but that covers the keystore only; the Certify database
+  must be in the same backup regime. To redeploy onto an existing identity, restore the keystore via
+  `p12.existingSecret` **and** the matching database.
+
+* **Where verifiers get the public keys.**
+  * `https://<certify-host>/.well-known/did.json` — the DID document for `did:web:<certify-host>`.
+    **Live**, not deferred: the Certify chart rewrites this path to Certify's own
+    `/v1/certify/.well-known/did.json` (`istio.virtualservice.exposeDidDocument`). It carries the
+    **Ed25519** key only, because Certify builds it from each credential config's `signatureAlgo` and
+    never consults `qrSignatureAlgo`.
+  * `https://<certify-host>/v1/certify/.well-known/jwks.json` — **all** Certify public keys, including
+    the **ES256 QR key**. This is where a verifier obtains the QR key.
+
+  For Phase 1 the QR is what gets verified, and **claim-169 verification does not resolve DIDs**: the
+  COSE header carries only `alg` and `kid`, with **no `x5chain`** embedded. The ES256 public key must
+  therefore be **pre-distributed to verifiers as a trust anchor**, taken from the JWKS endpoint above.
 
 ## Enabling and disabling the capability
 
@@ -270,9 +308,21 @@ install rather than surfacing later in the field.
 Gating is `failOnError: true` by default, with a values-only escape hatch.
 
 ## Verifier side
-**Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's key —
-obtained from the QR's COSE header (`x5chain`/`x5t`/`x5u`) and/or a **pre-loaded issuer trust anchor**.
-It does not need access to OpenG2P at scan time (offline-verifiable).
+**Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's
+**ES256** key. Because our QR embeds no certificate, that key must be **pre-loaded as a trust anchor**,
+taken from `https://<certify-host>/v1/certify/.well-known/jwks.json`.
+
+Two qualifications that are easy to miss:
+
+* **Inji Verify is a web portal the verifying organisation hosts** (webcam scan or upload), plus an SDK
+  for embedding it — it is not a phone app, and the citizen installs nothing. Inji **Wallet** is the
+  phone app and is a *holder* app. See
+  [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
+* **"Offline" applies to the signature check**, which needs no call to OpenG2P at scan time. A browser
+  still has to load the portal; a genuinely disconnected counter needs the SDK inside an installed
+  application.
+
+Whether a stock Inji Verify accepts a claim-169 CWT from a non-MOSIP issuer is **not yet tested**.
 
 ## Teardown / uninstall
 

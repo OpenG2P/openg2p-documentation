@@ -32,7 +32,7 @@ See the full analysis and comparisons in [Custody Options & Strategy](custody-op
 ## Why this matters (the reasoning in brief)
 
 * **Classic VCs assume a holder with a device.** That excludes exactly the people we care about. So "give everyone a wallet" is the _top_ of the pyramid, not the **lowest common denominator**.
-* **The LCD is Option A (paper).** An agent issues the credential, it's printed as a PDF with an **offline-verifiable signed QR**, the citizen carries paper, and any verifier scans it with Inji Verify — **no device and no connectivity are needed to carry or present it.**
+* **The LCD is Option A (paper).** An agent issues the credential, it's printed as a PDF with a **signed QR**, and the citizen carries paper — **no device and no connectivity are needed to carry or present it.** Verification happens on the *verifier's* side: they run Inji Verify (a hosted web portal, or its SDK) and must hold the issuer's key as a trust anchor. See [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
 * **A feature phone doesn't change this** — it can receive an OTP, but it can't run a wallet or the hosted-wallet browser UI. So the feature-phone user is still served by paper.
 * **The hosted wallet (B) adds little for our audience.** For the device-less it's unusable; for a smartphone owner the device wallet is strictly better. Its only genuine edge is _online presentation for a "browser-but-no-smartphone"_ minority — a narrow, shrinking slice. B is really a **policy choice** (a custodial government locker, DigiLocker-style) rather than a capability tier.
 * **Device wallet (C) is the self-sovereign upgrade** for the growing smartphone segment.

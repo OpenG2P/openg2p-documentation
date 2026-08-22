@@ -21,7 +21,7 @@ Ranked by **what the citizen must own** (least → most):
 
 * **Citizen owns:** nothing — no device is needed to *hold* the credential.
 * **Issuance:** **assisted** — at a kiosk/CSC, an agent (authenticated in the `agent` realm) looks the citizen up by their **national ID**, the citizen **authenticates themselves through eSignet** (biometric at the counter, or OTP to a phone), and only then does Certify issue and sign the credential, which is **printed as a PDF with an offline-verifiable signed QR**.
-* **Presentation:** the citizen hands over the paper; a verifier scans the QR with **Inji Verify** and validates the signature **offline** against the issuer's published key/DID.
+* **Presentation:** the citizen hands over the paper; a verifier scans the QR with **Inji Verify** (a web portal the verifying organisation hosts, or its embeddable SDK) and checks the COSE signature against a **pre-loaded trust anchor** — the issuer's ES256 key, taken from Certify's JWKS. Claim-169 verification does not resolve DIDs. See [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
 * **Needs from the citizen:** no device to carry or present it, and no connectivity afterwards — but they **must be able to authenticate once at issuance**. Biometric capture at the counter is what keeps this available to citizens with no phone at all.
 
 ### Option B — Hosted wallet (custodial locker)

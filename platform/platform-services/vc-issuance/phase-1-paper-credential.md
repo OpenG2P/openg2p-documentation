@@ -127,14 +127,16 @@ its own:
   Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
   COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
   `claim169` field.
-* **Offline verification — where the key comes from.** The signed QR is a **COSE_Sign1 / CWT**. The
-  claim-169 spec **does not** use `.well-known`/JWKS (DID) discovery for the QR; it uses **COSE**
-  mechanisms in the signature header — `x5chain` (embedded cert), `x5t` (cert hash), or `x5u` (cert
-  URI) — and assumes the verifier holds a **pre-loaded trust anchor** ("the app already has the
-  country's/issuer's key"). Certify can embed the issuer cert (`x5c`) so verification is **fully
-  offline**, but embedding it costs QR bytes, so issuers often **omit it and rely on the pre-distributed
-  trust list**. Either way, no call back to OpenG2P at scan time. (The **JSON-LD VC** — not the QR —
-  still uses `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.)
+* **Where the verifying key comes from.** The signed QR is a **COSE_Sign1 / CWT**, and claim-169
+  verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be
+  identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise
+  the verifier is assumed to hold a **pre-loaded trust anchor**.
+  **What OpenG2P actually emits carries no certificate**: the header holds only `alg` (ES256) and a
+  `kid`. So a pre-distributed trust anchor is the *only* way our QR verifies — take the ES256 key from
+  `/v1/certify/.well-known/jwks.json` and load it into the verifier. Either way, no call back to
+  OpenG2P at scan time. (The **JSON-LD VC** — not the QR — uses
+  `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.) See
+  [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
 
 {% hint style="info" %}
 **Photograph in the QR is deferred to Phase 2.** A QR is hard-capped at **~2.9 KB**, but claim 169 can
@@ -197,85 +199,21 @@ Registry, …) supplies what is specific to it, because the fields differ:
 
 ## Two documents, two signatures, two keys
 
-This surprises people, so it is worth being explicit. An issuance produces **two
-separate signed things**, not one signed thing shown two ways:
+An issuance produces **two separately signed documents**, not one shown two ways:
+the **JSON-LD credential** (Ed25519 proof) and, embedded inside it, the **compact
+claim-169 QR** (COSE/CWT, ES256). The QR is later torn out and travels alone — on
+paper, or on a wallet screen — so it must carry its own signature; the
+credential's proof covers different bytes and says nothing about it.
 
-| | The credential | The QR |
-|---|---|---|
-| What it is | the full **JSON-LD VC** (~1.5 KB) | a compact **CBOR** identity payload (~470 B) |
-| Signature | `Ed25519Signature2020` (a Linked-Data proof) | `COSE_Sign1`, wrapped as a **CWT** (CBOR tag 61 → 18) |
-| Algorithm | **EdDSA** (Ed25519) | **ES256** (ECDSA P-256) |
-| Key alias | `CERTIFY_VC_SIGN_ED25519` / `ED25519_SIGN` | `CERTIFY_VC_SIGN_EC_R1` / `EC_SECP256R1_SIGN` |
-| Set by | `credentialConfig.signatureAlgo` | `credentialConfig.qrSignatureAlgo` |
-| Encoding | JSON | zlib → **Base45** (the `NCF…` string) |
+On paper, **the QR signature is the only one anyone checks**. A verifier must
+already hold the issuer's ES256 key as a trust anchor: claim-169 verification
+does not resolve DIDs.
 
-**Why the QR needs its own signature.** The QR does **not** contain the JSON-LD
-credential — it contains a different, much smaller document. A signature only
-covers the exact bytes it was made over, so the Ed25519 proof over the JSON says
-nothing about the CBOR payload. The compact form therefore carries its own
-signature or it cannot be trusted at all.
-
-**Why not simply put the signed JSON in the QR?** That is the fallback the
-renderer uses when no `qrSettings` are configured, and it does work — but it is
-roughly four times the data (1760 characters against 396), it crowds a QR whose
-practical ceiling is about 2.9 KB, and it is not a shape claim-169 verifiers
-recognise.
-
-**Why two keys rather than one?** COSE also supports EdDSA, so the credential
-key *could* sign both and there is no security objection to that — the two
-structures cannot be confused. It is deliberately not done:
-
-* **Compatibility.** ES256 is what the mDL / EU-DCC / claim-169 ecosystem
-  actually implements. EdDSA is a registered COSE algorithm but less widely
-  supported in verifier stacks, and the QR is the artefact most likely to meet a
-  third-party verifier.
-* **Key separation.** A compromised or rotated QR key does not disturb
-  credential signing, and the QR algorithm can change without touching it.
-* **Hardware.** P-256 is universally supported in secure elements and HSMs;
-  Ed25519 support is patchier — worth preserving even though Phase 1 uses a
-  `.p12`.
-
-**Which signature is actually checked, and when.** The two are not
-paper-versus-wallet — they are *transfer* versus *presentation*:
-
-| | Signature 1 (Ed25519, on the VC) | Signature 2 (ES256, on the QR) |
-|---|---|---|
-| Paper (Phase 1) | not used — the citizen never receives the JSON | **the only thing verified** |
-| Wallet, scanned at a counter | checked when the wallet **receives** the credential | **verified at the counter** |
-| Wallet, OpenID4VP to a relying party | **the one verified** | not used in that exchange |
-
-A wallet does not hand a shopkeeper a JSON-LD document: it **displays the
-claim-169 QR on screen** and the verifier scans it — the same artefact as the
-paper, the same scanner, the same trust anchor. So the QR signature is needed on
-both paths, not only on paper.
-
-The inversion is worth noticing: **in Phase 1 the Ed25519 signature is the one
-nothing checks**, because the JSON is never handed out. It is not wasted — it is
-what makes this a W3C Verifiable Credential, it is what a wallet validates on
-receipt in Phase 2, and Certify produces it as part of issuing at all. It cannot
-meaningfully be switched off.
-
-Note also the nesting: Certify signs the compact CBOR payload FIRST, embeds the
-resulting Base45 blob at `credentialSubject.claim169.qrCode`, and only then signs
-the whole credential. Signature 2 therefore sits inside the bytes signature 1
-covers — which is exactly why the credential proof cannot stand in for the QR's:
-the QR travels alone, detached from the JSON that carried it.
-
-**Where each key is published.**
-
-* `GET /.well-known/did.json` — the **DID document**, resolving
-  `did:web:<certify-host>`. It carries the **Ed25519** key only. Certify builds
-  this document from the registered credential configs' `signatureAlgo`; it does
-  not consult `qrSignatureAlgo`, so the QR key never appears here.
-* `GET /v1/certify/.well-known/jwks.json` — **all** of Certify's public keys,
-  the ES256 QR key included. This is where a verifier obtains the QR key.
-
-That split is not a defect, because **claim-169 verification does not resolve
-DIDs**. The COSE header carries only an `alg` and a `kid`; there is no
-`x5chain`. A verifier is expected to already hold the issuer's key, from a
-**pre-distributed trust list** — exactly as EU DCC and mDL work. Publishing the
-key is therefore necessary but not sufficient: it must be **loaded into the
-verifier as a trust anchor**. See [Deployment](deployment.md).
+→ [Signatures, Keys and the QR](signatures-keys-and-the-qr.md) explains all of
+this properly: who builds which part, which signature is checked on which path,
+what claim 169 can and cannot carry (the photo is optional; a programme id will
+not fit), where each key is published, and why Inji **Verify** is a hosted web
+portal rather than the phone app.
 
 ## Key management
 
