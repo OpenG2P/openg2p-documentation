@@ -26,6 +26,7 @@
       * [Cloud-Native Deployment & Scaling](products/registry/registry/features/cloud-native-deployment-and-scaling.md)
       * [Observability & Operational Control](products/registry/registry/features/observability-and-operational-control.md)
       * [Multi-Level Approval Workflow](products/registry/registry/features/multi-level-approval-workflow.md)
+      * [Agent Portal](products/registry/registry/features/agent-portal.md)
     * [Design](products/registry/registry/design/README.md)
       * [Tech Architecture](products/registry/registry/design/registry-tech-architecture.md)
       * [Data Model](products/registry/registry/design/data-model.md)

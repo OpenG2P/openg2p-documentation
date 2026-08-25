@@ -197,6 +197,156 @@ Registry, …) supplies what is specific to it, because the fields differ:
 * the **card design** for the printed PDF;
 * the **issuer DID** value for the environment.
 
+### Why a view, and not the tables
+
+The Agent Portal API is part of the **platform**, not of any one registry. It
+cannot know that a farmer's land parcels live in one table and a household's
+members in another — those tables are declared by the manifestation's extension,
+and `G2PRegister` itself is abstract. A view is what lets one platform service
+serve every manifestation without importing any of their models.
+
+It also does three things a direct table read would not:
+
+* **flattens** whatever joins the claims need into one row per record, so the
+  service never has to know the shape underneath;
+* **filters** — the view exposes only the columns that may become claims, so a
+  column added to a register does not silently become a credential field;
+* **keys** the record consistently on `internal_record_id`, whatever the
+  manifestation's own primary keys look like.
+
+### The view contract
+
+Five column names are **reserved**. What becomes a **claim** depends on whether
+the VC definition sets `claim_columns`:
+
+| Column | Required | Meaning |
+|---|---|---|
+| `internal_record_id` | yes | the record key; what claims are fetched by |
+| `foundational_id` | yes | the national ID; what the beneficiary's authenticated subject is checked against |
+| `record_status` | should | only `ACTIVE` records may be issued a credential |
+| `record_name` | optional | shown to the agent after look-up, so they can confirm the right person |
+| `register_id` | optional | recorded on the issuance log |
+
+**With `claim_columns` set** (what the Farmer Registry does), only those columns
+are stamped into the credential — a column added to the view is *not* issued
+unless the definition asks for it by name, and a configured column that the view
+does not expose is a hard error at issue time rather than a silently missing
+field.
+
+**Without it**, every non-reserved column becomes a claim, and the view alone is
+the claim list.
+
+The explicit list is the safer default: it means widening a view for reporting
+cannot quietly widen what is printed on a citizen's credential.
+
+### How a column becomes a credential field
+
+The column name is the link. The credential template refers to variables as
+`${...}`, and the view's column names must match them:
+
+```sql
+-- farmer_vc_view
+select f.internal_record_id,
+       f.foundational_id,
+       f.record_status,
+       concat_ws(' ', f.given_name, f.family_name) as "fullName",   -- ${fullName}
+       to_char(f.birth_date, 'YYYY-MM-DD')         as "dateOfBirth" -- ${dateOfBirth}
+from   g2p_register_farmers f;
+```
+
+Two details bite in Postgres: camelCase aliases must be **double-quoted** or
+they fold to lowercase and stop matching `${fullName}`; and dates should be
+rendered to text, so the claim is a clean string rather than a serialised date
+object. The API stringifies any non-string value before pushing it, so an
+un-cast date still issues — it just issues Python's rendering of it.
+
+If a template variable has no matching column, Certify returns the credential
+with the literal `${...}` still in it. The Agent Portal API **rejects** such a
+credential rather than printing it — an unresolved placeholder on a citizen's
+paper credential is worse than a failed issuance.
+
+### Who reads it, and when
+
+Only the **Agent Portal API**, twice in one issuance:
+
+1. at **look-up**, by `foundational_id`, to find the record and confirm it is
+   `ACTIVE`;
+2. at **issue**, by `internal_record_id`, to read the claims that are pushed to
+   Certify.
+
+Inji Certify never reads it. In Phase 1 claims are *pushed* to Certify, so
+Certify holds no database credentials and needs no access to the registry at
+all. (Certify's own `registrydb` data-provider plugin — which would read a view
+directly — is a different, wallet-oriented path; see
+[Registry Data Connector](registry-data-connector.md).)
+
+## Where the credential template lives
+
+The template is part of the manifestation's **VC definition**, in its Helm
+values — not in code and not in the database:
+
+```yaml
+agentPortalApi:
+  vcDefinitions:
+    - config_id: OpenG2PFarmerCredential
+      view: farmer_vc_view                    # where the claims come from
+      claim_columns: ["fullName", ...]        # which columns are issued
+      svg_template: farmer-card.svg           # how the paper card looks
+      certifyConfig:
+        credentialConfigKeyId: OpenG2PFarmerCredential
+        vcTemplateJson: ...                   # the JSON-LD credential template
+```
+
+It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the
+`credential-config-register` Job**, which POSTs each definition to Certify on
+install and upgrade. Certify can only issue a credential type it already knows,
+so a type that was never registered fails at the first issuance on an unknown
+`credential_configuration_id`.
+
+Certify is what substitutes the `${...}` variables, using the claims the Agent
+Portal API pushed.
+
+## Where the PDF is made
+
+In the **Agent Portal API**, not in Certify and not in the browser.
+
+Certify returns a signed JSON-LD credential with the compact claim-169 QR
+payload inside it. The API then renders the printable card itself, with
+`cairosvg`, from the manifestation's **SVG card design** — shipped as a
+ConfigMap and mounted at `/app/pdf-templates`, so a designer can restyle the
+card without touching code or rebuilding an image. If no SVG is configured the
+API falls back to a plain layout, so a missing design file never blocks an
+issuance.
+
+The PDF is **streamed straight to the agent's browser** as a download and is
+never written to the pod, so any replica can serve any request. The issuance
+identifiers travel in response headers (`X-Issuance-Id`, `X-Credential-Id`) for
+the client to display or log.
+
+## The portal the agent uses
+
+This page is the *credential* design. The portal itself — its own Keycloak
+`agent` realm, why agents are not staff, how the browser is authenticated
+without ever holding a token, and how the portal grows beyond issuance — is
+documented with the Registry Platform:
+
+→ [Agent Portal](../../../products/registry/registry/features/agent-portal.md)
+
+## Master Data Service
+
+**VC issuance does not use MDS at run time.** The Agent Portal API holds no
+Master Data configuration at all: claims come from the registry's own VC view,
+and nothing in the look-up → authenticate → issue path calls MDS.
+
+MDS is involved before and after, not during:
+
+* **at seed time**, a registry's `db-seed` reads geography and country code
+  lists from the MDS API to populate its own attribute tables;
+* **in reporting**, dashboards join registry data to geography held in Master
+  Data.
+
+So a Master Data outage does not stop credentials being issued.
+
 ## Two documents, two signatures, two keys
 
 An issuance produces **two separately signed documents**, not one shown two ways:
