@@ -12,12 +12,13 @@ Not every good build is a release. A build passes QA, gets deployed to a pilot, 
 
 ## What it looks like
 
-The note appears in bold in the **Notes** column of that module's catalogue page:
+The note appears in the **Notes** column of that module's catalogue page, rendered as
+markdown — so it looks exactly the way you wrote it:
 
 | Version | Date | Type | Notes |
 | --- | --- | --- | --- |
 | `0.0.0-develop.207` | 2026-08-24 | develop | |
-| `0.0.0-develop.205` | 2026-08-21 | develop | **Intermediate Stable Version — verified on staging** |
+| `0.0.0-develop.205` | 2026-08-21 | develop | **Intermediate Stable Version** — verified on staging |
 
 Releases keep their own section in the catalogue because they are tagged. A mark is only an annotation, so it stays in the table rather than creating a category of its own.
 
@@ -33,13 +34,15 @@ Marks live in the **versions** repo ([`openg2p/versions`](https://gitlab.com/ope
 3. Add one line per marked version:
 
 ```
-0.0.0-develop.205|Intermediate Stable Version — verified on staging
+0.0.0-develop.205|**Intermediate Stable Version** — verified on staging
 1.3.0-rc.151|Passed the full QA cycle; safe for pilot deployments
 ```
 
 4. Commit to the versions repo's default branch.
 
-The format is `version|note`. The version must match the page exactly — `versions/0.0.0-develop.205.md` means you write `0.0.0-develop.205`. Everything after the first `|` is free text.
+The format is `version|note`. The version must match the page exactly — `versions/0.0.0-develop.205.md` means you write `0.0.0-develop.205`. Everything after the first `|` is the note.
+
+The note is **markdown**, passed through as written: use `**bold**` if you want bold, `` `code` `` for a version or command, or a link. Nothing is added for you, so a plain note stays plain. A literal `|` inside a note is escaped automatically and cannot break the table row.
 
 The catalogue re-renders on every push to the versions repo, so the note appears on the site within a minute or so. You do **not** need to wait for the module's next build.
 
@@ -65,9 +68,9 @@ Two things happen automatically once a version is marked, and both exist so the 
 
 The note is free text, so it can carry whatever is useful. Some patterns that work well:
 
-* `Intermediate Stable Version — verified on staging`
+* `**Intermediate Stable Version** — verified on staging`
 * `Passed the full QA cycle; safe for pilot deployments`
-* `Known good with registry-platform 0.0.0-develop.383`
-* `Use this one — 0.0.0-develop.206 has a broken migration`
+* ``Known good with `registry-platform 0.0.0-develop.383` ``
+* `Use this one — **0.0.0-develop.206 has a broken migration**`
 
 Keep it short enough to read in a table cell. If it needs more explanation than that, the explanation probably belongs in a ticket, and the note should link to it.
