@@ -166,7 +166,12 @@ Find the numeric ID on the `charts` project's overview page (or `curl -s https:/
 
 Because the model is "one GitLab holds source, images and charts," a customer can run the **entire** thing on a **self-hosted GitLab** — ideal for on-prem, air-gapped deployments:
 
-* Point the pipeline at their instance: `chart-gitlab-host: https://gitlab.customer.gov` and `registry: registry.gitlab.customer.gov`, with a deploy token they issue.
+* Point the pipeline at their instance. Under the GitLab-native pipeline this needs no host settings at all — everything is driven by GitLab's predefined `CI_*` variables, so the same files run unchanged on any instance; only the group name and the tokens differ.
+
+{% hint style="info" %}
+**Full recipe:** [Standing up your own group](standing-up-your-own-group.md) covers every project, token, permission and air-gap consideration needed to reproduce this setup end to end.
+{% endhint %}
+
 * Their GitLab hosts the images (Container Registry) and the chart catalogue (Helm Package Registry); their Rancher adds the one HTTP Helm repo URL on that host.
 * Nothing reaches the public internet at deploy time — the whole supply chain is inside their network.
 

@@ -848,6 +848,7 @@
     * [Changelogs](releases/helm-docker-versioning-and-ci/changelogs.md)
     * [Onboarding a repo](releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)
     * [Publishing to GitLab](releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md)
+    * [Standing up your own group](releases/helm-docker-versioning-and-ci/standing-up-your-own-group.md)
   * [Helm Charts](releases/helm-charts.md)
   * [Previous Releases](releases/previous-releases/README.md)
     * [1.1.0](releases/previous-releases/1.1.0/README.md)
