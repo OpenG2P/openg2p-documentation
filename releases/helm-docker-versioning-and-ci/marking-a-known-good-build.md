@@ -20,7 +20,15 @@ markdown — so it looks exactly the way you wrote it:
 | `0.0.0-develop.207` | 2026-08-24 | develop | |
 | `0.0.0-develop.205` | 2026-08-21 | develop | **Intermediate Stable Version** — verified on staging |
 
+It also appears on that version's own section further down the page, directly under the heading:
+
+> **Note** — **Intermediate Stable Version** — verified on staging
+
 Releases keep their own section in the catalogue because they are tagged. A mark is only an annotation, so it stays in the table rather than creating a category of its own.
+
+{% hint style="info" %}
+**It applies retroactively.** The note is injected when the catalogue is rendered, not when the build ran — so you can mark a build from months ago and the note appears on its page immediately. Nothing is rebuilt and no artifact is touched.
+{% endhint %}
 
 ## How to mark a build
 
@@ -63,6 +71,21 @@ Two things happen automatically once a version is marked, and both exist so the 
 * It does not rebuild, republish, or move any artifact. The image and chart are untouched.
 * It does not change what `develop` (the moving alias) points at.
 * It is not a substitute for a release. When you are ready to ship, cut a real tag — see [Cutting a release](cutting-a-release.md).
+
+## Notes vs annotated tags
+
+A note and an [annotated tag](cutting-a-release.md) both put words on a version page, but they are not the same thing:
+
+| | Annotated tag | `.marked` note |
+| --- | --- | --- |
+| Lives in | the **source repo**, in git history | the **versions** repo |
+| Applies to | a release (`N.N.N`) only | any build — develop, RC or release |
+| Renders as | a **Release notes** section | a `> **Note**` line under the heading |
+| Written | at tag time | any time, afterwards |
+
+The practical difference: a tag annotation travels with the repo. Clone the service repo a year from now, run `git show 1.3.0`, and the notes are there — no dependency on the catalogue. A note is easier to add and to revise, and works on builds that were never released.
+
+Marking is the low-friction default: use it freely. Reach for an annotated tag when a release's notes should be embedded in the repository itself, which is worth doing for anything shipped to a deployment.
 
 ## Choosing what to write
 
