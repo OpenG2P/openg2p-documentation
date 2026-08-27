@@ -843,6 +843,7 @@
   * [Helm & Docker Versioning Strategy and CI](releases/helm-docker-versioning-and-ci/README.md)
     * [Cutting a release (how to tag)](releases/helm-docker-versioning-and-ci/cutting-a-release.md)
     * [Withdrawing a version](releases/helm-docker-versioning-and-ci/withdrawing-a-version.md)
+    * [Marking a known-good build](releases/helm-docker-versioning-and-ci/marking-a-known-good-build.md)
     * [CI pipeline](releases/helm-docker-versioning-and-ci/ci-pipeline.md)
     * [Changelogs](releases/helm-docker-versioning-and-ci/changelogs.md)
     * [Onboarding a repo](releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)

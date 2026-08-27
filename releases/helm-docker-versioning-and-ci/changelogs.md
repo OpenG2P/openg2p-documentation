@@ -301,11 +301,13 @@ develop build shows an explicit _"No new commits since 0.0.0-develop.40."_ rathe
 than an empty section.
 {% endhint %}
 
-**Retention.** The last **10 develop builds** and the last **10 RCs per release
-line** are kept — RCs as deep as develop, because they are the audit trail for a
-release. **Every release is kept forever.** RC pages are deleted once their release
-ships. Older develop deltas remain recoverable from git, since the version number is
-the commit ordinal.
+**Retention.** The last **20 develop builds** and the last **10 RCs per release
+line** are kept. RC pages are **kept after their release ships** — they are the audit
+trail of that release run, and what changed between `rc.4` and `rc.5` is exactly what
+QA needs to look back at. **Every release is kept forever.** A build that has been
+[marked known-good](marking-a-known-good-build.md) is **exempt from retention** and
+stays until it is unmarked. Older develop deltas remain recoverable from git, since
+the version number is the commit ordinal.
 
 {% hint style="info" %}
 **Withdrawn versions.** A develop build whose artifacts have been deleted (see
