@@ -141,7 +141,7 @@ variables:
   CHART_GITLAB_PROJECT: acme/charts
 ```
 
-`ci/samples/gitlab-caller.yml` is a fuller commented example, and `ci/samples/library.gitlab-ci.yml` covers a code library with no image or chart. See [Onboarding a repo](onboarding-a-new-repo.md) for the details of each field.
+`ci/samples/gitlab-caller.yml` in the packaging project is a fuller commented example of every field, and `ci/samples/library.gitlab-ci.yml` covers a code library that builds no image or chart. Those two files are the reference for the GitLab stub.
 
 Migrating an existing GitHub repo? `ci/migrate/github-to-gitlab.sh` translates a repo already on the central GitHub pipeline; for anything else, pass a hand-written config with `--ci`.
 
@@ -201,7 +201,13 @@ If step 2 hangs at `pending`, the runner is missing or refuses untagged jobs. If
 
 ## Keeping up with upstream
 
-If you forked `openg2p/packaging`, you can pull improvements later. The rule is the same one OpenG2P follows internally: **`v1` is a moving tag, and any change behind it must be backward compatible** for every project that pins it. Re-run the test suites, move `v1`, and the whole group picks the change up on its next build. See [Onboarding a repo](onboarding-a-new-repo.md#maintaining-the-pipeline-moving-v1).
+If you forked `openg2p/packaging`, you can pull improvements later. The rule is the same one OpenG2P follows internally:
+
+> Moving `v1` may change **how** artifacts are built and published. It must never change **what version string a given commit gets.**
+
+Fixing a bug, adding a variable with a default, improving a label — safe under `v1`. Changing the version *format* renames what a commit is called and needs a `v2`, or it breaks the immutability of versions already published from long-lived branches.
+
+Cut an immutable peg first (`git tag v1.2.0`), canary it by pinning one project to `@v1.2.0`, then move `v1`. Keep every peg forever: it answers "which policy built this?" and is how you roll back (`git tag -f v1 v1.1.0 && git push -f origin v1`). The [`v1` maintenance section](onboarding-a-new-repo.md#maintaining-the-pipeline-moving-v1) has the fuller version of this rule.
 
 Keep your `PIPELINE_NAMESPACE` and project-path edits on a branch you rebase onto upstream, rather than editing after each merge — those two values are the only things that must differ.
 
@@ -209,7 +215,7 @@ Keep your `PIPELINE_NAMESPACE` and project-path edits on a branch you rebase ont
 
 * [CI pipeline](ci-pipeline.md) — what each job does and the guarantees it gives
 * [Publishing to GitLab](publishing-to-gitlab.md) — layout, registries, Rancher
-* [Onboarding a repo](onboarding-a-new-repo.md) — the per-project stub in detail
+* [Onboarding a repo](onboarding-a-new-repo.md) — putting one repo on the pipeline, and the `v1` rollout rule
 * [Changelogs](changelogs.md) — how the catalogue is generated
 * [Withdrawing a version](withdrawing-a-version.md) — deleting a published develop build
 * [Marking a known-good build](marking-a-known-good-build.md) — notes without releasing
