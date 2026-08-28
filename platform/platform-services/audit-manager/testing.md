@@ -8,7 +8,7 @@ description: >-
 # Testing
 
 Three layers, each proving a different thing. Full details in
-[`tests/README.md`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/tests/README.md).
+[`tests/README.md`](https://github.com/OpenG2P/audit-manager/blob/develop/tests/README.md).
 
 ## 1. Unit tests — schema validation (no infra needed)
 
@@ -46,7 +46,7 @@ N=1000 C=20 tests/load.sh
 
 ## Postman collection
 
-Import [`tests/postman/OpenG2P-Audit-Manager.postman_collection.json`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/tests/postman/OpenG2P-Audit-Manager.postman_collection.json)
+Import [`tests/postman/OpenG2P-Audit-Manager.postman_collection.json`](https://github.com/OpenG2P/audit-manager/blob/develop/tests/postman/OpenG2P-Audit-Manager.postman_collection.json)
 into Postman, Bruno, or Insomnia. Folders:
 
 * Service endpoints (`/v1/auditmanager/health`, `/v1/auditmanager/version`,
@@ -61,7 +61,7 @@ ids, 4xx on invalid). Use the **Runner** to fire the whole collection.
 
 ## Sample events
 
-Nine JSON fixtures under [`tests/sample-events/`](https://gitlab.com/openg2p/audit-manager/-/tree/develop/tests/sample-events)
+Nine JSON fixtures under [`tests/sample-events/`](https://github.com/OpenG2P/audit-manager/tree/develop/tests/sample-events)
 cover every realistic OpenG2P audit shape — reusable as `curl -d @file.json`:
 
 ```bash

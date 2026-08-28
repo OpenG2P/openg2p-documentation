@@ -68,13 +68,10 @@ uvicorn audit_manager.main:app --reload
 
 ### Install
 
-The Audit Manager chart is published to the shared **GitLab** catalogue
-(`openg2p/charts`), not the GitHub Helm repo:
+The Audit Manager chart is published to the shared OpenG2P Helm repository:
 
 ```bash
-# openg2p/charts — the numeric project id is required (the encoded-path form
-# breaks Rancher's link resolution). Public: no credentials needed.
-helm repo add openg2p https://gitlab.com/api/v4/projects/84460547/packages/helm/stable
+helm repo add openg2p https://openg2p.github.io/openg2p-helm
 helm repo update
 
 helm install audit-manager openg2p/openg2p-audit-manager \
@@ -85,7 +82,7 @@ helm install audit-manager openg2p/openg2p-audit-manager \
 {% hint style="info" %}
 Same URL in **Rancher** (Apps → Repositories → *http(s) URL to an index generated
 by Helm*) — it lists every OpenG2P chart, not just this one. See
-[Publishing to GitLab](../../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md).
+[CI pipeline](../../../releases/helm-docker-versioning-and-ci/ci-pipeline.md).
 {% endhint %}
 
 ### Minimal per-environment values file
@@ -151,7 +148,7 @@ VirtualService, and Helm-owned secrets/configmaps. It does **not**:
   themselves with `helm.sh/hook-delete-policy`.
 
 Use the bundled
-[`scripts/uninstall-audit-manager.sh`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/scripts/uninstall-audit-manager.sh)
+[`scripts/uninstall-audit-manager.sh`](https://github.com/OpenG2P/audit-manager/blob/develop/scripts/uninstall-audit-manager.sh)
 to do the full teardown. Same flag style as the AWE uninstaller.
 
 ```bash
@@ -218,7 +215,7 @@ All configuration is layered, highest priority first:
 
 ### YAML config
 
-See [`config/default.yaml`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/config/default.yaml)
+See [`config/default.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/config/default.yaml)
 for the full reference. Top-level keys:
 
 * `audit_manager.ingest.*` — queue size, batch limits
@@ -227,8 +224,8 @@ for the full reference. Top-level keys:
 
 ### Helm values
 
-See [`helm/openg2p-audit-manager/values.yaml`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/helm/openg2p-audit-manager/values.yaml) and
-[`helm/openg2p-audit-manager/questions.yaml`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/helm/openg2p-audit-manager/questions.yaml)
+See [`helm/openg2p-audit-manager/values.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/helm/openg2p-audit-manager/values.yaml) and
+[`helm/openg2p-audit-manager/questions.yaml`](https://github.com/OpenG2P/audit-manager/blob/develop/helm/openg2p-audit-manager/questions.yaml)
 for the full schema of user-facing values and their Rancher UI groupings.
 
 ## Operational runbook
