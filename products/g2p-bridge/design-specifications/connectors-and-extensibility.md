@@ -18,8 +18,8 @@ own connectors without ever forking or modifying the Bridge platform.**
 
 | Repo | Contents | Who changes it |
 | --- | --- | --- |
-| [**`g2p-bridge`**](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge) | The **platform** — `core/` (models, partner-api, bene-portal-api, celery beat + workers), the Docker builds, the Helm chart, and CI. It also bundles the demo **Example Bank**. | OpenG2P only — standard, versioned, **never forked** by adopters |
-| [**`g2p-bridge-connectors`**](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors) | The six **connector** packages: interfaces + DTOs + config-driven factories + the **reference** implementations (SPAR mapper, Example Bank connector, Novu notifier, …). | OpenG2P for the reference set; **adopters fork/copy freely** |
+| [**`g2p-bridge`**](https://github.com/OpenG2P/g2p-bridge) | The **platform** — `core/` (models, partner-api, bene-portal-api, celery beat + workers), the Docker builds, the Helm chart, and CI. It also bundles the demo **Example Bank**. | OpenG2P only — standard, versioned, **never forked** by adopters |
+| [**`g2p-bridge-connectors`**](https://github.com/OpenG2P/g2p-bridge-connectors) | The six **connector** packages: interfaces + DTOs + config-driven factories + the **reference** implementations (SPAR mapper, Example Bank connector, Novu notifier, …). | OpenG2P for the reference set; **adopters fork/copy freely** |
 | _your connector repo_ | One small package implementing a connector interface, plus a ~4-line Dockerfile. | the adopter |
 
 `g2p-bridge` **builds everything and deploys nothing you have to touch.** The
@@ -58,7 +58,7 @@ pulls `openg2p-fastapi-common`:
 # docker/g2p-bridge-celery/Dockerfile (excerpt)
 ARG G2P_BRIDGE_CONNECTORS_REF=develop
 RUN pip install --no-cache-dir \
-    "git+https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors@${G2P_BRIDGE_CONNECTORS_REF}#subdirectory=bank-connectors" \
+    "git+https://github.com/openg2p/g2p-bridge-connectors@${G2P_BRIDGE_CONNECTORS_REF}#subdirectory=bank-connectors" \
     ...
 ```
 
@@ -121,7 +121,7 @@ connectors commit straight off the image, without running it:
 ```bash
 # from the registry, without pulling the image
 docker buildx imagetools inspect \
-  registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/celery:<version> \
+  openg2p/openg2p-bridge-celery:<version> \
   --format '{{ json .Image.Config.Labels }}'
 ```
 
@@ -150,7 +150,7 @@ An adopter never forks core. The end-to-end steps:
    `check_funds` / `block_funds` / `disburse_funds` / etc.
 2. **Build a derived image** from the published Celery image:
    ```dockerfile
-   FROM registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/celery:<version>
+   FROM openg2p/openg2p-bridge-celery:<version>
    COPY acme-bank-connector /conn
    RUN pip install /conn
    ```
@@ -172,5 +172,5 @@ See the connector interface guides under
 [Tech Guides](../tech-guides/README.md) (e.g. the
 [Bank Connector Interface Guide](../tech-guides/bank-connector-interface-guide.md)) for
 the method-by-method contract of each interface, and the
-[`g2p-bridge-connectors` README](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors)
+[`g2p-bridge-connectors` README](https://github.com/OpenG2P/g2p-bridge-connectors)
 for a copy-paste quickstart.

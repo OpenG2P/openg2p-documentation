@@ -36,7 +36,7 @@ Every repository builds and publishes at **one immutable version per commit** �
 * **Chart** → a **shared `charts` project's Helm Package Registry**, so Rancher adds **one** repo URL and browses every chart and version.
 * **Changelog** → pure `.md` pushed to the **`openg2p/versions`** project, browseable directly in the repo.
 
-Full details — the `.gitlab-ci.yml` inputs, tokens, and the Rancher URL (use the **numeric project id**) — are in [Publishing to GitLab](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md).
+Full details — the `.github/workflows/build-publish.yml` inputs, tokens, and the Rancher URL (use the **numeric project id**) — are in [Publishing to GitLab](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md).
 
 {% hint style="info" %}
 Source and CI currently run on **GitHub**, publishing artifacts **to** GitLab. As a repository is _hosted_ on GitLab (the customer/air-gap case), the same versioning logic runs from the **GitLab-CI** wrapper — the logic lives in portable shell scripts shared by both platforms, so there is one source of truth, two thin adapters.
@@ -88,17 +88,17 @@ bash ci/migrate/github-to-gitlab.sh \
 GITLAB_TOKEN=<PAT with 'api' scope> bash ci/migrate/github-to-gitlab.sh … --apply
 ```
 
-It creates the project, transplants the branch **with history** (+ tags), translates the caller into `.gitlab-ci.yml`, repoints `values.yaml` at the GitLab image paths, and sets the default branch + visibility.
+It creates the project, transplants the branch **with history** (+ tags), translates the caller into `.github/workflows/build-publish.yml`, repoints `values.yaml` at the GitLab image paths, and sets the default branch + visibility.
 
 {% hint style="warning" %}
 **Caveats.**
 
 * **Create the group/subgroup first** — the script creates the _project_, not the group.
-* **Only repos on the central pipeline.** Anything still on old-style workflows (`docker-build*.yml` / `helm-publish.yml`) is **refused** — there is no `with:` block to translate. Onboard it first ([Onboarding a repo](../../releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)), or hand-write `.gitlab-ci.yml` using the prompt below.
+* **Only repos on the central pipeline.** Anything still on old-style workflows (`docker-build*.yml` / `helm-publish.yml`) is **refused** — there is no `with:` block to translate. Onboard it first ([Onboarding a repo](../../releases/helm-docker-versioning-and-ci/onboarding-a-new-repo.md)), or hand-write `.github/workflows/build-publish.yml` using the prompt below.
 * **`--apply` force-pushes** the branch. It is meant for a fresh/empty target.
-* **Other GitHub workflows are left alone** (tests, pre-commit). They are **inert on GitLab** — port them to `.gitlab-ci.yml` jobs separately or lose that CI.
+* **Other GitHub workflows are left alone** (tests, pre-commit). They are **inert on GitLab** — port them to `.github/workflows/build-publish.yml` jobs separately or lose that CI.
 * **Flagged image paths are never guessed.** The link from a `chart-image-paths` entry to an image name isn't declared anywhere; the script infers it from the current `repository` value and **flags** whatever it can't match — fix by hand.
-* **Always dry-run first** and read the generated `.gitlab-ci.yml` (especially `pins`).
+* **Always dry-run first** and read the generated `.github/workflows/build-publish.yml` (especially `pins`).
 {% endhint %}
 
 ### Retiring the GitHub source
@@ -138,7 +138,7 @@ Only for repos the script refuses (**not on the central pipeline**, so there is 
 >
 > 1. The GitLab project is `[<group>/<project>]`. Bring the **`develop`** branch over **with history** (add the GitHub checkout as a temporary local remote, fetch `develop`, and make it the GitLab repo's `develop`) — keep only `develop`. Do **not** change any source other than the build/publish CI.
 > 2. **Delete** `.github/workflows/build-publish.yml` (and the `.github/workflows` folder if it holds nothing else).
-> 3.  **Create `.gitlab-ci.yml`** at the repo root that:
+> 3.  **Create `.github/workflows/build-publish.yml`** at the repo root that:
 >
 >     ```yaml
 >     include:
@@ -156,9 +156,9 @@ Only for repos the script refuses (**not on the central pipeline**, so there is 
 >
 >     Derive `IMAGES` from the `docker/**` and `ui/**` Dockerfiles; carry over any `pins` (a build-arg that is a git ref) from the old GitHub caller. Derive `CHART_IMAGE_PATHS` by grepping `values.yaml` for this org's image tags.
 > 4. In `values.yaml`, set each OpenG2P image's `registry` to `registry.gitlab.com` and `repository` to `<group>/<project>/<image-name>` (for images whose chart template renders `repository:tag` directly, put the full path in `repository`).
-> 5. Do NOT add versioning logic or pipeline stages to `.gitlab-ci.yml` — all logic is in `openg2p/packaging`. Keep it minimal and declarative.
+> 5. Do NOT add versioning logic or pipeline stages to `.github/workflows/build-publish.yml` — all logic is in `openg2p/packaging`. Keep it minimal and declarative.
 >
-> Reference: `openg2p/consent-manager`'s `.gitlab-ci.yml`, and the docs at _OpenG2P GitLab Repositories_ and _Publishing to GitLab_.
+> Reference: `openg2p/consent-manager`'s `.github/workflows/build-publish.yml`, and the docs at _OpenG2P GitLab Repositories_ and _Publishing to GitLab_.
 
 Group setup (projects, deploy tokens, CI/CD variables, Rancher URL) is a one-time step per group — see [Publishing to GitLab → _What you set up on GitLab_](../../releases/helm-docker-versioning-and-ci/publishing-to-gitlab.md#what-you-set-up-on-gitlab-one-time).
 
@@ -183,7 +183,7 @@ The procedure below is **manual** — do it once, carefully. (Automation can com
 
 ### Step 1 — Mirror the shared pipeline
 
-Their instance needs **`openg2p/packaging` at the same path**, with the `v1` tag — otherwise every repo's `include:` fails. Because the wrapper uses `CI_*` variables and a project-path `include:`, this is what lets every `.gitlab-ci.yml` work **unchanged** on the new host.
+Their instance needs **`openg2p/packaging` at the same path**, with the `v1` tag — otherwise every repo's `include:` fails. Because the wrapper uses `CI_*` variables and a project-path `include:`, this is what lets every `.github/workflows/build-publish.yml` work **unchanged** on the new host.
 
 ```bash
 git clone --mirror https://gitlab.com/openg2p/packaging.git packaging.git

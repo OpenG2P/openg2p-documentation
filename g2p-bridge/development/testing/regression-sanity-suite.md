@@ -9,7 +9,7 @@ Bridge by pointing at its live URLs. It verifies every API and the full
 digital-cash end-to-end flow, and creates only clearly-marked, self-cleaning test
 data — so it is safe to run against a **fresh** or an **in-use** environment.
 
-It lives in the monorepo at [`test/sanity/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/test/sanity).
+It lives in the monorepo at [`test/sanity/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test/sanity).
 
 {% hint style="info" %}
 **Phase 1** — point-and-run against a deployed system. CI/CD automation (GitHub

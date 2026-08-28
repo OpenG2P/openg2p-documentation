@@ -1294,10 +1294,10 @@ Run `python -m py_compile` over every `.py` file in the extension package. Catch
 #### 7. generate_deployment_files
 
 * **Inputs:** `helm_resource_profile`, `production_domain_name`, `sandbox_base_domain`, `organisation_mnemonic`, `registry_mnemonic`, image base path computed from Activity 2.
-* **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.gitlab-ci.yml` to `<workspace>/deployment/`.
+* **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.github/workflows/build-publish.yml` to `<workspace>/deployment/`.
 * **On failure:** abort.
 
-Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.gitlab-ci.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
+Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.github/workflows/build-publish.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
 
 #### 8. compile_deployment
 

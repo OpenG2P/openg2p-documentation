@@ -166,7 +166,7 @@ Source of truth: `versions.yaml` → `images:`.
 # versions.yaml (excerpt)
 images:
   farmer_registry_staff_api: openg2p/openg2p-farmer-registry-staff-api:1.2.0
-  awe_api: registry.gitlab.com/openg2p/awe/openg2p-awe:0.0.0-develop.67
+  awe_api: openg2p/openg2p-awe-openg2p-awe:0.0.0-develop.67
   # …
 ```
 

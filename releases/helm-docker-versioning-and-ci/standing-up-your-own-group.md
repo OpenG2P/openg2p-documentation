@@ -69,7 +69,7 @@ What you are copying:
 | `ci/samples/` | caller stubs and the versions-site scaffold |
 | `ci/*/test-*.sh` | the test suites — run them after any change |
 
-**Two edits are mandatory**, in `ci/gitlab/build-publish.yml` and `.gitlab-ci.yml`:
+**Two edits are mandatory**, in `ci/gitlab/build-publish.yml` and `.github/workflows/build-publish.yml`:
 
 ```yaml
 PIPELINE_NAMESPACE: "acme"          # was "openg2p"
@@ -92,7 +92,7 @@ If `acme/packaging` is **private**, allow other projects' job tokens to clone it
 
 ## Step 4 — set up the versions site
 
-Copy `ci/samples/versions/` from the packaging project into `acme/versions`: `build.sh`, `.gitlab-ci.yml`, `assets/`, `.gitignore`. Push to its default branch and GitLab Pages publishes the catalogue at `https://acme.gitlab.io/versions/` (or your instance's Pages domain).
+Copy `ci/samples/versions/` from the packaging project into `acme/versions`: `build.sh`, `.github/workflows/build-publish.yml`, `assets/`, `.gitignore`. Push to its default branch and GitLab Pages publishes the catalogue at `https://acme.gitlab.io/versions/` (or your instance's Pages domain).
 
 Everything else in that repo is generated: each service's `changelog` job writes `<module>/versions/*.md` and the aggregate. The Pages job re-renders the aggregates on every push, so hand-edited files like `.marked` take effect immediately.
 
@@ -124,7 +124,7 @@ Nothing else needs a secret. Image pushes use `CI_REGISTRY_USER` / `CI_REGISTRY_
 
 ## Step 6 — onboard your service projects
 
-For each project, add a `.gitlab-ci.yml` declaring only what that repo contains:
+For each project, add a `.github/workflows/build-publish.yml` declaring only what that repo contains:
 
 ```yaml
 include:

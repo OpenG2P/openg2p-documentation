@@ -67,7 +67,7 @@ seeded with.
 no longer receives changes.
 {% endhint %}
 
-* **Repository:** [`gitlab.com/openg2p/master-data-service`](https://gitlab.com/openg2p/master-data-service)
+* **Repository:** [`github.com/OpenG2P/master-data-service`](https://github.com/OpenG2P/master-data-service)
 
 One repository holds all of the service's parts together — the FastAPI
 application, the Docker image build, the Helm chart, and the country-pack seeder.
@@ -83,7 +83,7 @@ Versions are tracked in the changelog published by CI:
 MDS is **not installed on its own**. It ships as part of the **`commons-services`**
 Helm chart, alongside the other shared platform services.
 
-* **Chart repository:** [`gitlab.com/openg2p/commons`](https://gitlab.com/openg2p/commons)
+* **Chart repository:** [`github.com/OpenG2P/commons`](https://github.com/OpenG2P/commons)
 
 {% hint style="warning" %}
 **Version bumps must be made in `commons-services`.** Publishing a new Master Data

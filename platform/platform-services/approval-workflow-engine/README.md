@@ -222,11 +222,11 @@ Alice and Director-X are **purely approvers** — they neither authored `cr-42` 
 
 | Helm Chart Version                                              | Docker Image                                            | Date        | Comments           |
 | ---------------------------------------------------------------- | ------------------------------------------------------- | ----------- | ------------------ |
-| [0.0.0-develop](https://gitlab.com/openg2p/awe/-/tree/develop) | `registry.gitlab.com/openg2p/awe/openg2p-awe:develop`   | in progress | Active development |
+| [0.0.0-develop](https://github.com/OpenG2P/awe/tree/develop) | `openg2p/openg2p-awe-openg2p-awe:develop`   | in progress | Active development |
 
 ## Source code
 
-* **GitLab:** [https://gitlab.com/openg2p/awe](https://gitlab.com/openg2p/awe)
+* **GitLab:** [https://github.com/OpenG2P/awe](https://github.com/OpenG2P/awe)
 
 {% hint style="info" %}
 AWE has **moved to GitLab**. Images publish to this project's GitLab Container

@@ -558,7 +558,7 @@ Full model: [Testing & the sanity suite](../../deployment-and-extension/testing-
 
 ## 7. Wire up CI
 
-`.gitlab-ci.yml` declares only what your repo has; all build, version and publish
+`.github/workflows/build-publish.yml` declares only what your repo has; all build, version and publish
 logic is central:
 
 ```yaml

@@ -22,7 +22,7 @@ Starts **three** services — Postgres, the backend (`awe`), and the admin SPA (
 * Swagger: http://localhost:8000/v1/awe/docs
 * Health: http://localhost:8000/v1/awe/health
 
-Dev-mode auth is enabled — the Keycloak `issuer` is empty in [`config/default.yaml`](https://gitlab.com/openg2p/awe/-/blob/develop/config/default.yaml), so the service accepts any unsigned JWT. **Never run this configuration in production** — the Helm chart sets a non-empty issuer which forces JWKS signature verification.
+Dev-mode auth is enabled — the Keycloak `issuer` is empty in [`config/default.yaml`](https://github.com/OpenG2P/awe/blob/develop/config/default.yaml), so the service accepts any unsigned JWT. **Never run this configuration in production** — the Helm chart sets a non-empty issuer which forces JWKS signature verification.
 
 ### Smoke test (create policy → request → approve)
 
@@ -98,8 +98,8 @@ Open http://localhost:5173/ — Vite proxies API calls on `/v1/awe/*` to the uvi
 
 The single `openg2p-awe` chart ships:
 
-* **`awe`** — the backend (FastAPI + Postgres). Image `registry.gitlab.com/openg2p/awe/openg2p-awe:<branch>`.
-* **`awe-ui`** — the admin SPA, nginx-served static bundle. Image `registry.gitlab.com/openg2p/awe/openg2p-awe-ui:<branch>`. Low-traffic, single replica, \~10 mCPU / 32 Mi requests.
+* **`awe`** — the backend (FastAPI + Postgres). Image `openg2p/openg2p-awe-openg2p-awe:<branch>`.
+* **`awe-ui`** — the admin SPA, nginx-served static bundle. Image `openg2p/openg2p-awe-openg2p-awe-ui:<branch>`. Low-traffic, single replica, \~10 mCPU / 32 Mi requests.
 * **One Istio `VirtualService`** on the shared host (`global.aweHostname`) with two routes:
   * `/v1/awe/` → backend Service (most-specific prefix, evaluated first)
   * `/` → UI Service (catch-all)
@@ -165,7 +165,7 @@ Approver rules of type `role:` can point at either a **realm role** or a **clien
 
 At request creation time, AWE calls Keycloak to list the current members of the role and stores the resulting user ids as that stage's candidate approvers. Tasks are created for each — any one can act (or a quorum, if `min_approvals` > 1).
 
-Both are declared in AWE's [helm values](https://gitlab.com/openg2p/awe/-/blob/develop/helm/openg2p-awe/values.yaml) — no post-install manual steps here.
+Both are declared in AWE's [helm values](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) — no post-install manual steps here.
 
 ### Why `awe-admin-portal` is a **public** client (and should stay that way)
 
@@ -216,7 +216,7 @@ global:
 
 That's the whole override. The Keycloak client's `redirectUris` template references `global.aweHostname`, so changing that one value propagates through to the `awe-admin-portal` client's valid redirects and CORS Web Origins automatically.
 
-Most other settings (issuer URL, JWKS URL, audience, resolver client ID) are also derived from the `global.*` values — no further per-environment overrides needed unless you diverge from the staff-realm convention. See [`helm/openg2p-awe/values.yaml`](https://gitlab.com/openg2p/awe/-/blob/develop/helm/openg2p-awe/values.yaml) for the full set.
+Most other settings (issuer URL, JWKS URL, audience, resolver client ID) are also derived from the `global.*` values — no further per-environment overrides needed unless you diverge from the staff-realm convention. See [`helm/openg2p-awe/values.yaml`](https://github.com/OpenG2P/awe/blob/develop/helm/openg2p-awe/values.yaml) for the full set.
 
 > **Note:** the AWE Helm chart is expected to become part of the OpenG2P
 > commons bundle (deployed once alongside `commons-postgresql`,
@@ -280,7 +280,7 @@ Prerequisites: `kubectl` (cluster-admin for the namespace), `helm`, `jq`, `bash`
 
 ## Configuration reference
 
-All keys under `awe:` in [`config/default.yaml`](https://gitlab.com/openg2p/awe/-/blob/develop/config/default.yaml). Env-var overrides use `AWE__` prefix with `__` as nested separator, e.g. `AWE__WEBHOOK__MAX_ATTEMPTS=10`.
+All keys under `awe:` in [`config/default.yaml`](https://github.com/OpenG2P/awe/blob/develop/config/default.yaml). Env-var overrides use `AWE__` prefix with `__` as nested separator, e.g. `AWE__WEBHOOK__MAX_ATTEMPTS=10`.
 
 ### Service metadata
 

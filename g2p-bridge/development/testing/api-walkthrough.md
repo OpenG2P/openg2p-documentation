@@ -16,7 +16,7 @@ date, the amounts, add or remove beneficiaries), and the requests are plain,
 readable G2PConnect bodies you can inspect and reuse.
 
 It lives in the monorepo at
-[`test/api-walkthrough/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/test/api-walkthrough).
+[`test/api-walkthrough/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test/api-walkthrough).
 
 {% hint style="info" %}
 **Walkthrough vs. Sanity Suite.** The [Regression Sanity Suite](regression-sanity-suite.md)
@@ -39,7 +39,7 @@ each stage. Use the sanity suite to verify; use the walkthrough to learn and dem
 ## Files
 
 Download these three from
-[`test/api-walkthrough/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/test/api-walkthrough):
+[`test/api-walkthrough/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test/api-walkthrough):
 
 | File | What it is |
 | --- | --- |
@@ -243,7 +243,7 @@ walkthrough is a quick way to populate a fresh environment with demonstrable dat
 ## For maintainers
 
 The three artifacts are generated from a single script,
-[`test/api-walkthrough/build_collection.py`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/blob/develop/test/api-walkthrough/build_collection.py)
+[`test/api-walkthrough/build_collection.py`](https://github.com/OpenG2P/g2p-bridge/blob/develop/test/api-walkthrough/build_collection.py)
 (the source of truth — like `provision_dashboards.py` for the dashboards). It
 mirrors the request shapes used by the [sanity suite](regression-sanity-suite.md).
 After editing it, regenerate:
