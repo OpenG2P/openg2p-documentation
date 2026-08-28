@@ -39,13 +39,6 @@ flowchart TD
     changelog --> pages[("openg2p-packaging<br/>gh-pages")]
 ```
 
-{% hint style="info" %}
-The **publish target is pluggable.** The diagram shows the default (classic)
-target — Docker Hub for images, `openg2p-helm` gh-pages for the chart. A repo can
-instead publish both to **GitLab** (Container Registry + Helm Package Registry) by
-setting a few stub inputs; versioning, promotion and changelogs are identical. See
-[Publishing to GitLab](publishing-to-gitlab.md).
-{% endhint %}
 
 ## What each job does
 

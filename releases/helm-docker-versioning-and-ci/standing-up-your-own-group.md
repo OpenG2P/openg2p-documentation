@@ -214,7 +214,6 @@ Keep your `PIPELINE_NAMESPACE` and project-path edits on a branch you rebase ont
 ## See also
 
 * [CI pipeline](ci-pipeline.md) — what each job does and the guarantees it gives
-* [Publishing to GitLab](publishing-to-gitlab.md) — layout, registries, Rancher
 * [Onboarding a repo](onboarding-a-new-repo.md) — putting one repo on the pipeline, and the `v1` rollout rule
 * [Changelogs](changelogs.md) — how the catalogue is generated
 * [Withdrawing a version](withdrawing-a-version.md) — deleting a published develop build
