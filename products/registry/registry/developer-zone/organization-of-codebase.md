@@ -1,7 +1,7 @@
 # Organization of Codebase
 
 {% hint style="info" %}
-**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+**New home: GitLab.** **`registry-platform`** is now developed at [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 
 Any `github.com` links on this page refer to the **earlier GitHub repository**, which is now read-only. They are kept so that references to previous versions keep working.
 {% endhint %}
@@ -104,8 +104,8 @@ The **version of the `registry-platform` repository is the platform version** â€
 | Branch / tag | Release date | Notes |
 | ------------ | ------------ | ----- |
 | `develop` | 08-Jul-2026 | Latest running version; in progress. |
-| [1.1](https://gitlab.com/openg2p/registry/registry-platform/-/tree/1.1) | 17-Jul-2026 | Running release line for 1.1.x patches and support. |
-| [v1.1.0](https://gitlab.com/openg2p/registry/registry-platform/-/tree/1.1.0) | 06-Jul-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.1.0.md). |
-| [v1.0.0](https://gitlab.com/openg2p/registry/registry-platform/-/tree/v1.0.0) | 19-Jun-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
+| [1.1](https://github.com/OpenG2P/registry-platform/tree/1.1) | 17-Jul-2026 | Running release line for 1.1.x patches and support. |
+| [v1.1.0](https://github.com/OpenG2P/registry-platform/tree/1.1.0) | 06-Jul-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.1.0.md). |
+| [v1.0.0](https://github.com/OpenG2P/registry-platform/tree/v1.0.0) | 19-Jun-2026 | Tagged release. [Release notes](../versions/registry-platform-release-notes-v1.0.0.md). |
 
 Legacy Helm chart history (4.0.0, 4.1.0) is in [Versions](../versions/).

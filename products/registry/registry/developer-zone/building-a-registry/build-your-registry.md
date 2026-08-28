@@ -13,9 +13,9 @@ it says what goes in each folder; this says what to do.
 
 {% hint style="info" %}
 **Copy, don't invent.** Start from
-[`farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry) (two
+[`farmer-registry`](https://github.com/OpenG2P/farmer-registry) (two
 registers, several sub-registers) or
-[`national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry).
+[`national-social-registry`](https://github.com/OpenG2P/national-social-registry).
 Every step below has a working example in both.
 {% endhint %}
 
@@ -77,7 +77,7 @@ step reads from it:
 Copy the reference extension from the platform as your starting point:
 
 ```bash
-git clone https://gitlab.com/openg2p/registry/registry-platform
+git clone https://github.com/OpenG2P/registry-platform
 cp -r registry-platform/reference-extension <domain>-registry/<domain>-extension
 ```
 
@@ -187,7 +187,7 @@ the CMD.
 
 ```dockerfile
 ARG RP_VERSION=0.0.0-develop.383
-FROM registry.gitlab.com/openg2p/registry/registry-platform/staff-api:${RP_VERSION}
+FROM openg2p/openg2p-registry-staff-api:${RP_VERSION}
 
 ENV REGISTRY_EXTENSION_MODULE=openg2p_registry_<domain>_extension
 
@@ -201,7 +201,7 @@ Repeat for `partner-api` and `celery` (identical but for the base image).
 copies yours:
 
 ```dockerfile
-FROM registry.gitlab.com/openg2p/registry/registry-platform/db-seed:${RP_VERSION}
+FROM openg2p/openg2p-registry-db-seed:${RP_VERSION}
 RUN rm -rf /seed/meta_data/* /seed/awe_meta_data/* /seed/templates/* /seed/seed-data/*
 COPY <domain>-extension/src/openg2p_registry_<domain>_extension/meta_data/     /seed/meta_data/
 COPY <domain>-extension/src/openg2p_registry_<domain>_extension/awe_meta_data/ /seed/awe_meta_data/
@@ -361,7 +361,7 @@ dependencies:
   - name: openg2p-registry
     alias: registry
     version: 0.0.0-develop.383      # same value as RP_VERSION above
-    repository: https://gitlab.com/api/v4/projects/84460547/packages/helm/stable
+    repository: https://openg2p.github.io/openg2p-helm
 ```
 
 `values.yaml` then carries only what is yours:
@@ -512,7 +512,7 @@ extension-independent tests. Add only the files whose assertions are shaped by
 e2e tests — and layer them on:
 
 ```dockerfile
-FROM registry.gitlab.com/openg2p/registry/registry-platform/sanity-tests:${RP_VERSION}
+FROM openg2p/openg2p-registry-sanity-tests:${RP_VERSION}
 COPY test/sanity/sanity/fixtures.py               /app/sanity/fixtures.py
 COPY test/sanity/sanity/data_seed.py              /app/sanity/data_seed.py
 COPY test/sanity/tests/test_e2e_dci.py            /app/tests/test_e2e_dci.py
@@ -593,7 +593,7 @@ so the chart can never reference a tag it did not ship with, generates
 |---|---|
 | Images | This project's GitLab container registry — `registry.gitlab.com/openg2p/registry/<your-repo>/<name>` |
 | Helm chart | The shared `openg2p/charts` Helm registry (one Rancher catalogue for all of OpenG2P) |
-| Changelog | Published per component and indexed at [openg2p.gitlab.io/versions](https://openg2p.gitlab.io/versions/index.html) |
+| Changelog | Published per component and indexed at [openg2p.github.io/versions](https://openg2p.github.io/versions/) |
 
 You configure no runners, credentials or registries — `CHART_GITLAB_PROJECT` and
 the project's own registry are all the pipeline needs.

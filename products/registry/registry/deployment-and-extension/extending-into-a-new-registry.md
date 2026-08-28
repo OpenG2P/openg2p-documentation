@@ -67,8 +67,8 @@ The classes the platform resolves by register mnemonic are specified in the
 
 Both are built exactly this way, and are the best reference while you work:
 
-* [Farmer Registry](https://gitlab.com/openg2p/registry/farmer-registry) — Farmer
+* [Farmer Registry](https://github.com/OpenG2P/farmer-registry) — Farmer
   and Household, with land, crop, livestock and cooperative sub-registers.
-* [National Social Registry](https://gitlab.com/openg2p/registry/national-social-registry)
+* [National Social Registry](https://github.com/OpenG2P/national-social-registry)
   — Individual and Household, with the socio-economic sub-registers used for
   targeting.

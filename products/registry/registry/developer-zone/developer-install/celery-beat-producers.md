@@ -58,7 +58,7 @@ sudo systemctl enable --now redis
 #### 5. Clone the Registry Celery Repository
 
 ```bash
-git clone https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/celery
+git clone https://github.com/OpenG2P/registry-platform/tree/develop/celery
 ```
 
 #### 6. Install Python Libraries and Run Celery Beat

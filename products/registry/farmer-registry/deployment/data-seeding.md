@@ -7,7 +7,7 @@ description: >-
 # Data seeding
 
 {% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
+**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
 {% endhint %}
 
 Seeding follows the same split as everything else: the **machinery** is inherited from the platform's `db-seed` image, and the Farmer Registry supplies only its **content**.
@@ -52,7 +52,7 @@ The Farmer Registry then **augments** each person with its own agricultural fiel
 | `membership_details.json` | 122 |
 | `scores.json` | 100 |
 
-These live in [`docker/db-seed/seed-data`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
+These live in [`docker/db-seed/seed-data`](https://github.com/OpenG2P/farmer-registry/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
 
 {% hint style="warning" %}
 **If Master Data holds no samples, the loader falls back** to the shared demography
@@ -147,7 +147,7 @@ hierarchy from Master Data. This registry supplies two things:
   because they normalise a free-text land size into hectares, roll the parcels, crops, livestock and inputs up onto the farmer, and define what this registry means by "uses modern inputs" and where its age bands fall. Nothing can infer those from a schema.
 * **`reporting.yaml`** — a short declaration: which entity hangs off which, which
   views are hand-written, and what its own columns mean.
-  ([this registry's copy](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/docker/db-seed/reporting.yaml))
+  ([this registry's copy](https://github.com/OpenG2P/farmer-registry/blob/develop/docker/db-seed/reporting.yaml))
 
 Everything else is generated: crop, livestock, farm inputs, membership, scores, households, household members, change requests and record history.
 

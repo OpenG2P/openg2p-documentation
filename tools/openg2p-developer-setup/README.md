@@ -23,7 +23,7 @@ Docker Farmer (includes this common stack):
 
 ```bash
 sed -i 's/^USE_EXTERNAL_REDIS=.*/USE_EXTERNAL_REDIS=false/' .env
-docker login registry.gitlab.com
+docker login   (Docker Hub)
 make sync-images && make docker-farmer-up
 ```
 
@@ -39,7 +39,7 @@ Default login: `staff` / `staff`.
 * Python 3.10+ (3.11+ for AWE/SPAR)
 * Node.js 18+ (native staff UI)
 * \~20 GB disk; 16 GB+ RAM with Odoo
-* GitHub + PyPI + npm access; `docker login registry.gitlab.com` for AWE/Master Data images
+* GitHub + PyPI + npm access; `docker login   (Docker Hub)` for AWE/Master Data images
 
 #### Hardware / OS
 
@@ -185,7 +185,7 @@ images:
     # or: docker compose … up -d --pull always <service>
     ```
 
-For GitLab images (AWE, Master Data), run `docker login registry.gitlab.com` first.
+For GitLab images (AWE, Master Data), run `docker login   (Docker Hub)` first.
 
 #### 2. Git repo refs (native clone / `make setup`)
 

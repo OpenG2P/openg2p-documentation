@@ -7,7 +7,7 @@ description: G2P Bridge Versions
 {% hint style="info" %}
 **For the current versions, changelogs, and the exact Helm chart & Docker image links, go here:**
 
-## 👉 [G2P Bridge — Versions & Changelog](https://openg2p.gitlab.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html)
+## 👉 [G2P Bridge — Versions & Changelog](https://openg2p.github.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html)
 
 That page is **generated on every build and is always up to date**. The
 [historical tables](#historical-versions) further down are kept only as a record of the
@@ -40,7 +40,7 @@ details see
 
 The tables below are a **read-only record of builds published before the GitLab move** —
 Docker Hub images and the GitHub `openg2p-helm` chart. They are **not** updated for GitLab
-builds; for those, always use the [changelog page](https://openg2p.gitlab.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html) above.
+builds; for those, always use the [changelog page](https://openg2p.github.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html) above.
 
 {% hint style="warning" %}
 **Two similarly-named charts — don't confuse them.** The **current** chart is

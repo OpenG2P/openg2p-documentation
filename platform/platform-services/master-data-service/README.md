@@ -76,7 +76,7 @@ application, the Docker image build, the Helm chart, and the country-pack seeder
 
 Versions are tracked in the changelog published by CI:
 
-* **[Master Data Service changelog](https://openg2p.gitlab.io/versions/master-data-service/CHANGELOG.html)**
+* **[Master Data Service changelog](https://openg2p.github.io/versions/master-data-service/CHANGELOG.html)**
 
 ## Deployment
 
@@ -98,7 +98,7 @@ load) is therefore also configured through `commons-services`.
 ## Legacy versions
 
 {% hint style="info" %}
-Superseded by the [changelog](https://openg2p.gitlab.io/versions/master-data-service/CHANGELOG.html)
+Superseded by the [changelog](https://openg2p.github.io/versions/master-data-service/CHANGELOG.html)
 above, and retained for history. These rows point at the former GitHub repository
 and at Docker Hub images predating the move to GitLab.
 {% endhint %}

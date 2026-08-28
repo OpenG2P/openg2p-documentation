@@ -118,9 +118,9 @@ loses a report; guessing wrong in the other direction leaks a person.
 | `materialized` | which views hold a snapshot, and their indexes |
 
 Worked examples, kept current with the code:
-[Farmer Registry](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/docker/db-seed/reporting.yaml)
+[Farmer Registry](https://github.com/OpenG2P/farmer-registry/blob/develop/docker/db-seed/reporting.yaml)
 and
-[National Social Registry](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/docker/db-seed/reporting.yaml).
+[National Social Registry](https://github.com/OpenG2P/national-social-registry/blob/develop/docker/db-seed/reporting.yaml).
 
 Two notes worth carrying:
 

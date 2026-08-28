@@ -196,7 +196,7 @@ not the GitHub Helm repo. Use the **numeric project id** — the encoded-path fo
 breaks Rancher's link resolution. It is public, so no credentials are needed:
 
 ```bash
-helm repo add openg2p https://gitlab.com/api/v4/projects/84460547/packages/helm/stable
+helm repo add openg2p https://openg2p.github.io/openg2p-helm
 helm repo update
 
 # One shared AWE per environment, serving all modules.

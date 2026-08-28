@@ -22,11 +22,11 @@ This section covers only what is disability-specific.
 
 | Artifact | Location |
 |---|---|
-| **Source code** | [gitlab.com/openg2p/registry/disability-registry](https://gitlab.com/openg2p/registry/disability-registry) |
-| **Docker images** | `registry.gitlab.com/openg2p/registry/disability-registry/<name>` — the project's own GitLab container registry |
-| **Helm chart** | `openg2p-disability-registry`, published to the shared [`openg2p/charts`](https://gitlab.com/openg2p/charts) Helm registry (project `84460547`, channel `stable`) |
+| **Source code** | [github.com/OpenG2P/disability-registry](https://github.com/OpenG2P/disability-registry) |
+| **Docker images** | `openg2p/openg2p-disability-registry-<name>` on Docker Hub |
+| **Helm chart** | `openg2p-disability-registry`, published to the shared [`openg2p-helm`](https://openg2p.github.io/openg2p-helm) Helm repository |
 | **Platform chart it extends** | `openg2p-registry`, same registry, pinned as a dependency |
-| **CI** | GitLab CI, including [`openg2p/packaging`](https://gitlab.com/openg2p/packaging)`@v1` — all versioning, build and publish logic is central |
+| **CI** | GitHub Actions, calling [`openg2p-packaging`](https://github.com/OpenG2P/openg2p-packaging)`@v1` — all versioning, build and publish logic is central |
 
 One pipeline derives **one version from git** for the whole commit, builds every
 image, rewrites the chart's image tags to that version, generates

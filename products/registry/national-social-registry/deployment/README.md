@@ -7,7 +7,7 @@ description: >-
 # Deployment
 
 {% hint style="info" %}
-**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+**New home: GitLab.** **`national-social-registry`** is now developed at [github.com/OpenG2P/national-social-registry](https://github.com/OpenG2P/national-social-registry).
 {% endhint %}
 
 The National Social Registry is **not** a registry built from scratch. It is a thin **extension** of the [OpenG2P Registry Platform](../../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the NSR domain on top.
@@ -36,9 +36,9 @@ The platform version is **pinned in two places that move together**: `RP_VERSION
 
 | Artifact | Location |
 |---|---|
-| Source | [`openg2p/registry/national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry) |
-| Helm chart | [`helm/openg2p-nsr`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/helm/openg2p-nsr), published to the `openg2p/charts` GitLab Helm registry |
-| Docker images | `registry.gitlab.com/openg2p/registry/national-social-registry/<name>` |
+| Source | [`openg2p/registry/national-social-registry`](https://github.com/OpenG2P/national-social-registry) |
+| Helm chart | [`helm/openg2p-nsr`](https://github.com/OpenG2P/national-social-registry/tree/develop/helm/openg2p-nsr), published to the `openg2p/charts` GitLab Helm registry |
+| Docker images | `openg2p/openg2p-nsr-<name>` |
 | Versions & changelog | [openg2p-packaging/national-social-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/national-social-registry/CHANGELOG) — see [Versions](../versions/README.md) |
 
 ## Prerequisites
@@ -89,7 +89,7 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 
 ## Tearing down
 
-`helm uninstall` leaves behind hook Jobs, PVCs and secrets carrying `resource-policy: keep`. The repo ships [`scripts/uninstall-registry.sh`](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/scripts/uninstall-registry.sh), which removes the release, its leftover Jobs and Pods, and the registry databases.
+`helm uninstall` leaves behind hook Jobs, PVCs and secrets carrying `resource-policy: keep`. The repo ships [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/national-social-registry/blob/develop/scripts/uninstall-registry.sh), which removes the release, its leftover Jobs and Pods, and the registry databases.
 
 ## Before going to production
 

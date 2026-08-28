@@ -196,7 +196,7 @@ If step 2 hangs at `pending`, the runner is missing or refuses untagged jobs. If
 | `openg2p/packaging` | `acme/packaging` |
 | `openg2p/charts` | `acme/charts` |
 | `openg2p/versions` | `acme/versions` |
-| `https://openg2p.gitlab.io/versions/` | your Pages domain |
+| `https://openg2p.github.io/versions/` | your Pages domain |
 | OpenG2P's tokens | your own, minted on your instance |
 
 ## Keeping up with upstream

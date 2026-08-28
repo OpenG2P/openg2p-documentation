@@ -11,8 +11,8 @@ what you must put in it. It is a **reference**, not a sequence — the order to 
 things in is [Phase 1](build-your-registry.md).
 
 Everything here is real: the paths match the
-[Farmer Registry](https://gitlab.com/openg2p/registry/farmer-registry) and the
-[National Social Registry](https://gitlab.com/openg2p/registry/national-social-registry)
+[Farmer Registry](https://github.com/OpenG2P/farmer-registry) and the
+[National Social Registry](https://github.com/OpenG2P/national-social-registry)
 as they are built today.
 
 ## The repository

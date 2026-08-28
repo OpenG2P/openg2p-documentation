@@ -7,7 +7,7 @@ description: >-
 # Data seeding
 
 {% hint style="info" %}
-**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+**New home: GitLab.** **`national-social-registry`** is now developed at [github.com/OpenG2P/national-social-registry](https://github.com/OpenG2P/national-social-registry).
 {% endhint %}
 
 Seeding follows the same split as everything else: the **machinery** is inherited from the platform's `db-seed` image, and NSR supplies only its **content**.
@@ -56,7 +56,7 @@ make it a social registry rather than a generic register:
 | `scores.json` | 100 |
 | `household_programs.json` | 77 |
 
-These live in [`docker/db-seed/seed-data`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
+These live in [`docker/db-seed/seed-data`](https://github.com/OpenG2P/national-social-registry/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
 
 {% hint style="warning" %}
 **If Master Data holds no samples, the loader falls back** to the shared demography
@@ -71,8 +71,8 @@ addresses do not match the deployment's country pack. Enable
 The platform image carries no sample loader at all, and the reference registry's
 own is farmer-shaped — it writes `g2p_register_farmers`, `crops`, `lands`, none of
 which NSR has. NSR therefore keeps its own
-[`load_sample_data.py`](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/docker/db-seed/load_sample_data.py)
-and [`upload_images.py`](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/docker/db-seed/upload_images.py),
+[`load_sample_data.py`](https://github.com/OpenG2P/national-social-registry/blob/develop/docker/db-seed/load_sample_data.py)
+and [`upload_images.py`](https://github.com/OpenG2P/national-social-registry/blob/develop/docker/db-seed/upload_images.py),
 which target `g2p_register_individuals` and NSR's `individual_*` / `household_*`
 tables, and copies them over the inherited ones in its Dockerfile.
 
@@ -160,7 +160,7 @@ hierarchy from Master Data. This registry supplies two things:
   because they pair household with individual and derive the bands and flags the dashboards group by. Nothing can infer those from a schema.
 * **`reporting.yaml`** — a short declaration: which entity hangs off which, which
   views are hand-written, and what its own columns mean.
-  ([this registry's copy](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/docker/db-seed/reporting.yaml))
+  ([this registry's copy](https://github.com/OpenG2P/national-social-registry/blob/develop/docker/db-seed/reporting.yaml))
 
 Everything else is generated: vulnerability, livelihood, disability, land, livestock, programmes, shocks, housing and services, household assets, scores, change requests and record history.
 
