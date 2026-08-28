@@ -24,7 +24,7 @@ as they are built today.
 ├── helm/openg2p-<domain>/  ← your Helm chart (wraps the platform chart)
 ├── test/                   ← your field-specific sanity tests + the pin guard
 ├── scripts/                ← bump-rp-version.sh, uninstall-registry.sh
-└── .gitlab-ci.yml          ← ~40 lines; all logic lives in openg2p/packaging
+└── .github/workflows/          ← ~40 lines; all logic lives in openg2p/packaging
 ```
 
 | Folder | You own | Notes |

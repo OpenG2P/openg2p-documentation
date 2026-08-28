@@ -839,7 +839,6 @@
       * [AWS Add-Node Provisioning (optional)](operations/deployment/deployment-guide/add-node/aws-provisioning.md)
     * [Adding and Removing Nodes in Cluster](operations/deployment/deployment-guide/adding-and-removing-nodes-in-cluster.md)
     * [Single Machine Backup & Restore Guide](operations/deployment/deployment-guide/single-machine-backup-and-restore-guide.md)
-  * [OpenG2P GitLab Repositories](operations/deployment/gitlab-repositories.md)
   * [Helm & Docker Versioning Strategy and CI](releases/helm-docker-versioning-and-ci/README.md)
     * [Cutting a release (how to tag)](releases/helm-docker-versioning-and-ci/cutting-a-release.md)
     * [Withdrawing a version](releases/helm-docker-versioning-and-ci/withdrawing-a-version.md)

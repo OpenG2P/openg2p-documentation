@@ -8,7 +8,7 @@ AWE source code, Docker images, and the Helm chart all live in the single reposi
 
 Since the move, images publish to the project's **GitLab Container Registry**
 (`openg2p/openg2p-awe/…`) and the chart to the shared
-[`openg2p/charts`](https://gitlab.com/openg2p/charts) catalogue. **`v1.0.0`
+[`openg2p-helm`](https://openg2p.github.io/openg2p-helm) catalogue. **`v1.0.0`
 predates the move** — its artefacts remain on Docker Hub and the GitHub Helm repo,
 and the links below still point there.
 

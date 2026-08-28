@@ -130,7 +130,7 @@ For each project, add a `.github/workflows/build-publish.yml` declaring only wha
 include:
   - project: 'acme/packaging'
     ref: v1
-    file: '/ci/gitlab/build-publish.yml'
+    uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1
 
 variables:
   PACKAGING_REF: v1

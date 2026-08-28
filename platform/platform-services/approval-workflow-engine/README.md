@@ -230,8 +230,7 @@ Alice and Director-X are **purely approvers** — they neither authored `cr-42` 
 
 {% hint style="info" %}
 AWE has **moved to GitLab**. Images publish to this project's GitLab Container
-Registry and the chart to the shared [`openg2p/charts`](https://gitlab.com/openg2p/charts)
-catalogue — see [OpenG2P GitLab Repositories](../../../operations/deployment/gitlab-repositories.md).
+Registry and the chart to the shared [`openg2p-helm`](https://openg2p.github.io/openg2p-helm) repository.
 Artefacts released **before** the move (`v1.0.0`) remain on Docker Hub and the
 GitHub Helm repo; the links on those pages are unchanged and still valid.
 {% endhint %}

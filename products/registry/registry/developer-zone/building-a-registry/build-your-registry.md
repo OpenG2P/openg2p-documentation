@@ -71,7 +71,7 @@ step reads from it:
 ├── helm/openg2p-<domain>/
 ├── test/
 ├── scripts/
-└── .gitlab-ci.yml
+└── .github/workflows/
 ```
 
 Copy the reference extension from the platform as your starting point:
@@ -373,7 +373,7 @@ global:
 
 registry:                    # values for the platform subchart
   staffApi:
-    image: { repository: registry.gitlab.com/.../staff-api, tag: 0.0.0-develop }
+    image: { repository: openg2p/openg2p-<your-repo>-staff-api, tag: 0.0.0-develop }
   dbSeed:
     loadSampleData: true
   idgenerator:
@@ -501,7 +501,7 @@ helm dependency update ./helm/openg2p-<domain>
 helm lint ./helm/openg2p-<domain>
 helm template test ./helm/openg2p-<domain> > /tmp/render.yaml
 # the overlay actually took effect — not the subchart's defaults
-grep -q "registry.gitlab.com/openg2p/registry/<your-repo>/staff-api" /tmp/render.yaml
+grep -q "openg2p/openg2p-<your-repo>-staff-api" /tmp/render.yaml
 ```
 
 ## 6. Narrow the sanity tests
@@ -565,7 +565,7 @@ logic is central:
 include:
   - project: 'openg2p/packaging'
     ref: v1
-    file: '/ci/gitlab/build-publish.yml'
+    uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1
 
 variables:
   PACKAGING_REF: v1
@@ -591,7 +591,7 @@ so the chart can never reference a tag it did not ship with, generates
 
 | Artifact | Destination |
 |---|---|
-| Images | This project's GitLab container registry — `registry.gitlab.com/openg2p/registry/<your-repo>/<name>` |
+| Images | Docker Hub — `openg2p/openg2p-<your-repo>-<name>` |
 | Helm chart | The shared `openg2p/charts` Helm registry (one Rancher catalogue for all of OpenG2P) |
 | Changelog | Published per component and indexed at [openg2p.github.io/versions](https://openg2p.github.io/versions/) |
 

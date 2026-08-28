@@ -151,7 +151,7 @@ chart. On **GitLab**:
 include:
   - project: 'openg2p/packaging'
     ref: v1
-    file: '/ci/gitlab/build-publish.yml'
+    uses: openg2p/openg2p-packaging/.github/workflows/build-publish.yml@v1
 variables:
   PACKAGING_REF: v1
   CHANGELOG_KIND: library
