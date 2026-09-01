@@ -114,11 +114,14 @@ its own:
 1. a verifier deployment exists (nothing verifies a credential until a relying
    party stands one up); and
 2. the OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor** —
-   take it from `/v1/certify/.well-known/jwks.json`.
+   take it from `https://<certify-host>/.well-known/jwks.json` (the Certify
+   chart rewrites that well-known path onto Certify's own
+   `/v1/certify/.well-known/jwks.json`).
 
-> **Unverified.** Whether a stock Inji Verify accepts a claim-169 CWT from a
-> non-MOSIP issuer has not been tested end to end. Until it has, treat
-> third-party verification as unproven rather than assumed.
+> **Verified.** A claim-169 QR issued by our Certify verifies against Inji
+> Verify's `verify-service` end to end — `SUCCESS` for a genuine credential,
+> `INVALID` for a tampered or re-signed one. The Agent Portal's **Verify VC**
+> screen does exactly this; see [Verification](verification.md).
 
 * **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
   **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used
@@ -127,13 +130,44 @@ its own:
   Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
   COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
   `claim169` field.
+* **There is no identifier key in claim 169.** The registry PixelPass ships
+  (`CLAIM_169_KEY_MAPPER`, compiled into `pixelpass-jar-0.8.0` — a Kotlin
+  constant, not a config file, and Certify exposes no property to extend it)
+  covers Version, Language, the name fields, Date of Birth, Gender, Address,
+  contact details, biometrics, and a generic `Data` / `Data format` /
+  `Data sub format` / `Data issuer` group. **No ID, UIN or document number.**
+
+  The labels written in `qrSettings` are rewritten to their registry **numbers**
+  on the way into the CBOR, so an invented label is not a small liberty — it
+  leaves the format.
+
+  The Farmer ID therefore travels in **`Data`**, paired with `Data issuer`:
+
+  ```yaml
+  qrSettings:
+    - claim169:
+        Version: '1.0'
+        Language: eng
+        Full Name: '${fullName}'
+        Date of Birth: '${dateOfBirth}'
+        Gender: '${gender}'
+        Data: '${functionalRecordId}'
+        Data issuer: 'OpenG2P Farmer Registry'
+  ```
+
+  That keeps the QR strict claim-169 — a stock verifier still reads it, labelled
+  "Data". **It has to be in the QR to be worth anything:** the QR is all an
+  offline verifier sees, so an id living only in the JSON-LD credential cannot
+  be checked against the card in the field. Without it, a genuine QR paired with
+  a card showing someone else's Farmer ID still verifies.
 * **Where the verifying key comes from.** The signed QR is a **COSE_Sign1 / CWT**, and claim-169
   verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be
   identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise
   the verifier is assumed to hold a **pre-loaded trust anchor**.
   **What OpenG2P actually emits carries no certificate**: the header holds only `alg` (ES256) and a
-  `kid`. So a pre-distributed trust anchor is the *only* way our QR verifies — take the ES256 key from
-  `/v1/certify/.well-known/jwks.json` and load it into the verifier. Either way, no call back to
+  `kid`. So the verifier needs the ES256 key from
+  **`https://<certify-host>/.well-known/jwks.json`** — published there for every configured key,
+  unlike `did.json`, which carries the Ed25519 proof key only. Either way, no call back to
   OpenG2P at scan time. (The **JSON-LD VC** — not the QR — uses
   `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.) See
   [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
@@ -361,8 +395,9 @@ does not resolve DIDs.
 
 → [Signatures, Keys and the QR](signatures-keys-and-the-qr.md) explains all of
 this properly: who builds which part, which signature is checked on which path,
-what claim 169 can and cannot carry (the photo is optional; a programme id will
-not fit), where each key is published, and why Inji **Verify** is a hosted web
+what claim 169 can and cannot carry (the photo is optional; the Farmer ID has no
+registry key of its own and travels in `Data` — see below), where each key is
+published, and why Inji **Verify** is a hosted web
 portal rather than the phone app.
 
 ## Key management

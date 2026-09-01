@@ -125,7 +125,19 @@ either is missing:
 2. an IAM **application** registered with mnemonic `agent-portal`.
 
 The registry's `iam-register` Job registers that application, declaring the
-`register:issue_credential` permission and the role that grants it.
+`register:issue_credential` and `register:verify_credential` permissions and the
+roles that grant them. The two are **separate on purpose**: checking a card
+someone presents and creating a new one are different acts with different risk,
+and a deployment may well want staff who can do the first and not the second.
+
+{% hint style="warning" %}
+`keycloak-init` creates a realm and its client only when **absent** — it does not
+reconcile roles onto an existing client, and the Keycloak database outlives a
+registry reinstall. On an environment created before a role existed, that role is
+silently skipped even though the chart requests it, and the corresponding card
+does not appear in the portal. Adding a role to an existing deployment means
+adding it to the Keycloak client directly.
+{% endhint %}
 
 ## Current functionality: Verifiable Credential issuance
 
@@ -157,6 +169,43 @@ own token on every call; the **beneficiary** is authenticated by eSignet, and
 that authentication is re-checked at the moment of issue rather than trusted
 from an earlier screen — the window may well have elapsed while the agent was
 reading.
+
+## Current functionality: Verifiable Credential verification
+
+A second card, **Verify VC**, gated by `register:verify_credential`.
+
+The agent uploads the printed credential (PDF) or a photo of it, and gets a
+verdict plus the credential's contents.
+
+```
+1. Read the QR       in the BROWSER — pdf.js rasterises a PDF page, a JS QR
+   (client-side)     reader handles images, PixelPass unwraps Base45 → zlib
+                     → hex CWT
+                     → the image itself is NEVER uploaded
+
+2. Check it          the hex payload goes to the Agent Portal API, which calls
+   (server-side)     verify-service in-cluster; verify-service resolves the
+                     issuer's ES256 key from Certify's published JWKS and
+                     checks the COSE signature
+
+3. Show it           the verdict, and beneath it the signed contents —
+                     issuer, validity, Full Name, Date of Birth, Gender,
+                     Farmer ID
+```
+
+**The image never leaves the agent's device.** A photo of a credential is a
+photo of someone's identity document; uploading it would put that image in
+request logs, proxies and every intermediary in between. Only the signed payload
+the QR already encodes is transmitted.
+
+**Showing the contents is the point, not decoration.** "Valid" alone says the
+card is genuine without saying whose it is, so it cannot catch a real credential
+presented by the wrong person. The fields shown are decoded from the signed
+payload — exactly what was signed — and only after a `SUCCESS`.
+
+Every verification is audited with its **verdict**, so the trail distinguishes a
+genuine card from a forged one. See
+[Verification](../../../../platform/platform-services/vc-issuance/verification.md).
 
 For the full design — what each step guarantees, what the QR contains, which
 signature a verifier checks, and how a registry supplies its claims — see

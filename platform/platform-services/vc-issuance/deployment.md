@@ -154,6 +154,13 @@ data — every module is its own issuance backend that pushes its own claims.
   generic, **no** `credential_config`; modules register those).
   It is packaged into and enabled from **commons-services** (`charts/openg2p-commons-services`, dep
   alias `injiCertify`) — installed **with the commons layer**, reusing the cluster PostgreSQL.
+* **Inji Verify chart** — `vc-issuance/helm/openg2p-inji-verify`. Deploys **only**
+  `verify-service`: no MOSIP config-server, no PostgreSQL (it runs the image's bundled in-memory
+  profile), no stock `verify-ui`. It is a **dependency of commons-services too**
+  (`condition: openg2p-inji-verify.enabled`, default **on**), so **installing commons-services
+  installs both Certify and Verify** — the issuing and checking halves of the same feature arrive
+  together. Both charts are published from the `verifiable-credentials` repo and share a version
+  line, so they are pinned to the same `0.0.0-develop.N`.
 * **Agent Portal API + UI** — built in the **Registry Platform** repo (`apis/`, `ui/`, `docker/`) and
   shipped in the **`openg2p-registry`** chart under the `agentPortalApi` block, pointed at the commons
   Certify service. Because it lives in the platform chart, **every registry manifestation inherits it**;
@@ -267,8 +274,10 @@ data — every module is its own issuance backend that pushes its own claims.
     `/v1/certify/.well-known/did.json` (`istio.virtualservice.exposeDidDocument`). It carries the
     **Ed25519** key only, because Certify builds it from each credential config's `signatureAlgo` and
     never consults `qrSignatureAlgo`.
-  * `https://<certify-host>/v1/certify/.well-known/jwks.json` — **all** Certify public keys, including
-    the **ES256 QR key**. This is where a verifier obtains the QR key.
+  * `https://<certify-host>/.well-known/jwks.json` — **all** Certify public keys, including
+    the **ES256 QR key**. This is where a verifier obtains the QR key, and it is
+    **live** for the same reason as `did.json`: the Certify chart rewrites the well-known path onto
+    Certify's own `/v1/certify/.well-known/jwks.json`.
 
   For Phase 1 the QR is what gets verified, and **claim-169 verification does not resolve DIDs**: the
   COSE header carries only `alg` and `kid`, with **no `x5chain`** embedded. The ES256 public key must
@@ -309,8 +318,36 @@ Gating is `failOnError: true` by default, with a values-only escape hatch.
 
 ## Verifier side
 **Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's
-**ES256** key. Because our QR embeds no certificate, that key must be **pre-loaded as a trust anchor**,
-taken from `https://<certify-host>/v1/certify/.well-known/jwks.json`.
+**ES256** key. Our QR embeds no certificate — only a `kid` — so the key is resolved from the JWKS
+Certify publishes at **`https://<certify-host>/.well-known/jwks.json`**.
+
+{% hint style="warning" %}
+That well-known path exists only because the **Certify chart's VirtualService rewrites it** onto
+Certify's own `/v1/certify/.well-known/jwks.json`. Without the rewrite the URL is a **404** and QR
+verification cannot work. The ES256 key is published in the JWKS and **not** in `did.json`, so
+resolving the DID is not an alternative — see
+[Verification](verification.md#where-the-verification-keys-come-from).
+{% endhint %}
+
+### What verify-service needs configured, and where it comes from
+
+Very little, by design — which is the point of running it stateless:
+
+| Setting | Value | Where it comes from |
+|---|---|---|
+| `active_profile_env` | `local` | Chart default (`verifyService.stateless: true`) — selects the bundled in-memory database instead of PostgreSQL |
+| Host / route | `verify.<baseDomain>` | `global.verifyHostname`, derived from `global.baseDomain` in commons-services |
+| Context path | `/v1/verify` | Chart default (`verifyService.contextPath`) |
+| Issuer's public key | fetched at verification time | **Not configured.** Resolved from the `kid` in the credential and the issuer named in it |
+| `DATABASE_*` | unset | Only required if `stateless: false` |
+
+There is deliberately **no trusted-issuer list** to configure — and that is also a limitation: see
+[Verification → Still open](verification.md#still-open).
+
+The Agent Portal API reaches it in-cluster at
+`http://commons-services-inji-verify-service/v1/verify`, the default already shipped in
+`agentPortalApi.vcVerification.serviceUrl`. Switch the screen on with
+`agentPortalApi.vcVerification.enabled=true`.
 
 Two qualifications that are easy to miss:
 
@@ -322,7 +359,9 @@ Two qualifications that are easy to miss:
   still has to load the portal; a genuinely disconnected counter needs the SDK inside an installed
   application.
 
-Whether a stock Inji Verify accepts a claim-169 CWT from a non-MOSIP issuer is **not yet tested**.
+A claim-169 QR issued by our Certify **verifies against `verify-service`**, confirmed end to end on a
+live deployment: a genuine credential returns `SUCCESS`, while a tampered signature and a token
+re-signed with a different key both return `INVALID`.
 
 ## Teardown / uninstall
 
