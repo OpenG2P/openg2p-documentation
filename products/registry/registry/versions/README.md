@@ -4,15 +4,6 @@ description: Where to find Registry Platform chart and image versions, and what 
 
 # Versions
 
-{% hint style="warning" %}
-**New home: GitLab.** `registry-platform` is now developed at
-[github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
-
-The GitHub repository is **read-only** and no longer receives changes. Any
-`github.com` links on this page refer to it and are kept so older references keep
-working.
-{% endhint %}
-
 The Registry Platform publishes its own Docker images and Helm chart. Every image and the chart
 built from a commit carry the **same** version, derived from git by the central
 pipeline — so a chart version tells you exactly which images it deploys.
@@ -33,8 +24,8 @@ versions are not listed on this site.
 
 | Artifact | Where |
 |---|---|
-| Helm chart `openg2p-registry` | `openg2p/charts` GitLab Helm registry |
-| Docker images | `openg2p/openg2p-registry-<name>` |
+| Helm chart `openg2p-registry` | [`openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
+| Docker images | Docker Hub `openg2p/openg2p-registry-<name>` |
 
 For what these artifacts are and how a domain registry extends them, see
 [Deployment and Extension](../deployment-and-extension/README.md).
@@ -42,16 +33,17 @@ For what these artifacts are and how a domain registry extends them, see
 How versions are derived, frozen and promoted is documented org-wide in
 [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci).
 
-## Legacy versions
+## Earlier catalogues
 
 {% hint style="info" %}
-Superseded by the changelog above, and kept for history. These point at the
-**former GitHub** repositories, the GitHub-Pages Helm repository and Docker Hub —
-all of which predate the move to GitLab and are no longer updated.
+Every **released** version (`N.N.N`) is listed in the changelog above, including
+those published before the move back to GitHub — their charts are in
+[`openg2p-helm`](https://openg2p.github.io/openg2p-helm). Development builds
+(`0.0.0-develop.N`) and release candidates from those earlier periods were not
+moved and remain where they were published.
 {% endhint %}
 
-| Legacy location | What it was |
+| Earlier catalogue | What it still holds |
 |---|---|
-| [`openg2p-packaging/registry-platform/CHANGELOG`](https://openg2p.github.io/openg2p-packaging/registry-platform/CHANGELOG) | The previous CI-generated changelog |
-| [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) | The previous Helm chart repository |
-| Docker Hub `openg2p/openg2p-registry-*` | The previous image registry |
+| [GitLab catalogue](https://openg2p.gitlab.io/versions/registry-registry-platform/CHANGELOG.html) | develop builds and release candidates from the GitLab period |
+| [previous GitHub catalogue](https://openg2p.github.io/openg2p-packaging/registry-platform/CHANGELOG) | develop builds and release candidates from before that |
