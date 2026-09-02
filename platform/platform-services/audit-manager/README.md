@@ -76,9 +76,11 @@ It is built with **FastAPI**, uses **Kafka** as a durable buffer, and **PostgreS
 
 ## Versions
 
-| Helm Chart Version                                                       | Docker Image                                                              | Date        | Comments           |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------- | ------------------ |
-| [0.0.0-develop](https://github.com/OpenG2P/audit-manager/tree/develop) | `openg2p/openg2p-audit-manager:develop` | in progress | Active development |
+| Helm Chart Version                                                       | Docker Image                                | Date        | Comments           |
+| ------------------------------------------------------------------------ | ------------------------------------------- | ----------- | ------------------ |
+| [1.0.0](https://github.com/OpenG2P/audit-manager/tree/1.0.0)             | `openg2p/openg2p-audit-manager:1.0.0`       | 2026-07-13  | Stable version     |
+| [1.0.1](https://github.com/OpenG2P/audit-manager/tree/1.0.1)             | `openg2p/openg2p-audit-manager:1.0.1`       | 2026-07-17  | <mark style="color:red;">Stale</mark> — do not use |
+| [0.0.0-develop](https://github.com/OpenG2P/audit-manager/tree/develop)   | `openg2p/openg2p-audit-manager:develop`     | in progress | Active development |
 
 ## Source code
 
