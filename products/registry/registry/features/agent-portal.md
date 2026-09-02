@@ -114,6 +114,35 @@ The agent portal's cookies are therefore prefixed (`agent-X-Access-Token`,
 service that **sets** the cookies and the Agent Portal API that **reads** them
 must be configured with the same prefix.
 
+### Signing out
+
+Sign-out is RP-initiated OIDC logout: the portal calls `/api/logout`, IAM clears
+the session cookies and redirects to Keycloak's `end_session_endpoint`, and
+Keycloak returns the browser to `post_logout_redirect_uri` — which IAM takes from
+the login provider's `default_redirect_uri`.
+
+{% hint style="warning" %}
+**`global.agentPortalHostname` must name the registry's REAL agent UI host on the
+commons-services install.** It defaults to `agent-portal.<baseDomain>`, but the
+portal is served by the registry chart at its own host (e.g.
+`fr-agent.<baseDomain>`). If the two disagree, **login still works and only
+sign-out breaks** — login redirects via the IAM callback, which is registered
+correctly, while logout sends the browser to a host that serves nothing.
+
+That one value drives three things, which are wrong together:
+
+* `login_providers.default_redirect_uri` — where logout returns to
+* the Keycloak client's `redirectUris` / `post.logout.redirect.uris`
+* `IAM_AGENT_CORS_ALLOW_ORIGINS`
+
+```
+--set global.agentPortalHostname=fr-agent.<baseDomain>
+```
+
+Easy to miss, because commons-services has to be told a hostname that only the
+registry chart really knows.
+{% endhint %}
+
 ### Permissions
 
 Roles live on the `agent-portal` Keycloak client and are resolved into

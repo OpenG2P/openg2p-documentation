@@ -141,7 +141,7 @@ its own:
   on the way into the CBOR, so an invented label is not a small liberty — it
   leaves the format.
 
-  The Farmer ID therefore travels in **`Data`**, paired with `Data issuer`:
+  The registry's id therefore travels in **`Data`**, and in `Data` ALONE:
 
   ```yaml
   qrSettings:
@@ -152,14 +152,42 @@ its own:
         Date of Birth: '${dateOfBirth}'
         Gender: '${gender}'
         Data: '${functionalRecordId}'
-        Data issuer: 'OpenG2P Farmer Registry'
   ```
 
-  That keeps the QR strict claim-169 — a stock verifier still reads it, labelled
-  "Data". **It has to be in the QR to be worth anything:** the QR is all an
-  offline verifier sees, so an id living only in the JSON-LD credential cannot
-  be checked against the card in the field. Without it, a genuine QR paired with
-  a card showing someone else's Farmer ID still verifies.
+  {% hint style="danger" %}
+  **Do not add `Data issuer` (or `Data format` / `Data sub format`) at the top
+  level.** PixelPass numbers the `Data*` group in its **own** key space — `Data`=0,
+  `Data format`=1, `Data sub format`=2, `Data issuer`=3 — not the top-level
+  attribute space. Written at the top level, `Data issuer` becomes **key 3, which
+  is Language**: it silently replaces `eng` with whatever string you set, and the
+  language is lost from every credential issued.
+
+  Observed on a real issued QR, whose decoded map was
+  `{0: '<record id>', 2: '1.0', 3: 'OpenG2P Farmer Registry', 4: …}` — key 3
+  should have been `eng`.
+  {% endhint %}
+
+  `Data` itself lands on **key 0**, which is outside the standard top-level
+  attribute numbering but collides with nothing, so the id rides safely. A stock
+  verifier shows it as "Data"; the Agent Portal relabels it using the
+  `qr_data_label` on the credential definition (see below).
+
+  **It has to be in the QR to be worth anything:** the QR is all an offline
+  verifier sees, so an id living only in the JSON-LD credential cannot be checked
+  against the card in the field. Without it, a genuine QR paired with a card
+  showing someone else's id still verifies.
+
+  **The platform does not name the id.** The Registry Platform serves every
+  manifestation, so "Farmer ID" would be wrong for all but one of them. Each
+  registry supplies the label on its credential definition:
+
+  ```yaml
+  vcDefinitions:
+    - config_id: OpenG2PFarmerCredential
+      qr_data_label: "Farmer ID"     # shown on the verification screen
+  ```
+
+  Unset, the verification screen shows the neutral `ID`.
 * **Where the verifying key comes from.** The signed QR is a **COSE_Sign1 / CWT**, and claim-169
   verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be
   identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise

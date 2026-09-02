@@ -316,6 +316,96 @@ install rather than surfacing later in the field.
 
 Gating is `failOnError: true` by default, with a values-only escape hatch.
 
+## The eSignet client key — why a reinstall must not rotate it
+
+The registry authenticates to eSignet with **`private_key_jwt`**: every token
+exchange is signed with a private key whose public half eSignet holds in
+`esignet.client_detail`. The `registrant-auth-bootstrap` Job creates both halves
+on install.
+
+**The key must survive a reinstall.** It originally lived only in
+`g2p_registrant_authentication_providers.client_private_key`, and the registry
+schema is rebuilt by a reinstall — so the row disappeared, the Job saw no key,
+and minted a new one. That rotates a live credential as a side effect of
+reinstalling, and the failure it produces is deeply unhelpful:
+
+```
+eSignet: Failed to verify client assertion
+         BadJWSException: Signed JWT rejected: Invalid signature
+returned to the portal as: invalid_assertion
+```
+
+Nothing in that says a key moved. Both databases look *consistent* afterwards,
+because the Job updates eSignet's `client_detail` with the new public half too —
+so comparing the two moduli shows a match while authentication still fails.
+
+The chart therefore also keeps the keypair in a Secret
+(`agentPortalApi.vcIssuance.bootstrap.persistKeyToSecret`, on by default, named
+`<release>-registrant-auth-client-key`). The Job restores from it when present
+and generates only when it is absent. The Secret is deliberately **not** owned by
+the release, so `helm uninstall` leaves it and the key survives an
+uninstall/reinstall cycle.
+
+To rotate deliberately: delete that Secret, reinstall, **then clear eSignet's
+client cache** (see below).
+
+{% hint style="danger" %}
+**eSignet caches the client in REDIS, not in memory. Restarting eSignet does not
+clear it.**
+
+The cached entry is `clientdetails::<client_id>` in the Redis that
+`spring_redis_host` points at (`commons-redis-auth` in a standard OpenG2P
+install). It holds the client's **public key** as it was when first read.
+
+So after any key rotation, eSignet keeps verifying against the *old* public key
+while the registry signs with the new private key — and every authentication
+fails with `invalid_assertion` until the cache entry is deleted or expires.
+Restarting the eSignet pod achieves nothing, because the cache outlives it.
+
+```bash
+kubectl -n <ns> exec <redis-pod> -- \
+  sh -c 'REDISCLI_AUTH=<pw> redis-cli DEL "clientdetails::<client_id>"'
+```
+
+This is why a reinstall that rotates the key breaks authentication in a way that
+looks like a misconfiguration: both databases agree, the assertion is correctly
+signed, and eSignet still rejects it.
+{% endhint %}
+
+### Diagnosing `invalid_assertion`
+
+The portal reports:
+
+```
+Authentication Failed — invalid_assertion: invalid_assertion
+```
+
+and eSignet logs `BadJWSException: Signed JWT rejected: Invalid signature` from
+`TokenServiceImpl.verifyClientAssertionToken`.
+
+Work through it in this order — the first two are cheap and settle most cases:
+
+**1. Are the two halves of the keypair actually a pair?** Read the private key
+from `g2p_registrant_authentication_providers.client_private_key`, derive its
+public modulus, and compare with `esignet.client_detail.public_key`.`n`. If they
+differ, the registry and eSignet were written at different times.
+
+**2. Is eSignet's Redis cache stale?** Fetch `clientdetails::<client_id>` and
+check whether the CURRENT modulus appears in it. If it does not, that is the
+fault — delete the key. **This is the common case after any reinstall.**
+
+**3. Is the assertion itself well-formed?** Capture what the registry actually
+sends (point `token_endpoint` at a logging proxy) and verify its signature
+locally against the stored private key.
+
+{% hint style="warning" %}
+**Do not test an assertion with a dummy `code`.** eSignet validates the
+transaction *before* the client assertion, so an invalid code returns
+`invalid_transaction` having never looked at the assertion. Reading that as "the
+assertion was accepted" is wrong and will send you down a blind alley — only a
+real authorization code exercises assertion verification.
+{% endhint %}
+
 ## Verifier side
 **Inji Verify** validates the printed QR by checking the COSE/CWT signature against the issuer's
 **ES256** key. Our QR embeds no certificate — only a `kid` — so the key is resolved from the JWKS
