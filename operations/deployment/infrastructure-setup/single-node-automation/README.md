@@ -22,7 +22,7 @@ Source: [`openg2p-deployment`](https://github.com/OpenG2P/openg2p-deployment) un
 
 ## What the sandbox is
 
-A sandbox is **one VM running everything**. It is intended for evaluation, development, QA, demos and small pilots — not for production, where compute, storage and the reverse proxy are separated across nodes.
+A sandbox is **one VM running everything**.  It is intended for evaluation, development, QA, demos and small pilots — not for production, where compute, storage and the reverse proxy are separated across nodes.
 
 The install has two distinct layers, and the distinction matters throughout:
 
@@ -91,10 +91,29 @@ The sandbox is **not reachable from the public internet by default, even if the 
 
 Administrative and data-plane ports — the Kubernetes API, NodePorts, etcd, kubelet, NFS — are always restricted to the VPC and Wireguard, so `kubectl` and `helm` require the VPN.
 
-Setting `public_access: true` opens `80/443` to `0.0.0.0/0`.
+### Public access — how it is controlled
+
+Sometimes you want a sandbox reachable **without** the VPN — a demo, a partner integration, a mobile app test. That should not mean exposing Rancher.
+
+Access is therefore controlled by **two independent layers**:
+
+| Layer | Scope | Setting |
+|---|---|---|
+| **Firewall** (`ufw`, cloud SG) | the whole host — cannot distinguish environments | `public_access` in `sandbox-config.yaml` |
+| **Nginx allow/deny** | **per hostname** — this is what separates environments | `public` in each `environment-config.yaml` |
+
+The firewall is all-or-nothing, so it alone cannot open `dev` while keeping `qa` and Rancher private. Nginx routes by hostname, so a source-IP allowlist on each server block provides that separation.
+
+The result:
+
+* The **Rancher hostname always keeps its allowlist** and is never made public by either setting. A client presenting a forged `Host: rancher.<domain>` still arrives with its real source IP and gets `403`.
+* Each environment is **private by default** (`public: false`) — served only over Wireguard or from the VPC.
+* Setting `public: true` on one environment exposes **only that environment's** hostnames.
+
+Both are required for public access: `public_access: true` opens the port, `public: true` decides which hostnames are answered on it.
 
 {% hint style="danger" %}
-`public_access: true` exposes the Rancher **cluster-admin** UI and every environment service to anyone who can reach the public IP, protected only by local passwords. A valid TLS certificate encrypts the connection — it does **not** restrict who may connect. Only enable it deliberately, and prefer restricting source IPs at the firewall or cloud security group to the specific addresses that need access.
+A public environment is reachable by anyone on the internet, protected only by each application's own authentication. A valid TLS certificate encrypts the connection — it does **not** restrict who may connect. Prefer restricting source IPs at the firewall or cloud security group to the addresses that actually need access.
 {% endhint %}
 
 ## How you reach it over the VPN
@@ -278,7 +297,7 @@ If `nslookup` returns nothing, your resolver is stripping private addresses from
 
 | Key | Default | Description |
 |---|---|---|
-| `public_access` | `false` | `false` = `80/443` reachable only via Wireguard/VPC. `true` = open to `0.0.0.0/0`. See the warning in [Access model](#access-model--private-by-default). |
+| `public_access` | `false` | Opens `80/443` at the **firewall**. On its own it exposes nothing extra — Nginx still restricts the Rancher hostname, and environments stay private unless each sets `public: true`. See [Public access — how it is controlled](#public-access--how-it-is-controlled) for the model, and [Opening an environment to the public](#opening-an-environment-to-the-public) for the steps. |
 
 #### Wireguard
 
@@ -329,6 +348,7 @@ If `nslookup` returns nothing, your resolver is stripping private addresses from
 | `environment` | `dev` | Environment name. Becomes the Kubernetes namespace, the Rancher Project name and the sub-domain label. |
 | `base_domain` | — | Leave blank to derive `<environment>.<domain>`. Set explicitly only to use a domain outside `domain` — in which case DNS records are **not** managed for you. |
 | `sandbox_config` | `sandbox-config.yaml` | Path to the sandbox config, for inherited values (`node_ip`, `domain`, `tls.*`). |
+| `public` | `false` | Whether Nginx answers this environment's hostnames to **any** client. `false` = Wireguard/VPC only. `true` = public — also requires `public_access: true`. Never affects the Rancher hostname. |
 
 ### Command-line flags
 
@@ -346,6 +366,63 @@ If `nslookup` returns nothing, your resolver is stripping private addresses from
 | `--yes`, `-y` | Skip the interactive confirmation. |
 | `--skip-environment` | Run infra only for this run. |
 | `--reset-laptop` | Clear laptop-side state markers. |
+
+## Opening an environment to the public
+
+By default everything requires Wireguard. To make **one** environment reachable without the VPN — while Rancher and every other environment stay private:
+
+**1. Open the firewall port.** In `sandbox-config.yaml`:
+
+```yaml
+public_access: true
+```
+
+Re-run the infra firewall step:
+
+```bash
+./openg2p-sandbox.sh --config sandbox-config.yaml --stage infra --phase 1
+```
+
+**2. Mark the environment public.** In that environment's `environment-config.yaml`:
+
+```yaml
+environment: "dev"
+public: true
+```
+
+Re-run the environment stage:
+
+```bash
+./openg2p-sandbox.sh --config sandbox-config.yaml --stage environment --force
+```
+
+**3. On AWS, open the security group too** — the host firewall is only one layer:
+
+```bash
+aws ec2 authorize-security-group-ingress --group-id sg-xxx \
+  --protocol tcp --port 443 --cidr <caller-ip>/32
+aws ec2 authorize-security-group-ingress --group-id sg-xxx \
+  --protocol tcp --port 80  --cidr <caller-ip>/32
+```
+
+Prefer a specific CIDR over `0.0.0.0/0` wherever you can.
+
+**4. Point DNS at a reachable address.** The published A records point at the VM's **private** IP, which is unroutable from the internet. For genuine public access those hostnames must resolve to the **public** IP — set `tls.publish_a_records: false` and manage those records yourself, or override them in your DNS provider.
+
+### Verifying the separation
+
+From a machine **not** on the VPN, once the above is done:
+
+```bash
+curl -I https://dev.<your-domain>       # → 200 / 302  (public environment)
+curl -I https://rancher.<your-domain>   # → 403        (admin stays private)
+```
+
+That `403` is Nginx rejecting the request on source IP. If you get anything else for the Rancher hostname, stop and check `/etc/nginx/sites-available/openg2p-infra.conf` still contains its `allow`/`deny all` block.
+
+{% hint style="warning" %}
+Reverting is symmetric: set `public: false` (and/or `public_access: false`), re-run the same stages, and close the security-group rules. The Nginx allowlist returns on the next run — it is generated, not hand-edited.
+{% endhint %}
 
 ## Adding another environment
 
