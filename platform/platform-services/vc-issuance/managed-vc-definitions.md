@@ -180,10 +180,19 @@ authoritative.
 
 ## Multiple credential types
 
-Already supported — `vcDefinitions` is a list, and `config_id` selects among
-them at issue time. What is missing is *managing* them, which is what this
-proposal adds. The Agent Portal already asks for the type when more than one is
-configured.
+Already supported — `vcDefinitions` is a list, each entry carrying its own view,
+claim columns, Certify config, SVG and `qr_data_label`. The register Job pushes
+every entry to Certify, the API exposes them via `get_vc_types`, and the Agent
+Portal asks the agent to choose when more than one is configured.
+
+The choice is made **before the lookup**, not at the issue step, because each
+definition names the registry **view** the beneficiary is resolved through — so
+`lookup_beneficiary`, `start_authentication` and `issue` all take `vc_type`. It
+is locked once a record is found: changing it afterwards would leave a record
+resolved in one view about to be issued against another.
+
+What is missing is *managing* the definitions, which is what this proposal
+adds.
 
 ## Deliberately out of scope
 

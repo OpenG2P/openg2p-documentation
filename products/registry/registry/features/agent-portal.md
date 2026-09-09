@@ -199,6 +199,22 @@ that authentication is re-checked at the moment of issue rather than trusted
 from an earlier screen — the window may well have elapsed while the agent was
 reading.
 
+### Issuing more than one credential type
+
+A registry can define several credential types — `vcDefinitions` is a list, and
+each entry carries its own registry **view**, claim columns, Certify config, card
+SVG and `qr_data_label`. No code change is needed to add one.
+
+The agent picks the credential in **step 1, before the look-up**, and the choice
+is locked once a record is found. That ordering is not cosmetic: the definition
+names the view the beneficiary is resolved through, so choosing later would mean
+looking someone up in one view and issuing them a credential built from another.
+`lookup_beneficiary`, `start_authentication` and `issue` therefore all carry
+`vc_type`.
+
+The selector only appears when more than one type is configured; with a single
+definition the flow is unchanged.
+
 ## Current functionality: Verifiable Credential verification
 
 A second card, **Verify VC**, gated by `register:verify_credential`.
