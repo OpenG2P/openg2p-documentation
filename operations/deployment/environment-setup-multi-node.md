@@ -34,7 +34,7 @@ Install `openg2p-commons-base` and `openg2p-commons-services` from the **Rancher
 
 If you installed the platform with the production automation:
 
-1. **Scaffolding** is Stage 4 of `openg2p-prod.sh` (runs at the end of a full install when `install_environment: true`). It creates the namespace, Rancher Project, Istio Gateway, Helm ClusterRepos (`openg2p` + `openg2p-gitlab`), and the external-PG secret. It uses an **SSH tunnel** to the Kubernetes API — **Wireguard is not required** for scaffolding.
+1. **Scaffolding** is Stage 4 of `openg2p-prod.sh` (runs at the end of a full install when `install_environment: true`). It creates the namespace, Rancher Project, Istio Gateway, Helm ClusterRepo (`openg2p`), and the external-PG secret. It uses an **SSH tunnel** to the Kubernetes API — **Wireguard is not required** for scaffolding.
 
 ```bash
 ./openg2p-prod.sh --config prod-config.yaml --stage environment

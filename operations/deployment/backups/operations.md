@@ -49,7 +49,7 @@ What it does, in order:
 5. **Per-group install** — gated by `groups.<name>` toggle and `--component` (when not `all`):
    * `pg`: pgBackRest on backup + storage, archive_command on PG, stanza-create, first full backup
    * `etcd`: RKE2 snapshot schedule (every 6h), initial on-demand snapshot, rsync-pull SSH trust + first pull to backup host
-   * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
+   * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default — re-verify against Rancher 2.15.1 / RKE2 v1.35.8+rke2r1), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
    * `nfs`: storage-node NFS export + `ufw` allow for backup host; read-only NFS mount on backup host via `_nfs_ensure_ro_mount` (stops stale automounts, rewrites fstab without `x-systemd.automount`, remounts; falls back to `/mnt/openg2p-nfs-ro-dr` after DR IP changes); restic repo init
    * `configs`: restic repo for configs
    * `objectstore` (opt-in): rclone + restic for MinIO/S3 — skipped when `groups.objectstore: false` (default)

@@ -35,7 +35,7 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 * Rancher uses local auth — admins are created directly in Rancher (no SSO). The OpenG2P apps' Keycloak is installed separately, per environment.
 * Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
 * NFS server + host PostgreSQL 16 on the Storage node.
-* **One OpenG2P environment scaffolding** (default name `prod`) — namespace, Rancher Project, Istio Gateway, OpenG2P Helm repos registered in Rancher (`openg2p` + `openg2p-gitlab`), and the external-PostgreSQL secret. On by default; toggle with `install_environment`. **Commons charts are not installed here** — install them from the **Rancher UI only**. See [The environment stage](./#the-environment-stage).
+* **One OpenG2P environment scaffolding** (default name `prod`) — namespace, Rancher Project, Istio Gateway, OpenG2P Helm repo registered in Rancher (`openg2p`), and the external-PostgreSQL secret. On by default; toggle with `install_environment`. **Commons charts are not installed here** — install them from the **Rancher UI only**. See [The environment stage](./#the-environment-stage).
 
 **What it does NOT do (yet):** Commons Helm install (**Rancher UI only**), product modules (Registry, PBMS, SPAR, G2P Bridge — install those via their own Helm charts after Commons is up), citizen-facing public hostnames and certs (opening public 80/443 is a separate step), local Docker registry, local Git, air-gap operation, backup automation. See [Reference → Out of scope](./#out-of-scope).
 
@@ -329,7 +329,7 @@ This section documents how the environment stage is **wired into the production 
 **What production scaffolding does (phase 1 only):**
 
 1. Opens an SSH tunnel to the Kubernetes API on compute and fetches kubeconfig
-2. Registers Helm ClusterRepos: `openg2p` (GitHub Rancher index) and `openg2p-gitlab` (GitLab Helm registry)
+2. Registers Helm ClusterRepo: `openg2p` (GitHub Rancher index)
 3. Creates the namespace and Rancher Project, the Istio Gateway for `*.<base_domain>`, and the external-PostgreSQL secret (password auto-read from the Storage node)
 
 **What it does _not_ do:** install `openg2p-commons-base` / `openg2p-commons-services`. That is done from the **Rancher UI only**.
@@ -634,11 +634,11 @@ Background detail — not needed to run the install. Useful when something goes 
 | --------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | OS              | Ubuntu Server 24.04 LTS                     | All three nodes                                                                                                                        |
 | Orchestrator    | bash + ssh + rsync                          | Runs on your laptop, no extra dependencies                                                                                             |
-| Kubernetes      | RKE2 v1.33.6                                | Single control-plane on the compute node                                                                                               |
+| Kubernetes      | RKE2 v1.35.8+rke2r1                         | Single control-plane on the compute node                                                                                               |
 | Service mesh    | Istio 1.24.1                                | Installed via `istioctl`                                                                                                               |
 | Helm            | v3.17.3                                     | + helm-diff plugin                                                                                                                     |
 | Helmfile        | v1.1.0                                      | Drives the platform component installs                                                                                                 |
-| Cluster manager | Rancher 2.12.3                              | In-cluster, with embedded Postgres                                                                                                     |
+| Cluster manager | Rancher 2.15.1                              | In-cluster, with embedded Postgres                                                                                                     |
 | Rancher auth    | Local authentication                        | Admin users created directly in Rancher; no external SSO. (The apps' Keycloak is per-environment, installed with Commons — not by production scaffolding.) |
 | Monitoring      | Rancher monitoring 105.0.0                  | Prometheus + Grafana                                                                                                                   |
 | Logging         | OpenTelemetry + Grafana Loki                | Cluster-wide log pipeline (OTel agent → gateway → Loki, backed by dedicated MinIO); replaces Fluentd/OpenSearch                        |
@@ -659,7 +659,7 @@ The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 | 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                                       |
 | 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip`                       |
 | 4 | Compute       | helmfile sync — Istio, Rancher (local auth, NFS-backed embedded Postgres), monitoring, logging                                                                                                     |
-| 5 | Laptop        | Environment scaffolding — Helm ClusterRepos (`openg2p`, `openg2p-gitlab`), namespace, Rancher Project, Istio Gateway, external-PG secret. Uses SSH tunnel to compute (**Wireguard not required**). Commons is **not** installed here. |
+| 5 | Laptop        | Environment scaffolding — Helm ClusterRepo (`openg2p`), namespace, Rancher Project, Istio Gateway, external-PG secret. Uses SSH tunnel to compute (**Wireguard not required**). Commons is **not** installed here. |
 
 ### Out of scope
 

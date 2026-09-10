@@ -197,11 +197,12 @@ versions:
   restic: "0.17.3"
   # Helm CHART version from charts.rancher.io — scheme <chartVersion>+up<appVersion>.
   # This is the CHART version, NOT the operator app version (there is no plain "7.0.0").
-  # 107.1.5+up8.1.5 → Rancher 2.12.x, Kubernetes 1.31–1.33.
+  # Default pin below was validated against older Rancher/K8s; re-check annotations
+  # for the current platform (Rancher 2.15.1 / RKE2 v1.35.8+rke2r1) before production use.
   rancher_backup_chart: "107.1.5+up8.1.5"
 ```
 
-Pinned to known-good versions. Bump after testing in a non-production environment. Choose a `rancher_backup_chart` whose `rancher-version` / `kube-version` annotations match your cluster:
+Pinned to known-good versions. Bump after testing in a non-production environment. Choose a `rancher_backup_chart` whose `rancher-version` / `kube-version` annotations match your cluster (OpenG2P production default: **Rancher 2.15.1**, **RKE2 v1.35.8+rke2r1**):
 
 ```bash
 helm search repo rancher-charts/rancher-backup --versions
