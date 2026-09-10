@@ -48,7 +48,7 @@ The library is the UI foundation for OpenG2P registry applications. It powers st
 * Program-specific schemas (attributes, tabs, and sections configured per register or program)
 * Capture beneficiary data required by a program without rewriting form UI
 * Tables and dialog-tables for repeating household/member-style records
-* Register lookup and ID authentication for cross-register and foundational ID flows
+* Register lookup, parent lookup, and ID authentication for cross-register, section hierarchy, and foundational ID flows
 {% endstep %}
 {% endstepper %}
 
@@ -66,9 +66,9 @@ Layouts follow **Section → Panel → Widget**:
 
 | Mode | Role |
 | --- | --- |
-| `RegistryView` | View registry data; edit one section at a time; save produces old/new change sets |
-| `CRView` | Review a change request; audit footer (`createdBy`, `createdDate`, `approvedBy`, `approvedDate`) |
-| `IntakeForm` | Accordion multi-section intake; draft vs locked; form handle for validate / get data |
+| `RegistryView` | View registry data; edit one section at a time; save produces old/new change sets (`records` + `section_files`) |
+| `CRView` | Review a change request; read-only (no Edit Details); NEW/OLD comparison |
+| `IntakeForm` | Accordion multi-section intake; draft vs locked; form handle for validate / get data; supporting documents skipped |
 
 CSS grid alignment, responsive stacking, and `section-column-span` / `widget-column-span` support multi-column registry layouts.
 
@@ -126,6 +126,8 @@ Option widgets load data from:
 * **API** sources via `service` + `endpoint` (or legacy `url`), resolved by the host’s `dataSourceRequestHandler`
 * **Schema** references inside `schemaData`
 
+Pass optional **`hostContext`** on `WidgetProvider` (string key/value map). Lookup widgets such as `parent-lookup` merge it into request params so the host can inject register/section ids without hard-coding them in every schema.
+
 Dependent loading uses `dependsOn` and/or **`widget-cascade`** (event bus: clear/reload child options when a parent changes). Geo hierarchy uses a dedicated API shape (`levelsEndpoint` + `valuesEndpoint`).
 
 ### Internationalization (i18n)
@@ -140,8 +142,8 @@ Translation is host-owned. Pass a `t` function to `WidgetProvider` (for example 
 
 | Category | Widgets |
 | --- | --- |
-| Input | `text`, `textarea`, `number`, `phone`, `date`, `datetime`, `file`, `select`, `multi-select`, `radio`, `checkbox`, `boolean`, `geo-hierarchy`, `docs` |
-| Selection / lookup | `register-lookup` |
+| Input | `text`, `textarea`, `number`, `phone`, `date`, `datetime`, `file`, `select`, `multi-select`, `radio`, `checkbox`, `boolean`, `geo-hierarchy` |
+| Selection / lookup | `register-lookup`, `parent-lookup` |
 | Display / identity | `display`, `profile`, `header-section`, `scores-display` |
 | Tables | `table`, `dialog-table` |
 | Domain | `id-authentication` |
@@ -158,14 +160,15 @@ Custom widgets register through `widgetRegistry` without changing core code.
 
 ### File and document handling
 
-* **`file`**: single/multiple upload, preview, serialization for storage
-* **`docs`**: fixed upload slots in a three-column layout, per-slot accept/max-size/required
-* **Section supporting documents**: section-level document config rendered alongside panels
+* **`file`**: single/multiple upload, preview, `StoredDocumentRef` hydration for already-stored docs
+* **Section supporting documents**: `section-supporting-documents` on the section config; each slot is rendered as a synthetic `file` widget (`document-data-path`, type, accept, max size, required, label)
+* Saves collect uploads into `section_files` (tagged `_profile` / `_supporting_docs` / `_direct_file`) separately from `records`
+* Supporting documents are shown in `RegistryView` / `CRView`; skipped for validation and file collection in `IntakeForm`
 
 ### Change request design and CRView
 
-* Section save callbacks receive structured old/new values
-* Dirty tracking and cancel/revert of in-progress edits
+* Section save callbacks receive structured old/new values (`SectionChanges`: `records` + optional `section_files`)
+* Dirty tracking and cancel/revert of in-progress edits (`replaceValues` for full revert)
 * CRView audit trail and read-only review
 * Integration points for backend CR create/approve workflows
 
@@ -175,6 +178,7 @@ Custom widgets register through `widgetRegistry` without changing core code.
 * **`scores-display`**: Sorted list of computed scores (type, value, time, triggering CR)
 * **`id-authentication`**: Initiate OIDC/provider auth; show status, expiry, foundational ID
 * **`register-lookup`**: Paginated search of another register; store linked record id
+* **`parent-lookup`**: Paginated parent-record picker (section hierarchy); merges `hostContext` into API params; compact mode for table columns
 * **`geo-hierarchy`**: Cascading geo levels with optional multi-column layout
 
 ### Section builder tooling
@@ -186,6 +190,7 @@ Custom widgets register through `widgetRegistry` without changing core code.
 * Centralized values, errors, touched, loading, and data-source options
 * `WidgetEventBus` + `useWidgetCascade` for cross-widget reload/clear
 * Optional `theme` on `WidgetProvider` (CSS variables for colors, section, panel, button, widget chrome)
+* Dynamic theme from the host application as well (registry branding passed through as `WidgetTheme`)
 * Tailwind-friendly class hooks; host controls overall look
 
 ### TypeScript-first design
@@ -196,17 +201,17 @@ Full types for configs, data sources, section modes, theme, and store. Zod peer 
 
 {% embed url="https://miro.com/app/board/uXjVGPIon0M=/?share_link_id=859507579636" %}
 
-**Application layer** — Host apps pass UI schemas into `SectionsContainer` / `SectionRenderer` / `WidgetRenderer`, choose mode (`RegistryView` | `CRView` | `IntakeForm`), and supply `dataSourceRequestHandler`, `schemaData`, `onSectionSave`, and optional `t` / `theme`.
+**Application layer** — Host apps pass UI schemas into `SectionsContainer` / `SectionRenderer` / `WidgetRenderer`, choose mode (`RegistryView` | `CRView` | `IntakeForm`), and supply `dataSourceRequestHandler`, `schemaData`, `onSectionSave`, and optional `t` / `theme` / `hostContext`.
 
 **Widget registry layer** — Maps widget names to React components. Defaults register on import; apps can add custom widgets.
 
-**Widget components layer** — Twenty-two built-in widgets plus any registered customs.
+**Widget components layer** — Twenty-two built-in widgets (including `parent-lookup` and `geo-hierarchy`) plus any registered customs.
 
 **Core hooks layer** — `useBaseWidget` (state, validation, conditions, data sources, formatting), `useWidgetCascade`, `useWidgetEventBus`, `useWidgetTheme`, and specialized hooks (for example `useGeoHierarchy`).
 
-**State management layer** — Redux store / widget slice as the single source of truth for form values and UI state.
+**State management layer** — Redux store / widget slice as the single source of truth for form values and UI state (`values`, `errors`, `touched`, `loading`, `dataSources`).
 
-**Utility layer** — Path utilities, validation, formatting, conditions, data-source helpers, file serialization/preview, schema translation, section validate/revert/snapshot.
+**Utility layer** — Path utilities, validation, formatting, conditions, data-source helpers, file serialization/preview / `StoredDocumentRef`, schema translation, section validate/revert/snapshot / `section_files`.
 
 #### Data flow
 
@@ -222,10 +227,10 @@ Full types for configs, data sources, section modes, theme, and store. Zod peer 
 * **Extensibility** — Registry plugins, cascade, and host API handler
 * **Type safety** — TypeScript + Zod
 * **i18n-ready** — Host `t` + schema translation utilities
-* **Domain fit** — Geo hierarchy, docs, register lookup, ID auth, scores, header
+* **Domain fit** — Geo hierarchy, section supporting documents, register/parent lookup, ID auth, scores, header
 
 ## Conclusion
 
-`@openg2p/registry-widgets` is a purpose-built foundation for OpenG2P registry UIs. Section modes, multi-path binding, host-driven APIs, conditional logic, and a registry-focused widget set (including geo hierarchy, documents, lookup, and authentication) cover registration, intake, viewing, and change-request review without sacrificing extensibility.
+`@openg2p/registry-widgets` is a purpose-built foundation for OpenG2P registry UIs. Section modes, multi-path binding, host-driven APIs (`dataSourceRequestHandler` + `hostContext`), conditional logic, and a registry-focused widget set (geo hierarchy, file uploads, register/parent lookup, and authentication) cover registration, intake, viewing, and change-request review without sacrificing extensibility.
 
-Use it when you need schema-driven forms that stay aligned with registry governance: section-level edits, auditable change sets, and production-ready widgets for identity, location, documents, and linked records.
+Use it when you need schema-driven forms that stay aligned with registry governance: section-level edits, auditable change sets (`records` + `section_files`), and production-ready widgets for identity, location, documents, and linked records.
