@@ -4,266 +4,164 @@ description: >-
   and referenced through postgres record
 ---
 
-# File Attachments
+# Document Storage
 
-File attachments in OpenG2P Registry are supporting documents (identity proofs, certificates, photos, and similar artifacts) that accompany registry mutations. Binary content lives in object storage; PostgreSQL holds a central catalog of metadata and thin junction rows that bind each document to a change request, intake submission, or live register section.
+Binary files (identity proofs, certificates, photos, templates, import payloads) are stored in **S3**. PostgreSQL holds a catalog row per object. Callers attach catalog ids to change requests, intake submissions, and live records; they never send file bytes on those APIs.
+
+How those catalog ids are bound to a section, and when they become live, is Document attachments. Staff usage is Documents.
 
 {% hint style="info" %}
-Every mutation to registry data flows through a [change request](https://docs.openg2p.org/products/registry/registry/design/change-management) (or an intake-form approval path). Documents are never written directly into live register tables without that approval step.
+Application code never talks to S3 directly. It uses [`DocumentHandler`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/helpers/document/document_handlers.py) from [`get_document_handler()`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/helpers/document/document_factory.py).
 {% endhint %}
 
 ### Design principles
 
-<table><thead><tr><th width="216">Principle</th><th>Description</th></tr></thead><tbody><tr><td>Catalog-centric</td><td>Every stored object has exactly one row in <code>g2p_registry_documents</code>. All other tables reference <code>document_id</code> (PK <code>g2p_registry_documents</code>) only.</td></tr><tr><td>Attach by reference</td><td>Upload is a separate step from business attachment. Change requests and intake submissions receive <code>{ document_id, label }</code> references, not file bytes.</td></tr><tr><td>Bucket-aware storage</td><td>Logical buckets (<code>documents</code>, <code>templates</code>, <code>data_import_files</code>, <code>default</code>) map 1:1 to physical object-store buckets. Validation rules are bucket-specific.</td></tr><tr><td>Labelled attachments</td><td>Junction and history rows require a human-readable <code>label</code> so the UI can show document slots without relying on filenames alone.</td></tr><tr><td>Promote on approval</td><td>Pending attachments on change requests / intake submissions become live section documents only when the request is approved.</td></tr><tr><td>Presigned access</td><td>Callers never receive long-lived storage credentials. Reads use short-lived presigned GET URLs (default expiry: one hour).</td></tr></tbody></table>
+<table><thead><tr><th width="192">Principle</th><th>Description</th></tr></thead><tbody><tr><td>Catalog-centric</td><td>Every stored object has one row in <code>g2p_registry_documents</code>. Other tables reference <code>document_id</code> only.</td></tr><tr><td>Upload is not attach</td><td><code>POST /documents/upload_documents</code> returns <code>{ document_id, … }</code>. Change requests and intake saves send that id, not bytes.</td></tr><tr><td>Bucket-aware</td><td>Logical buckets (<code>documents</code>, <code>templates</code>, <code>data_import_files</code>, <code>export-files</code>, <code>default</code>) map 1:1 to S3 buckets. Validation is per bucket.</td></tr><tr><td>Presigned reads</td><td>Callers never get long-lived storage credentials. Reads use short-lived presigned GET URLs (default one hour).</td></tr></tbody></table>
 
 ### Architecture
 
 ```mermaid
 flowchart LR
     subgraph clients [Clients]
-        SP[Staff Portal UI]
-        PA[Partner / ingest paths]
+        SP[Staff Portal]
+        PA[Partner / ingest]
     end
 
-    subgraph api [Staff Portal API]
+    subgraph api [Staff API]
         DC["/documents/*"]
-        CR[Change request APIs]
-        IF[Intake form APIs]
     end
 
     subgraph core [Registry core]
         DS[G2PDocumentService]
-        CRS[Change request service]
-        IFS[Intake form service]
-        DH[DocumentHandler factory]
+        DH[DocumentHandler]
     end
 
     subgraph stores [Stores]
-        PG[(PostgreSQL catalog + junctions)]
-        MO[(MinIO object storage)]
+        PG[(PostgreSQL catalog)]
+        S3[(S3 buckets)]
     end
 
     SP --> DC
-    SP --> CR
-    SP --> IF
-    PA --> CR
-    PA --> IF
+    PA --> DC
     DC --> DS
-    CR --> CRS
-    IF --> IFS
-    CRS --> DS
-    IFS --> DS
     DS --> DH
     DS --> PG
-    DH --> MO
+    DH --> S3
 ```
 
-#### Components
+| Component                                                                                                                                                                                  | Role                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| [`G2PDocumentController`](https://github.com/OpenG2P/registry-platform/blob/develop/apis/openg2p-registry-staff-api/src/openg2p_registry_staff_api/controllers/g2p_document_controller.py) | Staff API under `/documents`.                                             |
+| [`G2PDocumentService`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/services/g2p_document_service.py)                    | Catalog CRUD, junction queries, S3 via the handler.                       |
+| `DocumentHandler`                                                                                                                                                                          | `upload`, `download`, `delete`, `get_url`.                                |
+| Staff Portal                                                                                                                                                                               | `file` widgets collect bytes; save uploads first, then sends catalog ids. |
 
-| Component               | Role                                                                                                              |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `G2PDocumentController` | Staff Portal API surface under `/documents` for upload, get, delete, and entity-scoped listing.                   |
-| `G2PDocumentService`    | Single entry point for catalog CRUD, junction queries, and object-store operations.                               |
-| `DocumentHandler`       | Abstract storage interface (`upload`, `download`, `delete`, `get_url`).                                           |
-| `MinioClient`           | Default `DocumentHandler` implementation. Selected via `document_storage_backend` (default: `minio`).             |
-| Staff Portal widgets    | Schema-driven `docs` / `file` widgets collect files client-side; save flows upload first, then attach references. |
+### S3
 
-### Object storage
+`DocumentHandler.upload` puts an object and returns `document_store_id` (opaque hex UUID, used as the object key). The service then inserts the catalog row.
 
-Binary payloads are stored through the `DocumentHandler` abstraction. The factory resolves the active backend from configuration; MinIO is the default.
+Reads go through `get_url` (presigned GET). Optional read-only credentials can sign those URLs so write keys stay off download links.
 
 #### Logical buckets
 
-Bucket names are fixed by the `DocumentBucket` enum. The physical bucket name is always the enum value.
+Names are fixed by [`DocumentBucket`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/enum.py). The S3 bucket name is the enum value. They are not configurable.
 
-| Bucket              | Typical contents                                                    | Upload validation                                          |
-| ------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `documents`         | Supporting documents and record images attached to forms / sections | MIME, extension, and size limits (configurable)            |
-| `default`           | Fallback bucket when none is specified                              | Same profile as `documents`                                |
-| `templates`         | Jinja / JSON templates for ingest and outgest responses             | Text-oriented profile (e.g. `.json.j2`)                    |
-| `data_import_files` | Bulk import payloads                                                | No profile validation (import pipeline owns format checks) |
+| Bucket              | Typical contents                                  | Upload validation                             |
+| ------------------- | ------------------------------------------------- | --------------------------------------------- |
+| `documents`         | Section files, supporting evidence, record images | MIME, extension, size                         |
+| `default`           | Fallback when no bucket is given                  | Same as `documents`                           |
+| `templates`         | Ingest / outgest Jinja templates                  | Text profile (for example `.json.j2`)         |
+| `data_import_files` | Bulk import payloads                              | None at upload; import pipeline owns format   |
+| `export-files`      | Register export downloads                         | Handler only; export worker writes the object |
 
-#### Object identity
+#### Identifiers
 
-| Identifier          | Scope        | Description                                                                                                |
-| ------------------- | ------------ | ---------------------------------------------------------------------------------------------------------- |
-| `document_store_id` | Object store | Opaque hex UUID generated at upload time; used as the object key inside the bucket. Unique in the catalog. |
-| `document_id`       | PostgreSQL   | Catalog primary key (UUID string). Used by all junction tables and API payloads.                           |
+| Identifier          | Scope      | Description                                                  |
+| ------------------- | ---------- | ------------------------------------------------------------ |
+| `document_store_id` | S3         | Object key. Unique in the catalog.                           |
+| `document_id`       | PostgreSQL | Catalog primary key. Used on all junctions and API payloads. |
 
-Upload flow (handler side): ensure bucket exists → generate `document_store_id` → `put_object` → return store id. The service then inserts the catalog row and returns a `DocumentData` payload that includes a presigned URL.
+### Catalog: `g2p_registry_documents`
 
-### Data model
+| Column              | Description                     |
+| ------------------- | ------------------------------- |
+| `document_id`       | Primary key (UUID string)       |
+| `document_store_id` | S3 object key (unique, indexed) |
+| `bucket`            | `DocumentBucket` value          |
+| `source_filename`   | Original client filename        |
+| `created_by`        | Uploader                        |
+| `created_at`        | Upload time                     |
 
-#### Central catalog - `g2p_registry_documents`
+The catalog does **not** store a display label. Labels live on junction and history rows. See Document attachments.
 
-Every uploaded object has exactly one catalog row.
-
-| Column              | Description                                         |
-| ------------------- | --------------------------------------------------- |
-| `document_id`       | Primary key (UUID string)                           |
-| `document_store_id` | Object key in the storage backend (unique, indexed) |
-| `bucket`            | Logical / physical bucket name (`DocumentBucket`)   |
-| `source_filename`   | Original client filename                            |
-| `created_by`        | Identity of the uploader                            |
-| `created_at`        | Upload timestamp                                    |
-
-{% hint style="info" %}
-Templates for ingestion / outgestion and partner response templates also use this catalog (typically the `templates` bucket). Import queues and process logs reference the same `document_id` for bulk files.
-{% endhint %}
-
-#### Attachment junction tables
-
-Attachments are many-to-many links between a business entity and the catalog. Each junction row carries a required `label` and a `section_id` so documents stay scoped to the section that collected them.
-
-```mermaid
-erDiagram
-    g2p_registry_documents ||--o{ g2p_change_request_documents : "document_id"
-    g2p_registry_documents ||--o{ g2p_intake_section_documents : "document_id"
-    g2p_registry_documents ||--o{ g2p_register_section_documents : "document_id"
-    g2p_registry_documents ||--o{ g2p_register_document_history : "document_id"
-
-    g2p_change_request_documents {
-        string change_request_id PK
-        string document_id PK
-        string section_id
-        string label
-    }
-
-    g2p_intake_section_documents {
-        string submission_id PK
-        string document_id PK
-        string section_id
-        string label
-    }
-
-    g2p_register_section_documents {
-        string internal_record_id PK
-        string document_id PK
-        string section_id
-        string label
-    }
-
-    g2p_register_document_history {
-        string document_history_id PK
-        string internal_record_id
-        string section_id
-        string document_id
-        string label
-        string change_request_id
-        string submission_id
-    }
-```
-
-| Table                            | Binds documents to                    | Notes                                                                                  |
-| -------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------- |
-| `g2p_change_request_documents`   | A pending / historical change request | Composite PK: `(change_request_id, document_id)`                                       |
-| `g2p_intake_section_documents`   | An intake form submission section     | Composite PK: `(submission_id, document_id)`                                           |
-| `g2p_register_section_documents` | A live register record                | Composite PK: `(internal_record_id, document_id)` - the approved “current” set         |
-| `g2p_register_document_history`  | Audit of promotions to live           | One history row per promotion event; origin via `change_request_id` or `submission_id` |
-
-#### Wire attachment shape
-
-When creating or updating a change request or intake section, clients send references - not binary content:
-
-<table><thead><tr><th width="162">Field</th><th width="117">Required</th><th>Description</th></tr></thead><tbody><tr><td><code>document_id</code></td><td>Yes</td><td>Catalog id returned by upload</td></tr><tr><td><code>label</code></td><td>Yes</td><td>Display / slot label for the attachment</td></tr></tbody></table>
-
-API responses enrich catalog rows into `DocumentData`: catalog fields plus optional `presigned_url`, `section_id`, and `label` when loaded through a junction.
-
-### Lifecycle
-
-#### Upload then attach
+### Upload flow
 
 ```mermaid
 sequenceDiagram
     participant UI as Staff Portal
-    participant DocAPI as /documents/upload_documents
+    participant API as /documents/upload_documents
     participant DS as G2PDocumentService
-    participant Store as Object store
+    participant S3 as S3
     participant PG as PostgreSQL
-    participant Biz as Change request / Intake API
 
-    UI->>DocAPI: multipart files + bucket
-    DocAPI->>DS: upload_documents
+    UI->>API: multipart files + bucket
+    API->>DS: upload_documents
     DS->>DS: validate bytes (bucket profile)
-    DS->>Store: put_object(document_store_id)
+    DS->>S3: put_object(document_store_id)
     DS->>PG: INSERT g2p_registry_documents
     DS-->>UI: DocumentData[] (document_id + presigned_url)
-    UI->>Biz: save section with DocumentAttachment[]
-    Biz->>PG: upsert junction rows (document_id, label, section_id)
 ```
 
-1. The UI (or partner path) uploads files to `/documents/upload_documents`.
-2. The service validates content against the bucket profile, stores the object, and inserts the catalog row.
-3. The client includes `{ document_id, label }` on the subsequent change-request or intake save.
-4. The business service validates that catalog ids exist, then upserts junction rows for that section.
+1. Client posts one or more files and a `bucket` (default `documents`).
+2. Service validates against the bucket profile, puts the object, inserts the catalog row.
+3. Response is `DocumentData`: catalog fields plus a presigned URL.
 
-{% hint style="info" %}
-For intake drafts, `documents = null`  leaves attachments unchanged; `[]` clears the section’s attachments; a non-empty list is the desired full set (diff by `document_id`).
+{% hint style="warning" %}
+`delete_documents` is a hard cascade: S3 object, then every junction and history row for those ids, then the catalog row. Treat it as irreversible.
 {% endhint %}
 
-#### Promotion on approval
+### Staff API
 
-Pending attachments become live only after approval.
+Prefix `/documents` on Staff API.
 
-```mermaid
-flowchart TD
-    A[Pending attachments on CR or intake] --> B{Approved?}
-    B -->|No| C[Remain on junction only]
-    B -->|Yes| D[Write g2p_register_document_history]
-    D --> E[Upsert g2p_register_section_documents]
-    E --> F[Live section GETs resolve documents + presigned URLs]
-```
+| Method | Path                                      | Purpose                                            | Typical permission      |
+| ------ | ----------------------------------------- | -------------------------------------------------- | ----------------------- |
+| `POST` | `/documents/upload_documents`             | Multipart upload; returns catalog + presigned URLs | Authenticated uploader  |
+| `POST` | `/documents/get_documents`                | Catalog rows by `document_ids`                     | `register:view`         |
+| `POST` | `/documents/delete_documents`             | Hard-cascade delete                                | Authenticated           |
+| `POST` | `/documents/get_change_request_documents` | Header attachments on a change request             | `changeRequest:view`    |
+| `POST` | `/documents/get_intake_form_documents`    | Attachments on an intake submission                | `intakeSubmission:view` |
+| `POST` | `/documents/get_section_documents`        | Live attachments on a register record              | `register:view`         |
 
-| Origin                        | Promotion behaviour                                                                                                                           |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Change request approval       | For each CR document, write history and link (or refresh) live section documents for the target record id(s) derived from the change payload. |
-| Intake form approval / ingest | For each submission section document, write history (with `submission_id`) and upsert live section documents for the new or updated record.   |
+Upload accepts form field `bucket` and one or more files. Entity-scoped GETs join the catalog to the relevant junction and add `section_id` / `label`.
 
-Target record selection for change requests prefers `internal_record_id` values from the change payload (so child / household rows receive documents correctly). If none are present, the change request’s subject `internal_record_id` is used.
+Record images use the same upload path, then set `record_image_document_id` (or equivalent) on the register payload. Live record APIs batch-resolve those ids to presigned URLs.
 
-#### Delete
+### Validation
 
-`delete_documents` is a hard cascade:
+Applied **before** the object is stored. Profiles live in [`file_validation_profiles.py`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/helpers/file_validation_profiles.py).
 
-1. Remove objects from the storage backend.
-2. Delete junction and history rows that reference the ids.
-3. Delete catalog rows.
+| Bucket                  | Default rules (configurable)                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| `documents` / `default` | `png`, `jpg`, `jpeg`, `webp`, `pdf`; matching MIME types; max 10 MiB, with lower per-MIME caps for images |
+| `templates`             | Text / JSON MIME; template extensions; max 1 MiB                                                          |
+| `data_import_files`     | No upload-time profile                                                                                    |
 
-Callers should treat delete as irreversible and restrict it to unused or explicitly orphaned documents.
-
-### Staff Portal API
-
-Document endpoints are exposed on the Staff Portal API under the `/documents` prefix.
-
-<table><thead><tr><th width="99">Method</th><th>Path</th><th>Purpose</th><th>Typical permission</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/documents/upload_documents</code></td><td>Multipart upload into a bucket; returns catalog entries + presigned URLs</td><td>Authenticated uploader</td></tr><tr><td><code>POST</code></td><td><code>/documents/get_documents</code></td><td>Resolve catalog rows by <code>document_ids</code></td><td><code>register:view</code></td></tr><tr><td><code>POST</code></td><td><code>/documents/delete_documents</code></td><td>Hard-cascade delete</td><td>Authenticated (use carefully)</td></tr><tr><td><code>POST</code></td><td><code>/documents/get_change_request_documents</code></td><td>List attachments for a change request</td><td><code>changeRequest:view</code></td></tr><tr><td><code>POST</code></td><td><code>/documents/get_intake_form_documents</code></td><td>List attachments for an intake submission</td><td><code>intakeSubmission:view</code></td></tr><tr><td><code>POST</code></td><td><code>/documents/get_section_documents</code></td><td>List live attachments for a register record</td><td><code>register:view</code></td></tr></tbody></table>
-
-Upload accepts a `bucket` form field (default: `documents`) and one or more files. Entity-scoped get endpoints join the catalog to the relevant junction table and attach `section_id` / `label` on each returned document.
-
-### UI integration
-
-Supporting documents are schema-driven. Section UI schemas declare document slots (label, accept filter, max size, required). The widgets library renders:
-
-<table><thead><tr><th width="166">Widget</th><th>Role</th></tr></thead><tbody><tr><td><code>docs</code> widget</td><td>Multi-slot supporting documents layout (labels, upload controls, view / remove).</td></tr><tr><td><code>file</code> widget</td><td>Single-file slots derived from supporting-document metadata.</td></tr></tbody></table>
-
-On section save (register edit or intake):
-
-1. Collect local files from docs widgets (blobs are not persisted in the change payload).
-2. Upload via the shared upload helper → receive `document_id`s.
-3. Strip raw file blobs from the section records.
-4. Submit the change request / intake payload with `DocumentAttachment` references and labels.
-
-Record images (profile pictures) follow the same upload path: upload first, then set `record_image_document_id` (or equivalent) on the register payload. Live record and tab APIs batch-resolve image and section documents to presigned URLs for display.
-
-### Validations
-
-Upload validation is profile-driven and applied before the object is stored.
-
-<table><thead><tr><th width="242">Bucket</th><th>Default rules (configurable)</th></tr></thead><tbody><tr><td><code>documents</code> / <code>default</code></td><td>Extensions such as <code>png</code>, <code>jpg</code>, <code>jpeg</code>, <code>webp</code>, <code>pdf</code>; matching MIME types; overall max size (default 10 MiB) with optional per-MIME caps (images often lower than PDFs).</td></tr><tr><td><code>templates</code></td><td>Text / JSON MIME types; template extensions (e.g. <code>json.j2</code>); smaller max size (default 1 MiB).</td></tr><tr><td><code>data_import_files</code></td><td>No upload-time profile, format is owned by the import pipeline.</td></tr></tbody></table>
-
-Separate image profiles exist for icons and dashboard imagery (MIME, dimensions, and byte limits) outside the general document buckets.
+Separate image profiles exist for register icons and dashboard imagery (MIME, pixel bounds, byte limits). Those are not the `documents` bucket.
 
 ### Configuration
 
-<table><thead><tr><th width="284">Setting</th><th>Purpose</th></tr></thead><tbody><tr><td><code>document_storage_backend</code></td><td>Handler selection (default <code>minio</code>)</td></tr><tr><td><code>minio_endpoint</code> / <code>minio_access_key</code> / <code>minio_secret_key</code> / <code>minio_secure</code></td><td>MinIO connectivity</td></tr><tr><td><code>document_upload_allowed_extensions</code></td><td>Allowed extensions for document uploads</td></tr><tr><td><code>document_upload_allowed_mime_types</code></td><td>Allowed MIME types for document uploads</td></tr><tr><td><code>document_upload_max_bytes</code></td><td>Absolute max size for document uploads</td></tr><tr><td><code>document_upload_max_bytes_by_mime</code></td><td>Optional JSON map of per-MIME size caps</td></tr><tr><td><code>template_upload_*</code></td><td>Parallel settings for the <code>templates</code> bucket</td></tr></tbody></table>
+Env prefix `registry_core_`.
 
-Physical bucket names are not configurable; they always equal the `DocumentBucket` enum values.
+| Setting                              | Purpose                                             |
+| ------------------------------------ | --------------------------------------------------- |
+| `document_storage_backend`           | Which `DocumentHandler` implementation to construct |
+| S3 endpoint, access key, secret, TLS | Connectivity for the handler                        |
+| Optional read access key / secret    | Signs presigned GET; falls back to the write key    |
+| `document_upload_allowed_extensions` | `documents` / `default` extensions                  |
+| `document_upload_allowed_mime_types` | MIME allow-list                                     |
+| `document_upload_max_bytes`          | Absolute max size                                   |
+| `document_upload_max_bytes_by_mime`  | Optional JSON map of per-MIME caps                  |
+| `template_upload_*`                  | Same shape for the `templates` bucket               |
+
+S3 bucket names always equal `DocumentBucket` values.

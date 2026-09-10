@@ -2,30 +2,26 @@
 description: >-
   Phase 1 — agent-assisted issuance of a signed, printable credential (PDF with
   an offline-verifiable QR) from OpenG2P Registry data, gated by the
-  beneficiary's own eSignet authentication and verified with Inji Verify.
+  beneficiary's own eSignet authentication and verified w
 ---
 
 # Phase 1 — Paper Credential
 
-The lowest-common-denominator path: a citizen who owns **no device** receives a **printed credential**
-with an **offline-verifiable QR**, and a verifier validates it by scanning that QR. Wallets, Mimoto and
-OpenID4VCI redirect flows are **out of scope** for Phase 1.
+The lowest-common-denominator path: a citizen who owns **no device** receives a **printed credential** with an **offline-verifiable QR**, and a verifier validates it by scanning that QR. Wallets, Mimoto and OpenID4VCI redirect flows are **out of scope** for Phase 1.
 
-"Owns no device" refers to **holding** the credential. Issuance itself is **always gated by the
-beneficiary authenticating digitally** through eSignet — by **biometric at the agent's counter** (which
-requires nothing of the citizen) or by **OTP** to their phone.
+"Owns no device" refers to **holding** the credential. Issuance itself is **always gated by the beneficiary authenticating digitally** through eSignet — by **biometric at the agent's counter** (which requires nothing of the citizen) or by **OTP** to their phone.
 
 ## Actors
 
-| Actor | Role |
-|-------|------|
-| **Citizen (beneficiary)** | Receives and carries a **printed** credential. Authenticates once, in person, via **eSignet** to authorise the issuance. Holds nothing digital afterwards. |
-| **Agent** | Field/kiosk operator who performs the issuance. Logs in to the Agent Portal with **Keycloak in the `agent` realm**. Distinct from registry **staff** — different realm, different API, different portal. |
-| **Agent Portal API** | The issuance backend: resolves the citizen in the Registry, drives the beneficiary's eSignet authentication, **pushes** claims into Certify, renders the PDF and records the issuance. |
-| **eSignet** | Authenticates the **beneficiary** against the foundational ID system (biometric or OTP). Issues no credential; it only proves who is standing at the counter. |
-| **Inji Certify** | Issues + **signs** the VC and produces the **signed QR** payload. **Not connected to the Registry.** |
-| **OpenG2P Registry** | Source of claim data and of the record's identity/status; read **only by the Agent Portal API**. |
-| **Verifier** | A relying party (bank, ration shop, department) who **scans the QR** with **Inji Verify**. |
+| Actor                     | Role                                                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Citizen (beneficiary)** | Receives and carries a **printed** credential. Authenticates once, in person, via **eSignet** to authorise the issuance. Holds nothing digital afterwards.                                               |
+| **Agent**                 | Field/kiosk operator who performs the issuance. Logs in to the Agent Portal with **Keycloak in the `agent` realm**. Distinct from registry **staff** — different realm, different API, different portal. |
+| **Agent Portal API**      | The issuance backend: resolves the citizen in the Registry, drives the beneficiary's eSignet authentication, **pushes** claims into Certify, renders the PDF and records the issuance.                   |
+| **eSignet**               | Authenticates the **beneficiary** against the foundational ID system (biometric or OTP). Issues no credential; it only proves who is standing at the counter.                                            |
+| **Inji Certify**          | Issues + **signs** the VC and produces the **signed QR** payload. **Not connected to the Registry.**                                                                                                     |
+| **OpenG2P Registry**      | Source of claim data and of the record's identity/status; read **only by the Agent Portal API**.                                                                                                         |
+| **Verifier**              | A relying party (bank, ration shop, department) who **scans the QR** with **Inji Verify**.                                                                                                               |
 
 ## Issuance flow
 
@@ -62,34 +58,16 @@ requires nothing of the citizen) or by **OTP** to their phone.
 
 ### What each step guarantees
 
-* **The beneficiary must exist in the Registry.** The entry point is the citizen's **national ID**,
-  matched against the register's **`foundational_id`** (unique and indexed). No record, no credential.
-  A record whose `record_status` is not **`ACTIVE`** is refused. `foundational_id` is **required** for
-  VC issuance — a record ingested without one cannot be issued a credential.
-* **Digital authentication is mandatory.** The beneficiary authenticates *themselves* through eSignet.
-  Whether that is a **biometric** capture at the counter or an **OTP** to their phone is determined by
-  what the deployment has configured — eSignet's own UI handles capture, including the biometric device.
-* **The authentication is bound to the record.** The subject returned by eSignet (`individual_id`) is
-  checked against the `foundational_id` of the record being issued. Without this check an agent could
-  pair one person's authentication with another person's record.
-* **The authorisation is short-lived.** Issuance proceeds only while the authentication is
-  `SUCCESS` **and** within the configured VC window (default **5 minutes**) measured from
-  `completed_at`. The window is **VC configuration**, deliberately independent of any expiry the
-  authentication record carries for other consumers.
-* **Issuance is keyed on `internal_record_id`**, not on a value the agent typed. The national ID only
-  *finds* the record; the authenticated record identity is what the credential is built from.
-* **The Agent Portal API owns the Registry lookup.** It reads the claims and **pushes** them into
-  Certify; Certify never connects to the Registry, keeping the issuer decoupled from registry data.
-* **Server-side issuance.** The backend drives Certify directly (a trusted machine-to-machine call)
-  via the OpenID4VCI **pre-authorized-code** grant; there is no device holder key — the credential is a
-  **bearer document** whose trust comes from the **issuer's signature**.
-* **Every issuance is recorded.** The Registry keeps an issuance **event log** — which record, which
-  credential id, which authentication, which agent, when. It stores a *reference*, never a copy of the
-  credential or its claims.
-* **The agent downloads the PDF.** It is streamed to the agent's browser, printed on whatever printer
-  the counter has, and handed over.
-* **Re-issue on demand.** A lost or stale credential is simply **re-issued** — a fresh authentication,
-  a new credential, linked to the previous one in the issuance log.
+* **The beneficiary must exist in the Registry.** The entry point is the citizen's **national ID**, matched against the register's **`foundational_id`** (unique and indexed). No record, no credential. A record whose `record_status` is not **`ACTIVE`** is refused. `foundational_id` is **required** for VC issuance — a record ingested without one cannot be issued a credential.
+* **Digital authentication is mandatory.** The beneficiary authenticates _themselves_ through eSignet. Whether that is a **biometric** capture at the counter or an **OTP** to their phone is determined by what the deployment has configured — eSignet's own UI handles capture, including the biometric device.
+* **The authentication is bound to the record.** The subject returned by eSignet (`individual_id`) is checked against the `foundational_id` of the record being issued. Without this check an agent could pair one person's authentication with another person's record.
+* **The authorisation is short-lived.** Issuance proceeds only while the authentication is `SUCCESS` **and** within the configured VC window (default **5 minutes**) measured from `completed_at`. The window is **VC configuration**, deliberately independent of any expiry the authentication record carries for other consumers.
+* **Issuance is keyed on `internal_record_id`**, not on a value the agent typed. The national ID only _finds_ the record; the authenticated record identity is what the credential is built from.
+* **The Agent Portal API owns the Registry lookup.** It reads the claims and **pushes** them into Certify; Certify never connects to the Registry, keeping the issuer decoupled from registry data.
+* **Server-side issuance.** The backend drives Certify directly (a trusted machine-to-machine call) via the OpenID4VCI **pre-authorized-code** grant; there is no device holder key — the credential is a **bearer document** whose trust comes from the **issuer's signature**.
+* **Every issuance is recorded.** The Registry keeps an issuance **event log** — which record, which credential id, which authentication, which agent, when. It stores a _reference_, never a copy of the credential or its claims.
+* **The agent downloads the PDF.** It is streamed to the agent's browser, printed on whatever printer the counter has, and handed over.
+* **Re-issue on demand.** A lost or stale credential is simply **re-issued** — a fresh authentication, a new credential, linked to the previous one in the issuance log.
 
 ## Presentation & verification
 
@@ -99,116 +77,52 @@ requires nothing of the citizen) or by **OTP** to their phone.
                                                               trust anchor  → ✅/❌
 ```
 
-**What "offline" does and does not mean here.** The *signature check* needs no
-call back to OpenG2P: the verifier holds the issuer key already. But **Inji
-Verify is a web portal**, not a phone app — the verifying organisation hosts it
-and a verifier uses it in a browser, by webcam or by uploading a photo of the
-paper. A browser still has to load that page. A genuinely disconnected counter
-needs Inji Verify's **SDK** (a React/NPM module) embedded in an installed
-application. Inji **Wallet** is the phone app, and it is a *holder* app: it
-stores the owner's own credentials and does not verify someone else's paper.
+**What "offline" does and does not mean here.** The _signature check_ needs no call back to OpenG2P: the verifier holds the issuer key already. But **Inji Verify is a web portal**, not a phone app — the verifying organisation hosts it and a verifier uses it in a browser, by webcam or by uploading a photo of the paper. A browser still has to load that page. A genuinely disconnected counter needs Inji Verify's **SDK** (a React/NPM module) embedded in an installed application. Inji **Wallet** is the phone app, and it is a _holder_ app: it stores the owner's own credentials and does not verify someone else's paper.
 
-**Before any of this works, two things must be true**, and neither happens on
-its own:
+**Before any of this works, two things must be true**, and neither happens on its own:
 
-1. a verifier deployment exists (nothing verifies a credential until a relying
-   party stands one up); and
-2. the OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor** —
-   take it from `https://<certify-host>/.well-known/jwks.json` (the Certify
-   chart rewrites that well-known path onto Certify's own
-   `/v1/certify/.well-known/jwks.json`).
+1. a verifier deployment exists (nothing verifies a credential until a relying party stands one up); and
+2. the OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor** — take it from `https://<certify-host>/.well-known/jwks.json` (the Certify chart rewrites that well-known path onto Certify's own `/v1/certify/.well-known/jwks.json`).
 
-> **Verified.** A claim-169 QR issued by our Certify verifies against Inji
-> Verify's `verify-service` end to end — `SUCCESS` for a genuine credential,
-> `INVALID` for a tampered or re-signed one. The Agent Portal's **Verify VC**
-> screen does exactly this; see [Verification](verification.md).
+> **Verified.** A claim-169 QR issued by our Certify verifies against Inji Verify's `verify-service` end to end — `SUCCESS` for a genuine credential, `INVALID` for a tampered or re-signed one. The Agent Portal's **Verify VC** screen does exactly this; see [Verification](verification.md).
 
-* **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
-  **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used
-  by mDL / COVID certificates. Inji Certify supports this **natively** (no plugin) via the
-  `credential_config` columns **`qr_settings` + `qr_signature_algo`**: each `qr_settings` entry is a
-  Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
-  COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
-  `claim169` field.
-* **There is no identifier key in claim 169.** The registry PixelPass ships
-  (`CLAIM_169_KEY_MAPPER`, compiled into `pixelpass-jar-0.8.0` — a Kotlin
-  constant, not a config file, and Certify exposes no property to extend it)
-  covers Version, Language, the name fields, Date of Birth, Gender, Address,
-  contact details, biometrics, and a generic `Data` / `Data format` /
-  `Data sub format` / `Data issuer` group. **No ID, UIN or document number.**
+* **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used by mDL / COVID certificates. Inji Certify supports this **natively** (no plugin) via the `credential_config` columns **`qr_settings` + `qr_signature_algo`**: each `qr_settings` entry is a Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a `claim169` field.
+*   **There is no identifier key in claim 169.** The registry PixelPass ships (`CLAIM_169_KEY_MAPPER`, compiled into `pixelpass-jar-0.8.0` — a Kotlin constant, not a config file, and Certify exposes no property to extend it) covers Version, Language, the name fields, Date of Birth, Gender, Address, contact details, biometrics, and a generic `Data` / `Data format` / `Data sub format` / `Data issuer` group. **No ID, UIN or document number.**
 
-  The labels written in `qrSettings` are rewritten to their registry **numbers**
-  on the way into the CBOR, so an invented label is not a small liberty — it
-  leaves the format.
+    The labels written in `qrSettings` are rewritten to their registry **numbers** on the way into the CBOR, so an invented label is not a small liberty — it leaves the format.
 
-  The registry's id therefore travels in **`Data`**, and in `Data` ALONE:
+    The registry's id therefore travels in **`Data`**, and in `Data` ALONE:
 
-  ```yaml
-  qrSettings:
-    - claim169:
-        Version: '1.0'
-        Language: eng
-        Full Name: '${fullName}'
-        Date of Birth: '${dateOfBirth}'
-        Gender: '${gender}'
-        Data: '${functionalRecordId}'
-  ```
+    ```yaml
+    qrSettings:
+      - claim169:
+          Version: '1.0'
+          Language: eng
+          Full Name: '${fullName}'
+          Date of Birth: '${dateOfBirth}'
+          Gender: '${gender}'
+          Data: '${functionalRecordId}'
+    ```
 
-  {% hint style="danger" %}
-  **Do not add `Data issuer` (or `Data format` / `Data sub format`) at the top
-  level.** PixelPass numbers the `Data*` group in its **own** key space — `Data`=0,
-  `Data format`=1, `Data sub format`=2, `Data issuer`=3 — not the top-level
-  attribute space. Written at the top level, `Data issuer` becomes **key 3, which
-  is Language**: it silently replaces `eng` with whatever string you set, and the
-  language is lost from every credential issued.
+    <div data-gb-custom-block data-tag="hint" data-style="danger" class="hint hint-danger"><p><strong>Do not add <code>Data issuer</code> (or <code>Data format</code> / <code>Data sub format</code>) at the top level.</strong> PixelPass numbers the <code>Data*</code> group in its <strong>own</strong> key space — <code>Data</code>=0, <code>Data format</code>=1, <code>Data sub format</code>=2, <code>Data issuer</code>=3 — not the top-level attribute space. Written at the top level, <code>Data issuer</code> becomes <strong>key 3, which is Language</strong>: it silently replaces <code>eng</code> with whatever string you set, and the language is lost from every credential issued.</p><p>Observed on a real issued QR, whose decoded map was <code>{0: '&#x3C;record id>', 2: '1.0', 3: 'OpenG2P Farmer Registry', 4: …}</code> — key 3 should have been <code>eng</code>.</p></div>
 
-  Observed on a real issued QR, whose decoded map was
-  `{0: '<record id>', 2: '1.0', 3: 'OpenG2P Farmer Registry', 4: …}` — key 3
-  should have been `eng`.
-  {% endhint %}
+    `Data` itself lands on **key 0**, which is outside the standard top-level attribute numbering but collides with nothing, so the id rides safely. A stock verifier shows it as "Data"; the Agent Portal relabels it using the `qr_data_label` on the credential definition (see below).
 
-  `Data` itself lands on **key 0**, which is outside the standard top-level
-  attribute numbering but collides with nothing, so the id rides safely. A stock
-  verifier shows it as "Data"; the Agent Portal relabels it using the
-  `qr_data_label` on the credential definition (see below).
+    **It has to be in the QR to be worth anything:** the QR is all an offline verifier sees, so an id living only in the JSON-LD credential cannot be checked against the card in the field. Without it, a genuine QR paired with a card showing someone else's id still verifies.
 
-  **It has to be in the QR to be worth anything:** the QR is all an offline
-  verifier sees, so an id living only in the JSON-LD credential cannot be checked
-  against the card in the field. Without it, a genuine QR paired with a card
-  showing someone else's id still verifies.
+    **The platform does not name the id.** The Registry Platform serves every manifestation, so "Farmer ID" would be wrong for all but one of them. Each registry supplies the label on its credential definition:
 
-  **The platform does not name the id.** The Registry Platform serves every
-  manifestation, so "Farmer ID" would be wrong for all but one of them. Each
-  registry supplies the label on its credential definition:
+    ```yaml
+    vcDefinitions:
+      - config_id: OpenG2PFarmerCredential
+        qr_data_label: "Farmer ID"     # shown on the verification screen
+    ```
 
-  ```yaml
-  vcDefinitions:
-    - config_id: OpenG2PFarmerCredential
-      qr_data_label: "Farmer ID"     # shown on the verification screen
-  ```
-
-  Unset, the verification screen shows the neutral `ID`.
-* **Where the verifying key comes from.** The signed QR is a **COSE_Sign1 / CWT**, and claim-169
-  verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be
-  identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise
-  the verifier is assumed to hold a **pre-loaded trust anchor**.
-  **What OpenG2P actually emits carries no certificate**: the header holds only `alg` (ES256) and a
-  `kid`. So the verifier needs the ES256 key from
-  **`https://<certify-host>/.well-known/jwks.json`** — published there for every configured key,
-  unlike `did.json`, which carries the Ed25519 proof key only. Either way, no call back to
-  OpenG2P at scan time. (The **JSON-LD VC** — not the QR — uses
-  `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.) See
-  [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
+    Unset, the verification screen shows the neutral `ID`.
+* **Where the verifying key comes from.** The signed QR is a **COSE\_Sign1 / CWT**, and claim-169 verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise the verifier is assumed to hold a **pre-loaded trust anchor**. **What OpenG2P actually emits carries no certificate**: the header holds only `alg` (ES256) and a `kid`. So the verifier needs the ES256 key from **`https://<certify-host>/.well-known/jwks.json`** — published there for every configured key, unlike `did.json`, which carries the Ed25519 proof key only. Either way, no call back to OpenG2P at scan time. (The **JSON-LD VC** — not the QR — uses `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.) See [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
 
 {% hint style="info" %}
-**Photograph in the QR is deferred to Phase 2.** A QR is hard-capped at **~2.9 KB**, but claim 169 can
-carry a **low-resolution face thumbnail** by combining a modern codec (attribute 62 allows
-**WEBP / AVIF / JPEG / PNG / WSQ** — WEBP/AVIF give a recognisable face in **~1–2 KB**),
-**integer-keyed CBOR**, **zlib/Brotli** compression and **Base45** packing. It is recognition-grade,
-not high-resolution — the same approach as Aadhaar's Secure QR. When adopted, the photo will be
-solicited as part of the **eSignet KYC response** (the ID system's own photograph, matching what the
-beneficiary was authenticated against) and pushed to Certify as the `face` claim; Certify never fetches
-images. See [Phase 2 — Device Wallet](phase-2-device-wallet.md).
+**Photograph in the QR is deferred to Phase 2.** A QR is hard-capped at **\~2.9 KB**, but claim 169 can carry a **low-resolution face thumbnail** by combining a modern codec (attribute 62 allows **WEBP / AVIF / JPEG / PNG / WSQ** — WEBP/AVIF give a recognisable face in **\~1–2 KB**), **integer-keyed CBOR**, **zlib/Brotli** compression and **Base45** packing. It is recognition-grade, not high-resolution — the same approach as Aadhaar's Secure QR. When adopted, the photo will be solicited as part of the **eSignet KYC response** (the ID system's own photograph, matching what the beneficiary was authenticated against) and pushed to Certify as the `face` claim; Certify never fetches images. See [Phase 2 — Device Wallet](phase-2-device-wallet.md).
 {% endhint %}
 
 ## Architecture & components (Phase 1)
@@ -229,30 +143,16 @@ images. See [Phase 2 — Device Wallet](phase-2-device-wallet.md).
  Verifier (separate):   Inji Verify ── scans QR ── validates vs issuer trust anchor (offline)
 ```
 
-* **Agent Portal API** — the issuance backend, part of the **Registry Platform** so every registry
-  manifestation inherits it. Ships **disabled by default** and is switched on per deployment.
-* **Agent authentication** — `iam-agent-portal-api` (IAM service) against the Keycloak **`agent`**
-  realm. Issuance itself is permission-gated on the Agent Portal API.
-* **Beneficiary authentication** — the Registry's **registrant-authentication** subsystem with an
-  **eSignet** provider. The same subsystem staff already use; the VC flow adds its own time window.
-* **Inji Certify** — the issuer (used **stock**, no custom plugin). Builds the VC from a Velocity
-  template and signs with its **embedded keymanager (PKCS12 `.p12`, no HSM)**. Certify's built-in
-  **`PreAuthDataProviderPlugin`** makes the **pushed claims the credential subject** — so Certify needs
-  **no Registry access**. (A custom pull connector exists for the wallet flow; see
-  [Registry Data Connector](registry-data-connector.md).)
+* **Agent Portal API** — the issuance backend, part of the **Registry Platform** so every registry manifestation inherits it. Ships **disabled by default** and is switched on per deployment.
+* **Agent authentication** — `iam-agent-portal-api` (IAM service) against the Keycloak **`agent`** realm. Issuance itself is permission-gated on the Agent Portal API.
+* **Beneficiary authentication** — the Registry's **registrant-authentication** subsystem with an **eSignet** provider. The same subsystem staff already use; the VC flow adds its own time window.
+* **Inji Certify** — the issuer (used **stock**, no custom plugin). Builds the VC from a Velocity template and signs with its **embedded keymanager (PKCS12 `.p12`, no HSM)**. Certify's built-in **`PreAuthDataProviderPlugin`** makes the **pushed claims the credential subject** — so Certify needs **no Registry access**. (A custom pull connector exists for the wallet flow; see [Registry Data Connector](registry-data-connector.md).)
 * **Agent web portal** — a thin reference client proving the chain, following OpenG2P UI conventions.
-* **Inji Verify** — the verifier side. NOT a phone app: it is a **web portal** the
-  verifying organisation deploys (scan by webcam, or upload a photo/scan of the
-  paper), plus an **SDK** (a React/NPM module) for embedding the same
-  scan-and-verify into a relying party's own application. The citizen installs
-  nothing; the *verifier* runs it. Inji **Wallet** is the phone app, and it is a
-  holder app — it stores your own credentials, it does not verify someone
-  else's paper.
+* **Inji Verify** — the verifier side. NOT a phone app: it is a **web portal** the verifying organisation deploys (scan by webcam, or upload a photo/scan of the paper), plus an **SDK** (a React/NPM module) for embedding the same scan-and-verify into a relying party's own application. The citizen installs nothing; the _verifier_ runs it. Inji **Wallet** is the phone app, and it is a holder app — it stores your own credentials, it does not verify someone else's paper.
 
 ## What a registry manifestation must supply
 
-The Registry Platform owns the service, the chart and the contract. Each manifestation (NSR, Farmer
-Registry, …) supplies what is specific to it, because the fields differ:
+The Registry Platform owns the service, the chart and the contract. Each manifestation (NSR, Farmer Registry, …) supplies what is specific to it, because the fields differ:
 
 * the **VC view** exposing the claim columns, keyed on `internal_record_id`;
 * its **VC definitions** — credential type, template, fields, scope;
@@ -261,50 +161,35 @@ Registry, …) supplies what is specific to it, because the fields differ:
 
 ### Why a view, and not the tables
 
-The Agent Portal API is part of the **platform**, not of any one registry. It
-cannot know that a farmer's land parcels live in one table and a household's
-members in another — those tables are declared by the manifestation's extension,
-and `G2PRegister` itself is abstract. A view is what lets one platform service
-serve every manifestation without importing any of their models.
+The Agent Portal API is part of the **platform**, not of any one registry. It cannot know that a farmer's land parcels live in one table and a household's members in another — those tables are declared by the manifestation's extension, and `G2PRegister` itself is abstract. A view is what lets one platform service serve every manifestation without importing any of their models.
 
 It also does three things a direct table read would not:
 
-* **flattens** whatever joins the claims need into one row per record, so the
-  service never has to know the shape underneath;
-* **filters** — the view exposes only the columns that may become claims, so a
-  column added to a register does not silently become a credential field;
-* **keys** the record consistently on `internal_record_id`, whatever the
-  manifestation's own primary keys look like.
+* **flattens** whatever joins the claims need into one row per record, so the service never has to know the shape underneath;
+* **filters** — the view exposes only the columns that may become claims, so a column added to a register does not silently become a credential field;
+* **keys** the record consistently on `internal_record_id`, whatever the manifestation's own primary keys look like.
 
 ### The view contract
 
-Five column names are **reserved**. What becomes a **claim** depends on whether
-the VC definition sets `claim_columns`:
+Five column names are **reserved**. What becomes a **claim** depends on whether the VC definition sets `claim_columns`:
 
-| Column | Required | Meaning |
-|---|---|---|
-| `internal_record_id` | yes | the record key; what claims are fetched by |
-| `foundational_id` | yes | the national ID; what the beneficiary's authenticated subject is checked against |
-| `record_status` | should | only `ACTIVE` records may be issued a credential |
-| `record_name` | optional | shown to the agent after look-up, so they can confirm the right person |
-| `register_id` | optional | recorded on the issuance log |
+| Column               | Required | Meaning                                                                          |
+| -------------------- | -------- | -------------------------------------------------------------------------------- |
+| `internal_record_id` | yes      | the record key; what claims are fetched by                                       |
+| `foundational_id`    | yes      | the national ID; what the beneficiary's authenticated subject is checked against |
+| `record_status`      | should   | only `ACTIVE` records may be issued a credential                                 |
+| `record_name`        | optional | shown to the agent after look-up, so they can confirm the right person           |
+| `register_id`        | optional | recorded on the issuance log                                                     |
 
-**With `claim_columns` set** (what the Farmer Registry does), only those columns
-are stamped into the credential — a column added to the view is *not* issued
-unless the definition asks for it by name, and a configured column that the view
-does not expose is a hard error at issue time rather than a silently missing
-field.
+**With `claim_columns` set** (what the Farmer Registry does), only those columns are stamped into the credential — a column added to the view is _not_ issued unless the definition asks for it by name, and a configured column that the view does not expose is a hard error at issue time rather than a silently missing field.
 
-**Without it**, every non-reserved column becomes a claim, and the view alone is
-the claim list.
+**Without it**, every non-reserved column becomes a claim, and the view alone is the claim list.
 
-The explicit list is the safer default: it means widening a view for reporting
-cannot quietly widen what is printed on a citizen's credential.
+The explicit list is the safer default: it means widening a view for reporting cannot quietly widen what is printed on a citizen's credential.
 
 ### How a column becomes a credential field
 
-The column name is the link. The credential template refers to variables as
-`${...}`, and the view's column names must match them:
+The column name is the link. The credential template refers to variables as `${...}`, and the view's column names must match them:
 
 ```sql
 -- farmer_vc_view
@@ -316,36 +201,22 @@ select f.internal_record_id,
 from   g2p_register_farmers f;
 ```
 
-Two details bite in Postgres: camelCase aliases must be **double-quoted** or
-they fold to lowercase and stop matching `${fullName}`; and dates should be
-rendered to text, so the claim is a clean string rather than a serialised date
-object. The API stringifies any non-string value before pushing it, so an
-un-cast date still issues — it just issues Python's rendering of it.
+Two details bite in Postgres: camelCase aliases must be **double-quoted** or they fold to lowercase and stop matching `${fullName}`; and dates should be rendered to text, so the claim is a clean string rather than a serialised date object. The API stringifies any non-string value before pushing it, so an un-cast date still issues — it just issues Python's rendering of it.
 
-If a template variable has no matching column, Certify returns the credential
-with the literal `${...}` still in it. The Agent Portal API **rejects** such a
-credential rather than printing it — an unresolved placeholder on a citizen's
-paper credential is worse than a failed issuance.
+If a template variable has no matching column, Certify returns the credential with the literal `${...}` still in it. The Agent Portal API **rejects** such a credential rather than printing it — an unresolved placeholder on a citizen's paper credential is worse than a failed issuance.
 
 ### Who reads it, and when
 
 Only the **Agent Portal API**, twice in one issuance:
 
-1. at **look-up**, by `foundational_id`, to find the record and confirm it is
-   `ACTIVE`;
-2. at **issue**, by `internal_record_id`, to read the claims that are pushed to
-   Certify.
+1. at **look-up**, by `foundational_id`, to find the record and confirm it is `ACTIVE`;
+2. at **issue**, by `internal_record_id`, to read the claims that are pushed to Certify.
 
-Inji Certify never reads it. In Phase 1 claims are *pushed* to Certify, so
-Certify holds no database credentials and needs no access to the registry at
-all. (Certify's own `registrydb` data-provider plugin — which would read a view
-directly — is a different, wallet-oriented path; see
-[Registry Data Connector](registry-data-connector.md).)
+Inji Certify never reads it. In Phase 1 claims are _pushed_ to Certify, so Certify holds no database credentials and needs no access to the registry at all. (Certify's own `registrydb` data-provider plugin — which would read a view directly — is a different, wallet-oriented path; see [Registry Data Connector](registry-data-connector.md).)
 
 ## Where the credential template lives
 
-The template is part of the manifestation's **VC definition**, in its Helm
-values — not in code and not in the database:
+The template is part of the manifestation's **VC definition**, in its Helm values — not in code and not in the database:
 
 ```yaml
 agentPortalApi:
@@ -359,100 +230,58 @@ agentPortalApi:
         vcTemplateJson: ...                   # the JSON-LD credential template
 ```
 
-It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the
-`credential-config-register` Job**, which POSTs each definition to Certify on
-install and upgrade. Certify can only issue a credential type it already knows,
-so a type that was never registered fails at the first issuance on an unknown
-`credential_configuration_id`.
+It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the `credential-config-register` Job**, which POSTs each definition to Certify on install and upgrade. Certify can only issue a credential type it already knows, so a type that was never registered fails at the first issuance on an unknown `credential_configuration_id`.
 
-Certify is what substitutes the `${...}` variables, using the claims the Agent
-Portal API pushed.
+Certify is what substitutes the `${...}` variables, using the claims the Agent Portal API pushed.
 
 ## Where the PDF is made
 
 In the **Agent Portal API**, not in Certify and not in the browser.
 
-Certify returns a signed JSON-LD credential with the compact claim-169 QR
-payload inside it. The API then renders the printable card itself, with
-`cairosvg`, from the manifestation's **SVG card design** — shipped as a
-ConfigMap and mounted at `/app/pdf-templates`, so a designer can restyle the
-card without touching code or rebuilding an image. If no SVG is configured the
-API falls back to a plain layout, so a missing design file never blocks an
-issuance.
+Certify returns a signed JSON-LD credential with the compact claim-169 QR payload inside it. The API then renders the printable card itself, with `cairosvg`, from the manifestation's **SVG card design** — shipped as a ConfigMap and mounted at `/app/pdf-templates`, so a designer can restyle the card without touching code or rebuilding an image. If no SVG is configured the API falls back to a plain layout, so a missing design file never blocks an issuance.
 
-The PDF is **streamed straight to the agent's browser** as a download and is
-never written to the pod, so any replica can serve any request. The issuance
-identifiers travel in response headers (`X-Issuance-Id`, `X-Credential-Id`) for
-the client to display or log.
+The PDF is **streamed straight to the agent's browser** as a download and is never written to the pod, so any replica can serve any request. The issuance identifiers travel in response headers (`X-Issuance-Id`, `X-Credential-Id`) for the client to display or log.
 
 ## The portal the agent uses
 
-This page is the *credential* design. The portal itself — its own Keycloak
-`agent` realm, why agents are not staff, how the browser is authenticated
-without ever holding a token, and how the portal grows beyond issuance — is
-documented with the Registry Platform:
+This page is the _credential_ design. The portal itself — its own Keycloak `agent` realm, why agents are not staff, how the browser is authenticated without ever holding a token, and how the portal grows beyond issuance — is documented with the Registry Platform:
 
 → [Agent Portal](../../../products/registry/registry/features/agent-portal.md)
 
 ## Master Data Service
 
-**VC issuance does not use MDS at run time.** The Agent Portal API holds no
-Master Data configuration at all: claims come from the registry's own VC view,
-and nothing in the look-up → authenticate → issue path calls MDS.
+**VC issuance does not use MDS at run time.** The Agent Portal API holds no Master Data configuration at all: claims come from the registry's own VC view, and nothing in the look-up → authenticate → issue path calls MDS.
 
 MDS is involved before and after, not during:
 
-* **at seed time**, a registry's `db-seed` reads geography and country code
-  lists from the MDS API to populate its own attribute tables;
-* **in reporting**, dashboards join registry data to geography held in Master
-  Data.
+* **at seed time**, a registry's `db-seed` reads geography and country code lists from the MDS API to populate its own attribute tables;
+* **in reporting**, dashboards join registry data to geography held in Master Data.
 
 So a Master Data outage does not stop credentials being issued.
 
 ## Two documents, two signatures, two keys
 
-An issuance produces **two separately signed documents**, not one shown two ways:
-the **JSON-LD credential** (Ed25519 proof) and, embedded inside it, the **compact
-claim-169 QR** (COSE/CWT, ES256). The QR is later torn out and travels alone — on
-paper, or on a wallet screen — so it must carry its own signature; the
-credential's proof covers different bytes and says nothing about it.
+An issuance produces **two separately signed documents**, not one shown two ways: the **JSON-LD credential** (Ed25519 proof) and, embedded inside it, the **compact claim-169 QR** (COSE/CWT, ES256). The QR is later torn out and travels alone — on paper, or on a wallet screen — so it must carry its own signature; the credential's proof covers different bytes and says nothing about it.
 
-On paper, **the QR signature is the only one anyone checks**. A verifier must
-already hold the issuer's ES256 key as a trust anchor: claim-169 verification
-does not resolve DIDs.
+On paper, **the QR signature is the only one anyone checks**. A verifier must already hold the issuer's ES256 key as a trust anchor: claim-169 verification does not resolve DIDs.
 
-→ [Signatures, Keys and the QR](signatures-keys-and-the-qr.md) explains all of
-this properly: who builds which part, which signature is checked on which path,
-what claim 169 can and cannot carry (the photo is optional; the Farmer ID has no
-registry key of its own and travels in `Data` — see below), where each key is
-published, and why Inji **Verify** is a hosted web
-portal rather than the phone app.
+→ [Signatures, Keys and the QR](signatures-keys-and-the-qr.md) explains all of this properly: who builds which part, which signature is checked on which path, what claim 169 can and cannot carry (the photo is optional; the Farmer ID has no registry key of its own and travels in `Data` — see below), where each key is published, and why Inji **Verify** is a hosted web portal rather than the phone app.
 
 ## Key management
 
-Certify signs with its embedded keymanager backed by a **`.p12` keystore** (no HSM). The `.p12` and
-the encrypted key rows **are the issuer identity** — they must be **persisted and backed up**, and the
-issuer's **public key / DID must be published at a stable, resolvable URL** so verifiers can validate
-offline. By default the Certify chart **generates `local.p12` on first boot onto a durable PVC**; to
-redeploy with an existing identity, restore it from a Secret (`p12.existingSecret`). See
-[Deployment](deployment.md) for the custody modes.
+Certify signs with its embedded keymanager backed by a **`.p12` keystore** (no HSM). The `.p12` and the encrypted key rows **are the issuer identity** — they must be **persisted and backed up**, and the issuer's **public key / DID must be published at a stable, resolvable URL** so verifiers can validate offline. By default the Certify chart **generates `local.p12` on first boot onto a durable PVC**; to redeploy with an existing identity, restore it from a Secret (`p12.existingSecret`). See [Deployment](deployment.md) for the custody modes.
 
 ## Deliberately out of scope for Phase 1
 
-| Deferred | Why |
-|----------|-----|
-| **Photograph in the QR** (claim 169 `face`) | Sequenced after the core chain; needs the eSignet KYC photo and a hard QR size budget. |
-| **Revocation / status lists** | Paper is verified **offline**, so a status list cannot be checked at scan time. Short credential validity is the compensating control for now. Certify already ships the status-list tables for when this is taken up. |
-| **Android agent app** | The web portal comes first; the app follows against the identical API, adding Bluetooth printing for roaming agents. |
-| **Non-digital fallback** | Issuance always requires eSignet authentication. A beneficiary with neither a phone nor an available biometric device cannot be issued a credential. |
+| Deferred                                    | Why                                                                                                                                                                                                                    |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Photograph in the QR** (claim 169 `face`) | Sequenced after the core chain; needs the eSignet KYC photo and a hard QR size budget.                                                                                                                                 |
+| **Revocation / status lists**               | Paper is verified **offline**, so a status list cannot be checked at scan time. Short credential validity is the compensating control for now. Certify already ships the status-list tables for when this is taken up. |
+| **Android agent app**                       | The web portal comes first; the app follows against the identical API, adding Bluetooth printing for roaming agents.                                                                                                   |
+| **Non-digital fallback**                    | Issuance always requires eSignet authentication. A beneficiary with neither a phone nor an available biometric device cannot be issued a credential.                                                                   |
 
 ## Status
 
-**Proven end to end:** claims are read from a real registrant, pushed to Certify, Certify returns an
-**Ed25519-signed** `OpenG2PBeneficiaryCredential`, and a **printable PDF with a QR** is rendered (see
-[Local Developer Trial](local-setup.md)).
+**Proven end to end:** claims are read from a real registrant, pushed to Certify, Certify returns an **Ed25519-signed** `OpenG2PBeneficiaryCredential`, and a **printable PDF with a QR** is rendered (see [Local Developer Trial](local-setup.md)).
 
-**In progress:** eSignet beneficiary authentication as a
-mandatory gate, issuance keyed on `internal_record_id`, the issuance event log, and the reference agent
-portal. Then: switch the QR to Certify's **compact signed** form (`qr_settings` + `qr_signature_algo`)
-and confirm **Inji Verify validates it offline** against the issuer's trust anchor.
+**In progress:** eSignet beneficiary authentication as a mandatory gate, issuance keyed on `internal_record_id`, the issuance event log, and the reference agent portal. Then: switch the QR to Certify's **compact signed** form (`qr_settings` + `qr_signature_algo`) and confirm **Inji Verify validates it offline** against the issuer's trust anchor.

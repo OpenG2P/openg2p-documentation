@@ -190,10 +190,7 @@ Supporting documents use a **shared** append-only table, `g2p_register_document_
 
 Document history is written on **promotion to live**, not on upload:
 
-| Origin                  | Behaviour                                                                                                                                              |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Change request approval | For each CR document × target record id(s) from the payload (skip `DELETE` / `NO_CHANGE`), insert history and upsert `g2p_register_section_documents`. |
-| Intake ingest           | For each submission section document, insert history with `submission_id` and upsert live section documents.                                           |
+<table><thead><tr><th width="216">Origin</th><th>Behaviour</th></tr></thead><tbody><tr><td>Change request approval</td><td>For each CR document × target record id(s) from the payload (skip <code>DELETE</code> / <code>NO_CHANGE</code>), insert history and upsert <code>g2p_register_section_documents</code>.</td></tr><tr><td>Intake ingest</td><td>For each submission section document, insert history with <code>submission_id</code> and upsert live section documents.</td></tr></tbody></table>
 
 Live attachments are the current set in `g2p_register_section_documents`. Document history is the audit of promotion events.
 
@@ -241,11 +238,5 @@ No per-domain history **service** is required for the default CR and intake path
 
 ### Related design topics
 
-| Topic                                    | Link                       |
-| ---------------------------------------- | -------------------------- |
-| Registers, sections, and history stub    | Data Model                 |
-| Approval transaction that writes history | Change Management          |
-| Document catalog and promotion           | File Attachments           |
-| Intake create path                       | Intake Forms               |
-| Partner / async UPDATE path into CRs     | Ingestion Pipeline         |
-| Product-facing capability summary        | Version History (Features) |
+<table><thead><tr><th width="315">Topic</th><th>Link</th></tr></thead><tbody><tr><td>Registers, sections, and history stub</td><td>Data Model</td></tr><tr><td>Approval transaction that writes history</td><td>Change Management</td></tr><tr><td>Document catalog and promotion</td><td>File Attachments</td></tr><tr><td>Intake create path</td><td>Intake Forms</td></tr><tr><td>Partner / async UPDATE path into CRs</td><td>Ingestion Pipeline</td></tr><tr><td>Product-facing capability summary</td><td>Version History (Features)</td></tr><tr><td>Catalog and S3</td><td>Document storage</td></tr><tr><td>Section / CR / intake binds</td><td>Document attachments</td></tr></tbody></table>
+
