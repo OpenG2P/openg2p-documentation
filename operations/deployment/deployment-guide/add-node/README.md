@@ -92,7 +92,7 @@ ssh_key:  "/home/you/sshkeys/openg2p.pem"
 # Join parameters
 server_url: "https://172.29.0.198:9345"
 rke2_token: "K10…::server:…"
-rke2_version: "v1.33.6+rke2r1"
+rke2_version: "v1.35.8+rke2r1"
 node_ip: "172.29.4.176"
 node_name: "worker"
 node_role: "worker"

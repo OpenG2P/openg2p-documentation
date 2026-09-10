@@ -133,7 +133,9 @@ System logs are excluded by default because OpenSearch already retains them.
 
 The live `ResourceSet` CR applied at install is `automation/backups/manifests/rancher-backup-resourceset.yaml` in the deployment repo. **Edit that manifest** to change what is captured. At install time, the orchestrator validates each `apiVersion` entry against the live cluster (`kubectl api-resources`) and warns about any unknown API group — it does not fail install if optional operators (cert-manager, Istio, Keycloak, etc.) are not yet deployed.
 
-The operator v8.x CRD uses strict decoding:
+`run --component rancher` also re-applies this ResourceSet before creating an ad-hoc `Backup` CR. That matters after Rancher / `rancher-backup-crd` upgrades, which commonly drop custom ResourceSets and leave backups failing with `resourcesets.resources.cattle.io "openg2p-resource-set" not found`.
+
+The operator CRD uses strict decoding:
 
 * There is **no** top-level `namespaceRegexp` or boolean `controllerReferences` field.
 * Namespace scoping is per `resourceSelector` entry (`namespaces` / `namespaceRegexp`, Go RE2 only — no negative lookahead).
@@ -197,15 +199,24 @@ versions:
   restic: "0.17.3"
   # Helm CHART version from charts.rancher.io — scheme <chartVersion>+up<appVersion>.
   # This is the CHART version, NOT the operator app version (there is no plain "7.0.0").
-  # 107.1.5+up8.1.5 → Rancher 2.12.x, Kubernetes 1.31–1.33.
-  rancher_backup_chart: "107.1.5+up8.1.5"
+  # 110.x matches Rancher 2.15 / RKE2 1.35. Older 107.x ships kuberlr-kubectl v5
+  # whose post-upgrade patch-sa Job often fails with BackoffLimitExceeded.
+  rancher_backup_chart: "110.0.1+up11.0.2"
 ```
 
-Pinned to known-good versions. Bump after testing in a non-production environment. Choose a `rancher_backup_chart` whose `rancher-version` / `kube-version` annotations match your cluster:
+Pinned to known-good versions. Bump after testing in a non-production environment. Choose a `rancher_backup_chart` whose `rancher-version` / `kube-version` annotations match your cluster (OpenG2P production default: **Rancher 2.15.1**, **RKE2 v1.35.8+rke2r1**):
 
 ```bash
 helm search repo rancher-charts/rancher-backup --versions
 ```
+
+After a Rancher or BRO chart upgrade, re-run:
+
+```bash
+./openg2p-backup.sh install --config backup-config.yaml --component rancher --force
+```
+
+That refreshes CRDs + operator, re-applies the ResourceSet / Schedule, and tolerates a failed `rancher-backup-patch-sa` hook (manual SA patch + `--no-hooks` retry).
 
 ## Monitoring
 

@@ -49,7 +49,7 @@ What it does, in order:
 5. **Per-group install** — gated by `groups.<name>` toggle and `--component` (when not `all`):
    * `pg`: pgBackRest on backup + storage, archive_command on PG, stanza-create, first full backup
    * `etcd`: RKE2 snapshot schedule (every 6h), initial on-demand snapshot, rsync-pull SSH trust + first pull to backup host
-   * `rancher`: rancher-backup operator (chart `107.1.5+up8.1.5` default), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR
+   * `rancher`: rancher-backup operator (chart `110.0.1+up11.0.2` default — matches Rancher 2.15.1 / RKE2 v1.35.8+rke2r1; override via `versions.rancher_backup_chart`), static NFS PV `openg2p-rancher-backup-store`, encryption Secret, ResourceSet + in-cluster Schedule CR. Older `107.x` pins often fail the chart’s `patch-sa` post-upgrade Job (`BackoffLimitExceeded`); install deletes stuck Jobs and, if needed, patches the default SA and retries with `--no-hooks`.
    * `nfs`: storage-node NFS export + `ufw` allow for backup host; read-only NFS mount on backup host via `_nfs_ensure_ro_mount` (stops stale automounts, rewrites fstab without `x-systemd.automount`, remounts; falls back to `/mnt/openg2p-nfs-ro-dr` after DR IP changes); restic repo init
    * `configs`: restic repo for configs
    * `objectstore` (opt-in): rclone + restic for MinIO/S3 — skipped when `groups.objectstore: false` (default)
@@ -76,7 +76,9 @@ If a group is disabled in config, `run --component <that-group>` exits with a wa
 
 Failures don't stop other groups — `run` attempts every enabled group and surfaces per-group results in the status file. Failed groups also trigger failure email when `alerting.email_enabled: true`. Each run updates Prometheus textfile metrics under `$backup_repo_root/metrics/` when `monitoring.enabled: true`.
 
-**rancher is special.** The nightly rancher backup is driven by an in-cluster `Schedule` CR, not by the cron file on the backup host. `run --component rancher` from the laptop creates an *ad-hoc* `Backup` CR — useful before upgrades, but not the routine cadence.
+**rancher is special.** The nightly rancher backup is driven by an in-cluster `Schedule` CR, not by the cron file on the backup host. `run --component rancher` from the laptop creates an *ad-hoc* `Backup` CR — useful before upgrades, but not the routine cadence. Each ad-hoc run also re-applies `openg2p-resource-set` (custom ResourceSets are often wiped when `rancher-backup-crd` is upgraded).
+
+**nfs / configs self-heal on run.** `run --component nfs` re-asserts the storage `/etc/exports` + ufw rules for the backup host before mounting (avoids `mount.nfs: Connection timed out` after storage rebuild). `run --component configs` initialises the configs restic repo if it is missing.
 
 ## verify
 

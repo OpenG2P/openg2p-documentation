@@ -166,8 +166,10 @@ Email works without scrape. Cluster / Slack alerts need **rule + scrape** both.
 
 ## Operator checklist after upgrade
 
-1. Merge new keys from `backup-config.example.yaml` into your `backup-config.yaml`.
+1. Merge new keys from `backup-config.example.yaml` into your `backup-config.yaml` (especially `versions.rancher_backup_chart` — use `110.0.1+up11.0.2` or newer for Rancher 2.15 / RKE2 1.35).
 2. Re-run `install` (refreshes cron wrappers + libs under `/opt/openg2p-backup`, re-applies PrometheusRule).
-3. Point node_exporter at `$backup_repo_root/metrics` (or set Pushgateway).
-4. Confirm PrometheusRule: `kubectl -n cattle-monitoring-system get prometheusrule | grep openg2p-backup`.
-5. Optionally enable email (prefer SMTP :587) and/or Slack via Alertmanager.
+3. After a **Rancher / rancher-backup** upgrade specifically: `./openg2p-backup.sh install --config backup-config.yaml --component rancher --force` (restores CRDs, operator, and `openg2p-resource-set`).
+4. Point node_exporter at `$backup_repo_root/metrics` (or set Pushgateway).
+5. Confirm PrometheusRule: `kubectl -n cattle-monitoring-system get prometheusrule | grep openg2p-backup`.
+6. Optionally enable email (prefer SMTP :587) and/or Slack via Alertmanager.
+7. Smoke-test: `./openg2p-backup.sh run --config backup-config.yaml --component rancher` (and `nfs` / `configs` if those groups are enabled).

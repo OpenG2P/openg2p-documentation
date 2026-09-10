@@ -19,7 +19,7 @@ Below are the steps to add new nodes to an existing Kubernetes cluster.
     <a class="button secondary">Copy</a>
 
     ```
-    export INSTALL_RKE2_VERSION="v1.28.9+rke2r1"
+    export INSTALL_RKE2_VERSION="v1.35.8+rke2r1"
     ```
 *   Run the below command to download RKE2.
 
