@@ -10,7 +10,7 @@ The UI is implemented in the `registry-platform` repository under `ui/`:
 
 | Component | Path | Package / image |
 | --- | --- | --- |
-| Staff Portal | `ui/staff-portal-ui` | `openg2p-registry-staff-portal-ui` (Docker) |
+| Staff Portal | `ui/staff-ui` | `openg2p-registry-staff-ui` (Docker) |
 | Widget library | `ui/ui-widgets` | `@openg2p/registry-widgets` (npm) |
 
 This page describes the overall UI engineering design. Widget-library internals and per-widget behaviour are covered in the child pages:
@@ -82,7 +82,7 @@ Farmer Registry, Social Registry, and other domain deployments differ by configu
 | Widget state | Redux Toolkit (scoped to the widget subsystem) |
 | App state | React Context (`Auth`, `Rbac`, `Register`, runtime config, notifications) |
 | Validation | Built-in widget rules + Zod |
-| i18n | next-intl (portal) + i18next in the widget package |
+| i18n | next-intl (portal); widgets accept a host `t` function via `WidgetProvider` |
 | Icons / motion | lucide-react, react-icons, Framer Motion |
 | Notifications | Novu (`@novu/js`), react-toastify |
 | Credentials / VCs | Inji SDK, SD-JWT helpers |
@@ -97,11 +97,12 @@ registry-platform/
 ├── core/                          # Shared domain / persistence
 ├── celery/                        # Async workers
 └── ui/
-    ├── staff-portal-ui/           # Next.js Staff Portal
+    ├── staff-ui/                  # Next.js Staff Portal
     │   ├── src/app/[locale]/…     # Routes (thin pages)
     │   ├── src/app/api/…          # BFF route handlers
     │   ├── src/features/…         # Feature modules
     │   ├── src/context/…          # Auth, RBAC, register, runtime config
+    │   ├── src/shared/widgets/    # RegistryWidgetProvider, branding → WidgetTheme
     │   ├── src/i18n/…             # next-intl routing and message loading
     │   ├── sample-locale/         # Example core + domain translation packs
     │   └── Dockerfile
@@ -114,7 +115,7 @@ registry-platform/
         └── src/theme/             # Default OpenG2P theme tokens
 ```
 
-Feature code lives under `src/features/*` (register, change-request, intake-form, configuration, filter, messages, notification, verifiable-credentials, approval). App Router pages stay thin and compose feature components.
+Feature code lives under `src/features/*` (register, change-request, intake-form, configuration, filter, messages, notification, verifiable-credentials, approval, export). App Router pages stay thin and compose feature components.
 
 ## Schema-driven UI model
 
@@ -135,20 +136,21 @@ This is the same model described under [Dynamic UI rendering](../../features/dyn
 | Mode | Purpose |
 | --- | --- |
 | **RegistryView** | Live register record view; section-level edit/save → change request |
-| **CRView** | Change-request / audit-oriented review (read-oriented, metadata visible) |
+| **CRView** | Change-request review (read-only; NEW/OLD comparison) |
 | **IntakeForm** | Multi-section registration / intake accordion flow |
 
-The Staff Portal wires the same library into register detail, change-request screens, and intake forms with different host callbacks.
+The Staff Portal wires the same library into register detail, change-request screens, and intake forms through `RegistryWidgetProvider` (host `t`, `dataSourceRequestHandler`, branding theme, and optional `hostContext`).
 
 ### Data binding and data sources
 
 * Widgets bind to record data through `widget-data-path` (single path or multi-path maps).
 * Option lists come from **static** schema options, **API** data sources, or **schema** reference data.
 * Widgets do not call backend services directly. The host supplies a `dataSourceRequestHandler` that maps `(service, endpoint, method, params)` to authenticated BFF routes such as `/api/{service}/{endpoint}`.
+* Optional `hostContext` on `WidgetProvider` injects host values (for example register / record ids) into lookup widgets such as `parent-lookup`.
 
 ### Change packaging
 
-When a user edits a section and saves, the library computes `SectionChanges` (old vs new values) for the host. The portal turns those changes into a change request rather than writing the master record immediately. This keeps the UI aligned with [Change management](../change-management.md).
+When a user edits a section and saves, the library computes `SectionChanges` (old vs new `records`, plus optional `section_files` for uploads) for the host. The portal turns those changes into a change request rather than writing the master record immediately. This keeps the UI aligned with [Change management](../change-management.md).
 
 ## Staff Portal engineering
 
@@ -161,9 +163,9 @@ Routes use the Next.js App Router with a `[locale]` segment and next-intl middle
 | Home / dashboard | `/[locale]/` |
 | Register list / detail | `/[locale]/register/[type]`, `.../[id]` |
 | Version history | `.../[id]/version-history` |
-| Change requests | `/[locale]/change-request`, nested under register / tasks |
+| Change requests | `/[locale]/change-request`, nested under register / `tasks` |
 | Intake forms | `/[locale]/intake-form/[type]/...`, task-scoped variants |
-| Configuration | `/[locale]/configuration/{registers,attributes,data-models,registry,...}` |
+| Configuration | `/[locale]/configuration/{registers,intake-forms,registry,data-models,ingest,outgest,...}` |
 | Messages | `/[locale]/incoming-messages`, `/outgoing-messages` |
 | Profile / errors | `/myprofile`, `/record-access-denied` |
 
@@ -177,7 +179,7 @@ Browser code calls **relative** `/api/...` routes. Each route handler authentica
 * `requireAuth` — gates protected API routes.
 * Client data fetching uses a shared `useFetch` hook (not React Query / SWR). HTTP 401 triggers re-login.
 
-Runtime env is read at request time (not baked into the client bundle for secrets). Important variables include `BACKEND_API_URL`, `MASTERDATA_BACKEND_API_URL`, `IAM_URL`, `KEYCLOAK_LOGOUT_URL`, `APPLICATION_MNEMONIC`, `COOKIE_DOMAIN`, CSP fragments, and verification / VP settings. See `ui/staff-portal-ui/.env.example` and the [Staff Portal install guide](../../developer-zone/developer-install/openg2p-registry-staff-portal-ui.md).
+Runtime env is read at request time (not baked into the client bundle for secrets). Important variables include `BACKEND_API_URL`, `MASTERDATA_BACKEND_API_URL`, `IAM_URL`, `KEYCLOAK_LOGOUT_URL`, `APPLICATION_MNEMONIC`, `COOKIE_DOMAIN`, CSP fragments, and verification / VP settings. See `ui/staff-ui/.env.example` and the [Staff Portal install guide](../../developer-zone/developer-install/openg2p-registry-staff-portal-ui.md).
 
 ### Authentication
 
@@ -209,12 +211,12 @@ Brand colours and related tokens are applied at runtime from registry configurat
 
 Tailwind maps these variables into utility classes. Admins manage themes under Configuration → Registry → Themes. Design details of theme persistence are in [Registry themes](../registry-themes.md).
 
-The widget package also exposes a `WidgetTheme` with OpenG2P defaults (gold, orange, purple, navy) applied under `.openg2p-widget-theme-root` inside `WidgetProvider`.
+The widget library also supports a dynamic theme: the portal maps the same branding into a `WidgetTheme` (via `brandingToWidgetTheme`) and passes it to `WidgetProvider` through `RegistryWidgetProvider`, so section/widget chrome follows the active registry theme as well.
 
 ### Internationalization
 
 * **Portal**: next-intl with locale routing. Message catalogues are loaded primarily from backend language configuration, with bundled English (and sample packs under `sample-locale/`) as fallback.
-* **Widgets**: accept a host `translate` function via `WidgetProvider`, and can translate schema labels through `translateUISchema`.
+* **Widgets**: accept a host `t` function via `WidgetProvider` (Staff Portal passes next-intl translations), and can translate schema labels through `translateUISchema`.
 * Admins manage languages under Configuration → Registry → Languages. See [Dynamic languages](../dynamic-languages.md).
 
 ### Content Security Policy
@@ -229,7 +231,8 @@ In non-development environments, middleware builds a CSP header from env-configu
 
 | Piece | Role |
 | --- | --- |
-| `WidgetProvider` | Redux store, theme CSS variables, data-source handler, translate, event bus |
+| `RegistryWidgetProvider` (Staff Portal) | Host wrapper: branding → `WidgetTheme`, next-intl `t`, shared data-source handler |
+| `WidgetProvider` | Redux store, theme CSS variables, data-source handler, translate, `hostContext`, event bus |
 | `SectionsContainer` | Multi-section orchestration and mode selection |
 | `SectionRenderer` / `PanelRenderer` | Layout, edit/save, change extraction |
 | `WidgetRenderer` | Resolves `config.widget` through `widgetRegistry` |
@@ -238,7 +241,7 @@ In non-development environments, middleware builds a CSP header from env-configu
 
 ### Default widgets
 
-Built-in keys include: `text`, `textarea`, `number`, `boolean`, `date`, `datetime`, `phone`, `currency`, `select`, `multi-select`, `radio`, `checkbox`, `file`, `display`, `profile`, `simple-table`, `table`, `dialog-table`, `array-widget`, `iterable-accordion`, `header-section`, `scores-display`, `id-authentication`, and `register-lookup`.
+Built-in keys (22): `text`, `textarea`, `number`, `boolean`, `date`, `datetime`, `select`, `multi-select`, `radio`, `checkbox`, `file`, `phone`, `display`, `profile`, `table`, `dialog-table`, `header-section`, `scores-display`, `id-authentication`, `register-lookup`, `parent-lookup`, `geo-hierarchy`.
 
 ### Extension
 
@@ -253,7 +256,7 @@ Custom widgets should call `useBaseWidget({ config })` so they participate in th
 
 ### Section Builder
 
-The package includes a Section Builder (visual + JSON) for authoring `section_ui_schema` without hand-writing every schema by hand. Host integration notes live under `ui/ui-widgets/docs/` in `registry-platform`.
+The package includes a Section Builder (visual + JSONC) for authoring `section_ui_schema` without hand-writing every schema by hand. Sample schemas live under `ui/ui-widgets/example-ui-schema/` in `registry-platform`.
 
 For architecture depth, unique registry features (CR view, multi-path binding, conditions), and the layered data flow, see [Widget Library](registry-ui-widget-library.md). For practical per-widget configuration, see [Widget Reference](widget-reference.md).
 
@@ -294,7 +297,7 @@ Domain registers still share the same hierarchical tab navigation, verification 
 ### Staff Portal → container
 
 * Dockerfile builds a standalone Next.js image as user `nextjs` on port 3000
-* Published as `openg2p/openg2p-registry-staff-portal-ui:<tag>`
+* Published as `openg2p/openg2p-registry-staff-ui:<tag>`
 * At runtime the container needs backend and IAM URLs, cookie domain, application mnemonic, and CSP settings (see `.env.example`)
 
 Local development typically runs the Next app against deployed or local Staff Portal / masterdata APIs. Production deployments place the UI behind nginx (or equivalent) with the env-driven BFF configuration described in the developer install guide.
@@ -305,25 +308,26 @@ Local development typically runs the Next app against deployed or local Staff Po
 2. **Plugin widget registry** — string type keys map to React components.
 3. **`useBaseWidget` facade** — shared binding, validation, conditions, and data sources for all inputs.
 4. **Host-owned data-source adapter** — widgets stay portable; auth and CORS stay in the BFF.
-5. **Change-request-centric saves** — section edits become reviewable change payloads.
+5. **Change-request-centric saves** — section edits become reviewable change payloads (`records` + `section_files`).
 6. **Dual/triple render modes** — RegistryView, CRView, and IntakeForm share one library.
 7. **BFF + cookie session** — browser never needs to hold bearer tokens in application JS for normal API calls.
 8. **Action-string RBAC** — `feature:action` constants with declarative and imperative checks.
-9. **Runtime branding and languages** — CSS variables and message catalogues from backend config.
+9. **Runtime branding and languages** — CSS variables and message catalogues from backend config; dynamic `WidgetTheme` for the widget library as well.
 10. **Section Builder** — dual visual/JSON authoring for implementers.
 11. **Event bus and geo cascade helpers** — loosely coupled widget communication for dependent fields.
 12. **React Compiler** — enabled in the Next.js config for the Staff Portal build.
 
 ## Key source locations
 
-**Staff Portal (`ui/staff-portal-ui`)**
+**Staff Portal (`ui/staff-ui`)**
 
 * `src/app/[locale]/layout.tsx` — providers, branding CSS variables
 * `src/proxy.ts` — next-intl + CSP middleware
 * `src/app/api/_lib/backend-proxy.ts` — BFF proxy
 * `src/app/api/_lib/env-config.ts` / `client-safe-config.ts` — runtime configuration
 * `src/context/` — auth, RBAC, register, runtime config
-* `src/features/register/` — register list/detail and data-source handler
+* `src/shared/widgets/` — `RegistryWidgetProvider`, `brandingToWidgetTheme`
+* `src/features/register/` — register list/detail and section save
 * `src/components/shared/RequireAction.tsx` — declarative RBAC gate
 * `sample-locale/` — example translation pack shape
 
@@ -335,7 +339,7 @@ Local development typically runs the Next app against deployed or local Staff Po
 * `src/components/WidgetProvider.tsx`, `SectionRenderer.tsx`, `SectionsContainer.tsx`
 * `src/components/SectionBuilder/` — schema authoring UI
 * `src/theme/` — default theme tokens
-* `docs/section-builder-*.md` — Section Builder design and host integration
+* `example-ui-schema/` — sample section and widget configs
 
 ## Further reading
 

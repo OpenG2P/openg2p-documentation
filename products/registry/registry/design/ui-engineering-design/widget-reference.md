@@ -59,13 +59,14 @@ A practical, widget-by-widget reference for `@openg2p/registry-widgets`. It cove
     * [Checkbox Widget (`checkbox`)](#checkbox-widget-checkbox)
     * [Boolean Widget (`boolean`)](#boolean-widget-boolean)
     * [Geo Hierarchy Widget (`geo-hierarchy`)](#geo-hierarchy-widget-geo-hierarchy)
-    * [Docs Widget (`docs`)](#docs-widget-docs)
+    * [Section supporting documents](#section-supporting-documents)
     * [Display Widget (`display`)](#display-widget-display)
     * [Profile Widget (`profile`)](#profile-widget-profile)
     * [Header Section Widget (`header-section`)](#header-section-widget-header-section)
     * [Scores Display Widget (`scores-display`)](#scores-display-widget-scores-display)
     * [ID Authentication Widget (`id-authentication`)](#id-authentication-widget-id-authentication)
     * [Register Lookup Widget (`register-lookup`)](#register-lookup-widget-register-lookup)
+    * [Parent Lookup Widget (`parent-lookup`)](#parent-lookup-widget-parent-lookup)
     * [Table Widget (`table`)](#table-widget-table)
     * [Dialog Table Widget (`dialog-table`)](#dialog-table-widget-dialog-table)
     * [Widget configuration summary](#widget-configuration-summary)
@@ -100,18 +101,19 @@ A practical, widget-by-widget reference for `@openg2p/registry-widgets`. It cove
 
 The OpenG2P Registry UI Widgets library builds dynamic forms from JSON configurations. Current capabilities include:
 
-* **22 pre-built widgets** (inputs, tables, display/identity, geo hierarchy, docs, lookup, ID auth)
+* **22 pre-built widgets** (inputs, tables, display/identity, geo hierarchy, register/parent lookup, ID auth)
 * **Redux-based state management** for values, errors, touched, loading, and data sources
 * **Flexible data binding** with single-path and multi-path maps
 * **Validation** with built-in rules and Zod schemas
 * **Conditional logic** including dynamic `require`
-* **Host-driven API data sources** via `dataSourceRequestHandler`
+* **Host-driven API data sources** via `dataSourceRequestHandler` and optional `hostContext`
+* **Section supporting documents** rendered as `file` widgets (not a separate `docs` widget)
 * **i18n** via host `t` function and schema translation helpers
 * **Theme** tokens applied as CSS variables on `WidgetProvider`
 * **Extensible registry** for custom widgets
 * **SectionBuilder** tooling for authoring schemas
 
-Package version context: `@openg2p/registry-widgets` (see package for current version). Peer stack: **React 19**, **Redux Toolkit**, **Zod 4**.
+Package: `@openg2p/registry-widgets`. Peer stack: **React 19**, **Redux Toolkit**, **Zod**.
 
 ## Installation and setup
 
@@ -175,7 +177,7 @@ Default widgets register automatically when the package is imported.
 {% endstep %}
 
 {% step %}
-**Optional: translation and theme**
+**Optional: translation, theme, and hostContext**
 
 ```tsx
 import { useTranslation } from 'react-i18next';
@@ -186,7 +188,15 @@ function App() {
   const store = createWidgetStore();
 
   return (
-    <WidgetProvider store={store} t={t} theme={defaultTheme}>
+    <WidgetProvider
+      store={store}
+      t={t}
+      theme={defaultTheme}
+      hostContext={{
+        // Merged into lookup widget API params (e.g. parent-lookup)
+        register_id: currentRegisterId,
+      }}
+    >
       {/* … */}
     </WidgetProvider>
   );
@@ -379,6 +389,8 @@ function MyForm() {
   }
 }
 ```
+
+Multi-path maps are used by `profile`, `header-section`, `id-authentication`, and `geo-hierarchy` (`value` / `hierarchy`). Other widgets (including lookups) use a single string path.
 
 ### Accessing data
 
@@ -663,16 +675,18 @@ Pass `mode` to `SectionsContainer`:
 
 | Mode | Behavior |
 | --- | --- |
-| `RegistryView` (default) | View sections; optional edit/save per section; `hideEditButton` / `section-hide-edit-button` |
-| `CRView` | Change-request review; audit footer from schema/store |
-| `IntakeForm` | Accordion sections; `isDraft` controls editability; form handle for full-form validate/submit |
+| `RegistryView` (default) | View sections; optional edit/save per section; `hideEditButton` / `section-hide-edit-button`; supporting docs shown |
+| `CRView` | Change-request review; no Edit Details; NEW/OLD via `changeRequestType`; supporting docs shown |
+| `IntakeForm` | Accordion sections; `isDraft` controls editability; form handle for full-form validate/submit; supporting docs hidden / skipped in validation and `section_files` |
 
 Section config extras:
 
 * `section-editable`
 * `section-hide-edit-button`
 * `section-column-span`
-* `section-supporting-documents` (path, type, accept, max size, required, label)
+* `section-supporting-documents` — array of slots (`document-data-path`, `document-type`, `document-accept`, `document-max-size`, `document-required`, `document-label`); each slot renders as a `file` widget
+
+`onSectionSave` / form handles produce `SectionChanges` with `records` and optional `section_files` (file values are kept out of `records`).
 
 ## Widget reference
 
@@ -683,7 +697,7 @@ Section config extras:
 
 ### Default widget catalog (22)
 
-`text`, `textarea`, `number`, `boolean`, `date`, `datetime`, `select`, `multi-select`, `radio`, `checkbox`, `file`, `phone`, `display`, `profile`, `table`, `dialog-table`, `header-section`, `scores-display`, `id-authentication`, `register-lookup`, `geo-hierarchy`, `docs`
+`text`, `textarea`, `number`, `boolean`, `date`, `datetime`, `select`, `multi-select`, `radio`, `checkbox`, `file`, `phone`, `display`, `profile`, `table`, `dialog-table`, `header-section`, `scores-display`, `id-authentication`, `register-lookup`, `parent-lookup`, `geo-hierarchy`
 
 ---
 
@@ -808,7 +822,7 @@ Defaults: `"today"` supported for default value.
 
 #### File Input Widget (`file`)
 
-Upload with preview and serialization for storage.
+Upload with preview. Fresh files are collected into `section_files` on save; already-stored documents hydrate via `StoredDocumentRef`. Accept / max size come from `widget-data-options`.
 
 ```json
 {
@@ -817,11 +831,14 @@ Upload with preview and serialization for storage.
   "widget-id": "attachment",
   "widget-label": "Attachment",
   "widget-data-path": "person.document",
-  "widget-data-format": {
-    "inputType": "file"
+  "widget-data-options": {
+    "accept": ".pdf,.jpg,.jpeg,.png",
+    "maxSize": 5242880
   }
 }
 ```
+
+Section-level fixed slots use the same `file` widget via `section-supporting-documents` (see [Section supporting documents](#section-supporting-documents)).
 
 ---
 
@@ -948,37 +965,47 @@ Cascading location selects (e.g. Region → Zone → Woreda). Persists the deepe
 
 **Layout:** By default levels fill top-to-bottom across up to 3 columns (`columnSpan` / auto from level count). Optional `widget-geo-layout` forces explicit column counts. Prefer a full-width section (`section-column-span: 3`).
 
-#### Docs Widget (`docs`)
+#### Section supporting documents
 
-Fixed upload slots in a three-column layout.
+There is **no** standalone `docs` widget. Configure uploads on the **section** with `section-supporting-documents`. Each entry is rendered by `SupportingDocuments` as a synthetic `file` widget.
 
 ```json
 {
-  "widget": "docs",
-  "widget-type": "input",
-  "widget-id": "individual_docs",
-  "widget-label": "Supporting Documents",
-  "widget-data-path": "register-id.supporting_documents",
-  "widget-total-docs": 4,
-  "documents": [
+  "section-id": "identity",
+  "section-title": "Identity",
+  "section-supporting-documents": [
     {
-      "document-key": "national_id_front",
+      "document-data-path": "register-id.national_id_front",
       "document-label": "National ID (Front)",
+      "document-type": "image",
       "document-required": true,
       "document-accept": ".pdf,.jpg,.jpeg,.png",
       "document-max-size": 5242880
     },
     {
-      "document-key": "passport",
+      "document-data-path": "register-id.passport",
       "document-label": "Passport",
+      "document-type": "file",
       "document-accept": ".pdf,.jpg,.jpeg,.png",
       "document-max-size": 5242880
     }
-  ]
+  ],
+  "panels": []
 }
 ```
 
-Stored value is an object keyed by `document-key` (serialized file or view URL). `document-accept` and `document-max-size` (bytes) are required per slot.
+| Field | Role |
+| --- | --- |
+| `document-data-path` | Store path for the upload (required) |
+| `document-label` | Slot label (falls back to path or `Document N`) |
+| `document-type` | Hint for default accept: `image` → `image/*`, `pdf` → `.pdf`, else `*/*` |
+| `document-accept` | Override MIME / extension filter |
+| `document-max-size` | Max bytes |
+| `document-required` | Required slot |
+
+Shown in `RegistryView` / `CRView`. In `IntakeForm`, supporting documents are not rendered and are excluded from validation and `section_files` collection. Fresh uploads are packaged under `section_files` with tag `_supporting_docs`; already-stored files hydrate via `StoredDocumentRef`.
+
+For ad-hoc uploads inside a panel, use the **`file`** widget directly.
 
 ---
 
@@ -1151,10 +1178,48 @@ Search another register and store the selected record id.
     "page_size": 10,
     "action_label": "Click to Search Record",
     "search_placeholder": "Search by name or ID...",
-    "select_record_label": "Select Record"
+    "select_record_label": "Select Record",
+    "hydrate_page_size": 50
   }
 }
 ```
+
+#### Parent Lookup Widget (`parent-lookup`)
+
+Paginated picker for an allowed **parent** record in a section hierarchy (e.g. household → member). Stores the selected parent’s `internal_record_id` at `widget-data-path`.
+
+Request params are **`hostContext` merged with** `widget-data-source.params` (schema params win on key collision). Fetch runs only when both `hostContext` and schema `params` have non-empty values and `service` / `endpoint` / `dataSourceRequestHandler` are set.
+
+```json
+{
+  "widget": "parent-lookup",
+  "widget-type": "input",
+  "widget-id": "parent_link",
+  "widget-label": "Parent",
+  "widget-required": true,
+  "widget-data-path": "register-id.link_internal_record_id",
+  "widget-data-source": {
+    "type": "api",
+    "method": "POST",
+    "service": "register",
+    "endpoint": "get-allowed-parents-for-a-child-section",
+    "params": {
+      "section_register_id": "<child_section_register_id>"
+    }
+  },
+  "widget-lookup-config": {
+    "page_size": 10,
+    "action_label": "Select",
+    "search_placeholder": "Search parent...",
+    "select_record_label": "Select Parent",
+    "hydrate_page_size": 50
+  }
+}
+```
+
+**Table column usage:** Omit `widget-label` for compact cell UI (header can use `column-label`). Same `widget-data-source` / `widget-lookup-config` shape as the standalone field.
+
+Display label prefers `record_name`, then `internal_record_id`. API responses are expected as `{ records, pagination }` (`number_of_items`, `number_of_pages`, `current_page`).
 
 ---
 
@@ -1262,10 +1327,11 @@ Common properties:
 * `widget-cascade`
 * Table: `widget-data-columns`, `widget-data-operations`, `widget-data-add-label`
 * Geo: `widget-geo-layout`, `widget-geo-hierarchy-path`
-* Docs: `documents`, `widget-total-docs`
 * Auth: `widget-auth-config`
-* Lookup: `widget-lookup-config`
+* Lookup (`register-lookup`, `parent-lookup`): `widget-lookup-config` (`page_size`, `action_label`, `search_placeholder`, `select_record_label`, `hydrate_page_size`)
 * Header: `widget-field-config`
+* Section documents: `section-supporting-documents` (`document-data-path`, `document-type`, `document-label`, `document-accept`, `document-max-size`, `document-required`) — not a widget type
+* Provider: `hostContext` (merged into parent-lookup / host API params)
 
 ## Creating custom widgets
 
@@ -1352,11 +1418,17 @@ Map a server field list to `BaseWidgetConfig[]` and place them under panels/sect
 
 ### Section-level change tracking
 
-`onSectionSave` receives structured `SectionChanges` (old/new values) suitable for change-request payloads.
+`onSectionSave` receives structured `SectionChanges` suitable for change-request payloads:
+
+* `section_id` / `section_register_id` (when provided)
+* `records` — field values (file blobs stripped)
+* `section_files` — fresh uploads tagged `_profile`, `_supporting_docs`, or `_direct_file`
+
+Cancel/revert uses `replaceValues` so the store returns to the pre-edit snapshot without merging leftovers.
 
 ### Section builder
 
-Use `SectionBuilder` / `VisualBuilderPanel` / `JSONEditorPanel` during development to edit schemas visually and as JSON.
+Use `SectionBuilder` / `VisualBuilderPanel` / `JSONEditorPanel` (JSONC-aware) during development to edit schemas visually and as JSON.
 
 ## Internationalization
 
@@ -1421,7 +1493,7 @@ Prefer `actions` arrays when a field must both show and require. Keep condition 
 
 ### Data sources
 
-Always provide `dataSourceRequestHandler` in production. Prefer `service` + `endpoint` over deprecated `url`. Use cascade for parent/child selects.
+Always provide `dataSourceRequestHandler` in production. Prefer `service` + `endpoint` over deprecated `url`. Use cascade for parent/child selects. For `parent-lookup`, also pass filled `hostContext` on `WidgetProvider`.
 
 ### Performance
 
@@ -1429,7 +1501,7 @@ Keep section schemas reasonable in size. Use section-level edit instead of editi
 
 ### Type safety
 
-Type configs with `BaseWidgetConfig`, `SectionConfig`, `UISchema`, and `SectionMode`.
+Type configs with `BaseWidgetConfig`, `SectionConfig`, `UISchema`, `SectionMode`, `SectionChanges`, and `SectionsFormHandle`.
 
 ## Troubleshooting
 
@@ -1438,6 +1510,7 @@ Type configs with `BaseWidgetConfig`, `SectionConfig`, `UISchema`, and `SectionM
 * Confirm the widget name is registered (`widgetRegistry` / default list)
 * Ensure the package import ran (defaults register on import)
 * Check `isVisible` / conditional hide rules
+* Note: there is no `docs` widget — use `section-supporting-documents` or `file`
 
 ### Validation not working
 
@@ -1449,6 +1522,7 @@ Type configs with `BaseWidgetConfig`, `SectionConfig`, `UISchema`, and `SectionM
 
 * Provide `dataSourceRequestHandler` on `WidgetProvider` or `SectionsContainer`
 * Verify `service`, `endpoint`, method, and `valueKey` / `labelKey`
+* For `parent-lookup`, ensure both `hostContext` and schema `params` are non-empty
 * Check browser network/console for host handler errors
 
 ### Conditional logic not working
@@ -1466,8 +1540,8 @@ Type configs with `BaseWidgetConfig`, `SectionConfig`, `UISchema`, and `SectionM
 ### TypeScript errors
 
 * Import types from `@openg2p/registry-widgets`
-* Align Zod peer major version with the package (`zod` ^4)
+* Import types from `@openg2p/registry-widgets` and keep the Zod peer dependency aligned with the package
 
 ## Conclusion
 
-`@openg2p/registry-widgets` provides a schema-driven form system tailored to OpenG2P registry workflows: section modes for view/intake/CR review, twenty-two default widgets spanning inputs through geo hierarchy, documents, lookup, and ID authentication, plus host-owned APIs, theming, and translation. Use this reference alongside the overview document for architecture context, and the `example-ui-schema` folder in the package for copy-paste configs.
+`@openg2p/registry-widgets` provides a schema-driven form system tailored to OpenG2P registry workflows: section modes for view/intake/CR review, twenty-two default widgets spanning inputs through geo hierarchy, register/parent lookup, and ID authentication, plus section supporting documents via `file`, host-owned APIs (`dataSourceRequestHandler` + `hostContext`), theming, and translation. Use this reference alongside the overview document for architecture context, and the `example-ui-schema` folder in the package for copy-paste configs.
