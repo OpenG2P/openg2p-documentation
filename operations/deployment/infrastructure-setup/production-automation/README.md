@@ -143,7 +143,7 @@ environment:
 ```
 
 {% hint style="info" %}
-**Commons version.** When you install Commons from Rancher, pick the chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
+**Commons version.** When you install Commons from Rancher, pick the chart version from the [Commons changelog](https://openg2p.github.io/versions/commons/CHANGELOG.html).
 {% endhint %}
 
 ### Step 2 — probe and preflight
@@ -310,7 +310,7 @@ The orchestrator scaffolds the environment (namespace, project, gateway, PG secr
 1. Apps → Charts → **openg2p-commons-base**
 2. Then install **openg2p-commons-services** in the same namespace
 3. Point PostgreSQL at the storage node's private IP using the `commons-postgresql` secret created by scaffolding
-4. Pick the chart version from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html)
+4. Pick the chart version from the [Commons changelog](https://openg2p.github.io/versions/commons/CHANGELOG.html)
 
 If you skipped scaffolding (`install_environment: false`), run it first (SSH tunnel; Wireguard not required):
 

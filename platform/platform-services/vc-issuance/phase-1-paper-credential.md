@@ -114,11 +114,14 @@ its own:
 1. a verifier deployment exists (nothing verifies a credential until a relying
    party stands one up); and
 2. the OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor** —
-   take it from `/v1/certify/.well-known/jwks.json`.
+   take it from `https://<certify-host>/.well-known/jwks.json` (the Certify
+   chart rewrites that well-known path onto Certify's own
+   `/v1/certify/.well-known/jwks.json`).
 
-> **Unverified.** Whether a stock Inji Verify accepts a claim-169 CWT from a
-> non-MOSIP issuer has not been tested end to end. Until it has, treat
-> third-party verification as unproven rather than assumed.
+> **Verified.** A claim-169 QR issued by our Certify verifies against Inji
+> Verify's `verify-service` end to end — `SUCCESS` for a genuine credential,
+> `INVALID` for a tampered or re-signed one. The Agent Portal's **Verify VC**
+> screen does exactly this; see [Verification](verification.md).
 
 * **The QR is the credential.** A full JSON-LD VC is far too large for a QR, so the QR carries a
   **compact, signed payload** — MOSIP's **"claim 169"** identity QR (CBOR), the CWT/mDoc family used
@@ -127,13 +130,72 @@ its own:
   Velocity template; Certify renders it, encodes it with the **pixel-pass** library, **signs it as a
   COSE/CWT** (`CoseSignatureService.cwtSign`), and **base45**-encodes the result into the VC under a
   `claim169` field.
+* **There is no identifier key in claim 169.** The registry PixelPass ships
+  (`CLAIM_169_KEY_MAPPER`, compiled into `pixelpass-jar-0.8.0` — a Kotlin
+  constant, not a config file, and Certify exposes no property to extend it)
+  covers Version, Language, the name fields, Date of Birth, Gender, Address,
+  contact details, biometrics, and a generic `Data` / `Data format` /
+  `Data sub format` / `Data issuer` group. **No ID, UIN or document number.**
+
+  The labels written in `qrSettings` are rewritten to their registry **numbers**
+  on the way into the CBOR, so an invented label is not a small liberty — it
+  leaves the format.
+
+  The registry's id therefore travels in **`Data`**, and in `Data` ALONE:
+
+  ```yaml
+  qrSettings:
+    - claim169:
+        Version: '1.0'
+        Language: eng
+        Full Name: '${fullName}'
+        Date of Birth: '${dateOfBirth}'
+        Gender: '${gender}'
+        Data: '${functionalRecordId}'
+  ```
+
+  {% hint style="danger" %}
+  **Do not add `Data issuer` (or `Data format` / `Data sub format`) at the top
+  level.** PixelPass numbers the `Data*` group in its **own** key space — `Data`=0,
+  `Data format`=1, `Data sub format`=2, `Data issuer`=3 — not the top-level
+  attribute space. Written at the top level, `Data issuer` becomes **key 3, which
+  is Language**: it silently replaces `eng` with whatever string you set, and the
+  language is lost from every credential issued.
+
+  Observed on a real issued QR, whose decoded map was
+  `{0: '<record id>', 2: '1.0', 3: 'OpenG2P Farmer Registry', 4: …}` — key 3
+  should have been `eng`.
+  {% endhint %}
+
+  `Data` itself lands on **key 0**, which is outside the standard top-level
+  attribute numbering but collides with nothing, so the id rides safely. A stock
+  verifier shows it as "Data"; the Agent Portal relabels it using the
+  `qr_data_label` on the credential definition (see below).
+
+  **It has to be in the QR to be worth anything:** the QR is all an offline
+  verifier sees, so an id living only in the JSON-LD credential cannot be checked
+  against the card in the field. Without it, a genuine QR paired with a card
+  showing someone else's id still verifies.
+
+  **The platform does not name the id.** The Registry Platform serves every
+  manifestation, so "Farmer ID" would be wrong for all but one of them. Each
+  registry supplies the label on its credential definition:
+
+  ```yaml
+  vcDefinitions:
+    - config_id: OpenG2PFarmerCredential
+      qr_data_label: "Farmer ID"     # shown on the verification screen
+  ```
+
+  Unset, the verification screen shows the neutral `ID`.
 * **Where the verifying key comes from.** The signed QR is a **COSE_Sign1 / CWT**, and claim-169
   verification **does not** use `.well-known` / JWKS / DID discovery. The spec allows the key to be
   identified from the COSE header — `x5chain` (embedded cert), `x5t` (hash) or `x5u` (URI) — otherwise
   the verifier is assumed to hold a **pre-loaded trust anchor**.
   **What OpenG2P actually emits carries no certificate**: the header holds only `alg` (ES256) and a
-  `kid`. So a pre-distributed trust anchor is the *only* way our QR verifies — take the ES256 key from
-  `/v1/certify/.well-known/jwks.json` and load it into the verifier. Either way, no call back to
+  `kid`. So the verifier needs the ES256 key from
+  **`https://<certify-host>/.well-known/jwks.json`** — published there for every configured key,
+  unlike `did.json`, which carries the Ed25519 proof key only. Either way, no call back to
   OpenG2P at scan time. (The **JSON-LD VC** — not the QR — uses
   `proof.verificationMethod = <issuerDID>#<key>`, resolvable via `did:web`.) See
   [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
@@ -197,6 +259,156 @@ Registry, …) supplies what is specific to it, because the fields differ:
 * the **card design** for the printed PDF;
 * the **issuer DID** value for the environment.
 
+### Why a view, and not the tables
+
+The Agent Portal API is part of the **platform**, not of any one registry. It
+cannot know that a farmer's land parcels live in one table and a household's
+members in another — those tables are declared by the manifestation's extension,
+and `G2PRegister` itself is abstract. A view is what lets one platform service
+serve every manifestation without importing any of their models.
+
+It also does three things a direct table read would not:
+
+* **flattens** whatever joins the claims need into one row per record, so the
+  service never has to know the shape underneath;
+* **filters** — the view exposes only the columns that may become claims, so a
+  column added to a register does not silently become a credential field;
+* **keys** the record consistently on `internal_record_id`, whatever the
+  manifestation's own primary keys look like.
+
+### The view contract
+
+Five column names are **reserved**. What becomes a **claim** depends on whether
+the VC definition sets `claim_columns`:
+
+| Column | Required | Meaning |
+|---|---|---|
+| `internal_record_id` | yes | the record key; what claims are fetched by |
+| `foundational_id` | yes | the national ID; what the beneficiary's authenticated subject is checked against |
+| `record_status` | should | only `ACTIVE` records may be issued a credential |
+| `record_name` | optional | shown to the agent after look-up, so they can confirm the right person |
+| `register_id` | optional | recorded on the issuance log |
+
+**With `claim_columns` set** (what the Farmer Registry does), only those columns
+are stamped into the credential — a column added to the view is *not* issued
+unless the definition asks for it by name, and a configured column that the view
+does not expose is a hard error at issue time rather than a silently missing
+field.
+
+**Without it**, every non-reserved column becomes a claim, and the view alone is
+the claim list.
+
+The explicit list is the safer default: it means widening a view for reporting
+cannot quietly widen what is printed on a citizen's credential.
+
+### How a column becomes a credential field
+
+The column name is the link. The credential template refers to variables as
+`${...}`, and the view's column names must match them:
+
+```sql
+-- farmer_vc_view
+select f.internal_record_id,
+       f.foundational_id,
+       f.record_status,
+       concat_ws(' ', f.given_name, f.family_name) as "fullName",   -- ${fullName}
+       to_char(f.birth_date, 'YYYY-MM-DD')         as "dateOfBirth" -- ${dateOfBirth}
+from   g2p_register_farmers f;
+```
+
+Two details bite in Postgres: camelCase aliases must be **double-quoted** or
+they fold to lowercase and stop matching `${fullName}`; and dates should be
+rendered to text, so the claim is a clean string rather than a serialised date
+object. The API stringifies any non-string value before pushing it, so an
+un-cast date still issues — it just issues Python's rendering of it.
+
+If a template variable has no matching column, Certify returns the credential
+with the literal `${...}` still in it. The Agent Portal API **rejects** such a
+credential rather than printing it — an unresolved placeholder on a citizen's
+paper credential is worse than a failed issuance.
+
+### Who reads it, and when
+
+Only the **Agent Portal API**, twice in one issuance:
+
+1. at **look-up**, by `foundational_id`, to find the record and confirm it is
+   `ACTIVE`;
+2. at **issue**, by `internal_record_id`, to read the claims that are pushed to
+   Certify.
+
+Inji Certify never reads it. In Phase 1 claims are *pushed* to Certify, so
+Certify holds no database credentials and needs no access to the registry at
+all. (Certify's own `registrydb` data-provider plugin — which would read a view
+directly — is a different, wallet-oriented path; see
+[Registry Data Connector](registry-data-connector.md).)
+
+## Where the credential template lives
+
+The template is part of the manifestation's **VC definition**, in its Helm
+values — not in code and not in the database:
+
+```yaml
+agentPortalApi:
+  vcDefinitions:
+    - config_id: OpenG2PFarmerCredential
+      view: farmer_vc_view                    # where the claims come from
+      claim_columns: ["fullName", ...]        # which columns are issued
+      svg_template: farmer-card.svg           # how the paper card looks
+      certifyConfig:
+        credentialConfigKeyId: OpenG2PFarmerCredential
+        vcTemplateJson: ...                   # the JSON-LD credential template
+```
+
+It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the
+`credential-config-register` Job**, which POSTs each definition to Certify on
+install and upgrade. Certify can only issue a credential type it already knows,
+so a type that was never registered fails at the first issuance on an unknown
+`credential_configuration_id`.
+
+Certify is what substitutes the `${...}` variables, using the claims the Agent
+Portal API pushed.
+
+## Where the PDF is made
+
+In the **Agent Portal API**, not in Certify and not in the browser.
+
+Certify returns a signed JSON-LD credential with the compact claim-169 QR
+payload inside it. The API then renders the printable card itself, with
+`cairosvg`, from the manifestation's **SVG card design** — shipped as a
+ConfigMap and mounted at `/app/pdf-templates`, so a designer can restyle the
+card without touching code or rebuilding an image. If no SVG is configured the
+API falls back to a plain layout, so a missing design file never blocks an
+issuance.
+
+The PDF is **streamed straight to the agent's browser** as a download and is
+never written to the pod, so any replica can serve any request. The issuance
+identifiers travel in response headers (`X-Issuance-Id`, `X-Credential-Id`) for
+the client to display or log.
+
+## The portal the agent uses
+
+This page is the *credential* design. The portal itself — its own Keycloak
+`agent` realm, why agents are not staff, how the browser is authenticated
+without ever holding a token, and how the portal grows beyond issuance — is
+documented with the Registry Platform:
+
+→ [Agent Portal](../../../products/registry/registry/features/agent-portal.md)
+
+## Master Data Service
+
+**VC issuance does not use MDS at run time.** The Agent Portal API holds no
+Master Data configuration at all: claims come from the registry's own VC view,
+and nothing in the look-up → authenticate → issue path calls MDS.
+
+MDS is involved before and after, not during:
+
+* **at seed time**, a registry's `db-seed` reads geography and country code
+  lists from the MDS API to populate its own attribute tables;
+* **in reporting**, dashboards join registry data to geography held in Master
+  Data.
+
+So a Master Data outage does not stop credentials being issued.
+
 ## Two documents, two signatures, two keys
 
 An issuance produces **two separately signed documents**, not one shown two ways:
@@ -211,8 +423,9 @@ does not resolve DIDs.
 
 → [Signatures, Keys and the QR](signatures-keys-and-the-qr.md) explains all of
 this properly: who builds which part, which signature is checked on which path,
-what claim 169 can and cannot carry (the photo is optional; a programme id will
-not fit), where each key is published, and why Inji **Verify** is a hosted web
+what claim 169 can and cannot carry (the photo is optional; the Farmer ID has no
+registry key of its own and travels in `Data` — see below), where each key is
+published, and why Inji **Verify** is a hosted web
 portal rather than the phone app.
 
 ## Key management

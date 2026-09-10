@@ -8,7 +8,7 @@ description: Base registry models available in the platform
 
 Within the OpenG2P platform, a deployed registry instance is referred to as a **Registry**, while the individual data stores (tables or models) that hold records are referred to as **Registers**.
 
-The platform classifies registers into three categories, defined as enumerations in the [`g2p_register_metadata.py`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) file within the [`openg2p-registry-core`](https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/core/openg2p-registry-core) module:
+The platform classifies registers into three categories, defined as enumerations in the [`g2p_register_metadata.py`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) file within the [`openg2p-registry-core`](https://github.com/OpenG2P/registry-platform/tree/develop/core/openg2p-registry-core) module:
 
 * **REGISTER**
 * **TABLE**

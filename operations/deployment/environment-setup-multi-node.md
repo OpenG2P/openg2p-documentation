@@ -41,7 +41,7 @@ If you installed the platform with the production automation:
 # or: ./openg2p-prod-env-install.sh --config prod-config.yaml
 ```
 
-2. **Commons** — connect Wireguard, open Rancher, and install **openg2p-commons-base** then **openg2p-commons-services** in the environment namespace (use the `commons-postgresql` secret and host PostgreSQL on storage). Chart versions: [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
+2. **Commons** — connect Wireguard, open Rancher, and install **openg2p-commons-base** then **openg2p-commons-services** in the environment namespace (use the `commons-postgresql` secret and host PostgreSQL on storage). Chart versions: [Commons changelog](https://openg2p.github.io/versions/commons/CHANGELOG.html).
 
 **Your only other manual actions:**
 
@@ -348,7 +348,7 @@ _**Production and standalone:** required — Commons is installed from Rancher o
 2. Select the environment namespace / project.
 3. **Apps → Charts → openg2p-commons-base** — install with production values (external PostgreSQL via the `commons-postgresql` secret when using production scaffolding, hostnames, storage class, and so on).
 4. Then install **openg2p-commons-services** in the same namespace.
-5. Pick chart versions from the [Commons changelog](https://openg2p.gitlab.io/versions/commons/CHANGELOG.html).
+5. Pick chart versions from the [Commons changelog](https://openg2p.github.io/versions/commons/CHANGELOG.html).
 
 {% hint style="info" %}
 Do not use Helm CLI scripts under `automation/environment/` to install Commons. Those scripts are scaffolding-only.

@@ -7,10 +7,10 @@ description: >-
 # Helm chart
 
 {% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
+**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
 {% endhint %}
 
-The Farmer Registry is deployed by **`openg2p-farmer-registry`** ([`helm/openg2p-farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/helm/openg2p-farmer-registry)), published to the `openg2p/charts` GitLab Helm registry.
+The Farmer Registry is deployed by **`openg2p-farmer-registry`** ([`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry)), published to the `openg2p/charts` GitLab Helm registry.
 
 The chart declares the platform chart as a **pinned dependency** and supplies a values overlay. It owns **no service templates** — every API, worker, job and ingress comes from the subchart — but it does carry a few templates of its own for things the platform has no concept of (see [What this chart owns](#what-this-chart-owns)):
 
@@ -20,7 +20,7 @@ dependencies:
   - name: openg2p-registry
     alias: registry              # overlay nests under .Values.registry
     version: 0.0.0-develop.383   # HARDCODED — moved deliberately
-    repository: https://gitlab.com/api/v4/projects/84460547/packages/helm/stable
+    repository: https://openg2p.github.io/openg2p-helm
 ```
 
 Every service template, IAM/Keycloak wiring and db-seed mechanism comes from that subchart. See [Packaging & the reference registry](../../registry/deployment-and-extension/packaging-and-reference-registry.md) for what the platform chart contains.
@@ -105,7 +105,7 @@ Names that would otherwise collide are scoped to the release, so a Farmer Regist
 
 ## Versions and CI
 
-The chart and all farmer images are built by the **OpenG2P central pipeline** at **one version per commit** — see [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the authoritative rules. The repo carries a single thin stub, [`.gitlab-ci.yml`](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/.gitlab-ci.yml), calling `openg2p/packaging@v1`.
+The chart and all farmer images are built by the **OpenG2P central pipeline** at **one version per commit** — see [Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the authoritative rules. The repo carries a single thin stub, [`.github/workflows/build-publish.yml`](https://github.com/OpenG2P/farmer-registry/blob/develop/.github/workflows/build-publish.yml), calling `openg2p-packaging@v1`.
 
 Two version lines meet in this chart, and they move independently:
 

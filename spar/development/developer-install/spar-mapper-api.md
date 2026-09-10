@@ -79,7 +79,7 @@ brew services start postgresql@15
 ### Repository Setup
 
 ```bash
-git clone https://gitlab.com/openg2p/spar/spar.git
+git clone https://github.com/OpenG2P/spar.git
 cd spar
 git checkout develop
 ```

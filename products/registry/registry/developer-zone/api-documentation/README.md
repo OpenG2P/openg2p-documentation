@@ -5,10 +5,10 @@ description: API reference for OpenG2P Registry.
 # API Documentation
 
 {% hint style="info" %}
-**New home: GitLab.** **`registry-platform`** is now developed at [gitlab.com/openg2p/registry/registry-platform](https://gitlab.com/openg2p/registry/registry-platform).
+**New home: GitLab.** **`registry-platform`** is now developed at [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 {% endhint %}
 
-OpenG2P Registry exposes two primary API surfaces. Both pages below are **generated from the OpenAPI specs published by [`registry-platform`](https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/apis/docs/openapi)** and render live from them, so the request/response schemas are always the spec's own.
+OpenG2P Registry exposes two primary API surfaces. Both pages below are **generated from the OpenAPI specs published by [`registry-platform`](https://github.com/OpenG2P/registry-platform/tree/develop/apis/docs/openapi)** and render live from them, so the request/response schemas are always the spec's own.
 
 ## Staff Portal API
 

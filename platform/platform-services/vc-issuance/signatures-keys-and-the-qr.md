@@ -127,15 +127,24 @@ Two consequences people trip over:
   `did:web:<certify-host>`. Carries the **Ed25519** key only. Certify builds this
   from the registered credential configs' `signatureAlgo` and never consults
   `qrSignatureAlgo`, so the QR key does not appear here.
-* `GET /v1/certify/.well-known/jwks.json` — **all** of Certify's public keys, the
-  ES256 QR key included. This is where a verifier obtains the QR key.
+* `GET /.well-known/jwks.json` — **all** of Certify's public keys, the ES256 QR
+  key included. This is where a verifier obtains the QR key.
+
+  Certify itself serves this at `/v1/certify/.well-known/jwks.json`; the Certify
+  chart's VirtualService rewrites the standard well-known path onto it. Without
+  that rewrite the URL is a **404**, and since the QR key is not in `did.json`
+  there is then no way to obtain it at all.
 
 That split is not a defect, because **claim-169 verification does not resolve
 DIDs.** The COSE header carries only an `alg` and a `kid` — there is no
-`x5chain` embedded. A verifier is expected to already hold the issuer's key from
-a **pre-distributed trust list**, exactly as EU DCC and mDL work. Publishing the
-key is necessary but not sufficient: it must be **loaded into the verifier as a
-trust anchor**.
+`x5chain` embedded. A verifier resolves the key by `kid` from the issuer's published JWKS, or holds
+it from a **pre-distributed trust list**, as EU DCC and mDL do.
+
+Inji Verify's `verify-service` does the former: given a credential naming
+`https://certify.<domain>` it fetches that host's JWKS and matches the `kid`.
+Nothing has to be loaded by hand — but equally there is **no trusted-issuer
+allow-list**, so a verdict means "this signature is authentic for the issuer the
+credential names".
 
 ## Who verifies, and with what
 
@@ -154,10 +163,12 @@ to OpenG2P — the verifier already holds the key. But a web portal is a web pag
 so a browser-based verifier still has to load it. A genuinely disconnected
 counter needs the SDK embedded in an installed application.
 
-{% hint style="warning" %}
-**Unverified.** Whether a stock Inji Verify accepts a claim-169 CWT from a
-non-MOSIP issuer has not been tested end to end. Until it has, treat third-party
-verification as unproven rather than assumed.
+{% hint style="success" %}
+**Verified.** A claim-169 QR issued by our Certify verifies against Inji Verify's
+`verify-service` end to end: `SUCCESS` for a genuine credential, and `INVALID`
+both for a tampered signature and for a token re-signed with a different key
+under the same issuer and `kid` — which is what proves the verifier really
+fetches the published key rather than trusting the token.
 {% endhint %}
 
 ## Before anyone can verify anything
@@ -166,7 +177,9 @@ Neither of these happens on its own:
 
 1. A **verifier deployment exists** — nothing verifies a credential until a
    relying party stands one up.
-2. The OpenG2P issuer's **ES256 QR key is loaded there as a trust anchor**, taken
-   from `/v1/certify/.well-known/jwks.json`.
+2. The OpenG2P issuer's **ES256 QR key is reachable**, from
+   `https://<certify-host>/.well-known/jwks.json` — resolved automatically by
+   `verify-service`, or pre-loaded as a trust anchor by a verifier that works
+   from a trust list.
 
 See [Deployment](deployment.md) for the issuer side.

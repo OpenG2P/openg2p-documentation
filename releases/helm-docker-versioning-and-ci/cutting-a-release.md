@@ -94,7 +94,7 @@ git push origin 1.1.1
 * The **image** exists at `…:1.1.0` (Container Registry / Docker Hub).
 * The **chart** `1.1.0` appears in the Helm repository.
 * The **changelog** shows a `1.1.0` page with your **Release notes**, at
-  [openg2p.gitlab.io/versions](https://openg2p.gitlab.io/versions/) (GitLab repos).
+  [openg2p.github.io/versions](https://openg2p.github.io/versions/) (GitLab repos).
 
 ## Do not do this
 

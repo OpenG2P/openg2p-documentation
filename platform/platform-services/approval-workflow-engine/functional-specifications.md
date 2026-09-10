@@ -606,7 +606,7 @@ Why notifications belong in the Caller:
 | Throttling / consolidation          | "5 approvals waiting" digest emails are a Caller policy decision                       |
 
 A minimal SMTP notifier scaffold ships in
-[`src/awe/services/notifier.py`](https://gitlab.com/openg2p/awe/-/blob/develop/src/awe/services/notifier.py)
+[`src/awe/services/notifier.py`](https://github.com/OpenG2P/awe/blob/develop/src/awe/services/notifier.py)
 and is `enabled: false` by default. It exists only as a low-effort
 fallback for trial deployments without a Caller-side notification
 pipeline. Production deployments should leave it disabled and let the

@@ -100,9 +100,9 @@ registry does this", it means these:
 
 | | Shape | |
 |---|---|---|
-| [**Farmer Registry**](../../../farmer-registry/README.md) | Two registers | Farmer + Household, with land, crop, livestock and cooperative sub-registers. [Source](https://gitlab.com/openg2p/registry/farmer-registry) |
-| [**National Social Registry**](../../../national-social-registry/README.md) | Two registers | Individual + Household, with the socio-economic sub-registers used for targeting. [Source](https://gitlab.com/openg2p/registry/national-social-registry) |
-| [**Disability Registry**](../../../disability-registry/README.md) | **One register** | A single `PersonWithDisability` register with eight sub-registers and no group register — the example to follow if your domain has one subject. Built to the SPDCI Disability Registry data objects. [Source](https://gitlab.com/openg2p/registry/disability-registry) |
+| [**Farmer Registry**](../../../farmer-registry/README.md) | Two registers | Farmer + Household, with land, crop, livestock and cooperative sub-registers. [Source](https://github.com/OpenG2P/farmer-registry) |
+| [**National Social Registry**](../../../national-social-registry/README.md) | Two registers | Individual + Household, with the socio-economic sub-registers used for targeting. [Source](https://github.com/OpenG2P/national-social-registry) |
+| [**Disability Registry**](../../../disability-registry/README.md) | **One register** | A single `PersonWithDisability` register with eight sub-registers and no group register — the example to follow if your domain has one subject. Built to the SPDCI Disability Registry data objects. [Source](https://github.com/OpenG2P/disability-registry) |
 
 {% hint style="info" %}
 The two-register examples make a household register look mandatory. It is not —

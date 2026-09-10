@@ -5,7 +5,7 @@ description: The single, consolidated G2P Bridge Helm chart
 # Helm Chart
 
 The entire G2P Bridge subsystem — and everything it depends on — installs from a
-**single Helm chart**, [`openg2p-bridge`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/deployment/charts/openg2p-bridge),
+**single Helm chart**, [`openg2p-bridge`](https://github.com/OpenG2P/g2p-bridge/tree/develop/deployment/charts/openg2p-bridge),
 in the `g2p-bridge` repository. There are no longer separate charts per service
 or a separate chart for the Example Bank; one `helm install` brings up the
 complete, working subsystem.
@@ -54,9 +54,9 @@ For the chart version, runtime image tags, last-modified date and change history
 ### Workloads deployed
 
 Images are published to the project's **GitLab Container Registry**,
-`registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/<name>` (the `<name>` shown below).
+`openg2p/openg2p-bridge/<name>` (the `<name>` shown below).
 These moved from Docker Hub (`openg2p/openg2p-bridge-*`) with the GitLab migration; the
-exact tags per version are on the [Releases](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/releases)
+exact tags per version are on the [Releases](https://github.com/OpenG2P/g2p-bridge/-/releases)
 page.
 
 | Component | Image `<name>` | Notes |
@@ -182,7 +182,7 @@ The command-line install below is intended for **advanced / developer** use.
 
 ```bash
 # 1. Clone the consolidated repo
-git clone https://gitlab.com/openg2p/g2p-bridge/g2p-bridge.git
+git clone https://github.com/OpenG2P/g2p-bridge.git
 cd g2p-bridge/deployment/charts/openg2p-bridge
 
 # 2. Build chart dependencies (common, postgres-init, redis, keycloak-init)

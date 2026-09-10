@@ -1,7 +1,7 @@
 # National Social Registry
 
 {% hint style="info" %}
-**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+**New home: GitLab.** **`national-social-registry`** is now developed at [github.com/OpenG2P/national-social-registry](https://github.com/OpenG2P/national-social-registry).
 {% endhint %}
 
 A **National Social Registry (NSR)** is a dynamic, centrally-maintained repository of socio-economic information on poor and vulnerable individuals and households. It serves as the single source of truth that government agencies rely on to _target, enrol and deliver_ social-protection programmes — cash transfers, food support, elderly pensions, disability allowances, health insurance, school feeding, public works and the like.
@@ -37,7 +37,7 @@ NSR defines **two** [**registers**](../registry/concepts.md#register) (top-level
 
 An Individual may exist independently or belong to a Household, linked via `link_internal_record_id` on the Individual record. Supporting tables follow the same linkage pattern.
 
-The NSR domain models are available in the [NSR repository](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/nsr-extension).
+The NSR domain models are available in the [NSR repository](https://github.com/OpenG2P/national-social-registry/tree/develop/nsr-extension).
 
 ## How it is packaged
 
@@ -48,7 +48,7 @@ The NSR is a thin **extension** of the [Registry Platform](../registry/deploymen
 * [**Data seeding**](deployment/data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
 * [**Sanity testing**](deployment/sanity-testing.md) — why NSR inherits the whole suite unchanged.
 
-All NSR source — the Python extension, the thin Dockerfiles, the wrapper chart and the single CI workflow — lives in one repository: [**gitlab.com/openg2p/registry/national-social-registry**](https://gitlab.com/openg2p/registry/national-social-registry).
+All NSR source — the Python extension, the thin Dockerfiles, the wrapper chart and the single CI workflow — lives in one repository: [**github.com/OpenG2P/national-social-registry**](https://github.com/OpenG2P/national-social-registry).
 
 ## Versions
 

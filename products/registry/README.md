@@ -13,9 +13,9 @@ The **platform is itself installable** and ships a runnable reference registry. 
 {% hint style="info" %}
 **New home: GitLab.** These repositories are now developed on GitLab:
 
-* [`registry-platform`](https://gitlab.com/openg2p/registry/registry-platform)
-* [`national-social-registry`](https://gitlab.com/openg2p/registry/national-social-registry)
-* [`farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry)
+* [`registry-platform`](https://github.com/OpenG2P/registry-platform)
+* [`national-social-registry`](https://github.com/OpenG2P/national-social-registry)
+* [`farmer-registry`](https://github.com/OpenG2P/farmer-registry)
 {% endhint %}
 
 ## In this section

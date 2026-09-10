@@ -11,8 +11,8 @@ what you must put in it. It is a **reference**, not a sequence — the order to 
 things in is [Phase 1](build-your-registry.md).
 
 Everything here is real: the paths match the
-[Farmer Registry](https://gitlab.com/openg2p/registry/farmer-registry) and the
-[National Social Registry](https://gitlab.com/openg2p/registry/national-social-registry)
+[Farmer Registry](https://github.com/OpenG2P/farmer-registry) and the
+[National Social Registry](https://github.com/OpenG2P/national-social-registry)
 as they are built today.
 
 ## The repository
@@ -24,7 +24,7 @@ as they are built today.
 ├── helm/openg2p-<domain>/  ← your Helm chart (wraps the platform chart)
 ├── test/                   ← your field-specific sanity tests + the pin guard
 ├── scripts/                ← bump-rp-version.sh, uninstall-registry.sh
-└── .gitlab-ci.yml          ← ~40 lines; all logic lives in openg2p/packaging
+└── .github/workflows/          ← ~40 lines; all logic lives in openg2p/packaging
 ```
 
 | Folder | You own | Notes |

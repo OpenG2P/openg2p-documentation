@@ -7,10 +7,9 @@ description: >-
 # Development
 
 {% hint style="info" %}
-**Source repository:** the Consent Manager is developed on **GitLab** —
-[https://gitlab.com/openg2p/consent-manager](https://gitlab.com/openg2p/consent-manager).
-The former GitHub repository (`github.com/openg2p/consent-manager`) is **frozen and
-read-only**; its CI is disabled. Clone, raise issues, and open merge requests on GitLab.
+**Source repository:**
+[https://github.com/OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager).
+Clone, raise issues, and open pull requests there.
 {% endhint %}
 
 The Consent Manager is a FastAPI service built on
@@ -32,7 +31,7 @@ The Consent Manager is a FastAPI service built on
 
 ## Repository layout
 
-The service lives under `backend/` in the [`consent-manager`](https://gitlab.com/openg2p/consent-manager) repository (GitLab):
+The service lives under `backend/` in the [`consent-manager`](https://github.com/OpenG2P/consent-manager) repository:
 
 ```
 backend/src/openg2p_consent_manager/

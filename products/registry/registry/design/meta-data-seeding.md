@@ -25,7 +25,7 @@ Configuration meta data (the `configurations/` folder) is **mandatory**. The reg
 
 ## Source: the registry's extension package
 
-The SQL scripts live in each registry's **own repository**, inside its extension package — for example [`farmer-extension`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/farmer-extension) in the Farmer Registry and [`nsr-extension`](https://gitlab.com/openg2p/registry/national-social-registry/-/tree/develop/nsr-extension) in the National Social Registry:
+The SQL scripts live in each registry's **own repository**, inside its extension package — for example [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) in the Farmer Registry and [`nsr-extension`](https://github.com/OpenG2P/national-social-registry/tree/develop/nsr-extension) in the National Social Registry:
 
 ```
 farmer-registry/                      ← the registry's own repo

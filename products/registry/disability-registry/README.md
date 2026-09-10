@@ -7,7 +7,7 @@ description: >-
 # Disability Registry
 
 {% hint style="info" %}
-**Source:** [gitlab.com/openg2p/registry/disability-registry](https://gitlab.com/openg2p/registry/disability-registry)
+**Source:** [github.com/OpenG2P/disability-registry](https://github.com/OpenG2P/disability-registry)
 {% endhint %}
 
 An estimated **1.3 billion people — about 16% of the world's population — live with a significant disability** ([WHO](https://www.who.int/news-room/fact-sheets/detail/disability-and-health)), and they are consistently poorer, less likely to be in work and less likely to be enrolled in the programmes meant for them. A disability registry is the instrument a government uses to close that gap: an authoritative record of who has a disability, what kind and how severe, what support they need, and what they already receive — so that entitlements can be granted, assistive products procured, and coverage measured. The obligation to collect exactly this data is set out in [UNCRPD Article 31](https://www.ohchr.org/en/instruments-mechanisms/instruments/convention-rights-persons-disabilities), and the operational case is made in the [WHO Global report on health equity for persons with disabilities](https://www.who.int/publications/i/item/9789240063600). For a resident, the registry is what turns a diagnosis into an entitlement without having to prove it again at every counter — one assessment, recognised across programmes, with the certificate, the assistive-product request and the allowance all hanging off the same record.

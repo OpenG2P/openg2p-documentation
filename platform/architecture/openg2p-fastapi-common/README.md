@@ -131,5 +131,6 @@ FastAPI dependencies. Its settings use the `COMMON_AUTH_*` env prefix.
 
 ## Versioning
 
-Services install these packages from the `develop` git ref (pinnable to a tag via
-each service's `FASTAPI_COMMON_REF` build-arg). See [Versions](versions.md).
+Services install these packages from a git ref — the `develop` branch by default,
+pinnable to a tag via each service's `FASTAPI_COMMON_REF` build-arg. See
+[Versions](versions.md).

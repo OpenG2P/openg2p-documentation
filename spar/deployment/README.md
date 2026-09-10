@@ -27,7 +27,7 @@ After steps 1 and 2, Rancher is up and running, so it is recommended to deploy S
 
 1. Login to the Rancher console.
 2. Select the cluster and namespace (environment).
-3. Under **Apps → Repositories**, make sure the **OpenG2P charts** repository is added — the shared **GitLab Helm registry** (`https://gitlab.com/api/v4/projects/<CHARTS_PROJECT_ID>/packages/helm/stable`), not the old `openg2p.github.io/openg2p-helm` GitHub Pages repo. See [Helm & Docker Versioning and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) for the exact URL.
+3. Under **Apps → Repositories**, make sure the **OpenG2P charts** repository is added: `https://openg2p.github.io/openg2p-helm`.
 4. Under **Apps → Charts**, refresh all repositories.
 5. To show moving (pre-release) versions, click your user avatar (top-right) → **Preferences** → enable **Include Prerelease Versions**.
 6. Select the **"OpenG2P SPAR"** chart.

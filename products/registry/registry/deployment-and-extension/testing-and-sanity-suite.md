@@ -33,7 +33,7 @@ The sanity image mirrors the app's base-and-extension shape. The **harness** (cl
 
 ```dockerfile
 ARG RP_VERSION=<version>
-FROM registry.gitlab.com/openg2p/registry/registry-platform/sanity-tests:${RP_VERSION}
+FROM openg2p/openg2p-registry-sanity-tests:${RP_VERSION}
 
 COPY test/sanity/sanity/fixtures.py               /app/sanity/fixtures.py
 COPY test/sanity/sanity/data_seed.py              /app/sanity/data_seed.py

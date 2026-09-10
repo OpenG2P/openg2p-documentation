@@ -47,7 +47,7 @@ exit
 #### 4. Clone the Registry APIs Repository
 
 ```bash
-git clone https://gitlab.com/openg2p/registry/registry-platform/-/tree/develop/apis
+git clone https://github.com/OpenG2P/registry-platform/tree/develop/apis
 ```
 
 #### 5. Install Python Libraries and Run the API

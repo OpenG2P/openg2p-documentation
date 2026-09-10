@@ -31,7 +31,7 @@ Three repositories, and the boundary between them is the whole design.
 
 | Repository | Publishes | You |
 |---|---|---|
-| [`registry-platform`](https://gitlab.com/openg2p/registry/registry-platform) | The runnable images (`staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `staff-ui`, `bene-api`) and the `openg2p-registry` Helm chart | **Consume.** Never fork |
+| [`registry-platform`](https://github.com/OpenG2P/registry-platform) | The runnable images (`staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `staff-ui`, `bene-api`) and the `openg2p-registry` Helm chart | **Consume.** Never fork |
 | [`openg2p/packaging`](https://gitlab.com/openg2p/packaging) | The shared CI — versioning, build, chart publish | **Include.** Never copy |
 | `<domain>-registry` | Your five thin images and one wrapper chart | **Own** |
 

@@ -7,7 +7,7 @@ description: >-
 # Deployment
 
 {% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
+**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
 {% endhint %}
 
 The Farmer Registry is **not** a registry built from scratch. It is a thin **extension** of the [OpenG2P Registry Platform](../../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the farmer domain on top.
@@ -36,9 +36,9 @@ The platform version is **pinned in two places that move together**: `RP_VERSION
 
 | Artifact | Location |
 |---|---|
-| Source | [`openg2p/registry/farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry) |
-| Helm chart | [`helm/openg2p-farmer-registry`](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/helm/openg2p-farmer-registry), published to the `openg2p/charts` GitLab Helm registry |
-| Docker images | `registry.gitlab.com/openg2p/registry/farmer-registry/<name>` |
+| Source | [`openg2p/registry/farmer-registry`](https://github.com/OpenG2P/farmer-registry) |
+| Helm chart | [`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry), published to the `openg2p/charts` GitLab Helm registry |
+| Docker images | `openg2p/openg2p-farmer-registry-<name>` |
 | Versions & changelog | [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG) — see [Versions](../versions/README.md) |
 
 ## Deployment steps
