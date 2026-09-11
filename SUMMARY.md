@@ -694,6 +694,8 @@
     * [Monitoring & Reporting](platform/platform-services/_archive/monitoring-and-reporting.md)
   * [Interoperability](interoperability.md)
   * [Creating a New Platform Service](platform/platform-services/creating-a-new-service.md)
+  * [Notification](platform/platform-services/notification/README.md)
+    * [Notification Architecture](platform/platform-services/notification/notification-architecture.md)
 * [Country Data Architecture](platform/country-data-architecture.md)
 * [Portals & Apps](portals-and-apps/README.md)
   * [Staff Portal](staff-portal/README.md)
