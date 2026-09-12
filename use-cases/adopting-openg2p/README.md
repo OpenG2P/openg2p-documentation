@@ -83,10 +83,6 @@ OpenG2P has a governing body. Refer to [openg2p.org](https://openg2p.org)
 
 ## 8. What adoption takes — effort, team and support
 
-**This section must answer:**
-- Roughly how long does it take to go from a decision to adopt OpenG2P to actually paying out benefits to real beneficiaries?
-- If something goes wrong in a live payment run — say disbursements fail — is there an official helpdesk or support team we can call, or are we entirely responsible for fixing it ourselves?
-
 The timelines for adoption depends on several factors like the nature of the engagement, prepardness of countries, availablity of developers and DevOps engineers, availability of hardware, champion on the government side to drive the initiative etc.  As such, an OpenG2P sandbox can be brought up in just a few hours and a setup for pilot can be created in a few days.  
 
 OpenG2P provides advisory, design and archirtecture guidance, and L3 support to the governments during all phases of the project. Beyond the engagement, OpenG2P maintains the code base and provides bug fixes, enhancements and upgrades for the core platform.
