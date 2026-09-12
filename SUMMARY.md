@@ -893,6 +893,7 @@
 ## Resources
 
 * [Use Cases](use-cases/README.md)
+  * [Adopting OpenG2P — A Guide for Evaluators](use-cases/adopting-openg2p/README.md)
   * [Farmer Profile](use-cases/farmer-registry/README.md)
     * [Reference Design: Farmer Profile](use-cases/farmer-registry/reference-design-farmer-registry.md)
 * [Blogs](blogs/README.md)
