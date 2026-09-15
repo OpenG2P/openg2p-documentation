@@ -35,7 +35,7 @@ Empty. A rounded **Upload** button with an upload icon and a dashed border. Requ
 
 Filled. Paperclip, truncated filename, X to clear. Supporting Documents use the same control, full width. Example of both in the same section shown below.
 
-<figure><img src="../../../../.gitbook/assets/image (13).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
 
 Click **Upload** and pick a file from disk. Allowed types and max size come from that field. PDF and common images are typical. If the file does not appear after you pick it, it is usually the wrong type or larger than that field allows. Try another file.
 
@@ -179,7 +179,7 @@ The submission header lists **Attached Documents**. On intake, that list **is** 
 
 Breadcrumb looks like Individuals - Form Submissions > the submission id. Tabs are **Intake Forms**, **Intake Possible Duplicates**, **Register Possible Duplicates**. **Approvals** is on the right.
 
-<figure><img src="../../../../.gitbook/assets/image (76).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (68).png" alt=""><figcaption></figcaption></figure>
 
 #### After submit
 
@@ -195,7 +195,7 @@ Remove a file in draft and save before submit if it should never reach the live 
 
 Open the register record and the same section. File fields are read-only. Label, filename, paperclip. **Edit Details** is still at the bottom of the section.
 
-<figure><img src="../../../../.gitbook/assets/image (60).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../../.gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
 
 To change a live file, **Edit Details** again. That creates another change request. View has no X.
 
