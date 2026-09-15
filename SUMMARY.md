@@ -209,6 +209,7 @@
             * [G2P Registry Datashare: WebSub](products/registry/registry/_archive/social-registry/developer-zone/odoo-modules/g2p-registry-datashare-websub.md)
             * [ODK App User Mapping](products/registry/registry/_archive/social-registry/developer-zone/odoo-modules/odk-app-user-mapping.md)
           * [Performance Testing](products/registry/registry/_archive/social-registry/developer-zone/performance-and-scale-1.md)
+    * [Performance Benchmarks](products/registry/registry/performance-benchmarks.md)
   * [Farmer Registry](products/registry/farmer-registry/README.md)
     * [Deployment](products/registry/farmer-registry/deployment/README.md)
       * [Helm chart](products/registry/farmer-registry/deployment/helm-chart.md)
