@@ -28,7 +28,7 @@ In Phase 2 the Advisor generates code into its own per-project workspace, pushes
 
 ### 4. Build locally, push to GitLab Container Registry
 
-Phase 2 generates files locally, runs `python -m py_compile` + `helm lint` + `yaml.safe_load` for fast feedback, runs `docker build` on the advisor host, and pushes the resulting images to GitLab Container Registry. The deployment repo's `.gitlab-ci.yml` is intentionally a no-op — CI doesn't rebuild what we've already built.
+Phase 2 generates files locally, runs `python -m py_compile` + `helm lint` + `yaml.safe_load` for fast feedback, runs `docker build` on the advisor host, and pushes the resulting images to GitLab Container Registry. The deployment repo's `.github/workflows/build-publish.yml` is intentionally a no-op — CI doesn't rebuild what we've already built.
 
 **Why:** GitLab CI on shared runners is slow (10-15 min per build) and burns CI minutes. Local build catches errors in seconds and reuses the same image for the local sandbox.
 

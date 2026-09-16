@@ -67,6 +67,7 @@ Agents and staff are **entirely distinct**: a separate realm, a separate API, an
 | [Deployment](deployment.md)                                   | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL                        |
 | [Local Developer Trial](local-setup.md)                       | A verified local run that issues a signed VC + printable QR/PDF from real registry data                                 |
 | [Phase 2 — Device Wallet](phase-2-device-wallet.md)           | Future: self-owned smartphone wallets, plus the capabilities deliberately deferred from Phase 1                          |
+| [Agent Portal](../../../products/registry/registry/features/agent-portal.md) | The portal the agent uses: its own Keycloak `agent` realm, how it authenticates, and how it carries capabilities beyond issuance |
 
 ## Status
 

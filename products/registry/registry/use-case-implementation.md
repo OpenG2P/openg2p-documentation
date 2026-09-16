@@ -1,7 +1,7 @@
 # Use Case Implementation
 
 {% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [gitlab.com/openg2p/registry/farmer-registry](https://gitlab.com/openg2p/registry/farmer-registry).
+**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
 {% endhint %}
 
 This page is the operating contract for the OpenG2P Advisor when it walks an implementer through deploying OpenG2P Registry. It is structured for machine consumption: every Discovery item, Activity, Gap-analysis check, and Output element has a deterministic shape, and the advisor relies on that shape. Human readers will find the format unusually rigid; that is intentional.
@@ -1260,7 +1260,7 @@ Reserve the GitLab namespace early so we know the image-registry path before the
 * **Side effects:** workspace — fresh clone of Farmer Registry into `<workspace>/reference/`.
 * **On failure:** abort. Network / git-clone errors.
 
-Clone Farmer Registry (`https://gitlab.com/openg2p/registry/farmer-registry`) at the configured branch into the project workspace. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
+Clone Farmer Registry (`https://github.com/OpenG2P/farmer-registry`) at the configured branch into the project workspace. The clone is the substitution surface; the advisor never edits Farmer Registry itself.
 
 #### 4. generate_extension_files
 
@@ -1294,10 +1294,10 @@ Run `python -m py_compile` over every `.py` file in the extension package. Catch
 #### 7. generate_deployment_files
 
 * **Inputs:** `helm_resource_profile`, `production_domain_name`, `sandbox_base_domain`, `organisation_mnemonic`, `registry_mnemonic`, image base path computed from Activity 2.
-* **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.gitlab-ci.yml` to `<workspace>/deployment/`.
+* **Side effects:** workspace — writes Dockerfiles, Helm wrapper chart, sandbox compose file, README, disabled `.github/workflows/build-publish.yml` to `<workspace>/deployment/`.
 * **On failure:** abort.
 
-Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.gitlab-ci.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
+Adapt the reference's `docker/` and `helm/` into the customised deployment repo. Substitute farmer→`<org>-<mnemonic>` per the substitution map. Generate the Helm `Chart.yaml` + `values.yaml` from inputs. Generate the `docker-compose.sandbox.yaml`. Generate a stub `.github/workflows/build-publish.yml` with `workflow.rules: when: never` (CI is disabled in v0.x because builds happen locally; the file is preserved as a hook for future toggling).
 
 #### 8. compile_deployment
 
@@ -1407,7 +1407,7 @@ Phase 2 generates and runs a real test suite — it's not a smoke check that's t
 
 ### References
 
-* Farmer Registry reference repository: `https://gitlab.com/openg2p/registry/farmer-registry` — the structural baseline this phase substitutes against.
+* Farmer Registry reference repository: `https://github.com/OpenG2P/farmer-registry` — the structural baseline this phase substitutes against.
 * Registry extensions package conventions and the extension build contract (multiple-inheritance pattern: `G2PRegister<Entity>(G2PRegister, G2PPerson, G2PGeo, G2P<Entity>)`).
 * Registry deployment repository conventions: per-service `Dockerfile` + `develop.txt`, wrapper Helm chart over `openg2p-registry` base chart, sample-data SQL seeds keyed per Register/Table.
 * `g2p_register_definitions` schema and master-register hierarchy.

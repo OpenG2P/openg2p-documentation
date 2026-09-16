@@ -8,7 +8,7 @@ description: >-
 # Consent Management
 
 {% hint style="info" %}
-**Source code:** [https://gitlab.com/openg2p/consent-manager](https://gitlab.com/openg2p/consent-manager) (GitLab). The former GitHub repository is frozen/read-only.
+**Source code:** [https://github.com/OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager)
 {% endhint %}
 
 ## Overview

@@ -106,7 +106,24 @@ The newly promoted lesson now backs its taxonomy cell, so the cell flips toward 
 
 The interview loop above finds gaps by scanning the **static wiki**. Persona elicitation finds gaps by running questions through the **real advisor answer path** — it catches cases where a page exists but the advisor still can't produce a usable answer. The two are complementary; run both.
 
-The unit of audience is a **persona**. The taxonomy is now persona-tagged (`persona:` on each area); the original deployment areas are the `implementer` persona, and there is a new set of **operator** areas — a government administrator running the deployed system ("how do I do X", no devops, no concepts).
+The unit of audience is a **persona**. The taxonomy is persona-tagged (`persona:` on each area), covering four audiences:
+
+| Persona | Who they are | What they ask |
+|---|---|---|
+| `evaluator` | A non-technical decision-maker (government department or programme lead) deciding **whether to adopt** OpenG2P | What is it, what can/can't it do, does it fit my programme, is it mature, what does it cost, who backs it |
+| `developer` | A software developer building **against** OpenG2P | APIs, data models, module internals, extension points, integration, local setup |
+| `implementer` | An engineer with devops skills **deploying and customising** OpenG2P | Topology, Kubernetes, data layer, Helm config, integration wiring — the original taxonomy |
+| `operator` | A government administrator running the **already-deployed** system | "How do I do X" on registry / PBMS / G2P Bridge / SPAR — no devops, no concepts |
+
+An area with no `persona:` tag defaults to `implementer`, since the original taxonomy was written entirely as deployment knowledge.
+
+Which producer suits which persona matters: `evaluator`, `developer`, and `operator` knowledge is largely **codified** (it exists in docs/code), so those run through the persona harness below and route to doc/synthesis fixes. `implementer` knowledge is heavily **tacit**, so it stays on the interview loop above.
+
+To list the personas the taxonomy currently defines, pass any unknown name — the error prints them:
+
+```bash
+npm run elicit:persona-generate -- list
+```
 
 ### Step A — generate the question bank (`elicit:persona-generate`)
 

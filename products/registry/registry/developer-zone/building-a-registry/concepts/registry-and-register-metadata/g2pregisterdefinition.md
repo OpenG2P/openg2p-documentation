@@ -4,7 +4,7 @@ description: g2p_register_definitions - the principal metadata information on Re
 
 # G2PRegisterDefinition
 
-This table - [g2p\_register\_definitions](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) - stores the core metadata definition for all register types within the platform.
+This table - [g2p\_register\_definitions](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_metadata.py) - stores the core metadata definition for all register types within the platform.
 
 Every dataset in the registry whether it is a **REGISTER**, **TABLE**, **PROGRAM\_REGISTER**, or **CORE\_TABLE** must have a corresponding entry in this table.
 
@@ -131,9 +131,9 @@ The attributes used for deduplication are defined as JSON in [`g2p_register_sche
 
 A reference implementation of the **register metadata configuration** can be found in the Farmer Registry extension.
 
-The SQL script that initializes the `g2p_register_definition` table and other registry metadata is available in the [OpenG2P Registry Extensions repository](https://gitlab.com/openg2p/registry/farmer-registry/-/tree/develop/farmer-extension) — Farmer Extension.
+The SQL script that initializes the `g2p_register_definition` table and other registry metadata is available in the [OpenG2P Registry Extensions repository](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) — Farmer Extension.
 
-The g2p\_register\_definition database script for Farmer Registry is available [here](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_definitions.sql).
+The g2p\_register\_definition database script for Farmer Registry is available [here](https://github.com/OpenG2P/farmer-registry/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_definitions.sql).
 
 ```
 ```

@@ -190,4 +190,3 @@ git rev-list --reverse origin/develop | sed -n '39p'   # -> the commit for .39
 * [**CI pipeline**](ci-pipeline.md) — how the reusable workflow builds, versions, promotes and publishes; the `@v1` rollout model; a diagram.
 * [**Changelogs**](changelogs.md) — where change notes are published, how to link them, the role of AI, and what happens when AI is unavailable.
 * [**Onboarding a repo**](onboarding-a-new-repo.md) — a step-by-step guide **and a copy-paste prompt** to add this to any new repo, plus moving the `v1` tag.
-* [**Publishing to GitLab**](publishing-to-gitlab.md) — publishing images + chart to GitLab (Container Registry + Helm Package Registry) instead of Docker Hub + gh-pages: why, how to switch a repo, the GitLab group/project/token setup, and running it all on a customer's own GitLab.

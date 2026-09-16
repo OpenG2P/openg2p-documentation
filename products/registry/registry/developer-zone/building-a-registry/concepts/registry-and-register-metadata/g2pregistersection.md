@@ -4,7 +4,7 @@ description: g2p_register_sections
 
 # G2PRegisterSection
 
-The [`g2p_register_sections`](https://gitlab.com/openg2p/registry/registry-platform/-/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_sections.py) table defines **sections within a tab of a register**. Each tab can contain one or more sections, where each section represents a **logical grouping of related attributes**.
+The [`g2p_register_sections`](https://github.com/OpenG2P/registry-platform/blob/develop/core/openg2p-registry-core/src/openg2p_registry_core/models/g2p_register_sections.py) table defines **sections within a tab of a register**. Each tab can contain one or more sections, where each section represents a **logical grouping of related attributes**.
 
 Examples of sections include:
 
@@ -155,4 +155,4 @@ If the value is **FALSE**, the generated change request must be **manually verif
 
 ## Reference Implementation
 
-Database scripts for g2p\_register\_sections for a Reference Farmer Registry are available [here](https://gitlab.com/openg2p/registry/farmer-registry/-/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_sections.sql).
+Database scripts for g2p\_register\_sections for a Reference Farmer Registry are available [here](https://github.com/OpenG2P/farmer-registry/blob/develop/farmer-extension/src/openg2p_registry_farmer_extension/db_scripts/register-metadata/g2p_register_sections.sql).

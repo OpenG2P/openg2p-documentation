@@ -5,7 +5,7 @@ description: Design of the Partner API surface for external system integration
 # Partner APIs
 
 {% hint style="info" %}
-**New home: GitLab.** **`national-social-registry`** is now developed at [gitlab.com/openg2p/registry/national-social-registry](https://gitlab.com/openg2p/registry/national-social-registry).
+**New home: GitLab.** **`national-social-registry`** is now developed at [github.com/OpenG2P/national-social-registry](https://github.com/OpenG2P/national-social-registry).
 {% endhint %}
 
 ## Overview
@@ -406,7 +406,7 @@ Common codes: `DATA_MODEL_NOT_FOUND`, `PARTNER_NOT_REGISTERED`, `INVALID_REQUEST
 [Deployment and Extension](../deployment-and-extension/README.md)
 {% endcontent-ref %}
 
-Link to some [sample metadata](https://gitlab.com/openg2p/registry/national-social-registry/-/blob/develop/nsr-extension/src/openg2p_registry_nsr_extension/meta_data/registry-inbound-message-rules/incoming_model_register_semantic_patterns.sql) for a look at some key paths and semantic patterns
+Link to some [sample metadata](https://github.com/OpenG2P/national-social-registry/blob/develop/nsr-extension/src/openg2p_registry_nsr_extension/meta_data/registry-inbound-message-rules/incoming_model_register_semantic_patterns.sql) for a look at some key paths and semantic patterns
 
 ### Source code
 

@@ -5,7 +5,7 @@ description: The single, consolidated SPAR Helm chart
 # Helm Chart
 
 The entire SPAR subsystem — and everything it depends on — installs from a
-**single Helm chart**, [`openg2p-spar`](https://gitlab.com/openg2p/spar/spar/-/tree/develop/deployment/charts/openg2p-spar),
+**single Helm chart**, [`openg2p-spar`](https://github.com/OpenG2P/spar/tree/develop/deployment/charts/openg2p-spar),
 in the consolidated `spar` repository. There are no longer separate charts
 per service; one `helm install` brings up the complete, working subsystem.
 
@@ -197,7 +197,7 @@ The command-line install below is intended for **advanced / developer** use.
 
 ```bash
 # 1. Clone the consolidated repo
-git clone https://gitlab.com/openg2p/spar/spar.git
+git clone https://github.com/OpenG2P/spar.git
 cd spar/deployment/charts/openg2p-spar
 
 # 2. Build chart dependencies (common, postgres-init)

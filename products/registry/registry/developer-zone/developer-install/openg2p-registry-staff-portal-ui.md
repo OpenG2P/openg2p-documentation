@@ -1,76 +1,74 @@
 ---
-description: Developer Installation for Openg2p Registry Staff Portal UI
+description: >-
+  Run the OpenG2P Registry Staff UI locally against remote Staff Portal API,
+  IAM, Masterdata, and AWE services that are already deployed.
 ---
 
 # Staff Portal UI
 
+Run Staff UI locally with remote APIs.
+
+### Prerequisites
+
+* Node.js and npm
+* Nginx
+* [mkcert](https://github.com/FiloSottile/mkcert) (local TLS certificates)
+* The following remote services must already be **running and deployed** (this guide only runs Staff UI locally):
+  * Staff Portal API
+  * IAM
+  * Masterdata API
+  * AWE
+
+Configure `.env.local` so Staff UI points at those deployed environments (`BACKEND_API_URL`, `IAM_URL`, `MASTERDATA_BACKEND_API_URL`, and related settings).
+
 ### Setup
 
-Follow these steps to set up Openg2p Registry Staff Portal UI:
+#### 1. Add hostname
 
-* **Clone the Repository**: Clone the Openg2p Registry Staff Portal UI repository from the source:
-
-```
-git clone git@github.com:OpenG2P/openg2p-registry-staff-portal-ui.git
+```bash
+sudo nano /etc/hosts
 ```
 
-* **Install Dependencies**: Navigate into the cloned Openg2p Registry Staff Portal UI directory and install dependencies using npm:
+Add:
 
-```
-npm install
-```
-
-* **Configuration**: Configure the OpenG2P Registry Staff Portal UI to connect to the APIs by setting the required environment variables.
-
-```
-IAM_URL="http://iam.dev.openg2p.my"
-BACKEND_API_URL="https://staff-farmer-registry-gen2.dev.openg2p.org"
-MASTERDATA_BACKEND_API_URL="https://gen2-master-data.dev.openg2p.org"
-
-VERIFY_SERVICE_URL="https://registry-farmer.dev.openg2p.org/v1/verify"
-VP_CLIENT_ID="did:web:registry-farmer.dev.openg2p.org:v1:verify"
-
-PARTNER_IMPORT_EXPORT_ENABLE="true"
-
-PAGE_SIZE=10
-
-LOGIN_PROVIDER_ID="1"
-APPLICATION_MNEMONIC="registry-staff-portal"
-COOKIE_DOMAIN=".dev.openg2p.org"
-
-DEFAULT_LOCALE="en"
-
-# Content-Security-Policy — one env var per directive (space-separated sources).
-CSP_SRC_DEFAULT=self
-CSP_SRC_SCRIPT=self unsafe-inline
-CSP_SRC_STYLE=self unsafe-inline
-CSP_SRC_IMG="self blob: data: https://minio-api.dev.openg2p.org"
-CSP_SRC_FONT=self
-CSP_SRC_CONNECT=self
-CSP_SRC_FRAME=self
-CSP_SRC_OBJECT=none
-CSP_SRC_BASE_URI=self
-CSP_SRC_FORM_ACTION=self
-CSP_SRC_FRAME_ANCESTORS=none
+```text
+127.0.0.1 localstaff-ui.dev.openg2p.org
 ```
 
-**Nginx Configuration**: Configure Nginx to act as a reverse proxy for Openg2p Registry Staff Portal UI
+#### 2. Create TLS certificate for the hostname
 
+```bash
+mkcert -install
+
+sudo mkdir -p /etc/nginx/ssl
+
+sudo mkcert -cert-file /etc/nginx/ssl/localstaff-ui.dev.openg2p.org.pem \
+  -key-file /etc/nginx/ssl/localstaff-ui.dev.openg2p.org-key.pem \
+  localstaff-ui.dev.openg2p.org
 ```
-# Install Nginx if not already installed
-sudo apt-get update
-sudo apt-get install nginx -y
 
-# Create a new configuration file for Openg2p Registry Staff Portal UI
+#### 3. Create Nginx configuration for Staff UI
+
+```bash
 sudo nano /etc/nginx/sites-available/staff-portal.conf
 ```
 
-* Below is a sample Nginx configuration (`/etc/nginx/sites-available/staff-portal.conf`).
+Paste:
 
-```
+```nginx
 server {
     listen 80;
-    server_name farmer-registry.openg2p.my;
+    server_name localstaff-ui.dev.openg2p.org;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name localstaff-ui.dev.openg2p.org;
+
+    ssl_certificate     /etc/nginx/ssl/localstaff-ui.dev.openg2p.org.pem;
+    ssl_certificate_key /etc/nginx/ssl/localstaff-ui.dev.openg2p.org-key.pem;
 
     proxy_buffer_size 256k;
     proxy_buffers 8 512k;
@@ -78,42 +76,85 @@ server {
     large_client_header_buffers 8 256k;
 
     location / {
-        proxy_pass                      http://localhost:3000;
-        proxy_http_version              1.1;
-        proxy_set_header                Upgrade $http_upgrade;
-        proxy_set_header                Connection "upgrade";
-        proxy_set_header                Host $host;
-        proxy_set_header                Referer $http_referer;
-        proxy_set_header                X-Real-IP $remote_addr;
-        proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header                X-Forwarded-Proto $scheme;
-        proxy_pass_request_headers      on;
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header Referer $http_referer;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass_request_headers on;
     }
 }
 ```
 
-* **Enable Configuration**: Enable the Nginx configuration by creating a symbolic link to `sites-enabled`
+Create the symlink and reload Nginx:
 
-```
-sudo ln -sf /etc/nginx/sites-available/staff-portal.conf /etc/nginx/sites-enabled/
-```
+```bash
+sudo ln -sf /etc/nginx/sites-available/staff-portal.conf /etc/nginx/sites-enabled/staff-portal.conf
 
-* **Adding domain to Hosts**: Add the domain to the hosts for the system to recognize the domain.
+sudo nginx -t
 
-```
-sudo nano /etc/hosts
-127.0.0.1 farmer-registry.openg2p.my
+sudo systemctl reload nginx
 ```
 
-* **Restart Nginx**: Restart the Nginx service to apply the changes:
+#### 4. Clone the repository
 
-```
-sudo service nginx restart
+```bash
+git clone https://github.com/OpenG2P/registry-platform.git
+
+cd registry-platform/ui/staff-ui
 ```
 
-* **Start Openg2p IAM Service**: Ensure that Openg2p IAM Service is up and running. Refer to the Openg2p IAM Service documentation.
-* **Run Openg2p Registry Staff Portal UI**: This command starts the development server. Open a web browser and navigate to the specified URL ([http://localhost:3000](http://localhost:3000/)) or a specific domain as per nginx server ([http://farmer-registry.openg2p.my](http://farmer-registry.openg2p.my/)) to access the UI interface.
+#### 5. Use local ui-widgets (optional)
 
+If you are developing against a local widget library build:
+
+```bash
+cd ../ui-widgets
+
+npm install
+
+npm run build
+
+cd ../staff-ui
+
+npm install @openg2p/registry-widgets@file:../ui-widgets/
 ```
-npm run dev
+
+#### 6. Create `.env.local` in the staff-ui directory
+
+```bash
+BACKEND_API_URL="https://staff-farmer-registry.dev.openg2p.org"
+MASTERDATA_BACKEND_API_URL="https://master-data.dev.openg2p.org/"
+DEFAULT_LOCALE="en"
+IAM_URL="https://staff-iam.dev.openg2p.org"
+LOGIN_PROVIDER_ID="1"
+APPLICATION_MNEMONIC="farmer-registry-staff-portal"
+COOKIE_DOMAIN=".dev.openg2p.org"
+CSP_SRC_IMG="self blob: data: https://minio-api.dev.openg2p.org"
 ```
+
+Adjust URLs and `APPLICATION_MNEMONIC` for the registry environment you are targeting. See `ui/staff-ui/.env.example` for the full set of optional variables.
+
+#### 7. Build and start Staff UI
+
+```bash
+npm install
+
+npm run build
+
+npm start
+```
+
+#### 8. Open Staff UI
+
+Open [https://localstaff-ui.dev.openg2p.org](https://localstaff-ui.dev.openg2p.org).
+
+### Note
+
+To use a different local hostname, repeat the `/etc/hosts` update, TLS certificate generation, Nginx `server_name` / certificate paths, and matching `.env.local` values (especially `COOKIE_DOMAIN` if the parent domain changes).

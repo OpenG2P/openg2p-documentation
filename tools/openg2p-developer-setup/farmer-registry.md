@@ -44,7 +44,7 @@ make farmer-registry-init
 Docker-only (includes Common):
 
 ```bash
-# USE_EXTERNAL_REDIS=false in .env; docker login registry.gitlab.com
+# USE_EXTERNAL_REDIS=false in .env; docker login   (Docker Hub)
 make sync-images && make docker-farmer-up
 ```
 

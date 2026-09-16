@@ -9,7 +9,7 @@ layout:
 
 # API Reference
 
-Base path: `/v1/awe/`. The spec below is rendered from the live [`docs/openapi.json`](https://gitlab.com/openg2p/awe/-/blob/develop/docs/openapi.json). CI regenerates it from the FastAPI app on every `src/`-touching push, so endpoint signatures, response shapes, status-code descriptions, and the error-code catalog stay in lockstep with the code. This page does **not** duplicate any of that in prose.
+Base path: `/v1/awe/`. The spec below is rendered from the live [`docs/openapi.json`](https://github.com/OpenG2P/awe/blob/develop/docs/openapi.json). CI regenerates it from the FastAPI app on every `src/`-touching push, so endpoint signatures, response shapes, status-code descriptions, and the error-code catalog stay in lockstep with the code. This page does **not** duplicate any of that in prose.
 
 A running instance also exposes the live spec at `/v1/awe/openapi.json` and interactive UIs at `/v1/awe/docs` (Swagger) and `/v1/awe/redoc`.
 

@@ -262,7 +262,7 @@ existing deployments inherit them on the next pod restart.
 | GIN expression on `details->'actor'->>'session_id'`    | Login / session queries already filter by `actor_id` first, which hits the existing actor index and prunes 99 % of rows. Worth adding only if you ever query session_id *across all actors*. |
 
 If a real query plan turns up a slow scan, run `EXPLAIN ANALYZE`. Add a
-new index then, in [`src/audit_manager/models.py`](https://gitlab.com/openg2p/audit-manager/-/blob/develop/src/audit_manager/models.py)
+new index then, in [`src/audit_manager/models.py`](https://github.com/OpenG2P/audit-manager/blob/develop/src/audit_manager/models.py)
 under `_PARENT_INDEXES` — it's `CREATE INDEX IF NOT EXISTS`, so the next
 service restart picks it up across every existing partition.
 

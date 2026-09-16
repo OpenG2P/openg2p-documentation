@@ -5,7 +5,7 @@ description: Physical organization of source code in the g2p-bridge monorepo
 # Physical Organization
 
 The G2P Bridge source code is consolidated into a **single repository**:
-[**`g2p-bridge`**](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge). What were previously
+[**`g2p-bridge`**](https://github.com/OpenG2P/g2p-bridge). What were previously
 seven separate repositories are now folders within this one monorepo, with each
 component's internal structure kept intact.
 
@@ -19,16 +19,16 @@ Docker image names, and Helm `Chart.yaml` names are intentionally left unchanged
 
 | Folder | Origin repo | Contents |
 | --- | --- | --- |
-| [`core/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/core) | `openg2p-g2p-bridge` | Core services and libraries: `models`, `partner-api`, `bene-portal-api`, `celery-beat-producers`, `celery-workers`. |
-| [`example-bank/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
-| [`docker/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/docker) | `openg2p-g2p-bridge-docker` | Dockerfiles for the API and Celery service images. |
-| [`deployment/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/deployment) | `openg2p-g2p-bridge-deployment` + `openg2p-g2p-bridge-example-bank-deployment` | The single consolidated Helm chart `charts/openg2p-bridge` (Bridge + bundled Example Bank, toggled via `exampleBank.enabled`) and the `scripts/` (e.g. `uninstall-bridge.sh`). |
-| [`test/`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge/-/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — the `sanity/` regression suite (API coverage, full e2e cash flow, business-rule negatives and MT940 reconciliation-error checks). |
+| [`core/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/core) | `openg2p-g2p-bridge` | Core services and libraries: `models`, `partner-api`, `bene-portal-api`, `celery-beat-producers`, `celery-workers`. |
+| [`example-bank/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/example-bank) | `openg2p-g2p-bridge-example-bank` | Reference Sponsor Bank simulator (not for production): api, celery-beat-producers, celery-workers, models. |
+| [`docker/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/docker) | `openg2p-g2p-bridge-docker` | Dockerfiles for the API and Celery service images. |
+| [`deployment/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/deployment) | `openg2p-g2p-bridge-deployment` + `openg2p-g2p-bridge-example-bank-deployment` | The single consolidated Helm chart `charts/openg2p-bridge` (Bridge + bundled Example Bank, toggled via `exampleBank.enabled`) and the `scripts/` (e.g. `uninstall-bridge.sh`). |
+| [`test/`](https://github.com/OpenG2P/g2p-bridge/tree/develop/test) | `openg2p-g2p-bridge-test` | Test artefacts — the `sanity/` regression suite (API coverage, full e2e cash flow, business-rule negatives and MT940 reconciliation-error checks). |
 
 {% hint style="info" %}
 The pluggable **connectors** (bank, mapper, notification, geo, agency, warehouse) no
 longer live in this repo. They were moved to a separate repository,
-[**`g2p-bridge-connectors`**](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors),
+[**`g2p-bridge-connectors`**](https://github.com/OpenG2P/g2p-bridge-connectors),
 so this platform repo stays standard and versioned and adopters extend it without
 forking. The Celery image pulls the reference connectors from there by git ref at
 build time. See [Connectors & Extensibility](connectors-and-extensibility.md).
@@ -44,7 +44,7 @@ build time. See [Connectors & Extensibility](connectors-and-extensibility.md).
 | **celery-workers** | service (pod) | Celery workers that execute the beats (check balance, block funds, initiate payments, reconcile MT940, and — for in-kind — geo/warehouse/agency tasks). Scale horizontally. |
 | **models** | library | SQLAlchemy persistence models and Pydantic schemas shared by the api, beat producer and workers. |
 
-The beat producer and workers ship as a **single Docker image** (`registry.gitlab.com/openg2p/g2p-bridge/g2p-bridge/celery`); the Helm chart runs it as beat or worker by configuration.
+The beat producer and workers ship as a **single Docker image** (`openg2p/openg2p-bridge-celery`); the Helm chart runs it as beat or worker by configuration.
 
 ## Example Bank modules (`example-bank/`)
 
@@ -61,7 +61,7 @@ not used in a production deployment.
 
 ## CI
 
-CI runs on **GitLab** (`.gitlab-ci.yml`). Building, versioning and publishing the
+CI runs on **GitHub Actions** (`.github/workflows/build-publish.yml`). Building, versioning and publishing the
 images and the Helm chart are handled by OpenG2P's **central Helm & Docker packaging
 pipeline** (shared across repos) — the old per-image `docker-build-*` and
 `helm-publish` GitHub Actions are retired. Images publish to the project's GitLab
@@ -73,7 +73,7 @@ Lint (`pre-commit`) and unit tests run as separate jobs.
 {% hint style="info" %}
 The Python packages are **not published to PyPI**. The images build the **core** from
 local in-repo source; the **connectors** are pulled from
-[`g2p-bridge-connectors`](https://gitlab.com/openg2p/g2p-bridge/g2p-bridge-connectors)
+[`g2p-bridge-connectors`](https://github.com/OpenG2P/g2p-bridge-connectors)
 by git ref at build time (`G2P_BRIDGE_CONNECTORS_REF`), and the external OpenG2P
 libraries (`openg2p-fastapi-common`, `openg2p-spar-models`) are overridable git-ref
 build args. See [Connectors & Extensibility](connectors-and-extensibility.md).

@@ -10,7 +10,7 @@ instance and are not owned by the Helm release, so they survive. A subchart
 Job (`postgres-init`) and any retained PVs also linger. The repository ships an
 **uninstall script** that cleans all of this up safely.
 
-Script: [`deployment/scripts/uninstall-spar.sh`](https://gitlab.com/openg2p/spar/spar/-/blob/develop/deployment/scripts/uninstall-spar.sh)
+Script: [`deployment/scripts/uninstall-spar.sh`](https://github.com/OpenG2P/spar/blob/develop/deployment/scripts/uninstall-spar.sh)
 
 ## What it does
 

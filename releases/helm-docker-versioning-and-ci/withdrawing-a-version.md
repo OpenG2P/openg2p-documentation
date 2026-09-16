@@ -11,7 +11,10 @@ simply bad and nobody should install it. There is a button for that on both forg
 **Only `0.0.0-develop.N` can be withdrawn, and it cannot be undone.**
 Releases (`N.N.N`) are permanent. Release candidates (`N.N.N-rc.M`) are en route to a
 release and are kept too. The pipeline **refuses** anything else, and also refuses the
-**newest** develop build — the moving `develop` tag points at it.
+**newest** develop build — the moving `develop` tag points at it — and any build that has
+been [marked known-good](marking-a-known-good-build.md). A range or keep-N sweep skips
+marked builds and says so, rather than failing; unmark one first if you really mean to
+withdraw it.
 {% endhint %}
 
 ## What it deletes

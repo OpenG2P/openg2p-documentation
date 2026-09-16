@@ -44,6 +44,6 @@ These services share two supporting Python packages:
 * **openg2p-spar-mapper-core** -- the core mapper logic library used by the APIs.
 
 All SPAR source now lives in a single consolidated repository,
-[spar](https://gitlab.com/openg2p/spar/spar) (`core/` for the Python
+[spar](https://github.com/OpenG2P/spar) (`core/` for the Python
 projects, `docker/` for the Dockerfiles, `deployment/` for the Helm chart and
 scripts).
