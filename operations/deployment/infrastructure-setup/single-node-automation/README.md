@@ -568,6 +568,15 @@ This automation does not replace the Rancher UI. Your existing umbrella Helm cha
 Infra Phase 3 pre-registers the **OpenG2P Helm repository** (`https://openg2p.github.io/openg2p-helm/rancher`) as a Rancher catalog ClusterRepo named `openg2p`, so the OpenG2P charts are available out of the box under **Rancher UI → Apps → Repositories / Charts**.
 {% endhint %}
 
+### Pinned platform versions
+
+Defaults in `sandbox-config.example.yaml` (override in `sandbox-config.yaml`):
+
+| Component       | Version              | Config key |
+| --------------- | -------------------- | ---------- |
+| Kubernetes      | RKE2 v1.35.8+rke2r1  | `rke2_version` |
+| Cluster manager | Rancher 2.15.1       | `rancher.version` |
+
 ## Related documentation
 
 * [AWS Provisioning](aws-provisioning.md) — optional EC2 provisioner (`m5a.4xlarge`)
