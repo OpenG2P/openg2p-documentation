@@ -31,6 +31,7 @@
       * [Export Register Data](products/registry/registry/features/export-register-data.md)
     * [Design](products/registry/registry/design/README.md)
       * [Tech Architecture](products/registry/registry/design/registry-tech-architecture.md)
+      * [Data flow](products/registry/registry/design/data-flow.md)
       * [Data Model](products/registry/registry/design/data-model.md)
       * [Document Storage](products/registry/registry/design/file-attachments.md)
       * [Document Attachments](products/registry/registry/design/document-attachments.md)
