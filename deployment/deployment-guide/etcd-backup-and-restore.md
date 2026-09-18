@@ -36,8 +36,8 @@ When RKE2 is restored from backup, the old data directory will be moved to /var/
 
 1. Back up the following: `/var/lib/rancher/rke2/server/cred`, `/var/lib/rancher/rke2/server/tls`, `/var/lib/rancher/rke2/server/token`, `/etc/rancher`
 2. Restore the certs in Step 1 above to the first new server node.
-3. Install rke2 v1.20.8+rke2r1 on the first new server node as in the following example:\
-   `curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.20.8+rke2r1" sh -`
+3. Install RKE2 on the first new server node — use the same version as the snapshot source (OpenG2P automation default: **v1.35.8+rke2r1**):\
+   `curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="v1.35.8+rke2r1" sh -`
 4. Stop RKE2 service on all server nodes if it is enabled and initiate the restore from snapshot on the first server node with the following commands:\
    `systemctl stop rke2-server`\
    `rke2 server \`\

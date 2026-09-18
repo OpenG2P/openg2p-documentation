@@ -541,6 +541,15 @@ automation/sandbox/
 └── aws/                               # optional AWS provisioning
 ```
 
+### Pinned platform versions
+
+Defaults in `sandbox-config.example.yaml` (override in `sandbox-config.yaml`):
+
+| Component       | Version              | Config key |
+| --------------- | -------------------- | ---------- |
+| Kubernetes      | RKE2 v1.35.8+rke2r1  | `rke2_version` |
+| Cluster manager | Rancher 2.15.1       | `rancher.version` |
+
 ## Related documentation
 
 * [AWS Provisioning](aws-provisioning.md) — provision the VM on AWS
