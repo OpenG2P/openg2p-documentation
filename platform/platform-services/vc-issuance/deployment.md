@@ -122,7 +122,9 @@ Farmer Registry, NSR or a customer registry, because they all build on the Regis
 | Parameter | Description | Default |
 |---|---|---|
 | `agentPortalApi.enabled` | Deploy the Agent Portal API and its route | `false` |
-| `agentPortalApi.vcIssuance.enabled` | Mount the **issuance** endpoints | `false` |
+| `agentPortalApi.vcIssuance.enabled` | Mount the **issuance** endpoints (paper) | `false` |
+| `agentPortalApi.walletIssuance.enabled` | Mount the **wallet offer** endpoint ([Wallet Handover](wallet-handover.md)). Independent of paper — either, both or neither. Requires `vcIssuance.enabled` | `false` |
+| `agentPortalApi.walletIssuance.offerExpiresInSeconds` | How long a credential offer stays redeemable | `300` |
 | `agentPortalApi.vcVerification.enabled` | Mount the **verification** endpoint (the Verify VC card) | varies |
 | `agentPortalApi.vcVerification.serviceUrl` | In-cluster verify-service | `http://commons-services-inji-verify-service/v1/verify` |
 | `agentPortalApi.certifyBaseUrl` | In-cluster Certify | `http://commons-services-inji-certify/v1/certify` |
@@ -213,7 +215,12 @@ rejecting anonymous calls. No data is created. An opt-in `runE2e` mode walks the
 5. **Verify it** — upload the PDF or a photo to the portal's **Verify VC** card. Expect `SUCCESS` and
    the credential's contents.
 
-6. **Prove verification is real** — flip one character in the QR payload and confirm the verdict
+6. **Wallet download** (only if `walletIssuance.enabled`) — the sanity suite's
+   `test_e2e_wallet_issuance.py` performs the wallet's side of OpenID4VCI itself, so this is
+   covered without installing a wallet app. See
+   [Wallet Handover](wallet-handover.md#testing-without-a-wallet-app).
+
+7. **Prove verification is real** — flip one character in the QR payload and confirm the verdict
    becomes `INVALID`. A verifier that accepts everything is worse than none.
 
 ---

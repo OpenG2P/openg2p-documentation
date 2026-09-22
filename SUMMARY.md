@@ -654,6 +654,7 @@
     * [Deployment](platform/platform-services/vc-issuance/deployment.md)
     * [Managed VC Definitions (proposal)](platform/platform-services/vc-issuance/managed-vc-definitions.md)
     * [Local Developer Trial](platform/platform-services/vc-issuance/local-setup.md)
+    * [Wallet Handover (Phase 1.5)](platform/platform-services/vc-issuance/wallet-handover.md)
     * [Phase 2 — Device Wallet](platform/platform-services/vc-issuance/phase-2-device-wallet.md)
   * [Consent Management](consent-management/README.md)
     * [Partner Integration Guide](consent-management/partner-integration-guide.md)

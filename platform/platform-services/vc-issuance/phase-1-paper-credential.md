@@ -69,6 +69,17 @@ The lowest-common-denominator path: a citizen who owns **no device** receives a 
 * **The agent downloads the PDF.** It is streamed to the agent's browser, printed on whatever printer the counter has, and handed over.
 * **Re-issue on demand.** A lost or stale credential is simply **re-issued** — a fresh authentication, a new credential, linked to the previous one in the issuance log.
 
+## Delivering to a wallet instead of paper
+
+Everything above ends in a printed card. A citizen with a smartphone can instead
+be handed the credential **into their own wallet**, at the same counter, after the
+same authentication — the chain is identical up to the final step, where the agent
+shows an OpenID4VCI credential offer rather than printing.
+
+It is an optional second channel (`agentPortalApi.walletIssuance.enabled`), off by
+default, and it can run alongside paper rather than instead of it. See
+[Wallet Handover (Phase 1.5)](wallet-handover.md).
+
 ## Presentation & verification
 
 ```
