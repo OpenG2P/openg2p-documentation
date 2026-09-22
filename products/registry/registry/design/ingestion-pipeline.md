@@ -8,6 +8,8 @@ description: >-
 
 The ingestion pipeline is responsible for receiving data from external systems, classifying and transforming incoming payloads, and creating change requests in the registry. The pipeline is fully asynchronous and designed for high-throughput, horizontally scalable processing.
 
+<figure><img src="../../../../.gitbook/assets/Ingestion Pipeline.jpg" alt=""><figcaption><p>Ingestion Pipeline - Flow</p></figcaption></figure>
+
 ## Requirements
 
 The ingestion pipeline is designed to satisfy the following requirements:

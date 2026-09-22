@@ -50,8 +50,9 @@ Agents and staff are **entirely distinct**: a separate realm, a separate API, an
 
 ## Strategy (what we are building)
 
-* **Phase 1 — Paper (Option A).** Agent-assisted issuance, gated by the beneficiary's own eSignet authentication → signed QR/PDF → offline verification. An **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify (which stays decoupled from the Registry), then renders the signed QR/PDF for the agent to download and print. The backbone for the device-less majority. **No hosted wallet, no Mimoto, no OpenID4VCI device flow** — which removes almost all integration complexity.
-* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens who have smartphones (self-sovereign, online + offline presentation).
+* **Phase 1 — Paper (Option A).** Agent-assisted issuance, gated by the beneficiary's own eSignet authentication → signed QR/PDF → offline verification. An **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify (which stays decoupled from the Registry), then renders the signed QR/PDF for the agent to download and print. The backbone for the device-less majority. **No hosted wallet and no Mimoto** — which removes almost all integration complexity. An optional second delivery channel, [Wallet Handover](wallet-handover.md), lets the same agent hand the credential into a smartphone owner's wallet via an OpenID4VCI credential offer; it reuses this entire chain and changes only the last step.
+* **Phase 1.5 — Wallet handover (optional).** The agent hands the credential into the citizen's own wallet at the counter, instead of printing it. Same authentication, same push, same Certify — only the delivery differs. Buys holder binding and digital presentation; **not** self-service. See [Wallet Handover](wallet-handover.md).
+* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens who have smartphones (self-sovereign, online + offline presentation). The distinguishing property is **self-service**: the citizen downloads unaided, which requires Certify to pull claims from the registry.
 * **Option B (hosted wallet) — considered, not chosen.** Documented for completeness; it would only be adopted as a deliberate **custodial-locker policy**, not as a default tier.
 * **Consent-based data sharing** (department ↔ department / third-party "pull") is a **separate track** (registry partner APIs + consent), not a wallet feature — out of scope here.
 
@@ -66,6 +67,7 @@ Agents and staff are **entirely distinct**: a separate realm, a separate API, an
 | [Registry Data Connector](registry-data-connector.md)                        | How Certify gets claims: the Phase-1 **push** path vs. the **pull** connector plugin (used by the Phase-2 wallet flow)           |
 | [Deployment](deployment.md)                                                  | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL                                 |
 | [Local Developer Trial](local-setup.md)                                      | A verified local run that issues a signed VC + printable QR/PDF from real registry data                                          |
+| [Wallet Handover (Phase 1.5)](wallet-handover.md)                            | Optional: the agent hands the credential into the citizen's wallet at the counter, via an OpenID4VCI credential offer            |
 | [Phase 2 — Device Wallet](phase-2-device-wallet.md)                          | Future: self-owned smartphone wallets, plus the capabilities deliberately deferred from Phase 1                                  |
 | [Agent Portal](../../../products/registry/registry/features/agent-portal.md) | The portal the agent uses: its own Keycloak `agent` realm, how it authenticates, and how it carries capabilities beyond issuance |
 

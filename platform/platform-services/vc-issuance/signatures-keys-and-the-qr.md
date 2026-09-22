@@ -39,7 +39,7 @@ The one encoding the Agent Portal API does perform is the **fallback**: when `cl
 
 |               | The credential                             | The QR                                               |
 | ------------- | ------------------------------------------ | ---------------------------------------------------- |
-| What it is    | full **JSON-LD VC** (\~1.5 KB)             | compact **CBOR** identity payload (\~470 B)          |
+| What it is    | full **JSON-LD VC**, W3C **VC Data Model 1.1** (\~1.5 KB) | compact **CBOR** identity payload (\~470 B)          |
 | Signature     | `Ed25519Signature2020` Linked-Data proof   | `COSE_Sign1` wrapped as a **CWT** (CBOR tag 61 → 18) |
 | Algorithm     | **EdDSA** (Ed25519)                        | **ES256** (ECDSA P-256)                              |
 | Key alias     | `CERTIFY_VC_SIGN_ED25519` / `ED25519_SIGN` | `CERTIFY_VC_SIGN_EC_R1` / `EC_SECP256R1_SIGN`        |
@@ -78,7 +78,12 @@ Claim 169 has a **fixed vocabulary**, defined by MOSIP's pixelpass mapper. Only 
 Two consequences people trip over:
 
 * **A photo is optional.** Claim 169 is a compact _signed identity payload_; the face image is one attribute among many, and MOSIP's own specification says biometrics are optional. A QR carrying only name, date of birth and gender is a perfectly valid claim-169 QR. OpenG2P defers the photo to Phase 2 for QR size reasons, not validity ones.
-* **There is no slot for a programme identifier.** A registry's own id — the Farmer Registry's `functionalRecordId`, for instance — cannot go in the QR. It stays in the JSON-LD credential only.
+* **There is no dedicated slot for a programme identifier**, so a registry's own id — the
+  Farmer Registry's `functionalRecordId`, for instance — travels in claim-169's generic
+  **`Data`** key (key 0 on the wire). It has to be in the QR to be worth anything: the QR is
+  all an offline verifier sees, so an id living only in the JSON-LD credential could not be
+  checked against the card. See
+  [Phase 1 — Paper Credential](phase-1-paper-credential.md).
 
 ## Where the keys are published
 

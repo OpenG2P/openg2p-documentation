@@ -12,6 +12,8 @@ The outgestion pipeline is the counterpart to the ingestion pipeline. While inge
 
 The pipeline is fully asynchronous, built on Celery workers with Redis as the message broker. When a change request is approved in the registry, the outgestion pipeline captures the change, transforms it into the partner's expected schema using Jinja2 templates, and publishes it via the WebSub protocol.
 
+<figure><img src="../../../../.gitbook/assets/Outgestion Pipeline.jpg" alt=""><figcaption><p>Outgestion Pipeline - Flow</p></figcaption></figure>
+
 #### Key design goals
 
 1. **Event-driven delivery** -- registry changes are automatically propagated to subscribed external systems without polling.
