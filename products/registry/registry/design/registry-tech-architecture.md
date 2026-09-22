@@ -23,7 +23,7 @@ layout:
 
 # Build design
 
-<div data-full-width="false"><figure><img src="../../../../.gitbook/assets/Tech Arch - Registry (1).jpg" alt=""><figcaption><p>Registry - Build design</p></figcaption></figure></div>
+<div data-full-width="false"><figure><img src="../../../../.gitbook/assets/Tech Arch - Registry (2).jpg" alt=""><figcaption><p>Registry - Build design</p></figcaption></figure></div>
 
 ## Technology Stack
 
