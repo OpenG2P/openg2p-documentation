@@ -234,6 +234,36 @@ It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the `
 
 Certify is what substitutes the `${...}` variables, using the claims the Agent Portal API pushed.
 
+### Which VC data model
+
+OpenG2P issues **VC Data Model 1.1**, not 2.0. Two things in the template say so,
+and they must agree:
+
+| | 1.1 (what we issue) | 2.0 |
+|---|---|---|
+| `@context` | `https://www.w3.org/2018/credentials/v1` | `https://www.w3.org/ns/credentials/v2` |
+| Valid-from property | `issuanceDate` | `validFrom` |
+| Valid-until property | `expirationDate` | `validUntil` |
+
+```json
+"@context": ["https://www.w3.org/2018/credentials/v1", ...],
+"issuanceDate":   "${validFrom}",
+"expirationDate": "${validUntil}"
+```
+
+The `${validFrom}` / `${validUntil}` **variables** are 2.0 vocabulary — that is
+what Certify names them — but the template maps them onto the 1.1 **property**
+names. So the variable names say nothing about which model is issued; only the
+context and the property names do. Do not "tidy" one without the other: a 1.1
+context with `validFrom` is neither model, and a verifier is entitled to reject
+it.
+
+**Moving to 2.0** is a template change, not a code change: swap the context URL
+and rename the two date properties in `vcTemplateJson`, then re-run the register
+Job so Certify picks up the new template. Check first that the verifiers you care
+about accept 2.0 — the claim-169 QR is unaffected either way, since it is a
+CWT and carries none of this.
+
 ## Where the PDF is made
 
 In the **Agent Portal API**, not in Certify and not in the browser.
