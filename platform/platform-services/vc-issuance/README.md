@@ -2,7 +2,7 @@
 description: >-
   Issuing Verifiable Credentials from OpenG2P data (Registry first) with MOSIP
   Inji Certify — and, crucially, how a citizen holds and presents them. Phase 1
-  is paper-based; Phase 2 is a self-owned smartphone wallet.
+  is paper-based; Phase 2 is a self-owned smart
 ---
 
 # Verifiable Credentials
@@ -32,7 +32,7 @@ See the full analysis and comparisons in [Custody Options & Strategy](custody-op
 ## Why this matters (the reasoning in brief)
 
 * **Classic VCs assume a holder with a device.** That excludes exactly the people we care about. So "give everyone a wallet" is the _top_ of the pyramid, not the **lowest common denominator**.
-* **The LCD is Option A (paper).** An agent issues the credential, it's printed as a PDF with a **signed QR**, and the citizen carries paper — **no device and no connectivity are needed to carry or present it.** Verification happens on the *verifier's* side: they run Inji Verify (a hosted web portal, or its SDK) and must hold the issuer's key as a trust anchor. See [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
+* **The LCD is Option A (paper).** An agent issues the credential, it's printed as a PDF with a **signed QR**, and the citizen carries paper — **no device and no connectivity are needed to carry or present it.** Verification happens on the _verifier's_ side: they run Inji Verify (a hosted web portal, or its SDK) and must hold the issuer's key as a trust anchor. See [Signatures, Keys and the QR](signatures-keys-and-the-qr.md).
 * **A feature phone doesn't change this** — it can receive an OTP, but it can't run a wallet or the hosted-wallet browser UI. So the feature-phone user is still served by paper.
 * **The hosted wallet (B) adds little for our audience.** For the device-less it's unusable; for a smartphone owner the device wallet is strictly better. Its only genuine edge is _online presentation for a "browser-but-no-smartphone"_ minority — a narrow, shrinking slice. B is really a **policy choice** (a custodial government locker, DigiLocker-style) rather than a capability tier.
 * **Device wallet (C) is the self-sovereign upgrade** for the growing smartphone segment.
@@ -41,17 +41,18 @@ See the full analysis and comparisons in [Custody Options & Strategy](custody-op
 
 Phase-1 issuance involves **two** authenticated actors, and conflating them is the most common misreading of this design:
 
-| Actor           | Authenticates against              | How                                                  | Why                                                          |
-| --------------- | ---------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
-| **Agent**       | **Keycloak**, `agent` realm        | username + password (a normal portal login)          | Authorises the operator to use the Agent Portal at all       |
-| **Beneficiary** | **eSignet**, against the ID system | **biometric** at the counter, or **OTP** to a phone  | Authorises the issuance of *this* credential to *this* person |
+| Actor           | Authenticates against              | How                                                 | Why                                                           |
+| --------------- | ---------------------------------- | --------------------------------------------------- | ------------------------------------------------------------- |
+| **Agent**       | **Keycloak**, `agent` realm        | username + password (a normal portal login)         | Authorises the operator to use the Agent Portal at all        |
+| **Beneficiary** | **eSignet**, against the ID system | **biometric** at the counter, or **OTP** to a phone | Authorises the issuance of _this_ credential to _this_ person |
 
 Agents and staff are **entirely distinct**: a separate realm, a separate API, and a separate portal. A staff user administering registers is not an agent, and holds no power to issue credentials.
 
 ## Strategy (what we are building)
 
-* **Phase 1 — Paper (Option A).** Agent-assisted issuance, gated by the beneficiary's own eSignet authentication → signed QR/PDF → offline verification. An **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify (which stays decoupled from the Registry), then renders the signed QR/PDF for the agent to download and print. The backbone for the device-less majority. **No hosted wallet, no Mimoto, no OpenID4VCI device flow** — which removes almost all integration complexity.
-* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens who have smartphones (self-sovereign, online + offline presentation).
+* **Phase 1 — Paper (Option A).** Agent-assisted issuance, gated by the beneficiary's own eSignet authentication → signed QR/PDF → offline verification. An **Agent Portal API** reads the citizen's Registry record and **pushes** the claims into Certify (which stays decoupled from the Registry), then renders the signed QR/PDF for the agent to download and print. The backbone for the device-less majority. **No hosted wallet and no Mimoto** — which removes almost all integration complexity. An optional second delivery channel, [Wallet Handover](wallet-handover.md), lets the same agent hand the credential into a smartphone owner's wallet via an OpenID4VCI credential offer; it reuses this entire chain and changes only the last step.
+* **Phase 1.5 — Wallet handover (optional).** The agent hands the credential into the citizen's own wallet at the counter, instead of printing it. Same authentication, same push, same Certify — only the delivery differs. Buys holder binding and digital presentation; **not** self-service. See [Wallet Handover](wallet-handover.md).
+* **Phase 2 — Self-owned smartphone wallet (Option C).** Inji Mobile device wallets for citizens who have smartphones (self-sovereign, online + offline presentation). The distinguishing property is **self-service**: the citizen downloads unaided, which requires Certify to pull claims from the registry.
 * **Option B (hosted wallet) — considered, not chosen.** Documented for completeness; it would only be adopted as a deliberate **custodial-locker policy**, not as a default tier.
 * **Consent-based data sharing** (department ↔ department / third-party "pull") is a **separate track** (registry partner APIs + consent), not a wallet feature — out of scope here.
 
@@ -59,14 +60,15 @@ Agents and staff are **entirely distinct**: a separate realm, a separate API, an
 
 ## Sub-pages
 
-| Page                                                          | Contents                                                                                                                |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| [Custody Options & Strategy](custody-options-and-strategy.md) | Full A/B/C analysis, comparisons, the LCD/feature-phone/custodial-vs-self-sovereign reasoning, and the phasing decision |
-| [Phase 1 — Paper Credential](phase-1-paper-credential.md)     | The issuance chain end to end: agent login, beneficiary eSignet authentication, push-issuance, signed QR/PDF            |
-| [Registry Data Connector](registry-data-connector.md)         | How Certify gets claims: the Phase-1 **push** path vs. the **pull** connector plugin (used by the Phase-2 wallet flow)  |
-| [Deployment](deployment.md)                                   | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL                        |
-| [Local Developer Trial](local-setup.md)                       | A verified local run that issues a signed VC + printable QR/PDF from real registry data                                 |
-| [Phase 2 — Device Wallet](phase-2-device-wallet.md)           | Future: self-owned smartphone wallets, plus the capabilities deliberately deferred from Phase 1                          |
+| Page                                                                         | Contents                                                                                                                         |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [Custody Options & Strategy](custody-options-and-strategy.md)                | Full A/B/C analysis, comparisons, the LCD/feature-phone/custodial-vs-self-sovereign reasoning, and the phasing decision          |
+| [Phase 1 — Paper Credential](phase-1-paper-credential.md)                    | The issuance chain end to end: agent login, beneficiary eSignet authentication, push-issuance, signed QR/PDF                     |
+| [Registry Data Connector](registry-data-connector.md)                        | How Certify gets claims: the Phase-1 **push** path vs. the **pull** connector plugin (used by the Phase-2 wallet flow)           |
+| [Deployment](deployment.md)                                                  | Running the Phase-1 stack (Agent Portal API + Certify) on Kubernetes, reusing cluster PostgreSQL                                 |
+| [Local Developer Trial](local-setup.md)                                      | A verified local run that issues a signed VC + printable QR/PDF from real registry data                                          |
+| [Wallet Handover (Phase 1.5)](wallet-handover.md)                            | Optional: the agent hands the credential into the citizen's wallet at the counter, via an OpenID4VCI credential offer            |
+| [Phase 2 — Device Wallet](phase-2-device-wallet.md)                          | Future: self-owned smartphone wallets, plus the capabilities deliberately deferred from Phase 1                                  |
 | [Agent Portal](../../../products/registry/registry/features/agent-portal.md) | The portal the agent uses: its own Keycloak `agent` realm, how it authenticates, and how it carries capabilities beyond issuance |
 
 ## Status
@@ -77,32 +79,13 @@ Currently being built on the Registry Platform: the **agent-facing service** (`a
 
 ## Guides still to be written
 
-Three things are configurable today but have no guide, so each is currently done
-by reading someone else's `values.yaml`:
+Three things are configurable today but have no guide, so each is currently done by reading someone else's `values.yaml`:
 
-* **Authoring a credential template.** What `type` actually means (the second
-  entry is the credential's own type and must match `credentialConfigKeyId`, the
-  `@context` term and the Certify `credentialTypes`), where `${validFrom}` /
-  `${validUntil}` / `${_holderId}` / `${_issuer}` come from, and which names are
-  free to invent. A wrong name is not an error — Velocity emits it verbatim — so
-  the rules need writing down.
-* **Adding agents.** Creating real agents in the `agent` realm, granting
-  `register:issue_credential`, and retiring one. The chart seeds a single demo
-  `agent` user, which is not how a deployment runs.
-* **Changing what a credential contains.** The claim fields, the JSON-LD body and
-  the printed card are edited in four different places that must agree; that is
-  worth one page with the order to change them in.
+* **Authoring a credential template.** What `type` actually means (the second entry is the credential's own type and must match `credentialConfigKeyId`, the `@context` term and the Certify `credentialTypes`), where `${validFrom}` / `${validUntil}` / `${_holderId}` / `${_issuer}` come from, and which names are free to invent. A wrong name is not an error — Velocity emits it verbatim — so the rules need writing down.
+* **Adding agents.** Creating real agents in the `agent` realm, granting `register:issue_credential`, and retiring one. The chart seeds a single demo `agent` user, which is not how a deployment runs.
+* **Changing what a credential contains.** The claim fields, the JSON-LD body and the printed card are edited in four different places that must agree; that is worth one page with the order to change them in.
 
 ## Known limitations
 
-* **One issuer per Certify deployment.** Certify itself can hold several signing
-  keys and a `credential_config` names its own `didUrl` / `keyManagerAppId`, so
-  several issuing authorities in one Certify is possible in principle — but the
-  charts expose a single `global.vcIssuerDid` and a single questions entry.
-  Supporting a second authority (a different department signing its own
-  credentials) needs the chart widened first. **TODO.**
-* **Credential validity is per deployment, not per credential type.** It is
-  `appConfig.vcExpiryDuration` on the Certify chart (ISO-8601, default `P730D`),
-  read once by the data-provider plugin, and it fills `${validUntil}`. A registry
-  wanting a 1-year card and a 5-year card from the same Certify cannot express
-  that today; it needs per-`credential_config` support upstream. **TODO.**
+* **One issuer per Certify deployment.** Certify itself can hold several signing keys and a `credential_config` names its own `didUrl` / `keyManagerAppId`, so several issuing authorities in one Certify is possible in principle — but the charts expose a single `global.vcIssuerDid` and a single questions entry. Supporting a second authority (a different department signing its own credentials) needs the chart widened first. **TODO.**
+* **Credential validity is per deployment, not per credential type.** It is `appConfig.vcExpiryDuration` on the Certify chart (ISO-8601, default `P730D`), read once by the data-provider plugin, and it fills `${validUntil}`. A registry wanting a 1-year card and a 5-year card from the same Certify cannot express that today; it needs per-`credential_config` support upstream. **TODO.**
