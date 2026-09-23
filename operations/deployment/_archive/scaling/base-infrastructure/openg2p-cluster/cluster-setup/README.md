@@ -59,7 +59,7 @@ The following section uses [RKE2](https://docs.rke2.io) to set up the K8s cluste
   *   Run the following to set the RKE2 version after referring to [RKE2 Releases](https://github.com/rancher/rke2/releases).
 
       ```bash
-      export INSTALL_RKE2_VERSION="v1.33.6+rke2r1"
+      export INSTALL_RKE2_VERSION="v1.35.8+rke2r1"
       ```
   *   Run this to download rke2.
 
