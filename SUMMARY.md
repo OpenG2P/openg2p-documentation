@@ -656,6 +656,7 @@
     * [Local Developer Trial](platform/platform-services/vc-issuance/local-setup.md)
     * [Wallet Handover (Phase 1.5)](platform/platform-services/vc-issuance/wallet-handover.md)
     * [Phase 2 — Device Wallet](platform/platform-services/vc-issuance/phase-2-device-wallet.md)
+    * [Supporting VC 2.0 (TODO)](platform/platform-services/vc-issuance/supporting-vc-2-0.md)
   * [Consent Management](consent-management/README.md)
     * [Partner Integration Guide](consent-management/partner-integration-guide.md)
     * [Design](consent-management/design/README.md)
