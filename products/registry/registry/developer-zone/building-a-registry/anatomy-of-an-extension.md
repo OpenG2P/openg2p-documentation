@@ -47,7 +47,7 @@ as they are built today.
     ├── app.py                 ← wires the extension into the platform app
     ├── config.py              ← extension settings
     ├── register_domain/       ← the domain model  (REQUIRED)
-    ├── meta_data/             ← seed SQL: registers, UI, code lists  (REQUIRED)
+    ├── meta_data/             ← seed SQL: registers, UI  (REQUIRED)
     ├── awe_meta_data/         ← approval-workflow seed SQL
     ├── templates/             ← DCI / message Jinja templates
     ├── score_compute/         ← optional: computed scores
@@ -103,12 +103,11 @@ what you inherit.
 ### `meta_data/` — the seed SQL
 
 Applied to the registry database at install, in sorted path order. This is what
-turns your ORM tables into a working registry: registers, screens, code lists.
+turns your ORM tables into a working registry: registers and screens.
 
 | Subfolder | What it defines |
 |---|---|
 | `register-metadata/` | The core: `g2p_register_definitions`, `_schemas`, `_sections`, UI tabs and tab-sections, intake-form equivalents, score definitions, documents. **Start here** |
-| `lookup-data/` | Code lists — `g2p_attributes` and `g2p_attribute_values` (plus their `_defaults` variants) |
 | `registry-configurations/` | Registry-wide settings: languages, themes, input mechanisms, VC configuration |
 | `data-models/` | `data_models.sql` — the model definitions used by ingestion/outgestion |
 | `registry-inbound-message-rules/` | Incoming templates, key paths, semantic patterns |
@@ -119,9 +118,11 @@ Each metadata table is documented under
 [Concepts → Register Metadata](concepts/registry-and-register-metadata/README.md).
 
 {% hint style="info" %}
-**Code lists are not the same as country data.** The `_defaults` files are your
-registry's fallback; a deployment's country pack can override them from Master
-Data. See [Country data & seeding](../../deployment-and-extension/country-data-and-seeding.md).
+**There is no code-list folder.** Code lists are country data: they live in the
+country pack, Master Data loads them, and your dropdowns read them from Master Data
+live. Your extension only names which list each coded field uses — its
+`attribute_id` in the section metadata. See
+[Country data & seeding → Code lists](../../deployment-and-extension/country-data-and-seeding.md#code-lists).
 {% endhint %}
 
 ### `awe_meta_data/` — approval workflow

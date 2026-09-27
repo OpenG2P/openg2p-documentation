@@ -11,97 +11,16 @@
       "name": "Mozilla Public License 2.0",
       "url": "https://www.mozilla.org/en-US/MPL/2.0/"
     },
-    "version": "2.0.0"
+    "version": "1.1.1"
   },
   "paths": {
-    "/geo/get_g2p_geo_levels": {
+    "/geo/get_all_geo_levels": {
       "post": {
         "tags": [
           "/geo"
         ],
-        "summary": "Get G2P Geo Levels",
-        "operationId": "get_g2p_geo_levels_geo_get_g2p_geo_levels_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetGeoLevelsRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetGeoLevelsResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorListResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorListResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorListResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorListResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/geo/get_all_g2p_geo_levels": {
-      "post": {
-        "tags": [
-          "/geo"
-        ],
-        "summary": "Get All G2P Geo Levels",
-        "operationId": "get_all_g2p_geo_levels_geo_get_all_g2p_geo_levels_post",
+        "summary": "Get All Geo Levels",
+        "operationId": "get_all_geo_levels_geo_get_all_geo_levels_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -176,13 +95,13 @@
         }
       }
     },
-    "/geo/get_g2p_geo_level_values": {
+    "/geo/get_geo_level_values": {
       "post": {
         "tags": [
           "/geo"
         ],
-        "summary": "Get G2P Geo Level Values",
-        "operationId": "get_g2p_geo_level_values_geo_get_g2p_geo_level_values_post",
+        "summary": "Get Geo Level Values",
+        "operationId": "get_geo_level_values_geo_get_geo_level_values_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -257,18 +176,18 @@
         }
       }
     },
-    "/partner/get_all_partners": {
+    "/geo/add_geo_level": {
       "post": {
         "tags": [
-          "/partner"
+          "/geo"
         ],
-        "summary": "Get All Partners",
-        "operationId": "get_all_partners_partner_get_all_partners_post",
+        "summary": "Add Geo Level",
+        "operationId": "add_geo_level_geo_add_geo_level_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetAllPartnersRequest"
+                "$ref": "#/components/schemas/AddGeoLevelRequest"
               }
             }
           },
@@ -280,7 +199,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/G2PPartnersResponse"
+                  "$ref": "#/components/schemas/AddGeoLevelResponse"
                 }
               }
             }
@@ -338,18 +257,18 @@
         }
       }
     },
-    "/partner/get_partner": {
+    "/geo/update_geo_level": {
       "post": {
         "tags": [
-          "/partner"
+          "/geo"
         ],
-        "summary": "Get Partner",
-        "operationId": "get_partner_partner_get_partner_post",
+        "summary": "Update Geo Level",
+        "operationId": "update_geo_level_geo_update_geo_level_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetPartnerRequest"
+                "$ref": "#/components/schemas/UpdateGeoLevelRequest"
               }
             }
           },
@@ -361,7 +280,331 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/G2PPartnerResponse"
+                  "$ref": "#/components/schemas/UpdateGeoLevelResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/delete_geo_level": {
+      "post": {
+        "tags": [
+          "/geo"
+        ],
+        "summary": "Delete Geo Level",
+        "operationId": "delete_geo_level_geo_delete_geo_level_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteGeoLevelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteGeoLevelResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/add_geo_level_value": {
+      "post": {
+        "tags": [
+          "/geo"
+        ],
+        "summary": "Add Geo Level Value",
+        "operationId": "add_geo_level_value_geo_add_geo_level_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddGeoLevelValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddGeoLevelValueResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/update_geo_level_value": {
+      "post": {
+        "tags": [
+          "/geo"
+        ],
+        "summary": "Update Geo Level Value",
+        "operationId": "update_geo_level_value_geo_update_geo_level_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGeoLevelValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateGeoLevelValueResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/geo/delete_geo_level_value": {
+      "post": {
+        "tags": [
+          "/geo"
+        ],
+        "summary": "Delete Geo Level Value",
+        "operationId": "delete_geo_level_value_geo_delete_geo_level_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteGeoLevelValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteGeoLevelValueResponse"
                 }
               }
             }
@@ -581,6 +824,492 @@
         }
       }
     },
+    "/attributes/add_attribute": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Add Attribute",
+        "operationId": "add_attribute_attributes_add_attribute_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddAttributeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddAttributeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/update_attribute": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Update Attribute",
+        "operationId": "update_attribute_attributes_update_attribute_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAttributeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAttributeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/delete_attribute": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Delete Attribute",
+        "operationId": "delete_attribute_attributes_delete_attribute_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAttributeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAttributeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/add_attribute_value": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Add Attribute Value",
+        "operationId": "add_attribute_value_attributes_add_attribute_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddAttributeValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddAttributeValueResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/update_attribute_value": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Update Attribute Value",
+        "operationId": "update_attribute_value_attributes_update_attribute_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAttributeValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAttributeValueResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/delete_attribute_value": {
+      "post": {
+        "tags": [
+          "/attributes"
+        ],
+        "summary": "Delete Attribute Value",
+        "operationId": "delete_attribute_value_attributes_delete_attribute_value_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAttributeValueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAttributeValueResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ping": {
       "get": {
         "tags": [
@@ -644,6 +1373,455 @@
   },
   "components": {
     "schemas": {
+      "AddAttributeRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/AddAttributeRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "AddAttributeRequest"
+      },
+      "AddAttributeRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/AddAttributeRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "AddAttributeRequestBody"
+      },
+      "AddAttributeRequestPayload": {
+        "properties": {
+          "attribute_code": {
+            "type": "string",
+            "title": "Attribute Code"
+          },
+          "attribute_display": {
+            "type": "string",
+            "title": "Attribute Display"
+          },
+          "is_hierarchical": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Hierarchical",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "attribute_code",
+          "attribute_display"
+        ],
+        "title": "AddAttributeRequestPayload"
+      },
+      "AddAttributeResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/AddAttributeResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "AddAttributeResponse"
+      },
+      "AddAttributeResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributeData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "AddAttributeResponseBody"
+      },
+      "AddAttributeValueRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/AddAttributeValueRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "AddAttributeValueRequest"
+      },
+      "AddAttributeValueRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/AddAttributeValueRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "AddAttributeValueRequestBody"
+      },
+      "AddAttributeValueRequestPayload": {
+        "properties": {
+          "attribute_id": {
+            "type": "string",
+            "title": "Attribute Id"
+          },
+          "value_code": {
+            "type": "string",
+            "title": "Value Code"
+          },
+          "value_display": {
+            "type": "string",
+            "title": "Value Display"
+          },
+          "parent_value_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Value Id"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "attribute_id",
+          "value_code",
+          "value_display"
+        ],
+        "title": "AddAttributeValueRequestPayload"
+      },
+      "AddAttributeValueResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/AddAttributeValueResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "AddAttributeValueResponse"
+      },
+      "AddAttributeValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributeValueData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "AddAttributeValueResponseBody"
+      },
+      "AddGeoLevelRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/AddGeoLevelRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "AddGeoLevelRequest"
+      },
+      "AddGeoLevelRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/AddGeoLevelRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "AddGeoLevelRequestBody"
+      },
+      "AddGeoLevelRequestPayload": {
+        "properties": {
+          "level_mnemonic": {
+            "type": "string",
+            "title": "Level Mnemonic"
+          },
+          "parent_level_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Level Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_mnemonic"
+        ],
+        "title": "AddGeoLevelRequestPayload"
+      },
+      "AddGeoLevelResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/AddGeoLevelResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "AddGeoLevelResponse"
+      },
+      "AddGeoLevelResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeoLevelData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "AddGeoLevelResponseBody"
+      },
+      "AddGeoLevelValueRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/AddGeoLevelValueRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "AddGeoLevelValueRequest"
+      },
+      "AddGeoLevelValueRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/AddGeoLevelValueRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "AddGeoLevelValueRequestBody"
+      },
+      "AddGeoLevelValueRequestPayload": {
+        "properties": {
+          "level_id": {
+            "type": "string",
+            "title": "Level Id"
+          },
+          "level_value_mnemonic": {
+            "type": "string",
+            "title": "Level Value Mnemonic"
+          },
+          "parent_level_value_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Level Value Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_id",
+          "level_value_mnemonic"
+        ],
+        "title": "AddGeoLevelValueRequestPayload"
+      },
+      "AddGeoLevelValueResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/AddGeoLevelValueResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "AddGeoLevelValueResponse"
+      },
+      "AddGeoLevelValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeoLevelValueData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "AddGeoLevelValueResponseBody"
+      },
       "AttributeData": {
         "properties": {
           "attribute_id": {
@@ -683,40 +1861,6 @@
             ],
             "title": "Is Hierarchical",
             "default": false
-          },
-          "display_name_i18n": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name I18N"
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Country"
-          },
-          "version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Version"
           }
         },
         "type": "object",
@@ -779,89 +1923,6 @@
               }
             ],
             "title": "Sort Order"
-          },
-          "display_name_i18n": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name I18N"
-          },
-          "roles": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Roles"
-          },
-          "domain": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Domain"
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Country"
-          },
-          "version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Version"
-          },
-          "valid_from": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid From"
-          },
-          "valid_to": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid To"
           }
         },
         "type": "object",
@@ -871,6 +1932,462 @@
         ],
         "title": "AttributeValueData",
         "description": "One value of a list.\n\nIdentified by `attribute_id` PLUS `value_id`: the code alone is not unique,\nsince 'OTHER' occurs in thirteen of Ethiopia's lists."
+      },
+      "DeleteAttributeRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/DeleteAttributeRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "DeleteAttributeRequest"
+      },
+      "DeleteAttributeRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/DeleteAttributeRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "DeleteAttributeRequestBody"
+      },
+      "DeleteAttributeRequestPayload": {
+        "properties": {
+          "attribute_id": {
+            "type": "string",
+            "title": "Attribute Id"
+          },
+          "cascade": {
+            "type": "boolean",
+            "title": "Cascade",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "attribute_id"
+        ],
+        "title": "DeleteAttributeRequestPayload"
+      },
+      "DeleteAttributeResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/DeleteAttributeResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "DeleteAttributeResponse"
+      },
+      "DeleteAttributeResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeleteAttributeResponsePayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DeleteAttributeResponseBody"
+      },
+      "DeleteAttributeResponsePayload": {
+        "properties": {
+          "attribute_id": {
+            "type": "string",
+            "title": "Attribute Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attribute_id"
+        ],
+        "title": "DeleteAttributeResponsePayload"
+      },
+      "DeleteAttributeValueRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/DeleteAttributeValueRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "DeleteAttributeValueRequest"
+      },
+      "DeleteAttributeValueRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/DeleteAttributeValueRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "DeleteAttributeValueRequestBody"
+      },
+      "DeleteAttributeValueRequestPayload": {
+        "properties": {
+          "value_id": {
+            "type": "string",
+            "title": "Value Id"
+          },
+          "attribute_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribute Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value_id"
+        ],
+        "title": "DeleteAttributeValueRequestPayload"
+      },
+      "DeleteAttributeValueResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/DeleteAttributeValueResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "DeleteAttributeValueResponse"
+      },
+      "DeleteAttributeValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeleteAttributeValueResponsePayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DeleteAttributeValueResponseBody"
+      },
+      "DeleteAttributeValueResponsePayload": {
+        "properties": {
+          "value_id": {
+            "type": "string",
+            "title": "Value Id"
+          },
+          "attribute_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribute Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value_id"
+        ],
+        "title": "DeleteAttributeValueResponsePayload"
+      },
+      "DeleteGeoLevelRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/DeleteGeoLevelRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "DeleteGeoLevelRequest"
+      },
+      "DeleteGeoLevelRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/DeleteGeoLevelRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "DeleteGeoLevelRequestBody"
+      },
+      "DeleteGeoLevelRequestPayload": {
+        "properties": {
+          "level_id": {
+            "type": "string",
+            "title": "Level Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_id"
+        ],
+        "title": "DeleteGeoLevelRequestPayload"
+      },
+      "DeleteGeoLevelResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/DeleteGeoLevelResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "DeleteGeoLevelResponse"
+      },
+      "DeleteGeoLevelResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeleteGeoLevelResponsePayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DeleteGeoLevelResponseBody"
+      },
+      "DeleteGeoLevelResponsePayload": {
+        "properties": {
+          "level_id": {
+            "type": "string",
+            "title": "Level Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_id"
+        ],
+        "title": "DeleteGeoLevelResponsePayload"
+      },
+      "DeleteGeoLevelValueRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/DeleteGeoLevelValueRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "DeleteGeoLevelValueRequest"
+      },
+      "DeleteGeoLevelValueRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/DeleteGeoLevelValueRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "DeleteGeoLevelValueRequestBody"
+      },
+      "DeleteGeoLevelValueRequestPayload": {
+        "properties": {
+          "level_value_id": {
+            "type": "string",
+            "title": "Level Value Id"
+          },
+          "cascade": {
+            "type": "boolean",
+            "title": "Cascade",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_value_id"
+        ],
+        "title": "DeleteGeoLevelValueRequestPayload"
+      },
+      "DeleteGeoLevelValueResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/DeleteGeoLevelValueResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "DeleteGeoLevelValueResponse"
+      },
+      "DeleteGeoLevelValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeleteGeoLevelValueResponsePayload"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DeleteGeoLevelValueResponseBody"
+      },
+      "DeleteGeoLevelValueResponsePayload": {
+        "properties": {
+          "level_value_id": {
+            "type": "string",
+            "title": "Level Value Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_value_id"
+        ],
+        "title": "DeleteGeoLevelValueResponsePayload"
       },
       "ErrorListResponse": {
         "properties": {
@@ -974,134 +2491,6 @@
           "number_of_pages"
         ],
         "title": "G2PPaginationResponse"
-      },
-      "G2PPartnerData": {
-        "properties": {
-          "partner_id": {
-            "type": "string",
-            "title": "Partner Id"
-          },
-          "partner_mnemonic": {
-            "type": "string",
-            "title": "Partner Mnemonic"
-          },
-          "keymanager_reference_id": {
-            "type": "string",
-            "title": "Keymanager Reference Id"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active"
-          }
-        },
-        "type": "object",
-        "required": [
-          "partner_id",
-          "partner_mnemonic",
-          "keymanager_reference_id",
-          "is_active"
-        ],
-        "title": "G2PPartnerData"
-      },
-      "G2PPartnerResponse": {
-        "properties": {
-          "response_header": {
-            "$ref": "#/components/schemas/G2PResponseHeader"
-          },
-          "response_body": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPartnerResponseBody"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "response_header"
-        ],
-        "title": "G2PPartnerResponse"
-      },
-      "G2PPartnerResponseBody": {
-        "properties": {
-          "pagination_response": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPaginationResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "response_payload": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPartnerData"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "title": "G2PPartnerResponseBody"
-      },
-      "G2PPartnersResponse": {
-        "properties": {
-          "response_header": {
-            "$ref": "#/components/schemas/G2PResponseHeader"
-          },
-          "response_body": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPartnersResponseBody"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "response_header"
-        ],
-        "title": "G2PPartnersResponse"
-      },
-      "G2PPartnersResponseBody": {
-        "properties": {
-          "pagination_response": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPaginationResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "response_payload": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/G2PPartnerData"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Response Payload"
-          }
-        },
-        "type": "object",
-        "title": "G2PPartnersResponseBody"
       },
       "G2PRequestHeader": {
         "properties": {
@@ -1216,64 +2605,6 @@
               }
             ],
             "title": "Parent Level Id"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "display_name_i18n": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name I18N"
-          },
-          "version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Version"
-          },
-          "valid_from": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid From"
-          },
-          "valid_to": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid To"
           }
         },
         "type": "object",
@@ -1282,7 +2613,7 @@
           "level_mnemonic"
         ],
         "title": "GeoLevelData",
-        "description": "A level in the hierarchy.\n\nDepth and naming are country-specific and come from data, so consumers\nmust walk `parent_level_id` rather than assume any fixed set of levels.\n\nAll fields below `parent_level_id` are additive and optional \u2014 existing\nclients that ignore them continue to work."
+        "description": "A level in the hierarchy.\n\nDepth and naming are country-specific and come from data, so consumers\nmust walk `parent_level_id` rather than assume any fixed set of levels."
       },
       "GeoLevelValueData": {
         "properties": {
@@ -1308,108 +2639,6 @@
               }
             ],
             "title": "Parent Level Value Id"
-          },
-          "pcode": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pcode"
-          },
-          "pcode_source": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pcode Source"
-          },
-          "boundary_uri": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Boundary Uri"
-          },
-          "boundary_simplified_uri": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Boundary Simplified Uri"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "display_name_i18n": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name I18N"
-          },
-          "version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Version"
-          },
-          "valid_from": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid From"
-          },
-          "valid_to": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Valid To"
           }
         },
         "type": "object",
@@ -1419,7 +2648,7 @@
           "level_value_mnemonic"
         ],
         "title": "GeoLevelValueData",
-        "description": "A node in the hierarchy.\n\n`level_value_id` stays the stable internal key. `pcode` is the join key to\nthe outside world (boundary files, registry data) \u2014 name-based joins are\nunreliable and must not be used."
+        "description": "A node in the hierarchy.\n\n`level_value_id` is the stable internal key."
       },
       "GetAllGeoLevelsRequest": {
         "properties": {
@@ -1506,49 +2735,6 @@
         ],
         "title": "GetAllGeoLevelsResponseBody"
       },
-      "GetAllPartnersRequest": {
-        "properties": {
-          "request_header": {
-            "$ref": "#/components/schemas/G2PRequestHeader"
-          },
-          "request_body": {
-            "$ref": "#/components/schemas/GetAllPartnersRequestBody"
-          }
-        },
-        "type": "object",
-        "required": [
-          "request_header",
-          "request_body"
-        ],
-        "title": "GetAllPartnersRequest"
-      },
-      "GetAllPartnersRequestBody": {
-        "properties": {
-          "pagination_request": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/G2PPaginationRequest"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "request_payload": {
-            "$ref": "#/components/schemas/GetAllPartnersRequestPayload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "request_payload"
-        ],
-        "title": "GetAllPartnersRequestBody"
-      },
-      "GetAllPartnersRequestPayload": {
-        "properties": {},
-        "type": "object",
-        "title": "GetAllPartnersRequestPayload"
-      },
       "GetAttributeValuesRequest": {
         "properties": {
           "request_header": {
@@ -1578,22 +2764,13 @@
             ]
           },
           "request_payload": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/GetAttributeValuesRequestPayload"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": {
-              "include_domains": false,
-              "page_size": 1000,
-              "page_number": 1
-            }
+            "$ref": "#/components/schemas/GetAttributeValuesRequestPayload"
           }
         },
         "type": "object",
+        "required": [
+          "request_payload"
+        ],
         "title": "GetAttributeValuesRequestBody"
       },
       "GetAttributeValuesRequestPayload": {
@@ -1607,58 +2784,15 @@
                 "type": "null"
               }
             ],
-            "title": "Attribute Id"
-          },
-          "domain": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Domain"
-          },
-          "include_domains": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Include Domains",
-            "default": false
-          },
-          "page_size": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Page Size",
-            "default": 1000
-          },
-          "page_number": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Page Number",
-            "default": 1
+            "title": "Attribute Id",
+            "description": "Code-list id. When set, returns all values for that attribute."
           }
         },
         "type": "object",
-        "title": "GetAttributeValuesRequestPayload"
+        "title": "GetAttributeValuesRequestPayload",
+        "example": {
+          "attribute_id": "string"
+        }
       },
       "GetAttributeValuesResponse": {
         "properties": {
@@ -1770,40 +2904,14 @@
                 "type": "null"
               }
             ],
-            "default": {
-              "include_domains": false
-            }
+            "default": {}
           }
         },
         "type": "object",
         "title": "GetAttributesRequestBody"
       },
       "GetAttributesRequestPayload": {
-        "properties": {
-          "domain": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Domain"
-          },
-          "include_domains": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Include Domains",
-            "default": false
-          }
-        },
+        "properties": {},
         "type": "object",
         "title": "GetAttributesRequestPayload"
       },
@@ -1973,13 +3081,26 @@
         ],
         "title": "GetGeoLevelValuesResponseBody"
       },
-      "GetGeoLevelsRequest": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "UpdateAttributeRequest": {
         "properties": {
           "request_header": {
             "$ref": "#/components/schemas/G2PRequestHeader"
           },
           "request_body": {
-            "$ref": "#/components/schemas/GetGeoLevelsRequestBody"
+            "$ref": "#/components/schemas/UpdateAttributeRequestBody"
           }
         },
         "type": "object",
@@ -1987,9 +3108,9 @@
           "request_header",
           "request_body"
         ],
-        "title": "GetGeoLevelsRequest"
+        "title": "UpdateAttributeRequest"
       },
-      "GetGeoLevelsRequestBody": {
+      "UpdateAttributeRequestBody": {
         "properties": {
           "pagination_request": {
             "anyOf": [
@@ -2002,17 +3123,306 @@
             ]
           },
           "request_payload": {
-            "$ref": "#/components/schemas/GetGeoLevelsRequestPayload"
+            "$ref": "#/components/schemas/UpdateAttributeRequestPayload"
           }
         },
         "type": "object",
         "required": [
           "request_payload"
         ],
-        "title": "GetGeoLevelsRequestBody"
+        "title": "UpdateAttributeRequestBody"
       },
-      "GetGeoLevelsRequestPayload": {
+      "UpdateAttributeRequestPayload": {
         "properties": {
+          "attribute_id": {
+            "type": "string",
+            "title": "Attribute Id"
+          },
+          "attribute_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribute Code"
+          },
+          "attribute_display": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribute Display"
+          },
+          "is_hierarchical": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Hierarchical"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attribute_id"
+        ],
+        "title": "UpdateAttributeRequestPayload"
+      },
+      "UpdateAttributeResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/UpdateAttributeResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "UpdateAttributeResponse"
+      },
+      "UpdateAttributeResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributeData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "UpdateAttributeResponseBody"
+      },
+      "UpdateAttributeValueRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/UpdateAttributeValueRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "UpdateAttributeValueRequest"
+      },
+      "UpdateAttributeValueRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/UpdateAttributeValueRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "UpdateAttributeValueRequestBody"
+      },
+      "UpdateAttributeValueRequestPayload": {
+        "properties": {
+          "value_id": {
+            "type": "string",
+            "title": "Value Id"
+          },
+          "attribute_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribute Id"
+          },
+          "value_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Code"
+          },
+          "value_display": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value Display"
+          },
+          "parent_value_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Value Id"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value_id"
+        ],
+        "title": "UpdateAttributeValueRequestPayload"
+      },
+      "UpdateAttributeValueResponse": {
+        "properties": {
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/UpdateAttributeValueResponseBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "UpdateAttributeValueResponse"
+      },
+      "UpdateAttributeValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributeValueData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "UpdateAttributeValueResponseBody"
+      },
+      "UpdateGeoLevelRequest": {
+        "properties": {
+          "request_header": {
+            "$ref": "#/components/schemas/G2PRequestHeader"
+          },
+          "request_body": {
+            "$ref": "#/components/schemas/UpdateGeoLevelRequestBody"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_header",
+          "request_body"
+        ],
+        "title": "UpdateGeoLevelRequest"
+      },
+      "UpdateGeoLevelRequestBody": {
+        "properties": {
+          "pagination_request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request_payload": {
+            "$ref": "#/components/schemas/UpdateGeoLevelRequestPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "request_payload"
+        ],
+        "title": "UpdateGeoLevelRequestBody"
+      },
+      "UpdateGeoLevelRequestPayload": {
+        "properties": {
+          "level_id": {
+            "type": "string",
+            "title": "Level Id"
+          },
+          "level_mnemonic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Mnemonic"
+          },
           "parent_level_id": {
             "anyOf": [
               {
@@ -2026,15 +3436,18 @@
           }
         },
         "type": "object",
-        "title": "GetGeoLevelsRequestPayload"
+        "required": [
+          "level_id"
+        ],
+        "title": "UpdateGeoLevelRequestPayload"
       },
-      "GetGeoLevelsResponse": {
+      "UpdateGeoLevelResponse": {
         "properties": {
           "response_header": {
             "$ref": "#/components/schemas/G2PResponseHeader"
           },
           "response_body": {
-            "$ref": "#/components/schemas/GetGeoLevelsResponseBody"
+            "$ref": "#/components/schemas/UpdateGeoLevelResponseBody"
           }
         },
         "type": "object",
@@ -2042,9 +3455,9 @@
           "response_header",
           "response_body"
         ],
-        "title": "GetGeoLevelsResponse"
+        "title": "UpdateGeoLevelResponse"
       },
-      "GetGeoLevelsResponseBody": {
+      "UpdateGeoLevelResponseBody": {
         "properties": {
           "pagination_response": {
             "anyOf": [
@@ -2057,26 +3470,26 @@
             ]
           },
           "response_payload": {
-            "items": {
-              "$ref": "#/components/schemas/GeoLevelData"
-            },
-            "type": "array",
-            "title": "Response Payload"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeoLevelData"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
-        "required": [
-          "response_payload"
-        ],
-        "title": "GetGeoLevelsResponseBody"
+        "title": "UpdateGeoLevelResponseBody"
       },
-      "GetPartnerRequest": {
+      "UpdateGeoLevelValueRequest": {
         "properties": {
           "request_header": {
             "$ref": "#/components/schemas/G2PRequestHeader"
           },
           "request_body": {
-            "$ref": "#/components/schemas/GetPartnerRequestBody"
+            "$ref": "#/components/schemas/UpdateGeoLevelValueRequestBody"
           }
         },
         "type": "object",
@@ -2084,9 +3497,9 @@
           "request_header",
           "request_body"
         ],
-        "title": "GetPartnerRequest"
+        "title": "UpdateGeoLevelValueRequest"
       },
-      "GetPartnerRequestBody": {
+      "UpdateGeoLevelValueRequestBody": {
         "properties": {
           "pagination_request": {
             "anyOf": [
@@ -2099,40 +3512,102 @@
             ]
           },
           "request_payload": {
-            "$ref": "#/components/schemas/GetPartnerRequestPayload"
+            "$ref": "#/components/schemas/UpdateGeoLevelValueRequestPayload"
           }
         },
         "type": "object",
         "required": [
           "request_payload"
         ],
-        "title": "GetPartnerRequestBody"
+        "title": "UpdateGeoLevelValueRequestBody"
       },
-      "GetPartnerRequestPayload": {
+      "UpdateGeoLevelValueRequestPayload": {
         "properties": {
-          "partner_id": {
+          "level_value_id": {
             "type": "string",
-            "title": "Partner Id"
+            "title": "Level Value Id"
+          },
+          "level_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Id"
+          },
+          "level_value_mnemonic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Value Mnemonic"
+          },
+          "parent_level_value_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Level Value Id"
           }
         },
         "type": "object",
         "required": [
-          "partner_id"
+          "level_value_id"
         ],
-        "title": "GetPartnerRequestPayload"
+        "title": "UpdateGeoLevelValueRequestPayload"
       },
-      "HTTPValidationError": {
+      "UpdateGeoLevelValueResponse": {
         "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "type": "array",
-            "title": "Detail"
+          "response_header": {
+            "$ref": "#/components/schemas/G2PResponseHeader"
+          },
+          "response_body": {
+            "$ref": "#/components/schemas/UpdateGeoLevelValueResponseBody"
           }
         },
         "type": "object",
-        "title": "HTTPValidationError"
+        "required": [
+          "response_header",
+          "response_body"
+        ],
+        "title": "UpdateGeoLevelValueResponse"
+      },
+      "UpdateGeoLevelValueResponseBody": {
+        "properties": {
+          "pagination_response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/G2PPaginationResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response_payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GeoLevelValueData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "UpdateGeoLevelValueResponseBody"
       },
       "ValidationError": {
         "properties": {

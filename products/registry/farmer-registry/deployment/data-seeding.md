@@ -64,21 +64,43 @@ addresses do not match the deployment's country pack. Enable
 
 ## Code lists — including the agriculture domain
 
-A Farmer Registry needs the country's agricultural vocabularies (crop types,
-livestock) on top of the core lists a social registry uses. Those live in a
-**domain subtree** of the country pack, and are opted into explicitly:
+Nothing to seed here: the Farmer Registry's coded dropdowns read their options
+**live from Master Data**, and the registry keeps no copy. Six farmer fields are
+bound to Master Data lists this way:
+
+| Field | Master Data list | Where it comes from |
+|---|---|---|
+| `gender` | `GENDER` | the pack's core lists |
+| `marital_status` | `MARITAL_STATUS` | the pack's core lists |
+| `education_level` | `EDUCATION_LEVEL` | the pack's core lists |
+| `disability_type` | `DISABILITY_DOMAIN` | the pack's core lists |
+| `disability_severity` | `DISABILITY_SEVERITY` | the pack's core lists |
+| `source_of_income` | `SOURCE_OF_INCOME` | the pack's **`agriculture` domain** |
+
+The other dropdowns — crops, livestock, land use and the like — still carry fixed
+options in the section metadata.
+
+`SOURCE_OF_INCOME` lives in a domain subtree of the pack, which Master Data loads
+only when asked — on the **Master Data** chart, not the registry's:
 
 ```yaml
-registry:
-  dbSeed:
-    loadAttributes: true
-    attributeDomains:
+masterData:              # under commons-services
+  geoSeed:
+    domains:
       - agriculture
 ```
 
-Leaving `attributeDomains` empty loads only the core lists. A country pack that
-carries no `agriculture` domain simply has none to load — the step logs it and
-continues.
+{% hint style="warning" %}
+**The domain must exist in the pack.** The ETH pack carries `agriculture`;
+naming a domain the pack lacks **fails the Master Data seed Job**. The fictitious
+XKM pack carries no code lists at all — on XKM leave `domains` empty, and expect
+all six coded dropdowns above to be empty.
+{% endhint %}
+
+Because the codes come from Master Data, everything the Farmer Registry writes into
+these fields uses them too: the sample loader maps its seed JSON onto them (e.g.
+income becomes `SOI_CROP_PRODUCTION`, gender `OTHER`), and the bulk generator and
+the inbound DCI template emit them directly.
 
 ## Bulk data
 
@@ -196,7 +218,7 @@ strict sequence — and **a failure at any step blocks everything after it**.
 flowchart TD
     A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
 
-    B["<b>10 · db-seed</b><br/>meta-data · code lists · geo widgets<br/><b>sample data</b> · images · templates"] --> C
+    B["<b>10 · db-seed</b><br/>meta-data · geo widgets<br/><b>sample data</b> · images · templates"] --> C
 
     subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
         direction TB
@@ -229,7 +251,7 @@ they belong to other releases — see [Cross-release dependencies](#cross-releas
 | Weight | Job | What it does | Runs when |
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
-| 10 | `fr-db-seed` | Meta-data SQL, code lists from Master Data, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
+| 10 | `fr-db-seed` | Meta-data SQL, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
 | 11 | `fr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
 | 12 | `fr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
 | 13 | `fr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
@@ -285,9 +307,6 @@ with, rather than in a shared repository.
 registry:
   dbSeed:
     loadGeoData: false     # legacy loader — must stay off
-    loadAttributes: true   # take the country's code lists from Master Data
-    attributeDomains:
-      - agriculture        # crops, livestock
     syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: true
     loadImages: true

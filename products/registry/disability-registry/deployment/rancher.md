@@ -67,7 +67,6 @@ registry:
                            #            search returns an empty 200
     loadSampleData: false
     loadImages: false
-    loadAttributes: true   # take the country's code lists from Master Data
     syncGeoWidgets: true
   sanity:
     enabled: false

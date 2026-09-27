@@ -27,7 +27,7 @@ Write this down before touching code — it drives everything after it.
 1. **List your registers.** A register is a top-level entity a staff user searches for and raises change requests against (Farmer, Individual, Household). Things that only ever hang off a register — a land parcel, a crop — are **sub-registers**, not registers.
 2. **Give each a mnemonic** — one CamelCase word (`Farmer`, `IndividualLand`). It becomes the class-name suffix and the DCI `reg_type`. Changing it later means touching code, SQL and templates.
 3. **Freeze a UUID per register** now. Metadata rows reference each other by these.
-4. **List the fields per register**, marking which are code lists (dropdowns) and which are free text.
+4. **List the fields per register**, marking which are code lists (dropdowns) and which are free text. For each code list, note the **Master Data list** it uses (its `attribute_id` in the country pack) — if the pack does not carry it, it is added to the pack, not to your extension.
 5. **Decide which registers mint functional IDs.** Only those get `functional_id_generation_required = TRUE`, an ID pool in the chart (`registry.idgenerator.idGenerator.appConfig.idTypes.<mnemonic-lowercase>`) and a branch in `id_generator/`. Sub-registers reached through a parent normally need none of the three.
 
 A single-register registry is a perfectly good shape — do not add a household register because the worked examples have one. Unsure whether something is a register: [Registry vs Register](concepts/registry-vs-register.md).
@@ -93,7 +93,7 @@ In `src/openg2p_registry_<domain>_extension/`:
 3. **`register_domain/services/`** — `G2PRegisterDomainService{Mnemonic}` per register.
 4. **`register_domain/factory/`** — map each mnemonic to your classes. Alongside it, `register_domain/id_generator/` returns the prefix/suffix for each register that mints functional IDs. It branches on the **lowercased mnemonic**, and those branches must match the ID pools you declare in the chart — see [Functional-ID pools](build-your-registry.md#functional-id-pools) in step 5.
 5. **`meta_data/register-metadata/`** — the seed SQL, in this order: register definitions → sections → schemas → UI tabs → tab-sections → intake equivalents.
-6. **`meta_data/lookup-data/`** — your code lists.
+6. **Dropdowns** — bind each coded field to its Master Data list in the section JSON (`widget-data-source` with an `attribute_id`). The extension ships **no code-list SQL**; the options come from Master Data live. See [Contracts that fail silently §9](contracts-that-fail-silently.md#id-9.-code-lists-and-enums-must-agree).
 7. **`templates/`** — your DCI templates.
 8. **`awe_meta_data/`** — your approval policy and stages.
 
@@ -108,15 +108,15 @@ Read [Contracts that fail silently](contracts-that-fail-silently.md) **before** 
 | Mismatch                                | What you see                                           |
 | --------------------------------------- | ------------------------------------------------------ |
 | widget path ↔ ORM column                | a permanently blank field that accepts no input        |
-| dropdown `attribute_id` ↔ code list     | an empty dropdown; the field cannot be filled          |
-| enum value ↔ code-list value            | the field refuses to save, or the value is unreachable |
+| dropdown `attribute_id` ↔ Master Data list | an empty dropdown; the field cannot be filled       |
+| enum / written code ↔ Master Data code  | the field refuses to save, or the value is unreachable |
 | inbound template key ↔ section mnemonic | ingested records arrive with empty tables              |
 | consent scope ↔ template top-level key  | every shared record clamps to `{}`                     |
 | seed `INSERT` with no `ON CONFLICT`     | the second install half-applies metadata and exits `0` |
 
 Two habits that remove whole categories of this:
 
-* **Generate the code lists from the enums** rather than maintaining both, and fail CI when the checked-in SQL is stale.
+* **Treat the country pack as the source of codes.** Check your enums, and every code your loaders and inbound templates write, against the pack in openg2p-data, and fail CI on a code the pack does not carry.
 * **Generate the translation keys from the section metadata** — every `widget-label` is a translation key, and a missing one renders as the raw key.
 
 **Done when:**
@@ -173,7 +173,7 @@ COPY docker/db-seed/load_sample_data.py /seed/load_sample_data.py
 COPY docker/db-seed/upload_images.py    /seed/upload_images.py
 ```
 
-Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `load_geo_data.py`, `load_attributes_from_mds.py`, `sync_geo_widgets.py`, `upload_templates.py`.
+Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `load_geo_data.py`, `sync_geo_widgets.py`, `upload_templates.py`. There is no code-list loader — the registry reads code lists from Master Data live.
 
 #### Where sample people come from
 
@@ -537,7 +537,7 @@ Confirm before moving on:
 * [ ] The chart published at that same version
 * [ ] `./scripts/bump-rp-version.sh -n` reports no pin drift
 * [ ] The repository guards pass
-* [ ] Any generated files are current (code lists, translations)
+* [ ] Any generated files are current (translations)
 * [ ] `helm template` renders your chart **and carries your overrides**
 
 **Done when** this exits zero from a clean checkout:

@@ -106,7 +106,6 @@
       * [Registry Platform Release Notes - v1.0.0](products/registry/registry/versions/registry-platform-release-notes-v1.0.0.md)
       * [Registry Release Notes - v4.0.0](products/registry/registry/versions/registry-release-notes-v4.0.0.md)
       * [Registry Release Notes - v4.1.0](products/registry/registry/versions/registry-release-notes-v4.1.0.md)
-    * [Use Case Implementation](products/registry/registry/use-case-implementation.md)
     * [\_Archive](products/registry/registry/_archive/README.md)
       * [Deployment (Registry 4.x)](products/registry/registry/_archive/deployment/README.md)
         * [Registry Helm Chart 4.x](products/registry/registry/_archive/deployment/helm-chart-4.x.md)

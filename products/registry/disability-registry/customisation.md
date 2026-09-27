@@ -24,36 +24,38 @@ means maintaining a fork of the registry forever.
 
 ## 1. Geography and code lists — use a country pack
 
-**Do not edit the shipped code lists to add your country's values.** Load a
-country pack into the Master Data Service instead and let the registry pick it
-up:
+**The registry ships no code lists.** Its coded dropdowns read the country's
+lists live from the Master Data Service, which loads them from a country pack —
+so to change the values, change the pack (or maintain them in Master Data), never
+the registry. On the registry side, only the geo dropdowns need a switch:
 
 ```yaml
 registry:
   dbSeed:
-    loadAttributes: true     # copy the country's code lists from Master Data
     syncGeoWidgets: true     # match the geo dropdowns to the loaded hierarchy
 ```
 
-`loadAttributes` replaces any list the pack also defines; `syncGeoWidgets`
-rewrites the location dropdowns to the hierarchy depth and level names Master
-Data actually holds. This is what lets one image serve any country — and it is
+`syncGeoWidgets` rewrites the location dropdowns to the hierarchy depth and level
+names Master Data actually holds. This is what lets one image serve any country — and it is
 why the registry declares no country anywhere.
 
-Geography is seeded by the **master-data** chart (`geoSeed.countryPack`), not by
-the registry. Declaring a country in two charts is how registry records end up
+Geography and code lists are seeded by the **master-data** chart
+(`geoSeed.countryPack`, with `geoSeed.load.codelists`), not by the registry. Declaring a country in two charts is how registry records end up
 pointing at places Master Data has never heard of.
 
 ## 2. Programmes
 
 `PROGRAM_NAME` is a code list, deliberately not an enum, because a country's
-programmes are its own. The shipped values are generic archetypes — disability
+programmes are its own. Its values come from the country pack's `PROGRAM_NAME`
+list, through Master Data — so a deployment offers the country's programmes, not
+the registry's. A disability deployment will usually want its own set — disability
 allowance, caregiver allowance, assistive device grant, rehabilitation services,
 inclusive education, vocational training, employment quota, housing adaptation,
 transport concession.
 
-Replace them from your country pack, or edit them in the staff portal under
-**Configuration → Attributes**. No rebuild.
+Add them to the pack, or maintain them in the **Master Data** admin UI (the
+`referenceData:*` permissions). No registry rebuild either way. The staff portal
+has no attribute editor — code lists are not the registry's to edit.
 
 ## 3. Adding or changing a field
 
@@ -76,19 +78,21 @@ The full list is in
 [Contracts that fail silently](../registry/developer-zone/building-a-registry/contracts-that-fail-silently.md).
 {% endhint %}
 
-### Code lists are generated
+### Code lists come from Master Data; translations are generated
 
-Dropdown values in `meta_data/lookup-data/*_defaults.sql` are **derived from the
-domain enums** by a script, and the translation keys from the section metadata:
+Dropdown values are **not** in this repository: coded fields read them live from
+Master Data, loaded from the country pack. What the repository must do is agree
+with them — the domain enums in `models/enums.py`, and every code the loaders and
+DCI templates write, must be the pack's codes. A code in the pack and not in an
+enum makes the field refuse to save; one in an enum and not in the pack is
+unreachable from the UI — both silently. See
+[Contracts that fail silently §9](../registry/developer-zone/building-a-registry/contracts-that-fail-silently.md#id-9.-code-lists-and-enums-must-agree).
+
+The translation keys are still generated from the section metadata:
 
 ```bash
-./scripts/generate-code-lists.py      # after editing models/enums.py
 ./scripts/generate-translations.py    # after adding a widget label
 ```
-
-CI fails if the checked-in SQL is stale. Edit the enum, re-run the script — never
-hand-edit the generated SQL, because a value in one and not the other makes the
-field refuse to save or the option unreachable, silently.
 
 ## 4. Assessment vocabulary
 
