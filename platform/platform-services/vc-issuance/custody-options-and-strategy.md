@@ -36,6 +36,23 @@ Ranked by **what the citizen must own** (least → most):
 * **Mechanism:** credentials and keys live **on the device** (Inji Mobile); presentation by QR/BLE offline or **OpenID4VP** online; supports selective disclosure.
 * **Needs from the citizen:** a smartphone + the wallet app + some literacy.
 
+### A + C — assisted handover into a device wallet
+
+* **Citizen owns:** a **smartphone**, but is still served **at the counter**.
+* **Mechanism:** issuance is Option A's exactly — agent lookup, the citizen's own
+  eSignet authentication, claims pushed to Certify. Delivery is Option C's: rather
+  than printing, the agent shows an **OpenID4VCI credential offer** as a QR and the
+  wallet redeems it, so the credential lands bound to a key on the device.
+* **Why it is worth naming separately:** it gives a smartphone owner everything
+  Option C gives them for *presentation* — holder binding, OpenID4VP, selective
+  disclosure — without needing Option C's **issuance** machinery, which is the part
+  that requires Certify to pull from the registry.
+* **What it does not give:** self-service. The citizen still travels to an agent,
+  so this does not replace Option C; it is a bridge to it for deployments that
+  already run Option A.
+
+See [Wallet Handover (Phase 1.5)](wallet-handover.md).
+
 ## Comparison
 
 | Dimension                          | A — Paper           | B — Hosted                | C — Device                   |

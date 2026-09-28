@@ -1,23 +1,37 @@
 ---
-description: Geo, Attribute and Partner lookup APIs served by the Master Data Service
+description: Geo and Attribute APIs served by the Master Data Service
 ---
 
 # API Reference
 
-The Master Data Service exposes three groups of **read-only lookup** APIs, plus a
-health check.
+The Master Data Service exposes two groups of APIs — **reads**, used by registries
+and other services, and **writes**, used to maintain the data (the Master Data admin
+UI) — plus a health check.
 
 | Group | Prefix | What it serves |
 |---|---|---|
 | [Geo](#geo-apis) | `/geo` | The administrative hierarchy and its units |
 | [Attributes](#attribute-apis) | `/attributes` | The country's code lists and their values |
-| [Partner](#partner-apis) | `/partner` | Partner organisations, for inter-service trust and routing |
 | [Health](#health) | `/ping` | Liveness |
+
+{% hint style="info" %}
+**MDS holds no partners.** Partner organisations and their keys are served by
+[Partner Management](../partner-management/README.md); the `/partner` APIs this
+service once had are gone.
+{% endhint %}
 
 {% hint style="info" %}
 **Every lookup is a `POST`, including the reads.** These follow the OpenG2P common
 request/response envelope, which carries a request header alongside the payload, so
 arguments travel in a body rather than the query string. `/ping` is the only `GET`.
+{% endhint %}
+
+{% hint style="warning" %}
+**Every endpoint except `/ping` needs a bearer token** from the deployment's
+Keycloak. Reads need authentication only (geo units and attribute values are
+additionally filtered by the caller's data policy); writes need a permission — `geo:create`, `geo:edit`,
+`geo:delete`, `referenceData:create`, `referenceData:edit` or
+`referenceData:delete` — held under the `master-data-ui` client.
 {% endhint %}
 
 A machine-readable OpenAPI document is available at
@@ -62,26 +76,20 @@ relying on the HTTP code alone.
 
 ## Geo APIs
 
-### `POST /geo/get_g2p_geo_levels`
+### `POST /geo/get_all_geo_levels`
 
-Returns the levels directly beneath a given level — the hierarchy one step at a
-time. Omit `parent_level_id` to get the top level.
-
-**Request payload**
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `parent_level_id` | string | no | Return the levels below this one. Omitted → the root level. |
+Returns the **entire** level hierarchy in one call. Takes an empty payload. Use it
+to learn the shape of the hierarchy up front — how many levels, and what the
+country calls them — for example to build a set of cascading dropdowns. A level's
+children are the levels whose `parent_level_id` is its `level_id`.
 
 **Response payload** — a list of level objects:
 
 | Field | Description |
 |---|---|
 | `level_id` | Level identifier, e.g. `l0`, `l1` |
-| `level_mnemonic` | The country's name for the level, e.g. `region`, `woreda` |
+| `level_mnemonic` | The country's name for the level, e.g. `region`, `woreda` — unique under its parent |
 | `parent_level_id` | Parent level, `null` at the root |
-| `display_name`, `display_name_i18n` | Optional labels |
-| `version`, `valid_from`, `valid_to` | Pack version and validity window |
 
 **Example**
 
@@ -112,29 +120,15 @@ time. Omit `parent_level_id` to get the top level.
   "response_body": {
     "pagination_response": null,
     "response_payload": [
-      {
-        "level_id": "l0",
-        "level_mnemonic": "country",
-        "parent_level_id": null,
-        "display_name": null,
-        "display_name_i18n": null,
-        "version": null,
-        "valid_from": null,
-        "valid_to": null
-      }
+      { "level_id": "l0", "level_mnemonic": "country", "parent_level_id": null },
+      { "level_id": "l1", "level_mnemonic": "region",  "parent_level_id": "l0" }
     ]
   }
 }
 ```
 {% endcode %}
 
-### `POST /geo/get_all_g2p_geo_levels`
-
-Returns the **entire** level hierarchy in one call — the same objects as above, for
-every level. Takes an empty payload. Use this when you need the shape of the
-hierarchy up front, for example to build a set of cascading dropdowns.
-
-### `POST /geo/get_g2p_geo_level_values`
+### `POST /geo/get_geo_level_values`
 
 Returns the administrative **units** at a level, optionally only those under a given
 parent. This is the call that drives cascading address dropdowns: ask for level `l1`
@@ -152,77 +146,71 @@ to fill the first dropdown, then for `l2` with the chosen unit as
 
 | Field | Description |
 |---|---|
-| `level_value_id` | The unit's identifier — **this is its P-code** |
+| `level_value_id` | The unit's identifier — for a unit loaded from a country pack, **this is its P-code** |
 | `level_id` | Which level it belongs to |
-| `level_value_mnemonic` | Short name |
+| `level_value_mnemonic` | Short name — unique under its parent at that level |
 | `parent_level_value_id` | Parent unit |
-| `pcode`, `pcode_source` | The P-code and where it came from, e.g. `OCHA COD-AB` |
-| `boundary_uri`, `boundary_simplified_uri` | Where the unit's map shape can be fetched |
-| `display_name`, `display_name_i18n` | Labels |
-| `version`, `valid_from`, `valid_to` | Pack version and validity window |
 
-{% hint style="danger" %}
-**This endpoint requires authentication.** It is permission-checked, so an
-unauthenticated call returns `401`. The two level endpoints above are not.
-{% endhint %}
+The results are filtered by the caller's **data policy**, so two callers can see
+different subsets of the same level.
 
 See [Country Data Architecture](../../country-data-architecture.md) for what
-P-codes are and where the boundary files actually live.
+P-codes are.
+
+### Geo writes
+
+For maintaining the hierarchy. Each returns the object it created or changed, or —
+for a delete — its id.
+
+| Endpoint | Permission | Request payload |
+|---|---|---|
+| `POST /geo/add_geo_level` | `geo:create` | `level_mnemonic`, `parent_level_id`? |
+| `POST /geo/update_geo_level` | `geo:edit` | `level_id`, `level_mnemonic`?, `parent_level_id`? |
+| `POST /geo/delete_geo_level` | `geo:delete` | `level_id` |
+| `POST /geo/add_geo_level_value` | `geo:create` | `level_id`, `level_value_mnemonic`, `parent_level_value_id`? |
+| `POST /geo/update_geo_level_value` | `geo:edit` | `level_value_id`, `level_id`?, `level_value_mnemonic`?, `parent_level_value_id`? |
+| `POST /geo/delete_geo_level_value` | `geo:delete` | `level_value_id`, `cascade` (default `false`) |
+
+`?` marks an optional field.
 
 ---
 
 ## Attribute APIs
 
-These serve the country's code lists — the vocabularies a registry validates
-against.
+These serve the country's code lists — the vocabularies registry dropdowns read
+their options from, and that a registry's coded-value check validates against.
 
 ### `POST /attributes/get_all_attributes`
 
-Returns the list of attributes (the code lists themselves, not their values).
+Returns the list of attributes (the code lists themselves, not their values). Takes
+an empty payload.
 
-**Request payload**
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `domain` | string | no | Only attributes in this domain, e.g. `agriculture` |
-| `include_domains` | boolean | no | Include domain-specific attributes alongside the core ones |
-
-**Response payload** — `{ "attributes": [...], "total": n }`, each attribute
-carrying `attribute_id`, `attribute_code`, `attribute_display`, `is_hierarchical`,
-`display_name_i18n`, `country` and `version`.
+**Response payload** — `{ "attributes": [...] }`, each attribute carrying
+`attribute_id`, `attribute_code`, `attribute_display` and `is_hierarchical`.
 
 ### `POST /attributes/get_attribute_values`
 
-Returns the values within one or more code lists.
+Returns the values of one code list — or, with no `attribute_id`, of every list.
 
 **Request payload**
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `attribute_id` | string | no | Restrict to one code list, e.g. `GENDER` |
-| `domain` | string | no | Restrict to a domain |
-| `include_domains` | boolean | no | Include domain-specific values |
-| `page_size` | integer | no | Page size |
-| `page_number` | integer | no | Page number |
+| `attribute_id` | string | no | The code list, e.g. `GENDER`. Omitted → every value of every list |
+
+Paging is not part of the payload: it goes in the envelope, as
+`request_body.pagination_request` (`current_page`, `page_size`).
 
 **Response payload** — `{ "attribute_values": [...], "total": n }`:
 
 | Field | Description |
 |---|---|
-| `attribute_id`, `value_id` | Which list, and the value's identifier |
+| `attribute_id`, `value_id` | Which list, and the value's identifier — the code a registry stores |
 | `value_code`, `value_display` | Code and human-readable label |
 | `parent_value_id` | Set for hierarchical lists |
 | `sort_order` | Display order |
-| `roles` | Semantic role tags — see below |
-| `domain`, `country`, `version` | Provenance |
-| `valid_from`, `valid_to` | Validity window |
 
-{% hint style="info" %}
-**`roles` is what makes reporting portable across countries.** Rather than
-hardcoding a literal like `"SELF"`, platform logic asks which value carries the role
-`head_of_household`. The vocabulary is fixed; which value holds a role is the
-country's decision.
-{% endhint %}
+As with geo units, the values are filtered by the caller's **data policy**.
 
 **Example**
 
@@ -236,7 +224,8 @@ country's decision.
     "request_timestamp": "2026-08-04T10:00:00Z"
   },
   "request_body": {
-    "request_payload": { "attribute_id": "GENDER", "page_size": 3 }
+    "request_payload": { "attribute_id": "GENDER" },
+    "pagination_request": { "current_page": 1, "page_size": 3 }
   }
 }
 ```
@@ -252,17 +241,10 @@ country's decision.
       "value_code": "FEMALE",
       "value_display": "Female",
       "parent_value_id": null,
-      "sort_order": 1,
-      "display_name_i18n": {},
-      "roles": ["female"],
-      "domain": null,
-      "country": "ETH",
-      "version": "2026-04-17T09:59:45.523963",
-      "valid_from": null,
-      "valid_to": null
+      "sort_order": 1
     }
   ],
-  "total": 2
+  "total": 4
 }
 ```
 {% endcode %}
@@ -270,35 +252,36 @@ country's decision.
 {% hint style="info" %}
 Attribute ids are **upper-case**: `GENDER`, `COOKING_FUEL_TYPE`,
 `DISABILITY_SEVERITY`. Call `get_all_attributes` to list what a deployment actually
-holds — it varies with the country pack loaded.
+holds — it varies with the country pack loaded, and a pack's **domain** lists (such
+as `agriculture`) are there only if the deployment asked for that domain
+(`geoSeed.domains`).
 {% endhint %}
 
----
+{% hint style="warning" %}
+**Only the codes and labels are stored.** A pack's values may also declare semantic
+`roles`, a domain and provenance, but MDS does not keep them and these APIs do not
+return them. See
+[Country Data Architecture → Semantic roles](../../country-data-architecture.md#semantic-roles).
+{% endhint %}
 
-## Partner APIs
+### Attribute writes
 
-### `POST /partner/get_all_partners`
-
-Returns every registered partner organisation. Empty payload.
-
-### `POST /partner/get_partner`
-
-Returns one partner.
-
-**Request payload**
-
-| Field | Type | Required |
+| Endpoint | Permission | Request payload |
 |---|---|---|
-| `partner_id` | string | yes |
+| `POST /attributes/add_attribute` | `referenceData:create` | `attribute_code`, `attribute_display`, `is_hierarchical`? |
+| `POST /attributes/update_attribute` | `referenceData:edit` | `attribute_id`, `attribute_code`?, `attribute_display`?, `is_hierarchical`? |
+| `POST /attributes/delete_attribute` | `referenceData:delete` | `attribute_id`, `cascade` (default `false`) |
+| `POST /attributes/add_attribute_value` | `referenceData:create` | `attribute_id`, `value_code`, `value_display`, `parent_value_id`?, `sort_order`? |
+| `POST /attributes/update_attribute_value` | `referenceData:edit` | `value_id`, `attribute_id`?, `value_code`?, `value_display`?, `parent_value_id`?, `sort_order`? |
+| `POST /attributes/delete_attribute_value` | `referenceData:delete` | `value_id`, `attribute_id`? |
 
-**Response payload** — a partner object:
-
-| Field | Description |
-|---|---|
-| `partner_id` | Identifier |
-| `partner_mnemonic` | Short name used across services |
-| `keymanager_reference_id` | Key-manager reference used for inter-service trust |
-| `is_active` | Whether the partner is currently active |
+{% hint style="danger" %}
+**A registry stores these codes.** Changing a `value_code` or deleting a value that
+records already hold leaves those records with a code no dropdown can show — and,
+with the registry's coded-value check on, a record that cannot be saved until the
+field is re-picked. Add new values freely; change or remove existing ones only with
+the registries' data in mind.
+{% endhint %}
 
 ---
 
@@ -318,6 +301,6 @@ pack's sample people, but registries load them **database-to-database** during
 seeding rather than over HTTP. There is no endpoint for them.
 {% endhint %}
 
-Boundary geometry is likewise not served by this API. The geo endpoints return a
-**URL** to each unit's map shape; the file itself lives in object storage. See
+Boundary geometry is likewise not served by this API, and the geo endpoints carry
+no link to it: a unit's map shape is not part of its record. See
 [Country Data Architecture](../../country-data-architecture.md).

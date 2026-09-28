@@ -28,16 +28,18 @@ not repeat it.
 
 | Consumer | What it takes | How |
 |---|---|---|
-| **Registries** (NSR, Farmer Registry, …) | Code lists, the geo hierarchy, sample people | At **install**, copied into the registry's own tables |
+| **Registries** (NSR, Farmer Registry, …) | Code lists and the geo hierarchy | At **runtime**, via the Attributes and Geo APIs — the registry keeps no copy. Its coded-value check, when on, reads the same lists |
+| **Registry sample loaders** | Sample people | At **install**, to load the demo records |
 | **Staff portal screens** | Geo units, level by level | At **runtime**, via the Geo API — this is what fills cascading address dropdowns |
-| **Bulk data generators** | The hierarchy and code lists | At install, so generated records point at real units |
-| **PBMS, Bridge, SPAR** | Partner and geo lookups | At runtime, via the APIs |
+| **Bulk data generators** | The hierarchy | At install, so generated records point at real units |
+| **PBMS, Bridge, SPAR** | Geo lookups | At runtime, via the Geo API. MDS holds no partners — partner lookups go to [Partner Management](../partner-management/README.md) |
 | **Map and reporting surfaces** | Map shapes | From the country pack at build time — **not** from MDS at runtime |
 
-{% hint style="info" %}
-**Registries depend on MDS at install time, not on every write.** A registry copies
-what it needs into its own tables during seeding and validates against that copy
-afterwards. MDS being unavailable later does not stop a registration.
+{% hint style="warning" %}
+**Registries depend on MDS at runtime for data entry.** A registry keeps no copy of
+the code lists or the hierarchy: its dropdowns read them from MDS each time a form
+is filled. While MDS is unavailable those dropdowns are empty, so new records
+cannot be completed. Records already stored are unaffected — they hold the codes.
 {% endhint %}
 
 See the [API Reference](api-reference.md) for the endpoints themselves.

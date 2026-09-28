@@ -100,8 +100,11 @@ It is the *people* that are country-agnostic, not the *geography*. Every generat
 record must point at a real administrative unit or maps and drill-downs break, so
 the generator reads the hierarchy from the MDS database
 (`g2p_geo_levels` / `g2p_geo_level_values`) and **refuses to run against an empty
-MDS**. It also reconciles the values it writes against the registry's code lists,
-so it never writes a value the deployment does not recognise.
+MDS**. It also reconciles the values it writes against any code lists it finds in
+the registry database, dropping values the deployment does not recognise. Under the
+platform's live Master Data model the registry database holds no code lists, so
+there this check finds nothing to compare against — the generator's constants must
+match the country pack's codes on their own.
 
 What this buys is that **one generator serves every country** — the same NSR build
 generates for Ethiopia or Kamuntu unchanged. It does not mean MDS is optional.
@@ -209,7 +212,7 @@ strict sequence — and **a failure at any step blocks everything after it**.
 flowchart TD
     A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
 
-    B["<b>10 · db-seed</b><br/>meta-data · code lists · geo widgets<br/><b>sample data</b> · images · templates"] --> C
+    B["<b>10 · db-seed</b><br/>meta-data · geo widgets<br/><b>sample data</b> · images · templates"] --> C
 
     subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
         direction TB
@@ -242,7 +245,7 @@ they belong to other releases — see [Cross-release dependencies](#cross-releas
 | Weight | Job | What it does | Runs when |
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
-| 10 | `nsr-db-seed` | Meta-data SQL, code lists from Master Data, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
+| 10 | `nsr-db-seed` | Meta-data SQL, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
 | 11 | `nsr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
 | 12 | `nsr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
 | 13 | `nsr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
@@ -304,7 +307,7 @@ So NSR's seed content is:
 
 | Content | Source in this repo |
 |---|---|
-| `meta_data/` SQL — register definitions, schemas, UI tabs/sections, **code-list fixtures**, score definitions, registry configuration, inbound message rules | `nsr-extension/.../meta_data` |
+| `meta_data/` SQL — register definitions, schemas, UI tabs/sections, score definitions, registry configuration, inbound message rules. No code lists: the dropdowns read them live from Master Data | `nsr-extension/.../meta_data` |
 | `awe_meta_data/` SQL — approval policy, stages, approver rules, callback-secret template | `nsr-extension/.../awe_meta_data` |
 | `templates/` — the DCI Jinja templates | `nsr-extension/.../templates` |
 | `seed-data/*.json` — the NSR domain overlay listed above | `docker/db-seed/seed-data` |
@@ -320,7 +323,6 @@ views they must move in step with, rather than in a shared repository.
 registry:
   dbSeed:
     loadGeoData: false     # legacy loader — must stay off
-    loadAttributes: true   # take the country's code lists from Master Data
     syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: true
     loadImages: true
