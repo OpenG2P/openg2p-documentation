@@ -217,6 +217,7 @@
         * [Test Scenarios](products/registry/registry/performance-benchmarks/staff-api/test-scenarios.md)
         * [Raw Report](products/registry/registry/performance-benchmarks/staff-api/raw-report.md)
         * [Final Report](products/registry/registry/performance-benchmarks/staff-api/final-report.md)
+        * [Final Report Summary](products/registry/registry/performance-benchmarks/staff-api/final-report-summary.md)
       * [Partner API](products/registry/registry/performance-benchmarks/partner-api/test-scenarios.md)
       * [Celery](products/registry/registry/performance-benchmarks/celery/test-scenarios.md)
   * [Farmer Registry](products/registry/farmer-registry/README.md)

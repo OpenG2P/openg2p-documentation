@@ -25,3 +25,11 @@ The interpretation layer: capacity/sizing model, bottleneck findings, and pass/f
 {% content-ref url="final-report.md" %}
 [final-report.md](final-report.md)
 {% endcontent-ref %}
+
+## Final Report Summary
+
+A condensed version of the final report: methodology, data seeding, and headline results.
+
+{% content-ref url="final-report-summary.md" %}
+[final-report-summary.md](final-report-summary.md)
+{% endcontent-ref %}
