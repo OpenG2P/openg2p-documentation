@@ -78,7 +78,7 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `validity_exceeds_policy` | Requested validity longer than `max_validity_duration` |
 | `expired` | Consent outside its validity window |
 | `revoked` | Consent has been revoked |
-| `replay` | Stale `issued_at` (a repeat `jti` for the same `data_controller` returns the stored decision instead) |
+| `replay` | Stale `issued_at`, or a known `jti` reused for a different consent (a repeat of the same signed consent for the same `data_controller` returns the stored decision instead) |
 
 ## Implementation
 

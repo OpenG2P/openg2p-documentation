@@ -178,7 +178,7 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 | `scope_exceeds_policy` | You requested a field outside the policy ceiling — narrow it or ask to widen the policy.               |
 | `expired`              | `validity` window passed — issue a fresh consent.                                                      |
 | `revoked`              | The subject revoked this consent — stop; you may need fresh consent.                                   |
-| `replay`               | `issued_at` outside the freshness window — sync clocks, issue fresh. (Re-sending a `jti` to the same registry returns its earlier decision.) |
+| `replay`               | `issued_at` outside the freshness window — sync clocks, issue fresh; or a `jti` you already used for a different consent — use a new `jti` per consent. (Re-sending the same signed consent to the same registry returns its earlier decision.) |
 | `malformed_object`     | The object failed schema validation — check required fields; use `grants` **or** `data_controller` + `data_scopes`, not both, and list each registry once. |
 
 ***
