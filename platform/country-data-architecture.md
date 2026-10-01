@@ -37,20 +37,26 @@ platform needs. It holds four kinds of thing:
 * **A small set of sample people** — a few dozen individuals and households that
   belong to this country, used for demos and smoke tests.
 
-Only the first two are required. A pack carrying nothing but geography is
-perfectly valid.
+Only the first two are required. A pack carrying nothing but geography is valid
+for Master Data — but a **registry** on it has no code lists: registries read their
+dropdowns' options from MDS, and MDS has no source for them other than the pack.
 
 Two packs ship today:
 
-| Pack | Country | Real? | Licence | Levels | Units |
-|---|---|---|---|---|---|
-| `XKM` | Kamuntu | **No — fictitious** | CC0-1.0 | country → region → district → ward → village | 884 |
-| `ETH` | Ethiopia | Yes | CC BY-IGO (**attribution required**) | country → region → zone → woreda | 1,271 |
+| Pack | Country | Real? | Licence | Levels | Units | Code lists | Samples |
+|---|---|---|---|---|---|---|---|
+| `XKM` | Kamuntu | **No — fictitious** | CC0-1.0 | country → region → district → ward → village | 884 | **none** | none |
+| `ETH` | Ethiopia | Yes | CC BY-IGO (**attribution required**) | country → region → zone → woreda | 1,271 | 34 core + `agriculture` domain | yes |
 
 {% hint style="warning" %}
 `XKM` is the **default**, deliberately. A fresh install gets a country that does
 not exist, so invented poverty and enrolment figures are never attached to a real
 place's name. Real countries are opt-in, chosen per environment.
+
+But `XKM` is **geography only**. A registry installed against it has empty coded
+dropdowns — gender, education, disability and the rest — and no pack-coherent
+sample people. For a registry you can actually fill in, use a pack that carries
+code lists (today, `ETH`).
 {% endhint %}
 
 ## Where packs live
@@ -216,9 +222,11 @@ flowchart TB
 
 Two things in that picture are easy to get wrong:
 
-**Registries read MDS at install, not at runtime.** A registry copies what it
-needs into its own tables and thereafter validates and serves from its own copy.
-MDS is an install-time dependency, never a per-write one.
+**Registries read geography and code lists from MDS live.** A registry keeps no
+copy of either: the staff portal asks MDS for a dropdown's options each time a form
+is filled, and so does the coded-value check when it is switched on. MDS is
+therefore a **runtime dependency for data entry** — while it is down, coded and
+geo dropdowns are empty. Only the sample people are read once, at install.
 
 **Map shapes reach a map from MinIO, at build time.**
 
@@ -242,37 +250,36 @@ detectable, and it is still worth checking after any pack change.
 ### Install sequence
 
 1. MDS is seeded from the pack — geography, code lists, sample people.
-2. The registry's db-seed waits for MDS geography to exist, then copies the code
-   lists into its own tables and loads the sample records.
-3. The registry validates locally against its copy.
-4. The registry generates bulk data, reading the hierarchy and code lists from
-   MDS.
+2. The registry's db-seed waits for MDS geography to exist, then loads the sample
+   records. It copies no code lists: from here on its dropdowns read them from MDS.
+3. When the coded-value check is on, the registry validates writes against MDS.
+4. The registry generates bulk data, reading the hierarchy from MDS.
 
-## Code lists: available, optional to consume
+## Code lists: the registry reads them from MDS
 
-A pack may declare the country's code lists — gender, education status, water
-source and so on — and MDS will hold them. **Whether a registry uses them is a
-separate decision**, and the default is no.
-
-Three independent switches, each defaulting off on the consuming side:
+A pack declares the country's code lists — gender, education status, water source
+and so on — and MDS holds them. **Registries consume them directly**: a coded
+field's dropdown names its list by `attribute_id`, and the staff portal reads the
+options from MDS live. Registry extensions ship no code-list SQL and the registry
+database has no code-list table, so there is no registry-side switch to turn this
+on — the lists must simply be in MDS.
 
 | Switch | Where | Default | Effect |
 |---|---|---|---|
-| `geoSeed.load.codelists` | `openg2p-master-data` chart | `true` | MDS loads the pack's lists |
-| `dbSeed.loadAttributes` | registry chart | `false` | Registry copies MDS's lists into its own tables |
-| `registry_core_validate_attribute_values` | registry API config | `false` | Registry rejects writes whose values are not in its copy |
+| `geoSeed.load.codelists` | `openg2p-master-data` chart | `true` | MDS loads the pack's core lists |
+| `geoSeed.domains` | `openg2p-master-data` chart | `[]` | MDS also loads these domain lists |
+| `registry_core_validate_attribute_values` | registry API config | `false` | Registry rejects writes whose coded values are not in MDS |
 
-The staging is deliberate. An existing deployment that upgrades keeps getting its
-lists from its own extension exactly as before — nothing changes underneath it.
-Turning on `loadAttributes` replaces those with the country's; turning on
-validation then makes that copy authoritative for what may be written.
+`geoSeed.domains` selects extra subject-specific lists from the pack's `domains/`
+directory on top of the core ones — `["agriculture"]` for a Farmer Registry, empty
+for a social registry that has no use for crop types. A domain must exist in the
+pack: naming one the pack does not carry **fails the MDS seed Job**. (ETH carries
+`agriculture`; `XKM` carries no code lists at all.)
 
-If `loadAttributes` is on but MDS holds no lists, the step says so and moves on
-rather than failing the install.
-
-`dbSeed.attributeDomains` selects extra subject-specific lists on top of the core
-ones — `["agriculture"]` for a Farmer Registry, empty for a social registry that
-has no use for crop types.
+Because the codes a registry stores are MDS's, everything else that writes them —
+its sample and bulk loaders, inbound DCI templates, the enums in its schemas — must
+use the pack's codes too. See
+[Contracts that fail silently §9](../products/registry/registry/developer-zone/building-a-registry/contracts-that-fail-silently.md#id-9.-code-lists-and-enums-must-agree).
 
 ### Semantic roles
 
@@ -281,11 +288,17 @@ head of the household?", "is this an improved water source?". With country-defin
 lists, hardcoding a literal like `'SELF'` breaks silently the moment a country
 words it differently.
 
-So a code-list value may carry **roles**, and platform logic asks for the role
-rather than the literal. `packs/roles.json` is the closed vocabulary and the only
-source of it: each role names the attribute expected to carry it and whether one
-value holds it (`head_of_household`) or many may (`improved_water` — which sources
-count as improved is a national definition).
+So a pack's code-list values may carry **roles**, declared against
+`packs/roles.json` — the closed vocabulary, where each role names the attribute
+expected to carry it and whether one value holds it (`head_of_household`) or many
+may (`improved_water` — which sources count as improved is a national definition).
+
+{% hint style="warning" %}
+**Declared, not yet consumed.** Master Data does not currently load roles — its
+code-list tables have no roles column — so no platform logic can ask for one yet.
+Keep them in packs (they are validated and cost nothing), but do not build on them:
+until MDS carries them, logic must still test the literal value.
+{% endhint %}
 
 ## Bulk data is generated by the registry
 
@@ -385,11 +398,13 @@ In the registry chart (NSR, Farmer Registry, …):
 registry:
   dbSeed:
     loadGeoData: false     # legacy loader — must stay off
-    loadAttributes: true   # copy the country's code lists
-    attributeDomains: []   # e.g. ["agriculture"] for a Farmer Registry
     syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: true   # load the pack's sample people
 ```
+
+There is no code-list switch on the registry side: code lists are read from MDS
+live, so what a registry offers is decided in step 4 (`geoSeed.load.codelists` and
+`geoSeed.domains`).
 
 {% hint style="danger" %}
 `loadGeoData` is a **legacy** loader that writes a second, differently-keyed
@@ -406,7 +421,7 @@ Syncing rewrites them from the hierarchy MDS actually holds.
 ### 6. Verify
 
 * MDS holds the expected number of units for the pack.
-* The registry's own tables carry the country's code-list values.
+* The coded dropdowns in the staff portal list the country's values (including any domain lists, e.g. crops for a Farmer Registry).
 * The geo dropdowns in the staff portal populate at every level.
 * A map renders and drills down.
 

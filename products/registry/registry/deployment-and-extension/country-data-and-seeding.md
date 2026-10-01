@@ -26,11 +26,11 @@ live, what P-codes are and how a country is configured end to end, see
 A registry never names a country. It reads whatever the MDS beside it was seeded
 with, and adapts:
 
-| What the registry takes | From | Effect |
-|---|---|---|
-| The geo hierarchy | `g2p_geo_levels`, `g2p_geo_level_values` | Address dropdowns match the country's levels, however many there are |
-| The code lists | `g2p_attributes`, `g2p_attribute_values` | Gender, education, water source… become the country's own |
-| The sample people | `g2p_sample_individuals`, `g2p_sample_households` | Demo records that belong to the country |
+| What the registry takes | From (MDS tables) | When | Effect |
+|---|---|---|---|
+| The geo hierarchy | `g2p_geo_levels`, `g2p_geo_level_values` | **Live**, as a form is filled | Address dropdowns match the country's levels, however many there are |
+| The code lists | `g2p_attributes`, `g2p_attribute_values` | **Live**, as a form is filled | Gender, education, water source… are the country's own |
+| The sample people | `g2p_sample_individuals`, `g2p_sample_households` | At install, by the sample loader | Demo records that belong to the country |
 
 This is what lets **one registry image serve any country**. Changing country is a
 matter of pointing the registry at an MDS seeded with a different pack — there is
@@ -46,9 +46,11 @@ country than this deployment was set up for. Left empty (the default), no check 
 made. Nothing in the registry chooses the country — only MDS does.
 {% endhint %}
 
-Because MDS is read at **install time** and copied into the registry's own tables,
-MDS is not a runtime dependency: it being unavailable later does not stop a
-registration.
+Geography and code lists are **not copied** into the registry: the staff portal
+reads them from MDS each time a form needs them, and so does the coded-value check
+when it is switched on (see [Code lists](#code-lists)). MDS is therefore a
+**runtime dependency for data entry** — while it is unavailable, coded dropdowns
+have no options. Records already stored are unaffected; they hold the codes.
 
 ## Three different kinds of data
 
@@ -78,7 +80,6 @@ generator and no country content.
 | In the platform image | What it is |
 |---|---|
 | `entrypoint.sh` | Runs the ordered steps, entirely from environment variables |
-| `load_attributes_from_mds.py` | Copies the country's code lists from MDS |
 | `sync_geo_widgets.py` | Rewrites geo dropdowns to match the country's levels |
 | `load_geo_data.py` | **Legacy** slug-path geo loader — see the warning below |
 | `upload_templates.py` | Jinja templates → MinIO |
@@ -102,7 +103,7 @@ in the individual registry:
 | | Registry Platform | NSR / Farmer Registry |
 |---|---|---|
 | Seeding machinery, hook order, switches | **yes** | inherited |
-| Code-list SQL fixtures | reference registry's own | **its own** |
+| Code lists | **none** — read live from Master Data | **none** — read live from Master Data |
 | Sample-data loader | **none** | **its own** |
 | Sample content (the domain overlay) | **none** | **its own** |
 | Bulk data generator | **none** | **its own** |
@@ -118,55 +119,58 @@ tables and its dashboards read its own views.
 
 ### Where they are defined
 
-Every registry extension ships its code lists as SQL fixtures, applied on every
-install:
+In the **country pack**, and nowhere else. A pack in
+[openg2p-data](https://github.com/openg2p/openg2p-data) carries its lists as JSON —
+the core lists under `packs/<country>/codelists/`, and lists that only some
+registries need under `packs/<country>/domains/<domain>/` (for example
+`domains/agriculture/` for a Farmer Registry). MDS's own seed Job loads them into
+its `g2p_attributes` and `g2p_attribute_values` when it installs.
 
+A registry extension ships **no** code-list SQL, and the registry keeps no copy of
+the lists: there is no code-list table in the registry database.
+
+### How a registry uses them
+
+A coded field names its list in the section UI metadata. Its dropdown asks MDS for
+the options each time the form is opened:
+
+```json
+"widget-data-source": {
+  "type": "api", "method": "POST",
+  "service": "attributes", "endpoint": "values",
+  "params": { "attribute_id": "GENDER" },
+  "labelKey": "value_display", "valueKey": "value_id"
+}
 ```
-<extension>/meta_data/lookup-data/g2p_attributes.sql
-<extension>/meta_data/lookup-data/g2p_attribute_values.sql
-```
 
-These are the registry's own defaults — programme names, livelihood categories,
-and so on. With no MDS involvement, these are what the registry validates against,
-and they are the same for every deployment of that registry.
-
-### How Master Data overrides them
-
-With `dbSeed.loadAttributes` on, `load_attributes_from_mds.py` copies the country's
-lists from MDS after the fixtures have been applied. The copy is a **per-list
-replacement**, not a merge:
-
-* For each code list MDS defines, the registry's existing values for that list are
-  **deleted** and MDS's values inserted in their place.
-* A list MDS does **not** define is left exactly as the extension shipped it.
+The stored value is the list's `value_id` — the code, such as `FEMALE`. So
+everything else that writes that field — the sample and bulk loaders, inbound DCI
+templates, enums in the extension's schemas — must use **the pack's codes**.
 
 {% hint style="warning" %}
-Replacement is deliberate. Merging looks conservative and is worse: a country that
-deliberately omits a value would silently keep the extension's version of it, and
-the registry would accept a value the country does not recognise.
+**Domain lists load only when asked for.** A list under `domains/<domain>/` reaches
+MDS only if that domain is named in the Master Data chart's `geoSeed.domains`
+(`masterData.geoSeed.domains` under commons-services). A Farmer Registry needs
+`[agriculture]`; without it a field such as `SOURCE_OF_INCOME` shows an **empty
+dropdown**, with no error anywhere. A social registry can leave it empty.
 {% endhint %}
 
-Values may also carry **roles** — semantic tags like `head_of_household` — so
-platform logic can ask for meaning rather than hardcoding a literal value that
-differs by country. The rationale is in
-[Country Data Architecture](../../../../platform/country-data-architecture.md).
+### Enforcing them on writes
 
-### How to use none of it
+Off by default. With `registry_core_validate_attribute_values` on, change requests
+and intake-form submissions are rejected when a coded field holds a value that is
+not in its MDS list. The fields checked are exactly those whose widget declares an
+`attribute_id`, so the check follows the UI metadata with no separate mapping.
 
-Leave `dbSeed.loadAttributes` off, which is the platform default. The registry then
-uses only its extension's own fixtures and never reads MDS attributes. Nothing
-breaks: an existing deployment that upgrades keeps the lists it has always had.
-
-If `loadAttributes` is on but MDS holds no lists, the step logs that and moves on
-rather than failing the install.
-
-A third switch decides whether the copy is *enforced* on writes:
+Turn it on only once the data is clean: a record whose stored code is not in the
+pack — for example one written by an older loader — can no longer be saved until
+that field is corrected.
 
 | Switch | Where | Default | Effect |
 |---|---|---|---|
-| `geoSeed.load.codelists` | `openg2p-master-data` chart | `true` | MDS loads the pack's lists |
-| `dbSeed.loadAttributes` | registry chart | `false` | Registry copies them into its own tables |
-| `registry_core_validate_attribute_values` | registry API config | `false` | Registry rejects writes with values not in its copy |
+| `geoSeed.load.codelists` | `openg2p-master-data` chart | `true` | MDS loads the pack's core lists |
+| `geoSeed.domains` | `openg2p-master-data` chart | `[]` | MDS also loads these domain lists |
+| `registry_core_validate_attribute_values` | registry API config | `false` | Registry rejects writes whose coded values are not in MDS |
 
 ## The seeding switches
 
@@ -176,8 +180,6 @@ platform chart itself).
 | Switch | Platform default | What it does |
 |---|---|---|
 | `enabled` | `true` | Run the db-seed Job at all. Meta-data SQL is applied unconditionally when on |
-| `loadAttributes` | `false` | Copy the country's code lists from MDS |
-| `attributeDomains` | `[]` | Extra domain lists, e.g. `["agriculture"]` for a Farmer Registry |
 | `syncGeoWidgets` | `false` | Match the geo dropdowns to the country's levels |
 | `loadSampleData` | `false` | Load the demo people |
 | `loadImages` | `false` | Sample profile photos — requires `loadSampleData` |
@@ -225,8 +227,6 @@ So in the Rancher form these appear under the **DB Seed** group:
 |---|---|
 | Enable DB Seed | `registry.dbSeed.enabled` |
 | Load Sample Data | `registry.dbSeed.loadSampleData` |
-| Load Code Lists from Master Data | `registry.dbSeed.loadAttributes` |
-| Domain Code Lists | `registry.dbSeed.attributeDomains` |
 | Match Geo Dropdowns to Country | `registry.dbSeed.syncGeoWidgets` |
 | Load Sample Images | `registry.dbSeed.loadImages` |
 | Load Templates to MinIO | `registry.dbSeed.loadTemplates` |
@@ -255,7 +255,6 @@ registry:
     loadImages: false
     loadGeoData: false
     loadTemplates: true    # keep — see below
-    loadAttributes: true   # keep if this deployment uses the country's code lists
     syncGeoWidgets: true   # keep — dropdowns must match the country
   sanity:
     enabled: true          # smoke only; creates nothing
@@ -270,6 +269,10 @@ analytics:
 **Do not turn off `dbSeed.enabled` or `loadTemplates`.** The meta-data SQL defines
 the register itself — without it there is no registry. Without the Jinja templates
 in MinIO every record fails to render and a DCI search returns an empty result.
+
+The same goes for **code lists on the Master Data side**: they are configuration,
+not demo data. Keep `geoSeed.load.codelists: true` (and any `geoSeed.domains` your
+registries need) in production — only `geoSeed.load.samples` is demo data.
 {% endhint %}
 
 `sanity.enabled: true` is safe in production: with `runE2e: false` the suite is
@@ -283,9 +286,8 @@ Seeding puts data *in*; reporting is how it comes back out, and the platform shi
 the machinery for that too.
 
 `generate_reporting_views.py` lives in this platform's **db-seed image**, beside
-`load_attributes_from_mds.py` and `load_sample_data.py`, and follows the same
-principle: the platform supplies the mechanism, the registry supplies what is
-specific to it.
+the other seeding machinery, and follows the same principle: the platform supplies
+the mechanism, the registry supplies what is specific to it.
 
 At install it reads the registry's own schema and Master Data's country pack, and
 creates a view per entity — geography inherited from the parent, workflow columns
@@ -313,16 +315,16 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 
 | # | Step | Controlled by |
 |---|---|---|
-| 1 | **meta-data SQL** → registry DB — register definitions, UI metadata, code-list fixtures | *always, when `enabled`* |
-| 2 | **code lists** from MDS → registry tables | `loadAttributes` |
-| 3 | **geo widgets** rewritten from the MDS hierarchy | `syncGeoWidgets` |
-| 4 | **sample data** → `g2p_register_*` | `loadSampleData` |
-| 5 | **images** → MinIO | `loadImages` |
-| 6 | **templates** → MinIO | `loadTemplates` |
-| 7 | **AWE seed** → AWE DB | `aweDbSeed` |
+| 1 | **meta-data SQL** → registry DB — register definitions, UI metadata | *always, when `enabled`* |
+| 2 | **geo widgets** rewritten from the MDS hierarchy | `syncGeoWidgets` |
+| 3 | **sample data** → `g2p_register_*` | `loadSampleData` |
+| 4 | **images** → MinIO | `loadImages` |
+| 5 | **templates** → MinIO | `loadTemplates` |
+| 6 | **AWE seed** → AWE DB | `aweDbSeed` |
 
-Code lists load **before** sample data on purpose, so seeded records reference
-values that exist.
+Code lists are not a step here: the registry does not load them. MDS's own seed Job
+loads them from the pack, so — like the geography — they must be in MDS **before**
+the registry is installed, or seeded records carry codes no dropdown can show.
 
 Bulk generation and the sanity suite are separate Jobs at later hook weights, so a
 failure in one does not silently skip the others — but note that Helm stops at a

@@ -16,7 +16,7 @@ The seed data is split into two categories:
 
 | Category | Folder | Required | Description |
 | --- | --- | --- | --- |
-| **Configuration** | `configurations/` | Yes | Register definitions, UI layouts, lookup data, VC configs, message templates. These are essential for the registry to function. |
+| **Configuration** | `configurations/` | Yes | Register definitions, UI layouts, VC configs, message templates. These are essential for the registry to function. |
 | **Sample data** | `sample_data/` | No | Demo registrants, households, land records, etc. Useful for testing and training but should typically be skipped in production. |
 
 {% hint style="warning" %}
@@ -33,7 +33,6 @@ farmer-registry/                      ← the registry's own repo
     └── src/openg2p_registry_farmer_extension/
 │       ├── configurations/          ← mandatory meta data
 │       │   ├── data-models/
-│       │   ├── lookup-data/
 │       │   ├── register-metadata/
 │       │   ├── registry-configurations/
 │       │   ├── registry-inbound-message-rules/
@@ -47,7 +46,7 @@ farmer-registry/                      ← the registry's own repo
 │       └── sample_data/
 ```
 
-Each variant defines its own set of registers, attributes, UI sections, and sample records. When adding a new variant, create a new extension folder following the same structure.
+Each variant defines its own set of registers, UI sections, and sample records. Code lists are not among them: registries read them live from Master Data, which loads them from the country pack — see [Country data & seeding](../deployment-and-extension/country-data-and-seeding.md#code-lists). When adding a new variant, create a new extension folder following the same structure.
 
 ## Docker image
 

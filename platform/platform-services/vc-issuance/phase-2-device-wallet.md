@@ -50,6 +50,19 @@ That wallet flow needs an OAuth2/OIDC **authorization server** and introduces th
 considerations (token type, `c_nonce`, the AS choice) that Phase 1 deliberately avoids. Those are
 taken up when Phase 2 is scheduled.
 
+## Not this: the agent-assisted handover
+
+A credential can already be delivered into a citizen's wallet **at the counter**,
+by handing them an OpenID4VCI credential offer — see
+[Wallet Handover (Phase 1.5)](wallet-handover.md). That reuses Phase 1 entirely:
+same agent, same authentication, same **push**, same single Certify.
+
+It is worth being clear that this is **not** Phase 2 and does not remove the need
+for it. It gives a smartphone owner holder binding and digital presentation, but
+the citizen still travels to an agent. Phase 2's defining property is
+**self-service** — the citizen downloads unaided — and that is what requires the
+pull connector and a second Certify configured against eSignet.
+
 ## Not in scope (separate tracks)
 * **Hosted/custodial wallet (Option B, Inji Web + Mimoto)** — considered but **not chosen**; see
   [Custody Options & Strategy](custody-options-and-strategy.md). Adopt only as a deliberate

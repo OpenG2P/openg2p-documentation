@@ -17,6 +17,8 @@ layout:
     visible: true
   actions:
     visible: true
+  anchors:
+    visible: true
 ---
 
 # Platform Architecture
@@ -25,6 +27,6 @@ layout:
 
 <figure><img src="../../.gitbook/assets/OpenG2P Architecture - Simplified.jpg" alt=""><figcaption></figcaption></figure>
 
-### OpenG2P Platform Architecture - Components&#x20;
+### OpenG2P Platform Architecture - Components
 
-<figure><img src="../../.gitbook/assets/OpenG2P Tech Architecture.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Tech Arch - Platform with Supporting Services.jpg" alt=""><figcaption><p>OpenG2P Platform Architecture - Components</p></figcaption></figure>

@@ -195,18 +195,27 @@ address. A `json.loads` over both raises and takes the whole load down.
 
 ## 9. Code lists and enums must agree
 
-A dropdown's options come from `g2p_attribute_values`; the column behind it is
-constrained by a Python enum in `models/enums.py`.
+A coded field's dropdown reads its options **live from Master Data** — the list
+named by its `attribute_id`, which MDS loaded from the country pack. The registry
+keeps no copy and your extension ships no code-list SQL. But the codes still have
+to agree with several things you *do* own:
 
 | Divergence | Symptom |
 |---|---|
-| value in the code list, not in the enum | the field **refuses to save** |
-| value in the enum, not in the code list | the field is **unreachable from the UI** |
+| the `attribute_id` is not in MDS (not in the pack, or a domain list whose domain is not in `geoSeed.domains`) | an **empty dropdown**; the field cannot be filled |
+| a code in MDS, not in the schema's enum (`models/enums.py`) | the field **refuses to save** |
+| a code in the enum, not in MDS | the value is **unreachable from the UI** |
+| a code your sample/bulk loader, inbound DCI template or fixture writes, not in MDS | the dropdown shows nothing for that record; with `registry_core_validate_attribute_values` on, the section **cannot be saved** until the field is re-picked |
 
-Neither logs anything.
+None of these logs anything. The last one is the easiest to miss, because the data
+loads fine — it only shows the first time someone edits the record.
 
-**Fix:** rather than maintaining both, **generate the code list from the enum**
-and fail CI when the checked-in SQL is stale.
+**Fix:** treat the **country pack as the source of codes**. Keep your enums, loader
+constants and templates on the pack's codes, and check them in CI against the pack
+in [openg2p-data](https://github.com/openg2p/openg2p-data)
+(`packs/<country>/codelists/`, and `packs/<country>/domains/<domain>/` for domain
+lists). Watch for near-misses that read as equal — a pack's `OTHER` is not
+`OTHERS`, and a pack may prefix its codes (`SOI_CROP_PRODUCTION`).
 
 The same argument applies to **translations**: every `widget-label` and
 `section-title` in your section JSON is a translation key, and a key with no
@@ -259,7 +268,8 @@ Two habits that make this class of problem self-limiting:
 ## The check suite
 
 None of these need a cluster, a database or credentials — they read the
-repository, and they run in well under a second. Add them as
+repository (and, for the §9 code checks, a checkout of the country pack in
+openg2p-data), and they run in well under a second. Add them as
 `test/test_metadata_consistency.py` alongside the inherited pin guard, and wire
 them into CI on every push:
 
@@ -267,8 +277,8 @@ them into CI on every push:
 |---|---|
 | every `widget-data-path` names a real column | §1 |
 | every table `column-key` names a real column | §1 |
-| every dropdown `attribute_id` has a code list | §9 |
-| generated code lists match the enums | §9 |
+| every dropdown `attribute_id` exists in the country pack | §9 |
+| enum values and loader/template codes exist in the pack | §9 |
 | generated translations cover every UI key | §9 |
 | every section is reachable from a tab | invisible sections |
 | tab-sections reference existing tabs and sections | dangling references |

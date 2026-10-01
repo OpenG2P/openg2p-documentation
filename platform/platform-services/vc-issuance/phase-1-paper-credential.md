@@ -69,6 +69,17 @@ The lowest-common-denominator path: a citizen who owns **no device** receives a 
 * **The agent downloads the PDF.** It is streamed to the agent's browser, printed on whatever printer the counter has, and handed over.
 * **Re-issue on demand.** A lost or stale credential is simply **re-issued** — a fresh authentication, a new credential, linked to the previous one in the issuance log.
 
+## Delivering to a wallet instead of paper
+
+Everything above ends in a printed card. A citizen with a smartphone can instead
+be handed the credential **into their own wallet**, at the same counter, after the
+same authentication — the chain is identical up to the final step, where the agent
+shows an OpenID4VCI credential offer rather than printing.
+
+It is an optional second channel (`agentPortalApi.walletIssuance.enabled`), off by
+default, and it can run alongside paper rather than instead of it. See
+[Wallet Handover (Phase 1.5)](wallet-handover.md).
+
 ## Presentation & verification
 
 ```
@@ -233,6 +244,36 @@ agentPortalApi:
 It is authored as readable JSON (`vcTemplateJson`) and **base64-encoded by the `credential-config-register` Job**, which POSTs each definition to Certify on install and upgrade. Certify can only issue a credential type it already knows, so a type that was never registered fails at the first issuance on an unknown `credential_configuration_id`.
 
 Certify is what substitutes the `${...}` variables, using the claims the Agent Portal API pushed.
+
+### Which VC data model
+
+OpenG2P issues **VC Data Model 1.1**, not 2.0. Two things in the template say so,
+and they must agree:
+
+| | 1.1 (what we issue) | 2.0 |
+|---|---|---|
+| `@context` | `https://www.w3.org/2018/credentials/v1` | `https://www.w3.org/ns/credentials/v2` |
+| Valid-from property | `issuanceDate` | `validFrom` |
+| Valid-until property | `expirationDate` | `validUntil` |
+
+```json
+"@context": ["https://www.w3.org/2018/credentials/v1", ...],
+"issuanceDate":   "${validFrom}",
+"expirationDate": "${validUntil}"
+```
+
+The `${validFrom}` / `${validUntil}` **variables** are 2.0 vocabulary — that is
+what Certify names them — but the template maps them onto the 1.1 **property**
+names. So the variable names say nothing about which model is issued; only the
+context and the property names do. Do not "tidy" one without the other: a 1.1
+context with `validFrom` is neither model, and a verifier is entitled to reject
+it.
+
+**Moving to 2.0** is a template change, not a code change: swap the context URL
+and rename the two date properties in `vcTemplateJson`, then re-run the register
+Job so Certify picks up the new template. Check first that the verifiers you care
+about accept 2.0 — the claim-169 QR is unaffected either way, since it is a
+CWT and carries none of this.
 
 ## Where the PDF is made
 

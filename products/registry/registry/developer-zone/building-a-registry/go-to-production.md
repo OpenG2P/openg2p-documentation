@@ -37,19 +37,22 @@ Rules: [Helm & Docker versioning and CI](https://docs.openg2p.org/operations/dep
 ## 2. Load the real country pack
 
 Same mechanism as the sandbox, different content — the real administrative
-hierarchy, and **no sample people**:
+hierarchy and code lists, and **no sample people**:
 
 ```yaml
 geoSeed:
+  countryPack: <real pack>
   load:
-    hierarchy: true      # the real hierarchy
+    geo: true            # the real hierarchy
+    codelists: true      # KEEP: configuration, not demo data — dropdowns read these
     samples: false       # no demo people in production
+  domains: []            # the domain lists your registries need, e.g. [agriculture]
 ```
 
 {% hint style="warning" %}
-Load the hierarchy **before** the registry. Records reference administrative
-units; if the hierarchy arrives later, existing records point at nothing and maps
-stay empty.
+Load the hierarchy and code lists **before** the registry. Records reference
+administrative units and codes; if either arrives later, existing records point at
+nothing — maps stay empty and coded fields show no value.
 {% endhint %}
 
 ## 3. Turn every demo switch off
@@ -78,7 +81,8 @@ analytics:
 Two switches are load-bearing and must stay **on**:
 
 * **`dbSeed.enabled`** — without the metadata SQL you have tables but no
-  registers, screens or code lists. It creates no registrant data.
+  registers or screens. It creates no registrant data. (Code lists are not part of
+  it — they come from Master Data; see step 2.)
 * **`loadTemplates`** — without the DCI templates in MinIO every record fails to
   render, and a DCI search returns an empty `200` rather than an error.
 {% endhint %}

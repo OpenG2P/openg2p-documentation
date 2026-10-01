@@ -85,8 +85,8 @@ save.
 
 The metadata **is** the registry. The Python package defines what *can* be
 stored; the seed SQL in `meta_data/` decides which registers exist, what their
-screens look like, which dropdowns have which options, and who must approve a
-change. A registry installed with migrations but no metadata has tables and no
+screens look like, which code list each dropdown draws on (the options themselves
+come from Master Data), and who must approve a change. A registry installed with migrations but no metadata has tables and no
 screens.
 
 That is what makes the platform metadata-driven: adding a field to an existing
