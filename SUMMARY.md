@@ -827,6 +827,7 @@
       * [RKE2 Kubernetes Cluster not Starting due to ETCD Quorum Loss](deployment/deployment-guide/troubleshooting-section/rke2-kubernetes-cluster-not-starting-due-to-etcd-quorum-loss.md)
       * [RKE2 Control Plane Flap: kube-system Restarts and Rancher UI 504](deployment/deployment-guide/troubleshooting-section/rke2-control-plane-flap-kube-system-restarts-and-rancher-ui.md)
       * [Performance Issues in Environments](deployment/deployment-guide/troubleshooting-section/performance-issues-in-environments.md)
+      * [RKE2 Restart Loop due to Slow Shared Disk (ATI Environment)](deployment/deployment-guide/troubleshooting-section/rke2-restart-loop-due-to-slow-shared-disk-ati.md)
     * [Restart Deployment or StatefulSets to Redistribute Pods across Nodes](deployment/deployment-guide/redistribute-pods-across-nodes-by-restarting-deployment-statefulsets.md)
     * [Rerun Jobs in Kubernetes Cluster](deployment/deployment-guide/rerun-jobs-in-kubernetes-cluster.md)
     * [Finding URLs in the System](deployment/deployment-guide/finding-urls-in-the-system.md)
