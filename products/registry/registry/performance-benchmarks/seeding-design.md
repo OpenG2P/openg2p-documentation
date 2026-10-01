@@ -1,7 +1,7 @@
 # Seeding Design
 
 Read-path latency (search, dedup, history) is **highly sensitive to table size**.
-The DB must be seeded to the target volume — and warmed — **before** the app-tier
+The DB is seeded to the target volume — and warmed — **before** the app-tier
 benchmark, not after. This document is the design rationale for the bulk
 generator at [`../seeding/`](../seeding/); for the install/run commands, see
 [`../seeding/README.md`](../seeding/README.md).
@@ -15,8 +15,8 @@ generator at [`../seeding/`](../seeding/); for the install/run commands, see
 | `stretch` | 50 M | Scaling/headroom characterisation. |
 | `stress` | 100 M | DB-ceiling and worst-case search/dedup behaviour. |
 
-`smoke` is a harness-validation tier only — don't report numbers measured
-against it. `primary` is the volume most cells in the matrix run at (see
+`smoke` is a harness-validation tier only; numbers measured against it aren't
+reported as capacity figures. `primary` is the volume most cells in the matrix run at (see
 [`test-scenarios.md`](staff-api/test-scenarios.md) §3); `stretch`/`stress` are mainly
 used by `db-sweep` (DB ceiling / data-volume sensitivity) and by
 volume-sensitivity comparisons across Steps 1–2.
@@ -32,9 +32,9 @@ meta-data. This is run by the chart's db-seed Job (`dbSeed.enabled=true`). It
 is a prerequisite for any bulk data load — the generator queries
 `g2p_register_definitions` / `g2p_register_ui_tab_sections` /
 `g2p_register_sections` at runtime (for history rows' `tab_id`/`section_id`,
-see "History rows" below) and fails loudly if they're missing. **Do not** use
-`dbSeed.loadSampleData=true` demo rows for scale testing — that's a handful of
-demo records, not a volume tier.
+see "History rows" below) and fails loudly if they're missing.
+`dbSeed.loadSampleData=true` demo rows aren't used for scale testing — that's
+a handful of demo records, not a volume tier.
 
 ## The generation DAG
 
@@ -58,53 +58,75 @@ household  (root; count derived from the farmer target)
 Each child's count is sampled independently per parent from a `(min, max)`
 range, not a fixed multiplier — e.g. each farmer gets `randint(1, 2)` lands, so
 the *average* across the dataset lands on ~1–2× without ever needing a
-fractional row count. The distribution is currently **uniform**; real data is
-more Zipfian (some households much larger than others) — revisit if a test
-specifically needs to stress the long tail.
+fractional row count. The distribution is **uniform**, not the more Zipfian
+shape of real data (some households much larger than others).
 
 `link_internal_record_id` (the generic parent-link column every `G2PRegister`
 table has) is how children point at their parent — e.g. a `Crop` row's
 `link_internal_record_id` is its `Land` row's `internal_record_id`, not a
 Farmer's.
 
-`poverty_score` is **not implemented** — there is currently no
-`G2PRegisterPovertyScore` model in `farmer-extension`. Add a
-`generators/poverty_score.py` + a `RATIOS`/`TABLE_NAMES` entry once it exists.
+Poverty score isn't a plain column on any generated model — it's
+metadata-driven: a generic `g2p_register_scores` table holds the latest
+computed score per `(link_internal_record_id, score_type)`, configured via
+`g2p_register_score_definitions` (which score types exist per register
+mnemonic) and `g2p_register_score_contributing_attributes` (which fields
+feed a given score type, with weights). Computation itself is asynchronous —
+a change-request approval enqueues a row on `g2p_score_compute_queue`, and a
+Celery worker resolves the score type to a domain-supplied class via
+`G2PScoreComputeFactory` (farmer-extension contributes
+`G2PScoreComputeServicePoverty` for `POVERTY`). None of this is seeded — the
+generator populates neither `g2p_register_scores` nor
+`g2p_score_compute_queue`, so bulk-seeded records carry no score rows at
+all. Exercising score-dependent reads at scale would need a generator step
+for these tables, not a `poverty_score` column on an existing model.
 
-## Why fields are generator-computed instead of ORM-computed
+## Why fields are generator-computed instead of business-logic-computed
 
-Production populates several fields via SQLAlchemy ORM machinery —
-`before_insert`/`before_update` event listeners, `@validates` hooks, and an
-async Celery pipeline. Bulk `COPY` bypasses the ORM entirely, so the generator
-computes each of these itself:
+In production these fields are computed by the app's business logic —
+domain-service classes (`G2PRegisterDomainService*`, `G2PGeoHierarchyService`)
+and, for `functional_record_id`, an async Celery worker calling an external
+id-allocation service. SQLAlchemy's `before_insert`/`before_update` events and
+`@validates` hooks are only the trigger, not the computation: each register
+model's `get_search_text_fields()`/`get_record_name_fields()`
+(`registry-platform/.../models/g2p_register.py`) immediately delegates to its
+own domain service's `construct_search_text()`/`construct_record_name()`
+(`G2PRegisterDomainService`, overridden per register — e.g.
+`G2PRegisterDomainServiceFarmer` in
+`farmer-extension/.../services/g2p_register_domain_service_farmer.py`). Bulk
+`COPY` bypasses both the ORM (so those events never fire) and the Celery
+pipeline, so the generator computes each of these itself:
 
-- **`search_text`** — normally built by `_populate_search_text()`
-  (`registry-platform/.../models/g2p_register.py`), which calls each table's
-  `construct_search_text()`. The generator replicates that field-list logic
-  per table (`generators/*.py: SEARCH_TEXT_FIELDS`) — **except Farmer**, where
-  the perf-testing dataset deliberately uses a *reduced* list
-  (`config.FARMER_SEARCH_TEXT_FIELDS`: `functional_record_id`, `first_name`,
-  `last_name`, `middle_name`, `foundational_id`, `birth_date`,
-  `address_line_1`, `address_line_2`) rather than production's full ~22-field
-  list. This only affects the seed dataset — the app's real
-  `construct_search_text()` for Farmer is untouched.
-- **`functional_record_id`** — normally allocated *asynchronously*: a Celery
-  worker calls an external HTTP id-allocation service and writes the result
-  back later (`functional_id_allocation_worker.py`). That pipeline doesn't
-  scale to a bulk load and isn't guaranteed reachable from a seeding job.
-  `id_scheme.py` synthesizes ids directly instead, using the same prefix
+- **`search_text`** — computed by each register's domain-service
+  `construct_search_text()`, invoked from `get_search_text_fields()` when
+  SQLAlchemy's `before_insert`/`before_update` fires. The generator
+  replicates that field-list logic per table (`generators/*.py:
+  SEARCH_TEXT_FIELDS`) — **except Farmer**, where the perf-testing dataset
+  deliberately uses a *reduced* list (`config.FARMER_SEARCH_TEXT_FIELDS`:
+  `functional_record_id`, `first_name`, `last_name`, `middle_name`,
+  `foundational_id`, `birth_date`, `address_line_1`, `address_line_2`) rather
+  than production's full ~22-field list. This only affects the seed dataset —
+  the app's real `construct_search_text()` for Farmer is untouched.
+- **`functional_record_id`** — allocated *asynchronously* in production: a
+  Celery worker calls an external HTTP id-allocation service and writes the
+  result back later (`functional_id_allocation_worker.py`). That pipeline
+  doesn't scale to a bulk load and isn't guaranteed reachable from a seeding
+  job. `id_scheme.py` synthesizes ids directly instead, using the same prefix
   scheme as production (`HH-` Household, `FR-` Farmer, `DEFAULT-` everything
   else — from `g2p_id_generator_service.py`) with a simple per-mnemonic
   counter standing in for the real allocator's sequence.
-- **`internal_record_id`** — production's default is a client-side Python
-  `uuid4()` (not a DB default), so the generator just does the same thing.
-- **`record_name`** — replicates each table's `construct_record_name()` field
-  list directly (these are short, e.g. Farmer is just `first_name last_name`).
+- **`internal_record_id`** — production's default is a plain client-side
+  Python `uuid4()` (not a DB default, no domain-service logic involved), so
+  the generator does the same thing.
+- **`record_name`** — replicates each register's domain-service
+  `construct_record_name()` field list directly (these are short, e.g. Farmer
+  is just `first_name last_name`).
 - **`geo_lowest_level_value_id` / `geo_code_hierarchy_json`** — in the app,
   setting `geo_lowest_level_value_id` triggers an ORM `@validates` hook that
-  calls out to master-data-db per write to populate the hierarchy JSON. The
-  generator leaves both **unset**. If a benchmark needs geo-hierarchy
-  filtering to be exercised, this is the gap to close first.
+  calls `G2PGeoHierarchyService`
+  (`registry-platform/.../services/g2p_geo_hierarchy_service.py`) to fetch
+  the hierarchy from master-data-db. The generator leaves both **unset** —
+  geo-hierarchy filtering isn't exercised as a result.
 - **History rows' `tab_id`/`section_id`** — real UI metadata, not invented.
   `generators/history.py` reads them back from `g2p_register_definitions` /
   `g2p_register_sections` / `g2p_register_ui_tab_sections`. Only Household and
@@ -164,7 +186,7 @@ matching nothing or all piling onto one hot term:
    and `intake_read_and_approve`'s anchor-filtered searches over live-created
    data return real results, not just the bulk-seeded rows.
 
-Record-id-level reads (`get_subject_record`, `get_record_history`, etc.) do
+Record-id-level reads (`get_subject_record`, `get_change_request`, etc.) do
 **not** need anchor-style treatment — `register_read`'s Locust flow already
 samples a random page from `search_in_a_register`'s real pagination and pulls
 a record id from whatever lands on that page, which spreads reads across the
@@ -179,12 +201,12 @@ full key space without needing a pre-generated id list.
   table's non-PK indexes (including the `pg_trgm` GIN index) are captured via
   `pg_indexes.indexdef` and dropped; after the full load, they're recreated
   from the captured definitions and every table gets `ANALYZE`. This avoids
-  paying per-row index-maintenance cost during the load. **Only run this
-  against a dedicated/disposable perf-testing database** — it modifies real
+  paying per-row index-maintenance cost during the load. This is only run
+  against a dedicated/disposable perf-testing database — it modifies real
   index state on the target tables, briefly leaving them unindexed for
   anything else querying the same DB during the load. For a `smoke`-tier
-  correctness check, turn it off — the perf benefit is negligible at 10K rows
-  and it avoids touching real index state before the generator's logic is
+  correctness check, it's turned off — the perf benefit is negligible at 10K
+  rows, and real index state stays untouched while the generator's logic is
   verified end to end.
 - Farmer/household counts aren't exact-to-the-row at the target tier: the
   household loop stops adding farmers once the tier target is hit mid-loop,
@@ -194,17 +216,70 @@ full key space without needing a pre-generated id list.
 
 ## Storage sizing
 
-100M farmer records + supporting tables + history + indexes can be **hundreds
-of GB**. The storage node ships **256 GB gp3** (see
-[`environment-topology.md`](environment-topology.md)). Confirm free space
-before the `stretch`/`stress` tiers; resize the data disk if needed (and
-remember gp3 IOPS is a separate ceiling).
+The storage node ships **256 GB gp3** by default (see
+[`environment-topology.md`](environment-topology.md)). Free space is
+confirmed before the `stretch`/`stress` tiers, with the data disk resized if
+needed — gp3 IOPS remains a separate ceiling regardless of disk size.
+
+### Measured sizes
+
+Row counts and table/index sizes from `psql`, captured per tier in
+[`../seeding/primary-volume/`](../seeding/primary-volume/) and
+[`../seeding/stretch-volume/`](../seeding/stretch-volume/)
+(`table_sizes.txt`, `index_sizes.txt`):
+
+| Volume-Tier | Farmer rows | Total rows (all tables) | Table size | Index size | Total DB size |
+|---|---:|---:|---:|---:|---:|
+| `primary` (10M target) | 10,150,268 | 203,079,145 | 79.6 GB | 59.1 GB | 139.3 GB |
+| `stretch` (50M target) | 50,000,264 | 1,000,170,349 | 393.9 GB | 318.8 GB | 715.1 GB |
+
+Farmer rows land slightly above each tier's round target (10M/50M) for the
+same reason noted above — the household loop overshoots its last draw, not
+a bug. Growth from `primary` to `stretch` (5× the farmer target) is ~5.13×
+in total DB size — close to linear, marginally super-linear.
+
+Largest tables, both tiers (register + history, `crop`/`land` fan out the
+most per farmer — see the generation DAG above):
+
+| Table | `primary` total size | `stretch` total size |
+|---|---:|---:|
+| `g2p_register_history_crops` | 19 GB | 96 GB |
+| `g2p_register_household_members` | 16 GB | 86 GB |
+| `g2p_register_crops` | 14 GB | 68 GB |
+| `g2p_register_lands` | 13 GB | 72 GB |
+| `g2p_register_history_household_members` | 13 GB | 64 GB |
+
+**Storage disk resized for `stretch`.** The default 256 GB gp3 disk was
+expanded by +768 GB to **1024 GB (1 TiB)**, a single volume, ahead of the
+`stretch` run — consistent with this section's own "resized if needed."
+`stretch`'s measured 715.1 GB leaves **~308.9 GB headroom** on that
+volume (~70% utilized). `stress` (100M target, double `stretch`'s row
+count) will need this resized further before it can be seeded — projecting
+`primary`→`stretch`'s growth rate (5.13× total size for a 5× farmer
+target, i.e. slightly super-linear) forward to 100M lands around
+**~1.4 TB**, well past the current 1 TiB volume, so plan the next resize
+rather than discovering the shortfall mid-load.
+
+**Schema changed between the two measurements, not just the data volume.**
+`stretch`'s index dump includes 17 `_search_text_fts` indexes — a
+full-text-search GIN index, alongside the existing `_search_text_trigram`
+one, on `household_members`/`farmers`/`lands`/`households`/`crops`/etc.
+**None exist in `primary`'s dump at all.** The populated ones (register
+tables; the intake-form-table copies are ~16 kB each, effectively empty)
+total ~31.7 GB — about 10% of `stretch`'s 318.8 GB index total. So the
+5.13× total-size growth above isn't purely a volume effect: part of
+`stretch`'s larger footprint is a schema addition `primary`'s measurement
+predates, not more rows against the same index set. Confirm when
+`idx_*_search_text_fts` was added, and re-baseline `primary` (or discount
+~32 GB from the comparison) if a clean volume-only growth figure is
+needed.
 
 ## Reset between tiers
 
-Keep tiers reproducible: snapshot the storage volume (or `pg_dump`/restore, or
-a templated database) after each tier load so a run can be repeated without
-re-generating, and so a failed write-phase can be rolled back to a known size.
+Tiers are kept reproducible by snapshotting the storage volume (or
+`pg_dump`/restore, or a templated database) after each tier load, so a run
+can be repeated without re-generating, and a failed write-phase can be
+rolled back to a known size.
 
 ## Seed manifest
 
@@ -226,10 +301,9 @@ directly without holding 100M ids in memory. `household_ids` is load-bearing
 today (`intake_create` links every farmer intake submission to a real
 household via it, replacing a hardcoded placeholder list). `record_ids` has
 no current consumer — `register_read` discovers ids by paginating real
-search results instead — but is kept per the original spec for any future
-by-id-only scenario.
+search results instead — but is kept for any future by-id-only scenario.
 
-## Verify before benchmarking
+## Pre-benchmark verification
 
 ```sql
 -- row counts
@@ -245,31 +319,21 @@ EXPLAIN (ANALYZE, BUFFERS)
 SELECT * FROM g2p_register_farmers WHERE search_text ILIKE '%<an anchor>%' LIMIT 20;
 ```
 
-Then warm the cache (representative reads) before measuring.
+The cache is then warmed (representative reads) before measuring.
 
-## Known simplifications (revisit if a benchmark needs them)
+## Known simplifications
 
-- No `poverty_score` generator (model doesn't exist yet).
-- `geo_lowest_level_value_id` / `geo_code_hierarchy_json` left null — no
-  geo-hierarchy filter testing without closing this gap.
+- No score rows seeded — `g2p_register_scores` / `g2p_score_compute_queue`
+  (poverty score, or any other metadata-defined score type) aren't populated
+  by the generator.
+- `geo_lowest_level_value_id` / `geo_code_hierarchy_json` left null —
+  geo-hierarchy filter testing isn't exercised as a result.
 - Enum value lists (`common.py`, `generators/*.py`) are hardcoded copies of
-  the real `StrEnum` classes, not imported from the app packages — keep in
-  sync manually if those enums change.
+  the real `StrEnum` classes, not imported from the app packages, so they can
+  drift out of sync if those enums change.
 - Attribute-lookup fields (crop `commodity`, livestock `livestock_type`/
   `breed`, etc.) use plausible hardcoded value lists, not the deployment's
   actual configured attribute lookups.
 - Anchor-to-farmer assignment is round-robin (exactly even) for bulk-seeded
   data, not Zipfian/skewed — real search-term popularity isn't flat in
   production.
-
-## Known upstream issue (not fixable from the seed side)
-
-`get_record_history` (`registry-platform/.../services/g2p_register_service.py`)
-does `history_record.change_request_source.value`, assuming an Enum instance.
-The column is `mapped_column(String, ...)` (not `sqlalchemy.Enum`), so a
-fresh `SELECT` always returns a plain `str`, and `.value` raises
-`AttributeError` for **any** history row with `change_request_source` set —
-seeded or app-written, once actually queried this way. The column is
-`nullable=False`, so this can't be routed around from the generator; it needs
-a platform-side fix (drop the `.value`). `get_record_history` will keep
-returning `SYS-ERR-001` against seeded data until that lands.
