@@ -64,8 +64,10 @@ Rendered resources per audience:
 
 Configuration is supplied through `values.yaml` as `CONSENT_MANAGER_*` env vars (database from
 `postgres-init`'s Secret, Keycloak issuer/JWKS, admin role, `.p12` path) — see
-`backend/.env.example` for the full variable list. The data controller / module is a per-partner
-attribute set at onboarding, not a chart value.
+`backend/.env.example` for the full variable list. The data controller / module is a per-binding
+attribute set at onboarding (a partner can have one binding per controller), not a chart value.
+The registry names its controller on each `/validate` call (registry chart value
+`global.consentDataController`).
 
 ### Publishing &amp; Rancher catalog
 
@@ -193,8 +195,8 @@ The service is designed to scale out under a high rate of consent verification:
   tick regardless of replica count; the hot path also lazily expires on read.
 * **Hot-path cache** — partner keys and policies are cached per pod with a short TTL, keeping
   `/validate` cheap under load (each pod's cache is independent — safe across replicas).
-* **Idempotent `/validate`** — re-validating the same consent object (`jti`) returns the same
-  decision instead of minting duplicates.
+* **Idempotent `/validate`** — re-validating the same consent object (`jti`) for the same
+  `data_controller` returns the same decision instead of minting duplicates.
 
 ## Database
 

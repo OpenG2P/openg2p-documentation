@@ -253,13 +253,14 @@ Each hit is rendered through the register's DCI outgoing Jinja template into `da
 The `authorize` block carries the partner's **consent object** — a compact JWS at
 `search_criteria.authorize.consent_jws`. When **consent enforcement is enabled**, it
 **does gate search**: the partner-api forwards the JWS to the Consent Manager's
-`/validate` and clamps each returned record to the **effective data scopes** it returns;
-a non-permit decision rejects the item (fail-closed). Independently, the DCI envelope
+`/validate` (naming this registry as `data_controller`), checks that the consent's subject
+is the person searched, and clamps each returned record to the **effective data scopes** it
+returns; a non-permit decision or a subject mismatch rejects the request (fail-closed). Independently, the DCI envelope
 `signature` is verified against the partner's
 [**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
-key when signature validation is enabled. Both switches default **off** in the Helm
-values, in which case the blocks are accepted but not enforced (the bypass is stamped
-into the response header `meta`).
+key when signature validation is enabled. Both switches default **on** in the Helm
+values; when one is turned off the blocks are accepted but not enforced (the bypass is
+stamped into the response header `meta`).
 
 The `consent` block remains a permissive JSON-LD descriptor and is not itself evaluated.
 

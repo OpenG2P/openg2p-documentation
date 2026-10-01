@@ -32,12 +32,18 @@ The registry partner-api then:
    (looked up as `PARTNER_<sender_id>`, cached in-process). The registry stores no
    partner keys.
 2. **Delegates the decision** — forwards the consent JWS verbatim to the Consent
-   Manager's `/validate`. CM verifies the signature against the same Partner Management
-   key, evaluates the partner's data-share policy, and returns a decision plus the
-   **effective data scopes** (consent scope ∩ policy).
-3. **Enforces the decision** — clamps every returned record to those effective scopes.
+   Manager's `/validate`, naming itself as the **data controller** (for example
+   `farmer-registry`). A partner's consent can cover several registries with one grant
+   each; CM evaluates only this registry's grant against the partner's policy for this
+   registry, and returns a decision, the **effective data scopes** (grant ∩ policy) and
+   the consent's subject.
+3. **Checks the subject** — the consent's subject must be the person searched. In an
+   entity register every returned record's foundational or functional ID must equal it;
+   in an activity register the searched subject must equal it or be linked to it by the
+   register's own data (e.g. a crop record holding the farmer's Fayda FAN).
+4. **Enforces the decision** — clamps every returned record to those effective scopes.
    A narrower consent or policy can only ever *remove* fields, never add them. Any
-   non-permit decision rejects the request (**fail-closed**).
+   non-permit decision or subject mismatch rejects the request (**fail-closed**).
 
 CM separately records a canonical **consent artefact** and issues a signed **consent
 receipt** — the audit / non-repudiation evidence. The registry keeps none of it.
@@ -45,13 +51,20 @@ receipt** — the audit / non-repudiation evidence. The registry keeps none of i
 ## Configuration
 
 Enforcement is governed by two **independent** switches on the partner-api. Both default
-**off**, so the feature is opt-in per deployment and existing behaviour is unchanged
-until you enable it:
+**on** (the chart fails closed); turn one off only for testing or a bring-up install:
 
 | Switch | Effect when ON |
 | --- | --- |
 | **Verify Partner Signature** | verify the DCI envelope signature against Partner Management keys |
 | **Enforce Consent** | call the Consent Manager and clamp returned fields to the consented scopes |
+
+The registry's data-controller ID is set with **Consent data controller**
+(`global.consentDataController`), which defaults to the registry variant. It must match
+the controller ID that partners are bound to in the Consent Manager.
+
+A composite service or aggregator calling the registry for a partner signs the request
+with its own key, forwards the partner's consent unchanged, and names the partner in
+`header.meta.on_behalf_of`; the registry logs it.
 
 When a switch is OFF the bypass is logged and stamped into the DCI response header
 `meta`, so a bypassed response can never be mistaken for an authorised one. The exact

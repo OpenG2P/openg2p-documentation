@@ -26,15 +26,23 @@ that governs data sharing under that controller:
 | Field | Meaning |
 | --- | --- |
 | `partner_mgmt_id` | Reference to the authoritative partner in the Partner Management service |
-| `controller_id` | The **module** the binding is scoped to (e.g. farmer registry, social registry). A consent object's `data_controller` is validated against this |
+| `controller_id` | The **module / registry** the binding is scoped to (e.g. `farmer-registry`, `crop-sown-registry`). A registry validating a consent names its controller, and the consent's grant for it is evaluated against this binding |
 | `audience` | The `audience` identifier the partner uses in its consent objects |
 | `name` | Optional, non-authoritative **display label** only (the real identity lives in PM) |
 | `status` | Whether this binding is active; the verification hot path only serves `active` bindings |
 
 One shared CM serves **several controllers**. The **same PM partner may be bound per-controller**
-with a different policy under each — a partner that needs data from two modules has two CM
-bindings, one per `controller_id`, each with its own policy. A consent issued for one module can
-never authorise data from another.
+with a different policy under each — a partner that needs data from two registries has two CM
+bindings (same `audience`, one per `controller_id`), each with its own policy. Add a binding with
+`POST /partners` using the existing `audience` and a new `controller_id`; the pair is unique, and
+all bindings of an audience share one `partner_mgmt_id`. In the admin console, a partner's page
+lists its **controller bindings** and can add one; the decisions view shows the controller of each
+decision.
+
+The partner can then ask the subject **once**: one consent with a grant per registry. Each
+registry validates only its own grant, and a grant is only ever evaluated against the binding (and
+policy) for that registry — a grant for one registry never authorises data from another. Existing
+single-controller partners were migrated unchanged: their binding is simply the first one.
 
 {% hint style="warning" %}
 CM does **not** store partner public keys, `jwks_url`, or run any partner onboarding/approval flow.
@@ -45,7 +53,8 @@ Those are PM's responsibility. CM stores only the binding above plus its data-sh
 
 The policy is the enforceable contract and stays in CM. It is **versioned** — each change creates a
 new version; prior versions are retained, and every decision records the `policy_version` it was
-evaluated against. Effective fields on any decision are always `consent scope ∩ policy`.
+evaluated against. Effective fields on any decision are always `grant scope ∩ policy`, using the
+grant and the policy of the registry that asked.
 
 | Dimension | Meaning | Enforced in validation |
 | --- | --- | --- |
@@ -114,9 +123,9 @@ active policy version, and the request context, it always yields the same decisi
 testable and auditable, and lets enforcement points reason about outcomes.
 
 ```
-decide(consent_object, active_policy, request_context) -> {
+decide(consent_object, data_controller, active_policy_of(aud, data_controller), request_context) -> {
   decision: permit | deny,
-  effective_data_scopes: requested ∩ consented ∩ policy.allowed_data_scopes,
+  effective_data_scopes: requested ∩ grant(data_controller).data_scopes ∩ policy.allowed_data_scopes,
   reason_code,
   policy_version
 }

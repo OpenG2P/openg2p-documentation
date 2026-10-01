@@ -44,8 +44,9 @@ between the Registry and CM.
 * **Content type:** `application/json`; JSON-LD documents use `application/ld+json`.
 * **Timestamps:** RFC 3339 / ISO 8601 UTC.
 * **Identifiers:** UUIDs unless an external id (`subject_id`, `kid`, purpose code) is referenced.
-* **Idempotency:** re-validating the same consent object (`jti`) returns the same
-  `consent_id` / `receipt_id`.
+* **Idempotency:** re-validating the same consent object (`jti`) for the same `data_controller`
+  returns the same `consent_id` / `receipt_id`. Each registry that validates a multi-grant consent
+  gets its own.
 * **Pagination:** list endpoints accept `page` (≥1) and `size` (1–100) and return
   `{ items, total, page, size, pages }`.
 
@@ -65,17 +66,19 @@ Used in decisions (`reason_code`) and errors (`error`):
 | Code | Meaning |
 | --- | --- |
 | `ok` | Permit — all checks passed |
-| `malformed_object` | Consent object failed schema validation |
+| `malformed_object` | Consent object failed schema validation (incl. both `grants` and `data_controller`/`data_scopes`, a duplicate controller in `grants`, or no `data_controller` on `/validate` for a consent with `grants`) |
 | `unknown_partner` | Partner not onboarded / suspended, or `kid` not found in Partner Management |
 | `signature_invalid` | JWS signature did not verify |
 | `audience_mismatch` | `aud` is not this partner / controller |
+| `controller_not_granted` | The consent has no grant for the `data_controller` in the request (or a single-registry consent names another controller) |
+| `subject_mismatch` | `request_context.subject_id` has the consent subject's type but a different value |
 | `subject_not_allowed` | Subject missing or `subject_id_type` not permitted |
 | `purpose_not_allowed` | Purpose code outside policy |
 | `scope_exceeds_policy` | Requested scope not permitted; empty effective intersection |
 | `validity_exceeds_policy` | Requested validity longer than `max_validity_duration` |
 | `expired` | Consent outside its validity window |
 | `revoked` | Consent has been revoked |
-| `replay` | Duplicate `jti` or stale `issued_at` |
+| `replay` | Stale `issued_at` (a repeat `jti` for the same `data_controller` returns the stored decision instead) |
 
 ## Implementation
 

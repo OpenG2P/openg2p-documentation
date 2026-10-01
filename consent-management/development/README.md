@@ -71,10 +71,21 @@ docker compose up --build
 
 FastAPI serves an interactive OpenAPI/Swagger UI at `/docs` once running.
 
+## Tests
+
+`backend/tests/` runs the services, controllers and the migration against a real Postgres. It
+**wipes the database it is given**, and is skipped if the database cannot be reached:
+
+```bash
+cd backend
+pip install -e '.[test]'
+CM_TEST_DB_DATASOURCE=postgresql+asyncpg://postgres@localhost:5432/cm_test pytest tests
+```
+
 ## Configuration
 
 All settings use the `CONSENT_MANAGER_` env prefix; see `backend/.env.example` for the full
-list (database, controller id, `.p12` signing key, Keycloak auth, replay window, cache TTL). Key
+list (database, `.p12` signing key, Keycloak auth, replay window, cache TTL). Key
 operational settings are summarised in [Deployment](../deployment/README.md).
 
 ## Background expiry

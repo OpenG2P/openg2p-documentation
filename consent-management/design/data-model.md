@@ -38,14 +38,18 @@ poll a `jwks_url`; at verification time the CM fetches the partner's public key 
 `partner_mgmt_id` + the object's `kid`. See
 [Partner Management Integration](partner-management-integration.md).
 
+A partner (`audience`) can be bound to **several controllers**: one row per
+(`audience`, `controller_id`), unique on that pair, each with its own policy. All bindings of one
+audience share the same `partner_mgmt_id`.
+
 | Field | Type | Notes |
 | --- | --- | --- |
 | partner_id | UUID | Primary key (the CM-local binding id) |
-| partner_mgmt_id | str | Reference to the partner in PM; falls back to `audience` if not set |
+| partner_mgmt_id | str | Reference to the partner in PM; inherited from the audience's other bindings, else falls back to `audience`. Changing it updates every binding of the audience |
 | name | str | Optional display name, for the admin UI only |
-| status | enum | `active`, `suspended` — whether this binding is active in the CM |
-| audience | str | The `aud` value the partner's consent objects must carry |
-| controller_id | UUID | The data controller / module this partner is onboarded under |
+| status | enum | `active`, `suspended` — whether this binding is active in the CM (per binding) |
+| audience | str | The `aud` value the partner's consent objects must carry (not unique on its own) |
+| controller_id | str | The data controller (registry) this binding is for; unique per audience |
 | created_at / updated_at | datetime | |
 
 ### PartnerPolicy
@@ -60,7 +64,7 @@ active version stays in force.
 | Field | Type | Notes |
 | --- | --- | --- |
 | policy_id | UUID | Primary key |
-| partner_id | UUID | FK → Partner |
+| partner_id | UUID | FK → Partner (the binding), so a policy is per (audience, controller) |
 | version | int | Monotonic; the active version is evaluated |
 | allowed_data_scopes | list[str] | Fields/registers the partner may ever receive |
 | allowed_purposes | list[str] | Purpose codes the partner may assert |
@@ -79,15 +83,22 @@ active version stays in force.
 The CM's canonical representation of a consent decision — whether derived from the verified
 claims of a partner-embedded consent JWS or produced by the origination flow.
 
+An **embedded** consent yields **one artefact per (`jti`, `data_controller`)** — a consent with
+grants for two registries, validated by both, has two artefacts (and two receipts), each revocable
+on its own. An **originated** consent yields one artefact per approved request; if the request
+carried grants, the approved grants are stored on it.
+
 | Field | Type | Notes |
 | --- | --- | --- |
 | consent_id | UUID | Primary key |
 | subject_id_type / subject_id_value | str | The data subject |
-| controller_id | UUID | Data controller (registry tenant) |
+| controller_id | str | Data controller (registry). Null for an originated consent with several approved grants |
 | partner_id | UUID | Audience / data recipient |
 | purpose | json | `{code, text}` |
-| data_scopes | list[str] | Consented fields (pre-policy-intersection) |
+| data_scopes | list[str] | Consented fields for this controller's grant (pre-policy-intersection) |
 | effective_data_scopes | list[str] | `data_scopes ∩ policy.allowed_data_scopes` at issue time |
+| grants | json | Originated consents only: `[{data_controller, data_scopes, granted_scopes, effective_data_scopes, partner_binding_id, policy_version}]` |
+| object_jti | str | The embedded consent's `jti`; unique together with `controller_id` |
 | valid_from / valid_until | datetime | |
 | fetch_type | enum | `oneshot`, `periodic` |
 | auth_context_id | UUID | FK → AuthContext (origination) or `null` (embedded, partner-attested) |
@@ -133,9 +144,9 @@ without PM. (The CM is **not** a PM partner.) See the JSON below.
 
 | Entity | Key fields |
 | --- | --- |
-| **ConsentRequest** (origination) | request_id, subject, controller_id, partner_id, requested_scopes, purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
+| **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id, requested_scopes (union), grants (`[{data_controller, data_scopes, partner_binding_id}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
 | **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, created_at |
-| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id, request_ctx_hash, decision, reason_code, policy_version, evaluated_at |
+| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id, object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, evaluated_at |
 
 ---
 
@@ -170,6 +181,10 @@ recovers the claims from the payload and verifies the signature using the partne
 [Partner Management Integration](partner-management-integration.md)). `jti` + `issued_at` give
 replay protection.
 
+The data to share is given as **`grants`** — one consent, one grant per registry. The earlier
+single-registry form (`data_controller` + `data_scopes` at the top level) is still accepted and
+treated as one grant; a consent may not mix the two.
+
 ```json
 // JWS payload (claims). Wire form: base64url(header).base64url(payload).base64url(signature)
 {
@@ -177,11 +192,14 @@ replay protection.
   "@type": "ConsentObject",
   "jti": "b2f1...-unique-per-object",
   "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "data_controller": "my.registry.org",
   "partner_system": "PARTNER_SYSTEM_A",
   "aud": "PARTNER_SYSTEM_A",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
-  "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"],
+  "grants": [
+    { "data_controller": "farmer-registry",
+      "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"] },
+    { "data_controller": "crop-sown-registry", "data_scopes": ["crop_season", "crops_sown"] }
+  ],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
   "issued_at": "2025-05-01T11:59:50Z"
@@ -223,7 +241,7 @@ The CM's canonical decision document. Stored, and checked before any data is rel
   "@type": "ConsentArtefact",
   "consent_id": "CONSENT-123456",
   "subject_id": "FARMER_1234",
-  "data_controller": "my.registry.org",
+  "data_controller": "farmer-registry",
   "partner_system": "PARTNER_SYSTEM_A",
   "source": "embedded",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
@@ -236,8 +254,10 @@ The CM's canonical decision document. Stored, and checked before any data is rel
 }
 ```
 
-> `effective_data_scopes` excludes `farmer_profile.landholdings` because the partner's policy did
-> not allow it — data minimisation enforced at the point of decision.
+> This is the Farmer Registry's artefact for the consent above: its grant only.
+> `effective_data_scopes` excludes `farmer_profile.landholdings` because the partner's policy for
+> this registry did not allow it — data minimisation enforced at the point of decision. An
+> originated consent with several approved grants carries them under `grants` instead.
 
 ### Consent Receipt (Kantara / ISO 27560)
 
@@ -253,11 +273,12 @@ cryptographic proof and a human-readable consent record for the subject, audit, 
   "issued_at": "2025-05-01T12:02:12Z",
   "jurisdiction": "IN",
   "data_controller": {
-    "id": "my.registry.org",
+    "id": "farmer-registry",
     "name": "National Farmer Registry",
     "contact": "dpo@registry.org",
     "dpo": "Data Protection Officer"
   },
+  "data_controllers": [ { "id": "farmer-registry" } ],
   "subject_id": "FARMER_1234",
   "purposes": [
     { "code": "share_farm_profile", "text": "Share farmer profile with Partner A",
@@ -274,6 +295,10 @@ cryptographic proof and a human-readable consent record for the subject, audit, 
   }
 }
 ```
+
+`data_controllers` lists every controller the receipt covers: the one controller for an embedded
+consent (one receipt per registry), or one entry per approved grant — `{id, data_categories}` —
+for an originated consent with grants, where `data_controller` is null if there are several.
 
 The CM publishes its signing public keys at `GET /.well-known/jwks.json` so any party can verify
 a receipt independently.

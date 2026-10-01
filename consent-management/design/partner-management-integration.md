@@ -98,8 +98,8 @@ a CM authorization context, nothing more:
 
 | Field | Meaning |
 | --- | --- |
-| `partner_mgmt_id` | Reference to the partner in PM (falls back to `audience` if not set) |
-| `controller_id` | The module the partner is onboarded under; a consent object's `data_controller` is checked against this |
+| `partner_mgmt_id` | Reference to the partner in PM (falls back to `audience` if not set); shared by all bindings of one audience |
+| `controller_id` | The module / registry this binding is for; a partner can have one binding per controller, and a consent's grant for a controller is checked against that binding |
 | `audience` | The `aud` value the partner's consent objects must carry |
 | `status` | Whether this binding is active in the CM |
 | display name | Optional, for the admin UI only |

@@ -24,7 +24,7 @@ sequenceDiagram
   Note over P,R: Per data fetch
   P->>P: capture consent + build & SIGN a consent object (private key)
   P->>R: call the registry data API, embedding the signed consent object
-  R->>CM: POST /consent/v1/validate (your object + controller context)
+  R->>CM: POST /consent/v1/validate (your object + its own data_controller)
   CM->>PM: fetch your public key (by partner_id + kid) to verify
   CM-->>R: decision = permit + effective_data_scopes (or deny + reason)
   R-->>P: only the permitted fields (or an error)
@@ -73,6 +73,7 @@ For each registry whose data you want, that registry's administrator creates a *
 * This policy is the **ceiling**: what you actually get back is always `consent scope ∩ policy`. You cannot exceed it, no matter what the consent says.
 * You request this binding from the registry operator (out of band). Ask for exactly the scopes/purposes you need. Widening an existing policy may go through an approval workflow on their side — plan for lead time.
 * You'll agree on the **`data_controller`** identifier and the **audience** (your `partner_id`) to use in the consent object (Step 5).
+* Needing data from **several registries** means one binding (and policy) per registry, all under the same audience. You still collect **one** consent from the beneficiary (Step 5).
 
 ***
 
@@ -95,10 +96,9 @@ Build the consent claims — these become the **payload** of the JWS you sign in
 | ----------------- | ------------------------------------------------------------------------ |
 | `jti`             | Unique id for THIS object (replay guard — never reuse)                   |
 | `subject_id`      | `{ type, value }` — the beneficiary (e.g. `national_id` / `FARMER_1234`) |
-| `data_controller` | The registry's controller id (agreed in Step 3)                          |
+| `grants`          | `[{ data_controller, data_scopes }]` — one grant per registry: the registry's controller id (agreed in Step 3) and the fields you're requesting from it (subset of that registry's policy) |
 | `aud`             | The audience — **your** `partner_id`                                     |
 | `purpose`         | `{ code, text }` — must be allowed by the policy                         |
-| `data_scopes`     | The fields you're requesting (subset of the policy)                      |
 | `fetch_type`      | `oneshot` or `periodic`                                                  |
 | `validity`        | `{ valid_from, valid_until }` (within the policy's max)                  |
 | `issued_at`       | Now (UTC) — must be within the freshness window                          |
@@ -109,10 +109,12 @@ Build the consent claims — these become the **payload** of the JWS you sign in
   "@type": "ConsentObject",
   "jti": "b2f1-unique-per-object",
   "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "data_controller": "my.registry.org",
   "aud": "PARTNER_SYSTEM_A",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
-  "data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+  "grants": [
+    { "data_controller": "farmer-registry", "data_scopes": ["farmer_profile.basic", "farmer_profile.crops"] },
+    { "data_controller": "crop-sown-registry", "data_scopes": ["crop_season", "crops_sown"] }
+  ],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
   "issued_at": "2025-05-01T11:59:50Z"
@@ -120,6 +122,9 @@ Build the consent claims — these become the **payload** of the JWS you sign in
 ```
 
 There is **no `signature` field** — the whole object is signed as a JWS in Step 6.
+
+* List each registry once in `grants`. Each registry sees and uses **only its own grant**; another registry's grant never widens what it returns.
+* **Single registry (backward compatible):** instead of `grants` you may put `data_controller` + `data_scopes` at the top level, as before. Don't combine the two forms — that is `malformed_object`.
 
 ***
 
@@ -147,9 +152,13 @@ consent_jws = sign_consent_jws(consent_claims, priv, kid="partnerA-2025-01", alg
 
 ## Step 7 — Call the registry's data API (embed the consent JWS)
 
-Send the **consent JWS** to the **registry's** data endpoint, per that registry's API contract. For the OpenG2P registry (DCI search) you embed it at `search_criteria.authorize.consent_jws` — see [Registry integration](design/registry-integration.md). You do **not** call the Consent Manager's `/validate` — the registry does that for you, adding its own controller context. For reference, the call the registry makes on your behalf is [`POST /consent/v1/validate`](api/verification-api.md); it returns `permit` + `effective_data_scopes` or `deny` + a `reason_code`, and the registry releases **only** the permitted fields.
+Send the **consent JWS** to the **registry's** data endpoint, per that registry's API contract. For the OpenG2P registry (DCI search) you embed it at `search_criteria.authorize.consent_jws` — see [Registry integration](design/registry-integration.md). You do **not** call the Consent Manager's `/validate` — the registry does that for you, naming itself as `data_controller` so the CM picks its grant.
 
-_(You may optionally call the Consent Manager's `partner-api`_ _`/validate` yourself to pre-check an object before sending it to the registry — but the authoritative decision and the data both come via the registry.)_
+**Several registries, one consent.** Send the **same** consent JWS to each registry you need. Each validates its own grant and returns its own `consent_id` and `receipt_id`; the same `jti` gets one decision per registry (presenting it again to that registry returns the same decision). The `subject_id` in the consent must be the person you search for at each registry (a registry may accept a different identifier for the same person when its own data links them, e.g. a farmer ID recorded with the farmer's Fayda FAN).
+
+**Composite services and aggregators.** If a composite service fans your request out to several registries, it forwards your consent **unchanged** to each, signs each registry call with its own key, and names you in `header.meta.on_behalf_of`. For reference, the call the registry makes on your behalf is [`POST /consent/v1/validate`](api/verification-api.md); it returns `permit` + `effective_data_scopes` or `deny` + a `reason_code`, and the registry releases **only** the permitted fields.
+
+_(You may optionally call the Consent Manager's `partner-api`_ _`/validate` yourself to pre-check an object before sending it to the registry — pass the registry's `data_controller` when the consent has `grants` — but the authoritative decision and the data both come via the registry.)_
 
 ***
 
@@ -160,23 +169,25 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 | `reason_code`          | What it means / what to fix                                                                            |
 | ---------------------- | ------------------------------------------------------------------------------------------------------ |
 | `ok`                   | Permitted — you got `effective_data_scopes`.                                                           |
-| `unknown_partner`      | Your partner/kid isn't active/known in PM. Re-check Step 2.                                            |
+| `unknown_partner`      | Your partner/kid isn't active/known in PM, or you have no active binding to this registry. Re-check Steps 2 & 3. |
 | `signature_invalid`    | The consent JWS didn't verify — wrong `kid`, a key/alg mismatch, or the JWS was altered after signing. |
 | `audience_mismatch`    | `aud` / `data_controller` don't match the binding. Re-check Steps 3 & 5.                               |
+| `controller_not_granted` | Your consent has no grant for the registry you called. Add a grant for it (Step 5).                  |
+| `subject_mismatch`     | The subject declared to the CM is not the consent's subject. (The registry runs its own check too: if what you search is not the consent's subject, it rejects the item with a search-criteria error.) |
 | `purpose_not_allowed`  | Purpose isn't in the policy — ask the controller to add it.                                            |
 | `scope_exceeds_policy` | You requested a field outside the policy ceiling — narrow it or ask to widen the policy.               |
 | `expired`              | `validity` window passed — issue a fresh consent.                                                      |
 | `revoked`              | The subject revoked this consent — stop; you may need fresh consent.                                   |
-| `replay`               | `issued_at` outside the freshness window, or reused — sync clocks, issue fresh.                        |
-| `malformed_object`     | The object failed schema validation — check required fields.                                           |
+| `replay`               | `issued_at` outside the freshness window — sync clocks, issue fresh. (Re-sending a `jti` to the same registry returns its earlier decision.) |
+| `malformed_object`     | The object failed schema validation — check required fields; use `grants` **or** `data_controller` + `data_scopes`, not both, and list each registry once. |
 
 ***
 
 ## Step 9 — Receipts, status & revocation
 
-* **Receipt (proof):** a permit issues a signed **consent receipt** (`receipt_id`). Fetch it — [`GET /consent/v1/receipts/{receipt_id}`](api/verification-api.md) — it's public and **self-verifying** against the Consent Manager's `GET /.well-known/jwks.json`, so you can prove independently that the decision happened. Keep receipts for audit.
+* **Receipt (proof):** a permit issues a signed **consent receipt** (`receipt_id`) — one per registry that validated your consent. Fetch it — [`GET /consent/v1/receipts/{receipt_id}`](api/verification-api.md) — it's public and **self-verifying** against the Consent Manager's `GET /.well-known/jwks.json`, so you can prove independently that the decision happened. Keep receipts for audit.
 * **Status:** for cached or periodic access, re-check `GET /consent/v1/consents/{consent_id}/status` (`active | revoked | expired`) rather than trusting a stale decision.
-* **Revocation:** the beneficiary can revoke consent at any time. Honour it — a revoked/expired consent must stop further fetches.
+* **Revocation:** the beneficiary can revoke consent at any time. Revocation is per `consent_id`, i.e. per registry: revoking at one registry leaves the others in force. Honour it — a revoked/expired consent must stop further fetches.
 
 ***
 
@@ -192,8 +203,9 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 
 * [ ] The consent object is a valid **compact JWS** (Step 6), signed with your PM key.
 * [ ] JWS header `kid` + `alg` match a key you registered in PM (and the policy's `allowed_signing_algs`).
-* [ ] `aud` = your `partner_id`; `data_controller` = the binding's controller.
-* [ ] Requested `data_scopes` / `purpose` are within the policy (else widen the policy first).
+* [ ] `aud` = your `partner_id`; each grant's `data_controller` = a registry you are bound to.
+* [ ] Each grant's `data_scopes` and the `purpose` are within that registry's policy (else widen the policy first).
+* [ ] The `subject_id` is the person you search for at every registry.
 * [ ] `issued_at` is fresh and clocks are synced; `jti` is unique.
 * [ ] You handle `deny` outcomes and honour `revoked` / `expired`.
 

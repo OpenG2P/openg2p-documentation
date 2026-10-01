@@ -18,14 +18,14 @@ sequenceDiagram
   participant CM as Consent Manager
   participant IdP as OIDC Provider
 
-  App->>CM: POST /consent-requests {subject, partner, scopes, purpose}
+  App->>CM: POST /consent-requests {subject, partner, scopes or grants, purpose}
   CM-->>App: request_id (status=pending)
   App->>IdP: subject authenticates (OTP / biometric)
   IdP-->>App: ID Token (JWS)
   App->>CM: POST /consent-requests/{id}/authenticate {id_token}
   CM->>IdP: fetch JWKS, validate signature + claims
   CM->>CM: build AuthContext (id_token_hash, verified_claims)
-  App->>CM: POST /consent-requests/{id}/approve {granted_scopes}
+  App->>CM: POST /consent-requests/{id}/approve {granted_scopes or grants}
   CM->>CM: effective = granted ∩ policy ; issue ConsentArtefact (active)
   CM->>CM: sign ConsentReceipt (CM private key)
   CM-->>App: { consent_id, receipt_id }
@@ -35,14 +35,17 @@ sequenceDiagram
 
 1. **Create request** — a subject app, staff portal, or partner integration creates a
    `ConsentRequest` (status `pending`) naming the subject, the partner (audience), requested
-   scopes, and purpose. The request is validated against the partner's policy up front, so an
-   impossible request is rejected early.
+   scopes, and purpose. The scopes can be for one controller, or a **grant per registry**
+   (`grants: [{data_controller, data_scopes}]`). The request is validated against the partner's
+   policy for each controller up front, so an impossible request is rejected early.
 2. **Authenticate** — the subject authenticates with the configured OIDC provider and the ID token
    is posted to the CM. The CM validates the token signature and claims (`iss`, `aud`, `exp`,
    `auth_time`, `amr`) against the IdP's JWKS, stores only the **hash**, and builds an
    `AuthContext`. See [Security &amp; trust](security-and-trust.md).
-3. **Approve** — the subject chooses which requested scopes to grant. The CM computes
-   `effective = granted ∩ policy.allowed_data_scopes`, issues a `ConsentArtefact`
+3. **Approve** — the subject chooses which requested scopes to grant — for a grants request,
+   per registry, and may decline a registry entirely. The CM computes
+   `effective = granted ∩ policy.allowed_data_scopes` (per registry), issues a `ConsentArtefact`
+   holding the approved grants
    (`source = originated`, status `active`) linked to the `AuthContext`, and signs a
    `ConsentReceipt`.
 4. **Deny** — alternatively the subject denies; the request becomes `denied`. **No artefact or
@@ -54,6 +57,8 @@ sequenceDiagram
 * A **receipt is only created after an artefact** exists.
 * The **granted scope can never exceed policy**, even if the subject "approves" more.
 * Approval requires a valid **AuthContext** — the subject must have authenticated.
+* An originated consent cannot yet be presented at a registry's `/validate`, which takes a
+  partner-signed consent JWS only.
 
 ## Revocation
 
@@ -76,6 +81,8 @@ sequenceDiagram
 * Revocation is **append-only**: the artefact moves to `revoked`, a `RevocationRecord` is written,
   and the original timestamps are preserved.
 * A `revoked` consent **fails validation immediately** (reason `revoked`).
+* Revocation is per artefact. A partner-signed consent validated by two registries has one artefact
+  (`consent_id`) per registry, so revoking one registry's leaves the other's in force.
 * Revocation is **propagated** two ways: a live **status endpoint**
   (`GET /consents/{id}/status`, OCSP-like) that enforcement points consult, and **webhook /
   notification** to the partner and subject. This closes the gap where a cached "permit" could

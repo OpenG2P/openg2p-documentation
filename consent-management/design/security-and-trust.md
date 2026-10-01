@@ -71,8 +71,9 @@ When an ID token arrives, the CM:
 ## Replay protection
 
 * Every consent object carries a unique `jti` and an `issued_at`.
-* The CM rejects a `jti` it has already processed (within the validity window) and rejects objects whose `issued_at` is outside a configurable **freshness window** (reason `replay`).
-* Re-presenting the _same_ valid object returns the existing `consent_id`/`receipt_id` idempotently rather than minting duplicates.
+* The CM rejects objects whose `issued_at` is outside a configurable **freshness window** (reason `replay`).
+* A `jti` is recorded **per data controller** (unique on (`jti`, `data_controller`)). Re-presenting the _same_ object to the same registry returns that registry's existing decision (`consent_id`/`receipt_id`) rather than minting duplicates; a second registry named in the consent's `grants` gets its own decision and receipt.
+* A registry can only use **its own grant**: it names its `data_controller`, and a consent with no grant for it is denied (`controller_not_granted`).
 
 ## Caller authentication
 
@@ -100,6 +101,8 @@ The partner-facing PDP API does **not** use Keycloak. Different endpoint classes
 | Partner over-asking beyond its contract   | Policy intersection caps scope (`scope_exceeds_policy`)                                                                                                       |
 | Replaying a captured consent object       | `jti` + freshness window (`replay`)                                                                                                                           |
 | Using consent meant for another recipient | Audience check (`audience_mismatch`)                                                                                                                          |
+| Using one registry's grant at another     | Grant selected by the calling registry's `data_controller`; policy per (partner, controller) (`controller_not_granted`, `unknown_partner`)                    |
+| Using a consent for a different person    | `subject_mismatch` when the caller declares a same-type subject; the registry also checks the consent's subject against what it searches                     |
 | Acting on revoked consent                 | Live status endpoint + revocation notifications (`revoked`)                                                                                                   |
 | Tampering with a stored artefact          | Receipt signs the artefact hash; mismatch is detectable                                                                                                       |
 | Key compromise                            | Key revocation + rotation; short validity windows                                                                                                             |

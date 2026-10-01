@@ -45,10 +45,12 @@ A single Consent Manager is deployed **per environment** and shared by every dat
 audit log, and signing key central — one consent authority for the whole installation.
 
 The module a consent concerns is a **per-binding attribute**: each partner binding carries a
-`controller_id` (its module), and a consent object's `data_controller` is validated against that
-binding's `controller_id` (check 4 below). There is no single global controller — the same CM
-serves all modules, and a consent issued for one module can never authorise data from another. A
-partner that needs data from two modules has one binding per module, each with its own policy.
+`controller_id` (its module). There is no single global controller — the same CM serves all
+modules. A partner that needs data from two modules has one binding per module, each with its own
+policy, and asks the subject **once**: the consent carries a **grant per module**
+(`grants: [{data_controller, data_scopes}]`). Each registry names itself as `data_controller` on
+`/validate` and is evaluated only on its grant against its binding's policy, so a grant for one
+module never authorises data from another. The single-controller consent form remains valid.
 
 ## APIs by audience
 
@@ -79,7 +81,7 @@ live on the **staff-api** behind Keycloak.
 | --- | --- | --- |
 | **Verification API** | partner | Validates an embedded consent object and returns a decision (the hot path). |
 | **Policy Engine** | partner · staff | Evaluates a consent object against the bound partner's versioned data-share policy; computes the effective scope. |
-| **Policy Binding &amp; Policy Admin** | staff | Manages the per-partner **policy binding** (`partner_mgmt_id` + `controller` + `audience` + policy) and the versioned data-share policies. |
+| **Policy Binding &amp; Policy Admin** | staff | Manages the **policy bindings** — one per (partner `audience`, `controller`), each with `partner_mgmt_id` + policy — and the versioned data-share policies. |
 | **PM Key Client** | partner | Fetches partner verifying keys from **Partner Management** and caches them; CM stores no partner keys of its own. |
 | **Approval Proxy &amp; Webhook** | staff | Proxies the **AWE** approvals inbox with the approver's JWT and receives AWE's terminal HMAC webhook for policy-change approvals. |
 | **Trust / Signing Store** | partner | The CM's own key pair (`.p12`) for signing receipts. Partner verifying keys are **not** stored here — they come from PM. |
@@ -106,17 +108,17 @@ sequenceDiagram
   participant DB as CM Store
 
   P->>R: GET /farmer/{id}?... + signed consent_object
-  R->>CM: POST /consent/v1/validate {consent_object, partner_mgmt_id, request_ctx}
-  CM->>CM: 1. schema-validate object
-  CM->>DB: 2. look up policy binding (partner_mgmt_id → controller/audience/policy)
+  R->>CM: POST /consent/v1/validate {consent_jws, data_controller, request_ctx}
+  CM->>CM: 1. schema-validate object; select the grant for data_controller
+  CM->>DB: 2. look up the (aud, data_controller) binding + its policy
   CM->>PM: 3. fetch verifying key (kid) — cached
-  CM->>CM: 4. verify JWS signature + jti replay guard (known party)
+  CM->>CM: 4. verify JWS signature + replay guard per (jti, controller)
   CM->>CM: 5. audience / subject / purpose checks
   CM->>CM: 6. effective = consent_scope ∩ policy_scope
   CM->>DB: 7. revocation + validity check
   CM->>DB: 8. persist artefact + signed receipt + decision log
-  CM-->>R: {decision: permit, effective_data_scopes, receipt_id, ...}
-  R->>R: project record to effective_data_scopes
+  CM-->>R: {decision: permit, subject_id, effective_data_scopes, receipt_id, ...}
+  R->>R: check subject; project record to effective_data_scopes
   R-->>P: data (only permitted fields) + receipt_id
 ```
 
@@ -137,7 +139,7 @@ sequenceDiagram
   CM->>CM: create ConsentRequest (status=pending)
   Sub->>IdP: authenticate (OTP / biometric / ...)
   IdP-->>Sub: ID Token (JWS)
-  Sub->>CM: approve(request_id, id_token, granted_scopes)
+  Sub->>CM: approve(request_id, id_token, granted_scopes or per-controller grants)
   CM->>IdP: validate signature + claims (JWKS)
   CM->>CM: build AuthContext (id_token_hash, verified_claims)
   CM->>CM: issue ConsentArtefact (status=active)

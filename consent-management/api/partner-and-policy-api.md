@@ -20,11 +20,16 @@ Signing keys are **not** managed here — they live in **Partner Management (PM)
 
 ### `POST /partners`
 
-Create a partner binding.
+Create a partner binding — a partner (`audience`) bound to one data controller (`controller_id`).
+
+A partner can be bound to **several controllers**, one binding (and one policy) each: to add a
+controller, `POST` again with the same `audience` and the new `controller_id`. The pair
+(`audience`, `controller_id`) is unique.
 
 `partner_mgmt_id` references the partner's record in **Partner Management** (the source of signing
-keys); if omitted it falls back to the `audience`. `name` is an optional display label
-(`org_name` no longer exists).
+keys). If omitted it is taken from the audience's existing bindings, else falls back to the
+`audience`. `name` is an optional display label (`org_name` no longer exists); a new binding
+inherits it from the audience's other bindings when omitted.
 
 ```json
 // request
@@ -38,11 +43,16 @@ keys); if omitted it falls back to the `audience`. `name` is an optional display
   "status": "active", "created_at": "2025-04-01T00:00:00Z" }
 ```
 
-> The binding's identifier is returned as `id` (used as `{partner_id}` in the policy paths).
+> The binding's identifier is returned as `id` (used as `{partner_id}` in the policy paths), so
+> policies are per binding, i.e. per (audience, controller).
+
+`409` (`{"error": "conflict", "detail": ...}`) if the audience is already bound to that
+controller, or if `partner_mgmt_id` differs from the one the audience's other bindings use.
 
 ### `GET /partners`
 
-List partner bindings. Filters: `controller_id`, `status`. Paginated (see
+List partner bindings. Filters: `controller_id`, `status`, `audience` (all bindings of one
+partner, e.g. `GET /partners?audience=PARTNER_SYSTEM_A`). Paginated (see
 [conventions](README.md#conventions)).
 
 ### `GET /partners/{partner_id}`
@@ -51,8 +61,10 @@ Return the partner binding (no secrets).
 
 ### `PATCH /partners/{partner_id}`
 
-Update mutable fields (`name`, `partner_mgmt_id`) or `status` (`active` / `suspended`). Suspending a
-partner causes all its consent objects to fail with `unknown_partner`.
+Update mutable fields (`name`, `partner_mgmt_id`) or `status` (`active` / `suspended`). `name` and
+`status` apply to **this binding only**: suspending it makes consents presented by that controller
+fail with `unknown_partner`, while the partner's other bindings keep working. `partner_mgmt_id` is
+partner identity, so a change is applied to **every binding** of the audience.
 
 ```json
 { "status": "suspended" }
@@ -155,12 +167,15 @@ rejection it becomes `rejected`.
 ### `GET /decisions`
 
 Read the CM decision audit log. Filters: `partner_id`, `decision`; `limit` caps the page size.
+Each entry carries the `data_controller` the decision was made for (when known).
 
 ```json
 // response 200
 [
-  { "consent_id": "CONSENT-123456", "partner_id": "8c0b...", "decision": "permit",
-    "reason_code": "ok", "policy_version": 4, "evaluated_at": "2025-05-01T12:02:12Z" }
+  { "id": "d-5512", "consent_id": "CONSENT-123456", "partner_id": "8c0b...",
+    "object_jti": "6f1c-unique-per-object", "data_controller": "farmer-registry",
+    "decision": "permit", "reason_code": "ok", "detail": null, "policy_version": 4,
+    "created_at": "2025-05-01T12:02:12Z" }
 ]
 ```
 

@@ -25,7 +25,7 @@ This service is the system's **Policy Decision Point (PDP)**. The registry — a
 
 The CM does not own everything about a partner. Identity and keys live elsewhere:
 
-* **Partner Management (PM) owns partner identity + signing keys.** The CM holds only a thin **policy binding** per partner and, at verification time, **fetches the partner's public key from PM** (by `partner_mgmt_id` + `kid`) to verify the consent object's signature locally. See [Partner Management Integration](design/partner-management-integration.md).
+* **Partner Management (PM) owns partner identity + signing keys.** The CM holds only a thin **policy binding** per partner and registry (data controller) and, at verification time, **fetches the partner's public key from PM** (by `partner_mgmt_id` + `kid`) to verify the consent object's signature locally. See [Partner Management Integration](design/partner-management-integration.md).
 * **The CM owns the data-share policy, the PDP decision, and the receipts.** The versioned policy (allowed fields, purposes, validity ceiling, fetch semantics) is attached to the binding; receipts are signed with the CM's own `.p12` key and published at `/.well-known/jwks.json` (self-verifying — the CM is **not** a PM partner).
 * **The Approval Workflow Engine (AWE) gates policy-widening.** A change that grants more than the current active policy sits `pending` until AWE returns an approved outcome, then becomes `active`. See [Approval Workflow Integration](design/approval-workflow-integration.md).
 * **API-audience split.** The CM follows the platform's 4-API audience pattern — **staff** (admin console, approver inbox), **partner** (the PDP `/validate`, no Keycloak — trust is the partner-signed object + `jti` replay guard over mTLS), and **beneficiary** (subject self-service).
@@ -50,9 +50,11 @@ The CM supports two complementary modes. The first is the priority.
 A partner calls a registry API and **embeds a signed consent object** in the request. The registry forwards it to the CM, which:
 
 1. verifies the object's signature locally against the partner's public key **fetched from Partner Management** (**known-party** check),
-2. evaluates it against the partner's **data-share policy** (allowed fields, purpose, validity),
+2. evaluates the consent's grant **for that registry** against the partner's **data-share policy for that registry** (allowed fields, purpose, validity),
 3. checks it is **not revoked or expired**, and
-4. returns a **decision** containing the **effective set of fields** the registry may release (`consent scope ∩ partner policy`).
+4. returns a **decision** containing the **effective set of fields** the registry may release (`grant scope ∩ partner policy`) and the consent's subject, which the registry checks against what it searches.
+
+One consent can cover **several registries**: the partner asks the subject once and lists a grant per registry (`grants: [{data_controller, data_scopes}]`); each registry validates only its own grant and gets its own receipt. The earlier single-registry consent (`data_controller` + `data_scopes`) still works.
 
 The registry releases only those fields. The CM persists a canonical artefact, a signed receipt, and an immutable decision log.
 
@@ -63,7 +65,7 @@ For first-party flows where consent is collected through OpenG2P itself: the CM 
 ## Design principles
 
 * **Delegated consent.** Data-holding services never interpret consent semantics; they enforce a decision.
-* **Partner-bound policy.** Every partner binding carries an explicit, versioned data-share policy; widening is gated by AWE approval. Consent can never exceed the active policy.
+* **Partner-bound policy.** Every partner binding (one per partner and registry) carries an explicit, versioned data-share policy; widening is gated by AWE approval. Consent can never exceed the active policy.
 * **Cryptographic proof.** Consent objects are partner-signed (keys sourced from PM); receipts are CM-signed with the CM's own `.p12` key and published via JWKS. Anyone can verify.
 * **Data minimisation &amp; purpose limitation.** The CM returns the intersection of what was consented and what policy allows — never more.
 * **Append-only audit.** Every decision and state transition is logged immutably for non-repudiation.
