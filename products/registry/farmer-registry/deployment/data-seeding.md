@@ -25,10 +25,11 @@ This page covers only what is specific to the Farmer Registry.
 
 | | Sample data | Bulk data | Sanity data |
 |---|---|---|---|
-| **How much** | A few dozen people from the country pack, plus the farmer overlay below | **100,000 farmers** by default | A handful of fixtures |
+| **How much** | A few dozen people from the country pack, plus the farmer overlay below | **100,000 farmers** when on (adjustable) | A handful of fixtures |
 | **Purpose** | Demonstrations — records a person reads | Volume for reports and dashboards | Verifying the deploy |
 | **Switch** | `registry.dbSeed.loadSampleData` | `analytics.bulkSample.enabled` | `registry.sanity.runE2e` |
-| **Default here** | `true` | `true` | `false` |
+| **Default here** | `false` | `false` | `false` |
+| **Rancher form** | DB Seed → *Load Sample Data* (+ *Load Sample Images*) | Analytics → *Generate bulk demo data* | Sanity → *Sanity - Run Full E2E* |
 
 ## Sample data
 
@@ -104,8 +105,10 @@ the inbound DCI template emit them directly.
 
 ## Bulk data
 
-The Farmer Registry generates **100,000 farmers** at install so that reports and
-dashboards have something to show. Nobody reads an individual bulk row, so the
+When switched on, the Farmer Registry generates **100,000 farmers** (adjustable)
+at install so that load tests have volume and the dashboards have something to
+show. It is **off by default**, and it is independent of the reporting views and
+dashboards — those install either way, over whatever data the register holds. Nobody reads an individual bulk row, so the
 names and phone numbers are invented and need not belong to the country.
 
 {% hint style="warning" %}
@@ -124,19 +127,17 @@ generates for Ethiopia or Kamuntu unchanged. It does not mean MDS is optional.
 the job fails if MDS holds a different country than expected. Empty (the default)
 means no check.
 
-### Turning it off
+### Turning it on
+
+In the Rancher form, under **Analytics**: tick **Generate bulk demo data**, and set
+**Bulk demo farmers** if 100,000 is not the size you want. In values:
 
 ```yaml
 analytics:
   bulkSample:
-    enabled: false
+    enabled: true
+    farmers: 100000
 ```
-
-{% hint style="warning" %}
-This one is **not in the Rancher form** — the generated questions come from the
-platform chart, and `analytics.*` is the Farmer Registry's own key. Set it in the
-YAML editor alongside the form.
-{% endhint %}
 
 ## Sanity data
 
@@ -232,7 +233,7 @@ flowchart TD
 
     subgraph AN ["Analytics — only when analytics.* enabled"]
         direction TB
-        H["<b>40 · bulk-sample</b><br/><b>100,000 farmers</b>"] --> I
+        H["<b>40 · bulk-sample</b><br/><b>100,000 farmers</b><br/><i>off by default</i>"] --> I
         I["<b>45 · reporting-views</b><br/>views the dashboards read"] --> J
         J["<b>50 · dashboards</b><br/><b>import into Superset</b>"]
     end
@@ -308,13 +309,15 @@ registry:
   dbSeed:
     loadGeoData: false     # legacy loader — must stay off
     syncGeoWidgets: true   # match geo dropdowns to the country's levels
-    loadSampleData: true
-    loadImages: true
+    loadSampleData: false  # demo farmers — opt in from the form
+    loadImages: false
 
 analytics:
   bulkSample:
-    enabled: true
-    farmers: 100000
+    enabled: false         # bulk demo data — opt in from the form
+    farmers: 100000        # used only when enabled
+  reportingViews:
+    enabled: true          # independent of bulk data
 ```
 
 For a production install, see

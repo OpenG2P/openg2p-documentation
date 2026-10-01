@@ -236,11 +236,12 @@ and under **Sanity**: `registry.sanity.enabled`, `registry.sanity.runE2e`,
 `registry.sanity.failOnError`.
 
 {% hint style="warning" %}
-**Bulk data cannot currently be turned off from the Rancher form.** The generated
-questions come only from the platform chart, and `analytics.*` is a variant-level
-key that the platform does not define. To disable bulk generation you must set
-`analytics.bulkSample.enabled: false` in values — for example in the YAML editor
-Rancher offers alongside the form.
+**Bulk data is a variant-level switch.** `analytics.*` is defined by each registry
+chart, not the platform, so it appears in the Rancher form only where the variant
+adds it to its own questions. The Farmer Registry does — **Analytics → Generate
+bulk demo data**, off by default. Where a variant does not, set
+`analytics.bulkSample.enabled` in values — for example in the YAML editor Rancher
+offers alongside the form.
 {% endhint %}
 
 ## An empty install, for production
