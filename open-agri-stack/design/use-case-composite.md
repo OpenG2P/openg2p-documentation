@@ -111,11 +111,11 @@ audit:
 | Section | Purpose | Notes |
 | --- | --- | --- |
 | **Identity** | Name, version and lifecycle status | Partners call `use_case@major`. A breaking change to the response means a new major version, and the old one is deprecated with a sunset date. |
-| **Governance** | Links the use case to a policy, a purpose and a consent mode | The gateway rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). |
+| **Governance** | Links the use case to a policy, a purpose and a consent mode | The composite rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). |
 | **Input** | What the partner sends: subject identifier types, parameters, batch size | Checked before any registry is called |
 | **Sources** | One entry per registry: controller, whether it's mandatory, requested scopes, DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
 | **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the composite only bundles the parts. |
-| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced at the gateway |
+| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
 **First version:** registry endpoints are configured in the composite's own settings (`registries`), because PM holds no registry endpoints yet; the composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [composite as built](../implementation/composite.md).
@@ -140,9 +140,10 @@ Publishing is done by the Open Agri Stack platform team. Because the configurati
 
 ## What happens at runtime
 
-1. **Gateway:** authenticates the partner, checks its association with `policy` in PM, applies rate limits, and routes to `use_case@version`.
+1. **Ingress:** the OpenG2P deployment's ingress (Nginx, Istio) routes the request to the composite. There is no separate API gateway; the composite does the partner checks below.
 2. **Composite:**
-   * verifies the partner's signature and validates the input;
+   * verifies the partner's signature, checks its association with `policy` and applies rate limits;
+   * validates the input and selects `use_case@version`;
    * renders one DCI request per source from its template;
    * signs each request with its own PM key, carrying the partner's consent and the request ID;
    * sends the requests in parallel.

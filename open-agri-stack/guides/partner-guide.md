@@ -324,7 +324,7 @@ Get the composite's public key from the operator, or from PM's key API (`GET {pm
 
 ## Rate limits
 
-`loan-profile` allows **60 requests per minute** per partner (`429 rate_limited` beyond that). The limit is applied per composite pod and worker, so it is a floor rather than an exact ceiling; global limits and daily quotas belong to the API gateway, which is [not built yet](../open-items/README.md).
+`loan-profile` allows **60 requests per minute** per partner (`429 rate_limited` beyond that). The limit is applied per composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](../open-items/README.md).
 
 ## Worked example: `loan-profile`
 

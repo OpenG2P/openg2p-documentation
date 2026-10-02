@@ -60,7 +60,7 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry changes](implementation/farmer-registry.md) |
 | One consent with a grant per registry, in CM | Built | [Consent Manager changes](implementation/consent-manager.md) |
 | Use-case composite, first version | Built | [Composite as built](implementation/composite.md) |
-| Consent collected in CM presented at a registry; policies held in PM; API gateway; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
+| Consent collected in CM presented at a registry; policies held in PM; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
 
 ## Map of this section
 

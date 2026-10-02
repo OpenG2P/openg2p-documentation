@@ -54,7 +54,7 @@ In the registries as built, a scope is a **top-level key of the registry's DCI r
 
 ## Runtime checks
 
-1. **Gateway / composite:** is this partner associated with the policy the use case refers to? If not, reject.
+1. **Composite:** is this partner associated with the policy the use case refers to? If not, reject. (Today: the use case's `allowed_partners`.)
 2. **Registry → CM `/validate`:** CM checks the consent (valid, not revoked, right purpose), fetches that registry's policy section (from PM, cached, in the target design), and returns the intersection.
 3. **Registry:** releases only the effective scopes.
 

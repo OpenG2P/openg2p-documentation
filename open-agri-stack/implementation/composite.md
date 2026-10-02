@@ -58,7 +58,7 @@ The file and its settings are explained in the [composite configuration guide](.
 * Stateless pods behind a CPU-based autoscaler (1–5 pods at 70% CPU by default); memory-based autoscaling is off on purpose (Python's memory does not shrink, so it would never scale back down).
 * A pooled HTTP client per worker (2 gunicorn workers per pod by default); partner keys cached per pod (soft TTL 300 s, last-known-good for 6 hours during a PM outage).
 * No database; startup never calls a registry.
-* Rate limits are per pod and worker: with N pods and W workers the effective ceiling is up to N × W times the configured rate. Global limits and daily quotas belong to the API gateway.
+* Rate limits are per pod and worker: with N pods and W workers the effective ceiling is up to N × W times the configured rate. Limits across pods and daily quotas need shared counters (to do).
 * The image runs as uid 1001 with a read-only root filesystem.
 
 ## Audit
@@ -77,7 +77,7 @@ Events are linked by the request ID. They are sent in the background; failures a
 
 * the checks when a use case is published (against PM policies, which PM doesn't hold yet);
 * data-blind mode;
-* daily quotas and global rate limits (API gateway);
+* daily quotas and rate limits across pods (shared counters);
 * registry endpoints and policies held in PM rather than in configuration;
 * calling the crop sources in parallel with the farmer when the partner already sends a farmer ID;
 * a configuration UI;

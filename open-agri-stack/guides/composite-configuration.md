@@ -112,7 +112,7 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `response.source_status` | Include `sources` in the response (default `true`) |
 | `execution.overall_timeout_ms` | 100–300000; default from `DEFAULT_OVERALL_TIMEOUT_MS` (10000) |
 | `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does. |
-| `limits.rate_per_partner` | e.g. `60/min` (units `s`, `min`, `hour`), as a token bucket per pod and worker. Global limits belong to the gateway. |
+| `limits.rate_per_partner` | e.g. `60/min` (units `s`, `min`, `hour`), as a token bucket per pod and worker. Limits across pods are to do (shared counters). |
 | `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) |
 
 Also accepted from the design but **not acted on yet** (logged once at load): `owner`, `consent.collection`, `consent.mode`, `sources[].request_scopes`, `response.schema`, `response.correlate_on`, `response.mode: merged`, `execution.fan_out: parallel`, and `limits.daily_quota_per_partner`.
@@ -364,5 +364,5 @@ Registry settings (`composite.registries`) are environment variables, so changin
 
 * Pods are stateless; scale on CPU (memory autoscaling is off on purpose).
 * Each worker keeps its own connection pool and partner-key cache.
-* Rate limits are per pod and worker (up to pods × workers × the configured rate in total); global limits and daily quotas belong to the API gateway.
+* Rate limits are per pod and worker (up to pods × workers × the configured rate in total); limits across pods and daily quotas are to do (shared counters in the composite).
 * Startup never calls a registry; a registry being down only affects requests.

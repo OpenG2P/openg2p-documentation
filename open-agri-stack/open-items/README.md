@@ -24,7 +24,10 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 * **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
 * **Data-blind mode:** each registry encrypts its part to the partner's PM key and the composite only bundles the parts.
-* **API gateway:** global rate limits and daily quotas (`limits.daily_quota_per_partner`), partner authentication and the policy association check at the edge. The composite's rate limit is per pod and worker.
+* **No separate API gateway.** Partners come in through the OpenG2P deployment's ingress (Nginx, Istio); see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway). What remains to do:
+  * **Restrict the registries' partner APIs** with an Istio `AuthorizationPolicy`, so only the composite (and partners deliberately allowed direct access) can call them, and partners cannot bypass the composite.
+  * **Rate limits across pods and daily quotas** in the composite (`limits.daily_quota_per_partner`), with shared counters in Redis. Today the rate limit is per pod and worker.
+  * **Reconsider a gateway product** only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated.
 * **Registry endpoints and policies held in PM** rather than in the composite's configuration.
 * **Calling the crop sources in parallel with the farmer** when the partner already sends a farmer ID.
 * **A configuration UI.**
