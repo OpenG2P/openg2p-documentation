@@ -176,6 +176,8 @@ One role is the **primary subject**, used for contexts and summaries. Participan
 
 Nothing changes for the Farmer Registry unless it adopts field verification. Its existing verification table becomes verification records, and AWE approval of changes stays as it is.
 
+**Crop seasons: one registry per deployment.** Crop seasons belong to the Crop Sown Registry; the Farmer Registry holds only the farmer's declared main crops. A country may instead keep crop seasons as an activity register inside the Farmer Registry's own extension (the design allows it; not built). It should then not also run the Crop Sown Registry for the same farmers: each fact has one authoritative registry, and two would count sown area twice.
+
 ### Crop Sown Registry (occurrences, plus a cluster entity)
 
 | Register | Kind | Verification | Notes |
