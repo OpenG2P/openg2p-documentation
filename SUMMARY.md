@@ -574,6 +574,38 @@
     * [Releases](products/g2p-bridge/_archive/releases/README.md)
       * [1.0.2](products/g2p-bridge/_archive/releases/1.0.2.md)
 
+## Open Agri Stack
+
+* [What is Open Agri Stack](open-agri-stack/README.md)
+* [Architecture & Concepts](open-agri-stack/architecture/README.md)
+  * [Request Flow](open-agri-stack/architecture/request-flow.md)
+  * [Policy and Consent](open-agri-stack/architecture/policy-and-consent.md)
+  * [Consent Model](open-agri-stack/architecture/consent-model.md)
+  * [Registry Model](open-agri-stack/architecture/registry-model.md)
+  * [Register vs Activity Register](open-agri-stack/architecture/register-vs-activity-register.md)
+  * [Terms: Validation, Correction, Verification](open-agri-stack/architecture/terms.md)
+* [Design](open-agri-stack/design/README.md)
+  * [Register Model Design](open-agri-stack/design/register-model-design.md)
+  * [Activity Register](open-agri-stack/design/activity-register.md)
+  * [Crop Sown Registry](open-agri-stack/design/crop-sown-registry.md)
+  * [Use-Case Composite](open-agri-stack/design/use-case-composite.md)
+  * [Concept Notes Review](open-agri-stack/design/concept-notes-review.md)
+* [Implementation](open-agri-stack/implementation/README.md)
+  * [Registry Platform Changes](open-agri-stack/implementation/registry-platform.md)
+  * [Consent Manager Changes](open-agri-stack/implementation/consent-manager.md)
+  * [Crop Sown Registry (as built)](open-agri-stack/implementation/crop-sown-registry.md)
+  * [Farmer Registry Changes](open-agri-stack/implementation/farmer-registry.md)
+  * [Composite as Built](open-agri-stack/implementation/composite.md)
+* [Guides](open-agri-stack/guides/README.md)
+  * [Partner Guide](open-agri-stack/guides/partner-guide.md)
+  * [Composite Configuration](open-agri-stack/guides/composite-configuration.md)
+  * [Adding a Data Source](open-agri-stack/guides/adding-a-data-source.md)
+  * [End-to-End Test from a Laptop](open-agri-stack/guides/end-to-end-test.md)
+  * [Deploying on a Cluster](open-agri-stack/guides/deployment.md)
+  * [Running the Composite Locally](open-agri-stack/guides/running-the-composite-locally.md)
+* [TODOs & Open Items](open-agri-stack/open-items/README.md)
+  * [Service Guide Notes](open-agri-stack/open-items/service-guide-notes.md)
+
 ## Platform
 
 * [Roadmap](platform/roadmap.md)

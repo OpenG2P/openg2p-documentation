@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="540" viewBox="0 0 1060 540" role="img" aria-label="Sequence: the bank's request passes the gateway, which checks the association in Partner Management, then the composite fans out to three registries; each registry validates with the Consent Manager, which reads its policy section from Partner Management; results return with per-source status, one registry timing out."><style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
+.cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.l1{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5} .l2{fill:#F7ECD4;stroke:#AE8433;stroke-width:1.5}
+.dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5} .uc{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
+.plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
+.dept{fill:none;stroke:#C8D0C8;stroke-width:1.3;stroke-dasharray:5 4}
+.band{fill:none;stroke:#56625B;stroke-width:1.2;stroke-dasharray:6 5}
+.ar{stroke:#3B4640;stroke-width:1.4;fill:none} .ar.d{stroke-dasharray:5 4}
+.life{stroke:#C8D0C8;stroke-width:1.2;stroke-dasharray:4 4}
+.chip-ok{fill:#DDEFE3;stroke:none} .chip-no{fill:none;stroke:#C8D0C8;stroke-dasharray:4 3}
+.ok{font-size:12px;fill:#1F5B3A;font-family:'JetBrains Mono',Menlo,monospace}
+.no{font-size:12px;fill:#8A948E;font-family:'JetBrains Mono',Menlo,monospace}
+.strike{stroke:#8A948E;stroke-width:1.2} .op{font-size:22px;fill:#56625B;font-weight:500}
+.x{stroke:#C0463B;stroke-width:2}
+</style><rect width="100%" height="100%" fill="#FFFFFF"/>
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker>
+      </defs>
+      <!-- heads -->
+      <rect class="plain" x="15" y="16" width="110" height="36" rx="6"/><text class="t" x="70" y="39" text-anchor="middle">Bank</text>
+      <rect class="dpi" x="145" y="16" width="110" height="36" rx="6"/><text class="t" x="200" y="39" text-anchor="middle">Gateway</text>
+      <rect class="uc" x="275" y="16" width="110" height="36" rx="6"/><text class="t" x="330" y="39" text-anchor="middle">Composite</text>
+      <rect class="l1" x="415" y="16" width="110" height="36" rx="6"/><text class="t" x="470" y="39" text-anchor="middle">Farmer Reg.</text>
+      <rect class="l1" x="545" y="16" width="110" height="36" rx="6"/><text class="t" x="600" y="39" text-anchor="middle">Crop Sown</text>
+      <rect class="l1" x="675" y="16" width="110" height="36" rx="6"/><text class="t" x="730" y="39" text-anchor="middle">Livestock</text>
+      <rect class="dpi" x="815" y="16" width="110" height="36" rx="6"/><text class="t" x="870" y="39" text-anchor="middle">CM</text>
+      <rect class="dpi" x="945" y="16" width="110" height="36" rx="6"/><text class="t" x="1000" y="39" text-anchor="middle">PM</text>
+      <!-- lifelines -->
+      <line class="life" x1="70" y1="52" x2="70" y2="520"/>
+      <line class="life" x1="200" y1="52" x2="200" y2="520"/>
+      <line class="life" x1="330" y1="52" x2="330" y2="520"/>
+      <line class="life" x1="470" y1="52" x2="470" y2="520"/>
+      <line class="life" x1="600" y1="52" x2="600" y2="520"/>
+      <line class="life" x1="730" y1="52" x2="730" y2="520"/>
+      <line class="life" x1="870" y1="52" x2="870" y2="520"/>
+      <line class="life" x1="1000" y1="52" x2="1000" y2="520"/>
+
+      <!-- 1 -->
+      <line class="ar" x1="70" y1="90" x2="198" y2="90" marker-end="url(#a2)"/>
+      <text class="lbl" x="135" y="83" text-anchor="middle">1 · request + consents</text>
+      <!-- 2 -->
+      <line class="ar" x1="200" y1="125" x2="998" y2="125" marker-end="url(#a2)"/>
+      <text class="lbl" x="600" y="118" text-anchor="middle">2 · is this bank associated with the credit-assessment policy?</text>
+      <line class="ar d" x1="1000" y1="150" x2="202" y2="150" marker-end="url(#a2)"/>
+      <text class="lbl" x="600" y="143" text-anchor="middle">yes</text>
+      <!-- 3 -->
+      <line class="ar" x1="200" y1="185" x2="328" y2="185" marker-end="url(#a2)"/>
+      <text class="lbl" x="265" y="178" text-anchor="middle">3 · route</text>
+      <!-- 4 -->
+      <line class="ar" x1="330" y1="222" x2="468" y2="222" marker-end="url(#a2)"/>
+      <line class="ar" x1="330" y1="236" x2="598" y2="236" marker-end="url(#a2)"/>
+      <line class="ar" x1="330" y1="250" x2="728" y2="250" marker-end="url(#a2)"/>
+      <text class="lbl" x="400" y="215" text-anchor="middle">4 · DCI search ×3</text>
+      <!-- 5 -->
+      <line class="ar" x1="470" y1="290" x2="868" y2="290" marker-end="url(#a2)"/>
+      <text class="lbl" x="800" y="283" text-anchor="middle">5 · /validate</text>
+      <!-- 6 -->
+      <line class="ar" x1="870" y1="315" x2="998" y2="315" marker-end="url(#a2)"/>
+      <text class="lbl" x="935" y="308" text-anchor="middle">6 · policy section</text>
+      <line class="ar d" x1="870" y1="345" x2="472" y2="345" marker-end="url(#a2)"/>
+      <text class="lbl" x="800" y="338" text-anchor="middle">effective scopes</text>
+      <text class="s" x="665" y="374" text-anchor="middle">crop sown and livestock do the same with their own consent object</text>
+      <!-- 7 -->
+      <line class="ar d" x1="470" y1="405" x2="332" y2="405" marker-end="url(#a2)"/>
+      <text class="lbl" x="400" y="398" text-anchor="middle">7 · ok</text>
+      <line class="ar d" x1="600" y1="425" x2="332" y2="425" marker-end="url(#a2)"/>
+      <text class="lbl" x="465" y="419" text-anchor="middle">ok</text>
+      <line class="ar d" x1="730" y1="448" x2="332" y2="448" marker-end="url(#a2)"/>
+      <line class="x" x1="520" y1="441" x2="532" y2="455"/><line class="x" x1="532" y1="441" x2="520" y2="455"/>
+      <text class="lbl" x="620" y="442" text-anchor="middle">timeout → unavailable</text>
+      <!-- 8 -->
+      <line class="ar" x1="330" y1="490" x2="72" y2="490" marker-end="url(#a2)"/>
+      <text class="lbl" x="200" y="483" text-anchor="middle">8 · per-source status + data</text>
+    </svg>

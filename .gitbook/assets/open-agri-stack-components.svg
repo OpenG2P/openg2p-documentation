@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="620" viewBox="0 0 1060 620" role="img" aria-label="Service provider calls the API gateway, which routes to a use-case composite; the composite fans out DCI searches to departmental registries; each registry validates with the Consent Manager, which reads policy from Partner Management; registries look up codes and geography in Layer 2 reference services."><style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
+.cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.l1{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5} .l2{fill:#F7ECD4;stroke:#AE8433;stroke-width:1.5}
+.dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5} .uc{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
+.plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
+.dept{fill:none;stroke:#C8D0C8;stroke-width:1.3;stroke-dasharray:5 4}
+.band{fill:none;stroke:#56625B;stroke-width:1.2;stroke-dasharray:6 5}
+.ar{stroke:#3B4640;stroke-width:1.4;fill:none} .ar.d{stroke-dasharray:5 4}
+.life{stroke:#C8D0C8;stroke-width:1.2;stroke-dasharray:4 4}
+.chip-ok{fill:#DDEFE3;stroke:none} .chip-no{fill:none;stroke:#C8D0C8;stroke-dasharray:4 3}
+.ok{font-size:12px;fill:#1F5B3A;font-family:'JetBrains Mono',Menlo,monospace}
+.no{font-size:12px;fill:#8A948E;font-family:'JetBrains Mono',Menlo,monospace}
+.strike{stroke:#8A948E;stroke-width:1.2} .op{font-size:22px;fill:#56625B;font-weight:500}
+.x{stroke:#C0463B;stroke-width:2}
+</style><rect width="100%" height="100%" fill="#FFFFFF"/>
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker>
+      </defs>
+
+      <!-- OAN band -->
+      <rect class="band" x="20" y="12" width="1000" height="36" rx="6"/>
+      <text class="lbl" x="520" y="35" text-anchor="middle">OAN network layer (Beckn): discovery of service providers and consumers — not used for registry data exchange</text>
+
+      <!-- SP -->
+      <rect class="plain" x="250" y="70" width="260" height="48" rx="6"/>
+      <text class="t" x="380" y="90" text-anchor="middle">Service provider</text>
+      <text class="s" x="380" y="107" text-anchor="middle">bank · MFI · agritech — a PM partner</text>
+      <line class="ar" x1="380" y1="118" x2="380" y2="158" marker-end="url(#a1)"/>
+      <text class="lbl" x="390" y="142">signed DCI request + consent objects</text>
+
+      <!-- Gateway -->
+      <rect class="dpi" x="250" y="160" width="260" height="48" rx="6"/>
+      <text class="t" x="380" y="180" text-anchor="middle">API Gateway</text>
+      <text class="s" x="380" y="197" text-anchor="middle">auth · quota · routing · audit</text>
+      <line class="ar" x1="380" y1="208" x2="380" y2="248" marker-end="url(#a1)"/>
+      <text class="lbl" x="390" y="232">route by use case</text>
+
+      <!-- Composite -->
+      <rect class="uc" x="230" y="250" width="300" height="48" rx="6"/>
+      <text class="t" x="380" y="270" text-anchor="middle">Use-case composite · credit-profile/v1</text>
+      <text class="s" x="380" y="287" text-anchor="middle">fan-out · per-source status · stores nothing</text>
+
+      <!-- fan-out -->
+      <line class="ar" x1="370" y1="298" x2="110" y2="370" marker-end="url(#a1)"/>
+      <line class="ar" x1="380" y1="298" x2="282" y2="370" marker-end="url(#a1)"/>
+      <line class="ar" x1="390" y1="298" x2="456" y2="370" marker-end="url(#a1)"/>
+      <text class="lbl" x="436" y="322">DCI search, in parallel</text>
+
+      <!-- Departments -->
+      <rect class="dept" x="20" y="350" width="165" height="124" rx="8"/>
+      <rect class="dept" x="198" y="350" width="165" height="124" rx="8"/>
+      <rect class="dept" x="376" y="350" width="165" height="124" rx="8"/>
+      <rect class="dept" x="554" y="350" width="165" height="124" rx="8"/>
+      <text class="cap" x="30" y="365">DEPARTMENT A</text>
+      <text class="cap" x="208" y="365">DEPARTMENT B</text>
+      <text class="cap" x="386" y="365">DEPARTMENT C</text>
+      <text class="cap" x="564" y="365">DEPARTMENT D</text>
+
+      <rect class="l1" x="28" y="372" width="149" height="60" rx="6"/>
+      <text class="t" x="102" y="396" text-anchor="middle">Farmer Registry</text>
+      <text class="s" x="102" y="413" text-anchor="middle">register + tables</text>
+      <rect class="l1" x="206" y="372" width="149" height="60" rx="6"/>
+      <text class="t" x="280" y="396" text-anchor="middle">Crop Sown Registry</text>
+      <text class="s" x="280" y="413" text-anchor="middle">activity register</text>
+      <rect class="l1" x="384" y="372" width="149" height="60" rx="6"/>
+      <text class="t" x="458" y="396" text-anchor="middle">Livestock Registry</text>
+      <text class="s" x="458" y="413" text-anchor="middle">register + activities</text>
+      <rect class="l1" x="562" y="372" width="149" height="60" rx="6"/>
+      <text class="t" x="636" y="396" text-anchor="middle">DA Registry</text>
+      <text class="s" x="636" y="413" text-anchor="middle">register</text>
+
+      <text class="s" x="102" y="456" text-anchor="middle">enforces its own slice</text>
+      <text class="s" x="280" y="456" text-anchor="middle">enforces its own slice</text>
+      <text class="s" x="458" y="456" text-anchor="middle">enforces its own slice</text>
+      <text class="s" x="636" y="456" text-anchor="middle">enforces its own slice</text>
+
+      <!-- Layer 2 -->
+      <line class="ar d" x1="190" y1="474" x2="190" y2="538" marker-end="url(#a1)"/>
+      <line class="ar d" x1="549" y1="474" x2="549" y2="538" marker-end="url(#a1)"/>
+      <text class="lbl" x="370" y="511" text-anchor="middle">look up codes, reference entities, geography</text>
+
+      <rect class="l2" x="20" y="540" width="699" height="60" rx="6"/>
+      <text class="t" x="369" y="564" text-anchor="middle">Master Data Service</text>
+      <text class="s" x="369" y="582" text-anchor="middle">code lists · reference entities (seed varieties, inputs, breeds) · admin areas · boundaries · public read</text>
+
+      <!-- Right column: shared DPI -->
+      <text class="cap" x="790" y="140">SHARED DPI · LAYER 3</text>
+      <rect class="dpi" x="790" y="150" width="230" height="100" rx="6"/>
+      <text class="t" x="905" y="172" text-anchor="middle">Partner Management</text>
+      <text class="s" x="905" y="192" text-anchor="middle">identity &amp; keys</text>
+      <text class="s" x="905" y="208" text-anchor="middle">data-share policies</text>
+      <text class="s" x="905" y="224" text-anchor="middle">one section per department</text>
+      <text class="s" x="905" y="240" text-anchor="middle">partner ↔ policy associations</text>
+
+      <line class="ar" x1="510" y1="184" x2="788" y2="184" marker-end="url(#a1)"/>
+      <text class="lbl" x="650" y="176" text-anchor="middle">caller associated with policy?</text>
+
+      <rect class="dpi" x="790" y="276" width="230" height="50" rx="6"/>
+      <text class="t" x="905" y="296" text-anchor="middle">AWE</text>
+      <text class="s" x="905" y="313" text-anchor="middle">each department approves its section</text>
+      <line class="ar" x1="905" y1="252" x2="905" y2="274" marker-start="url(#a1)" marker-end="url(#a1)"/>
+
+      <rect class="dpi" x="790" y="368" width="230" height="70" rx="6"/>
+      <text class="t" x="905" y="390" text-anchor="middle">Consent Manager</text>
+      <text class="s" x="905" y="407" text-anchor="middle">farmer consent, one per registry</text>
+      <text class="s" x="905" y="424" text-anchor="middle">/validate → effective scopes</text>
+
+      <line class="ar" x1="719" y1="403" x2="788" y2="403" marker-end="url(#a1)"/>
+      <text class="lbl" x="754" y="395" text-anchor="middle">/validate</text>
+
+      <polyline class="ar" points="1020,403 1040,403 1040,200 1022,200" marker-end="url(#a1)"/>
+      <text class="lbl" x="1052" y="300" text-anchor="middle" transform="rotate(-90 1052 300)">policy + partner keys</text>
+
+      <rect class="dpi" x="790" y="540" width="230" height="60" rx="6"/>
+      <text class="t" x="905" y="564" text-anchor="middle">Audit Manager</text>
+      <text class="s" x="905" y="582" text-anchor="middle">events from every hop</text>
+    </svg>
