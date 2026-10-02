@@ -35,12 +35,6 @@ The diagram labels CM as "farmer consent, one per registry". That has changed: t
 * **AWE.** Each department approves its own section of a policy.
 * **Audit Manager.** Receives audit events from every hop, linked by the request ID.
 
-## Why not X-Road, IUDX or a data-space connector
-
-* **X-Road** secures transport between organisations, but it has no consent handling, field-level policy or aggregation. It's only worth adding if the government mandates a national interoperability layer. In that case it would carry the DCI calls, and everything described here would sit on top unchanged.
-* **IUDX** is out of scope.
-* **Eclipse Dataspace Components** duplicate PM and CM and bring a heavy Java stack. We borrow only their vocabularies: DCAT and ODRL.
-
 ## In this part
 
 | Page | Covers |
