@@ -596,6 +596,7 @@
   * [Crop Sown Registry (as built)](open-agri-stack/implementation/crop-sown-registry.md)
   * [Farmer Registry Changes](open-agri-stack/implementation/farmer-registry.md)
   * [Composite as Built](open-agri-stack/implementation/composite.md)
+  * [Standards](open-agri-stack/implementation/standards.md)
 * [Guides](open-agri-stack/guides/README.md)
   * [Partner Guide](open-agri-stack/guides/partner-guide.md)
   * [Composite Configuration](open-agri-stack/guides/composite-configuration.md)
