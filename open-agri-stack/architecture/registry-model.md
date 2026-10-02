@@ -21,19 +21,23 @@ A projection is current state computed from activities: for example, the current
 * **Per-subject projections** (current crop stage, 360 view) are updated in the same database transaction as the activity, so they are always exact.
 * **Aggregates for dashboards** are updated asynchronously. Each change is recorded in an outbox and the projection is recomputed idempotently from it; lag alerts and a nightly reconciliation job catch anything that falls behind. Any projection can be rebuilt from the activities.
 
-## Layer 2 split
+## Layer 2: catalogues
 
-All Layer 2 reference data lives in the [Master Data Service (MDS)](../../platform/platform-services/master-data-service/README.md). There is no separate reference registry.
+Layer 2 is the **catalogues**: the reference data every registry uses, defined once for the country. There is no reference data inside a registry.
 
-* **What MDS holds:**
+* **What the catalogues hold:**
   * simple code lists (gender, tenure type, units, crop types);
   * richer reference entities such as seed varieties, input products and breeds;
-  * geography: admin areas, with boundaries stored in MinIO.
-* **What MDS needs to gain:**
-  * **typed attributes per list**, so an entity like a seed variety can carry crop, maturity days, release year and agro-ecological zone (for example a JSONB attribute set validated by a JSON Schema defined per list);
-  * approvals through AWE;
-  * audit and history;
-  * a public read API and a change feed. Registries read code lists live today, but over a direct connection to MDS's database.
+  * geography: admin areas, with boundaries.
+* **Today:** the [Master Data Service (MDS)](../../platform/platform-services/master-data-service/README.md) serves this role. Registries read code lists and geography from it live, over a direct connection to its database, and the country pack's agriculture domain is loaded into it.
+* **Not designed yet.** Proper catalogues are still to be designed and built. The options are:
+  * **enhance MDS** with what a catalogue needs (below);
+  * **use the registry platform:** catalogues as registers, which already have approvals, history, audit and APIs;
+  * **adopt an existing open-source DPG** built for catalogues.
+* **What any catalogue needs:**
+  * **typed attributes per list**, so an entity like a seed variety can carry crop, maturity days, release year and agro-ecological zone (for example an attribute set validated by a JSON Schema defined per list);
+  * approvals (AWE), audit and history;
+  * a public read API and a change feed, instead of registries reading a database directly.
 * Codes are defined by the country; international classifications are optional mappings. Publish code lists in SKOS-shaped JSON-LD, and boundaries through OGC API – Features.
 
 See also [Country Data Architecture](../../platform/country-data-architecture.md) for country packs.

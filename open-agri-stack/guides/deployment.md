@@ -27,6 +27,10 @@ The release names `fr` and `csr` match the composite's default registry URLs (`h
 
 ## Commons services: Master Data, PM, CM
 
+{% hint style="info" %}
+Master Data (MDS) serves Open Agri Stack's **catalogues** (code lists, reference entities, geography) for now. Proper catalogues are still to be designed; see [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+{% endhint %}
+
 See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In the `openg2p-commons-services` form:
 
 | Group | Setting | Value for Open Agri Stack |

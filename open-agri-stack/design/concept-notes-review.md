@@ -16,15 +16,15 @@ This compares three concept notes with the [activity register](activity-register
 * **Livestock:** born, vaccinated, sold;
 * **Work log:** attendance, work performed, training attended.
 
-Each note classifies every fact as entity registry, Master Data, activity, trust or correction.
+Each note classifies every fact as entity registry, catalogue (Master Data), activity, trust or correction.
 
-**Verdict:** the notes fit our formulation. They use the same split between entity registry, Master Data and activity, the same append-only corrections, and derive state from history the same way. Nothing contradicts the core. They go further than we have in **trust** (verification and approval as separate, per-type steps), **certificates**, **participants**, and **activities that trigger entity changes**. There are also a few smaller differences, listed below.
+**Verdict:** the notes fit our formulation. They use the same split between entity registry, catalogues (MDS) and activity, the same append-only corrections, and derive state from history the same way. Nothing contradicts the core. They go further than we have in **trust** (verification and approval as separate, per-type steps), **certificates**, **participants**, and **activities that trigger entity changes**. There are also a few smaller differences, listed below.
 
 ## Where they match what we built
 
 | Their concept | Ours |
 | --- | --- |
-| **Entity vs occurrence.** Farmer, plot, animal and person live in entity registries; codes and geography in Master Data | Same. Activities refer to farmers and plots. Code lists and geography are read live from Master Data |
+| **Entity vs occurrence.** Farmer, plot, animal and person live in entity registries; codes and geography in the catalogues (MDS) | Same. Activities refer to farmers and plots. Code lists and geography are read live from Master Data |
 | **The "season case"** groups a farmer's occurrences; its lifecycle stage is _read_ from the activities | The **context** (crop season). The stage is **derived** in the projection |
 | Occurrence time vs record time; source; recorded by; status; schema version; location on every line | `occurred_at` / `recorded_at`, `channel` (+ partner), `recorded_by`, status, `schema_version`, `geo_dimensions` |
 | **Corrections are new records.** The original stays; a cancellation keeps the record | Supersede (`supersedes_activity_id`; the old one becomes `SUPERSEDED`) and void (`VOIDED`, kept) |

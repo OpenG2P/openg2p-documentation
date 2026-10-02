@@ -18,7 +18,7 @@ description: >-
 Open Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture for OAN Ethiopia layers 1–3:
 
 * **Layer 1:** the functional registries (farmer, crop sown, livestock, DA);
-* **Layer 2:** reference and master data;
+* **Layer 2:** catalogues: the reference data every registry uses (code lists, reference entities such as seed varieties, geography);
 * **Layer 3:** the shared DPI services that connect and govern them.
 
 They also cover how service providers (banks, MFIs, agritechs: **partners**) get farmer data held across the registries: who routes a request, who decides what may be shared, and who enforces it.
@@ -40,7 +40,7 @@ All registries are keyed to the same Fayda-based identifier.
 
 | Service | Role in Open Agri Stack |
 | --- | --- |
-| [Master Data Service (MDS)](../platform/platform-services/master-data-service/README.md) | All Layer 2 reference data: code lists (the Ethiopia country pack's agriculture domain), geography, sample people |
+| **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: code lists (the Ethiopia country pack's agriculture domain), reference entities, geography, sample people. MDS serves this role for now; proper catalogues are still to be designed and built (see [open items](open-items/README.md#catalogues)) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the composite): identities and public keys |
 | [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and the data-share policies; `/validate` tells each registry what it may release |
 | **Use-case composite** | One generic service that serves approved use cases (e.g. `loan-profile`) by querying several registries with one consent and returning one signed response |

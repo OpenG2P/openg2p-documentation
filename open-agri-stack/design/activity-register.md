@@ -52,7 +52,7 @@ An activity register does **not** use:
 | Planning, Cultivation, Sowing, Production, Harvest, Infestation tables | **Activity types**: `PLANNED`, `LAND_PREPARED`, `SOWN`, `GROWTH_OBSERVED`, `HARVESTED`, `INFESTATION_REPORTED`. Each has a JSON-Schema payload and a few promoted columns. |
 | Cluster / CultivationCluster tables | A **cluster register** in the same instance, referenced by activities |
 | `lifecycle_stage` on the header | A **projection**: current stage, area sown, yield and last activity per plot × season |
-| `farmer_name`, `region_name`… copied onto records | **Typed references** to the Farmer Registry / Fayda and to MDS geography, with names shown through a cached lookup |
+| `farmer_name`, `region_name`… copied onto records | **Typed references** to the Farmer Registry / Fayda and to catalogue geography (MDS), with names shown through a cached lookup |
 | `da_name`, `da_mobile_number` on each line | A reference to the **DA Registry** |
 | `status`, `rejection_reason`, `edit_count` | A **lightweight verification** state: submitted → verified / rejected (with reason) |
 | `sowing_date_ec`, `harvest_date_ec`… as strings | **Ethiopian calendar support**: store the Gregorian date, enter and display in the Ethiopian calendar |
@@ -96,7 +96,7 @@ As built, the activity model is its own base class, `G2PActivity`, next to an un
 | --- | --- | --- |
 | 1 | **Projections** (current-state records) | Current stage per plot × season; attendance rate per person |
 | 2 | **Activity context**: a grouping key with open/closed status | Plot × season for crop sown; session for attendance. Replaces the invented header. |
-| 3 | **Typed references**: internal register, external registry, Fayda, MDS codes and geography; validation per type (strict / lenient / none); names shown without copying | Farmer and plot held elsewhere; walk-ins at a training session |
+| 3 | **Typed references**: internal register, external registry, Fayda, catalogue codes and geography (MDS); validation per type (strict / lenient / none); names shown without copying | Farmer and plot held elsewhere; walk-ins at a training session |
 | 4 | **Sequence rules**: allowed order, repeatable vs once per context, expected dates | Can't harvest before sowing; infestation is repeatable; harvest due about N days after sowing |
 | 5 | **Work lists** from sequence rules | "Plots in my kebele overdue for a harvest visit" |
 | 6 | **Lightweight verification** (submitted → verified / rejected) | Supervisor checks a DA's entries without full change management |
@@ -151,7 +151,7 @@ The registry platform's [Observations design](../../products/registry/registry/d
 | Grouping a lifecycle | An explicit `FOLLOWS` link, chosen by the agent, one step at a time | A context derived from the payload (plot × year × season × crop) | **Keep contexts.** They handle an 8-step lifecycle and intercropping. An explicit link is an option for types that can't derive a key. |
 | Roll-ups | Asynchronous: optional enrichment, then adapter-computed aggregates per subject and period, with history | Synchronous: a projection per context, recomputed in the same transaction, plus declarative indicators | **Keep projections for current state; add aggregates and enrichment as an asynchronous layer on top.** |
 | Geography | Resolved from the subject's record (walking Land → Individual → Household) when aggregates are computed; `geo_dimensions` holds code and name per level; a reporting view groups by `geo_1…geo_5` | Named levels snapshotted on each activity when written, from the activity, the subject's record or the context | **Named levels, as there; snapshot rather than live resolution**, so it works when the subject is in another registry. See [geography and roll-ups](../implementation/registry-platform.md#geography-and-roll-ups). |
-| Code lists | The registry's local `G2PAttribute` tables | Read live from Master Data | **Ours.** The local tables no longer exist in the platform. |
+| Code lists | The registry's local `G2PAttribute` tables | Read live from the catalogues (MDS) | **Ours.** The local tables no longer exist in the platform. |
 | Offline sync | Batch endpoint with no idempotency | Idempotency key, temporary IDs | Ours |
 | Governance | Not covered | Verification, period locks, reference rules, DCI with consent, data policies, permissions | Ours |
 

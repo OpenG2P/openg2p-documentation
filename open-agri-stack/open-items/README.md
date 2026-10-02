@@ -69,14 +69,22 @@ The [composite as built](../implementation/composite.md) leaves these for later:
   * agent-portal entry;
   * looking up Farmer Registry farmer and plot IDs (today only their format is checked).
 
-## Master Data
+## Catalogues
 
-* **Registries read Master Data's database directly.** Registries no longer copy code lists at install; they query Master Data's code-list tables live over a database connection. That couples every registry to Master Data's schema. A public read API for code lists (see [Layer 2](../architecture/registry-model.md#layer-2-split)) would replace the direct connection.
+* **TODO: design and build proper catalogues.** Layer 2 (code lists, reference entities such as seed varieties, input products and breeds, geography) is served today by the Master Data Service (MDS), as a stand-in. The catalogues themselves are not designed yet. Decide between:
+  * **enhancing MDS** with typed attributes per list, AWE approvals, history and audit, a public read API and a change feed;
+  * **using the registry platform:** catalogues as registers, which already have approvals, history, audit and APIs;
+  * **adopting an existing open-source DPG** built for catalogues.
+
+  Whichever is chosen, registries must stop reading a database directly (below), and the country pack must load into it. See [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+
+The items below are about MDS as it serves the catalogues today.
+
+* **Registries read Master Data's database directly.** Registries no longer copy code lists at install; they query Master Data's code-list tables live over a database connection. That couples every registry to Master Data's schema. A public read API for the catalogues (see [Layer 2](../architecture/registry-model.md#layer-2-catalogues)) would replace the direct connection.
 * **Ethiopia country pack.**
   * Master Data's pack loader upserts but never deletes. An existing Master Data therefore keeps retired codes, such as the old `CROP_SEASON` values `SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`, after a reload. Retiring a code needs an `is_active` flag or a delete step.
   * `CROP_COMMODITY` still lacks enset, pulses beyond faba bean, haricot bean and chickpea, and horticulture beyond a handful of crops. The list needs review with MoA.
   * `SEED_VARIETY` is flat. Tying a variety to its crop needs typed attributes per list (below).
-* **MDS as the single reference-data service.** Design typed attributes per list (for seed varieties, input products, breeds), AWE approvals, history, a public read API and a change feed. See [registry model](../architecture/registry-model.md#layer-2-split).
 * **MDS partner endpoints.** They currently have no authentication decorator.
 
 ## Platform and build

@@ -83,7 +83,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
       <text class="lbl" x="370" y="511" text-anchor="middle">look up codes, reference entities, geography</text>
 
       <rect class="l2" x="20" y="540" width="699" height="60" rx="6"/>
-      <text class="t" x="369" y="564" text-anchor="middle">Master Data Service</text>
+      <text class="t" x="369" y="564" text-anchor="middle">Catalogues (MDS for now)</text>
       <text class="s" x="369" y="582" text-anchor="middle">code lists · reference entities (seed varieties, inputs, breeds) · admin areas · boundaries · public read</text>
 
       <!-- Right column: shared DPI -->

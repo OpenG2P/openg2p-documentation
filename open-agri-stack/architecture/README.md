@@ -13,7 +13,7 @@ description: >-
 | Colour | Layer |
 | --- | --- |
 | Blue | Layer 1: functional registries (system of record) |
-| Ochre | Layer 2: reference / master data (all in MDS) |
+| Ochre | Layer 2: catalogues (reference data; MDS for now) |
 | Teal | Layer 3: shared DPI |
 | Green | Layer 4: use-case service |
 

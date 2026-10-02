@@ -27,7 +27,7 @@ The Crop Sown Registry is **independent**. It shares data with the Farmer Regist
 * **Entities first** ([register model design](register-model-design.md#participants-and-entities-first)): the farmer and plot are registered in the Farmer Registry before crop activities are recorded. Temporary plot IDs (`TMP-…`) are no longer accepted; a plot found in the field is registered first.
 * **Participants:** every activity records its participants in typed roles: farmer (primary), plot and development agent (Farmer Registry and other systems), and cluster (the Cluster register here). Activities can be searched by participant.
 * **A changed crop** is a new crop season that names the one it replaces (`replaces_crop_season_id`). The old season is closed, and each points to the other.
-* **The location** is the plot's **woreda**, chosen from Master Data's geography. It is required when a crop season is planned or sown; later activities take it from their crop season. Every activity stores it with its zone, region and country as named levels, so every figure can be rolled up by level. The registry can't read the plot's location from the Farmer Registry, which may be on another instance, so the woreda is entered.
+* **The location** is the plot's **woreda**, chosen from the catalogues' geography (MDS). It is required when a crop season is planned or sown; later activities take it from their crop season. Every activity stores it with its zone, region and country as named levels, so every figure can be rolled up by level. The registry can't read the plot's location from the Farmer Registry, which may be on another instance, so the woreda is entered.
 
 ## Activity types
 
@@ -56,7 +56,7 @@ The Crop Sown Registry is **independent**. It shares data with the Farmer Regist
 
 ## Code lists
 
-**All code lists live in Master Data.** The Crop Sown Registry keeps none of its own. The registry platform checks every coded field against Master Data at the time of writing, the same way the Farmer Registry's dropdowns and validation read their lists.
+**All code lists live in the catalogues (MDS).** The Crop Sown Registry keeps none of its own. The registry platform checks every coded field against Master Data at the time of writing, the same way the Farmer Registry's dropdowns and validation read their lists.
 
 The lists are the **agriculture domain of the Ethiopia country pack** (`openg2p-data`, `packs/ETH/domains/agriculture`). Master Data loads that domain when installed with `geoSeed.domains: [agriculture]` (see [deployment](../guides/deployment.md)).
 
