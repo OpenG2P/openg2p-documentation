@@ -59,7 +59,14 @@ The [composite as built](../implementation/composite.md) leaves these for later:
   * **Later:** have register forms read Master Data's levels when they load, as activity-register forms already do, so the sync and the switch go away.
 * **Credentials after a change.** Certificates are verifiable credentials issued from a record (agent portal, Inji Certify). When that record is changed or corrected, credentials already issued from it stay valid. Decide whether a change suspends or revokes them (through Certify's status list) and prompts reissue.
 * **Sample data at the registries' edges.** The CSR sample farmer and plot IDs match the Farmer Registry's only by convention (`FR-<n>`, `LAND-<n>-<k>` from Master Data's sample people). If either registry changes its sample ID rule, the other must follow.
-* **Aligning with the Observations design.** Still to do: per-type switches for enrichment and aggregation with per-stage status, and agent-app capture (offline drafts, sync badge). The Crop Sown Registry has no enrichment yet; weather or satellite data would be the first. (The beneficiary API is in phase 2 above.) See [activity register](../design/activity-register.md#relation-to-the-observations-design).
+* **Gaps compared with the Observations design** (full table in [activity register](../design/activity-register.md#relation-to-the-observations-design)):
+  1. **Activity-type definitions through an API** (create and update types and schemas), instead of seed SQL only.
+  2. **Per-type processing switches and per-stage status** for enrichment and aggregation. The Crop Sown Registry has no enrichment yet; weather or satellite data would be the first.
+  3. **A shared calendar-period helper** (month, quarter, year) for aggregates, beside domain-defined periods such as seasons.
+  4. **Decide how area totals get farmer attributes** (e.g. farmers by gender), which live in the Farmer Registry: a consented copy of selected attributes on activities, or an analytics layer joining the registries.
+  5. **GPS as standard fields on every activity**, filled from the device.
+  6. **Recomputing aggregates after boundary changes**, from the catalogues' current boundaries.
+  7. **Agent field app** (offline drafts, sync badge, device GPS), only if field agents don't use ODK; see agent-portal entry below.
 * **Activity register gaps.** Not yet designed:
   * bulk export API;
   * file import into activity registers;
@@ -69,20 +76,15 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 ## Catalogues
 
-* **TODO: design and build proper catalogues.** Layer 2 (code lists, reference entities such as seed varieties, input products and breeds, geography) is served today by the Master Data Service (MDS), as a stand-in. The catalogues themselves are not designed yet. Decide between:
-  * **enhancing MDS** with typed attributes per list, AWE approvals, history and audit, a public read API and a change feed;
-  * **using the registry platform:** catalogues as registers, which already have approvals, history, audit and APIs;
-  * **adopting an existing open-source DPG** built for catalogues.
-
-  Whichever is chosen, registries must stop reading a database directly (below), and the country pack must load into it. See [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+* **In progress: catalogues as "MDS as Catalogue".** Decided: extend MDS rather than use the registry platform or adopt another DPG. The design is in [MDS as Catalogue](../../platform/platform-services/master-data-service/catalogue/README.md): versioned lists and geography, drafts with AWE or maker-checker approval, typed attributes per list, a crosswalk for boundary changes, a public read API and a change feed. The GeoPrism Registry was evaluated: strong temporal geography, but versioning and approvals only for geographic lists, a Java and OrientDB stack, and no Helm chart or Keycloak integration; MDS borrows its working/published versions and split/merge lineage. An import adapter from GeoPrism or the Common Geo Registry is a possible later add-on. Still to do once it is built: registries move from reading MDS's database to the catalogue APIs (below). See [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
 
 The items below are about MDS as it serves the catalogues today.
 
 * **Registries read Master Data's database directly.** Registries no longer copy code lists at install; they query Master Data's code-list tables live over a database connection. That couples every registry to Master Data's schema. A public read API for the catalogues (see [Layer 2](../architecture/registry-model.md#layer-2-catalogues)) would replace the direct connection.
 * **Ethiopia country pack.**
-  * Master Data's pack loader upserts but never deletes. An existing Master Data therefore keeps retired codes, such as the old `CROP_SEASON` values `SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`, after a reload. Retiring a code needs an `is_active` flag or a delete step.
+  * Master Data's pack loader upserts but never deletes. An existing Master Data therefore keeps retired codes, such as the old `CROP_SEASON` values `SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`, after a reload. MDS as Catalogue fixes this: a later pack load creates a draft in which dropped codes are retired, not deleted ([country packs and migration](../../platform/platform-services/master-data-service/catalogue/country-packs-and-migration.md)).
   * `CROP_COMMODITY` still lacks enset, pulses beyond faba bean, haricot bean and chickpea, and horticulture beyond a handful of crops. The list needs review with MoA.
-  * `SEED_VARIETY` is flat. Tying a variety to its crop needs typed attributes per list (see the catalogues TODO above).
+  * `SEED_VARIETY` is flat. Tying a variety to its crop needs typed attributes per list, which MDS as Catalogue provides through a per-list attribute schema (see the catalogues item above).
 * **MDS partner endpoints.** They currently have no authentication decorator.
 
 ## Platform and build

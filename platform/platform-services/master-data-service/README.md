@@ -28,7 +28,7 @@ not repeat it.
 
 | Consumer | What it takes | How |
 |---|---|---|
-| **Registries** (NSR, Farmer Registry, …) | Code lists and the geo hierarchy | At **runtime**, via the Attributes and Geo APIs — the registry keeps no copy. Its coded-value check, when on, reads the same lists |
+| **Registries** (NSR, Farmer Registry, …) | Code lists and the geo hierarchy | At **runtime**: the staff UI fills its dropdowns via the Attributes and Geo APIs, and the registry backend reads MDS's database directly — the registry keeps no copy. Its coded-value check, when on, reads the same lists |
 | **Registry sample loaders** | Sample people | At **install**, to load the demo records |
 | **Staff portal screens** | Geo units, level by level | At **runtime**, via the Geo API — this is what fills cascading address dropdowns |
 | **Bulk data generators** | The hierarchy | At install, so generated records point at real units |
@@ -61,6 +61,13 @@ countries from one instance; serving a second country means a second deployment.
 This is what keeps registry images country-agnostic: the same registry build
 serves Ethiopia or Kamuntu depending only on which pack the MDS beside it was
 seeded with.
+
+## MDS as Catalogue
+
+MDS is being extended into a governed, versioned **catalogue**: changes go through
+approved drafts, published versions are immutable and can be pinned, and the
+geography is versioned with split/merge lineage. See
+[MDS as Catalogue](catalogue/README.md).
 
 ## Source code
 

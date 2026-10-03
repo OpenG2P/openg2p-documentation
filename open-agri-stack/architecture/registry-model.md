@@ -30,11 +30,8 @@ Layer 2 is the **catalogues**: the reference data every registry uses, defined o
   * richer reference entities such as seed varieties, input products and breeds;
   * geography: admin areas, with boundaries.
 * **Today:** the [Master Data Service (MDS)](../../platform/platform-services/master-data-service/README.md) serves this role. Registries read code lists and geography from it live, over a direct connection to its database, and the country pack's agriculture domain is loaded into it.
-* **Not designed yet.** Proper catalogues are still to be designed and built. The options are:
-  * **enhance MDS** with what a catalogue needs (below);
-  * **use the registry platform:** catalogues as registers, which already have approvals, history, audit and APIs;
-  * **adopt an existing open-source DPG** built for catalogues.
-* **What any catalogue needs:**
+* **Decision: extend MDS.** The catalogue is being built as [MDS as Catalogue](../../platform/platform-services/master-data-service/catalogue/README.md): versioned lists and geography, drafts with approval, immutable published versions, latest / pinned / as-of reads, a crosswalk for boundary changes, and a change feed. The GeoPrism Registry was evaluated: it has strong temporal geography, but versioning and approvals cover only geographic lists, it runs on Java and OrientDB, and it has no Helm chart or Keycloak integration. MDS therefore borrows its ideas (working and published versions, split/merge lineage); an import adapter from GeoPrism or the Common Geo Registry is a possible later add-on.
+* **What the catalogue provides:**
   * **typed attributes per list**, so an entity like a seed variety can carry crop, maturity days, release year and agro-ecological zone (for example an attribute set validated by a JSON Schema defined per list);
   * approvals (AWE), audit and history;
   * a public read API and a change feed, instead of registries reading a database directly.
