@@ -80,7 +80,7 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 The items below are about MDS as it serves the catalogues today.
 
-* **Registries read Master Data's database directly.** Registries no longer copy code lists at install; they query Master Data's code-list tables live over a database connection. That couples every registry to Master Data's schema. A public read API for the catalogues (see [Layer 2](../architecture/registry-model.md#layer-2-catalogues)) would replace the direct connection.
+* **Registries read the catalogue API** (done for the registry platform: versioned and cached, with direct database reads kept as a rollback setting). Still to do: entity registers recording the catalogue versions used (activities already do), accepting an unchanged retired value when an entity record is edited, the registry staff UI moving from the legacy `/attributes` and `/geo` APIs to `/catalogue`, and the Farmer Registry's and NSR's install-time seed scripts still reading MDS's database.
 * **Ethiopia country pack.**
   * Master Data's pack loader upserts but never deletes. An existing Master Data therefore keeps retired codes, such as the old `CROP_SEASON` values `SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`, after a reload. MDS as Catalogue fixes this: a later pack load creates a draft in which dropped codes are retired, not deleted ([country packs and migration](../../platform/platform-services/master-data-service/catalogue/country-packs-and-migration.md)).
   * `CROP_COMMODITY` still lacks enset, pulses beyond faba bean, haricot bean and chickpea, and horticulture beyond a handful of crops. The list needs review with MoA.

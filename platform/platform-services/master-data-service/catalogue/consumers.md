@@ -10,15 +10,17 @@ description: >-
 This page is for teams building on MDS: registries, PBMS, reporting, the composite,
 and any other service that reads code lists or geography.
 
-{% hint style="warning" %}
-**The registry platform's backend reads MDS's database directly today.** It
-queries the current-state tables (`g2p_attributes`, `g2p_attribute_values`, and the
-geography tables) over a database connection; its staff UI fills dropdowns from the
-`/attributes` and `/geo` APIs. This keeps working: those tables hold the current
-published state. Note that they hold **only `ACTIVE`** values and units, so a
-retired code is no longer found there. Moving the registry platform to the
-catalogue APIs, so that it can pin versions, resolve retired codes and stop
-depending on MDS's schema, is **planned**.
+{% hint style="info" %}
+**The registry platform reads MDS through the catalogue API.** A client in the
+registry platform's core reads lists, values and geography through `/catalogue`,
+caches them by version, follows the change feed (`get_changes`) to notice newly
+published versions, and keeps serving the last good data if MDS is briefly
+unreachable. It authenticates with the registry's own Keycloak client (client
+credentials), so background workers read the same way as the APIs. Activities record
+the catalogue versions they were checked against (`catalogue_versions`), and a
+registry can pin a catalogue release (`catalogue_release`). The old direct database
+reads remain as a rollback switch (`master_data_read_mode: db`). The registry's staff
+UI still fills dropdowns from the legacy `/attributes` and `/geo` APIs.
 {% endhint %}
 
 ## Latest, pinned or as of
@@ -126,8 +128,10 @@ current, and use the time to prepare), and when it **takes effect**
 * **Do not reject records that hold a retired value.** The value was valid when
   recorded. Read with `include_retired: true` (or `get_list_value`) to show it.
 * A registry's coded-value check should validate **new** values against `latest` and
-  accept existing values that are retired. (For the registry platform this is part
-  of the planned move to the catalogue APIs; MDS provides the reads it needs.)
+  accept existing values that are retired. (The registry platform validates new
+  values against the version in effect and shows retired codes' labels at the
+  version recorded on an activity. Accepting an unchanged retired value when an
+  entity record is edited is still to do.)
 
 ## Geography changes
 

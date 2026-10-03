@@ -487,6 +487,22 @@ How this catalogue is configured, for clients such as the admin UI.
   "websub_enabled": false, "country": "ETH", "geo_current_version_no": 2 }
 ```
 
+## Sample people (testing and demos only)
+
+{% hint style="warning" %}
+**For testing and demos only; do not use in production.** These endpoints serve the made-up sample people a country pack ships, so that demo and test installs of several registries share the same people (e.g. the Crop Sown Registry's sample crop seasons for the Farmer Registry's sample farmers). Sample people are not reference data: they are not versioned or approved, and a production deployment should not load them (leave the pack's samples off).
+{% endhint %}
+
+Read-only access to the sample individuals and households a country pack loaded. Same envelope; any authenticated caller. Not versioned.
+
+### `POST /samples/get_individuals`
+
+Paged. Optional filters: `household_id`, `geo_pcode`, `country`. Returns the pack's sample individuals (`individual_id`, names, sex, birth date, `national_id`, `geo_pcode`, `household_id`, …).
+
+### `POST /samples/get_households`
+
+Paged. Returns the pack's sample households.
+
 ## Writes: lists
 
 `?` marks an optional field. Every write that edits a draft creates one (from the

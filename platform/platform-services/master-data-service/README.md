@@ -28,7 +28,7 @@ not repeat it.
 
 | Consumer | What it takes | How |
 |---|---|---|
-| **Registries** (NSR, Farmer Registry, …) | Code lists and the geo hierarchy | At **runtime**: the staff UI fills its dropdowns via the Attributes and Geo APIs, and the registry backend reads MDS's database directly — the registry keeps no copy. Its coded-value check, when on, reads the same lists |
+| **Registries** (NSR, Farmer Registry, …) | Code lists and the geo hierarchy | At **runtime**: the registry backend reads through the [catalogue API](catalogue/README.md) (versioned, cached; direct database reads remain as a rollback setting), and the staff UI fills its dropdowns via the Attributes and Geo APIs — the registry keeps no copy. Its coded-value check, when on, reads the same lists |
 | **Registry sample loaders** | Sample people | At **install**, to load the demo records |
 | **Staff portal screens** | Geo units, level by level | At **runtime**, via the Geo API — this is what fills cascading address dropdowns |
 | **Bulk data generators** | The hierarchy | At install, so generated records point at real units |
