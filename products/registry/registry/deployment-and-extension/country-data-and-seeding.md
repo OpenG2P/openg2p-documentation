@@ -26,9 +26,9 @@ live, what P-codes are and how a country is configured end to end, see
 A registry never names a country. It reads whatever the MDS beside it was seeded
 with, and adapts:
 
-| What the registry takes | From (MDS tables) | When | Effect |
+| What the registry takes | Held in MDS as (read via its API) | When | Effect |
 |---|---|---|---|
-| The geo hierarchy | `g2p_geo_levels`, `g2p_geo_level_values` | **Live**, as a form is filled | Address dropdowns match the country's levels, however many there are |
+| The geo hierarchy | `g2p_geo_levels`, `g2p_geo_level_values` | **Live**, as a form loads and is filled | Address dropdowns match the country's levels, however many there are |
 | The code lists | `g2p_attributes`, `g2p_attribute_values` | **Live**, as a form is filled | Gender, education, water source… are the country's own |
 | The sample people | `g2p_sample_individuals`, `g2p_sample_households` | At install, by the sample loader | Demo records that belong to the country |
 
@@ -46,8 +46,9 @@ country than this deployment was set up for. Left empty (the default), no check 
 made. Nothing in the registry chooses the country — only MDS does.
 {% endhint %}
 
-Geography and code lists are **not copied** into the registry: the staff portal
-reads them from MDS each time a form needs them, and so does the coded-value check
+Geography and code lists are **not copied** into the registry, and the registry
+never reads MDS's database: the staff portal asks the MDS API each time a form
+needs them, and so does the coded-value check
 when it is switched on (see [Code lists](#code-lists)). MDS is therefore a
 **runtime dependency for data entry** — while it is unavailable, coded dropdowns
 have no options. Records already stored are unaffected; they hold the codes.
@@ -80,8 +81,7 @@ generator and no country content.
 | In the platform image | What it is |
 |---|---|
 | `entrypoint.sh` | Runs the ordered steps, entirely from environment variables |
-| `sync_geo_widgets.py` | Rewrites geo dropdowns to match the country's levels |
-| `load_geo_data.py` | **Legacy** slug-path geo loader — see the warning below |
+| `mds_client.py` | Small client for the Master Data API, used by seed scripts that need geography or code lists |
 | `upload_templates.py` | Jinja templates → MinIO |
 
 There is deliberately **no `load_sample_data.py` and no bulk generator in the
@@ -180,18 +180,15 @@ platform chart itself).
 | Switch | Platform default | What it does |
 |---|---|---|
 | `enabled` | `true` | Run the db-seed Job at all. Meta-data SQL is applied unconditionally when on |
-| `syncGeoWidgets` | `false` | Match the geo dropdowns to the country's levels |
 | `loadSampleData` | `false` | Load the demo people |
 | `loadImages` | `false` | Sample profile photos — requires `loadSampleData` |
 | `loadTemplates` | `true` | Jinja templates → MinIO |
-| `loadGeoData` | `false` | **Legacy** — see below |
 
-{% hint style="danger" %}
-**`loadGeoData` must stay off.** It loads a five-level `country → village`
-hierarchy from a CSV keyed by slug-paths. MDS now seeds its own geography from a
-country pack keyed by P-code, so enabling this writes a **second** hierarchy over
-the first, in a different id space and at a fixed depth that only ever described
-one country. It is kept only for a deployment that has no country pack at all.
+{% hint style="info" %}
+Removed from the platform: `loadGeoData` (a legacy loader that wrote a second
+hierarchy into MDS) and `syncGeoWidgets` (the "Match Geo Dropdowns to Country"
+question). An older values file that still sets them can drop them; they have no
+effect.
 {% endhint %}
 
 {% hint style="warning" %}
@@ -200,12 +197,33 @@ These are `registry.dbSeed.*`, **not** `global.*`. The db-seed Job reads
 `global` silently does nothing.
 {% endhint %}
 
-### `syncGeoWidgets` — why it matters
+### Seeding never touches Master Data's database
 
-An extension's UI metadata names its geo dropdowns and fixes how many there are. A
-country whose pack disagrees — four levels where the metadata expects five — gets
-dropdowns that **silently return nothing**, with no error anywhere. Syncing
-rewrites those widgets from the hierarchy MDS actually holds.
+Seeding writes only the registry's own database. A seed script that needs
+geography or code lists — a sample loader, a bulk generator, the reporting-view
+generator — reads them from the MDS API through `mds_client.py`, with a
+client-credentials token from the `<release>-staff-portal` Keycloak client:
+
+| Env | What it is |
+|---|---|
+| `MDS_API_URL` | Master Data API base URL |
+| `MDS_TOKEN_URL` | Keycloak token endpoint |
+| `MDS_CLIENT_ID` / `MDS_CLIENT_SECRET` | The client the seed Job authenticates as |
+
+That client needs read access to MDS `/catalogue` (and `/samples` when sample data
+is loaded). The client also has a small CLI — `levels` prints the hierarchy levels,
+`wait-geo` blocks until MDS holds geography — for use in entrypoints. Registry
+charts render the MDS database credentials (`masterDataDB*`) only when
+`masterDataReadMode` is set to `db`, a rollback mode; the default is `api`.
+
+### Geo dropdowns follow the country at runtime
+
+A register's geo field is a `geo-hierarchy` widget with no levels of its own: when
+the form loads, the staff portal asks MDS for the country's levels (through its
+`/api/master-data/geo-levels` route, which proxies MDS `/catalogue/get_geo_levels`)
+and draws one dropdown per level, with MDS's level names. A four-level country gets
+four dropdowns with no extension change and no seed step. An older
+`widget-geo-config` widget without levels is treated the same way.
 
 ## Configuring from Rancher
 
@@ -227,10 +245,8 @@ So in the Rancher form these appear under the **DB Seed** group:
 |---|---|
 | Enable DB Seed | `registry.dbSeed.enabled` |
 | Load Sample Data | `registry.dbSeed.loadSampleData` |
-| Match Geo Dropdowns to Country | `registry.dbSeed.syncGeoWidgets` |
 | Load Sample Images | `registry.dbSeed.loadImages` |
 | Load Templates to MinIO | `registry.dbSeed.loadTemplates` |
-| Load Legacy Geo Data (deprecated) | `registry.dbSeed.loadGeoData` |
 
 and under **Sanity**: `registry.sanity.enabled`, `registry.sanity.runE2e`,
 `registry.sanity.failOnError`.
@@ -254,9 +270,7 @@ registry:
     enabled: true          # meta-data SQL is REQUIRED
     loadSampleData: false
     loadImages: false
-    loadGeoData: false
     loadTemplates: true    # keep — see below
-    syncGeoWidgets: true   # keep — dropdowns must match the country
   sanity:
     enabled: true          # smoke only; creates nothing
     runE2e: false          # e2e SEEDS fixtures and leaves them behind
@@ -290,7 +304,8 @@ the machinery for that too.
 the other seeding machinery, and follows the same principle: the platform supplies
 the mechanism, the registry supplies what is specific to it.
 
-At install it reads the registry's own schema and Master Data's country pack, and
+At install it reads the registry's own schema and the country's geography from the
+Master Data API, and
 creates a view per entity — geography inherited from the parent, workflow columns
 carried, personal data withheld and then verified absent. A registry that declares
 nothing still gets a complete reporting layer.
@@ -317,14 +332,13 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 | # | Step | Controlled by |
 |---|---|---|
 | 1 | **meta-data SQL** → registry DB — register definitions, UI metadata | *always, when `enabled`* |
-| 2 | **geo widgets** rewritten from the MDS hierarchy | `syncGeoWidgets` |
-| 3 | **sample data** → `g2p_register_*` | `loadSampleData` |
-| 4 | **images** → MinIO | `loadImages` |
-| 5 | **templates** → MinIO | `loadTemplates` |
-| 6 | **AWE seed** → AWE DB | `aweDbSeed` |
+| 2 | **sample data** → `g2p_register_*` | `loadSampleData` |
+| 3 | **images** → MinIO | `loadImages` |
+| 4 | **templates** → MinIO | `loadTemplates` |
+| 5 | **AWE seed** → AWE DB | `aweDbSeed` |
 
-Code lists are not a step here: the registry does not load them. MDS's own seed Job
-loads them from the pack, so — like the geography — they must be in MDS **before**
+Code lists and geo dropdowns are not steps here: the registry does not load them.
+MDS's own seed Job loads them from the pack, so — like the geography — they must be in MDS **before**
 the registry is installed, or seeded records carry codes no dropdown can show.
 
 Bulk generation and the sanity suite are separate Jobs at later hook weights, so a

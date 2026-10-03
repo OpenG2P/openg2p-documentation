@@ -67,7 +67,7 @@ registry:
                            #            search returns an empty 200
     loadSampleData: false
     loadImages: false
-    syncGeoWidgets: true
+    syncGeoWidgets: true   # removed in the current registry platform — drop on upgrade
   sanity:
     enabled: false
     runE2e: false          # never true in production

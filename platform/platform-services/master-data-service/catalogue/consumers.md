@@ -19,8 +19,15 @@ unreachable. It authenticates with the registry's own Keycloak client (client
 credentials), so background workers read the same way as the APIs. Activities record
 the catalogue versions they were checked against (`catalogue_versions`), and a
 registry can pin a catalogue release (`catalogue_release`). The old direct database
-reads remain as a rollback switch (`master_data_read_mode: db`). The registry's staff
-UI still fills dropdowns from the legacy `/attributes` and `/geo` APIs.
+reads remain as a rollback switch (`master_data_read_mode: db`; the chart renders
+MDS database credentials only in that mode). The registry's staff UI still fills
+dropdowns from the legacy `/attributes` and `/geo` APIs, but a register form's geo
+**levels** (how many dropdowns, and their names) come from `/catalogue/get_geo_levels`
+when the form loads, so the form follows the country's geography with no install
+step. Install-time seed scripts (sample loaders, bulk generators, reporting views)
+read MDS through the same API with a small client in the seed image (`mds_client.py`),
+so they need read access to `/catalogue` (and `/samples` for demo data). **A registry
+never reads or writes MDS's database**; its seeding writes only its own.
 {% endhint %}
 
 ## Latest, pinned or as of

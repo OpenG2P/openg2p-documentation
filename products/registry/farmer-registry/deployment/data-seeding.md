@@ -116,8 +116,9 @@ names and phone numbers are invented and need not belong to the country.
 
 It is the *people* that are country-agnostic, not the *geography*. Every generated
 record must point at a real administrative unit or maps and drill-downs break, so
-the generator reads the hierarchy from the MDS database
-(`g2p_geo_levels` / `g2p_geo_level_values`) and fails if it is not there.
+the generator reads the hierarchy from the MDS API (through the platform's
+`mds_client.py`) and fails if it is not there. No Farmer Registry job reads or
+writes MDS's database.
 
 What this buys is that **one generator serves every country** — the same build
 generates for Ethiopia or Kamuntu unchanged. It does not mean MDS is optional.
@@ -219,7 +220,7 @@ strict sequence — and **a failure at any step blocks everything after it**.
 flowchart TD
     A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
 
-    B["<b>10 · db-seed</b><br/>meta-data · geo widgets<br/><b>sample data</b> · images · templates"] --> C
+    B["<b>10 · db-seed</b><br/>meta-data<br/><b>sample data</b> · images · templates"] --> C
 
     subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
         direction TB
@@ -252,7 +253,7 @@ they belong to other releases — see [Cross-release dependencies](#cross-releas
 | Weight | Job | What it does | Runs when |
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
-| 10 | `fr-db-seed` | Meta-data SQL, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
+| 10 | `fr-db-seed` | Meta-data SQL, **sample data**, images, templates | `dbSeed.enabled` |
 | 11 | `fr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
 | 12 | `fr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
 | 13 | `fr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
@@ -307,8 +308,6 @@ with, rather than in a shared repository.
 ```yaml
 registry:
   dbSeed:
-    loadGeoData: false     # legacy loader — must stay off
-    syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: false  # demo farmers — opt in from the form
     loadImages: false
 
@@ -319,6 +318,15 @@ analytics:
   reportingViews:
     enabled: true          # independent of bulk data
 ```
+
+There is no geo-dropdown setting: register forms take their geo levels from Master
+Data when they load. `loadGeoData` and `syncGeoWidgets` were removed from the
+registry platform and take effect here once the chart's registry-platform version
+is bumped; until then leave `loadGeoData` off.
+
+The seed and analytics Jobs reach Master Data through its API (`MDS_API_URL` and a
+client-credentials token from the `<release>-staff-portal` Keycloak client), so
+that client needs read access to MDS `/catalogue` and `/samples`.
 
 For a production install, see
 [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).

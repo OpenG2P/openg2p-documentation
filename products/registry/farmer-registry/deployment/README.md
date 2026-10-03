@@ -96,4 +96,4 @@ Use `--devel` to resolve a moving `0.0.0-develop.N` version.
 ## Before going to production
 
 * Leave `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` **on** (the default) — they govern real PII egress and the chart fails closed. See [Helm chart](helm-chart.md#consent-manager-and-partner-management).
-* Turn **off** the sample-data loaders (`registry.dbSeed.loadSampleData`, `loadImages`, `loadGeoData`) — see [Data seeding](data-seeding.md).
+* Turn **off** the sample-data loaders (`registry.dbSeed.loadSampleData`, `loadImages`) — see [Data seeding](data-seeding.md).

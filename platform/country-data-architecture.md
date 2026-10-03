@@ -188,6 +188,7 @@ flowchart TB
     subgraph mds ["Master Data Service"]
         SEED["db-seed Job"]
         MDSDB[("hierarchy + units (P-codes)<br/>code lists<br/>sample people")]
+        API["MDS API"]
         OBJ[("MinIO — bucket openg2p-geo<br/>GeoJSON map shapes")]
     end
 
@@ -195,6 +196,7 @@ flowchart TB
         RSEED["db-seed Job"]
         RDB[("Registry tables<br/>each record stores a P-code")]
         BULK["Bulk generator<br/>(lives in the registry)"]
+        FORMS["Staff portal forms"]
     end
 
     subgraph maps ["Map / reporting surface"]
@@ -207,12 +209,13 @@ flowchart TB
     SEED -->|"uploads GeoJSON"| OBJ
     OBJ -.->|"URL recorded on each unit"| MDSDB
 
-    MDSDB -->|"code lists"| RSEED
-    MDSDB -->|"hierarchy → geo dropdowns"| RSEED
-    MDSDB -->|"sample people"| RSEED
+    MDSDB --> API
+    API -->|"code lists · geo levels (live)"| FORMS
+    FORMS --> RDB
+    API -->|"sample people"| RSEED
     RSEED --> RDB
 
-    MDSDB -->|"hierarchy + code lists"| BULK
+    API -->|"hierarchy + code lists"| BULK
     BULK --> RDB
 
     PACK -->|"at image build time"| BUILD
@@ -222,9 +225,10 @@ flowchart TB
 
 Two things in that picture are easy to get wrong:
 
-**Registries read geography and code lists from MDS live.** A registry keeps no
-copy of either: the staff portal asks MDS for a dropdown's options each time a form
-is filled, and so does the coded-value check when it is switched on. MDS is
+**Registries read geography and code lists from MDS live, through its API.** A
+registry keeps no copy of either and never touches MDS's database: the staff portal
+asks MDS for a form's geo levels when it loads and for a dropdown's options each
+time a form is filled, and so does the coded-value check when it is switched on. MDS is
 therefore a **runtime dependency for data entry** — while it is down, coded and
 geo dropdowns are empty. Only the sample people are read once, at install.
 
@@ -397,26 +401,23 @@ In the registry chart (NSR, Farmer Registry, …):
 ```yaml
 registry:
   dbSeed:
-    loadGeoData: false     # legacy loader — must stay off
-    syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: true   # load the pack's sample people
 ```
 
-There is no code-list switch on the registry side: code lists are read from MDS
-live, so what a registry offers is decided in step 4 (`geoSeed.load.codelists` and
-`geoSeed.domains`).
+There is no code-list or geo switch on the registry side: code lists and geo
+levels are read from MDS live, so what a registry offers is decided in step 4
+(`geoSeed.load.codelists` and `geoSeed.domains`). A register form's geo dropdowns
+take their number and names from the levels MDS holds when the form loads, so a
+four-level country gets four dropdowns with no extension change. Seed scripts that
+need geography (sample loaders, bulk generators, reporting views) also call the MDS
+API; registry seeding writes only the registry's own database.
 
-{% hint style="danger" %}
-`loadGeoData` is a **legacy** loader that writes a second, differently-keyed
-hierarchy into the master-data database, with a fixed depth of five levels that
-only ever described Kamuntu. Left on alongside a country pack it produces two
-hierarchies in two id spaces, one of which joins to nothing. Keep it `false`.
+{% hint style="info" %}
+Removed from the registry platform: `registry.dbSeed.loadGeoData` (a legacy loader
+that wrote a second hierarchy into MDS) and `registry.dbSeed.syncGeoWidgets` (the
+"Match Geo Dropdowns to Country" question). If an older values file still sets
+them, drop them; they have no effect.
 {% endhint %}
-
-`syncGeoWidgets` matters more than it looks. A registry's screens name their geo
-dropdowns and fix how many there are; a country whose pack disagrees — four levels
-where the screens expect five — gets dropdowns that silently return nothing.
-Syncing rewrites them from the hierarchy MDS actually holds.
 
 ### 6. Verify
 

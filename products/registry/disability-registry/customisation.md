@@ -27,17 +27,16 @@ means maintaining a fork of the registry forever.
 **The registry ships no code lists.** Its coded dropdowns read the country's
 lists live from the Master Data Service, which loads them from a country pack —
 so to change the values, change the pack (or maintain them in Master Data), never
-the registry. On the registry side, only the geo dropdowns need a switch:
-
-```yaml
-registry:
-  dbSeed:
-    syncGeoWidgets: true     # match the geo dropdowns to the loaded hierarchy
-```
-
-`syncGeoWidgets` rewrites the location dropdowns to the hierarchy depth and level
-names Master Data actually holds. This is what lets one image serve any country — and it is
+the registry. The geo dropdowns likewise follow the hierarchy depth and level
+names Master Data holds. This is what lets one image serve any country — and it is
 why the registry declares no country anywhere.
+
+{% hint style="info" %}
+This registry's chart still carries `registry.dbSeed.syncGeoWidgets` (and
+`loadGeoData`). Both are removed from the current registry platform, where register
+forms read their geo levels from Master Data at runtime; they are ignored there and
+should be dropped when this registry moves to that platform version.
+{% endhint %}
 
 Geography and code lists are seeded by the **master-data** chart
 (`geoSeed.countryPack`, with `geoSeed.load.codelists`), not by the registry. Declaring a country in two charts is how registry records end up

@@ -54,9 +54,12 @@ The [composite as built](../implementation/composite.md) leaves these for later:
   5. a season-window date check.
 
   Programme approval and certificates are not registry work: PBMS decides whether a programme acts on verified records.
-* **TODO: geo dropdowns on register forms.** A register's geo dropdowns (how many, which levels) are fixed in each extension's seed metadata; the values come from Master Data, but a country whose levels differ gets empty dropdowns. "Match geo dropdowns to country" (`syncGeoWidgets`) rewrites them at install, and is off by default in the registry platform (on in FR, off in CSR, whose Cluster register has a woreda dropdown).
-  * **Next:** default it on in the registry platform and remove it from the Rancher form, keeping it only as a values setting for deployments that have hand-edited their geo dropdowns.
-  * **Later:** have register forms read Master Data's levels when they load, as activity-register forms already do, so the sync and the switch go away.
+* **Registries reading Master Data only through its API.** Register forms now read geo levels from Master Data at runtime, and seed scripts use its API; `syncGeoWidgets` and `loadGeoData` are gone from the registry platform. Left to do:
+  * bump the registry-platform version pinned by the Farmer Registry, Crop Sown Registry and NSR charts, which get the change only then;
+  * NSR still seeds code lists into its own database (`g2p_attribute_values*.sql`, `loadAttributes`); move them to Master Data lists;
+  * the Farmer Registry's analytics maps and reporting views assume Ethiopian level names and at most five levels;
+  * the staff UI's geo levels do not yet follow `catalogueRelease`;
+  * the Disability Registry chart still carries the removed `syncGeoWidgets` and `loadGeoData`; drop them when it moves to the current platform.
 * **Credentials after a change.** Certificates are verifiable credentials issued from a record (agent portal, Inji Certify). When that record is changed or corrected, credentials already issued from it stay valid. Decide whether a change suspends or revokes them (through Certify's status list) and prompts reissue.
 * **Sample data at the registries' edges.** The CSR sample farmer and plot IDs match the Farmer Registry's only by convention (`FR-<n>`, `LAND-<n>-<k>` from Master Data's sample people). If either registry changes its sample ID rule, the other must follow.
 * **Gaps compared with the Observations design** (full table in [activity register](../design/activity-register.md#relation-to-the-observations-design)):
@@ -80,7 +83,7 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 The items below are about MDS as it serves the catalogues today.
 
-* **Registries read the catalogue API** (done for the registry platform: versioned and cached, with direct database reads kept as a rollback setting). Still to do: entity registers recording the catalogue versions used (activities already do), accepting an unchanged retired value when an entity record is edited, the registry staff UI moving from the legacy `/attributes` and `/geo` APIs to `/catalogue`, and the Farmer Registry's and NSR's install-time seed scripts still reading MDS's database.
+* **Registries read the catalogue API** (done for the registry platform: versioned and cached, with direct database reads kept as a rollback setting). Still to do: entity registers recording the catalogue versions used (activities already do), accepting an unchanged retired value when an entity record is edited, and the registry staff UI moving from the legacy `/attributes` and `/geo` APIs to `/catalogue` (geo levels already come from `/catalogue`). Install-time seed scripts read MDS through its API.
 * **Ethiopia country pack.**
   * Master Data's pack loader upserts but never deletes. An existing Master Data therefore keeps retired codes, such as the old `CROP_SEASON` values `SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`, after a reload. MDS as Catalogue fixes this: a later pack load creates a draft in which dropped codes are retired, not deleted ([country packs and migration](../../platform/platform-services/master-data-service/catalogue/country-packs-and-migration.md)).
   * `CROP_COMMODITY` still lacks enset, pulses beyond faba bean, haricot bean and chickpea, and horticulture beyond a handful of crops. The list needs review with MoA.

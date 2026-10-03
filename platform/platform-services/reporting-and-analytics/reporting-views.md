@@ -57,7 +57,7 @@ Two things are affected, and both are read from a source that knows the answer
 before the first record exists:
 
 * **How many geographic levels** the country has, and what they are called, comes
-  from Master Data's `g2p_geo_levels`. A four-level pack produces `geo_1..geo_4`;
+  from Master Data's geo levels, read through the MDS API. A four-level pack produces `geo_1..geo_4`;
   a six-level pack produces six. Nothing is hard-coded, and no view carries a
   column for a level the country does not have.
 * **Which entity hangs off which** is declared in `reporting.yaml`, not inferred

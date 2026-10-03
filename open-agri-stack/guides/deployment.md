@@ -60,7 +60,6 @@ Install as in [Farmer Registry → Deployment](../../products/registry/farmer-re
 | **Consent Manager URL** (`global.consentManagerUrl`) | `http://commons-services-cm-partner-api` (default) |
 | **Consent data controller** (`global.consentDataController`) | `farmer-registry` (defaults to the registry variant) |
 | **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo (sample farmers from Master Data's sample people, lands numbered `LAND-<n>-<k>`) |
-| **Match Geo Dropdowns to Country** (`registry.dbSeed.syncGeoWidgets`) | on in the Farmer Registry chart |
 
 See [Data seeding](../../products/registry/farmer-registry/deployment/data-seeding.md) and [Helm chart](../../products/registry/farmer-registry/deployment/helm-chart.md).
 
@@ -76,9 +75,9 @@ The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registr
 | **Load sample crop seasons** (`REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA`) | **off by default**; shown only when Load Sample Data is on. Records the sample crop seasons once, after install; needs the sample clusters and Master Data's sample people. Leave off for production. |
 | **Pull submissions from ODK Central** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED`) | off by default. When on, also activate the form in the register's Settings (ODK project and form ID) and create the ODK credentials Secret |
 | **ODK Central URL** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_BASE_URL`) | `http://commons-services-odk-central-backend` |
-| **Match Geo Dropdowns to Country** (`registry.dbSeed.syncGeoWidgets`) | off in this chart (its Cluster register has a woreda dropdown) |
 
 * **No code lists are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
+* **No geo setting:** register forms read the country's geo levels from Master Data when they load; seed Jobs read Master Data through its API, never its database.
 * **No ID generator** is installed (no functional IDs).
 * **AWE:** nothing to set. The chart uses the shared AWE in commons-services; db-seed loads the Cluster approval policies and keycloak-init creates the approvers they name (`alex.carter`, `nina.patel`).
 * **Sanity:** the platform's smoke tier runs on install; its e2e tier stays off (it seeds a record-register record, which this registry doesn't have). Activity-register checks run against a deployed instance with `scripts/e2e_smoke.py`.

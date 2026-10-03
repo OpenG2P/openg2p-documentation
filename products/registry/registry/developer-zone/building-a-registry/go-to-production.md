@@ -65,7 +65,6 @@ registry:
     enabled: true            # KEEP: metadata seeding is required
     loadSampleData: false    # no demo records
     loadImages: false        # no demo photos
-    loadGeoData: false       # geography comes from the real pack
     loadTemplates: true      # KEEP: DCI templates must be in MinIO
   sanity:
     enabled: false           # or true with runE2e:false for a smoke check

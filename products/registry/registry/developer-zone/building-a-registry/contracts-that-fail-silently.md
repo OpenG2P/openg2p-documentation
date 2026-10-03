@@ -183,8 +183,8 @@ Two traps, both silent:
 **Symptom:** the names still read correctly on the record, so the data looks
 fine. The only symptom is that every map and every geo chart is empty.
 
-**Fix:** resolve the name chain against `g2p_geo_level_values` in Master Data by
-walking parent links (a village name repeats under different wards), and write
+**Fix:** resolve the name chain against Master Data's geo units (through the MDS
+API, never its database) by walking parent links (a village name repeats under different wards), and write
 both `geo_lowest_level_value_id` and `geo_code_hierarchy_json` explicitly.
 
 {% hint style="info" %}

@@ -295,7 +295,7 @@ This page is the _credential_ design. The portal itself — its own Keycloak `ag
 
 MDS is involved before and after, not during:
 
-* **at seed time**, a registry's `db-seed` reads geography and country code lists from the MDS API to populate its own attribute tables;
+* **at seed time**, a registry's `db-seed` reads geography (and sample people) from the MDS API to build its own records; it never touches MDS's database;
 * **in reporting**, dashboards join registry data to geography held in Master Data.
 
 So a Master Data outage does not stop credentials being issued.

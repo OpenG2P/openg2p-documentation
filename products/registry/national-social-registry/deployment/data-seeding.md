@@ -98,8 +98,8 @@ numbers are invented and need not belong to the country.
 
 It is the *people* that are country-agnostic, not the *geography*. Every generated
 record must point at a real administrative unit or maps and drill-downs break, so
-the generator reads the hierarchy from the MDS database
-(`g2p_geo_levels` / `g2p_geo_level_values`) and **refuses to run against an empty
+the generator reads the hierarchy from the MDS API (through the platform's
+`mds_client.py`, never MDS's database) and **refuses to run against an empty
 MDS**. It also reconciles the values it writes against any code lists it finds in
 the registry database, dropping values the deployment does not recognise. Under the
 platform's live Master Data model the registry database holds no code lists, so
@@ -212,7 +212,7 @@ strict sequence — and **a failure at any step blocks everything after it**.
 flowchart TD
     A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
 
-    B["<b>10 · db-seed</b><br/>meta-data · geo widgets<br/><b>sample data</b> · images · templates"] --> C
+    B["<b>10 · db-seed</b><br/>meta-data<br/><b>sample data</b> · images · templates"] --> C
 
     subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
         direction TB
@@ -245,7 +245,7 @@ they belong to other releases — see [Cross-release dependencies](#cross-releas
 | Weight | Job | What it does | Runs when |
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
-| 10 | `nsr-db-seed` | Meta-data SQL, geo-widget sync, **sample data**, images, templates | `dbSeed.enabled` |
+| 10 | `nsr-db-seed` | Meta-data SQL, **sample data**, images, templates | `dbSeed.enabled` |
 | 11 | `nsr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
 | 12 | `nsr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
 | 13 | `nsr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
@@ -322,8 +322,6 @@ views they must move in step with, rather than in a shared repository.
 ```yaml
 registry:
   dbSeed:
-    loadGeoData: false     # legacy loader — must stay off
-    syncGeoWidgets: true   # match geo dropdowns to the country's levels
     loadSampleData: true
     loadImages: true
 
@@ -332,6 +330,15 @@ analytics:
     enabled: true
     individuals: 250000
 ```
+
+There is no geo-dropdown setting: register forms take their geo levels from Master
+Data when they load. `loadGeoData` and `syncGeoWidgets` were removed from the
+registry platform and take effect here once the chart's registry-platform version
+is bumped; until then leave `loadGeoData` off.
+
+The seed and analytics Jobs reach Master Data through its API (`MDS_API_URL` and a
+client-credentials token from the `<release>-staff-portal` Keycloak client), so
+that client needs read access to MDS `/catalogue` and `/samples`.
 
 For a production install, see
 [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).

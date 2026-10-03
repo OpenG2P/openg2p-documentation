@@ -173,7 +173,7 @@ COPY docker/db-seed/load_sample_data.py /seed/load_sample_data.py
 COPY docker/db-seed/upload_images.py    /seed/upload_images.py
 ```
 
-Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `load_geo_data.py`, `sync_geo_widgets.py`, `upload_templates.py`. There is no code-list loader — the registry reads code lists from Master Data live.
+Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `upload_templates.py`, `mds_client.py`. There is no code-list or geo loader — the registry reads code lists and geo levels from Master Data live, and a register's geo dropdowns are built from MDS's levels when the form loads. Your loaders read Master Data through `mds_client.py` (the MDS API), never its database; seeding writes only your registry's own DB.
 
 #### Where sample people come from
 
@@ -181,7 +181,7 @@ This is the decision that most often gets made wrong, because both sources work 
 
 | Source                          | Table / file                                                            | Use it                                                                                                                                 |
 | ------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Master Data country samples** | `g2p_sample_individuals`, `g2p_sample_households` in the master-data DB | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and code lists |
+| **Master Data country samples** | MDS `/samples` API (via `mds_client.py`)                                 | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and code lists |
 | Shared demography CSV           | `/openg2p-data/demography/individuals.csv`                              | Fallback only                                                                                                                          |
 
 **Read Master Data first and fall back to the CSV**, exactly as the reference registries do. Your loader's job is to add _your_ fields to the country's people, not to invent a second population.
@@ -192,7 +192,7 @@ This is the decision that most often gets made wrong, because both sources work 
 
 Two things the Master Data path gives you for free:
 
-* **Geography by p-code.** A sample row carries `geo_pcode` — the unit's own id. Walk its ancestry through `parent_level_value_id` and write the chain directly. No name matching, and no chance of the slug-path mismatch the CSV path has to guard against. Read the **depth and the level names** from `g2p_geo_levels` rather than assuming five: Ethiopia has four and calls the middle ones zone and woreda.
+* **Geography by p-code.** A sample row carries `geo_pcode` — the unit's own id. Walk its ancestry through `parent_level_value_id` and write the chain directly. No name matching, and no chance of the slug-path mismatch the CSV path has to guard against. Read the **depth and the level names** from MDS (`/catalogue/get_geo_levels`, or `mds_client.py levels`) rather than assuming five: Ethiopia has four and calls the middle ones zone and woreda.
 * **The country's own attributes.** `disability_status`, `employment_status`, `relationship_to_head` and friends are on the sample row. If a pack marks who it considers disabled, or employed, prefer that over any selection rule of your own — the country has already decided.
 
 {% hint style="warning" %}
