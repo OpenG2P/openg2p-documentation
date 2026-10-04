@@ -82,7 +82,7 @@ generator and no country content.
 |---|---|
 | `entrypoint.sh` | Runs the ordered steps, entirely from environment variables |
 | `mds_client.py` | Small client for the Master Data API, used by seed scripts that need geography or code lists |
-| `upload_templates.py` | Jinja templates → MinIO |
+| `upload_templates.py` | Jinja templates → object store (Garage) |
 
 There is deliberately **no `load_sample_data.py` and no bulk generator in the
 platform**. The platform owns the *hook* and the *order*; each registry variant
@@ -182,7 +182,7 @@ platform chart itself).
 | `enabled` | `true` | Run the db-seed Job at all. Meta-data SQL is applied unconditionally when on |
 | `loadSampleData` | `false` | Load the demo people |
 | `loadImages` | `false` | Sample profile photos — requires `loadSampleData` |
-| `loadTemplates` | `true` | Jinja templates → MinIO |
+| `loadTemplates` | `true` | Jinja templates → object store (Garage) |
 
 {% hint style="info" %}
 Removed from the platform: `loadGeoData` (a legacy loader that wrote a second
@@ -239,6 +239,10 @@ questions, by `inherit-questions.sh` in the packaging repository, which:
   platform's. Without this a field would render blank, and a blank boolean submits
   as **false** — silently disabling db-seed on install.
 
+{% hint style="info" %}
+**Object store.** Registries store documents, images and templates in the commons **Garage** (S3-compatible; it replaced MinIO), reached in-cluster. The chart values keep their `minio*` names: `global.minioHost` defaults to `commons-garage:3900` and `global.minioSecure` to `false`; credentials come from the `commons-minio` Secret written by the Garage init job. The buckets `default`, `templates`, `documents`, `import-files` and `export-files` must exist (the commons Garage init job creates them). Pre-signed document URLs are signed for this in-cluster host.
+{% endhint %}
+
 So in the Rancher form these appear under the **DB Seed** group:
 
 | Form field | Variable |
@@ -246,7 +250,7 @@ So in the Rancher form these appear under the **DB Seed** group:
 | Enable DB Seed | `registry.dbSeed.enabled` |
 | Load Sample Data | `registry.dbSeed.loadSampleData` |
 | Load Sample Images | `registry.dbSeed.loadImages` |
-| Load Templates to MinIO | `registry.dbSeed.loadTemplates` |
+| Load Templates to Object Store | `registry.dbSeed.loadTemplates` |
 
 and under **Sanity**: `registry.sanity.enabled`, `registry.sanity.runE2e`,
 `registry.sanity.failOnError`.
@@ -333,8 +337,8 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 |---|---|---|
 | 1 | **meta-data SQL** → registry DB — register definitions, UI metadata | *always, when `enabled`* |
 | 2 | **sample data** → `g2p_register_*` | `loadSampleData` |
-| 3 | **images** → MinIO | `loadImages` |
-| 4 | **templates** → MinIO | `loadTemplates` |
+| 3 | **images** → object store | `loadImages` |
+| 4 | **templates** → object store | `loadTemplates` |
 | 5 | **AWE seed** → AWE DB | `aweDbSeed` |
 
 Code lists and geo dropdowns are not steps here: the registry does not load them.
