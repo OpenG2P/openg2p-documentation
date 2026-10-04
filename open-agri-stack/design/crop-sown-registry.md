@@ -132,7 +132,8 @@ The summary is recomputed from the crop-season projections after every change, i
 
 Clusters are **entities** in their own register in this registry, not activity data:
 
-* **fields:** code (e.g. `CL-ET0406-001`), name, crop, woreda, agro-ecological zone, water source, area, smallholders, year established, coordinator;
+* **fields:** Cluster ID, programme cluster code (optional, e.g. `CL-ET0406-001`), name, crop, woreda, agro-ecological zone, water source, area, smallholders, year established, coordinator;
+* **identity:** the Cluster ID is the record's functional ID, **generated** by the ID generator when the registration is approved (pool `cluster`, prefix `CL-`, e.g. `CL-4729318560`); staff never type it. The programme's own code is kept, if known, in the searchable **Programme Cluster Code** field. Activities refer to a cluster by its Cluster ID;
 * **changes:** created through an intake form and changed through change requests, both approved in AWE, like the Farmer Registry's registers.
 
 A plot joins a cluster with a `CLUSTER_ENROLLED` activity. Cluster totals are derived from the plots' activities.

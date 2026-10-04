@@ -254,7 +254,8 @@ Attribute ids are **upper-case**: `GENDER`, `COOKING_FUEL_TYPE`,
 `DISABILITY_SEVERITY`. Call `get_all_attributes` to list what a deployment actually
 holds — it varies with the country pack loaded, and a pack's **domain** lists (such
 as `agriculture`) are there only if the deployment asked for that domain
-(`geoSeed.domains`).
+(`geoSeed.domains`, which defaults to `agriculture`; a pack without a requested
+domain skips it with a warning).
 {% endhint %}
 
 {% hint style="warning" %}

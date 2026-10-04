@@ -36,7 +36,7 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Group | Setting | Value for Open Agri Stack |
 | --- | --- | --- |
 | Country Pack | **Country Pack** (`masterData.geoSeed.countryPack`) | `ETH` (Ethiopia; the commons default) |
-| Country Pack | **Domain Code Lists** (`masterData.geoSeed.domains`) | `agriculture` — **required** by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected |
+| Country Pack | **Domain Code Lists** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
 | Country Pack | **Load Code Lists** (`masterData.geoSeed.load.codelists`) | on (default) |
 | Country Pack | **Load Sample People** (`masterData.geoSeed.load.samples`) | on (default) — the registries' sample farmers and crop seasons are derived from them |
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
@@ -78,7 +78,7 @@ The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registr
 
 * **No code lists are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
 * **No geo setting:** register forms read the country's geo levels from Master Data when they load; seed Jobs read Master Data through its API, never its database.
-* **No ID generator** is installed (no functional IDs).
+* **ID generator:** installed, with one pool, `cluster`, for the Cluster register's generated Cluster IDs (`registry.idgenerator.idGenerator.appConfig.idTypes`; nothing to set). Crop seasons have no functional IDs.
 * **AWE:** nothing to set. The chart uses the shared AWE in commons-services; db-seed loads the Cluster approval policies and keycloak-init creates the approvers they name (`alex.carter`, `nina.patel`).
 * **Sanity:** the platform's smoke tier runs on install; its e2e tier stays off (it seeds a record-register record, which this registry doesn't have). Activity-register checks run against a deployed instance with `scripts/e2e_smoke.py`.
 

@@ -99,6 +99,7 @@ production: it bypasses approval.
 | `--publish-initial` / `--no-publish-initial` | `PACK_PUBLISH_INITIAL` | `geoSeed.publishInitial` | on |
 | `--publish` | `PACK_AUTO_PUBLISH` | `geoSeed.autoPublish` | off |
 | `--owner-org` | `PACK_OWNER_ORG` | `geoSeed.ownerOrg` | none |
+| `--domains` | `PACK_DOMAINS` | `geoSeed.domains` | chart: `agriculture` (loader alone: none); a domain the pack lacks is skipped with a warning |
 | `--actor` | `PACK_ACTOR` | — | `country-pack-loader` |
 
 Every load step is written to the change log with the loader as the actor
