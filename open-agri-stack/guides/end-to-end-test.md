@@ -28,7 +28,7 @@ python composite/scripts/e2e.py -n <ns> --partner bank-a --yes    # first time: 
 python composite/scripts/e2e.py -n <ns> --partner bank-a --call-only    # afterwards: call with the saved keys
 ```
 
-* **`--partner bank-a`:** `loan-profile` allows only `bank-a` (`allowed_partners: [bank-a]`). The script's default test partner is `e2e-bank`, which is not allowed, so without this option the script stops with exit code 2 and prints the Helm value change that would add `e2e-bank` (Rancher → Apps → Installed Apps → the composite release → **Edit YAML**, key `composite.useCases.loan-profile`; pods reload the use case within about 30 s). Use `bank-a` only where it is a test partner: the script registers its test key for `PARTNER_BANK_A` in PM.
+* **`--partner` (required):** a partner the use case allows (`allowed_partners`); `loan-profile` allows `bank-a`. The script registers a **TEST** key for it in Partner Management (`PARTNER_BANK_A`), so use a partner ID that is a test partner in that environment. To test with another ID, add it to the use case's `allowed_partners` first (Rancher → Apps → Installed Apps → the composite release → **Edit YAML**, key `composite.useCases.<use case>`; pods reload the use case within about 30 s).
 * **`--yes`:** make the listed writes without asking. Without it, the script lists every write and waits for a typed `yes`.
 * **`--call-only`:** no setup; it signs with the saved keys and calls.
 

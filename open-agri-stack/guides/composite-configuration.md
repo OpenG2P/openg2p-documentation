@@ -172,7 +172,7 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 **When the request fails** because of a source, the HTTP status is: any `denied` → **403** `source_denied`; else any `unavailable` → **504** if a timeout was involved, otherwise **503** (`source_unavailable`); else **502** `source_error`. `sources` is still included.
 
-**`loan-profile`'s settings:** `farmer` mandatory; `season_summaries` and `crop_seasons` optional and `depends_on: [farmer]`; each `timeout_ms: 3000`, `retries: 1`; `overall_timeout_ms: 8000`; `partial_response: allowed`. So the request fails only when the Farmer Registry fails (or denies), and the crop data is best effort.
+**`loan-profile`'s settings:** `farmer` mandatory; `season_summaries` and `crop_seasons` optional and `depends_on: [farmer]`; each `timeout_ms: 10000`, `retries: 0` (a slow registry search is not retried: a retry only doubles the wait); `overall_timeout_ms: 25000` (farmer, then the crop sources); `partial_response: allowed`. So the request fails only when the Farmer Registry fails (or denies), and the crop data is best effort.
 
 ## Output format
 
@@ -233,8 +233,8 @@ sources:
          "query": {"type": "expression",
                    "value": {"expression": {"query": {"{{ field }}": {"$eq": {{ subject.value | tojson }} } } } } },
          "pagination": {"page_size": 1, "page_number": 1} }
-    timeout_ms: 3000
-    retries: 1
+    timeout_ms: 10000
+    retries: 0
 
   - id: season_summaries
     controller: crop-sown-registry
@@ -261,8 +261,8 @@ sources:
                      {%- if parameters.crop_year is not none %}, "crop_year": {{ parameters.crop_year | tojson }}{% endif %}
                      {%- if parameters.season %}, "season": {{ parameters.season | tojson }}{% endif %} } } } },
          "pagination": {"page_size": 20, "page_number": 1} }
-    timeout_ms: 3000
-    retries: 1
+    timeout_ms: 10000
+    retries: 0
 
   - id: crop_seasons
     controller: crop-sown-registry
@@ -288,8 +288,8 @@ sources:
                      {%- if parameters.crop_year is not none %}, "crop_year": {{ parameters.crop_year | tojson }}{% endif %}
                      {%- if parameters.season %}, "season": {{ parameters.season | tojson }}{% endif %} } } } },
          "pagination": {"page_size": 100, "page_number": 1} }
-    timeout_ms: 3000
-    retries: 1
+    timeout_ms: 10000
+    retries: 0
 
 response:
   # JSONPath over {subject, parameters, sources: {<id>: {status, records: [...]}}}.
@@ -312,7 +312,7 @@ response:
   source_status: true
 
 execution:
-  overall_timeout_ms: 8000
+  overall_timeout_ms: 25000
   partial_response: allowed   # a failing mandatory source (farmer) fails the request
 
 limits:
