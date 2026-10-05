@@ -8,7 +8,7 @@ description: >-
 
 Registry staff API, the Registry Celery worker, and AWE each get the same connector environment. The connector reads `NOTIFICATION_*` directly. There is no service-specific prefix.
 
-The staff UI gets a different set. It talks to the public Novu hosts. It does not send. See [Inbox](inbox.md).
+The staff UI gets a different set. It loads the [client](client.md). It does not send. The default notification provider install is in [Novu](notification-provider/novu.md).
 
 ## Shared values
 
@@ -28,7 +28,7 @@ AWE chart: [values.yaml](https://github.com/OpenG2P/awe/blob/develop/helm/openg2
 
 The API key reference is optional. A pod can start when the Novu secret is not there yet. Sends then fail until the key exists, and that failure is logged.
 
-`NOTIFICATION_STAFF_PORTAL_BASE_URL` is the public staff UI origin, for example `https://staff.example.org`, with no path and no trailing slash required (the app strips one trailing slash). Locale `/en` is fixed in the Novu workflow. Use the registry staff UI host, not the AWE admin host. Export and AWE links are empty of a host until this value is set.
+`NOTIFICATION_STAFF_PORTAL_BASE_URL` is the public staff UI origin, for example `https://staff.example.org`, with no path and no trailing slash required (the app strips one trailing slash). Locale `/en` is fixed in the notification provider workflow. Use the registry staff UI host, not the AWE admin host. Export and AWE links are empty of a host until this value is set.
 
 `notificationEnabled: false` skips every send, even when a workflow is listed. Removing one key from `notificationWorkflows` skips only that event.
 
@@ -64,20 +64,21 @@ Registry puts the same `NOTIFICATION_*` block on the staff API and on the Celery
 }
 ```
 
-The AWE Helm question describes `novu` as the provider value. The connector still loads whatever name is registered. See [Switch provider](connector.md#switch-provider). Changing provider means a new Python provider and a new `notificationProvider` value. The event map can stay.
+The AWE Helm question describes `novu` as the provider value. The connector still loads whatever name is registered. See [Switch provider](connector.md#switch-provider). Changing provider means a new Python provider and a new `notificationProvider` value. The event map can stay. The client `provider` value changes with it. See [Switch provider](client.md#switch-provider) on the client.
 
 ## Staff UI values
 
-These are on the registry staff UI deployment. They are not connector settings.
+These are on the registry staff UI deployment. They are not connector settings. The staff UI server reads them and passes them into `@openg2p/notification`. See [Client](client.md#staff-ui).
 
 | Helm value | Pod env | Use |
 | --- | --- | --- |
-| `global.notificationApplicationIdentifier` | `NOTIFICATION_APPLICATION_IDENTIFIER` | Novu application identifier. Empty until you copy it from the Novu environment |
-| `global.notificationBackendUrl` | `NOTIFICATION_BACKEND_URL` | Public API URL, `https://` plus `global.notificationApiHostname` |
-| `global.notificationWebsocketUrl` | `NOTIFICATION_WEBSOCKET_URL` | Public WebSocket URL, `https://` plus `global.notificationWsHostname` |
-| `global.notificationHmacSecretKey` | `NOTIFICATION_SECRET_KEY` | Key `novu-secret-key` on the Novu secret. Server-only |
+| `global.notificationProvider` | `NOTIFICATION_PROVIDER` | Client adapter name. `novu` when that is the provider |
+| `global.notificationApplicationIdentifier` | `NOTIFICATION_APPLICATION_IDENTIFIER` | Provider application identifier. Empty until you copy it from the provider environment |
+| `global.notificationBackendUrl` | `NOTIFICATION_BACKEND_URL` | Public API URL, `https://` plus the provider API hostname |
+| `global.notificationWebsocketUrl` | `NOTIFICATION_WEBSOCKET_URL` | Public WebSocket URL, `https://` plus the provider WebSocket hostname |
+| `global.notificationHmacSecretKey` | `NOTIFICATION_SECRET_KEY` | Server-only HMAC secret. On Novu this is key `novu-secret-key` |
 
-The inbox client reads `NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER`, `NEXT_PUBLIC_NOVU_BACKEND_URL`, and `NEXT_PUBLIC_NOVU_SOCKET_URL`. Wire those from the three public values above. Do not point the browser at `http://commons-novu-api:3000`.
+Do not point the browser at the in-cluster API (`http://commons-novu-api:3000` on the default install). Email and SMS credentials are not in this table. They are set on the notification provider. See [Email and SMS](notification-provider/novu.md#email-and-sms).
 
 ## Docker
 
