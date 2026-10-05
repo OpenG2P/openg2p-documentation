@@ -8,13 +8,13 @@ description: >-
 
 There are 16 workflows. Eight belong to Registry. Eight belong to AWE. The catalog below is the implementer set: every field the sender should put on the payload, not only the fields today's email happens to print.
 
-Event keys are dotted. Novu trigger ids replace `.` and `_` with `-`. `NOTIFICATION_WORKFLOWS` binds the two. Templates read `{{payload.field}}`. Python does not render the copy.
+Event keys are dotted. `NOTIFICATION_WORKFLOWS` binds each key to a notification provider workflow id. On Novu that id replaces `.` and `_` with `-`. Templates read `{{payload.field}}`. Python does not render the copy.
 
 Registrant copy stays plain language. It uses `record_name`, `register_subject`, `registry_name`, and `application_reference`. It does not print internal ids. Staff titles use the same friendly fields (`stage_name`, `policy_name`, `artifact_type_label`, display names). Ids stay on the payload for links and for the notification id. They do not belong in the title.
 
 Email bodies are HTML. This page records the subject, the SMS line, the in-app title and body, and the buttons. It does not paste the HTML.
 
-How to add a key is in [Implementing a send](implementing.md). How the workflows are seeded is in [Novu](novu.md).
+How to add a key is in [Implementing a send](implementing.md). How the workflows are seeded is in [Novu](notification-provider/novu.md#workflows). Email and SMS delivery follows Novu's provider guides, listed in [Email and SMS](notification-provider/novu.md#email-and-sms).
 
 ## Registrant contact in an extension
 
@@ -225,7 +225,7 @@ There is no SMS. The completed email links `file_presigned_url` and shows `file_
 | `file_object_name` | Object name in storage |
 | `file_presigned_url` | Download URL |
 | `file_url_expires_at` | When that URL expires, ISO |
-| `requested_by` | Staff username. This is also the Novu subscriber id |
+| `requested_by` | Staff username. This is also the subscriber id |
 | `queued_at` | Queue time, ISO |
 | `staff_portal_base_url` | Staff UI origin |
 | `batch_size` | Worker batch size |

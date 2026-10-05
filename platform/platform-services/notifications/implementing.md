@@ -14,12 +14,12 @@ The [connector](connector.md) is the only send API. This page is how a service u
 2. Put the event key in `NOTIFICATION_WORKFLOWS`. A key that is not in the map is skipped.
 3. Pass `event`, `entity_id`, `payload`, and a `Recipient`. Do not pass a channel.
 4. Call `send` or `send_bulk` from a thread if you are in an async service (`asyncio.to_thread`).
-5. Log failures. Do not fail the business request because Novu is down or the package is missing.
+5. Log failures. Do not fail the business request because the notification provider is down or the package is missing.
 6. Keep `send_bulk` at 100 events or fewer. Split a longer list.
 
 Staff `recipient_id` is the Keycloak username (`preferred_username`). Registrant `recipient_id` is `registrant_id(internal_record_id)`, which returns `person:{id}`.
 
-`notification_id` defaults to `{event}:{entity_id}`. Pass your own when one entity must produce more than one notification, for example one per recipient. Registry uses `{workflow}:{entity_id}:{recipient_id}`. AWE uses `{workflow}:{request_id}:{ref}:{recipient_id}`.
+`notification_id` defaults to `{event}:{entity_id}`. Pass your own when one entity must produce more than one notification, for example one per recipient. Registry uses `{event}:{entity_id}:{recipient_id}`. AWE uses `{event}:{request_id}:{ref}:{recipient_id}`.
 
 ## Minimal call
 
@@ -74,8 +74,8 @@ Source: [`awe/src/awe/services/notification.py`](https://github.com/OpenG2P/awe/
 
 ## Add an event
 
-1. Choose a dotted event key. The Novu trigger id is that key with `.` and `_` replaced by `-`.
-2. Add the workflow in Novu (channels, copy, `{{payload.*}}`). See [Novu](novu.md).
+1. Choose a dotted event key. On the default notification provider the workflow id is that key with `.` and `_` replaced by `-`.
+2. Add the workflow on the notification provider (channels, copy, `{{payload.*}}`). See [Novu](notification-provider/novu.md).
 3. Add the key to `NOTIFICATION_WORKFLOWS` on the deployment that should send it.
 4. After commit, call `send` with a payload that includes every field the template reads.
 
