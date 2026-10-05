@@ -1,14 +1,14 @@
 ---
 description: >-
   The openg2p-notification Python package. send and send_bulk, environment
-  variables, and how to replace the Novu provider.
+  variables, and how to replace the provider.
 ---
 
 # Connector
 
-[`openg2p-notification`](https://github.com/OpenG2P/notifications/tree/develop/connector) is a library, not an HTTP service. Registry and AWE import it and call `send` or `send_bulk` in process.
+[`openg2p-notification`](https://github.com/OpenG2P/notifications/tree/develop/connector) is a library, not an HTTP service. Registry and AWE import it and call `send` or `send_bulk` in process. The call is the same for every notification provider.
 
-The package does not talk to the staff inbox. Session, list, and mark-read stay in the [staff UI](inbox.md).
+The package does not talk to the inbox. Session, list, and mark-read stay in the [client](client.md). The default notification provider's trigger body, workflow ids, and dashboard are in [Novu](notification-provider/novu.md).
 
 ## Install
 
@@ -49,19 +49,19 @@ Settings use the prefix `NOTIFICATION_`. Source: [`config.py`](https://github.co
 | `NOTIFICATION_ENABLED` | `true` | Master switch. `false` skips every send |
 | `NOTIFICATION_PROVIDER` | `novu` | Provider module name under `providers/` |
 | `NOTIFICATION_PROVIDER_URL` | `http://localhost:3000` | Provider API base URL |
-| `NOTIFICATION_PROVIDER_API_KEY` | empty | Secret key. For Novu this is the API secret, not `NOVU_SECRET_KEY` |
+| `NOTIFICATION_PROVIDER_API_KEY` | empty | Secret key for the provider API. On Novu this is the API secret, not `NOVU_SECRET_KEY` |
 | `NOTIFICATION_PROVIDER_TIMEOUT_MS` | `20000` | HTTP timeout |
 | `NOTIFICATION_WORKFLOWS` | `{}` | JSON map of event key to provider workflow id. `{}` sends nothing |
 
 `NOTIFICATION_STAFF_PORTAL_BASE_URL` is not a connector setting. Registry and AWE read it themselves and put the value in the payload. See [Deployment](deployment.md).
 
-Create the workflow in the provider first. Then list only the events this environment should send:
+Create the workflow in the notification provider first. Then list only the events this environment should send:
 
 ```bash
 NOTIFICATION_WORKFLOWS={"change_request.created":"change-request-created"}
 ```
 
-The catalog of event keys lives in the host app, not in this package. A missing key, a blank mapped value, or an empty map means that event is not sent. Novu workflow ids cannot contain dots, so `change_request.created` maps to `change-request-created`.
+The catalog of event keys lives in the host app, not in this package. A missing key, a blank mapped value, or an empty map means that event is not sent. On the default notification provider, workflow ids cannot contain dots, so `change_request.created` maps to `change-request-created`. See [Workflows](notification-provider/novu.md#workflows).
 
 ## Send
 
@@ -87,7 +87,7 @@ NotificationFactory.get_notifier().send(
 | `entity_id` | Stable id of the business row. Used in the notification id |
 | `payload` | Dict the workflow template reads as `{{payload.*}}` |
 | `recipient` | `recipient_id` is required. Email, phone, and name are channel addresses |
-| `notification_id` | Optional. Default is `{event}:{entity_id}`. Novu stores this as `transaction_id` |
+| `notification_id` | Optional. Default is `{event}:{entity_id}`. The default notification provider stores this as `transaction_id` |
 
 From an async service, call `await asyncio.to_thread(...)`. Call it after commit. Catch and log. A failed send must not fail the business request.
 
@@ -115,33 +115,9 @@ notifier.send_bulk(
 )
 ```
 
-The Novu provider maps `Recipient` onto the trigger body: `subscriber_id`, and `email`, `phone`, and `first_name` when those fields are set. Source: [`novu.py`](https://github.com/OpenG2P/notifications/blob/develop/connector/src/openg2p_notification/providers/novu.py) and [`interface.py`](https://github.com/OpenG2P/notifications/blob/develop/connector/src/openg2p_notification/core/interface.py).
+`Recipient` is provider-neutral: `recipient_id` plus optional email, phone, and name. The built-in `novu` module maps those fields onto the trigger body. That JSON, and how Novu treats `transaction_id`, is in [What the connector sends](notification-provider/novu.md#what-the-connector-sends). Source of the shared types: [`interface.py`](https://github.com/OpenG2P/notifications/blob/develop/connector/src/openg2p_notification/core/interface.py).
 
-A skipped send (disabled, or event not in the map) returns status `SUCCESS` with response `skipped`. A Novu result whose status is not `processed` returns `FAILURE`. An empty API key raises `ValueError` before the HTTP call. A missing `recipient_id` or `workflow_id` also raises. Host apps should catch that. Registry and AWE do.
-
-### What Novu receives
-
-`send` builds one trigger. `send_bulk` sends `{ "events": [ ... ] }` and refuses more than 100 events.
-
-```json
-{
-  "workflow_id": "change-request-created",
-  "transaction_id": "change_request.created:cr-1:person:p-1",
-  "to": {
-    "subscriber_id": "person:p-1",
-    "email": "ada@example.com",
-    "phone": "+10000000000",
-    "first_name": "Ada"
-  },
-  "payload": {
-    "record_name": "Ada"
-  }
-}
-```
-
-`email`, `phone`, and `first_name` are omitted when the recipient does not set them. `transaction_id` is omitted when the notification id is empty. Novu treats `transaction_id` as the idempotency key for that trigger. Reuse it and Novu will not start a second run of the same workflow for the same id.
-
-`first_name` is the whole `recipient_name`. The connector does not split a name into first and last.
+A skipped send (disabled, or event not in the map) returns status `SUCCESS` with response `skipped`. An empty API key raises `ValueError` before the HTTP call. A missing `recipient_id` or `workflow_id` also raises. Host apps should catch that. Registry and AWE do. A provider-specific failure status is documented with that provider.
 
 ### Allow-list helpers
 
@@ -157,9 +133,9 @@ A skipped send (disabled, or event not in the map) returns status `SUCCESS` with
 
 ## Switch provider
 
-Host apps do not import Novu. [`NotificationFactory`](https://github.com/OpenG2P/notifications/blob/develop/connector/src/openg2p_notification/core/factory.py) loads `openg2p_notification.providers.{NOTIFICATION_PROVIDER}`. That module must call `NotificationFactory.register(name, cls)` at import. The Novu module registers `"novu"`.
+Host apps do not import a provider SDK. [`NotificationFactory`](https://github.com/OpenG2P/notifications/blob/develop/connector/src/openg2p_notification/core/factory.py) loads `openg2p_notification.providers.{NOTIFICATION_PROVIDER}`. That module must call `NotificationFactory.register(name, cls)` at import. The built-in module registers `"novu"`.
 
-To leave Novu:
+To leave the default provider:
 
 1. Implement `NotificationInterface.send` and `send_bulk`. Call `ids(event, entity_id)` for the workflow id and the notification id.
 2. Register the class under a short name (`^[a-z][a-z0-9_]*$`).
@@ -190,9 +166,9 @@ Then set `NOTIFICATION_PROVIDER=acme`. If the name is not registered and `openg2
 
 A provider module inside the package registers itself on import. Put the class in `src/openg2p_notification/providers/acme.py` and end the module with `NotificationFactory.register("acme", AcmeNotifier)`. The factory imports `openg2p_notification.providers.acme` when `NOTIFICATION_PROVIDER=acme` and the name is not registered yet.
 
-Implement `send_bulk` yourself when the new system has a bulk API. The interface default loops and calls `send` once per item. That default is correct. It is slower, and it does not share the Novu limit of 100. If you keep the default, still document the limit your API enforces and split in the host app.
+Implement `send_bulk` yourself when the new system has a bulk API. The interface default loops and calls `send` once per item. That default is correct. It is slower, and it does not share the built-in limit of 100. If you keep the default, still document the limit your API enforces and split in the host app.
 
-The provider must keep the same skip rules the Novu class uses, or host apps will notify when the allow-list says not to:
+The provider must keep the same skip rules the built-in class uses, or host apps will notify when the allow-list says not to:
 
 * `NOTIFICATION_ENABLED=false` returns `skipped` and does not call the remote API.
 * `ids()` returns `workflow_id is None` when the event is not mapped. Return `skipped` for that item. In a bulk call, skip that item and still send the others.
