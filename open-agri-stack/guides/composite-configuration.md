@@ -103,7 +103,7 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `policy`, `purpose` | Informational until PM has policies |
 | `consent.required` | Default `true`: requires `message.consent_jws` and checks it (signature, subject, validity, grants for mandatory sources) |
 | `allowed_partners` | Partner IDs allowed to call (`"*"` = any verified partner). This **stands in for the PM policy association**, which PM does not have yet. |
-| `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` |
+| `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` (see [subject ID types](#subject-id-types)) |
 | `input.parameters.<name>` | `{type: integer\|number\|string\|boolean, description, required, default, min, max, enum}`. For strings, `min`/`max` bound the length. Unknown parameters are rejected. |
 | `input.batch.max_subjects` | Must be 1 |
 | `sources[]` | `{id, controller, requirement: mandatory\|optional, depends_on: [], dci: {reg_type, reg_record_type, query_template}, timeout_ms, retries}`. `id` matches `^[a-z][a-z0-9_]*$`; `timeout_ms` 50–120000; `retries` 0–5 (default 0); `requirement` defaults to `mandatory`. `depends_on` may not form a cycle. |
@@ -114,6 +114,19 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does. |
 | `limits.rate_per_partner` | e.g. `60/min` (units `s`, `min`, `hour`), as a token bucket per pod and worker. Limits across pods are to do (shared counters). |
 | `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) |
+
+### Subject ID types
+
+A subject ID type names the kind of identifier a request's subject is given in. It is a label, not a registry field: the use case's query templates map it to the field each registry searches, and the same label must be allowed in two places.
+
+| Subject ID type | What it is | Farmer Registry field | Crop Sown Registry field |
+| --- | --- | --- | --- |
+| `FAYDA_FAN` | Fayda (national ID) FAN | `foundational_id` | `fayda_fan` |
+| `FARMER_ID` | Farmer Registry ID, e.g. `FR-0007` | `functional_record_id` | `farmer_id` |
+
+* **Use case:** `input.subject.id_types` lists the types a partner may send as `message.subject.type`.
+* **Consent Manager:** each partner policy's `allowed_subject_id_types` must include the type, or CM refuses the consent.
+
 
 Also accepted from the design but **not acted on yet** (logged once at load): `owner`, `consent.collection`, `consent.mode`, `sources[].request_scopes`, `response.schema`, `response.correlate_on`, `response.mode: merged`, `execution.fan_out: parallel`, and `limits.daily_quota_per_partner`.
 

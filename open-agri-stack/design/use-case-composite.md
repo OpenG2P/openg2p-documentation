@@ -39,7 +39,7 @@ consent:
 # ── Input: what the SP sends ──────────────────────────────────────────────
 input:
   subject:
-    id_types: [fayda_token, farmer_id]   # must be within the policy's subject_id_types
+    id_types: [FAYDA_FAN, FARMER_ID]     # must be within the CM policy's allowed_subject_id_types
   parameters:
     seasons: { type: integer, min: 1, max: 4, default: 2 }
   batch: { max_subjects: 1 }             # 1 = one farmer per request

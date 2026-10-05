@@ -32,7 +32,7 @@ Each registry computes this intersection for its own part, so a misconfigured us
 ```yaml
 policy: credit-assessment          # version 3, status: active
 purpose: credit-assessment
-terms: { fetch_type: oneshot, max_validity: P90D, data_life: P1Y, subject_id_types: [fayda_token] }
+terms: { fetch_type: oneshot, max_validity: P90D, data_life: P1Y, subject_id_types: [FAYDA_FAN, FARMER_ID] }
 sections:                           # one per data controller, each approved by that department
   - controller: farmer-registry     scopes: [farmer:profile, farmer:land]        approved_by: MoA-FR (AWE)
   - controller: crop-sown-registry  scopes: [crop:season]                        approved_by: MoA-Crop (AWE)
