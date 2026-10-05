@@ -58,8 +58,8 @@ A consent carrying both forms, an empty `grants` list, or two grants for the sam
   "subject_id": { "type": "fayda_fan", "value": "1234567890123456" },
   "purpose": { "code": "credit_scoring", "text": "Farm loan eligibility" },
   "grants": [
-    { "data_controller": "farmer-registry", "data_scopes": ["farmer_personal_details", "land_parcels"] },
-    { "data_controller": "crop-sown-registry", "data_scopes": ["crop_season", "crops_sown"] }
+    { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"] },
+    { "data_controller": "crop-sown-registry", "data_scopes": ["crop-sown-registry.crop_season", "crop-sown-registry.measures"] }
   ],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2026-10-01T00:00:00Z", "valid_until": "2027-10-01T00:00:00Z" },
@@ -74,7 +74,7 @@ A consent carrying both forms, an empty `grants` list, or two grants for the sam
   "partner_id": "PARTNER_SYSTEM_A",
   "data_controller": "farmer-registry",
   "request_context": {
-    "requested_scopes": ["farmer_personal_details", "land_parcels"],
+    "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
     "subject_id": { "type": "fayda_fan", "value": "1234567890123456" }
   }
 }
@@ -100,7 +100,7 @@ How the controller is resolved:
   "receipt_id": "RECEIPT-998877",
   "subject_id": { "type": "fayda_fan", "value": "1234567890123456" },
   "data_controller": "farmer-registry",
-  "effective_data_scopes": ["farmer_personal_details", "land_parcels"],
+  "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
   "valid_until": "2027-10-01T00:00:00Z",
   "policy_version": 3,
   "reason_code": "ok",

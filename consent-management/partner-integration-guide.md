@@ -73,6 +73,7 @@ For each registry whose data you want, that registry's administrator creates a *
 * This policy is the **ceiling**: what you actually get back is always `consent scope ∩ policy`. You cannot exceed it, no matter what the consent says.
 * You request this binding from the registry operator (out of band). Ask for exactly the scopes/purposes you need. Widening an existing policy may go through an approval workflow on their side — plan for lead time.
 * You'll agree on the **`data_controller`** identifier and the **audience** (your `partner_id`) to use in the consent object (Step 5).
+* **Data scopes are the registry's scope IDs**, `<data_controller>.<name>` (e.g. `farmer-registry.land`), from that registry's scope catalogue: `GET /partner/data_scopes` on its partner API lists each scope with its label, description and fields. A scope is a named group of the registry's own fields, not a field of an output format such as DCI. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
 * Needing data from **several registries** means one binding (and policy) per registry, all under the same audience. You still collect **one** consent from the beneficiary (Step 5).
 
 ***
@@ -96,7 +97,7 @@ Build the consent claims — these become the **payload** of the JWS you sign in
 | ----------------- | ------------------------------------------------------------------------ |
 | `jti`             | Unique id for THIS object (replay guard — never reuse)                   |
 | `subject_id`      | `{ type, value }` — the beneficiary (e.g. `national_id` / `FARMER_1234`) |
-| `grants`          | `[{ data_controller, data_scopes }]` — one grant per registry: the registry's controller id (agreed in Step 3) and the fields you're requesting from it (subset of that registry's policy) |
+| `grants`          | `[{ data_controller, data_scopes }]` — one grant per registry: the registry's controller id (agreed in Step 3) and the registry's data scope IDs you're requesting from it (subset of that registry's policy) |
 | `aud`             | The audience — **your** `partner_id`                                     |
 | `purpose`         | `{ code, text }` — must be allowed by the policy                         |
 | `fetch_type`      | `oneshot` or `periodic`                                                  |
@@ -112,8 +113,8 @@ Build the consent claims — these become the **payload** of the JWS you sign in
   "aud": "PARTNER_SYSTEM_A",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
   "grants": [
-    { "data_controller": "farmer-registry", "data_scopes": ["farmer_profile.basic", "farmer_profile.crops"] },
-    { "data_controller": "crop-sown-registry", "data_scopes": ["crop_season", "crops_sown"] }
+    { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"] },
+    { "data_controller": "crop-sown-registry", "data_scopes": ["crop-sown-registry.crop_season"] }
   ],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
@@ -124,6 +125,7 @@ Build the consent claims — these become the **payload** of the JWS you sign in
 There is **no `signature` field** — the whole object is signed as a JWS in Step 6.
 
 * List each registry once in `grants`. Each registry sees and uses **only its own grant**; another registry's grant never widens what it returns.
+* `data_scopes` are scope IDs from each registry's catalogue (Step 3). A registry ignores an ID it does not know or one from another registry's namespace: it grants nothing. When a registry later adds a field to a scope, consents issued before that (by `issued_at`) do not get it.
 * **Single registry (backward compatible):** instead of `grants` you may put `data_controller` + `data_scopes` at the top level, as before. Don't combine the two forms — that is `malformed_object`.
 
 ***
@@ -204,7 +206,7 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 * [ ] The consent object is a valid **compact JWS** (Step 6), signed with your PM key.
 * [ ] JWS header `kid` + `alg` match a key you registered in PM (and the policy's `allowed_signing_algs`).
 * [ ] `aud` = your `partner_id`; each grant's `data_controller` = a registry you are bound to.
-* [ ] Each grant's `data_scopes` and the `purpose` are within that registry's policy (else widen the policy first).
+* [ ] Each grant's `data_scopes` are that registry's scope IDs (`GET /partner/data_scopes`) and, with the `purpose`, within its policy (else widen the policy first).
 * [ ] The `subject_id` is the person you search for at every registry.
 * [ ] `issued_at` is fresh and clocks are synced; `jti` is unique.
 * [ ] You handle `deny` outcomes and honour `revoked` / `expired`.

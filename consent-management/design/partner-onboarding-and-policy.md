@@ -56,16 +56,34 @@ new version; prior versions are retained, and every decision records the `policy
 evaluated against. Effective fields on any decision are always `grant scope ∩ policy`, using the
 grant and the policy of the registry that asked.
 
-| Dimension | Meaning | Enforced in validation |
-| --- | --- | --- |
-| `allowed_data_scopes` | The maximal set of fields/registers this partner may ever receive | `data_scopes ⊆ allowed_data_scopes`; effective = intersection |
-| `allowed_purposes` | Purpose codes the partner may assert | checked per request |
-| `allowed_subject_id_types` | Which subject identifier types are acceptable | checked per request |
-| `allowed_signing_algs` | Acceptable JWS algorithms (reject weak/`none`) | at signature verify |
-| `max_validity_duration` | Upper bound (ISO-8601 duration) on `valid_until − valid_from` | at validity check |
-| `fetch_type` | `oneshot` or `periodic` (DEPA-style recurring access) | recorded on artefact |
-| `max_fetch_frequency` | For `periodic`, the minimum interval between fetches | enforced per fetch |
-| `data_life` | Retention the partner may keep data for after fetch | recorded on receipt |
+| Dimension | Meaning | Allowed values | Enforced in validation |
+| --- | --- | --- | --- |
+| `allowed_data_scopes` | The maximal set of data this partner may ever receive from this registry | The registry's data scope IDs, `<controller>.<name>` (e.g. `farmer-registry.land`), from its scope catalogue | `data_scopes ⊆ allowed_data_scopes`; effective = intersection |
+| `allowed_purposes` | Purpose codes the partner may assert | Open list; empty = any purpose | checked per request |
+| `allowed_subject_id_types` | Which subject identifier types are acceptable | Open list; empty = any type | checked per request |
+| `allowed_signing_algs` | Acceptable JWS algorithms (reject weak/`none`) | At least one of `EdDSA`, `ES256`, `RS256` (the verifier's accepted set, `crypto_allowed_algorithms`) | at signature verify |
+| `max_validity_duration` | Upper bound on `valid_until − valid_from` | ISO-8601 duration longer than zero (`P30D`, `P1Y`, `PT12H`, `P1DT6H`), or `null` for no cap | at validity check |
+| `fetch_type` | DEPA-style access pattern | `oneshot` or `periodic` | recorded on artefact |
+| `max_fetch_frequency` | For `periodic`, the minimum interval between fetches | ISO-8601 duration > 0, or `null` | enforced per fetch |
+| `data_life` | Retention the partner may keep data for after fetch | ISO-8601 duration > 0, or `null` for no cap | recorded on receipt |
+
+CM rejects a policy with any other value (`400`). The admin console offers these as fixed choices:
+a checkbox per signing algorithm, a fetch-type dropdown, and a number + unit picker (hours, days,
+weeks, months, years, or a custom ISO-8601 value) for each duration. The choices come from
+`GET /consent/v1/meta`, the same values the API checks. The open lists stay free text, with values
+already used in other policies offered as suggestions.
+
+A policy version saved before these checks still loads. Its `issues` field lists the values that
+are no longer accepted, and the console flags them. The version stays in force as stored until
+someone edits the policy, and the edit can only be saved once those values are fixed.
+
+**Data scopes are the registry's, not CM's.** CM treats scopes as opaque strings. Each registry
+publishes its scope catalogue — scope IDs `<controller>.<name>`, each a named group of the
+registry's own fields (by default one per register section), versioned — at
+`GET /partner/data_scopes` on its partner API (and `GET /data_scopes` on its staff API). Put those
+IDs in `allowed_data_scopes`; they are not keys of a DCI record or any other output format. A
+registry ignores IDs it does not know, so a mistyped or outdated scope grants nothing. See
+[Data Scopes](../../products/registry/registry/design/data-scopes.md).
 
 ### Example policy
 
@@ -73,7 +91,7 @@ grant and the policy of the registry that asked.
 {
   "version": 3,
   "status": "active",
-  "allowed_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+  "allowed_data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
   "allowed_purposes": ["share_farm_profile", "subsidy_eligibility"],
   "allowed_subject_id_types": ["national_id", "farmer_id"],
   "allowed_signing_algs": ["EdDSA", "ES256"],
@@ -96,11 +114,15 @@ CM integrates the shared, per-environment **Approval Workflow Engine (AWE)** so 
 grants **more** access does not take effect until it has been approved.
 
 * A change that **widens** the policy — a larger allowed set (scopes, purposes, subject-id types, or
-  signing algs), or a longer `max_validity_duration` / `data_life`; the **first policy counts as
-  widening** — creates a new `PartnerPolicy` version in status `pending` and submits an approval
-  request to AWE. The prior `active` version **stays in force** until AWE approves.
+  signing algs), a longer `max_validity_duration` / `data_life`, `oneshot` → `periodic` fetching, or
+  a shorter `max_fetch_frequency`; the **first policy counts as widening** (configurable with
+  `awe_gate_first_policy`) — creates a new `PartnerPolicy` version in status `pending` and submits
+  an approval request to AWE. The prior `active` version **stays in force** until AWE approves.
+  Only one version per binding can be `pending` at a time.
 * A pure **narrowing** change (a strictly smaller/shorter policy), or when AWE is disabled,
-  **activates immediately** and supersedes the prior version.
+  **activates immediately** and supersedes the prior version. If a widening was pending meanwhile,
+  its later approval is not applied (it ends `stale` and can be resubmitted), so a narrowing is
+  never silently undone.
 
 {% hint style="info" %}
 The **verification hot path only ever uses the `active` policy version**, so a `pending` version

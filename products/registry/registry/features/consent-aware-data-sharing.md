@@ -41,8 +41,11 @@ The registry partner-api then:
    entity register every returned record's foundational or functional ID must equal it;
    in an activity register the searched subject must equal it or be linked to it by the
    register's own data (e.g. a crop record holding the farmer's Fayda FAN).
-4. **Enforces the decision** — clamps every returned record to those effective scopes.
-   A narrower consent or policy can only ever *remove* fields, never add them. Any
+4. **Enforces the decision** — filters every record to the fields of those effective
+   scopes, then renders it. A scope is a named group of the registry's own fields (by
+   default one per register section), not a key of the output format; see
+   [Data Scopes](../design/data-scopes.md). A narrower consent or policy can only ever
+   *remove* fields, never add them. Any
    non-permit decision or subject mismatch rejects the request (**fail-closed**).
 
 CM separately records a canonical **consent artefact** and issues a signed **consent
@@ -56,7 +59,7 @@ Enforcement is governed by two **independent** switches on the partner-api. Both
 | Switch | Effect when ON |
 | --- | --- |
 | **Verify Partner Signature** | verify the DCI envelope signature against Partner Management keys |
-| **Enforce Consent** | call the Consent Manager and clamp returned fields to the consented scopes |
+| **Enforce Consent** | call the Consent Manager and filter returned records to the consented scopes' fields |
 
 The registry's data-controller ID is set with **Consent data controller**
 (`global.consentDataController`), which defaults to the registry variant. It must match

@@ -92,27 +92,36 @@ A DCI search with `reg_type = CropSown`, by farmer ID, returns one of three reco
 | `spdci-extensions-agri:CropSeason` | Each crop season's current state: stage, planned and sown area, seed type, whether sowing and harvest were verified, activities awaiting verification, growth and infestation status, harvest, yield, location, and the season it replaced or was replaced by | **Decisions** such as a fertiliser subsidy or a loan |
 | `spdci-extensions-agri:ActivityAggregate` | The farmer's season summaries across plots and crops | Decisions on the farmer as a whole |
 
-All three share one set of consent scopes, the record's top-level keys:
+### Data scopes
 
-* `activity` (activities only)
-* `crop_season`
-* `measures`
-* `farmer_reference`
-* `location`
+A consent names the registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `crop-sown-registry.<name>`, shipped in `crop-sown-extension/…/meta_data/data-scopes/` and published at `GET /partner/data_scopes`. Each scope covers fields of all three record types (`CropSown.activity.*`, `CropSown.context.*`, `CropSown.aggregate.*`), so a partner's policy covers them the same way. Records are filtered to the consented fields before they are shaped; a record group whose fields are all outside the consent is `null`.
 
-A partner's policy therefore covers all three record types the same way.
+| Scope ID | Covers |
+| --- | --- |
+| `crop-sown-registry.crop_season` | which crop on which plot in which season: plot, crop year, season, crop, variety, cluster; a crop season's stage, status and last activity; a summary's type, period and `is_final` |
+| `crop-sown-registry.measures` | areas, quantities, yields, dates, seed type, crop condition, pest and damage counts, verification flags, each activity's recorded details, a summary's figures (`aggregate_value`) |
+| `crop-sown-registry.farmer_reference` | the farmer ID and Fayda FAN (more sensitive) |
+| `crop-sown-registry.location` | administrative levels and, for an activity, the GPS point (more sensitive) |
+| `crop-sown-registry.activity` | an activity's own details: ID, type, when it happened and was recorded, channel, verification status |
+| `crop-sown-registry.cluster_profile` | Cluster register: cluster ID, programme code, name, crop, year established (no coordinator contact) |
+| `crop-sown-registry.csr_cluster_details` | Cluster register's details section, including the coordinator's name and phone |
+| `crop-sown-registry.csr_cluster_location_resources` | Cluster register's location and resources section |
 
-**Querying.** Every search is synchronous (`/dci/registry/sync/search`).
+The first four keep the meaning the DCI record's groups of the same names had. An activity's `measures.details` leaves out the farmer, development agent and location keys the payload repeats.
+
+### Querying
+
+Every search is synchronous (`/dci/registry/sync/search`).
 
 * **By farmer ID** (`idtype-value`): every crop season or summary of the farmer.
 * **Filtered** (`expression`): `subject_id` (the farmer ID) plus filters.
   * Activities can be filtered by any plain field: `activity_type`, `occurred_at`, `verification_status`, `crop`, `plot_id`…
   * Crop seasons can be filtered by any plain projection column, e.g. `crop_year`, `season`, `crop`, `stage`.
   * Summaries can be filtered by `aggregate_type`, `period_key`, `crop_year`, `season` and `is_final`.
-* **Final summaries:** a farmer's season summary becomes final when a period lock (all activity types) covers the season's window and its activities are processed (`crop_season.is_final`). Plans are often made before the window, so lock from the planning start, or a late change to a plan makes the summary provisional again.
+* **Final summaries:** a farmer's season summary becomes final when a period lock (all activity types) covers the season's window and its activities are processed (`crop_season.is_final`; `null` when the partner may not see `crop_season`). Plans are often made before the window, so lock from the planning start, or a late change to a plan makes the summary provisional again.
 * **Across farmers:** a programme system the registry operator allow-lists can search summaries without a farmer ID, e.g. every final Belg 2018 summary for a subsidy run. See [aggregates across subjects](registry-platform.md#dci-search-of-activity-registers).
   * The operators are those of entity searches (`$eq`, `$in`, `$gte`…).
 
 Results come newest first, so "the farmer's last 10 activities" needs no filter: `page_size: 10`. For example, "wheat sown by FR-0007 in Meher 2019" is the summary for `crop_year: 2019`, `season: SEASON_MEHER`, read at `measures.by_crop.CROP_WHEAT.area_sown_ha`. See the [composite worked example](../design/use-case-composite.md#worked-example-wheat-sown-by-a-farmer-this-season).
 
-The `loan-profile` use case reads the crop seasons and the season summaries; its consent grant for this registry is `farmer_reference`, `crop_season`, `measures`, `location` ([composite configuration](../guides/composite-configuration.md#the-loan-profile-use-case)).
+The `loan-profile` use case reads the crop seasons and the season summaries; its consent grant for this registry is `crop-sown-registry.farmer_reference`, `.crop_season`, `.measures` and `.location` ([composite configuration](../guides/composite-configuration.md#the-loan-profile-use-case)).

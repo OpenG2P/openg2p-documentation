@@ -146,4 +146,4 @@ A plot joins a cluster with a `CLUSTER_ENROLLED` activity. Cluster totals are de
 
 ## Sharing with partners (DCI)
 
-Partners read three record types by farmer ID: the farmer's **activities** (`spdci-extensions-agri:CropActivity`), each **crop season's current state** (`spdci-extensions-agri:CropSeason`, what a subsidy or loan decision reads) and the farmer's **season summaries** (`spdci-extensions-agri:ActivityAggregate`). The record types, consent scopes, filters and examples are in [Crop Sown Registry (as built)](../implementation/crop-sown-registry.md#dci-records).
+Partners read three record types by farmer ID: the farmer's **activities** (`spdci-extensions-agri:CropActivity`), each **crop season's current state** (`spdci-extensions-agri:CropSeason`, what a subsidy or loan decision reads) and the farmer's **season summaries** (`spdci-extensions-agri:ActivityAggregate`). The record types, data scopes, filters and examples are in [Crop Sown Registry (as built)](../implementation/crop-sown-registry.md#dci-records).

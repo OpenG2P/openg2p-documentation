@@ -23,6 +23,11 @@ Coverage:
 * **Disable/enable** — disabled partners fail-closed on both fetch and JWKS.
 * **Reject** — rejected onboarding is never served, and a decided request cannot
   be approved.
+* **Validation** — `GET /metadata` lists the allowed values; unsupported or
+  wrong-case algorithms, malformed `partner_id` / `kid`, non-http(s) `jwks_url`,
+  unknown or already-revoked `revoke_kids`, and unknown status / request-type
+  filters are rejected; `""` still means auto-detect; stored rows with values
+  outside today's sets still load.
 
 ## Manual smoke test (no Keycloak)
 

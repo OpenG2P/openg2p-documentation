@@ -170,7 +170,7 @@ The registry platform's [Observations design](../../products/registry/registry/d
 * **Form defaults** from the latest activity of the same type for the same context or subject.
 * **Geography as named levels** (`geo_dimensions`), filled by the platform, on activities, projections and aggregates; **indicators by level**; a **reporting view per registry** by level.
 * **Season windows** in the domain code: a season's period is its own date range, not just its year.
-* **The same data for partners:** aggregates are readable through DCI with the consent clamp, not only in the staff UI.
+* **The same data for partners:** aggregates are readable through DCI, filtered to the consented data scopes, not only in the staff UI.
 
 **Still missing compared with Observations** (reviewed October 2026; tracked in [open items](../open-items/README.md#registries))
 

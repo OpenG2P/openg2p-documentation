@@ -16,6 +16,8 @@ This guide covers what is specific to Open Agri Stack. The consent object, its s
 
 ## How it fits together
 
+The diagram shows the sample use case `loan-profile`, which reads the Farmer Registry and then the Crop Sown Registry; another use case reads its own registries in its own order.
+
 ```mermaid
 sequenceDiagram
   participant P as You (partner)
@@ -30,13 +32,13 @@ sequenceDiagram
   C->>PM: your public key (PARTNER_<ID>)
   C->>FR: DCI search, signed by the composite, your consent unchanged
   FR->>CM: /validate (your consent, data_controller = farmer-registry)
-  FR-->>C: farmer record, clamped to your grant ∩ policy
+  FR-->>C: farmer record, filtered to your grant ∩ policy
   par after the farmer
     C->>CSR: DCI search (season summaries)
     C->>CSR: DCI search (crop seasons)
   end
   CSR->>CM: /validate (data_controller = crop-sown-registry)
-  CSR-->>C: records, clamped
+  CSR-->>C: records, filtered
   C-->>P: one signed response, status per source
 ```
 
@@ -76,39 +78,64 @@ After approval your keys are served at `GET {pm}/keys/PARTNER_BANK_A` (and `/key
 
 ## Step 3 — Get a binding and policy for each registry
 
-For **each registry** the use case reads, the Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; a new or wider policy may wait for AWE approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
+For **each registry** the use case reads, the Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the data scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; a new or wider policy may wait for AWE approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
 
-For `loan-profile` that is two bindings, both with **audience** = your partner ID:
+The registries a use case reads are its sources' `controller`s, listed as `consent_grants_needed` when you [describe the use case](#step-5-discover-the-use-case).
 
-| Binding | Value |
-| --- | --- |
-| `audience` | `bank-a` |
-| `controller_id` | `farmer-registry`, and a second binding for `crop-sown-registry` |
-| `partner_mgmt_id` | `PARTNER_BANK_A` |
+**Binding** (one per registry):
+
+| Field | Meaning | Where the value comes from |
+| --- | --- | --- |
+| `audience` | Who consents are given to | Your partner ID ([step 2](#step-2-get-onboarded-in-partner-management)); the same for every registry |
+| `controller_id` | The registry | The registry's data-controller ID, as the use case's source names it (`sources[].controller`) |
+| `partner_mgmt_id` | Your record in Partner Management | `PARTNER_<YOUR_ID>` ([step 2](#step-2-get-onboarded-in-partner-management)) |
+
+**Policy** (one per binding):
+
+| Field | Meaning | Where the value comes from |
+| --- | --- | --- |
+| `allowed_data_scopes` | The data you may ever receive from this registry | **Scope IDs from the registry's scope catalogue**, `<controller>.<name>`. The registry publishes it at `GET /partner/data_scopes` on its partner API (ask the registry operator if that is not reachable to you): each scope with a label, a description and the fields it covers. Ask for the scopes the use case's output needs, and no more. |
+| `allowed_purposes` | Purpose codes your consents may carry | The use case's `purpose` ([step 5](#step-5-discover-the-use-case)) |
+| `allowed_subject_id_types` | Identifier types the consent's subject may use | The use case's `input.subject.id_types` ([step 5](#step-5-discover-the-use-case)) |
+| `allowed_signing_algs` | Algorithms your consents may be signed with | Your key's algorithm ([step 1](#step-1-generate-your-signing-key)): `EdDSA`, `ES256` or `RS256` |
+| `max_validity_duration` | The longest consent validity accepted | Agreed with the department; an ISO 8601 duration such as `P90D` |
+| `fetch_type` | Access pattern | `oneshot` for a use case you call per request |
+
+A data scope is a **named group of the registry's own fields**, not a key of the record you get back: the registry filters each record to the scopes' fields before rendering it. A scope ID the registry does not have grants nothing. See [Data Scopes](../../products/registry/registry/design/data-scopes.md).
+
+**Sources that depend on another.** When a use case queries one registry with a value read from another registry's record (a source with `depends_on`), your scopes for the first registry must include the one that carries that value. Otherwise the dependent sources have nothing to query with.
+
+#### Example: `loan-profile`
+
+Two bindings, for `farmer-registry` and `crop-sown-registry`, both with `audience` = `bank-a` and `partner_mgmt_id` = `PARTNER_BANK_A`:
 
 | Policy field | `farmer-registry` | `crop-sown-registry` |
 | --- | --- | --- |
-| `allowed_data_scopes` | `farmer_personal_details`, `family_details`, `farm_details`, `main_crops` | `farmer_reference`, `crop_season`, `measures`, `location` |
+| `allowed_data_scopes` | `farmer-registry.farmer_identifiers`, `farmer-registry.personal_details`, `farmer-registry.household_location`, `farmer-registry.land`, `farmer-registry.land_location`, `farmer-registry.main_crops` | `crop-sown-registry.farmer_reference`, `crop-sown-registry.crop_season`, `crop-sown-registry.measures`, `crop-sown-registry.location` |
 | `allowed_purposes` | `credit-assessment` | `credit-assessment` |
 | `allowed_subject_id_types` | `FAYDA_FAN`, `FARMER_ID` | `FAYDA_FAN`, `FARMER_ID` |
-| `allowed_signing_algs` | your algorithm, e.g. `ES256` | same |
-| `max_validity_duration` | e.g. `P90D` | e.g. `P90D` |
+| `allowed_signing_algs` | `ES256` | `ES256` |
+| `max_validity_duration` | `P90D` | `P90D` |
 | `fetch_type` | `oneshot` | `oneshot` |
 
-A registry's scopes are the **top-level keys of its DCI record**. The Farmer Registry scopes must include `farmer_personal_details`: the farmer ID that the Crop Sown Registry query needs is read from it.
+The crop sources query the Crop Sown Registry by farmer ID, read from the farmer record, so the Farmer Registry scopes include `farmer-registry.farmer_identifiers`.
 
 ## Step 4 — Get allowed for the use case
 
-Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (`loan-profile` ships with `[bank-a]`). Ask the Open Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [composite configuration](composite-configuration.md#use-case-file-format).
+Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (for example, the sample `loan-profile` ships with `[bank-a]`). Ask the Open Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [composite configuration](composite-configuration.md#use-case-file-format).
 
 ## Step 5 — Discover the use case
 
 The operator gives you the composite's URL, e.g. `https://agri-composite.<namespace>.openg2p.org`, and its public key for verifying responses. The describe endpoints need no signature:
 
 ```bash
-curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases            # all published use cases
-curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/loan-profile
+curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases              # all published use cases
+curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/<use_case>   # one use case
 ```
+
+The description tells you what to set up and send: `purpose` (for the policies and the consent), `input.subject.id_types` and `input.parameters` (for the request), `sources` and `consent_grants_needed` (the registries to get bindings for and to grant in the consent), and `output_fields`.
+
+Example: `loan-profile`.
 
 ```json
 {
@@ -145,7 +172,7 @@ curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/loan-prof
 }
 ```
 
-`consent_grants_needed` lists the registries your consent needs a grant for. A grant for a **mandatory** source is required; without a grant for an **optional** source, that source is reported `denied` and not called.
+`consent_grants_needed` lists the registries your consent needs a grant for (the data scopes of each grant come from that registry's catalogue, [step 3](#step-3-get-a-binding-and-policy-for-each-registry)). A grant for a **mandatory** source is required; without a grant for an **optional** source, that source is reported `denied` and not called.
 
 ## Step 6 — Collect the farmer's consent
 
@@ -157,7 +184,7 @@ Data is released only against the farmer's consent for the specific purpose and 
 
 What that means for you:
 
-* **Obtain real, informed consent** for the purpose (`credit-assessment` for `loan-profile`) and for each registry's data, before you sign. Tell the farmer which registries hold the data being shared (here the Farmer Registry and the Crop Sown Registry), as the CM consent screen would.
+* **Obtain real, informed consent** for the use case's purpose (e.g. `credit-assessment` for `loan-profile`) and for each registry's data, before you sign. Tell the farmer which registries hold the data being shared (e.g. the Farmer Registry and the Crop Sown Registry for `loan-profile`) and what each scope covers (its label and description in the registry's catalogue), as the CM consent screen would.
 * **Stay within the policy.** The scopes you grant per registry must be within that registry's policy (step 3), and within what the farmer agreed to.
 * **Keep evidence** of how the consent was obtained, for audit and disputes: who consented, when, through which channel and how they were authenticated, for which purpose and which registries' data. The capture method and evidence a department accepts are part of your agreement with it when your binding and policy are set up; follow what it requires.
 * **The signed consent and the Consent Manager's receipts are the audit trail.** CM issues a receipt per registry that validated your consent ([Partner Integration Guide, step 9](../../consent-management/partner-integration-guide.md)). Misrepresenting consent is a compliance breach.
@@ -166,16 +193,18 @@ What that means for you:
 
 The consent is a **compact JWS** signed with your key, with **one grant per registry**. The claims are defined in the [Partner Integration Guide, step 5](../../consent-management/partner-integration-guide.md#step-5-construct-the-consent-claims); for Open Agri Stack:
 
-| Claim | Value for `loan-profile` | Rule |
+| Claim | Value | Rule |
 | --- | --- | --- |
 | `jti` | a new UUID | **New for every consent.** Re-sending the same signed consent to the same registry returns its earlier decision; a different consent reusing a `jti` is denied `replay`. |
-| `aud` | `bank-a` | Your partner ID |
-| `subject_id` | `{"type": "FAYDA_FAN", "value": "123456789012"}` | Must equal `message.subject` in your request: **same type and value** |
-| `purpose` | `{"code": "credit-assessment"}` | Allowed by each registry's policy |
-| `grants` | one per registry, see below | Each registry once; scopes within its policy |
+| `aud` | your partner ID | |
+| `subject_id` | `{"type": …, "value": …}`, a type from the use case's `input.subject.id_types` | Must equal `message.subject` in your request: **same type and value** |
+| `purpose` | `{"code": <the use case's purpose>}` | Allowed by each registry's policy |
+| `grants` | `[{"data_controller": <registry>, "data_scopes": [<scope IDs>]}]`, one per registry in `consent_grants_needed` | Each registry once; scope IDs from that registry's catalogue, within its policy and within what the farmer agreed to |
 | `fetch_type` | `oneshot` | |
 | `validity` | `{"valid_from": …, "valid_until": …}` | Within the policy's `max_validity_duration`; the composite rejects a consent outside its window |
 | `issued_at` | now (UTC) | Within **±300 seconds** of the Consent Manager's clock (its freshness window), so sign a **fresh consent for each request** and keep clocks in sync |
+
+Example: `loan-profile`, for partner `bank-a`.
 
 ```json
 {
@@ -185,9 +214,12 @@ The consent is a **compact JWS** signed with your key, with **one grant per regi
   "purpose": {"code": "credit-assessment"},
   "grants": [
     {"data_controller": "farmer-registry",
-     "data_scopes": ["farmer_personal_details", "family_details", "farm_details", "main_crops"]},
+     "data_scopes": ["farmer-registry.farmer_identifiers", "farmer-registry.personal_details",
+                     "farmer-registry.household_location", "farmer-registry.land",
+                     "farmer-registry.land_location", "farmer-registry.main_crops"]},
     {"data_controller": "crop-sown-registry",
-     "data_scopes": ["farmer_reference", "crop_season", "measures", "location"]}
+     "data_scopes": ["crop-sown-registry.farmer_reference", "crop-sown-registry.crop_season",
+                     "crop-sown-registry.measures", "crop-sown-registry.location"]}
   ],
   "fetch_type": "oneshot",
   "validity": {"valid_from": "2026-10-01T10:00:00+00:00", "valid_until": "2026-10-31T10:00:00+00:00"},
@@ -220,13 +252,15 @@ The request is a DCI-style envelope: `header`, `message`, and a **detached JWS**
 | `header.message_id` | a new UUID |
 | `header.message_ts` | now, ISO 8601 UTC, e.g. `2026-10-01T10:00:00.000Z`. Must be within **300 seconds** of the composite's clock. |
 | `header.action` | `query` |
-| `header.sender_id` | your partner ID, `bank-a` |
+| `header.sender_id` | your partner ID |
 | `header.receiver_id` | the composite's ID, `agri-composite` (if present, it must match) |
 | `message.subject` | `{"type": "FAYDA_FAN" \| "FARMER_ID", "value": "…"}` |
-| `message.parameters` | the use case's parameters, e.g. `{"crop_year": 2019, "season": "SEASON_MEHER"}`; omit or `{}` for none |
+| `message.parameters` | the use case's `input.parameters`, e.g. `{"crop_year": 2019, "season": "SEASON_MEHER"}` for `loan-profile`; omit or `{}` for none |
 | `message.consent_jws` | the consent from step 7 |
 
 **The signature** is a JWS whose payload is the canonical JSON of `{"header": …, "message": …}` (keys sorted, no whitespace, UTF-8), with the payload part removed: `<protected header>..<signature>`.
+
+Example (`loan-profile`, partner `bank-a`):
 
 ```python
 import uuid
@@ -249,18 +283,18 @@ envelope = {"signature": sign_detached({"header": header, "message": message}, p
 ## Step 9 — Call the use case
 
 ```
-POST https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/loan-profile/query
+POST https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/<use_case>/query
 Content-Type: application/json
 
 <envelope>
 ```
 
-* `loan-profile` gets the highest published major version; `loan-profile@1` pins major 1 (or send the header `X-Use-Case-Major: 1`).
-* One farmer per request.
+* `<use_case>` gets the highest published major version; `<use_case>@1` pins major 1 (or send the header `X-Use-Case-Major: 1`). For example `loan-profile` or `loan-profile@1`.
+* How many subjects one request may carry is the use case's `input.batch.max_subjects` (one for `loan-profile`).
 
 ## Step 10 — Read the response
 
-The response is an envelope signed by the composite:
+The response is an envelope signed by the composite. Example (`loan-profile`):
 
 ```json
 {
@@ -288,7 +322,7 @@ The response is an envelope signed by the composite:
 | `unavailable` | The registry could not be reached, timed out, or answered 408/429/5xx; or the overall timeout was reached |
 | `error` | Any other failure (a rejected search, a malformed answer) |
 
-A source whose dependency is not `ok` is not called; it takes the dependency's status, with `detail: "not called: …"`. With `partial_response: allowed` (as in `loan-profile`), only a failing **mandatory** source fails the request; optional sources that fail just show their status, and their output fields are empty.
+A source whose dependency is not `ok` is not called; it takes the dependency's status, with `detail: "not called: …"`. With `partial_response: allowed` (e.g. `loan-profile`), only a failing **mandatory** source fails the request; optional sources that fail just show their status, and their output fields are empty.
 
 **HTTP status and error codes:**
 
@@ -324,7 +358,7 @@ Get the composite's public key from the operator, or from PM's key API (`GET {pm
 
 ## Rate limits
 
-`loan-profile` allows **60 requests per minute** per partner (`429 rate_limited` beyond that). The limit is applied per composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](../open-items/README.md).
+Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is applied per composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](../open-items/README.md).
 
 ## Worked example: `loan-profile`
 
@@ -404,7 +438,7 @@ To set everything up against a cluster namespace in one go, use the [end-to-end 
 * [ ] Your key is registered and **active** in PM under `PARTNER_<YOUR_ID>`; the JWS `kid` and `alg` match it.
 * [ ] CM has a binding and an **active** policy for your audience with **each** registry the use case reads.
 * [ ] Your partner ID is in the use case's `allowed_partners`.
-* [ ] The consent's `subject_id` equals `message.subject` (type and value); `aud` is your partner ID; one grant per registry, scopes within each policy.
+* [ ] The consent's `subject_id` equals `message.subject` (type and value); `aud` is your partner ID; one grant per registry, with scope IDs from that registry's catalogue, within its policy.
 * [ ] A new `jti` and a fresh `issued_at` for each consent; `message_ts` fresh; clocks in sync.
 * [ ] You verify the composite's signature and check `sources` before using `data`.
 * [ ] You keep evidence of how each consent was obtained.

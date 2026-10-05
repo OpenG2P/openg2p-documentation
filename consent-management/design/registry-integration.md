@@ -91,18 +91,19 @@ out to several registries forwards the partner's consent **unchanged** to each, 
 envelope with its **own** key, and names the partner in `header.meta.on_behalf_of`. Each registry
 validates its own grant; the registry logs `on_behalf_of` alongside `sender_id`.
 
-## Field-level enforcement (the clamp)
+## Field-level enforcement
 
 CM `/validate` returns a decision with `effective_data_scopes` = this registry's grant ∩ the
-partner's policy for this registry. The registry **clamps every returned record to those scopes** — a strict
-allow-list over the rendered record's top-level fields. A narrower consent or policy can
-only ever *remove* fields, never add them.
+partner's policy for this registry. The registry **filters every record to those scopes' fields
+before rendering it** (DCI or any other output). A narrower consent or policy can only ever
+*remove* fields, never add them.
 
-Scope names are the registry's **outgoing-template output field names**. Deployers must
-keep a shared **scope ↔ field catalog** so a policy's `data_scopes` line up with what the
-registry can return (e.g. `first_name`, `birth_date`, and farmer-extension fields like
-`crop`, `livestock`). Fields the partner may *filter* on are separately bounded by
-`dci_expression_allowed_fields`.
+Scopes are the registry's **data scope IDs**, `<controller>.<name>` (e.g.
+`farmer-registry.land`): named groups of the registry's own fields, by default one per register
+section, versioned, and published at `GET /partner/data_scopes`. The registry resolves each scope
+to its fields as of the consent's issue time (a field added later never reaches an older
+consent). See [Data Scopes](../../products/registry/registry/design/data-scopes.md). Fields the
+partner may *filter* on are separately bounded by `dci_expression_allowed_fields`.
 
 ## Subject enforcement
 
@@ -121,56 +122,23 @@ A mismatch fails the whole request (fail-closed, an error response with
 `request_context.subject_id` to CM; the cross-identifier check needs the registry's own data, so it
 is done here.
 
-## Data-scope catalog — design (NOT yet implemented) — handover note
+## Data-scope catalogue — ownership
 
-> **Status:** design agreed, implementation deferred. This section is the handover
-> note for whoever implements the scope catalog later. Nothing here is built yet;
-> today `data_scopes` are opaque strings and the clamp is structural only.
-
-**The decision: the catalog is owned by the data source (the registry), NOT the
-Consent Manager.** CM is a generic PDP — it only does set math on opaque scope
-strings (`consent.data_scopes ⊆ policy.allowed_data_scopes`;
-`effective = consent ∩ policy`). It never needs to know what a scope maps to. So a
-registry adding/renaming a field must **never** require a CM code change or release.
-Baking a per-registry field taxonomy into CM would be wrong — it's data, and it
-belongs to the source that owns the schema and changes it.
-
-**Ownership split:**
+The catalogue is owned by the data source (the registry), **not** the Consent Manager. CM is a
+generic PDP: it only does set math on opaque scope strings
+(`consent.data_scopes ⊆ policy.allowed_data_scopes`; `effective = consent ∩ policy`). A registry
+adding, renaming or regrouping fields never needs a CM change.
 
 | Concern | Owner | Form |
 | --- | --- | --- |
-| Field taxonomy / scope vocabulary | **Registry (PEP)** | data/config, changes with the registry schema — no CM release |
-| Scope → field mapping (for the clamp) | **Registry (PEP)** | data/config (a config table, or derived from the DCI outgoing template already in MinIO) |
-| Publishing the scope catalog (discovery) | **Registry (PEP)** | a discovery endpoint / documented list |
-| Set-math authorization (`⊆`, `∩`) | **Consent Manager** | opaque strings — unchanged, no catalog |
-| Knowing which scopes to request/grant | **Partner + CM policy admin** | read the registry's published catalog |
+| Scope vocabulary and scope → field mapping | **Registry (PEP)** | the data scope catalogue: default section scopes plus the extension's `meta_data/data-scopes/*.json`, versioned in the registry database |
+| Publishing the catalogue (discovery) | **Registry (PEP)** | `GET /partner/data_scopes` (partners), `GET /data_scopes` (staff API) |
+| Set-math authorization (`⊆`, `∩`) | **Consent Manager** | opaque strings — no catalogue |
+| Knowing which scopes to request / grant | **Partner + CM policy admin** | read the registry's published catalogue |
 
-**The only shared contract is the scope-name vocabulary** — CM policies and the
-registry's mapping must use the same strings. That is a naming convention, not a code
-dependency. The registry **publishes** its catalog so partners and policy admins know
-the vocabulary; CM's admin UI *may* fetch it dynamically to populate a scope picker,
-but must never hardcode it.
-
-**Recommended model — scopes ARE the registry's published field/bundle names.** Then
-the "mapping" is identity and the clamp already written (`record.keys() ⊆ scopes`)
-needs no mapping table. Adding a farmer field = a registry data/config change, zero CM
-impact.
-
-**To implement (registry side, later):**
-- Define the scope → field mapping as **config/data** in the registry
-  (registry-platform / farmer-extension) — or make scope = field name (identity).
-- Add a small **discovery endpoint** publishing the scope catalog (alongside the DCI
-  capabilities).
-- Extend `dci_expression_allowed_fields` with the farmer-extension fields.
-- The existing `_clamp_record_fields` stays; it reads the mapping instead of guessing.
-- **CM: no structural change** (optionally, the admin UI fetches the registry catalog).
-- Document the scope naming convention in GitBook as the shared contract.
-
-**Open decision (registry-side, pick when implementing):** scope **granularity** —
-field-level (`first_name`, `crops`; scope = field name, no mapping table) vs coarse
-**bundles** (`farmer_profile.basic`; needs a bundle→fields mapping, still registry-owned).
-Lean: **field-level to start**, add bundles later if raw field lists prove tedious for
-partners.
+The only shared contract is the scope IDs: CM policies and consents use the registry's IDs as they
+are. CM's admin UI may later fetch a registry's catalogue to offer a scope picker, but never
+hardcodes it. Design and rules: [Data Scopes](../../products/registry/registry/design/data-scopes.md).
 
 ## Two kill-switches (testing)
 
@@ -181,7 +149,7 @@ CM/PM are wired. Turn both **on** for production.
 | Config (env) | Off behaviour |
 | --- | --- |
 | `signature_validation_enabled` | skip DCI envelope verification — accept any/unsigned caller |
-| `consent_enforcement_enabled` | skip CM `/validate` — return **all** fields (no clamp) |
+| `consent_enforcement_enabled` | skip CM `/validate` — return **all** fields (no filtering) |
 
 When a switch is off the bypass is logged (`WARNING`) and **stamped into the response
 header meta** (`signature_validation` / `consent_enforcement` = `enabled`/`disabled`), and
@@ -198,7 +166,7 @@ a missing consent object, a non-permit decision, or an unreachable CM rejects th
 | `REGISTRY_PARTNER_API_CONSENT_MANAGER_URL` | CM partner-api base URL (the `/validate` PDP) |
 | `REGISTRY_PARTNER_API_CONSENT_DATA_CONTROLLER` | This registry's controller ID in CM, sent as `data_controller` on every `/validate` |
 | `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` | gate the envelope signature check |
-| `REGISTRY_PARTNER_API_CONSENT_ENFORCEMENT_ENABLED` | gate consent enforcement + field clamp |
+| `REGISTRY_PARTNER_API_CONSENT_ENFORCEMENT_ENABLED` | gate consent enforcement + field filtering |
 
 In the Farmer Registry Helm chart these map to `global.registryCryptoBackend`,
 `global.partnerManagementApiUrl`, `global.consentManagerUrl`, `global.consentDataController`
@@ -215,8 +183,8 @@ In the Farmer Registry Helm chart these map to `global.registryCryptoBackend`,
    `/validate` (if `consent_enforcement_enabled`); CM selects this registry's grant, verifies,
    evaluates this registry's binding policy, and returns `effective_data_scopes` and the
    consent's `subject_id`.
-5. Registry fetches records, checks they belong to the consent's subject, and **clamps** each to
-   the effective scopes.
+5. Registry fetches records, checks they belong to the consent's subject, and **filters** each to
+   the effective scopes' fields before rendering it.
 6. Registry returns the DCI response, signed and stamped with the enforcement posture.
 
 > **Note — farmer consent is never a government approval.** The AWE approval workflow

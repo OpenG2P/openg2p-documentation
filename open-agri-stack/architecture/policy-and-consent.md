@@ -49,7 +49,7 @@ credit-assessment v3  ←  Bank A, Bank B, MFI C
 * **Policies list scopes, not individual fields.** Each registry defines and versions its own mapping from scope to fields and publishes it in the developer sandbox. For example, `farmer:profile` = name, sex, date of birth, kebele.
 
 {% hint style="info" %}
-In the registries as built, a scope is a **top-level key of the registry's DCI record** (e.g. `farmer_personal_details`, `farm_details`, `main_crops` in the Farmer Registry; `crop_season`, `measures`, `location`, `farmer_reference`, `activity` in the Crop Sown Registry). The `farmer:profile` style above is the design's notation.
+In the registries as built, a scope is a registry **data scope**: a named group of the registry's own fields, with ID `<controller>.<name>` (e.g. `farmer-registry.personal_details`, `farmer-registry.land`; `crop-sown-registry.crop_season`, `crop-sown-registry.measures`). Each registry publishes its versioned catalogue at `GET /partner/data_scopes` and filters records to the consented fields before rendering them, so scopes are independent of DCI. See [Data Scopes](../../products/registry/registry/design/data-scopes.md); the Farmer and Crop Sown Registry catalogues are listed in [Farmer Registry](../implementation/farmer-registry.md#data-scopes) and [Crop Sown Registry](../implementation/crop-sown-registry.md#data-scopes). The `farmer:profile` style above is the design's notation.
 {% endhint %}
 
 ## Runtime checks

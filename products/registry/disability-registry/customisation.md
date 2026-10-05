@@ -160,9 +160,12 @@ for your own officials before going live.
 
 ## 8. Data sharing
 
-The **top-level keys** of `templates/dr_person_to_dci.json.j2` are the consent
-scopes a partner can be granted. Adding a key creates a scope; renaming one
-silently revokes access for every partner consented to the old name.
+The consent scopes a partner can be granted are the registry's
+[data scopes](../registry/design/data-scopes.md): by default one per register
+section (`<controller>.<section_mnemonic>`), or named scopes shipped in the
+extension's `meta_data/data-scopes/`. Records are filtered to the consented fields
+before `templates/dr_person_to_dci.json.j2` renders them. Renaming a section
+retires its default scope; ship a named scope if partners need a stable ID.
 
 The registry ships a deliberately conservative PII posture: names, identifiers
 and certificate numbers are withheld from every reporting view, and unlike the

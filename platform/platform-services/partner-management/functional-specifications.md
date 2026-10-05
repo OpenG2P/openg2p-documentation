@@ -8,22 +8,22 @@ A third party whose signatures OpenG2P modules need to verify.
 
 | Field | Notes |
 | --- | --- |
-| `partner_id` | Admin-supplied, unique, stable business key used to fetch keys (e.g. `PARTNER_G2P_BRIDGE`). |
+| `partner_id` | Admin-supplied, unique, stable business key used to fetch keys (e.g. `PARTNER_G2P_BRIDGE`). Free text at onboarding, but no spaces or `/`, `?`, `#`, `%` (it is a URL path segment). |
 | `name`, `org_name` | Display fields. |
 | `description` | Free text captured at onboarding. |
-| `jwks_url` | Optional well-known JWKS endpoint keys may be imported from. |
-| `status` | `created` → `active` → `disabled`. |
+| `jwks_url` | Optional well-known JWKS endpoint keys may be imported from. Must be an `http(s)://` URL. |
+| `status` | One of `created`, `active`, `disabled` (`created` → `active` → `disabled`). |
 | `created_by`, `approved_by` | Audit: staff identity behind each transition. |
 
 ### Partner key
 
 | Field | Notes |
 | --- | --- |
-| `kid` | Key ID. Defaults to the key fingerprint when omitted. |
-| `algorithm` | `RS256`, `ES256`, or `EdDSA`. |
+| `kid` | Key ID. Defaults to the key fingerprint when omitted. Same character rule as `partner_id`. |
+| `algorithm` | One of `RS256`, `ES256`, `EdDSA` (case-sensitive). Optional on input: omitted means *auto-detect from the key*. A deployment can narrow the list with `crypto_allowed_algorithms`. |
 | `public_key` | Canonical PEM (SubjectPublicKeyInfo), regardless of input format. |
 | `key_fingerprint` | SHA-256 of the DER SPKI; used for dedup and display. |
-| `status` | `active` or `revoked` (never hard-deleted, for audit). |
+| `status` | One of `pending`, `active`, `revoked` (never hard-deleted, for audit). |
 | `not_before`, `not_after` | Optional validity window. |
 
 `(partner_id, kid)` is unique. **Multiple active keys** are allowed per partner.
@@ -34,12 +34,33 @@ The admin-facing workflow record.
 
 | Field | Notes |
 | --- | --- |
-| `request_type` | `onboarding` or `key_update`. |
+| `request_type` | One of `onboarding`, `key_update`. |
 | `description` | Free text — e.g. the reason for a rotation. |
 | `proposed_keys` | Normalised keys to activate on approval. |
-| `revoke_kids` | Existing kids to revoke on approval. |
-| `status` | `created` → `approved` / `rejected`. |
+| `revoke_kids` | Kids to revoke on approval. Each must be a current (non-revoked) key of the partner. |
+| `status` | One of `created`, `approved`, `rejected` (`created` → `approved` / `rejected`). |
 | `submitted_by`, `reviewed_by`, `review_notes` | Audit. |
+
+### Allowed values in the admin UI
+
+Every field with a fixed set of values is a select (or checkbox list) in the
+admin portal, not free text, and the API rejects anything else:
+
+| Screen | Field | Control | Allowed values |
+| --- | --- | --- | --- |
+| Onboard / Rotate keys | Algorithm (per key) | Select | *Auto-detect*, `RS256`, `ES256`, `EdDSA` |
+| Rotate keys | Partner ID | Select (when not opened from a partner) | Existing partners |
+| Rotate keys | Revoke existing keys | Checkbox list | The partner's current (non-revoked) keys |
+| Onboard / Rotate keys | Import from JWKS URL | Checkbox | Enabled only when a JWKS URL is set |
+| Requests | Status filter | Buttons | All, `created`, `approved`, `rejected` |
+| Requests | Type filter | Select | All, `onboarding`, `key_update` |
+| Partners | Status filter | Select | All, `created`, `active`, `disabled` |
+
+The portal reads these lists from `GET /metadata` (see [API Reference](api-reference.md#get-metadata)),
+which builds them from the same enums the API validates against. Partner ID,
+name, organisation, description and key ID stay free text; Partner ID and key ID
+show the character rule as a hint. Rows stored before this validation existed
+still load and display as-is.
 
 ## Lifecycles
 

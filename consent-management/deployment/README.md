@@ -176,12 +176,24 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 * a confidential client **`consent-manager`** (service account enabled) — keycloak-init
   auto-creates a Kubernetes Secret named `consent-manager` holding its `client_secret`;
 * the **`CONSENT_MANAGER_ADMIN`** client role required by the partner/policy admin endpoints;
-* role mappings granting `CONSENT_MANAGER_ADMIN` to the `admin` user and to the client's own
-  service account (for onboarding automation).
+* the **`CONSENT_MANAGER_APPROVER`** client role, which opens the approvals inbox and (with AWE on)
+  makes a user an approver of policy widenings;
+* role mappings granting `CONSENT_MANAGER_ADMIN` and `CONSENT_MANAGER_APPROVER` to the `admin` user,
+  and `CONSENT_MANAGER_ADMIN` to the client's own service account (for onboarding automation).
 
 The service itself **validates tokens via JWKS only** — it consumes no client secret. The
 generated `client_secret` exists for *callers*: the registry/PEP obtaining a client-credentials
 token to call `/validate`, and admin automation obtaining a token that carries the admin role.
+
+## Approval workflow (AWE) — optional
+
+Off by default (`global.aweEnabled: false`): policy changes take effect immediately. Setting it to
+`true` is the only switch needed against the shared AWE in `commons-services`: the chart mints the
+callback HMAC secret, its `awe-callback-seed` Job registers CM's callback secret and seeds the
+approval policy `consent-manager.policy_change.v1` (approvers: holders of
+`CONSENT_MANAGER_APPROVER`) into the AWE database, and the callback / token URLs are derived. Grant
+approvers that role. Details, settings and the state machine:
+[Approval Workflow (AWE) Integration](../design/approval-workflow-integration.md#enabling-awe-approval).
 
 ## Horizontal scalability
 

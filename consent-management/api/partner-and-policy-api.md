@@ -61,7 +61,8 @@ Return the partner binding (no secrets).
 
 ### `PATCH /partners/{partner_id}`
 
-Update mutable fields (`name`, `partner_mgmt_id`) or `status` (`active` / `suspended`). `name` and
+Update mutable fields (`name`, `partner_mgmt_id`) or `status` (`active` or `suspended`; any other
+value is rejected with `400`). `name` and
 `status` apply to **this binding only**: suspending it makes consents presented by that controller
 fail with `unknown_partner`, while the partner's other bindings keep working. `partner_mgmt_id` is
 partner identity, so a change is applied to **every binding** of the audience.
@@ -74,11 +75,25 @@ partner identity, so a change is applied to **every binding** of the audience.
 
 The policy is **versioned**. A `PUT` upserts the policy; **widening** it (adding scopes/purposes,
 longer validity, etc.) creates a **`pending`** version routed through AWE approval, while a
-non-widening change becomes `active` immediately. Prior versions are retained.
+non-widening change becomes `active` immediately. Prior versions are retained. Only one version per
+binding can be `pending`; `failed`, `stale` and `rejected` versions can be resubmitted.
 
 ### `PUT /partners/{partner_id}/policy`
 
-Durations are **ISO-8601** strings (`P1Y`, `P30D`).
+Allowed values (any other value is rejected with `400`, and the message names the field):
+
+| Field | Allowed values |
+| --- | --- |
+| `allowed_signing_algs` | At least one of `EdDSA`, `ES256`, `RS256`, the verifier's accepted set (`crypto_allowed_algorithms`). Defaults to `["EdDSA", "ES256"]` when omitted. |
+| `fetch_type` | `oneshot` (default) or `periodic` |
+| `max_validity_duration`, `max_fetch_frequency`, `data_life` | ISO-8601 duration longer than zero (`P30D`, `P1Y`, `PT12H`, `P1DT6H`; at most 32 characters), or `null` / `""` for no cap. Lower case is accepted and stored upper case. |
+| `allowed_data_scopes`, `allowed_purposes`, `allowed_subject_id_types` | Open lists (registry-defined). Entries are trimmed; blanks and duplicates are dropped. |
+
+```json
+// response 400 — e.g. an algorithm outside the accepted set
+{ "errors": [{ "code": "G2P-REQ-102",
+  "message": "Invalid Input. Value error, allowed_signing_algs: unsupported ['HS256']; allowed: ['EdDSA', 'ES256', 'RS256']" }] }
+```
 
 ```json
 // request
@@ -100,15 +115,31 @@ Durations are **ISO-8601** strings (`P1Y`, `P30D`).
 A non-widening change returns `"status": "active"` with an `effective_from` timestamp and no
 `awe_request_id`.
 
+| Status | Body | When |
+| --- | --- | --- |
+| `409` | `{"error": "policy_pending", "detail": "...", "pending_version": 5}` | A widening while another version awaits approval. Narrowing changes are still accepted. |
+| `409` | `{"error": "conflict", "detail": "..."}` | Another change to the same binding was saved at the same time. |
+| `502` | `{"error": "awe_submit_failed", "detail": "...", "message": "<AWE error>", "awe_status": 404, "policy_id": "...", "version": 6, "status": "failed"}` | AWE could not be reached or refused the request. The version is stored as `failed` (with the reason) and the active policy is unchanged. |
+
+### `POST /partners/{partner_id}/policies/{version}/resubmit`
+
+Copy a `failed`, `stale` or `rejected` version into a **new** version and save it like a `PUT`
+(re-evaluated against the current active policy: `pending` and submitted to AWE if it still widens,
+else `active`). Same responses as `PUT`; `409 not_resubmittable` for a version in another state,
+`404` if the binding or version does not exist.
+
 ### `GET /partners/{partner_id}/policy`
 
-Return the **active** policy version.
+Return the **active** policy version. Each returned version also carries `issues`, a list of the
+values the current rules reject. It is empty except for versions saved before these checks; such a
+version still loads and stays in force as stored, but has to be fixed before it can be saved again.
 
 ### `GET /partners/{partner_id}/policies`
 
 List **all** policy versions for the partner, each with its lifecycle `status`
-(`pending` | `active` | `superseded` | `rejected`) and, where applicable, the `awe_request_id`
-that drove approval.
+(`pending` | `active` | `superseded` | `rejected` | `failed` | `stale`), where applicable the
+`awe_request_id` that drove approval, `base_version` (the version active when it was created) and
+`status_reason` (why it ended `failed` / `stale` / `rejected`).
 
 ```json
 // response 200
@@ -122,6 +153,28 @@ that drove approval.
 ]
 ```
 
+### `GET /meta`
+
+The allowed values for the binding and policy forms, from the same source the API validates
+against, so a client does not need to hard-code them. Requires `CONSENT_MANAGER_ADMIN`.
+
+```json
+// response 200
+{
+  "signing_algorithms": ["EdDSA", "ES256", "RS256"],
+  "fetch_types": ["oneshot", "periodic"],
+  "partner_statuses": ["active", "suspended"],
+  "known_controller_ids": ["crop-sown-registry", "farmer-registry"],
+  "known_data_scopes": ["farmer-registry.land", "farmer-registry.personal_details"],
+  "known_purposes": ["credit-assessment"],
+  "known_subject_id_types": ["FAYDA_FAN", "national_id"]
+}
+```
+
+The `known_*` lists are **suggestions only**: values already used by bindings and policies (plus
+the configured default subject ID type). Controllers, scopes, purposes and subject ID types are open
+sets, so values outside these lists are still accepted.
+
 ## AWE approvals (approver proxy)
 
 Staff-api proxies the shared **Approval Workflow Engine (AWE)** so approvers can act on pending
@@ -129,7 +182,9 @@ policy widenings without a direct AWE login. These require the **`CONSENT_MANAGE
 
 ### `GET /awe/tasks`
 
-List approval tasks assigned to / claimable by the caller.
+List the caller's approval tasks. Default `status=actionable` returns open **and** claimed tasks
+(merged, newest first); any other value is passed to AWE as a single status filter. Query:
+`artifact_type` (default `consent_manager.policy_change`), `page`, `page_size`.
 
 ### `POST /awe/tasks/{task_id}/claim`
 
@@ -159,14 +214,16 @@ Return the request's event/audit trail.
 ### `POST /awe/webhooks/decision`
 
 AWE calls this back when a request is decided. **HMAC-only** (signed body, **no bearer token**) —
-see the AWE integration design. On approval the pending policy version flips to `active`; on
-rejection it becomes `rejected`.
+see the AWE integration design. On approval the pending policy version flips to `active` (or
+`stale` if the active version changed after it was submitted); on rejection or cancellation it
+becomes `rejected`.
 
 ## Audit — decisions
 
 ### `GET /decisions`
 
-Read the CM decision audit log. Filters: `partner_id`, `decision`; `limit` caps the page size.
+Read the CM decision audit log. Filters: `partner_id`, `decision` (`permit` or `deny`); `limit`
+caps the page size.
 Each entry carries the `data_controller` the decision was made for (when known).
 
 ```json
@@ -182,5 +239,6 @@ Each entry carries the `data_controller` the decision was made for (when known).
 ## Errors
 
 Standard HTTP codes with a problem body (see [conventions](README.md#decision--error-model)).
-`404` for unknown partner/policy/task/request; `422` for an invalid policy (e.g. unknown scope or
-non-ISO-8601 duration).
+`404` for unknown partner/policy/task/request; `400` (`{"errors": [{"code", "message"}]}`) for an
+invalid request body or query value, e.g. an unsupported signing algorithm, an unknown `fetch_type`
+or binding `status`, or a duration that is not ISO-8601.

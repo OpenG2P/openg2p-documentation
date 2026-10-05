@@ -59,7 +59,9 @@ policy.** Versioned; every decision records the version used, and the hot path o
 `active` version. A **widening** change sits `pending` until approved via the
 [Approval Workflow Engine](approval-workflow-integration.md), then becomes `active` and supersedes
 the prior version; a rejected/cancelled request marks the new version `rejected` and the prior
-active version stays in force.
+active version stays in force. At most one version per binding is `pending`; an approval that
+arrives after the active version changed ends `stale` (not applied), and a failed submission ends
+`failed` — see the [state machine](approval-workflow-integration.md#policy-version-state-machine).
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -74,8 +76,10 @@ active version stays in force.
 | fetch_type | enum | `oneshot`, `periodic` (DEPA-style) |
 | max_fetch_frequency | duration | For `periodic` — minimum interval between fetches |
 | data_life | duration | How long the partner may retain data after fetch |
-| status | enum | `pending`, `active`, `superseded`, `rejected` |
+| status | enum | `pending`, `active`, `superseded`, `rejected`, `failed`, `stale` (at most one `pending` per binding) |
 | awe_request_id | str | The AWE request id for the approval of a widening change (null for narrowing / AWE-disabled) |
+| base_version | int | Version that was active when this one was created (`0` = none); an approval applies only if it is still the active one |
+| status_reason | text | Why the version ended `failed` / `stale` / `rejected` |
 | effective_from | datetime | |
 
 ### ConsentArtefact (CM-issued, canonical)

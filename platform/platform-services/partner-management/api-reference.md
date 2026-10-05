@@ -33,6 +33,14 @@ Creates the partner in `created` and a request in `created`. Each key may instea
 supply `jwk` (a JSON Web Key) rather than `public_key`; `kid` and `algorithm` are
 optional and derived when omitted.
 
+Validation (rejected with `400`, code `G2P-REQ-102`):
+
+* `algorithm` — one of `RS256`, `ES256`, `EdDSA`, or omitted / `""` for auto-detect.
+  A supported value that does not match the key, or one the deployment's
+  `crypto_allowed_algorithms` excludes, is rejected with `PM-KEY-400`.
+* `partner_id`, `kid` — no spaces or `/`, `?`, `#`, `%`.
+* `jwks_url` — an `http(s)://` URL, or omitted / `""`.
+
 ### `POST /partners/requests/key-update`
 File a key rotation/update for an existing partner.
 
@@ -45,8 +53,14 @@ File a key rotation/update for an existing partner.
 }
 ```
 
-### `GET /partners/requests?status=&partner_id=`
-List requests (optionally filtered).
+`partner_id` must be an existing partner (`PM-PRT-404` otherwise). Each entry in
+`revoke_kids` must be a current (non-revoked) key of that partner (`PM-KEY-400`
+otherwise). `keys` and `jwks_url` follow the onboarding rules above.
+
+### `GET /partners/requests?status=&request_type=&partner_id=`
+List requests (optionally filtered). `status` is one of `created`, `approved`,
+`rejected`; `request_type` is one of `onboarding`, `key_update`. Other values
+are rejected with `400` (`G2P-REQ-102`).
 
 ### `GET /partners/requests/{request_id}`
 Request detail, including `proposed_keys`.
@@ -62,12 +76,33 @@ Body `{ "notes": "optional" }`.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
-| GET | `/partners?status=` | List partners |
+| GET | `/metadata` | Allowed values for the UI selects (see below) |
+| GET | `/partners?status=` | List partners. `status`: `created`, `active` or `disabled` |
 | GET | `/partners/{partner_id}` | Partner detail |
 | GET | `/partners/{partner_id}/keys` | All keys (any status) |
 | GET | `/partners/{partner_id}/audit` | Local audit history (append-only ledger) |
 | POST | `/partners/{partner_id}/disable` | Stop serving keys |
 | POST | `/partners/{partner_id}/enable` | Resume serving keys |
+
+### `GET /metadata`
+
+Allowed values for every enum-backed field, built from the API's own enums so
+the admin UI and the validators share one source of truth:
+
+```json
+{
+  "algorithms": ["RS256", "ES256", "EdDSA"],
+  "partner_statuses": ["created", "active", "disabled"],
+  "key_statuses": ["pending", "active", "revoked"],
+  "request_types": ["onboarding", "key_update"],
+  "request_statuses": ["created", "approved", "rejected"],
+  "identifier_pattern": "^[^\\s/?#%]+$",
+  "identifier_hint": "No spaces or '/', '?', '#', '%' (e.g. PARTNER_G2P_BRIDGE)."
+}
+```
+
+`algorithms` lists only the supported algorithms the deployment's
+`crypto_allowed_algorithms` keeps.
 
 ## Public — key fetch (no auth)
 
@@ -113,7 +148,8 @@ The partner's active keys as a JWKS document.
 
 | Code | Meaning |
 | --- | --- |
-| `PM-KEY-400` | Invalid key material (private key, weak RSA, bad format, disallowed algorithm). |
+| `G2P-REQ-102` | Request validation failed (e.g. an algorithm, status, request type or `jwks_url` outside the allowed values). |
+| `PM-KEY-400` | Invalid key material (private key, weak RSA, bad format, disallowed algorithm), or a `revoke_kids` entry that is not a current key. |
 | `PM-PRT-409` | Partner already exists. |
 | `PM-PRT-404` | Partner not found (admin API). |
 | `PM-REQ-404` | Request not found. |

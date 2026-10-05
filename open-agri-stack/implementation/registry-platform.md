@@ -95,13 +95,13 @@ It is finalised when the period is locked, or after the outbox worker catches up
 
 ## DCI search of activity registers
 
-`reg_type` can be an activity register. A search returns current activities only, rendered by the register's DCI template, with the consent clamp applied as for records. The `reg_record_type` picks what comes back, by subject ID:
+`reg_type` can be an activity register. A search returns current activities only, rendered by the register's DCI template, filtered to the consented data scopes as records are. The `reg_record_type` picks what comes back, by subject ID:
 
 * **activities** (default);
 * **current state per context**, when the record type names a context type (e.g. `spdci-extensions-agri:CropSeason` → `CROP_SEASON`): each crop season's stage, areas, yield and verification, from the projection. This is what a subsidy or loan decision reads;
 * **aggregates**, when it ends in `Aggregate` (e.g. a farmer's season summaries).
 
-The register shapes the state and aggregate records (domain hooks `dci_state_record`, `dci_aggregate_record`) onto its own consent scopes, so the consent clamp applies as for activities.
+The register shapes the state and aggregate records (domain hooks `dci_state_record`, `dci_aggregate_record`). Each row reaches the hook already filtered to the consented [data scopes](../../products/registry/registry/design/data-scopes.md), which an activity register defines over `<Register>.activity.*`, `<Register>.context.*` and `<Register>.aggregate.*` fields (aggregates by column only).
 
 **Per-subject and filtered queries.** Every search of an activity register can name its subject exactly: an `expression` with `subject_id` plus filters, on fields the view itself has:
 
@@ -117,10 +117,10 @@ An exact-field search of an entity register (e.g. the Farmer register by `founda
 
 | Setting (partner API) | Default | Meaning |
 | --- | --- | --- |
-| `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS` | `{}` (off) | JSON: `sender_id` → the data scopes it may receive, e.g. `{"benefits-system": ["crop_season", "measures"]}` |
+| `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS` | `{}` (off) | JSON: `sender_id` → the data scopes it may receive, data scope IDs, e.g. `{"benefits-system": ["crop-sown-registry.crop_season", "crop-sown-registry.measures"]}` (a bare name means this registry's scope) |
 | `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_MAX_PAGE_SIZE` | `500` | Page size cap for such searches |
 
-There is no per-person consent for such a search, so those scopes replace the Consent Manager's; the signature is still verified. The search must name the `aggregate_type`. Moving this allow-list into a Partner Management policy is an [open item](../open-items/README.md).
+There is no per-person consent for such a search, so those scopes, at their current versions, replace the Consent Manager's; the signature is still verified. The search must name the `aggregate_type`. Moving this allow-list into a Partner Management policy is an [open item](../open-items/README.md).
 
 ## Consent per registry and subject enforcement
 
@@ -128,6 +128,7 @@ The registry's partner API takes part in the [one consent, a grant per registry]
 
 * it sends its own **data controller** (`global.consentDataController`, defaulting to the registry variant, e.g. `farmer-registry`, `crop-sown-registry`) to CM `/validate`, so CM evaluates only this registry's grant;
 * it checks that the **consent's subject is the person searched**: in an entity register every returned record's foundational or functional ID must equal it; in an activity register the searched subject must equal it or be linked to it by the register's own data (`subject_id_fields`, e.g. a farmer ID recorded with the farmer's Fayda FAN);
+* it filters each record to the fields of the consent's **data scopes** (`<controller>.<name>`, from the registry's versioned scope catalogue, `GET /partner/data_scopes`) before rendering it, reading each scope as it was when the consent was issued. Scopes are named groups of the registry's own fields, not DCI keys. See [Data Scopes](../../products/registry/registry/design/data-scopes.md);
 * it logs `header.meta.on_behalf_of` when a composite calls for a partner.
 
 How a registry enforces consent, its switches and its settings are in [Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md) and [Registry integration (the PEP side)](../../consent-management/design/registry-integration.md).

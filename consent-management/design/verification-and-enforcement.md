@@ -116,7 +116,7 @@ The registry's contract is intentionally tiny:
 1. Call `POST /consent/v1/validate`, naming itself as `data_controller`.
 2. If `decision != "permit"` → return nothing (HTTP 403 with `reason_code`).
 3. Check that the decision's `subject_id` (the consent's subject) is the person being searched — directly, or through the registry's own data (e.g. a farmer ID recorded with the farmer's national ID). See [Registry integration](registry-integration.md#subject-enforcement).
-4. Project the record down to `effective_data_scopes` and return only those fields, echoing `receipt_id` for the partner's audit trail.
+4. Project the record down to the fields of `effective_data_scopes` (the registry's own [data scopes](../../products/registry/registry/design/data-scopes.md), resolved as of the consent's issue time) and return only those fields, echoing `receipt_id` for the partner's audit trail.
 
 Because the CM returns the field list and the subject, the registry needs **no consent logic** — only a subject check and a field-projection step. This is the deliberate division of labour decided in the design: **CM returns the effective fields; the registry is a dumb enforcement point.**
 

@@ -149,9 +149,11 @@ dci_to_<domain>.json.j2      inbound: DCI → your record
 dci_commons_response.json.j2 shared response envelope
 ```
 
-The **top-level keys your outbound template emits are the consent scopes** a
-partner can be granted — get them right or clamping silently returns `{}`. See
-[Partner APIs](../../design/partner-apis.md).
+The records reach the outbound template already filtered to the partner's consented
+[data scopes](../../design/data-scopes.md) (fields outside them are null; child
+records outside them are an empty list), so write the template to tolerate missing
+values. Scopes are defined by the catalogue in `meta_data/data-scopes/`, not by the
+template's keys. See [Partner APIs](../../design/partner-apis.md).
 
 Two key contracts you cannot infer from the templates themselves:
 

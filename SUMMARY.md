@@ -42,6 +42,7 @@
       * [Version History](products/registry/registry/design/version-history.md)
       * [Encryption at Rest](products/registry/registry/design/encryption-at-rest.md)
       * [Partner APIs](products/registry/registry/design/partner-apis.md)
+      * [Data Scopes](products/registry/registry/design/data-scopes.md)
       * [Deduplication](products/registry/registry/design/deduplication.md)
       * [VC Issuance](products/registry/registry/design/vc-issuance.md)
       * [Registrant Auth - OIDC](products/registry/registry/design/registrant-authentication-oidc-widget/README.md)

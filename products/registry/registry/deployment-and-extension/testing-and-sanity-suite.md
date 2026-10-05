@@ -61,8 +61,8 @@ Everything above is supplied as env from the chart's `registry.sanity.*` values 
 | `regType` | string | Your register mnemonic; goes into the DCI envelope as `reg_type` |
 | `regRecordType` | string | The DCI record type |
 | `searchText` | string | The injected record's `functional_record_id`. Must equal what your `data_seed.py` writes — the DCI search matches `search_text ILIKE '%…%'` |
-| `dataScopes` | **comma-separated string** | Not a YAML list. Must name real **top-level keys** of your outbound DCI template |
-| `deniedScopes` | **comma-separated string** | Scopes deliberately not consented to; the clamping test asserts they never come back |
+| `dataScopes` | **comma-separated string** | Not a YAML list. [Data scope](../design/data-scopes.md) names from your catalogue (`GET /partner/data_scopes`); a bare name is prefixed with the consent data controller. Must cover the seeded first name, last name and birth date |
+| `deniedScopes` | **comma-separated string** | Scopes deliberately not consented to; the filtering test asserts the seeded values of their fields never come back |
 | `crTabId` / `crSectionId` | string | A real, **editable** section, or the change-request write is rejected |
 
 {% hint style="warning" %}

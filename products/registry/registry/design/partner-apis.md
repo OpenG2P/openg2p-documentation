@@ -254,8 +254,8 @@ The `authorize` block carries the partner's **consent object** — a compact JWS
 `search_criteria.authorize.consent_jws`. When **consent enforcement is enabled**, it
 **does gate search**: the partner-api forwards the JWS to the Consent Manager's
 `/validate` (naming this registry as `data_controller`), checks that the consent's subject
-is the person searched, and clamps each returned record to the **effective data scopes** it
-returns; a non-permit decision or a subject mismatch rejects the request (fail-closed). Independently, the DCI envelope
+is the person searched, and filters each record to the fields of the **effective data scopes** it
+returns before rendering it (see [Data Scopes](data-scopes.md)); a non-permit decision or a subject mismatch rejects the request (fail-closed). Independently, the DCI envelope
 `signature` is verified against the partner's
 [**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
 key when signature validation is enabled. Both switches default **on** in the Helm

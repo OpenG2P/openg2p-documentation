@@ -33,7 +33,7 @@ The registry platform has two kinds of register. They solve different problems a
 | **Geography** | The record's address (`geo_lowest_level_value_id` and its hierarchy) | Every activity is **located** when written, as named levels (region, zone, woreda) |
 | **Figures** | Counts of records; reporting views per registry | **Indicators** (by crop, season, region, zone, woreda…), **aggregates** per subject and period with history, **reporting views** by level |
 | **Read by staff** | Record search and profile; change requests; version history | Activities, crop seasons (current state), work list, indicators, summaries; an **Activities tab** on records of the same registry |
-| **Shared with partners** | DCI search of records, through the register's template, with the consent clamp | DCI search of **activities**, **current state per context** (e.g. a crop season) and **aggregates**, with the same consent clamp |
+| **Shared with partners** | DCI search of records, through the register's template, filtered to the consented data scopes | DCI search of **activities**, **current state per context** (e.g. a crop season) and **aggregates**, with the same consent clamp |
 | **Storage** | One table per register (plus history and intake-form tables) | One table per register, **partitioned by year**, with an append-only database trigger; shared tables for types, contexts, locks, outbox |
 | **Platform features it does not use** | Contexts, projections, verification, period locks | Change requests, AWE, history tables, intake forms, functional IDs, dedup, completion scores, registrant authentication |
 
@@ -113,7 +113,7 @@ A background worker then works through the outbox:
 | --- | --- | --- |
 | **Staff** | Search, record profile, child records, change requests, version history | Per register:<br>• activities (filters, detail with the correction chain);<br>• current state per context;<br>• work list (what's due or overdue);<br>• indicators;<br>• summaries;<br>• record entry.<br>Per context: a timeline. On a record of the same registry: an **Activities** tab listing activities about it and its children, with their summaries. |
 | **Home page** | The Registers card counts registers | Counted in the same Registers card (by contexts, e.g. crop seasons) and chosen from the same dropdown, marked "(Activity)" |
-| **Partners (DCI)** | Record search, rendered through the register's DCI template, clamped to the consented scopes | Chosen by record type:<br>• **activities** (the evidence);<br>• **current state per context**, e.g. `…:CropSeason`: stage, areas, yield, verified — what a subsidy or loan decision reads;<br>• **aggregates**, e.g. a farmer's season summary.<br>All three are clamped to the same consent scopes. |
+| **Partners (DCI)** | Record search, rendered through the register's DCI template, filtered to the consented data scopes | Chosen by record type:<br>• **activities** (the evidence);<br>• **current state per context**, e.g. `…:CropSeason`: stage, areas, yield, verified — what a subsidy or loan decision reads;<br>• **aggregates**, e.g. a farmer's season summary.<br>All three are clamped to the same consent scopes. |
 | **Analysts** | Reporting views | Reporting views by region, zone and woreda (plain views over the projection, so always current) |
 
 ## 6. Figures and geography
@@ -137,7 +137,7 @@ Geography is stored on every activity as **named levels** (`{"region": {"code": 
 | **Closing a period** | — | Period locks: no writes or corrections inside a closed period, with controlled reopening |
 | **Permissions** | `register:*` and change-request actions | `activity:view`, `create`, `correct`, `verify`, `configure` |
 | **Data policies** | Filter records; a policy on a missing column is skipped | Filter activities and projections; a policy on a missing column **denies** access (fails closed) |
-| **Consent** | DCI clamp on the register's template keys | DCI clamp on the same kind of top-level keys, across all three record types |
+| **Consent** | Records filtered to the consented [data scopes](../../products/registry/registry/design/data-scopes.md) (by default one per register section) before rendering | The same, with scopes over activity, context-state and aggregate fields (`<Register>.activity.*`, `.context.*`, `.aggregate.*`) |
 | **Deleting** | Records can be deactivated or archived | Nothing is deleted; the database trigger rejects deletes and edits other than to status and verification |
 
 ## 8. When to use which, and how they fit together

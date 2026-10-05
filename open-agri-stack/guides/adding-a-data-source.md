@@ -34,7 +34,7 @@ The registry must answer the composite exactly as it answers a partner:
 * **Signature validation against PM** on (`global.partnerSignatureValidationEnabled`, the default), with the PM key backend (`global.registryCryptoBackend: partner-mgmt`) and `global.partnerManagementApiUrl` pointing at PM. It then accepts the composite's signature (`PARTNER_AGRI_COMPOSITE`).
 * **Consent enforcement** on (`global.consentEnforcementEnabled`, the default), with `global.consentManagerUrl`, and **`global.consentDataController`** set to the registry's controller ID: here `livestock-registry` (it defaults to `global.registryVariant`). The registry sends it to CM `/validate`, so CM evaluates only this registry's grant. See [Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md).
 * **Subject identifiers that pass the consent subject check.** The registry rejects a search whose subject is not the consent's subject. The consent's subject is what the partner sent (a Fayda FAN or a farmer ID), so the registry must hold that identifier on its records, or link its own key to it (`subject_id_fields` for an activity register, e.g. a farmer ID recorded with the farmer's FAN). If the registry is keyed on something else (e.g. a farmer ID only), the source must [depend on a source](#step-5-add-the-source-to-the-use-case) that returns that key, and the registry must be able to link it to the consent's subject.
-* **A DCI record template whose top-level keys are the consent scopes.** CM's clamp is an allow-list over the rendered record's top-level keys; a scope naming anything else clamps every record to empty. Publish the list of scopes (e.g. `animals`, `vaccinations`, `owner_reference`).
+* **A data scope catalogue.** Consents name the registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `<controller>.<name>` (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`): by default one per register section, plus any named scopes the extension ships in `meta_data/data-scopes/`. The registry publishes them at `GET /partner/data_scopes` and filters each record to the consented fields before rendering it. If another source depends on a value from this registry's record, one scope must carry it.
 
 ## Step 2 — Identities in Partner Management
 
@@ -123,13 +123,13 @@ response:
 
 ## Step 6 — Partners add a grant
 
-A partner's consent must carry a **grant for the new controller** to get the new data:
+A partner's consent must carry a **grant for the new controller**, naming scope IDs from the new registry's catalogue, to get the new data. Example, for `loan-profile` with a livestock source:
 
 ```json
 "grants": [
-  {"data_controller": "farmer-registry", "data_scopes": ["farmer_personal_details", "family_details", "farm_details", "main_crops"]},
-  {"data_controller": "crop-sown-registry", "data_scopes": ["farmer_reference", "crop_season", "measures", "location"]},
-  {"data_controller": "livestock-registry", "data_scopes": ["animals", "owner_reference"]}
+  {"data_controller": "farmer-registry", "data_scopes": ["farmer-registry.farmer_identifiers", "farmer-registry.personal_details", "…"]},
+  {"data_controller": "crop-sown-registry", "data_scopes": ["crop-sown-registry.crop_season", "…"]},
+  {"data_controller": "livestock-registry", "data_scopes": ["livestock-registry.animals", "livestock-registry.owner_reference"]}
 ]
 ```
 

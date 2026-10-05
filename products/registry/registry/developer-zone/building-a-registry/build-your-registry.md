@@ -111,7 +111,7 @@ Read [Contracts that fail silently](contracts-that-fail-silently.md) **before** 
 | dropdown `attribute_id` ↔ Master Data list | an empty dropdown; the field cannot be filled       |
 | enum / written code ↔ Master Data code  | the field refuses to save, or the value is unreachable |
 | inbound template key ↔ section mnemonic | ingested records arrive with empty tables              |
-| consent scope ↔ template top-level key  | every shared record clamps to `{}`                     |
+| consent scope ↔ data scope catalogue    | every shared record renders empty                      |
 | seed `INSERT` with no `ON CONFLICT`     | the second install half-applies metadata and exits `0` |
 
 Two habits that remove whole categories of this:
@@ -391,7 +391,7 @@ COPY test/sanity/tests/test_e2e_change_request.py /app/tests/test_e2e_change_req
 | Key                          | Note                                                                                                                                                             |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `farmerRegisterId`           | **This is the register id**, whatever your registry is about. Same historical naming as `fixtures.py`; the subchart helpers and every variant use this spelling  |
-| `dataScopes`, `deniedScopes` | **Comma-separated strings**, not YAML lists — a list renders into the env var as Go map syntax. Both must name real top-level keys of your outbound DCI template |
+| `dataScopes`, `deniedScopes` | **Comma-separated strings**, not YAML lists — a list renders into the env var as Go map syntax. Both must name [data scopes](../../design/data-scopes.md) in your catalogue (`GET /partner/data_scopes`) |
 | `regType`, `regRecordType`   | Your register mnemonic and DCI record type                                                                                                                       |
 | `crTabId`, `crSectionId`     | A real, **editable** section of yours, or the change-request test's write is rejected                                                                            |
 | `searchText`                 | The injected record's `functional_record_id` — must equal what your `data_seed.py` writes                                                                        |

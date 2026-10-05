@@ -242,7 +242,7 @@ The occurrences are the history. Current animal status (e.g. last vaccinated, so
 | **Corrections by partners** _(built, phase 1)_ | `/partner/activity/correct_activities`: supersede or void with a reason, same signed envelope. Before this, partners could only append. Entity corrections continue through `/partner/ingest_data` as change requests. |
 | **Trusted-source submissions** | Partner Management marks a partner as a **trusted source** for given activity types or fields. Its signed submissions record an automatic verification, with the signature as evidence. |
 | **Participants** _(built, phase 1)_ | `append_activities` accepts `participants[]` |
-| **DCI: verification in responses** | Records, activities, crop-season state and aggregates carry their **verification status**, clamped like any other scope. Searches can require a status, e.g. only **verified** sowings. |
+| **DCI: verification in responses** | Records, activities, crop-season state and aggregates carry their **verification status**, filtered by consent like any other field. Searches can require a status, e.g. only **verified** sowings. |
 | **DCI: subscribe / notify** | Subscribe to occurrence events (appended, superseded, voided, verified), published from the existing outbox, so a programme hears when a sowing is verified or corrected |
 
 **Beneficiary API**
