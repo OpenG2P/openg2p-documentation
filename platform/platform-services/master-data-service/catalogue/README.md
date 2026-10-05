@@ -98,7 +98,7 @@ Common Geo Registry is a possible later add-on.
 | [API reference](api-reference.md) | The `/catalogue` read and write endpoints, error codes, the change feed and WebSub, with examples |
 | [Country packs and migration](country-packs-and-migration.md) | First and later pack loads, loader flags and chart values, boundaries, migration of existing data to version 1 |
 | [For consumers](consumers.md) | How registries, PBMS and other services should read, cache, pin and follow changes |
-| [Admin UI](ui.md) | What the Master Data admin UI adds for versions, drafts, approvals, geography changes and releases |
+| [Admin UI](ui.md) | The Master Data admin UI: the catalogue overview home page, datasets (with themes), versions, drafts, approvals, geography changes, releases and activity |
 
 See also [Country Data Architecture](../../../country-data-architecture.md) for
 country packs and P-codes.

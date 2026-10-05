@@ -13,7 +13,7 @@ there: **a pack never overwrites published data.**
 The pack loader (`docker/db-seed/load_geo_pack.py`) runs in the chart's geo-seed
 Job after the API has created the catalogue schema: the Job waits until
 `g2p_catalogue_state.schema_version` reaches the catalogue schema version it was
-built for (`CATALOGUE_SCHEMA_VERSION`, currently **3**, set in the Job and kept
+built for (`CATALOGUE_SCHEMA_VERSION`, currently **4**, set in the Job and kept
 equal to the API's), and the loader itself refuses to run against an older
 schema. It decides **per subject**: each list, and the geography, is handled on its
 own.
@@ -42,6 +42,11 @@ approval instead.
 Labels in other languages (`display_i18n`, `name_i18n`), P-codes, each value's
 `roles`, `attributes`, a list's `attribute_schema`, and its `description` and
 `owner_org` (default `geoSeed.ownerOrg`) are kept as the pack gives them.
+Each list's `domain` is set to `core` for the pack's `codelists/` and to the domain
+name for `domains/<domain>/` (lists a domain's SQL fixtures add get that domain
+too). A later load fills the domain of a list that has none (a list loaded before
+the field existed) and never changes one already set; it is not versioned, so no
+draft is created for it.
 
 ## Later loads: drafts, not overwrites
 
@@ -168,7 +173,7 @@ API's database migration (and the loader, before it loads) converts it:
 
 The migration is **idempotent**: it runs on every start and skips any list, and
 the geography, that already has a version. It records the catalogue schema version
-it created (`schema_version` in `g2p_catalogue_state`, currently 3) last, which is
+it created (`schema_version` in `g2p_catalogue_state`, currently 4) last, which is
 what the geo-seed Job waits for.
 
 Upgrading a catalogue created by an earlier release adds what is new in place. For

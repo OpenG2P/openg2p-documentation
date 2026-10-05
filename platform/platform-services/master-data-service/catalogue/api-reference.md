@@ -103,9 +103,17 @@ A list is named by `list_code` (its code or its id) in every request.
 
 ### `POST /catalogue/get_lists`
 
-All lists with their owner, current published version (in effect now), highest
-published version, open draft and a summary of their attribute schema.
+All lists with their owner, domain, current published version (in effect now),
+highest published version, open draft and a summary of their attribute schema.
 `include_unpublished` (default `true`) includes lists never published.
+
+`domain` is the pack domain the list belongs to: `core` for a pack's core
+`codelists/`, the domain name (for example `agriculture`) for a list from
+`domains/<domain>/`, or whatever a maker set with `create_list` / `update_list`
+(stored lower-case). For a pack list loaded before the field existed, MDS derives it
+from the change note of the list's first version until the next pack load fills it
+in; it is `null` when unknown. The admin UI shows it as the dataset's **Theme**
+(`null` as *Other*). `get_list` returns it too.
 
 ```json
 // request
@@ -120,6 +128,7 @@ published version, open draft and a summary of their attribute schema.
       "display_i18n": { "am": "የዘር ዝርያ" },
       "description": "Released crop varieties",
       "owner_org": "MOA-CROP",
+      "domain": "agriculture",
       "is_hierarchical": false,
       "attribute_schema": { "…": "…" },
       "attribute_schema_summary": {
@@ -418,6 +427,7 @@ Change-log events after a cursor, oldest first.
 | `subject_type` | string | no | `list`, `geo` or `release` |
 | `subject_id` | string | no | A list id, `geography`, or a release code |
 | `event_types` | array | no | Only these event types |
+| `newest` | boolean | no | Default `false`. When `true`, returns the **newest** `limit` matching events (still oldest first, `next_cursor` the last one's id, `has_more` false) instead of the first `limit` after the cursor; for a recent-activity view such as the admin UI's home page |
 
 ```json
 // request
@@ -510,8 +520,8 @@ highest published version) if none is open.
 
 | Endpoint | Permission | Request payload | Response |
 |---|---|---|---|
-| `create_list` | `referenceData:create` | `list_code`, `display`, `display_i18n`?, `description`?, `owner_org`?, `is_hierarchical`?, `attribute_schema`?, `list_id`? (default the code), `change_note`? | `list`, `draft` (version 1, nothing published) |
-| `update_list` | `referenceData:edit` | `list_code`; `description`?, `owner_org`? (applied at once); `new_list_code`?, `display`?, `display_i18n`?, `is_hierarchical`?, `attribute_schema`? (into the draft) | `list`, `draft` |
+| `create_list` | `referenceData:create` | `list_code`, `display`, `display_i18n`?, `description`?, `owner_org`?, `domain`?, `is_hierarchical`?, `attribute_schema`?, `list_id`? (default the code), `change_note`? | `list`, `draft` (version 1, nothing published) |
+| `update_list` | `referenceData:edit` | `list_code`; `description`?, `owner_org`?, `domain`? (applied at once; an empty `domain` clears it); `new_list_code`?, `display`?, `display_i18n`?, `is_hierarchical`?, `attribute_schema`? (into the draft) | `list`, `draft` |
 | `create_list_draft` | `referenceData:edit` | `list_code`, `base_version`? (must be the highest published), `copy_from_version`?, `change_note`?, `effective_from`? | `list_code`, `draft` |
 | `update_list_draft` | `referenceData:edit` | `list_code`, `change_note`?, `effective_from`? | `list_code`, `draft` |
 | `upsert_draft_values` | `referenceData:edit` | `list_code`, `values`: a batch of (`value_code`, `display`, `display_i18n`?, `parent_code`?, `sort_order`?, `attributes`?, `roles`?, `value_id`?, `status`?) | `list_code`, `draft`, `values` |

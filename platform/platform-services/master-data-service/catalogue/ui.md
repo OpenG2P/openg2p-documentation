@@ -1,21 +1,51 @@
 ---
 description: >-
-  The Master Data admin UI for MDS as Catalogue: Reference Data lists and their
-  versions, drafts, approvals and diffs; Geo Locations with change events,
-  boundaries and the crosswalk; Releases; and Recent Changes
+  The Master Data admin UI for MDS as Catalogue: a catalogue overview home page;
+  Datasets with their versions, entries, schema, drafts, approvals, diffs and
+  history; Geography with data, lineage (change events and crosswalk) and
+  history; Releases; and Activity
 ---
 
 # Admin UI
 
 The catalogue is managed from the existing **Master Data admin UI**
-(`master-data-ui`). It is extended, not replaced. The side menu has four pages:
+(`master-data-ui`). It is extended, not replaced. The UI uses common
+data-catalogue terms (W3C DCAT, SKOS): the whole service is the **Catalogue**,
+each code list is a **dataset**, a dataset's values are its **entries**, and a
+dataset's domain is its **theme**. The API keeps its own names (`get_lists`,
+`list_code`, `owner_org`, `domain`, ...); the table below maps them.
+
+| In the UI | In the API |
+|---|---|
+| Catalogue | MDS as Catalogue (`/catalogue/*`) |
+| Dataset | A list (code list): `list_id`, `list_code` |
+| Entry, with its **Code** and **Label** | A list value: `value_code`, `display` |
+| Labels by language | `display_i18n` |
+| Parent entry | `parent_code` |
+| Schema, and an entry's **Fields** | `attribute_schema`, a value's `attributes` |
+| Dataset reference | `x-list-ref` |
+| Publisher | `owner_org` |
+| Theme (Core, Agriculture, ..., Other) | `domain` (`core`, `agriculture`, ..., `null`) |
+| Version, Effective from | `version_no`, `effective_from` |
+| Release | A catalogue release |
+| Geography: Levels, Administrative units, Boundaries, Change events, Crosswalk | Geography versions, levels, units, boundaries, change events, crosswalk |
+| Activity | The change feed (`get_changes`) |
+
+The side menu has five pages, shown to every signed-in user (every read in the
+catalogue API needs only a signed-in user; buttons that change something need a
+permission, see [Permissions in the UI](#permissions-in-the-ui)). The logo and
+product name at the top of the menu also lead to the home page.
 
 | Page | What it is for |
 |---|---|
-| **Geo Locations** | The geography: its versions, hierarchy, units, change events, boundaries and crosswalk |
-| **Reference Data** | The code lists, and for each list its versions, values, attribute schema and history |
-| **Releases** | Catalogue releases: named sets of pinned list and geography versions |
-| **Recent Changes** | The catalogue change feed across lists, geography and releases |
+| **Home** | The catalogue overview: datasets by theme, the geography in effect, pending work and recent activity |
+| **Datasets** | Every dataset, and for each dataset its versions, entries, schema and history |
+| **Geography** | The geography: its versions, hierarchy, administrative units, change events, boundaries and crosswalk |
+| **Releases** | Catalogue releases: named sets of pinned dataset and geography versions |
+| **Activity** | The catalogue change feed across datasets, geography and releases |
+
+The Datasets page was at `/reference-data`; that address now redirects to
+`/datasets` (and `/reference-data/<id>` to `/datasets/<id>`).
 
 Wherever the UI shows who did something (created, submitted, decided, published,
 recorded), it shows the person's **display name**, and falls back to the user id
@@ -23,32 +53,75 @@ when no name is recorded (system actors such as the country-pack loader, or rows
 older than the names). See
 [Change control and approvals](change-control.md#permission-maker-checker-within-mds).
 
-## Reference Data
+## Home
 
-### The list of lists
+The home page, **Catalogue overview**, has:
 
-The Reference Data page lists every code list, with a search box and, for users
-with `referenceData:create`, a button to add a list. Each row shows:
+* a **search box**: searching opens the Datasets page filtered by that text;
+* four tiles: **Datasets** (how many, in how many themes), **Geography** (the
+  version in effect and its number of administrative units), **Pending work**
+  (how many versions await approval and how many drafts are open) and
+  **Releases** (how many, and the latest published one). Each tile opens its page;
+* **Datasets by theme**: one group per theme (*Core* first, *Other* last for
+  datasets without a theme), with the number of datasets and every dataset's
+  label as a link to its page; a dot marks a dataset with an open draft. A theme's
+  name opens the Datasets page filtered by that theme;
+* **Geography**: the country, the version in effect, its effective date, and each
+  level with its number of active administrative units;
+* **Pending work**: **Awaiting approval** lists every submitted version (datasets
+  and the geography), and **Drafts in progress** every open draft and draft
+  release, each with its status and a link. For a user who may act on an item
+  (the publish permission for a submitted version, the edit permission for a
+  draft) it says *Review* or *Continue*; other users see the same list for
+  information;
+* **Recent activity**: the ten newest events of the change feed, as readable
+  summaries, each subject linking to its page, and a link to the Activity page.
+
+The page loads with a few requests in parallel (the datasets, geography
+versions, releases, the newest activity, and one unit count per geography level),
+not one request per dataset.
+
+## Datasets
+
+### The list of datasets
+
+The Datasets page lists every dataset, with:
+
+* a **Theme** filter: *All themes*, or one of the themes the datasets have
+  (*Core*, *Agriculture*, ..., and *Other* for datasets without a theme);
+* a search box (label, code, publisher, theme or id);
+* **Rows per page**: 10, 25 (default), 50 or 100;
+* for users with `referenceData:create`, a **New dataset** button.
+
+The page also takes `?q=<text>` and `?theme=<theme>` (`theme=other` for datasets
+without a theme), which is how the home page links to it. Each row shows:
 
 | Column | Shows |
 |---|---|
-| Code | The list's label (in the user's language when there is one) and its code |
-| Owner | The owner department (`owner_org`) |
+| Dataset | The dataset's label (in the user's language when there is one) and its code |
+| Theme | Core, Agriculture, ... or Other |
+| Publisher | The publishing department (`owner_org`) |
 | Published version | The **published version in effect** (for example `v3`), or *Not published* |
 | Draft / pending | A **Draft** or **Submitted** badge with the open draft's number, and **Changes pending** when a published version has a **future effective date** (it is published but not yet in effect) |
-| Hierarchical | Whether values may have parents |
-| Actions | **Edit** (list details); **Delete** only for a list that was **never published** |
+| Hierarchical | Whether entries may have parent entries |
+| Actions | **Edit** (dataset details); **Delete** only for a dataset that was **never published** |
 
-A new list is created with its first draft (version 1) and opens on that draft:
-add values, then submit it for approval. A published list cannot be deleted; its
-values are retired in a new version instead.
+A new dataset is created with its first draft (version 1) and opens on that
+draft: add entries, then submit it for approval. A published dataset cannot be
+deleted; its entries are retired in a new version instead.
 
-### A list's page
+A dataset's theme comes from the country pack (`core` for the pack's core lists,
+the domain name such as `agriculture` for a domain's lists; see
+[Country packs](country-packs-and-migration.md)). A maker can set or change it in
+the dataset's details; it applies at once and is not versioned.
 
-Clicking a list opens its page. The header shows the code, owner, hierarchy flag,
-description and labels per language, and an **Edit list details** button (code,
-label, labels per language, description, owner, hierarchy flag). Description and
-owner apply at once; the other details are saved into the list's draft.
+### A dataset's page
+
+Clicking a dataset opens its page. The header shows the code, publisher, theme,
+hierarchy flag, description and labels by language, and an **Edit dataset
+details** button (code, label, labels by language, description, publisher,
+theme, hierarchy flag). Description, publisher and theme apply at once; the other
+details are saved into the dataset's draft.
 
 Below the header is the **version bar**:
 
@@ -62,15 +135,14 @@ Below the header is the **version bar**:
 * the **lifecycle buttons** the user may use (see
   [Drafts and approval](#drafts-and-approval)).
 
-The page has five tabs:
+The page has four tabs:
 
 | Tab | Shows |
 |---|---|
-| **Values** | The values of the selected version, with a search box and an *Include retired* switch (on by default when viewing the draft). Hierarchical lists are browsed level by level. Retired values are shown struck through |
-| **Attribute schema** | The list's attribute schema as JSON, with a summary of its fields (name, type, required, list reference) |
-| **Version history** | Every version with its status, effective date, who made it (created, submitted) and who decided it, and the notes; *View* opens a version |
-| **Compare versions** | The diff between two versions (by default a version against its base): changes to the list itself (code, labels, schema) and values **added**, **changed** (before and after), **retired** and **reactivated** |
-| **Activity** | The change feed for this list |
+| **Entries** | The entries of the selected version, with a search box and an *Include retired* switch (on by default when viewing the draft). Hierarchical datasets are browsed level by level. Retired entries are shown struck through |
+| **Schema** | The dataset's schema as JSON, with a summary of its fields (name, type, required, dataset reference) |
+| **History** | Version history and activity together, as two sub-tabs. **Versions**: every version with its status, effective date, who made it (created, submitted) and who decided it, and the notes; *View* opens a version, and each row **expands** to that version's activity timeline. **All activity**: the full change feed for this dataset |
+| **Compare versions** | The diff between two versions (by default a version against its base): changes to the dataset itself (code, labels, schema) and entries **added**, **changed** (before and after), **retired** and **reactivated** |
 
 ### Editing the draft
 
@@ -78,23 +150,21 @@ Editing is possible **only on the open draft, while its status is `DRAFT`**, and
 only for a user with `referenceData:edit`. Any other version is read-only, with a
 hint to switch to the draft (or to open one). On the draft:
 
-* **Add** and **Edit** open the value form: code, label, labels per language,
-  parent (for hierarchical lists), sort order and attributes. Changing a value's
-  code keeps the same value (a recode).
-* Attributes are shown as fields generated from the list's attribute schema: a
-  property with `x-list-ref` is a dropdown of the referenced list's values in its
-  **published version in effect** (a referenced list's draft is never offered,
-  because the API accepts only published values); enums are selects, numbers,
-  booleans and text are inputs. A list without a schema takes attributes as free
-  JSON.
-* Values are never deleted: **Retire** retires a value in the draft (a value added
-  in the same draft is removed instead), optionally with its child values;
-  **Reactivate** brings a retired value back.
-* The **Attribute schema** tab becomes editable: a JSON editor that checks the
-  schema as you type (valid JSON, an object schema, known property types, required
-  names, and that every `x-list-ref` names an existing list), with *Insert
-  example*, *Reset* and *Remove schema*. *Save schema to draft* saves it into the
-  draft.
+* **Add entry** and **Edit** open the entry form: code, label, labels by
+  language, parent entry (for hierarchical datasets), sort order and fields.
+  Changing an entry's code keeps the same entry (a recode).
+* Fields are generated from the dataset's schema: a field with `x-list-ref` is a
+  dropdown of the referenced dataset's entries in its **published version in
+  effect** (a referenced dataset's draft is never offered, because the API accepts
+  only published entries); enums are selects, numbers, booleans and text are
+  inputs. A dataset without a schema takes its fields as free JSON.
+* Entries are never deleted: **Retire** retires an entry in the draft (an entry
+  added in the same draft is removed instead), optionally with its child entries;
+  **Reactivate** brings a retired entry back.
+* The **Schema** tab becomes editable: a JSON editor that checks the schema as you
+  type (valid JSON, an object schema, known field types, required names, and that
+  every `x-list-ref` names an existing dataset), with *Insert example*, *Reset* and
+  *Remove schema*. *Save schema to draft* saves it into the draft.
 
 ### Drafts and approval
 
@@ -117,28 +187,41 @@ When a draft is submitted, the version bar says what happens next:
   **AWE request reference** (`approval_ref`). There are no approve or reject
   buttons; the page shows the result once AWE has decided.
 
-There is no separate approvals queue: a user with the publish permission finds
-submitted drafts by their **Submitted** badge on the Reference Data page (and the
-geography's on Geo Locations), or in Recent Changes.
+A user with the publish permission finds submitted versions under **Pending work
+→ Awaiting approval** on the home page, by their **Submitted** badge on the
+Datasets page (and the geography's on Geography), or in Activity.
 
-## Geo Locations
+## Geography
 
-The geography is one dataset with one version bar, the same as a list's: version
-selector, badge, the country, owner and unit count of the version on screen, and
-the same lifecycle buttons (with `geo:edit` and `geo:publish`). Editing is
-possible only on the open draft while it is `DRAFT`. The page has these tabs:
+The geography is one dataset with one version bar, the same as other datasets':
+version selector, badge, the country, publisher and administrative-unit count of
+the version on screen, and the same lifecycle buttons (with `geo:edit` and
+`geo:publish`). Editing is possible only on the open draft while it is `DRAFT`.
+The page has three groups of tabs: **Data**, **Lineage** and **History**.
 
-| Tab | Shows |
+**Data** has three sub-tabs:
+
+| Sub-tab | Shows |
 |---|---|
-| **Hierarchy** | The tree of units level by level, with an *Include retired* switch. On the draft: **Manage levels** (add, edit, remove levels), add, edit and retire units; otherwise **View levels** |
-| **Units** | A flat, searchable table of units: filter by level and parent P-code, search by code or name, include retired. Shows each unit's level, parent, status and validity dates. On the draft: edit, **Retire** and **Reactivate** |
-| **Change events** | The change events of the version on screen, or of all versions, filterable by P-code, with type, from and to units, effective date, note, who recorded it and when, and an **Auto** badge for events MDS generated. On the draft: a form to **record a change event** (type, from units, to units, effective date, note, with the rule for each type) and to remove a recorded event |
+| **Hierarchy** | The tree of administrative units level by level, with an *Include retired* switch. On the draft: **Manage levels** (add, edit, remove levels), add, edit and retire units; otherwise **View levels** |
+| **Administrative units** | A flat, searchable table of units: filter by level and parent P-code, search by code or name, include retired. Shows each unit's level, parent, status and validity dates. On the draft: edit, **Retire** and **Reactivate** |
 | **Boundaries** | Shown only when the boundary store is configured (`boundary_store_enabled`). For each level, the boundary object key of the version on screen (marked when it is shared, unchanged, from an earlier version) and a **Download** link. On the draft: **Upload GeoJSON** per level |
-| **Crosswalk** | A lookup: a unit code, a published from-version and a to-version (latest, the draft, or a published version); shows the successor (or predecessor) units, units without one, and the change events followed |
-| **Version history** | Every geography version, as for a list, with its unit count |
-| **Activity** | The change feed for the geography |
 
-Unit changes left without a recorded event are not blocked: the Change events tab
+**Lineage** shows two panels side by side (one above the other on a narrow
+screen):
+
+| Panel | Shows |
+|---|---|
+| **Change events** | The change events of the version on screen, or of all versions, filterable by P-code, with type, from and to units, effective date, note, who recorded it and when, and an **Auto** badge for events MDS generated. On the draft: a form to **record a change event** (type, from units, to units, effective date, note, with the rule for each type) and to remove a recorded event |
+| **Crosswalk** | A lookup: a unit code, a published from-version and a to-version (latest, the draft, or a published version); shows the successor (or predecessor) units, units without one, and the change events followed |
+
+**History** works as for a dataset: **Versions** lists every geography version,
+with its unit count, and each row expands to that version's activity timeline;
+**All activity** is the full change feed for the geography. Recording or removing
+a change event appears there too, for example *SPLIT recorded: ET040611 →
+ET040612, ET040613*.
+
+Unit changes left without a recorded event are not blocked: the Change events panel
 says that MDS adds automatic events for them on submit, and once submitted they
 appear with the **Auto** badge. The UI does not preview them before submit.
 
@@ -149,10 +232,10 @@ version cannot be replaced.
 
 ## Releases
 
-The Releases page lists catalogue releases (code, title, status, number of lists,
-geography version, and when and by whom it was published). A user with
+The Releases page lists catalogue releases (code, title, status, number of
+datasets, geography version, and when and by whom it was published). A user with
 `referenceData:edit` can **create a release** (code, title, note) and **set its
-members**: a published version of each chosen list (with *Pin all versions in
+members**: a published version of each chosen dataset (with *Pin all versions in
 effect* as a shortcut) and optionally a published geography version.
 
 **Publish** is shown to a user with `referenceData:publish` who is **neither the
@@ -161,18 +244,21 @@ says that another person must publish it. A draft release can be deleted (with
 `referenceData:delete`); a published release shows its members and cannot be
 changed.
 
-## Recent Changes
+## Activity
 
-The Recent Changes page shows the catalogue change feed, newest first: when, the
-event, the subject (list, geography or release, and which), the version, who did it
-and the details. It can be filtered by subject type and by text (event, subject or
-user name or id), and is paged. Each list's and the geography's **Activity** tab
-shows the same feed for that subject.
+The Activity page shows the catalogue change feed, newest first: when, the
+event, the subject (dataset, geography or release, and which), the version, who
+did it and the details, as a readable summary (for example *SPLIT recorded: D1 →
+D1A, D1B* for a recorded change event; otherwise the detail fields as
+`name: value`, with the raw JSON on hover). It can be filtered by subject type and
+by text (event, subject or user name or id), and is paged. The **History** tab of
+each dataset and of the geography shows the same feed for that subject, in full
+and per version, and the home page shows its ten newest events.
 
 ## Permissions in the UI
 
-Buttons appear only for users who hold the matching permission
-(`referenceData:*`, `geo:*`); see
-[Change control and approvals](change-control.md#permissions). The API enforces the
-same rules, including maker ≠ checker, so a hidden button is a convenience, not the
-control.
+Every page is in the menu for every signed-in user. Buttons that change something
+appear only for users who hold the matching permission (`referenceData:*`,
+`geo:*`); see [Change control and approvals](change-control.md#permissions). The
+API enforces the same rules, including maker ≠ checker, so a hidden button is a
+convenience, not the control.

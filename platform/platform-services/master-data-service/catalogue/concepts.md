@@ -22,9 +22,10 @@ A **list** is one code list or reference entity set: `GENDER`, `CROP_COMMODITY`,
 | `attribute_schema` | Optional JSON Schema for each value's `attributes` (see [Typed attributes](#typed-attributes)) | Yes |
 | `description` | What the list is for | No: applied at once |
 | `owner_org` | The department that owns it, e.g. the Ministry of Agriculture's crop directorate | No: applied at once |
+| `domain` | The pack domain it belongs to (`core`, `agriculture`, ...), shown in the admin UI as the dataset's Theme | No: applied at once |
 
 "Versioned" fields change only through a draft and are published with it; the other
-two are administrative and take effect immediately. Reads of a list also return
+three are administrative and take effect immediately. Reads of a list also return
 `current_version_no` (the published version in effect now),
 `latest_published_version_no` (the highest published version, which may be
 future-effective), `open_draft_version_no`, `open_draft_status` and an
@@ -324,7 +325,7 @@ The authoritative schema is in the
 
 | Table | Holds |
 |---|---|
-| `g2p_attributes` (extended) | Lists, with new columns `description`, `display_i18n`, `attribute_schema`, `owner_org`, `current_version_no` |
+| `g2p_attributes` (extended) | Lists, with new columns `description`, `display_i18n`, `attribute_schema`, `owner_org`, `domain`, `current_version_no` |
 | `g2p_list_versions` | One row per list version: status, base version, the versioned list metadata, change note, `effective_from`, who (`*_by` user id and `*_by_name`) and when, decision, `approval_ref` |
 | `g2p_list_version_values` | Values per list version |
 | `g2p_geo_versions` | Geography versions, with `country`, `owner_org`, `boundary_objects` (level → object key) and `boundary_checksums` |
@@ -333,5 +334,5 @@ The authoritative schema is in the
 | `g2p_catalogue_releases`, `g2p_catalogue_release_members` | Releases (with `members_set_by` / `members_set_at`) and their members |
 | `g2p_catalogue_change_log` | The append-only change log, also the delivery outbox (`forwarded_at` is the only column that ever changes) |
 | `g2p_catalogue_awe_events` | AWE callbacks received, for idempotency |
-| `g2p_catalogue_state` | Catalogue schema version (`schema_version`, now 3), the geography version in effect, and `legacy.generation` (bumped whenever the current-state tables are refreshed) |
+| `g2p_catalogue_state` | Catalogue schema version (`schema_version`, now 4), the geography version in effect, and `legacy.generation` (bumped whenever the current-state tables are refreshed) |
 | `g2p_attribute_values`, `g2p_geo_levels`, `g2p_geo_level_values` | Unchanged in shape: the materialised **current published** state, `ACTIVE` values and units only |
