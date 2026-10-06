@@ -21,6 +21,8 @@ The design of the Crop Sown Registry (CSR) — the crop-season context, activity
 * the committed SQL matches the definitions;
 * every list and code the definitions use exists in the Ethiopia pack.
 
+**Register configuration.** The register's declarations (context fields, subject and FAN link, UI hints, search fields, final season summaries), its DCI record templates and its four plausibility warnings are in `meta_data/activity-config/CropSown.json`, with the templates in `meta_data/activity-config/templates/` (see [activity register configuration](../design/activity-register.md#activity-register-configuration)). The domain service keeps only what is still code: the crop-season context key, yield per hectare, the projection, the farmer's season summary and the sample data.
+
 ## Phase 1 changes
 
 Phase 1 of the [register model design](../design/register-model-design.md#phase-1-built), in the Crop Sown Registry:
@@ -84,7 +86,7 @@ The crop seasons need the sample clusters, so the second question alone loads no
 
 ## DCI records
 
-A DCI search with `reg_type = CropSown`, by farmer ID, returns one of three record types:
+A DCI search with `reg_type = CropSown`, by farmer ID, returns one of three record types (the crop season and summary records are rendered by the register's `dci` templates):
 
 | `reg_record_type` | Returns | Used for |
 | --- | --- | --- |

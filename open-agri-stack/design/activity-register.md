@@ -129,8 +129,8 @@ An activity register derives three kinds of figures from its activities. In the 
 
 | Part | Registry platform (generic) | Extension (per register) |
 | --- | --- | --- |
-| Context (what "current state" is keyed by) | Stores contexts and projections; keeps them up to date | Declares the context key, e.g. CSR's `CONTEXT_FIELDS = (plot_id, crop_year, season, crop)`, and the projection's columns |
-| Subject (who a summary is about) | Stores `subject_type` and `subject_id` generically | Declares the subject: CSR sets `FARMER_ID` from the activity's `farmer_id`, with the Fayda FAN as an alternative identifier (`subject_id_fields`). Other registers may use a worker, a household or a cluster. |
+| Context (what "current state" is keyed by) | Stores contexts and projections; keeps them up to date | Declares the context fields in its [configuration file](#activity-register-configuration) (CSR: farmer, plot, crop year, season, crop), derives the context key in code, and defines the projection's columns |
+| Subject (who a summary is about) | Stores `subject_type` and `subject_id` generically | Declares the subject in its configuration file: CSR's is `FARMER_ID`, set from the activity's `farmer_id`, with the Fayda FAN as an alternative identifier (`subject_id_fields`). Other registers may use a worker, a household or a cluster. |
 | Summaries | Runs and stores them, keeps history, finalises them when a period is locked | Defines each summary type and how it is computed |
 | Indicators | The indicator table, computation (count, distinct count, sum, average, min, max; group by and filter, `geo:<level>`), the staff API and the Indicators panel | **Only the definitions**, as seed data (CSR: `20_g2p_activity_indicators.sql`, 12 indicators). A new activity register gets indicators by adding rows, no code. |
 
@@ -155,6 +155,66 @@ Guidelines:
 * Keep the staff UI to a **few** operational indicators that staff act on; too many turn the panel into a dashboard.
 * Statistics not about a particular subject belong to **reporting**: build views (or materialised views) and Superset dashboards as and when they are needed, rather than adding indicators for them.
 * An indicator should read cheaply from current state (one projection table, simple grouping). If it needs joins, history or heavy computation, it belongs to reporting.
+
+## Activity register configuration
+
+An activity register's declarations, output records and plausibility rules are **configuration**, not code, so a new activity register needs less code. The extension ships one file per register, `meta_data/activity-config/<register mnemonic>.json` (setting `activity_config_path` overrides the directory), with its templates beside it. The platform validates the file when the register is first used and reports every problem at once (error `ACT-ERR-023`); a register without a file runs on its domain service and the platform defaults.
+
+| Key | What it declares | Crop Sown |
+| --- | --- | --- |
+| `context_fields` | The payload fields that place an activity in its context; a correction can't change them | farmer, plot, crop year, season, crop |
+| `subject` | `subject_type`, and `subject_id_fields`: activity fields holding another identifier of the subject, for consent subject checks | `FARMER_ID`; Fayda FAN |
+| `ui_hints` | How the staff UI shows the register: summary fields, context columns, fields carried between batch rows, search hints | |
+| `final_on_period_lock` | Aggregate types that become final when their period is locked | `FARMER_SEASON_SUMMARY` |
+| `search_fields` | Payload fields added to an activity's search text | farmer, FAN, plot, crop, cluster |
+| `formats` | Output record templates, per output format and record kind (below) | `dci`: crop season state and season summary |
+| `rules` | Plausibility rules (below) | Four warnings |
+
+**Precedence.** Per declaration or hook: a domain service that sets the attribute or overrides the method wins; otherwise the configuration file; otherwise the platform default. A domain service that overrides `validate` and still wants the configured rules calls `super().validate(...)`.
+
+**What stays code** (for now): deriving the context key (`build_context`), derived values (`enrich_payload`), the projection (`project`), aggregates (`aggregate`), enrichment and sample data.
+
+### Output formats
+
+DCI is one way of sharing data; other standards may follow. Records are therefore internal and format-independent (a context's current state from the projection, an aggregate) and are **filtered to the partner's consented [data scopes](../../products/registry/registry/design/data-scopes.md) before they are rendered**. Each output format then names a Jinja template per record kind:
+
+```json
+"formats": {
+  "dci": {
+    "state":     {"record_type": "spdci-extensions-agri:CropSeason",         "template": "templates/crop_sown_dci_state.json.j2"},
+    "aggregate": {"record_type": "spdci-extensions-agri:ActivityAggregate", "template": "templates/crop_sown_dci_aggregate.json.j2"}
+  }
+}
+```
+
+* A template renders JSON. It sees `record`, `record_type`, `output_format`, `kind` and `register_mnemonic`, in the platform's lenient template environment (the one data scopes use: a missing or non-consented field is `null` under `tojson`).
+* Two filters: `pick("a", "b")` takes those fields of the record; `or_null` turns a group whose values are all null (not consented, or nothing recorded) into `null`.
+* The DCI partner API asks for format `dci`. A register without a `dci` template gets the platform's generic DCI record. Another standard's API would ask for its own format from the same filtered records.
+
+### Rules
+
+Plausibility rules are written in **[JSON Logic](https://jsonlogic.com)**, evaluated on each new or corrected activity:
+
+```json
+{"id": "sown_area_within_plan", "applies_to": ["SOWN"],
+ "when":  {"and": [{"var": "payload.area_ha"}, {"var": "latest.PLANNED.area_ha"}]},
+ "check": {"<=": [{"var": "payload.area_ha"}, {"*": [{"var": "latest.PLANNED.area_ha"}, 1.5]}]},
+ "message": "Area sown {{ payload.area_ha | float }} ha is more than 1.5 × the planned {{ latest.PLANNED.area_ha | float }} ha",
+ "severity": "warn"}
+```
+
+* A rule sees `payload` (after derived values), `activity_type`, and `latest.<TYPE>`: the context's latest active activity of each type (its payload and columns).
+* `applies_to` lists activity types (all when empty); `when` (optional) says whether the rule applies; `check` must hold.
+* **A missing value means "not applicable":** a rule that reads a value that isn't there (a `var` without a default) is skipped. `{"var": ["payload.sold_qt", 0]}` gives a default instead.
+* `severity`: `warn` adds the message to the activity's rule warnings; `block` rejects the activity (error `ACT-ERR-022`). Crop Sown's four rules are warnings, as before.
+* `message` is a Jinja string over the same data, so it can quote the values.
+* Rules are checked when the file is loaded: unknown operators, malformed `var`s and bad message templates are reported.
+
+**Why JSON Logic.** Rules are data: JSON, like the rest of the file, checked on load, with no `eval` and nothing outside a fixed set of operators. The platform evaluates them with a small built-in evaluator (`helpers/json_logic.py`), so there is no new dependency. CEL reads better, but `cel-python` brings five dependencies, including `google-re2`, which has no wheels for the Alpine images the services run on; the Python JSON Logic libraries are unmaintained (last releases 2015–2021, one ships broken). JSON Logic also has evaluators in JavaScript, so the staff UI could show the same warnings before submitting.
+
+### Roadmap
+
+This is step 1 of moving activity-register logic from code to configuration. **TODO (design):** the later steps (a projection spec, an aggregate spec, and tables generated from metadata) wait for a second real activity register, so that the specs are shaped by two domains rather than by crop sown alone. See [open items](../open-items/README.md#registries).
 
 ## Where an activity register lives
 

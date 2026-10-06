@@ -47,7 +47,7 @@ The Crop Sown Registry is **independent**. It shares data with the Farmer Regist
 * FAO's World Programme for the Census of Agriculture 2020 (crop module and crop-loss causes);
 * Ethiopia's CSA Agricultural Sample Survey (Meher/Belg seasons, UREA/DAP/NPS fertilisers, quintals).
 
-**Plausibility warnings** (never blocking):
+**Plausibility warnings** (never blocking; configured as [rules](activity-register.md#rules) in the register's configuration file):
 
 * sown area more than 1.5 × the planned area;
 * observed or harvested area larger than the sown area;

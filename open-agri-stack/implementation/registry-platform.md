@@ -53,7 +53,7 @@ The activity model is **its own base class**, `G2PActivity`, next to `G2PRegiste
    * External IDs: pattern only, or a lookup through the domain service; strict, lenient or none.
    * Temporary IDs: recorded now and resolved later. Supported, but not used by the Crop Sown Registry (entities first).
 4. **Find or open the context** and lock it, so concurrent writes to one context are serialised.
-5. **Check rules:** dates, closed periods, repeatability, uniqueness, sequence. Warnings are stored on the activity; blocking rules reject it.
+5. **Check rules:** dates, closed periods, repeatability, uniqueness, sequence, and the register's [plausibility rules](../design/activity-register.md#rules) (JSON Logic, from its configuration file). Warnings are stored on the activity; blocking rules reject it.
 6. **Locate it:** record where the activity happened as named Master Data levels ([geography and roll-ups](#geography-and-roll-ups)).
 7. **Save.** Insert the activity, its participants and its idempotency key, recompute the context's projection in the same transaction, and write an outbox event.
 
@@ -64,7 +64,7 @@ The activity model is **its own base class**, `G2PActivity`, next to `G2PRegiste
 * **Verify or reject:** changes only the verification columns.
 * All of these need a reason and are blocked inside closed periods.
 
-**Context fields and UI hints.** The activity UI holds no register-specific fields. The domain service declares:
+**Context fields and UI hints.** The activity UI holds no register-specific fields. The register declares, in its [configuration file](../design/activity-register.md#activity-register-configuration) (or its domain service, which wins):
 
 * `context_fields`: the fields that make up the context key. They are locked in a correction, and a supersede can't change them (a correction can't move an activity to another crop season);
 * `ui_hints`: summary fields, context columns, the fields carried from one row to the next in batch entry, and search hints.
@@ -73,7 +73,7 @@ The activity model is **its own base class**, `G2PActivity`, next to `G2PRegiste
 
 A payment or official statistic needs a figure that won't change. An aggregate becomes **final** (`is_final`, with when and by whose lock) when:
 
-* its type is one the register lists (`final_on_period_lock` in the domain service, e.g. a worker's monthly attendance, a farmer's season summary);
+* its type is one the register lists (`final_on_period_lock` in its configuration file, e.g. a worker's monthly attendance, a farmer's season summary);
 * an active period lock for all activity types covers its whole period;
 * every activity event in that period has been processed;
 * its value was last changed by an event raised before the lock.
@@ -101,7 +101,7 @@ It is finalised when the period is locked, or after the outbox worker catches up
 * **current state per context**, when the record type names a context type (e.g. `spdci-extensions-agri:CropSeason` → `CROP_SEASON`): each crop season's stage, areas, yield and verification, from the projection. This is what a subsidy or loan decision reads;
 * **aggregates**, when it ends in `Aggregate` (e.g. a farmer's season summaries).
 
-The register shapes the state and aggregate records (domain hooks `dci_state_record`, `dci_aggregate_record`). Each row reaches the hook already filtered to the consented [data scopes](../../products/registry/registry/design/data-scopes.md), which an activity register defines over `<Register>.activity.*`, `<Register>.context.*` and `<Register>.aggregate.*` fields (aggregates by column only).
+The register shapes the state and aggregate records with the `dci` templates of its [configuration file](../design/activity-register.md#output-formats) (or the domain hooks `dci_state_record`, `dci_aggregate_record`, which win; without either, a generic record). Each row is filtered to the consented [data scopes](../../products/registry/registry/design/data-scopes.md) before it is shaped; an activity register defines those over `<Register>.activity.*`, `<Register>.context.*` and `<Register>.aggregate.*` fields (aggregates by column only).
 
 **Per-subject and filtered queries.** Every search of an activity register can name its subject exactly: an `expression` with `subject_id` plus filters, on fields the view itself has:
 
