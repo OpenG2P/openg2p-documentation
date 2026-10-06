@@ -115,6 +115,47 @@ As built, the activity model is its own base class, `G2PActivity`, next to an un
 
 Which of these are built is in [registry platform changes](../implementation/registry-platform.md); what is still open (verification, sequence, period-locking and calendar rules; bulk export, file import, archiving, agent-portal entry) is in [open items](../open-items/README.md).
 
+## Current state, summaries and indicators
+
+An activity register derives three kinds of figures from its activities. In the staff UI they appear as **Current state**, **Summaries** and **Indicators**.
+
+| Figure | What it is | Crop Sown example | Stored? |
+| --- | --- | --- | --- |
+| **Current state** (projection) | The latest state of one **context**, kept up to date as activities arrive | One crop season: plot + crop year + season + crop | Yes, one row per context |
+| **Summary** (aggregate) | A value per **subject** per period, derived from that subject's contexts | A farmer's season summary (`FARMER_SEASON_SUMMARY`): area sown and harvest across all their plots | Yes, versioned, and **final** once the period is locked |
+| **Indicator** | A statistic across **many subjects**, grouped and filtered (including by any geography level) | Area sown by woreda and crop; farmers reporting by woreda | No, computed when asked |
+
+### Who defines what
+
+| Part | Registry platform (generic) | Extension (per register) |
+| --- | --- | --- |
+| Context (what "current state" is keyed by) | Stores contexts and projections; keeps them up to date | Declares the context key, e.g. CSR's `CONTEXT_FIELDS = (plot_id, crop_year, season, crop)`, and the projection's columns |
+| Subject (who a summary is about) | Stores `subject_type` and `subject_id` generically | Declares the subject: CSR sets `FARMER_ID` from the activity's `farmer_id`, with the Fayda FAN as an alternative identifier (`subject_id_fields`). Other registers may use a worker, a household or a cluster. |
+| Summaries | Runs and stores them, keeps history, finalises them when a period is locked | Defines each summary type and how it is computed |
+| Indicators | The indicator table, computation (count, distinct count, sum, average, min, max; group by and filter, `geo:<level>`), the staff API and the Indicators panel | **Only the definitions**, as seed data (CSR: `20_g2p_activity_indicators.sql`, 12 indicators). A new activity register gets indicators by adding rows, no code. |
+
+### Who can see them
+
+* **Staff UI:** a subject's record shows its current state and summaries (with their history) on its Activities tab; the activity register's page has the Indicators panel. Each staff user sees only what their data policy allows.
+* **Partners:** per subject only, and with consent. Summaries are returned by DCI search as the `spdci-extensions-agri:ActivityAggregate` record type (our own, not a published DCI type), filtered by subject, summary type and dimensions (e.g. crop year, season), within the partner's [data scopes](../../products/registry/registry/design/data-scopes.md). A new kind of figure, such as a monthly yield, is a new summary type defined by the extension; the API does not change. Indicators are not offered to partners.
+
+### Operational and analytical indicators
+
+Choose where an indicator belongs before defining it:
+
+| | Operational: staff UI Indicators | Analytical: reporting (Superset) |
+| --- | --- | --- |
+| Used for | Day-to-day work and follow-up | Analysis and management reporting |
+| Freshness | Live, computed when opened | Refreshed on a schedule |
+| Scope | The user's own area (their data policy applies) | Across regions and periods |
+| Examples | Pending verifications; crops by stage; farmers reporting this season in my woreda; area sown so far | Trends over seasons; comparisons between regions; yield distributions; reports for management |
+
+Guidelines:
+
+* Keep the staff UI to a **few** operational indicators that staff act on; too many turn the panel into a dashboard.
+* Statistics not about a particular subject belong to **reporting**: build views (or materialised views) and Superset dashboards as and when they are needed, rather than adding indicators for them.
+* An indicator should read cheaply from current state (one projection table, simple grouping). If it needs joins, history or heavy computation, it belongs to reporting.
+
 ## Where an activity register lives
 
 A crop season can be recorded in either of two places. The platform supports both.
