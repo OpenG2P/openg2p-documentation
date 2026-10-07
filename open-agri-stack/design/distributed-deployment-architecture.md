@@ -106,9 +106,64 @@ Cross-department **service-to-service trust** uses signed requests with keys reg
 
 ### Simulating it on one cluster
 
-Install the exchange tier and each department in **separate namespaces**. Calls must still go to the **external hostnames** (e.g. `https://pm.<exchange domain>`), not in-cluster service names, or the test proves nothing. Enforce mutual TLS at the gateway, or test from outside the cluster.
+See [Proving it: three namespaces](#proving-it-three-namespaces).
+
+## Standalone installs are not affected
+
+Every change below is **opt-in and off by default**. A department that installs commons and a registry without the exchange gets exactly today's behaviour:
+
+* the registry keeps calling its **own** CM `/validate` for consent, its own PM for keys and its own catalogue;
+* new settings (a trusted exchange CM, remote shared-service URLs) are **empty by default**, and while they are empty no new code path runs;
+* the composite's new behaviour (obtaining consent receipts from the exchange CM) is used only in the exchange tier; a composite used inside one installation keeps passing the partner's consent through, as today.
+
+## Proving it: three namespaces
+
+The model is tested on one cluster with three namespaces, each installed as if it were a separate organisation:
+
+| Namespace | Installs | Role |
+| --- | --- | --- |
+| `trial` | commons-base, commons-services, Farmer Registry | Agriculture department |
+| `csr` | commons-base, commons-services, Crop Sown Registry | Crop department |
+| `agrix` | commons-base and a slim commons-services (PM, CM, catalogue, audit, notifications, IAM for admin UIs), composite | Agri Stack exchange tier |
+
+Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `*.agrix.openg2p.org`) on its own `internal` gateway, as other namespaces already do; `csr` and `agrix` need DNS and TLS certificates. All calls between namespaces use these **external hostnames**, never in-cluster service names.
+
+### What already works without code changes
+
+* **Reaching the registries:** each registry already publishes its partner API on its gateway (`https://partner-fr.trial.openg2p.org`, `https://partner-csr.csr.openg2p.org`). The composite's registry URLs are values (`composite.registries.<name>.url`); set them to these.
+* **The composite as a partner of each department:** register the composite's public key in the `trial` PM and the `csr` PM, and give it a policy in each department's CM. Each registry then verifies the composite's signature as for any partner.
+* **Partner onboarding at the exchange:** the bank onboards in the `agrix` PM and CM only; the composite verifies the bank there (same namespace).
+* **Catalogue, phase 1:** each department keeps its own catalogue loaded from the **same country pack version**, so codes and geography are identical. Pointing departments at the `agrix` catalogue is phase 2.
+
+**What does not work yet:** consent. Today a registry validates the partner's consent with its **own** CM, so the bank would have to be bound in every department's CM as well: three onboardings instead of one. The phase 1 changes below remove that.
+
+### Changes, in phases
+
+**Phase 1: one onboarding, one consent** (needed for the three-namespace test)
+
+| Where | Change | Default |
+| --- | --- | --- |
+| Consent Manager | Issue a **signed consent receipt** per registry grant (subject, partner, purpose, scopes for that registry, validity, receipt ID), verifiable offline with the key CM already publishes at `/.well-known/jwks.json`; a receipt status endpoint for revocation | Off for standalone use; no change to `/validate` |
+| Composite | An **exchange mode**: validate the partner's consent with the exchange CM, then send each registry its receipt instead of the raw consent | Off: today's pass-through |
+| Registry platform (partner API) | **Trusted exchange settings**: the exchange's partner ID, the exchange CM's key URL. A request from that partner carrying a receipt is verified offline; scopes = receipt grant ∩ the department's standing policy for the exchange ∩ what was asked; the receipt ID is audited | Empty: today's behaviour (own CM `/validate`) |
+| Registry charts | An optional "Agri Stack exchange" question group for those settings | Hidden unless enabled |
+| Commons-services | A slim **exchange profile** (values file) for `agrix` | Not used by department installs |
+| Operations | DNS and TLS for `csr` and `agrix`; onboarding steps (see above) | — |
+
+**Phase 2: shared catalogue and policy subset check**
+
+* Departments may point at the `agrix` catalogue (a remote catalogue URL; default stays local), with read access by signed request.
+* The exchange CM refuses a partner policy that grants more than a department's published exchange policy allows.
+
+**Phase 3: production hardening**
+
+* Inter-department gateway with mutual TLS (or WireGuard peering).
+* CM-originated consent (farmer notification and approval).
+* Request ID propagation across tiers; API versioning; usage metering.
 
 ## TODO
+
+All items are opt-in and default off; see [the phases](#changes-in-phases).
 
 * **Consent trust:** registries accept consent receipts signed by a configured *trusted* CM (the exchange CM), verified offline against its published key; status check as fallback; per-partner choice of which CM to trust. Record the receipt ID in audit.
 * **Policy subset check:** the exchange CM refuses a partner policy that grants more than a department's exchange policy allows (needs departments to publish their exchange policy and scope catalogue).
