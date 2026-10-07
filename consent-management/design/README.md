@@ -25,6 +25,7 @@ Workflow Engine (AWE)**.
 | [Partner onboarding &amp; policy](partner-onboarding-and-policy.md) | How partner policy bindings and versioned data-share policies are managed and evaluated. |
 | [Partner Management integration](partner-management-integration.md) | How CM fetches and caches partner verifying keys from PM, and holds only a policy binding (no partner identity or keys of its own). |
 | [Approval Workflow integration](approval-workflow-integration.md) | How CM gates data-share policy widening through AWE — pending version, proxied approvals inbox, HMAC webhook, activate/supersede. |
+| [Exchange receipts](exchange-receipts.md) | Agri Stack exchange (opt-in): the exchange CM signs a consent receipt per registry; a department CM accepts receipts from a trusted issuer under its own standing policy. |
 | [Consent lifecycle](consent-lifecycle.md) | The **secondary** flow: originating consent (request → authenticate → approve → artefact → receipt), revocation, and expiry. |
 | [Security &amp; trust](security-and-trust.md) | Signing and key management, ID-token validation, replay protection, and the threat model. |
 | [Standards &amp; best practices](standards-and-best-practices.md) | Alignment with Kantara/ISO 27560, GDPR, DEPA/AA, and DCI/OIDC — and the gaps we deliberately close. |

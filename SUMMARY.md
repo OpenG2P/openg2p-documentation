@@ -709,6 +709,7 @@
       * [Partner policy binding & approval](consent-management/design/partner-onboarding-and-policy.md)
       * [Approval Workflow (AWE) integration](consent-management/design/approval-workflow-integration.md)
       * [Registry integration (the PEP side)](consent-management/design/registry-integration.md)
+      * [Exchange receipts (Agri Stack exchange)](consent-management/design/exchange-receipts.md)
       * [Consent lifecycle](consent-management/design/consent-lifecycle.md)
       * [Security & trust](consent-management/design/security-and-trust.md)
       * [Standards & best practices](consent-management/design/standards-and-best-practices.md)

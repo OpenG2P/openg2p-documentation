@@ -150,7 +150,8 @@ without PM. (The CM is **not** a PM partner.) See the JSON below.
 | --- | --- |
 | **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id, requested_scopes (union), grants (`[{data_controller, data_scopes, partner_binding_id}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
 | **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, created_at |
-| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id, object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, evaluated_at |
+| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id, object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, receipt_jti / receipt_issuer (decisions on an exchange consent receipt; null otherwise), evaluated_at |
+| **IssuedReceipt** (exchange role) | jti, consent_id (the artefact it was issued from), data_controller, presenter, partner, expires_at — see [exchange receipts](exchange-receipts.md) |
 
 ---
 

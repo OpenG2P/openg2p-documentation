@@ -71,19 +71,19 @@ The partner (e.g. a bank) **asks** for consent; the **exchange CM issues** it. O
 
 ### What a department registry does with the consent
 
-The registry does **not** create or look up a per-farmer consent of its own. For each request from the exchange:
+The registry does **not** create or look up a per-farmer consent of its own, and its flow does not change: it still calls its **own** department CM's `/validate` with the consent JWS it received and its `data_controller`, as a standalone registry does. What changes is what it receives and what its CM does with it. For each request from the exchange:
 
 ![One request across the tiers](../../.gitbook/assets/open-agri-stack-distributed-request-trust.svg)
 
-1. **Verify the caller:** the composite's signature, with the key in the department's own PM.
-2. **Load the standing exchange policy** from the department's own CM.
-3. **Verify the exchange consent receipt:** signed by the exchange CM (checked against its published key, offline), for this farmer, still valid, purpose allowed, and a grant **for this registry**.
-4. **Compute what to return:** receipt grant for this registry ∩ department's exchange policy ∩ what was asked; filter the record to those scopes.
-5. **Record it:** the receipt's ID goes into the department's audit log, so the department can show why it shared.
+1. **Verify the caller (registry):** the composite's signature, with the key in the department's own PM.
+2. **Ask its own CM (registry):** the request carries an **exchange consent receipt** (from the exchange CM, for this registry) where a partner's consent would be. The registry passes it to its own CM's `/validate` unchanged, with the sender (the composite) and its `data_controller`.
+3. **Verify the receipt (department CM):** the exchange CM is a configured **trusted receipt issuer**; the receipt's signature is checked against the exchange CM's published keys, and it must be for this registry (`aud` = this controller), presented by the composite, still valid and not revoked (status check against the exchange CM).
+4. **Apply the standing exchange policy (department CM):** the department's policy for the exchange (binding audience = the composite's partner ID) must allow the purpose and the subject ID type; effective scopes = receipt scopes ∩ that policy's scopes. The CM answers with its normal decision, including the farmer from the receipt, and logs the receipt ID and issuer.
+5. **Filter and record (registry, unchanged):** the registry checks the searched farmer against the decision's subject, filters the record to the effective scopes, and audits as today. The only registry change: the consent time used to pick each data scope's version is the receipt's `consent_issued_at` (the farmer's consent time) when present, before `iat` and `issued_at`.
 
-**Revocation:** the farmer revokes at the exchange CM. Registries learn of it through short receipt validity, with a status check against the exchange CM as a fallback.
+**Revocation:** the farmer revokes at the exchange CM. Receipts are short-lived (15 minutes by default, never past the consent's expiry), and the department CM checks a receipt's status at the exchange CM before permitting.
 
-Today a registry trusts only its own CM (`/validate`). Accepting a receipt signed by another CM is the main platform change this design needs (see [TODO](#todo)).
+Trusting receipts is a Consent Manager setting in the department; the registry platform needs no new trust settings (see [the phases](#changes-in-phases)).
 
 ## Networking across departments
 
@@ -124,7 +124,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 | --- | --- | --- |
 | `trial` | commons-base, commons-services, Farmer Registry | Agriculture department |
 | `csr` | commons-base, commons-services, Crop Sown Registry | Crop department |
-| `agrix` | commons-base and a slim commons-services (PM, CM, catalogue, audit, notifications, IAM for admin UIs), composite | Agri Stack exchange tier |
+| `agrix` | commons-base and a slim commons-services (profile `values-agri-stack-exchange.yaml`: PM, CM, catalogue, audit, IAM for admin UIs), composite in exchange mode | Agri Stack exchange tier |
 
 Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `*.agrix.openg2p.org`) on its own `internal` gateway, as other namespaces already do; `csr` and `agrix` need DNS and TLS certificates. All calls between namespaces use these **external hostnames**, never in-cluster service names.
 
@@ -143,10 +143,11 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `
 
 | Where | Change | Default |
 | --- | --- | --- |
-| Consent Manager | Issue a **signed consent receipt** per registry grant (subject, partner, purpose, scopes for that registry, validity, receipt ID), verifiable offline with the key CM already publishes at `/.well-known/jwks.json`; a receipt status endpoint for revocation | Off for standalone use; no change to `/validate` |
-| Composite | An **exchange mode**: validate the partner's consent with the exchange CM, then send each registry its receipt instead of the raw consent | Off: today's pass-through |
-| Registry platform (partner API) | **Trusted exchange settings**: the exchange's partner ID, the exchange CM's key URL. A request from that partner carrying a receipt is verified offline; scopes = receipt grant ∩ the department's standing policy for the exchange ∩ what was asked; the receipt ID is audited | Empty: today's behaviour (own CM `/validate`) |
-| Registry charts | An optional "Agri Stack exchange" question group for those settings | Hidden unless enabled |
+| Consent Manager (exchange role, `agrix`) | On `/validate` with `issue_receipts: true` from a configured **receipt presenter** (the composite), return one **signed consent receipt** per registry grant (subject, partner, presenter, purpose, scopes for that registry, consent time, validity, receipt ID), signed with the key CM already publishes at `/.well-known/jwks.json`; a receipt status endpoint for revocation | Off: no receipt issuer or presenters configured; `/validate` unchanged |
+| Consent Manager (department role, `trial`, `csr`) | **Trusted receipt issuers** (the exchange CM: issuer ID, key URL, presenter). `/validate` accepts a receipt from a trusted issuer: verifies it, checks it is for this registry, applies the department's standing policy for the exchange and intersects scopes; the receipt ID and issuer are logged with the decision | Empty: a receipt is denied; partner consents as today |
+| Composite | An **exchange mode**: validate the partner's consent with the exchange CM (`issue_receipts: true`), then send each registry its own receipt instead of the raw consent | Off: today's pass-through |
+| Registry platform (partner API) | No flow change: still calls its own CM `/validate` with the sender and `data_controller`. Consent time for data-scope versions prefers the receipt's `consent_issued_at` claim | Additive: the claim is absent from partner consents |
+| CM chart | An "Agri Stack exchange" question group for the receipt issuer, presenters and trusted issuers | Hidden unless enabled |
 | Commons-services | A slim **exchange profile** (values file) for `agrix` | Not used by department installs |
 | Operations | DNS and TLS for `csr` and `agrix`; onboarding steps (see above) | — |
 
@@ -165,10 +166,10 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `
 
 All items are opt-in and default off; see [the phases](#changes-in-phases).
 
-* **Consent trust:** registries accept consent receipts signed by a configured *trusted* CM (the exchange CM), verified offline against its published key; status check as fallback; per-partner choice of which CM to trust. Record the receipt ID in audit.
+* **Consent trust (phase 1, in progress):** department CMs accept consent receipts signed by a configured *trusted* CM (the exchange CM) and apply their standing exchange policy; registries keep calling their own CM. Next: per-partner choice of which CM to trust.
 * **Policy subset check:** the exchange CM refuses a partner policy that grants more than a department's exchange policy allows (needs departments to publish their exchange policy and scope catalogue).
 * **CM-originated consent flow** in the exchange CM (farmer notification and approval, farmer authentication).
-* **Exchange-tier install:** a chart profile (or helmfile) that installs only the exchange components.
+* **Exchange-tier install:** the commons-services profile `values-agri-stack-exchange.yaml` covers commons; a helmfile for the whole tier is still open.
 * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, exchange CM), back in the Rancher form; setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs).
 * **Catalogue across departments:** read access for department registries (signed requests or an exchange-issued client), publishers per department.
 * **Inter-department gateway** with mutual TLS; document the WireGuard-peering alternative.

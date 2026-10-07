@@ -3,7 +3,7 @@ description: >-
   Deploying Open Agri Stack on a cluster: the order of installs and the
   settings for commons (Master Data with the Ethiopia pack and agriculture
   domain, PM, CM), the Farmer and Crop Sown registries, and the composite;
-  uninstalling.
+  the three-namespace exchange setup; uninstalling.
 ---
 
 # Deploying on a Cluster
@@ -109,6 +109,38 @@ Install **Agri Stack Composite** from the Rancher catalog. Settings ([composite 
 * **Use cases:** not in the form. Edit `composite.useCases` in **Edit YAML** (e.g. `allowed_partners` of `loan-profile`), or point `composite.existingUseCasesConfigMap` at your own ConfigMap.
 
 The post-install sanity hook pings the API and lists the use cases; a failure fails the release.
+
+## Three-namespace setup: exchange and departments
+
+The [distributed deployment](../design/distributed-deployment-architecture.md#proving-it-three-namespaces) on one cluster: each namespace is installed as a separate organisation, and calls between namespaces use **external hostnames** only. A partner (e.g. `bank-a`) onboards and the farmer consents only at the exchange; each department still decides at its own boundary.
+
+| Namespace | Install | Notes |
+| --- | --- | --- |
+| `trial` | commons-base, commons-services (default values), Farmer Registry `fr` | As in the sections above; no exchange settings in the registry |
+| `csr` | commons-base, commons-services (default values), Crop Sown Registry `csr` | Same |
+| `agrix` | commons-base, commons-services with the **exchange profile**, composite in **exchange mode** | No registries |
+
+Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS.
+
+**1. Exchange commons (`agrix`).** Install `openg2p-commons-services` with the profile [`values-agri-stack-exchange.yaml`](https://github.com/OpenG2P/commons/blob/develop/charts/openg2p-commons-services/values-agri-stack-exchange.yaml) (in Rancher, paste it into **Edit YAML**; with Helm, `-f values-agri-stack-exchange.yaml`). It keeps PM, CM, Master Data, Audit Manager, IAM (admin login) and keycloak-init, turns off the registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI, AWE), and sets the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`.
+
+**2. Composite (`agrix`).** Install **Agri Stack Composite** with:
+
+* **Agri Stack exchange:** Consent Mode `exchange`; Exchange Consent Manager URL `http://commons-services-cm-partner-api` (same namespace).
+* **Integration:** the registry search URLs by external hostname, e.g. `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` and `https://partner-csr.csr.openg2p.org/dci/registry/sync/search`; Partner Management URL is the `agrix` PM (default).
+
+**3. Onboarding.**
+
+| Where | What |
+| --- | --- |
+| `agrix` PM | The composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) |
+| `agrix` CM | For each partner, a binding and policy **per registry** it reads (`farmer-registry`, `crop-sown-registry`): purposes, data scopes, subject ID types. The bank is onboarded **only here** |
+| `trial` PM and `csr` PM | The composite's public key (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the composite's signature |
+| `trial` CM and `csr` CM | The **standing policy for the exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the exchange CM as a **trusted receipt issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Agri Stack exchange" group) |
+
+The registries need no change: each keeps calling its own CM, which now accepts the exchange's receipts. A department's scopes for the exchange cap what any partner gets from it (receipt scopes ∩ standing policy).
+
+**4. Test.** The partner calls the composite at `https://agri-composite.agrix.openg2p.org` with a consent signed with its own key, as in the [partner guide](partner-guide.md). A denial from a department shows as that source's `denied` status with the registry's reason.
 
 ## Uninstalling
 

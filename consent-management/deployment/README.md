@@ -195,6 +195,36 @@ approval policy `consent-manager.policy_change.v1` (approvers: holders of
 approvers that role. Details, settings and the state machine:
 [Approval Workflow (AWE) Integration](../design/approval-workflow-integration.md#enabling-awe-approval).
 
+## Agri Stack exchange — optional
+
+Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
+install. In Rancher the settings sit in the **Agri Stack exchange** group, shown once
+`global.agriStackExchange.enabled` is ticked. How the two roles work:
+[Exchange receipts](../design/exchange-receipts.md).
+
+| Value (`global.agriStackExchange.*`) | Env (`CONSENT_MANAGER_*`) | Role | Meaning |
+| --- | --- | --- | --- |
+| `issuer` | `RECEIPT_ISSUER` | exchange | Issuer ID stamped as `iss` on receipts (e.g. `agri-stack-exchange-cm`). Empty = no receipts |
+| `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) allowed to request receipts, e.g. `agri-composite`. List or comma-separated string |
+| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | Receipt lifetime, capped by the consent's expiry (default 900) |
+| `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
+| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | `always` (default) or `never` |
+
+Receipt issuing uses the **signing key** above (same `kid`, same JWKS) — give the exchange CM a real
+`.p12`, not the demo key. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
+(10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
+`receipt_fetch_timeout_seconds` (3).
+
+**Exchange (`agrix`)** — set `issuer` and `receiptPresenters: [agri-composite]`, and bind each partner
+(e.g. `bank-a`) to each registry with its exchange policy.
+
+**Department (`trial`, `csr`)** — set the trusted issuer (`jwksUrl` reachable from this CM's partner
+API, e.g. the `agrix` CM partner API's in-cluster or internal-gateway URL, `presenter: agri-composite`)
+and bind `agri-composite` at this CM for each of its registries with the department's standing
+policy. The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
+both stay empty on a standalone install.
+
 ## Horizontal scalability
 
 The service is designed to scale out under a high rate of consent verification:

@@ -174,6 +174,31 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 **`loan-profile`'s settings:** `farmer` mandatory; `season_summaries` and `crop_seasons` optional and `depends_on: [farmer]`; each `timeout_ms: 10000`, `retries: 0` (a slow registry search is not retried: a retry only doubles the wait); `overall_timeout_ms: 25000` (farmer, then the crop sources); `partial_response: allowed`. So the request fails only when the Farmer Registry fails (or denies), and the crop data is best effort.
 
+## Consent mode: passthrough or exchange
+
+| Mode | What each registry receives as the consent | Used by |
+| --- | --- | --- |
+| `passthrough` (default) | The partner's consent JWS, unchanged. Each registry validates it with its own CM, so the partner needs a binding in each registry's CM. | A composite inside one installation (today's setup) |
+| `exchange` | Its **own consent receipt** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's receipts and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
+
+In **exchange** mode, after the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the composite calls the exchange CM's `POST /consent/v1/validate` with:
+
+```json
+{"consent_jws": "<the partner's consent>", "partner_id": "agri-composite",
+ "issue_receipts": true, "request_context": {"subject_id": {"type": "FAYDA_FAN", "value": "…"}}}
+```
+
+`partner_id` is the composite's partner ID, which must be one of the exchange CM's **receipt presenters**. On `permit`, the answer carries `receipts: {<data_controller>: <receipt JWS>}`, and each source's DCI search carries its controller's receipt in `search_criteria.authorize.consent_jws` (where the partner's consent goes in passthrough mode). The registry passes it to its own CM as usual.
+
+| Situation (exchange mode) | Result |
+| --- | --- |
+| Exchange CM answers `deny` | **403** `consent_denied` (with CM's reason code); no registry is called |
+| No receipt for a **mandatory** source's controller | **403** `consent_receipt_missing`; no registry is called |
+| No receipt for an **optional** source's controller | The source is `unavailable`, not called, with `detail: "not called: the exchange Consent Manager issued no consent receipt for <controller>"` |
+| Exchange CM unreachable, timed out, HTTP 408/429/5xx, or no URL configured | **503** `consent_exchange_unavailable` (fails closed) |
+| Exchange CM answers another non-200 or a non-JSON body | **502** `consent_exchange_error` |
+| Use case with `consent.required: false` | The exchange CM is not called and registries get no consent |
+
 ## Output format
 
 * **The envelope** is DCI-style: `{signature, header, message}`, signed by the composite (detached JWS over `{header, message}`), `header.action: on-query`, `header.status: succ | rjct`.
@@ -339,6 +364,9 @@ limits:
 | `REQUEST_MAX_SKEW_SECONDS` | `300` | How far `header.message_ts` may be from now (`0` disables) |
 | `DEFAULT_SOURCE_TIMEOUT_MS`, `DEFAULT_OVERALL_TIMEOUT_MS` | `5000`, `10000` | Used when the use case doesn't set them |
 | `HTTP_MAX_CONNECTIONS`, `HTTP_MAX_KEEPALIVE_CONNECTIONS`, `HTTP_KEEPALIVE_EXPIRY_SECONDS` | `200`, `50`, `30` | One pooled client per worker |
+| `CONSENT_MODE` | `passthrough` | `passthrough` or `exchange` (see [Consent mode](#consent-mode-passthrough-or-exchange)); any other value stops startup |
+| `CONSENT_EXCHANGE_CM_URL` | empty | Exchange mode: the exchange CM partner-api base URL (`/consent/v1/validate` is appended), e.g. `http://commons-services-cm-partner-api` |
+| `CONSENT_EXCHANGE_CM_TIMEOUT_SECONDS` | `5.0` | Exchange mode: timeout of that call |
 | `AUDIT_MANAGER_URL` | empty (off) | e.g. `http://commons-services-auditmanager:80` |
 | `AUDIT_TIMEOUT_SECONDS`, `AUDIT_SOURCE` | `2.0`, `/openg2p/agri-composite` | |
 | `NO_OF_WORKERS` | `2` | gunicorn workers per pod |
@@ -360,6 +388,9 @@ The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"
 | `composite.registries.farmer-registry.url` | `http://fr-partner-api/dci/registry/sync/search` | Integration: Farmer Registry Search URL |
 | `composite.registries.crop-sown-registry.url` | `http://csr-partner-api/dci/registry/sync/search` | Integration: Crop Sown Registry Search URL |
 | `composite.registries.<controller>.partnerId`, `.receiverId` | empty | values only |
+| `composite.consent.mode` | `passthrough` | Agri Stack exchange: Consent Mode |
+| `composite.consent.exchangeCmUrl` | empty | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |
+| `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout (shown only in exchange mode) |
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: the Secret with `composite.p12`, `password`, and optionally `kid` and `algorithm` |
 | `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `true`, `1`, `5` (70% CPU) | Scaling |
 | `composite.replicaCount` | `1` | Scaling (when autoscaling is off) |

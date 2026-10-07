@@ -37,6 +37,12 @@ against the partner's Partner-Management key referenced by `kid`.
 | `data_controller` | when the consent has `grants` | The **calling registry**. Selects that registry's grant in the consent |
 | `request_context.requested_scopes` | no | Narrows the effective scopes further |
 | `request_context.subject_id` | no | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch` |
+| `issue_receipts` | no (default `false`) | **Exchange role only** ([exchange receipts](../design/exchange-receipts.md)). On permit, also return one signed consent receipt per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured receipt presenter, else deny `receipt_presenter_not_allowed` |
+
+`consent_jws` may also be a **consent receipt** (header `typ: consent-receipt+jwt`) from an exchange
+CM. It is accepted only when its issuer is configured as trusted on this CM (department role); then
+`data_controller` must be the receipt's `aud` and `partner_id` its `presenter`. See
+[Department role: accepting](../design/exchange-receipts.md#department-role-accepting).
 
 **Consent claims** (the JWS payload): `jti`, `aud`, `subject_id {type, value}`, `purpose {code, text}`,
 `fetch_type`, `validity {valid_from, valid_until}`, `issued_at`, and the data to share in **one** of
@@ -127,6 +133,26 @@ How the controller is resolved:
 > usual 4xx/5xx. The registry releases data **only** when `decision == "permit"`, and only the
 > fields in `effective_data_scopes`.
 
+**Response — permit with receipts** (`issue_receipts: true`, exchange role). The response gains
+`receipts`, one compact JWS per controller ([receipt format](../design/exchange-receipts.md#consent-receipt)).
+With one controller the other fields are that controller's decision; with several, they hold the
+common `subject_id` and the earliest `valid_until`. If any controller denies, that deny is returned
+and no receipts are issued. `receipts` is `null` on every other response.
+
+```json
+{
+  "decision": "permit",
+  "reason_code": "ok",
+  "subject_id": { "type": "FAYDA_FAN", "value": "1234567890123456" },
+  "valid_until": "2027-10-01T00:00:00Z",
+  "receipts": {
+    "farmer-registry": "eyJhbGciOiJFZERTQSIsImtpZCI6ImNtLTIwMjUtMDEiLCJ0eXAiOiJjb25zZW50LXJlY2VpcHQrand0In0…",
+    "crop-sown-registry": "eyJhbGciOiJFZERTQSIs…"
+  },
+  "evaluated_at": "2026-10-01T10:00:02Z"
+}
+```
+
 **Idempotency and replay are per (`jti`, `data_controller`).** The same consent validated by two
 registries gives two decisions, two artefacts (two `consent_id`s) and two receipts; a repeat by the
 same registry returns its stored decision. Revoking one registry's `consent_id` leaves the other's
@@ -144,6 +170,21 @@ A lightweight, OCSP-like status check for enforcement points that cache decision
 ```
 
 `status` ∈ `active | revoked | expired`. A `404` means no such consent.
+
+## `GET /consent/v1/receipts/{jti}/status`
+
+Status of a consent receipt this CM issued in the **exchange role** (with `issue_receipts`) — what a
+department CM checks before accepting one.
+
+**Auth:** none (partner API; Istio mTLS at transport). **Response (HTTP 200)**
+
+```json
+{ "jti": "0b6d1f0e-5c1e-4c1a-9d7e-2f1f6c8a9b10", "status": "active", "checked_at": "2026-10-01T10:00:05Z" }
+```
+
+`status` ∈ `active | revoked | expired`: `revoked` when the receipt's consent (the exchange CM's
+artefact for that registry) is revoked, `expired` after the receipt's `exp` or the consent's expiry.
+A `404` means this CM issued no such receipt.
 
 ## `GET /consent/v1/receipts/{receipt_id}`
 
@@ -170,4 +211,6 @@ The CM's signing public keys, so any party can verify receipts independently.
 This endpoint can return any [shared reason code](README.md#shared-reason-codes). The common
 denials are `unknown_partner`, `signature_invalid`, `audience_mismatch`, `controller_not_granted`,
 `subject_mismatch`, `purpose_not_allowed`, `scope_exceeds_policy`, `expired`, `revoked`, and
-`replay`.
+`replay`. With the Agri Stack exchange settings on, also `receipt_presenter_not_allowed`,
+`receipt_issuer_not_trusted`, `receipt_invalid`, `presenter_mismatch` and
+`receipt_status_unavailable`.

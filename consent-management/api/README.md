@@ -79,6 +79,11 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `expired` | Consent outside its validity window |
 | `revoked` | Consent has been revoked |
 | `replay` | Stale `issued_at`, or a known `jti` reused for a different consent (a repeat of the same signed consent for the same `data_controller` returns the stored decision instead) |
+| `receipt_presenter_not_allowed` | `issue_receipts` from a caller that is not a configured receipt presenter, or receipt issuing is not enabled ([exchange receipts](../design/exchange-receipts.md)) |
+| `receipt_issuer_not_trusted` | A consent receipt from an issuer this CM does not trust (or no trusted issuers configured) |
+| `receipt_invalid` | A trusted issuer's receipt failed verification (signature, `alg`, missing claims, unknown at the issuer) |
+| `presenter_mismatch` | The receipt's `presenter` is not the caller (`partner_id`) or not the issuer's configured presenter |
+| `receipt_status_unavailable` | The receipt's status could not be checked at its issuer (fail closed) |
 
 ## Implementation
 
