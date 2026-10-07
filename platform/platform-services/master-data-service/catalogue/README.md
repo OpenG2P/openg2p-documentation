@@ -68,6 +68,7 @@ Common Geo Registry is a possible later add-on.
 | **Releases** | None | A **catalogue release** names a set of list versions and one geography version, for consumers that pin everything at once |
 | **Geography** | Levels and units, edited in place | Versioned **as one dataset**, with **change events** (split, merge, rename, …) giving the lineage from old units to new, and a **crosswalk** API |
 | **Boundaries** | GeoJSON in MinIO, overwritten on reseed | GeoJSON in MinIO under **immutable per-version keys** |
+| **Open data** | None | Opt-in **public catalogue**: datasets and geography marked public (private by default) are readable anonymously at their published versions, with a licence, CSV / JSON / GeoJSON downloads, DCAT and SKOS. MDS itself stays an admin UI |
 
 ## What stays
 
@@ -99,6 +100,7 @@ Common Geo Registry is a possible later add-on.
 | [Country packs and migration](country-packs-and-migration.md) | First and later pack loads, loader flags and chart values, boundaries, migration of existing data to version 1 |
 | [For consumers](consumers.md) | How registries, PBMS and other services should read, cache, pin and follow changes |
 | [Admin UI](ui.md) | The Master Data admin UI: the catalogue overview home page, datasets (with themes), versions, drafts, approvals, geography changes, releases and activity |
+| [Public catalogue](public-catalogue.md) | Visibility and licence, the anonymous `/public` API, downloads, DCAT and SKOS, deployment settings |
 
 See also [Country Data Architecture](../../../country-data-architecture.md) for
 country packs and P-codes.

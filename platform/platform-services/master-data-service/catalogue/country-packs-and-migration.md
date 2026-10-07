@@ -154,6 +154,15 @@ The defaults are `http://commons-minio:9000`, bucket `openg2p-geo`, and the
 
 See [Boundaries in MinIO, per version](geography.md#boundaries-in-minio-per-version).
 
+## Licence
+
+When the pack's `manifest.json` names a licence (`license`, and optionally
+`license_uri`), the loader sets the geography's licence from it, deriving the URI of
+a well-known licence (for example CC BY-IGO, CC0-1.0) from its label, unless an
+administrator has already set one. The loader never changes visibility: everything
+it loads stays **private** until someone marks it public (see
+[Public catalogue](public-catalogue.md)). The loader needs catalogue schema 5.
+
 ## Migrating an existing MDS
 
 An MDS installed before the catalogue already has data in `g2p_attributes`,

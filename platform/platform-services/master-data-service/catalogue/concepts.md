@@ -255,6 +255,18 @@ the admin UI, so a reader knows whom to ask about a list, and in `awe` approval 
 it is passed to AWE in the approval request's context (see
 [Change control and approvals](change-control.md#awe-through-the-approval-workflow-engine)).
 
+## Visibility and licence
+
+Each list, and the geography, has a **`visibility`**: `private` (the default) or
+`public`, and an optional **licence** (`licence_uri`, `licence_label`, e.g. CC BY
+4.0). Both are administrative, like `owner_org`: they apply at once and are not
+part of a version. `public` lets the opt-in, anonymous
+[public catalogue](public-catalogue.md) show the dataset's **published** versions
+(never a draft) to other websites and open-data portals; authenticated reads,
+including the registries', ignore visibility. The country-pack loader sets the
+geography's licence from the pack manifest when none is set, and never makes
+anything public.
+
 ## Catalogue release
 
 Most consumers pin one or two lists. Some need **everything** to be consistent: a

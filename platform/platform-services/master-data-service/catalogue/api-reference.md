@@ -24,8 +24,10 @@ is also described in the service's OpenAPI page.
   `{ "response_header": { "response_status", "response_error_code", "response_error_message", … }, "response_body": { "response_payload", "pagination_response"? } }`.
 * Every call needs a **bearer token** from the deployment's Keycloak; reads need
   authentication only, writes need a permission (see
-  [Change control](change-control.md#permissions)). The one exception is the
-  [AWE callback](#awe-callback).
+  [Change control](change-control.md#permissions)). The exceptions are the
+  [AWE callback](#awe-callback) and the opt-in, anonymous, read-only
+  [public catalogue](public-catalogue.md#public-api) under `/public` (`GET`,
+  public datasets at their published versions only; off by default).
 * Errors come back **inside the envelope** with HTTP 200,
   `response_status: "ERROR"` and a code:
 
@@ -494,7 +496,19 @@ How this catalogue is configured, for clients such as the admin UI.
 ```json
 // response
 { "approval_mode": "permission", "boundary_store_enabled": true, "audit_enabled": true,
-  "websub_enabled": false, "country": "ETH", "geo_current_version_no": 2 }
+  "websub_enabled": false, "country": "ETH", "geo_current_version_no": 2,
+  "public_catalogue_enabled": false, "public_base_url": null }
+```
+
+### `POST /catalogue/get_geo_settings`
+
+The geography's administrative settings: `visibility` (`private`, the default, or
+`public`) and the optional licence. Any authenticated caller.
+
+```json
+// response
+{ "settings": { "visibility": "private", "licence_uri": "https://creativecommons.org/licenses/by/3.0/igo/",
+                "licence_label": "Creative Commons Attribution for Intergovernmental Organisations (CC BY-IGO)" } }
 ```
 
 ## Sample people (testing and demos only)
@@ -520,8 +534,8 @@ highest published version) if none is open.
 
 | Endpoint | Permission | Request payload | Response |
 |---|---|---|---|
-| `create_list` | `referenceData:create` | `list_code`, `display`, `display_i18n`?, `description`?, `owner_org`?, `domain`?, `is_hierarchical`?, `attribute_schema`?, `list_id`? (default the code), `change_note`? | `list`, `draft` (version 1, nothing published) |
-| `update_list` | `referenceData:edit` | `list_code`; `description`?, `owner_org`?, `domain`? (applied at once; an empty `domain` clears it); `new_list_code`?, `display`?, `display_i18n`?, `is_hierarchical`?, `attribute_schema`? (into the draft) | `list`, `draft` |
+| `create_list` | `referenceData:create` | `list_code`, `display`, `display_i18n`?, `description`?, `owner_org`?, `domain`?, `visibility`? (`private` default, or `public`), `licence_uri`?, `licence_label`?, `is_hierarchical`?, `attribute_schema`?, `list_id`? (default the code), `change_note`? | `list`, `draft` (version 1, nothing published) |
+| `update_list` | `referenceData:edit` | `list_code`; `description`?, `owner_org`?, `domain`?, `visibility`?, `licence_uri`?, `licence_label`? (applied at once; an empty `domain` or licence field clears it); `new_list_code`?, `display`?, `display_i18n`?, `is_hierarchical`?, `attribute_schema`? (into the draft) | `list`, `draft` |
 | `create_list_draft` | `referenceData:edit` | `list_code`, `base_version`? (must be the highest published), `copy_from_version`?, `change_note`?, `effective_from`? | `list_code`, `draft` |
 | `update_list_draft` | `referenceData:edit` | `list_code`, `change_note`?, `effective_from`? | `list_code`, `draft` |
 | `upsert_draft_values` | `referenceData:edit` | `list_code`, `values`: a batch of (`value_code`, `display`, `display_i18n`?, `parent_code`?, `sort_order`?, `attributes`?, `roles`?, `value_id`?, `status`?) | `list_code`, `draft`, `values` |
@@ -580,6 +594,7 @@ The batch is all or nothing.
 | `approve_geo_draft` | `geo:publish` | `version_no`?, `decision_note`?, `effective_from`? (`permission` mode) | `draft` |
 | `reject_geo_draft` | `geo:publish` | `version_no`?, `decision_note` (`permission` mode) | `draft` |
 | `discard_geo_draft` | `geo:edit` | (empty) | `discarded_version_no` |
+| `update_geo_settings` | `geo:edit` | `visibility`?, `licence_uri`?, `licence_label`? (applied at once, not versioned; an empty licence field clears it; logged as `geo.settings.updated`) | `settings` |
 
 A unit's parent must be an active unit of the parent level, and names are unique
 among siblings. Upserting a retired unit brings it back.

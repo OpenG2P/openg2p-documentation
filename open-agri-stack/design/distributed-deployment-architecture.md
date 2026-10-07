@@ -41,7 +41,7 @@ Two needs pull in different directions:
 | --- | --- | --- |
 | Composite | Exchange | Single door for Open AgriNet partners |
 | Partner Management, Consent Manager | **Both** | Each department's for its own partners; the exchange's for Open AgriNet partners and farmer consent |
-| Catalogue | **Shared, authoritative at Agri Stack level** | Crop codes, seasons and geography (P-codes) must be identical across registries, or the composite cannot join their data. Departments read it through its API (cached, version-pinned); department-only datasets can live in it under their own publisher. |
+| Catalogue | **Shared, authoritative at Agri Stack level** | Crop codes, seasons and geography (P-codes) must be identical across registries, or the composite cannot join their data. Target: departments read it through its API (cached, version-pinned); department-only datasets can live in it under their own publisher. **For now (phase 1):** each department runs its own MDS from the same `openg2p-data` pack; the central catalogue and mirroring come in phase 2. |
 | Audit | **Both** | Each department audits access to its data, including calls from the exchange, recorded "on behalf of" the partner. The exchange audits who asked what. A **request ID passed through every hop** ties them together for forensics. |
 | Verifiable credentials | Issuer per department, verification shared | The Farmer Registry issues farmer credentials under its own issuer identity; verification is public and can be shared. |
 | Farmer identity | Fayda FAN and the FR farmer ID | The join key across registries; departments resolve farmers through FR (lookups or [data sync](registry-data-sync.md)). |
@@ -133,7 +133,7 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `
 * **Reaching the registries:** each registry already publishes its partner API on its gateway (`https://partner-fr.trial.openg2p.org`, `https://partner-csr.csr.openg2p.org`). The composite's registry URLs are values (`composite.registries.<name>.url`); set them to these.
 * **The composite as a partner of each department:** register the composite's public key in the `trial` PM and the `csr` PM, and give it a policy in each department's CM. Each registry then verifies the composite's signature as for any partner.
 * **Partner onboarding at the exchange:** the bank onboards in the `agrix` PM and CM only; the composite verifies the bank there (same namespace).
-* **Catalogue, phase 1:** each department keeps its own catalogue loaded from the **same country pack version**, so codes and geography are identical. Pointing departments at the `agrix` catalogue is phase 2.
+* **Catalogue, phase 1 (decided):** each department runs its **own MDS**, loaded from the **same `openg2p-data` country pack version**, so codes and geography are identical. A central catalogue, and departments mirroring it, is phase 2. Each MDS can also publish an opt-in, read-only [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md) (DCAT, SKOS, downloads) of the datasets it marks public.
 
 **What does not work yet:** consent. Today a registry validates the partner's consent with its **own** CM, so the bank would have to be bound in every department's CM as well: three onboardings instead of one. The phase 1 changes below remove that.
 
@@ -154,6 +154,7 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `
 **Phase 2: shared catalogue and policy subset check**
 
 * Departments may point at the `agrix` catalogue (a remote catalogue URL; default stays local), with read access by signed request.
+* **Central catalogue and mirroring:** the `agrix` catalogue becomes the authoritative copy; department MDSs mirror its published versions (pull by release or change feed) instead of loading the pack themselves. Not before phase 2: for now each department loads the same pack.
 * The exchange CM refuses a partner policy that grants more than a department's published exchange policy allows.
 
 **Phase 3: production hardening**

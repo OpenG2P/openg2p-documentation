@@ -26,6 +26,8 @@ dataset's domain is its **theme**. The API keeps its own names (`get_lists`,
 | Dataset reference | `x-list-ref` |
 | Publisher | `owner_org` |
 | Theme (Core, Agriculture, ..., Other) | `domain` (`core`, `agriculture`, ..., `null`) |
+| Visibility: Public / Private | `visibility` (`public`, `private`) |
+| Licence, Licence URL | `licence_label`, `licence_uri` |
 | Version, Effective from | `version_no`, `effective_from` |
 | Release | A catalogue release |
 | Geography: Levels, Administrative units, Boundaries, Change events, Crosswalk | Geography versions, levels, units, boundaries, change events, crosswalk |
@@ -102,7 +104,7 @@ without a theme), which is how the home page links to it. Each row shows:
 | Theme | Core, Agriculture, ... or Other |
 | Publisher | The publishing department (`owner_org`) |
 | Published version | The **published version in effect** (for example `v3`), or *Not published* |
-| Draft / pending | A **Draft** or **Submitted** badge with the open draft's number, and **Changes pending** when a published version has a **future effective date** (it is published but not yet in effect) |
+| Draft / pending | A **Draft** or **Submitted** badge with the open draft's number, **Changes pending** when a published version has a **future effective date** (it is published but not yet in effect), and a **Public** badge for a dataset in the public catalogue |
 | Hierarchical | Whether entries may have parent entries |
 | Actions | **Edit** (dataset details); **Delete** only for a dataset that was **never published** |
 
@@ -118,10 +120,11 @@ the dataset's details; it applies at once and is not versioned.
 ### A dataset's page
 
 Clicking a dataset opens its page. The header shows the code, publisher, theme,
-hierarchy flag, description and labels by language, and an **Edit dataset
-details** button (code, label, labels by language, description, publisher,
-theme, hierarchy flag). Description, publisher and theme apply at once; the other
-details are saved into the dataset's draft.
+hierarchy flag, description and labels by language, a **Public** or **Private**
+badge with the licence, and an **Edit dataset details** button (code, label,
+labels by language, description, publisher, theme, visibility, licence, hierarchy
+flag). Description, publisher, theme, visibility and licence apply at once; the
+other details are saved into the dataset's draft.
 
 Below the header is the **version bar**:
 
@@ -199,6 +202,10 @@ the version on screen, and the same lifecycle buttons (with `geo:edit` and
 `geo:publish`). Editing is possible only on the open draft while it is `DRAFT`.
 The page has three groups of tabs: **Data**, **Lineage** and **History**.
 
+Under the title, a **Public** or **Private** badge and the licence show the
+geography's publication settings; users with `geo:edit` change them with
+**Publication settings** (see [Visibility and licence](#visibility-and-licence)).
+
 **Data** has three sub-tabs:
 
 | Sub-tab | Shows |
@@ -229,6 +236,25 @@ A boundary upload must be a GeoJSON `FeatureCollection`; the UI checks that the 
 is JSON and a FeatureCollection, and the API matches features to units (by
 `properties.pcode`). The UI does not preview the shapes. A boundary of a published
 version cannot be replaced.
+
+## Visibility and licence
+
+The dataset dialog (**Edit dataset details**, and **Add** for a new dataset) and the
+geography's **Publication settings** have the same two controls:
+
+* **Visibility**: *Private* (the default) or *Public*. Public datasets and a public
+  geography are shown, at their **published** versions only, by the opt-in
+  [public catalogue](public-catalogue.md) for other websites and open-data
+  portals. When the public catalogue is switched off in the deployment, choosing
+  *Public* shows a note that nothing is published until an administrator enables
+  it.
+* **Licence** and **Licence URL**: free text, with suggestions (CC BY 4.0, CC BY-SA
+  4.0, CC0 1.0, CC BY-IGO, ODbL 1.0); picking a suggestion fills the URL when it is
+  empty.
+
+Both apply at once and are not versioned; a change appears in the activity feed
+(`list.updated`, `geo.settings.updated`). There is no public MDS website: the
+public catalogue is an API that other sites read.
 
 ## Releases
 

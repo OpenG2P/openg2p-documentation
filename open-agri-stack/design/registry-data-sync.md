@@ -25,7 +25,7 @@ For registry-to-registry sharing, a **blanket (standing) consent** from the farm
 
 ## Proposal: publish/subscribe into read-only mirror registers
 
-1. **The source publishes changes.** When a register record (e.g. Farmer) is created, changed, corrected or retired, the source registry publishes an event to a topic. The registry platform already publishes register changes over [WebSub](https://www.w3.org/TR/websub/) (outgestion).
+1. **The source publishes changes.** When a register record (e.g. Farmer) is created, changed, corrected or retired, the source registry publishes an event to a topic. The registry platform's outgestion can publish register changes over [WebSub](https://www.w3.org/TR/websub/), but no WebSub hub is deployed today (commons installs none), so this needs a hub first.
    * The event carries the record **filtered to the agreed [data scopes](../../products/registry/registry/design/data-scopes.md)**, so each subscriber receives only what it is allowed.
    * Each event carries the record's **version** and is **signed** by the source (keys in Partner Management).
 2. **The subscriber keeps a mirror register.** The subscribing registry defines a register such as "Farmer (from FR)" with its own fields and a mapping from the source's fields, and ingests the events through the platform's existing ingestion pipeline (incoming models and templates).
