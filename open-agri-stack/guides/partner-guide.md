@@ -94,7 +94,7 @@ The registries a use case reads are its sources' `controller`s, listed as `conse
 
 | Field | Meaning | Where the value comes from |
 | --- | --- | --- |
-| `allowed_data_scopes` | The data you may ever receive from this registry | **Scope IDs from the registry's scope catalogue**, `<controller>.<name>`. The registry publishes it at `GET /partner/data_scopes` on its partner API (ask the registry operator if that is not reachable to you): each scope with a label, a description and the fields it covers. Ask for the scopes the use case's output needs, and no more. |
+| `allowed_data_scopes` | The data you may ever receive from this registry | **Scope IDs from the registry's scope catalogue**, `<controller>.<name>`. The registry publishes it at `POST /partner/data_scopes` on its partner API, a signed call like every other (sign `{header, message}` with your key, `message` may be empty; the unsigned `GET` is off by default — ask the registry operator if it is not reachable to you): each scope with a label, a description and the fields it covers. Ask for the scopes the use case's output needs, and no more. |
 | `allowed_purposes` | Purpose codes your consents may carry | The use case's `purpose` ([step 5](#step-5-discover-the-use-case)) |
 | `allowed_subject_id_types` | Identifier types the consent's subject may use | The use case's `input.subject.id_types` ([step 5](#step-5-discover-the-use-case)) |
 | `allowed_signing_algs` | Algorithms your consents may be signed with | Your key's algorithm ([step 1](#step-1-generate-your-signing-key)): `EdDSA`, `ES256` or `RS256` |

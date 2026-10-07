@@ -73,7 +73,7 @@ For each registry whose data you want, that registry's administrator creates a *
 * This policy is the **ceiling**: what you actually get back is always `consent scope ∩ policy`. You cannot exceed it, no matter what the consent says.
 * You request this binding from the registry operator (out of band). Ask for exactly the scopes/purposes you need. Widening an existing policy may go through an approval workflow on their side — plan for lead time.
 * You'll agree on the **`data_controller`** identifier and the **audience** (your `partner_id`) to use in the consent object (Step 5).
-* **Data scopes are the registry's scope IDs**, `<data_controller>.<name>` (e.g. `farmer-registry.land`), from that registry's scope catalogue: `GET /partner/data_scopes` on its partner API lists each scope with its label, description and fields. A scope is a named group of the registry's own fields, not a field of an output format such as DCI. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
+* **Data scopes are the registry's scope IDs**, `<data_controller>.<name>` (e.g. `farmer-registry.land`), from that registry's scope catalogue: `POST /partner/data_scopes` on its partner API (a signed call) lists each scope with its label, description and fields. A scope is a named group of the registry's own fields, not a field of an output format such as DCI. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
 * Needing data from **several registries** means one binding (and policy) per registry, all under the same audience. You still collect **one** consent from the beneficiary (Step 5).
 
 ***
@@ -206,7 +206,7 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 * [ ] The consent object is a valid **compact JWS** (Step 6), signed with your PM key.
 * [ ] JWS header `kid` + `alg` match a key you registered in PM (and the policy's `allowed_signing_algs`).
 * [ ] `aud` = your `partner_id`; each grant's `data_controller` = a registry you are bound to.
-* [ ] Each grant's `data_scopes` are that registry's scope IDs (`GET /partner/data_scopes`) and, with the `purpose`, within its policy (else widen the policy first).
+* [ ] Each grant's `data_scopes` are that registry's scope IDs (signed `POST /partner/data_scopes`) and, with the `purpose`, within its policy (else widen the policy first).
 * [ ] The `subject_id` is the person you search for at every registry.
 * [ ] `issued_at` is fresh and clocks are synced; `jti` is unique.
 * [ ] You handle `deny` outcomes and honour `revoked` / `expired`.

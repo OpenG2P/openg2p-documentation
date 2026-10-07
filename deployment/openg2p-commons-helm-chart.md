@@ -38,8 +38,7 @@ Installs all infrastructure components:
 | **Redis Auth**          | Cache with authentication (for eSignet)                             |
 | **Kafka**               | Message broker                                                      |
 | **Kafka UI**            | Kafka management dashboard                                          |
-| **MinIO**               | Object storage                                                      |
-| **SoftHSM**             | Software HSM for key management                                     |
+| **Garage**              | S3-compatible object store (replaced MinIO)                         |
 | **Mail**                | SMTP relay server (optional)                                        |
 | **Client Secrets Sync** | Fetches OIDC client secrets from Keycloak and stores in K8s secrets |
 
@@ -52,7 +51,7 @@ Installs application services:
 | **Superset**              | Data visualization and dashboards                                                  |
 | **eSignet**               | Digital signature service                                                          |
 | **Mock Identity System**  | Mock identity provider for testing                                                 |
-| **Keymanager**            | Cryptographic key management                                                       |
+| **Keymanager**            | Standalone MOSIP Keymanager (on by default). Used by PBMS to sign G2P Bridge disbursement requests, and by a registry whose partner key backend is `keymanager`. Open Agri Stack does not use it — turn it off with **Install Keymanager?**. eSignet, the mock identity system and Inji Certify carry their own keymanager |
 | **ODK Central**           | Data collection                                                                    |
 | **OpenG2P Master Data**   | Master data service                                                                |
 | **Artifactory**           | Artifact repository                                                                |
@@ -108,14 +107,9 @@ keycloak-init:
 
 All services (including Keycloak) share the same PostgreSQL instance. The `postgres-init` job creates dedicated databases and users for each service. For production deployments, an external PostgreSQL server can be used — see the [External PostgreSQL](openg2p-commons-helm-chart.md#external-postgresql) section below for the full setup steps.
 
-### MinIO Console vs S3 API
+### Object store (Garage)
 
-MinIO exposes two ports on a single Kubernetes Service: **9001 (Console UI)** and **9000 (S3 API)**. To route browser traffic to the console and S3-client traffic to the API without manual port juggling, the chart creates **two Istio VirtualServices**:
-
-* `minio.<baseDomain>` → port 9001 (Console UI)
-* `minio-api.<baseDomain>` → port 9000 (S3 API)
-
-Pod-to-pod S3 calls (e.g., from ODK Central) use the internal cluster service `http://commons-minio:9000` — they don't go through Istio. Both hostnames work out of the box on a fresh install; no manual VirtualService edits required.
+The object store is **Garage** (S3-compatible), which replaced MinIO. Pods reach its S3 API in-cluster at `http://commons-garage:3900`; it is also published at `garage.<baseDomain>`. Its init job writes the S3 credentials to the `commons-minio` Secret (the name is kept for compatibility). MinIO is still in the chart but off by default and not in the Rancher form; nothing needs it. Novu (on by default) stores its files in Garage too, in the `novu` bucket the Garage init job creates.
 
 ### Internal vs External URLs
 
@@ -145,10 +139,8 @@ All components are configured with **sandbox-friendly resource limits** by defau
 | Keycloak                    | 1Gi          | 512m     | Increase to 2Gi / 1g for production                             |
 | PostgreSQL                  | 1Gi          | N/A      | Increase to 2-4Gi for production                                |
 | Kafka (controller + broker) | 1Gi each     | 512m     | Increase to 2Gi / 1g for production                             |
-| MinIO                       | 512Mi        | N/A      | Increase to 1-2Gi for heavy S3 usage                            |
 | Redis (x2)                  | 128Mi each   | N/A      | Sufficient for most workloads                                   |
 | Kafka UI                    | 512Mi        | 256m     | Sufficient for most workloads                                   |
-| SoftHSM                     | 128Mi        | N/A      | Sufficient                                                      |
 | Artifactory                 | 512Mi        | N/A      | Sufficient                                                      |
 
 To scale up for production, override the relevant values:
@@ -228,7 +220,7 @@ The `install-base.sh` script verifies the secret exists in the namespace before 
 
 ### From the Rancher UI
 
-The same three globals are exposed in `questions.yaml` for both charts under the **Postgres** / **Infrastructure** group. Set them through the UI and the chart behaves identically. Remember to pre-create the secret in the target namespace using `kubectl` first — Rancher's installer doesn't have a pre-flight check for it, so a missing secret will surface as `CreateContainerConfigError` on the postgres-init pods.
+The same three globals are in the Rancher form of both charts, under the **PostgreSQL** group (in commons-base they appear once **Install PostgreSQL?** is off). Set them through the UI and the chart behaves identically. Remember to pre-create the secret in the target namespace using `kubectl` first — Rancher's installer doesn't have a pre-flight check for it, so a missing secret will surface as `CreateContainerConfigError` on the postgres-init pods.
 
 ### Notes
 

@@ -102,7 +102,7 @@ prefix, an old DCI key) grants nothing: every field of the record renders as nul
 or empty — the partner receives HTTP `200` and no error appears anywhere in the
 chain. Renaming a section retires its default scope.
 
-**Check:** `GET /partner/data_scopes` lists every scope ID; every scope named in a
+**Check:** `POST /partner/data_scopes` (signed) lists every scope ID; every scope named in a
 CM policy, in `registry.sanity.dataScopes` and in `deniedScopes` must be there.
 Ship named scopes in the catalogue if partners need IDs that survive UI changes.
 
@@ -115,7 +115,7 @@ Ship named scopes in the catalogue if partners need IDs that survive UI changes.
 |---|---|---|
 | `registry.sanity.farmerRegisterId` | string | **This is the register id**, whatever your registry is about. Named for the registry the harness was first written against; the subchart helpers, the suite's `cfg` object and every variant's override use this spelling. Leave it unset and the suite runs against the reference registry's id |
 | `registry.sanity.dataScopes` | **comma-separated string** | Not a YAML list. A list renders into the env var as Go map syntax |
-| `registry.sanity.deniedScopes` | **comma-separated string** | Same. Must name real scopes in your catalogue (`GET /partner/data_scopes`) that cover seeded fields, or the filtering test fails |
+| `registry.sanity.deniedScopes` | **comma-separated string** | Same. Must name real scopes in your catalogue (signed `POST /partner/data_scopes`) that cover seeded fields, or the filtering test fails |
 | `registry.sanity.regType` | string | Your register mnemonic — goes into the DCI envelope as `reg_type` |
 | `registry.sanity.regRecordType` | string | The DCI record type |
 | `registry.sanity.crTabId` / `crSectionId` | string | A real, **editable** section of yours, or the change-request test's write is rejected |

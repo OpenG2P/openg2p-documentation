@@ -320,7 +320,7 @@ limits:
 ```
 
 * The Crop Sown Registry knows the farmer by farmer ID, so both crop sources depend on the farmer source and read `FARMER_ID` from its record (or use the subject itself when the partner sends a `FARMER_ID`).
-* **Consent** (one consent, a grant per registry) names each registry's [data scopes](../../products/registry/registry/design/data-scopes.md). The use case file does not list them: the partner picks them from each registry's catalogue (`GET /partner/data_scopes`). The Farmer Registry grant must include `farmer-registry.farmer_identifiers`, since the farmer ID is read from it. The partner test kit grants:
+* **Consent** (one consent, a grant per registry) names each registry's [data scopes](../../products/registry/registry/design/data-scopes.md). The use case file does not list them: the partner picks them from each registry's catalogue (signed `POST /partner/data_scopes`). The Farmer Registry grant must include `farmer-registry.farmer_identifiers`, since the farmer ID is read from it. The partner test kit grants:
   * `farmer-registry`: `farmer_identifiers`, `personal_details`, `household_location`, `land`, `land_location`, `main_crops`;
   * `crop-sown-registry`: `farmer_reference`, `crop_season`, `measures`, `location` (each as `<registry>.<name>`, e.g. `crop-sown-registry.crop_season`).
 

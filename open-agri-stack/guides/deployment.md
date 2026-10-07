@@ -40,8 +40,9 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Country Pack | **Load Code Lists** (`masterData.geoSeed.load.codelists`) | on (default) |
 | Country Pack | **Load Sample People** (`masterData.geoSeed.load.samples`) | on (default) — the registries' sample farmers and crop seasons are derived from them |
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
-| Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | **on** (the Rancher form defaults it off) |
+| Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | on (default) |
 | AWE | **Install AWE?** (`openg2p-awe.enabled`) | on (the registries' change requests and CM policy approvals use it) |
+| Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** — Open Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet and Inji Certify have their own). It stays on by default for PBMS, which signs G2P Bridge disbursements with it |
 
 The Audit Manager is part of commons-services; the composite sends its events to `http://commons-services-auditmanager:80`.
 
@@ -55,11 +56,9 @@ Install as in [Farmer Registry → Deployment](../../products/registry/farmer-re
 | --- | --- |
 | **Verify Partner Signature** (`global.partnerSignatureValidationEnabled`) | on (default) |
 | **Enforce Consent** (`global.consentEnforcementEnabled`) | on (default) |
-| **Partner Key Verification Backend** (`global.registryCryptoBackend`) | `partner-mgmt` (default) |
-| **Partner Management URL** (`global.partnerManagementApiUrl`) | `http://commons-services-pm-partner-api` (default) |
-| **Consent Manager URL** (`global.consentManagerUrl`) | `http://commons-services-cm-partner-api` (default) |
-| **Consent data controller** (`global.consentDataController`) | `farmer-registry` (defaults to the registry variant) |
 | **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo (sample farmers from Master Data's sample people, lands numbered `LAND-<n>-<k>`) |
+
+Not in the form, and right by default: the partner key backend (`global.registryCryptoBackend: partner-mgmt`), the Partner Management and Consent Manager URLs (`http://commons-services-pm-partner-api`, `http://commons-services-cm-partner-api`) and the consent data controller (`global.consentDataController`, the registry variant: `farmer-registry`). Change them in the YAML editor only if you know why.
 
 See [Data seeding](../../products/registry/farmer-registry/deployment/data-seeding.md) and [Helm chart](../../products/registry/farmer-registry/deployment/helm-chart.md).
 
@@ -69,12 +68,10 @@ The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registr
 
 | Setting | Value |
 | --- | --- |
-| Signature, consent, PM and CM settings | As for the Farmer Registry (defaults) |
-| **Consent data controller** (`global.consentDataController`) | `crop-sown-registry` (defaults to the registry variant) |
+| Signature and consent settings | As for the Farmer Registry (defaults); the consent data controller is `crop-sown-registry` |
 | **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo: loads the two sample clusters |
 | **Load sample crop seasons** (`REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA`) | **off by default**; shown only when Load Sample Data is on. Records the sample crop seasons once, after install; needs the sample clusters and Master Data's sample people. Leave off for production. |
-| **Pull submissions from ODK Central** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED`) | off by default. When on, also activate the form in the register's Settings (ODK project and form ID) and create the ODK credentials Secret |
-| **ODK Central URL** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_BASE_URL`) | `http://commons-services-odk-central-backend` |
+| **Pull submissions from ODK Central** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED`) | off by default. When on, also activate the form in the register's Settings (ODK project and form ID) and create the ODK credentials Secret. It pulls from the commons ODK Central (`http://commons-services-odk-central-backend`; YAML only) |
 
 * **No code lists are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
 * **No geo setting:** register forms read the country's geo levels from Master Data when they load; seed Jobs read Master Data through its API, never its database.

@@ -145,7 +145,9 @@ There is no `send_task` call from the FastAPI ingest handler. Processing begins 
 The partner system calls the `/partner/ingest_data` endpoint. The API layer performs the following synchronous operations:
 
 * Validates the request structure and resolves the partner from the payload.
-* Matches the payload against `incoming_model_key_paths` to extract the sender, signature envelope, and message identifier.
+* Matches the payload against `incoming_model_key_paths` to extract the sender, signature, signature payload and message identifier.
+* Requires the sender to be an **active** partner in Partner Management.
+* Verifies the partner's signature (a detached JWS) over the signature payload with the partner's Partner Management key; a missing or bad signature rejects the call before anything is stored.
 * Resolves the data model by query parameter or by matching `pattern_for_data_model`.
 * Stores the raw payload in PostgreSQL (`incoming_raw_data` + `incoming_raw_data_payloads`) without any transformation.
 * Fans out list payloads into individual ingest records sharing a single `correlation_id`.
@@ -155,7 +157,7 @@ The partner system calls the `/partner/ingest_data` endpoint. The API layer perf
 
 **Staff equivalent:** `POST /input-mechanism-data/ingest-data` uses the same core service with staff IAM permissions.
 
-Cryptographic signature verification via the key manager is implemented (`_validate_signature`) but **currently disabled** in the ingest service. Partner identity is resolved from the payload sender mnemonic.
+**Authentication.** The partner path verifies the signature found at `key_path_for_signature` over the object at `key_path_for_signature_payload` (one JSON node, e.g. `$.body.message`, serialised as compact JSON with sorted keys) against the key Partner Management holds for the partner (`PARTNER_<SENDER>`), with the same crypto as DCI search. It is gated by `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (on by default; off only for testing, when unsigned messages are accepted with a warning). The staff path is authenticated by IAM and the file-import worker runs inside the registry, so neither asks for a partner signature. See [Partner APIs — Authentication](partner-apis.md#authentication-and-signature-verification).
 
 A Celery Beat producer then picks up the row for asynchronous classification processing.
 {% endstep %}

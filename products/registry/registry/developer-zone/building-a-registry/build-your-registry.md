@@ -324,7 +324,7 @@ personwithdisability  {'id_length': 12}      ← the only one it uses
 Each unused pool is an empty table and nothing more — it costs nothing at runtime and allocates no IDs, because nothing ever asks it for one. But it is alarming when you first see it, so expect it rather than debugging it.
 
 {% hint style="info" %}
-**The Rancher form's "ID Types Configuration" note is a static string** from the platform chart, not a reading of your values — it cannot know which registers your registry has, and it describes only the deepest layer's defaults. Switch to _Edit YAML_ to see and change the real `idgenerator.idGenerator.appConfig.idTypes` block.
+**The pools are not in the Rancher form.** Switch to _Edit YAML_ to see and change the real `idgenerator.idGenerator.appConfig.idTypes` block.
 {% endhint %}
 
 Verify what actually rendered, rather than what you wrote:
@@ -391,7 +391,7 @@ COPY test/sanity/tests/test_e2e_change_request.py /app/tests/test_e2e_change_req
 | Key                          | Note                                                                                                                                                             |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `farmerRegisterId`           | **This is the register id**, whatever your registry is about. Same historical naming as `fixtures.py`; the subchart helpers and every variant use this spelling  |
-| `dataScopes`, `deniedScopes` | **Comma-separated strings**, not YAML lists — a list renders into the env var as Go map syntax. Both must name [data scopes](../../design/data-scopes.md) in your catalogue (`GET /partner/data_scopes`) |
+| `dataScopes`, `deniedScopes` | **Comma-separated strings**, not YAML lists — a list renders into the env var as Go map syntax. Both must name [data scopes](../../design/data-scopes.md) in your catalogue (signed `POST /partner/data_scopes`) |
 | `regType`, `regRecordType`   | Your register mnemonic and DCI record type                                                                                                                       |
 | `crTabId`, `crSectionId`     | A real, **editable** section of yours, or the change-request test's write is rejected                                                                            |
 | `searchText`                 | The injected record's `functional_record_id` — must equal what your `data_seed.py` writes                                                                        |

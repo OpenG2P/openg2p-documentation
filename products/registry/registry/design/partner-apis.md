@@ -37,7 +37,7 @@ flowchart TB
     subgraph platform [Registry platform]
         CORE[openg2p-registry-core]
         EXT[Domain extension]
-        KM[Keymanager]
+        KM[Partner Management keys]
     end
 
     P1 --> ING
@@ -51,7 +51,7 @@ flowchart TB
     DCI --> KM
 ```
 
-Compared to the **Staff Portal API**, the Partner API serves external callers with signature-based auth (not Keycloak JWT), exposes ingest and DCI search only (not full CRUD), returns envelope-level success/error inside HTTP 200 for business failures, and relies on controllers to set `request.state.audit_actor` for audit identity.
+Compared to the **Staff Portal API**, the Partner API serves external callers with signature-based auth (not Keycloak JWT), exposes ingest, activity submission, the data scope catalogue and DCI search only (not full CRUD), returns envelope-level success/error inside HTTP 200 for business failures, and relies on controllers to set `request.state.audit_actor` for audit identity.
 
 See Platform and extension model for how the extension package is loaded into API images at deploy time.
 
@@ -59,11 +59,11 @@ See Platform and extension model for how the extension package is loaded into AP
 
 Boot sequence (`main.py` → `app.py`) initialises core, extensions, ping, ingestion, and DCI modules:
 
-<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/registry/sync/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>Register search + outbound template rendering</td></tr><tr><td><code>DciQueryHelper</code></td><td>Parses <code>expression</code> and <code>idtype-value</code> queries</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>JWT verify/sign for DCI envelopes</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
+<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/registry/sync/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>Register search + outbound template rendering</td></tr><tr><td><code>DciQueryHelper</code></td><td>Parses <code>expression</code> and <code>idtype-value</code> queries</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>Detached JWS verify/sign for every partner call (DCI, ingest, activities, data scopes)</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
 
 ### API surface
 
-<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/registry/sync/search</code></td><td>Synchronous DCI search</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
+<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/registry/sync/search</code></td><td>Synchronous DCI search</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction</td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); <code>GET</code> is off by default</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
 
 {% hint style="info" %}
 OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
@@ -73,7 +73,7 @@ OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
 
 1. **Format-agnostic ingest** - Raw envelopes are stored; data-model metadata (JSONPath key paths, semantic patterns, Jinja) drives downstream interpretation.
 2. **Synchronous search, asynchronous ingest** - Search returns records in the same response; ingest returns `correlation_id` while workers apply changes later.
-3. **Signature-based trust** - Partner identity via Keymanager JWT over payload or DCI envelope content, not staff sessions.
+3. **Signature-based trust** - Every partner call carries a detached JWS verified against the partner's Partner Management key; no staff sessions.
 4. **Template-driven wire formats** - Ingest acknowledgements and DCI `reg_records` are rendered from MinIO Jinja templates.
 5. **Fail in the envelope** - Business errors appear inside the protocol body; HTTP status often stays `200` (see Error handling).
 
@@ -89,7 +89,7 @@ Both ingest and DCI controllers currently return HTTP 200 for business failures 
 
 The partner-api image installs the domain extension (`openg2p_registry_extensions`) alongside core. Helm values configure database URLs, MinIO buckets, Keymanager endpoints, and audit URLs per environment. The service shares the registry database with workers; ingest acceptance only requires raw-data tables to be writable — pipeline workers must be running for records to reach register tables.
 
-For local development, copy `.env.example` from the service repo and point `REGISTRY_PARTNER_API_DB_*` and MinIO settings at your stack. Signature verification differs per endpoint: **DCI search** verification is implemented and Partner-Management-backed (gated by `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED`, which the Helm values ship **off**), while **ingest** signature verification is still commented out in source — do not treat ingest as authenticated (see [Authentication and signature verification](#authentication-and-signature-verification)).
+For local development, copy `.env.example` from the service repo and point `REGISTRY_PARTNER_API_DB_*` and MinIO settings at your stack. Every partner call is signed and verified against the partner's Partner Management key, gated by `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (Helm `global.partnerSignatureValidationEnabled`, **on** by default; turn it off only for testing). See [Authentication and signature verification](#authentication-and-signature-verification).
 
 ***
 
@@ -99,7 +99,7 @@ Endpoint reference: [`POST /partner/ingest_data`](../developer-zone/api-document
 
 ### Role
 
-`POST /partner/ingest_data` is the front door for partner-submitted registry data. A successful call **does not** write register rows. It identifies the data model and partner, extracts signature material, persists raw ingest rows, optionally pre-classifies when query params are set, and returns an acknowledgement with **`correlation_id`**.
+`POST /partner/ingest_data` is the front door for partner-submitted registry data. A successful call **does not** write register rows. It identifies the data model and the (active) partner, verifies the partner's signature over the configured signature payload, persists raw ingest rows, optionally pre-classifies when query params are set, and returns an acknowledgement with **`correlation_id`**.
 
 Downstream processing: Ingestion and outgestion.
 
@@ -183,7 +183,7 @@ Endpoint reference: [`POST /dci/registry/sync/search`](../developer-zone/api-doc
 
 | Part        | Content                                                                          |
 | ----------- | -------------------------------------------------------------------------------- |
-| `signature` | Keymanager JWT over `{header, message}`                                          |
+| `signature` | Detached JWS over `{header, message}` (partner's PM key)                         |
 | `header`    | Routing metadata: `message_id`, `sender_id`, `receiver_id`, `action`, timestamps |
 | `message`   | `DciSearchRequest` (in) or `DciSearchResponse` (out)                             |
 
@@ -287,21 +287,42 @@ Cleartext messages only (`is_msg_encrypted = false`); `DciEncryptedMessage` is n
 ## Authentication and signature verification
 
 The Partner API does **not** use Keycloak or staff JWT middleware — trust is
-**signature-based**, over agreed payload bytes. The two endpoints use **different**
-mechanisms and different key sources, described below.
+**signature-based**. **Every partner API call that returns or accepts data must be
+signed** with the partner's key; the registry verifies it against the key Partner
+Management holds for that partner.
 
-### DCI search signatures — keys from Partner Management
+| Endpoint | What is signed | Verified |
+| --- | --- | --- |
+| `POST /dci/registry/sync/search` | `{header, message}` | yes |
+| `POST /partner/ingest_data` | the object at the data model's `key_path_for_signature_payload` | yes |
+| `POST /partner/activity/append_activities` | `{header, message}` | yes |
+| `POST /partner/activity/correct_activities` | `{header, message}` | yes |
+| `POST /partner/data_scopes` | `{header, message}` | yes |
+| `GET /partner/data_scopes` | nothing (no body) | **off by default** — use the signed POST |
+| `GET /ping`, `/docs`, `/openapi.json` | — | open (health and API description) |
 
-The DCI envelope `signature` is a **detached JWS** over `{header, message}`. The
-registry **holds no partner keys**: it fetches the caller's public key from
+One switch, `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (Helm
+`global.partnerSignatureValidationEnabled`, **on** by default), gates all of them.
+Turn it off only for testing: unsigned messages are then accepted, a warning is
+logged and the audit actor is recorded as unverified.
+
+`GET /partner/data_scopes` is the one unsigned read. It is disabled unless
+`REGISTRY_PARTNER_API_DATA_SCOPES_PUBLIC_GET_ENABLED=true` (Helm
+`global.partnerDataScopesPublicGetEnabled`); when disabled it answers HTTP 403 and
+points to the signed `POST /partner/data_scopes`.
+
+### How the signature is checked
+
+The `signature` is a **detached JWS** (`header..signature`). The registry **holds
+no partner keys**: it fetches the caller's public key from
 [**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
 and caches it in-process.
 
-* **Key lookup** — the partner reference is derived from the DCI
-  `header.sender_id` as **`PARTNER_<SENDER_ID>`** (upper-cased, `-` → `_`). This is
-  the same reference convention used by `openg2p-fastapi-partner-auth` and
-  g2p-bridge, so a partner's key resolves identically across the platform. The
-  partner must be onboarded in Partner Management under exactly that `partner_id`.
+* **Key lookup** — the partner reference is derived from the sender as
+  **`PARTNER_<SENDER_ID>`** (upper-cased, `-` → `_`). This is the same reference
+  convention used by `openg2p-fastapi-partner-auth` and g2p-bridge, so a partner's
+  key resolves identically across the platform. The partner must be onboarded in
+  Partner Management under exactly that `partner_id`.
 * **Backend** — `crypto_backend` selects the key source via
   `openg2p-fastapi-common`'s `build_crypto_helper`:
   `partner-mgmt` (**default**) fetches from PM; `keymanager` is the legacy Mosip
@@ -310,8 +331,13 @@ and caches it in-process.
   on an unknown `kid` (rotation), and served stale within a bounded window if PM is
   briefly unreachable. A disabled/unknown partner returns no keys and the request is
   **rejected (fail-closed)**.
-* **Verification input** — the raw `{header, message}` exactly as sent, never
-  re-serialised pydantic models.
+* **Verification input** — the raw JSON exactly as sent, never re-serialised
+  pydantic models. The signing input is the payload serialised as compact JSON with
+  sorted keys.
+* **Rejection** — a missing signature gives `INVALID_REQUEST`, a signature that does
+  not verify gives `REQUEST_VALIDATION_ERROR`, each in the endpoint's usual error
+  envelope, and the call is audited as a failure. Once the signature verifies, the
+  partner is recorded as the verified audit actor.
 
 Settings (env prefix `REGISTRY_PARTNER_API_`):
 
@@ -320,28 +346,32 @@ Settings (env prefix `REGISTRY_PARTNER_API_`):
 | `CRYPTO_BACKEND` | `partner-mgmt` (default), `keymanager`, or `local` |
 | `PARTNER_MGMT_API_URL` | PM partner-api, e.g. `http://commons-services-pm-partner-api` — **required** when the backend is `partner-mgmt` |
 | `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` (widened from fastapi-common's RS256-only) |
-| `SIGNATURE_VALIDATION_ENABLED` | gates the check; the Helm values ship it **off** |
+| `SIGNATURE_VALIDATION_ENABLED` | gates the check on every partner call; **on** by default — testing only when off |
+| `DATA_SCOPES_PUBLIC_GET_ENABLED` | allows the unsigned `GET /partner/data_scopes`; **off** by default |
 
 See [Integration — consuming partner keys](../../../../platform/platform-services/partner-management/integration.md)
 for the fetch/caching contract.
 
-### Ingestion signatures — Keymanager (legacy, not currently enforced)
+### Ingestion signatures
 
-Ingestion uses a different scheme: not an HTTP `Authorization` header, but JSONPath
-(`key_path_for_signature`, `key_path_for_signature_payload`) extracting the signature
-string and the signed payload object from the partner body. Each ingestion
-configuration row carries a **`keymanager_reference_id`** selecting the verification
-key, and verification is **Keymanager**-backed (`REGISTRY_PARTNER_API_KEYMANAGER_*`:
-`keymanager_api_base_url`, `keymanager_api_timeout`, OAuth settings, `sign_app_id`).
+Ingest envelopes are format-agnostic, so the data model's `incoming_model_key_paths`
+row says where things are: `key_path_for_sender` (the partner), `key_path_for_signature`
+(the detached JWS) and `key_path_for_signature_payload` (the signed object). The
+registry:
 
-{% hint style="warning" %}
-The ingest verification call is **commented out in source**
-(`G2PIngestService`) — ingestion signatures are **not enforced** today. Do not treat
-ingest as authenticated until it is re-enabled (and, ideally, moved to the same
-Partner Management key source as DCI search).
-{% endhint %}
+1. resolves the sender to an **active** Partner Management partner (else
+   `PARTNER_NOT_REGISTERED`);
+2. verifies the JWS over the object at the signature payload key path with that
+   partner's PM key (the PM `partner_id`, i.e. `PARTNER_<SENDER>`);
+3. only then stores the raw data and records the partner as the verified audit actor.
 
-Partners must sign the exact object the registry reconstructs from key paths.
+The signature payload key path must select **one** JSON node (for example
+`$.body.message`); a path that matches several nodes uses only the first. Partners
+sign exactly that object.
+
+The **staff** ingestion endpoint uses the same ingest service but is authenticated by
+IAM (`intakeSubmission:edit`), so it does not ask for a partner signature; nor does the
+file-import worker.
 
 ***
 

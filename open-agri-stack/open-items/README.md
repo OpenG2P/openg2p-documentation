@@ -34,6 +34,8 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 ## Registries
 
+* **TODO: distributed deployment.** Department installs plus one shared exchange tier; registries trusting the exchange CM's consent receipts; exchange-tier install; remote shared services in registry charts; inter-department gateway. See [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md#todo).
+
 * **TODO: sync farmer data into other registries.** Read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. See [Registry Data Sync](../design/registry-data-sync.md).
 
 * **TODO (design): activity registers from configuration, next steps.** Step 1 is built: declarations, output record templates per format and plausibility rules (JSON Logic) are configuration (see [activity register configuration](../design/activity-register.md#activity-register-configuration)). The later steps, a projection spec, an aggregate spec, and per-register tables generated from metadata, wait for a **second real activity register**, so the specs are designed from two domains, not from crop sown alone.

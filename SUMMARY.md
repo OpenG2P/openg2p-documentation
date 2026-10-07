@@ -588,6 +588,7 @@
     * [Crop Sown Registry](open-agri-stack/design/crop-sown-registry.md)
     * [Use-Case Composite](open-agri-stack/design/use-case-composite.md)
     * [Registry Data Sync (TODO)](open-agri-stack/design/registry-data-sync.md)
+    * [Distributed Deployment Architecture](open-agri-stack/design/distributed-deployment-architecture.md)
     * [Concept Notes Review](open-agri-stack/design/concept-notes-review.md)
   * [Implementation](open-agri-stack/implementation/README.md)
     * [Registry Platform Changes](open-agri-stack/implementation/registry-platform.md)

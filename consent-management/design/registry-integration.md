@@ -100,7 +100,7 @@ before rendering it** (DCI or any other output). A narrower consent or policy ca
 
 Scopes are the registry's **data scope IDs**, `<controller>.<name>` (e.g.
 `farmer-registry.land`): named groups of the registry's own fields, by default one per register
-section, versioned, and published at `GET /partner/data_scopes`. The registry resolves each scope
+section, versioned, and published at `POST /partner/data_scopes` (a signed partner call). The registry resolves each scope
 to its fields as of the consent's issue time (a field added later never reaches an older
 consent). See [Data Scopes](../../products/registry/registry/design/data-scopes.md). Fields the
 partner may *filter* on are separately bounded by `dci_expression_allowed_fields`.
@@ -132,7 +132,7 @@ adding, renaming or regrouping fields never needs a CM change.
 | Concern | Owner | Form |
 | --- | --- | --- |
 | Scope vocabulary and scope → field mapping | **Registry (PEP)** | the data scope catalogue: default section scopes plus the extension's `meta_data/data-scopes/*.json`, versioned in the registry database |
-| Publishing the catalogue (discovery) | **Registry (PEP)** | `GET /partner/data_scopes` (partners), `GET /data_scopes` (staff API) |
+| Publishing the catalogue (discovery) | **Registry (PEP)** | `POST /partner/data_scopes` (partners, signed; the unsigned `GET` is off by default), `GET /data_scopes` (staff API) |
 | Set-math authorization (`⊆`, `∩`) | **Consent Manager** | opaque strings — no catalogue |
 | Knowing which scopes to request / grant | **Partner + CM policy admin** | read the registry's published catalogue |
 

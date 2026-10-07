@@ -40,7 +40,7 @@ The Farmer Registry's consent data controller is `farmer-registry` (`global.cons
 
 ## Data scopes
 
-A consent names the Farmer Registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `farmer-registry.<name>`. The extension ships them in `farmer-extension/…/meta_data/data-scopes/data_scopes.json`; the registry publishes them at `GET /partner/data_scopes`.
+A consent names the Farmer Registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `farmer-registry.<name>`. The extension ships them in `farmer-extension/…/meta_data/data-scopes/data_scopes.json`; the registry publishes them at `POST /partner/data_scopes` (signed).
 
 | Scope ID | Label | Fields |
 | --- | --- | --- |

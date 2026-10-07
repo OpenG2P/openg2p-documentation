@@ -92,7 +92,9 @@ The **partner-api** is the policy-enforcement point for DCI requests and depends
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Partner key lookup |
 | `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | The `/validate` endpoint |
 | `global.consentDataController` | the registry variant (`global.registryVariant`) | This registry's data-controller ID in CM, sent as `data_controller` on every `/validate`. Must match the `controller_id` partners are bound to in CM |
-| `global.registryCryptoBackend` | `partner-mgmt` | Partner-key backend: `partner-mgmt` \| `keymanager` \| `local` |
+| `global.registryCryptoBackend` | `partner-mgmt` | Partner-key backend: `partner-mgmt` (production), `keymanager` (legacy, needs the standalone Keymanager in commons-services) or `local` (tests) |
+
+Only the two switches are in the Rancher form (**Consent & Partner API** group); the URLs, the data controller and the backend are right by default and are set in the YAML editor if at all.
 
 {% hint style="warning" %}
 **Both switches default to `true` — the chart fails closed.** Turning either off opens real PII egress: with signature validation off the `signature` field is required but never inspected, and with consent enforcement off records are returned **unclamped** — every field the DCI template emits, to any caller. Either bypass is stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.

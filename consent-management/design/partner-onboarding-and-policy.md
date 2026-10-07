@@ -80,7 +80,7 @@ someone edits the policy, and the edit can only be saved once those values are f
 **Data scopes are the registry's, not CM's.** CM treats scopes as opaque strings. Each registry
 publishes its scope catalogue — scope IDs `<controller>.<name>`, each a named group of the
 registry's own fields (by default one per register section), versioned — at
-`GET /partner/data_scopes` on its partner API (and `GET /data_scopes` on its staff API). Put those
+`POST /partner/data_scopes` (signed) on its partner API (and `GET /data_scopes` on its staff API). Put those
 IDs in `allowed_data_scopes`; they are not keys of a DCI record or any other output format. A
 registry ignores IDs it does not know, so a mistyped or outdated scope grants nothing. See
 [Data Scopes](../../products/registry/registry/design/data-scopes.md).

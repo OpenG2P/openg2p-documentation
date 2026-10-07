@@ -24,6 +24,8 @@ External partner systems submit data through the partner API.
 
 **Response:** A `correlation_id` rendered through a partner-specific Jinja response template stored in MinIO (`data_models.response_template_file_id`). All records created from a single API call (including list fan-out) share the same `correlation_id`.
 
+**Authentication:** The call must be signed. The sender (at `key_path_for_sender`) must be an active partner in Partner Management, and the detached JWS at `key_path_for_signature` must verify over the object at `key_path_for_signature_payload` with that partner's key. A missing or bad signature is rejected (`INVALID_REQUEST` / `REQUEST_VALIDATION_ERROR`) and nothing is stored. Switch: `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (on by default; off only for testing). See [Partner APIs — Authentication](../design/partner-apis.md#authentication-and-signature-verification).
+
 ***
 
 ## Staff data ingestion
@@ -34,7 +36,7 @@ Staff users can submit data through the staff portal using the same core ingest 
 
 **Permission:** `intakeSubmission:edit`
 
-**Behaviour:** Same ingestion pipeline as the partner API, but returns a plain JSON response (no MinIO response template rendering).
+**Behaviour:** Same ingestion pipeline as the partner API, but returns a plain JSON response (no MinIO response template rendering). Staff are authenticated by IAM, so no partner signature is needed.
 
 ***
 

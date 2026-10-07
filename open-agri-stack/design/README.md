@@ -16,4 +16,5 @@ These pages record where the design discussion has landed. Each page says what i
 | [Crop Sown Registry](crop-sown-registry.md) | The crop season activity register: context, activity types, code lists, projection, indicators, season summary, clusters, channels | Built |
 | [Use-case composite](use-case-composite.md) | How a composite use case is configured, validated and run: configuration format, publishing checks, runtime, worked example | First version built |
 | [Registry data sync (TODO)](registry-data-sync.md) | Proposal: read-only copies of Farmer Registry data in other registries (Crop Sown, Livestock, …), kept up to date by publish/subscribe and set up by configuration |
+| [Distributed deployment architecture](distributed-deployment-architecture.md) | Department installs and one shared exchange tier for Open AgriNet: what is shared, the consent and policy model between tiers, networking, and what is still to build |
 | [Concept notes review](concept-notes-review.md) | How the Activity Registry concept notes (crop sown, livestock, work log) compare with the activity register, with suggested priorities | Review (30 September 2026) |

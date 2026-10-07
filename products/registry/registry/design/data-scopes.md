@@ -108,7 +108,7 @@ A section scope follows its section: when a section's widgets change, the scope 
 
 The catalogue holds field references, never values.
 
-* **Partner API:** `GET /partner/data_scopes` (public read), or `POST /partner/data_scopes` with a signed partner envelope (`header` + `signature`, checked like other partner calls) for partners that only make signed calls.
+* **Partner API:** `POST /partner/data_scopes` with a signed partner envelope (`header`, `message`, `signature`, checked like every other partner call). The unsigned `GET /partner/data_scopes` is **off by default** (HTTP 403 pointing to the POST); an operator who wants to publish the catalogue openly turns it on with `REGISTRY_PARTNER_API_DATA_SCOPES_PUBLIC_GET_ENABLED=true` (Helm `global.partnerDataScopesPublicGetEnabled`).
 * **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI and, later, for choosing scopes when writing a CM policy.
 
 ```json

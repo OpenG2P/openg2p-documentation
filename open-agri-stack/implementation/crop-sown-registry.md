@@ -96,7 +96,7 @@ A DCI search with `reg_type = CropSown`, by farmer ID, returns one of three reco
 
 ### Data scopes
 
-A consent names the registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `crop-sown-registry.<name>`, shipped in `crop-sown-extension/…/meta_data/data-scopes/` and published at `GET /partner/data_scopes`. Each scope covers fields of all three record types (`CropSown.activity.*`, `CropSown.context.*`, `CropSown.aggregate.*`), so a partner's policy covers them the same way. Records are filtered to the consented fields before they are shaped; a record group whose fields are all outside the consent is `null`.
+A consent names the registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `crop-sown-registry.<name>`, shipped in `crop-sown-extension/…/meta_data/data-scopes/` and published at `POST /partner/data_scopes` (signed). Each scope covers fields of all three record types (`CropSown.activity.*`, `CropSown.context.*`, `CropSown.aggregate.*`), so a partner's policy covers them the same way. Records are filtered to the consented fields before they are shaped; a record group whose fields are all outside the consent is `null`.
 
 | Scope ID | Covers |
 | --- | --- |

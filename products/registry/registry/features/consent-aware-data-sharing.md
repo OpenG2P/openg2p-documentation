@@ -61,8 +61,8 @@ Enforcement is governed by two **independent** switches on the partner-api. Both
 | **Verify Partner Signature** | verify the DCI envelope signature against Partner Management keys |
 | **Enforce Consent** | call the Consent Manager and filter returned records to the consented scopes' fields |
 
-The registry's data-controller ID is set with **Consent data controller**
-(`global.consentDataController`), which defaults to the registry variant. It must match
+The registry's data-controller ID is `global.consentDataController` (set in the
+YAML editor; it is not in the Rancher form), which defaults to the registry variant. It must match
 the controller ID that partners are bound to in the Consent Manager.
 
 A composite service or aggregator calling the registry for a partner signs the request
