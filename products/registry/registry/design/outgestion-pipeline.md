@@ -25,13 +25,23 @@ The pipeline is fully asynchronous, built on Celery workers with Redis as the me
 
 ### Outgestion topics
 
-An outgestion topic defines a delivery channel for a specific register and data model combination. Topics use the [WebSub protocol](https://www.w3.org/TR/websub/) to register with a hub and publish content to subscribers.
+An outgoing topic defines a WebSub delivery channel. The topic's `topic_type`
+determines what it carries:
 
-Each topic is uniquely constrained by `(register_id, data_model_id)`. When a registry change matches a topic's register and data model, the outgestion pipeline picks it up for processing.
+| Topic type | Required identifiers | Purpose |
+| --- | --- | --- |
+| `REGISTER` | `register_id`, `data_model_id` | Publishes approved register changes through the transformation pipeline. |
+| `PARTNER` | `partner_id` | Publishes asynchronous DCI `on-search` results for one partner. |
+
+`REGISTER` topics are unique by `(register_id, data_model_id)`. `PARTNER`
+topics are unique by `partner_id`; their register and data-model identifiers
+are null. A topic uses the
+[WebSub protocol](https://www.w3.org/TR/websub/) to register with a hub and
+publish content to subscribers.
 
 #### Topic lifecycle
 
-1. **Creation** -- an administrator creates a topic via the staff portal API, specifying the register, data model, and WebSub topic URL.
+1. **Creation** -- an administrator creates a topic via the staff portal API, selecting `REGISTER` with a register and data model or `PARTNER` with a Partner Management id.
 2. **Registration** -- the topic registration beat producer detects the new topic (status: `PENDING`) and dispatches a worker to register it with the WebSub hub.
 3. **Active** -- once registered (`PROCESSED`), the topic is ready to receive and publish data.
 4. **Deactivation** -- topics can be toggled inactive, halting publication without deleting configuration.
@@ -79,7 +89,9 @@ Registers newly created outgestion topics with the WebSub hub. This is a one-tim
 
 **Beat producer:** `outgest_data_transformation_beat_producer` **Worker:** `outgest_data_transformation_worker`
 
-Transforms raw outgoing data into the partner's expected format.
+Transforms raw outgoing data into the partner's expected format. This stage
+uses only `REGISTER` topics; async search does not write
+`outgoing_raw_data`.
 
 * Beat producer queries `outgoing_raw_data` for rows with `transformation_status = PENDING`.
 * Updates status to `PROCESSING` and dispatches a worker per record.
@@ -91,7 +103,8 @@ Transforms raw outgoing data into the partner's expected format.
 
 **Beat producer:** `outgest_data_publish_beat_producer` **Worker:** `outgest_data_publish_worker`
 
-Publishes transformed data to the WebSub hub for delivery to subscribers.
+Publishes transformed data to the WebSub hub for delivery to subscribers. This
+stage also uses only `REGISTER` topics.
 
 * Beat producer queries `outgoing_raw_data` for rows with `publish_status = PENDING`.
 * Updates status to `PROCESSING` and dispatches a worker per record.
@@ -136,22 +149,46 @@ Change Request Approved
 
 #### outgoing\_topics
 
-Defines WebSub topic endpoints for each register and data model combination.
+Defines WebSub topics for register-change fan-out and partner-specific async
+search delivery.
 
-| Column                               | Type             | Description                                                         |
-| ------------------------------------ | ---------------- | ------------------------------------------------------------------- |
-| `topic_id`                           | UUID (PK)        | Unique identifier                                                   |
-| `register_id`                        | String (indexed) | Target register                                                     |
-| `data_model_id`                      | String (indexed) | Target data model                                                   |
-| `websub_topic`                       | String           | WebSub topic URL                                                    |
-| `description`                        | String           | Human-readable description                                          |
-| `is_active`                          | Boolean          | Whether topic accepts new data                                      |
-| `websub_register_status`             | String           | Registration state (`PENDING`, `PROCESSING`, `PROCESSED`, `FAILED`) |
-| `websub_register_datetime`           | DateTime         | Last registration attempt timestamp                                 |
-| `websub_register_number_of_attempts` | Integer          | Retry counter                                                       |
-| `websub_register_latest_error_code`  | String           | Last error message                                                  |
+| Column                               | Type              | Description                                                         |
+| ------------------------------------ | ----------------- | ------------------------------------------------------------------- |
+| `topic_id`                           | UUID (PK)         | Unique identifier                                                   |
+| `topic_type`                         | String            | `REGISTER` or `PARTNER`                                             |
+| `register_id`                        | String (nullable) | Target register for a `REGISTER` topic                              |
+| `data_model_id`                      | String (nullable) | Target data model for a `REGISTER` topic                            |
+| `partner_id`                         | String (nullable) | Partner Management id for a `PARTNER` topic                         |
+| `websub_topic`                       | String            | WebSub topic name                                                   |
+| `description`                        | String            | Human-readable description                                          |
+| `is_active`                          | Boolean           | Whether topic accepts new data                                      |
+| `websub_register_status`             | String            | Registration state (`PENDING`, `PROCESSING`, `PROCESSED`, `FAILED`) |
+| `websub_register_datetime`           | DateTime          | Last registration attempt timestamp                                 |
+| `websub_register_number_of_attempts` | Integer           | Retry counter                                                       |
+| `websub_register_latest_error_code`  | String            | Last error message                                                  |
 
-Unique constraint: `(data_model_id, register_id)`
+Database checks enforce the required identifiers for each type. Partial unique
+indexes enforce one `REGISTER` topic per register/data-model pair and one
+`PARTNER` topic per partner.
+
+### Asynchronous search publishing
+
+Asynchronous DCI search reuses `outgoing_topics` for routing but does not use
+the three-stage register outgestion pipeline:
+
+1. The Partner API validates the search request and maps `header.sender_id` to
+   `PARTNER_<NORMALIZED_SENDER>`.
+2. It finds an active, registered `PARTNER` topic.
+3. It returns an ACK with a new `correlation_id`.
+4. A FastAPI background task executes the same search as the synchronous route.
+5. It signs an `action = on-search` response and publishes directly to the
+   partner topic.
+
+The ACK correlation id is copied into the published response. The DCI request,
+acknowledgement, and `on-search` envelope are specified in
+[DCI partner search](partner-register-search/dci-search.md). Hub subscription
+and callback signatures are specified in
+[WebSub](../../../../platform/platform-services/websub/subscription.md).
 
 #### outgoing\_templates
 
@@ -232,6 +269,11 @@ The outgestion configuration is managed through the staff portal API under the `
 | `POST /toggle_topicstatus` | `outgestTopic:edit`   | Activate or deactivate topic   |
 | `POST /re_register_topic`  | `outgestTopic:edit`   | Re-trigger WebSub registration |
 | `POST /delete_topic`       | `outgestTopic:delete` | Delete inactive topic          |
+
+Topic create and update payloads include `topic_type`, `register_id`,
+`data_model_id`, and `partner_id`. Topic responses also include
+`partner_name`, resolved from Partner Management for display. `partner_name`
+is not stored and must not be sent in update requests.
 
 #### Template management
 
