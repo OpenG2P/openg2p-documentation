@@ -21,6 +21,8 @@ The pipeline supports delivering the same registry data in different formats to 
 
 Administrators define outgestion topics that pair a register (e.g., Farmer Register) with a data model (e.g., DCI v1) and a WebSub topic URL. Each topic acts as a delivery channel -- when registry data matching that register and data model changes, the pipeline transforms and publishes it to the topic's subscribers.
 
+A second topic kind, `PARTNER`, belongs to one partner rather than a register. Asynchronous [partner register search](partner-register-search.md) publishes its callback on that topic. It does not pass through the change-event transformation stages.
+
 #### Template-based transformation
 
 Outgoing data is transformed from the registry's internal format to the external partner's schema using Jinja2 templates stored in MinIO object storage. Templates are managed through the staff portal API and can be uploaded, updated, or replaced without code changes.

@@ -14,6 +14,7 @@ OpenG2P Registry provides a comprehensive set of features for building productio
 | Data Integrity, Security & Encryption | Column-level encryption, deduplication, key management               | [Data Integrity, Security & Encryption](data-integrity-security-and-encryption.md)  |
 | Ingestion Pipeline                    | Asynchronous multi-standard data ingestion from external systems     | [Ingestion Pipeline](ingestion-pipeline.md)                                         |
 | Outgestion Pipeline                   | Push data to external systems via templates and events               | [Outgestion Pipeline](outgestion-pipeline.md)                                       |
+| Partner Register Search               | Standard-neutral register search, with a DCI adapter today           | [Partner Register Search](partner-register-search.md)                               |
 | Version History                       | Snapshots of approved register states                                | [Version History](version-history.md)                                               |
 | Dynamic UI Rendering                  | Schema-driven UI with custom widget support                          | [Dynamic UI Rendering](dynamic-ui-rendering.md)                                     |
 | Event Publishing & WebSub             | Standards-based event notifications                                  | [Event Publishing & WebSub](event-publishing-and-websub-integration.md)             |

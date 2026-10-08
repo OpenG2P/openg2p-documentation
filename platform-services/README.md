@@ -10,3 +10,4 @@ OpenG2P platform services provide shared, cross-cutting capabilities that every 
 | **Privacy & Security** | Encryption key management, security controls, and audit reports |
 | **Monitoring & Reporting** | Dashboards, system health, and logging infrastructure |
 | **Interoperability** | Standards-based integration with national ID, payment, and other systems |
+| **[WebSub](../platform/platform-services/websub/README.md)** | Shared hub for topic registration and callback delivery |

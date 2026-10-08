@@ -15,7 +15,9 @@ description: Design of the Partner API surface for external system integration
 The Partner API is the boundary between external data providers / programme systems and an OpenG2P Registry deployment. Partners do not call staff-portal endpoints or mutate register tables directly. Instead they:
 
 1. **Ingest** structured payloads that enter the async ingestion pipeline (classification → transformation → intake or change request → approval).
-2. **Search** register records synchronously via a fixed standard such as DCI-compliant envelope, receiving JSON-LD shaped outbound payloads.
+2. **Search** register records synchronously or asynchronously through a
+   DCI-compliant envelope, receiving JSON-LD-shaped outbound payloads directly
+   or through WebSub.
 
 The service is intentionally thin: controllers validate and adapt wire formats, then delegate to **core** services (`G2PIngestControllerService`, `G2PRegisterService`) and **extension** register models loaded at runtime.
 
@@ -30,7 +32,7 @@ flowchart TB
 
     subgraph partner_api [Partner API]
         ING["POST /partner/ingest_data"]
-        DCI["POST /dci/registry/sync/search"]
+        DCI["POST /dci/sync/search<br/>POST /dci/async/search"]
         AUD[AuditMiddleware]
     end
 
@@ -59,11 +61,11 @@ See Platform and extension model for how the extension package is loaded into AP
 
 Boot sequence (`main.py` → `app.py`) initialises core, extensions, ping, ingestion, and DCI modules:
 
-<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/registry/sync/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>Register search + outbound template rendering</td></tr><tr><td><code>DciQueryHelper</code></td><td>Parses <code>expression</code> and <code>idtype-value</code> queries</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>Detached JWS verify/sign for every partner call (DCI, ingest, activities, data scopes)</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
+<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/sync/search</code> and <code>POST /dci/async/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>DCI adaptation, register search, and outbound-template rendering</td></tr><tr><td><code>PartnerRegisterSearch</code></td><td>Allowlisted SQL search and batched related-register loading</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>Detached JWS verification and signing</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
 
 ### API surface
 
-<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/registry/sync/search</code></td><td>Synchronous DCI search</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction</td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); <code>GET</code> is off by default</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
+<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/sync/search</code></td><td>Run DCI search and return results synchronously</td></tr><tr><td><code>POST</code></td><td><code>/dci/async/search</code></td><td>Acknowledge DCI search and publish results through WebSub</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction</td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); <code>GET</code> is off by default</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
 
 {% hint style="info" %}
 OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
@@ -72,7 +74,7 @@ OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
 ### Design principles
 
 1. **Format-agnostic ingest** - Raw envelopes are stored; data-model metadata (JSONPath key paths, semantic patterns, Jinja) drives downstream interpretation.
-2. **Synchronous search, asynchronous ingest** - Search returns records in the same response; ingest returns `correlation_id` while workers apply changes later.
+2. **Two search delivery modes** - Sync search returns records directly. Async search returns a `correlation_id` and publishes the result through WebSub.
 3. **Signature-based trust** - Every partner call carries a detached JWS verified against the partner's Partner Management key; no staff sessions.
 4. **Template-driven wire formats** - Ingest acknowledgements and DCI `reg_records` are rendered from MinIO Jinja templates.
 5. **Fail in the envelope** - Business errors appear inside the protocol body; HTTP status often stays `200` (see Error handling).
@@ -171,116 +173,33 @@ Success and error responses serialise to G2P objects, then render through the da
 
 ***
 
-## DCI search endpoint
+## DCI partner search
 
-Endpoint reference: [`POST /dci/registry/sync/search`](../developer-zone/api-documentation/partner-api.md).
+The Partner API exposes synchronous and asynchronous search over the same signed
+`DciSearchRequestEnvelope`:
 
-### Role
+| Endpoint | Result delivery |
+| --- | --- |
+| `POST /dci/sync/search` | Returns the signed search response directly. |
+| `POST /dci/async/search` | Returns an ACK with `correlation_id`, then publishes a signed `on-search` envelope through the caller's WebSub topic. |
 
-**Synchronous, read-only** register lookup for DCI participants. The partner sends a signed envelope with one or more search items; the registry responds with a signed envelope listing per-item statuses and, on success, rendered `reg_records`.
+Both calls decode into the same core search. The DCI wire format, query
+grammars, and asynchronous acknowledgement are specified separately from the
+SQL engine.
 
-### Envelope model
+{% content-ref url="partner-register-search/dci-search.md" %}
+[DCI partner search](partner-register-search/dci-search.md)
+{% endcontent-ref %}
 
-| Part        | Content                                                                          |
-| ----------- | -------------------------------------------------------------------------------- |
-| `signature` | Detached JWS over `{header, message}` (partner's PM key)                         |
-| `header`    | Routing metadata: `message_id`, `sender_id`, `receiver_id`, `action`, timestamps |
-| `message`   | `DciSearchRequest` (in) or `DciSearchResponse` (out)                             |
+{% content-ref url="partner-register-search/core-search.md" %}
+[Core register search](partner-register-search/core-search.md)
+{% endcontent-ref %}
 
-Response headers swap sender/receiver, echo request `message_id`, and set aggregate `status`, `total_count`, `completed_count`.
-
-### Request handling flow
-
-```mermaid
-sequenceDiagram
-    participant Partner
-    participant Controller as G2PDciController
-    participant KM as DciKeymanagerHelper
-    participant Svc as G2PDciService
-    participant MinIO
-
-    Partner->>Controller: DciSearchRequestEnvelope
-    Controller->>KM: validate_signature (when enabled)
-    loop each search_request item
-        Controller->>Svc: search
-        Svc->>Svc: resolve register, parse query, query DB
-        Svc->>MinIO: render reg_records (DCI outgoing template)
-    end
-    Controller->>Controller: construct response envelope
-    Controller->>KM: sign_response (when enabled)
-    Controller-->>Partner: DciSearchResponseEnvelope
-```
-
-### Batch semantics
-
-`message.search_request[]` items carry `reference_id`, `search_criteria`, and optional `locale`. Items are processed sequentially. Partial success uses per-item `status` (`succ` / `rjct`), not HTTP status.
-
-### Register resolution
-
-`search_criteria.reg_type` = deployer **`register_mnemonic`** (`g2p_register_definitions.register_mnemonic`), e.g. `Farmer`, `Household` — not necessarily a DCI URI unless configured that way.
-
-Steps: resolve `register_id` → load `G2PRegister{Mnemonic}` from extension → load DCI outgoing template (`outgoing_templates` where data model mnemonic is `"DCI"`). `reg_record_type` (e.g. `spdci-extensions-dci:Farmer`) shapes outbound JSON-LD and is echoed in results; it does **not** select the register.
-
-### Query types
-
-**`idtype-value`** — Requires `id_type` and `id_value` in query value. Delegates to `G2PRegisterService.deep_search_in_a_register` (full-text / configured search vectors).
-
-**`expression`** — Mongo-style filters translated to SQLAlchemy on the register model:
-
-```json
-{
-  "expression": {
-    "query": {
-      "functional_record_id": { "$eq": "FR-001" },
-      "birth_date": { "$gte": "1990-01-01" }
-    }
-  }
-}
-```
-
-Shorthand `{"field": "value"}` ≡ `{"$eq": "value"}`. Allowed fields: `Settings.dci_expression_allowed_fields` (defaults include names, `foundational_id`, demographics, `search_text`, …). Operators: `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$nin`, `$contains`, `$startsWith`, `$endsWith`. Legacy: lone `search_text.$eq` → plain full-text search.
-
-Invalid fields/operators → `rjct.search_criteria.invalid`.
-
-### Pagination, sorting, rendering
-
-Defaults: page 1, size 10. Only the **first** sort item applies (`desc` → `-column`). Response items include `pagination.total_count` when available.
-
-Each hit is rendered through the register's DCI outgoing Jinja template into `data.reg_records` (opaque JSON-LD). Success items use `status = succ`, ISO timestamp, and echoed `reg_type` / `reg_record_type`.
-
-### Consent, encryption, item statuses
-
-The `authorize` block carries the partner's **consent object** — a compact JWS at
-`search_criteria.authorize.consent_jws`. When **consent enforcement is enabled**, it
-**does gate search**: the partner-api forwards the JWS to the Consent Manager's
-`/validate` (naming this registry as `data_controller`), checks that the consent's subject
-is the person searched, and filters each record to the fields of the **effective data scopes** it
-returns before rendering it (see [Data Scopes](data-scopes.md)); a non-permit decision or a subject mismatch rejects the request (fail-closed). Independently, the DCI envelope
-`signature` is verified against the partner's
-[**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
-key when signature validation is enabled. Both switches default **on** in the Helm
-values; when one is turned off the blocks are accepted but not enforced (the bypass is
-stamped into the response header `meta`).
-
-The `consent` block remains a permissive JSON-LD descriptor and is not itself evaluated.
-
-The partner-api holds **no** partner keys of its own: it fetches them from Partner
-Management (`crypto_backend=partner-mgmt`), keyed by `PARTNER_<sender_id>` — the same
-reference convention used across g2p-bridge and the rest of the platform. See
-[Integration — consuming partner keys](../../../../platform/platform-services/partner-management/integration.md).
-
-See [Consent-Aware data sharing](../features/consent-aware-data-sharing.md) for the
-feature overview, and
-[Registry integration (the PEP side)](../../../../consent-management/design/registry-integration.md)
-for the full contract (embedding, signatures, keys, config).
-
-Cleartext messages only (`is_msg_encrypted = false`); `DciEncryptedMessage` is not supported on this path.
-
-| Status         | Meaning on this endpoint                                      |
-| -------------- | ------------------------------------------------------------- |
-| `succ`         | Results in `data.reg_records`                                 |
-| `rjct`         | Rejected — see `status_reason_code` / `status_reason_message` |
-| `rcvd`, `pdng` | Not emitted on sync search today                              |
+{% hint style="warning" %}
+Older generated OpenAPI files may show `/dci/registry/sync/search`. Current
+controller source uses `/dci/sync/search` and `/dci/async/search`. Confirm the
+deployed contract at `/openapi.json`.
+{% endhint %}
 
 ***
 
@@ -293,7 +212,7 @@ Management holds for that partner.
 
 | Endpoint | What is signed | Verified |
 | --- | --- | --- |
-| `POST /dci/registry/sync/search` | `{header, message}` | yes |
+| `POST /dci/sync/search`, `POST /dci/async/search` | `{header, message}` | yes; the async ACK itself is unsigned |
 | `POST /partner/ingest_data` | the object at the data model's `key_path_for_signature_payload` | yes |
 | `POST /partner/activity/append_activities` | `{header, message}` | yes |
 | `POST /partner/activity/correct_activities` | `{header, message}` | yes |
@@ -384,7 +303,8 @@ Two parallel error models — ingest (G2P envelope) and DCI (search envelope). C
 | Endpoint                    | Business error HTTP | Error location                                      |
 | --------------------------- | ------------------- | --------------------------------------------------- |
 | `/partner/ingest_data`      | Usually `200`       | `response_header.response_status = ERROR`           |
-| `/dci/registry/sync/search` | Usually `200`       | `header.status = rjct`; may empty `search_response` |
+| `/dci/sync/search`         | Usually `200`       | `header.status = rjct`; may empty `search_response` |
+| `/dci/async/search`        | Usually `200`       | `message.ack_status = ERR`                           |
 
 {% hint style="warning" %}
 **HTTP 422** applies when Pydantic rejects the body before the controller (`HTTPValidationError` with `detail[]`). Unhandled controller exceptions map to code `"500"` in envelopes.
