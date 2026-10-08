@@ -610,6 +610,7 @@
     * [Composite Configuration](open-agri-stack/guides/composite-configuration.md)
     * [Adding a Data Source](open-agri-stack/guides/adding-a-data-source.md)
     * [End-to-End Test from a Laptop](open-agri-stack/guides/end-to-end-test.md)
+    * [Partner Test (Public APIs)](open-agri-stack/guides/partner-test.md)
     * [Deploying on a Cluster](open-agri-stack/guides/deployment.md)
     * [Running the Composite Locally](open-agri-stack/guides/running-the-composite-locally.md)
   * [TODOs & Open Items](open-agri-stack/open-items/README.md)
