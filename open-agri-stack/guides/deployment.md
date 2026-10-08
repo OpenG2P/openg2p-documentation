@@ -42,7 +42,7 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
 | Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | on (default) |
 | AWE | **Install AWE?** (`openg2p-awe.enabled`) | on (the registries' change requests and CM policy approvals use it) |
-| Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** — Open Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet and Inji Certify have their own). It stays on by default for PBMS, which signs G2P Bridge disbursements with it |
+| Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** (the default) — Open Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet, the mock identity system and Inji Certify have their own). Only PBMS needs it on |
 
 The Audit Manager is part of commons-services; the composite sends its events to `http://commons-services-auditmanager:80`.
 
@@ -117,17 +117,51 @@ The [distributed deployment](../design/distributed-deployment-architecture.md#pr
 | Namespace | Install | Notes |
 | --- | --- | --- |
 | `trial` | commons-base, commons-services (default values), Farmer Registry `fr` | As in the sections above; no exchange settings in the registry |
-| `csr` | commons-base, commons-services (default values), Crop Sown Registry `csr` | Same |
+| `dept1` | commons-base, commons-services (default values), Crop Sown Registry `csr` | Same (the crop department) |
 | `agrix` | commons-base, commons-services with the **exchange profile**, composite in **exchange mode** | No registries |
 
-Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS.
+Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS.
+
+
+### What to install in `agrix`
+
+The exchange needs only part of commons. The [exchange profile](https://github.com/OpenG2P/commons/blob/develop/charts/openg2p-commons-services/values-agri-stack-exchange.yaml) sets the commons-services switches below; set the commons-base ones in its install.
+
+**commons-base**
+
+| Module | Enable? | Why |
+| --- | --- | --- |
+| PostgreSQL | **Yes** | Databases for PM, CM, Master Data, IAM, Audit Manager and Keycloak |
+| Keycloak | **Yes** | Login for the admin UIs (PM, CM, Master Data, IAM) and service tokens |
+| Redis | **Yes** | Login sessions for IAM and Master Data |
+| Kafka | **Yes** | The Audit Manager stores events through it |
+| Garage | **Yes** | Master Data keeps geography boundaries there; the geo seed and public downloads use it |
+| Novu | No, for now | Only once the exchange sends farmers consent notifications |
+| Kafka UI | Optional | Operations only |
+| MinIO, mail, SoftHSM | No | Off by default |
+
+**commons-services** (set by the exchange profile)
+
+| Module | Enable? | Why |
+| --- | --- | --- |
+| Master Data | **Yes** | The catalogue |
+| Partner Management | **Yes** | Open AgriNet partners onboard here; the composite checks their keys here |
+| Consent Manager | **Yes** | Exchange role: farmer consent and signed receipts (`global.agriStackExchange`) |
+| Audit Manager | **Yes** | Records the composite's and CM's activity |
+| IAM service | **Yes** | Permissions for the Master Data and PM admin screens |
+| keycloak-init | **Yes** | Creates their Keycloak clients and roles |
+| AWE | No | Only if CM approval of policy widening, or Master Data approval through AWE, is switched on (both off by default) |
+| WebSub hub | **Yes** | Other services depend on it; leave it on (the profile does) |
+| Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, commons staff portal UI | No | Department and registry concerns |
+
+**Also in `agrix`:** the composite (`openg2p-agri-composite`, a separate chart, not part of commons) in consent mode `exchange`, with its exchange CM URL and its registry URLs set to the departments' partner APIs (`https://partner-fr.trial.openg2p.org/…`, `https://partner-csr.dept1.openg2p.org/…`). Set the exchange CM's own signing key before installing; never the demo key.
 
 **1. Exchange commons (`agrix`).** Install `openg2p-commons-services` with the profile [`values-agri-stack-exchange.yaml`](https://github.com/OpenG2P/commons/blob/develop/charts/openg2p-commons-services/values-agri-stack-exchange.yaml) (in Rancher, paste it into **Edit YAML**; with Helm, `-f values-agri-stack-exchange.yaml`). It keeps PM, CM, Master Data, Audit Manager, IAM (admin login) and keycloak-init, turns off the registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI, AWE), and sets the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`.
 
 **2. Composite (`agrix`).** Install **Agri Stack Composite** with:
 
 * **Agri Stack exchange:** Consent Mode `exchange`; Exchange Consent Manager URL `http://commons-services-cm-partner-api` (same namespace).
-* **Integration:** the registry search URLs by external hostname, e.g. `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` and `https://partner-csr.csr.openg2p.org/dci/registry/sync/search`; Partner Management URL is the `agrix` PM (default).
+* **Integration:** the registry search URLs by external hostname, e.g. `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` and `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search`; Partner Management URL is the `agrix` PM (default).
 
 **3. Onboarding.**
 
@@ -135,8 +169,8 @@ Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.
 | --- | --- |
 | `agrix` PM | The composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) |
 | `agrix` CM | For each partner, a binding and policy **per registry** it reads (`farmer-registry`, `crop-sown-registry`): purposes, data scopes, subject ID types. The bank is onboarded **only here** |
-| `trial` PM and `csr` PM | The composite's public key (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the composite's signature |
-| `trial` CM and `csr` CM | The **standing policy for the exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the exchange CM as a **trusted receipt issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Agri Stack exchange" group) |
+| `trial` PM and `dept1` PM | The composite's public key (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the composite's signature |
+| `trial` CM and `dept1` CM | The **standing policy for the exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the exchange CM as a **trusted receipt issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Agri Stack exchange" group) |
 
 The registries need no change: each keeps calling its own CM, which now accepts the exchange's receipts. A department's scopes for the exchange cap what any partner gets from it (receipt scopes ∩ standing policy).
 

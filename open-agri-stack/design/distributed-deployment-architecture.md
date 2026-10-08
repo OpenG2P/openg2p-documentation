@@ -123,15 +123,15 @@ The model is tested on one cluster with three namespaces, each installed as if i
 | Namespace | Installs | Role |
 | --- | --- | --- |
 | `trial` | commons-base, commons-services, Farmer Registry | Agriculture department |
-| `csr` | commons-base, commons-services, Crop Sown Registry | Crop department |
+| `dept1` | commons-base, commons-services, Crop Sown Registry | Crop department |
 | `agrix` | commons-base and a slim commons-services (profile `values-agri-stack-exchange.yaml`: PM, CM, catalogue, audit, IAM for admin UIs), composite in exchange mode | Agri Stack exchange tier |
 
-Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `*.agrix.openg2p.org`) on its own `internal` gateway, as other namespaces already do; `csr` and `agrix` need DNS and TLS certificates. All calls between namespaces use these **external hostnames**, never in-cluster service names.
+Each namespace has its own domain (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`) on its own `internal` gateway, as other namespaces already do; `dept1` and `agrix` need DNS and TLS certificates. All calls between namespaces use these **external hostnames**, never in-cluster service names.
 
 ### What already works without code changes
 
-* **Reaching the registries:** each registry already publishes its partner API on its gateway (`https://partner-fr.trial.openg2p.org`, `https://partner-csr.csr.openg2p.org`). The composite's registry URLs are values (`composite.registries.<name>.url`); set them to these.
-* **The composite as a partner of each department:** register the composite's public key in the `trial` PM and the `csr` PM, and give it a policy in each department's CM. Each registry then verifies the composite's signature as for any partner.
+* **Reaching the registries:** each registry already publishes its partner API on its gateway (`https://partner-fr.trial.openg2p.org`, `https://partner-csr.dept1.openg2p.org`). The composite's registry URLs are values (`composite.registries.<name>.url`); set them to these.
+* **The composite as a partner of each department:** register the composite's public key in the `trial` PM and the `dept1` PM, and give it a policy in each department's CM. Each registry then verifies the composite's signature as for any partner.
 * **Partner onboarding at the exchange:** the bank onboards in the `agrix` PM and CM only; the composite verifies the bank there (same namespace).
 * **Catalogue, phase 1 (decided):** each department runs its **own MDS**, loaded from the **same `openg2p-data` country pack version**, so codes and geography are identical. A central catalogue, and departments mirroring it, is phase 2. Each MDS can also publish an opt-in, read-only [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md) (DCAT, SKOS, downloads) of the datasets it marks public.
 
@@ -144,12 +144,12 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.csr.openg2p.org`, `
 | Where | Change | Default |
 | --- | --- | --- |
 | Consent Manager (exchange role, `agrix`) | On `/validate` with `issue_receipts: true` from a configured **receipt presenter** (the composite), return one **signed consent receipt** per registry grant (subject, partner, presenter, purpose, scopes for that registry, consent time, validity, receipt ID), signed with the key CM already publishes at `/.well-known/jwks.json`; a receipt status endpoint for revocation | Off: no receipt issuer or presenters configured; `/validate` unchanged |
-| Consent Manager (department role, `trial`, `csr`) | **Trusted receipt issuers** (the exchange CM: issuer ID, key URL, presenter). `/validate` accepts a receipt from a trusted issuer: verifies it, checks it is for this registry, applies the department's standing policy for the exchange and intersects scopes; the receipt ID and issuer are logged with the decision | Empty: a receipt is denied; partner consents as today |
+| Consent Manager (department role, `trial`, `dept1`) | **Trusted receipt issuers** (the exchange CM: issuer ID, key URL, presenter). `/validate` accepts a receipt from a trusted issuer: verifies it, checks it is for this registry, applies the department's standing policy for the exchange and intersects scopes; the receipt ID and issuer are logged with the decision | Empty: a receipt is denied; partner consents as today |
 | Composite | An **exchange mode**: validate the partner's consent with the exchange CM (`issue_receipts: true`), then send each registry its own receipt instead of the raw consent | Off: today's pass-through |
 | Registry platform (partner API) | No flow change: still calls its own CM `/validate` with the sender and `data_controller`. Consent time for data-scope versions prefers the receipt's `consent_issued_at` claim | Additive: the claim is absent from partner consents |
 | CM chart | An "Agri Stack exchange" question group for the receipt issuer, presenters and trusted issuers | Hidden unless enabled |
 | Commons-services | A slim **exchange profile** (values file) for `agrix` | Not used by department installs |
-| Operations | DNS and TLS for `csr` and `agrix`; onboarding steps (see above) | — |
+| Operations | DNS and TLS for `dept1` and `agrix`; onboarding steps (see above) | — |
 
 **Phase 2: shared catalogue and policy subset check**
 
