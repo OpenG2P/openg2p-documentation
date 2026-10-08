@@ -36,8 +36,8 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Group | Setting | Value for Open Agri Stack |
 | --- | --- | --- |
 | Country Pack | **Country Pack** (`masterData.geoSeed.countryPack`) | `ETH` (Ethiopia; the commons default) |
-| Country Pack | **Domain Code Lists** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
-| Country Pack | **Load Code Lists** (`masterData.geoSeed.load.codelists`) | on (default) |
+| Country Pack | **Dataset Themes** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
+| Country Pack | **Load Datasets** (`masterData.geoSeed.load.codelists`) | on (default) |
 | Country Pack | **Load Sample People** (`masterData.geoSeed.load.samples`) | on (default) — the registries' sample farmers and crop seasons are derived from them |
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
 | Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | on (default) |
@@ -118,14 +118,14 @@ The [distributed deployment](../design/distributed-deployment-architecture.md#pr
 | --- | --- | --- |
 | `trial` | commons-base, commons-services (default values), Farmer Registry `fr` | As in the sections above; no exchange settings in the registry |
 | `dept1` | commons-base, commons-services (default values), Crop Sown Registry `csr` | Same (the crop department) |
-| `agrix` | commons-base, commons-services with the **exchange profile**, composite in **exchange mode** | No registries |
+| `agrix` | The [Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange): commons-base and commons-services with the **exchange overrides**, composite in **exchange mode** | No registries |
 
 Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS.
 
 
 ### What to install in `agrix`
 
-The exchange needs only part of commons. The [exchange profile](https://github.com/OpenG2P/commons/blob/develop/charts/openg2p-commons-services/values-agri-stack-exchange.yaml) sets the commons-services switches below; set the commons-base ones in its install.
+The exchange is installed with the agri-stack [Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange) (`deploy/agri-exchange`): a helmfile that installs the unchanged commons charts and the composite, in order, with exchange **overrides** kept in the agri-stack repo. Commons itself has no exchange-specific values. The tables below are what the overrides enable.
 
 **commons-base**
 
@@ -136,11 +136,11 @@ The exchange needs only part of commons. The [exchange profile](https://github.c
 | Redis | **Yes** | Login sessions for IAM and Master Data |
 | Kafka | **Yes** | The Audit Manager stores events through it |
 | Garage | **Yes** | Master Data keeps geography boundaries there; the geo seed and public downloads use it |
-| Novu | No, for now | Only once the exchange sends farmers consent notifications |
-| Kafka UI | Optional | Operations only |
+| Novu | No, for now | Only once the exchange sends farmers consent notifications (bundle toggle `notifications`) |
+| Kafka UI | Optional | Operations only (bundle toggle `kafkaUi`, off) |
 | MinIO, mail, SoftHSM | No | Off by default |
 
-**commons-services** (set by the exchange profile)
+**commons-services** (set by the exchange override)
 
 | Module | Enable? | Why |
 | --- | --- | --- |
@@ -151,17 +151,22 @@ The exchange needs only part of commons. The [exchange profile](https://github.c
 | IAM service | **Yes** | Permissions for the Master Data and PM admin screens |
 | keycloak-init | **Yes** | Creates their Keycloak clients and roles |
 | AWE | No | Only if CM approval of policy widening, or Master Data approval through AWE, is switched on (both off by default) |
-| WebSub hub | **Yes** | Other services depend on it; leave it on (the profile does) |
+| WebSub hub | No (for now) | On by default in commons because other services use it, but nothing in the exchange layer needs it yet; the override turns it off |
 | Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, commons staff portal UI | No | Department and registry concerns |
 
-**Also in `agrix`:** the composite (`openg2p-agri-composite`, a separate chart, not part of commons) in consent mode `exchange`, with its exchange CM URL and its registry URLs set to the departments' partner APIs (`https://partner-fr.trial.openg2p.org/…`, `https://partner-csr.dept1.openg2p.org/…`). Set the exchange CM's own signing key before installing; never the demo key.
+**Also in `agrix`:** the composite (`openg2p-agri-composite`, a separate chart, not part of commons) in consent mode `exchange`, with its exchange CM URL and its registry URLs set to the departments' partner APIs (`https://partner-fr.trial.openg2p.org/…`, `https://partner-csr.dept1.openg2p.org/…`). The exchange CM signs receipts with your own key; the bundle has no demo key.
 
-**1. Exchange commons (`agrix`).** Install `openg2p-commons-services` with the profile [`values-agri-stack-exchange.yaml`](https://github.com/OpenG2P/commons/blob/develop/charts/openg2p-commons-services/values-agri-stack-exchange.yaml) (in Rancher, paste it into **Edit YAML**; with Helm, `-f values-agri-stack-exchange.yaml`). It keeps PM, CM, Master Data, Audit Manager, IAM (admin login) and keycloak-init, turns off the registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI, AWE), and sets the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`.
+**1. Settings.** In the bundle's `values.yaml` set the namespace (`agrix`), the base domain (empty: `<namespace>.openg2p.org`), the **CM signing key Secret** (`cmSigningKey`: Secret name, `.p12` and password keys, `kid`; required), the department registry search URLs (`registries`: `farmer-registry`, `crop-sown-registry`), and, if not the in-namespace CM, the exchange CM URL. Create the signing key Secret in the namespace first. Chart versions are pinned in the bundle's `versions.yaml`.
 
-**2. Composite (`agrix`).** Install **Agri Stack Composite** with:
+**2. Install.** With helmfile (and the `helm-diff` plugin): `helmfile -e agrix apply`. It installs, in order and each waiting for the previous one:
 
-* **Agri Stack exchange:** Consent Mode `exchange`; Exchange Consent Manager URL `http://commons-services-cm-partner-api` (same namespace).
-* **Integration:** the registry search URLs by external hostname, e.g. `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` and `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search`; Partner Management URL is the `agrix` PM (default).
+| Release | Chart | Override |
+| --- | --- | --- |
+| `commons` | `openg2p-commons-base` | Novu and Kafka UI off |
+| `commons-services` | `openg2p-commons-services` | PM, CM, Master Data, Audit Manager, IAM (admin login) and keycloak-init kept; registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI), WebSub and AWE off; the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`, your signing key |
+| `agri-composite` | `openg2p-agri-composite` | Consent mode `exchange`; exchange CM URL `http://commons-services-cm-partner-api` (same namespace); the registry search URLs by external hostname |
+
+The release names `commons` and `commons-services` are required by the commons charts. **In Rancher:** render the overrides with `helmfile -e agrix write-values` (or `helmfile -e agrix template`), then install the three charts in the order above, at the versions in `versions.yaml`, pasting each rendered file into **Edit YAML**, and wait for each to be ready before the next. Upgrades: a new bundle version, then the same command (`helmfile -e agrix diff` first). See the bundle's README.
 
 **3. Onboarding.**
 

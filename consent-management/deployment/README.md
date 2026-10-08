@@ -217,7 +217,10 @@ Receipt issuing uses the **signing key** above (same `kid`, same JWKS) — give 
 `receipt_fetch_timeout_seconds` (3).
 
 **Exchange (`agrix`)** — set `issuer` and `receiptPresenters: [agri-composite]`, and bind each partner
-(e.g. `bank-a`) to each registry with its exchange policy.
+(e.g. `bank-a`) to each registry with its exchange policy. The Agri Stack
+[Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange)
+sets these, and the signing key, as overrides on the commons install (see the Open Agri Stack
+[deployment guide](../../open-agri-stack/guides/deployment.md#three-namespace-setup-exchange-and-departments)).
 
 **Department (`trial`, `csr`)** — set the trusted issuer (`jwksUrl` reachable from this CM's partner
 API, e.g. the `agrix` CM partner API's in-cluster or internal-gateway URL, `presenter: agri-composite`)

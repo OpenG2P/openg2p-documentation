@@ -124,7 +124,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 | --- | --- | --- |
 | `trial` | commons-base, commons-services, Farmer Registry | Agriculture department |
 | `dept1` | commons-base, commons-services, Crop Sown Registry | Crop department |
-| `agrix` | commons-base and a slim commons-services (profile `values-agri-stack-exchange.yaml`: PM, CM, catalogue, audit, IAM for admin UIs), composite in exchange mode | Agri Stack exchange tier |
+| `agrix` | The [Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange) (agri-stack `deploy/agri-exchange`): commons-base and a slim commons-services (exchange overrides: PM, CM, catalogue, audit, IAM for admin UIs), composite in exchange mode | Agri Stack exchange tier |
 
 Each namespace has its own domain (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`) on its own `internal` gateway, as other namespaces already do; `dept1` and `agrix` need DNS and TLS certificates. All calls between namespaces use these **external hostnames**, never in-cluster service names.
 
@@ -148,7 +148,7 @@ Each namespace has its own domain (`*.trial.openg2p.org`, `*.dept1.openg2p.org`,
 | Composite | An **exchange mode**: validate the partner's consent with the exchange CM (`issue_receipts: true`), then send each registry its own receipt instead of the raw consent | Off: today's pass-through |
 | Registry platform (partner API) | No flow change: still calls its own CM `/validate` with the sender and `data_controller`. Consent time for data-scope versions prefers the receipt's `consent_issued_at` claim | Additive: the claim is absent from partner consents |
 | CM chart | An "Agri Stack exchange" question group for the receipt issuer, presenters and trusted issuers | Hidden unless enabled |
-| Commons-services | A slim **exchange profile** (values file) for `agrix` | Not used by department installs |
+| Install | The **Agri Exchange bundle** in agri-stack (`deploy/agri-exchange`): a helmfile installing the unchanged commons charts and the composite in order, with exchange overrides (slim commons-services, CM exchange role, composite exchange mode) | Commons unchanged; not used by department installs |
 | Operations | DNS and TLS for `dept1` and `agrix`; onboarding steps (see above) | — |
 
 **Phase 2: shared catalogue and policy subset check**
@@ -170,7 +170,7 @@ All items are opt-in and default off; see [the phases](#changes-in-phases).
 * **Consent trust (phase 1, in progress):** department CMs accept consent receipts signed by a configured *trusted* CM (the exchange CM) and apply their standing exchange policy; registries keep calling their own CM. Next: per-partner choice of which CM to trust.
 * **Policy subset check:** the exchange CM refuses a partner policy that grants more than a department's exchange policy allows (needs departments to publish their exchange policy and scope catalogue).
 * **CM-originated consent flow** in the exchange CM (farmer notification and approval, farmer authentication).
-* **Exchange-tier install:** the commons-services profile `values-agri-stack-exchange.yaml` covers commons; a helmfile for the whole tier is still open.
+* **Exchange-tier install:** done — the [Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange) (helmfile, pinned chart versions, Rancher steps). Next: a CI test of each bundle version.
 * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, exchange CM), back in the Rancher form; setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs).
 * **Catalogue across departments:** read access for department registries (signed requests or an exchange-issued client), publishers per department.
 * **Inter-department gateway** with mutual TLS; document the WireGuard-peering alternative.
