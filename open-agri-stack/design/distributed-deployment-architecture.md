@@ -1,6 +1,6 @@
 ---
 description: >-
-  How Open Agri Stack is deployed across departments: self-sufficient
+  How Agri Stack is deployed across departments: self-sufficient
   department installs, one shared exchange tier for Open AgriNet, the consent
   and policy model between them, networking, and what is still to build.
 ---
@@ -8,12 +8,12 @@ description: >-
 # Distributed Deployment Architecture
 
 {% hint style="warning" %}
-**Status: design, mostly to build.** This page records the agreed direction for deploying Open Agri Stack across departments. The [TODO list](#todo) at the end says what the platform and charts still need.
+**Status: design, mostly to build.** This page records the agreed direction for deploying Agri Stack across departments. The [TODO list](#todo) at the end says what the platform and charts still need.
 {% endhint %}
 
 ## The setting
 
-Open Agri Stack is the **data layer** that Open AgriNet uses to serve farmers and others: AI-based advisory, loans, a marketplace and more. The registries behind it belong to **different departments**: the Farmer Registry (FR) to one, the Crop Sown Registry (CSR) to another, and later others (livestock, …).
+Agri Stack is the **data layer** that Open AgriNet uses to serve farmers and others: AI-based advisory, loans, a marketplace and more. The registries behind it belong to **different departments**: the Farmer Registry (FR) to one, the Crop Sown Registry (CSR) to another, and later others (livestock, …).
 
 Two needs pull in different directions:
 

@@ -1,6 +1,6 @@
 ---
 description: >-
-  One request through Open Agri Stack, end to end: a bank asks for a farmer's
+  One request through Agri Stack, end to end: a bank asks for a farmer's
   credit profile held across three registries.
 ---
 

@@ -1,12 +1,12 @@
 ---
 description: >-
-  The open standards Open Agri Stack uses, where it uses its own formats, and
+  The open standards Agri Stack uses, where it uses its own formats, and
   where a standard exists that is still to be explored.
 ---
 
 # Standards
 
-Open Agri Stack is built from many OpenG2P components. This page lists, area by area, which open standard each part follows, which components use it, and where no standard is followed.
+Agri Stack is built from many OpenG2P components. This page lists, area by area, which open standard each part follows, which components use it, and where no standard is followed.
 
 **Components:** **RP** Registry Platform, and the registries built on it: **FR** Farmer Registry, **CSR** Crop Sown Registry. **Composite** the use-case composite (partner entry point). **CM** Consent Manager. **PM** Partner Management. **MDS** Master Data Service (the catalogue). **AWE** Approval Workflow Engine. Plus Keycloak, the Audit Manager, Inji Certify, ODK Central and the cluster's Istio / Nginx.
 

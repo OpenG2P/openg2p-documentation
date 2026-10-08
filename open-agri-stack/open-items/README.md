@@ -1,6 +1,6 @@
 ---
 description: >-
-  Decisions, checks and TODOs still pending in Open Agri Stack: identity,
+  Decisions, checks and TODOs still pending in Agri Stack: identity,
   consent and policies, the composite, the registries, catalogues, and the
   platform and build.
 ---

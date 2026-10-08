@@ -1,6 +1,6 @@
 ---
 description: >-
-  What is built for Open Agri Stack (October 2026), component by component, and
+  What is built for Agri Stack (October 2026), component by component, and
   how.
 ---
 

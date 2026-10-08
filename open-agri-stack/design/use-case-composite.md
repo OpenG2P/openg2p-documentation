@@ -132,7 +132,7 @@ A use case moves from `draft` → `validated` → `published` only if all of the
 5. The query templates render valid DCI requests against sample data. The sandbox runs each use case end to end with test fixtures.
 6. The response schema validates against the mapped output.
 
-Publishing is done by the Open Agri Stack platform team. Because the configuration can't widen access, it doesn't need department approval; the departments have already approved the policy.
+Publishing is done by the Agri Stack platform team. Because the configuration can't widen access, it doesn't need department approval; the departments have already approved the policy.
 
 {% hint style="info" %}
 **First version:** only check 5 is done, partly: every template is rendered with sample input when the file is loaded, and must produce a valid query. The other checks need policies in PM ([open items](../open-items/README.md)).

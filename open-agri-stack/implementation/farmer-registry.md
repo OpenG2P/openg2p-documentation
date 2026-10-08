@@ -1,13 +1,13 @@
 ---
 description: >-
-  What changed in the Farmer Registry for Open Agri Stack: declared main crops
+  What changed in the Farmer Registry for Agri Stack: declared main crops
   instead of the Crops tab, sample lands numbered like the Crop Sown Registry,
   and the farmer ID in the DCI record.
 ---
 
 # Farmer Registry Changes
 
-The [Farmer Registry](../../products/registry/farmer-registry/README.md) ([OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry)) holds the entities the other registries refer to: farmers, their land, households and (for now) livestock. Its deployment, seeding and chart are documented in [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md). For Open Agri Stack it changed in three ways.
+The [Farmer Registry](../../products/registry/farmer-registry/README.md) ([OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry)) holds the entities the other registries refer to: farmers, their land, households and (for now) livestock. Its deployment, seeding and chart are documented in [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md). For Agri Stack it changed in three ways.
 
 ## Declared main crops replace the Crops tab
 

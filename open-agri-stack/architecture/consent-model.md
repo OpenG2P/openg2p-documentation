@@ -72,7 +72,7 @@ POST /consent-requests
 **6. Revocation.** The farmer can revoke the whole consent, or only one source (for example, "stop sharing my livestock data"). The partner is notified either way.
 
 {% hint style="info" %}
-**As built,** the partner signs the consent itself (the partner-embedded flow): a compact JWS with a `grants` claim, presented unchanged to every registry, directly or through the composite. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Open Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
+**As built,** the partner signs the consent itself (the partner-embedded flow): a compact JWS with a `grants` claim, presented unchanged to every registry, directly or through the composite. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
 {% endhint %}
 
 ## Changes in CM

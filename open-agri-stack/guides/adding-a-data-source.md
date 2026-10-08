@@ -21,7 +21,7 @@ The Livestock Registry is [planned](../design/register-model-design.md#livestock
 | [1. Registry prerequisites](#step-1-registry-prerequisites) | The registry | Registry team |
 | [2. Identities in Partner Management](#step-2-identities-in-partner-management) | PM | PM administrator |
 | [3. Bindings and policies in the Consent Manager](#step-3-bindings-and-policies-in-the-consent-manager) | CM | CM administrator, department (AWE) |
-| [4. Register the endpoint in the composite](#step-4-register-the-endpoint-in-the-composite) | Composite Helm values | Open Agri Stack operator |
+| [4. Register the endpoint in the composite](#step-4-register-the-endpoint-in-the-composite) | Composite Helm values | Agri Stack operator |
 | [5. Add the source to the use case](#step-5-add-the-source-to-the-use-case) | Use-case YAML | Use-case author |
 | [6. Partners add a grant](#step-6-partners-add-a-grant) | Partner's consent | Each partner |
 | [7. Test](#step-7-test) | Laptop / cluster | Operator |
@@ -63,13 +63,13 @@ Add the registry's DCI search URL under its controller ID, in the composite's He
 composite:
   registries:
     farmer-registry:
-      url: http://fr-partner-api/dci/registry/sync/search
+      url: https://partner-fr.<dept-domain>/dci/registry/sync/search
       partnerId: ""
     crop-sown-registry:
-      url: http://csr-partner-api/dci/registry/sync/search
+      url: https://partner-csr.<dept-domain>/dci/registry/sync/search
       partnerId: ""
     livestock-registry:
-      url: http://lsr-partner-api/dci/registry/sync/search   # the registry release's partner API service
+      url: https://partner-lsr.<dept-domain>/dci/registry/sync/search   # the registry's partner API (full URL)
       partnerId: ""                                          # or livestock-registry, to verify its responses
 ```
 

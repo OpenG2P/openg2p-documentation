@@ -1,6 +1,6 @@
 ---
 description: >-
-  Open Agri Stack components, the layers they belong to, and who talks to whom
+  Agri Stack components, the layers they belong to, and who talks to whom
   when a partner asks for farmer data.
 ---
 
@@ -8,7 +8,7 @@ description: >-
 
 ## Components and who talks to whom
 
-<figure><img src="../../.gitbook/assets/open-agri-stack-components.svg" alt="Components: service provider → ingress (Nginx, Istio) → use-case composite → departmental registries; registries validate with CM, which reads policy from PM; Layer 2 catalogues below"><figcaption><p>Components of Open Agri Stack</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/open-agri-stack-components.svg" alt="Components: service provider → ingress (Nginx, Istio) → use-case composite → departmental registries; registries validate with CM, which reads policy from PM; Layer 2 catalogues below"><figcaption><p>Components of Agri Stack</p></figcaption></figure>
 
 | Colour | Layer |
 | --- | --- |
@@ -18,7 +18,7 @@ description: >-
 | Green | Layer 4: use-case service |
 
 * Every registry sends `/validate` to the Consent Manager; the single arrow in the diagram stands for all four.
-* The ingress (dashed grey: OpenG2P deployment infrastructure, not an Open Agri Stack service) routes requests but never reads data. The composite checks the caller.
+* The ingress (dashed grey: OpenG2P deployment infrastructure, not an Agri Stack service) routes requests but never reads data. The composite checks the caller.
 * The composite runs only for approved use cases and keeps nothing after it responds.
 * Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data.
 
@@ -37,7 +37,7 @@ The partner requests and presents **one consent**, with a grant per registry ins
 
 ## Entry point: the OpenG2P deployment, not a separate API gateway
 
-Open Agri Stack has **no API gateway product**. Partners reach it through the ingress of the [OpenG2P deployment](../../deployment/openg2p-deployment-model.md) (Nginx and Istio on Kubernetes), as for every OpenG2P service, and the jobs usually given to an API gateway are covered by that deployment and by the composite:
+Agri Stack has **no API gateway product**. Partners reach it through the ingress of the [OpenG2P deployment](../../deployment/openg2p-deployment-model.md) (Nginx and Istio on Kubernetes), as for every OpenG2P service, and the jobs usually given to an API gateway are covered by that deployment and by the composite:
 
 | Gateway job | Handled by |
 | --- | --- |
@@ -49,7 +49,7 @@ Open Agri Stack has **no API gateway product**. Partners reach it through the in
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
 | Developer portal, API keys, analytics, billing | Not needed now: the [partner guide](../guides/partner-guide.md) and the composite's describe endpoints cover discovery |
 
-A gateway product becomes worth adding only if Open Agri Stack grows many partner-facing APIs from different teams that need a common portal, keys, analytics or billing, or if a national API gateway is mandated. It would then sit in front of the composite, unchanged.
+A gateway product becomes worth adding only if Agri Stack grows many partner-facing APIs from different teams that need a common portal, keys, analytics or billing, or if a national API gateway is mandated. It would then sit in front of the composite, unchanged.
 
 ## In this part
 

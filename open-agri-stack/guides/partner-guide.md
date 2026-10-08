@@ -1,6 +1,6 @@
 ---
 description: >-
-  How a partner (bank, MFI, agritech) joins Open Agri Stack and uses it end to
+  How a partner (bank, MFI, agritech) joins Agri Stack and uses it end to
   end: onboarding, keys, CM bindings, the farmer's consent with a grant per
   registry, signing, calling a use case, and reading and verifying the
   response.
@@ -11,7 +11,7 @@ description: >-
 You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier and **one consent** to the use-case composite, and get back **one signed response** with a status per registry.
 
 {% hint style="info" %}
-This guide covers what is specific to Open Agri Stack. The consent object, its signing and the Consent Manager's reason codes are documented once, in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); onboarding mechanics are in [Partner Management](../../platform/platform-services/partner-management/README.md). This guide links to both rather than repeating them.
+This guide covers what is specific to Agri Stack. The consent object, its signing and the Consent Manager's reason codes are documented once, in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); onboarding mechanics are in [Partner Management](../../platform/platform-services/partner-management/README.md). This guide links to both rather than repeating them.
 {% endhint %}
 
 ## How it fits together
@@ -51,8 +51,8 @@ You never call the registries or `/validate` yourself. Each registry asks the Co
 | A signing key pair and a `kid` | You | [1](#step-1-generate-your-signing-key) |
 | Your partner record and public key in Partner Management | A **PM administrator** (no self-service yet) | [2](#step-2-get-onboarded-in-partner-management) |
 | A binding and data-share policy for each registry, in the Consent Manager | The **CM administrator** (each registry's policy may need AWE approval) | [3](#step-3-get-a-binding-and-policy-for-each-registry) |
-| Permission to call the use case (`allowed_partners`) | The **Open Agri Stack operator** | [4](#step-4-get-allowed-for-the-use-case) |
-| The composite's URL and its public key | The Open Agri Stack operator | [5](#step-5-discover-the-use-case) |
+| Permission to call the use case (`allowed_partners`) | The **Agri Stack operator** | [4](#step-4-get-allowed-for-the-use-case) |
+| The composite's URL and its public key | The Agri Stack operator | [5](#step-5-discover-the-use-case) |
 
 ## Step 1 — Generate your signing key
 
@@ -122,7 +122,7 @@ The crop sources query the Crop Sown Registry by farmer ID, read from the farmer
 
 ## Step 4 — Get allowed for the use case
 
-Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (for example, the sample `loan-profile` ships with `[bank-a]`). Ask the Open Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [composite configuration](composite-configuration.md#use-case-file-format).
+Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (for example, the sample `loan-profile` ships with `[bank-a]`). Ask the Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [composite configuration](composite-configuration.md#use-case-file-format).
 
 ## Step 5 — Discover the use case
 
@@ -191,7 +191,7 @@ What that means for you:
 
 ## Step 7 — Build and sign the consent
 
-The consent is a **compact JWS** signed with your key, with **one grant per registry**. The claims are defined in the [Partner Integration Guide, step 5](../../consent-management/partner-integration-guide.md#step-5-construct-the-consent-claims); for Open Agri Stack:
+The consent is a **compact JWS** signed with your key, with **one grant per registry**. The claims are defined in the [Partner Integration Guide, step 5](../../consent-management/partner-integration-guide.md#step-5-construct-the-consent-claims); for Agri Stack:
 
 | Claim | Value | Rule |
 | --- | --- | --- |

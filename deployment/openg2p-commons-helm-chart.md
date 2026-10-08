@@ -51,7 +51,7 @@ Installs application services:
 | **Superset**              | Data visualization and dashboards                                                  |
 | **eSignet**               | Digital signature service                                                          |
 | **Mock Identity System**  | Mock identity provider for testing                                                 |
-| **Keymanager**            | Standalone MOSIP Keymanager (**off by default**). Turn it on with **Install Keymanager?** for PBMS, which signs G2P Bridge disbursement requests with it, or for a registry whose partner key backend is `keymanager`. Registries and Open Agri Stack don't use it; eSignet, the mock identity system and Inji Certify carry their own keymanager |
+| **Keymanager**            | Standalone MOSIP Keymanager (**off by default**). Turn it on with **Install Keymanager?** for PBMS, which signs G2P Bridge disbursement requests with it, or for a registry whose partner key backend is `keymanager`. Registries and Agri Stack don't use it; eSignet, the mock identity system and Inji Certify carry their own keymanager |
 | **ODK Central**           | Data collection                                                                    |
 | **OpenG2P Master Data**   | Master data service                                                                |
 | **Artifactory**           | Artifact repository                                                                |

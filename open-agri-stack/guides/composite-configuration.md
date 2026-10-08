@@ -82,7 +82,7 @@ Retries can add calls (one retry per source in `loan-profile`, on network errors
 
 | What | Where | Example |
 | --- | --- | --- |
-| The registry's URL, per controller | Helm `composite.registries.<controller>.url` → env `AGRI_COMPOSITE_REGISTRIES` | `farmer-registry: http://fr-partner-api/dci/registry/sync/search` |
+| The registry's URL, per controller | Helm `composite.registries.<controller>.url` → env `AGRI_COMPOSITE_REGISTRIES` | `farmer-registry: https://partner-fr.<dept-domain>/dci/registry/sync/search` |
 | Verify the registry's response signature (optional) | `composite.registries.<controller>.partnerId`: the registry's PM partner ID; its responses are verified against `PARTNER_<ID>` | empty (off) by default |
 | The `receiver_id` sent (optional) | `composite.registries.<controller>.receiverId` | defaults to the controller ID |
 | Which registry a source calls | use case `sources[].controller` | `farmer-registry` |
@@ -204,7 +204,7 @@ In **exchange** mode, after the partner's request signature and consent checks (
 * **The envelope** is DCI-style: `{signature, header, message}`, signed by the composite (detached JWS over `{header, message}`), `header.action: on-query`, `header.status: succ | rjct`.
 * **`message.data` is defined per use case** by its `mapping` and `derived` keys: each output path becomes a nested object (`farmer.name` → `{"farmer": {"name": …}}`).
 * **Records keep the registries' shapes.** Where a mapping copies records (e.g. `land.parcels`, `crops.seasons`), they are the registries' DCI / SPDCI records (e.g. the Farmer Registry's `farm_details`, the Crop Sown Registry's `…:CropSeason` records with `crop_season`, `measures`, `location`, `farmer_reference`), already clamped by each registry to the consented scopes.
-* **This is not an open standard.** The envelope follows DCI conventions; the `data` shape is Open Agri Stack's, per use case.
+* **This is not an open standard.** The envelope follows DCI conventions; the `data` shape is Agri Stack's, per use case.
 * **No machine-readable schema is published yet.** The describe endpoint lists the **output field names only** (`output_fields`). A JSON Schema per use case (an endpoint serving `response.schema`) is a [TODO](../open-items/README.md#composite).
 
 ## The `loan-profile` use case
@@ -385,8 +385,8 @@ The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"
 | `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID (its key must be in PM) |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Integration |
 | `global.auditManagerUrl` | `http://commons-services-auditmanager:80` | Integration (empty disables auditing) |
-| `composite.registries.farmer-registry.url` | `http://fr-partner-api/dci/registry/sync/search` | Integration: Farmer Registry Search URL |
-| `composite.registries.crop-sown-registry.url` | `http://csr-partner-api/dci/registry/sync/search` | Integration: Crop Sown Registry Search URL |
+| `composite.registries.farmer-registry.url` | empty (required) | Integration: Farmer Registry Search URL. Full URL; the registry may be in another department or cluster |
+| `composite.registries.crop-sown-registry.url` | empty (required) | Integration: Crop Sown Registry Search URL. Full URL, as above |
 | `composite.registries.<controller>.partnerId`, `.receiverId` | empty | values only |
 | `composite.consent.mode` | `passthrough` | Agri Stack exchange: Consent Mode |
 | `composite.consent.exchangeCmUrl` | empty | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |

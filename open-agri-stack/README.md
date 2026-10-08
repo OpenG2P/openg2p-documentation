@@ -1,13 +1,13 @@
 ---
 description: >-
-  Open Agri Stack is the digital public infrastructure (DPI) for agriculture:
+  Agri Stack is the digital public infrastructure (DPI) for agriculture:
   sovereign departmental registries, shared reference data, and the shared
   services that let partners use farmer data with the farmer's consent.
 ---
 
-# Open Agri Stack
+# Agri Stack
 
-<figure><img src="../.gitbook/assets/open-agri-stack-logo.jpg" alt="Open Agri Stack — DPI for Agriculture" width="160"><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/open-agri-stack-logo.jpg" alt="Agri Stack — DPI for Agriculture" width="160"><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 **Source code:** [github.com/openg2p/agri-stack](https://github.com/openg2p/agri-stack) (the use-case composite), [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry), [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) and [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
@@ -15,7 +15,7 @@ description: >-
 
 ## What it is
 
-Open Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture for OAN Ethiopia layers 1–3:
+Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture for OAN Ethiopia layers 1–3:
 
 * **Layer 1:** the functional registries (farmer, crop sown, livestock, DA);
 * **Layer 2:** catalogues: the reference data every registry uses (code lists, reference entities such as seed varieties, geography);
@@ -38,7 +38,7 @@ All registries are keyed to the same Fayda-based identifier.
 
 ## Shared services (Layers 2 and 3)
 
-| Service | Role in Open Agri Stack |
+| Service | Role in Agri Stack |
 | --- | --- |
 | **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: code lists (the Ethiopia country pack's agriculture domain), reference entities, geography, sample people. MDS serves this role for now; proper catalogues are still to be designed and built (see [open items](open-items/README.md#catalogues)) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the composite): identities and public keys |

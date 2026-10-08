@@ -38,7 +38,7 @@ An activity register does **not** use:
 ## Crop sown, remodelled
 
 {% hint style="info" %}
-This section is about the **earlier crop-sown implementation by ATI** ([cropsown-regsitry](https://github.com/Centre-for-Open-Societal-Systems/cropsown-regsitry)), which predates the activity register. It is not how Open Agri Stack is built. The registry platform is generic: activity registers are one of its features, available to any registry, and the [Crop Sown Registry](crop-sown-registry.md) is a thin extension on it with no modified platform code.
+This section is about the **earlier crop-sown implementation by ATI** ([cropsown-regsitry](https://github.com/Centre-for-Open-Societal-Systems/cropsown-regsitry)), which predates the activity register. It is not how Agri Stack is built. The registry platform is generic: activity registers are one of its features, available to any registry, and the [Crop Sown Registry](crop-sown-registry.md) is a thin extension on it with no modified platform code.
 {% endhint %}
 
 **How the earlier crop-sown implementation is built:** it invents a header register, `CropSown` (one record per farmer, crop year and season). It has **8 child `TABLE` registers**, and every one of them runs through change requests, history and intake forms. It also:

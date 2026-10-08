@@ -1,6 +1,6 @@
 ---
 description: >-
-  Design notes for Open Agri Stack: the register model, activity registers, the
+  Design notes for Agri Stack: the register model, activity registers, the
   Crop Sown Registry, the use-case composite, and the review of the Activity
   Registry concept notes.
 ---

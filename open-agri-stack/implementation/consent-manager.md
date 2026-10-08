@@ -1,6 +1,6 @@
 ---
 description: >-
-  What changed in the Consent Manager for Open Agri Stack: one consent with a
+  What changed in the Consent Manager for Agri Stack: one consent with a
   grant per registry, bindings per partner and registry, replay per consent
   and registry.
 ---

@@ -20,7 +20,7 @@ Each registry computes this intersection for its own part, so a misconfigured us
 | --- | --- | --- | --- |
 | **Data-share policy** (PM, target) | Departments (data controllers), approved through AWE | Allowed scopes per registry, purposes, fetch type, validity ceiling, data life. A policy is reusable: many partners can be associated with one policy. | Rarely. A change that widens access goes back to the department concerned. |
 | **Partner association** (PM, target) | PM administrators | Which partners may use a policy | Onboarding a new bank is one association, with no re-approval |
-| **Use-case configuration** ([composite](../design/use-case-composite.md)) | Open Agri Stack platform team | Sources, query templates, requested scopes (must be ⊆ policy), response schema, merged or data-blind, timeout | Versioned like an API |
+| **Use-case configuration** ([composite](../design/use-case-composite.md)) | Agri Stack platform team | Sources, query templates, requested scopes (must be ⊆ policy), response schema, merged or data-blind, timeout | Versioned like an API |
 | **Consent** (CM) | The farmer | Scopes agreed for this purpose | Per farmer; revocable |
 
 {% hint style="warning" %}

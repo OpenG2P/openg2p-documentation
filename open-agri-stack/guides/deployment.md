@@ -1,6 +1,6 @@
 ---
 description: >-
-  Deploying Open Agri Stack on a cluster: the order of installs and the
+  Deploying Agri Stack on a cluster: the order of installs and the
   settings for commons (Master Data with the Ethiopia pack and agriculture
   domain, PM, CM), the Farmer and Crop Sown registries, and the composite;
   the three-namespace exchange setup; uninstalling.
@@ -8,7 +8,7 @@ description: >-
 
 # Deploying on a Cluster
 
-Open Agri Stack is installed into one environment (namespace) from OpenG2P Helm charts, through Rancher. This page lists the order and the settings that matter for Open Agri Stack; each chart's own documentation covers the rest.
+Agri Stack is installed into one environment (namespace) from OpenG2P Helm charts, through Rancher. This page lists the order and the settings that matter for Agri Stack; each chart's own documentation covers the rest.
 
 ## Order
 
@@ -23,17 +23,17 @@ Open Agri Stack is installed into one environment (namespace) from OpenG2P Helm 
 | 6 | Use-case composite | `openg2p-agri-composite` ("Agri Stack Composite") | e.g. `agri-composite` |
 | 7 | Test | [End-to-end test](end-to-end-test.md) | — |
 
-The release names `fr` and `csr` match the composite's default registry URLs (`http://fr-partner-api/…`, `http://csr-partner-api/…`); with other names, change `composite.registries` in step 6.
+The composite has no default registry URLs: in step 6, give each registry's full partner API URL, e.g. `https://partner-fr.<dept-domain>/dci/registry/sync/search`. A registry in the same cluster can also be reached as `http://<release>-partner-api.<namespace>.svc.cluster.local/dci/registry/sync/search`.
 
 ## Commons services: Master Data, PM, CM
 
 {% hint style="info" %}
-Master Data (MDS) serves Open Agri Stack's **catalogues** (code lists, reference entities, geography) for now. Proper catalogues are still to be designed; see [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+Master Data (MDS) serves Agri Stack's **catalogues** (code lists, reference entities, geography) for now. Proper catalogues are still to be designed; see [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
 {% endhint %}
 
 See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In the `openg2p-commons-services` form:
 
-| Group | Setting | Value for Open Agri Stack |
+| Group | Setting | Value for Agri Stack |
 | --- | --- | --- |
 | Country Pack | **Country Pack** (`masterData.geoSeed.countryPack`) | `ETH` (Ethiopia; the commons default) |
 | Country Pack | **Dataset Themes** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
@@ -42,7 +42,7 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
 | Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | on (default) |
 | AWE | **Install AWE?** (`openg2p-awe.enabled`) | on (the registries' change requests and CM policy approvals use it) |
-| Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** (the default) — Open Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet, the mock identity system and Inji Certify have their own). Only PBMS needs it on |
+| Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** (the default) — Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet, the mock identity system and Inji Certify have their own). Only PBMS needs it on |
 
 The Audit Manager is part of commons-services; the composite sends its events to `http://commons-services-auditmanager:80`.
 

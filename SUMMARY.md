@@ -574,7 +574,7 @@
   * [\_Archive](products/g2p-bridge/_archive/README.md)
     * [Releases](products/g2p-bridge/_archive/releases/README.md)
       * [1.0.2](products/g2p-bridge/_archive/releases/1.0.2.md)
-* [Open Agri Stack](open-agri-stack/README.md)
+* [Agri Stack](open-agri-stack/README.md)
   * [Architecture & Concepts](open-agri-stack/architecture/README.md)
     * [Request Flow](open-agri-stack/architecture/request-flow.md)
     * [Policy and Consent](open-agri-stack/architecture/policy-and-consent.md)

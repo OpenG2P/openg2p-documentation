@@ -11,7 +11,7 @@ description: >-
 
 ## Prerequisites
 
-* A namespace with Open Agri Stack deployed: commons (MDS with the agriculture domain and sample people, PM, CM, Keycloak, Postgres), the Farmer Registry and the Crop Sown Registry with sample data, and the composite. See [deploying on a cluster](deployment.md).
+* A namespace with Agri Stack deployed: commons (MDS with the agriculture domain and sample people, PM, CM, Keycloak, Postgres), the Farmer Registry and the Crop Sown Registry with sample data, and the composite. See [deploying on a cluster](deployment.md).
 * `kubectl` with a context that can read Secrets and Deployments, `exec` into the Postgres pod, port-forward, and (for setup) create a Secret and restart the composite in that namespace. `--context` picks another context.
 * Python 3 with a virtual environment:
 

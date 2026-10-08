@@ -1,6 +1,6 @@
 ---
 description: >-
-  The trust and correction vocabulary used across Open Agri Stack registries:
+  The trust and correction vocabulary used across Agri Stack registries:
   validation, change, correction, void, approval of changes, verification and
   dispute.
 ---

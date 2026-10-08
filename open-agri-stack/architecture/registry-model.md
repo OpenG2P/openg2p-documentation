@@ -1,6 +1,6 @@
 ---
 description: >-
-  How each Open Agri Stack registry is built: register, table and activity
+  How each Agri Stack registry is built: register, table and activity
   register kinds, projections, and where reference data lives (Layer 2).
 ---
 
