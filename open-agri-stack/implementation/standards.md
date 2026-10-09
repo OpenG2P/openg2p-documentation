@@ -78,6 +78,39 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 | Catalogue dataset descriptions | MDS | MDS [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md#dcat-catalogue) (`/public/catalog`) | [W3C DCAT](https://www.w3.org/TR/vocab-dcat-3/) (DCAT-AP style, JSON-LD) | **Used** | Opt-in: a `dcat:Dataset` per public list and for the geography when public, with licence, version and a distribution per format (CSV, JSON, SKOS, GeoJSON). Harvestable by CKAN / DCAT harvesters. |
 | Registry and use-case descriptions | RP, Composite | Registries, use cases | [W3C DCAT](https://www.w3.org/TR/vocab-dcat-3/) | **To explore** | For describing what each registry and use case offers. |
 
+### TODO: agricultural data standards for the catalogues
+
+{% hint style="warning" %}
+**TODO.** The agriculture datasets in the country pack ([openg2p-data](https://github.com/OpenG2P/openg2p-data) `packs/ETH/domains/agriculture`) use our own codes, and only crop codes have a candidate standard noted above. We must look at all of the standards below and decide the best fit for the stack, dataset by dataset.
+
+**Preferred direction (later): stay standard-agnostic.** A country picks the standard each dataset follows (its own codes, AGROVOC, ICC, EPPO, …), and the catalogue carries it; registries and other modules must read whichever the country chose, so no module is tied to one standard. Mappings between standards are then catalogue data (e.g. SKOS matches), not code.
+{% endhint %}
+
+Candidates, by dataset:
+
+| Datasets | Candidate standards (body) |
+| --- | --- |
+| Crops and commodities (`CROP_COMMODITY`) | [AGROVOC](https://agrovoc.fao.org/) (FAO); [Indicative Crop Classification ICC 1.1](https://www.fao.org/world-census-agriculture/en/) (FAO, World Programme for the Census of Agriculture 2020); [CPC](https://unstats.un.org/unsd/classifications/Econ/cpc) / [FAOSTAT item codes](https://www.fao.org/faostat/en/#definitions) (UN / FAO); [HS codes](https://www.wcoomd.org/en/topics/nomenclature/overview/what-is-the-harmonized-system.aspx) (WCO); [EPPO codes](https://gd.eppo.int/) |
+| Crop growth stages (`CROP_GROWTH_STAGE`) | [BBCH scale](https://www.julius-kuehn.de/en/media/publications/bbch-monographs/) (BBCH monograph, Julius Kühn-Institut) |
+| Pests, diseases, infestation (`INFESTATION_AGENT`, `INFESTATION_TYPE`, `CROP_DAMAGE_CAUSE`, `PEST_CONTROL_ACTION`) | [EPPO codes](https://gd.eppo.int/) (EPPO); [IPPC glossary](https://www.ippc.int/en/publications/622/) (IPPC / FAO); AGROVOC |
+| Seed varieties and sources (`SEED_VARIETY`, `SEED_TYPE`, `SEED_SOURCE`) | [WIEWS](https://www.fao.org/wiews/en/) (FAO); [Crop Ontology](https://cropontology.org/) (CGIAR); national variety release lists |
+| Livestock types and breeds (`LIVESTOCK_TYPE`, `LIVESTOCK_BREED`) | [DAD-IS](https://www.fao.org/dad-is/en/) (FAO); AGROVOC |
+| Soil and land (`SOIL_FERTILITY`) | [World Reference Base for Soil Resources](https://www.fao.org/soils-portal/data-hub/soil-classification/world-reference-base/en/) (FAO / IUSS); [LCCS](https://www.fao.org/4/x0596e/x0596e00.htm) / [ISO 19144](https://www.iso.org/standard/32562.html) land cover (FAO / ISO) |
+| Agro-ecological zones (`AGRO_ECOLOGICAL_ZONE`) | [GAEZ](https://gaez.fao.org/) (FAO / IIASA), alongside Ethiopia's traditional zones (Bereha, Kolla, Weyna Dega, Dega, Wurch) |
+| Irrigation, water, land preparation, sowing, cropping system, means of acquisition (`IRRIGATION_*`, `WATER_SOURCE`, `LAND_PREPARATION_METHOD`, `SOWING_METHOD`, `CROPPING_SYSTEM`, `MEANS_OF_ACQUISITION`) | [World Census of Agriculture 2020](https://www.fao.org/world-census-agriculture/en/) concepts and classifications (FAO); AGROVOC |
+| Fertilizer and machinery (`FERTILIZER_TYPE`, `FARM_MACHINERY`) | [ADAPT](https://adaptframework.org/) (AgGateway); [ISO 11783 (ISOBUS)](https://www.iso.org/standard/57556.html); FAO fertilizer classes ([FAOSTAT fertilizers by product](https://www.fao.org/faostat/en/#data/RFB)) |
+| Farm activities and income (`SOURCE_OF_INCOME`) | [ISIC Rev.4](https://unstats.un.org/unsd/classifications/Econ/isic) (UN) |
+| Crop condition (`CROP_CONDITION`) | AGROVOC; national crop assessment scales (e.g. Ethiopian Statistics Service crop surveys) |
+| Units and geography | [UCUM](https://ucum.org/); [OCHA P-codes](https://humanitarian.atlassian.net/wiki/spaces/imtoolbox/pages/222265609/P-codes) (already used); [ISO 3166](https://www.iso.org/iso-3166-country-codes.html) / [UN M49](https://unstats.un.org/unsd/methodology/m49/) |
+| Cross-cutting | [AgroPortal](https://agroportal.lirmm.fr/) (ontology repository); [GODAN](https://www.godan.info/); [OGC agriculture work](https://www.ogc.org/topics/agriculture/) |
+
+For each dataset, the evaluation should record:
+
+* the best-fit standard and the body that publishes it;
+* how well our codes map to it (exact, partial, none);
+* whether its licence lets us republish it in the public catalogue;
+* the decision: keep our codes and publish mappings (as SKOS `skos:exactMatch` / `skos:closeMatch` in the [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md)), or adopt the standard's codes; then carry it into the country pack.
+
 ## Records, time and measures
 
 | Area | Components | Where | Standard | Status | Notes |
