@@ -29,6 +29,11 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 * **Registry endpoints held in PM** rather than in the composite's configuration (`composite.registries`).
 * **Calling the crop sources in parallel with the farmer** when the partner already sends a farmer ID.
 * **Console, next steps** (the read-only [console](../guides/composite-console.md) is built):
+  * **TODO: make adding a use case easy.** Today a use case is YAML in the Helm values (`composite.useCases`), with a Jinja query template and JSONPath mappings per source. In order:
+    1. **Query shorthand** instead of Jinja for common sources, e.g. `query: {by: subject}` (FAN or farmer ID → the registry's field) or `query: {by: farmer.identifiers.FARMER_ID, filters: [crop_year, season]}`; raw `query_template` stays for unusual cases.
+    2. **"New use case" in the console** (with editing, below): live validation, and a "try it" run for a sample farmer showing the registries' records beside the mapped output; publish / retire / partners from the UI.
+    3. **Pick fields from the registry's data scopes** (Registries page): the console fills `scopes`, `optional_scopes` and the output mappings.
+    4. **Copy an existing use case** as a starting point.
   * **Editing use cases in the console:** use cases stored in the composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run against the registries, and a record of who changed what and when (in the database, and sent to the Audit Manager). Earlier versions need not be kept.
   * **"Give partner X use case Y":** one flow that checks the partner's key in PM, creates its Consent Manager policy from the use case's data scopes and adds it to the use case's partners.
   * **Data scopes for registries a partner calls directly:** a registry's own staff UI (and CM's policy form) do not list its data scopes yet; the registry staff API has them (`/data_scopes/get_data_scopes`).

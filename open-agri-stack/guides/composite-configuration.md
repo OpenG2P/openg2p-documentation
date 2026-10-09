@@ -137,12 +137,17 @@ Each source names the data scopes it uses, from its registry's catalogue (signed
 * **`optional_scopes`:** may be left out of the consent; the fields they cover then come back `null`.
 * **Nothing else is asked for.** In exchange mode the composite asks the exchange Consent Manager for receipts with only these scopes (`request_context.requested_scopes`), so each registry returns no other field. In passthrough mode the registry sees the partner's consent as given; the composite still maps only its output fields.
 * A scope ID must belong to the source's registry (`<controller>.`), may not be listed twice, nor in both lists. `request_scopes` is accepted as the earlier name of `scopes`.
-* A source with neither list has no scope check (its registry's grant is used as it is).
+* A source with neither list has no scope check (its registry's grant is used as it is); in exchange mode its registry's receipt then carries every scope the consent grants for that registry.
+* A grant with no `data_scopes` (including a legacy consent with `data_controller` only) grants no scopes, so it fails a source with required scopes.
 * The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent and to allow in the partner's Consent Manager policy.
 
 Also accepted from the design but **not acted on yet** (logged once at load): `owner`, `consent.collection`, `consent.mode`, `response.schema`, `response.correlate_on`, `response.mode: merged`, `execution.fan_out: parallel`, and `limits.daily_quota_per_partner`.
 
 Output paths (`mapping` and `derived` keys) are dot-separated identifiers; each may be defined once, and a path can't be both a value and the parent of another.
+
+A field built from a source that failed (`denied`, `unavailable`, `error`) is `null`; `[]` and `0` mean the registry answered and has nothing. So the composite can tell which sources a field uses, name them in dotted form: `$.sources.<id>...` and `$.data.<path>`. A `[...]`, `*` or `..` right after `$`, `$.sources` or `$.data` is refused at load.
+
+A rendered query whose expression has an empty `subject_id` (e.g. the farmer record carries no farmer ID) is not sent; the source is reported `error`. A list query that returns a full page (`page_size` above 1) is reported with the detail "the first N records only".
 
 ## Query templates
 
@@ -386,7 +391,7 @@ limits:
 
 ## Helm values
 
-The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"**). Its [values](https://github.com/openg2p/agri-stack/blob/develop/composite/deployment/charts/openg2p-agri-composite/values.yaml) and [Rancher questions](https://github.com/openg2p/agri-stack/blob/develop/composite/deployment/charts/openg2p-agri-composite/questions.yaml):
+The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"**). Its [values](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/values.yaml) and [Rancher questions](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/questions.yaml):
 
 | Value | Default | Rancher form |
 | --- | --- | --- |
@@ -404,7 +409,7 @@ The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"
 | `composite.consent.exchangeCmUrl` | empty | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout (shown only in exchange mode) |
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: the Secret with `composite.p12`, `password`, and optionally `kid` and `algorithm` |
-| `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `true`, `1`, `5` (70% CPU) | Scaling |
+| `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `false`, `1`, `5` (70% CPU) | Scaling |
 | `composite.replicaCount` | `1` | Scaling (when autoscaling is off) |
 | `composite.workers` | `2` | Scaling: Workers per Pod |
 | `composite.useCases` | `loan-profile` | **Not in the form**: edit in **Edit YAML** |

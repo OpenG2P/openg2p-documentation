@@ -8,7 +8,7 @@ description: >-
 # Composite as Built
 
 {% hint style="info" %}
-**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`deployment/`](https://github.com/openg2p/agri-stack/tree/develop/composite/deployment)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); test and uninstall scripts in the repository's [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts). Built October 2026.
+**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`deployment/`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); test and uninstall scripts in the repository's [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts). Built October 2026.
 {% endhint %}
 
 The design is on the [use-case composite](../design/use-case-composite.md) page. This page says what the first version does. How to call it is in the [partner guide](../guides/partner-guide.md); how to configure it in the [composite configuration guide](../guides/composite-configuration.md).
