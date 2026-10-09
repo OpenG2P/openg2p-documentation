@@ -668,6 +668,7 @@
       * [For Consumers](platform/platform-services/master-data-service/catalogue/consumers.md)
       * [Admin UI](platform/platform-services/master-data-service/catalogue/ui.md)
       * [Public Catalogue](platform/platform-services/master-data-service/catalogue/public-catalogue.md)
+      * [Standards](platform/platform-services/master-data-service/catalogue/standards.md)
   * [Approval Workflow Engine (AWE)](platform/platform-services/approval-workflow-engine/README.md)
     * [Versions](platform/platform-services/approval-workflow-engine/versions.md)
     * [Releases](platform/platform-services/approval-workflow-engine/releases/README.md)

@@ -101,6 +101,7 @@ Common Geo Registry is a possible later add-on.
 | [For consumers](consumers.md) | How registries, PBMS and other services should read, cache, pin and follow changes |
 | [Admin UI](ui.md) | The Master Data admin UI: the catalogue overview home page, datasets (with themes), versions, drafts, approvals, geography changes, releases and activity |
 | [Public catalogue](public-catalogue.md) | Visibility and licence, the anonymous `/public` API, downloads, DCAT and SKOS, deployment settings |
+| [Standards](standards.md) | The open standards the catalogue uses (DCAT, SKOS, GeoJSON, P-codes, CloudEvents, WebSub, …) and where |
 
 See also [Country Data Architecture](../../../country-data-architecture.md) for
 country packs and P-codes.
