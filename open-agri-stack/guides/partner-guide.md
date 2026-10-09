@@ -272,6 +272,7 @@ The request is a DCI-style envelope: `header`, `message`, and a **detached JWS**
 | `message.subject` | `{"type": "FAYDA_FAN" \| "FARMER_ID", "value": "…"}` |
 | `message.parameters` | the use case's `input.parameters`, e.g. `{"crop_year": 2019, "season": "SEASON_MEHER"}` for `loan-profile`; omit or `{}` for none |
 | `message.consent_jws` | the consent from step 7 |
+| `message.consent_id` | *instead of `consent_jws`:* the ID of a consent the farmer gave through the Consent Manager (e.g. collected in person in the partner portal and verified by staff; see [consent collection](../../consent-management/design/consent-collection.md)). The exchange Consent Manager checks it (active, in its validity, obtained by you, about this farmer) and what it grants; needs the composite's exchange consent mode. Send one of the two, not both. |
 
 **The signature** is a JWS whose payload is the canonical JSON of `{"header": …, "message": …}` (keys sorted, no whitespace, UTF-8), with the payload part removed: `<protected header>..<signature>`.
 

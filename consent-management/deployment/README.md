@@ -185,6 +185,26 @@ The service itself **validates tokens via JWKS only** — it consumes no client 
 generated `client_secret` exists for *callers*: the registry/PEP obtaining a client-credentials
 token to call `/validate`, and admin automation obtaining a token that carries the admin role.
 
+## Partner portal and consent evidence — optional
+
+The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then verify it in the CM console (**Consent verifications**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
+
+| Value | Default | |
+| --- | --- | --- |
+| `partnerPortal.enabled` | `false` | The portal SPA (`consent-partner-portal.<namespace>.openg2p.org`), the partner realm in Keycloak, and evidence storage |
+| `partnerPortal.compositeUrl` | empty | Optional: a use-case composite URL; the portal then shows its use cases and pre-fills requests from them (the composite must allow the portal's origin: `composite.corsAllowOrigins`) |
+| `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files; the commons Garage init job creates the bucket |
+
+The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
+
+**One-time Keycloak setup.** The chart's keycloak-init creates the `partner` realm and the `consent-partner-portal` client, but cannot create realm roles, user-profile attributes, token mappers or users with attributes. After installing, run [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh) (idempotent) — it creates the roles `PARTNER_OPERATOR` / `PARTNER_ADMIN`, declares the `partner_id` user attribute, adds its token mapper, and optionally creates partner users with a generated password kept in a Secret `partner-user-<username>`:
+
+```bash
+deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operator:bank-a:PARTNER_OPERATOR
+```
+
+A partner user's `partner_id` must be the partner's ID as bound in the CM (its policy bindings' audience, e.g. `bank-a`).
+
 ## Approval workflow (AWE) — optional
 
 Off by default (`global.aweEnabled: false`): policy changes take effect immediately. Setting it to

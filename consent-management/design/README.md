@@ -27,6 +27,7 @@ Workflow Engine (AWE)**.
 | [Approval Workflow integration](approval-workflow-integration.md) | How CM gates data-share policy widening through AWE — pending version, proxied approvals inbox, HMAC webhook, activate/supersede. |
 | [Exchange receipts](exchange-receipts.md) | Agri Stack exchange (opt-in): the exchange CM signs a consent receipt per registry; a department CM accepts receipts from a trusted issuer under its own standing policy. |
 | [Consent lifecycle](consent-lifecycle.md) | The **secondary** flow: originating consent (request → authenticate → approve → artefact → receipt), revocation, and expiry. |
+| [Consent collection](consent-collection.md) | How a partner seeks consent and how the subject gives it: in person (assisted), SMS/USSD, self-service; what is built, the gaps, and the partner portal. |
 | [Security &amp; trust](security-and-trust.md) | Signing and key management, ID-token validation, replay protection, and the threat model. |
 | [Standards &amp; best practices](standards-and-best-practices.md) | Alignment with Kantara/ISO 27560, GDPR, DEPA/AA, and DCI/OIDC — and the gaps we deliberately close. |
 
