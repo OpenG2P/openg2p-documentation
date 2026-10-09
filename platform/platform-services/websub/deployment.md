@@ -63,7 +63,7 @@ The Partner API and Celery charts also expose:
 
 {% hint style="warning" %}
 After an upgrade, confirm the effective `websub_base_url` inside both running
-processes. The default value set in core the incluster access route
+processes. The default value set in core is the incluster access route
 `http://commons-services-websub`.
 {% endhint %}
 
