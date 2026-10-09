@@ -63,8 +63,8 @@ The Partner API and Celery charts also expose:
 
 {% hint style="warning" %}
 After an upgrade, confirm the effective `websub_base_url` inside both running
-processes. A process that only sees the core default will call
-`http://websub.play.svc.cluster.local` instead of the Commons hub.
+processes. The default value set in core is the incluster access route
+`http://commons-services-websub`.
 {% endhint %}
 
 Which Registry call uses the hub is specified with the feature: topic
