@@ -28,7 +28,10 @@ The [composite as built](../implementation/composite.md) leaves these for later:
   * **Reconsider a gateway product** only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated.
 * **Registry endpoints held in PM** rather than in the composite's configuration (`composite.registries`).
 * **Calling the crop sources in parallel with the farmer** when the partner already sends a farmer ID.
-* **A configuration UI.**
+* **Console, next steps** (the read-only [console](../guides/composite-console.md) is built):
+  * **Editing use cases in the console:** use cases stored in the composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run against the registries, and a record of who changed what and when (in the database, and sent to the Audit Manager). Earlier versions need not be kept.
+  * **"Give partner X use case Y":** one flow that checks the partner's key in PM, creates its Consent Manager policy from the use case's data scopes and adds it to the use case's partners.
+  * **Data scopes for registries a partner calls directly:** a registry's own staff UI (and CM's policy form) do not list its data scopes yet; the registry staff API has them (`/data_scopes/get_data_scopes`).
 * **TODO: JSON Schema per use case.** No machine-readable response schema is published; the describe endpoint lists output field names only. Add an endpoint serving each use case's JSON Schema (`response.schema`, accepted but not acted on), and validate responses against it.
 * **Developer sandbox** with each published use case's schema, sample request and response, and a test harness.
 

@@ -106,7 +106,8 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` (see [subject ID types](#subject-id-types)) |
 | `input.parameters.<name>` | `{type: integer\|number\|string\|boolean, description, required, default, min, max, enum}`. For strings, `min`/`max` bound the length. Unknown parameters are rejected. |
 | `input.batch.max_subjects` | Must be 1 |
-| `sources[]` | `{id, controller, requirement: mandatory\|optional, depends_on: [], dci: {reg_type, reg_record_type, query_template}, timeout_ms, retries}`. `id` matches `^[a-z][a-z0-9_]*$`; `timeout_ms` 50–120000; `retries` 0–5 (default 0); `requirement` defaults to `mandatory`. `depends_on` may not form a cycle. |
+| `sources[]` | `{id, controller, requirement: mandatory\|optional, depends_on: [], scopes: [], optional_scopes: [], dci: {reg_type, reg_record_type, query_template}, timeout_ms, retries}`. `id` matches `^[a-z][a-z0-9_]*$`; `timeout_ms` 50–120000; `retries` 0–5 (default 0); `requirement` defaults to `mandatory`. `depends_on` may not form a cycle. |
+| `sources[].scopes`, `sources[].optional_scopes` | The registry's [data scopes](#data-scopes) the source uses (IDs `<controller>.<name>`). See below. |
 | `response.mapping` | `out.path: <JSONPath>` over `{subject, parameters, sources: {id: {status, records: [...]}}}`. Wildcards and filters give lists; other paths give one value. |
 | `response.derived` | `out.path: <expr>` using `sum`, `count`, `min`, `max`, `first`, `round` over JSONPaths and numbers (no `eval`). The mapped output is at `$.data`. |
 | `response.source_status` | Include `sources` in the response (default `true`) |
@@ -128,7 +129,18 @@ A subject ID type names the kind of identifier a request's subject is given in. 
 * **Consent Manager:** each partner policy's `allowed_subject_id_types` must include the type, or CM refuses the consent.
 
 
-Also accepted from the design but **not acted on yet** (logged once at load): `owner`, `consent.collection`, `consent.mode`, `sources[].request_scopes`, `response.schema`, `response.correlate_on`, `response.mode: merged`, `execution.fan_out: parallel`, and `limits.daily_quota_per_partner`.
+### Data scopes
+
+Each source names the data scopes it uses, from its registry's catalogue (signed `POST /partner/data_scopes` on the registry's partner API, or the console's **Registries** page). The use case, set by the admin, fixes what is asked for; a partner does not pick scopes.
+
+* **`scopes` (required):** the partner's consent must grant every one. Missing for a **mandatory** source: the request fails (`403 consent_scope_missing`). Missing for an **optional** source: it is not called and reported `denied`.
+* **`optional_scopes`:** may be left out of the consent; the fields they cover then come back `null`.
+* **Nothing else is asked for.** In exchange mode the composite asks the exchange Consent Manager for receipts with only these scopes (`request_context.requested_scopes`), so each registry returns no other field. In passthrough mode the registry sees the partner's consent as given; the composite still maps only its output fields.
+* A scope ID must belong to the source's registry (`<controller>.`), may not be listed twice, nor in both lists. `request_scopes` is accepted as the earlier name of `scopes`.
+* A source with neither list has no scope check (its registry's grant is used as it is).
+* The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent and to allow in the partner's Consent Manager policy.
+
+Also accepted from the design but **not acted on yet** (logged once at load): `owner`, `consent.collection`, `consent.mode`, `response.schema`, `response.correlate_on`, `response.mode: merged`, `execution.fan_out: parallel`, and `limits.daily_quota_per_partner`.
 
 Output paths (`mapping` and `derived` keys) are dot-separated identifiers; each may be defined once, and a path can't be both a value and the parent of another.
 

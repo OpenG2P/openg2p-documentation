@@ -126,7 +126,7 @@ audit:
 A use case moves from `draft` → `validated` → `published` only if all of these pass:
 
 1. The `policy` exists in PM and is active, and `purpose` is one of its allowed purposes.
-2. Each source's `request_scopes` ⊆ that controller's **approved** section of the policy. A source whose section isn't yet approved can stay in the configuration, but it will always return `denied` until the section is approved.
+2. Each source's `scopes` and `optional_scopes` (earlier `request_scopes`) ⊆ that controller's **approved** section of the policy. A source whose section isn't yet approved can stay in the configuration, but it will always return `denied` until the section is approved.
 3. `input.subject.id_types` ⊆ the policy's allowed subject identifier types.
 4. Every `mapping` path refers only to fields covered by the requested scopes, using each registry's published scope-to-field mapping. A use case can't map a field it didn't ask for.
 5. The query templates render valid DCI requests against sample data. The sandbox runs each use case end to end with test fixtures.

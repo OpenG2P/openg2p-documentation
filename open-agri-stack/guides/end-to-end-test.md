@@ -7,7 +7,7 @@ description: >-
 
 # End-to-End Test from a Laptop
 
-[`composite/scripts/e2e.py`](https://github.com/openg2p/agri-stack/blob/develop/composite/scripts/e2e.py) tests the composite against a cluster namespace from your laptop. Using your current kubectl context, it reaches the services through `kubectl port-forward` (closed on exit), sets up a test partner and the composite's signing key, picks a farmer who has crop seasons, calls the `loan-profile` use case, verifies the composite's signature and saves the JSON answer.
+[`scripts/e2e.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/e2e.py) tests the composite against a cluster namespace from your laptop. Using your current kubectl context, it reaches the services through `kubectl port-forward` (closed on exit), sets up a test partner and the composite's signing key, picks a farmer who has crop seasons, calls the `loan-profile` use case, verifies the composite's signature and saves the JSON answer.
 
 ## Prerequisites
 
@@ -18,14 +18,14 @@ description: >-
 ```bash
 cd agri-stack
 python3 -m venv .venv && . .venv/bin/activate
-pip install -r composite/scripts/requirements.txt     # cryptography, pyjwt, httpx
+pip install -r scripts/requirements.txt     # cryptography, pyjwt, httpx
 ```
 
 ## The recommended commands
 
 ```bash
-python composite/scripts/e2e.py -n <ns> --partner bank-a --yes    # first time: set up, then call
-python composite/scripts/e2e.py -n <ns> --partner bank-a --call-only    # afterwards: call with the saved keys
+python scripts/e2e.py -n <ns> --partner bank-a --yes    # first time: set up, then call
+python scripts/e2e.py -n <ns> --partner bank-a --call-only    # afterwards: call with the saved keys
 ```
 
 * **`--partner` (required):** a partner the use case allows (`allowed_partners`); `loan-profile` allows `bank-a`. The script registers a **TEST** key for it in Partner Management (`PARTNER_BANK_A`), so use a partner ID that is a test partner in that environment. To test with another ID, add it to the use case's `allowed_partners` first (Rancher → Apps → Installed Apps → the composite release → **Edit YAML**, key `composite.useCases.<use case>`; pods reload the use case within about 30 s).
@@ -37,7 +37,7 @@ python composite/scripts/e2e.py -n <ns> --partner bank-a --call-only    # afterw
 When the composite runs in the exchange namespace and the registries in department namespaces (see [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md)):
 
 ```bash
-python composite/scripts/e2e.py -n agrix --partner bank-a --fr-namespace trial --csr-namespace dept1 --yes
+python scripts/e2e.py -n agrix --partner bank-a --fr-namespace trial --csr-namespace dept1 --yes
 ```
 
 * **`--fr-namespace`, `--csr-namespace`:** where each registry, its PM, CM and Postgres run (default: `-n`).
@@ -79,7 +79,7 @@ Keys are reused across runs. `--new-keys` generates new test keys with new kids 
 
 ## Outputs
 
-Each run writes two files to `composite/scripts/out/` (git-ignored, owner-only; they hold a farmer's personal data), with the same timestamp:
+Each run writes two files to `scripts/out/` (git-ignored, owner-only; they hold a farmer's personal data), with the same timestamp:
 
 * the response JSON: `<use case>-<namespace>-<time>.json`, e.g. `loan-profile-trial-20261001-100000.json`;
 * everything the script printed: `e2e-<namespace>-<time>.log`.
@@ -105,7 +105,7 @@ A pre-signed request **expires about 5 minutes after signing**: `header.message_
 {% endhint %}
 
 ```bash
-python composite/scripts/e2e.py -n <ns> --partner bank-a --call-only --crop-year 2018 --season SEASON_MEHER \
+python scripts/e2e.py -n <ns> --partner bank-a --call-only --crop-year 2018 --season SEASON_MEHER \
     --emit-curl --emit-postman loan-profile.postman.json
 ```
 
@@ -119,4 +119,4 @@ python composite/scripts/e2e.py -n <ns> --partner bank-a --call-only --crop-year
 | 3 | The call failed, the response signature did not verify, or a source did not answer `ok` / `no_record` |
 | 130 | Interrupted |
 
-Unit tests for the script's pure parts: `pytest composite/scripts/tests`.
+Unit tests for the script's pure parts: `pytest scripts/tests`.

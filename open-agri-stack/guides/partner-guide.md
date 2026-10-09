@@ -133,7 +133,7 @@ curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases          
 curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases/<use_case>   # one use case
 ```
 
-The description tells you what to set up and send: `purpose` (for the policies and the consent), `input.subject.id_types` and `input.parameters` (for the request), `sources` and `consent_grants_needed` (the registries to get bindings for and to grant in the consent), and `output_fields`.
+The description tells you what to set up and send: `purpose` (for the policies and the consent), `input.subject.id_types` and `input.parameters` (for the request), `sources` and `consent_grants_needed` (the registries to get bindings for and to grant in the consent), `consent_scopes` (per registry, the data scopes the consent must grant, `required`, and may grant, `optional`), and `output_fields`.
 
 Example: `loan-profile`.
 
@@ -158,11 +158,26 @@ Example: `loan-profile`.
     "batch": {"max_subjects": 1}
   },
   "sources": [
-    {"id": "farmer", "controller": "farmer-registry", "requirement": "mandatory", "depends_on": []},
-    {"id": "season_summaries", "controller": "crop-sown-registry", "requirement": "optional", "depends_on": ["farmer"]},
-    {"id": "crop_seasons", "controller": "crop-sown-registry", "requirement": "optional", "depends_on": ["farmer"]}
+    {"id": "farmer", "controller": "farmer-registry", "requirement": "mandatory", "depends_on": [],
+     "scopes": ["farmer-registry.farmer_identifiers", "farmer-registry.personal_details",
+                "farmer-registry.land", "farmer-registry.main_crops"],
+     "optional_scopes": ["farmer-registry.household_location", "farmer-registry.land_location"]},
+    {"id": "season_summaries", "controller": "crop-sown-registry", "requirement": "optional", "depends_on": ["farmer"],
+     "scopes": ["crop-sown-registry.farmer_reference", "crop-sown-registry.crop_season", "crop-sown-registry.measures"],
+     "optional_scopes": ["crop-sown-registry.location"]},
+    {"id": "crop_seasons", "controller": "crop-sown-registry", "requirement": "optional", "depends_on": ["farmer"],
+     "scopes": ["crop-sown-registry.farmer_reference", "crop-sown-registry.crop_season", "crop-sown-registry.measures"],
+     "optional_scopes": ["crop-sown-registry.location"]}
   ],
   "consent_grants_needed": ["crop-sown-registry", "farmer-registry"],
+  "consent_scopes": {
+    "crop-sown-registry": {"required": ["crop-sown-registry.crop_season", "crop-sown-registry.farmer_reference",
+                                        "crop-sown-registry.measures"],
+                           "optional": ["crop-sown-registry.location"]},
+    "farmer-registry": {"required": ["farmer-registry.farmer_identifiers", "farmer-registry.land",
+                                     "farmer-registry.main_crops", "farmer-registry.personal_details"],
+                        "optional": ["farmer-registry.household_location", "farmer-registry.land_location"]}
+  },
   "output_fields": ["crops.season_summaries", "crops.seasons", "crops.total_area_sown_ha", "farmer.birth_date",
                     "farmer.identifiers", "farmer.location", "farmer.main_crops", "farmer.name", "farmer.sex",
                     "land.parcel_count", "land.parcels", "land.total_size"],
@@ -172,7 +187,7 @@ Example: `loan-profile`.
 }
 ```
 
-`consent_grants_needed` lists the registries your consent needs a grant for (the data scopes of each grant come from that registry's catalogue, [step 3](#step-3-get-a-binding-and-policy-for-each-registry)). A grant for a **mandatory** source is required; without a grant for an **optional** source, that source is reported `denied` and not called.
+`consent_grants_needed` lists the registries your consent needs a grant for, and `consent_scopes` the data scopes of each grant: grant every `required` scope (and the `optional` ones you want). A grant for a **mandatory** source, with its required scopes, is needed or the request fails (`consent_scope_missing`); without them for an **optional** source, that source is reported `denied` and not called. Scopes beyond the use case's are never asked for.
 
 ## Step 6 — Collect the farmer's consent
 
@@ -418,13 +433,13 @@ If the farmer had not consented to the Crop Sown Registry (no grant), `season_su
 
 ## Test kit
 
-[`composite/scripts/partner_kit.py`](https://github.com/openg2p/agri-stack/blob/develop/composite/scripts/partner_kit.py) does all of the above for testing (`pip install cryptography pyjwt`):
+[`scripts/partner_kit.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_kit.py) does all of the above for testing (`pip install cryptography pyjwt`):
 
 ```bash
-python composite/scripts/partner_kit.py keys          # partner key + composite .p12 in scripts/kit-out (git-ignored), and what to onboard
-python composite/scripts/partner_kit.py consent --subject FAYDA_FAN:123456789012
-python composite/scripts/partner_kit.py describe --url https://agri-composite.<ns>.openg2p.org
-python composite/scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org \
+python scripts/partner_kit.py keys          # partner key + composite .p12 in scripts/kit-out (git-ignored), and what to onboard
+python scripts/partner_kit.py consent --subject FAYDA_FAN:123456789012
+python scripts/partner_kit.py describe --url https://agri-composite.<ns>.openg2p.org
+python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org \
     --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
 ```
 

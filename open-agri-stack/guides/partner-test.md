@@ -6,10 +6,10 @@ description: >-
 
 # Partner Test (Public APIs)
 
-[`composite/scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/composite/scripts/partner_test.py) walks through what a partner such as a bank does, using only the environment's public URLs. It runs from any machine that can reach them. Unlike the [laptop end-to-end test](end-to-end-test.md), it uses no kubectl and reads no database.
+[`scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_test.py) walks through what a partner such as a bank does, using only the environment's public URLs. It runs from any machine that can reach them. Unlike the [laptop end-to-end test](end-to-end-test.md), it uses no kubectl and reads no database.
 
 ```bash
-python composite/scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a
+python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a
 ```
 
 * **`--base-domain`:** every URL defaults to `https://<service>.<base domain>`: `agri-composite`, `partner-management-partner-api`, `pm-staff-portal` (PM's admin API), `consent-manager`, and Keycloak's staff realm. Each one can be overridden (`--composite-url`, `--pm-staff-url`, …).
@@ -23,7 +23,7 @@ python composite/scripts/partner_test.py --base-domain agrix.openg2p.org --partn
 | **1. Use case** | GET the use case from the composite: purpose, inputs, the registries the consent must grant |
 | **2. Key** | The partner's signing key (EC P-256), kept in `--state-dir` (default `~/.agri-partner-test/<base domain>`) and reused |
 | **3. Onboard** | The partner's key in Partner Management. **With PM admin credentials:** the script raises the onboarding (or key-update) request and waits for a PM admin to approve it in the PM portal; `--auto-approve` approves it with the same credentials. **Without:** it prints the partner ID and the public key (also written to the state directory) for a PM admin to onboard and approve. Either way it waits (`--wait`, default 30 min) until PM's public key API serves the key |
-| **4. Access** | The partner's binding and policy per registry in the Consent Manager. **With CM admin credentials:** the script creates them. If the CM's optional AWE approval of policies is turned on (off by default), it waits for the approval. **Without:** it prints what a CM admin must set up and waits for Enter (`--no-prompt` skips the wait) |
+| **4. Access** | The partner's binding and policy per registry in the Consent Manager. **With CM admin credentials:** the script creates them. If the CM's optional AWE approval of policies is turned on (off by default), it waits for the approval. **Without:** nothing is checked, since a partner cannot see the CM's bindings either; the script goes on to the query, and if that is refused for consent it prints what a CM admin must set up |
 | **5. Consent and query** | A consent for the farmer with a grant per registry, signed by the partner; the signed request is POSTed to the composite's public URL |
 | **6. Result** | The response signature is checked against the composite's key served by PM; each source's status is printed, and the JSON is saved (git-ignored, owner-only) |
 
@@ -40,7 +40,7 @@ With both set and `--auto-approve`, the run needs no manual step:
 
 ```bash
 export PM_ADMIN_CLIENT_SECRET=… CM_ADMIN_CLIENT_SECRET=…
-python composite/scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --auto-approve --no-prompt
+python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --auto-approve
 ```
 
 ## What the operator sets up beforehand

@@ -8,14 +8,14 @@ description: >-
 # Composite as Built
 
 {% hint style="info" %}
-**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`deployment/`](https://github.com/openg2p/agri-stack/tree/develop/composite/deployment)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and test scripts ([`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/composite/scripts)). Built October 2026.
+**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`deployment/`](https://github.com/openg2p/agri-stack/tree/develop/composite/deployment)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); test and uninstall scripts in the repository's [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts). Built October 2026.
 {% endhint %}
 
 The design is on the [use-case composite](../design/use-case-composite.md) page. This page says what the first version does. How to call it is in the [partner guide](../guides/partner-guide.md); how to configure it in the [composite configuration guide](../guides/composite-configuration.md).
 
 ## Service
 
-* One stateless FastAPI service, `openg2p-agri-composite` (image `openg2p/openg2p-agri-composite-api`), built on [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common). **No database.**
+* One FastAPI service, `openg2p-agri-composite` (image `openg2p/openg2p-agri-composite-api`), built on [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common). The partner API is stateless; a database is used only by the optional [console](../guides/composite-console.md) (its call log).
 * **Use cases are YAML files** in a Helm-managed ConfigMap (edited in Rancher's YAML values editor), validated strictly at load and reloaded within 30 seconds of a change; only `published` ones are served.
 * **Registries are configured as `controller → DCI search URL`** (`composite.registries` in Helm, `AGRI_COMPOSITE_REGISTRIES` in the environment), because Partner Management holds no registry endpoints yet. Nothing about a registry is hard-coded.
 * **Its own identity:** partner ID `agri-composite` in PM (`PARTNER_AGRI_COMPOSITE`), with its signing key in the Kubernetes Secret `agri-composite-signing` (a `.p12`).
@@ -35,14 +35,14 @@ The full request and response, with examples, are in the [partner guide](../guid
 1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`); checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the composite.
 2. Checks the partner is in the use case's `allowed_partners` (a stand-in for the PM policy association, which PM doesn't have yet).
 3. Validates the input (subject type, parameters) and applies a per-partner rate limit.
-4. Verifies the consent: the partner's signature on it, the subject is the one asked about, its validity window, and a grant for every mandatory source. An optional source without a grant is reported `denied` and not called.
+4. Verifies the consent: the partner's signature on it, the subject is the one asked about, its validity window, and a grant with the use case's required [data scopes](../guides/composite-configuration.md#data-scopes) for every mandatory source. An optional source without them is reported `denied` and not called.
 5. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the **composite's own PM key**, carrying the partner's consent unchanged and the partner's ID in `header.meta.on_behalf_of`. Per-source timeout and retries; overall timeout.
 6. Maps the results (JSONPath), computes derived fields (`sum`, `count`, `min`, `max`, `first`, `round`), and returns a response signed by the composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
 7. Sends audit events (request, each source call, response; no data and no subject identifiers) to the [Audit Manager](../../platform/platform-services/audit-manager/README.md) as CloudEvents, without ever blocking the request.
 
 **Each registry still decides.** It verifies the composite's signature, validates its own grant in the consent with CM, checks that the consent's subject is the person searched (directly, or through its own data, e.g. a farmer ID recorded with the farmer's FAN), and clamps the record to the effective scopes.
 
-Nothing is stored. Logs carry the request ID, use case, partner, statuses and timings only.
+No partner data is stored. Logs carry the request ID, use case, partner, statuses and timings only; with the console on, the same (never the subject, the consent or any data) goes to its call log.
 
 ## Sample use case: `loan-profile`
 

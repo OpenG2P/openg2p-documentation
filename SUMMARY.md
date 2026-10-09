@@ -608,6 +608,7 @@
   * [Guides](open-agri-stack/guides/README.md)
     * [Partner Guide](open-agri-stack/guides/partner-guide.md)
     * [Composite Configuration](open-agri-stack/guides/composite-configuration.md)
+    * [Composite Console](open-agri-stack/guides/composite-console.md)
     * [Adding a Data Source](open-agri-stack/guides/adding-a-data-source.md)
     * [End-to-End Test from a Laptop](open-agri-stack/guides/end-to-end-test.md)
     * [Partner Test (Public APIs)](open-agri-stack/guides/partner-test.md)

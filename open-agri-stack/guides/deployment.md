@@ -83,7 +83,7 @@ The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registr
 
 Before the composite can serve requests:
 
-1. **Keys.** Generate the composite's key as a `.p12` (and, for testing, a partner key): `python composite/scripts/partner_kit.py keys` writes both to `scripts/kit-out/` and prints the next steps.
+1. **Keys.** Generate the composite's key as a `.p12` (and, for testing, a partner key): `python scripts/partner_kit.py keys` writes both to `scripts/kit-out/` and prints the next steps.
 2. **PM.** A PM administrator onboards and approves the composite as `PARTNER_AGRI_COMPOSITE` with its public key and `kid`, and each partner as `PARTNER_<ID>` ([partner guide, step 2](partner-guide.md#step-2-get-onboarded-in-partner-management)).
 3. **Signing Secret** in the namespace:
 
@@ -185,7 +185,7 @@ The registries need no change: each keeps calling its own CM, which now accepts 
 
 | What | Script | Notes |
 | --- | --- | --- |
-| Composite | [`composite/deployment/scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/composite/deployment/scripts/uninstall-agri-composite.sh) `--namespace <ns> [--release agri-composite] [--drop-signing-secret] [--dry-run] [--yes]` | Removes the release, leftover hook Jobs, ConfigMaps and Secrets labelled with the release; the signing Secret only with `--drop-signing-secret`. The composite has no database or PVCs. |
+| Composite | [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns> [--release agri-composite] [--drop-signing-secret] [--dry-run] [--yes]` | Removes the release, leftover hook Jobs, ConfigMaps and Secrets labelled with the release; the signing Secret only with `--drop-signing-secret`. The composite has no database or PVCs. |
 | Crop Sown Registry | [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/crop-sown-registry/blob/develop/scripts/uninstall-registry.sh) `--namespace <ns> [--release csr] [--keep-iam] [--keep-pvs] [--dry-run] [--yes]` | Also drops the registry's database and role in `commons-postgresql`, its IAM rows, PVCs and their PVs |
 | Farmer Registry | [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/farmer-registry/blob/develop/scripts/uninstall-registry.sh) `--namespace <ns> --release fr [--keep-iam] [--keep-dashboards] [--dry-run] [--yes]` | As above, and first removes the registry's Superset dashboards (its default release name is `registry`) |
 
