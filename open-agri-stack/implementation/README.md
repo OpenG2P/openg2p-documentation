@@ -14,7 +14,7 @@ These pages describe what is built and how. The design behind each part is in [D
 | **Consent Manager** | One consent with a grant per registry; bindings per (partner, controller); replay per (`jti`, controller); a stored decision returned only after the binding and signature checks | [Consent Manager changes](consent-manager.md) |
 | **Crop Sown Registry** | The crop-season activity register; the Cluster entity register; sample clusters and crop seasons; DCI records (activities, crop seasons, season summaries); reporting views | [Crop Sown Registry (as built)](crop-sown-registry.md) |
 | **Farmer Registry** | Declared main crops replacing the Crops tab; sample lands numbered to match the Crop Sown Registry; `FARMER_ID` in the DCI farmer record | [Farmer Registry changes](farmer-registry.md) |
-| **Use-case composite** | The generic composite service, its partner API, the `loan-profile` use case, Helm chart, partner test kit and end-to-end test | [Composite as built](composite.md) |
+| **Use-case composite** | The generic composite service, its partner API, the `loan-profile` use case, Helm chart, partner test kit, partner test and exchange setup script | [Composite as built](composite.md) |
 | **Standards** | The open standards used in each area, our own formats, and standards still to explore | [Standards](standards.md) |
 
 ## Repositories

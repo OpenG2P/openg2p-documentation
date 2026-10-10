@@ -21,7 +21,8 @@ Agri Stack is installed into one environment (namespace) from OpenG2P Helm chart
 | 4 | Crop Sown Registry | `openg2p-crop-sown-registry` ("OpenG2P Crop Sown Registry") | `csr` |
 | 5 | PM and CM entries for the composite and the partners; the composite's signing Secret | — | — |
 | 6 | Use-case composite | `openg2p-agri-composite` ("Agri Stack Composite") | e.g. `agri-composite` |
-| 7 | Test | [End-to-end test](end-to-end-test.md) | — |
+| 7 | Exchange setup (exchange installs) | [Exchange setup](exchange-setup.md) | — |
+| 8 | Test | [Partner test](partner-test.md) | — |
 
 The composite has no default registry URLs: in step 6, give each registry's full partner API URL, e.g. `https://partner-fr.<dept-domain>/dci/registry/sync/search`. A registry in the same cluster can also be reached as `http://<release>-partner-api.<namespace>.svc.cluster.local/dci/registry/sync/search`.
 
@@ -96,7 +97,7 @@ Before the composite can serve requests:
    `kid` must match the kid registered for the composite in PM (blank → the certificate's SHA-256 thumbprint). `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
 4. **CM.** The CM administrator creates, for each partner, a binding and a policy with each registry ([partner guide, step 3](partner-guide.md#step-3-get-a-binding-and-policy-for-each-registry)).
 
-The [end-to-end test](end-to-end-test.md) does steps 1–4 for a test partner in one go.
+The [exchange setup](exchange-setup.md) does steps 1–3 and the composite's department CM entries in one go; the [partner test](partner-test.md) does steps 2 and 4 for a test partner.
 
 ## Use-case composite
 
@@ -135,8 +136,8 @@ The exchange is installed with the agri-stack [Agri Exchange bundle](https://git
 | Keycloak | **Yes** | Login for the admin UIs (PM, CM, Master Data, IAM) and service tokens |
 | Redis | **Yes** | Login sessions for IAM and Master Data |
 | Kafka | **Yes** | The Audit Manager stores events through it |
-| Garage | **Yes** | Master Data keeps geography boundaries there; the geo seed and public downloads use it |
-| Novu | No, for now | Only once the exchange sends farmers consent notifications (bundle toggle `notifications`) |
+| Garage | **Yes** | Master Data keeps geography boundaries there (the geo seed and public downloads use it); the CM keeps consent evidence (signed consent forms) in bucket `consent-evidence` |
+| Novu | No, for now | Only once the exchange sends farmers consent notifications or SMS confirmations (consent scenario 2; bundle toggle `notifications`) |
 | Kafka UI | Optional | Operations only (bundle toggle `kafkaUi`, off) |
 | MinIO, mail, SoftHSM | No | Off by default |
 
@@ -147,12 +148,14 @@ The exchange is installed with the agri-stack [Agri Exchange bundle](https://git
 | Master Data | **Yes** | The catalogue |
 | Partner Management | **Yes** | Open AgriNet partners onboard here; the composite checks their keys here |
 | Consent Manager | **Yes** | Exchange role: farmer consent and signed receipts (`global.agriStackExchange`) |
+| CM partner portal | **Yes** | Partner users (e.g. bank staff) create consent requests and upload signed forms ([consent collection](../../consent-management/design/consent-collection.md)); bundle toggle `partnerPortal`, on. One-time setup after install: `setup-partner-realm.sh` (consent-manager repo) |
 | Audit Manager | **Yes** | Records the composite's and CM's activity |
 | IAM service | **Yes** | Permissions for the Master Data and PM admin screens |
 | keycloak-init | **Yes** | Creates their Keycloak clients and roles |
 | AWE | No | Only if CM approval of policy widening, or Master Data approval through AWE, is switched on (both off by default) |
 | WebSub hub | No (for now) | On by default in commons because other services use it, but nothing in the exchange layer needs it yet; the override turns it off |
-| Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, commons staff portal UI | No | Department and registry concerns |
+| eSignet, mock identity | No (for now) | Needed for consent phase 2: the farmer's national-ID authentication (Fayda through eSignet; mock identity for testing) |
+| Keymanager, Artifactory, Inji Certify and Verify, ODK Central, Superset, commons staff portal UI | No | Department and registry concerns |
 
 **Also in `agrix`:** the composite (`openg2p-agri-composite`, a separate chart, not part of commons) in consent mode `exchange`, with its exchange CM URL and its registry URLs set to the departments' partner APIs (`https://partner-fr.trial.openg2p.org/…`, `https://partner-csr.dept1.openg2p.org/…`). The exchange CM signs receipts with your own key; the bundle has no demo key.
 
@@ -163,10 +166,78 @@ The exchange is installed with the agri-stack [Agri Exchange bundle](https://git
 | Release | Chart | Override |
 | --- | --- | --- |
 | `commons` | `openg2p-commons-base` | Novu and Kafka UI off |
-| `commons-services` | `openg2p-commons-services` | PM, CM, Master Data, Audit Manager, IAM (admin login) and keycloak-init kept; registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI), WebSub and AWE off; the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`, your signing key |
+| `commons-services` | `openg2p-commons-services` | PM, CM (with its partner portal), Master Data, Audit Manager, IAM (admin login) and keycloak-init kept; registry-only services (Keymanager, Artifactory, eSignet, mock identity, Inji Certify and Verify, ODK Central, Superset, staff portal UI), WebSub and AWE off; the CM's **exchange role**: receipt issuer ID `agri-stack-exchange-cm`, receipt presenters `[agri-composite]`, your signing key |
 | `agri-composite` | `openg2p-agri-composite` | Consent mode `exchange`; exchange CM URL `http://commons-services-cm-partner-api` (same namespace); the registry search URLs by external hostname |
 
-The release names `commons` and `commons-services` are required by the commons charts. **In Rancher:** render the overrides with `helmfile -e agrix write-values` (or `helmfile -e agrix template`), then install the three charts in the order above, at the versions in `versions.yaml`, pasting each rendered file into **Edit YAML**, and wait for each to be ready before the next. Upgrades: a new bundle version, then the same command (`helmfile -e agrix diff` first). See the bundle's README.
+The release names `commons` and `commons-services` are required by the commons charts. **In Rancher:** render the overrides with `helmfile -e agrix write-values` (or `helmfile -e agrix template`), then install the three charts in the order above, at the versions in `versions.yaml`, pasting each rendered file into **Edit YAML**, and wait for each to be ready before the next (or make the choices listed below by hand). Upgrades: a new bundle version, then the same command (`helmfile -e agrix diff` first). See the bundle's README.
+
+**Installing by hand in Rancher (without helmfile).** Use these choices for the exchange (`agrix`) only. Department installs (the registries) keep the commons defaults.
+
+*commons-base* (release `commons`), in the form:
+
+| Form field | Choose |
+| --- | --- |
+| Install Novu? | **No** (yes only once the exchange sends notifications or SMS) |
+| Install Kafka UI? | No (optional, operations only) |
+| Everything else | Default |
+
+*commons-services* (release `commons-services`), in the form:
+
+| Form field | Choose | Default |
+| --- | --- | --- |
+| Install Master Data? | **Yes** (Country Pack `ETH`, Dataset Themes `agriculture`, Load Datasets on) | Yes |
+| Install Partner Management? | **Yes** | Yes |
+| Install Consent Manager? | **Yes** | Yes |
+| Require AWE Approval for Policy Widening? | **No** | No |
+| Install Staff Portal UI? | **No** | Yes |
+| Install ODK Central? | **No** | Yes |
+| Install Superset? | **No** | Yes |
+| Install AWE? | **No** | Yes |
+| Install Inji Certify? | **No** | Yes |
+| Install eSignet? | **No** (yes for consent phase 2) | Yes |
+| Install Mock Identity System? | **No** (yes for consent phase 2) | Yes |
+| Install Keymanager? | **No** | No |
+| Install WebSub? | **No** | Yes |
+
+The form does not show the rest. Add it in **Edit YAML** (replace `<…>`; the CM signing key Secret must already exist in the namespace):
+
+```yaml
+# Not in the form: keep
+openg2p-iam-service:
+  enabled: true
+openg2p-audit-manager:
+  enabled: true
+keycloak-init:
+  enabled: true
+# Not in the form: off
+artifactory:
+  enabled: false
+openg2p-inji-verify:
+  enabled: false
+# Consent Manager: exchange role, own signing key, partner portal
+openg2p-consent-manager:
+  global:
+    aweEnabled: false
+    consentSigningKid: <kid>
+    agriStackExchange:
+      enabled: true
+      issuer: agri-stack-exchange-cm
+      receiptPresenters: [agri-composite]
+      receiptTtlSeconds: 900
+      trustedReceiptIssuers: []
+  consentManagerApi:
+    signingKey:
+      mode: existing
+      secretName: <secret>
+      secretKey: <p12 key, e.g. cm.p12>
+      passwordSecretName: <secret>
+      passwordSecretKey: <password key, e.g. password>
+  partnerPortal:
+    enabled: true
+    compositeUrl: https://agri-composite.<base domain>
+```
+
+This is the same as the bundle's `commons-services.yaml.gotmpl`. `helmfile -e agrix write-values` prints it with your values filled in. After the install, run `setup-partner-realm.sh` once (consent-manager repo, `deployment/scripts/`) for the partner portal's realm roles, `partner_id` attribute and token mapper. Then install the composite (step 2's third row) and run the [exchange setup](exchange-setup.md).
 
 **3. Onboarding.**
 

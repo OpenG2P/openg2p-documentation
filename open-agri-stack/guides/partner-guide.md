@@ -447,7 +447,7 @@ python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org
 * `keys` (defaults: partner `bank-a`, composite `agri-composite`) prints the PM onboarding requests for `PARTNER_BANK_A` and `PARTNER_AGRI_COMPOSITE`, the `kubectl create secret generic agri-composite-signing …` command, and the CM bindings and policies for audience `bank-a`.
 * `call` builds a consent with both grants (`--controllers` narrows it), signs the envelope, verifies the composite's signature on the answer and prints it.
 
-To set everything up against a cluster namespace in one go, use the [end-to-end test](end-to-end-test.md).
+To go through these steps as a test partner against an environment, use the [partner test](partner-test.md).
 
 ## Checklist
 

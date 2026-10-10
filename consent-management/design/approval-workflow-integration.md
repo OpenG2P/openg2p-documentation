@@ -130,7 +130,7 @@ only later widenings.
 
 {% hint style="warning" %}
 Automated flows that create a binding and use it straight away — the CM sanity e2e and the
-Agri Stack composite e2e — do not get an active policy while the first version waits for a
+Agri Stack exchange setup and partner test — do not get an active policy while the first version waits for a
 human approval. Run them with AWE off, set `aweGateFirstPolicy: false`, or approve the version in
 the inbox before the permit step. The CM sanity e2e is AWE-aware: when its policy goes `pending`
 it skips the signed permit round-trip (smoke and contract checks still run).

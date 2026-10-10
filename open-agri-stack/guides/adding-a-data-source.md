@@ -145,5 +145,5 @@ So add a new source as `optional` unless every partner can be asked to update it
 ## Step 7 — Test
 
 * **Describe:** `GET /composite/v1/use-cases/loan-profile` should list the new source, its `depends_on`, the new output fields and `livestock-registry` in `consent_grants_needed`. If it doesn't, check the composite's logs for a load error.
-* **End to end:** the [end-to-end test](end-to-end-test.md) sets up PM and CM for the registries in its built-in list (Farmer and Crop Sown) and builds a consent with those two grants; for a new registry, set up the CM binding and policy (step 3) yourself, and call with the [partner test kit](partner-guide.md#test-kit) after extending its grants, or with your own client.
+* **End to end:** rerun the [exchange setup](exchange-setup.md) with `--registry <controller>=<namespace>` for the new registry: it adds the composite's key to that department's PM and a binding and policy with the use cases' scopes to its CM. Then test with the [partner test](partner-test.md), which builds the consent from the use case's `consent_scopes`.
 * **Check the statuses:** with a grant and a matching record the new source is `ok`; without a record `no_record`; without a grant `denied`; with the registry down `unavailable`, while the rest of the response still comes back.

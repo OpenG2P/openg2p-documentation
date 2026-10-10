@@ -6,7 +6,7 @@ description: >-
 
 # Partner Test (Public APIs)
 
-[`scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_test.py) walks through what a partner such as a bank does, using only the environment's public URLs. It runs from any machine that can reach them. Unlike the [laptop end-to-end test](end-to-end-test.md), it uses no kubectl and reads no database.
+[`scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_test.py) walks through what a partner such as a bank does, using only the environment's public URLs. It runs from any machine that can reach them. It uses no kubectl and reads no database. The operator's one-time setup of the exchange (the composite's key and its department entries) is the [exchange setup](exchange-setup.md).
 
 ```bash
 python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a
@@ -49,6 +49,20 @@ The script covers only the partner's side. The rest is part of installing the en
 
 * the composite, with its signing key onboarded in PM as `agri-composite`;
 * in a [distributed deployment](../design/distributed-deployment-architecture.md), each department's PM and CM set up for the composite (its key; a binding and policy for `agri-composite`), and each department CM trusting the exchange CM's receipts.
+
+## With a consent the farmer gave (partner portal)
+
+To test the consent collected in person rather than one the script signs:
+
+1. In the Consent Manager's **partner portal**, as a partner user of the same partner (e.g. `bank-a-operator`), create a consent request for the farmer (or from the use case), upload the signed form and submit it.
+2. In the **CM console**, **Consent verifications**, a staff user approves it; note the consent ID (also shown in the portal under Consents).
+3. Run the test with that ID:
+
+```bash
+python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --fan <the consent's FAN> --consent-id <consent ID>
+```
+
+The query then carries `message.consent_id`; the exchange Consent Manager checks the consent (active, in its validity, obtained by this partner, about this farmer) and what it grants, and the registries get receipts as before. Needs the composite's exchange consent mode. See [consent collection](../../consent-management/design/consent-collection.md).
 
 ## Exit codes
 
