@@ -48,7 +48,7 @@ In the composite's Rancher form, group **Console**, or in Helm values:
 | `console.pmPortalUrl`, `console.cmPortalUrl` | the namespace's PM and CM portals | Links shown in the console |
 | `console.activityRetentionDays` | `90` | Call log retention |
 
-With the console on, the chart also creates the Keycloak client and registers the console in IAM (a Helm hook; set `console.iamRegister.runAsHook: false` in an umbrella install such as the [Agri Exchange bundle](deployment.md)). Then grant staff `AGRI_COMPOSITE_ADMIN` or `AGRI_COMPOSITE_VIEWER` in IAM.
+With the console on, the chart also creates the Keycloak client and registers the console in IAM (a Helm hook; set `console.iamRegister.runAsHook: false` in an umbrella install that runs it after IAM is ready). Then grant staff `AGRI_COMPOSITE_ADMIN` or `AGRI_COMPOSITE_VIEWER` in IAM.
 
 **Uninstall:** [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns>` removes the release and what survives `helm uninstall`: its Jobs, ConfigMaps and Secrets, the console database and role, and the console's IAM application rows (`--keep-db`, `--keep-iam` to keep them; `--dry-run` to see the plan). It keeps the console's Keycloak client (a reinstall updates it), the PM/CM entries, and the signing Secret unless `--drop-signing-secret`.
 

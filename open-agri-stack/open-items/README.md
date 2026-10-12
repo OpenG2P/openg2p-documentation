@@ -42,7 +42,7 @@ The [composite as built](../implementation/composite.md) leaves these for later:
 
 ## Registries
 
-* **Rancher Fleet for multi-department installs (later).** The Agri Exchange bundle (`agri-stack/deploy/agri-exchange`) installs with helmfile today. For production across departments and clusters, add Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) reusing the same override files, so one git repo describes the exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
+* **Scripted installs for multi-department setups (later).** The exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the exchange choices as override files, so one git repo describes the exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
 
 * **TODO: distributed deployment.** Department installs plus one shared exchange tier; registries trusting the exchange CM's consent receipts; exchange-tier install; remote shared services in registry charts; inter-department gateway. See [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md#todo).
 
