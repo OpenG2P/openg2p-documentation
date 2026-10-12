@@ -1,122 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="620" viewBox="0 0 1060 620" role="img" aria-label="Service provider calls through the OpenG2P deployment ingress (Nginx, Istio), which routes to a use-case composite; the composite fans out DCI searches to departmental registries; each registry validates with the Consent Manager, which reads policy from Partner Management; registries look up codes and geography in Layer 2 reference services."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="740" viewBox="0 0 1240 740" role="img" aria-label="Agri Stack across departments. A partner's staff collect a farmer's consent in the Consent Manager's partner portal; the farmer logs in with the national ID through eSignet. The partner's system sends a signed query with the consent through the ingress to the use-case composite in the Agriculture Department. The composite asks the department's Consent Manager for one receipt per registry, then searches the Farmer Registry (Agriculture Department) and the Crop Sown Registry (Crops Department) with those receipts. Each registry checks its receipt at its own department's Consent Manager, which trusts the Agriculture Department's Consent Manager. Each department has its own Partner Management, Consent Manager and catalogue."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
-.cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.cap{font-size:10.5px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.n{font-size:11.5px;font-weight:700;fill:#1B231F}
 .l1{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5} .l2{fill:#F7ECD4;stroke:#AE8433;stroke-width:1.5}
 .dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5} .uc{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
 .plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
 .infra{fill:#F3F4F3;stroke:#8A948E;stroke-width:1.3;stroke-dasharray:6 4}
-.dept{fill:none;stroke:#C8D0C8;stroke-width:1.3;stroke-dasharray:5 4}
+.dept{fill:none;stroke:#9AA59D;stroke-width:1.4;stroke-dasharray:5 4}
+.faint{fill:#FAFBFA;stroke:#C8D0C8;stroke-width:1.2;stroke-dasharray:5 4}
 .band{fill:none;stroke:#56625B;stroke-width:1.2;stroke-dasharray:6 5}
 .ar{stroke:#3B4640;stroke-width:1.4;fill:none} .ar.d{stroke-dasharray:5 4}
-.life{stroke:#C8D0C8;stroke-width:1.2;stroke-dasharray:4 4}
-.chip-ok{fill:#DDEFE3;stroke:none} .chip-no{fill:none;stroke:#C8D0C8;stroke-dasharray:4 3}
-.ok{font-size:12px;fill:#1F5B3A;font-family:'JetBrains Mono',Menlo,monospace}
-.no{font-size:12px;fill:#8A948E;font-family:'JetBrains Mono',Menlo,monospace}
-.strike{stroke:#8A948E;stroke-width:1.2} .op{font-size:22px;fill:#56625B;font-weight:500}
-.x{stroke:#C0463B;stroke-width:2}
 </style><rect width="100%" height="100%" fill="#FFFFFF"/>
-      <defs>
-        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker>
-      </defs>
+  <defs>
+    <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker>
+  </defs>
 
-      <!-- OAN band -->
-      <rect class="band" x="20" y="12" width="1000" height="36" rx="6"/>
-      <text class="lbl" x="520" y="35" text-anchor="middle">OAN network layer (Beckn): discovery of service providers and consumers — not used for registry data exchange</text>
+  <!-- OAN band -->
+  <rect class="band" x="20" y="10" width="1200" height="32" rx="6"/>
+  <text class="lbl" x="620" y="31" text-anchor="middle">OAN network layer (Beckn): discovery of service providers and consumers — not used for registry data exchange</text>
 
-      <!-- SP -->
-      <rect class="plain" x="250" y="70" width="260" height="48" rx="6"/>
-      <text class="t" x="380" y="90" text-anchor="middle">Service provider</text>
-      <text class="s" x="380" y="107" text-anchor="middle">bank · MFI · agritech — a PM partner</text>
-      <line class="ar" x1="380" y1="118" x2="380" y2="158" marker-end="url(#a1)"/>
-      <text class="lbl" x="390" y="142">signed request + one consent (a grant per registry)</text>
+  <!-- Partner -->
+  <rect class="plain" x="480" y="58" width="540" height="60" rx="6"/>
+  <text class="t" x="750" y="78" text-anchor="middle">Partner · bank · MFI · agritech (onboarded in Partner Management)</text>
+  <text class="s" x="590" y="102" text-anchor="middle">its staff: the partner portal</text>
+  <text class="s" x="910" y="102" text-anchor="middle">its system: signed API calls</text>
 
-      <!-- Ingress: OpenG2P deployment infrastructure, not a service built here -->
-      <rect class="infra" x="250" y="160" width="260" height="48" rx="6"/>
-      <text class="t" x="380" y="180" text-anchor="middle">Ingress (Nginx · Istio)</text>
-      <text class="s" x="380" y="197" text-anchor="middle">OpenG2P deployment: TLS · routing · mTLS</text>
-      <line class="ar" x1="380" y1="208" x2="380" y2="248" marker-end="url(#a1)"/>
-      <text class="lbl" x="390" y="232">route by use case</text>
+  <!-- Farmer and the national ID system (outside the departments) -->
+  <rect class="plain" x="20" y="175" width="200" height="50" rx="6"/>
+  <text class="t" x="120" y="196" text-anchor="middle">Farmer</text>
+  <text class="s" x="120" y="213" text-anchor="middle">signs the consent form</text>
+  <rect class="plain" x="20" y="380" width="200" height="56" rx="6"/>
+  <text class="t" x="120" y="403" text-anchor="middle">National ID system</text>
+  <text class="s" x="120" y="420" text-anchor="middle">e.g. Fayda · OTP · biometrics</text>
 
-      <!-- Composite -->
-      <rect class="uc" x="230" y="250" width="300" height="48" rx="6"/>
-      <text class="t" x="380" y="270" text-anchor="middle">Use-case composite · credit-profile/v1</text>
-      <text class="s" x="380" y="287" text-anchor="middle">fan-out · per-source status · stores nothing</text>
+  <!-- ═══ Agriculture Department ═══ -->
+  <rect class="dept" x="250" y="135" width="970" height="335" rx="10"/>
+  <text class="cap" x="264" y="155">AGRICULTURE DEPARTMENT · RUNS THE EXCHANGE AND THE FARMER REGISTRY</text>
 
-      <!-- fan-out -->
-      <line class="ar" x1="370" y1="298" x2="110" y2="370" marker-end="url(#a1)"/>
-      <line class="ar" x1="380" y1="298" x2="282" y2="370" marker-end="url(#a1)"/>
-      <line class="ar" x1="390" y1="298" x2="456" y2="370" marker-end="url(#a1)"/>
-      <text class="lbl" x="436" y="322">DCI search, in parallel</text>
+  <!-- Row A -->
+  <rect class="dpi" x="270" y="175" width="180" height="50" rx="6"/>
+  <text class="t" x="360" y="196" text-anchor="middle">Partner Management</text>
+  <text class="s" x="360" y="213" text-anchor="middle">partners' and services' keys</text>
+  <rect class="dpi" x="480" y="175" width="220" height="50" rx="6"/>
+  <text class="t" x="590" y="196" text-anchor="middle">Partner portal (CM)</text>
+  <text class="s" x="590" y="213" text-anchor="middle">consent requests · signed forms</text>
+  <rect class="infra" x="800" y="175" width="220" height="50" rx="6"/>
+  <text class="t" x="910" y="196" text-anchor="middle">Ingress (Nginx · Istio)</text>
+  <text class="s" x="910" y="213" text-anchor="middle">TLS · routing · mTLS</text>
+  <rect class="dpi" x="1050" y="175" width="150" height="50" rx="6"/>
+  <text class="t" x="1125" y="196" text-anchor="middle">Audit Manager</text>
+  <text class="s" x="1125" y="213" text-anchor="middle">events from every hop</text>
 
-      <!-- Departments -->
-      <rect class="dept" x="20" y="350" width="165" height="124" rx="8"/>
-      <rect class="dept" x="198" y="350" width="165" height="124" rx="8"/>
-      <rect class="dept" x="376" y="350" width="165" height="124" rx="8"/>
-      <rect class="dept" x="554" y="350" width="165" height="124" rx="8"/>
-      <text class="cap" x="30" y="365">DEPARTMENT A</text>
-      <text class="cap" x="208" y="365">DEPARTMENT B</text>
-      <text class="cap" x="386" y="365">DEPARTMENT C</text>
-      <text class="cap" x="564" y="365">DEPARTMENT D</text>
+  <!-- Row B -->
+  <rect class="dpi" x="270" y="270" width="180" height="56" rx="6"/>
+  <text class="t" x="360" y="292" text-anchor="middle">eSignet</text>
+  <text class="s" x="360" y="309" text-anchor="middle">national-ID login</text>
+  <rect class="dpi" x="480" y="270" width="220" height="56" rx="6"/>
+  <text class="t" x="590" y="290" text-anchor="middle">Consent Manager</text>
+  <text class="s" x="590" y="305" text-anchor="middle">consents · staff verify (Farmer ID in FR)</text>
+  <text class="s" x="590" y="319" text-anchor="middle">/validate → a receipt per registry</text>
+  <rect class="uc" x="800" y="270" width="220" height="56" rx="6"/>
+  <text class="t" x="910" y="292" text-anchor="middle">Use-case composite</text>
+  <text class="s" x="910" y="309" text-anchor="middle">loan-profile@1 · fan-out · stores nothing</text>
+  <rect class="l2" x="1050" y="270" width="150" height="56" rx="6"/>
+  <text class="t" x="1125" y="292" text-anchor="middle">Catalogue (MDS)</text>
+  <text class="s" x="1125" y="309" text-anchor="middle">datasets · geography</text>
 
-      <rect class="l1" x="28" y="372" width="149" height="60" rx="6"/>
-      <text class="t" x="102" y="396" text-anchor="middle">Farmer Registry</text>
-      <text class="s" x="102" y="413" text-anchor="middle">register + tables</text>
-      <rect class="l1" x="206" y="372" width="149" height="60" rx="6"/>
-      <text class="t" x="280" y="396" text-anchor="middle">Crop Sown Registry</text>
-      <text class="s" x="280" y="413" text-anchor="middle">activity register</text>
-      <rect class="l1" x="384" y="372" width="149" height="60" rx="6"/>
-      <text class="t" x="458" y="396" text-anchor="middle">Livestock Registry</text>
-      <text class="s" x="458" y="413" text-anchor="middle">register + activities</text>
-      <rect class="l1" x="562" y="372" width="149" height="60" rx="6"/>
-      <text class="t" x="636" y="396" text-anchor="middle">DA Registry</text>
-      <text class="s" x="636" y="413" text-anchor="middle">register</text>
+  <!-- Row C -->
+  <rect class="l1" x="800" y="380" width="220" height="56" rx="6"/>
+  <text class="t" x="910" y="402" text-anchor="middle">Farmer Registry</text>
+  <text class="s" x="910" y="419" text-anchor="middle">register · Farmer ID ↔ national ID</text>
 
-      <text class="s" x="102" y="456" text-anchor="middle">enforces its own slice</text>
-      <text class="s" x="280" y="456" text-anchor="middle">enforces its own slice</text>
-      <text class="s" x="458" y="456" text-anchor="middle">enforces its own slice</text>
-      <text class="s" x="636" y="456" text-anchor="middle">enforces its own slice</text>
+  <!-- ═══ Crops Department ═══ -->
+  <rect class="dept" x="250" y="490" width="970" height="160" rx="10"/>
+  <text class="cap" x="264" y="510">CROPS DEPARTMENT · A SEPARATE INSTALL</text>
+  <rect class="dpi" x="270" y="530" width="180" height="56" rx="6"/>
+  <text class="t" x="360" y="552" text-anchor="middle">Partner Management</text>
+  <text class="s" x="360" y="569" text-anchor="middle">the composite's key</text>
+  <rect class="l2" x="470" y="530" width="180" height="56" rx="6"/>
+  <text class="t" x="560" y="552" text-anchor="middle">Catalogue (MDS)</text>
+  <text class="s" x="560" y="569" text-anchor="middle">datasets · geography</text>
+  <rect class="dpi" x="670" y="530" width="220" height="56" rx="6"/>
+  <text class="t" x="780" y="550" text-anchor="middle">Consent Manager</text>
+  <text class="s" x="780" y="565" text-anchor="middle">standing policy for the composite</text>
+  <text class="s" x="780" y="579" text-anchor="middle">checks receipts</text>
+  <rect class="l1" x="920" y="530" width="220" height="56" rx="6"/>
+  <text class="t" x="1030" y="552" text-anchor="middle">Crop Sown Registry</text>
+  <text class="s" x="1030" y="569" text-anchor="middle">activity register</text>
+  <text class="s" x="1030" y="630" text-anchor="middle">each registry releases only its own slice</text>
 
-      <!-- Layer 2 -->
-      <line class="ar d" x1="190" y1="474" x2="190" y2="538" marker-end="url(#a1)"/>
-      <line class="ar d" x1="549" y1="474" x2="549" y2="538" marker-end="url(#a1)"/>
-      <text class="lbl" x="370" y="511" text-anchor="middle">look up codes, reference entities, geography</text>
+  <!-- Other departments -->
+  <rect class="faint" x="250" y="668" width="970" height="52" rx="10"/>
+  <text class="lbl" x="735" y="699" text-anchor="middle">Other departments (Livestock, DA, …): the same pattern as Crops — own registry, Partner Management, Consent Manager, catalogue</text>
 
-      <rect class="l2" x="20" y="540" width="699" height="60" rx="6"/>
-      <text class="t" x="369" y="564" text-anchor="middle">Catalogues (MDS for now)</text>
-      <text class="s" x="369" y="582" text-anchor="middle">code lists · reference entities (seed varieties, inputs, breeds) · admin areas · boundaries · public read</text>
-
-      <!-- Right column: shared DPI -->
-      <text class="cap" x="790" y="140">SHARED DPI · LAYER 3</text>
-      <rect class="dpi" x="790" y="150" width="230" height="100" rx="6"/>
-      <text class="t" x="905" y="172" text-anchor="middle">Partner Management</text>
-      <text class="s" x="905" y="192" text-anchor="middle">identity &amp; keys</text>
-      <text class="s" x="905" y="208" text-anchor="middle">data-share policies</text>
-      <text class="s" x="905" y="224" text-anchor="middle">one section per department</text>
-      <text class="s" x="905" y="240" text-anchor="middle">partner ↔ policy associations</text>
-
-      <polyline class="ar" points="530,262 650,262 650,192 788,192" marker-end="url(#a1)"/>
-      <text class="lbl" x="660" y="236">caller associated</text>
-      <text class="lbl" x="660" y="250">with policy?</text>
-
-      <rect class="dpi" x="790" y="276" width="230" height="50" rx="6"/>
-      <text class="t" x="905" y="296" text-anchor="middle">AWE</text>
-      <text class="s" x="905" y="313" text-anchor="middle">each department approves its section</text>
-      <line class="ar" x1="905" y1="252" x2="905" y2="274" marker-start="url(#a1)" marker-end="url(#a1)"/>
-
-      <rect class="dpi" x="790" y="368" width="230" height="70" rx="6"/>
-      <text class="t" x="905" y="390" text-anchor="middle">Consent Manager</text>
-      <text class="s" x="905" y="407" text-anchor="middle">one farmer consent, a grant per registry</text>
-      <text class="s" x="905" y="424" text-anchor="middle">/validate → effective scopes</text>
-
-      <line class="ar" x1="719" y1="403" x2="788" y2="403" marker-end="url(#a1)"/>
-      <text class="lbl" x="754" y="395" text-anchor="middle">/validate</text>
-
-      <polyline class="ar" points="1020,403 1040,403 1040,200 1022,200" marker-end="url(#a1)"/>
-      <text class="lbl" x="1052" y="300" text-anchor="middle" transform="rotate(-90 1052 300)">policy + partner keys</text>
-
-      <rect class="dpi" x="790" y="540" width="230" height="60" rx="6"/>
-      <text class="t" x="905" y="564" text-anchor="middle">Audit Manager</text>
-      <text class="s" x="905" y="582" text-anchor="middle">events from every hop</text>
-    </svg>
+  <!-- ① partner staff → portal -->
+  <line class="ar" x1="590" y1="118" x2="590" y2="173" marker-end="url(#a1)"/>
+  <text class="n" x="598" y="131">①</text><text class="lbl" x="614" y="131">consent request</text>
+  <!-- portal → CM -->
+  <line class="ar" x1="590" y1="225" x2="590" y2="268" marker-end="url(#a1)"/>
+  <text class="lbl" x="598" y="251">requests · forms</text>
+  <!-- ② farmer → eSignet → national ID; result to CM -->
+  <polyline class="ar" points="120,225 120,298 268,298" marker-end="url(#a1)"/>
+  <text class="n" x="128" y="262">②</text><text class="lbl" x="144" y="262">national-ID login</text>
+  <polyline class="ar" points="360,326 360,408 222,408" marker-end="url(#a1)"/>
+  <text class="lbl" x="268" y="400">verifies the ID</text>
+  <line class="ar" x1="450" y1="298" x2="478" y2="298" marker-end="url(#a1)"/>
+  <!-- ③ partner system → ingress → composite -->
+  <line class="ar" x1="910" y1="118" x2="910" y2="173" marker-end="url(#a1)"/>
+  <text class="n" x="918" y="131">③</text><text class="lbl" x="934" y="131">signed query + consent (JWS or consent ID)</text>
+  <line class="ar" x1="910" y1="225" x2="910" y2="268" marker-end="url(#a1)"/>
+  <text class="lbl" x="918" y="251">route by use case</text>
+  <!-- ④ composite → CM -->
+  <line class="ar" x1="800" y1="298" x2="702" y2="298" marker-end="url(#a1)"/>
+  <text class="n" x="708" y="290">④</text><text class="lbl" x="724" y="290">/validate</text>
+  <text class="lbl" x="712" y="316">receipts</text>
+  <!-- ⑤ composite → registries -->
+  <line class="ar" x1="910" y1="326" x2="910" y2="378" marker-end="url(#a1)"/>
+  <text class="n" x="918" y="357">⑤</text><text class="lbl" x="934" y="357">search + receipt</text>
+  <polyline class="ar" points="1020,312 1035,312 1035,528" marker-end="url(#a1)"/>
+  <text class="n" x="1043" y="482">⑤</text><text class="lbl" x="1059" y="482">search + receipt</text>
+  <!-- ⑥ registries check their receipt at their own CM -->
+  <polyline class="ar" points="800,408 650,408 650,328" marker-end="url(#a1)"/>
+  <text class="n" x="662" y="400">⑥</text><text class="lbl" x="678" y="400">check receipt</text>
+  <line class="ar" x1="920" y1="558" x2="892" y2="558" marker-end="url(#a1)"/>
+  <text class="n" x="898" y="549">⑥</text>
+  <!-- trust: Crops CM trusts the Agriculture CM's receipts -->
+  <polyline class="ar d" points="780,528 780,455 560,455 560,328" marker-end="url(#a1)"/>
+  <text class="lbl" x="570" y="449">trusts its receipts (public keys)</text>
+</svg>

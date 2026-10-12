@@ -213,6 +213,7 @@ openg2p-consent-manager:
     compositeUrl: https://agri-composite.agrix.openg2p.org
     subjectAuth:
       enabled: true    # the farmer's national-ID login (eSignet); off by default
+    requiredSubjectIdentifiers: [FARMER_ID]   # every consent request names the farmer
 ```
 
 The partner portal is where partner users (e.g. bank staff) create consent requests, have the farmer log in with their national ID (eSignet) and upload the farmer's signed form ([consent collection](../../consent-management/design/consent-collection.md)); the forms are kept in Garage (bucket `consent-evidence`). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)).

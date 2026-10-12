@@ -26,6 +26,14 @@ helm -n agrix list
 kubectl -n agrix get pods
 ```
 
+**In one shot:** [`scripts/exchange_test.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/exchange_test.sh) runs step 1 (idempotent: a rerun changes nothing already in place), reads the PM and CM admin client secrets from the cluster, and runs step 3 with `--auto-approve`:
+
+```bash
+./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
+```
+
+`--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--consent-id <ID>` queries with a consent collected in the partner portal (step 4). The steps one by one follow.
+
 Prepare the scripts once:
 
 ```bash
@@ -84,8 +92,8 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 
 **Why:** in step 3 the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries only its ID.
 
-1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request** (or from the use case) with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
-2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form and that the person was authenticated, and approves it. Note the consent ID.
+1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request** (or from the use case) with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`) and Farmer ID (e.g. `FR-0007`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
+2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Note the consent ID.
    Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
 3. Query with it:
 
