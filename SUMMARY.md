@@ -54,6 +54,8 @@
       * [UI Engineering](products/registry/registry/design/ui-engineering-design/README.md)
         * [Widget Library](products/registry/registry/design/ui-engineering-design/registry-ui-widget-library.md)
         * [Widget Reference](products/registry/registry/design/ui-engineering-design/widget-reference.md)
+        * [UI Extendability](products/registry/registry/design/ui-engineering-design/ui-extendability.md)
+        * [Role-based screen](products/registry/registry/design/ui-engineering-design/role-based-screen.md)
       * [Score Computation framework](products/registry/registry/design/score-computation-framework.md)
       * [Application Reference](products/registry/registry/design/application-reference.md)
       * [Functional ID generation](products/registry/registry/design/functional-id-generation.md)
