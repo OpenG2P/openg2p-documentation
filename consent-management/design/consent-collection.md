@@ -13,6 +13,8 @@ A partner (e.g. a bank) needs a subject's (e.g. a farmer's) consent before it ca
 **Roles, as everywhere in OpenG2P:** *staff* (government users), *agents* (government field users), *partners* (organisations such as banks, onboarded in Partner Management), *beneficiaries* (subjects, e.g. farmers). A partner's own employees using the partner portal are **partner users**.
 {% endhint %}
 
+<figure><img src="../../.gitbook/assets/consent-scenarios.svg" alt="Three ways a farmer gives a bank consent: 1, in person at the bank (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, by SMS or USSD (planned); 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
+
 ## Principle
 
 **The subject's confirmation happens at the CM, or through a channel the CM verifies, never on the partner's word.** The CM records how the subject confirmed (the **assurance**), and a policy can demand a minimum assurance for a purpose.

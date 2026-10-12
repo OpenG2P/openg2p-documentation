@@ -16,6 +16,8 @@ description: >-
 * **Who may search across subjects.** Activity-register aggregates can be searched without a subject (e.g. for a benefit run). Today the registry operator allow-lists those partners and their scopes in the partner API's configuration (`dci_bulk_aggregate_partners`), because there is no per-person consent for such a search. This belongs in a Partner Management policy (a programme's legal basis for bulk access, approved by the department), checked like any other policy.
 * **Partner self-service in PM.** Onboarding and key rotation are done by a PM administrator today; partners can't submit their own requests.
 
+* **Standing permission for a purpose (registry to registry, Farmer ID check).** Today every data share needs the subject's consent. Operational sharing between registries (e.g. the Crop Sown Registry checking that a farmer is registered) and a yes/no check of a Farmer ID against a national ID before consent is collected usually rest on a mandate instead. The Consent Manager needs a rule for that: a standing permission for one caller, one purpose and narrow scopes, with its legal basis recorded, and every use logged. Needs the departments' agreement on the legal basis.
+
 ## Composite
 
 The [composite as built](../implementation/composite.md) leaves these for later:
