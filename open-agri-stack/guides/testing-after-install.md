@@ -84,8 +84,9 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 
 **Why:** in step 3 the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries only its ID.
 
-1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request** (or from the use case), the farmer's ID, upload the signed form, **Submit**.
-2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user approves it. Note the consent ID.
+1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request** (or from the use case) with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
+2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form and that the person was authenticated, and approves it. Note the consent ID.
+   Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
 3. Query with it:
 
 ```bash

@@ -192,6 +192,7 @@ The partner portal lets partner users (a partner's own employees) collect consen
 | Value | Default | |
 | --- | --- | --- |
 | `partnerPortal.enabled` | `false` | The portal SPA (`consent-partner-portal.<namespace>.openg2p.org`), the partner realm in Keycloak, and evidence storage |
+| `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<namespace>.openg2p.org` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
 | `partnerPortal.compositeUrl` | empty | Optional: a use-case composite URL; the portal then shows its use cases and pre-fills requests from them (the composite must allow the portal's origin: `composite.corsAllowOrigins`) |
 | `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files; the commons Garage init job creates the bucket |
 
@@ -204,6 +205,27 @@ deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operato
 ```
 
 A partner user's `partner_id` must be the partner's ID as bound in the CM (its policy bindings' audience, e.g. `bank-a`).
+
+## National ID authentication of the subject (eSignet)
+
+Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner portal on), the subject of every assisted request must log in with their national ID through eSignet before the request can be submitted ([how it works](../design/consent-collection.md#national-id-authentication-in-the-partner-portal)). Needs **eSignet** in the namespace and, to test with sample identities, the **mock identity system** (and Artifactory, which they use); in commons-services: Install eSignet, Install Mock Identity System and Install Artifactory on.
+
+| Value (`partnerPortal.subjectAuth.*`) | Default | |
+| --- | --- | --- |
+| `enabled` | `false` | Turns it on (mandatory once on) |
+| `esignetHostname` | `esignet.<namespace>.openg2p.org` | eSignet's public host; `discoveryUrl` is derived from it |
+| `clientId` | `<release>-consent-partner-portal` | The CM's OIDC client in eSignet |
+| `redirectUri` | `https://<partner portal host>/consent/v1/partner-portal/subject-auth/callback` | eSignet sends the browser back here (the portal host routes it to the CM API) |
+| `acrValues` | `mosip:idp:acr:generated-code` | How the person logs in (one-time code); e.g. `mosip:idp:acr:biometrics` |
+| `idTypes` | `[FAYDA_FAN, NATIONAL_ID, national_id]` | Subject ID types that are the national ID; only these can log in |
+| `keySecretName` | `<release>-subject-auth-client-key` | The client's RSA key (`client.pem`), mounted into the staff API |
+| `bootstrap.enabled` | `true` | The Job below |
+
+**The client in eSignet.** A Job (re-run on each upgrade) generates the client's RSA key once and keeps it in the Secret (never rotating it), then registers the client in eSignet's database (`esignet.client_detail`: redirect URI, claims `name` and `individual_id`, the ACR, `private_key_jwt` with the public key, `kid` = the client ID). eSignet's client API needs a scope an install cannot obtain, so the row is written directly, as the registry does for its credential flow. The Job waits up to 20 minutes for eSignet's tables. The staff API reads the key when it is first needed, so it works as soon as the Job has run.
+
+The staff API gets `CONSENT_MANAGER_SUBJECT_AUTH_*` (enabled, provider name, discovery URL, client ID, redirect URI, ACR, ID types, key path). Further backend settings, defaulted: `subject_auth_scope` (`openid profile`), `subject_auth_claims`, `subject_auth_subject_claim` (`individual_id`), `subject_auth_stored_claims` (`[name]`), `subject_auth_session_ttl_seconds` (300).
+
+**Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People), so a request for sample person `ETH-IND-0007` uses FAN `946053125409`. For the one-time code it accepts, see the mock identity system's configuration.
 
 ## Approval workflow (AWE) — optional
 

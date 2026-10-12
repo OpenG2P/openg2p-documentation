@@ -162,7 +162,7 @@ In the form:
 
 | Form field | Choose | Default | Why |
 | --- | --- | --- | --- |
-| Install Master Data? | **Yes** | Yes | The catalogue. Country Pack `ETH`, Dataset Themes `agriculture`, Load Datasets on |
+| Install Master Data? | **Yes** | Yes | The catalogue. Country Pack `ETH`, Dataset Themes `agriculture`, Load Datasets on; **Load Sample People** on for testing (the mock identity system's identities are these people) |
 | Install Partner Management? | **Yes** | Yes | Partners (banks, …) and the composite are onboarded here with their keys |
 | Install Consent Manager? | **Yes** | Yes | Farmer consent, and the receipts for each registry |
 | Require AWE Approval for Policy Widening? | **No** | No | No AWE in the exchange |
@@ -171,9 +171,9 @@ In the form:
 | Install ODK Central? | **No** | Yes | Registry data collection |
 | Install Superset? | **No** | Yes | Registry dashboards |
 | Install Inji Certify? | **No** | Yes | Credentials for beneficiaries |
-| Install eSignet? | **No** | Yes | Later: consent phase 2 (the farmer's national-ID authentication) |
-| Install Mock Identity System? | **No** | Yes | Later: consent phase 2 (test identities for eSignet) |
-| Install Artifactory? | **No** | Yes | Only for eSignet, mock identity or Keymanager |
+| Install eSignet? | **Yes** | Yes | The farmer's national-ID login in the partner portal (mandatory for assisted consent) |
+| Install Mock Identity System? | **Yes** for testing | Yes | The identities eSignet checks against; replace with the real ID system (e.g. Fayda) in production |
+| Install Artifactory? | **Yes** | Yes | eSignet and the mock identity system need it |
 | Install Keymanager? | **No** | No | Not used by Agri Stack |
 | Install WebSub? | **No** | Yes | Nothing in the exchange uses it yet |
 
@@ -190,8 +190,6 @@ keycloak-init:
 # Not needed, not in the form
 openg2p-inji-verify:
   enabled: false
-artifactory:
-  enabled: false     # for chart versions whose form has no "Install Artifactory?"
 # Consent Manager: exchange role, your signing key, partner portal
 openg2p-consent-manager:
   global:
@@ -213,9 +211,11 @@ openg2p-consent-manager:
   partnerPortal:
     enabled: true      # off by default
     compositeUrl: https://agri-composite.agrix.openg2p.org
+    subjectAuth:
+      enabled: true    # the farmer's national-ID login (eSignet); off by default
 ```
 
-The partner portal is where partner users (e.g. bank staff) create consent requests and upload the farmer's signed form ([consent collection](../../consent-management/design/consent-collection.md)); the forms are kept in Garage (bucket `consent-evidence`).
+The partner portal is where partner users (e.g. bank staff) create consent requests, have the farmer log in with their national ID (eSignet) and upload the farmer's signed form ([consent collection](../../consent-management/design/consent-collection.md)); the forms are kept in Garage (bucket `consent-evidence`). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)).
 
 #### 4. Partner portal realm and users
 

@@ -44,7 +44,8 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | Subject's own consents and revocation | **Built** (`/consent/v1/my/…`) |
 | Subject-facing pages: a consent request page and "my consents" | **Built**, but they log in through the staff Keycloak, not national ID |
 | Partner-signed consent presented in each query, checked at `/validate` | **Built** (the path in use today; see the gap below) |
-| **Scenario 1, phase 1:** partner portal and partner realm; requests by partner users, signed-form upload (evidence in object storage), submit, staff verification in the CM console, consents with assurance and receipts; `/validate` by `consent_id` (receipts in an exchange deployment); the composite accepts `message.consent_id` | **Built** ([deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)); phase 2 adds the subject's national-ID authentication (eSignet / Fayda) |
+| **Scenario 1, phase 1:** partner portal and partner realm; requests by partner users, signed-form upload (evidence in object storage), submit, staff verification in the CM console, consents with assurance and receipts; `/validate` by `consent_id` (receipts in an exchange deployment); the composite accepts `message.consent_id` | **Built** ([deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)) |
+| **Scenario 1, phase 2:** the subject's national-ID login (eSignet: OTP or biometrics) from the partner portal, matched to the request's subject; mandatory when on, together with the signed form and the staff check | **Built** ([how it works](#national-id-authentication-in-the-partner-portal), [deployment](../deployment/README.md#national-id-authentication-of-the-subject-esignet)) |
 
 ## Gaps
 
@@ -52,7 +53,7 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | --- | --- | --- |
 | ~~A consent the subject gave cannot be used in a query~~ | all | **Done** in an exchange deployment (`/validate` with `consent_id` issues registry receipts; registries unchanged). To do: a single install (no exchange CM). |
 | **Partner-signed consent proves nothing about the subject.** The CM checks the partner's signature, its policy, the subject in the consent against the subject in the request, validity and replay; nothing shows the subject took part | today's path | Keep it only for partners trusted to collect consent offline, clearly marked, or retire it. |
-| **National ID authentication** (OTP, biometrics) for the subject, including assisted authentication on a partner user's device | 1, 3 | e.g. Fayda through eSignet; the CM already verifies an OIDC ID token. |
+| ~~**National ID authentication**~~ for the subject on a partner user's device | 1 | **Done** for scenario 1 (eSignet). To do: scenario 3 (the subject's own login on the self-service pages). |
 | ~~Evidence~~ (signed form on a request) | 1 | **Done** (bucket `consent-evidence`). To do: encryption at rest beyond the store's, retention and deletion rules. |
 | ~~Staff verification~~ of assisted consents | 1 | **Done** in the CM console (Consent verifications). To do: optionally through an AWE task. |
 | **Assurance** on each consent | all | **Recorded** (method, evidence, verifier, whether the subject was authenticated). To do: a minimum assurance per policy. |
@@ -60,11 +61,38 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | **SMS / USSD**: sending the prompt, and an inbound webhook that matches the reply to the request | 2 | Through the platform's notification service (Novu) or the national SMS gateway. |
 | **Back to the partner**: redirect to the partner's app with the consent ID, or a notification, when the subject approves | 3 | |
 
+## National ID authentication in the partner portal
+
+When it is on, every assisted request needs **three** things before the consent is active: the subject's national-ID login, the signed form, and a CM staff member's verification. The design is the registry's beneficiary authentication for credentials, with the CM's own code.
+
+1. The partner user opens the request and chooses **Authenticate with national ID**. The CM starts a login at eSignet: authorization code with PKCE, a single-use `state` and a `nonce`, `acr_values` (e.g. a one-time code), and the `individual_id` claim (the national ID; eSignet's `sub` is pairwise, so it cannot be compared). The request's subject ID type must be a national ID type (e.g. `FAYDA_FAN`).
+2. eSignet opens in a popup. The person logs in there (the OTP goes to the phone registered with their ID), on the partner user's device or their own.
+3. eSignet redirects to the CM's callback on the portal host. The CM claims the `state` once (an atomic update, so a replayed or concurrent callback finds nothing), exchanges the code with `private_key_jwt`, and checks the ID token's signature (eSignet's JWKS), `iss`, `aud`, `exp` and `nonce`. It verifies the signed userinfo the same way and requires its `sub` to equal the ID token's. The `individual_id` must equal the request's subject ID.
+4. The portal follows the result (polling) and shows it; **Submit** is possible only after a successful login and the signed-form upload.
+5. Staff see the authentication on the verification page. On approval the consent's **assurance** records it: `subject_authenticated: true` and `subject_authentication` (provider, method, ACR, time).
+
+Stored: the method, ACR, time, the ID token's hash and the configured claims (default the name); not the tokens. Login state is a row in the CM's database (5 minutes), so no cache is needed.
+
+## The partner's copy of a consent
+
+For disputes and audits a partner keeps its own copy. On a consent in the partner portal, **Download consent record** gives one ZIP:
+
+| File | What it is |
+| --- | --- |
+| `consent-receipt.json` | The consent receipt as the CM issued it. **Unchanged**: the record only adds files around it |
+| `evidence/…` | The documents uploaded on the request (the subject's signed form) |
+| `consent-record.jws` | A statement signed by the CM (same key and public JWKS as the receipts) that ties them together: the consent, the SHA-256 of the receipt and of each document, whether and how the subject authenticated with national ID (provider, method, time), and when the CM verified the evidence |
+| `consent-record.json` | The same statement, readable |
+| `summary.html` | A printable one-page summary |
+| `cm-jwks.json`, `README.txt` | The CM's public key at download time, and how to check the record |
+
+With it a partner can show, without the CM, that this exact signed form backed this consent: check the statement's signature against the CM's published JWKS, then the files' SHA-256 values. The staff member who verified is not named (only the time); that stays in the CM's audit trail. The statement is signed when the record is downloaded; the facts in it are those recorded at approval. If a stored document no longer matches the SHA-256 recorded at upload, the download is refused.
+
 ## Partner portal
 
 Most partners will not build their own consent screens, so a central **partner portal** is the main way in; partners with their own systems use the same APIs.
 
-* **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and an optional signed form, SMS, or a link to self-service); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts.
+* **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and an optional signed form, SMS, or a link to self-service); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
 * **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the use-case composite).
 * **Administration:** a partner admin manages the partner's own portal users (roles: *operator*, who creates requests and runs in-person consent; *partner admin*, who also sees all the partner's consents and manages users).
 * **Not in the portal:** partner policies, keys (approved in Partner Management by staff; at most shown read-only) and the verification of uploaded forms (staff, in the CM console through AWE).
