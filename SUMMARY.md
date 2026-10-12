@@ -610,6 +610,7 @@
     * [Composite Configuration](open-agri-stack/guides/composite-configuration.md)
     * [Composite Console](open-agri-stack/guides/composite-console.md)
     * [Adding a Data Source](open-agri-stack/guides/adding-a-data-source.md)
+    * [Testing After Install](open-agri-stack/guides/testing-after-install.md)
     * [Partner Test (Public APIs)](open-agri-stack/guides/partner-test.md)
     * [Exchange Setup](open-agri-stack/guides/exchange-setup.md)
     * [Deploying on a Cluster](open-agri-stack/guides/deployment.md)

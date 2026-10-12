@@ -195,8 +195,8 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 | Mode | What each registry receives as the consent | Used by |
 | --- | --- | --- |
-| `passthrough` (default) | The partner's consent JWS, unchanged. Each registry validates it with its own CM, so the partner needs a binding in each registry's CM. | A composite inside one installation (today's setup) |
-| `exchange` | Its **own consent receipt** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's receipts and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
+| `passthrough` | The partner's consent JWS, unchanged. Each registry validates it with its own CM, so the partner needs a binding in each registry's CM. | A composite inside one installation (today's setup) |
+| `exchange` (chart default) | Its **own consent receipt** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's receipts and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
 
 In **exchange** mode, after the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the composite calls the exchange CM's `POST /consent/v1/validate` with:
 
@@ -405,8 +405,9 @@ The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"
 | `composite.registries.farmer-registry.url` | empty (required) | Integration: Farmer Registry Search URL. Full URL; the registry may be in another department or cluster |
 | `composite.registries.crop-sown-registry.url` | empty (required) | Integration: Crop Sown Registry Search URL. Full URL, as above |
 | `composite.registries.<controller>.partnerId`, `.receiverId` | empty | values only |
-| `composite.consent.mode` | `passthrough` | Agri Stack exchange: Consent Mode |
-| `composite.consent.exchangeCmUrl` | empty | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |
+| `composite.consent.mode` | `exchange` | Agri Stack exchange: Consent Mode |
+| `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |
+| `composite.corsAllowOrigins` | `https://consent-partner-portal.<namespace>.openg2p.org` | Agri Stack exchange: Allowed Browser Origins (CORS); comma-separated, empty for none |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout (shown only in exchange mode) |
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: the Secret with `composite.p12`, `password`, and optionally `kid` and `algorithm` |
 | `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `false`, `1`, `5` (70% CPU) | Scaling |

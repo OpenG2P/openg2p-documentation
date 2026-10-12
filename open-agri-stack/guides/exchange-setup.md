@@ -9,7 +9,7 @@ description: >-
 
 [`scripts/setup_exchange.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/setup_exchange.py) does the operator setup the Helm charts cannot do, once after installing the Agri Exchange and the department registries. Run it again after adding a registry, or a use case that needs new data scopes; it changes only what is missing.
 
-Partners (e.g. a bank) are **not** set up here: they onboard through Partner Management and the Consent Manager. To test the composite as a partner, use the [partner test](partner-test.md).
+Where it fits in testing: [testing after install](testing-after-install.md). Partners (e.g. a bank) are **not** set up here: they onboard through Partner Management and the Consent Manager. To test the composite as a partner, use the [partner test](partner-test.md).
 
 ## What it sets up
 

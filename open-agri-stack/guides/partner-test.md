@@ -45,7 +45,7 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 
 ## What the operator sets up beforehand
 
-The script covers only the partner's side. The rest is part of installing the environment, and the query fails if it is missing:
+The script covers only the partner's side. The rest is part of installing the environment, and the query fails if it is missing. Run the [exchange setup](exchange-setup.md) first; [testing after install](testing-after-install.md) gives the whole order:
 
 * the composite, with its signing key onboarded in PM as `agri-composite`;
 * in a [distributed deployment](../design/distributed-deployment-architecture.md), each department's PM and CM set up for the composite (its key; a binding and policy for `agri-composite`), and each department CM trusting the exchange CM's receipts.

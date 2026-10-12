@@ -21,8 +21,7 @@ Agri Stack is installed into one environment (namespace) from OpenG2P Helm chart
 | 4 | Crop Sown Registry | `openg2p-crop-sown-registry` ("OpenG2P Crop Sown Registry") | `csr` |
 | 5 | PM and CM entries for the composite and the partners; the composite's signing Secret | — | — |
 | 6 | Use-case composite | `openg2p-agri-composite` ("Agri Stack Composite") | e.g. `agri-composite` |
-| 7 | Exchange setup (exchange installs) | [Exchange setup](exchange-setup.md) | — |
-| 8 | Test | [Partner test](partner-test.md) | — |
+| 7 | Exchange setup and test | [Testing after install](testing-after-install.md) | — |
 
 The composite has no default registry URLs: in step 6, give each registry's full partner API URL, e.g. `https://partner-fr.<dept-domain>/dci/registry/sync/search`. A registry in the same cluster can also be reached as `http://<release>-partner-api.<namespace>.svc.cluster.local/dci/registry/sync/search`.
 
@@ -196,6 +195,7 @@ The release names `commons` and `commons-services` are required by the commons c
 | Install Inji Certify? | **No** | Yes |
 | Install eSignet? | **No** (yes for consent phase 2) | Yes |
 | Install Mock Identity System? | **No** (yes for consent phase 2) | Yes |
+| Install Artifactory? | **No** (yes whenever eSignet, mock identity or Keymanager is on) | Yes |
 | Install Keymanager? | **No** | No |
 | Install WebSub? | **No** | Yes |
 
@@ -210,8 +210,6 @@ openg2p-audit-manager:
 keycloak-init:
   enabled: true
 # Not in the form: off
-artifactory:
-  enabled: false
 openg2p-inji-verify:
   enabled: false
 # Consent Manager: exchange role, own signing key, partner portal
