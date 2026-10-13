@@ -96,9 +96,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="pt" x="942" y="268">Data shared</text>
   <text class="pc" x="942" y="288">The bank's system queries</text>
   <text class="pc" x="942" y="304">with the consent ID. Each</text>
-  <text class="pc" x="942" y="320">registry gets a receipt and</text>
-  <text class="pc" x="942" y="336">releases only what the farmer</text>
-  <text class="pc" x="942" y="352">consented to.</text>
+  <text class="pc" x="942" y="320">registry gets a consent token</text>
+  <text class="pc" x="942" y="336">and releases only what the</text>
+  <text class="pc" x="942" y="352">farmer consented to.</text>
   <!-- 1.6 -->
   <rect class="panel" x="1150" y="140" width="210" height="232" rx="10"/>
   <circle cx="1170" cy="160" r="11" fill="#1B231F"/><text class="num" x="1170" y="164" text-anchor="middle">6</text>

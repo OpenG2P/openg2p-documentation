@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1310" height="880" viewBox="0 0 1310 880" role="img" aria-label="Agri Stack across departments. Each department runs its own Kubernetes cluster behind its own ingress. In the Agriculture Department, which hosts the composite in this arrangement, the exchange services (partner portal, Consent Manager, Partner Management, eSignet, use-case composite) and the Farmer Registry are separate installs, each with its own Partner Management and Consent Manager. Path A: a partner calls the Farmer Registry directly with a consent for it. Path B: a partner's staff collect consent in the partner portal, the farmer logs in with the national ID, the partner's system queries the composite, which gets a receipt per registry from the exchange Consent Manager and searches the Farmer Registry and the Crop Sown Registry; each registry checks its receipt at its own Consent Manager, which trusts the exchange's receipts. Path C: the Crop Sown Registry calls the Farmer Registry as one of its partners."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1310" height="880" viewBox="0 0 1310 880" role="img" aria-label="Agri Stack across departments. Each department runs its own Kubernetes cluster behind its own ingress. In the Agriculture Department, which hosts the composite in this arrangement, the exchange services (partner portal, Consent Manager, Partner Management, eSignet, use-case composite) and the Farmer Registry are separate installs, each with its own Partner Management and Consent Manager. Path A: a partner calls the Farmer Registry directly with a consent for it. Path B: a partner's staff collect consent in the partner portal, the farmer logs in with the national ID, the partner's system queries the composite, which gets a consent token per registry from the exchange Consent Manager and searches the Farmer Registry and the Crop Sown Registry; each registry checks its consent token at its own Consent Manager, which trusts the exchange's consent tokens. Path C: the Crop Sown Registry calls the Farmer Registry as one of its partners."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11px;fill:#56625B}
 .cap{font-size:10.5px;letter-spacing:.07em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
@@ -63,7 +63,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <rect class="dpi" x="470" y="330" width="180" height="56" rx="6"/>
   <text class="t" x="560" y="350" text-anchor="middle">Consent Manager</text>
   <text class="s" x="560" y="365" text-anchor="middle">consents · staff verify</text>
-  <text class="s" x="560" y="379" text-anchor="middle">/validate → receipts</text>
+  <text class="s" x="560" y="379" text-anchor="middle">/validate → consent tokens</text>
   <rect class="dpi" x="670" y="330" width="145" height="56" rx="6"/>
   <text class="t" x="742" y="352" text-anchor="middle">Partner Mgmt</text>
   <text class="s" x="742" y="369" text-anchor="middle">partners onboard here</text>
@@ -78,12 +78,12 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <rect class="ns" x="855" y="198" width="395" height="358" rx="8"/>
   <text class="cap2" x="867" y="214">FARMER REGISTRY · OWN INSTALL</text>
   <rect class="l1" x="875" y="228" width="355" height="56" rx="6"/>
-  <text class="t" x="1052" y="250" text-anchor="middle">Farmer Registry · partner API (DCI)</text>
+  <text class="t" x="1052" y="250" text-anchor="middle">Farmer Registry</text>
   <text class="s" x="1052" y="267" text-anchor="middle">register · Farmer ID ↔ national ID · works on its own</text>
   <rect class="dpi" x="875" y="330" width="170" height="56" rx="6"/>
   <text class="t" x="960" y="350" text-anchor="middle">Consent Manager</text>
   <text class="s" x="960" y="365" text-anchor="middle">consents for the FR</text>
-  <text class="s" x="960" y="379" text-anchor="middle">checks consents, receipts</text>
+  <text class="s" x="960" y="379" text-anchor="middle">checks consents, tokens</text>
   <rect class="dpi" x="1065" y="330" width="165" height="56" rx="6"/>
   <text class="t" x="1147" y="352" text-anchor="middle">Partner Management</text>
   <text class="s" x="1147" y="369" text-anchor="middle">the FR's partners</text>
@@ -103,13 +103,13 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="s" x="960" y="730" text-anchor="middle">composite's key · partners</text>
   <rect class="l1" x="1065" y="696" width="165" height="44" rx="6"/>
   <text class="t" x="1147" y="714" text-anchor="middle">Crop Sown Registry</text>
-  <text class="s" x="1147" y="730" text-anchor="middle">activity register · partner API</text>
+  <text class="s" x="1147" y="730" text-anchor="middle">activity register</text>
   <rect class="l2" x="875" y="758" width="170" height="40" rx="6"/>
   <text class="t" x="960" y="775" text-anchor="middle">Catalogue (MDS)</text>
   <text class="s" x="960" y="790" text-anchor="middle">datasets · geography</text>
   <rect class="dpi" x="1065" y="758" width="165" height="40" rx="6"/>
   <text class="t" x="1147" y="775" text-anchor="middle">Consent Manager</text>
-  <text class="s" x="1147" y="790" text-anchor="middle">trusts the exchange's receipts</text>
+  <text class="s" x="1147" y="790" text-anchor="middle">trusts the exchange's tokens</text>
   <rect class="faint" x="270" y="656" width="565" height="148" rx="8"/>
   <text class="lbl" x="552" y="718" text-anchor="middle">Other departments (Livestock, DA, …) follow the same pattern:</text>
   <text class="lbl" x="552" y="736" text-anchor="middle">their own cluster and ingress, registry, Partner Management,</text>
@@ -136,7 +136,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="n" x="718" y="121">B3</text><text class="lbl" x="736" y="121">signed query + consent</text>
   <!-- B4 composite → exchange CM -->
   <polyline class="ar" points="630,284 630,328" marker-end="url(#a1)"/>
-  <text class="n" x="590" y="312">B4</text><text class="lbl" x="638" y="312">receipts</text>
+  <text class="n" x="590" y="312">B4</text><text class="lbl" x="638" y="312">consent tokens</text>
   <!-- B5 composite → FR, → Crop Sown -->
   <line class="ar" x1="815" y1="252" x2="873" y2="252" marker-end="url(#a1)"/>
   <text class="n" x="830" y="246">B5</text>
@@ -150,9 +150,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="n" x="966" y="311">A·B6·C</text><text class="lbl" x="1010" y="311">check</text>
   <line class="ar" x1="1147" y1="284" x2="1147" y2="328" marker-end="url(#a1)"/>
   <text class="lbl" x="1153" y="311">keys</text>
-  <!-- trust: FR CM trusts the exchange CM's receipts -->
+  <!-- trust: FR CM trusts the exchange CM's consent tokens -->
   <polyline class="ar d" points="960,386 960,420 600,420 600,388" marker-end="url(#a1)"/>
-  <text class="lbl" x="610" y="414">trusts the exchange's receipts</text>
+  <text class="lbl" x="610" y="414">trusts the exchange's consent tokens</text>
   <!-- Crop Sown checks at its own CM (B6) -->
   <line class="ar" x1="1110" y1="740" x2="1110" y2="756" marker-end="url(#a1)"/>
   <text class="n" x="1116" y="753">B6</text>

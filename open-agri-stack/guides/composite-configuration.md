@@ -38,7 +38,7 @@ Response: signed by the composite, `header.status` `succ`/`rjct`. The message is
 | --- | --- |
 | 400 | Invalid envelope, input or stale timestamp; `consent_id` in passthrough mode |
 | 401 | Bad signature or unknown partner |
-| 403 | Partner not allowed, or a consent problem (`consent_*`, including a deny or a missing receipt from the exchange CM), or a mandatory source denied |
+| 403 | Partner not allowed, or a consent problem (`consent_*`, including a deny or a missing consent token from the exchange CM), or a mandatory source denied |
 | 404 | Unknown use case |
 | 429 | Rate limit reached |
 | 502 / 503 / 504 | A mandatory source failed (error / unavailable / timed out); or the exchange CM failed (`consent_exchange_error` 502, `consent_exchange_unavailable` 503) |
@@ -72,13 +72,13 @@ In exchange mode the composite first makes one call to the exchange Consent Mana
                                                      "query_type": "expression",
                                                      "query": {"type": "expression", "value": {"…": "…"}},
                                                      "pagination": {"page_size": 1, "page_number": 1},
-                                                     "authorize": {"consent_jws": "<this registry's consent receipt (exchange) or the partner's consent (passthrough)>"}}}]}}
+                                                     "authorize": {"consent_jws": "<this registry's consent token (exchange) or the partner's consent (passthrough)>"}}}]}}
 ```
 
 * `sender_id` is the composite's PM ID; the registry verifies the composite's signature against `PARTNER_AGRI_COMPOSITE`.
 * `receiver_id` is the source's controller ID unless the registry's `receiver_id` is set.
 * `header.meta.on_behalf_of` names the partner. The registry logs it; it never grants access.
-* The consent (the registry's receipt in exchange mode, the partner's consent unchanged in passthrough) travels at `search_criteria.authorize.consent_jws`, as for a partner calling the registry directly ([Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md)).
+* The consent (the registry's consent token in exchange mode, the partner's consent unchanged in passthrough) travels at `search_criteria.authorize.consent_jws`, as for a partner calling the registry directly ([Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md)).
 
 **Where it is configured:**
 
@@ -137,9 +137,9 @@ Each source names the data scopes it uses, from its registry's catalogue (signed
 
 * **`scopes` (required):** the partner's consent must grant every one. Missing for a **mandatory** source: the request fails (`403 consent_scope_missing`). Missing for an **optional** source: it is not called and reported `denied`.
 * **`optional_scopes`:** may be left out of the consent; the fields they cover then come back `null`.
-* **Nothing else is asked for.** In exchange mode the composite asks the exchange Consent Manager for receipts with only these scopes (`request_context.requested_scopes`), so each registry returns no other field. In passthrough mode the registry sees the partner's consent as given; the composite still maps only its output fields.
+* **Nothing else is asked for.** In exchange mode the composite asks the exchange Consent Manager for consent tokens with only these scopes (`request_context.requested_scopes`), so each registry returns no other field. In passthrough mode the registry sees the partner's consent as given; the composite still maps only its output fields.
 * A scope ID must belong to the source's registry (`<controller>.`), may not be listed twice, nor in both lists. `request_scopes` is accepted as the earlier name of `scopes`.
-* A source with neither list has no scope check (its registry's grant is used as it is); in exchange mode its registry's receipt then carries every scope the consent grants for that registry.
+* A source with neither list has no scope check (its registry's grant is used as it is); in exchange mode its registry's consent token then carries every scope the consent grants for that registry.
 * A grant with no `data_scopes` (including a legacy consent with `data_controller` only) grants no scopes, so it fails a source with required scopes.
 * The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent and to allow in the partner's Consent Manager policy.
 
@@ -198,7 +198,7 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 | Mode | What each registry receives as the consent | Used by |
 | --- | --- | --- |
 | `passthrough` | The partner's consent JWS, unchanged. Each registry validates it with its own CM, so the partner needs a binding in each registry's CM. | A composite inside one installation, with the registries on the same Consent Manager (single install). `consent_id` is not supported. |
-| `exchange` (chart default; the code default is `passthrough`) | Its **own consent receipt** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's receipts and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
+| `exchange` (chart default; the code default is `passthrough`) | Its **own consent token** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's consent tokens and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
 
 In **exchange** mode, after the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the composite calls the exchange CM's `POST /consent/v1/validate` with:
 
@@ -209,15 +209,15 @@ In **exchange** mode, after the partner's request signature and consent checks (
                      "requested_scopes": ["<the use case's scopes>"]}}
 ```
 
-With a `consent_id`, the composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. The exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the receipts; the composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
+With a `consent_id`, the composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. The exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
 
-`partner_id` is the composite's partner ID, which must be one of the exchange CM's **receipt presenters**. On `permit`, the answer carries `receipts: {<data_controller>: <receipt JWS>}`, and each source's DCI search carries its controller's receipt in `search_criteria.authorize.consent_jws` (where the partner's consent goes in passthrough mode). The registry passes it to its own CM as usual.
+`partner_id` is the composite's partner ID, which must be one of the exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), and each source's DCI search carries its controller's consent token in `search_criteria.authorize.consent_jws` (where the partner's consent goes in passthrough mode). The registry passes it to its own CM as usual.
 
 | Situation (exchange mode) | Result |
 | --- | --- |
 | Exchange CM answers `deny` | **403** `consent_denied` (with CM's reason code); no registry is called |
-| No receipt for a **mandatory** source's controller | **403** `consent_receipt_missing`; no registry is called |
-| No receipt for an **optional** source's controller | The source is `unavailable`, not called, with `detail: "not called: the exchange Consent Manager issued no consent receipt for <controller>"` |
+| No consent token for a **mandatory** source's controller | **403** `consent_receipt_missing`; no registry is called |
+| No consent token for an **optional** source's controller | The source is `unavailable`, not called, with `detail: "not called: the exchange Consent Manager issued no consent receipt for <controller>"` |
 | Exchange CM unreachable, timed out, HTTP 408/429/5xx, or no URL configured | **503** `consent_exchange_unavailable` (fails closed) |
 | Exchange CM answers another non-200 or a non-JSON body | **502** `consent_exchange_error` |
 | Use case with `consent.required: false` | The exchange CM is not called and registries get no consent |

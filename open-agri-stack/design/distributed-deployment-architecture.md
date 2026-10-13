@@ -8,7 +8,7 @@ description: >-
 # Distributed Deployment Architecture
 
 {% hint style="warning" %}
-**Status: phase 1 built; phases 2–3 to build.** This page records the agreed direction for deploying Agri Stack across departments. Phase 1 (one onboarding and one consent at the exchange, receipts checked by each department) is built and installed by hand. The [TODO list](#todo) at the end says what is still to build.
+**Status: phase 1 built; phases 2–3 to build.** This page records the agreed direction for deploying Agri Stack across departments. Phase 1 (one onboarding and one consent at the exchange, consent tokens checked by each department) is built and installed by hand. The [TODO list](#todo) at the end says what is still to build.
 {% endhint %}
 
 ## The setting
@@ -30,7 +30,7 @@ Each department runs its own Kubernetes cluster behind its own ingress (Nginx, I
 2. **Agri Stack exchange tier: one install, shared, facing OAN.** A separate install of the cross-cutting pieces, hosted by one department. Here the Agriculture Department, which holds the Farmer Registry, hosts it; other arrangements are possible. It serves path B (one onboarding, one consent, one query across registries):
    * the **[composite](use-case-composite.md)**, which runs the use cases across registries;
    * **PM**, where OAN partners onboard **once**;
-   * **CM** in the exchange role, where the farmer gives consent **once**, for all registries, and which issues one receipt per registry;
+   * **CM** in the exchange role, where the farmer gives consent **once**, for all registries, and which issues one consent token per registry;
    * the CM's **partner portal**, where partner staff raise consent requests, and **eSignet**, for the farmer's national-ID login ([consent scenarios](../architecture/consent-scenarios.md));
    * the **catalogue**, shared codes and geography;
    * **audit** of who asked what through the exchange;
@@ -69,7 +69,7 @@ The partner (e.g. a bank) **asks** for consent; the **exchange CM issues** it. O
 | --- | --- | --- |
 | Question it answers | What may **this partner** ask farmers for? | What may **the exchange** ever get from me? |
 | Binding | One per OAN partner, per registry it reads | **One standing policy** for the exchange (the composite as partner) |
-| Contents | Purposes; [data scopes](../../products/registry/registry/design/data-scopes.md) per registry; subject ID types; validity; fetch type | Scopes and purposes the department agrees to share **through the exchange**, and the rule that every request must carry a valid exchange consent receipt |
+| Contents | Purposes; [data scopes](../../products/registry/registry/design/data-scopes.md) per registry; subject ID types; validity; fetch type | Scopes and purposes the department agrees to share **through the exchange**, and the rule that every request must carry a valid exchange consent token |
 | Who decides | The exchange operator | The department (its own approval workflow) |
 
 **Rule: a partner's scopes for a registry must be a subset of that department's exchange policy.** The exchange CM checks this when a partner policy is created or widened, reading each department's published scope catalogue and exchange policy, and refuses to grant a partner more than a department allows.
@@ -81,14 +81,14 @@ The registry does **not** create or look up a per-farmer consent of its own, and
 ![One request across the tiers](../../.gitbook/assets/open-agri-stack-distributed-request-trust.svg)
 
 1. **Verify the caller (registry):** the composite's signature, with the key in the department's own PM.
-2. **Ask its own CM (registry):** the request carries an **exchange consent receipt** (from the exchange CM, for this registry) where a partner's consent would be. The registry passes it to its own CM's `/validate` unchanged, with the sender (the composite) and its `data_controller`.
-3. **Verify the receipt (department CM):** the exchange CM is a configured **trusted receipt issuer**; the receipt's signature is checked against the exchange CM's published keys, and it must be for this registry (`aud` = this controller), presented by the composite, still valid and not revoked (status check against the exchange CM).
-4. **Apply the standing exchange policy (department CM):** the department's policy for the exchange (binding audience = the composite's partner ID) must allow the purpose and the subject ID type; effective scopes = receipt scopes ∩ that policy's scopes. The receipt already carries only the scopes the use case needs: the composite sends them to the exchange CM as `requested_scopes`. The CM answers with its normal decision, including the farmer from the receipt, and logs the receipt ID and issuer.
-5. **Filter and record (registry, unchanged):** the registry checks the searched farmer against the decision's subject, filters the record to the effective scopes, and audits as today. The only registry change: the consent time used to pick each data scope's version is the receipt's `consent_issued_at` (the farmer's consent time) when present, before `iat` and `issued_at`.
+2. **Ask its own CM (registry):** the request carries an **exchange consent token** (from the exchange CM, for this registry; called a *receipt* in the API and settings) where a partner's consent would be. The registry passes it to its own CM's `/validate` unchanged, with the sender (the composite) and its `data_controller`.
+3. **Verify the consent token (department CM):** the exchange CM is a configured **trusted token issuer**; the token's signature is checked against the exchange CM's published keys, and it must be for this registry (`aud` = this controller), presented by the composite, still valid and not revoked (status check against the exchange CM).
+4. **Apply the standing exchange policy (department CM):** the department's policy for the exchange (binding audience = the composite's partner ID) must allow the purpose and the subject ID type; effective scopes = token scopes ∩ that policy's scopes. The consent token already carries only the scopes the use case needs: the composite sends them to the exchange CM as `requested_scopes`. The CM answers with its normal decision, including the farmer from the consent token, and logs the token ID and issuer.
+5. **Filter and record (registry, unchanged):** the registry checks the searched farmer against the decision's subject, filters the record to the effective scopes, and audits as today. The only registry change: the consent time used to pick each data scope's version is the consent token's `consent_issued_at` (the farmer's consent time) when present, before `iat` and `issued_at`.
 
-**Revocation:** the farmer's consent is revoked at the exchange CM. Receipts are short-lived (900 seconds by default, never past the consent's expiry), and the department CM checks a receipt's status at the exchange CM (`GET /consent/v1/receipts/{jti}/status`) before permitting.
+**Revocation:** the farmer's consent is revoked at the exchange CM. Consent tokens are short-lived (900 seconds by default, never past the consent's expiry), and the department CM checks a token's status at the exchange CM (`GET /consent/v1/receipts/{jti}/status`) before permitting.
 
-Trusting receipts is a Consent Manager setting in the department (chart value `global.agriStackExchange.trustedIssuer`); the registry platform needs no new trust settings. Details: [exchange receipts](../../consent-management/design/exchange-receipts.md).
+Trusting consent tokens is a Consent Manager setting in the department (chart value `global.agriStackExchange.trustedIssuer`); the registry platform needs no new trust settings. Details: [exchange consent tokens](../../consent-management/design/exchange-receipts.md).
 
 ## Networking across departments
 
@@ -96,15 +96,15 @@ Each department's cluster has its own ingress. Partner-facing APIs (each registr
 
 * **Site-to-site WireGuard between departments:** each cluster becomes a peer. Simple and private; fine for a few departments, but every new department means network plumbing.
 * **A separate inter-department gateway (recommended):** expose **only the service APIs** others need, protected by **mutual TLS** (a client certificate per department) on top of the signed requests, optionally with IP allowlists. Staff UIs and admin APIs stay on WireGuard. APIs to expose:
-  * from the exchange: the composite's partner API, CM's receipt keys and status check, the catalogue's read API;
+  * from the exchange: the composite's partner API, CM's token-signing keys and token status check, the catalogue's read API;
   * from each department: its registry partner API (the composite calls it), and its PM key lookup if the exchange verifies department signatures.
 
 Cross-department **service-to-service trust** uses signed requests with keys registered in PM (as the partner APIs already do), not shared Keycloak tokens. Each department is a partner of the services it calls, and no secrets are exchanged.
 
 ## Operating it
 
-* **Availability:** departments depend on the exchange's catalogue, and the exchange depends on each department's partner API. PM keys and catalogue reads are already cached; consent receipts are verified offline. Decide behaviour when a site is down: consent fails closed, catalogues serve their cached version. Add timeouts and alerts.
-* **Upgrades and compatibility:** the exchange and departments upgrade on their own schedules. Shared APIs (composite, CM receipts, catalogue, registry partner API) need versioning and a compatibility promise.
+* **Availability:** departments depend on the exchange's catalogue, and the exchange depends on each department's partner API. PM keys and catalogue reads are already cached; consent tokens are verified offline. Decide behaviour when a site is down: consent fails closed, catalogues serve their cached version. Add timeouts and alerts.
+* **Upgrades and compatibility:** the exchange and departments upgrade on their own schedules. Shared APIs (composite, CM consent tokens, catalogue, registry partner API) need versioning and a compatibility promise.
 * **Tracing:** a request ID passed across tiers, recorded in every audit log.
 * **DNS and certificates:** public DNS names and trusted TLS for the exposed APIs; client certificates for mutual TLS.
 * **Onboarding a department to the exchange:** register its keys in the exchange PM; register the composite's key in the department PM; create the department's standing exchange policy in its CM; publish its scope catalogue; issue its client certificate; set the exchange URLs in its charts.
@@ -114,7 +114,7 @@ Cross-department **service-to-service trust** uses signed requests with keys reg
 The exchange settings in commons are **opt-in and off by default**. A department that installs commons and a registry without the exchange gets the standalone behaviour:
 
 * the registry keeps calling its **own** CM `/validate` for consent, its own PM for keys and its own catalogue;
-* new CM settings (receipt issuer, presenters, trusted exchange CM) and remote shared-service URLs are **empty by default**, and while they are empty no new code path runs;
+* new CM settings (token issuer, presenters, trusted exchange CM) and remote shared-service URLs are **empty by default**, and while they are empty no new code path runs;
 * the composite chart defaults to **exchange mode** (`consent.mode: exchange`, exchange CM at `http://commons-services-cm-partner-api`), since the exchange is where it is meant to run. For a composite inside a single install, where the registries share its CM, set `consent.mode: passthrough`: the partner's consent goes to each registry unchanged.
 
 ## Proving it: three namespaces
@@ -128,7 +128,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 * **Partner onboarding at the exchange:** the bank onboards in the `agrix` PM and CM only; the composite verifies the bank there (same namespace).
 * **Catalogue, phase 1 (decided):** each department runs its **own MDS**, loaded from the **same `openg2p-data` country pack version**, so codes and geography are identical. A central catalogue, and departments mirroring it, is phase 2. Each MDS can also publish an opt-in, read-only [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md) (DCAT, SKOS, downloads) of the datasets it marks public.
 
-**Consent (phase 1, built):** without the exchange, a registry validates the partner's consent with its **own** CM, so the bank would have to be bound in every department's CM as well. With phase 1, the bank onboards and the farmer consents only at the exchange; the exchange CM issues a receipt per registry, and each department CM trusts it. After the install, `scripts/setup_exchange.py` registers the composite's key in each department PM, binds the composite in each department CM and checks receipt trust; `scripts/partner_test.py` and `scripts/exchange_test.sh` test the whole path ([testing after install](../guides/testing-after-install.md)).
+**Consent (phase 1, built):** without the exchange, a registry validates the partner's consent with its **own** CM, so the bank would have to be bound in every department's CM as well. With phase 1, the bank onboards and the farmer consents only at the exchange; the exchange CM issues a consent token per registry, and each department CM trusts it. After the install, `scripts/setup_exchange.py` registers the composite's key in each department PM, binds the composite in each department CM and checks consent-token trust; `scripts/partner_test.py` and `scripts/exchange_test.sh` test the whole path ([testing after install](../guides/testing-after-install.md)).
 
 ### Changes, in phases
 
@@ -136,11 +136,11 @@ The model is tested on one cluster with three namespaces, each installed as if i
 
 | Where | Change | Default |
 | --- | --- | --- |
-| Consent Manager (exchange role, `agrix`) | On `/validate` with `issue_receipts: true` from a configured **receipt presenter** (the composite), return one **signed consent receipt** per registry grant (subject, partner, presenter, purpose, scopes for that registry, consent time, validity, receipt ID), signed with the key CM already publishes at `/.well-known/jwks.json`; a receipt status endpoint for revocation | Off: no receipt issuer or presenters configured; `/validate` unchanged |
-| Consent Manager (department role, `trial`, `dept1`) | **Trusted receipt issuers** (the exchange CM: issuer ID, key URL, presenter). `/validate` accepts a receipt from a trusted issuer: verifies it, checks it is for this registry, applies the department's standing policy for the exchange and intersects scopes; the receipt ID and issuer are logged with the decision | Empty: a receipt is denied; partner consents as today |
-| Composite | An **exchange mode**: validate the partner's consent (or `consent_id`) with the exchange CM (`issue_receipts: true`, `requested_scopes` = the use case's scopes), then send each registry its own receipt instead of the raw consent | Chart: exchange mode. Passthrough for a single install |
-| Registry platform (partner API) | No flow change: still calls its own CM `/validate` with the sender and `data_controller`. Consent time for data-scope versions prefers the receipt's `consent_issued_at` claim | Additive: the claim is absent from partner consents |
-| CM chart | An "Agri Stack exchange" question group for the receipt issuer, presenters and trusted issuers | Hidden unless enabled |
+| Consent Manager (exchange role, `agrix`) | On `/validate` with `issue_receipts: true` from a configured **token presenter** (the composite), return one **signed consent token** per registry grant (subject, partner, presenter, purpose, scopes for that registry, consent time, validity, token ID), signed with the key CM already publishes at `/.well-known/jwks.json`; a token status endpoint for revocation | Off: no token issuer or presenters configured; `/validate` unchanged |
+| Consent Manager (department role, `trial`, `dept1`) | **Trusted token issuers** (the exchange CM: issuer ID, key URL, presenter). `/validate` accepts a consent token from a trusted issuer: verifies it, checks it is for this registry, applies the department's standing policy for the exchange and intersects scopes; the token ID and issuer are logged with the decision | Empty: a consent token is denied; partner consents as today |
+| Composite | An **exchange mode**: validate the partner's consent (or `consent_id`) with the exchange CM (`issue_receipts: true`, `requested_scopes` = the use case's scopes), then send each registry its own consent token instead of the raw consent | Chart: exchange mode. Passthrough for a single install |
+| Registry platform (partner API) | No flow change: still calls its own CM `/validate` with the sender and `data_controller`. Consent time for data-scope versions prefers the consent token's `consent_issued_at` claim | Additive: the claim is absent from partner consents |
+| CM chart | An "Agri Stack exchange" question group for the token issuer, presenters and trusted issuers | Hidden unless enabled |
 | Install | By hand in Rancher: the unchanged commons charts and the composite in order, with the exchange choices (slim commons-services, CM exchange role, partner portal, eSignet, composite exchange mode); then `scripts/setup_exchange.py`. See [deploying on a cluster](../guides/deployment.md#what-to-install-in-agrix) | Commons unchanged; department installs keep its defaults |
 | Consent collection | Scenario 1, in person: partner portal, national-ID login (eSignet), signed form, CM staff verification with a Farmer ID check in the Farmer Registry, consent record download | Off unless the partner portal is enabled |
 | Operations | DNS and TLS for `dept1` and `agrix`; onboarding steps (see above) | — |
@@ -159,7 +159,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 
 ## TODO
 
-Platform items are opt-in and default off; see [the phases](#changes-in-phases). Done in phase 1: consent receipts (exchange and department CM roles), the composite's exchange mode, the hand install and `scripts/setup_exchange.py`, and in-person consent collection.
+Platform items are opt-in and default off; see [the phases](#changes-in-phases). Done in phase 1: consent tokens (exchange and department CM roles), the composite's exchange mode, the hand install and `scripts/setup_exchange.py`, and in-person consent collection.
 
 * **Consent trust, next:** per-partner choice of which CM to trust.
 * **Policy subset check:** the exchange CM refuses a partner policy that grants more than a department's exchange policy allows (needs departments to publish their exchange policy and scope catalogue).

@@ -32,20 +32,20 @@ sequenceDiagram
   P->>C: POST /composite/v1/use-cases/loan-profile/query (signed envelope + consent)
   C->>PM: your public key (PARTNER_<ID>)
   C->>XCM: /validate (your consent, issue_receipts, the use case's scopes)
-  XCM-->>C: one consent receipt per registry
-  C->>FR: DCI search, signed by the composite, with the Farmer Registry's receipt
-  FR->>DCM: /validate (the receipt, data_controller = farmer-registry)
-  FR-->>C: farmer record, filtered to the receipt's scopes
+  XCM-->>C: one consent token per registry
+  C->>FR: DCI search, signed by the composite, with the Farmer Registry's consent token
+  FR->>DCM: /validate (the consent token, data_controller = farmer-registry)
+  FR-->>C: farmer record, filtered to the token's scopes
   par after the farmer
     C->>CSR: DCI search (season summaries)
     C->>CSR: DCI search (crop seasons)
   end
-  CSR->>DCM: /validate (its receipt, data_controller = crop-sown-registry)
+  CSR->>DCM: /validate (its consent token, data_controller = crop-sown-registry)
   CSR-->>C: records, filtered
   C-->>P: one signed response, status per source
 ```
 
-You never call the registries or `/validate` yourself. The composite takes your consent to the **exchange Consent Manager** (the CM of the Agri Stack exchange), which checks it against your bindings and policies there and issues **one signed consent receipt per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own receipt and validates it at **its own department CM**, which trusts the exchange CM as a receipt issuer. The composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
+You never call the registries or `/validate` yourself. The composite takes your consent to the **exchange Consent Manager** (the CM of the Agri Stack exchange), which checks it against your bindings and policies there and issues **one signed consent token per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own consent token and validates it at **its own department CM**, which trusts the exchange CM's consent tokens. The composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
 
 {% hint style="info" %}
 **Single install (passthrough mode).** Where the registries share the composite's Consent Manager, the composite can instead send your consent **unchanged** to each registry, and each registry validates its own grant in it. Your bindings and policies are then needed at each registry's CM, and `consent_id` is not supported. Agri Stack exchange installs use exchange mode (the chart default).
@@ -262,7 +262,7 @@ consent_jws = PyJWS().encode(canonical(claims), private_key, algorithm="ES256", 
 # "eyJhbGciOiJFUzI1NiIs…" + "." + payload + "." + signature
 ```
 
-In exchange mode the composite presents this consent to the exchange CM, and each registry gets its own receipt. In passthrough mode the same consent goes to every registry unchanged, and each registry validates only its own grant.
+In exchange mode the composite presents this consent to the exchange CM, and each registry gets its own consent token. In passthrough mode the same consent goes to every registry unchanged, and each registry validates only its own grant.
 
 ## Step 8 — Sign the request envelope
 
@@ -358,7 +358,7 @@ A source whose dependency is not `ok` is not called; it takes the dependency's s
 | 400 | `consent_id_needs_exchange` | `message.consent_id` was sent, but the composite runs in passthrough mode |
 | 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the composite before any registry is called (`consent_scope_missing`: a mandatory source's required scopes are not granted) |
 | 403 | `consent_denied` | The exchange Consent Manager denied the consent; its reason code is in the message |
-| 403 | `consent_receipt_missing` | The exchange Consent Manager issued no receipt for a mandatory source's registry |
+| 403 | `consent_receipt_missing` | The exchange Consent Manager issued no consent token for a mandatory source's registry |
 | 502 | `consent_exchange_error` | The exchange Consent Manager rejected the call or gave an unreadable answer |
 | 503 | `consent_exchange_unavailable` | The exchange Consent Manager could not be reached, timed out, or is not configured |
 | 403 | `source_denied` | A mandatory source was denied (e.g. by the Consent Manager at the registry) |
@@ -406,7 +406,7 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 **What the composite does:**
 
 1. Verifies your signature (`PARTNER_BANK_A`), checks `allowed_partners`, the parameters and the rate limit.
-2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a receipt for each registry from the exchange CM.
+2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a consent token for each registry from the exchange CM.
 3. Calls the **Farmer Registry**: `reg_type: Farmer`, search `foundational_id $eq 946053125409`.
 4. Reads `FARMER_ID` from the farmer record, then calls the **Crop Sown Registry** twice in parallel: season summaries (`FARMER_SEASON_SUMMARY`, crop year 2019, Meher) and crop seasons (crop year 2019, Meher).
 5. Maps and derives the output, signs and returns it.

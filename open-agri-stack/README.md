@@ -43,7 +43,7 @@ All registries are keyed to the same Fayda-based identifier.
 | --- | --- |
 | **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: datasets (the Ethiopia country pack's agriculture domain), reference entities, geography, sample people. The catalogue is being built as [MDS as Catalogue](../platform/platform-services/master-data-service/catalogue/README.md) (see [open items](open-items/README.md#catalogues)) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the composite): identities and public keys. One per install |
-| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the exchange's collects consents and issues a receipt per registry |
+| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the exchange's collects consents and issues a consent token per registry |
 | **Use-case composite** (Layer 4) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |
 | [Approval Workflow Engine (AWE)](../platform/platform-services/approval-workflow-engine/README.md) | Approval of registers' changes; approval of policies is optional and off by default |
 | [Audit Manager](../platform/platform-services/audit-manager/README.md) | Audit events from every hop, linked by the request ID |
@@ -61,7 +61,7 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry changes](implementation/farmer-registry.md) |
 | One consent with a grant per registry, in CM | Built | [Consent Manager changes](implementation/consent-manager.md) |
 | Use-case composite, first version | Built | [Composite as built](implementation/composite.md) |
-| Exchange mode: the exchange CM issues a receipt per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [exchange setup](guides/exchange-setup.md) |
+| Exchange mode: the exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [exchange setup](guides/exchange-setup.md) |
 | Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent scenarios](architecture/consent-scenarios.md) |
 | Composite staff console | Built | [Composite console](guides/composite-console.md) |
 | Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |

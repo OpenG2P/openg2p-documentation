@@ -44,9 +44,9 @@ pip install -r scripts/requirements.txt
 
 ## 1. Exchange setup
 
-**Why:** the composite signs its calls to the registries and its answers to partners. The charts install the composite but cannot register its key with anyone, so until this step no Partner Management knows the composite: partners cannot verify its answers, and the registries refuse its calls. In an exchange deployment each department's Consent Manager must also accept the composite as the presenter of the exchange's consent receipts.
+**Why:** the composite signs its calls to the registries and its answers to partners. The charts install the composite but cannot register its key with anyone, so until this step no Partner Management knows the composite: partners cannot verify its answers, and the registries refuse its calls. In an exchange deployment each department's Consent Manager must also accept the composite as the presenter of the exchange's consent tokens.
 
-[`setup_exchange.py`](exchange-setup.md) does it with kubectl, idempotently: the composite's signing key (Secret and restart), the composite in the exchange PM and each department PM, a binding and policy for the composite in each department CM (scopes from the published use cases), and a check that each department CM trusts the exchange CM's receipts.
+[`setup_exchange.py`](exchange-setup.md) does it with kubectl, idempotently: the composite's signing key (Secret and restart), the composite in the exchange PM and each department PM, a binding and policy for the composite in each department CM (scopes from the published use cases), and a check that each department CM trusts the exchange CM's consent tokens.
 
 ```bash
 python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1 --dry-run
@@ -56,7 +56,7 @@ python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --reg
 python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
 ```
 
-The dry run lists what is missing; the second command makes the changes after a typed `yes`. Exit code 2 means a decision is needed (e.g. a department CM does not trust the exchange's receipts: the message names the Helm value to set).
+The dry run lists what is missing; the second command makes the changes after a typed `yes`. Exit code 2 means a decision is needed (e.g. a department CM does not trust the exchange's consent tokens: the message names the Helm value to set).
 
 ## 2. Partner portal realm
 
@@ -112,5 +112,5 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 | --- | --- | --- |
 | The partner test waits for PM approval and the PM portal shows no request | No `PM_ADMIN_CLIENT_SECRET`: the script raised no request, it waits for a PM admin to onboard the partner by hand | Set the credentials (step 3), or onboard `PARTNER_<ID>` in the PM portal with the printed key |
 | Response signature not verified, or registries answer 401 | The composite is not in PM (step 1 not run) | Run step 1 |
-| Sources `denied` for consent | The department CM has no binding or policy for the composite, or does not trust the exchange's receipts | Rerun step 1 and fix what it reports |
+| Sources `denied` for consent | The department CM has no binding or policy for the composite, or does not trust the exchange's consent tokens | Rerun step 1 and fix what it reports |
 | The composite API restarts at start | A setting it cannot read (the log names it) | Check the release's values; see [composite configuration](composite-configuration.md) |

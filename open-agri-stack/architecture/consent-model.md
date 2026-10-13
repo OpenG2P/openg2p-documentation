@@ -9,8 +9,12 @@ description: >-
 {% hint style="info" %}
 **Status: mostly built (October 2026).**
 
+{% hint style="info" %}
+**Consent object, artefact, receipt, token:** four different things; see [key terms](../../consent-management/design/README.md#key-terms). In Agri Stack the bank holds a consent (stored in the exchange's Consent Manager as a consent artefact, with a consent receipt in its consent record), and each registry gets a **consent token** per query.
+{% endhint %}
+
 * **Built:** a partner-signed consent can carry one **grant per registry** (`grants: [{data_controller, data_scopes}]`), and each registry validates its own grant (it sends its `data_controller` to CM `/validate`). A partner can be bound to several registries in CM, each with its own policy. Replay is per consent and registry, and each registry gets its own receipt. See [Consent Manager changes](../implementation/consent-manager.md).
-* **Built since:** a consent collected through the Consent Manager, in person in the partner portal (the farmer's national-ID login, signed form, staff verification, Farmer ID checked in the Farmer Registry), presented by its ID (`message.consent_id`) and turned into a receipt per registry in the exchange. How a farmer gives consent, in person with a form, in person digitally, or self-service: [consent collection](../../consent-management/design/consent-collection.md).
+* **Built since:** a consent collected through the Consent Manager, in person in the partner portal (the farmer's national-ID login, signed form, staff verification, Farmer ID checked in the Farmer Registry), presented by its ID (`message.consent_id`) and turned into a consent token per registry in the exchange. How a farmer gives consent, in person with a form, in person digitally, or self-service: [consent collection](../../consent-management/design/consent-collection.md).
 * **Still to do:** consent in person digitally (no form, no staff step) and self-service, and policies held in Partner Management.
 {% endhint %}
 
@@ -66,13 +70,13 @@ POST /consent-requests
 * The partner, or the composite acting for it, sends the consent ID or artefact with the request.
 * Each registry calls its own CM's `/validate(consent, controller = itself)`.
 * CM returns **that registry's grant ∩ that registry's policy**.
-* Through the composite in exchange mode, the exchange CM first turns the consent into one signed receipt per registry, and each registry presents its receipt instead (see [request flow](request-flow.md)).
+* Through the composite in exchange mode, the exchange CM first turns the consent into one signed consent token per registry, and each registry presents its consent token instead (see [request flow](request-flow.md)).
 * Usage is counted **per consent and per controller**, so one-shot and periodic limits apply to each registry separately.
 
 **6. Revocation.** The farmer can revoke the whole consent, or only one source (for example, "stop sharing my livestock data"). The partner is notified either way.
 
 {% hint style="info" %}
-**As built,** a consent reaches the composite in one of two forms: collected in CM ([scenario 1](consent-scenarios.md)) and presented by its ID (`message.consent_id`, exchange mode only), or signed by the partner itself (the partner-embedded flow: a compact JWS with a `grants` claim). In exchange mode the exchange CM turns either into a receipt per registry; in passthrough mode the composite forwards the partner's consent unchanged. A partner-signed consent can also be presented directly to a registry. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
+**As built,** a consent reaches the composite in one of two forms: collected in CM ([scenario 1](consent-scenarios.md)) and presented by its ID (`message.consent_id`, exchange mode only), or signed by the partner itself (the partner-embedded flow: a compact JWS with a `grants` claim). In exchange mode the exchange CM turns either into a consent token per registry; in passthrough mode the composite forwards the partner's consent unchanged. A partner-signed consent can also be presented directly to a registry. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
 {% endhint %}
 
 ## Changes in CM
@@ -85,8 +89,8 @@ What is built, per change, is in [Consent Manager changes](../implementation/con
 | `/validate` | Takes the calling registry as a parameter; returns only that registry's grant ∩ its policy | Built with policies in CM: `data_controller` on `/validate`, bindings per (partner, controller). Policies in PM: target |
 | Replay guard | It was keyed on the consent object's ID (`jti`), which would reject the second and third registries presented with the same consent. Move replay protection to a **per-request nonce** (the DCI envelope already carries message IDs and timestamps), and count usage per consent and controller. | Built as replay per (`jti`, controller); the per-request nonce is open |
 | Consent collection | The farmer confirms a consent CM holds | Built in person ([scenario 1](consent-scenarios.md)): partner portal, national-ID login (eSignet), signed form, staff verification, Farmer ID as a required identifier checked in the Farmer Registry, consent record download for the partner. In person digitally and self-service (grouped by source, per-item decline): planned |
-| Exchange receipts | Turn one consent into a signed receipt per registry | Built: exchange CM `/validate` with `issue_receipts` (by `consent_jws` or `consent_id`); a department CM accepts receipts from trusted issuers (`trustedReceiptIssuers`) and checks their status at the issuer |
-| Intermediary presentation | Accept a consent presented by the composite on the partner's behalf | Exchange mode: only callers in the exchange CM's `receiptPresenters` (`agri-composite`) get receipts, and a department CM checks the receipt's presenter is its caller. Passthrough mode: the composite forwards the partner's consent unchanged and names the partner in `header.meta.on_behalf_of`; there is no presenter check |
+| Exchange consent tokens | Turn one consent into a signed consent token per registry | Built: exchange CM `/validate` with `issue_receipts` (by `consent_jws` or `consent_id`; consent tokens are called *receipts* in the API and settings); a department CM accepts consent tokens from trusted issuers (`trustedReceiptIssuers`) and checks their status at the issuer |
+| Intermediary presentation | Accept a consent presented by the composite on the partner's behalf | Exchange mode: only callers in the exchange CM's `receiptPresenters` (`agri-composite`) get consent tokens, and a department CM checks the token's presenter is its caller. Passthrough mode: the composite forwards the partner's consent unchanged and names the partner in `header.meta.on_behalf_of`; there is no presenter check |
 
 ## Open questions
 

@@ -159,7 +159,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 **Consent.** The partner sends a consent it signed, or the ID of a consent collected at the exchange CM (`message.consent_id`, exchange mode only). How the composite checks it is a service setting (`consent.mode` in the chart):
 
-* **Exchange mode (chart default):** the composite calls the exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed receipt per registry, with only those scopes, and each registry gets its own receipt. Each registry checks its receipt at its own CM ([exchange receipts](../../consent-management/design/exchange-receipts.md)).
+* **Exchange mode (chart default):** the composite calls the exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed consent token per registry, with only those scopes, and each registry gets its own consent token. Each registry checks its consent token at its own CM ([exchange consent tokens](../../consent-management/design/exchange-receipts.md)).
 * **Passthrough:** the partner's consent goes to each registry unchanged. For a single install, where the registries share the composite's CM.
 
 Before calling a source, the composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).

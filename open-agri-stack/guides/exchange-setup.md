@@ -18,7 +18,7 @@ Where it fits in testing: [testing after install](testing-after-install.md). Par
 | Exchange namespace | Secret `agri-composite-signing` (a generated `.p12`), then a restart of the composite. A Secret whose key the exchange PM already serves is left alone. |
 | Exchange PM and each department PM | The composite (`PARTNER_AGRI_COMPOSITE`) with its signing key: onboarded and approved, or the key added with a key-update request and approved. Each registry checks the composite's signature at its **own** PM. |
 | Each department CM (exchange consent mode) | A binding and policy for the composite (audience `agri-composite`) per registry. **Scopes and purposes come from the composite's published use cases**: per registry, the union of each use case's `consent_scopes` (required and optional) and their purposes. An existing policy is only widened, never narrowed. |
-| Each department CM (checked, not set) | That it trusts the exchange CM's receipts for the composite (`global.agriStackExchange.trustedIssuer`), and that the exchange CM issues them (`issuer`, `receiptPresenters`). These are Helm values; the script names the missing one and stops. |
+| Each department CM (checked, not set) | That it trusts the exchange CM's consent tokens for the composite (`global.agriStackExchange.trustedIssuer`), and that the exchange CM issues them (`issuer`, `receiptPresenters`). These are Helm values; the script names the missing one and stops. |
 
 In passthrough consent mode the registries check each partner's own consent at their CM, so each partner needs a binding there; the script then sets up only the composite's key.
 
@@ -52,13 +52,13 @@ python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --reg
 
 | Step | What happens |
 | --- | --- |
-| **1. Discover** | The composite, PM, CM and Keycloak of the exchange and of each department, from the Deployments' environment; the receipt-trust check (exchange mode) |
+| **1. Discover** | The composite, PM, CM and Keycloak of the exchange and of each department, from the Deployments' environment; the consent-token trust check (exchange mode) |
 | **2. Admin tokens** | Keycloak client credentials for each PM and CM; checks the admin roles |
 | **3. Use cases** | The composite's published use cases (`GET /composite/v1/use-cases`) and the policy each registry needs |
 | **4. Plan** | GETs only: the signing Secret, the composite in each PM, the bindings and policies in each department CM |
 | **5. Apply** | After confirmation: PM requests raised and approved, CM bindings and policies, the Secret and the restart |
 
-**Exit codes:** 0 ok, 1 error, 2 a decision is needed: a department CM does not trust the exchange's receipts, a CM policy waits for AWE approval (approve it in AWE, then rerun), a PM key conflicts (rerun with `--new-key`), or the writes were not confirmed.
+**Exit codes:** 0 ok, 1 error, 2 a decision is needed: a department CM does not trust the exchange's consent tokens, a CM policy waits for AWE approval (approve it in AWE, then rerun), a PM key conflicts (rerun with `--new-key`), or the writes were not confirmed.
 
 ## Where the key is stored
 

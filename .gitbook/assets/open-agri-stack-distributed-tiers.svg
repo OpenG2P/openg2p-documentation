@@ -20,7 +20,7 @@ text{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
 <text class="s ps" x="656" y="148" text-anchor="end" dominant-baseline="central">Hosted by the Agriculture Department</text>
 <rect x="62" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="132" y="184" text-anchor="middle" dominant-baseline="central">Composite</text><text class="s ps" x="132" y="204" text-anchor="middle" dominant-baseline="central">Use cases (path B)</text>
 <rect x="214" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="284" y="184" text-anchor="middle" dominant-baseline="central">Partner mgmt</text><text class="s ps" x="284" y="204" text-anchor="middle" dominant-baseline="central">Partners onboard once</text>
-<rect x="366" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="436" y="184" text-anchor="middle" dominant-baseline="central">Consent manager</text><text class="s ps" x="436" y="204" text-anchor="middle" dominant-baseline="central">Receipt per registry</text>
+<rect x="366" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="436" y="184" text-anchor="middle" dominant-baseline="central">Consent manager</text><text class="s ps" x="436" y="204" text-anchor="middle" dominant-baseline="central">Token per registry</text>
 <rect x="518" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="588" y="184" text-anchor="middle" dominant-baseline="central">Partner portal</text><text class="s ps" x="588" y="204" text-anchor="middle" dominant-baseline="central">Consent collection</text>
 <rect x="62" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="132" y="252" text-anchor="middle" dominant-baseline="central">eSignet</text><text class="s ps" x="132" y="272" text-anchor="middle" dominant-baseline="central">National-ID login</text>
 <rect x="214" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="284" y="252" text-anchor="middle" dominant-baseline="central">Catalogue</text><text class="s ps" x="284" y="272" text-anchor="middle" dominant-baseline="central">Shared codes and geo</text>
@@ -28,8 +28,8 @@ text{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
 <rect x="518" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8" stroke-dasharray="4 3"/><text class="h ph" x="588" y="252" text-anchor="middle" dominant-baseline="central">Notifications</text><text class="s ps" x="588" y="272" text-anchor="middle" dominant-baseline="central">Planned</text>
 <line x1="200" y1="304" x2="200" y2="340" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
 <line x1="520" y1="304" x2="520" y2="340" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
-<text class="s lab" x="210" y="322" dominant-baseline="central">B: receipt</text>
-<text class="s lab" x="530" y="322" dominant-baseline="central">B: receipt</text>
+<text class="s lab" x="210" y="322" dominant-baseline="central">B: consent token</text>
+<text class="s lab" x="530" y="322" dominant-baseline="central">B: consent token</text>
 <rect x="50" y="344" width="300" height="306" rx="8" fill="none" stroke="#1D9E75" stroke-width="0.8" stroke-dasharray="4 4"/>
 <text class="h th" x="64" y="360" dominant-baseline="central">Agriculture Department</text>
 <text class="s ts" x="336" y="360" text-anchor="end" dominant-baseline="central">Registry install</text>

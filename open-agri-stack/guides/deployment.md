@@ -94,7 +94,7 @@ Before the composite can serve requests:
    ```
 
    `kid` must match the kid registered for the composite in PM (blank → the certificate's SHA-256 thumbprint). `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
-4. **CM.** The CM administrator creates, for each partner, a binding and a policy with each registry ([partner guide, step 3](partner-guide.md#step-3-get-a-binding-and-policy-for-each-registry)): at the exchange CM in exchange mode (the composite's default), at each registry's CM in passthrough mode. In exchange mode each department CM also needs a binding and policy for the composite (audience `agri-composite`) and trust of the exchange CM's receipts ([below](#three-namespace-setup-exchange-and-departments)).
+4. **CM.** The CM administrator creates, for each partner, a binding and a policy with each registry ([partner guide, step 3](partner-guide.md#step-3-get-a-binding-and-policy-for-each-registry)): at the exchange CM in exchange mode (the composite's default), at each registry's CM in passthrough mode. In exchange mode each department CM also needs a binding and policy for the composite (audience `agri-composite`) and trust of the exchange CM's consent tokens ([below](#three-namespace-setup-exchange-and-departments)).
 
 The [exchange setup](exchange-setup.md) does this for the **composite** in one go: its key, its entries in each PM, the signing Secret, and its bindings and policies in each department CM. It does not onboard partners. The [partner test](partner-test.md) does steps 2 and 4 for a test partner.
 
@@ -143,7 +143,7 @@ Install each one only after the previous one is ready (all pods running, release
 
 #### 1. CM signing key
 
-The exchange Consent Manager signs the consent receipts it gives each registry with your own key, not the chart's demo key. Department CMs trust it through the exchange CM's public JWKS. Create the Secret from your `.p12`:
+The exchange Consent Manager signs the consent tokens it gives each registry with your own key, not the chart's demo key. Department CMs trust it through the exchange CM's public JWKS. Create the Secret from your `.p12`:
 
 ```bash
 kubectl -n agrix create secret generic agrix-cm-signing --from-file=cm_signing.p12=./cm_signing.p12 --from-literal=password='<p12 password>'
@@ -156,69 +156,88 @@ In the form, change only these; leave everything else at its default (PostgreSQL
 | Form field | Choose | Why |
 | --- | --- | --- |
 | Install Novu? | **No** | Notifications: only once the exchange sends farmers notifications (e.g. the SMS after a digital consent, scenarios 2 and 3) |
-| Install Kafka UI? | **No** | Operations only (optional) |
+| Install Kafka? | **Yes** (keep) | The Audit Manager needs it: without it the commons-services install fails at the start |
+| Install Kafka UI? | **No** | Operations only (optional); not to be confused with "Install Kafka?" |
 
 #### 3. Commons Services
 
-In the form:
+Everything is chosen in the form; **no Edit YAML is needed**. (The Consent Manager fields need a commons-services version that has them in its form; on an older one, use the YAML at the end of this step.)
+
+**Services:**
 
 | Form field | Choose | Default | Why |
 | --- | --- | --- | --- |
 | Install Master Data? | **Yes** | Yes | The catalogue. Country Pack `ETH`, Dataset Themes `agriculture`, Load Datasets on; **Load Sample People** on for testing (the mock identity system's identities are these people) |
 | Install Partner Management? | **Yes** | Yes | Partners (banks, …) and the composite are onboarded here with their keys |
-| Install Consent Manager? | **Yes** | Yes | Farmer consent, and the receipts for each registry |
-| Require AWE Approval for Policy Widening? | **No** | No | No AWE in the exchange |
+| Install Consent Manager? | **Yes** | Yes | Farmer consent, and the consent tokens for each registry (its settings below) |
 | Install AWE? | **No** | Yes | Only needed if approvals in the CM or Master Data are switched on |
 | Install Staff Portal UI? | **No** | Yes | Registry staff home page |
 | Install ODK Central? | **No** | Yes | Registry data collection |
 | Install Superset? | **No** | Yes | Registry dashboards |
-| Install Inji Certify? | **No** | Yes | Credentials for beneficiaries |
-| Install eSignet? | **Yes** | Yes | The farmer's national-ID login in the partner portal (mandatory for assisted consent) |
-| Install Mock Identity System? | **Yes** for testing | Yes | The identities eSignet checks against; replace with the real ID system (e.g. Fayda) in production |
+| Install Inji Certify? | **No** | Yes | Issues credentials to beneficiaries |
+| Install Inji Verify? | **No** | Yes | Checks credentials; nothing in the exchange does |
+| Install eSignet? | **Yes** | Yes | The farmer's national-ID login in the partner portal |
+| Install Mock Identity System? | **Yes** for testing | Yes | The identities eSignet checks against; the real ID system (e.g. Fayda) in production |
 | Install Artifactory? | **Yes** | Yes | eSignet and the mock identity system need it |
 | Install Keymanager? | **No** | No | Not used by Agri Stack |
 | Install WebSub? | **No** | Yes | Nothing in the exchange uses it yet |
 
-Then **Edit YAML** and add the settings the form does not show (replace `<…>`):
+The IAM service, the Audit Manager and keycloak-init have no form field and are on by default: leave them on.
+
+**Consent Manager** (same group in the form):
+
+| Form field | Agrix value | Why |
+| --- | --- | --- |
+| Require AWE Approval for Policy Widening? | **No** | No AWE in the exchange |
+| Signing Key | **existing** | Never the demo key: the departments' Consent Managers trust this key |
+| Signing Key Secret | `agrix-cm-signing` | The Secret from step 1 |
+| Signing Key ID | `agrix-cm-2026-01` | Must stay the same while the key is in use; change it on rotation |
+| Consent Tokens (Exchange)? | **Yes** | This CM issues a consent token per registry to the composite |
+| Token Issuer ID (exchange) | `agri-stack-exchange-cm` | The departments' Consent Managers trust this ID |
+| Token Presenters (exchange) | `agri-composite` | Only the composite may ask for consent tokens |
+| Trusted Token Issuer ID / Trusted Issuer JWKS URL / Trusted Issuer Presenter (department) | leave empty | Department role only (set on `trial` and `dept1`) |
+| Partner Portal? | **Yes** | Partner users (e.g. bank staff) raise consent requests and upload the signed form |
+| Require National-ID Login (eSignet)? | **Yes** | The farmer's national-ID login, mandatory on every request |
+| Required Subject Identifiers | `FARMER_ID` | Every consent request names the farmer; staff check it in the Farmer Registry |
+| Composite URL | `https://agri-composite.agrix.openg2p.org` | The portal lists the use cases and fills requests from them |
+
+The signed forms are kept in Garage (bucket `consent-evidence`, created by commons-base). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)). How consent is collected: [consent scenarios](../architecture/consent-scenarios.md).
+
+{% hint style="info" %}
+**Department installs** (`trial`, `dept1`) use the same form with the commons defaults, plus, under the Consent Manager: **Consent Tokens (Exchange)?** Yes, **Trusted Token Issuer ID** `agri-stack-exchange-cm`, **Trusted Issuer JWKS URL** `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, **Trusted Issuer Presenter** `agri-composite`; and their own signing key.
+{% endhint %}
+
+<details>
+
+<summary>The same settings as YAML (command-line installs, or a commons-services without the Consent Manager form fields)</summary>
 
 ```yaml
-# Needed, not in the form (on by default; listed so they are not turned off)
-openg2p-iam-service:
-  enabled: true        # permissions for the admin screens
-openg2p-audit-manager:
-  enabled: true        # records the composite's and the CM's activity
-keycloak-init:
-  enabled: true        # Keycloak clients and roles of the services
-# Not needed, not in the form
+openg2p-awe:
+  enabled: false
 openg2p-inji-verify:
   enabled: false
-# Consent Manager: exchange role, your signing key, partner portal
 openg2p-consent-manager:
   global:
     aweEnabled: false
-    consentSigningKid: <kid, e.g. agrix-cm-2026-01>
+    consentSigningKid: agrix-cm-2026-01
     agriStackExchange:
       enabled: true
       issuer: agri-stack-exchange-cm
       receiptPresenters: [agri-composite]
-      receiptTtlSeconds: 900
-      trustedReceiptIssuers: []
   consentManagerApi:
     signingKey:
       mode: existing
       secretName: agrix-cm-signing
-      secretKey: cm_signing.p12
-      passwordSecretName: agrix-cm-signing
-      passwordSecretKey: password
+      passwordSecretName: agrix-cm-signing   # needed on CM charts develop.74 and earlier
   partnerPortal:
-    enabled: true      # off by default
+    enabled: true
     compositeUrl: https://agri-composite.agrix.openg2p.org
     subjectAuth:
-      enabled: true    # the farmer's national-ID login (eSignet); off by default
-    requiredSubjectIdentifiers: [FARMER_ID]   # every consent request names the farmer
+      enabled: true
+    requiredSubjectIdentifiers: [FARMER_ID]
 ```
 
-The partner portal is where partner users (e.g. bank staff) create consent requests, have the farmer log in with their national ID (eSignet) and upload the farmer's signed form ([consent collection](../../consent-management/design/consent-collection.md)); the forms are kept in Garage (bucket `consent-evidence`). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)).
+</details>
 
 #### 4. Partner portal realm and users
 
@@ -262,9 +281,9 @@ Follow [testing after install](testing-after-install.md).
 | `agrix` PM | The composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) |
 | `agrix` CM | For each partner, a binding and policy **per registry** it reads (`farmer-registry`, `crop-sown-registry`): purposes, data scopes, subject ID types. The bank is onboarded **only here** |
 | `trial` PM and `dept1` PM | The composite's public key (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the composite's signature |
-| `trial` CM and `dept1` CM | The **standing policy for the exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the exchange CM as a **trusted receipt issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Agri Stack exchange" group) |
+| `trial` CM and `dept1` CM | The **standing policy for the exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the exchange CM as a **trusted token issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Agri Stack exchange" group) |
 
-The registries need no change: each keeps calling its own CM, which now accepts the exchange's receipts. A department's scopes for the exchange cap what any partner gets from it (receipt scopes ∩ standing policy). A denial from a department shows as that source's `denied` status with the registry's reason.
+The registries need no change: each keeps calling its own CM, which now accepts the exchange's consent tokens. A department's scopes for the exchange cap what any partner gets from it (token scopes ∩ standing policy). A denial from a department shows as that source's `denied` status with the registry's reason.
 
 ## Uninstalling
 

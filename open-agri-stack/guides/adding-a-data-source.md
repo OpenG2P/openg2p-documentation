@@ -47,9 +47,9 @@ See the PM [API reference](../../platform/platform-services/partner-management/a
 
 In **exchange mode** (the chart default) there are two Consent Managers to set up ([consent scenarios](../architecture/consent-scenarios.md)):
 
-* **The department CM** (the one the new registry validates with) checks the composite's receipts. It needs:
+* **The department CM** (the one the new registry validates with) checks the composite's consent tokens. It needs:
   * a binding and policy for the **composite** (audience `agri-composite`, controller `livestock-registry`, `partner_mgmt_id` `PARTNER_AGRI_COMPOSITE`) with the scopes and purposes of the use cases that read the registry. [`scripts/setup_exchange.py`](exchange-setup.md) creates it from the published use cases ([step 7](#step-7-test));
-  * trust of the exchange CM as a receipt issuer: `global.agriStackExchange.trustedIssuer` (issuer, JWKS URL, presenter `agri-composite`) in the department's Consent Manager values. The setup script checks it and stops if it is missing. See [exchange receipts](../../consent-management/design/exchange-receipts.md#setting-up-a-department-for-the-exchange).
+  * trust of the exchange CM as a consent-token issuer: `global.agriStackExchange.trustedIssuer` (issuer, JWKS URL, presenter `agri-composite`) in the department's Consent Manager values. The setup script checks it and stops if it is missing. See [exchange consent tokens](../../consent-management/design/exchange-receipts.md#setting-up-a-department-for-the-exchange).
 * **The exchange CM** checks the partner's consent. For **each partner** that will receive the new data, the CM administrator of the exchange creates a binding of the partner to the new controller and a policy for it ([Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md)):
 
 | Binding | Value |
@@ -126,7 +126,7 @@ response:
 
 * **`depends_on`:** leave it out if the registry can be searched by the partner's subject directly (then it is called in the first level, in parallel with the farmer). Keep it if the query needs another source's result.
 * **`requirement`:** `optional` for data that is useful but not essential; `mandatory` only if the use case is meaningless without it (a failure or missing grant then fails the whole request).
-* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in exchange mode they are the `requested_scopes` the receipts are limited to. See [data scopes](composite-configuration.md#data-scopes).
+* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](composite-configuration.md#data-scopes).
 * **Timeouts:** `timeout_ms` and `retries` per source; check that `execution.overall_timeout_ms` still covers the slowest path. In `loan-profile` it is 25000 ms, for two levels of 10000 ms; `herd` depends on the farmer, so it runs in the second level with the crop sources and adds no level.
 * **Version:** adding an optional source and new output fields is backward compatible: bump the minor version (`1.1.0`). A change that breaks the response (renamed or removed fields) needs a new major.
 * The template is rendered with sample input when the file loads; a template that doesn't render valid JSON stops the file from loading (the previous version keeps serving). The rules are in [query templates](composite-configuration.md#query-templates).

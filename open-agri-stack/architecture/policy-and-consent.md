@@ -13,8 +13,8 @@ Through the composite (path B in the [architecture](README.md#components-and-who
 
 **effective scopes = what the use case asks for ∩ what the partner's policy allows ∩ what the farmer consented to ∩ what the department allows the composite**
 
-* The **exchange's Consent Manager** computes the first three when the composite asks it to validate the consent, and puts the result for each registry into that registry's signed **receipt**.
-* **Each registry's own Consent Manager** checks the receipt and intersects it with the department's **standing policy for the composite**, so a department always decides what leaves its registry.
+* The **exchange's Consent Manager** computes the first three when the composite asks it to validate the consent, and puts the result for each registry into that registry's signed **consent token**.
+* **Each registry's own Consent Manager** checks the consent token and intersects it with the department's **standing policy for the composite**, so a department always decides what leaves its registry.
 * **The registry** releases only what is left, and only its own slice.
 
 A misconfigured use case or partner policy can never leak more than the department allows.
@@ -70,8 +70,8 @@ In the registries as built, a scope is a registry **data scope**: a named group 
 Through the composite, as built:
 
 1. **Composite:** verifies the partner's signature (the exchange's Partner Management) and that the partner is in the use case's `allowed_partners`.
-2. **Composite → exchange Consent Manager `/validate`:** the consent is valid, not revoked, for this partner, purpose and farmer; the partner's policy per registry; only the use case's scopes. It returns one signed receipt per registry with the effective scopes so far.
-3. **Registry → its own Consent Manager `/validate`, with the receipt:** the receipt is signed by a trusted issuer (the exchange's Consent Manager), presented by the composite, still valid and not revoked; the department's standing policy for the composite is applied.
+2. **Composite → exchange Consent Manager `/validate`:** the consent is valid, not revoked, for this partner, purpose and farmer; the partner's policy per registry; only the use case's scopes. It returns one signed consent token per registry with the effective scopes so far.
+3. **Registry → its own Consent Manager `/validate`, with the consent token:** the token is signed by a trusted issuer (the exchange's Consent Manager), presented by the composite, still valid and not revoked; the department's standing policy for the composite is applied.
 4. **Registry:** releases only the effective scopes.
 
 ## Changes needed (target)

@@ -187,6 +187,10 @@ token to call `/validate`, and admin automation obtaining a token that carries t
 
 ## Partner portal and consent evidence — optional
 
+{% hint style="info" %}
+**In Rancher (commons-services):** the signing key, consent tokens (exchange and department roles), partner portal, national-ID login and required subject identifiers are all fields in the **Consent Manager** group of the commons-services form; no Edit YAML is needed. The values below are what those fields set.
+{% endhint %}
+
 The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then verify it in the CM console (**Consent verifications**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
 
 | Value | Default | |
@@ -242,19 +246,21 @@ approvers that role. Details, settings and the state machine:
 
 Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
 install. In Rancher the settings sit in the **Agri Stack exchange** group, shown once
-`global.agriStackExchange.enabled` is ticked. How the two roles work:
-[Exchange receipts](../design/exchange-receipts.md).
+**Consent Tokens (Exchange)?** (`global.agriStackExchange.enabled`) is ticked. The exchange CM
+issues short-lived **consent tokens** (called *receipts* in the API and settings), one per registry
+and query; a department CM accepts them. How the two roles work:
+[Exchange consent tokens](../design/exchange-receipts.md).
 
 | Value (`global.agriStackExchange.*`) | Env (`CONSENT_MANAGER_*`) | Role | Meaning |
 | --- | --- | --- | --- |
-| `issuer` | `RECEIPT_ISSUER` | exchange | Issuer ID stamped as `iss` on receipts (e.g. `agri-stack-exchange-cm`). Empty = no receipts |
-| `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) allowed to request receipts, e.g. `agri-composite`. List or comma-separated string |
-| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | Receipt lifetime, capped by the consent's expiry (default 900) |
+| `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
+| `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
+| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token TTL Seconds** — consent-token lifetime, capped by the consent's expiry (default 900) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
-| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | `always` (default) or `never` |
+| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Issuer Presenter**) |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `always` (default) or `never` |
 
-Receipt issuing uses the **signing key** above (same `kid`, same JWKS) — give the exchange CM a real
+Consent-token issuing uses the **signing key** above (same `kid`, same JWKS) — give the exchange CM a real
 `.p12`, not the demo key. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).

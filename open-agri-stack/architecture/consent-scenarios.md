@@ -9,6 +9,10 @@ description: >-
 
 A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the farmer's data with it. The consent is collected and kept by the **Consent Manager (CM)** of the exchange, not by the bank: the farmer confirms it there, or through a channel the CM checks, and the bank presents it by its ID when it queries.
 
+{% hint style="info" %}
+**Consent object, artefact, receipt, token:** four different things; see [key terms](../../consent-management/design/README.md#key-terms). In Agri Stack the bank holds a consent (stored in the exchange's Consent Manager as a consent artefact, with a consent receipt in its consent record), and each registry gets a **consent token** per query.
+{% endhint %}
+
 <figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent, each with a national-ID login: 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
 
 | Scenario | Status | How the farmer confirms |
@@ -23,7 +27,7 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 
 * **The farmer is identified by the national ID and the Farmer ID.** The consent's subject is the national ID (`FAYDA_FAN`), which the farmer logs in with. Every request must also carry the **Farmer ID** (`partnerPortal.requiredSubjectIdentifiers: [FARMER_ID]`). CM staff check it in the **Farmer Registry**, the source of truth for the link between the two, before approving. Demographics shown to them are those of the national-ID login, labelled as such, and are never compared automatically ([identifiers and demographics](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
 * **The data asked for comes from a use case.** In the partner portal, a request can start from a published use case of the composite (e.g. `loan-profile@1`): its data per registry (required and optional) fills the request.
-* **One consent, every registry.** The bank queries the composite with the consent's ID (`message.consent_id`). The exchange CM turns it into one receipt per registry, with only the scopes the use case needs, and each department's CM checks its receipt ([architecture, path B](README.md#components-and-who-talks-to-whom); [exchange receipts](../../consent-management/design/exchange-receipts.md)).
+* **One consent, every registry.** The bank queries the composite with the consent's ID (`message.consent_id`). The exchange CM turns it into one consent token per registry, with only the scopes the use case needs, and each department's CM checks its consent token ([architecture, path B](README.md#components-and-who-talks-to-whom); [exchange consent tokens](../../consent-management/design/exchange-receipts.md)).
 * **The bank keeps a provable copy.** The consent record it downloads (receipt, signed form, CM-signed statement) is the same in every scenario ([the partner's copy](../../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent)).
 
 ## Details
