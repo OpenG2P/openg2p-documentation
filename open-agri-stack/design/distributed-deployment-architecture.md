@@ -60,7 +60,7 @@ A third path, registry to registry, is not in use ([registry data sync](registry
 
 The partner (e.g. a bank) **asks** for consent; the **exchange CM issues** it. One consent object covers all registries the use case reads: a grant per registry (e.g. FR: identity, land; CSR: crop seasons), the purpose, the validity and the farmer's ID.
 
-* **CM-originated (recommended for the exchange):** the consent is collected and kept by the exchange CM, so the partner cannot fabricate it. **Built:** in person at the bank (scenario 1): partner staff raise the request in the partner portal, the farmer logs in with the national ID through eSignet and signs a form, and CM staff verify it, checking the Farmer ID in the Farmer Registry. The partner then queries with the consent's ID (`message.consent_id`) and can download the consent record. **Planned:** by SMS or USSD, and self-service (scenarios 2 and 3), with notifications to the farmer. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
+* **CM-originated (recommended for the exchange):** the consent is collected and kept by the exchange CM, so the partner cannot fabricate it. **Built:** in person at the bank (scenario 1): partner staff raise the request in the partner portal, the farmer logs in with the national ID through eSignet and signs a form, and CM staff verify it, checking the Farmer ID in the Farmer Registry. The partner then queries with the consent's ID (`message.consent_id`) and can download the consent record. **Planned:** in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to the farmer. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
 * **Partner-embedded:** the bank collects consent in its own app and signs it. Weaker; acceptable only with proof the farmer authenticated.
 
 ### Two kinds of policy, one inside the other
@@ -154,7 +154,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 **Phase 3: production hardening**
 
 * Inter-department gateway with mutual TLS (or WireGuard peering).
-* Consent by SMS or USSD and self-service (scenarios 2 and 3), with notifications to farmers.
+* Consent in person digitally and self-service (scenarios 2 and 3), with notifications to farmers.
 * Request ID propagation across tiers; API versioning; usage metering.
 
 ## TODO
@@ -163,7 +163,7 @@ Platform items are opt-in and default off; see [the phases](#changes-in-phases).
 
 * **Consent trust, next:** per-partner choice of which CM to trust.
 * **Policy subset check:** the exchange CM refuses a partner policy that grants more than a department's exchange policy allows (needs departments to publish their exchange policy and scope catalogue).
-* **More consent scenarios** in the exchange CM: SMS or USSD, and self-service, with notifications to farmers ([consent scenarios](../architecture/consent-scenarios.md)).
+* **More consent scenarios** in the exchange CM: in person digitally (no form, no staff step), and self-service, with notifications to farmers ([consent scenarios](../architecture/consent-scenarios.md)).
 * **Exchange-tier install:** by hand in Rancher today. Later: a scripted install with pinned chart versions.
 * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, exchange CM), back in the Rancher form; setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs).
 * **Catalogue across departments:** read access for department registries (signed requests or an exchange-issued client), publishers per department.

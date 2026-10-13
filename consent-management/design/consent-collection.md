@@ -1,7 +1,7 @@
 ---
 description: >-
   How a partner seeks a subject's consent and how the subject gives it: three
-  scenarios (in person, SMS, self-service), what the Consent Manager does today,
+  scenarios (in person with a form, in person digital, self-service), what the Consent Manager does today,
   the gaps, and the partner portal.
 ---
 
@@ -13,7 +13,7 @@ A partner (e.g. a bank) needs a subject's (e.g. a farmer's) consent before it ca
 **Roles, as everywhere in OpenG2P:** *staff* (government users), *agents* (government field users), *partners* (organisations such as banks, onboarded in Partner Management), *beneficiaries* (subjects, e.g. farmers). A partner's own employees using the partner portal are **partner users**.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent: 1, in person at the bank (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, by SMS or USSD (planned); 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent, each with a national-ID login: 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
 
 ## Principle
 
@@ -21,16 +21,36 @@ A partner (e.g. a bank) needs a subject's (e.g. a farmer's) consent before it ca
 
 ## Scenarios
 
-### 1. In person, assisted (subject at the partner's office, or the partner's user in the field)
+In every scenario the subject proves who they are with their **national ID** (e.g. Fayda through eSignet): never by a phone number, a signature or the partner's word alone.
+
+| | Where the subject is | Agreement | Staff check | Active |
+| --- | --- | --- | --- | --- |
+| **1 · In person, with a form** | with the partner (office or field agent) | a signed form, uploaded | yes: CM staff verify the form (and, e.g., the Farmer ID) | after staff approve |
+| **2 · In person, digital** | with the partner (office or field agent) | the subject approves the request on the CM's screen after logging in | none | at once |
+| **3 · Self-service** | anywhere, on their own device | the subject approves in their own portal or app | none | at once |
+
+### 1. In person, with a form (subject at the partner's office, or the partner's user in the field)
 
 1. A partner user creates the consent request in the partner portal: the use case (or purpose and registries), the subject's ID, the validity.
 2. The subject is authenticated on the spot through national ID (e.g. Fayda): OTP to the phone registered with the ID, or biometrics. The CM records the authentication (provider, method, time).
 3. The subject signs a consent form; the partner user uploads it as evidence.
 4. Staff check the uploaded form (it matches the subject and the request) and verify it. Only then is the consent active.
 
-### 2. Confirmation by SMS or USSD
+### 2. In person, digital (no form, no staff step)
 
-As scenario 1, but instead of (or as well as) the signed form, the CM sends the subject an SMS ("Bank X asks to see … — reply YES to agree") or a USSD prompt; the subject replies to a trusted number. The reply approves the request with no staff step. **The phone number must be the subject's own**, taken from the national ID or the registry, never from the partner.
+An extension of scenario 1 for when the partner and the subject are together (at the office, or the partner's agent in the field), without the paper form and the back-office check:
+
+1. A partner user creates the consent request in the partner portal, choosing **digital approval**.
+2. The subject logs in with their national ID (eSignet: OTP to the phone registered with the ID, or biometrics), as in scenario 1.
+3. Right after the login, in the same window, the **CM** (not the partner) shows the subject the request: who asks, which data from which registry, for what purpose and until when, in the subject's language. The subject **approves** (all, or part where optional) or **declines**. The partner cannot change what is shown.
+4. On approval the consent is **active at once**; no staff step.
+5. The CM texts the **phone registered with the national ID** (never a number from the partner): "You gave Bank A consent to see … until …; reply STOP or use this link to revoke." SMS here is a safeguard after the fact, not the proof.
+
+The consent's assurance records it as *national-ID authenticated, approved digitally, no form, no staff check*. A policy can require scenario 1 instead for sensitive purposes (minimum assurance per policy, a gap below).
+
+{% hint style="info" %}
+**Why not "reply YES to an SMS".** A reply from a phone proves only that someone holds that SIM: not who they are (SIM swap, a shared phone), and not that they read what they agreed to. It can at most be a weaker option that a policy may refuse. When the partner reaches the subject remotely, a link that the subject opens on their own phone and logs into is scenario 3.
+{% endhint %}
 
 ### 3. Self-service
 
@@ -60,7 +80,8 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | ~~Staff verification~~ of assisted consents | 1 | **Done** in the CM console (Consent verifications). To do: optionally through an AWE task. |
 | **Assurance** on each consent | all | **Recorded** (method, evidence, verifier, whether the subject was authenticated). To do: a minimum assurance per policy. |
 | ~~Partner access~~ | 1, 2 | **Done**: partner realm and the partner-portal API. To do: partner user management from the portal (staff create users today), a partner-signed API for partners with their own systems. |
-| **SMS / USSD**: sending the prompt, and an inbound webhook that matches the reply to the request | 2 | Through the platform's notification service (Novu) or the national SMS gateway. |
+| **Digital approval by the subject**: after the national-ID login, the CM's screen showing the request (in the subject's language) with approve, approve in part and decline; the consent active at once | 2, 3 | Builds on scenario 1's login (same popup); the request carries the method *digital approval* and needs no form or staff step. |
+| **Notification after consent** to the phone registered with the national ID, with a revoke link (and STOP) | 2, 3 | Through the platform's notification service (Novu) or the national SMS gateway; the number comes from the national ID login or the registry, never from the partner. |
 | **Back to the partner**: redirect to the partner's app with the consent ID, or a notification, when the subject approves | 3 | |
 
 ## National ID authentication in the partner portal
@@ -102,7 +123,7 @@ With it a partner can show, without the CM, that this exact signed form backed t
 
 Most partners will not build their own consent screens, so a central **partner portal** is the main way in; partners with their own systems use the same APIs.
 
-* **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and an optional signed form, SMS, or a link to self-service); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
+* **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and a signed form (scenario 1), in person digitally (scenario 2), or a link to self-service (scenario 3)); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
 * **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the use-case composite).
 * **Administration:** a partner admin manages the partner's own portal users (roles: *operator*, who creates requests and runs in-person consent; *partner admin*, who also sees all the partner's consents and manages users).
 * **Not in the portal:** partner policies, keys (approved in Partner Management by staff; at most shown read-only) and the verification of uploaded forms (staff, in the CM console through AWE).
@@ -113,5 +134,5 @@ Most partners will not build their own consent screens, so a central **partner p
 
 1. Presenting a stored consent by its ID at `/validate` (and receipts from it in an exchange deployment).
 2. Scenario 1: partner portal and partner users, request creation, national ID authentication, evidence upload, staff verification, assurance.
-3. Scenario 3: national ID login on the subject pages, redirect back to the partner.
-4. Scenario 2: SMS / USSD prompts and replies.
+3. Scenario 2: the subject's digital approval after the national-ID login, and the notification afterwards (builds directly on scenario 1).
+4. Scenario 3: national ID login on the subject pages, redirect back to the partner.

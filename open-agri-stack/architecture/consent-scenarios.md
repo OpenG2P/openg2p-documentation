@@ -1,7 +1,7 @@
 ---
 description: >-
   How a farmer gives a bank consent in Agri Stack: in person at the bank
-  (built), by SMS or USSD, or self-service (planned). What is specific to Agri
+  with a form (built), in person digitally, or self-service (planned). What is specific to Agri
   Stack; the Consent Manager pages have the details.
 ---
 
@@ -9,13 +9,15 @@ description: >-
 
 A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the farmer's data with it. The consent is collected and kept by the **Consent Manager (CM)** of the exchange, not by the bank: the farmer confirms it there, or through a channel the CM checks, and the bank presents it by its ID when it queries.
 
-<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent: 1, in person at the bank (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, by SMS or USSD (planned); 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent, each with a national-ID login: 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
 
 | Scenario | Status | How the farmer confirms |
 | --- | --- | --- |
-| **1 · In person, at the bank** | **Built** | National-ID login (eSignet) on the bank's device, a signed form, and a check by CM staff |
-| **2 · By SMS or USSD** | Planned | A reply from the phone registered with the national ID |
-| **3 · Self-service** | Planned | In their own portal or app, with the national ID; they can revoke any consent there |
+| **1 · In person, with a form** | **Built** | National-ID login (eSignet) on the bank's device, a signed form, and a check by CM staff |
+| **2 · In person, digital** | Planned | National-ID login, then the farmer approves the request on the CM's own screen; active at once, no form, no staff step; an SMS to the registered phone lets them revoke |
+| **3 · Self-service** | Planned | National-ID login in their own portal or app, where they approve or decline, and can revoke any consent |
+
+In every scenario the farmer proves who they are with the national ID; an SMS is only ever a notification afterwards, never the proof.
 
 ## What is specific to Agri Stack
 

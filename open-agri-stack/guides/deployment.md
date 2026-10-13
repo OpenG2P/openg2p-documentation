@@ -155,7 +155,7 @@ In the form, change only these; leave everything else at its default (PostgreSQL
 
 | Form field | Choose | Why |
 | --- | --- | --- |
-| Install Novu? | **No** | Notifications: only once the exchange sends farmers notifications or SMS confirmations (consent scenario 2) |
+| Install Novu? | **No** | Notifications: only once the exchange sends farmers notifications (e.g. the SMS after a digital consent, scenarios 2 and 3) |
 | Install Kafka UI? | **No** | Operations only (optional) |
 
 #### 3. Commons Services

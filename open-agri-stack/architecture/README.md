@@ -23,7 +23,7 @@ description: >-
 
 **B — a use case across registries, through the composite** (the OAN layer). The partner onboards once, in the exchange, and uses one consent for several registries:
 
-1. **Consent request.** (How consent is collected, in person, by SMS or self-service: [consent scenarios](consent-scenarios.md).) The partner's staff raise a consent request in the partner portal, with the farmer's national ID and Farmer ID, and upload the form the farmer signed.
+1. **Consent request.** (How consent is collected, in person with a form, in person digitally, or self-service: [consent scenarios](consent-scenarios.md).) The partner's staff raise a consent request in the partner portal, with the farmer's national ID and Farmer ID, and upload the form the farmer signed.
 2. **National-ID login.** The farmer proves who they are through eSignet against the national ID system. Consent Manager staff verify the form and check the Farmer ID in the Farmer Registry; the consent becomes active ([consent collection](../../consent-management/design/consent-collection.md)).
 3. **Query.** The partner's system sends a signed query to the composite with the consent (its ID, or a consent the partner signed).
 4. **Receipts.** The composite asks the exchange's Consent Manager for one signed receipt per registry, with only the scopes the use case needs.
@@ -72,7 +72,7 @@ A gateway product becomes worth adding only if Agri Stack grows many partner-fac
 | [Request flow](request-flow.md) | One request, end to end |
 | [Policy and consent](policy-and-consent.md) | What gets released; policy vs use case vs consent |
 | [Consent model](consent-model.md) | One consent for the partner, one grant per registry |
-| [Consent scenarios](consent-scenarios.md) | How a farmer gives a bank consent: in person (built), SMS, self-service |
+| [Consent scenarios](consent-scenarios.md) | How a farmer gives a bank consent: in person with a form (built), in person digitally, self-service |
 | [Registry model](registry-model.md) | Register, table and activity-register kinds; projections; the Layer 2 split |
 | [Register vs activity register](register-vs-activity-register.md) | How the two kinds differ, as built |
 | [Terms](terms.md) | Validation, change, correction, void, approval of changes, verification, dispute |

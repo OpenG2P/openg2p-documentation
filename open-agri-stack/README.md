@@ -64,7 +64,7 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | Exchange mode: the exchange CM issues a receipt per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [exchange setup](guides/exchange-setup.md) |
 | Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent scenarios](architecture/consent-scenarios.md) |
 | Composite staff console | Built | [Composite console](guides/composite-console.md) |
-| Consent by SMS/USSD and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
+| Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
 
 ## Start here
 
