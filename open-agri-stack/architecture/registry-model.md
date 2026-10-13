@@ -6,13 +6,13 @@ description: >-
 
 # Registry Model
 
-Registries run on the OpenG2P [registry platform](../../products/registry/registry/README.md), which supports **two kinds, register and activity register, plus child tables**. A registry instance can hold only registers, only an activity register, or both. [Register vs activity register](register-vs-activity-register.md) compares them in detail.
+Registries run on the OpenG2P [registry platform](../../products/registry/registry/README.md), which supports **two kinds, register and activity register, plus child tables**. A registry instance can hold only registers, only an activity register, or both. [Activity register](../../products/registry/registry/features/activity-register.md) compares them in detail.
 
 | Kind | Behaviour | Platform features | Examples |
 | --- | --- | --- | --- |
 | **Register** | Changeable, governed entities, person or not | Change requests + AWE, history, functional ID, dedup (can be switched off), DCI | Farmer, household, DA, training session, cluster |
 | **Table** | Child rows owned by a register record | Inherits from its parent | Land parcels, household members |
-| **Activity register** | Append-only records of activities. A correction supersedes the earlier record; nothing is edited in place. Can stand alone or relate to a register. | Idempotency key, occurred/recorded time, external references, batch entry, time partitioning. No ID issuance, change requests or history tables. See [activity register](../design/activity-register.md). | Sown, harvested, attended, paid |
+| **Activity register** | Append-only records of activities. A correction supersedes the earlier record; nothing is edited in place. Can stand alone or relate to a register. | Idempotency key, occurred/recorded time, external references, batch entry, time partitioning. No ID issuance, change requests or history tables. See [activity register](../../products/registry/registry/features/activity-register.md). | Sown, harvested, attended, paid |
 
 ## Projections
 

@@ -88,7 +88,7 @@ The registry does **not** create or look up a per-farmer consent of its own, and
 
 **Revocation:** the farmer's consent is revoked at the exchange CM. Consent tokens are short-lived (900 seconds by default, never past the consent's expiry), and the department CM checks a token's status at the exchange CM (`GET /consent/v1/receipts/{jti}/status`) before permitting.
 
-Trusting consent tokens is a Consent Manager setting in the department (chart value `global.agriStackExchange.trustedIssuer`); the registry platform needs no new trust settings. Details: [exchange consent tokens](../../consent-management/design/exchange-receipts.md).
+Trusting consent tokens is a Consent Manager setting in the department (role **department**, chart value `global.agriStackExchange.role`); the registry platform needs no new trust settings. Details: [exchange consent tokens](../../consent-management/design/exchange-receipts.md).
 
 ## Networking across departments
 

@@ -10,7 +10,7 @@ description: >-
 Review date: 30 September 2026. A report for future reference; nothing here was built at the time of the review unless stated. Since then, phase 1 of the [register model design](register-model-design.md#phase-1-built), which grew out of this review, has built typed participants, the Cluster register (difference 9), the crop-change link (difference 11) and verification status in DCI.
 {% endhint %}
 
-This compares three concept notes with the [activity register](activity-register.md) as built in the registry platform and the [Crop Sown Registry](crop-sown-registry.md). The notes apply the Activity Registry concept to three registries:
+This compares three concept notes with the [activity register](../../products/registry/registry/features/activity-register.md) as built in the registry platform and the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md). The notes apply the Activity Registry concept to three registries:
 
 * **Crop sown:** an evaluation of the ATI crop sown implementation ([cropsown-regsitry](https://github.com/Centre-for-Open-Societal-Systems/cropsown-regsitry), `develop`);
 * **Livestock:** born, vaccinated, sold;
@@ -117,7 +117,7 @@ The [register model design](register-model-design.md) turns these priorities int
 ## Related
 
 * [Register model design](register-model-design.md): turns these priorities into a design, making trust and corrections common to both register kinds
-* [Register vs activity register](../architecture/register-vs-activity-register.md)
-* [Activity register](activity-register.md), including its comparison with the Observations design
-* [Crop Sown Registry](crop-sown-registry.md)
+* [Activity register](../../products/registry/registry/features/activity-register.md), which compares it with a register
+* [Activity register design](../../products/registry/registry/design/activity-register.md), including its relation to the Observations design
+* [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)
 * [Open items](../open-items/README.md)

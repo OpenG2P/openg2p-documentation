@@ -291,7 +291,7 @@ CSR's samples are past and current Meher and Belg seasons for the adult sample p
 * one correction;
 * cluster enrolments.
 
-How each component implements phase 1 is in [Implementation](../implementation/README.md).
+What is built is documented with each product: [activity registers](../../products/registry/registry/features/activity-register.md) in the registry platform, the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) and the [Farmer Registry](../../products/registry/farmer-registry/README.md). What Agri Stack configures is in [Configuration](../configuration/README.md).
 
 ### Phase 2 (proposed)
 
@@ -318,8 +318,8 @@ How each component implements phase 1 is in [Implementation](../implementation/R
 
 ## Related
 
-* [Register vs activity register](../architecture/register-vs-activity-register.md): the two kinds as built today
-* [Activity register](activity-register.md)
+* [Activity register](../../products/registry/registry/features/activity-register.md): the two kinds as built today, compared
+* [Activity register design](../../products/registry/registry/design/activity-register.md)
 * [Concept notes review](concept-notes-review.md): where this proposal comes from
-* [Crop Sown Registry](crop-sown-registry.md)
+* [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)
 * [Registry model](../architecture/registry-model.md)

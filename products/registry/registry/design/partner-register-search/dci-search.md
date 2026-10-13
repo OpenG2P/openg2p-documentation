@@ -186,6 +186,8 @@ Operators: `$eq`, `$ne`, `$neq`, `$gt`, `$gte`, `$lt`, `$lte`, `$in`, `$nin`,
 A scalar is shorthand for `$eq`. A field map without `$and` or `$or` is
 combined with `AND`. `$and` or `$or` must be the only key at its node.
 
+An expression search returns each record with its linked records (a person's land, household…), as an identifier search does.
+
 `search_text` uses the core text rules: `$eq` and `$contains` are substring
 matches. `$in` and `$nin` are rejected for that column.
 

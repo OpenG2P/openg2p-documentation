@@ -130,7 +130,8 @@ The policy's `allowed_signing_algs` governs partner signatures and is not applie
 
 ## Setting up a department for the exchange
 
-1. Set the trusted issuer (Helm `global.agriStackExchange.trustedIssuer`, see
+1. Choose the department role (Helm `global.agriStackExchange.role: department`, which trusts the
+   exchange CM by default; or set `trustedIssuer` yourself, see
    [Deployment](../deployment/README.md#agri-stack-exchange-optional)).
 2. Bind the presenter (`agri-composite`) at this CM **for each registry** it may read, with a policy:
    that policy is the department's standing decision on what the exchange may receive.

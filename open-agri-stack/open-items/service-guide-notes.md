@@ -6,7 +6,7 @@ description: >-
 
 # Service Guide Notes
 
-Found while building the [use-case composite](../implementation/composite.md) from the guide ([Creating a New Platform Service](../../platform/platform-services/creating-a-new-service.md)) and comparing it with recent services (Consent Manager, Partner Management, Master Data, the registry platform, Farmer and Crop Sown registries). For the guide's maintainers; nothing here changes the composite.
+Found while building the [use-case composite](../configuration/composite.md) from the guide ([Creating a New Platform Service](../../platform/platform-services/creating-a-new-service.md)) and comparing it with recent services (Consent Manager, Partner Management, Master Data, the registry platform, Farmer and Crop Sown registries). For the guide's maintainers; nothing here changes the composite.
 
 | # | The guide says | Current practice | Suggestion |
 | --- | --- | --- | --- |

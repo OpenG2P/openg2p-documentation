@@ -44,7 +44,6 @@ The Farmer Registry then **augments** each person with its own agricultural fiel
 
 | Farmer overlay | Rows |
 |---|---|
-| `crops.json` | 757 |
 | `lands.json` | 509 |
 | `farmers.json` | 500 |
 | `livestocks.json` | 471 |
@@ -54,6 +53,8 @@ The Farmer Registry then **augments** each person with its own agricultural fiel
 | `scores.json` | 100 |
 
 These live in [`docker/db-seed/seed-data`](https://github.com/OpenG2P/farmer-registry/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
+
+**Sample IDs follow the sample people.** Sample person `ETH-IND-0007` becomes farmer `FR-0007`, and that person's lands are numbered `LAND-0007-1`, `LAND-0007-2`… in the person's woreda. The [Crop Sown Registry](../../crop-sown-registry/deployment/rancher.md#sample-data) numbers its sample farmers and plots the same way, so a demo of both shows the same farmers and plots. Neither registry reads the other.
 
 {% hint style="warning" %}
 **If Master Data holds no samples, the loader falls back** to the shared demography

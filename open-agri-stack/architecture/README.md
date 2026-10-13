@@ -74,5 +74,5 @@ A gateway product becomes worth adding only if Agri Stack grows many partner-fac
 | [Consent model](consent-model.md) | One consent for the partner, one grant per registry |
 | [Consent scenarios](consent-scenarios.md) | How a farmer gives a bank consent: in person with a form (built), in person digitally, self-service |
 | [Registry model](registry-model.md) | Register, table and activity-register kinds; projections; the Layer 2 split |
-| [Register vs activity register](register-vs-activity-register.md) | How the two kinds differ, as built |
 | [Terms](terms.md) | Validation, change, correction, void, approval of changes, verification, dispute |
+| [Standards](standards.md) | The open standards used in each area, our own formats, and standards still to explore |

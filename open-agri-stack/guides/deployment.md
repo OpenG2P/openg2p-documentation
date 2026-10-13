@@ -64,20 +64,15 @@ See [Data seeding](../../products/registry/farmer-registry/deployment/data-seedi
 
 ## Crop Sown Registry
 
-The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registry` ([source](https://github.com/OpenG2P/crop-sown-registry)); the form shows the platform's questions plus a "Crop Sown Registry" group. Install it the same way as the Farmer Registry, release name `csr`.
+Install as in [Crop Sown Registry → Deploying on Rancher](../../products/registry/crop-sown-registry/deployment/rancher.md), release name `csr`. That page has the form fields, sample data, ODK Central and the checks after install. For Agri Stack:
 
 | Setting | Value |
 | --- | --- |
 | Signature and consent settings | As for the Farmer Registry (defaults); the consent data controller is `crop-sown-registry` |
-| **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo: loads the two sample clusters |
-| **Load sample crop seasons** (`REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA`) | **off by default**; shown only when Load Sample Data is on. Records the sample crop seasons once, after install; needs the sample clusters and Master Data's sample people. Leave off for production. |
-| **Pull submissions from ODK Central** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED`) | off by default. When on, also activate the form in the register's Settings (ODK project and form ID) and create the ODK credentials Secret. It pulls from the commons ODK Central (`http://commons-services-odk-central-backend`; YAML only) |
+| **Load Sample Data** and **Load sample crop seasons** | **Off by default.** On for a demo: the sample clusters, then the sample crop seasons, loaded by the post-install Job `<release>-activity-samples`. They use the same farmer and plot IDs as the Farmer Registry's sample data ([Sample data](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data)) |
+| **Pull submissions from ODK Central** | Off by default. Turning it on needs more than the switch: an XLSForm you build (none ships), a credentials Secret wired through Edit YAML, and a SQL update to activate the mapping ([Collecting sowings with ODK Central](../../products/registry/crop-sown-registry/deployment/rancher.md#collecting-sowings-with-odk-central)) |
 
-* **No datasets (lists) are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
-* **No geo setting:** register forms read the country's geo levels from Master Data when they load; seed Jobs read Master Data through its API, never its database.
-* **ID generator:** installed, with one pool, `cluster`, for the Cluster register's generated Cluster IDs (`registry.idgenerator.idGenerator.appConfig.idTypes`; nothing to set). Crop seasons have no functional IDs.
-* **AWE:** nothing to set. The chart uses the shared AWE in commons-services; db-seed loads the Cluster approval policies and keycloak-init creates the approvers they name (`alex.carter`, `nina.patel`).
-* **Sanity:** the platform's smoke tier runs on install; its e2e tier stays off (it seeds a record-register record, which this registry doesn't have). Activity-register checks run against a deployed instance with `scripts/e2e_smoke.py`.
+The sanity Job's end-to-end tier stays off. `scripts/e2e_smoke.py` in the Crop Sown Registry repository does not sign its requests or carry a consent, so it runs only against a registry with **Verify Partner Signature** and **Enforce Consent** off, not against an Agri Stack install. To test an install end to end, use the [partner test](partner-test.md).
 
 ## PM and CM entries, and the signing Secret
 
@@ -186,25 +181,28 @@ The IAM service, the Audit Manager and keycloak-init have no form field and are 
 
 **Consent Manager** (same group in the form):
 
-| Form field | Agrix value | Why |
+Two choices are enough; leave every other field empty or at its default:
+
+| Form field | Agrix value | What the defaults give |
 | --- | --- | --- |
 | Require AWE Approval for Policy Widening? | **No** | No AWE in the exchange |
-| Signing Key | **existing** | Never the demo key: the departments' Consent Managers trust this key |
+| Agri Stack Exchange Role | **exchange** | Consent tokens issued as `agri-stack-exchange-cm` to `agri-composite` only, the partner ID our composite and test scripts use |
+| Partner Portal? | **Yes** | Partner users (e.g. bank staff) raise consent requests; with the exchange role the farmer's national-ID login is always on, every request needs a `FARMER_ID`, and the portal lists the use cases of `https://agri-composite.<this domain>` |
+
+For production, also:
+
+| Form field | Value | Why |
+| --- | --- | --- |
+| Signing Key | **existing** | The demo key is public: anyone could sign consent tokens the departments accept. Fine for a demo |
 | Signing Key Secret | `agrix-cm-signing` | The Secret from step 1 |
-| Signing Key ID | `agrix-cm-2026-01` | Must stay the same while the key is in use; change it on rotation |
-| Consent Tokens (Exchange)? | **Yes** | This CM issues a consent token per registry to the composite |
-| Token Issuer ID (exchange) | `agri-stack-exchange-cm` | The departments' Consent Managers trust this ID |
-| Token Presenters (exchange) | `agri-composite` | Only the composite may ask for consent tokens |
-| Trusted Token Issuer ID / Trusted Issuer JWKS URL / Trusted Issuer Presenter (department) | leave empty | Department role only (set on `trial` and `dept1`) |
-| Partner Portal? | **Yes** | Partner users (e.g. bank staff) raise consent requests and upload the signed form |
-| Require National-ID Login (eSignet)? | **Yes** | The farmer's national-ID login, mandatory on every request |
-| Required Subject Identifiers | `FARMER_ID` | Every consent request names the farmer; staff check it in the Farmer Registry |
-| Composite URL | `https://agri-composite.agrix.openg2p.org` | The portal lists the use cases and fills requests from them |
+| Signing Key ID | e.g. `agrix-cm-2026-01` | Must stay the same while the key is in use; change it on rotation |
+| Token Issuer ID, Token Presenters | only to differ from `agri-stack-exchange-cm`, `agri-composite` | The departments must then be given the same values |
+| Required Subject Identifiers, Composite URL | only to differ from `FARMER_ID`, `agri-composite.<this domain>` | |
 
 The signed forms are kept in Garage (bucket `consent-evidence`, created by commons-base). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)). How consent is collected: [consent scenarios](../architecture/consent-scenarios.md).
 
 {% hint style="info" %}
-**Department installs** (`trial`, `dept1`) use the same form with the commons defaults, plus, under the Consent Manager: **Consent Tokens (Exchange)?** Yes, **Trusted Token Issuer ID** `agri-stack-exchange-cm`, **Trusted Issuer JWKS URL** `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, **Trusted Issuer Presenter** `agri-composite`; and their own signing key.
+**Department installs** (`trial`, `dept1`) use the same form with the commons defaults, plus, under the Consent Manager, **Agri Stack Exchange Role** **department**. That trusts consent tokens from `agri-stack-exchange-cm`, presented by `agri-composite`, with the key at `https://consent-manager-partner.agrix.<parent domain>/…/.well-known/jwks.json` (e.g. `agrix.openg2p.org` for `trial.openg2p.org`). Set **Exchange Domain** only when the exchange is elsewhere; for production, their own signing key.
 {% endhint %}
 
 <details>
@@ -221,9 +219,7 @@ openg2p-consent-manager:
     aweEnabled: false
     consentSigningKid: agrix-cm-2026-01
     agriStackExchange:
-      enabled: true
-      issuer: agri-stack-exchange-cm
-      receiptPresenters: [agri-composite]
+      role: exchange        # departments: role: department (exchangeDomain: agrix.<domain> if not the default)
   consentManagerApi:
     signingKey:
       mode: existing
@@ -231,10 +227,6 @@ openg2p-consent-manager:
       passwordSecretName: agrix-cm-signing   # needed on CM charts develop.74 and earlier
   partnerPortal:
     enabled: true
-    compositeUrl: https://agri-composite.agrix.openg2p.org
-    subjectAuth:
-      enabled: true
-    requiredSubjectIdentifiers: [FARMER_ID]
 ```
 
 </details>

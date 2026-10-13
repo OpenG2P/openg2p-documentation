@@ -7,7 +7,7 @@ description: >-
 
 # Composite Configuration
 
-How to configure the [use-case composite](../design/use-case-composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [composite as built](../implementation/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
+How to configure the [use-case composite](../design/use-case-composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
 
 ## API reference
 

@@ -245,33 +245,40 @@ approvers that role. Details, settings and the state machine:
 ## Agri Stack exchange — optional
 
 Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
-install. In Rancher the settings sit in the **Agri Stack exchange** group, shown once
-**Consent Tokens (Exchange)?** (`global.agriStackExchange.enabled`) is ticked. The exchange CM
+install. In Rancher, pick **Agri Stack Exchange Role** (`global.agriStackExchange.role`):
+**exchange** or **department**. The role alone gives working defaults, the ones the Agri Stack test
+scripts use; the other fields only override them. The exchange CM
 issues short-lived **consent tokens** (called *receipts* in the API and settings), one per registry
 and query; a department CM accepts them. How the two roles work:
 [Exchange consent tokens](../design/exchange-receipts.md).
 
 | Value (`global.agriStackExchange.*`) | Env (`CONSENT_MANAGER_*`) | Role | Meaning |
 | --- | --- | --- | --- |
+| `role` | — | both | `exchange`, `department`, or empty (none: the fields below act as set) |
+| `defaultIssuer`, `defaultPresenter` | — | both | Used for an empty issuer or presenter in a role: `agri-stack-exchange-cm`, `agri-composite` |
+| `exchangeDomain` | — | department | **Exchange Domain**; empty = `agrix.<parent of this install's domain>`. The JWKS URL defaults to `https://consent-manager-partner.<exchange domain>/api/consent-manager-partner/.well-known/jwks.json` |
+| `defaultSubjectIdentifiers` | — | exchange | Required subject identifiers when the partner portal leaves them empty: `[FARMER_ID]` |
 | `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
 | `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
 | `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token TTL Seconds** — consent-token lifetime, capped by the consent's expiry (default 900) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
-| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Issuer Presenter**) |
+| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
 | `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `always` (default) or `never` |
 
-Consent-token issuing uses the **signing key** above (same `kid`, same JWKS) — give the exchange CM a real
-`.p12`, not the demo key. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
+Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
+demo, but give a production exchange CM its own `.p12`. With the exchange role and the partner
+portal on, the national-ID login is always on, required subject identifiers default to `FARMER_ID`, and
+the composite URL to `https://agri-composite.<this domain>`. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).
 
-**Exchange (`agrix`)** — set `issuer` and `receiptPresenters: [agri-composite]`, and bind each partner
-(e.g. `bank-a`) to each registry with its exchange policy. Set these, and the signing key, in the
-commons install's Edit YAML (see the Agri Stack
+**Exchange (`agrix`)** — role `exchange`, and bind each partner
+(e.g. `bank-a`) to each registry with its exchange policy. Everything is in the commons-services
+form (see the Agri Stack
 [deployment guide](../../open-agri-stack/guides/deployment.md#what-to-install-in-agrix)).
 
-**Department (`trial`, `csr`)** — set the trusted issuer (`jwksUrl` reachable from this CM's partner
-API, e.g. the `agrix` CM partner API's in-cluster or internal-gateway URL, `presenter: agri-composite`)
+**Department (`trial`, `csr`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
+exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API)
 and bind `agri-composite` at this CM for each of its registries with the department's standing
 policy. The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
 both stay empty on a standalone install.

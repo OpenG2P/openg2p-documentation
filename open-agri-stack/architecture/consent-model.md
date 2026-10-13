@@ -13,7 +13,7 @@ description: >-
 **Consent object, artefact, receipt, token:** four different things; see [key terms](../../consent-management/design/README.md#key-terms). In Agri Stack the bank holds a consent (stored in the exchange's Consent Manager as a consent artefact, with a consent receipt in its consent record), and each registry gets a **consent token** per query.
 {% endhint %}
 
-* **Built:** a partner-signed consent can carry one **grant per registry** (`grants: [{data_controller, data_scopes}]`), and each registry validates its own grant (it sends its `data_controller` to CM `/validate`). A partner can be bound to several registries in CM, each with its own policy. Replay is per consent and registry, and each registry gets its own receipt. See [Consent Manager changes](../implementation/consent-manager.md).
+* **Built:** a partner-signed consent can carry one **grant per registry** (`grants: [{data_controller, data_scopes}]`), and each registry validates its own grant (it sends its `data_controller` to CM `/validate`). A partner can be bound to several registries in CM, each with its own policy. Replay is per consent and registry, and each registry gets its own receipt. See the [Partner Integration Guide](../../consent-management/partner-integration-guide.md) and [exchange consent tokens](../../consent-management/design/exchange-receipts.md).
 * **Built since:** a consent collected through the Consent Manager, in person in the partner portal (the farmer's national-ID login, signed form, staff verification, Farmer ID checked in the Farmer Registry), presented by its ID (`message.consent_id`) and turned into a consent token per registry in the exchange. How a farmer gives consent, in person with a form, in person digitally, or self-service: [consent collection](../../consent-management/design/consent-collection.md).
 * **Still to do:** consent in person digitally (no form, no staff step) and self-service, and policies held in Partner Management.
 {% endhint %}
@@ -81,7 +81,7 @@ POST /consent-requests
 
 ## Changes in CM
 
-What is built, per change, is in [Consent Manager changes](../implementation/consent-manager.md).
+The contract is documented in the [Consent Manager](../../consent-management/README.md) pages; what the exchange's CM is configured with is in [Exchange](../configuration/exchange.md).
 
 | Area | Change | Status |
 | --- | --- | --- |

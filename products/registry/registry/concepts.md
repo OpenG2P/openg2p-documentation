@@ -54,6 +54,10 @@ Similar to Registers, records in a Programme Register undergo verification and a
 | **Version history**   | Yes                    | Follows parent register | No                        |
 | **Deduplication**     | Supported              | Not applicable          | Supported                 |
 
+## Activity register
+
+An **Activity Register** records things that happened, such as a visit, a sowing or an attendance. Each activity is appended and never edited; current state and summaries are derived from the activities. It does not use change requests, functional IDs or version history. See [Activity Register](features/activity-register.md).
+
 ## Records and identifiers
 
 Every record in the Registry is identified by a combination of system-generated and domain-meaningful identifiers.

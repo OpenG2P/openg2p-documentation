@@ -6,3 +6,13 @@ redirects:
   products/registry/registry/developer-zone/api-documentation/1.1.0: products/registry/registry/developer-zone/api-documentation/README.md
   products/registry/registry/developer-zone/api-documentation/1.1.0/staff-portal-api: products/registry/registry/developer-zone/api-documentation/staff-portal-api.md
   products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api: products/registry/registry/developer-zone/api-documentation/partner-api.md
+  open-agri-stack/implementation: open-agri-stack/configuration/README.md
+  open-agri-stack/implementation/composite: open-agri-stack/configuration/composite.md
+  open-agri-stack/implementation/farmer-registry: open-agri-stack/configuration/farmer-registry.md
+  open-agri-stack/implementation/crop-sown-registry: open-agri-stack/configuration/crop-sown-registry.md
+  open-agri-stack/implementation/registry-platform: products/registry/registry/design/activity-register.md
+  open-agri-stack/implementation/consent-manager: open-agri-stack/configuration/exchange.md
+  open-agri-stack/implementation/standards: open-agri-stack/architecture/standards.md
+  open-agri-stack/architecture/register-vs-activity-register: products/registry/registry/features/activity-register.md
+  open-agri-stack/design/activity-register: products/registry/registry/design/activity-register.md
+  open-agri-stack/design/crop-sown-registry: products/registry/crop-sown-registry/README.md

@@ -9,7 +9,7 @@ description: >-
 
 The registry's job is that its records are **authentic, and verified where that is needed**. Whether a programme will act on a record (approval for payment or eligibility) is decided in PBMS, not here.
 
-These terms apply to both record kinds: **entity** registers (a farmer, a plot) and **activity** registers, whose records are occurrences (a sowing, a vaccination). See [register vs activity register](register-vs-activity-register.md).
+These terms apply to both record kinds: **entity** registers (a farmer, a plot) and **activity** registers, whose records are occurrences (a sowing, a vaccination). See [activity register](../../products/registry/registry/features/activity-register.md).
 
 | Term | What it means | What happens to the data | Entity register | Activity register |
 | --- | --- | --- | --- | --- |

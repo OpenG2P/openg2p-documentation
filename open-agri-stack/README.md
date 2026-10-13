@@ -31,7 +31,7 @@ Each department runs its own registry on the OpenG2P [registry platform](../prod
 | Registry | Holds | Kind | Status |
 | --- | --- | --- | --- |
 | **Farmer Registry (FR)** | Farmers, land parcels, households, declared main crops, livestock (until a Livestock Registry exists) | Registers and child tables (entities) | Built ([Farmer Registry](../products/registry/farmer-registry/README.md)) |
-| **Crop Sown Registry (CSR)** | What each farmer plans, prepares, sows, observes and harvests, plot by plot and season by season; clusters | An activity register (occurrences) plus a Cluster register | Built ([design](design/crop-sown-registry.md), [as built](implementation/crop-sown-registry.md)) |
+| **Crop Sown Registry (CSR)** | What each farmer plans, prepares, sows, observes and harvests, plot by plot and season by season; clusters | An activity register (occurrences) plus a Cluster register | Built ([Crop Sown Registry](../products/registry/crop-sown-registry/README.md)) |
 | **Livestock Registry** | Animals and livestock events (born, vaccinated, treated, sold) | An entity register and an activity register | Planned (design only, see [register model design](design/register-model-design.md#livestock-registry-an-entity-and-occurrences-in-one-registry)) |
 | **DA Registry** | Development agents | Register | Planned |
 
@@ -54,14 +54,14 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 
 | Part | Status | Where |
 | --- | --- | --- |
-| Activity registers in the registry platform | Built | [Registry platform changes](implementation/registry-platform.md) |
+| Activity registers in the registry platform | Built | [Activity register](../products/registry/registry/features/activity-register.md) |
 | Register model, phase 1 (typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data) | Built | [Register model design](design/register-model-design.md#phase-1-built) |
 | Register model, phase 2 (common verification model, disputes, beneficiary API for occurrences, subscribe/notify) | Design | [Register model design](design/register-model-design.md#phase-2-proposed) |
-| Crop Sown Registry | Built | [Crop Sown Registry (as built)](implementation/crop-sown-registry.md) |
-| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry changes](implementation/farmer-registry.md) |
-| One consent with a grant per registry, in CM | Built | [Consent Manager changes](implementation/consent-manager.md) |
-| Use-case composite, first version | Built | [Composite as built](implementation/composite.md) |
-| Exchange mode: the exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [exchange setup](guides/exchange-setup.md) |
+| Crop Sown Registry | Built | [Crop Sown Registry](../products/registry/crop-sown-registry/README.md); [configuration](configuration/crop-sown-registry.md) |
+| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../products/registry/farmer-registry/README.md); [configuration](configuration/farmer-registry.md) |
+| One consent with a grant per registry, in CM | Built | [Consent model](architecture/consent-model.md); [Consent Manager](../consent-management/README.md) |
+| Use-case composite, first version | Built | [Composite](configuration/composite.md) |
+| Exchange mode: the exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [Exchange](configuration/exchange.md); [exchange setup](guides/exchange-setup.md) |
 | Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent scenarios](architecture/consent-scenarios.md) |
 | Composite staff console | Built | [Composite console](guides/composite-console.md) |
 | Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
@@ -72,14 +72,14 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | --- | --- |
 | A partner (e.g. a bank) | [Consent scenarios](architecture/consent-scenarios.md) → [partner guide](guides/partner-guide.md) |
 | An operator | [Architecture](architecture/README.md) → [distributed deployment architecture](design/distributed-deployment-architecture.md) → [deploying on a cluster](guides/deployment.md) → [testing after install](guides/testing-after-install.md) |
-| A developer | [Architecture](architecture/README.md) → [design](design/README.md) → [implementation](implementation/README.md) → [running the composite locally](guides/running-the-composite-locally.md) |
+| A developer | [Architecture](architecture/README.md) → [design](design/README.md) → [configuration](configuration/README.md) → [running the composite locally](guides/running-the-composite-locally.md) |
 
 ## Map of this section
 
 | Part | Pages |
 | --- | --- |
-| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [request flow](architecture/request-flow.md); [policy and consent](architecture/policy-and-consent.md); [consent model](architecture/consent-model.md); [consent scenarios](architecture/consent-scenarios.md); [registry model](architecture/registry-model.md); [register vs activity register](architecture/register-vs-activity-register.md); [terms](architecture/terms.md) |
-| **[Design](design/README.md)** | [Register model design](design/register-model-design.md); [activity register](design/activity-register.md); [Crop Sown Registry](design/crop-sown-registry.md); [use-case composite](design/use-case-composite.md); [distributed deployment architecture](design/distributed-deployment-architecture.md); [registry data sync](design/registry-data-sync.md); [concept notes review](design/concept-notes-review.md) |
-| **[Implementation](implementation/README.md)** | What is built, per component: [registry platform](implementation/registry-platform.md), [Consent Manager](implementation/consent-manager.md), [Crop Sown Registry](implementation/crop-sown-registry.md), [Farmer Registry](implementation/farmer-registry.md), [composite](implementation/composite.md); the [standards](implementation/standards.md) used |
+| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [request flow](architecture/request-flow.md); [policy and consent](architecture/policy-and-consent.md); [consent model](architecture/consent-model.md); [consent scenarios](architecture/consent-scenarios.md); [registry model](architecture/registry-model.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
+| **[Design](design/README.md)** | [Register model design](design/register-model-design.md); [use-case composite](design/use-case-composite.md); [distributed deployment architecture](design/distributed-deployment-architecture.md); [registry data sync](design/registry-data-sync.md); [concept notes review](design/concept-notes-review.md) |
+| **[Configuration](configuration/README.md)** | What each install is configured with for Agri Stack: [Farmer Registry](configuration/farmer-registry.md), [Crop Sown Registry](configuration/crop-sown-registry.md), [exchange](configuration/exchange.md), [composite](configuration/composite.md) |
 | **[Guides](guides/README.md)** | [Partner guide](guides/partner-guide.md); [composite configuration](guides/composite-configuration.md); [adding a data source](guides/adding-a-data-source.md); [testing after install](guides/testing-after-install.md); [partner test](guides/partner-test.md); [exchange setup](guides/exchange-setup.md); [composite console](guides/composite-console.md); [registry-to-registry sync](guides/registry-to-registry-sync.md); [deploying on a cluster](guides/deployment.md); [running the composite locally](guides/running-the-composite-locally.md) |
 | **[TODOs and open items](open-items/README.md)** | Decisions and checks still pending; [service guide notes](open-items/service-guide-notes.md) |

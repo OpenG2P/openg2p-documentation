@@ -8,7 +8,7 @@ description: >-
 # Use-Case Composite
 
 {% hint style="info" %}
-**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [composite as built](../implementation/composite.md) for what is in it and what is not yet, and the [composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
+**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See the [composite configuration](../configuration/composite.md) page for what is in it and what is not yet, and the [composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
 {% endhint %}
 
 A **composite** serves one approved use case, such as `loan-profile`, by querying several departmental registries and returning one response. There is **one generic composite service**; each use case is a **configuration file** that it loads, not new code.
@@ -120,7 +120,7 @@ audit:
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the composite's own settings (`registries`), because PM holds no registry endpoints yet; the composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [composite as built](../implementation/composite.md).
+**First version:** registry endpoints are configured in the composite's own settings (`registries`), because PM holds no registry endpoints yet; the composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../configuration/composite.md).
 {% endhint %}
 
 ## Checks when a use case is published
@@ -164,7 +164,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 Before calling a source, the composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).
 
-How the first version runs a request, step by step, is in [composite as built](../implementation/composite.md#what-it-does-per-request).
+How the first version runs a request, step by step, is in [Composite](../configuration/composite.md#what-it-does-per-request).
 
 ## Worked example: wheat sown by a farmer this season
 
@@ -212,10 +212,10 @@ One record comes back. The answer is at `measures.by_crop.CROP_WHEAT.area_sown_h
 * **The partner sends a FAN:** the Farmer Registry is called first, and the Crop Sown query uses the `FARMER_ID` it returns. The source then declares `depends_on: farmer`, and its query template reads the farmer ID from the farmer result.
 
 {% hint style="info" %}
-In the built `loan-profile`, the crop sources always declare `depends_on: farmer` and use the subject itself when it is a `FARMER_ID`; calling them in parallel with the farmer when the partner sends a farmer ID is [not built yet](../implementation/composite.md#not-built-yet).
+In the built `loan-profile`, the crop sources always declare `depends_on: farmer` and use the subject itself when it is a `FARMER_ID`; calling them in parallel with the farmer when the partner sends a farmer ID is [not built yet](../configuration/composite.md#not-built-yet).
 {% endhint %}
 
-**"This season"** is resolved by the composite (the crop year and season from today's date, using the season windows in the [Crop Sown Registry](crop-sown-registry.md#farmers-season-summary)) and passed as parameters. Without them, the summaries come back newest first.
+**"This season"** is resolved by the composite (the crop year and season from today's date, using the season windows in the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md#what-the-registry-works-out)) and passed as parameters. Without them, the summaries come back newest first.
 
 ## Response to the partner (example)
 
