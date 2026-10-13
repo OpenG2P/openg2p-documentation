@@ -1,7 +1,7 @@
 ---
 description: >-
   What is configured in the Farmer Registry install for Agri Stack: the data it
-  shares, the Farmer ID and Fayda FAN link, the composite as a partner, and the
+  shares, the Farmer ID and national ID link, the composite as a partner, and the
   department Consent Manager with its standing policy for the composite.
 ---
 
@@ -24,7 +24,7 @@ Master Data in the same namespace needs the **agriculture** dataset theme (the d
 
 ## What Agri Stack reads
 
-The composite's `loan-profile` use case searches the `Farmer` register, record type `spdci-extensions-dci:Farmer`, with an expression search on `foundational_id` (Fayda FAN) or `functional_record_id` (Farmer ID). The record comes with the farmer's land and household.
+The composite's `loan-profile` use case searches the `Farmer` register, record type `spdci-extensions-dci:Farmer`, with an expression search on `foundational_id` (national ID) or `functional_record_id` (Farmer ID). The record comes with the farmer's land and household.
 
 | Register | Read by Agri Stack |
 | --- | --- |
@@ -48,9 +48,9 @@ A consent without an optional scope still works: those fields come back `null`. 
 
 ## Farmer ID and national ID
 
-Every Agri Stack registry is keyed to the same Fayda-based identifier. The Farmer Registry holds the link between the two:
+Every Agri Stack registry is keyed to the same national identifier. The Farmer Registry holds the link between the two:
 
-* the farmer record's foundational ID is the **Fayda FAN** (subject ID type `FAYDA_FAN`);
+* the farmer record's foundational ID is the **national ID** (Fayda FAN in the reference setup; subject ID type `FAYDA_FAN`);
 * its functional ID is the **Farmer ID** (`FARMER_ID`, e.g. `FR-0007`);
 * the DCI farmer record carries both in `farmer_personal_details.member_identifier`, as `UIN` and `FARMER_ID`.
 

@@ -1,7 +1,7 @@
 ---
 description: >-
   Deploying Agri Stack on a cluster: the order of installs and the
-  settings for commons (Master Data with the Ethiopia pack and agriculture
+  settings for commons (Master Data with a country pack, ETH by default, and the agriculture
   domain, PM, CM), the Farmer and Crop Sown registries, and the composite;
   the three-namespace exchange setup; uninstalling.
 ---

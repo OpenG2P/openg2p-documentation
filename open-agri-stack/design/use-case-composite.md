@@ -170,7 +170,7 @@ How the first version runs a request, step by step, is in [Composite](../configu
 
 The question is "total area of wheat sown by farmer X in this season". Both registries answer with one **synchronous** DCI call each, `POST /dci/registry/sync/search`. Neither registry has an asynchronous search, so the composite never waits for a callback.
 
-**Farmer Registry:** who the farmer is. Search the Farmer register by Fayda FAN (`foundational_id`) or farmer ID (`functional_record_id`):
+**Farmer Registry:** who the farmer is. Search the Farmer register by national ID (`foundational_id`; Fayda FAN in the reference setup) or farmer ID (`functional_record_id`):
 
 ```json
 "search_criteria": {

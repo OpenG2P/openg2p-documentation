@@ -82,7 +82,7 @@ The vocabulary (validation, change, correction, void, approval of changes, verif
 
 **Verification policy**, set in configuration. What needs verifying depends on the registry, so the target is chosen per case:
 
-* a **field** (e.g. the Fayda FAN, checked against Fayda);
+* a **field** (e.g. the national ID, checked against the ID system; Fayda FAN in the reference setup);
 * a **section** (e.g. land tenure, from a document);
 * the **whole record**;
 * an **activity type** (e.g. Sown and Harvested, as today).
@@ -94,7 +94,7 @@ For each target, the policy says:
 * **who** may verify (roles);
 * what **evidence** is expected (a photo, a document, a device capture).
 
-**Verification by an activity.** A field verification is itself something that happened, so it can be recorded as an **activity**: a site visit with a photo, GPS coordinates and a short form, whose participant is the record being checked (a sowing, a land parcel, a farmer). The verification activity type declares what it verifies, and its outcome creates the verification record, with the activity as its evidence. That gives verification a date, a place and evidence, ODK and agent capture, and a work list of visits due. The **status** still sits on the target, because it is also set by other methods (a Fayda lookup, a trusted device) and is what resets on change and what APIs filter on: the visit is the evidence, the status the result.
+**Verification by an activity.** A field verification is itself something that happened, so it can be recorded as an **activity**: a site visit with a photo, GPS coordinates and a short form, whose participant is the record being checked (a sowing, a land parcel, a farmer). The verification activity type declares what it verifies, and its outcome creates the verification record, with the activity as its evidence. That gives verification a date, a place and evidence, ODK and agent capture, and a work list of visits due. The **status** still sits on the target, because it is also set by other methods (a national ID lookup, a trusted device) and is what resets on change and what APIs filter on: the visit is the evidence, the status the result.
 
 **Verification records** are attached to a target. Each one holds:
 
@@ -168,7 +168,7 @@ One role is the **primary subject**, used for contexts and summaries. Participan
 
 | Register | Kind | Verification | Corrections |
 | --- | --- | --- | --- |
-| Farmer (incl. declared main crops) | Entity | Approval of changes (AWE), as today. **Verification** of the Fayda FAN by a system check (Fayda lookup: trusted source) | Change request → new version |
+| Farmer (incl. declared main crops) | Entity | Approval of changes (AWE), as today. **Verification** of the national ID by a system check (ID system lookup: trusted source) | Change request → new version |
 | Land (child of Farmer) | Entity | Verification of size and tenure (survey, document) | Change request; verification of the changed fields goes back to pending |
 | Household, members | Entity | As Farmer | Change request |
 | Livestock (child of Farmer) | Entity | As Farmer | Change request. Kept until a Livestock registry exists |
@@ -182,7 +182,7 @@ Nothing changes for the Farmer Registry unless it adopts field verification. Its
 
 | Register | Kind | Verification | Notes |
 | --- | --- | --- | --- |
-| CropSown | Occurrence. Types: Planned, Land prepared, Sown, Growth observed, Infestation reported, Damage reported, Harvested. Context: plot × crop year × season × crop | **Verification:** Sown and Harvested, by a supervisor from photo evidence (as today); Infestation optionally | Participants: farmer (primary), plot, development agent. The farmer and plot are external references to the Farmer Registry, checked for format. Location = the plot's woreda |
+| CropSown | Occurrence. Types: Planned, Land prepared, Sown, Growth observed, Infestation reported, Damage reported, Harvested. Context: plot × crop year × season × crop | **Verification:** Sown and Harvested, by a supervisor from photo evidence (as today); Infestation optionally | Participants: farmer (primary), plot, development agent. The farmer and plot are external references to the Farmer Registry, checked for format. Location = the plot's district (woreda in the shipped configuration) |
 | **Cluster** (proposed; built in phase 1) | **Entity** | Approval of changes | Holds the cluster's attributes and membership, which the `CLUSTER_ENROLLED` activity carried before. Clusters and membership are maintained here first; activities only refer to the cluster. Cluster totals are derived from the plot activities |
 
 **Corrections:**
@@ -269,7 +269,7 @@ No verification work: entity change requests keep their AWE approval, and activi
 | **Participants** | Platform | Each activity type declares its roles (`participant_roles`: role → payload field, primary flag). Every activity's participants are stored typed and indexed (`g2p_activity_participants`: role, `LOCAL` register record or `EXTERNAL` system, ID). `append` accepts `participants[]` (role + ID); search filters by participant and role; the profile tab finds a record in any role. The staff UI lists participants on an activity |
 | **Entities first** | Platform, CSR | A local entity is checked strictly (the cluster must exist in the Cluster register). Farmer and plot stay format-only (another registry). Temporary plot IDs withdrawn from the Crop Sown Registry |
 | **Partner corrections** | Partner API | `/partner/activity/correct_activities`: supersede or void with a reason, signed like `append_activities`; a partner can only correct its own submissions |
-| **Cluster as an entity** | CSR | A Cluster register (generated Cluster ID, programme cluster code, name, crop, woreda, zone, water source, area, smallholders…), created through an intake form and changed through change requests, both approved in AWE. `CLUSTER_ENROLLED` carries only the cluster ID |
+| **Cluster as an entity** | CSR | A Cluster register (generated Cluster ID, programme cluster code, name, crop, district, agro-ecological zone, water source, area, smallholders…), created through an intake form and changed through change requests, both approved in AWE. `CLUSTER_ENROLLED` carries only the cluster ID |
 | **Crop-change link** | Platform, CSR | A context can name the context it replaces (`replaces_crop_season_id` in the payload). The old one is closed and both point to each other, in the projection, the reporting view, the DCI crop-season record and the staff UI |
 | **Verification in DCI** | CSR | Activities carry `verification_status`; the crop-season state carries `sowing_verified`, `harvest_verified` and `pending_verification_count` |
 | **Sample data** | Platform, CSR, FR | See below |
@@ -277,7 +277,7 @@ No verification work: entity change requests keep their AWE approval, and activi
 **Sample data, shared by convention.** The Farmer and Crop Sown registries never read each other's database. Both derive sample IDs from Master Data's sample people (the country pack's `samples/individuals.json`):
 
 * sample person `ETH-IND-0007` is farmer `FR-0007`;
-* their plots are `LAND-0007-1`, `LAND-0007-2`… in their woreda.
+* their plots are `LAND-0007-1`, `LAND-0007-2`… in their district.
 
 The Farmer Registry's loader numbers each sample person's lands this way. The Crop Sown Registry loads its samples in two parts:
 

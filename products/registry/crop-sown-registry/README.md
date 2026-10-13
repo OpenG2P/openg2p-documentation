@@ -32,10 +32,10 @@ graph LR
 | --- | --- |
 | **What it records** | Events in the life of a crop: one crop, on one plot, in one season |
 | **How it stores them** | An [activity register](../registry/features/activity-register.md): entries are only added, never overwritten. A mistake is corrected by a new entry |
-| **Who it is about** | Farmers, by their Farmer Registry ID. The Fayda FAN is kept alongside |
+| **Who it is about** | Farmers, by their Farmer Registry ID. The national ID (Fayda FAN in the reference setup) is kept alongside |
 | **Where data comes from** | The staff portal, partner systems over the signed partner API, and ODK Central |
 | **What it gives back** | Each crop season's current state, each farmer's season summary, indicators by crop and area, reporting views, and DCI search for partners |
-| **Country** | Built for Ethiopia: Ethiopian calendar, Meher and Belg seasons, woredas, quintals. See [Customisation](customisation.md) |
+| **Country settings** | Calendar, seasons, administrative levels, units and lists are set per country. See [Customisation](customisation.md) |
 
 ## Who uses it
 
@@ -43,7 +43,7 @@ graph LR
 | --- | --- |
 | **Development agents** and data clerks | Record plans, sowings, field visits, pests, damage and harvests, one at a time or in batches |
 | **Supervisors** | Verify sowings and harvests, and follow up on the work list of activities that are due |
-| **Woreda, zone and region offices** | Read indicators: area sown, production and yield, by crop and area |
+| **District and regional offices** | Read indicators: area sown, production and yield, by crop and area |
 | **Cooperatives and other partner systems** | Send entries for their members, and correct their own entries |
 | **Banks, insurers and subsidy programmes** | Read a farmer's crop seasons and season summaries over DCI, with the farmer's consent |
 | **Cluster programme staff** | Register production clusters and see which plots joined them |
@@ -57,7 +57,7 @@ The registry has two registers.
 | Register | Kind | Holds |
 | --- | --- | --- |
 | **Crop Sown** (`CropSown`) | Activity register | Every activity on every crop season. No functional IDs and no change requests |
-| **Cluster** (`Cluster`) | Entity register | Production clusters: groups of smallholders farming one crop together in a woreda |
+| **Cluster** (`Cluster`) | Entity register | Production clusters: groups of smallholders farming one crop together in a district |
 
 What an activity register is, and how it differs from an entity register, is explained in [Activity register](../registry/features/activity-register.md) and its [design](../registry/design/activity-register.md). This page says only what the Crop Sown Registry records in it.
 
@@ -71,8 +71,8 @@ A **crop season** is one crop on one plot in one season. It is identified by fou
 
 * **Intercropping** is two crop seasons on the same plot.
 * **A changed crop** is a new crop season that names the one it replaces. The old one is closed, and each points to the other.
-* **The crop year** is the Ethiopian year. The seasons are Meher, Belg and Irrigation.
-* **The location** is the plot's woreda. It is required on the plan and on the sowing. Later activities take it from their crop season.
+* **The crop year** is a year in the configured calendar. The seasons are set per country (Meher, Belg and Irrigation in the shipped configuration, with the Ethiopian calendar).
+* **The location** is the plot's district, the lowest administrative level (woreda in the shipped configuration). It is required on the plan and on the sowing. Later activities take it from their crop season.
 
 ### Activities
 
@@ -85,7 +85,7 @@ A **crop season** is one crop on one plot in one season. It is identified by fou
 | **Growth observed** | Growth stage, crop condition, area under crop, estimated yield, a photo | Repeatable. Needs a sowing first |
 | **Pest, disease or weed reported** | Type, agent (e.g. fall armyworm, wheat rust, striga), severity, area, damage %, action taken, pesticide | Repeatable. Needs a sowing first |
 | **Crop damage reported** | Cause (drought, flood, hail, frost, wind, wildlife…), area, loss % | Repeatable. Needs a sowing first |
-| **Harvested** | Area, quantity in quintals, yield (computed), post-harvest loss, stored, sold, consumed and kept as seed, sale price | Once. Needs a sowing first. Due 90–180 days after sowing. **Verified by a supervisor** |
+| **Harvested** | Area, quantity in the configured unit (quintals ship), yield (computed), post-harvest loss, stored, sold, consumed and kept as seed, sale price | Once. Needs a sowing first. Due 90–180 days after sowing. **Verified by a supervisor** |
 
 Each activity also carries the farmer ID, the plot ID, the development agent's ID and, if known, a GPS point.
 
@@ -95,16 +95,16 @@ The fields follow the FAO World Programme for the Census of Agriculture 2020 cro
 
 * area sown more than 1.5 × the area planned;
 * an observation, report or harvest covering more than the area sown;
-* a yield above 150 quintals per hectare;
+* a yield above the configured limit (150 quintals per hectare ships);
 * stored, sold, consumed and seed quantities adding up to more than the harvest less losses.
 
-**Lists.** Every coded field (crop, season, variety, seed type, fertiliser, pest, severity, damage cause…) is checked against **Master Data** when the entry is made. The registry keeps no lists of its own. They come from the agriculture domain of the Ethiopia country pack. See [Customisation](customisation.md#lists-in-master-data).
+**Lists.** Every coded field (crop, season, variety, seed type, fertiliser, pest, severity, damage cause…) is checked against **Master Data** when the entry is made. The registry keeps no lists of its own. They come from the agriculture domain of the country pack in use (ETH ships). See [Customisation](customisation.md#lists-in-master-data).
 
 ### Cluster register
 
 A cluster is an ordinary entity register, maintained like the Farmer Registry's registers:
 
-* **fields:** Cluster ID, programme cluster code, name, crop, woreda, agro-ecological zone, water source, area, number of smallholders, year established, coordinator's name and phone;
+* **fields:** Cluster ID, programme cluster code, name, crop, district, agro-ecological zone, water source, area, number of smallholders, year established, coordinator's name and phone;
 * **Cluster ID:** generated when the registration is approved, e.g. `CL-4729318560`. Staff never type it. The cluster programme's own code (e.g. `CL-ET0406-001`) is kept in the searchable **Programme Cluster Code** field;
 * **changes:** a new cluster is registered through an intake form; later changes are change requests. Both are approved in two stages in the Approval Workflow Engine (AWE).
 
@@ -118,10 +118,10 @@ From the activities, the registry keeps four things up to date. Staff see them i
 | --- | --- | --- |
 | **Crop season status** | Crop season | Furthest stage reached (planned → land prepared → sown → growing → harvested), planned and sown area, sowing date, seed type, whether sowing and harvest were verified, latest growth stage and condition, pest and damage counts with the worst severity and loss, harvest, yield, activities awaiting verification, and the crop season it replaced or was replaced by |
 | **Farmer's season summary** | Farmer, crop year and season | Across all the farmer's plots and crops: crop seasons, plots, planned, sown and harvested area, quantity, yield, pest and damage counts, and a breakdown by crop |
-| **Indicators** | Crop year and season | Area sown, quantity harvested and average yield by crop; crops by stage; farmers reporting; crops with pests, diseases or weeds. Also area sown by region, zone and woreda; harvest and yield by region; farmers reporting by woreda |
+| **Indicators** | Crop year and season | Area sown, quantity harvested and average yield by crop; crops by stage; farmers reporting; crops with pests, diseases or weeds. Also area sown by each administrative level; harvest and yield by the top level; farmers reporting by district |
 | **Reporting views** | Crop season, or crop and area | `csr_rpt_crop_season` and `csr_rpt_crop_performance_region`, `_zone`, `_woreda`, for Superset and SQL users |
 
-**The season summary** covers the season's window in the Ethiopian crop year:
+**The season summary** covers the season's window in the crop year. The shipped configuration uses these windows:
 
 | Season | Window |
 | --- | --- |
@@ -166,7 +166,7 @@ Partners search the Crop Sown register over DCI, synchronously, by farmer ID. Th
 | `spdci-extensions-agri:CropSeason` | Each crop season's current state | A decision on one crop, e.g. an input subsidy or a crop loan |
 | `spdci-extensions-agri:ActivityAggregate` | The farmer's season summaries, with `is_final` | A decision on the farmer's whole season |
 
-A search can add filters, e.g. one crop year and season, or a stage. Results come newest first. A partner the operator allow-lists can also search **season summaries across farmers**, e.g. every final Belg summary for a subsidy run. See [Deploying on Rancher](deployment/rancher.md#settings-only-in-yaml).
+A search can add filters, e.g. one crop year and season, or a stage. Results come newest first. A partner the operator allow-lists can also search **season summaries across farmers**, e.g. every final summary for one season for a subsidy run. See [Deploying on Rancher](deployment/rancher.md#settings-only-in-yaml).
 
 Signature checks and consent enforcement are on by default. The request format is in [DCI search](../registry/design/partner-register-search/dci-search.md).
 
@@ -178,12 +178,12 @@ A consent names [data scopes](../registry/design/data-scopes.md). The registry's
 | --- | --- |
 | `crop_season` | Which crop on which plot in which season: plot, crop year, season, crop, variety, cluster; a crop season's stage and status; a summary's period and whether it is final |
 | `measures` | Areas, quantities, yields, dates, seed type, crop condition, pest and damage counts, verification flags, each activity's details, a summary's figures |
-| `farmer_reference` | Farmer ID and Fayda FAN. More sensitive |
-| `location` | Region, zone and woreda, and an activity's GPS point. More sensitive |
+| `farmer_reference` | Farmer ID and national ID. More sensitive |
+| `location` | The administrative areas, and an activity's GPS point. More sensitive |
 | `activity` | An activity's ID, type, dates, channel and verification status |
 | `cluster_profile` | Cluster ID, programme code, name, crop, year established |
 | `csr_cluster_details` | The cluster's details section, including the coordinator's name and phone |
-| `csr_cluster_location_resources` | The cluster's woreda, GPS point, area, smallholders, agro-ecological zone and water source |
+| `csr_cluster_location_resources` | The cluster's district, GPS point, area, smallholders, agro-ecological zone and water source |
 
 Partners read the catalogue with the signed `POST /partner/data_scopes`.
 
@@ -195,11 +195,11 @@ The three Cluster scopes are in the catalogue, but the registry ships **no DCI t
 
 The two registries share identifiers, not code or databases.
 
-* **The farmer** is the [Farmer Registry](../farmer-registry/README.md) farmer ID. The Fayda FAN is carried alongside. A consent given for the FAN also covers a search by farmer ID.
+* **The farmer** is the [Farmer Registry](../farmer-registry/README.md) farmer ID. The national ID is carried alongside. A consent given for the national ID also covers a search by farmer ID.
 * **The plot** is a Farmer Registry land record ID.
 * **Entities first.** The farmer and plot are registered in the Farmer Registry before crop activities are recorded. Temporary plot IDs are not accepted.
 * **Format only.** The Crop Sown Registry checks that a farmer ID or plot ID looks right. It does not look them up, because the Farmer Registry may run on another installation. An unknown ID never blocks an entry.
-* **The woreda is entered**, for the same reason: the registry cannot read the plot's location from the Farmer Registry.
+* **The district is entered**, for the same reason: the registry cannot read the plot's location from the Farmer Registry.
 
 The development agent's ID is also checked for format only.
 

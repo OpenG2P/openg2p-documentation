@@ -116,8 +116,8 @@ For each dataset, the evaluation should record:
 | Area | Components | Where | Standard | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Dates and times | All services | Everywhere | ISO 8601 | **Used** | |
-| Ethiopian calendar | RP (CSR) | Activity dates, crop years, season windows | — | **Own** | Our own conversion; season windows follow the CSA Agricultural Sample Survey (Meher, Belg, irrigation). |
-| Units | RP (FR, CSR) | Areas, quantities | — | **Own** | Hectares and quintals by field name (e.g. `area_ha`, `quantity_qt`). To explore: [UCUM](https://ucum.org/) unit codes. |
+| Calendar conversion (Ethiopian calendar ships) | RP (CSR) | Activity dates, crop years, season windows | — | **Own** | Our own conversion; season windows follow the CSA Agricultural Sample Survey (Meher, Belg, irrigation). |
+| Units | RP (FR, CSR) | Areas, quantities | — | **Own** | Hectares and quintals (shipped) by field name (e.g. `area_ha`, `quantity_qt`). To explore: [UCUM](https://ucum.org/) unit codes. |
 | Occurrence lifecycle | RP (activity registers) | Activity registers (active, superseded, voided) | HL7 FHIR statuses (`amended`, `entered-in-error`) | **Partly** | Used as a mapping for our statuses. |
 | Observations | RP (activity registers) | Activity registers | ISO 19156 Observations & Measurements; OGC SensorThings; W3C PROV (provenance) | **To explore** | |
 | Use-case versions | Composite | Composite | [Semantic Versioning](https://semver.org/) | **Used** | Partners call `use_case@major`. |
@@ -144,6 +144,6 @@ In one place, what is our own today and what to evaluate:
 * **Own, by design:**
   * the composite's partner API body and response (a JSON Schema per use case is still to be published);
   * the consent object's claims and the CM `/validate` API;
-  * the Ethiopian calendar conversion.
+  * the calendar conversion (Ethiopian calendar ships).
 * **Hub installed, publishers not wired:** WebSub (commons installs the hub; the registry platform and MDS publish only once pointed at it).
 * **To explore, not yet used:** OGC API – Features for boundaries, OData for BI tools on the public catalogue, DCAT for registry and use-case descriptions (the MDS catalogue already uses it), ISO 19156 / SensorThings / PROV for observations, W3C Trace Context and OpenTelemetry for tracing, Bitstring Status List for credentials after a record change.

@@ -12,7 +12,7 @@ Review date: 30 September 2026. A report for future reference; nothing here was 
 
 This compares three concept notes with the [activity register](../../products/registry/registry/features/activity-register.md) as built in the registry platform and the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md). The notes apply the Activity Registry concept to three registries:
 
-* **Crop sown:** an evaluation of the ATI crop sown implementation ([cropsown-regsitry](https://github.com/Centre-for-Open-Societal-Systems/cropsown-regsitry), `develop`);
+* **Crop sown:** an evaluation of an earlier crop sown implementation ([cropsown-regsitry](https://github.com/Centre-for-Open-Societal-Systems/cropsown-regsitry), `develop`);
 * **Livestock:** born, vaccinated, sold;
 * **Work log:** attendance, work performed, training attended.
 

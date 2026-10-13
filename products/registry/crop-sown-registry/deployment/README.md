@@ -28,7 +28,7 @@ A second workflow runs checks without Docker:
 
 * the generated seed SQL matches `scripts/activity_definitions.py`;
 * the platform version is the same in the Dockerfiles and the chart;
-* every list and code the activity definitions use is in the Ethiopia country pack.
+* every list and code the activity definitions use is in the shipped country pack (ETH).
 
 ## Images
 

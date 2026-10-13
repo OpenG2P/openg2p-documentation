@@ -1,7 +1,7 @@
 ---
 description: >-
   What is configured in the Crop Sown Registry install for Agri Stack: the data
-  it shares, the Farmer ID and Fayda FAN link for consent checks, the composite
+  it shares, the Farmer ID and national ID link for consent checks, the composite
   as a partner, and the department Consent Manager with its standing policy.
 ---
 
@@ -27,16 +27,16 @@ Master Data in `dept1` needs the **agriculture** dataset theme (the default): ev
 
 The two registries share identifiers, not code or databases. In Agri Stack they run in different departments, so the Crop Sown Registry never looks anything up in the Farmer Registry.
 
-* **The farmer** is the Farmer Registry's Farmer ID (`FR-…`). The Fayda FAN is recorded alongside on each activity.
+* **The farmer** is the Farmer Registry's Farmer ID (`FR-…`). The national ID (Fayda FAN in the reference setup) is recorded alongside on each activity.
 * **The plot** is a Farmer Registry land record ID (`LAND-…`).
 * **Entities first:** farmers and plots are registered in the Farmer Registry before crop activities are recorded. The Crop Sown Registry checks their IDs by format only.
-* **The woreda is entered** on the plan and the sowing, since the registry cannot read the plot's location.
+* **The district is entered** on the plan and the sowing, since the registry cannot read the plot's location.
 
 See [How it relates to the Farmer Registry](../../products/registry/crop-sown-registry/README.md#how-it-relates-to-the-farmer-registry).
 
-### Farmer ID and Fayda FAN in consent checks
+### Farmer ID and national ID in consent checks
 
-The register's subject is the farmer by Farmer ID (`subject_type: FARMER_ID`). Its configuration file (`meta_data/activity-config/CropSown.json`) also names `fayda_fan` in `subject_id_fields`. A consent whose subject is the farmer's Fayda FAN therefore passes the subject check when the search is by Farmer ID, as long as the registry's own activities record that Farmer ID with that FAN. This is how one consent, given for the FAN, covers both registries. See [sharing through partner search](../../products/registry/registry/design/activity-register.md#sharing-through-partner-search).
+The register's subject is the farmer by Farmer ID (`subject_type: FARMER_ID`). Its configuration file (`meta_data/activity-config/CropSown.json`) also names `fayda_fan` in `subject_id_fields`. A consent whose subject is the farmer's national ID therefore passes the subject check when the search is by Farmer ID, as long as the registry's own activities record that Farmer ID with that FAN. This is how one consent, given for the national ID, covers both registries. See [sharing through partner search](../../products/registry/registry/design/activity-register.md#sharing-through-partner-search).
 
 ## What Agri Stack reads
 
@@ -75,7 +75,7 @@ As for the [Farmer Registry](farmer-registry.md#the-composite-as-a-partner), the
 
 ## Searches across farmers
 
-A programme system can read season summaries for many farmers at once (e.g. every final Belg summary for a subsidy run) without a per-farmer consent, only if the registry operator lists it in `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS`. Agri Stack's composite does not use this, and no partner is listed by default. See [Settings only in YAML](../../products/registry/crop-sown-registry/deployment/rancher.md#settings-only-in-yaml).
+A programme system can read season summaries for many farmers at once (e.g. every final summary for one season for a subsidy run) without a per-farmer consent, only if the registry operator lists it in `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS`. Agri Stack's composite does not use this, and no partner is listed by default. See [Settings only in YAML](../../products/registry/crop-sown-registry/deployment/rancher.md#settings-only-in-yaml).
 
 ## Sample data
 

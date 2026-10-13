@@ -120,10 +120,10 @@ Sample data is off by default. For a demo, turn on both switches:
 **What the crop seasons cover:**
 
 * **Farmers** are Master Data's sample people: person `ETH-IND-0007` is farmer `FR-0007`, with the person's national ID as the Fayda FAN.
-* **Plots** are `LAND-0007-1` for every farmer and `LAND-0007-2` for every third, in the person's woreda.
+* **Plots** are `LAND-0007-1` for every farmer and `LAND-0007-2` for every third, in the person's district (woreda).
 * **Seasons:** Meher 2018 complete (with a pest report for some); Belg 2018 complete for some farmers (with drought damage); Meher 2019 growing, so its harvests are due on the work list.
 * **Verification:** most sowings and harvests are verified; every fifth farmer's are pending. One sowing is corrected.
-* **Clusters:** farmers in a sample cluster's woreda join it.
+* **Clusters:** farmers in a sample cluster's district join it.
 
 The Farmer Registry numbers its sample farmers and lands the same way. A demo of both shows the same farmers and plots, though neither reads the other.
 

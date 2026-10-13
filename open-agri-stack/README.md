@@ -15,7 +15,7 @@ description: >-
 
 ## What it is
 
-Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture in the four layers of OAN Ethiopia:
+Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture in four layers:
 
 * **Layer 1:** the functional registries (farmer, crop sown, livestock, DA);
 * **Layer 2:** catalogues: the reference data every registry uses (datasets such as crop types and units, reference entities such as seed varieties, geography);
@@ -35,13 +35,13 @@ Each department runs its own registry on the OpenG2P [registry platform](../prod
 | **Livestock Registry** | Animals and livestock events (born, vaccinated, treated, sold) | An entity register and an activity register | Planned (design only, see [register model design](design/register-model-design.md#livestock-registry-an-entity-and-occurrences-in-one-registry)) |
 | **DA Registry** | Development agents | Register | Planned |
 
-All registries are keyed to the same Fayda-based identifier.
+All registries are keyed to the same national identifier (Fayda in the reference setup).
 
 ## Shared services (Layers 2 to 4)
 
 | Service | Role in Agri Stack |
 | --- | --- |
-| **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: datasets (the Ethiopia country pack's agriculture domain), reference entities, geography, sample people. The catalogue is being built as [MDS as Catalogue](../platform/platform-services/master-data-service/catalogue/README.md) (see [open items](open-items/README.md#catalogues)) |
+| **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: datasets (the agriculture domain of the country pack in use; ETH ships), reference entities, geography, sample people. The catalogue is being built as [MDS as Catalogue](../platform/platform-services/master-data-service/catalogue/README.md) (see [open items](open-items/README.md#catalogues)) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the composite): identities and public keys. One per install |
 | [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the exchange's collects consents and issues a consent token per registry |
 | **Use-case composite** (Layer 4) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |

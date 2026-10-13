@@ -49,7 +49,7 @@ A third path, registry to registry, is not in use ([registry data sync](registry
 | Catalogue | **Shared, authoritative at Agri Stack level** | Crop codes, seasons and geography (P-codes) must be identical across registries, or the composite cannot join their data. Target: departments read it through its API (cached, version-pinned); department-only datasets can live in it under their own publisher. **For now (phase 1):** each department runs its own MDS from the same `openg2p-data` pack; the central catalogue and mirroring come in phase 2. |
 | Audit | **Both** | Each department audits access to its data, including calls from the exchange, recorded "on behalf of" the partner. The exchange audits who asked what. A **request ID passed through every hop** ties them together for forensics. |
 | Verifiable credentials | Issuer per department, verification shared | The Farmer Registry issues farmer credentials under its own issuer identity; verification is public and can be shared. |
-| Farmer identity | Fayda FAN and the FR farmer ID | The join key across registries; departments resolve farmers through FR (lookups or [data sync](registry-data-sync.md)). |
+| Farmer identity | National ID (Fayda FAN in the reference setup) and the FR farmer ID | The join key across registries; departments resolve farmers through FR (lookups or [data sync](registry-data-sync.md)). |
 | IAM, AWE, Keycloak, Kafka, Redis, object store | Per department | Internal to each |
 | Data sync (WebSub) | Per publisher | Proposal, not built: FR would publish, CSR and others subscribe. See [registry data sync](registry-data-sync.md). |
 | Databases | Per department; the exchange's own for its services | Registry data never leaves its department except through its APIs |

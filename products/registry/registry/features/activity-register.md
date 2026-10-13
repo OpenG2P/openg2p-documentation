@@ -112,36 +112,11 @@ A context has its own page: its current state, a timeline of its activities, and
 
 ## Partner activity submission
 
-Partner systems can append and correct activities through the Partner API. Calls are signed the same way as partner searches.
-
-| Endpoint | What it does |
-| --- | --- |
-| `POST /partner/activity/append_activities` | Appends a batch of activities. Each activity succeeds or fails on its own, or the whole batch is all or nothing (`atomic`). An idempotency key makes a retry safe. |
-| `POST /partner/activity/correct_activities` | Supersedes or voids activities, each with a reason. A partner can correct only the activities it submitted. Staff correct the rest. |
-
-Activity registers do not take data through the record ingestion pipeline (`/partner/ingest_data`).
+Partner systems append activities, and correct the ones they submitted (supersede or void, with a reason), through two signed Partner API endpoints. Activity registers do not take data through record ingestion. Envelopes and outcomes: [design, Partner API](../design/activity-register.md#partner-api).
 
 ## Sharing with partners
 
-A partner reads an activity register through partner search. The record type it asks for picks what it gets:
-
-* **Activities**: current activities only (not superseded, voided or rejected).
-* **Current state per context**: for example each crop season of one person.
-* **Aggregates**: for example one person's season summary.
-
-Under consent enforcement a search names one subject. The subject must be the consented person, or be linked to that person by the register's own data. Every record is filtered to the consented [data scopes](../design/data-scopes.md) before it is rendered. Scopes over an activity register name its fields as:
-
-| Reference | Covers |
-| --- | --- |
-| `<Register>.activity.<field>` | A column of the activities |
-| `<Register>.context.<field>` | A column of the current state per context |
-| `<Register>.aggregate.<field>` | A column of the aggregates |
-
-See [Consent-Aware Data Sharing](consent-aware-data-sharing.md).
-
-### Bulk aggregate searches
-
-Some partners need aggregates for many subjects at once, such as a benefits system paying on every worker's monthly attendance. A search for aggregates without a subject is allowed only for partners the registry operator lists in `dci_bulk_aggregate_partners`, each with the data scopes it may receive. No per-person consent applies. The search must name the aggregate type, and pages are capped.
+A partner reads an activity register through partner search and can ask for **activities**, the **current state per context** (for example each crop season of one person) or **aggregates** (for example one person's season summary). Under consent enforcement the search names one subject, linked to the consented person, and every record is filtered to the consented [data scopes](../design/data-scopes.md) (`<Register>.activity|context|aggregate.<field>`). A partner the registry operator lists can also fetch one aggregate type for all subjects, such as a benefits system paying on monthly attendance, without per-person consent. Details: [design, sharing through partner search](../design/activity-register.md#sharing-through-partner-search); see also [Consent-Aware Data Sharing](consent-aware-data-sharing.md).
 
 ## Governance
 
@@ -154,6 +129,4 @@ Some partners need aggregates for many subjects at once, such as a benefits syst
 
 ## Not built yet
 
-* Managing activity types through an API. Types come from the extension's seed.
-* Activity entry from file import and from the agent portal.
-* A bulk export API, and retention or archiving of old partitions.
+Managing activity types through an API, activity entry from file import or the agent portal, bulk export and archiving: see [design, not built](../design/activity-register.md#not-built).

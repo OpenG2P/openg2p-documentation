@@ -6,7 +6,7 @@ description: >-
 
 # Customisation
 
-The Crop Sown Registry is built for **Ethiopia**. Its lists, calendar, seasons, units and administrative levels are Ethiopia's. Much of that is data and configuration, but some of it is code. This page says which is which.
+A country sets the registry's lists, calendar, seasons, units and administrative levels. Much of that is data and configuration, but some of it is code. This page says which is which. The examples use the configuration that ships with the registry.
 
 ## Where a change is made
 
@@ -26,7 +26,7 @@ Paths are in the [repository](https://github.com/OpenG2P/crop-sown-registry), un
 
 ## Lists in Master Data
 
-The registry keeps **no lists**. Every coded field is checked against Master Data when an entry is made. The lists are the **agriculture domain** of the Ethiopia country pack ([`openg2p-data`, `packs/ETH/domains/agriculture`](https://github.com/OpenG2P/openg2p-data/tree/develop/packs/ETH/domains/agriculture)). Master Data loads it when commons-services is installed with **Dataset Themes** `agriculture`.
+The registry keeps **no lists**. Every coded field is checked against Master Data when an entry is made. The lists are the **agriculture domain** of the country pack in use. ETH ships ([`openg2p-data`, `packs/ETH/domains/agriculture`](https://github.com/OpenG2P/openg2p-data/tree/develop/packs/ETH/domains/agriculture)). Master Data loads it when commons-services is installed with **Dataset Themes** `agriculture`.
 
 | Used for | Lists |
 | --- | --- |
@@ -46,20 +46,20 @@ The registry keeps **no lists**. Every coded field is checked against Master Dat
 Four codes are also used **in code**: the season codes `SEASON_MEHER`, `SEASON_BELG`, `SEASON_IRRIGATION` (season summary windows) and the severity codes `SEV_LOW`, `SEV_MEDIUM`, `SEV_HIGH` (worst severity, and the "crops with pests" indicator). Renaming them in the pack needs a code change. A new season code works, but its summary covers the whole crop year.
 {% endhint %}
 
-The CI build checks that every list and code the activity definitions name is in the Ethiopia pack. A pack for another country must carry the same lists.
+The CI build checks that every list and code the activity definitions name is in the country pack in use (ETH ships). A pack for another country must carry the same lists.
 
-## What is Ethiopian, and where it lives
+## Country-specific settings
 
-| Ethiopian element | Where it is set | To change it |
+| Setting | Where it is set | To change it |
 | --- | --- | --- |
 | Lists (crops, seasons, fertilisers…) | Master Data | The country pack |
-| Administrative levels region, zone, woreda | Activity definitions (the location is a `woreda`), indicators, reporting views | Activity definitions, indicators and the reporting view SQL |
-| Ethiopian calendar: crop year, planned sowing date | Activity definitions | Activity definitions; the season windows in code |
-| Ethiopian calendar for "when it happened" in the staff portal | The registry platform's staff portal, for every activity register | A platform change |
-| Season windows (Meher, Belg, Irrigation) | `SEASON_WINDOWS` in the domain service | Code |
-| Units: hectares, quintals, birr per quintal | Field names and labels in the activity definitions, columns and views | Code and seed; field names are part of the DCI records and data scopes |
-| Fayda FAN (12–16 digits) | Activity definitions, register configuration, data scopes | Activity definitions and configuration |
-| Plausibility limits (1.5 × plan, 150 qt/ha) | `CropSown.json` | Register configuration |
+| Administrative levels (region, zone, woreda in the shipped configuration) | Activity definitions (the location is a `woreda`), indicators, reporting views | Activity definitions, indicators and the reporting view SQL |
+| Calendar (the Ethiopian calendar ships): crop year, planned sowing date | Activity definitions | Activity definitions; the season windows in code |
+| Calendar for "when it happened" in the staff portal | The registry platform's staff portal, for every activity register | A platform change |
+| Season windows (Meher, Belg, Irrigation ship) | `SEASON_WINDOWS` in the domain service | Code |
+| Units (hectares, quintals and birr per quintal ship) | Field names and labels in the activity definitions, columns and views | Code and seed; field names are part of the DCI records and data scopes |
+| National ID (Fayda FAN, 12–16 digits, in the reference setup) | Activity definitions, register configuration, data scopes | Activity definitions and configuration |
+| Plausibility limits (1.5 × plan, 150 qt/ha ship) | `CropSown.json` | Register configuration |
 
 A deployment in another country is therefore a fork of this repository, not only a new country pack.
 
@@ -73,7 +73,7 @@ Activity types are defined in one Python file, `scripts/activity_definitions.py`
 * when it falls due (sowing 0–60 days after the plan, harvest 90–180 days after sowing);
 * how far back it can be dated (plan 365 days, sowing 180, harvest 120, field visits 60);
 * whether a supervisor must verify it (sowing and harvest);
-* which date fields use the Ethiopian calendar.
+* which date fields use the configured calendar.
 
 The same file holds the indicators, the ODK mapping and the participant roles (farmer, plot, development agent, cluster).
 

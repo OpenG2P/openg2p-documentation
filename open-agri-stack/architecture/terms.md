@@ -18,7 +18,7 @@ These terms apply to both record kinds: **entity** registers (a farmer, a plot) 
 | **Correction** | The record was wrong: a typo, a mis-measured area | New version; the old value is marked as an error, never true | Change request marked as a correction, with a reason | Supersede, with a reason |
 | **Void** | The record shouldn't exist: a duplicate, an event that never happened | Kept, but no longer counts | Record status (e.g. deactivated) | Void, with a reason |
 | **Approval** (of a change) | A supervisor authorises a change or correction before it enters the register | Governs who may change data; says nothing about whether it is true | AWE on change requests, as built | Not needed: appends and corrections are governed by permissions and rules |
-| **Verification** | An independent check that recorded data matches reality or an authoritative source: a field visit, a document, a Fayda lookup, a trusted device | **Never changes the data.** Adds a trust status (verified, failed or pending), with who checked, how and with what evidence | Phase 2 | Built as a single step; moves onto the common model |
+| **Verification** | An independent check that recorded data matches reality or an authoritative source: a field visit, a document, a national ID lookup, a trusted device | **Never changes the data.** Adds a trust status (verified, failed or pending), with who checked, how and with what evidence | Phase 2 | Built as a single step; moves onto the common model |
 | **Dispute** | The person concerned says a record is wrong | Triggers verification, then a correction if the claim holds | Phase 2 | Phase 2 |
 
 **How they relate:**
