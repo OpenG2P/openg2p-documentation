@@ -24,7 +24,7 @@ Each note classifies every fact as entity registry, catalogue (Master Data), act
 
 | Their concept | Ours |
 | --- | --- |
-| **Entity vs occurrence.** Farmer, plot, animal and person live in entity registries; codes and geography in the catalogues (MDS) | Same. Activities refer to farmers and plots. Code lists and geography are read live from Master Data |
+| **Entity vs occurrence.** Farmer, plot, animal and person live in entity registries; codes and geography in the catalogues (MDS) | Same. Activities refer to farmers and plots. Reference data and geography are read live from Master Data |
 | **The "season case"** groups a farmer's occurrences; its lifecycle stage is _read_ from the activities | The **context** (crop season). The stage is **derived** in the projection |
 | Occurrence time vs record time; source; recorded by; status; schema version; location on every line | `occurred_at` / `recorded_at`, `channel` (+ partner), `recorded_by`, status, `schema_version`, `geo_dimensions` |
 | **Corrections are new records.** The original stays; a cancellation keeps the record | Supersede (`supersedes_activity_id`; the old one becomes `SUPERSEDED`) and void (`VOIDED`, kept) |
@@ -68,7 +68,7 @@ Each note classifies every fact as entity registry, catalogue (Master Data), act
 
    In both cases the activity stays the history of what happened. We don't have this pattern. The hook exists (`on_activity_event`, run by the outbox worker), but nothing raises a change request on another registry. _(Decided since: entities first, see the [register model design](register-model-design.md#participants-and-entities-first).)_
 8. **A strict integrity check.** Before anything is stored, the notes check that the farmer and plot **exist**, that dates fall **in the season window**, and that the area is coherent with the plot. The check passes or fails; there is no reviewer and no trust status. We compare as follows:
-   * **stricter:** code lists and geography are always checked (strict mode);
+   * **stricter:** reference data and geography are always checked (strict mode);
    * **format-only:** farmer and plot IDs, a deliberate decision, since the Crop Sown Registry may run on its own instance and doesn't look IDs up yet;
    * **warnings, not failures:** plausibility checks (area vs plan, yield bounds);
    * **no season-window date check.**

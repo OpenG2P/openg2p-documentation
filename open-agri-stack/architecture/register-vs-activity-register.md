@@ -27,9 +27,9 @@ The registry platform has two kinds of register. They solve different problems a
 | **Grouping** | Parent/child registers (Farmer → Land, Household → Members) | **Contexts**: a key derived from the payload (plot × year × season × crop), open or closed |
 | **Current state** | The record itself | A **projection**: one row per context, recomputed from its activities in the same transaction |
 | **Defined by** | Extension code (the register's table model) + seed (register definition, sections, tabs, UI schemas) | Extension code (activity and projection models, domain rules) + seed (activity types: JSON Schema, rules, references; indicators; ODK mappings) |
-| **Form** | Configured **sections and tabs** of UI widgets | Generated from each activity type's **JSON Schema**; code lists as dropdowns; Ethiopian-calendar date entry; location picker |
-| **Validation** | Widget and field rules; code-list check on change requests | JSON Schema, **reference rules** (code lists, geography, records, external IDs; strict / lenient / none), **sequence rules** (e.g. no harvest before sowing), dates and closed periods |
-| **Code lists** | Read live from the catalogues (MDS; widget `attribute_id`) | Read live from the catalogues (MDS; reference rule `attribute`) |
+| **Form** | Configured **sections and tabs** of UI widgets | Generated from each activity type's **JSON Schema**; catalogue datasets as dropdowns; Ethiopian-calendar date entry; location picker |
+| **Validation** | Widget and field rules; catalogue check on change requests | JSON Schema, **reference rules** (catalogue datasets, geography, records, external IDs; strict / lenient / none), **sequence rules** (e.g. no harvest before sowing), dates and closed periods |
+| **Reference data** | Read live from the catalogues (MDS; widget `attribute_id`) | Read live from the catalogues (MDS; reference rule `attribute`) |
 | **Geography** | The record's address (`geo_lowest_level_value_id` and its hierarchy) | Every activity is **located** when written, as named levels (region, zone, woreda) |
 | **Figures** | Counts of records; reporting views per registry | **Indicators** (by crop, season, region, zone, woreda…), **aggregates** per subject and period with history, **reporting views** by level |
 | **Read by staff** | Record search and profile; change requests; version history | Activities, crop seasons (current state), work list, indicators, summaries; an **Activities tab** on records of the same registry |
@@ -55,13 +55,13 @@ Activities are grouped into **contexts**, such as one crop on one plot in one se
 
 ## 2. How each is defined
 
-Both are defined by a registry **extension** (code) plus a **seed** (data loaded by db-seed on every install). Reference data such as code lists and geography comes from **Master Data**, not from either.
+Both are defined by a registry **extension** (code) plus a **seed** (data loaded by db-seed on every install). Reference data such as datasets and geography comes from **Master Data**, not from either.
 
 | Layer | Register | Activity register |
 | --- | --- | --- |
 | **Extension code** | `G2PRegister<Name>` table model (+ `G2PRegisterHistory<Name>`, `G2PIntakeForm<Name>`), domain service for search text and record names | `G2PActivity<Name>`: the activity table, with payload fields stored in their own typed columns for search, policies and indicators. `G2PActivityProjection<Name>`: the current-state table. `G2PActivityDomainService<Name>`: the context key, derived values (e.g. yield), plausibility warnings, the projection, aggregates, DCI record shapes. |
 | **Seed** | Register definition (`register_purpose = REGISTER` or `TABLE`), sections, tabs, UI schemas, intake-form definitions, DCI templates | Register definition (`register_purpose = ACTIVITY`), **activity types** (JSON Schema, rules, reference rules), **indicators**, ODK form mappings, DCI template, reporting views |
-| **Catalogues (MDS)** | Code lists and geography for the form's widgets | Code lists and geography for reference rules and the location |
+| **Catalogues (MDS)** | Datasets and geography for the form's widgets | Datasets and geography for reference rules and the location |
 
 The platform creates both kinds of table from the models on migration, and adds new columns to existing tables on upgrade. An activity register's table is also partitioned by year and protected by an append-only trigger.
 
@@ -71,7 +71,7 @@ An activity register **can't be created from the Registers configuration screen*
 
 | What | Register | Activity register |
 | --- | --- | --- |
-| **The form** | Sections and tabs of widgets, edited in the Registers configuration screens | Each activity type's JSON Schema. The form is generated from it: code-list fields become dropdowns, the location field becomes a region → zone → woreda picker, and date fields use the Ethiopian calendar. |
+| **The form** | Sections and tabs of widgets, edited in the Registers configuration screens | Each activity type's JSON Schema. The form is generated from it: fields that take a catalogue value become dropdowns, the location field becomes a region → zone → woreda picker, and date fields use the Ethiopian calendar. |
 | **Rules** | Required fields and widget validation; approval workflow per register (AWE) | Per activity type:<br>• repeatable or once per context;<br>• uniqueness fields;<br>• prior types, with warn or block;<br>• due window, feeding the work list;<br>• backdating limit;<br>• supervisor verification.<br>Per register: closed periods. |
 | **References** | Widgets bound to catalogue lists or geography | Reference rules per field:<br>• `ATTRIBUTE` (a catalogue list, in MDS);<br>• `GEO` (geography, optionally at a level and marked as the location);<br>• `LOCAL_RECORD` (a record in the same registry, optionally the subject, optionally required to belong to another record);<br>• `EXTERNAL` (another registry's ID, format-checked or looked up).<br>Each rule can be strict, lenient or off. |
 | **Versioning** | Form changes apply to later edits | Each change to a type's schema increments `schema_version`. Every activity stores the version it was validated against, and every version is kept. |

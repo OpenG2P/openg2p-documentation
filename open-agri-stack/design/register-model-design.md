@@ -51,7 +51,7 @@ These differences are necessary; merging them would cost correctness or scale.
 
 An occurrence's **facts are never modified**: what happened, when, where, to whom, and its payload and location. Only two things around it change:
 
-* **Lifecycle status:** `CURRENT` → `SUPERSEDED` (replaced by a correcting occurrence) or `VOIDED` (withdrawn: it didn't happen). The record stays.
+* **Lifecycle status:** `ACTIVE` → `SUPERSEDED` (replaced by a correcting occurrence) or `VOIDED` (withdrawn: it didn't happen). The record stays.
 * **Verification:** held as **verification records** attached to it (see [trust layer](#trust-layer-verification)). Today it is columns on the row.
 
 So an error is fixed by a **new** occurrence that points to the old one. A change in reality is simply **another** occurrence. Both old records stay readable, and anything already paid or certified on the original can be reversed and reissued against the correction.
@@ -66,7 +66,7 @@ These should work the same for entities and occurrences, and some of them are bu
 | **Corrections** | Change request → new version + history | Supersede / void, with a reason | **One correction model** ([below](#one-correction-model)) |
 | **Derived values** (projections, aggregates, indicators) | None (only completion scores) | Built: a context's current state, a subject's summaries, indicators | **Both kinds.** An entity register needs them too: a farmer's total land area, a household's size, a worker's years of service. What differs is only what they are computed from (see "What the value is") |
 | **Forms** | Sections and tabs of widgets | Generated from each type's JSON Schema | **One form definition for both kinds**: the same schema, widgets and layout. Only what happens on submit differs: a change request creates a new version of an entity; an append adds an occurrence. Today each kind has its own form mechanism; either should work for either (`section_ui_schema` exists on activity types) |
-| **Reference rules** (code list, geography, local record, external ID; strict / lenient) | Widget-bound code lists only | Built | Available to entity registers too |
+| **Reference rules** (reference data, geography, local record, external ID; strict / lenient) | Widget-bound reference data only | Built | Available to entity registers too |
 | **Location as named levels** (`geo_dimensions`) | `geo_code_hierarchy_json` on the record | Built | Named levels on entity records too, for area statistics |
 | **Idempotent ingestion, submission IDs, schema versions** | No | Built | Both kinds |
 | **Participants with roles**: the records involved, each in a named role (a vaccination: the animal, its owner, the vet who gave it) | One link: a child points to its parent (Land → Farmer) | Built in phase 1: each activity stores its participants, typed (`role: vet, register: Veterinarian, id: V789`), so "all vaccinations by vet V789" is a direct query | Entity records could use the same for relations beyond a parent (a farmer's cooperative, a worker's employer); not yet needed ([participants](#participants-and-entities-first)) |

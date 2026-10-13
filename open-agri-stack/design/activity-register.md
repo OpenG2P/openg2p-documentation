@@ -48,19 +48,19 @@ This section is about the **earlier crop-sown implementation by ATI** ([cropsown
 * duplicates approval state in its own fields (`status`, `rejection_reason`, `edit_count`);
 * stores every date twice, with an extra `*_date_ec` string holding the Ethiopian-calendar date.
 
-**As an activity register:**
+**As an activity register** (the mapping as first designed; the built activity types and fields are in the [Crop Sown Registry](crop-sown-registry.md)):
 
 | Before | As an activity register |
 | --- | --- |
 | `CropSown` header register (functional ID, dedup at 70) | **Activity context** "plot × season": a grouping key (farmer ref + plot ref + crop year + season) with an open/closed status. Crop sown doesn't need to be a register. |
-| Planning, Cultivation, Sowing, Production, Harvest, Infestation tables | **Activity types**: `PLANNED`, `LAND_PREPARED`, `SOWN`, `GROWTH_OBSERVED`, `HARVESTED`, `INFESTATION_REPORTED`. Each has a JSON-Schema payload and a few promoted columns. |
+| Planning, Cultivation, Sowing, Production, Harvest, Infestation tables | **Activity types**: `PLANNED`, `LAND_PREPARED`, `SOWN`, `GROWTH_OBSERVED`, `HARVESTED`, `INFESTATION_REPORTED`; built since: `DAMAGE_REPORTED`, `CLUSTER_ENROLLED`. Each has a JSON-Schema payload and a few promoted columns. |
 | Cluster / CultivationCluster tables | A **cluster register** in the same instance, referenced by activities |
 | `lifecycle_stage` on the header | A **projection**: current stage, area sown, yield and last activity per plot × season |
 | `farmer_name`, `region_name`… copied onto records | **Typed references** to the Farmer Registry / Fayda and to catalogue geography (MDS), with names shown through a cached lookup |
 | `da_name`, `da_mobile_number` on each line | A reference to the **DA Registry** |
 | `status`, `rejection_reason`, `edit_count` | A **lightweight verification** state: submitted → verified / rejected (with reason) |
 | `sowing_date_ec`, `harvest_date_ec`… as strings | **Ethiopian calendar support**: store the Gregorian date, enter and display in the Ethiopian calendar |
-| `sync_id`, `temporary_land_id` | **Idempotency key** plus **resolution of temporary IDs** created offline |
+| `sync_id`, `temporary_land_id` | **Idempotency key**. Resolution of temporary IDs created offline was planned and later withdrawn. |
 | Patched ingestion worker (find header, attach child) | Ingestion writes activities directly with context keys, so no parent lookup is needed |
 | Custom `dashboard-ui` | **Configured indicators** over projections |
 
@@ -107,7 +107,7 @@ As built, the activity model is its own base class, `G2PActivity`, next to an un
 | 7 | **Corrections and period locking**: supersede or void with a reason; limits on backdating; closing a period with controlled reopen | No changes to a season after it's closed; no attendance changes after month-end |
 | 8 | **Business uniqueness rules**, as well as idempotency | One `SOWN` per plot × season × crop; warn about likely duplicates |
 | 9 | **Ethiopian calendar** entry and display | Replaces the duplicate `*_date_ec` string fields |
-| 10 | **Support for offline capture**: client-generated IDs, resolving temporary IDs, sync conflicts | ODK in areas with no network; `temporary_land_id` |
+| 10 | **Support for offline capture**: client-generated IDs, resolving temporary IDs (later withdrawn), sync conflicts | ODK in areas with no network; `temporary_land_id` |
 | 11 | **Geography on activities**: point or polygon, geo-tagged photos | Plot location at sowing; infestation photo |
 | 12 | **Time partitioning, retention and archiving** | Attendance and seasonal data grow quickly |
 | 13 | **Configured indicators** over projections | Sown area per woreda, yield per hectare, attendance rate |
@@ -226,7 +226,7 @@ A crop season can be recorded in either of two places. The platform supports bot
 | **Inside a record registry** | A crop-season activity register defined in the Farmer Registry's own extension | The Farmer Registry's own Land and farmer records (`LOCAL_RECORD`, strict); the subject is the Land record | The activity pages, **and** an Activities tab on the Land or farmer record |
 
 * **Registries stay independent.** Registries share data, never code. The Crop Sown Registry stands on its own, like the Disability Registry, and refers to the Farmer Registry only by ID. The Farmer Registry does not depend on it.
-* **Crop seasons inside the Farmer Registry are the Farmer Registry's own register.** They would be an activity register defined in the Farmer Registry's extension. It can follow the Crop Sown Registry's activity types, context key and code lists, but it is not the same package.
+* **Crop seasons inside the Farmer Registry are the Farmer Registry's own register.** They would be an activity register defined in the Farmer Registry's extension. It can follow the Crop Sown Registry's activity types, context key and reference data, but it is not the same package.
 * **The platform provides what the in-registry case needs**, generically, for any registry:
   * `"subject": true` on a `LOCAL_RECORD` rule: the referenced record (e.g. a Land record) becomes the activity's subject, with its ancestors (the farmer) recorded;
   * `"belongs_to": "<field>"`: the record must be a child of another referenced record, e.g. the plot must be that farmer's. Strict rules reject a mismatch; lenient rules warn;
@@ -256,8 +256,8 @@ The registry platform's [Observations design](../../products/registry/registry/d
 | Grouping a lifecycle | An explicit `FOLLOWS` link, chosen by the agent, one step at a time | A context derived from the payload (plot × year × season × crop) | **Keep contexts.** They handle an 8-step lifecycle and intercropping. An explicit link is an option for types that can't derive a key. |
 | Roll-ups | Asynchronous: optional enrichment, then adapter-computed aggregates per subject and period, with history | Synchronous: a projection per context, recomputed in the same transaction, plus declarative indicators | **Keep projections for current state; add aggregates and enrichment as an asynchronous layer on top.** |
 | Geography | Resolved from the subject's record (walking Land → Individual → Household) when aggregates are computed; `geo_dimensions` holds code and name per level; a reporting view groups by `geo_1…geo_5` | Named levels snapshotted on each activity when written, from the activity, the subject's record or the context | **Named levels, as there; snapshot rather than live resolution**, so it works when the subject is in another registry. See [geography and roll-ups](../implementation/registry-platform.md#geography-and-roll-ups). |
-| Code lists | The registry's local `G2PAttribute` tables | Read live from the catalogues (MDS) | **Ours.** The local tables no longer exist in the platform. |
-| Offline sync | Batch endpoint with no idempotency | Idempotency key, temporary IDs | Ours |
+| Reference data | The registry's local `G2PAttribute` tables | Read live from the catalogues (MDS) | **Ours.** The local tables no longer exist in the platform. |
+| Offline sync | Batch endpoint with no idempotency | Idempotency key | Ours |
 | Governance | Not covered | Verification, period locks, reference rules, DCI with consent, data policies, permissions | Ours |
 
 **Taken from the Observations design** (built)

@@ -22,27 +22,34 @@ The diagram shows the sample use case `loan-profile`, which reads the Farmer Reg
 sequenceDiagram
   participant P as You (partner)
   participant C as Composite
+  participant XCM as Exchange CM
+  participant PM as Partner Management
   participant FR as Farmer Registry
   participant CSR as Crop Sown Registry
-  participant CM as Consent Manager
-  participant PM as Partner Management
-  Note over P,PM: One-time: onboarding (PM), bindings and policies (CM), allowed for the use case
-  P->>P: collect the farmer's consent; sign a consent JWS with a grant per registry
+  participant DCM as Department CM
+  Note over P,DCM: One-time: onboarding (PM), bindings and policies (exchange CM), allowed for the use case
+  P->>P: the farmer's consent: a consent JWS you sign, or a consent held in the CM (consent_id)
   P->>C: POST /composite/v1/use-cases/loan-profile/query (signed envelope + consent)
   C->>PM: your public key (PARTNER_<ID>)
-  C->>FR: DCI search, signed by the composite, your consent unchanged
-  FR->>CM: /validate (your consent, data_controller = farmer-registry)
-  FR-->>C: farmer record, filtered to your grant ∩ policy
+  C->>XCM: /validate (your consent, issue_receipts, the use case's scopes)
+  XCM-->>C: one consent receipt per registry
+  C->>FR: DCI search, signed by the composite, with the Farmer Registry's receipt
+  FR->>DCM: /validate (the receipt, data_controller = farmer-registry)
+  FR-->>C: farmer record, filtered to the receipt's scopes
   par after the farmer
     C->>CSR: DCI search (season summaries)
     C->>CSR: DCI search (crop seasons)
   end
-  CSR->>CM: /validate (data_controller = crop-sown-registry)
+  CSR->>DCM: /validate (its receipt, data_controller = crop-sown-registry)
   CSR-->>C: records, filtered
   C-->>P: one signed response, status per source
 ```
 
-You never call the registries or `/validate` yourself. Each registry asks the Consent Manager about **its own grant** in your consent, and releases only `grant ∩ policy`. The composite only routes, maps and signs; it stores nothing.
+You never call the registries or `/validate` yourself. The composite takes your consent to the **exchange Consent Manager** (the CM of the Agri Stack exchange), which checks it against your bindings and policies there and issues **one signed consent receipt per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own receipt and validates it at **its own department CM**, which trusts the exchange CM as a receipt issuer. The composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
+
+{% hint style="info" %}
+**Single install (passthrough mode).** Where the registries share the composite's Consent Manager, the composite can instead send your consent **unchanged** to each registry, and each registry validates its own grant in it. Your bindings and policies are then needed at each registry's CM, and `consent_id` is not supported. Agri Stack exchange installs use exchange mode (the chart default).
+{% endhint %}
 
 ## What you need, and who sets it up
 
@@ -50,7 +57,7 @@ You never call the registries or `/validate` yourself. Each registry asks the Co
 | --- | --- | --- |
 | A signing key pair and a `kid` | You | [1](#step-1-generate-your-signing-key) |
 | Your partner record and public key in Partner Management | A **PM administrator** (no self-service yet) | [2](#step-2-get-onboarded-in-partner-management) |
-| A binding and data-share policy for each registry, in the Consent Manager | The **CM administrator** (each registry's policy may need AWE approval) | [3](#step-3-get-a-binding-and-policy-for-each-registry) |
+| A binding and data-share policy for each registry, in the Consent Manager | The **CM administrator** of the exchange (if AWE approval is switched on, each policy waits for it) | [3](#step-3-get-a-binding-and-policy-for-each-registry) |
 | Permission to call the use case (`allowed_partners`) | The **Agri Stack operator** | [4](#step-4-get-allowed-for-the-use-case) |
 | The composite's URL and its public key | The Agri Stack operator | [5](#step-5-discover-the-use-case) |
 
@@ -78,7 +85,7 @@ After approval your keys are served at `GET {pm}/keys/PARTNER_BANK_A` (and `/key
 
 ## Step 3 — Get a binding and policy for each registry
 
-For **each registry** the use case reads, the Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the data scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; a new or wider policy may wait for AWE approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
+For **each registry** the use case reads, the exchange Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the data scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; if AWE approval is switched on in the CM (it is off by default), a new or wider policy waits for approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
 
 The registries a use case reads are its sources' `controller`s, listed as `consent_grants_needed` when you [describe the use case](#step-5-discover-the-use-case).
 
@@ -193,20 +200,20 @@ Example: `loan-profile`.
 
 Data is released only against the farmer's consent for the specific purpose and scopes.
 
-{% hint style="warning" %}
-**Today you collect the consent yourself and sign it.** A consent collected inside the Consent Manager (the farmer approving in CM with a Fayda OTP) cannot yet be presented at a registry ([open items](../open-items/README.md)). So the consent you send is one **you obtained from the farmer** through your own channel and assert in a consent object signed with your key (the "partner-embedded" flow).
-{% endhint %}
+There are two ways to present it.
 
-What that means for you:
+**A consent held in the Consent Manager (`consent_id`).** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then send the consent's ID as `message.consent_id` ([step 8](#step-8-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. This needs the composite's exchange mode. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
+
+**A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 7](#step-7-build-and-sign-the-consent)). What that means for you:
 
 * **Obtain real, informed consent** for the use case's purpose (e.g. `credit-assessment` for `loan-profile`) and for each registry's data, before you sign. Tell the farmer which registries hold the data being shared (e.g. the Farmer Registry and the Crop Sown Registry for `loan-profile`) and what each scope covers (its label and description in the registry's catalogue), as the CM consent screen would.
 * **Stay within the policy.** The scopes you grant per registry must be within that registry's policy (step 3), and within what the farmer agreed to.
 * **Keep evidence** of how the consent was obtained, for audit and disputes: who consented, when, through which channel and how they were authenticated, for which purpose and which registries' data. The capture method and evidence a department accepts are part of your agreement with it when your binding and policy are set up; follow what it requires.
-* **The signed consent and the Consent Manager's receipts are the audit trail.** CM issues a receipt per registry that validated your consent ([Partner Integration Guide, step 9](../../consent-management/partner-integration-guide.md)). Misrepresenting consent is a compliance breach.
+* **The signed consent and the Consent Manager's receipts are the audit trail.** CM issues a receipt per registry for your consent ([Partner Integration Guide, step 9](../../consent-management/partner-integration-guide.md)). Misrepresenting consent is a compliance breach.
 
 ## Step 7 — Build and sign the consent
 
-The consent is a **compact JWS** signed with your key, with **one grant per registry**. The claims are defined in the [Partner Integration Guide, step 5](../../consent-management/partner-integration-guide.md#step-5-construct-the-consent-claims); for Agri Stack:
+Skip this step if you send a `consent_id`. The consent is a **compact JWS** signed with your key, with **one grant per registry**. The claims are defined in the [Partner Integration Guide, step 5](../../consent-management/partner-integration-guide.md#step-5-construct-the-consent-claims); for Agri Stack:
 
 | Claim | Value | Rule |
 | --- | --- | --- |
@@ -225,7 +232,7 @@ Example: `loan-profile`, for partner `bank-a`.
 {
   "jti": "5f0c2a8e-3d1b-4a51-9a0e-2b8f2e7c9d10",
   "aud": "bank-a",
-  "subject_id": {"type": "FAYDA_FAN", "value": "123456789012"},
+  "subject_id": {"type": "FAYDA_FAN", "value": "946053125409"},
   "purpose": {"code": "credit-assessment"},
   "grants": [
     {"data_controller": "farmer-registry",
@@ -255,7 +262,7 @@ consent_jws = PyJWS().encode(canonical(claims), private_key, algorithm="ES256", 
 # "eyJhbGciOiJFUzI1NiIs…" + "." + payload + "." + signature
 ```
 
-The same consent goes to every registry: the composite forwards it unchanged, and each registry validates only its own grant.
+In exchange mode the composite presents this consent to the exchange CM, and each registry gets its own receipt. In passthrough mode the same consent goes to every registry unchanged, and each registry validates only its own grant.
 
 ## Step 8 — Sign the request envelope
 
@@ -289,7 +296,7 @@ def sign_detached(payload: dict, key, kid: str) -> str:
 header = {"version": "1.0.0", "message_id": str(uuid.uuid4()),
           "message_ts": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"),
           "action": "query", "sender_id": "bank-a", "receiver_id": "agri-composite"}
-message = {"subject": {"type": "FAYDA_FAN", "value": "123456789012"},
+message = {"subject": {"type": "FAYDA_FAN", "value": "946053125409"},
            "parameters": {"crop_year": 2019, "season": "SEASON_MEHER"},
            "consent_jws": consent_jws}
 envelope = {"signature": sign_detached({"header": header, "message": message}, private_key, "bank-a-2026-01"),
@@ -319,7 +326,7 @@ The response is an envelope signed by the composite. Example (`loan-profile`):
              "status": "succ", "sender_id": "agri-composite", "receiver_id": "bank-a",
              "meta": {"in_reply_to": "<your header.message_id>"}},
   "message": {"use_case": "loan-profile@1", "version": "1.0.0", "request_id": "…",
-              "subject": {"type": "FAYDA_FAN", "value": "123456789012"},
+              "subject": {"type": "FAYDA_FAN", "value": "946053125409"},
               "sources": {"farmer": {"status": "ok"}, "season_summaries": {"status": "ok"},
                           "crop_seasons": {"status": "ok"}},
               "data": {"…": "…"}}
@@ -338,7 +345,7 @@ The response is an envelope signed by the composite. Example (`loan-profile`):
 | `unavailable` | The registry could not be reached, timed out, or answered 408/429/5xx; or the overall timeout was reached |
 | `error` | Any other failure (a rejected search, a malformed answer) |
 
-A source whose dependency is not `ok` is not called; it takes the dependency's status, with `detail: "not called: …"`. With `partial_response: allowed` (e.g. `loan-profile`), only a failing **mandatory** source fails the request; optional sources that fail just show their status, and their output fields are empty.
+A source whose dependency is not `ok` is not called; it takes the dependency's status, with `detail: "not called: …"`. With `partial_response: allowed` (e.g. `loan-profile`), only a failing **mandatory** source fails the request; optional sources that fail just show their status, and their output fields are `null` (a source that answered with no record gives `[]` or `0`).
 
 **HTTP status and error codes:**
 
@@ -348,7 +355,12 @@ A source whose dependency is not `ok` is not called; it takes the dependency's s
 | 400 | `invalid_envelope`, `wrong_receiver`, `stale_request`, `invalid_use_case`, `invalid_input` | Bad envelope, wrong `receiver_id`, `message_ts` more than 300 s from now, bad `@major`, bad subject or parameters |
 | 401 | `signature_invalid` | The envelope signature does not verify against your PM key (or you are unknown in PM) |
 | 403 | `partner_not_allowed` | You are not in the use case's `allowed_partners` |
-| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing` | A consent problem found by the composite before any registry is called |
+| 400 | `consent_id_needs_exchange` | `message.consent_id` was sent, but the composite runs in passthrough mode |
+| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the composite before any registry is called (`consent_scope_missing`: a mandatory source's required scopes are not granted) |
+| 403 | `consent_denied` | The exchange Consent Manager denied the consent; its reason code is in the message |
+| 403 | `consent_receipt_missing` | The exchange Consent Manager issued no receipt for a mandatory source's registry |
+| 502 | `consent_exchange_error` | The exchange Consent Manager rejected the call or gave an unreadable answer |
+| 503 | `consent_exchange_unavailable` | The exchange Consent Manager could not be reached, timed out, or is not configured |
 | 403 | `source_denied` | A mandatory source was denied (e.g. by the Consent Manager at the registry) |
 | 404 | `unknown_use_case` | No published use case of that name / major |
 | 429 | `rate_limited` | Rate limit reached |
@@ -378,14 +390,14 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 ## Worked example: `loan-profile`
 
-**Request:** farmer by FAN, Meher 2019.
+**Request:** the sample farmer of a demo install (FAN `946053125409`, farmer ID `FR-0007`), Meher 2019.
 
 ```json
 {
   "signature": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImJhbmstYS0yMDI2LTAxIn0..MEUCIQ…",
   "header": {"version": "1.0.0", "message_id": "0b6f6c1e-…", "message_ts": "2026-10-01T10:00:00.000Z",
              "action": "query", "sender_id": "bank-a", "receiver_id": "agri-composite"},
-  "message": {"subject": {"type": "FAYDA_FAN", "value": "123456789012"},
+  "message": {"subject": {"type": "FAYDA_FAN", "value": "946053125409"},
               "parameters": {"crop_year": 2019, "season": "SEASON_MEHER"},
               "consent_jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImJhbmstYS0yMDI2LTAxIn0.eyJhdWQiOiJiYW5rLWEi….…"}
 }
@@ -394,8 +406,8 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 **What the composite does:**
 
 1. Verifies your signature (`PARTNER_BANK_A`), checks `allowed_partners`, the parameters and the rate limit.
-2. Checks the consent: your signature, subject `FAYDA_FAN 123456789012` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`.
-3. Calls the **Farmer Registry**: `reg_type: Farmer`, search `foundational_id $eq 123456789012`.
+2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a receipt for each registry from the exchange CM.
+3. Calls the **Farmer Registry**: `reg_type: Farmer`, search `foundational_id $eq 946053125409`.
 4. Reads `FARMER_ID` from the farmer record, then calls the **Crop Sown Registry** twice in parallel: season summaries (`FARMER_SEASON_SUMMARY`, crop year 2019, Meher) and crop seasons (crop year 2019, Meher).
 5. Maps and derives the output, signs and returns it.
 
@@ -406,12 +418,12 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
   "use_case": "loan-profile@1",
   "version": "1.0.0",
   "request_id": "7d2e…",
-  "subject": {"type": "FAYDA_FAN", "value": "123456789012"},
+  "subject": {"type": "FAYDA_FAN", "value": "946053125409"},
   "sources": {"farmer": {"status": "ok"}, "season_summaries": {"status": "ok"}, "crop_seasons": {"status": "ok"}},
   "data": {
     "farmer": {
       "name": "…", "sex": "…", "birth_date": "…",
-      "identifiers": [{"@type": "Identifier", "identifier_type": "UIN", "identifier_value": "123456789012"},
+      "identifiers": [{"@type": "Identifier", "identifier_type": "UIN", "identifier_value": "946053125409"},
                       {"@type": "Identifier", "identifier_type": "FARMER_ID", "identifier_value": "FR-0007"}],
       "location": {"…": "…"},
       "main_crops": ["CROP_TEFF", "CROP_WHEAT"]
@@ -430,7 +442,7 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 * `crops.total_area_sown_ha` sums `measures.area_sown_ha` over the crop seasons returned; with `crop_year` and `season` it is that season's.
 * Without `crop_year` and `season`, all of the farmer's seasons come back, newest first.
 
-If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be empty, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
+If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be `null`, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
 
 ## Test kit
 
@@ -438,7 +450,7 @@ If the farmer had not consented to the Crop Sown Registry (no grant), `season_su
 
 ```bash
 python scripts/partner_kit.py keys          # partner key + composite .p12 in scripts/kit-out (git-ignored), and what to onboard
-python scripts/partner_kit.py consent --subject FAYDA_FAN:123456789012
+python scripts/partner_kit.py consent --subject FAYDA_FAN:946053125409
 python scripts/partner_kit.py describe --url https://agri-composite.<ns>.openg2p.org
 python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org \
     --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
@@ -452,7 +464,7 @@ To go through these steps as a test partner against an environment, use the [par
 ## Checklist
 
 * [ ] Your key is registered and **active** in PM under `PARTNER_<YOUR_ID>`; the JWS `kid` and `alg` match it.
-* [ ] CM has a binding and an **active** policy for your audience with **each** registry the use case reads.
+* [ ] The exchange CM has a binding and an **active** policy for your audience with **each** registry the use case reads.
 * [ ] Your partner ID is in the use case's `allowed_partners`.
 * [ ] The consent's `subject_id` equals `message.subject` (type and value); `aud` is your partner ID; one grant per registry, with scope IDs from that registry's catalogue, within its policy.
 * [ ] A new `jti` and a fresh `issued_at` for each consent; `message_ts` fresh; clocks in sync.

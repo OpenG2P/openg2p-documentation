@@ -1,30 +1,43 @@
 ---
 description: >-
-  What a registry actually releases: the intersection of the use case, the
-  data-share policy and the farmer's consent, and who owns each.
+  What a registry actually releases through the composite: the use case, the
+  partner's policy, the farmer's consent and the department's own policy, who
+  holds and owns each, and the target design with policies in PM.
 ---
 
 # Policy and Consent
 
 ## What actually gets released
 
-**effective scopes = what the use case asks for ∩ what the policy allows ∩ what the farmer consented to**
+Through the composite (path B in the [architecture](README.md#components-and-who-talks-to-whom)):
 
-Each registry computes this intersection for its own part, so a misconfigured use case can never leak more than the policy allows.
+**effective scopes = what the use case asks for ∩ what the partner's policy allows ∩ what the farmer consented to ∩ what the department allows the composite**
 
-<figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: use case asks for four scopes; livestock policy section not yet approved; farmer declined land; released: farmer:profile and crop:season"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
+* The **exchange's Consent Manager** computes the first three when the composite asks it to validate the consent, and puts the result for each registry into that registry's signed **receipt**.
+* **Each registry's own Consent Manager** checks the receipt and intersects it with the department's **standing policy for the composite**, so a department always decides what leaves its registry.
+* **The registry** releases only what is left, and only its own slice.
+
+A misconfigured use case or partner policy can never leak more than the department allows.
+
+<figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: the use case asks for five scopes; the bank's policy leaves out crop measures; the farmer declines land; the Livestock Department does not allow herd data; released: Farmer Registry personal details and Crop Sown crop season"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
+
+{% hint style="info" %}
+**A partner using one registry directly** (path A, no composite): effective scopes = the partner's policy at that registry's Consent Manager ∩ the farmer's consent. **A single install** (consent mode passthrough): the partner's consent goes unchanged to each registry, which applies the partner's policy at its own Consent Manager.
+{% endhint %}
 
 ## Layers and owners
 
-| | Owner | Defines | Changes |
-| --- | --- | --- | --- |
-| **Data-share policy** (PM, target) | Departments (data controllers), approved through AWE | Allowed scopes per registry, purposes, fetch type, validity ceiling, data life. A policy is reusable: many partners can be associated with one policy. | Rarely. A change that widens access goes back to the department concerned. |
-| **Partner association** (PM, target) | PM administrators | Which partners may use a policy | Onboarding a new bank is one association, with no re-approval |
-| **Use-case configuration** ([composite](../design/use-case-composite.md)) | Agri Stack platform team | Sources, query templates, requested scopes (must be ⊆ policy), response schema, merged or data-blind, timeout | Versioned like an API |
-| **Consent** (CM) | The farmer | Scopes agreed for this purpose | Per farmer; revocable |
+| | Held in | Owner | Defines | Changes |
+| --- | --- | --- | --- | --- |
+| **Use case** ([composite](../design/use-case-composite.md)) | the composite's configuration | Agri Stack platform team | Sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), response, timeouts | Versioned like an API |
+| **Partner's data-share policy** | the exchange's Consent Manager, one per partner and registry (Partner Management: target) | The exchange, on behalf of the departments | Allowed scopes per registry, purposes, subject ID types, validity ceiling, fetch type | Rarely; a widening can need approval (AWE, optional, off by default) |
+| **Department's policy for the composite** | each registry's own Consent Manager (a binding for `agri-composite`) | The department (data controller) | What its registry may release through the composite, at most | When the department decides; [exchange setup](../guides/exchange-setup.md) creates it from the published use cases |
+| **Consent** | the exchange's Consent Manager | The farmer | One consent with a grant per registry, for one partner and purpose | Per farmer; revocable |
+
+Which partners may use a use case is its `allowed_partners` today; a partner association in Partner Management is the target.
 
 {% hint style="warning" %}
-**Today** the data-share policies are held in CM, one per partner binding and registry (see [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md)), and the composite uses `allowed_partners` in each use case in place of the partner association. Moving policies to PM is an [open item](../open-items/README.md).
+**Today** the data-share policies are held in the Consent Manager, one per partner binding and registry (see [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md)). Partner Management holds identities and keys: each install verifies signatures against its own. Moving policies to Partner Management, with one policy reusable by many partners, is the target design below and an [open item](../open-items/README.md).
 {% endhint %}
 
 ## Example policy (target, in PM)
@@ -33,10 +46,10 @@ Each registry computes this intersection for its own part, so a misconfigured us
 policy: credit-assessment          # version 3, status: active
 purpose: credit-assessment
 terms: { fetch_type: oneshot, max_validity: P90D, data_life: P1Y, subject_id_types: [FAYDA_FAN, FARMER_ID] }
-sections:                           # one per data controller, each approved by that department
-  - controller: farmer-registry     scopes: [farmer:profile, farmer:land]        approved_by: MoA-FR (AWE)
-  - controller: crop-sown-registry  scopes: [crop:season]                        approved_by: MoA-Crop (AWE)
-  - controller: livestock-registry  scopes: [livestock:herd]                     approved_by: MoLF (AWE)
+sections:                           # one per data controller, each approved by that department (optionally through AWE)
+  - controller: farmer-registry     scopes: [farmer:profile, farmer:land]        approved_by: Agriculture Dept.
+  - controller: crop-sown-registry  scopes: [crop:season]                        approved_by: Crops Dept.
+  - controller: livestock-registry  scopes: [livestock:herd]                     approved_by: Livestock Dept.
 ```
 
 Partner associations (also held in PM):
@@ -45,7 +58,7 @@ Partner associations (also held in PM):
 credit-assessment v3  ←  Bank A, Bank B, MFI C
 ```
 
-* **Each department approves only its own section**, using its own AWE approval workflow. A section that hasn't been approved isn't in force, but the rest of the policy still applies.
+* **Each department approves only its own section**, optionally through its own AWE approval workflow. A section that hasn't been approved isn't in force, but the rest of the policy still applies.
 * **Policies list scopes, not individual fields.** Each registry defines and versions its own mapping from scope to fields and publishes it in the developer sandbox. For example, `farmer:profile` = name, sex, date of birth, kebele.
 
 {% hint style="info" %}
@@ -54,13 +67,16 @@ In the registries as built, a scope is a registry **data scope**: a named group 
 
 ## Runtime checks
 
-1. **Composite:** is this partner associated with the policy the use case refers to? If not, reject. (Today: the use case's `allowed_partners`.)
-2. **Registry → CM `/validate`:** CM checks the consent (valid, not revoked, right purpose), fetches that registry's policy section (from PM, cached, in the target design), and returns the intersection.
-3. **Registry:** releases only the effective scopes.
+Through the composite, as built:
 
-## Changes needed
+1. **Composite:** verifies the partner's signature (the exchange's Partner Management) and that the partner is in the use case's `allowed_partners`.
+2. **Composite → exchange Consent Manager `/validate`:** the consent is valid, not revoked, for this partner, purpose and farmer; the partner's policy per registry; only the use case's scopes. It returns one signed receipt per registry with the effective scopes so far.
+3. **Registry → its own Consent Manager `/validate`, with the receipt:** the receipt is signed by a trusted issuer (the exchange's Consent Manager), presented by the composite, still valid and not revoked; the department's standing policy for the composite is applied.
+4. **Registry:** releases only the effective scopes.
 
-* **PM:** add policy, policy-section and association entities, with AWE approval per section.
+## Changes needed (target)
+
+* **PM:** add policy, policy-section and association entities, with optional AWE approval per section.
 * **CM:** `/validate` reads policies from PM instead of CM's own `PartnerPolicy` tables.
 * **Composite service:** check each use case against its PM policy when the use case is published (see [publish checks](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
 * **Consent:** see the [consent model](consent-model.md).

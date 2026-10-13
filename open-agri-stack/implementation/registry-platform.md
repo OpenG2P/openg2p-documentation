@@ -47,7 +47,7 @@ The activity model is **its own base class**, `G2PActivity`, next to `G2PRegiste
    * Let the domain service add derived values (e.g. yield per hectare).
    * Validate against the type's JSON Schema.
 3. **Check references.**
-   * Code lists, including nested rows such as fertiliser types: strict. The registry holds no copy; it reads them from Master Data.
+   * Lists (reference data), including nested rows such as fertiliser types: strict. The registry holds no copy; it reads them from Master Data.
    * Master Data geography.
    * Records in the same registry.
    * External IDs: pattern only, or a lookup through the domain service; strict, lenient or none.

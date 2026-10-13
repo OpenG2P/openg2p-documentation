@@ -13,7 +13,7 @@ These terms apply to both record kinds: **entity** registers (a farmer, a plot) 
 
 | Term | What it means | What happens to the data | Entity register | Activity register |
 | --- | --- | --- | --- | --- |
-| **Validation** | Automatic checks at entry: format, required fields, code lists, plausibility | Bad input is rejected or warned on; nothing is stored about it | Built | Built |
+| **Validation** | Automatic checks at entry: format, required fields, reference data, plausibility | Bad input is rejected or warned on; nothing is stored about it | Built | Built |
 | **Change** | The world changed: the farmer moved, got a new phone, sold a plot | New version; the old value stays in history as true _at that time_ | Change request | Doesn't apply: an occurrence never changes; a new event is a new activity |
 | **Correction** | The record was wrong: a typo, a mis-measured area | New version; the old value is marked as an error, never true | Change request marked as a correction, with a reason | Supersede, with a reason |
 | **Void** | The record shouldn't exist: a duplicate, an event that never happened | Kept, but no longer counts | Record status (e.g. deactivated) | Void, with a reason |

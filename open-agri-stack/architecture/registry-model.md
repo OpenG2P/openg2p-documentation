@@ -16,25 +16,25 @@ Registries run on the OpenG2P [registry platform](../../products/registry/regist
 
 ## Projections
 
-A projection is current state computed from activities: for example, the current crop stage per plot per season, or a beneficiary's 360 view.
+A projection is current state computed from activities: for example, the current crop stage per plot per season, or a farmer's season summary.
 
-* **Per-subject projections** (current crop stage, 360 view) are updated in the same database transaction as the activity, so they are always exact.
-* **Aggregates for dashboards** are updated asynchronously. Each change is recorded in an outbox and the projection is recomputed idempotently from it; lag alerts and a nightly reconciliation job catch anything that falls behind. Any projection can be rebuilt from the activities.
+* **Per-subject projections** (the current crop stage) are updated in the same database transaction as the activity, so they are always exact.
+* **Aggregates** (a farmer's season summary, figures for dashboards) are updated asynchronously. Each change is recorded in an outbox and the aggregate is recomputed idempotently from it; lag alerts and a nightly reconciliation job catch anything that falls behind. Any projection can be rebuilt from the activities.
 
 ## Layer 2: catalogues
 
 Layer 2 is the **catalogues**: the reference data every registry uses, defined once for the country. There is no reference data inside a registry.
 
 * **What the catalogues hold:**
-  * simple code lists (gender, tenure type, units, crop types);
+  * simple datasets (gender, tenure type, units, crop types);
   * richer reference entities such as seed varieties, input products and breeds;
   * geography: admin areas, with boundaries.
-* **Today:** the [Master Data Service (MDS)](../../platform/platform-services/master-data-service/README.md) serves this role. Registries read code lists and geography from it live, over a direct connection to its database, and the country pack's agriculture domain is loaded into it.
+* **Today:** the [Master Data Service (MDS)](../../platform/platform-services/master-data-service/README.md) serves this role. Registries read its datasets and geography through the catalogue API (versioned, cached), with database reads kept only as a rollback, and the country pack's agriculture domain is loaded into it.
 * **Decision: extend MDS.** The catalogue is being built as [MDS as Catalogue](../../platform/platform-services/master-data-service/catalogue/README.md): versioned lists and geography, drafts with approval, immutable published versions, latest / pinned / as-of reads, a crosswalk for boundary changes, and a change feed. The GeoPrism Registry was evaluated: it has strong temporal geography, but versioning and approvals cover only geographic lists, it runs on Java and OrientDB, and it has no Helm chart or Keycloak integration. MDS therefore borrows its ideas (working and published versions, split/merge lineage); an import adapter from GeoPrism or the Common Geo Registry is a possible later add-on.
 * **What the catalogue provides:**
   * **typed attributes per list**, so an entity like a seed variety can carry crop, maturity days, release year and agro-ecological zone (for example an attribute set validated by a JSON Schema defined per list);
   * approvals (AWE), audit and history;
-  * a public read API and a change feed, instead of registries reading a database directly.
-* Codes are defined by the country; international classifications are optional mappings. Publish code lists in SKOS-shaped JSON-LD, and boundaries through OGC API – Features.
+  * a public read API and a change feed, which the registries read instead of a database.
+* Codes are defined by the country; international classifications are optional mappings. Publish datasets in SKOS-shaped JSON-LD, and boundaries through OGC API – Features.
 
 See also [Country Data Architecture](../../platform/country-data-architecture.md) for country packs.

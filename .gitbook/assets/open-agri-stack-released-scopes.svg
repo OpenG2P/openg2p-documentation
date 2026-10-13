@@ -1,57 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="250" viewBox="0 0 1060 250" role="img" aria-label="Effective scopes are the intersection of what the use case asks for, what the PM policy allows, and what the farmer consented to. In the example only farmer profile and crop season are released."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1206" height="330" viewBox="0 0 1206 330" role="img" aria-label="What a registry releases through the composite: what the use case asks for, intersected with the partner's policy and the farmer's consent at the exchange Consent Manager, which puts the result into each registry's receipt, then intersected with the department's own policy for the composite at that registry's Consent Manager. In the example the bank's policy leaves out crop measures, the farmer declines land, and the Livestock Department does not allow herd data, so farmer personal details and crop season are released."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
-.cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
-.l1{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5} .l2{fill:#F7ECD4;stroke:#AE8433;stroke-width:1.5}
+.cap{font-size:10px;letter-spacing:.07em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.l1{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5}
 .dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5} .uc{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
-.plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
-.dept{fill:none;stroke:#C8D0C8;stroke-width:1.3;stroke-dasharray:5 4}
-.band{fill:none;stroke:#56625B;stroke-width:1.2;stroke-dasharray:6 5}
-.ar{stroke:#3B4640;stroke-width:1.4;fill:none} .ar.d{stroke-dasharray:5 4}
-.life{stroke:#C8D0C8;stroke-width:1.2;stroke-dasharray:4 4}
+.band{fill:#F7F8F7;stroke:#B4BDB6;stroke-width:1.2;stroke-dasharray:5 4}
 .chip-ok{fill:#DDEFE3;stroke:none} .chip-no{fill:none;stroke:#C8D0C8;stroke-dasharray:4 3}
-.ok{font-size:12px;fill:#1F5B3A;font-family:'JetBrains Mono',Menlo,monospace}
-.no{font-size:12px;fill:#8A948E;font-family:'JetBrains Mono',Menlo,monospace}
+.ok{font-size:11.5px;fill:#1F5B3A;font-family:'JetBrains Mono',Menlo,monospace}
+.no{font-size:11.5px;fill:#8A948E;font-family:'JetBrains Mono',Menlo,monospace}
 .strike{stroke:#8A948E;stroke-width:1.2} .op{font-size:22px;fill:#56625B;font-weight:500}
-.x{stroke:#C0463B;stroke-width:2}
 </style><rect width="100%" height="100%" fill="#FFFFFF"/>
-      <!-- column boxes -->
-      <rect class="uc" x="20" y="14" width="220" height="222" rx="8"/>
-      <rect class="dpi" x="290" y="14" width="220" height="222" rx="8"/>
-      <rect class="dpi" x="560" y="14" width="220" height="222" rx="8"/>
-      <rect class="l1" x="830" y="14" width="210" height="222" rx="8"/>
-      <text class="t" x="34" y="40">Use case asks for</text><text class="s" x="34" y="57">composite configuration</text>
-      <text class="t" x="304" y="40">Policy allows</text><text class="s" x="304" y="57">PM · approved per department</text>
-      <text class="t" x="574" y="40">Farmer consented to</text><text class="s" x="574" y="57">CM · one object per registry</text>
-      <text class="t" x="844" y="40">Released</text><text class="s" x="844" y="57">each registry, its own slice</text>
-      <text class="op" x="265" y="132" text-anchor="middle">∩</text>
-      <text class="op" x="535" y="132" text-anchor="middle">∩</text>
-      <text class="op" x="805" y="132" text-anchor="middle">=</text>
 
-      <!-- use case chips -->
-      <rect class="chip-ok" x="34" y="74" width="192" height="26" rx="5"/><text class="ok" x="46" y="92">farmer:profile</text>
-      <rect class="chip-ok" x="34" y="110" width="192" height="26" rx="5"/><text class="ok" x="46" y="128">farmer:land</text>
-      <rect class="chip-ok" x="34" y="146" width="192" height="26" rx="5"/><text class="ok" x="46" y="164">crop:season</text>
-      <rect class="chip-ok" x="34" y="182" width="192" height="26" rx="5"/><text class="ok" x="46" y="200">livestock:herd</text>
+  <!-- who computes what -->
+  <rect class="band" x="16" y="10" width="694" height="26" rx="6"/>
+  <text class="cap" x="363" y="27" text-anchor="middle">THE EXCHANGE'S CONSENT MANAGER · PUTS THE RESULT IN EACH REGISTRY'S RECEIPT</text>
+  <rect class="band" x="756" y="10" width="200" height="26" rx="6"/>
+  <text class="cap" x="856" y="27" text-anchor="middle">EACH REGISTRY'S OWN CM</text>
+  <rect class="band" x="976" y="10" width="214" height="26" rx="6"/>
+  <text class="cap" x="1083" y="27" text-anchor="middle">EACH REGISTRY</text>
 
-      <!-- policy chips -->
-      <rect class="chip-ok" x="304" y="74" width="192" height="26" rx="5"/><text class="ok" x="316" y="92">farmer:profile</text>
-      <rect class="chip-ok" x="304" y="110" width="192" height="26" rx="5"/><text class="ok" x="316" y="128">farmer:land</text>
-      <rect class="chip-ok" x="304" y="146" width="192" height="26" rx="5"/><text class="ok" x="316" y="164">crop:season</text>
-      <rect class="chip-no" x="304" y="182" width="192" height="26" rx="5"/><text class="no" x="316" y="200">livestock:herd</text>
-      <line class="strike" x1="314" y1="196" x2="420" y2="196"/>
-      <text class="s" x="304" y="226">livestock section not yet approved</text>
+  <!-- column boxes -->
+  <rect class="uc" x="16" y="46" width="200" height="262" rx="8"/>
+  <rect class="dpi" x="263" y="46" width="200" height="262" rx="8"/>
+  <rect class="dpi" x="510" y="46" width="200" height="262" rx="8"/>
+  <rect class="dpi" x="756" y="46" width="200" height="262" rx="8"/>
+  <rect class="l1" x="976" y="46" width="214" height="262" rx="8"/>
+  <text class="t" x="30" y="70">Use case asks for</text><text class="s" x="30" y="86">composite: scopes, optional scopes</text>
+  <text class="t" x="277" y="70">Partner's policy allows</text><text class="s" x="277" y="86">per registry · in the CM (PM: target)</text>
+  <text class="t" x="524" y="70">Farmer consented to</text><text class="s" x="524" y="86">one consent, a grant per registry</text>
+  <text class="t" x="770" y="70">Department allows</text><text class="s" x="770" y="86">its standing policy for the composite</text>
+  <text class="t" x="990" y="70">Released</text><text class="s" x="990" y="86">each registry, its own slice</text>
+  <text class="op" x="240" y="180" text-anchor="middle">∩</text>
+  <text class="op" x="487" y="180" text-anchor="middle">∩</text>
+  <text class="op" x="746" y="180" text-anchor="middle">∩</text>
+  <text class="op" x="966" y="180" text-anchor="middle">=</text>
 
-      <!-- consent chips -->
-      <rect class="chip-ok" x="574" y="74" width="192" height="26" rx="5"/><text class="ok" x="586" y="92">farmer:profile</text>
-      <rect class="chip-no" x="574" y="110" width="192" height="26" rx="5"/><text class="no" x="586" y="128">farmer:land</text>
-      <line class="strike" x1="584" y1="124" x2="674" y2="124"/>
-      <rect class="chip-ok" x="574" y="146" width="192" height="26" rx="5"/><text class="ok" x="586" y="164">crop:season</text>
-      <rect class="chip-ok" x="574" y="182" width="192" height="26" rx="5"/><text class="ok" x="586" y="200">livestock:herd</text>
-      <text class="s" x="574" y="226">farmer declined to share land</text>
+  <!-- 1 use case -->
+  <rect class="chip-ok" x="30" y="100" width="172" height="26" rx="5"/><text class="ok" x="40" y="118">FR · personal details</text>
+  <rect class="chip-ok" x="30" y="134" width="172" height="26" rx="5"/><text class="ok" x="40" y="152">FR · land</text>
+  <rect class="chip-ok" x="30" y="168" width="172" height="26" rx="5"/><text class="ok" x="40" y="186">CSR · crop season</text>
+  <rect class="chip-ok" x="30" y="202" width="172" height="26" rx="5"/><text class="ok" x="40" y="220">CSR · measures</text>
+  <rect class="chip-ok" x="30" y="236" width="172" height="26" rx="5"/><text class="ok" x="40" y="254">LS · herd</text>
 
-      <!-- result -->
-      <rect class="chip-ok" x="844" y="74" width="182" height="26" rx="5"/><text class="ok" x="856" y="92">farmer:profile</text>
-      <rect class="chip-ok" x="844" y="146" width="182" height="26" rx="5"/><text class="ok" x="856" y="164">crop:season</text>
-    </svg>
+  <!-- 2 partner policy -->
+  <rect class="chip-ok" x="277" y="100" width="172" height="26" rx="5"/><text class="ok" x="287" y="118">FR · personal details</text>
+  <rect class="chip-ok" x="277" y="134" width="172" height="26" rx="5"/><text class="ok" x="287" y="152">FR · land</text>
+  <rect class="chip-ok" x="277" y="168" width="172" height="26" rx="5"/><text class="ok" x="287" y="186">CSR · crop season</text>
+  <rect class="chip-no" x="277" y="202" width="172" height="26" rx="5"/><text class="no" x="287" y="220">CSR · measures</text>
+  <line class="strike" x1="285" y1="216" x2="388" y2="216"/>
+  <rect class="chip-ok" x="277" y="236" width="172" height="26" rx="5"/><text class="ok" x="287" y="254">LS · herd</text>
+  <text class="s" x="277" y="290">not in the bank's policy: measures</text>
+
+  <!-- 3 consent -->
+  <rect class="chip-ok" x="524" y="100" width="172" height="26" rx="5"/><text class="ok" x="534" y="118">FR · personal details</text>
+  <rect class="chip-no" x="524" y="134" width="172" height="26" rx="5"/><text class="no" x="534" y="152">FR · land</text>
+  <line class="strike" x1="532" y1="148" x2="598" y2="148"/>
+  <rect class="chip-ok" x="524" y="168" width="172" height="26" rx="5"/><text class="ok" x="534" y="186">CSR · crop season</text>
+  <rect class="chip-ok" x="524" y="202" width="172" height="26" rx="5"/><text class="ok" x="534" y="220">CSR · measures</text>
+  <rect class="chip-ok" x="524" y="236" width="172" height="26" rx="5"/><text class="ok" x="534" y="254">LS · herd</text>
+  <text class="s" x="524" y="290">the farmer declined: land</text>
+
+  <!-- 4 department -->
+  <rect class="chip-ok" x="770" y="100" width="172" height="26" rx="5"/><text class="ok" x="780" y="118">FR · personal details</text>
+  <rect class="chip-ok" x="770" y="134" width="172" height="26" rx="5"/><text class="ok" x="780" y="152">FR · land</text>
+  <rect class="chip-ok" x="770" y="168" width="172" height="26" rx="5"/><text class="ok" x="780" y="186">CSR · crop season</text>
+  <rect class="chip-ok" x="770" y="202" width="172" height="26" rx="5"/><text class="ok" x="780" y="220">CSR · measures</text>
+  <rect class="chip-no" x="770" y="236" width="172" height="26" rx="5"/><text class="no" x="780" y="254">LS · herd</text>
+  <line class="strike" x1="778" y1="250" x2="844" y2="250"/>
+  <text class="s" x="770" y="290">Livestock Dept. does not allow: herd</text>
+
+  <!-- 5 released -->
+  <rect class="chip-ok" x="990" y="100" width="186" height="26" rx="5"/><text class="ok" x="1000" y="118">FR · personal details</text>
+  <rect class="chip-ok" x="990" y="168" width="186" height="26" rx="5"/><text class="ok" x="1000" y="186">CSR · crop season</text>
+  <text class="s" x="990" y="290">FR: Farmer Registry · CSR: Crop Sown</text>
+  <text class="s" x="990" y="303">LS: a Livestock registry</text>
+</svg>

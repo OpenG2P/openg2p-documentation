@@ -11,13 +11,13 @@ description: >-
 **Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [composite as built](../implementation/composite.md) for what is in it and what is not yet, and the [composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
 {% endhint %}
 
-A **composite** serves one approved use case, such as `credit-profile`, by querying several departmental registries and returning one response. There is **one generic composite service**; each use case is a **configuration file** that it loads, not new code.
+A **composite** serves one approved use case, such as `loan-profile`, by querying several departmental registries and returning one response. There is **one generic composite service**; each use case is a **configuration file** that it loads, not new code.
 
 The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [policy and consent](../architecture/policy-and-consent.md)).
 
-## Example configuration: `credit-profile`
+## Example configuration (full design)
 
-This is the full design. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
+This example, `credit-profile`, is hypothetical: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
 
 ```yaml
 # ── Identity ──────────────────────────────────────────────────────────────
@@ -33,8 +33,8 @@ policy: credit-assessment             # PM policy; caller must be associated wit
 purpose: credit-assessment            # must be one of the policy's allowed purposes
 consent:
   required: true
-  collection: cm-originated           # cm-originated | partner-embedded
-  mode: single                        # one consent, one grant per registry (see the consent model)
+  collection: cm-originated           # accepted, not enforced
+  mode: single                        # accepted, not enforced; the consent mode is a service setting
 
 # ── Input: what the SP sends ──────────────────────────────────────────────
 input:
@@ -49,7 +49,9 @@ sources:
   - id: farmer
     controller: farmer-registry          # PM participant; endpoint and keys resolved from PM
     requirement: mandatory               # mandatory | optional
-    request_scopes: [farmer:profile, farmer:land]
+    scopes: [farmer-registry.farmer_identifiers, farmer-registry.personal_details,
+             farmer-registry.land]            # the consent must grant all of these
+    optional_scopes: [farmer-registry.land_location]   # if not granted: fields come back null
     dci:
       reg_type: Farmer
       reg_record_type: spdci-extensions-dci:Farmer
@@ -60,7 +62,7 @@ sources:
   - id: crops
     controller: crop-sown-registry
     requirement: optional
-    request_scopes: [crop:season]
+    scopes: [crop-sown-registry.farmer_reference, crop-sown-registry.crop_season]
     dci:
       reg_type: CropSown
       reg_record_type: spdci-extensions-agri:ActivityAggregate   # the farmer's season summaries
@@ -71,7 +73,7 @@ sources:
   - id: herd
     controller: livestock-registry
     requirement: optional
-    request_scopes: [livestock:herd]
+    scopes: [livestock-registry.herd]
     dci:
       reg_type: Livestock
       query_template: templates/herd-by-owner.json.j2
@@ -92,7 +94,7 @@ response:
     herd.animals:         "$.herd.records[*]"
   derived:
     land.total_ha:        "sum($.farmer.land[*].area_ha)"
-  source_status: true                    # per-source ok | no_record | denied | unavailable
+  source_status: true                    # per-source ok | no_record | denied | unavailable | error
 
 # ── Behaviour ─────────────────────────────────────────────────────────────
 execution:
@@ -111,9 +113,9 @@ audit:
 | Section | Purpose | Notes |
 | --- | --- | --- |
 | **Identity** | Name, version and lifecycle status | Partners call `use_case@major`. A breaking change to the response means a new major version, and the old one is deprecated with a sunset date. |
-| **Governance** | Links the use case to a policy, a purpose and a consent mode | The composite rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). |
+| **Governance** | Links the use case to a policy, a purpose and the consent settings | The composite rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). As built, `consent.collection` and `consent.mode` are accepted but not enforced: how consent is checked (passthrough or exchange) is one setting for the whole service, in its Helm chart. |
 | **Input** | What the partner sends: subject identifier types, parameters, batch size | Checked before any registry is called |
-| **Sources** | One entry per registry: controller, whether it's mandatory, requested scopes, DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
+| **Sources** | One entry per registry: controller, whether it's mandatory, the data scopes it needs (`scopes`) and may use (`optional_scopes`), DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
 | **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the composite only bundles the parts. |
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
@@ -145,15 +147,22 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
    * verifies the partner's signature, checks its association with `policy` and applies rate limits;
    * validates the input and selects `use_case@version`;
    * renders one DCI request per source from its template;
-   * signs each request with its own PM key, carrying the partner's consent and the request ID;
-   * sends the requests in parallel.
-3. **Each registry:** calls CM `/validate` and releases only the effective scopes.
+   * checks the consent (below) and signs each request with its own PM key, with the request ID;
+   * sends the requests, in parallel unless a source depends on another.
+3. **Each registry:** calls its own CM `/validate` and releases only the effective scopes.
 4. **Composite:**
    * waits up to the timeout;
    * applies the partial-response rule;
    * maps the results, computes derived fields, adds the per-source status, and validates against the schema;
    * responds, then discards everything.
 5. **Audit:** every step sends an audit event, linked by the request ID.
+
+**Consent.** The partner sends a consent it signed, or the ID of a consent collected at the exchange CM (`message.consent_id`, exchange mode only). How the composite checks it is a service setting (`consent.mode` in the chart):
+
+* **Exchange mode (chart default):** the composite calls the exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed receipt per registry, with only those scopes, and each registry gets its own receipt. Each registry checks its receipt at its own CM ([exchange receipts](../../consent-management/design/exchange-receipts.md)).
+* **Passthrough:** the partner's consent goes to each registry unchanged. For a single install, where the registries share the composite's CM.
+
+Before calling a source, the composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).
 
 How the first version runs a request, step by step, is in [composite as built](../implementation/composite.md#what-it-does-per-request).
 
@@ -212,13 +221,13 @@ In the built `loan-profile`, the crop sources always declare `depends_on: farmer
 
 ```jsonc
 {
-  "use_case": "credit-profile@1",
+  "use_case": "credit-profile@1",          // the hypothetical example above
   "request_id": "…",
-  "subject": { "type": "fayda_token", "value": "…" },
+  "subject": { "type": "FAYDA_FAN", "value": "…" },
   "sources": {
     "farmer": { "status": "ok" },
     "crops":  { "status": "ok" },
-    "herd":   { "status": "unavailable" }
+    "herd":   { "status": "unavailable" }   // ok | no_record | denied | unavailable | error
   },
   "data": {
     "farmer": { "name": "…", "sex": "F", "kebele": "…" },
@@ -228,7 +237,7 @@ In the built `loan-profile`, the crop sources always declare `depends_on: farmer
 }
 ```
 
-As built, this body is the `message` of a signed DCI-style envelope; see the [partner guide](../guides/partner-guide.md#step-10-read-the-response).
+Fields from a source that failed are `null`. As built, this body is the `message` of a signed DCI-style envelope; see the [partner guide](../guides/partner-guide.md#step-10-read-the-response).
 
 ## Where configurations live
 

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="680" height="720" viewBox="0 0 680 720" role="img" aria-label="Agri Stack two-tier deployment: Open AgriNet partners use one shared exchange tier, which calls into self-sufficient department installs">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="724" viewBox="0 0 720 724" role="img" aria-label="Agri Stack deployment: OAN partners call a registry directly (path A) or use one shared exchange install through the composite (path B); each department runs one install per registry, with its own Partner Management, Consent Manager and catalogue">
 <style>
 text{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
 .h{font-size:14px;font-weight:500}.s{font-size:12px}
@@ -7,37 +7,50 @@ text{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
 .gf{fill:#F1EFE8;stroke:#5F5E5A}.gh{fill:#444441}.lab{fill:#444441}
 </style>
 <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<rect width="680" height="720" fill="#ffffff"/>
-<rect x="30" y="20" width="620" height="88" rx="8" fill="none" stroke="#888780" stroke-width="0.8" stroke-dasharray="4 4"/>
-<text class="s lab" x="44" y="34" dominant-baseline="central">Open AgriNet services (partners)</text>
-<rect x="40" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="130" y="72" text-anchor="middle" dominant-baseline="central">Agri AI advisory</text>
-<rect x="250" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="340" y="72" text-anchor="middle" dominant-baseline="central">Lending</text>
-<rect x="460" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="550" y="72" text-anchor="middle" dominant-baseline="central">Marketplace</text>
-<line x1="340" y1="108" x2="340" y2="128" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
-<rect x="30" y="132" width="620" height="176" rx="8" fill="none" stroke="#7F77DD" stroke-width="0.8" stroke-dasharray="4 4"/>
-<text class="h ph" x="44" y="148" dominant-baseline="central">Agri Stack exchange tier (one, shared)</text>
-<rect x="50" y="164" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="140" y="182" text-anchor="middle" dominant-baseline="central">Composite</text><text class="s ps" x="140" y="202" text-anchor="middle" dominant-baseline="central">Only door for partners</text>
-<rect x="250" y="164" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="340" y="182" text-anchor="middle" dominant-baseline="central">Partner management</text><text class="s ps" x="340" y="202" text-anchor="middle" dominant-baseline="central">Onboard partners once</text>
-<rect x="450" y="164" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="540" y="182" text-anchor="middle" dominant-baseline="central">Consent manager</text><text class="s ps" x="540" y="202" text-anchor="middle" dominant-baseline="central">Farmer consents once</text>
-<rect x="50" y="234" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="140" y="252" text-anchor="middle" dominant-baseline="central">Catalogue</text><text class="s ps" x="140" y="272" text-anchor="middle" dominant-baseline="central">Shared codes and geo</text>
-<rect x="250" y="234" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="340" y="252" text-anchor="middle" dominant-baseline="central">Audit</text><text class="s ps" x="340" y="272" text-anchor="middle" dominant-baseline="central">Who asked what</text>
-<rect x="450" y="234" width="180" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="540" y="252" text-anchor="middle" dominant-baseline="central">Notifications</text><text class="s ps" x="540" y="272" text-anchor="middle" dominant-baseline="central">Consent requests</text>
-<line x1="180" y1="308" x2="180" y2="346" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
-<line x1="500" y1="308" x2="500" y2="346" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
-<rect x="30" y="350" width="300" height="306" rx="8" fill="none" stroke="#1D9E75" stroke-width="0.8" stroke-dasharray="4 4"/>
-<text class="h th" x="44" y="366" dominant-baseline="central">Agriculture department</text>
-<rect x="50" y="382" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="180" y="400" text-anchor="middle" dominant-baseline="central">Farmer registry</text><text class="s ts" x="180" y="420" text-anchor="middle" dominant-baseline="central">Source of farmer data</text>
-<rect x="50" y="452" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="180" y="470" text-anchor="middle" dominant-baseline="central">Own PM, CM, audit</text><text class="s ts" x="180" y="490" text-anchor="middle" dominant-baseline="central">Department's own partners</text>
-<rect x="50" y="522" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="180" y="540" text-anchor="middle" dominant-baseline="central">IAM, AWE, Keycloak</text><text class="s ts" x="180" y="560" text-anchor="middle" dominant-baseline="central">Staff and approvals</text>
-<rect x="50" y="592" width="260" height="44" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="180" y="614" text-anchor="middle" dominant-baseline="central">Own database</text>
-<rect x="350" y="350" width="300" height="306" rx="8" fill="none" stroke="#1D9E75" stroke-width="0.8" stroke-dasharray="4 4"/>
-<text class="h th" x="364" y="366" dominant-baseline="central">Crop department</text>
-<rect x="370" y="382" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="500" y="400" text-anchor="middle" dominant-baseline="central">Crop sown registry</text><text class="s ts" x="500" y="420" text-anchor="middle" dominant-baseline="central">Seasons, clusters</text>
-<rect x="370" y="452" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="500" y="470" text-anchor="middle" dominant-baseline="central">Own PM, CM, audit</text><text class="s ts" x="500" y="490" text-anchor="middle" dominant-baseline="central">Department's own partners</text>
-<rect x="370" y="522" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="500" y="540" text-anchor="middle" dominant-baseline="central">IAM, AWE, Keycloak</text><text class="s ts" x="500" y="560" text-anchor="middle" dominant-baseline="central">Staff and approvals</text>
-<rect x="370" y="592" width="260" height="44" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="500" y="614" text-anchor="middle" dominant-baseline="central">Own database</text>
-<line x1="310" y1="410" x2="368" y2="410" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a)"/>
-<rect x="40" y="682" width="14" height="14" rx="3" class="pf" stroke-width="0.8"/><text class="s lab" x="62" y="689" dominant-baseline="central">Shared exchange tier</text>
-<rect x="220" y="682" width="14" height="14" rx="3" class="tf" stroke-width="0.8"/><text class="s lab" x="242" y="689" dominant-baseline="central">Per department, self-sufficient</text>
-<line x1="450" y1="689" x2="478" y2="689" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 4"/><text class="s lab" x="486" y="689" dominant-baseline="central">Farmer data sync</text>
+<rect width="720" height="724" fill="#ffffff"/>
+<rect x="50" y="20" width="620" height="88" rx="8" fill="none" stroke="#888780" stroke-width="0.8" stroke-dasharray="4 4"/>
+<text class="s lab" x="64" y="34" dominant-baseline="central">OAN services (partners)</text>
+<rect x="60" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="150" y="72" text-anchor="middle" dominant-baseline="central">Agri AI advisory</text>
+<rect x="270" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="360" y="72" text-anchor="middle" dominant-baseline="central">Lending</text>
+<rect x="480" y="50" width="180" height="44" rx="8" class="gf" stroke-width="0.8"/><text class="h gh" x="570" y="72" text-anchor="middle" dominant-baseline="central">Marketplace</text>
+<line x1="360" y1="108" x2="360" y2="128" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="s lab" x="370" y="118" dominant-baseline="central">B: one onboarding, one consent, one query</text>
+<rect x="50" y="132" width="620" height="172" rx="8" fill="none" stroke="#7F77DD" stroke-width="0.8" stroke-dasharray="4 4"/>
+<text class="h ph" x="64" y="148" dominant-baseline="central">Agri Stack exchange (one install, shared)</text>
+<text class="s ps" x="656" y="148" text-anchor="end" dominant-baseline="central">Hosted by the Agriculture Department</text>
+<rect x="62" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="132" y="184" text-anchor="middle" dominant-baseline="central">Composite</text><text class="s ps" x="132" y="204" text-anchor="middle" dominant-baseline="central">Use cases (path B)</text>
+<rect x="214" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="284" y="184" text-anchor="middle" dominant-baseline="central">Partner mgmt</text><text class="s ps" x="284" y="204" text-anchor="middle" dominant-baseline="central">Partners onboard once</text>
+<rect x="366" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="436" y="184" text-anchor="middle" dominant-baseline="central">Consent manager</text><text class="s ps" x="436" y="204" text-anchor="middle" dominant-baseline="central">Receipt per registry</text>
+<rect x="518" y="166" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="588" y="184" text-anchor="middle" dominant-baseline="central">Partner portal</text><text class="s ps" x="588" y="204" text-anchor="middle" dominant-baseline="central">Consent collection</text>
+<rect x="62" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="132" y="252" text-anchor="middle" dominant-baseline="central">eSignet</text><text class="s ps" x="132" y="272" text-anchor="middle" dominant-baseline="central">National-ID login</text>
+<rect x="214" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="284" y="252" text-anchor="middle" dominant-baseline="central">Catalogue</text><text class="s ps" x="284" y="272" text-anchor="middle" dominant-baseline="central">Shared codes and geo</text>
+<rect x="366" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8"/><text class="h ph" x="436" y="252" text-anchor="middle" dominant-baseline="central">Audit</text><text class="s ps" x="436" y="272" text-anchor="middle" dominant-baseline="central">Who asked what</text>
+<rect x="518" y="234" width="140" height="56" rx="8" class="pf" stroke-width="0.8" stroke-dasharray="4 3"/><text class="h ph" x="588" y="252" text-anchor="middle" dominant-baseline="central">Notifications</text><text class="s ps" x="588" y="272" text-anchor="middle" dominant-baseline="central">Planned</text>
+<line x1="200" y1="304" x2="200" y2="340" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="520" y1="304" x2="520" y2="340" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="s lab" x="210" y="322" dominant-baseline="central">B: receipt</text>
+<text class="s lab" x="530" y="322" dominant-baseline="central">B: receipt</text>
+<rect x="50" y="344" width="300" height="306" rx="8" fill="none" stroke="#1D9E75" stroke-width="0.8" stroke-dasharray="4 4"/>
+<text class="h th" x="64" y="360" dominant-baseline="central">Agriculture Department</text>
+<text class="s ts" x="336" y="360" text-anchor="end" dominant-baseline="central">Registry install</text>
+<rect x="70" y="376" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="200" y="394" text-anchor="middle" dominant-baseline="central">Farmer registry</text><text class="s ts" x="200" y="414" text-anchor="middle" dominant-baseline="central">Source of farmer data</text>
+<rect x="70" y="446" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="200" y="464" text-anchor="middle" dominant-baseline="central">Own PM, CM, catalogue, audit</text><text class="s ts" x="200" y="484" text-anchor="middle" dominant-baseline="central">Own partners and consents</text>
+<rect x="70" y="516" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="200" y="534" text-anchor="middle" dominant-baseline="central">IAM, AWE, Keycloak</text><text class="s ts" x="200" y="554" text-anchor="middle" dominant-baseline="central">Staff and approvals</text>
+<rect x="70" y="586" width="260" height="44" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="200" y="608" text-anchor="middle" dominant-baseline="central">Own database</text>
+<rect x="370" y="344" width="300" height="306" rx="8" fill="none" stroke="#1D9E75" stroke-width="0.8" stroke-dasharray="4 4"/>
+<text class="h th" x="384" y="360" dominant-baseline="central">Crops Department</text>
+<text class="s ts" x="656" y="360" text-anchor="end" dominant-baseline="central">Registry install</text>
+<rect x="390" y="376" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="520" y="394" text-anchor="middle" dominant-baseline="central">Crop sown registry</text><text class="s ts" x="520" y="414" text-anchor="middle" dominant-baseline="central">Seasons, clusters</text>
+<rect x="390" y="446" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="520" y="464" text-anchor="middle" dominant-baseline="central">Own PM, CM, catalogue, audit</text><text class="s ts" x="520" y="484" text-anchor="middle" dominant-baseline="central">Own partners and consents</text>
+<rect x="390" y="516" width="260" height="56" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="520" y="534" text-anchor="middle" dominant-baseline="central">IAM, AWE, Keycloak</text><text class="s ts" x="520" y="554" text-anchor="middle" dominant-baseline="central">Staff and approvals</text>
+<rect x="390" y="586" width="260" height="44" rx="8" class="tf" stroke-width="0.8"/><text class="h th" x="520" y="608" text-anchor="middle" dominant-baseline="central">Own database</text>
+<line x1="330" y1="404" x2="388" y2="404" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a)"/>
+<path d="M50 64 L26 64 L26 404 L68 404" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
+<path d="M670 64 L694 64 L694 404 L652 404" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="s lab" x="16" y="234" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 16 234)">A: direct to a registry</text>
+<text class="s lab" x="706" y="234" text-anchor="middle" dominant-baseline="central" transform="rotate(90 706 234)">A: direct to a registry</text>
+<rect x="50" y="678" width="14" height="14" rx="3" class="pf" stroke-width="0.8"/><text class="s lab" x="72" y="685" dominant-baseline="central">Exchange install</text>
+<rect x="190" y="678" width="14" height="14" rx="3" class="tf" stroke-width="0.8"/><text class="s lab" x="212" y="685" dominant-baseline="central">Registry install</text>
+<rect x="326" y="678" width="14" height="14" rx="3" class="pf" stroke-width="0.8" stroke-dasharray="4 3"/><text class="s lab" x="348" y="685" dominant-baseline="central">Planned</text>
+<line x1="426" y1="685" x2="454" y2="685" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="5 4"/><text class="s lab" x="462" y="685" dominant-baseline="central">Data sync (proposal, not in use)</text>
 </svg>

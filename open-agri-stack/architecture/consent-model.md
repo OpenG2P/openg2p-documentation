@@ -32,20 +32,18 @@ India's Account Aggregator works the same way: one consent artefact lists severa
 
 ```jsonc
 POST /consent-requests
-{ "subject": {"type":"fayda_token","value":"…"},
+{ "subject": {"type":"FAYDA_FAN","value":"…"},
   "purpose": "credit-assessment",
   "scopes": ["farmer:profile","farmer:land","crop:season","livestock:herd"],
   "validity": "P90D", "fetch_type": "oneshot" }
 ```
 
-**2. CM works out which registries are involved.** The PM policy already has **one section per department**, so it doubles as the map from scope to registry. CM also checks that the requested scopes fall within the policy.
+**2. CM works out which registries are involved.** Each scope belongs to one registry (`<registry>.<name>`), so the scopes map to registries. CM also checks that the requested scopes fall within the partner's data-share policy. Today the policies are in CM, one per partner binding and registry; in the target design they are held in PM.
 
-**3. The farmer sees one screen, grouped by source.**
+**3. The farmer confirms.**
 
-* Example: "Farmer Registry (Ministry A): profile, land. Crop Sown Registry: crop seasons. Livestock Registry: herd."
-* The farmer authenticates with a Fayda OTP, on their own or with a DA's help.
-* Listing the sources tells the farmer _who_ holds the data being shared.
-* If allowed, the farmer can decline individual items, so partial consent is possible.
+* **Built, in person ([scenario 1](consent-scenarios.md)):** the bank's staff raise the request in the CM partner portal, the farmer logs in with the national ID (eSignet) and signs a form, and CM staff verify it and check the Farmer ID in the Farmer Registry before the consent becomes active.
+* **Planned, self-service ([scenario 3](consent-scenarios.md)):** the farmer sees one screen grouped by source (for example "Farmer Registry: profile, land. Crop Sown Registry: crop seasons."), which tells them _who_ holds the data, and, if allowed, can decline individual items.
 
 **4. CM issues one consent artefact, signed by CM.**
 
@@ -66,35 +64,39 @@ POST /consent-requests
 **5. Using the consent.**
 
 * The partner, or the composite acting for it, sends the consent ID or artefact with the request.
-* Each registry calls `/validate(consent, controller = itself)`.
-* CM returns **that registry's grant ∩ that registry's policy section**.
+* Each registry calls its own CM's `/validate(consent, controller = itself)`.
+* CM returns **that registry's grant ∩ that registry's policy**.
+* Through the composite in exchange mode, the exchange CM first turns the consent into one signed receipt per registry, and each registry presents its receipt instead (see [request flow](request-flow.md)).
 * Usage is counted **per consent and per controller**, so one-shot and periodic limits apply to each registry separately.
 
 **6. Revocation.** The farmer can revoke the whole consent, or only one source (for example, "stop sharing my livestock data"). The partner is notified either way.
 
 {% hint style="info" %}
-**As built,** the partner signs the consent itself (the partner-embedded flow): a compact JWS with a `grants` claim, presented unchanged to every registry, directly or through the composite. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
+**As built,** a consent reaches the composite in one of two forms: collected in CM ([scenario 1](consent-scenarios.md)) and presented by its ID (`message.consent_id`, exchange mode only), or signed by the partner itself (the partner-embedded flow: a compact JWS with a `grants` claim). In exchange mode the exchange CM turns either into a receipt per registry; in passthrough mode the composite forwards the partner's consent unchanged. A partner-signed consent can also be presented directly to a registry. The claims, signing and reason codes are in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); the Agri Stack specifics are in the [partner guide](../guides/partner-guide.md).
 {% endhint %}
 
 ## Changes in CM
 
+What is built, per change, is in [Consent Manager changes](../implementation/consent-manager.md).
+
 | Area | Change | Status |
 | --- | --- | --- |
 | Consent model | One consent with several grants, replacing the single `data_controller` field | Built for partner-signed consents (`grants` claim; the single-controller form still works) |
-| `/validate` | Takes the calling registry as a parameter; returns only that registry's grant ∩ its policy section, read from PM | Built with policies in CM: `data_controller` on `/validate`, bindings per (partner, controller). Reading policies from PM: open |
+| `/validate` | Takes the calling registry as a parameter; returns only that registry's grant ∩ its policy | Built with policies in CM: `data_controller` on `/validate`, bindings per (partner, controller). Policies in PM: target |
 | Replay guard | It was keyed on the consent object's ID (`jti`), which would reject the second and third registries presented with the same consent. Move replay protection to a **per-request nonce** (the DCI envelope already carries message IDs and timestamps), and count usage per consent and controller. | Built as replay per (`jti`, controller); the per-request nonce is open |
-| Consent screen and receipt | Grouped by source, with per-item decline if allowed | Consent requests with grants built; one receipt per registry today |
-| Intermediary presentation | Accept a consent whose audience is the partner when a registered composite presents it | Works for partner-signed consents (the composite forwards the consent unchanged and names the partner in `header.meta.on_behalf_of`); a check that the presenter is a registered composite is open |
+| Consent collection | The farmer confirms a consent CM holds | Built in person ([scenario 1](consent-scenarios.md)): partner portal, national-ID login (eSignet), signed form, staff verification, Farmer ID as a required identifier checked in the Farmer Registry, consent record download for the partner. SMS/USSD and self-service (grouped by source, per-item decline): planned |
+| Exchange receipts | Turn one consent into a signed receipt per registry | Built: exchange CM `/validate` with `issue_receipts` (by `consent_jws` or `consent_id`); a department CM accepts receipts from trusted issuers (`trustedReceiptIssuers`) and checks their status at the issuer |
+| Intermediary presentation | Accept a consent presented by the composite on the partner's behalf | Exchange mode: only callers in the exchange CM's `receiptPresenters` (`agri-composite`) get receipts, and a department CM checks the receipt's presenter is its caller. Passthrough mode: the composite forwards the partner's consent unchanged and names the partner in `header.meta.on_behalf_of`; there is no presenter check |
 
 ## Open questions
 
 1. **Should consent that spans registries always be collected by CM?**
-   * CM supports two ways: the partner collects consent in its own app and signs it ("embedded"), or CM collects it through its own screen with a Fayda OTP ("originated").
+   * CM supports two ways: the partner collects consent in its own app and signs it ("embedded"), or CM collects it ("originated"): today in person through the partner portal, with a national-ID login and staff verification ([scenario 1](consent-scenarios.md)); by SMS/USSD or self-service later.
    * **Recommendation:** make CM collection the default when consent spans departments. Departments are more likely to trust a consent CM witnessed than one the bank vouches for, and the farmer sees the same screen whichever partner is asking.
-   * Today a consent collected in CM cannot yet be presented at a registry ([open items](../open-items/README.md)).
+   * A consent collected in CM is used through the composite in exchange mode (`message.consent_id`). Presenting it directly at a registry (path A) is open ([open items](../open-items/README.md)).
 2. **Should the farmer be able to decline individual items?**
    * It's better for the farmer, but the partner may get less than its use case needs.
-   * The composite response already reports a status per source, so a declined item shows as `denied`.
+   * The composite response already reports a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`). An optional source whose scopes the consent does not grant is not called and is reported `denied`; a mandatory one fails the request.
    * Alternatively, a policy could mark some scopes as mandatory, meaning the farmer must accept all of them or none.
 
 ## Related

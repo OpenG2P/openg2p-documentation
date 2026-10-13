@@ -28,7 +28,7 @@ The composite has no default registry URLs: in step 6, give each registry's full
 ## Commons services: Master Data, PM, CM
 
 {% hint style="info" %}
-Master Data (MDS) serves Agri Stack's **catalogues** (code lists, reference entities, geography) for now. Proper catalogues are still to be designed; see [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+Master Data (MDS) serves Agri Stack's **catalogues** (datasets such as lists of crops and seasons, reference entities, geography) for now. Proper catalogues are still to be designed; see [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
 {% endhint %}
 
 See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In the `openg2p-commons-services` form:
@@ -41,7 +41,7 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Country Pack | **Load Sample People** (`masterData.geoSeed.load.samples`) | on (default) — the registries' sample farmers and crop seasons are derived from them |
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
 | Consent Manager | **Install Consent Manager?** (`openg2p-consent-manager.enabled`) | on (default) |
-| AWE | **Install AWE?** (`openg2p-awe.enabled`) | on (the registries' change requests and CM policy approvals use it) |
+| AWE | **Install AWE?** (`openg2p-awe.enabled`) | on (the registries' change requests use it; CM policy approvals only if switched on in the CM, off by default) |
 | Keymanager | **Install Keymanager?** (`keymanager.enabled`) | **off** (the default) — Agri Stack does not use the standalone Keymanager (the registries check partner keys in Partner Management; eSignet, the mock identity system and Inji Certify have their own). Only PBMS needs it on |
 
 The Audit Manager is part of commons-services; the composite sends its events to `http://commons-services-auditmanager:80`.
@@ -73,7 +73,7 @@ The chart `openg2p-crop-sown-registry` is a values overlay over `openg2p-registr
 | **Load sample crop seasons** (`REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA`) | **off by default**; shown only when Load Sample Data is on. Records the sample crop seasons once, after install; needs the sample clusters and Master Data's sample people. Leave off for production. |
 | **Pull submissions from ODK Central** (`REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED`) | off by default. When on, also activate the form in the register's Settings (ODK project and form ID) and create the ODK credentials Secret. It pulls from the commons ODK Central (`http://commons-services-odk-central-backend`; YAML only) |
 
-* **No code lists are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
+* **No datasets (lists) are seeded** in the registry: they are read from Master Data's agriculture domain (set on commons-services, above).
 * **No geo setting:** register forms read the country's geo levels from Master Data when they load; seed Jobs read Master Data through its API, never its database.
 * **ID generator:** installed, with one pool, `cluster`, for the Cluster register's generated Cluster IDs (`registry.idgenerator.idGenerator.appConfig.idTypes`; nothing to set). Crop seasons have no functional IDs.
 * **AWE:** nothing to set. The chart uses the shared AWE in commons-services; db-seed loads the Cluster approval policies and keycloak-init creates the approvers they name (`alex.carter`, `nina.patel`).
@@ -94,9 +94,9 @@ Before the composite can serve requests:
    ```
 
    `kid` must match the kid registered for the composite in PM (blank → the certificate's SHA-256 thumbprint). `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
-4. **CM.** The CM administrator creates, for each partner, a binding and a policy with each registry ([partner guide, step 3](partner-guide.md#step-3-get-a-binding-and-policy-for-each-registry)).
+4. **CM.** The CM administrator creates, for each partner, a binding and a policy with each registry ([partner guide, step 3](partner-guide.md#step-3-get-a-binding-and-policy-for-each-registry)): at the exchange CM in exchange mode (the composite's default), at each registry's CM in passthrough mode. In exchange mode each department CM also needs a binding and policy for the composite (audience `agri-composite`) and trust of the exchange CM's receipts ([below](#three-namespace-setup-exchange-and-departments)).
 
-The [exchange setup](exchange-setup.md) does steps 1–3 and the composite's department CM entries in one go; the [partner test](partner-test.md) does steps 2 and 4 for a test partner.
+The [exchange setup](exchange-setup.md) does this for the **composite** in one go: its key, its entries in each PM, the signing Secret, and its bindings and policies in each department CM. It does not onboard partners. The [partner test](partner-test.md) does steps 2 and 4 for a test partner.
 
 ## Use-case composite
 
@@ -104,8 +104,10 @@ Install **Agri Stack Composite** from the Rancher catalog. Settings ([composite 
 
 * **General:** Composite Hostname (default `agri-composite.<namespace>.openg2p.org`, Istio internal gateway), Image Tag.
 * **Integration:** Composite Partner ID (`agri-composite`), Partner Management URL, Audit Manager URL, the Farmer Registry and Crop Sown Registry search URLs (check them against your release names).
+* **Agri Stack exchange:** Consent Mode (`exchange` by default; `passthrough` for a single install), Exchange Consent Manager URL (`http://commons-services-cm-partner-api`), its timeout, and Allowed Browser Origins (CORS; default the CM partner portal, `https://consent-partner-portal.<namespace>.openg2p.org`).
+* **Console:** on by default: the staff [console](composite-console.md), with its hostname, IAM settings, its database `agri_composite` in the commons Postgres (created by a Job) and links to the PM and CM portals.
 * **Signing key:** the Secret name (`agri-composite-signing`).
-* **Scaling:** autoscaling (1–5 pods), workers per pod.
+* **Scaling:** one replica by default; autoscaling (1–5 pods) is off unless switched on; workers per pod.
 * **Use cases:** not in the form. Edit `composite.useCases` in **Edit YAML** (e.g. `allowed_partners` of `loan-profile`), or point `composite.existingUseCasesConfigMap` at your own ConfigMap.
 
 The post-install sanity hook pings the API and lists the use cases; a failure fails the release.
@@ -268,7 +270,7 @@ The registries need no change: each keeps calling its own CM, which now accepts 
 
 | What | Script | Notes |
 | --- | --- | --- |
-| Composite | [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns> [--release agri-composite] [--drop-signing-secret] [--dry-run] [--yes]` | Removes the release, leftover hook Jobs, ConfigMaps and Secrets labelled with the release; the signing Secret only with `--drop-signing-secret`. The composite has no database or PVCs. |
+| Composite | [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns> [--release agri-composite] [--keep-db] [--keep-iam] [--drop-signing-secret] [--force] [--dry-run] [--yes]` | Removes the release, leftover Jobs, ConfigMaps and Secrets labelled with the release; drops the console's database `agri_composite` and its role in `commons-postgresql` (unless `--keep-db`) and deletes the console's IAM rows (unless `--keep-iam`); the signing Secret only with `--drop-signing-secret`. Other options: `--console-db`, `--console-db-user`, `--console-mnemonic`, `--iam-db`, `--postgres-release`, `--postgres-namespace`, `--signing-secret`, `--force` (run while a Helm operation is in progress). Leaves the console's Keycloak client. No PVCs. |
 | Crop Sown Registry | [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/crop-sown-registry/blob/develop/scripts/uninstall-registry.sh) `--namespace <ns> [--release csr] [--keep-iam] [--keep-pvs] [--dry-run] [--yes]` | Also drops the registry's database and role in `commons-postgresql`, its IAM rows, PVCs and their PVs |
 | Farmer Registry | [`scripts/uninstall-registry.sh`](https://github.com/OpenG2P/farmer-registry/blob/develop/scripts/uninstall-registry.sh) `--namespace <ns> --release fr [--keep-iam] [--keep-dashboards] [--dry-run] [--yes]` | As above, and first removes the registry's Superset dashboards (its default release name is `registry`) |
 

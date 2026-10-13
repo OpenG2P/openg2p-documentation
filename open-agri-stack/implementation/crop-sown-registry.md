@@ -7,14 +7,14 @@ description: >-
 
 # Crop Sown Registry (as built)
 
-The design of the Crop Sown Registry (CSR) — the crop-season context, activity types, code lists, projection, indicators, season summary, clusters and channels — is in [Crop Sown Registry](../design/crop-sown-registry.md). This page covers how it is built and what partners read from it.
+The design of the Crop Sown Registry (CSR) — the crop-season context, activity types, lists (reference data), projection, indicators, season summary, clusters and channels — is in [Crop Sown Registry](../design/crop-sown-registry.md). This page covers how it is built and what partners read from it.
 
 ## Packaging
 
 * **Repository:** [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry). A thin extension of the registry platform, packaged like the Farmer Registry: its own images (staff API, partner API, Celery, db-seed), each built `FROM` the matching registry-platform image.
 * **Chart:** `openg2p-crop-sown-registry` (Rancher: "OpenG2P Crop Sown Registry"), a values overlay over the `openg2p-registry` chart with no templates of its own. It sets the variant (`global.registryVariant: crop-sown-registry`, which is also its default consent data controller), the images, the seed switches and the ODK and sample-data settings. See [deploying Agri Stack](../guides/deployment.md#crop-sown-registry).
-* **No ID generator:** CropSown is an activity register and a cluster's code is entered by staff, so no functional IDs are issued.
-* **Code lists:** none are seeded or copied; every coded field is checked live against Master Data's agriculture domain.
+* **ID generator:** on, with one pool, `cluster`, for the Cluster register's IDs (see [Cluster register](#cluster-register)). CropSown is an activity register and issues no functional IDs.
+* **Lists (reference data):** none are seeded or copied; every coded field is checked live against Master Data's agriculture domain.
 
 **One file for the definitions.** The activity types, indicators and ODK mapping are **defined in one file**, `scripts/activity_definitions.py`. The seed SQL is generated from it (`scripts/build_seed_sql.py`). The script is a developer tool and never runs in a deployment. CI checks two things:
 

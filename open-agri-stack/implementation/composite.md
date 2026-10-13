@@ -8,7 +8,7 @@ description: >-
 # Composite as Built
 
 {% hint style="info" %}
-**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`deployment/`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); the partner test, exchange setup and uninstall scripts in the repository's [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts). Built October 2026.
+**Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite) — the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`charts/`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); the partner test, exchange setup and uninstall scripts in the repository's [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts). Built October 2026.
 {% endhint %}
 
 The design is on the [use-case composite](../design/use-case-composite.md) page. This page says what the first version does. How to call it is in the [partner guide](../guides/partner-guide.md); how to configure it in the [composite configuration guide](../guides/composite-configuration.md).
@@ -24,7 +24,7 @@ The design is on the [use-case composite](../design/use-case-composite.md) page.
 
 `POST /composite/v1/use-cases/{use_case}[@major]/query` with a signed envelope (detached JWS over `{header, message}`, the partner's PM key, as for registry DCI searches):
 
-* `message.subject` (type and value), `message.parameters`, and `message.consent_jws`: **one consent with a grant per registry** (see [consent model](../architecture/consent-model.md)).
+* `message.subject` (type and value), `message.parameters`, and the consent: either `message.consent_jws`, **one partner-signed consent with a grant per registry** (see [consent model](../architecture/consent-model.md)), or `message.consent_id`, the ID of a consent held in the exchange Consent Manager (e.g. collected in its partner portal; exchange mode only).
 * `GET /composite/v1/use-cases` and `/{use_case}` describe the published use cases (input, parameters, sources, output fields, the consent grants needed).
 * `GET /ping`: health check.
 
@@ -35,12 +35,13 @@ The full request and response, with examples, are in the [partner guide](../guid
 1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`); checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the composite.
 2. Checks the partner is in the use case's `allowed_partners` (a stand-in for the PM policy association, which PM doesn't have yet).
 3. Validates the input (subject type, parameters) and applies a per-partner rate limit.
-4. Verifies the consent: the partner's signature on it, the subject is the one asked about, its validity window, and a grant with the use case's required [data scopes](../guides/composite-configuration.md#data-scopes) for every mandatory source. An optional source without them is reported `denied` and not called.
-5. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the **composite's own PM key**, carrying the partner's consent unchanged and the partner's ID in `header.meta.on_behalf_of`. Per-source timeout and retries; overall timeout.
-6. Maps the results (JSONPath), computes derived fields (`sum`, `count`, `min`, `max`, `first`, `round`), and returns a response signed by the composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
-7. Sends audit events (request, each source call, response; no data and no subject identifiers) to the [Audit Manager](../../platform/platform-services/audit-manager/README.md) as CloudEvents, without ever blocking the request.
+4. For a `consent_jws`, verifies the consent: the partner's signature on it, the subject is the one asked about, its validity window, and a grant with the use case's required [data scopes](../guides/composite-configuration.md#data-scopes) for every mandatory source. An optional source without them is reported `denied` and not called. A `consent_id` is checked by the exchange CM (active, in its validity, obtained by this partner, about this subject), and the same scope rules are applied to the grants it reports.
+5. **Exchange mode** (the chart default): calls the exchange Consent Manager's `/validate` with the partner's consent (or `consent_id`), `issue_receipts: true` and `requested_scopes` (the use case's scopes). A deny fails the request (`consent_denied`); CM returns **one signed consent receipt per registry**, limited to grant ∩ policy ∩ requested scopes. A mandatory source without a receipt fails the request (`consent_receipt_missing`); an optional one is reported `unavailable`. **Passthrough mode** (a single install): no exchange call; the partner's consent goes to each registry unchanged, and `consent_id` is refused (`consent_id_needs_exchange`).
+6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the **composite's own PM key**, carrying that registry's receipt (or, in passthrough, the partner's consent) and the partner's ID in `header.meta.on_behalf_of`. Per-source timeout and retries; overall timeout.
+7. Maps the results (JSONPath), computes derived fields (`sum`, `count`, `min`, `max`, `first`, `round`), and returns a response signed by the composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`). Fields built from a failed source are `null`.
+8. Sends audit events (request, each source call, response; no data and no subject identifiers) to the [Audit Manager](../../platform/platform-services/audit-manager/README.md) as CloudEvents, without ever blocking the request.
 
-**Each registry still decides.** It verifies the composite's signature, validates its own grant in the consent with CM, checks that the consent's subject is the person searched (directly, or through its own data, e.g. a farmer ID recorded with the farmer's FAN), and clamps the record to the effective scopes.
+**Each registry still decides.** It verifies the composite's signature, validates its receipt at its own department CM (which trusts the exchange CM as a receipt issuer for the composite) or, in passthrough, its own grant in the partner's consent, checks that the consent's subject is the person searched (directly, or through its own data, e.g. a farmer ID recorded with the farmer's FAN), and clamps the record to the effective scopes.
 
 No partner data is stored. Logs carry the request ID, use case, partner, statuses and timings only; with the console on, the same (never the subject, the consent or any data) goes to its call log.
 
@@ -55,9 +56,9 @@ The file and its settings are explained in the [composite configuration guide](.
 
 ## Scaling
 
-* Stateless pods behind a CPU-based autoscaler (1–5 pods at 70% CPU by default); memory-based autoscaling is off on purpose (Python's memory does not shrink, so it would never scale back down).
+* Stateless pods; one replica by default. A CPU-based autoscaler is opt-in (`composite.autoscaling.enabled`; 1–5 pods at 70% CPU when on); memory-based autoscaling is off on purpose (Python's memory does not shrink, so it would never scale back down).
 * A pooled HTTP client per worker (2 gunicorn workers per pod by default); partner keys cached per pod (soft TTL 300 s, last-known-good for 6 hours during a PM outage).
-* No database; startup never calls a registry.
+* The partner API uses no database; only the console does (database `agri_composite` in the commons Postgres, on by default in the chart). Startup never calls a registry.
 * Rate limits are per pod and worker: with N pods and W workers the effective ceiling is up to N × W times the configured rate. Limits across pods and daily quotas need shared counters (to do).
 * The image runs as uid 1001 with a read-only root filesystem.
 
@@ -76,6 +77,7 @@ Events are linked by the request ID. They are sent in the background; failures a
 ## Not built yet
 
 * the checks when a use case is published (against PM policies, which PM doesn't hold yet);
+* `consent_id` in passthrough mode (a single install);
 * data-blind mode;
 * daily quotas and rate limits across pods (shared counters);
 * registry endpoints and policies held in PM rather than in configuration;

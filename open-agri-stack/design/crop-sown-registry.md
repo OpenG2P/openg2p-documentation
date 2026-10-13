@@ -1,7 +1,7 @@
 ---
 description: >-
   The Crop Sown Registry (CSR): a registry with an activity register of crop
-  seasons — context, activity types, code lists, projection, indicators, the
+  seasons — context, activity types, reference data, projection, indicators, the
   farmer's season summary, clusters and channels.
 ---
 
@@ -18,7 +18,7 @@ The Crop Sown Registry is **independent**. It shares data with the Farmer Regist
 **One context is one crop on one plot in one season:**
 
 ```
-<plot_id>|<crop_year>|<season>|<crop>        e.g.  LND-7781|2019|SEASON_MEHER|CROP_TEFF
+<plot_id>|<crop_year>|<season>|<crop>        e.g.  LAND-0007-1|2019|SEASON_MEHER|CROP_TEFF
 ```
 
 * **Intercropping** is two contexts on the same plot.
@@ -54,13 +54,13 @@ The Crop Sown Registry is **independent**. It shares data with the Farmer Regist
 * yield above 150 qt/ha;
 * stored + sold + consumed + seed quantities adding up to more than the harvest.
 
-## Code lists
+## Reference data
 
-**All code lists live in the catalogues (MDS).** The Crop Sown Registry keeps none of its own. The registry platform checks every coded field against Master Data at the time of writing, the same way the Farmer Registry's dropdowns and validation read their lists.
+**All reference data lives in the catalogues (MDS).** The Crop Sown Registry keeps none of its own. The registry platform checks every coded field against Master Data at the time of writing, the same way the Farmer Registry's dropdowns and validation read their datasets.
 
-The lists are the **agriculture domain of the Ethiopia country pack** (`openg2p-data`, `packs/ETH/domains/agriculture`). Master Data loads that domain when installed with `geoSeed.domains: [agriculture]` (see [deployment](../guides/deployment.md)).
+The datasets are the **agriculture domain of the Ethiopia country pack** (`openg2p-data`, `packs/ETH/domains/agriculture`). Master Data loads that domain when installed with `geoSeed.domains: [agriculture]` (see [deployment](../guides/deployment.md)).
 
-| Used for | Lists |
+| Used for | Datasets |
 | --- | --- |
 | The crop season | `CROP_COMMODITY`, `CROP_SEASON` (Meher, Belg, Irrigation), `SEED_VARIETY` |
 | Planning and land preparation | `CROPPING_SYSTEM`, `LAND_PREPARATION_METHOD`, `IRRIGATION_SOURCE`, `IRRIGATION_METHOD`, `SOIL_FERTILITY` |
