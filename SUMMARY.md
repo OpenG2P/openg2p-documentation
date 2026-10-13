@@ -589,6 +589,7 @@
     * [Request Flow](open-agri-stack/architecture/request-flow.md)
     * [Policy and Consent](open-agri-stack/architecture/policy-and-consent.md)
     * [Consent Model](open-agri-stack/architecture/consent-model.md)
+    * [Consent Scenarios](open-agri-stack/architecture/consent-scenarios.md)
     * [Registry Model](open-agri-stack/architecture/registry-model.md)
     * [Register vs Activity Register](open-agri-stack/architecture/register-vs-activity-register.md)
     * [Terms: Validation, Correction, Verification](open-agri-stack/architecture/terms.md)
