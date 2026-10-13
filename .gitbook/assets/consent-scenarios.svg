@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-label="Three ways a farmer gives a bank consent. 1, in person at the bank (built): staff raise the request in the partner portal, the farmer logs in with the national ID, signs a form that staff upload, Consent Manager staff verify it and check the Farmer ID in the Farmer Registry, the bank queries with the consent ID, and the bank admin downloads the consent record. 2, by SMS (planned): the Consent Manager texts the phone registered with the national ID and the farmer replies YES. 3, self-service (planned): the farmer logs in to a portal or app with the national ID, approves or declines, and can revoke later.">
+<style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.h1{font-size:22px;font-weight:700} .sub{font-size:13px;fill:#56625B}
+.lt{font-size:16px;font-weight:700} .ls{font-size:12px;fill:#56625B}
+.pt{font-size:12.5px;font-weight:700} .pc{font-size:11.5px;fill:#3B4640}
+.num{font-size:12px;font-weight:700;fill:#FFFFFF}
+.tag{font-size:10.5px;font-weight:700;letter-spacing:.06em}
+.mini{font-size:9px;font-weight:700;fill:#FFFFFF;font-family:'JetBrains Mono',Menlo,monospace}
+.panel{fill:#FFFFFF;stroke:#D5DCD6;stroke-width:1.3}
+.lane1{fill:#F1F7EF} .lane2{fill:#F4F6F8} .lane3{fill:#F6F4FA}
+.chev{fill:none;stroke:#9AA59D;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.flow{fill:none;stroke:#6B7770;stroke-width:1.6;stroke-dasharray:4 3}
+</style>
+<defs>
+  <!-- people: head + body; colour via fill on <use> -->
+  <symbol id="person" viewBox="0 0 40 60"><circle cx="20" cy="11" r="9"/><path d="M4,58 C4,36 10,25 20,25 C30,25 36,36 36,58 Z"/></symbol>
+  <symbol id="badge" viewBox="0 0 40 60"><circle cx="20" cy="11" r="9"/><path d="M4,58 C4,36 10,25 20,25 C30,25 36,36 36,58 Z"/><rect x="23" y="34" width="8" height="10" rx="1.5" fill="#FFFFFF"/></symbol>
+  <symbol id="bank" viewBox="0 0 64 54"><path d="M32,2 L62,16 L2,16 Z" fill="#56799F"/><rect x="6" y="18" width="52" height="4" fill="#56799F"/><rect x="10" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="22" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="36" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="48" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="2" y="46" width="60" height="6" fill="#56799F"/></symbol>
+  <symbol id="laptop" viewBox="0 0 60 42"><rect x="8" y="2" width="44" height="30" rx="3" fill="#3B4640"/><rect x="11" y="5" width="38" height="24" rx="1.5" fill="#E1EEF0"/><rect x="15" y="9" width="20" height="3" fill="#3C7C88"/><rect x="15" y="15" width="30" height="2.5" fill="#9AB9BF"/><rect x="15" y="20" width="24" height="2.5" fill="#9AB9BF"/><path d="M2,34 L58,34 L54,40 L6,40 Z" fill="#56625B"/></symbol>
+  <symbol id="phone" viewBox="0 0 30 52"><rect x="1" y="1" width="28" height="50" rx="5" fill="#3B4640"/><rect x="4" y="7" width="22" height="36" rx="2" fill="#FFFFFF"/><circle cx="15" cy="47" r="2" fill="#9AA59D"/></symbol>
+  <symbol id="doc" viewBox="0 0 40 50"><path d="M2,2 L28,2 L38,12 L38,48 L2,48 Z" fill="#FFFFFF" stroke="#3B4640" stroke-width="2"/><path d="M28,2 L28,12 L38,12" fill="none" stroke="#3B4640" stroke-width="2"/><rect x="8" y="16" width="22" height="2.5" fill="#9AA59D"/><rect x="8" y="22" width="24" height="2.5" fill="#9AA59D"/><rect x="8" y="28" width="18" height="2.5" fill="#9AA59D"/><path d="M8,40 C12,33 15,44 19,37 C22,32 25,42 31,36" fill="none" stroke="#2F6FA8" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="cm" viewBox="0 0 44 52"><path d="M22,2 L42,10 L42,26 C42,38 33,46 22,50 C11,46 2,38 2,26 L2,10 Z" fill="#3C7C88"/><path d="M12,26 L19,33 L33,18" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="db" viewBox="0 0 40 46"><path d="M2,8 L2,38 C2,46 38,46 38,38 L38,8" fill="#E5EDF6" stroke="#56799F" stroke-width="2"/><ellipse cx="20" cy="8" rx="18" ry="6" fill="#C9D9EA" stroke="#56799F" stroke-width="2"/><path d="M2,22 C2,30 38,30 38,22" fill="none" stroke="#56799F" stroke-width="1.6"/></symbol>
+  <symbol id="zip" viewBox="0 0 44 50"><rect x="2" y="10" width="40" height="38" rx="4" fill="#F7ECD4" stroke="#AE8433" stroke-width="2"/><rect x="2" y="10" width="40" height="9" rx="3" fill="#E9CF95"/><path d="M22,22 L22,40 M14,32 L22,40 L30,32" fill="none" stroke="#7A5A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="2" width="10" height="10" rx="2" fill="#AE8433"/></symbol>
+  <symbol id="bubble" viewBox="0 0 80 40"><path d="M4,2 L76,2 Q78,2 78,4 L78,28 Q78,30 76,30 L22,30 L12,38 L14,30 L4,30 Q2,30 2,28 L2,4 Q2,2 4,2 Z" fill="#FFFFFF" stroke="#3B4640" stroke-width="1.6"/></symbol>
+  <symbol id="arrowR" viewBox="0 0 30 12"><path d="M1,6 L27,6 M21,1 L28,6 L21,11" fill="none" stroke="#3B4640" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="check" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M5,10 L9,14 L15,6" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="key" viewBox="0 0 30 16"><circle cx="7" cy="8" r="5.5" fill="none" stroke="#AE8433" stroke-width="2.6"/><path d="M12,8 L28,8 M23,8 L23,13 M27,8 L27,12" fill="none" stroke="#AE8433" stroke-width="2.6" stroke-linecap="round"/></symbol>
+</defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+
+<!-- Title -->
+<text class="h1" x="36" y="44">How a farmer gives a bank consent</text>
+<text class="sub" x="36" y="68">The consent lives in the Consent Manager, not with the bank: the farmer confirms it there (or through a channel it checks), and the bank keeps a provable copy.</text>
+<g transform="translate(1150,20)">
+  <circle cx="8" cy="8" r="7" fill="#E39B4E"/><text class="ls" x="20" y="12">Farmer</text>
+  <circle cx="78" cy="8" r="7" fill="#2F6FA8"/><text class="ls" x="90" y="12">Bank staff / admin</text>
+  <circle cx="8" cy="30" r="7" fill="#3C7C88"/><text class="ls" x="20" y="34">Consent Manager and its staff</text>
+  <circle cx="78" cy="52" r="7" fill="#56799F"/><text class="ls" x="90" y="56">Registries</text>
+</g>
+
+<!-- ═══ Scenario 1 ═══ -->
+<rect class="lane1" x="20" y="90" width="1360" height="300" rx="14"/>
+<text class="lt" x="40" y="120">1 · In person, at the bank</text>
+<text class="ls" x="270" y="120">the farmer is with bank staff; national-ID login + signed form + Consent Manager staff check</text>
+<rect x="1240" y="104" width="120" height="24" rx="12" fill="#1F7A45"/><text class="tag" x="1300" y="120" text-anchor="middle" fill="#FFFFFF">BUILT</text>
+
+<!-- panels: x = 40 + i*222, w=200, y=140, h=232 -->
+<g>
+  <!-- 1.1 -->
+  <rect class="panel" x="40" y="140" width="200" height="232" rx="10"/>
+  <circle cx="60" cy="160" r="11" fill="#1B231F"/><text class="num" x="60" y="164" text-anchor="middle">1</text>
+  <use href="#person" x="64" y="176" width="40" height="60" fill="#E39B4E"/>
+  <use href="#badge" x="112" y="176" width="40" height="60" fill="#2F6FA8"/>
+  <use href="#laptop" x="160" y="198" width="60" height="42"/>
+  <text class="pt" x="54" y="268">At the bank</text>
+  <text class="pc" x="54" y="288">Staff raise a consent request</text>
+  <text class="pc" x="54" y="304">in the partner portal: the</text>
+  <text class="pc" x="54" y="320">farmer's national ID, Farmer</text>
+  <text class="pc" x="54" y="336">ID, the use case (data per</text>
+  <text class="pc" x="54" y="352">registry).</text>
+  <!-- 1.2 -->
+  <rect class="panel" x="262" y="140" width="200" height="232" rx="10"/>
+  <circle cx="282" cy="160" r="11" fill="#1B231F"/><text class="num" x="282" y="164" text-anchor="middle">2</text>
+  <use href="#person" x="300" y="176" width="40" height="60" fill="#E39B4E"/>
+  <use href="#phone" x="346" y="176" width="36" height="62"/>
+  <text x="364" y="202" font-size="8" font-weight="700" text-anchor="middle" fill="#1F7A45">OTP</text>
+  <text x="364" y="216" font-size="8" text-anchor="middle" fill="#56625B">4821</text>
+  <g transform="translate(396,186)"><rect width="56" height="36" rx="6" fill="#E1EEF0" stroke="#3C7C88"/><text x="28" y="15" font-size="9.5" font-weight="700" text-anchor="middle" fill="#2B5E66">eSignet</text><text x="28" y="28" font-size="8.5" text-anchor="middle" fill="#2B5E66">national ID</text></g>
+  <text class="pt" x="276" y="268">National-ID login</text>
+  <text class="pc" x="276" y="288">The farmer proves who they</text>
+  <text class="pc" x="276" y="304">are: a one-time code to the</text>
+  <text class="pc" x="276" y="320">phone registered with their</text>
+  <text class="pc" x="276" y="336">national ID, or biometrics.</text>
+  <!-- 1.3 -->
+  <rect class="panel" x="484" y="140" width="200" height="232" rx="10"/>
+  <circle cx="504" cy="160" r="11" fill="#1B231F"/><text class="num" x="504" y="164" text-anchor="middle">3</text>
+  <use href="#person" x="508" y="176" width="40" height="60" fill="#E39B4E"/>
+  <use href="#doc" x="552" y="180" width="40" height="50"/>
+  <use href="#arrowR" x="596" y="200" width="26" height="12"/>
+  <use href="#laptop" x="622" y="190" width="56" height="40"/>
+  <text class="pt" x="498" y="268">Signed form</text>
+  <text class="pc" x="498" y="288">The farmer signs the consent</text>
+  <text class="pc" x="498" y="304">form. Staff scan and upload it,</text>
+  <text class="pc" x="498" y="320">and submit the request.</text>
+  <!-- 1.4 -->
+  <rect class="panel" x="706" y="140" width="200" height="232" rx="10"/>
+  <circle cx="726" cy="160" r="11" fill="#1B231F"/><text class="num" x="726" y="164" text-anchor="middle">4</text>
+  <use href="#badge" x="732" y="176" width="40" height="60" fill="#3C7C88"/>
+  <use href="#doc" x="778" y="182" width="34" height="42"/>
+  <use href="#cm" x="818" y="178" width="36" height="44"/>
+  <use href="#db" x="860" y="182" width="34" height="40"/>
+  <text x="877" y="236" font-size="9" text-anchor="middle" fill="#56799F" font-weight="700">FR</text>
+  <text class="pt" x="720" y="268">Consent Manager checks</text>
+  <text class="pc" x="720" y="288">CM staff check the form, the</text>
+  <text class="pc" x="720" y="304">national-ID login (name as per</text>
+  <text class="pc" x="720" y="320">the national ID) and the Farmer</text>
+  <text class="pc" x="720" y="336">ID in the Farmer Registry, then</text>
+  <text class="pc" x="720" y="352">approve: the consent is active.</text>
+  <!-- 1.5 -->
+  <rect class="panel" x="928" y="140" width="200" height="232" rx="10"/>
+  <circle cx="948" cy="160" r="11" fill="#1B231F"/><text class="num" x="948" y="164" text-anchor="middle">5</text>
+  <use href="#bank" x="950" y="180" width="54" height="46"/>
+  <use href="#key" x="1008" y="196" width="26" height="14"/>
+  <use href="#cm" x="1038" y="180" width="30" height="36"/>
+  <use href="#db" x="1074" y="176" width="26" height="30"/>
+  <use href="#db" x="1074" y="208" width="26" height="30"/>
+  <text x="1104" y="196" font-size="8.5" fill="#56799F" font-weight="700">FR</text>
+  <text x="1104" y="228" font-size="8.5" fill="#56799F" font-weight="700">CS</text>
+  <text class="pt" x="942" y="268">Data shared</text>
+  <text class="pc" x="942" y="288">The bank's system queries</text>
+  <text class="pc" x="942" y="304">with the consent ID. Each</text>
+  <text class="pc" x="942" y="320">registry gets a receipt and</text>
+  <text class="pc" x="942" y="336">releases only what the farmer</text>
+  <text class="pc" x="942" y="352">consented to.</text>
+  <!-- 1.6 -->
+  <rect class="panel" x="1150" y="140" width="210" height="232" rx="10"/>
+  <circle cx="1170" cy="160" r="11" fill="#1B231F"/><text class="num" x="1170" y="164" text-anchor="middle">6</text>
+  <use href="#badge" x="1186" y="176" width="40" height="60" fill="#2F6FA8"/>
+  <use href="#zip" x="1236" y="180" width="44" height="50"/>
+  <g transform="translate(1286,180)"><rect width="66" height="54" rx="5" fill="#FFFFFF" stroke="#C8D0C8"/><text x="6" y="14" font-size="8.5" fill="#3B4640">• receipt</text><text x="6" y="27" font-size="8.5" fill="#3B4640">• signed form</text><text x="6" y="40" font-size="8.5" fill="#3B4640">• CM-signed</text><text x="12" y="50" font-size="8.5" fill="#3B4640">statement</text></g>
+  <text class="pt" x="1164" y="268">Bank keeps a copy</text>
+  <text class="pc" x="1164" y="288">The bank admin downloads the</text>
+  <text class="pc" x="1164" y="304">consent record: the receipt, the</text>
+  <text class="pc" x="1164" y="320">signed form and the CM's signed</text>
+  <text class="pc" x="1164" y="336">statement tying them together</text>
+  <text class="pc" x="1164" y="352">— for audits and disputes.</text>
+</g>
+<g><path class="chev" d="M245,250 L252,256 L245,262"/><path class="chev" d="M467,250 L474,256 L467,262"/><path class="chev" d="M689,250 L696,256 L689,262"/><path class="chev" d="M911,250 L918,256 L911,262"/><path class="chev" d="M1133,250 L1140,256 L1133,262"/></g>
+
+<!-- ═══ Scenario 2 ═══ -->
+<rect class="lane2" x="20" y="405" width="1360" height="245" rx="14"/>
+<text class="lt" x="40" y="435">2 · By SMS or USSD</text>
+<text class="ls" x="210" y="435">no visit: the farmer confirms on the phone registered with their national ID</text>
+<rect x="1240" y="419" width="120" height="24" rx="12" fill="#8A948E"/><text class="tag" x="1300" y="435" text-anchor="middle" fill="#FFFFFF">PLANNED</text>
+<g>
+  <rect class="panel" x="40" y="455" width="250" height="180" rx="10"/>
+  <circle cx="60" cy="475" r="11" fill="#1B231F"/><text class="num" x="60" y="479" text-anchor="middle">1</text>
+  <use href="#badge" x="80" y="485" width="34" height="52" fill="#2F6FA8"/><use href="#laptop" x="122" y="500" width="54" height="38"/>
+  <text class="pt" x="54" y="568">Bank raises the request</text>
+  <text class="pc" x="54" y="588">in the partner portal (national ID,</text>
+  <text class="pc" x="54" y="604">Farmer ID, use case), chooses SMS.</text>
+  <rect class="panel" x="312" y="455" width="250" height="180" rx="10"/>
+  <circle cx="332" cy="475" r="11" fill="#1B231F"/><text class="num" x="332" y="479" text-anchor="middle">2</text>
+  <use href="#cm" x="350" y="488" width="34" height="42"/><use href="#arrowR" x="388" y="504" width="24" height="10"/>
+  <use href="#phone" x="416" y="482" width="30" height="52"/>
+  <path d="M454,480 L552,480 Q556,480 556,484 L556,522 Q556,526 552,526 L476,526 L464,536 L466,526 L454,526 Q450,526 450,522 L450,484 Q450,480 454,480 Z" fill="#FFFFFF" stroke="#3B4640" stroke-width="1.6"/>
+  <text x="460" y="494" font-size="8.5" fill="#3B4640">Bank A asks to see</text><text x="460" y="506" font-size="8.5" fill="#3B4640">your land, crops.</text><text x="460" y="518" font-size="8.5" font-weight="700" fill="#3B4640">Reply YES</text>
+  <text class="pt" x="326" y="568">The CM texts the farmer</text>
+  <text class="pc" x="326" y="588">on the phone registered with the</text>
+  <text class="pc" x="326" y="604">national ID — never the bank's number.</text>
+  <rect class="panel" x="584" y="455" width="250" height="180" rx="10"/>
+  <circle cx="604" cy="475" r="11" fill="#1B231F"/><text class="num" x="604" y="479" text-anchor="middle">3</text>
+  <use href="#person" x="626" y="480" width="38" height="56" fill="#E39B4E"/><use href="#phone" x="668" y="478" width="36" height="62"/>
+  <text x="686" y="510" font-size="9" font-weight="700" text-anchor="middle" fill="#1F7A45">YES</text>
+  <use href="#arrowR" x="708" y="504" width="24" height="10"/><use href="#cm" x="738" y="488" width="34" height="42"/>
+  <use href="#check" x="776" y="494" width="20" height="20"/>
+  <text class="pt" x="598" y="568">Farmer replies YES</text>
+  <text class="pc" x="598" y="588">The CM matches the reply to the</text>
+  <text class="pc" x="598" y="604">request: the consent is active.</text>
+  <rect class="panel" x="856" y="455" width="250" height="180" rx="10"/>
+  <circle cx="876" cy="475" r="11" fill="#1B231F"/><text class="num" x="876" y="479" text-anchor="middle">4</text>
+  <use href="#bank" x="896" y="486" width="52" height="44"/><use href="#key" x="952" y="500" width="26" height="14"/><use href="#db" x="984" y="482" width="28" height="32"/><use href="#db" x="1016" y="496" width="28" height="32"/>
+  <text class="pt" x="870" y="568">Data shared</text>
+  <text class="pc" x="870" y="588">The bank queries with the consent</text>
+  <text class="pc" x="870" y="604">ID, as in scenario 1.</text>
+  <rect class="panel" x="1128" y="455" width="232" height="180" rx="10"/>
+  <circle cx="1148" cy="475" r="11" fill="#1B231F"/><text class="num" x="1148" y="479" text-anchor="middle">5</text>
+  <use href="#badge" x="1168" y="485" width="34" height="52" fill="#2F6FA8"/><use href="#zip" x="1212" y="486" width="40" height="46"/>
+  <text class="pt" x="1142" y="568">Bank keeps a copy</text>
+  <text class="pc" x="1142" y="588">The consent record, with the</text>
+  <text class="pc" x="1142" y="604">SMS confirmation as evidence.</text>
+</g>
+<g><path class="chev" d="M295,535 L302,541 L295,547"/><path class="chev" d="M567,535 L574,541 L567,547"/><path class="chev" d="M839,535 L846,541 L839,547"/><path class="chev" d="M1111,535 L1118,541 L1111,547"/></g>
+
+<!-- ═══ Scenario 3 ═══ -->
+<rect class="lane3" x="20" y="665" width="1360" height="245" rx="14"/>
+<text class="lt" x="40" y="695">3 · Self-service</text>
+<text class="ls" x="180" y="695">the farmer decides in their own portal or app, and can revoke any consent later</text>
+<rect x="1240" y="679" width="120" height="24" rx="12" fill="#8A948E"/><text class="tag" x="1300" y="695" text-anchor="middle" fill="#FFFFFF">PLANNED</text>
+<g>
+  <rect class="panel" x="40" y="715" width="250" height="180" rx="10"/>
+  <circle cx="60" cy="735" r="11" fill="#1B231F"/><text class="num" x="60" y="739" text-anchor="middle">1</text>
+  <use href="#badge" x="80" y="745" width="34" height="52" fill="#2F6FA8"/><use href="#laptop" x="122" y="760" width="54" height="38"/>
+  <text class="pt" x="54" y="828">Bank raises the request</text>
+  <text class="pc" x="54" y="848">The farmer gets a link, or sees it</text>
+  <text class="pc" x="54" y="864">waiting in the app.</text>
+  <rect class="panel" x="312" y="715" width="250" height="180" rx="10"/>
+  <circle cx="332" cy="735" r="11" fill="#1B231F"/><text class="num" x="332" y="739" text-anchor="middle">2</text>
+  <use href="#person" x="352" y="740" width="38" height="56" fill="#E39B4E"/><use href="#phone" x="398" y="742" width="30" height="52"/>
+  <g transform="translate(436,750)"><rect width="66" height="36" rx="6" fill="#E1EEF0" stroke="#3C7C88"/><text x="33" y="15" font-size="9.5" font-weight="700" text-anchor="middle" fill="#2B5E66">eSignet</text><text x="33" y="28" font-size="8.5" text-anchor="middle" fill="#2B5E66">national ID</text></g>
+  <text class="pt" x="326" y="828">Farmer logs in</text>
+  <text class="pc" x="326" y="848">to the self-service portal or app</text>
+  <text class="pc" x="326" y="864">with their national ID.</text>
+  <rect class="panel" x="584" y="715" width="250" height="180" rx="10"/>
+  <circle cx="604" cy="735" r="11" fill="#1B231F"/><text class="num" x="604" y="739" text-anchor="middle">3</text>
+  <g transform="translate(626,742)"><rect width="150" height="60" rx="6" fill="#FFFFFF" stroke="#3B4640"/><text x="8" y="14" font-size="8.5" font-weight="700" fill="#3B4640">Bank A asks for:</text>
+    <rect x="8" y="20" width="9" height="9" rx="2" fill="#1F7A45"/><text x="22" y="28" font-size="8.5" fill="#3B4640">Land (Farmer Registry)</text>
+    <rect x="8" y="34" width="9" height="9" rx="2" fill="#1F7A45"/><text x="22" y="42" font-size="8.5" fill="#3B4640">Crop seasons (Crop Sown)</text>
+    <rect x="8" y="48" width="9" height="9" rx="2" fill="none" stroke="#8A948E"/><text x="22" y="56" font-size="8.5" fill="#8A948E">Household (optional)</text></g>
+  <use href="#check" x="784" y="760" width="22" height="22"/>
+  <text class="pt" x="598" y="828">Approves, in part, or declines</text>
+  <text class="pc" x="598" y="848">Sees who asks for what data from</text>
+  <text class="pc" x="598" y="864">which registry, and decides.</text>
+  <rect class="panel" x="856" y="715" width="250" height="180" rx="10"/>
+  <circle cx="876" cy="735" r="11" fill="#1B231F"/><text class="num" x="876" y="739" text-anchor="middle">4</text>
+  <use href="#bank" x="896" y="746" width="52" height="44"/><use href="#key" x="952" y="760" width="26" height="14"/><use href="#db" x="984" y="742" width="28" height="32"/><use href="#db" x="1016" y="756" width="28" height="32"/>
+  <text class="pt" x="870" y="828">Bank notified, data shared</text>
+  <text class="pc" x="870" y="848">The bank queries with the consent</text>
+  <text class="pc" x="870" y="864">ID; it downloads the consent record.</text>
+  <rect class="panel" x="1128" y="715" width="232" height="180" rx="10"/>
+  <circle cx="1148" cy="735" r="11" fill="#1B231F"/><text class="num" x="1148" y="739" text-anchor="middle">5</text>
+  <use href="#person" x="1166" y="740" width="38" height="56" fill="#E39B4E"/>
+  <g transform="translate(1212,746)"><rect width="134" height="52" rx="6" fill="#FFFFFF" stroke="#3B4640"/><text x="8" y="14" font-size="8.5" font-weight="700" fill="#3B4640">My consents</text>
+    <text x="8" y="29" font-size="8.5" fill="#3B4640">Bank A · active</text><rect x="86" y="20" width="40" height="13" rx="3" fill="#C0463B"/><text x="106" y="30" font-size="8" font-weight="700" text-anchor="middle" fill="#FFFFFF">Revoke</text>
+    <text x="8" y="45" font-size="8.5" fill="#8A948E">MFI B · revoked</text></g>
+  <text class="pt" x="1142" y="828">Farmer stays in control</text>
+  <text class="pc" x="1142" y="848">Sees all their consents and can</text>
+  <text class="pc" x="1142" y="864">revoke any; sharing stops at once.</text>
+</g>
+<g><path class="chev" d="M295,795 L302,801 L295,807"/><path class="chev" d="M567,795 L574,801 L567,807"/><path class="chev" d="M839,795 L846,801 L839,807"/><path class="chev" d="M1111,795 L1118,801 L1111,807"/></g>
+</svg>
