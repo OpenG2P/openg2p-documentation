@@ -41,7 +41,7 @@ are listed on [Standards](standards.md).
   chart's `global.authClientId`): `referenceData:create|edit|delete|publish` for
   datasets and releases, `geo:create|edit|delete|publish` for geography. Each
   operation below names its permission. See
-  [Change control: permissions](catalogue/change-control.md#permissions).
+  [Change control: permissions](change-control.md#permissions).
 * The approve, reject and publish operations also enforce **maker ≠ checker**,
   compared by stable user id.
 * With CSRF protection on (`global.csrfEnabled`, the default), a `POST` also
@@ -50,7 +50,7 @@ are listed on [Standards](standards.md).
   `/samples` (all but `get_geo_settings`) and the AWE callback are exempt, so
   services can call them with a bearer token only.
 * Every authenticated call, and every failed anonymous call, is recorded in the
-  Audit Manager (see [Change control: audit](catalogue/change-control.md#audit)).
+  Audit Manager (see [Change control: audit](change-control.md#audit)).
 
 ### The envelope
 
@@ -111,7 +111,7 @@ Every such response has a `version` object (`version_no`, `status`,
 created, submitted and decided it). `*_by` fields hold the stable user id (token
 `sub`) or a system name; `*_by_name` the display name. Status is `DRAFT`,
 `SUBMITTED`, `PUBLISHED`, `REJECTED` or `DISCARDED`. Numbers are never reused.
-See [Concepts](catalogue/concepts.md#reading-latest-pinned-as-of-release).
+See [Concepts](concepts.md#reading-latest-pinned-as-of-release).
 
 ### Names in the API
 
@@ -129,8 +129,8 @@ The admin UI uses catalogue words; the API keeps its field names.
 Reads and the draft workflow for datasets. Every write that edits a draft opens
 one (a copy of the highest published version) if none is open. Approve and
 reject work only in `permission` approval mode. See
-[Concepts](catalogue/concepts.md) and
-[Change control](catalogue/change-control.md).
+[Concepts](concepts.md) and
+[Change control](change-control.md).
 
 | Operation | Permission | Summary |
 |---|---|---|
@@ -220,7 +220,7 @@ reject work only in `permission` approval mode. See
 The geography is versioned as one dataset: levels, units (`unit_id` is the
 P-code), change events and boundaries together. `get_geo_units` is paged and
 filtered by `GEO` data policies. See
-[Geography and boundary changes](catalogue/geography.md).
+[Geography and boundary changes](geography.md).
 
 | Operation | Permission | Summary |
 |---|---|---|
@@ -335,7 +335,7 @@ filtered by `GEO` data policies. See
 A release pins a set of published dataset versions and at most one geography
 version. A published release is immutable. Its publisher must be neither its
 creator nor whoever last set its members. See
-[Concepts: catalogue release](catalogue/concepts.md#catalogue-release).
+[Concepts: catalogue release](concepts.md#catalogue-release).
 
 | Operation | Permission | Summary |
 |---|---|---|
@@ -375,7 +375,7 @@ creator nor whoever last set its members. See
 `get_changes` reads the append-only change log after a cursor (the last
 `event_id` processed), oldest first. Call again with `next_cursor` while
 `has_more` is true. `newest: true` returns the newest events instead, for an
-activity view. See [For consumers](catalogue/consumers.md#following-changes).
+activity view. See [For consumers](consumers.md#following-changes).
 
 | Subject | Event types |
 |---|---|
@@ -412,7 +412,7 @@ In `awe` approval mode, AWE posts its decision here. It is for AWE only:
 authenticated by an HMAC signature (`X-Approval-Signature`,
 `X-Approval-Timestamp`, `X-Approval-Event-Id`), not a user token, and without the
 envelope. Idempotent on `event_id`. See
-[Change control: AWE](catalogue/change-control.md#awe-through-the-approval-workflow-engine).
+[Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
 
 {% openapi-operation spec="master-data-api" path="/catalogue/awe/callback" method="post" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
@@ -420,7 +420,7 @@ envelope. Idempotent on `event_id`. See
 
 ## Original endpoints
 
-The endpoints MDS had before the catalogue keep their paths and shapes for
+The endpoints MDS had before versioning keep their paths and shapes for
 existing consumers (the registry staff UI fills dropdowns from them).
 
 * **Reads** return the **current published** state, cached per API worker, and
@@ -429,12 +429,12 @@ existing consumers (the registry staff UI fills dropdowns from them).
   `/catalogue` reads.
 * **Writes** no longer change published data: they edit the open **draft**,
   which must then be submitted and approved. See
-  [What the legacy write endpoints do now](catalogue/change-control.md#what-the-legacy-write-endpoints-do-now).
+  [What the legacy write endpoints do now](change-control.md#what-the-legacy-write-endpoints-do-now).
 
 {% hint style="danger" %}
 **Registries store these codes.** Do not change or retire an entry that records
 hold without planning for those records. Retired entries still resolve; see
-[Retired entries](catalogue/concepts.md#retired-entries).
+[Retired entries](concepts.md#retired-entries).
 {% endhint %}
 
 | Operation | Permission | Summary |
@@ -552,7 +552,7 @@ until the deployment enables it). Only datasets and geography marked public, at
 their **published** versions. Plain JSON (JSON-LD for DCAT and SKOS); errors are
 `{"detail": "…"}` with 400, 404 or 429. Responses carry `ETag`,
 `Last-Modified` and `Cache-Control`, allow any origin (CORS), and are rate
-limited per client IP. See [Public catalogue](catalogue/public-catalogue.md).
+limited per client IP. See [Public catalogue](public-catalogue.md).
 
 | Operation | Permission | Summary |
 |---|---|---|

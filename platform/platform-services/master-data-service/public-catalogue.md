@@ -24,7 +24,7 @@ Everything public is **opt-in, and off by default**, twice over:
 Whatever the settings, the public API serves **published versions only**. Drafts,
 submitted, rejected and discarded versions, private datasets, the change feed,
 who made or approved a version, and the
-[sample people](../api-reference.md#sample-people-testing-and-demos-only) are never
+[sample people](api-reference.md#sample-people-testing-and-demos-only) are never
 reachable through it. A private dataset, an unpublished version and a dataset that
 does not exist all get the same 404, so the API does not reveal what exists
 behind it.
@@ -67,7 +67,7 @@ all of it.
 Anonymous `GET` requests; JSON responses (JSON-LD for DCAT and SKOS). Errors are
 `{"detail": "…"}` with HTTP 400, 404 or 429. Every operation is listed, with its
 parameters and responses, in the
-[API reference](../api-reference.md#public-catalogue).
+[API reference](api-reference.md#public-catalogue).
 
 | Path | Returns |
 |---|---|
@@ -120,7 +120,7 @@ harvester and other open-data portals can harvest it. It lists one dataset per
 public dataset with a published version in effect, plus the geography when it is
 public, each with its licence, theme, version and one distribution per download
 format (pinned to that version). The vocabulary and how fully it is followed are
-on [Standards](../standards.md#catalogue-metadata-public-catalogue).
+on [Standards](standards.md#catalogue-metadata-public-catalogue).
 
 ### SKOS concept schemes
 
@@ -129,7 +129,7 @@ scheme (JSON-LD): one concept per active entry, with its code, labels per
 language and parent. A concept's address
 (`/public/datasets/{code}/entries/{entry_code}`) resolves and does not carry the
 version, so a code keeps the same address across versions. See
-[Standards](../standards.md#datasets-and-entries).
+[Standards](standards.md#datasets-and-entries).
 
 ## Base URL
 

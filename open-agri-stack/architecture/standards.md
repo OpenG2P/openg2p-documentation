@@ -69,13 +69,13 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 | Area | Components | Where | Standard | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Lists (reference data) | Catalogue (MDS), RP | [Catalogues](registry-model.md#catalogues) | — | **Own** | Codes are the country's (e.g. `CROP_TEFF`, `SEASON_MEHER`); the catalogue APIs and list format are our own. |
-| Lists as concept schemes | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md#skos-concept-schemes) (`/public/datasets/{code}/skos`) | [W3C SKOS](https://www.w3.org/TR/skos-reference/) (JSON-LD) | **Used** | Opt-in: only lists marked public, at published versions. A `skos:Concept` per entry with `skos:notation`, language-tagged `skos:prefLabel` and `skos:broader`. |
+| Lists as concept schemes | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/public-catalogue.md#skos-concept-schemes) (`/public/datasets/{code}/skos`) | [W3C SKOS](https://www.w3.org/TR/skos-reference/) (JSON-LD) | **Used** | Opt-in: only lists marked public, at published versions. A `skos:Concept` per entry with `skos:notation`, language-tagged `skos:prefLabel` and `skos:broader`. |
 | Crop and commodity codes | Catalogue (MDS) | `CROP_COMMODITY` | FAO [AGROVOC](https://agrovoc.fao.org/), FAO Indicative Crop Classification, FAOSTAT commodity codes | **To explore** | As optional mappings from the country's codes. |
 | Administrative areas | Catalogue (MDS), RP | Catalogues; every activity's location | OCHA COD-AB P-codes (e.g. `ET040611`) | **Used** | The Ethiopia country pack's geography; CC BY-IGO licence (see [Country Data Architecture](../../platform/country-data-architecture.md)). |
 | Shapes | RP (FR), Catalogue (MDS; boundaries in the object store) | FR land parcels; catalogue boundaries (also downloadable per level from the public catalogue) | GeoJSON ([RFC 7946](https://www.rfc-editor.org/rfc/rfc7946)) | **Used** | |
 | Boundary features API | Catalogue (MDS) | Catalogue geography | [OGC API – Features](https://ogcapi.ogc.org/features/) | **To explore** | Today the public catalogue offers a GeoJSON file per level, not a features API. |
 | Query API for BI tools | Catalogue (MDS; public catalogue) | Catalogue datasets | [OData](https://www.odata.org/) (OASIS) | **To explore** | Lets Excel, Power BI and Tableau query a dataset live. Not needed while datasets are small and CSV/JSON downloads cover it; ODK Central's OData feed is already consumed by CSR's ODK ingestion. Not for registry or partner data (DCI and consent-scoped APIs). |
-| Catalogue dataset descriptions | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md#dcat-catalogue) (`/public/catalog`) | [W3C DCAT](https://www.w3.org/TR/vocab-dcat-3/) (DCAT-AP style, JSON-LD) | **Used** | Opt-in: a `dcat:Dataset` per public list and for the geography when public, with licence, version and a distribution per format (CSV, JSON, SKOS, GeoJSON). Harvestable by CKAN / DCAT harvesters. |
+| Catalogue dataset descriptions | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/public-catalogue.md#dcat-catalogue) (`/public/catalog`) | [W3C DCAT](https://www.w3.org/TR/vocab-dcat-3/) (DCAT-AP style, JSON-LD) | **Used** | Opt-in: a `dcat:Dataset` per public list and for the geography when public, with licence, version and a distribution per format (CSV, JSON, SKOS, GeoJSON). Harvestable by CKAN / DCAT harvesters. |
 | Registry and use-case descriptions | RP, Composite | Registries, use cases | [W3C DCAT](https://www.w3.org/TR/vocab-dcat-3/) | **To explore** | For describing what each registry and use case offers. |
 
 ### TODO: agricultural data standards for the catalogues
@@ -109,7 +109,7 @@ For each dataset, the evaluation should record:
 * the best-fit standard and the body that publishes it;
 * how well our codes map to it (exact, partial, none);
 * whether its licence lets us republish it in the public catalogue;
-* the decision: keep our codes and publish mappings (as SKOS `skos:exactMatch` / `skos:closeMatch` in the [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md)), or adopt the standard's codes; then carry it into the country pack.
+* the decision: keep our codes and publish mappings (as SKOS `skos:exactMatch` / `skos:closeMatch` in the [public catalogue](../../platform/platform-services/master-data-service/public-catalogue.md)), or adopt the standard's codes; then carry it into the country pack.
 
 ## Records, time and measures
 

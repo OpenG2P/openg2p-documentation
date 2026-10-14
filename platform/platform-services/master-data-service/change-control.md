@@ -1,13 +1,13 @@
 ---
 description: >-
-  How datasets and geography change in MDS as Catalogue: drafts, submission,
+  How datasets and geography change in MDS: drafts, submission,
   approval through a maker-checker permission or AWE, permissions, audit, and
   what the original write endpoints do now
 ---
 
 # Change Control and Approvals
 
-In MDS as Catalogue, **published data is never edited**. Every change, to a dataset
+In MDS, **published data is never edited**. Every change, to a dataset
 or to the geography, follows the same path:
 
 ```mermaid
@@ -91,7 +91,7 @@ who may approve: two people can share one, and a person can change theirs. So th
 ### `awe`: through the Approval Workflow Engine
 
 On submit, MDS opens an approval request in the
-[Approval Workflow Engine](../../approval-workflow-engine/README.md), forwarding the
+[Approval Workflow Engine](../approval-workflow-engine/README.md), forwarding the
 submitter's bearer token:
 
 | | Datasets | Geography |
@@ -108,7 +108,7 @@ on the version (`approval_ref`). If AWE cannot be reached, submit fails with
 
 When AWE reaches a decision it calls **`POST /catalogue/awe/callback`**. This
 endpoint takes no user token; it is authenticated by an **HMAC** signature, as in
-the [registry's AWE integration](../../approval-workflow-engine/integration-with-registry.md):
+the [registry's AWE integration](../approval-workflow-engine/integration-with-registry.md):
 `X-Approval-Signature: sha256=HMAC_SHA256(secret, "<X-Approval-Timestamp>." + body)`,
 with `X-Approval-Timestamp` (within 300 s) and `X-Approval-Event-Id`. The body is
 AWE's webhook event (`event_id`, `event_type`, `request_id`, `artifact_type`,
@@ -194,7 +194,7 @@ and both roles with IAM (`iamRegister`) and creates the roles in Keycloak.
 ## Audit
 
 MDS sends two kinds of audit events to the
-[Audit Manager](../../audit-manager/README.md) (off when no Audit Manager URL is
+[Audit Manager](../audit-manager/README.md) (off when no Audit Manager URL is
 configured; `masterDataAPI.catalogue.auditManagerUrl`, by default the `commons-services` Audit
 Manager):
 
@@ -211,7 +211,7 @@ Every lifecycle step is recorded twice:
   refuses updates and deletes; the one column that may change is `forwarded_at`),
   which also backs the [change feed](consumers.md#following-changes);
 * in the Audit Manager, as a CloudEvent (`POST <auditManagerUrl>/v1/auditmanager/events`;
-  see [Standards](../standards.md)). The change log is always kept.
+  see [Standards](standards.md)). The change log is always kept.
 
 **The change log is the outbox.** An event is written to the change log in the same
 transaction as the change, so the log is exact; delivery happens afterwards and is
@@ -249,7 +249,7 @@ The CloudEvent `type` is `org.openg2p.master_data.<event_type>`, its `subject`
 user's stable id and display name, or a system actor), the action, the resource
 (`master_data.list`, `master_data.geo` or `master_data.release`), the change-log
 `event_id` and the details. The event types are listed in the
-[API reference](../api-reference.md#change-feed-and-configuration).
+[API reference](api-reference.md#change-feed-and-configuration).
 
 ## What the legacy write endpoints do now
 

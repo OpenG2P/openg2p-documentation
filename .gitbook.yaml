@@ -20,3 +20,11 @@ redirects:
   open-agri-stack/architecture/consent-scenarios: open-agri-stack/architecture/consent.md
   platform/platform-services/master-data-service/catalogue/standards: platform/platform-services/master-data-service/standards.md
   platform/platform-services/master-data-service/catalogue/api-reference: platform/platform-services/master-data-service/api-reference.md
+  platform/platform-services/master-data-service/catalogue: platform/platform-services/master-data-service/README.md
+  platform/platform-services/master-data-service/catalogue/concepts: platform/platform-services/master-data-service/concepts.md
+  platform/platform-services/master-data-service/catalogue/geography: platform/platform-services/master-data-service/geography.md
+  platform/platform-services/master-data-service/catalogue/change-control: platform/platform-services/master-data-service/change-control.md
+  platform/platform-services/master-data-service/catalogue/country-packs-and-migration: platform/platform-services/master-data-service/country-packs-and-migration.md
+  platform/platform-services/master-data-service/catalogue/consumers: platform/platform-services/master-data-service/consumers.md
+  platform/platform-services/master-data-service/catalogue/ui: platform/platform-services/master-data-service/ui.md
+  platform/platform-services/master-data-service/catalogue/public-catalogue: platform/platform-services/master-data-service/public-catalogue.md

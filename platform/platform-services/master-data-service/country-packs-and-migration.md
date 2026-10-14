@@ -1,12 +1,12 @@
 ---
 description: >-
-  How country packs load into MDS as Catalogue (version 1 on first load, drafts
+  How country packs load into MDS (version 1 on first load, drafts
   on later loads), where boundaries go, and how an existing MDS is migrated
 ---
 
 # Country Packs and Migration
 
-A [country pack](../../../country-data-architecture.md) is still how a country's
+A [country pack](../../country-data-architecture.md) is still how a country's
 data first reaches MDS. What changes is what a load does to data that is already
 there: **a pack never overwrites published data.**
 
@@ -163,21 +163,21 @@ See [Boundaries in MinIO, per version](geography.md#boundaries-in-minio-per-vers
 When the pack's `manifest.json` names a licence (`license`, and optionally
 `license_uri`), the loader sets the geography's licence from it, unless an
 administrator has already set one. For a well-known licence it derives the URI from
-the label or id (see [Standards: licences](../standards.md#licences)). The loader never changes visibility: everything
+the label or id (see [Standards: licences](standards.md#licences)). The loader never changes visibility: everything
 it loads stays **private** until someone marks it public (see
 [Public catalogue](public-catalogue.md)). The loader needs catalogue schema 5.
 
 ## Migrating an existing MDS
 
-An MDS installed before the catalogue already has data in `g2p_attributes`,
+An MDS installed before versioning already has data in `g2p_attributes`,
 `g2p_attribute_values`, `g2p_geo_levels` and `g2p_geo_level_values`. On start, the
 API's database migration (and the loader, before it loads) converts it:
 
 * every existing dataset without a version becomes **version 1, `PUBLISHED`**, with
   exactly the entries it had;
 * the existing geography becomes **geography version 1, `PUBLISHED`**;
-* both get **`effective_from` 1970-01-01**: the data was in force before the
-  catalogue existed, so an `as_of` read for any past date resolves to it;
+* both get **`effective_from` 1970-01-01**: the data was in force before
+  versioning was added, so an `as_of` read for any past date resolves to it;
 * `list.version.migrated` and `geo.version.migrated` events are written to the
   change log, with `migration` as the actor (and delivered to the Audit Manager by
   the relay);

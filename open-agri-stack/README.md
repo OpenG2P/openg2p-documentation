@@ -41,7 +41,7 @@ All registries are keyed to the same national identifier (Fayda in the reference
 
 | Service | Role in Agri Stack |
 | --- | --- |
-| **Catalogues** | All reference data: datasets (the agriculture domain of the country pack in use; ETH ships), reference entities, geography, sample people. Served by the OpenG2P [Master Data Service](../platform/platform-services/master-data-service/README.md). Versions, approvals and a change feed are being added (see the [catalogue design](../platform/platform-services/master-data-service/catalogue/README.md) and [open items](open-items/README.md#catalogues)) |
+| **Catalogues** | All reference data: datasets (the agriculture domain of the country pack in use; ETH ships), reference entities, geography, sample people. Served by the OpenG2P [Master Data Service](../platform/platform-services/master-data-service/README.md). Versions, approvals and a change feed: see [how MDS works](../platform/platform-services/master-data-service/README.md#how-it-works) and [open items](open-items/README.md#catalogues) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the Composite): identities and public keys. One per install |
 | [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the Exchange's CM collects consents and issues a consent token per registry |
 | **Use-case Composite** (in the Exchange) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |

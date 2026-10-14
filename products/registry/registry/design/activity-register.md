@@ -123,7 +123,7 @@ Celery beat schedules these worker tasks:
 
 | Task | What it does | Beat setting (seconds) |
 | --- | --- | --- |
-| `activity_outbox_worker` | Processes outbox events | `activity_outbox_frequency` (default: the beat default) |
+| `activity_outbox_worker` | Processes outbox events | `activity_outbox_frequency` (default: `default_beat_producer_frequency`, 20) |
 | `activity_reconcile_worker` | Recomputes current-state rows that disagree with their activities | `activity_reconcile_frequency` (1 day) |
 | `activity_partition_worker` | Creates next year's partitions | `activity_partition_frequency` (1 day) |
 | `activity_odk_pull_worker` | Pulls new ODK Central submissions | `activity_odk_pull_frequency` (300) |

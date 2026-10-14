@@ -77,7 +77,7 @@ Each context has a **current state** (a projection): one row with the figures th
 
 An **aggregate** is a value per subject per period, such as a person's season summary across all their plots, or a worker's monthly attendance.
 
-* Aggregates are computed in the background after each activity event, from current data.
+* Aggregates are computed in the background after each activity event, from current data: a worker picks up the event within seconds (every 20 seconds by default). A context's current state, by contrast, is updated in the same transaction as the activity.
 * Each new value replaces the last one, and every value is kept in a history.
 * An aggregate type can be marked to become **final** when its period is closed. Then it is the figure a payment or official statistic can rely on. It becomes provisional again if the period is reopened, or if a later change still alters it.
 

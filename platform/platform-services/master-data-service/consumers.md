@@ -59,7 +59,7 @@ catalogue:
   geography: 3
 ```
 
-Moving a pin is a deliberate change: read the [diff](../api-reference.md#datasets) (`get_list_diff`)
+Moving a pin is a deliberate change: read the [diff](api-reference.md#datasets) (`get_list_diff`)
 between the pinned and the new version, check what it does to your rules, then
 change the configuration.
 
@@ -109,7 +109,7 @@ entries also expire after `cache_expire_seconds` (300 s) in any case. The
 Do not poll datasets to notice changes. Use the **change feed**:
 
 1. Keep the last `event_id` you processed (start with `0`).
-2. Call [`get_changes`](../api-reference.md#change-feed-and-configuration) with it as the
+2. Call [`get_changes`](api-reference.md#change-feed-and-configuration) with it as the
    `cursor`, process the events in order, and store the new cursor.
 3. On a `*.version.published` or `*.version.effective` event for a dataset or the
    geography you use: drop `latest` caches, and, if you pin, flag that a newer

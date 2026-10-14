@@ -1,6 +1,6 @@
 ---
 description: >-
-  The Master Data admin UI for MDS as Catalogue: a catalogue overview home page;
+  The Master Data admin UI: a catalogue overview home page;
   Datasets with their versions, entries, schema, drafts, approvals, diffs and
   history; Geography with data, lineage (change events and crosswalk) and
   history; Releases; and Activity
@@ -9,7 +9,7 @@ description: >-
 # Admin UI
 
 The catalogue is managed from the **Master Data admin UI** (`master-data-ui`).
-The UI uses common data-catalogue terms (see [Standards](../standards.md)): the
+The UI uses common data-catalogue terms (see [Standards](standards.md)): the
 whole service is the **Catalogue**, reference data comes in **datasets**, a
 dataset holds **entries**, and a dataset's domain is its **theme**. The API keeps
 its own names (`get_lists`, `list_code`, `owner_org`, `domain`, ...); the table
@@ -17,7 +17,7 @@ below maps them.
 
 | In the UI | In the API |
 |---|---|
-| Catalogue | MDS as Catalogue (`/catalogue/*`) |
+| Catalogue | MDS, and its `/catalogue/*` endpoints |
 | Dataset | A list: `list_id`, `list_code` |
 | Entry, with its **Code** and **Label** | A value: `value_code`, `display` |
 | Labels by language | `display_i18n` |

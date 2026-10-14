@@ -16,7 +16,7 @@ given in the notes. **To explore**: not used yet.
 
 ## Catalogue metadata (public catalogue)
 
-These apply to the opt-in [public catalogue](catalogue/public-catalogue.md)
+These apply to the opt-in [public catalogue](public-catalogue.md)
 (`/public/...`), which is off by default.
 
 | Standard | Where in MDS | Status | Notes |
@@ -43,7 +43,7 @@ These apply to the opt-in [public catalogue](catalogue/public-catalogue.md)
 
 | Standard | Where in MDS | Status | Notes |
 |---|---|---|---|
-| [OCHA COD-AB](https://data.humdata.org/dashboards/cod) and [P-codes](https://humanitarian.atlassian.net/wiki/spaces/imtoolbox/pages/222265609/P-codes) | Unit ids (`unit_id`, `level_value_id`), the `ETH` country pack | Used | The pack's units and boundaries come from COD-AB, so codes match datasets that use the same P-codes. MDS does not check the P-code format; after a reparent without a recode a code's prefix no longer names its parent (see [Geography](catalogue/geography.md)) |
+| [OCHA COD-AB](https://data.humdata.org/dashboards/cod) and [P-codes](https://humanitarian.atlassian.net/wiki/spaces/imtoolbox/pages/222265609/P-codes) | Unit ids (`unit_id`, `level_value_id`), the `ETH` country pack | Used | The pack's units and boundaries come from COD-AB, so codes match datasets that use the same P-codes. MDS does not check the P-code format; after a reparent without a recode a code's prefix no longer names its parent (see [Geography](geography.md)) |
 | [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) alpha-3 | Country pack name and geography `country` (e.g. `ETH`); boundary keys `geo/<country>/v<n>/…` | Partly | A convention, not validated. The demo country `XKM` uses the ISO 3166 user-assigned range so it cannot collide with a real country |
 | [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) (RFC 7946) | Boundary files per level and version: upload (`upload_draft_boundary`), `get_geo_boundary`, `/public/.../boundaries.geojson` | Used | One `FeatureCollection` per level; features matched to units by `properties.pcode`. MDS checks the type, not the geometry |
 | [OGC API – Features](https://ogcapi.ogc.org/features/) | — | To explore | Per-unit features, paging, bounding boxes. Today boundaries are one GeoJSON file per level |
@@ -67,7 +67,7 @@ These apply to the opt-in [public catalogue](catalogue/public-catalogue.md)
 
 | Standard | Where in MDS | Status | Notes |
 |---|---|---|---|
-| [CloudEvents](https://cloudevents.io/) 1.0 | Audit Manager: every catalogue change-log event and every API call | Used | Change-log events: type `org.openg2p.master_data.<event_type>`, `id` derived from the change-log `event_id`, at least once. API calls: one event per call, from the audit middleware (source `/openg2p/master-data-api`). See [Audit](catalogue/change-control.md#audit) |
+| [CloudEvents](https://cloudevents.io/) 1.0 | Audit Manager: every catalogue change-log event and every API call | Used | Change-log events: type `org.openg2p.master_data.<event_type>`, `id` derived from the change-log `event_id`, at least once. API calls: one event per call, from the audit middleware (source `/openg2p/master-data-api`). See [Audit](change-control.md#audit) |
 | [W3C WebSub](https://www.w3.org/TR/websub/) | Notifications when a version is published or takes effect | Partly | Optional (needs a hub). MDS registers topics and publishes with `hub.mode=register` / `publish`, as the OpenG2P hub expects; those publisher calls are hub-specific, not part of the WebSub recommendation. Subscribers use standard WebSub |
 
 ## HTTP API and security

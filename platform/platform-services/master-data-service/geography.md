@@ -1,6 +1,6 @@
 ---
 description: >-
-  Versioned geography in MDS as Catalogue: change events (split, merge, rename,
+  Versioned geography in MDS: change events (split, merge, rename,
   recode, reparent, boundary change) with worked examples, future-effective
   changes, the crosswalk, per-version boundaries in MinIO, and what consumers do
   when the geography changes
@@ -14,7 +14,7 @@ one province to another and redraw their boundaries. Each such change touches da
 that other systems hold: a registry records a person's woreda; a report counts
 farmers per zone; a dashboard sums area per region; a map draws the shapes.
 
-This page explains how MDS as Catalogue versions the geography, how each kind of
+This page explains how MDS versions the geography, how each kind of
 change is recorded, and what consumers should do when a new geography version is
 published.
 
@@ -295,7 +295,7 @@ without a predecessor.
 ## Boundaries in MinIO, per version
 
 Boundaries remain GeoJSON files in MinIO (bucket `openg2p-geo`), as described in
-[Country Data Architecture](../../../country-data-architecture.md#map-shapes-are-stored-in-minio-not-in-the-database).
+[Country Data Architecture](../../country-data-architecture.md#map-shapes-are-stored-in-minio-not-in-the-database).
 What changes is that they are stored **per geography version, under immutable
 keys**:
 
@@ -369,4 +369,4 @@ review or an update by the field team.
 | `get_geo_crosswalk` | Successors of a unit between two versions |
 | `get_geo_boundary` | A level's boundary file at a version |
 
-See [API reference](../api-reference.md#geography) for requests and responses.
+See [API reference](api-reference.md#geography) for requests and responses.

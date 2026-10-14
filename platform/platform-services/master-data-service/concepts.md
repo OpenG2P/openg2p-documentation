@@ -138,7 +138,7 @@ Every read names which version it wants, in one of these ways (at most one):
 (`version_no`, `status`, `effective_from`, `is_latest`, notes, who and when). A
 consumer never has to guess.
 
-Data migrated from before the catalogue is version 1 with `effective_from`
+Data migrated from before versioning is version 1 with `effective_from`
 1970-01-01, so an `as_of` read for any past date still resolves.
 
 Which read to use is covered in
@@ -174,7 +174,7 @@ seed variety has a crop, maturity days, release year and agro-ecological zones; 
 input product has a type and unit.
 
 A dataset may declare an **`attribute_schema`**, a JSON Schema that every entry's
-`attributes` object must satisfy (see [Standards](../standards.md)). Entries are
+`attributes` object must satisfy (see [Standards](standards.md)). Entries are
 validated against it as they are written to a draft, again on submit, and again
 on approval.
 
@@ -300,12 +300,12 @@ changed, and the release events. Each entry has a monotonically increasing
 (`list`, `geo` or `release`), a `subject_id`, the version number, the `actor`
 (stable user id, or a system name), the `actor_name`, the time and details. The
 event types are listed in the
-[API reference](../api-reference.md#change-feed-and-configuration).
+[API reference](api-reference.md#change-feed-and-configuration).
 
 The change log serves three purposes:
 
 * **Audit.** Every event is sent to the
-  [Audit Manager](../../audit-manager/README.md), whoever wrote it: the API, the
+  [Audit Manager](../audit-manager/README.md), whoever wrote it: the API, the
   country-pack loader, or the database itself (`*.version.effective`,
   `*.version.migrated`).
 * **Change feed.** Consumers read it with `get_changes` and a cursor (the last

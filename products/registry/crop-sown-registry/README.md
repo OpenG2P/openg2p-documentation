@@ -129,7 +129,7 @@ From the activities, the registry keeps four things up to date. Staff see them i
 | Belg | Megabit – Pagume (March – August) |
 | Irrigation | Hidar – Ginbot (November – May) |
 
-It is recomputed after every change, including corrections, and its history is kept. It becomes **final** when an administrator locks the period in the register's **Settings**. A programme that pays on a season's figures should read final summaries.
+It is recomputed after every change, including corrections, and its history is kept. A crop season's state is updated as each activity is saved; the season summary follows in the background, within seconds (every 20 seconds by default). It becomes **final** when an administrator locks the period in the register's **Settings**. A programme that pays on a season's figures should read final summaries.
 
 {% hint style="info" %}
 **Not built yet:** Superset dashboards and Insights maps on the reporting views. The views are in place and need no refresh.
