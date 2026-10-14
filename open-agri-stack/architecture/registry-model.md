@@ -1,7 +1,7 @@
 ---
 description: >-
   How each Agri Stack registry is built: register, table and activity
-  register kinds, projections, and where reference data lives (Layer 2).
+  register kinds, projections, and where reference data lives (catalogues).
 ---
 
 # Registry Model
@@ -21,9 +21,9 @@ A projection is current state computed from activities: for example, the current
 * **Per-subject projections** (the current crop stage) are updated in the same database transaction as the activity, so they are always exact.
 * **Aggregates** (a farmer's season summary, figures for dashboards) are updated asynchronously. Each change is recorded in an outbox and the aggregate is recomputed idempotently from it; lag alerts and a nightly reconciliation job catch anything that falls behind. Any projection can be rebuilt from the activities.
 
-## Layer 2: catalogues
+## Catalogues
 
-Layer 2 is the **catalogues**: the reference data every registry uses, defined once for the country. There is no reference data inside a registry.
+The **catalogues** are the reference data every registry uses, defined once for the country. There is no reference data inside a registry.
 
 * **What the catalogues hold:**
   * simple datasets (gender, tenure type, units, crop types);

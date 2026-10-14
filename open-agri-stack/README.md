@@ -10,21 +10,21 @@ description: >-
 <figure><img src="../.gitbook/assets/open-agri-stack-logo.jpg" alt="Agri Stack — DPI for Agriculture" width="160"><figcaption></figcaption></figure>
 
 {% hint style="info" %}
-**Source code:** [github.com/openg2p/agri-stack](https://github.com/openg2p/agri-stack) (the use-case composite), [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry), [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) and [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
+**Source code:** [github.com/openg2p/agri-stack](https://github.com/openg2p/agri-stack) (the use-case Composite), [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry), [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) and [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 {% endhint %}
 
 ## What it is
 
-Agri Stack is the digital public infrastructure (DPI) for agriculture. These pages describe its architecture in four layers:
+Agri Stack is the digital public infrastructure (DPI) for agriculture. It has four parts:
 
-* **Layer 1:** the functional registries (farmer, crop sown, livestock, DA);
-* **Layer 2:** catalogues: the reference data every registry uses (datasets such as crop types and units, reference entities such as seed varieties, geography);
-* **Layer 3:** the shared DPI services that connect and govern them;
-* **Layer 4:** the use-case service (the composite) that serves partners data across registries.
+* **Registries:** the functional registries (farmer, crop sown, livestock, DA), each run by its department.
+* **Catalogues:** the reference data every registry uses (datasets such as crop types and units, reference entities such as seed varieties, geography).
+* **Platform services:** Partner Management, Consent Manager and Audit Manager. Every install has its own.
+* **The Exchange** (the data exchange layer): where service providers (banks, MFIs, agritechs: **partners**) onboard once and use one farmer consent across registries: the partner portal, the Exchange's own Consent Manager and Partner Management, eSignet, and the Composite (the Exchange's use-case service).
 
-They also cover how service providers (banks, MFIs, agritechs: **partners**) get farmer data held across the registries: who routes a request, who decides what may be shared, and who enforces it.
+These pages describe how a partner gets farmer data held across the registries: who routes a request, who decides what may be shared, and who enforces it.
 
-## The registries (Layer 1)
+## Registries
 
 Each department runs its own registry on the OpenG2P [registry platform](../products/registry/registry/README.md). Registries are sovereign: each checks the caller, asks its own Consent Manager what may be released, and releases only that. Registries share **data**, never code.
 
@@ -37,49 +37,25 @@ Each department runs its own registry on the OpenG2P [registry platform](../prod
 
 All registries are keyed to the same national identifier (Fayda in the reference setup).
 
-## Shared services (Layers 2 to 4)
+## Catalogues, platform services and the Exchange
 
 | Service | Role in Agri Stack |
 | --- | --- |
-| **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All Layer 2 reference data: datasets (the agriculture domain of the country pack in use; ETH ships), reference entities, geography, sample people. The catalogue is being built as [MDS as Catalogue](../platform/platform-services/master-data-service/catalogue/README.md) (see [open items](open-items/README.md#catalogues)) |
-| [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the composite): identities and public keys. One per install |
-| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the exchange's collects consents and issues a consent token per registry |
-| **Use-case composite** (Layer 4) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |
+| **Catalogues** (today the [Master Data Service, MDS](../platform/platform-services/master-data-service/README.md)) | All reference data: datasets (the agriculture domain of the country pack in use; ETH ships), reference entities, geography, sample people. The catalogue is being built as [MDS as Catalogue](../platform/platform-services/master-data-service/catalogue/README.md) (see [open items](open-items/README.md#catalogues)) |
+| [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the Composite): identities and public keys. One per install |
+| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the Exchange's CM collects consents and issues a consent token per registry |
+| **Use-case Composite** (in the Exchange) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |
 | [Approval Workflow Engine (AWE)](../platform/platform-services/approval-workflow-engine/README.md) | Approval of registers' changes; approval of policies is optional and off by default |
-| [Audit Manager](../platform/platform-services/audit-manager/README.md) | Audit events from every hop, linked by the request ID |
-
-## What is built and what is design
-
-Besides the existing OpenG2P registries, PM and CM, the following are built (October 2026). The rest is design.
-
-| Part | Status | Where |
-| --- | --- | --- |
-| Activity registers in the registry platform | Built | [Activity register](../products/registry/registry/features/activity-register.md) |
-| Register model, phase 1 (typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data) | Built | [Register model design](design/register-model-design.md#phase-1-built) |
-| Register model, phase 2 (common verification model, disputes, beneficiary API for occurrences, subscribe/notify) | Design | [Register model design](design/register-model-design.md#phase-2-proposed) |
-| Crop Sown Registry | Built | [Crop Sown Registry](../products/registry/crop-sown-registry/README.md); [configuration](configuration/crop-sown-registry.md) |
-| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../products/registry/farmer-registry/README.md); [configuration](configuration/farmer-registry.md) |
-| One consent with a grant per registry, in CM | Built | [Consent model](architecture/consent-model.md); [Consent Manager](../consent-management/README.md) |
-| Use-case composite, first version | Built | [Composite](configuration/composite.md) |
-| Exchange mode: the exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the composite (`consent_id`) | Built | [Request flow](architecture/request-flow.md); [Exchange](configuration/exchange.md); [exchange setup](guides/exchange-setup.md) |
-| Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent scenarios](architecture/consent-scenarios.md) |
-| Composite staff console | Built | [Composite console](guides/composite-console.md) |
-| Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](open-items/README.md) |
-
-## Start here
-
-| You are | Read |
-| --- | --- |
-| A partner (e.g. a bank) | [Consent scenarios](architecture/consent-scenarios.md) → [partner guide](guides/partner-guide.md) |
-| An operator | [Architecture](architecture/README.md) → [distributed deployment architecture](design/distributed-deployment-architecture.md) → [deploying on a cluster](guides/deployment.md) → [testing after install](guides/testing-after-install.md) |
-| A developer | [Architecture](architecture/README.md) → [design](design/README.md) → [configuration](configuration/README.md) → [running the composite locally](guides/running-the-composite-locally.md) |
+| [Audit Manager](../platform/platform-services/audit-manager/README.md) | Audit events from every hop, linked by the request ID. One per install |
 
 ## Map of this section
 
+What is built today, and what is still design: [TODOs & Open Items](open-items/README.md#what-is-built).
+
 | Part | Pages |
 | --- | --- |
-| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [request flow](architecture/request-flow.md); [policy and consent](architecture/policy-and-consent.md); [consent model](architecture/consent-model.md); [consent scenarios](architecture/consent-scenarios.md); [registry model](architecture/registry-model.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
-| **[Design](design/README.md)** | [Register model design](design/register-model-design.md); [use-case composite](design/use-case-composite.md); [distributed deployment architecture](design/distributed-deployment-architecture.md); [registry data sync](design/registry-data-sync.md); [concept notes review](design/concept-notes-review.md) |
-| **[Configuration](configuration/README.md)** | What each install is configured with for Agri Stack: [Farmer Registry](configuration/farmer-registry.md), [Crop Sown Registry](configuration/crop-sown-registry.md), [exchange](configuration/exchange.md), [composite](configuration/composite.md) |
-| **[Guides](guides/README.md)** | [Partner guide](guides/partner-guide.md); [composite configuration](guides/composite-configuration.md); [adding a data source](guides/adding-a-data-source.md); [testing after install](guides/testing-after-install.md); [partner test](guides/partner-test.md); [exchange setup](guides/exchange-setup.md); [composite console](guides/composite-console.md); [registry-to-registry sync](guides/registry-to-registry-sync.md); [deploying on a cluster](guides/deployment.md); [running the composite locally](guides/running-the-composite-locally.md) |
+| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [consent model](architecture/consent-model.md); [consent scenarios](architecture/consent-scenarios.md); [policy and consent](architecture/policy-and-consent.md); [request flow](architecture/request-flow.md); [registry model](architecture/registry-model.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
+| **[Design](design/README.md)** | [Register model design](design/register-model-design.md); [use-case Composite](design/use-case-composite.md); [distributed deployment architecture](design/distributed-deployment-architecture.md); [registry data sync](design/registry-data-sync.md); [concept notes review](design/concept-notes-review.md) |
+| **[Configuration](configuration/README.md)** | What each install is configured with for Agri Stack: [Farmer Registry](configuration/farmer-registry.md), [Crop Sown Registry](configuration/crop-sown-registry.md), [Exchange](configuration/exchange.md), [Composite](configuration/composite.md) |
+| **[Guides](guides/README.md)** | [Partner guide](guides/partner-guide.md); [Composite configuration](guides/composite-configuration.md); [adding a data source](guides/adding-a-data-source.md); [testing after install](guides/testing-after-install.md); [partner test](guides/partner-test.md); [Exchange setup](guides/exchange-setup.md); [Composite console](guides/composite-console.md); [registry-to-registry sync](guides/registry-to-registry-sync.md); [deploying on a cluster](guides/deployment.md); [running the Composite locally](guides/running-the-composite-locally.md) |
 | **[TODOs and open items](open-items/README.md)** | Decisions and checks still pending; [service guide notes](open-items/service-guide-notes.md) |

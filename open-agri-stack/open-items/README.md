@@ -1,18 +1,35 @@
 ---
 description: >-
-  Decisions, checks and TODOs still pending in Agri Stack: identity,
-  consent and policies, the composite, the registries, catalogues, and the
+  What is built, and the decisions, checks and TODOs still pending in Agri Stack: identity,
+  consent and policies, the Composite, the registries, catalogues, and the
   platform and build.
 ---
 
 # TODOs & Open Items
 
+## What is built
+
+Besides the existing OpenG2P registries, PM and CM, the following are built (October 2026). The rest is design.
+
+| Part | Status | Where |
+| --- | --- | --- |
+| Activity registers in the registry platform | Built | [Activity register](../../products/registry/registry/features/activity-register.md) |
+| Register model, phase 1 (typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data) | Built | [Register model design](../design/register-model-design.md#phase-1-built) |
+| Register model, phase 2 (common verification model, disputes, beneficiary API for occurrences, subscribe/notify) | Design | [Register model design](../design/register-model-design.md#phase-2-proposed) |
+| Crop Sown Registry | Built | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md); [configuration](../configuration/crop-sown-registry.md) |
+| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../../products/registry/farmer-registry/README.md); [configuration](../configuration/farmer-registry.md) |
+| One consent with a grant per registry, in CM | Built | [Consent model](../architecture/consent-model.md); [Consent Manager](../../consent-management/README.md) |
+| Use-case Composite, first version | Built | [Composite](../configuration/composite.md) |
+| Exchange mode: the Exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the Composite (../`consent_id`) | Built | [Request flow](../architecture/request-flow.md); [Exchange](../configuration/exchange.md); [Exchange setup](../guides/exchange-setup.md) |
+| Consent collection, scenario 1 (in person): partner portal, national-ID login (../eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent scenarios](../architecture/consent-scenarios.md) |
+| Composite staff console | Built | [Composite console](../guides/composite-console.md) |
+| Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](../open-items/README.md) |
+
 ## Identity, consent and policies
 
 * **Common farmer identifier.** Confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup). If each registry is a separate MOSIP relying party with its own token, records can't be joined.
-* **Consent collected in CM, remaining paths.** Built in exchange mode: a consent recorded in CM's partner portal (national-ID login, evidence, staff verification) is presented to the composite as `message.consent_id`, and the exchange CM turns it into a consent token per registry ([partner guide](../guides/partner-guide.md#step-6-collect-the-farmers-consent)). Still to do: `consent_id` in a single install (passthrough mode, refused today with `consent_id_needs_exchange`), and presenting a CM-held consent directly at a registry without the composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom); see [consent scenarios](../architecture/consent-scenarios.md)). Decide whether consent spanning registries should always be collected in CM (recommended). See [consent model](../architecture/consent-model.md).
-* **Presentation via the composite in passthrough (CM presenter check).** In passthrough mode CM accepts a partner-signed consent presented by the composite on the partner's behalf (the composite forwards it unchanged). CM should also check that the presenter of a consent whose audience is a partner is a **registered composite**. In exchange mode this is covered: the exchange CM issues consent tokens only to its `receiptPresenters`.
-* **Moving policies to PM.** Move `PartnerPolicy` from CM to Partner Management, with a section per department, AWE approval per section, and partner associations; `/validate` then reads from PM. Until then the composite's `allowed_partners` stands in for the partner association ([policy and consent](../architecture/policy-and-consent.md)).
+* **Consent collected in CM, remaining paths.** Built in Exchange mode: a consent recorded in CM's partner portal (national-ID login, evidence, staff verification) is presented to the Composite as `message.consent_id`, and the Exchange CM turns it into a consent token per registry ([partner guide](../guides/partner-guide.md#step-6-collect-the-farmers-consent)). Still to do: presenting a CM-held consent directly at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom); see [consent scenarios](../architecture/consent-scenarios.md)). Decide whether consent spanning registries should always be collected in CM (recommended). See [consent model](../architecture/consent-model.md).
+* **Moving policies to PM.** Move `PartnerPolicy` from CM to Partner Management, with a section per department, AWE approval per section, and partner associations; `/validate` then reads from PM. Until then the Composite's `allowed_partners` stands in for the partner association ([policy and consent](../architecture/policy-and-consent.md)).
 * **Who may search across subjects.** Activity-register aggregates can be searched without a subject (e.g. for a benefit run). Today the registry operator allow-lists those partners and their scopes in the partner API's configuration (`dci_bulk_aggregate_partners`), because there is no per-person consent for such a search. This belongs in a Partner Management policy (a programme's legal basis for bulk access, approved by the department), checked like any other policy.
 * **Partner self-service in PM.** Onboarding and key rotation are done by a PM administrator today; partners can't submit their own requests.
 
@@ -20,15 +37,15 @@ description: >-
 
 ## Composite
 
-The [composite](../configuration/composite.md) as built leaves these for later:
+The [Composite](../configuration/composite.md) as built leaves these for later:
 
 * **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
-* **Data-blind mode:** each registry encrypts its part to the partner's PM key and the composite only bundles the parts.
+* **Data-blind mode:** each registry encrypts its part to the partner's PM key and the Composite only bundles the parts.
 * **No separate API gateway.** Partners come in through the OpenG2P deployment's ingress (Nginx, Istio); see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway). What remains to do:
-  * **Restrict the registries' partner APIs** with an Istio `AuthorizationPolicy`, so only the composite (and partners deliberately allowed direct access) can call them, and partners cannot bypass the composite.
-  * **Rate limits across pods and daily quotas** in the composite (`limits.daily_quota_per_partner`), with shared counters in Redis. Today the rate limit is per pod and worker.
+  * **Restrict the registries' partner APIs** with an Istio `AuthorizationPolicy`, so only the Composite (and partners deliberately allowed direct access) can call them, and partners cannot bypass the Composite.
+  * **Rate limits across pods and daily quotas** in the Composite (`limits.daily_quota_per_partner`), with shared counters in Redis. Today the rate limit is per pod and worker.
   * **Reconsider a gateway product** only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated.
-* **Registry endpoints held in PM** rather than in the composite's configuration (`composite.registries`).
+* **Registry endpoints held in PM** rather than in the Composite's configuration (`composite.registries`).
 * **Calling the crop sources in parallel with the farmer** when the partner already sends a farmer ID.
 * **Console, next steps** (the read-only [console](../guides/composite-console.md) is built):
   * **TODO: make adding a use case easy.** Today a use case is YAML in the Helm values (`composite.useCases`), with a Jinja query template and JSONPath mappings per source. In order:
@@ -36,7 +53,7 @@ The [composite](../configuration/composite.md) as built leaves these for later:
     2. **"New use case" in the console** (with editing, below): live validation, and a "try it" run for a sample farmer showing the registries' records beside the mapped output; publish / retire / partners from the UI.
     3. **Pick fields from the registry's data scopes** (Registries page): the console fills `scopes`, `optional_scopes` and the output mappings.
     4. **Copy an existing use case** as a starting point.
-  * **Editing use cases in the console:** use cases stored in the composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run against the registries, and a record of who changed what and when (in the database, and sent to the Audit Manager). Earlier versions need not be kept.
+  * **Editing use cases in the console:** use cases stored in the Composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run against the registries, and a record of who changed what and when (in the database, and sent to the Audit Manager). Earlier versions need not be kept.
   * **"Give partner X use case Y":** one flow that checks the partner's key in PM, creates its Consent Manager policy from the use case's data scopes and adds it to the use case's partners.
   * **Data scopes for registries a partner calls directly:** a registry's own staff UI (and CM's policy form) do not list its data scopes yet; the registry staff API has them (`/data_scopes/get_data_scopes`).
 * **TODO: JSON Schema per use case.** No machine-readable response schema is published; the describe endpoint lists output field names only. Add an endpoint serving each use case's JSON Schema (`response.schema`, accepted but not acted on), and validate responses against it.
@@ -44,9 +61,9 @@ The [composite](../configuration/composite.md) as built leaves these for later:
 
 ## Registries
 
-* **Scripted installs for multi-department setups (later).** The exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the exchange choices as override files, so one git repo describes the exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
+* **Scripted installs for multi-department setups (later).** The Exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the Exchange choices as override files, so one git repo describes the Exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
 
-* **TODO: distributed deployment.** Built: department installs plus one shared exchange tier, registries trusting the exchange CM's consent tokens, and the exchange-tier install (by hand in Rancher). Still to do: remote shared services in registry charts, and an inter-department gateway. See [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md#todo).
+* **TODO: distributed deployment.** Built: department installs plus one shared Exchange tier, registries trusting the Exchange CM's consent tokens, and the exchange-tier install (by hand in Rancher). Still to do: remote shared services in registry charts, and an inter-department gateway. See [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md#todo).
 
 * **TODO: sync farmer data into other registries.** Read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. See [Registry Data Sync](../design/registry-data-sync.md).
 
@@ -96,7 +113,7 @@ The [composite](../configuration/composite.md) as built leaves these for later:
 
 ## Catalogues
 
-* **In progress: catalogues as "MDS as Catalogue".** Decided: extend MDS rather than use the registry platform or adopt another DPG. The design is in [MDS as Catalogue](../../platform/platform-services/master-data-service/catalogue/README.md): versioned lists and geography, drafts with AWE or maker-checker approval, typed attributes per list, a crosswalk for boundary changes, a change feed and an opt-in public read API. The GeoPrism Registry was evaluated: strong temporal geography, but versioning and approvals only for geographic lists, a Java and OrientDB stack, and no Helm chart or Keycloak integration; MDS borrows its working/published versions and split/merge lineage. An import adapter from GeoPrism or the Common Geo Registry is a possible later add-on. Still to do once it is built: registries move from reading MDS's database to the catalogue APIs (below). See [Layer 2: catalogues](../architecture/registry-model.md#layer-2-catalogues).
+* **In progress: catalogues as "MDS as Catalogue".** Decided: extend MDS rather than use the registry platform or adopt another DPG. The design is in [MDS as Catalogue](../../platform/platform-services/master-data-service/catalogue/README.md): versioned lists and geography, drafts with AWE or maker-checker approval, typed attributes per list, a crosswalk for boundary changes, a change feed and an opt-in public read API. The GeoPrism Registry was evaluated: strong temporal geography, but versioning and approvals only for geographic lists, a Java and OrientDB stack, and no Helm chart or Keycloak integration; MDS borrows its working/published versions and split/merge lineage. An import adapter from GeoPrism or the Common Geo Registry is a possible later add-on. Still to do once it is built: registries move from reading MDS's database to the catalogue APIs (below). See [catalogues](../architecture/registry-model.md#catalogues).
 
 The items below are about MDS as it serves the catalogues today.
 
@@ -125,5 +142,5 @@ The items below are about MDS as it serves the catalogues today.
 * **TODO: fix the SQLAlchemy dependency at the root.** Fresh builds resolve SQLAlchemy 2.1, which no longer installs `greenlet`, and a service then dies at import. [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) declares `sqlalchemy >=2.0.20` without the `asyncio` extra, so each service pins on its own (the registry platform, MDS, CM and Partner Management pin `sqlalchemy[asyncio] >=2.0,<2.1`). Declaring `sqlalchemy[asyncio]` in the framework (and testing against 2.1) fixes it once for all services.
 * **Concurrent migrations.** Every API migrates on start; concurrent `CREATE TABLE`s collided and left tables missing. Core migration now takes a Postgres advisory lock. The extension's own migration (e.g. Farmer tables) still runs unlocked and can still collide; one API then logs the error while another completes the tables, as before. A lasting fix is to run migrations once, as a Helm hook Job, instead of in every API on start.
 * **TODO: changelog path option (CI).** agri-stack builds and publishes only when `composite/` changes, but the shared [openg2p-packaging](https://github.com/openg2p/openg2p-packaging) workflow builds a repository's changelog from all of its commits, including design-only ones. An option to limit the changelog to a path (here `composite/`) is needed.
-* **`PartnerMgmtKeyStore` unreleased.** The partner-key store the composite uses exists only on openg2p-fastapi-common `develop`, so the composite pins `develop` ([service guide notes](service-guide-notes.md), item 15).
+* **`PartnerMgmtKeyStore` unreleased.** The partner-key store the Composite uses exists only on openg2p-fastapi-common `develop`, so the Composite pins `develop` ([service guide notes](service-guide-notes.md), item 15).
 * **Service guide.** Where the "Creating a new service" guide disagrees with current practice: see [service guide notes](service-guide-notes.md).

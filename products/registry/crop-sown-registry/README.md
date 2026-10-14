@@ -211,7 +211,7 @@ Used alone, farmer and plot IDs are whatever the operator uses, as long as they 
 
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack exchange, alongside the Farmer Registry. How it is set up for Agri Stack is in [Agri Stack → Configuration → Crop Sown Registry](../../../open-agri-stack/configuration/crop-sown-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. How it is set up for Agri Stack is in [Agri Stack → Configuration → Crop Sown Registry](../../../open-agri-stack/configuration/crop-sown-registry.md).
 
 ## In this section
 

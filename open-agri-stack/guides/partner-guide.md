@@ -8,10 +8,14 @@ description: >-
 
 # Partner Guide
 
-You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier and **one consent** to the use-case composite, and get back **one signed response** with a status per registry.
+You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier and **one consent** to the use-case Composite, and get back **one signed response** with a status per registry.
 
 {% hint style="info" %}
 This guide covers what is specific to Agri Stack. The consent object, its signing and the Consent Manager's reason codes are documented once, in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); onboarding mechanics are in [Partner Management](../../platform/platform-services/partner-management/README.md). This guide links to both rather than repeating them.
+{% endhint %}
+
+{% hint style="info" %}
+Endpoint reference (request and response schemas, error codes): [Composite API](composite-api.md).
 {% endhint %}
 
 ## How it fits together
@@ -27,13 +31,13 @@ sequenceDiagram
   participant FR as Farmer Registry
   participant CSR as Crop Sown Registry
   participant DCM as Department CM
-  Note over P,DCM: One-time: onboarding (PM), bindings and policies (exchange CM), allowed for the use case
+  Note over P,DCM: One-time: onboarding (PM), bindings and policies (Exchange CM), allowed for the use case
   P->>P: the farmer's consent: a consent JWS you sign, or a consent held in the CM (consent_id)
   P->>C: POST /composite/v1/use-cases/loan-profile/query (signed envelope + consent)
   C->>PM: your public key (PARTNER_<ID>)
   C->>XCM: /validate (your consent, issue_receipts, the use case's scopes)
   XCM-->>C: one consent token per registry
-  C->>FR: DCI search, signed by the composite, with the Farmer Registry's consent token
+  C->>FR: DCI search, signed by the Composite, with the Farmer Registry's consent token
   FR->>DCM: /validate (the consent token, data_controller = farmer-registry)
   FR-->>C: farmer record, filtered to the token's scopes
   par after the farmer
@@ -45,11 +49,7 @@ sequenceDiagram
   C-->>P: one signed response, status per source
 ```
 
-You never call the registries or `/validate` yourself. The composite takes your consent to the **exchange Consent Manager** (the CM of the Agri Stack exchange), which checks it against your bindings and policies there and issues **one signed consent token per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own consent token and validates it at **its own department CM**, which trusts the exchange CM's consent tokens. The composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
-
-{% hint style="info" %}
-**Single install (passthrough mode).** Where the registries share the composite's Consent Manager, the composite can instead send your consent **unchanged** to each registry, and each registry validates its own grant in it. Your bindings and policies are then needed at each registry's CM, and `consent_id` is not supported. Agri Stack exchange installs use exchange mode (the chart default).
-{% endhint %}
+You never call the registries or `/validate` yourself. The Composite takes your consent to the **Exchange Consent Manager** (the CM of the Agri Stack Exchange), which checks it against your bindings and policies there and issues **one signed consent token per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own consent token and validates it at **its own department CM**, which trusts the Exchange CM's consent tokens. The Composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
 
 ## What you need, and who sets it up
 
@@ -57,9 +57,9 @@ You never call the registries or `/validate` yourself. The composite takes your 
 | --- | --- | --- |
 | A signing key pair and a `kid` | You | [1](#step-1-generate-your-signing-key) |
 | Your partner record and public key in Partner Management | A **PM administrator** (no self-service yet) | [2](#step-2-get-onboarded-in-partner-management) |
-| A binding and data-share policy for each registry, in the Consent Manager | The **CM administrator** of the exchange (if AWE approval is switched on, each policy waits for it) | [3](#step-3-get-a-binding-and-policy-for-each-registry) |
+| A binding and data-share policy for each registry, in the Consent Manager | The **CM administrator** of the Exchange (if AWE approval is switched on, each policy waits for it) | [3](#step-3-get-a-binding-and-policy-for-each-registry) |
 | Permission to call the use case (`allowed_partners`) | The **Agri Stack operator** | [4](#step-4-get-allowed-for-the-use-case) |
-| The composite's URL and its public key | The Agri Stack operator | [5](#step-5-discover-the-use-case) |
+| The Composite's URL and its public key | The Agri Stack operator | [5](#step-5-discover-the-use-case) |
 
 ## Step 1 — Generate your signing key
 
@@ -69,7 +69,7 @@ Key generation is shown in the Consent Manager's [Partner Integration Guide, ste
 
 ## Step 2 — Get onboarded in Partner Management
 
-Partner Management (PM) is the trust root: the composite, every registry and the Consent Manager fetch your public key from it. In the first version of PM the portal is **admin-run**: a PM administrator files your onboarding request and approves it. There is no partner self-service.
+Partner Management (PM) is the trust root: the Composite, every registry and the Consent Manager fetch your public key from it. In the first version of PM the portal is **admin-run**: a PM administrator files your onboarding request and approves it. There is no partner self-service.
 
 **What you give the PM administrator:**
 
@@ -79,13 +79,13 @@ Partner Management (PM) is the trust root: the composite, every registry and the
 | Name and organisation | Bank A | |
 | **Public key(s)** | PEM, X.509 certificate, or JWK; or a `jwks_url` to import from once | With `kid` and `algorithm` (EdDSA, ES256 or RS256) |
 
-**The PM ID.** PM stores you as `PARTNER_<SENDER_ID>`, upper-cased with `-` replaced by `_`: partner `bank-a` is `PARTNER_BANK_A`. The composite and the registries look your key up under that ID. The composite is itself a PM partner: `agri-composite` is `PARTNER_AGRI_COMPOSITE`.
+**The PM ID.** PM stores you as `PARTNER_<SENDER_ID>`, upper-cased with `-` replaced by `_`: partner `bank-a` is `PARTNER_BANK_A`. The Composite and the registries look your key up under that ID. The Composite is itself a PM partner: `agri-composite` is `PARTNER_AGRI_COMPOSITE`.
 
 After approval your keys are served at `GET {pm}/keys/PARTNER_BANK_A` (and `/keys/PARTNER_BANK_A/jwks.json`). Ask the administrator to confirm; PM returns `404` for an unknown or disabled partner, which everyone treats as a rejection. Key rotation is a **key-update request**, also filed by the administrator. See the PM [API reference](../../platform/platform-services/partner-management/api-reference.md) and [functional specifications](../../platform/platform-services/partner-management/functional-specifications.md).
 
 ## Step 3 — Get a binding and policy for each registry
 
-For **each registry** the use case reads, the exchange Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the data scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; if AWE approval is switched on in the CM (it is off by default), a new or wider policy waits for approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
+For **each registry** the use case reads, the Exchange Consent Manager needs a **binding** of your partner to that registry (data controller) with a **data-share policy**: the data scopes, purposes, subject identifier types, signing algorithms, validity limit and fetch type you may ever receive. The policy is the ceiling: you get `grant ∩ policy`, never more. The CM administrator creates them; if AWE approval is switched on in the CM (it is off by default), a new or wider policy waits for approval by the department. See [Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md).
 
 The registries a use case reads are its sources' `controller`s, listed as `consent_grants_needed` when you [describe the use case](#step-5-discover-the-use-case).
 
@@ -129,11 +129,11 @@ The crop sources query the Crop Sown Registry by farmer ID, read from the farmer
 
 ## Step 4 — Get allowed for the use case
 
-Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (for example, the sample `loan-profile` ships with `[bank-a]`). Ask the Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [composite configuration](composite-configuration.md#use-case-file-format).
+Until Partner Management holds policies and partner associations, each use case lists the partners that may call it in `allowed_partners` (for example, the sample `loan-profile` ships with `[bank-a]`). Ask the Agri Stack operator to add your partner ID; otherwise every call is rejected `403 partner_not_allowed`. See [Composite configuration](composite-configuration.md#use-case-file-format).
 
 ## Step 5 — Discover the use case
 
-The operator gives you the composite's URL, e.g. `https://agri-composite.<namespace>.openg2p.org`, and its public key for verifying responses. The describe endpoints need no signature:
+The operator gives you the Composite's URL, e.g. `https://agri-composite.<namespace>.openg2p.org`, and its public key for verifying responses. The describe endpoints need no signature:
 
 ```bash
 curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases              # all published use cases
@@ -202,7 +202,7 @@ Data is released only against the farmer's consent for the specific purpose and 
 
 There are two ways to present it.
 
-**A consent held in the Consent Manager (`consent_id`).** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda in the reference setup, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then send the consent's ID as `message.consent_id` ([step 8](#step-8-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. This needs the composite's exchange mode. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
+**A consent held in the Consent Manager (`consent_id`).** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda in the reference setup, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then send the consent's ID as `message.consent_id` ([step 8](#step-8-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. This needs the Composite's Exchange mode. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 7](#step-7-build-and-sign-the-consent)). What that means for you:
 
@@ -223,7 +223,7 @@ Skip this step if you send a `consent_id`. The consent is a **compact JWS** sign
 | `purpose` | `{"code": <the use case's purpose>}` | Allowed by each registry's policy |
 | `grants` | `[{"data_controller": <registry>, "data_scopes": [<scope IDs>]}]`, one per registry in `consent_grants_needed` | Each registry once; scope IDs from that registry's catalogue, within its policy and within what the farmer agreed to |
 | `fetch_type` | `oneshot` | |
-| `validity` | `{"valid_from": …, "valid_until": …}` | Within the policy's `max_validity_duration`; the composite rejects a consent outside its window |
+| `validity` | `{"valid_from": …, "valid_until": …}` | Within the policy's `max_validity_duration`; the Composite rejects a consent outside its window |
 | `issued_at` | now (UTC) | Within **±300 seconds** of the Consent Manager's clock (its freshness window), so sign a **fresh consent for each request** and keep clocks in sync |
 
 Example: `loan-profile`, for partner `bank-a`.
@@ -262,7 +262,7 @@ consent_jws = PyJWS().encode(canonical(claims), private_key, algorithm="ES256", 
 # "eyJhbGciOiJFUzI1NiIs…" + "." + payload + "." + signature
 ```
 
-In exchange mode the composite presents this consent to the exchange CM, and each registry gets its own consent token. In passthrough mode the same consent goes to every registry unchanged, and each registry validates only its own grant.
+The Composite presents this consent to the Exchange CM, and each registry gets its own consent token.
 
 ## Step 8 — Sign the request envelope
 
@@ -272,14 +272,14 @@ The request is a DCI-style envelope: `header`, `message`, and a **detached JWS**
 | --- | --- |
 | `header.version` | `1.0.0` |
 | `header.message_id` | a new UUID |
-| `header.message_ts` | now, ISO 8601 UTC, e.g. `2026-10-01T10:00:00.000Z`. Must be within **300 seconds** of the composite's clock. |
+| `header.message_ts` | now, ISO 8601 UTC, e.g. `2026-10-01T10:00:00.000Z`. Must be within **300 seconds** of the Composite's clock. |
 | `header.action` | `query` |
 | `header.sender_id` | your partner ID |
-| `header.receiver_id` | the composite's ID, `agri-composite` (if present, it must match) |
+| `header.receiver_id` | the Composite's ID, `agri-composite` (if present, it must match) |
 | `message.subject` | `{"type": "FAYDA_FAN" \| "FARMER_ID", "value": "…"}` |
 | `message.parameters` | the use case's `input.parameters`, e.g. `{"crop_year": 2019, "season": "SEASON_MEHER"}` for `loan-profile`; omit or `{}` for none |
 | `message.consent_jws` | the consent from step 7 |
-| `message.consent_id` | *instead of `consent_jws`:* the ID of a consent the farmer gave through the Consent Manager (e.g. collected in person in the partner portal and verified by staff; see [consent collection](../../consent-management/design/consent-collection.md)). The exchange Consent Manager checks it (active, in its validity, obtained by you, about this farmer) and what it grants; needs the composite's exchange consent mode. Send one of the two, not both. |
+| `message.consent_id` | *instead of `consent_jws`:* the ID of a consent the farmer gave through the Consent Manager (e.g. collected in person in the partner portal and verified by staff; see [consent collection](../../consent-management/design/consent-collection.md)). The Exchange Consent Manager checks it (active, in its validity, obtained by you, about this farmer) and what it grants; needs the Composite's Exchange consent mode. Send one of the two, not both. |
 
 **The signature** is a JWS whose payload is the canonical JSON of `{"header": …, "message": …}` (keys sorted, no whitespace, UTF-8), with the payload part removed: `<protected header>..<signature>`.
 
@@ -317,7 +317,7 @@ Content-Type: application/json
 
 ## Step 10 — Read the response
 
-The response is an envelope signed by the composite. Example (`loan-profile`):
+The response is an envelope signed by the Composite. Example (`loan-profile`):
 
 ```json
 {
@@ -334,7 +334,7 @@ The response is an envelope signed by the composite. Example (`loan-profile`):
 ```
 
 * `header.status` is `succ` or `rjct`; on `rjct`, `header.status_reason_code` and `status_reason_message` say why, and `message` carries `error: {code, message}` instead of `data`.
-* `message.request_id` is the composite's ID for this request; quote it when reporting a problem (audit events are linked by it).
+* `message.request_id` is the Composite's ID for this request; quote it when reporting a problem (audit events are linked by it).
 * `message.sources` has a status per source, and a `detail` when there is something to say:
 
 | Source status | Meaning |
@@ -355,23 +355,22 @@ A source whose dependency is not `ok` is not called; it takes the dependency's s
 | 400 | `invalid_envelope`, `wrong_receiver`, `stale_request`, `invalid_use_case`, `invalid_input` | Bad envelope, wrong `receiver_id`, `message_ts` more than 300 s from now, bad `@major`, bad subject or parameters |
 | 401 | `signature_invalid` | The envelope signature does not verify against your PM key (or you are unknown in PM) |
 | 403 | `partner_not_allowed` | You are not in the use case's `allowed_partners` |
-| 400 | `consent_id_needs_exchange` | `message.consent_id` was sent, but the composite runs in passthrough mode |
-| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the composite before any registry is called (`consent_scope_missing`: a mandatory source's required scopes are not granted) |
-| 403 | `consent_denied` | The exchange Consent Manager denied the consent; its reason code is in the message |
-| 403 | `consent_receipt_missing` | The exchange Consent Manager issued no consent token for a mandatory source's registry |
-| 502 | `consent_exchange_error` | The exchange Consent Manager rejected the call or gave an unreadable answer |
-| 503 | `consent_exchange_unavailable` | The exchange Consent Manager could not be reached, timed out, or is not configured |
+| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the Composite before any registry is called (`consent_scope_missing`: a mandatory source's required scopes are not granted) |
+| 403 | `consent_denied` | The Exchange Consent Manager denied the consent; its reason code is in the message |
+| 403 | `consent_receipt_missing` | The Exchange Consent Manager issued no consent token for a mandatory source's registry |
+| 502 | `consent_exchange_error` | The Exchange Consent Manager rejected the call or gave an unreadable answer |
+| 503 | `consent_exchange_unavailable` | The Exchange Consent Manager could not be reached, timed out, or is not configured |
 | 403 | `source_denied` | A mandatory source was denied (e.g. by the Consent Manager at the registry) |
 | 404 | `unknown_use_case` | No published use case of that name / major |
 | 429 | `rate_limited` | Rate limit reached |
 | 502 / 503 / 504 | `source_error` / `source_unavailable` | A mandatory source failed: error / unavailable / timed out |
-| 500 | `signing_unavailable` | The composite cannot sign (its key is missing); the body is unsigned |
+| 500 | `signing_unavailable` | The Composite cannot sign (its key is missing); the body is unsigned |
 
 When a registry denies your consent, the reason in `sources.<id>.detail` comes from the Consent Manager's `reason_code`; see the table in the [Partner Integration Guide, step 8](../../consent-management/partner-integration-guide.md).
 
-## Step 11 — Verify the composite's signature
+## Step 11 — Verify the Composite's signature
 
-Verify every response before you use it. The `signature` is a detached JWS over the canonical JSON of the response's `{header, message}`, signed with the composite's key (`PARTNER_AGRI_COMPOSITE` in PM; the JWS header carries its `kid`):
+Verify every response before you use it. The `signature` is a detached JWS over the canonical JSON of the response's `{header, message}`, signed with the Composite's key (`PARTNER_AGRI_COMPOSITE` in PM; the JWS header carries its `kid`):
 
 ```python
 import base64
@@ -382,11 +381,11 @@ def verify_response(body: dict, composite_public_key) -> None:
     PyJWS().decode(f"{h}.{payload}.{s}", composite_public_key, algorithms=["ES256", "RS256", "EdDSA"])  # raises if invalid
 ```
 
-Get the composite's public key from the operator, or from PM's key API (`GET {pm}/keys/PARTNER_AGRI_COMPOSITE`) where it is reachable to you; the key-fetch API is served on the cluster-internal gateway.
+Get the Composite's public key from the operator, or from PM's key API (`GET {pm}/keys/PARTNER_AGRI_COMPOSITE`) where it is reachable to you; the key-fetch API is served on the cluster-internal gateway.
 
 ## Rate limits
 
-Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is applied per composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](../open-items/README.md).
+Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is applied per Composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](../open-items/README.md).
 
 ## Worked example: `loan-profile`
 
@@ -403,10 +402,10 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 }
 ```
 
-**What the composite does:**
+**What the Composite does:**
 
 1. Verifies your signature (`PARTNER_BANK_A`), checks `allowed_partners`, the parameters and the rate limit.
-2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a consent token for each registry from the exchange CM.
+2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a consent token for each registry from the Exchange CM.
 3. Calls the **Farmer Registry**: `reg_type: Farmer`, search `foundational_id $eq 946053125409`.
 4. Reads `FARMER_ID` from the farmer record, then calls the **Crop Sown Registry** twice in parallel: season summaries (`FARMER_SEASON_SUMMARY`, crop year 2019, Meher) and crop seasons (crop year 2019, Meher).
 5. Maps and derives the output, signs and returns it.
@@ -456,17 +455,17 @@ python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org
     --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
 ```
 
-* `keys` (defaults: partner `bank-a`, composite `agri-composite`) prints the PM onboarding requests for `PARTNER_BANK_A` and `PARTNER_AGRI_COMPOSITE`, the `kubectl create secret generic agri-composite-signing …` command, and the CM bindings and policies for audience `bank-a`.
-* `call` builds a consent with both grants (`--controllers` narrows it), signs the envelope, verifies the composite's signature on the answer and prints it.
+* `keys` (defaults: partner `bank-a`, Composite `agri-composite`) prints the PM onboarding requests for `PARTNER_BANK_A` and `PARTNER_AGRI_COMPOSITE`, the `kubectl create secret generic agri-composite-signing …` command, and the CM bindings and policies for audience `bank-a`.
+* `call` builds a consent with both grants (`--controllers` narrows it), signs the envelope, verifies the Composite's signature on the answer and prints it.
 
 To go through these steps as a test partner against an environment, use the [partner test](partner-test.md).
 
 ## Checklist
 
 * [ ] Your key is registered and **active** in PM under `PARTNER_<YOUR_ID>`; the JWS `kid` and `alg` match it.
-* [ ] The exchange CM has a binding and an **active** policy for your audience with **each** registry the use case reads.
+* [ ] The Exchange CM has a binding and an **active** policy for your audience with **each** registry the use case reads.
 * [ ] Your partner ID is in the use case's `allowed_partners`.
 * [ ] The consent's `subject_id` equals `message.subject` (type and value); `aud` is your partner ID; one grant per registry, with scope IDs from that registry's catalogue, within its policy.
 * [ ] A new `jti` and a fresh `issued_at` for each consent; `message_ts` fresh; clocks in sync.
-* [ ] You verify the composite's signature and check `sources` before using `data`.
+* [ ] You verify the Composite's signature and check `sources` before using `data`.
 * [ ] You keep evidence of how each consent was obtained.

@@ -1,12 +1,12 @@
 ---
 description: >-
   Where the "Creating a New Platform Service" guide disagrees with current
-  practice, found while building the use-case composite.
+  practice, found while building the use-case Composite.
 ---
 
 # Service Guide Notes
 
-Found while building the [use-case composite](../configuration/composite.md) from the guide ([Creating a New Platform Service](../../platform/platform-services/creating-a-new-service.md)) and comparing it with recent services (Consent Manager, Partner Management, Master Data, the registry platform, Farmer and Crop Sown registries). For the guide's maintainers; nothing here changes the composite.
+Found while building the [use-case Composite](../configuration/composite.md) from the guide ([Creating a New Platform Service](../../platform/platform-services/creating-a-new-service.md)) and comparing it with recent services (Consent Manager, Partner Management, Master Data, the registry platform, Farmer and Crop Sown registries). For the guide's maintainers; nothing here changes the Composite.
 
 | # | The guide says | Current practice | Suggestion |
 | --- | --- | --- | --- |
@@ -26,4 +26,4 @@ Found while building the [use-case composite](../configuration/composite.md) fro
 | 14 | (not covered) | A service without a database: openg2p-fastapi-common's `init_db` still builds an engine from defaults | Document how to opt out (override `init_db`), or make it skip when no database is configured |
 | 15 | (not covered) | `PartnerMgmtKeyStore` (partner keys from PM) exists only on openg2p-fastapi-common `develop`, not 1.2.x | Release it, so partner-facing services can pin a release |
 
-On item 7: agri-stack's CI now does use a path filter (`composite/**` and the workflow file), so that documentation-only pushes don't build or publish a new composite version. The CI page's "no path filters" is therefore not universal either; the guide and the CI page should agree on when a path filter is acceptable.
+On item 7: agri-stack's CI now does use a path filter (`composite/**` and the workflow file), so that documentation-only pushes don't build or publish a new Composite version. The CI page's "no path filters" is therefore not universal either; the guide and the CI page should agree on when a path filter is acceptable.

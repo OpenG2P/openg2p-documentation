@@ -1,13 +1,13 @@
 ---
 description: >-
-  Configuring the use-case composite: its API, which registry APIs it calls and
+  Configuring the use-case Composite: its API, which registry APIs it calls and
   where that is configured, the use-case file format, failure handling, output
   format, environment settings, Helm values and scaling.
 ---
 
 # Composite Configuration
 
-How to configure the [use-case composite](../design/use-case-composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
+How to configure the [use-case Composite](../design/use-case-composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
 
 ## API reference
 
@@ -15,7 +15,7 @@ How to configure the [use-case composite](../design/use-case-composite.md) as bu
 | --- | --- | --- | --- |
 | `GET` | `/composite/v1/use-cases` | none | Published use cases: input, parameters, sources, output fields, the consent grants needed |
 | `GET` | `/composite/v1/use-cases/{use_case}` | none | One use case (`name` or `name@major`; or the `X-Use-Case-Major` header) |
-| `POST` | `/composite/v1/use-cases/{use_case}/query` | signed envelope | Run a query, with `message.consent_jws` or (exchange mode) `message.consent_id`. `use_case` is `name` or `name@major`; the major version can also be sent in the `X-Use-Case-Major` header. Without a major, the highest published major is used. |
+| `POST` | `/composite/v1/use-cases/{use_case}/query` | signed envelope | Run a query, with `message.consent_jws` or `message.consent_id`. `use_case` is `name` or `name@major`; the major version can also be sent in the `X-Use-Case-Major` header. Without a major, the highest published major is used. |
 | `GET` | `/ping` | none | Health check |
 | `GET` | `/docs` | none | OpenAPI UI |
 
@@ -30,33 +30,33 @@ Request (a detached JWS over `{header, message}`, as in DCI; `sender_id` is the 
              "consent_jws": "<partner-signed consent with a grant per registry>"}}
 ```
 
-Instead of `consent_jws`, a partner may send `"consent_id": "<ID of a consent held in the exchange Consent Manager>"` (e.g. one recorded in its partner portal). Only in exchange mode; in passthrough it is refused `400 consent_id_needs_exchange`. Send one of the two, not both.
+Instead of `consent_jws`, a partner may send `"consent_id": "<ID of a consent held in the exchange Consent Manager>"` (e.g. one recorded in its partner portal). Send one of the two, not both.
 
-Response: signed by the composite, `header.status` `succ`/`rjct`. The message is `{use_case, version, request_id, subject, sources: {id: {status, detail?}}, data}`. On failure, `data` is replaced by `error: {code, message}`, and the HTTP status is one of:
+Response: signed by the Composite, `header.status` `succ`/`rjct`. The message is `{use_case, version, request_id, subject, sources: {id: {status, detail?}}, data}`. On failure, `data` is replaced by `error: {code, message}`, and the HTTP status is one of:
 
 | Status | Meaning |
 | --- | --- |
-| 400 | Invalid envelope, input or stale timestamp; `consent_id` in passthrough mode |
+| 400 | Invalid envelope, input or stale timestamp |
 | 401 | Bad signature or unknown partner |
-| 403 | Partner not allowed, or a consent problem (`consent_*`, including a deny or a missing consent token from the exchange CM), or a mandatory source denied |
+| 403 | Partner not allowed, or a consent problem (`consent_*`, including a deny or a missing consent token from the Exchange CM), or a mandatory source denied |
 | 404 | Unknown use case |
 | 429 | Rate limit reached |
-| 502 / 503 / 504 | A mandatory source failed (error / unavailable / timed out); or the exchange CM failed (`consent_exchange_error` 502, `consent_exchange_unavailable` 503) |
+| 502 / 503 / 504 | A mandatory source failed (error / unavailable / timed out); or the Exchange CM failed (`consent_exchange_error` 502, `consent_exchange_unavailable` 503) |
 
 The error codes, response envelope and signature verification are detailed in the [partner guide](partner-guide.md#step-10-read-the-response).
 
-## Which registry APIs the composite calls
+## Which registry APIs the Composite calls
 
-**Every source is one DCI synchronous search** on a registry's **partner API**: `POST /dci/registry/sync/search`. The composite calls nothing else on a registry, and nothing about a registry is hard-coded: the endpoints come from the service's settings, and what is asked from each comes from the use-case file.
+**Every source is one DCI synchronous search** on a registry's **partner API**: `POST /dci/registry/sync/search`. The Composite calls nothing else on a registry, and nothing about a registry is hard-coded: the endpoints come from the service's settings, and what is asked from each comes from the use-case file.
 
 **For `loan-profile`, per request:**
 
 1. **One call to the Farmer Registry** (`farmer`, `reg_type: Farmer`), by `foundational_id` (FAN) or `functional_record_id` (farmer ID).
 2. Then **two parallel calls to the Crop Sown Registry**: `season_summaries` (`reg_record_type: spdci-extensions-agri:ActivityAggregate`) and `crop_seasons` (`spdci-extensions-agri:CropSeason`), both by the farmer ID read from the farmer record.
 
-In exchange mode the composite first makes one call to the exchange Consent Manager (see [consent mode](#consent-mode-passthrough-or-exchange)). `loan-profile` sets `retries: 0`, so there are no extra calls; a use case that sets retries retries on network errors and 5xx only.
+The Composite first makes one call to the Exchange Consent Manager (see [consent mode](#consent-mode)). `loan-profile` sets `retries: 0`, so there are no extra calls; a use case that sets retries retries on network errors and 5xx only.
 
-**What each call looks like.** The composite renders the source's query template, adds the rest, signs the envelope with its own key and posts it:
+**What each call looks like.** The Composite renders the source's query template, adds the rest, signs the envelope with its own key and posts it:
 
 ```json
 {"signature": "<composite's detached JWS>",
@@ -72,13 +72,13 @@ In exchange mode the composite first makes one call to the exchange Consent Mana
                                                      "query_type": "expression",
                                                      "query": {"type": "expression", "value": {"…": "…"}},
                                                      "pagination": {"page_size": 1, "page_number": 1},
-                                                     "authorize": {"consent_jws": "<this registry's consent token (exchange) or the partner's consent (passthrough)>"}}}]}}
+                                                     "authorize": {"consent_jws": "<this registry's consent token>"}}}]}}
 ```
 
-* `sender_id` is the composite's PM ID; the registry verifies the composite's signature against `PARTNER_AGRI_COMPOSITE`.
+* `sender_id` is the Composite's PM ID; the registry verifies the Composite's signature against `PARTNER_AGRI_COMPOSITE`.
 * `receiver_id` is the source's controller ID unless the registry's `receiver_id` is set.
 * `header.meta.on_behalf_of` names the partner. The registry logs it; it never grants access.
-* The consent (the registry's consent token in exchange mode, the partner's consent unchanged in passthrough) travels at `search_criteria.authorize.consent_jws`, as for a partner calling the registry directly ([Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md)).
+* The registry's consent token travels at `search_criteria.authorize.consent_jws`, as for a partner calling the registry directly ([Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md)).
 
 **Where it is configured:**
 
@@ -103,7 +103,7 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `status` | `draft`, `validated`, `published`, `deprecated` or `retired`; only `published` is served |
 | `title`, `description` | Shown by the describe endpoints |
 | `policy`, `purpose` | Informational until PM has policies |
-| `consent.required` | Default `true`: requires `message.consent_jws` (checked: signature, subject, validity, grants for mandatory sources) or, in exchange mode, `message.consent_id` (checked by the exchange CM) |
+| `consent.required` | Default `true`: requires `message.consent_jws` (checked: signature, subject, validity, grants for mandatory sources) or `message.consent_id` (checked by the Exchange CM) |
 | `allowed_partners` | Partner IDs allowed to call (`"*"` = any verified partner). This **stands in for the PM policy association**, which PM does not have yet. |
 | `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` (see [subject ID types](#subject-id-types)) |
 | `input.parameters.<name>` | `{type: integer\|number\|string\|boolean, description, required, default, min, max, enum}`. For strings, `min`/`max` bound the length. Unknown parameters are rejected. |
@@ -137,9 +137,9 @@ Each source names the data scopes it uses, from its registry's catalogue (signed
 
 * **`scopes` (required):** the partner's consent must grant every one. Missing for a **mandatory** source: the request fails (`403 consent_scope_missing`). Missing for an **optional** source: it is not called and reported `denied`.
 * **`optional_scopes`:** may be left out of the consent; the fields they cover then come back `null`.
-* **Nothing else is asked for.** In exchange mode the composite asks the exchange Consent Manager for consent tokens with only these scopes (`request_context.requested_scopes`), so each registry returns no other field. In passthrough mode the registry sees the partner's consent as given; the composite still maps only its output fields.
+* **Nothing else is asked for.** The Composite asks the Exchange Consent Manager for consent tokens with only these scopes (`request_context.requested_scopes`), so each registry returns no other field.
 * A scope ID must belong to the source's registry (`<controller>.`), may not be listed twice, nor in both lists. `request_scopes` is accepted as the earlier name of `scopes`.
-* A source with neither list has no scope check (its registry's grant is used as it is); in exchange mode its registry's consent token then carries every scope the consent grants for that registry.
+* A source with neither list has no scope check (its registry's grant is used as it is); its registry's consent token then carries every scope the consent grants for that registry.
 * A grant with no `data_scopes` (including a legacy consent with `data_controller` only) grants no scopes, so it fails a source with required scopes.
 * The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent and to allow in the partner's Consent Manager policy.
 
@@ -147,13 +147,13 @@ Also accepted from the design but **not acted on yet** (logged once at load): `o
 
 Output paths (`mapping` and `derived` keys) are dot-separated identifiers; each may be defined once, and a path can't be both a value and the parent of another.
 
-A field built from a source that failed (`denied`, `unavailable`, `error`) is `null`; `[]` and `0` mean the registry answered and has nothing. So the composite can tell which sources a field uses, name them in dotted form: `$.sources.<id>...` and `$.data.<path>`. A `[...]`, `*` or `..` right after `$`, `$.sources` or `$.data` is refused at load.
+A field built from a source that failed (`denied`, `unavailable`, `error`) is `null`; `[]` and `0` mean the registry answered and has nothing. So the Composite can tell which sources a field uses, name them in dotted form: `$.sources.<id>...` and `$.data.<path>`. A `[...]`, `*` or `..` right after `$`, `$.sources` or `$.data` is refused at load.
 
 A rendered query whose expression has an empty `subject_id` (e.g. the farmer record carries no farmer ID) is not sent; the source is reported `error`. A list query that returns a full page (`page_size` above 1) is reported with the detail "the first N records only".
 
 ## Query templates
 
-A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`, `.jinja2`) file next to the use case (a plain file name: a ConfigMap has no subdirectories). It renders the query part of the DCI `search_criteria`, as `{"query_type", "query": {"type", "value"}, "pagination"?, "sort"?}`. The composite adds `version`, `reg_type`, `reg_record_type` and the consent.
+A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`, `.jinja2`) file next to the use case (a plain file name: a ConfigMap has no subdirectories). It renders the query part of the DCI `search_criteria`, as `{"query_type", "query": {"type", "value"}, "pagination"?, "sort"?}`. The Composite adds `version`, `reg_type`, `reg_record_type` and the consent.
 
 * **Context:** `subject` (`type`, `value`), `parameters` (every declared parameter; unset ones are `none`), `sources` (the results of `depends_on`: `{id: {status, records}}`), `request_id`, `today` (ISO date) and `use_case`.
 * Use `| tojson` for values.
@@ -193,14 +193,11 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 **`loan-profile`'s settings:** `farmer` mandatory; `season_summaries` and `crop_seasons` optional and `depends_on: [farmer]`; each `timeout_ms: 10000`, `retries: 0` (a slow registry search is not retried: a retry only doubles the wait); `overall_timeout_ms: 25000` (farmer, then the crop sources); `partial_response: allowed`. So the request fails only when the Farmer Registry fails (or denies), and the crop data is best effort.
 
-## Consent mode: passthrough or exchange
+## Consent mode
 
-| Mode | What each registry receives as the consent | Used by |
-| --- | --- | --- |
-| `passthrough` | The partner's consent JWS, unchanged. Each registry validates it with its own CM, so the partner needs a binding in each registry's CM. | A composite inside one installation, with the registries on the same Consent Manager (single install). `consent_id` is not supported. |
-| `exchange` (chart default; the code default is `passthrough`) | Its **own consent token** from the exchange CM. The partner onboards and is bound only at the exchange; each department CM trusts the exchange CM's consent tokens and applies its standing policy for the composite. | The Agri Stack exchange (`agrix`), see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments) |
+The consent mode is `exchange` (the chart default), as on the Agri Stack Exchange (`agrix`, see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is bound only at the Exchange; each department CM trusts the Exchange CM's consent tokens and applies its standing policy for the Composite.
 
-In **exchange** mode, after the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the composite calls the exchange CM's `POST /consent/v1/validate` with:
+After the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
 
 ```json
 {"consent_jws": "<the partner's consent>", "partner_id": "agri-composite",
@@ -209,22 +206,22 @@ In **exchange** mode, after the partner's request signature and consent checks (
                      "requested_scopes": ["<the use case's scopes>"]}}
 ```
 
-With a `consent_id`, the composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. The exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
+With a `consent_id`, the Composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. The Exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the Composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
 
-`partner_id` is the composite's partner ID, which must be one of the exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), and each source's DCI search carries its controller's consent token in `search_criteria.authorize.consent_jws` (where the partner's consent goes in passthrough mode). The registry passes it to its own CM as usual.
+`partner_id` is the Composite's partner ID, which must be one of the Exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), and each source's DCI search carries its controller's consent token in `search_criteria.authorize.consent_jws`. The registry passes it to its own CM as usual.
 
-| Situation (exchange mode) | Result |
+| Situation | Result |
 | --- | --- |
 | Exchange CM answers `deny` | **403** `consent_denied` (with CM's reason code); no registry is called |
 | No consent token for a **mandatory** source's controller | **403** `consent_receipt_missing`; no registry is called |
 | No consent token for an **optional** source's controller | The source is `unavailable`, not called, with `detail: "not called: the exchange Consent Manager issued no consent receipt for <controller>"` |
 | Exchange CM unreachable, timed out, HTTP 408/429/5xx, or no URL configured | **503** `consent_exchange_unavailable` (fails closed) |
 | Exchange CM answers another non-200 or a non-JSON body | **502** `consent_exchange_error` |
-| Use case with `consent.required: false` | The exchange CM is not called and registries get no consent |
+| Use case with `consent.required: false` | The Exchange CM is not called and registries get no consent |
 
 ## Output format
 
-* **The envelope** is DCI-style: `{signature, header, message}`, signed by the composite (detached JWS over `{header, message}`), `header.action: on-query`, `header.status: succ | rjct`.
+* **The envelope** is DCI-style: `{signature, header, message}`, signed by the Composite (detached JWS over `{header, message}`), `header.action: on-query`, `header.status: succ | rjct`.
 * **`message.data` is defined per use case** by its `mapping` and `derived` keys: each output path becomes a nested object (`farmer.name` → `{"farmer": {"name": …}}`).
 * **Records keep the registries' shapes.** Where a mapping copies records (e.g. `land.parcels`, `crops.seasons`), they are the registries' DCI / SPDCI records (e.g. the Farmer Registry's `farm_details`, the Crop Sown Registry's `…:CropSeason` records with `crop_season`, `measures`, `location`, `farmer_reference`), already clamped by each registry to the consented scopes.
 * **This is not an open standard.** The envelope follows DCI conventions; the `data` shape is Agri Stack's, per use case.
@@ -388,18 +385,18 @@ limits:
 | `USE_CASES_DIR` | `use-cases` (`/app/config/use-cases` in the chart) | Use-case directory |
 | `USE_CASES_RELOAD_SECONDS` | `30` | `0` = no reload |
 | `REGISTRIES` | `{}` | JSON `{controller: {url, partner_id?, receiver_id?}}`. `url` is the registry's DCI sync search URL. If `partner_id` (its DCI ID, e.g. `farmer-registry`) is set, the registry's response signature is verified against `PARTNER_<ID>` in PM. |
-| `COMPOSITE_PARTNER_ID` | `agri-composite` | The composite's ID. It is the `sender_id` towards registries, and partners use it as `receiver_id`. |
-| `SIGNING_P12_PATH`, `SIGNING_P12_PASSWORD`, `SIGNING_KID`, `SIGNING_ALGORITHM` | –, –, thumbprint, `auto` | The composite's key. If the kid is set, it must match the kid registered in PM. `auto` picks the algorithm from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256). Without a key every query fails with `signing_unavailable`; the describe endpoints still work. |
+| `COMPOSITE_PARTNER_ID` | `agri-composite` | The Composite's ID. It is the `sender_id` towards registries, and partners use it as `receiver_id`. |
+| `SIGNING_P12_PATH`, `SIGNING_P12_PASSWORD`, `SIGNING_KID`, `SIGNING_ALGORITHM` | –, –, thumbprint, `auto` | The Composite's key. If the kid is set, it must match the kid registered in PM. `auto` picks the algorithm from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256). Without a key every query fails with `signing_unavailable`; the describe endpoints still work. |
 | `PARTNER_MGMT_API_URL` | `http://commons-services-pm-partner-api` | Partner keys are fetched by `PARTNER_<SENDER_ID>` and cached |
 | `PARTNER_KEY_CACHE_TTL_SECONDS`, `PARTNER_KEY_HARD_TTL_SECONDS`, `PARTNER_KEY_NEGATIVE_TTL_SECONDS`, `PARTNER_KEY_REFRESH_COOLDOWN_SECONDS`, `PARTNER_KEY_FETCH_TIMEOUT_SECONDS` | `300`, `21600`, `30`, `10`, `3.0` | Partner key cache: soft TTL, last-known-good during a PM outage, cache of "unknown", refresh cooldown on an unknown `kid`, fetch timeout |
 | `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` | |
 | `REQUEST_MAX_SKEW_SECONDS` | `300` | How far `header.message_ts` may be from now (`0` disables) |
 | `DEFAULT_SOURCE_TIMEOUT_MS`, `DEFAULT_OVERALL_TIMEOUT_MS` | `5000`, `10000` | Used when the use case doesn't set them |
 | `HTTP_MAX_CONNECTIONS`, `HTTP_MAX_KEEPALIVE_CONNECTIONS`, `HTTP_KEEPALIVE_EXPIRY_SECONDS` | `200`, `50`, `30` | One pooled client per worker |
-| `CONSENT_MODE` | `passthrough` | `passthrough` or `exchange` (see [Consent mode](#consent-mode-passthrough-or-exchange)); any other value stops startup |
-| `CONSENT_EXCHANGE_CM_URL` | empty | Exchange mode: the exchange CM partner-api base URL (`/consent/v1/validate` is appended), e.g. `http://commons-services-cm-partner-api` |
-| `CONSENT_EXCHANGE_CM_TIMEOUT_SECONDS` | `5.0` | Exchange mode: timeout of that call |
-| `CORS_ALLOW_ORIGINS` | `[]` | Browser origins allowed to call the composite, as a **JSON list**, e.g. `["https://consent-partner-portal.<namespace>.openg2p.org"]` (the CM partner portal reads the use-case list). The chart renders it from `composite.corsAllowOrigins`; a plain URL or an empty string stops startup. |
+| `CONSENT_MODE` | `exchange` (chart) | Consent mode (see [Consent mode](#consent-mode)); an unknown value stops startup |
+| `CONSENT_EXCHANGE_CM_URL` | empty | The Exchange CM partner-api base URL (`/consent/v1/validate` is appended), e.g. `http://commons-services-cm-partner-api` |
+| `CONSENT_EXCHANGE_CM_TIMEOUT_SECONDS` | `5.0` | Timeout of that call |
+| `CORS_ALLOW_ORIGINS` | `[]` | Browser origins allowed to call the Composite, as a **JSON list**, e.g. `["https://consent-partner-portal.<namespace>.openg2p.org"]` (the CM partner portal reads the use-case list). The chart renders it from `composite.corsAllowOrigins`; a plain URL or an empty string stops startup. |
 | `CONSOLE_ENABLED` | `false` (`true` in the chart) | The staff [console](composite-console.md): admin API, IAM login and a database (`DB_*`) for its call log |
 | `AUDIT_MANAGER_URL` | empty (off) | e.g. `http://commons-services-auditmanager:80` |
 | `AUDIT_TIMEOUT_SECONDS`, `AUDIT_SOURCE` | `2.0`, `/openg2p/agri-composite` | |
@@ -423,10 +420,10 @@ The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"
 | `composite.registries.crop-sown-registry.url` | empty (required) | Integration: Crop Sown Registry Search URL. Full URL, as above |
 | `composite.registries.<controller>.partnerId`, `.receiverId` | empty | values only |
 | `composite.consent.mode` | `exchange` | Agri Stack exchange: Consent Mode |
-| `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL (shown only in exchange mode) |
+| `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL |
 | `composite.corsAllowOrigins` | `https://consent-partner-portal.<namespace>.openg2p.org` | Agri Stack exchange: Allowed Browser Origins (CORS); comma-separated, empty for none. Rendered into `AGRI_COMPOSITE_CORS_ALLOW_ORIGINS` as a JSON list |
-| `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout (shown only in exchange mode) |
-| `console.enabled` | `true` | Console: Enable Console (with its hostname, IAM, database `agri_composite` and portal links in the same group); see [composite console](composite-console.md) |
+| `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
+| `console.enabled` | `true` | Console: Enable Console (with its hostname, IAM, database `agri_composite` and portal links in the same group); see [Composite console](composite-console.md) |
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: the Secret with `composite.p12`, `password`, and optionally `kid` and `algorithm` |
 | `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `false`, `1`, `5` (70% CPU) | Scaling |
 | `composite.replicaCount` | `1` | Scaling (when autoscaling is off) |
@@ -444,5 +441,5 @@ Registry settings (`composite.registries`) are environment variables, so changin
 
 * Pods are stateless; one replica by default. Autoscaling on CPU is opt-in (`composite.autoscaling.enabled`); memory autoscaling is off on purpose.
 * Each worker keeps its own connection pool and partner-key cache.
-* Rate limits are per pod and worker (up to pods × workers × the configured rate in total); limits across pods and daily quotas are to do (shared counters in the composite).
+* Rate limits are per pod and worker (up to pods × workers × the configured rate in total); limits across pods and daily quotas are to do (shared counters in the Composite).
 * Startup never calls a registry; a registry being down only affects requests.

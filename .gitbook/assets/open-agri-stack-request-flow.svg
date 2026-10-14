@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="760" viewBox="0 0 1150 760" role="img" aria-label="Sequence, path B in exchange mode: the bank's signed query with its consent passes the Agriculture Department's ingress to the composite, which checks the bank's signature against the exchange Partner Management and asks the exchange Consent Manager for one signed consent token per registry; the composite searches the Farmer Registry with its consent token, which the Farmer Registry checks at its own Consent Manager (token status at the exchange, intersected with its policy for the composite); then the Crop Sown Registry in the Crops Department, the same way; the composite returns a signed response with a status per source."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="760" viewBox="0 0 1150 760" role="img" aria-label="Sequence, path B in Exchange mode: the bank's signed query with its consent passes the Agriculture Department's ingress to the Composite, which checks the bank's signature against the Exchange Partner Management and asks the Exchange Consent Manager for one signed consent token per registry; the Composite searches the Farmer Registry with its consent token, which the Farmer Registry checks at its own Consent Manager (token status at the Exchange, intersected with its policy for the Composite); then the Crop Sown Registry in the Crops Department, the same way; the Composite returns a signed response with a status per source."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
 .cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
@@ -76,25 +76,27 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
       <text class="lbl" x="507" y="381" text-anchor="middle">4 · DCI search + its consent token</text>
       <line class="ar" x1="695" y1="420" x2="818" y2="420" marker-end="url(#a2)"/>
       <text class="lbl" x="757" y="413" text-anchor="middle">5 · /validate</text>
-      <line class="ar" x1="820" y1="450" x2="572" y2="450" marker-end="url(#a2)"/>
-      <text class="lbl" x="632" y="443" text-anchor="middle">token status</text>
-      <line class="ar d" x1="820" y1="480" x2="697" y2="480" marker-end="url(#a2)"/>
-      <text class="lbl" x="757" y="473" text-anchor="middle">token ∩ policy</text>
-      <line class="ar d" x1="695" y1="514" x2="322" y2="514" marker-end="url(#a2)"/>
-      <text class="lbl" x="507" y="507" text-anchor="middle">6 · ok + released fields</text>
+      <line class="ar" x1="820" y1="448" x2="572" y2="448" marker-end="url(#a2)"/>
+      <text class="lbl" x="696" y="441" text-anchor="middle">token revoked?</text>
+      <line class="ar d" x1="570" y1="472" x2="818" y2="472" marker-end="url(#a2)"/>
+      <text class="lbl" x="696" y="465" text-anchor="middle">status</text>
+      <line class="ar d" x1="820" y1="500" x2="697" y2="500" marker-end="url(#a2)"/>
+      <text class="lbl" x="757" y="493" text-anchor="middle">token ∩ policy</text>
+      <line class="ar d" x1="695" y1="530" x2="322" y2="530" marker-end="url(#a2)"/>
+      <text class="lbl" x="507" y="523" text-anchor="middle">6 · ok + released fields</text>
 
       <!-- 7 Crop Sown Registry -->
       <line class="ar" x1="320" y1="556" x2="953" y2="556" marker-end="url(#a2)"/>
-      <text class="lbl" x="637" y="549" text-anchor="middle">7 · two DCI searches + its consent token (by the Farmer ID from step 6)</text>
+      <text class="lbl" x="637" y="549" text-anchor="middle">7 · two DCI searches (season summaries, crop seasons) + its consent token</text>
       <line class="ar" x1="955" y1="588" x2="1076" y2="588" marker-end="url(#a2)"/>
-      <text class="lbl" x="1016" y="581" text-anchor="middle">/validate</text>
+      <text class="lbl" x="1016" y="581" text-anchor="middle">/validate (as in 5)</text>
       <line class="ar d" x1="1078" y1="618" x2="957" y2="618" marker-end="url(#a2)"/>
       <text class="lbl" x="1016" y="611" text-anchor="middle">token ∩ policy</text>
       <line class="ar d" x1="955" y1="650" x2="322" y2="650" marker-end="url(#a2)"/>
       <text class="lbl" x="637" y="643" text-anchor="middle">ok / no_record / denied / unavailable / error</text>
 
       <!-- 8 response -->
-      <line class="ar" x1="320" y1="700" x2="72" y2="700" marker-end="url(#a2)"/>
+      <line class="ar d" x1="320" y1="700" x2="72" y2="700" marker-end="url(#a2)"/>
       <text class="lbl" x="195" y="693" text-anchor="middle">8 · signed response</text>
       <text class="s" x="195" y="718" text-anchor="middle">status per source; failed → null</text>
     </svg>

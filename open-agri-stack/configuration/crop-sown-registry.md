@@ -1,7 +1,7 @@
 ---
 description: >-
   What is configured in the Crop Sown Registry install for Agri Stack: the data
-  it shares, the Farmer ID and national ID link for consent checks, the composite
+  it shares, the Farmer ID and national ID link for consent checks, the Composite
   as a partner, and the department Consent Manager with its standing policy.
 ---
 
@@ -62,20 +62,20 @@ What each scope covers is on the [Crop Sown Registry](../../products/registry/cr
 
 **Final figures.** A season summary is final (`is_final`) once an administrator locks the season's period in the register's **Settings**. A lender or subsidy programme that must rely on a season's figures should read final summaries. Plans are often made before the season's window, so lock from the planning start, or a late change to a plan makes the summary provisional again.
 
-## The composite as a partner
+## The Composite as a partner
 
-As for the [Farmer Registry](farmer-registry.md#the-composite-as-a-partner), the registry sees only the composite, which names the partner in `header.meta.on_behalf_of`.
+As for the [Farmer Registry](farmer-registry.md#the-composite-as-a-partner), the registry sees only the Composite, which names the partner in `header.meta.on_behalf_of`.
 
 | Where (in `dept1`) | What | Set by |
 | --- | --- | --- |
-| Partner Management | `PARTNER_AGRI_COMPOSITE`, with the composite's public key and `kid` | [Exchange setup](../guides/exchange-setup.md) |
+| Partner Management | `PARTNER_AGRI_COMPOSITE`, with the Composite's public key and `kid` | [Exchange setup](../guides/exchange-setup.md) |
 | Consent Manager, role | **Exchange Role** `department` (trusts `agri-stack-exchange-cm` tokens presented by `agri-composite`) | commons-services form |
 | Consent Manager, binding | Audience `agri-composite`, controller `crop-sown-registry` | [Exchange setup](../guides/exchange-setup.md) |
-| Consent Manager, standing policy | Allowed scopes: every `crop-sown-registry` scope the composite's use cases name (for `loan-profile`, the four above); purposes `credit-assessment`; subject ID types `FAYDA_FAN`, `FARMER_ID`; maximum validity `P90D`; fetch type `oneshot` | [Exchange setup](../guides/exchange-setup.md) |
+| Consent Manager, standing policy | Allowed scopes: every `crop-sown-registry` scope the Composite's use cases name (for `loan-profile`, the four above); purposes `credit-assessment`; subject ID types `FAYDA_FAN`, `FARMER_ID`; maximum validity `P90D`; fetch type `oneshot` | [Exchange setup](../guides/exchange-setup.md) |
 
 ## Searches across farmers
 
-A programme system can read season summaries for many farmers at once (e.g. every final summary for one season for a subsidy run) without a per-farmer consent, only if the registry operator lists it in `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS`. Agri Stack's composite does not use this, and no partner is listed by default. See [Settings only in YAML](../../products/registry/crop-sown-registry/deployment/rancher.md#settings-only-in-yaml).
+A programme system can read season summaries for many farmers at once (e.g. every final summary for one season for a subsidy run) without a per-farmer consent, only if the registry operator lists it in `REGISTRY_PARTNER_API_DCI_BULK_AGGREGATE_PARTNERS`. Agri Stack's Composite does not use this, and no partner is listed by default. See [Settings only in YAML](../../products/registry/crop-sown-registry/deployment/rancher.md#settings-only-in-yaml).
 
 ## Sample data
 

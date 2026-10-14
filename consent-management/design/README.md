@@ -26,9 +26,9 @@ Four things are easily confused; the CM keeps them apart:
 | **Consent object** | A consent the partner collected itself and presents with a request (`consent_jws`) | the partner | as long as its validity | the CM's JSON-LD consent object |
 | **Consent artefact** | The consent as the CM stores it: subject, partner, purpose, a grant per data controller, validity, assurance | — (stored in the CM) | until it expires or is revoked | DEPA (consent artefact) |
 | **Consent receipt** | The proof that a consent was given, created when it is approved (and per decision at `/validate`); the partner's copy is in its consent record | the CM | long-lived | Kantara Consent Receipt v1.1, ISO/IEC 27560 |
-| **Consent token** | A short-lived note the exchange's CM issues for **one** data controller and **one** query, with only the scopes allowed there; the controller's own CM checks it (called *receipt* in the API and settings) | the exchange's CM | about 15 minutes | in the spirit of OAuth 2.0 token exchange (RFC 8693) |
+| **Consent token** | A short-lived note the Exchange's CM issues for **one** data controller and **one** query, with only the scopes allowed there; the controller's own CM checks it (called *receipt* in the API and settings) | the Exchange's CM | about 15 minutes | in the spirit of OAuth 2.0 token exchange (RFC 8693) |
 
-See [data model](data-model.md), [standards](standards-and-best-practices.md) and [exchange consent tokens](exchange-receipts.md).
+See [data model](data-model.md), [standards](standards-and-best-practices.md) and [Exchange consent tokens](exchange-receipts.md).
 
 ## Pages
 
@@ -40,7 +40,7 @@ See [data model](data-model.md), [standards](standards-and-best-practices.md) an
 | [Partner onboarding &amp; policy](partner-onboarding-and-policy.md) | How partner policy bindings and versioned data-share policies are managed and evaluated. |
 | [Partner Management integration](partner-management-integration.md) | How CM fetches and caches partner verifying keys from PM, and holds only a policy binding (no partner identity or keys of its own). |
 | [Approval Workflow integration](approval-workflow-integration.md) | How CM gates data-share policy widening through AWE — pending version, proxied approvals inbox, HMAC webhook, activate/supersede. |
-| [Exchange consent tokens](exchange-receipts.md) | Agri Stack exchange (opt-in): the exchange CM signs a short-lived consent token per registry and query; a department CM accepts tokens from a trusted issuer under its own standing policy. |
+| [Exchange consent tokens](exchange-receipts.md) | Agri Stack Exchange (opt-in): the Exchange CM signs a short-lived consent token per registry and query; a department CM accepts tokens from a trusted issuer under its own standing policy. |
 | [Consent lifecycle](consent-lifecycle.md) | The **secondary** flow: originating consent (request → authenticate → approve → artefact → receipt), revocation, and expiry. |
 | [Consent collection](consent-collection.md) | How a partner seeks consent and how the subject gives it: in person with a form (built), in person digitally, self-service; national-ID login, identifiers and demographics, the partner's copy, the gaps, and the partner portal. |
 | [Security &amp; trust](security-and-trust.md) | Signing and key management, ID-token validation, replay protection, and the threat model. |

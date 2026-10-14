@@ -1,19 +1,19 @@
 ---
 description: >-
-  The composite's read-only staff console: use cases with their data scopes,
+  The Composite's read-only staff console: use cases with their data scopes,
   registries and their scope catalogues, partners and the call log. Staff log
   in through IAM (Keycloak staff realm).
 ---
 
 # Composite Console
 
-The console shows how the composite is set up and what it has been doing. It is **read-only**: use cases, registries and settings are still changed in the Helm values (Git and Helm history record those changes); partner onboarding stays in the Partner Management and Consent Manager portals, which the console links to.
+The console shows how the Composite is set up and what it has been doing. It is **read-only**: use cases, registries and settings are still changed in the Helm values (Git and Helm history record those changes); partner onboarding stays in the Partner Management and Consent Manager portals, which the console links to.
 
 | Page | What it shows |
 | --- | --- |
-| **Overview** | Composite partner ID, consent mode (passthrough or exchange) and exchange Consent Manager, signing key, Audit Manager on/off; counts of use cases (and files that failed to load), registries and partners; calls and failures in the last 24 hours |
+| **Overview** | Composite partner ID, consent mode and Exchange Consent Manager, signing key, Audit Manager on/off; counts of use cases (and files that failed to load), registries and partners; calls and failures in the last 24 hours |
 | **Use cases** | Each published use case: sources and their registry, mandatory/optional, required and optional [data scopes](composite-configuration.md#data-scopes), what the consent must grant per registry, inputs, output fields (with their mapping), allowed partners, and the use case file |
-| **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
+| **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the Composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
 | **Partners** | Every partner named in a use case's `allowed_partners`, its use cases and the keys Partner Management serves for it |
 | **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, duration and each source's status |
 
@@ -26,7 +26,7 @@ Staff log in through the IAM staff portal (Keycloak staff realm), as for Master 
 | `AGRI_COMPOSITE_ADMIN` | `composite:view`, `composite:manage` (kept for editing later) |
 | `AGRI_COMPOSITE_VIEWER` | `composite:view` |
 
-The console's API is `GET /composite/v1/admin/...` on the composite service, allowed only with an IAM session holding `composite:view`. The partner API is unchanged: it needs no session and is not affected by the login checks.
+The console's API is `GET /composite/v1/admin/...` on the Composite service, allowed only with an IAM session holding `composite:view`. The partner API is unchanged: it needs no session and is not affected by the login checks.
 
 ## Call log
 
@@ -34,7 +34,7 @@ The Audit Manager stays the record of every request (it has no read API), so the
 
 ## Install
 
-In the composite's Rancher form, group **Console**, or in Helm values:
+In the Composite's Rancher form, group **Console**, or in Helm values:
 
 | Value | Default | |
 | --- | --- | --- |

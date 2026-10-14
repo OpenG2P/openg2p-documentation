@@ -7,7 +7,7 @@ description: >-
 
 # For Consumers
 
-This page is for teams building on MDS: registries, PBMS, reporting, the composite,
+This page is for teams building on MDS: registries, PBMS, reporting, the Composite,
 and any other service that reads code lists or geography.
 
 {% hint style="info" %}

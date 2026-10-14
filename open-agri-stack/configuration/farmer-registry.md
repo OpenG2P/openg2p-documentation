@@ -1,8 +1,8 @@
 ---
 description: >-
   What is configured in the Farmer Registry install for Agri Stack: the data it
-  shares, the Farmer ID and national ID link, the composite as a partner, and the
-  department Consent Manager with its standing policy for the composite.
+  shares, the Farmer ID and national ID link, the Composite as a partner, and the
+  department Consent Manager with its standing policy for the Composite.
 ---
 
 # Farmer Registry
@@ -24,7 +24,7 @@ Master Data in the same namespace needs the **agriculture** dataset theme (the d
 
 ## What Agri Stack reads
 
-The composite's `loan-profile` use case searches the `Farmer` register, record type `spdci-extensions-dci:Farmer`, with an expression search on `foundational_id` (national ID) or `functional_record_id` (Farmer ID). The record comes with the farmer's land and household.
+The Composite's `loan-profile` use case searches the `Farmer` register, record type `spdci-extensions-dci:Farmer`, with an expression search on `foundational_id` (national ID) or `functional_record_id` (Farmer ID). The record comes with the farmer's land and household.
 
 | Register | Read by Agri Stack |
 | --- | --- |
@@ -44,7 +44,7 @@ The composite's `loan-profile` use case searches the `Farmer` register, record t
 | `farmer-registry.household_location` | Optional | The farmer's location |
 | `farmer-registry.land_location` | Optional | Parcel locations |
 
-A consent without an optional scope still works: those fields come back `null`. The full scope list is on the [Farmer Registry](../../products/registry/farmer-registry/README.md#data-scopes) page; the use case file is explained in [composite configuration](../guides/composite-configuration.md#the-loan-profile-use-case).
+A consent without an optional scope still works: those fields come back `null`. The full scope list is on the [Farmer Registry](../../products/registry/farmer-registry/README.md#data-scopes) page; the use case file is explained in [Composite configuration](../guides/composite-configuration.md#the-loan-profile-use-case).
 
 ## Farmer ID and national ID
 
@@ -54,32 +54,32 @@ Every Agri Stack registry is keyed to the same national identifier. The Farmer R
 * its functional ID is the **Farmer ID** (`FARMER_ID`, e.g. `FR-0007`);
 * the DCI farmer record carries both in `farmer_personal_details.member_identifier`, as `UIN` and `FARMER_ID`.
 
-A partner can ask about a farmer by either. When it sends a FAN, the composite reads the Farmer ID from this record and uses it to search the [Crop Sown Registry](crop-sown-registry.md). When a consent is collected in the exchange's partner portal, Consent Manager staff check the Farmer ID given in the request against this registry before approving it ([consent collection](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
+A partner can ask about a farmer by either. When it sends a FAN, the Composite reads the Farmer ID from this record and uses it to search the [Crop Sown Registry](crop-sown-registry.md). When a consent is collected in the Exchange's partner portal, Consent Manager staff check the Farmer ID given in the request against this registry before approving it ([consent collection](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
 
-## The composite as a partner
+## The Composite as a partner
 
-The registry only sees the composite, never the partner (a bank) directly. The bank's ID travels in `header.meta.on_behalf_of`, which the registry logs.
+The registry only sees the Composite, never the partner (a bank) directly. The bank's ID travels in `header.meta.on_behalf_of`, which the registry logs.
 
 | Where (in `trial`) | What | Set by |
 | --- | --- | --- |
-| Partner Management | `PARTNER_AGRI_COMPOSITE`, with the composite's public key and `kid`. The registry checks the composite's signature against it | [Exchange setup](../guides/exchange-setup.md) |
-| Consent Manager, role | **Exchange Role** `department`: trusts consent tokens from issuer `agri-stack-exchange-cm`, presented by `agri-composite`, signed with the key published at `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json`. Each token's status is checked at the exchange CM | commons-services form ([CM deployment](../../consent-management/deployment/README.md#exchange-optional)) |
+| Partner Management | `PARTNER_AGRI_COMPOSITE`, with the Composite's public key and `kid`. The registry checks the Composite's signature against it | [Exchange setup](../guides/exchange-setup.md) |
+| Consent Manager, role | **Exchange Role** `department`: trusts consent tokens from issuer `agri-stack-exchange-cm`, presented by `agri-composite`, signed with the key published at `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json`. Each token's status is checked at the Exchange CM | commons-services form ([CM deployment](../../consent-management/deployment/README.md#exchange-optional)) |
 | Consent Manager, binding | Audience `agri-composite`, controller `farmer-registry` | [Exchange setup](../guides/exchange-setup.md) |
 | Consent Manager, standing policy | See below | [Exchange setup](../guides/exchange-setup.md) |
 
-### Standing policy for the composite
+### Standing policy for the Composite
 
-The department decides once what it releases through the exchange. Every consent token is then cut down to this policy (token scopes ∩ policy).
+The department decides once what it releases through the Exchange. Every consent token is then cut down to this policy (token scopes ∩ policy).
 
-| Policy field | Value set by the exchange setup |
+| Policy field | Value set by the Exchange setup |
 | --- | --- |
-| Allowed data scopes | Every `farmer-registry` scope the composite's published use cases name, required and optional. For `loan-profile`: the six scopes above |
+| Allowed data scopes | Every `farmer-registry` scope the Composite's published use cases name, required and optional. For `loan-profile`: the six scopes above |
 | Allowed purposes | The use cases' purposes: `credit-assessment` |
 | Allowed subject ID types | `FAYDA_FAN`, `FARMER_ID` |
 | Maximum validity | `P90D` |
 | Fetch type | `oneshot` |
 
-A rerun of the setup only widens this policy, never narrows it. The department can narrow it by hand in its CM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and exchange CMs work together: [exchange consent tokens](../../consent-management/design/exchange-receipts.md).
+A rerun of the setup only widens this policy, never narrows it. The department can narrow it by hand in its CM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md).
 
 ## Sample data
 

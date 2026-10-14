@@ -32,7 +32,7 @@ the **gap we add**.
   [Consent Receipt](data-model.md#consent-receipt-kantara-iso-27560) now carries the full record
   set, signed with an asymmetric key.
 * **Not to be confused with the consent token.** The consent receipt is the long-lived record of
-  a consent. In the Agri Stack exchange the CM also issues
+  a consent. In the Agri Stack Exchange the CM also issues
   [consent tokens](exchange-receipts.md): short-lived JWSs, one per registry and query, that carry
   a subset of a consent to a department CM — akin to an OAuth 2.0 token-exchange token (RFC 8693)
   rather than a receipt.

@@ -1,17 +1,17 @@
 ---
 description: >-
-  Agri Stack exchange — one Consent Manager codebase in two roles: the exchange
+  Agri Stack Exchange — one Consent Manager codebase in two roles: the Exchange
   CM issues signed consent tokens, a department CM accepts them from a trusted
   issuer and applies its own standing policy. Opt-in, off by default.
 ---
 
-# Exchange consent tokens (Agri Stack exchange)
+# Exchange consent tokens (Agri Stack Exchange)
 
 In the [distributed Agri Stack deployment](../../open-agri-stack/design/distributed-deployment-architecture.md)
-a partner (e.g. a bank) onboards and the farmer consents **only at the exchange** (`agrix`), while
+a partner (e.g. a bank) onboards and the farmer consents **only at the Exchange** (the data exchange layer, `agrix`), while
 each department registry (`trial`, `csr`) still decides at its own boundary through its own Consent
 Manager. The link between the two is a **consent token** (called *receipt* in the API and settings):
-a short-lived JWS the exchange CM signs for one registry and one query, which the department CM
+a short-lived JWS the Exchange CM signs for one registry and one query, which the department CM
 verifies and evaluates against its own policy. It is not the long-lived
 [consent receipt](data-model.md#consent-receipt-kantara-iso-27560) document (Kantara / ISO 27560)
 the CM keeps as the record of a consent (all four terms side by side: [key terms](README.md#key-terms)).
@@ -25,7 +25,7 @@ field, a new status endpoint, new reason codes).
 
 | Role | Install | Configured by | What it does |
 | --- | --- | --- | --- |
-| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent as usual and, when a configured **presenter** (the composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
+| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent as usual and, when a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
 | **Department CM** | `trial`, `csr` | `trusted_receipt_issuers` | Accepts a consent token from a trusted issuer on `/validate`, checks it, applies its **standing policy for the presenter**, and returns its normal decision to the registry. |
 
 The registry is unchanged: it calls its **own** CM `/validate` with the consent JWS it received (now
@@ -40,7 +40,7 @@ sequenceDiagram
     participant D as Department CM (trial)
     B->>C: request + farmer consent (signed by bank-a)
     C->>X: POST /validate {consent_jws, partner_id: agri-composite, issue_receipts: true}
-    X->>X: validate each grant vs bank-a's exchange policy
+    X->>X: validate each grant vs bank-a's Exchange policy
     X-->>C: permit + receipts {farmer-registry: token JWS, crop-sown-registry: token JWS}
     C->>R: DCI search, sender_id agri-composite, consent = FR consent token
     R->>D: POST /validate {consent_jws: token, data_controller, partner_id: agri-composite}
@@ -59,15 +59,15 @@ algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27
 
 | Claim | Meaning |
 | --- | --- |
-| `iss` | The exchange CM's issuer ID (`receipt_issuer`, e.g. `agri-stack-exchange-cm`) |
+| `iss` | The Exchange CM's issuer ID (`receipt_issuer`, e.g. `agri-stack-exchange-cm`) |
 | `jti` | Token ID (UUID) — the key for its status |
-| `consent_id` | The exchange CM's consent artefact for this registry |
+| `consent_id` | The Exchange CM's consent artefact for this registry |
 | `aud` | The data controller the token is for (e.g. `farmer-registry`) |
 | `presenter` | Who may present it — the caller that asked for it (e.g. `agri-composite`) |
 | `partner` | The partner that obtained the consent (the consent's `aud`, e.g. `bank-a`) |
 | `sub` | The subject, `{"type": "FAYDA_FAN", "value": "…"}` — same shape as the consent's `subject_id` |
 | `purpose` | Purpose code |
-| `scopes` | Data scope IDs for this registry: the consent's grant ∩ the exchange policy for the partner |
+| `scopes` | Data scope IDs for this registry: the consent's grant ∩ the Exchange policy for the partner |
 | `consent_issued_at` | When the farmer's consent was issued (ISO-8601). Registries use it as "consent time" for data-scope versions |
 | `consent_exp` | Consent expiry (epoch seconds) |
 | `iat`, `nbf`, `exp` | Token times (epoch seconds); `exp` = min(consent expiry, now + `receipt_ttl_seconds`, default 900) |
@@ -126,13 +126,13 @@ When `/validate` receives a JWS whose header `typ` is `consent-receipt+jwt`:
    `receipt_jti` and `receipt_issuer` in the decision log.
 
 The policy's `allowed_signing_algs` governs partner signatures and is not applied to consent tokens
-(the exchange CM's key is trusted through `trusted_receipt_issuers`).
+(the Exchange CM's key is trusted through `trusted_receipt_issuers`).
 
-## Setting up a department for the exchange
+## Setting up a department for the Exchange
 
 1. Choose the department role (Helm `global.agriStackExchange.role: department`, which trusts the
-   exchange CM by default; or set `trustedIssuer` yourself, see
+   Exchange CM by default; or set `trustedIssuer` yourself, see
    [Deployment](../deployment/README.md#exchange-optional)).
 2. Bind the presenter (`agri-composite`) at this CM **for each registry** it may read, with a policy:
-   that policy is the department's standing decision on what the exchange may receive.
+   that policy is the department's standing decision on what the Exchange may receive.
 3. The registry needs no change beyond accepting the presenter as a DCI sender.

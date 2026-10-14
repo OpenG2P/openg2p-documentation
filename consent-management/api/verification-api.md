@@ -37,9 +37,9 @@ against the partner's Partner-Management key referenced by `kid`.
 | `data_controller` | when the consent has `grants` | The **calling registry**. Selects that registry's grant in the consent |
 | `request_context.requested_scopes` | no | Narrows the effective scopes further |
 | `request_context.subject_id` | no | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch` |
-| `issue_receipts` | no (default `false`) | **Exchange role only** ([exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
+| `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
-`consent_jws` may also be a **consent token** (header `typ: consent-receipt+jwt`) from an exchange
+`consent_jws` may also be a **consent token** (header `typ: consent-receipt+jwt`) from an Exchange
 CM. It is accepted only when its issuer is configured as trusted on this CM (department role); then
 `data_controller` must be the token's `aud` and `partner_id` its `presenter`. See
 [Department role: accepting](../design/exchange-receipts.md#department-role-accepting).
@@ -182,7 +182,7 @@ department CM checks before accepting one.
 { "jti": "0b6d1f0e-5c1e-4c1a-9d7e-2f1f6c8a9b10", "status": "active", "checked_at": "2026-10-01T10:00:05Z" }
 ```
 
-`status` ∈ `active | revoked | expired`: `revoked` when the token's consent (the exchange CM's
+`status` ∈ `active | revoked | expired`: `revoked` when the token's consent (the Exchange CM's
 artefact for that registry) is revoked, `expired` after the token's `exp` or the consent's expiry.
 A `404` means this CM issued no such consent token.
 
@@ -211,6 +211,6 @@ The CM's signing public keys, so any party can verify receipts independently.
 This endpoint can return any [shared reason code](README.md#shared-reason-codes). The common
 denials are `unknown_partner`, `signature_invalid`, `audience_mismatch`, `controller_not_granted`,
 `subject_mismatch`, `purpose_not_allowed`, `scope_exceeds_policy`, `expired`, `revoked`, and
-`replay`. With the Agri Stack exchange settings on, also `receipt_presenter_not_allowed`,
+`replay`. With the Agri Stack Exchange settings on, also `receipt_presenter_not_allowed`,
 `receipt_issuer_not_trusted`, `receipt_invalid`, `presenter_mismatch` and
 `receipt_status_unavailable`.

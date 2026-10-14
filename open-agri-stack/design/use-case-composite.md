@@ -1,6 +1,6 @@
 ---
 description: >-
-  Design of the use-case composite: one generic service that serves approved
+  Design of the use-case Composite: one generic service that serves approved
   use cases, each a configuration file — format, publishing checks, runtime,
   and a worked example.
 ---
@@ -8,16 +8,16 @@ description: >-
 # Use-Case Composite
 
 {% hint style="info" %}
-**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See the [composite configuration](../configuration/composite.md) page for what is in it and what is not yet, and the [composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
+**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See the [Composite configuration](../configuration/composite.md) page for what is in it and what is not yet, and the [Composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
 {% endhint %}
 
-A **composite** serves one approved use case, such as `loan-profile`, by querying several departmental registries and returning one response. There is **one generic composite service**; each use case is a **configuration file** that it loads, not new code.
+A **Composite** serves one approved use case, such as `loan-profile`, by querying several departmental registries and returning one response. There is **one generic Composite service**; each use case is a **configuration file** that it loads, not new code.
 
 The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [policy and consent](../architecture/policy-and-consent.md)).
 
 ## Example configuration (full design)
 
-This example, `credit-profile`, is hypothetical: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
+This example, `credit-profile`, is hypothetical: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([Composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
 
 ```yaml
 # ── Identity ──────────────────────────────────────────────────────────────
@@ -113,14 +113,14 @@ audit:
 | Section | Purpose | Notes |
 | --- | --- | --- |
 | **Identity** | Name, version and lifecycle status | Partners call `use_case@major`. A breaking change to the response means a new major version, and the old one is deprecated with a sunset date. |
-| **Governance** | Links the use case to a policy, a purpose and the consent settings | The composite rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). As built, `consent.collection` and `consent.mode` are accepted but not enforced: how consent is checked (passthrough or exchange) is one setting for the whole service, in its Helm chart. |
+| **Governance** | Links the use case to a policy, a purpose and the consent settings | The Composite rejects callers not associated with `policy`. The consent settings follow the [consent model](../architecture/consent-model.md). As built, `consent.collection` and `consent.mode` are accepted but not enforced: how consent is checked is one setting for the whole service, in its Helm chart (`exchange`, the default). |
 | **Input** | What the partner sends: subject identifier types, parameters, batch size | Checked before any registry is called |
 | **Sources** | One entry per registry: controller, whether it's mandatory, the data scopes it needs (`scopes`) and may use (`optional_scopes`), DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
-| **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the composite only bundles the parts. |
-| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
+| **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the Composite only bundles the parts. |
+| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the composite's own settings (`registries`), because PM holds no registry endpoints yet; the composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../configuration/composite.md).
+**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../configuration/composite.md).
 {% endhint %}
 
 ## Checks when a use case is published
@@ -142,7 +142,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 ## What happens at runtime
 
-1. **Ingress:** the OpenG2P deployment's ingress (Nginx, Istio) routes the request to the composite. There is no separate API gateway; the composite does the partner checks below.
+1. **Ingress:** the OpenG2P deployment's ingress (Nginx, Istio) routes the request to the Composite. There is no separate API gateway; the Composite does the partner checks below.
 2. **Composite:**
    * verifies the partner's signature, checks its association with `policy` and applies rate limits;
    * validates the input and selects `use_case@version`;
@@ -157,18 +157,15 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
    * responds, then discards everything.
 5. **Audit:** every step sends an audit event, linked by the request ID.
 
-**Consent.** The partner sends a consent it signed, or the ID of a consent collected at the exchange CM (`message.consent_id`, exchange mode only). How the composite checks it is a service setting (`consent.mode` in the chart):
+**Consent.** The partner sends a consent it signed, or the ID of a consent collected at the Exchange CM (`message.consent_id`). The consent mode is a service setting (`consent.mode` in the chart), `exchange` by default: the Composite calls the Exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed consent token per registry, with only those scopes, and each registry gets its own consent token. Each registry checks its consent token at its own CM ([Exchange consent tokens](../../consent-management/design/exchange-receipts.md)).
 
-* **Exchange mode (chart default):** the composite calls the exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed consent token per registry, with only those scopes, and each registry gets its own consent token. Each registry checks its consent token at its own CM ([exchange consent tokens](../../consent-management/design/exchange-receipts.md)).
-* **Passthrough:** the partner's consent goes to each registry unchanged. For a single install, where the registries share the composite's CM.
-
-Before calling a source, the composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).
+Before calling a source, the Composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).
 
 How the first version runs a request, step by step, is in [Composite](../configuration/composite.md#what-it-does-per-request).
 
 ## Worked example: wheat sown by a farmer this season
 
-The question is "total area of wheat sown by farmer X in this season". Both registries answer with one **synchronous** DCI call each, `POST /dci/registry/sync/search`. Neither registry has an asynchronous search, so the composite never waits for a callback.
+The question is "total area of wheat sown by farmer X in this season". Both registries answer with one **synchronous** DCI call each, `POST /dci/registry/sync/search`. Neither registry has an asynchronous search, so the Composite never waits for a callback.
 
 **Farmer Registry:** who the farmer is. Search the Farmer register by national ID (`foundational_id`; Fayda FAN in the reference setup) or farmer ID (`functional_record_id`):
 
@@ -215,7 +212,7 @@ One record comes back. The answer is at `measures.by_crop.CROP_WHEAT.area_sown_h
 In the built `loan-profile`, the crop sources always declare `depends_on: farmer` and use the subject itself when it is a `FARMER_ID`; calling them in parallel with the farmer when the partner sends a farmer ID is [not built yet](../configuration/composite.md#not-built-yet).
 {% endhint %}
 
-**"This season"** is resolved by the composite (the crop year and season from today's date, using the season windows in the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md#what-the-registry-works-out)) and passed as parameters. Without them, the summaries come back newest first.
+**"This season"** is resolved by the Composite (the crop year and season from today's date, using the season windows in the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md#what-the-registry-works-out)) and passed as parameters. Without them, the summaries come back newest first.
 
 ## Response to the partner (example)
 
@@ -241,10 +238,10 @@ Fields from a source that failed are `null`. As built, this body is the `message
 
 ## Where configurations live
 
-* **Storage:** configuration files, query templates and schemas are kept in a Git repository, reviewed like code, and loaded by the composite service. An admin UI is optional.
+* **Storage:** configuration files, query templates and schemas are kept in a Git repository, reviewed like code, and loaded by the Composite service. An admin UI is optional.
 * **Sandbox:** each published use case appears in the developer sandbox with its schema, sample request and response, and a test harness.
 * **Adding a use case** (e.g. `input-subsidy-eligibility`) means a new configuration file plus the matching PM policy. No code changes are needed unless the use case requires a new kind of derived field.
 
 {% hint style="info" %}
-**First version:** use cases are YAML entries in the composite's Helm values, rendered into a ConfigMap and edited in Rancher's **Edit YAML** view (or your own ConfigMap); the sample is also kept in the repository at [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml). There is no sandbox yet.
+**First version:** use cases are YAML entries in the Composite's Helm values, rendered into a ConfigMap and edited in Rancher's **Edit YAML** view (or your own ConfigMap); the sample is also kept in the repository at [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml). There is no sandbox yet.
 {% endhint %}

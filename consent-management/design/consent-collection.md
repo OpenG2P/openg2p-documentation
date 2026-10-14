@@ -66,14 +66,14 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | Subject's own consents and revocation | **Built** (`/consent/v1/my/…`) |
 | Subject-facing pages: a consent request page and "my consents" | **Built**, but they log in through the staff Keycloak, not national ID |
 | Partner-signed consent presented in each query, checked at `/validate` | **Built** (the path in use today; see the gap below) |
-| **Scenario 1, phase 1:** partner portal and partner realm; requests by partner users, signed-form upload (evidence in object storage), submit, staff verification in the CM console, consents with assurance and receipts; `/validate` by `consent_id` (consent tokens in an exchange deployment); the composite accepts `message.consent_id` | **Built** ([deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)) |
+| **Scenario 1, phase 1:** partner portal and partner realm; requests by partner users, signed-form upload (evidence in object storage), submit, staff verification in the CM console, consents with assurance and receipts; `/validate` by `consent_id` (consent tokens in an Exchange deployment); the Composite accepts `message.consent_id` | **Built** ([deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)) |
 | **Scenario 1, phase 2:** the subject's national-ID login (eSignet: OTP or biometrics) from the partner portal, matched to the request's subject; mandatory when on, together with the signed form and the staff check | **Built** ([how it works](#national-id-authentication-in-the-partner-portal), [deployment](../deployment/README.md#national-id-authentication-of-the-subject-esignet)) |
 
 ## Gaps
 
 | Gap | Scenarios | Notes |
 | --- | --- | --- |
-| ~~A consent the subject gave cannot be used in a query~~ | all | **Done** in an exchange deployment (`/validate` with `consent_id` issues a consent token per registry; registries unchanged). To do: a single install (no exchange CM). |
+| ~~A consent the subject gave cannot be used in a query~~ | all | **Done** in an Exchange deployment (`/validate` with `consent_id` issues a consent token per registry; registries unchanged). |
 | **Partner-signed consent proves nothing about the subject.** The CM checks the partner's signature, its policy, the subject in the consent against the subject in the request, validity and replay; nothing shows the subject took part | today's path | Keep it only for partners trusted to collect consent offline, clearly marked, or retire it. |
 | ~~**National ID authentication**~~ for the subject on a partner user's device | 1 | **Done** for scenario 1 (eSignet). To do: scenario 3 (the subject's own login on the self-service pages). |
 | ~~Evidence~~ (signed form on a request) | 1 | **Done** (bucket `consent-evidence`). To do: encryption at rest beyond the store's, retention and deletion rules. |
@@ -124,15 +124,15 @@ With it a partner can show, without the CM, that this exact signed form backed t
 Most partners will not build their own consent screens, so a central **partner portal** is the main way in; partners with their own systems use the same APIs.
 
 * **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and a signed form (scenario 1), in person digitally (scenario 2), or a link to self-service (scenario 3)); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
-* **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the use-case composite).
+* **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the use-case Composite).
 * **Administration:** a partner admin manages the partner's own portal users (roles: *operator*, who creates requests and runs in-person consent; *partner admin*, who also sees all the partner's consents and manages users).
 * **Not in the portal:** partner policies, keys (approved in Partner Management by staff; at most shown read-only) and the verification of uploaded forms (staff, in the CM console through AWE).
 
-**Ownership:** the consent logic and its evidence (requests, authentication records, uploaded files, verification, the consent and its revocation) belong to the CM, files in the CM's object store bucket. The portal is a partner-facing front end over the CM's APIs (and, in Agri Stack, the composite's); Partner Management needs no partner-facing UI.
+**Ownership:** the consent logic and its evidence (requests, authentication records, uploaded files, verification, the consent and its revocation) belong to the CM, files in the CM's object store bucket. The portal is a partner-facing front end over the CM's APIs (and, in Agri Stack, the Composite's); Partner Management needs no partner-facing UI.
 
 ## Order of work
 
-1. Presenting a stored consent by its ID at `/validate` (and consent tokens from it in an exchange deployment).
+1. Presenting a stored consent by its ID at `/validate` (and consent tokens from it in an Exchange deployment).
 2. Scenario 1: partner portal and partner users, request creation, national ID authentication, evidence upload, staff verification, assurance.
 3. Scenario 2: the subject's digital approval after the national-ID login, and the notification afterwards (builds directly on scenario 1).
 4. Scenario 3: national ID login on the subject pages, redirect back to the partner.
