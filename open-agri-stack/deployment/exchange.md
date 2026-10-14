@@ -77,7 +77,6 @@ For production, add the signing key under `openg2p-consent-manager`: `global.con
 | Field | Value | Why |
 | --- | --- | --- |
 | Base Domain (both commons charts) | The Exchange's own domain, the same in both | Every hostname sits under it. The departments find the Exchange CM under `agrix.<parent domain>`; with another name, each department sets **Exchange Domain** |
-| Partner portal hostname | `consent-partner-portal.<Base Domain>` | Not in the form, and it does not follow Base Domain: it stays `consent-partner-portal.<namespace>.openg2p.org`. Set `openg2p-consent-manager.global.consentPartnerPortalHostname` in **Edit YAML**, and the same origin in the Composite's [CORS](composite.md#cors) |
 | Signing Key (Consent Manager) | **existing** | The demo key is public: anyone could sign consent tokens the departments accept |
 | Signing Key Secret | `agrix-cm-signing` | Created before Commons Services, with keys `cm_signing.p12` and `password` (command below) |
 | Signing Key ID | e.g. `agrix-cm-2026-01` | Published with the public key and stamped on each consent token. Keep it while the key is in use; change it on rotation |

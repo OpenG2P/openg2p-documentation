@@ -36,7 +36,7 @@ Use the departments' public hostnames, never in-cluster service names: each depa
 
 ## For production
 
-The chart's hostnames follow the namespace (`<name>.<namespace>.openg2p.org`), not the commons Base Domain. With any other domain, set them all.
+Every hostname is `<name>.<Base Domain>`. Set **Base Domain** (`global.baseDomain`) to the same value as the commons install; it defaults to `<Base Domain>`.
 
 | Field | Value | Why |
 | --- | --- | --- |
@@ -57,8 +57,9 @@ Every option of the chart, by group. The Rancher form shows the groups below; op
 
 | Value | Default | Form |
 | --- | --- | --- |
-| `global.compositeHostname` | `agri-composite.<namespace>.openg2p.org` | General: Composite Hostname |
-| `global.consoleHostname` | `agri-composite-console.<namespace>.openg2p.org` | Console: Console Hostname |
+| `global.baseDomain` | `<namespace>.openg2p.org` | General: Base Domain |
+| `global.compositeHostname` | `agri-composite.<Base Domain>` | General: Composite Hostname |
+| `global.consoleHostname` | `agri-composite-console.<Base Domain>` | Console: Console Hostname |
 | `global.namespace` | Empty: the install namespace | Values only; the `<namespace>` in every default hostname |
 | `composite.istio.virtualservice.gateway`, `console.ui.istio.virtualservice.gateway` | `internal` | Values only |
 
@@ -138,12 +139,12 @@ On by default: the read-only staff [console](../composite/console.md). Off (`con
 | `console.enabled` | `true` | Console: Enable Console |
 | `console.ui.image.tag` | `develop` | Console: Console UI Image Tag |
 | `console.iam.providerApiUrl` | `http://commons-services-iam-staff-portal-api` | Console: IAM Staff API URL (internal) |
-| `console.iam.publicUrl` | `https://staff-iam.<namespace>.openg2p.org` | Console: IAM Staff API URL (public) |
+| `console.iam.publicUrl` | `https://staff-iam.<Base Domain>` | Console: IAM Staff API URL (public) |
 | `console.iam.redisUrl` | `redis://commons-redis-master:6379/0` | Console: IAM Redis URL |
 | `console.iam.keycloakClientId` | `agri-composite` | Console: Keycloak Client ID (also its IAM application mnemonic) |
-| `console.iam.cookieDomain` | `.<namespace>.openg2p.org` | Console: Cookie Domain |
+| `console.iam.cookieDomain` | `.<Base Domain>` | Console: Cookie Domain |
 | `console.db.hostname`, `dbname`, `user` | `commons-postgresql`, `agri_composite`, `agri_composite_user` | Console: Database Host, Name, User |
-| `console.pmPortalUrl`, `console.cmPortalUrl` | `https://partner-management.<namespace>.openg2p.org`, `https://consent-manager.<namespace>.openg2p.org` | Console: portal links |
+| `console.pmPortalUrl`, `console.cmPortalUrl` | `https://partner-management.<Base Domain>`, `https://consent-manager.<Base Domain>` | Console: portal links |
 | `console.activityRetentionDays` | `90` | Console: Call Log Retention (days); `0` keeps everything |
 | `console.catalogueCacheSeconds` | `300` | Values only: registry data scope catalogues are cached this long |
 | `console.db.createSecret`, `secretName` | `true`, `agri-composite-db` | Values only: the database password Secret, generated once and kept |
@@ -156,7 +157,7 @@ With the console on, the chart runs Jobs that create the database and its user i
 
 | Value | Default | Form |
 | --- | --- | --- |
-| `composite.corsAllowOrigins` | `https://consent-partner-portal.<namespace>.openg2p.org` | Agri Stack exchange: Allowed Browser Origins (CORS) |
+| `composite.corsAllowOrigins` | `https://consent-partner-portal.<Base Domain>` | Agri Stack exchange: Allowed Browser Origins (CORS) |
 
 Browser origins allowed to call the Composite, comma-separated; empty for none. The default is the Exchange CM's partner portal, which reads the published use cases. The chart renders it into `AGRI_COMPOSITE_CORS_ALLOW_ORIGINS` as a JSON list.
 
