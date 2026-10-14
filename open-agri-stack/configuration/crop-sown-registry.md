@@ -69,7 +69,7 @@ As for the [Farmer Registry](farmer-registry.md#the-composite-as-a-partner), the
 | Where (in `dept1`) | What | Set by |
 | --- | --- | --- |
 | Partner Management | `PARTNER_AGRI_COMPOSITE`, with the composite's public key and `kid` | [Exchange setup](../guides/exchange-setup.md) |
-| Consent Manager, role | **Agri Stack Exchange Role** `department` (trusts `agri-stack-exchange-cm` tokens presented by `agri-composite`) | commons-services form |
+| Consent Manager, role | **Exchange Role** `department` (trusts `agri-stack-exchange-cm` tokens presented by `agri-composite`) | commons-services form |
 | Consent Manager, binding | Audience `agri-composite`, controller `crop-sown-registry` | [Exchange setup](../guides/exchange-setup.md) |
 | Consent Manager, standing policy | Allowed scopes: every `crop-sown-registry` scope the composite's use cases name (for `loan-profile`, the four above); purposes `credit-assessment`; subject ID types `FAYDA_FAN`, `FARMER_ID`; maximum validity `P90D`; fetch type `oneshot` | [Exchange setup](../guides/exchange-setup.md) |
 

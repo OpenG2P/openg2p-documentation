@@ -242,11 +242,11 @@ approval policy `consent-manager.policy_change.v1` (approvers: holders of
 approvers that role. Details, settings and the state machine:
 [Approval Workflow (AWE) Integration](../design/approval-workflow-integration.md#enabling-awe-approval).
 
-## Agri Stack exchange — optional
+## Exchange — optional
 
 Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
-install. In Rancher, pick **Agri Stack Exchange Role** (`global.agriStackExchange.role`):
-**exchange** or **department**. The role alone gives working defaults, the ones the Agri Stack test
+install. In Rancher, pick **Exchange Role** (`global.agriStackExchange.role`):
+**exchange** or **department**. The role alone gives working defaults, the reference values the Agri Stack test
 scripts use; the other fields only override them. The exchange CM
 issues short-lived **consent tokens** (called *receipts* in the API and settings), one per registry
 and query; a department CM accepts them. How the two roles work:

@@ -63,7 +63,7 @@ The registry only sees the composite, never the partner (a bank) directly. The b
 | Where (in `trial`) | What | Set by |
 | --- | --- | --- |
 | Partner Management | `PARTNER_AGRI_COMPOSITE`, with the composite's public key and `kid`. The registry checks the composite's signature against it | [Exchange setup](../guides/exchange-setup.md) |
-| Consent Manager, role | **Agri Stack Exchange Role** `department`: trusts consent tokens from issuer `agri-stack-exchange-cm`, presented by `agri-composite`, signed with the key published at `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json`. Each token's status is checked at the exchange CM | commons-services form ([CM deployment](../../consent-management/deployment/README.md#agri-stack-exchange-optional)) |
+| Consent Manager, role | **Exchange Role** `department`: trusts consent tokens from issuer `agri-stack-exchange-cm`, presented by `agri-composite`, signed with the key published at `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json`. Each token's status is checked at the exchange CM | commons-services form ([CM deployment](../../consent-management/deployment/README.md#exchange-optional)) |
 | Consent Manager, binding | Audience `agri-composite`, controller `farmer-registry` | [Exchange setup](../guides/exchange-setup.md) |
 | Consent Manager, standing policy | See below | [Exchange setup](../guides/exchange-setup.md) |
 

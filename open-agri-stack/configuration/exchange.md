@@ -22,7 +22,7 @@ How to install it, form field by form field: [What to install in `agrix`](../gui
 
 ## Consent Manager: exchange role
 
-In the commons-services form, **Agri Stack Exchange Role** is `exchange`. That alone gives these values:
+In the commons-services form, **Exchange Role** is `exchange`. That alone gives these values:
 
 | Setting | Value | Meaning |
 | --- | --- | --- |
@@ -32,7 +32,7 @@ In the commons-services form, **Agri Stack Exchange Role** is `exchange`. That a
 | Signing key | The CM's signing key (same `kid`, same public JWKS) | The demo key for a demo; your own `.p12` (Secret `agrix-cm-signing`) for production. The department CMs fetch the public key from `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json` |
 | AWE approval of policies | Off | Policies take effect when the CM administrator saves them |
 
-A consent token carries only the scopes in the consent's grant for that registry ∩ the partner's policy for that registry ∩ the scopes the use case asks for. Each department CM then applies its own standing policy for the composite on top ([Farmer Registry](farmer-registry.md#standing-policy-for-the-composite), [Crop Sown Registry](crop-sown-registry.md#the-composite-as-a-partner)). The token format, its status check and the department side are in [exchange consent tokens](../../consent-management/design/exchange-receipts.md); every setting is in [CM deployment](../../consent-management/deployment/README.md#agri-stack-exchange-optional).
+A consent token carries only the scopes in the consent's grant for that registry ∩ the partner's policy for that registry ∩ the scopes the use case asks for. Each department CM then applies its own standing policy for the composite on top ([Farmer Registry](farmer-registry.md#standing-policy-for-the-composite), [Crop Sown Registry](crop-sown-registry.md#the-composite-as-a-partner)). The token format, its status check and the department side are in [exchange consent tokens](../../consent-management/design/exchange-receipts.md); every setting is in [CM deployment](../../consent-management/deployment/README.md#exchange-optional).
 
 ## Partner portal
 

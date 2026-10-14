@@ -18,7 +18,7 @@ Where it fits in testing: [testing after install](testing-after-install.md). Par
 | Exchange namespace | Secret `agri-composite-signing` (a generated `.p12`), then a restart of the composite. A Secret whose key the exchange PM already serves is left alone. |
 | Exchange PM and each department PM | The composite (`PARTNER_AGRI_COMPOSITE`) with its signing key: onboarded and approved, or the key added with a key-update request and approved. Each registry checks the composite's signature at its **own** PM. |
 | Each department CM (exchange consent mode) | A binding and policy for the composite (audience `agri-composite`) per registry. **Scopes and purposes come from the composite's published use cases**: per registry, the union of each use case's `consent_scopes` (required and optional) and their purposes. An existing policy is only widened, never narrowed. |
-| Each department CM (checked, not set) | That it trusts the exchange CM's consent tokens for the composite (**Agri Stack Exchange Role** department), and that the exchange CM issues them (role exchange). These are form choices; the script names the missing one and stops. |
+| Each department CM (checked, not set) | That it trusts the exchange CM's consent tokens for the composite (**Exchange Role** department), and that the exchange CM issues them (role exchange). These are form choices; the script names the missing one and stops. |
 
 In passthrough consent mode the registries check each partner's own consent at their CM, so each partner needs a binding there; the script then sets up only the composite's key.
 

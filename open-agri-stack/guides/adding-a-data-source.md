@@ -49,7 +49,7 @@ In **exchange mode** (the chart default) there are two Consent Managers to set u
 
 * **The department CM** (the one the new registry validates with) checks the composite's consent tokens. It needs:
   * a binding and policy for the **composite** (audience `agri-composite`, controller `livestock-registry`, `partner_mgmt_id` `PARTNER_AGRI_COMPOSITE`) with the scopes and purposes of the use cases that read the registry. [`scripts/setup_exchange.py`](exchange-setup.md) creates it from the published use cases ([step 7](#step-7-test));
-  * trust of the exchange CM as a consent-token issuer: **Agri Stack Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). The setup script checks it and stops if it is missing. See [exchange consent tokens](../../consent-management/design/exchange-receipts.md#setting-up-a-department-for-the-exchange).
+  * trust of the exchange CM as a consent-token issuer: **Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). The setup script checks it and stops if it is missing. See [exchange consent tokens](../../consent-management/design/exchange-receipts.md#setting-up-a-department-for-the-exchange).
 * **The exchange CM** checks the partner's consent. For **each partner** that will receive the new data, the CM administrator of the exchange creates a binding of the partner to the new controller and a policy for it ([Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md)):
 
 | Binding | Value |
