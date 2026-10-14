@@ -76,11 +76,13 @@ It is built with **FastAPI**, uses **Kafka** as a durable buffer, and **PostgreS
 
 ## Versions
 
-| Helm Chart Version                                                       | Docker Image                                | Date        | Comments           |
-| ------------------------------------------------------------------------ | ------------------------------------------- | ----------- | ------------------ |
-| [1.0.0](https://github.com/OpenG2P/audit-manager/tree/1.0.0)             | `openg2p/openg2p-audit-manager:1.0.0`       | 2026-07-13  | Stable version     |
-| [1.0.1](https://github.com/OpenG2P/audit-manager/tree/1.0.1)             | `openg2p/openg2p-audit-manager:1.0.1`       | 2026-07-17  | <mark style="color:red;">Stale</mark> — do not use |
-| [0.0.0-develop](https://github.com/OpenG2P/audit-manager/tree/develop)   | `openg2p/openg2p-audit-manager:develop`     | in progress | Active development |
+Every version, with its changes: [Audit Manager changelog](https://openg2p.github.io/versions/audit-manager/CHANGELOG.html).
+
+The `openg2p-audit-manager` chart and the `openg2p/openg2p-audit-manager` image carry the same version. How versions are derived: [Helm & Docker Versioning Strategy and CI](../../../releases/helm-docker-versioning-and-ci/README.md).
+
+{% hint style="warning" %}
+Do not use 1.0.1. It is stale.
+{% endhint %}
 
 ## Source code
 

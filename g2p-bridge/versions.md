@@ -4,43 +4,20 @@ description: G2P Bridge Versions
 
 # Versions
 
-{% hint style="info" %}
-**For the current versions, changelogs, and the exact Helm chart & Docker image links, go here:**
+Every version, with its changes:
 
-## 👉 [G2P Bridge — Versions & Changelog](https://openg2p.github.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html)
+* [G2P Bridge changelog](https://openg2p.github.io/versions/g2p-bridge/CHANGELOG.html) — the `openg2p-bridge` Helm chart and its images.
+* [G2P Bridge Connectors changelog](https://openg2p.github.io/versions/g2p-bridge-connectors/CHANGELOG.html) — the reference connectors in [`g2p-bridge-connectors`](https://github.com/OpenG2P/g2p-bridge-connectors). The Celery image pulls them by git ref at build time.
 
-That page is **generated on every build and is always up to date**. The
-[historical tables](#historical-versions) further down are kept only as a record of the
-pre-GitLab builds.
-{% endhint %}
+All OpenG2P components are indexed at [openg2p.github.io/versions](https://openg2p.github.io/versions/).
 
-## How versioning & publishing work
-
-G2P Bridge is now built and published **entirely on GitLab** (previously GitHub + Docker
-Hub), using OpenG2P's shared Helm & Docker packaging pipeline. In brief:
-
-* **One immutable version per commit** — `0.0.0-develop.<n>` on `develop` (by commit
-  ordinal) and a frozen `N.N.N` on release (promote-on-release). A version is never
-  rebuilt or overwritten.
-* **Helm charts** are published to the **shared OpenG2P Helm registry**, so one
-  Rancher/Helm repo lists every OpenG2P chart (Bridge included):
-  [hub.docker.com/u/openg2p](https://hub.docker.com/u/openg2p).
-* **Docker images** live in **each repo's own Container Registry** — the Bridge's are at
-  `openg2p/openg2p-bridge/<name>` (`partner-api`,
-  `bene-portal-api`, `celery`, `example-bank-*`).
-* **Changelogs** are generated from commit messages onto the changelog page linked above.
-
-This scheme is the same across all OpenG2P repos and is documented once — for the full
-details see
-**[Helm & Docker Versioning Strategy and CI](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci)**.
+The `openg2p-bridge` Helm chart and its Docker images (`openg2p-bridge-partner-api`, `-bene-portal-api`, `-celery`, `-example-bank-*`) carry the same version. How versions are derived: [Helm & Docker Versioning Strategy and CI](../releases/helm-docker-versioning-and-ci/README.md).
 
 ***
 
-## Historical versions
+## Earlier versions
 
-The tables below are a **read-only record of builds published before the GitLab move** —
-Docker Hub images and the GitHub `openg2p-helm` chart. They are **not** updated for GitLab
-builds; for those, always use the [changelog page](https://openg2p.github.io/versions/g2p-bridge-g2p-bridge/CHANGELOG.html) above.
+The G2P Bridge changelog starts at 1.1.0 (18-Jul-2026). Earlier builds are listed below.
 
 {% hint style="warning" %}
 **Two similarly-named charts — don't confuse them.** The **current** chart is
@@ -51,18 +28,17 @@ in the Rancher list, and are **not compatible**. For any new install use
 **`openg2p-bridge`**.
 {% endhint %}
 
-### Previous versions
+### `openg2p-bridge` before 1.1.0
 
-The last builds of the **current** `openg2p-bridge` chart under the old (Docker Hub +
-GitHub `openg2p-helm`) scheme, up to `1.0.0` and the final `0.0.0-develop.<run>` dev build:
+The last builds of the current `openg2p-bridge` chart before the changelog starts:
 
 <table><thead><tr><th width="180">Helm Chart &#x26; Version</th><th>G2P Bridge Runtimes</th><th width="123">Last modified</th><th>Contents</th></tr></thead><tbody><tr><td><strong><code>openg2p-bridge</code></strong><br>(Rancher: “OpenG2P Bridge”)<br><br><a href="https://github.com/OpenG2P/g2p-bridge/tree/develop">0.0.0-develop.41</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-partner-api/tags">openg2p-bridge-partner-api:develop</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-bene-portal-api/tags">openg2p-bridge-bene-portal-api:develop</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-celery/tags">openg2p-bridge-celery:develop</a><br><br>openg2p-bridge-example-bank-{api,celery-beat-producers,celery-workers}:develop</td><td>01-Jul-2026</td><td><p><strong>Rolling <code>develop</code> build.</strong> Major changes vs 1.0.0:</p><ol><li><strong>Partner signatures verified via the Partner Manager (PM) service</strong> (openg2p-fastapi-common <code>PartnerMgmtKeyStore</code>) — no MOSIP Keymanager and no local key store; the Bridge fetches partner public keys from PM.</li><li><strong>Partner API signature validation enabled by default in the chart</strong> (secure-by-default; the app-config default is off): inbound verify + signed Bridge→SPAR resolve. Partners (incl. <code>PARTNER_G2P_BRIDGE</code>) are onboarded in Partner Manager — the trial's <code>pm-seed</code> Job does this automatically.</li><li>Local <code>.p12</code> signing key with demo / inline / existing-secret modes.</li><li>Sanity smoke + e2e run as a post-install hook by default (can fail the deploy).</li><li>Deployment hardening: pre-upgrade DB password-sync hook + fail-loud <code>migrate</code>.</li></ol></td></tr><tr><td><strong><code>openg2p-bridge</code></strong><br>(Rancher: “OpenG2P Bridge”)<br><br><a href="https://github.com/OpenG2P/g2p-bridge/tree/v1.0.0">1.0.0</a></td><td><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-partner-api/tags">openg2p-bridge-partner-api:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-bene-portal-api/tags">openg2p-bridge-bene-portal-api:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-celery/tags">openg2p-bridge-celery:1.0.0</a><br>(single image, run as beat <em>and</em> worker)<br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-example-bank-api/tags">openg2p-bridge-example-bank-api:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-example-bank-celery-beat-producers/tags">openg2p-bridge-example-bank-celery-beat-producers:1.0.0</a><br><br><a href="https://hub.docker.com/r/openg2p/openg2p-bridge-example-bank-celery-workers/tags">openg2p-bridge-example-bank-celery-workers:1.0.0</a></td><td>26-Jun-2026</td><td><p><strong>Intermediate Stable Version</strong></p><ol><li><strong>Single consolidated chart for the complete installation.</strong> <mark style="color:red;">Incompatible with previous Helm chart versions.</mark></li><li>Source consolidated into a <strong>single repository</strong>, <code>g2p-bridge</code> (previously seven repos).</li><li>Added Keycloak client provisioning via the <code>keycloak-init</code> <a href="deployment/keycloak-client.md">Learn more >></a></li><li><strong>Digital cash transfer needs no PBMS or Registry.</strong> <a href="deployment/deployment-of-example-bank.md">Learn more >></a></li><li>Single Celery Docker image, run as beat producer or worker by Helm configuration.</li><li>Added an <a href="deployment/teardown.md">uninstall script</a> that fully tears down the release cleanly</li><li><strong>Partner API authentication is disabled by default in this version</strong> — inbound signature validation is off; when enabled, 1.0.0 validates signatures via <strong>MOSIP Keymanager</strong> (the <code>keycloak-init</code> client authenticates to it). From <code>develop</code> this is replaced by in-process local JWS (no Keymanager).</li></ol></td></tr></tbody></table>
 
 ***
 
-## Legacy Versions
+### Legacy versions
 
-These versions predate the repository/chart consolidation. They were built from the older multi-repository layout (`openg2p-g2p-bridge-deployment`, `openg2p-g2p-bridge-example-bank-deployment`, etc.) with a separate chart per service. They are **not compatible** with the consolidated chart above.
+These versions predate the repository/chart consolidation. They were built from the older multi-repository layout (`openg2p-g2p-bridge-deployment`, `openg2p-g2p-bridge-example-bank-deployment`, etc.) with a separate chart per service. They are **not compatible** with the consolidated chart above. The legacy `openg2p-g2p-bridge` 1.1.0 below is not the `openg2p-bridge` 1.1.0 in the changelog.
 
 Their Docker images use the **`openg2p-g2p-bridge-*`** prefix (the extra `g2p`) — e.g. `openg2p-g2p-bridge-partner-api`, `openg2p-g2p-bridge-celery-workers` — which is what distinguishes them from the current chart's `openg2p-bridge-*` images.
 

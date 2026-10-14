@@ -184,6 +184,10 @@ helm -n <namespace> install keycloak-init .
 
 ### Versions
 
+Every version, with its changes: [Keycloak Init changelog](https://openg2p.github.io/versions/keycloak-init/CHANGELOG.html).
+
+The changelog starts at 1.2.0 (2026-09-01). Earlier versions:
+
 | Helm Chart Version                                               | Date        | Contents                                                                                                        |
 | ---------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
 | [1.1.1](https://github.com/OpenG2P/keycloak-init/tree/v1.1.1)    | 08 May 2026 | Proper valid redirect URL feature added. See. [G2P-4456](https://openg2p.atlassian.net/browse/G2P-4456)         |
