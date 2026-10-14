@@ -16,3 +16,5 @@ redirects:
   open-agri-stack/architecture/register-vs-activity-register: products/registry/registry/features/activity-register.md
   open-agri-stack/design/activity-register: products/registry/registry/design/activity-register.md
   open-agri-stack/design/crop-sown-registry: products/registry/crop-sown-registry/README.md
+  open-agri-stack/architecture/consent-model: open-agri-stack/architecture/consent.md
+  open-agri-stack/architecture/consent-scenarios: open-agri-stack/architecture/consent.md

@@ -8,7 +8,7 @@ description: >-
 
 # Request Flow
 
-The farmer has already given the bank consent, as in [consent scenarios](consent-scenarios.md). This page follows what happens when the bank uses it.
+The farmer has already given the bank consent, as in [consent](consent.md#how-a-farmer-gives-consent). This page follows what happens when the bank uses it.
 
 The worked example is path B ([architecture](README.md#components-and-who-talks-to-whom)) in **Exchange mode**, the Composite's default: a bank asks for a farmer's `loan-profile@1`, with data from the Farmer Registry (Agriculture Department) and the Crop Sown Registry (Crops Department).
 
@@ -19,7 +19,7 @@ Solid arrows are requests; dashed arrows are replies.
 ## Steps
 
 1. **Bank → Composite.** The bank's system sends a signed query for `loan-profile@1` with the farmer's identifier (national ID FAN or Farmer ID) and the consent, as either:
-   * `message.consent_id`: the ID of a consent collected in the Exchange CM (the usual case, [scenario 1](consent-scenarios.md)); or
+   * `message.consent_id`: the ID of a consent collected in the Exchange CM (the usual case, [scenario 1](consent.md)); or
    * `message.consent_jws`: a consent the bank signed itself, with one grant per registry.
 
    The Agriculture Department's ingress (Nginx, Istio) routes it to the Composite. There is no separate API gateway (see [entry point](README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)).

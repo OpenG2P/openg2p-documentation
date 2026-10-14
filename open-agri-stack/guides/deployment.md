@@ -199,7 +199,7 @@ For production, also:
 | Token Issuer ID, Token Presenters | only to differ from `agri-stack-exchange-cm`, `agri-composite` | The departments must then be given the same values |
 | Required Subject Identifiers, Composite URL | only to differ from `FARMER_ID`, `agri-composite.<this domain>` | |
 
-The signed forms are kept in Garage (bucket `consent-evidence`, created by commons-base). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)). How consent is collected: [consent scenarios](../architecture/consent-scenarios.md).
+The signed forms are kept in Garage (bucket `consent-evidence`, created by commons-base). A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)). How consent is collected: [consent](../architecture/consent.md).
 
 {% hint style="info" %}
 **Department installs** (`trial`, `dept1`) use the same form with the commons defaults, plus, under the Consent Manager, **Exchange Role** **department**. That trusts consent tokens from `agri-stack-exchange-cm`, presented by `agri-composite`, with the key at `https://consent-manager-partner.agrix.<parent domain>/…/.well-known/jwks.json` (e.g. `agrix.openg2p.org` for `trial.openg2p.org`). Set **Exchange Domain** only when the Exchange is elsewhere; for production, their own signing key.

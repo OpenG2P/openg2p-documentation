@@ -31,7 +31,7 @@ Each department runs its own Kubernetes cluster behind its own ingress (Nginx, I
    * the **[Composite](use-case-composite.md)**, which runs the use cases across registries;
    * **PM**, where OAN partners onboard **once**;
    * **CM** in the exchange role, where the farmer gives consent **once**, for all registries, and which issues one consent token per registry;
-   * the CM's **partner portal**, where partner staff raise consent requests, and **eSignet**, for the farmer's national-ID login ([consent scenarios](../architecture/consent-scenarios.md));
+   * the CM's **partner portal**, where partner staff raise consent requests, and **eSignet**, for the farmer's national-ID login ([consent](../architecture/consent.md));
    * the **catalogue**, shared codes and geography;
    * **audit** of who asked what through the Exchange;
    * planned: **notifications** to farmers (consent requests) and **usage metering** (per-partner quotas; billing later, for a marketplace).
@@ -60,7 +60,7 @@ A third path, registry to registry, is not in use ([registry data sync](registry
 
 The partner (e.g. a bank) **asks** for consent; the **Exchange CM issues** it. One consent object covers all registries the use case reads: a grant per registry (e.g. FR: identity, land; CSR: crop seasons), the purpose, the validity and the farmer's ID.
 
-* **CM-originated (recommended for the Exchange):** the consent is collected and kept by the Exchange CM, so the partner cannot fabricate it. **Built:** in person at the bank (scenario 1): partner staff raise the request in the partner portal, the farmer logs in with the national ID through eSignet and signs a form, and CM staff verify it, checking the Farmer ID in the Farmer Registry. The partner then queries with the consent's ID (`message.consent_id`) and can download the consent record. **Planned:** in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to the farmer. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
+* **CM-originated (recommended for the Exchange):** the consent is collected and kept by the Exchange CM, so the partner cannot fabricate it. **Built:** in person at the bank (scenario 1): partner staff raise the request in the partner portal, the farmer logs in with the national ID through eSignet and signs a form, and CM staff verify it, checking the Farmer ID in the Farmer Registry. The partner then queries with the consent's ID (`message.consent_id`) and can download the consent record. **Planned:** in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to the farmer. See [consent](../architecture/consent.md) and [consent collection](../../consent-management/design/consent-collection.md).
 * **Partner-embedded:** the bank collects consent in its own app and signs it. Weaker; acceptable only with proof the farmer authenticated.
 
 ### Two kinds of policy, one inside the other
@@ -163,7 +163,7 @@ Platform items are opt-in and default off; see [the phases](#changes-in-phases).
 
 * **Consent trust, next:** per-partner choice of which CM to trust.
 * **Policy subset check:** the Exchange CM refuses a partner policy that grants more than a department's Exchange policy allows (needs departments to publish their Exchange policy and scope catalogue).
-* **More consent scenarios** in the Exchange CM: in person digitally (no form, no staff step), and self-service, with notifications to farmers ([consent scenarios](../architecture/consent-scenarios.md)).
+* **More consent scenarios** in the Exchange CM: in person digitally (no form, no staff step), and self-service, with notifications to farmers ([consent](../architecture/consent.md)).
 * **Exchange-tier install:** by hand in Rancher today. Later: a scripted install with pinned chart versions.
 * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, Exchange CM), back in the Rancher form; setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs).
 * **Catalogue across departments:** read access for department registries (signed requests or an exchange-issued client), publishers per department.

@@ -24,7 +24,7 @@ description: >-
 **B — distributed registries, through the Composite** (the OAN layer). The partner onboards once, in the Exchange, and uses one consent for several registries. The Composite runs only approved use cases (each a configuration file, such as `loan-profile`); there is no general query engine across registries.
 
 1. **Consent request.** The partner asks for the farmer's consent at the Exchange's Consent Manager, for example from the partner portal.
-2. **Consent.** The farmer gives it through one of several mechanisms ([consent scenarios](consent-scenarios.md)), always proving who they are with the national ID (eSignet). Once it is active, the partner can use it.
+2. **Consent.** The farmer gives it through one of several mechanisms ([consent](consent.md#how-a-farmer-gives-consent)), always proving who they are with the national ID (eSignet). Once it is active, the partner can use it.
 3. **Query.** The partner's system sends a signed query to the Composite with the consent (its ID, or a consent the partner signed).
 4. **Consent tokens.** The Composite asks the Exchange's Consent Manager for one signed consent token per registry, with only the scopes the use case needs.
 5. **Search.** The Composite searches each registry with its consent token: the Farmer Registry in the same cluster, the Crop Sown Registry in the Crops Department's.
@@ -61,8 +61,7 @@ A gateway product is worth adding only if many partner-facing APIs from differen
 
 | Page | Covers |
 | --- | --- |
-| [Consent model](consent-model.md) | One consent for the partner, one grant per registry |
-| [Consent scenarios](consent-scenarios.md) | How a farmer gives a bank consent: in person with a form (built), in person digitally, self-service |
+| [Consent](consent.md) | One consent per partner and farmer with a grant per registry; how a farmer gives it (in person with a form, built; in person digitally; self-service) |
 | [Policy and consent](policy-and-consent.md) | What gets released; policy vs use case vs consent |
 | [Request flow](request-flow.md) | One request, end to end |
 | [Registry model](registry-model.md) | Register, table and activity-register kinds; projections; where reference data lives |

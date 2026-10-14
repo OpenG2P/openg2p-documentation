@@ -45,7 +45,7 @@ See the PM [API reference](../../platform/platform-services/partner-management/a
 
 ## Step 3 — Bindings and policies in the Consent Manager
 
-There are two Consent Managers to set up ([consent scenarios](../architecture/consent-scenarios.md)):
+There are two Consent Managers to set up ([consent](../architecture/consent.md)):
 
 * **The department CM** (the one the new registry validates with) checks the Composite's consent tokens. It needs:
   * a binding and policy for the **Composite** (audience `agri-composite`, controller `livestock-registry`, `partner_mgmt_id` `PARTNER_AGRI_COMPOSITE`) with the scopes and purposes of the use cases that read the registry. [`scripts/setup_exchange.py`](exchange-setup.md) creates it from the published use cases ([step 7](#step-7-test));

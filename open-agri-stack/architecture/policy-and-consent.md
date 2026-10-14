@@ -79,4 +79,4 @@ Through the Composite, as built:
 * **PM:** add policy, policy-section and association entities, with optional AWE approval per section.
 * **CM:** `/validate` reads policies from PM instead of CM's own `PartnerPolicy` tables.
 * **Composite service:** check each use case against its PM policy when the use case is published (see [publish checks](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
-* **Consent:** see the [consent model](consent-model.md).
+* **Consent:** see [consent](consent.md).

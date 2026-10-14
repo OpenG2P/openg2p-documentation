@@ -30,6 +30,19 @@ Four things are easily confused; the CM keeps them apart:
 
 See [data model](data-model.md), [standards](standards-and-best-practices.md) and [Exchange consent tokens](exchange-receipts.md).
 
+## Design decisions
+
+| Decision | Why | Details |
+| --- | --- | --- |
+| **One consent, a grant per data controller.** A partner asks the subject once for everything it needs; the consent lists a grant per registry (data controller). | The partner thinks in terms of the data it needs, not of who holds it. The subject sees one request. India's Account Aggregator works the same way: one consent artefact, several data providers. | [Verification & enforcement](verification-and-enforcement.md), [data model](data-model.md) |
+| **Each data controller validates only its own grant, at its own CM.** `/validate` takes the calling controller and returns its grant ∩ its policy. | Each department stays sovereign over its data: no other party decides what it releases. | [Verification & enforcement](verification-and-enforcement.md) |
+| **Replay and usage are counted per consent and controller.** | One consent is presented to several registries; one-shot and periodic limits apply to each separately. | [Security & trust](security-and-trust.md) |
+| **Consent is preferably collected by the CM.** The partner can also sign a consent it collected itself. | Departments trust a consent the CM witnessed (national-ID login, evidence, verification) more than one a partner vouches for, and the subject sees the same process whoever asks. | [Consent collection](consent-collection.md) |
+| **The subject proves who they are with the national ID; an SMS is only a notification.** Demographics shown to staff come from that login and are never compared automatically. | A phone number or a reply proves little. Registry data is not exposed to the CM. | [Consent collection](consent-collection.md#identifiers-and-demographics) |
+| **The stored consent never changes.** The partner's downloadable consent record only adds to it (evidence, the CM's signed statement). | The consent stays the single source of truth; the record is a copy the partner can prove. | [Consent collection](consent-collection.md#the-partners-copy-of-a-consent) |
+| **Across installs, a short-lived consent token per controller** instead of passing the consent on. The issuing CM signs a token with only that controller's allowed scopes; the controller's CM verifies it, checks its status, and applies its own policy. Only named presenters may ask for tokens. | A controller in another install sees only what concerns it, for one query; revocation takes effect at once; a stolen token is useless to anyone else. | [Exchange consent tokens](exchange-receipts.md) |
+| **Data-share policies are in the CM today; Partner Management will hold them.** | Policies describe the partner agreement, which belongs with the partner; the CM keeps the consents. | [Partner onboarding & policy](partner-onboarding-and-policy.md) |
+
 ## Pages
 
 | Page | What it covers |

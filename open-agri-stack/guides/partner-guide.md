@@ -49,7 +49,7 @@ sequenceDiagram
   C-->>P: one signed response, status per source
 ```
 
-You never call the registries or `/validate` yourself. The Composite takes your consent to the **Exchange Consent Manager** (the CM of the Agri Stack Exchange), which checks it against your bindings and policies there and issues **one signed consent token per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own consent token and validates it at **its own department CM**, which trusts the Exchange CM's consent tokens. The Composite only routes, maps and signs; it stores nothing. See [consent scenarios](../architecture/consent-scenarios.md).
+You never call the registries or `/validate` yourself. The Composite takes your consent to the **Exchange Consent Manager** (the CM of the Agri Stack Exchange), which checks it against your bindings and policies there and issues **one signed consent token per registry**, limited to `grant ∩ policy ∩ the use case's scopes`. Each registry gets only its own consent token and validates it at **its own department CM**, which trusts the Exchange CM's consent tokens. The Composite only routes, maps and signs; it stores nothing. See [consent](../architecture/consent.md).
 
 ## What you need, and who sets it up
 
@@ -202,7 +202,7 @@ Data is released only against the farmer's consent for the specific purpose and 
 
 There are two ways to present it.
 
-**A consent held in the Consent Manager (`consent_id`).** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda in the reference setup, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then send the consent's ID as `message.consent_id` ([step 8](#step-8-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. This needs the Composite's Exchange mode. See [consent scenarios](../architecture/consent-scenarios.md) and [consent collection](../../consent-management/design/consent-collection.md).
+**A consent held in the Consent Manager (`consent_id`).** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda in the reference setup, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then send the consent's ID as `message.consent_id` ([step 8](#step-8-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. This needs the Composite's Exchange mode. See [consent](../architecture/consent.md) and [consent collection](../../consent-management/design/consent-collection.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 7](#step-7-build-and-sign-the-consent)). What that means for you:
 

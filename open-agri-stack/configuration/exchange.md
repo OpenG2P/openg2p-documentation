@@ -45,7 +45,7 @@ A consent token carries only the scopes in the consent's grant for that registry
 | Composite URL | `https://agri-composite.<this domain>` | The portal lists the Composite's published use cases and fills a request's grants from them. The Composite allows the portal's origin by default (`composite.corsAllowOrigins`) |
 | Evidence storage | Garage, bucket `consent-evidence` | The form the farmer signed |
 
-Partner users log in to the portal through the CM's `partner` realm in Keycloak. They are created with `setup-partner-realm.sh` from the consent-manager repository; a user's `partner_id` must be the partner's ID as bound in the CM (e.g. `bank-a`). How a consent is collected, verified and handed to the partner: [consent collection](../../consent-management/design/consent-collection.md) and [consent scenarios](../architecture/consent-scenarios.md).
+Partner users log in to the portal through the CM's `partner` realm in Keycloak. They are created with `setup-partner-realm.sh` from the consent-manager repository; a user's `partner_id` must be the partner's ID as bound in the CM (e.g. `bank-a`). How a consent is collected, verified and handed to the partner: [consent collection](../../consent-management/design/consent-collection.md) and [consent](../architecture/consent.md).
 
 ## Partner Management
 
@@ -77,7 +77,7 @@ The CM administrator creates these ([partner guide, step 3](../guides/partner-gu
 
 ## Not built yet
 
-* Consent given in person digitally (no form, no staff step) and self-service consent by the farmer ([consent scenarios](../architecture/consent-scenarios.md)).
+* Consent given in person digitally (no form, no staff step) and self-service consent by the farmer ([consent](../architecture/consent.md#how-a-farmer-gives-consent)).
 * Policies held in Partner Management rather than in the Consent Manager.
 * A consent collected in the Exchange CM presented directly at a registry, without the Composite.
 
