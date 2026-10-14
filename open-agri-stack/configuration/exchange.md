@@ -15,10 +15,10 @@ The **Exchange** is the install where partners (banks, MFIs, agritechs) onboard 
 | Consent Manager (CM) | [Consent Manager](../../consent-management/README.md) | Holds the farmers' consents and the partners' policies; issues a consent token per registry to the Composite |
 | Partner portal | Part of the Consent Manager | Partner staff record a consent given in person |
 | eSignet, mock identity system | Commons services | The farmer's national-ID login in the partner portal; the mock identity system stands in for the national ID system (Fayda) in testing |
-| Use-case Composite | [agri-stack](https://github.com/openg2p/agri-stack) | The partners' entry point; see [Composite](composite.md) |
+| Composite | [agri-stack](https://github.com/openg2p/agri-stack) | The partners' entry point; see [Composite](composite.md) |
 | Audit Manager | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | The Composite's audit events |
 
-How to install it, form field by form field: [What to install in `agrix`](../guides/deployment.md#what-to-install-in-agrix). The one-time setup after install: [Exchange setup](../guides/exchange-setup.md). Why the Exchange and the departments are split this way: [distributed deployment architecture](../design/distributed-deployment-architecture.md).
+How to install it, form field by form field: [What to install in `agrix`](../guides/deployment.md#what-to-install-in-agrix). The one-time setup after install: [Exchange setup](../guides/exchange-setup.md). Why the Exchange and the departments are split this way: [across departments](../architecture/README.md#across-departments).
 
 ## Consent Manager: exchange role
 

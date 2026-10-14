@@ -48,7 +48,7 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 The script covers only the partner's side. The rest is part of installing the environment, and the query fails if it is missing. Run the [Exchange setup](exchange-setup.md) first; [testing after install](testing-after-install.md) gives the whole order:
 
 * the Composite, with its signing key onboarded in PM as `agri-composite`;
-* in a [distributed deployment](../design/distributed-deployment-architecture.md), each department's PM and CM set up for the Composite (its key; a binding and policy for `agri-composite`), and each department CM trusting the Exchange CM's consent tokens.
+* with [departments and the Exchange](../architecture/README.md#across-departments), each department's PM and CM set up for the Composite (its key; a binding and policy for `agri-composite`), and each department CM trusting the Exchange CM's consent tokens.
 
 ## With a consent the farmer gave (partner portal)
 

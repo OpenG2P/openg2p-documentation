@@ -20,7 +20,7 @@ Agri Stack is installed into one environment (namespace) from OpenG2P Helm chart
 | 3 | Farmer Registry | `openg2p-farmer-registry` ("OpenG2P Farmer Registry") | `fr` |
 | 4 | Crop Sown Registry | `openg2p-crop-sown-registry` ("OpenG2P Crop Sown Registry") | `csr` |
 | 5 | PM and CM entries for the Composite and the partners; the Composite's signing Secret | — | — |
-| 6 | Use-case Composite | `openg2p-agri-composite` ("Agri Stack Composite") | e.g. `agri-composite` |
+| 6 | Composite | `openg2p-agri-composite` ("Agri Stack Composite") | e.g. `agri-composite` |
 | 7 | Exchange setup and test | [Testing after install](testing-after-install.md) | — |
 
 The Composite has no default registry URLs: in step 6, give each registry's full partner API URL, e.g. `https://partner-fr.<dept-domain>/dci/registry/sync/search`. A registry in the same cluster can also be reached as `http://<release>-partner-api.<namespace>.svc.cluster.local/dci/registry/sync/search`.
@@ -28,7 +28,7 @@ The Composite has no default registry URLs: in step 6, give each registry's full
 ## Commons services: Master Data, PM, CM
 
 {% hint style="info" %}
-Master Data is the commons component that serves Agri Stack's **catalogues** (datasets such as lists of crops and seasons, reference entities, geography). See [catalogues](../architecture/registry-model.md#catalogues).
+Master Data is the commons component that serves Agri Stack's **catalogues** (datasets such as lists of crops and seasons, reference entities, geography). See [catalogues](../README.md#catalogues-platform-services-and-the-exchange).
 {% endhint %}
 
 See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In the `openg2p-commons-services` form:
@@ -72,7 +72,7 @@ Install as in [Crop Sown Registry → Deploying on Rancher](../../products/regis
 | **Load Sample Data** and **Load sample crop seasons** | **Off by default.** On for a demo: the sample clusters, then the sample crop seasons, loaded by the post-install Job `<release>-activity-samples`. They use the same farmer and plot IDs as the Farmer Registry's sample data ([Sample data](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data)) |
 | **Pull submissions from ODK Central** | Off by default. Turning it on needs more than the switch: an XLSForm you build (none ships), a credentials Secret wired through Edit YAML, and a SQL update to activate the mapping ([Collecting sowings with ODK Central](../../products/registry/crop-sown-registry/deployment/rancher.md#collecting-sowings-with-odk-central)) |
 
-The sanity Job's end-to-end tier stays off. `scripts/e2e_smoke.py` in the Crop Sown Registry repository does not sign its requests or carry a consent, so it runs only against a registry with **Verify Partner Signature** and **Enforce Consent** off, not against an Agri Stack install. To test an install end to end, use the [partner test](partner-test.md).
+The sanity Job's end-to-end check stays off. `scripts/e2e_smoke.py` in the Crop Sown Registry repository does not sign its requests or carry a consent, so it runs only against a registry with **Verify Partner Signature** and **Enforce Consent** off, not against an Agri Stack install. To test an install end to end, use the [partner test](partner-test.md).
 
 ## PM and CM entries, and the signing Secret
 
@@ -93,7 +93,7 @@ Before the Composite can serve requests:
 
 The [Exchange setup](exchange-setup.md) does this for the **Composite** in one go: its key, its entries in each PM, the signing Secret, and its bindings and policies in each department CM. It does not onboard partners. The [partner test](partner-test.md) does steps 2 and 4 for a test partner.
 
-## Use-case Composite
+## Composite
 
 Install **Agri Stack Composite** from the Rancher catalog. Settings ([Composite configuration](composite-configuration.md#helm-values)):
 
@@ -109,7 +109,7 @@ The post-install sanity hook pings the API and lists the use cases; a failure fa
 
 ## Three-namespace setup: Exchange and departments
 
-The [distributed deployment](../design/distributed-deployment-architecture.md#proving-it-three-namespaces) on one cluster: each namespace is installed as a separate organisation, and calls between namespaces use **external hostnames** only. A partner (e.g. `bank-a`) onboards and the farmer consents only at the Exchange; each department still decides at its own boundary.
+Departments and the Exchange ([across departments](../architecture/README.md#across-departments)) on one cluster, for testing: each namespace is installed as if it were a separate organisation, and calls between namespaces use **external hostnames** only, never in-cluster service names. A partner (e.g. `bank-a`) onboards and the farmer consents only at the Exchange; each department still decides at its own boundary.
 
 | Namespace | Install | Notes |
 | --- | --- | --- |
@@ -117,8 +117,7 @@ The [distributed deployment](../design/distributed-deployment-architecture.md#pr
 | `dept1` | commons-base, commons-services (default values), Crop Sown Registry `csr` | Same (the crop department) |
 | `agrix` | commons-base and commons-services with the **Exchange choices** below, the Composite (consent mode `exchange`, its default) | No registries |
 
-Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS.
-
+Each namespace needs its own domain on its `internal` gateway (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS. Load the **same country pack version** in every namespace's catalogue, so codes and geography match across registries.
 
 ### What to install in `agrix`
 
@@ -276,6 +275,15 @@ Follow [testing after install](testing-after-install.md).
 | `trial` CM and `dept1` CM | The **standing policy for the Exchange**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the Exchange CM as a **trusted token issuer** — issuer `agri-stack-exchange-cm`, JWKS URL `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite` (CM chart, "Exchange" group) |
 
 The registries need no change: each keeps calling its own CM, which now accepts the Exchange's consent tokens. A department's scopes for the Exchange cap what any partner gets from it (token scopes ∩ standing policy). A denial from a department shows as that source's `denied` status with the registry's reason.
+
+### Running departments on separate clusters
+
+The same installs work across clusters. In addition:
+
+* **Hostnames reachable across departments:** from the Exchange, the Composite's partner API and the Exchange CM's partner API (its public keys at `/.well-known/jwks.json` and the consent token status check); from each department, its registry's partner API. Use public DNS names and trusted TLS for them.
+* **Availability:** the Exchange depends on each department's partner API. Partner keys and catalogue reads are cached, and consent tokens are verified with cached keys, but the status check needs the Exchange CM: consent fails closed when it is down. Set timeouts and alerts.
+* **Upgrades:** the Exchange and each department upgrade on their own schedules. Check the Composite, the CMs and the registries' partner APIs together after an upgrade ([testing after install](testing-after-install.md)).
+* **Adding a department:** install its commons with **Exchange Role** **department** and its registry, then add the registry to the Composite (`composite.registries`) and the use cases that read it, then run the [Exchange setup](exchange-setup.md) with the new registry.
 
 ## Uninstalling
 

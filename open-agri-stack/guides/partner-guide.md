@@ -8,7 +8,7 @@ description: >-
 
 # Partner Guide
 
-You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier and **one consent** to the use-case Composite, and get back **one signed response** with a status per registry.
+You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier and **one consent** to the Composite, and get back **one signed response** with a status per registry.
 
 {% hint style="info" %}
 This guide covers what is specific to Agri Stack. The consent object, its signing and the Consent Manager's reason codes are documented once, in the Consent Manager's [Partner Integration Guide](../../consent-management/partner-integration-guide.md); onboarding mechanics are in [Partner Management](../../platform/platform-services/partner-management/README.md). This guide links to both rather than repeating them.

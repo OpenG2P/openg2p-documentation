@@ -90,6 +90,8 @@ Each activity is about a **subject**. The subject can be:
 * **A record in the same registry.** A reference rule marked as the subject makes that record the activity's subject. Its parent records are noted too, so a plot's activities also appear on its owner's profile. A second rule can require one record to belong to another (the plot must be that person's).
 * **An identifier held elsewhere.** For example another registry's ID or a national ID. It can be checked by format only, or looked up.
 
+**Entities first.** An activity never creates or changes a record in an entity register. The record is registered, or changed through its own change request, first; the activity then records what happened (a birth, a sale) against it.
+
 Records in the same registry show an **Activities** tab. It lists the activities about the record and its children, with their aggregates.
 
 Where an activity happened is stored on it as named geography levels (for example region, district). It comes from the activity's own location field, else from the subject's record, else from its context. It is a snapshot, so history stays stable when a record is later edited.
@@ -130,3 +132,5 @@ A partner reads an activity register through partner search and can ask for **ac
 ## Not built yet
 
 Managing activity types through an API, activity entry from file import or the agent portal, bulk export and archiving: see [design, not built](../design/activity-register.md#not-built).
+
+One verification model and one correction model for both register kinds (verification records with evidence, trusted sources, disputes) are proposed in [Verification and Correction (Proposal)](../design/verification-and-correction.md).

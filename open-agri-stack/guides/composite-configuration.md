@@ -1,13 +1,13 @@
 ---
 description: >-
-  Configuring the use-case Composite: its API, which registry APIs it calls and
+  Configuring the Composite: its API, which registry APIs it calls and
   where that is configured, the use-case file format, failure handling, output
   format, environment settings, Helm values and scaling.
 ---
 
 # Composite Configuration
 
-How to configure the [use-case Composite](../design/use-case-composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
+How to configure the [Composite](../design/composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
 
 ## API reference
 

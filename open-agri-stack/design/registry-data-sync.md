@@ -19,7 +19,7 @@ Registries are owned by different departments, and some data recorded in one is 
 * **Into the Farmer Registry (FR).** The FR is the farmer's single record, the one most services ask first, e.g. "is this an active farmer?". Facts recorded elsewhere, such as what the farmer sowed last season, are worth keeping on that record, read-only, with the other registry staying their source of truth.
 * **Out of the Farmer Registry.** The Crop Sown Registry (CSR), and later Livestock and others, need basic farmer details (demographics, household size) to search, filter and link their own records, and to keep working when the FR is slow or briefly down (see [mirrors](#the-other-direction-mirrors-of-farmer-data)).
 
-This is a department operating on another department's data, not a partner asking for one farmer's data: that is the [use-case Composite](use-case-composite.md)'s job. In the [architecture](../architecture/README.md#components-and-who-talks-to-whom) it is **path C**: one registry is simply a partner of the other.
+This is a department operating on another department's data, not a partner asking for one farmer's data: that is the [Composite](composite.md)'s job. In the [architecture](../architecture/README.md#components-and-who-talks-to-whom) it is **path C**: one registry is simply a partner of the other.
 
 ## Reference design: crop activity in the Farmer Registry
 

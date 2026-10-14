@@ -6,7 +6,7 @@ description: >-
 
 # Configuration
 
-Agri Stack is built from OpenG2P products: the [registry platform](../../products/registry/registry/README.md) and the registries on it, [Partner Management](../../platform/platform-services/partner-management/README.md), the [Consent Manager](../../consent-management/README.md) and the use-case Composite. Each product is documented once, in its own pages. These pages say only what is configured in each install for Agri Stack.
+Agri Stack is built from OpenG2P products: the [registry platform](../../products/registry/registry/README.md) and the registries on it, [Partner Management](../../platform/platform-services/partner-management/README.md), the [Consent Manager](../../consent-management/README.md) and the Composite. Each product is documented once, in its own pages. These pages say only what is configured in each install for Agri Stack.
 
 How to install them is in [deploying on a cluster](../guides/deployment.md). What is still open is in [TODOs and open items](../open-items/README.md).
 
@@ -17,7 +17,7 @@ How to install them is in [deploying on a cluster](../guides/deployment.md). Wha
 | **Farmer Registry** (department, e.g. `trial`) | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Consent controller `farmer-registry`; Farmer ID and national ID in the DCI farmer record; the data scopes the Composite reads; the Composite as a partner; CM role **department** with a standing policy for the Composite | [Farmer Registry](farmer-registry.md) |
 | **Crop Sown Registry** (department, e.g. `dept1`) | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | Consent controller `crop-sown-registry`; farmer ID linked to the national ID for consent checks; the data scopes the Composite reads; the Composite as a partner; CM role **department** with a standing policy for the Composite | [Crop Sown Registry](crop-sown-registry.md) |
 | **Exchange** (`agrix`) | Commons services: Partner Management, Consent Manager, eSignet | CM role **exchange** (issues a consent token per registry to the Composite); the partner portal with national-ID login and `FARMER_ID`; partners, their bindings and policies | [Exchange](exchange.md) |
-| **Composite** (in the Exchange) | Use-case Composite ([agri-stack](https://github.com/openg2p/agri-stack)) | Consent mode `exchange`; the two registries' search URLs; the `loan-profile` use case; audit to the Audit Manager | [Composite](composite.md) |
+| **Composite** (in the Exchange) | Composite ([agri-stack](https://github.com/openg2p/agri-stack)) | Consent mode `exchange`; the two registries' search URLs; the `loan-profile` use case; audit to the Audit Manager | [Composite](composite.md) |
 
 ## Names used across installs
 
@@ -39,4 +39,4 @@ The installs only work together if these names match. The defaults match everywh
 | [OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) | The Farmer Registry extension and chart |
 | [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry) | The Crop Sown Registry extension and chart |
 | [OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager) | The Consent Manager |
-| [openg2p/agri-stack](https://github.com/openg2p/agri-stack) | The use-case Composite (`composite/`) and the scripts (`scripts/`) |
+| [openg2p/agri-stack](https://github.com/openg2p/agri-stack) | The Composite (`composite/`) and the scripts (`scripts/`) |

@@ -81,6 +81,10 @@ The following sub-pages cover individual design topics in detail:
 [activity-register.md](activity-register.md)
 {% endcontent-ref %}
 
+{% content-ref url="verification-and-correction.md" %}
+[verification-and-correction.md](verification-and-correction.md)
+{% endcontent-ref %}
+
 {% content-ref url="deduplication.md" %}
 [deduplication.md](deduplication.md)
 {% endcontent-ref %}

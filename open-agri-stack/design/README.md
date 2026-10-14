@@ -1,8 +1,7 @@
 ---
 description: >-
-  Design notes for Agri Stack: the register model, the use-case Composite,
-  registry data sync, the distributed deployment across departments, and the
-  review of the Activity Registry concept notes.
+  Design notes for Agri Stack: the Composite, registry data sync, the
+  Livestock Registry.
 ---
 
 # Design
@@ -11,8 +10,8 @@ These pages record where the design discussion has landed. Each page says what i
 
 | Page | Covers | Status |
 | --- | --- | --- |
-| [Register model design](register-model-design.md) | One register model with entity and occurrence records; one verification model and one correction model for both; participants and entities first; how the Farmer, Crop Sown and Livestock registries fit; API changes; phases; decisions | Phase 1 built, phase 2 proposed |
-| [Use-case Composite](use-case-composite.md) | How a Composite use case is configured, validated and run: configuration format, publishing checks, runtime, worked example | First version built |
+| [Composite](composite.md) | How a Composite use case is configured, validated and run: configuration format, publishing checks, runtime, worked example | First version built; publishing checks and data-blind mode proposed |
 | [Registry data sync](registry-data-sync.md) | Registries sharing data with each other through outgestion and ingestion: crop activity from Crop Sown kept in the Farmer Registry (reference design), the gaps, mirrors of farmer data | Proposal, not in use |
-| [Distributed deployment architecture](distributed-deployment-architecture.md) | One install per registry in each department and one shared Exchange install for Open AgriNet (OAN): what is shared, the consent and policy model between them, networking, and what is still to build | Phase 1 built; phases 2–3 to build |
-| [Concept notes review](concept-notes-review.md) | How the Activity Registry concept notes (crop sown, livestock, work log) compare with the activity register, with suggested priorities | Review (30 September 2026) |
+| [Livestock Registry](livestock-registry.md) | An Animal register and a livestock events activity register in one registry: events, entities first, corrections, keys, relation to the Farmer Registry, what it would share | Planned, design only |
+
+The platform-wide proposal for one verification model and one correction model for both register kinds is in the Registry Platform: [Verification and Correction (Proposal)](../../products/registry/registry/design/verification-and-correction.md).

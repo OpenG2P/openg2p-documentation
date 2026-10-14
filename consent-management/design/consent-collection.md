@@ -124,7 +124,7 @@ With it a partner can show, without the CM, that this exact signed form backed t
 Most partners will not build their own consent screens, so a central **partner portal** is the main way in; partners with their own systems use the same APIs.
 
 * **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and a signed form (scenario 1), in person digitally (scenario 2), or a link to self-service (scenario 3)); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
-* **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the use-case Composite).
+* **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the Composite).
 * **Administration:** a partner admin manages the partner's own portal users (roles: *operator*, who creates requests and runs in-person consent; *partner admin*, who also sees all the partner's consents and manages users).
 * **Not in the portal:** partner policies, keys (approved in Partner Management by staff; at most shown read-only) and the verification of uploaded forms (staff, in the CM console through AWE).
 

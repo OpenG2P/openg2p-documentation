@@ -1,6 +1,6 @@
 ---
 description: >-
-  Running the use-case Composite and its tests on a laptop.
+  Running the Composite and its tests on a laptop.
 ---
 
 # Running the Composite Locally

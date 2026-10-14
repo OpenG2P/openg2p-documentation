@@ -28,3 +28,8 @@ redirects:
   platform/platform-services/master-data-service/catalogue/consumers: platform/platform-services/master-data-service/consumers.md
   platform/platform-services/master-data-service/catalogue/ui: platform/platform-services/master-data-service/ui.md
   platform/platform-services/master-data-service/catalogue/public-catalogue: platform/platform-services/master-data-service/public-catalogue.md
+  open-agri-stack/architecture/registry-model: open-agri-stack/README.md
+  open-agri-stack/design/register-model-design: products/registry/registry/design/verification-and-correction.md
+  open-agri-stack/design/use-case-composite: open-agri-stack/design/composite.md
+  open-agri-stack/design/distributed-deployment-architecture: open-agri-stack/architecture/README.md
+  open-agri-stack/design/concept-notes-review: products/registry/registry/features/activity-register.md

@@ -1,11 +1,11 @@
 ---
 description: >-
-  Design of the use-case Composite: one generic service that serves approved
-  use cases, each a configuration file — format, publishing checks, runtime,
-  and a worked example.
+  Design of the Composite: one generic service that serves approved
+  use cases, each a configuration file — the format, what each section does,
+  checks when a use case is published, and where configurations live.
 ---
 
-# Use-Case Composite
+# Composite
 
 {% hint style="info" %}
 **Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See the [Composite configuration](../configuration/composite.md) page for what is in it and what is not yet, and the [Composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
@@ -17,12 +17,12 @@ The configuration describes **how** a request is served. It **never grants acces
 
 ## Example configuration (full design)
 
-This example, `credit-profile`, is hypothetical: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([Composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
+This example is a hypothetical next version of the shipped use case, `loan-profile@2`: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([Composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
 
 ```yaml
 # ── Identity ──────────────────────────────────────────────────────────────
-use_case: credit-profile
-version: 1.2.0                        # semver; breaking response changes → new major
+use_case: loan-profile
+version: 2.0.0                        # semver; breaking response changes → new major
 status: published                     # draft | validated | published | deprecated | retired
 title: Farmer credit profile
 description: Identity, landholding, recent crops and herd, for credit assessment.
@@ -83,7 +83,7 @@ sources:
 # ── Assembly: what the SP gets back ───────────────────────────────────────
 response:
   mode: merged                           # merged | data-blind
-  schema: schemas/credit-profile-1.json  # published JSON Schema / JSON-LD context for SPs
+  schema: schemas/loan-profile-2.json  # published JSON Schema / JSON-LD context for SPs
   correlate_on: subject                  # results joined on the resolved subject identifier
   mapping:                               # source fields → response fields
     farmer.name:          "$.farmer.name"
@@ -140,101 +140,9 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 **First version:** only check 5 is done, partly: every template is rendered with sample input when the file is loaded, and must produce a valid query. The other checks need policies in PM ([open items](../open-items/README.md)).
 {% endhint %}
 
-## What happens at runtime
+## At runtime and worked example
 
-1. **Ingress:** the OpenG2P deployment's ingress (Nginx, Istio) routes the request to the Composite. There is no separate API gateway; the Composite does the partner checks below.
-2. **Composite:**
-   * verifies the partner's signature, checks its association with `policy` and applies rate limits;
-   * validates the input and selects `use_case@version`;
-   * renders one DCI request per source from its template;
-   * checks the consent (below) and signs each request with its own PM key, with the request ID;
-   * sends the requests, in parallel unless a source depends on another.
-3. **Each registry:** calls its own CM `/validate` and releases only the effective scopes.
-4. **Composite:**
-   * waits up to the timeout;
-   * applies the partial-response rule;
-   * maps the results, computes derived fields, adds the per-source status, and validates against the schema;
-   * responds, then discards everything.
-5. **Audit:** every step sends an audit event, linked by the request ID.
-
-**Consent.** The partner sends a consent it signed, or the ID of a consent collected at the Exchange CM (`message.consent_id`). The consent mode is a service setting (`consent.mode` in the chart), `exchange` by default: the Composite calls the Exchange CM's `/validate` with the use case's scopes as `requested_scopes`. The CM returns one signed consent token per registry, with only those scopes, and each registry gets its own consent token. Each registry checks its consent token at its own CM ([Exchange consent tokens](../../consent-management/design/exchange-receipts.md)).
-
-Before calling a source, the Composite checks that the consent grants the source's `scopes`. If not, a mandatory source fails the request; an optional one is not called and is reported `denied`. Scopes in `optional_scopes` that are not granted leave their fields `null`. Partners see each registry's required and optional scopes in the use case's describe response (`consent_scopes`).
-
-How the first version runs a request, step by step, is in [Composite](../configuration/composite.md#what-it-does-per-request).
-
-## Worked example: wheat sown by a farmer this season
-
-The question is "total area of wheat sown by farmer X in this season". Both registries answer with one **synchronous** DCI call each, `POST /dci/registry/sync/search`. Neither registry has an asynchronous search, so the Composite never waits for a callback.
-
-**Farmer Registry:** who the farmer is. Search the Farmer register by national ID (`foundational_id`; Fayda FAN in the reference setup) or farmer ID (`functional_record_id`):
-
-```json
-"search_criteria": {
-  "reg_type": "Farmer",
-  "query_type": "expression",
-  "query": {"type": "expression", "value": {"expression": {"query": {"foundational_id": {"$eq": "<FAN>"}}}}}
-}
-```
-
-The farmer record carries both identifiers, `UIN` (the FAN) and `FARMER_ID` (e.g. `FR-0007`). It comes with the farmer's linked records (land, household, livestock) and declared main crops, whether the search is by exact field or by ID.
-
-Any question about one farmer follows the same pattern: the farmer's record from the Farmer Registry, and from the Crop Sown Registry the farmer's activities, crop seasons or season summaries, each filtered on its own fields. Nothing in the registries is specific to a particular question.
-
-**Crop Sown Registry:** what they sowed. Search the farmer's season summary for the crop year and season:
-
-```json
-"search_criteria": {
-  "reg_type": "CropSown",
-  "reg_record_type": "spdci-extensions-agri:ActivityAggregate",
-  "query_type": "expression",
-  "query": {"type": "expression", "value": {"expression": {"query": {
-    "subject_id": "FR-0007", "aggregate_type": "FARMER_SEASON_SUMMARY",
-    "crop_year": 2019, "season": "SEASON_MEHER"}}}}
-}
-```
-
-One record comes back. The answer is at `measures.by_crop.CROP_WHEAT.area_sown_ha`, beside the season's totals and the other crops. Alternatively, `reg_record_type: spdci-extensions-agri:CropSeason` with `"crop": "CROP_WHEAT"` returns the wheat crop seasons, one per plot, each with its `area_sown_ha`, stage and whether sowing was verified. The mapping then sums them.
-
-| | Season summary (`…:ActivityAggregate`) | Crop seasons (`…:CropSeason`) |
-| --- | --- | --- |
-| Records | One per farmer and season | One per plot and crop |
-| Answer | Read one field | Sum over plots |
-| Freshness | Updated by the outbox worker, seconds after each activity | Updated in the same transaction as each activity |
-| Filters | `aggregate_type`, `period_key`, `crop_year`, `season` | Any plain projection column: `crop_year`, `season`, `crop`, `stage`, `plot_id`… |
-
-**Sequencing.** The Crop Sown Registry knows the farmer by farmer ID, not by FAN.
-
-* **The partner sends a farmer ID:** both sources can be called in parallel.
-* **The partner sends a FAN:** the Farmer Registry is called first, and the Crop Sown query uses the `FARMER_ID` it returns. The source then declares `depends_on: farmer`, and its query template reads the farmer ID from the farmer result.
-
-{% hint style="info" %}
-In the built `loan-profile`, the crop sources always declare `depends_on: farmer` and use the subject itself when it is a `FARMER_ID`; calling them in parallel with the farmer when the partner sends a farmer ID is [not built yet](../configuration/composite.md#not-built-yet).
-{% endhint %}
-
-**"This season"** is resolved by the Composite (the crop year and season from today's date, using the season windows in the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md#what-the-registry-works-out)) and passed as parameters. Without them, the summaries come back newest first.
-
-## Response to the partner (example)
-
-```jsonc
-{
-  "use_case": "credit-profile@1",          // the hypothetical example above
-  "request_id": "…",
-  "subject": { "type": "FAYDA_FAN", "value": "…" },
-  "sources": {
-    "farmer": { "status": "ok" },
-    "crops":  { "status": "ok" },
-    "herd":   { "status": "unavailable" }   // ok | no_record | denied | unavailable | error
-  },
-  "data": {
-    "farmer": { "name": "…", "sex": "F", "kebele": "…" },
-    "land":   { "parcels": [ … ], "total_ha": 1.4 },
-    "crops":  { "seasons": [ … ] }
-  }
-}
-```
-
-Fields from a source that failed are `null`. As built, this body is the `message` of a signed DCI-style envelope; see the [partner guide](../guides/partner-guide.md#step-10-read-the-response).
+How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request, and its consent checks per source, is in [Composite](../configuration/composite.md#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../guides/partner-guide.md#worked-example-loan-profile).
 
 ## Where configurations live
 

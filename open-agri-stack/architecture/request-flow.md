@@ -31,14 +31,14 @@ Solid arrows are requests; dashed arrows are replies.
    * asks the Exchange CM whether the token is still valid (the farmer may have revoked the consent since it was issued): *token revoked?* and its *status* in the diagram;
    * intersects the token's scopes with its own standing policy for the Composite, and returns the result to the registry.
 6. **Farmer Registry → Composite.** The registry releases only those scopes and returns the record.
-7. **Composite → Crop Sown Registry.** Two DCI searches of the same registry, in parallel: the farmer's season summaries and their crop seasons, each with the Crop Sown Registry's consent token, through the Crops Department's ingress. Its CM checks the token as in step 5. The searches use the Farmer ID from the request; if the bank sent the national ID instead, they take the Farmer ID from the Farmer Registry's record, and so wait for step 6.
+7. **Composite → Crop Sown Registry.** Two DCI searches of the same registry, in parallel: the farmer's season summaries and their crop seasons, each with the Crop Sown Registry's consent token, through the Crops Department's ingress. Its CM checks the token as in step 5. The searches use the Farmer ID from the request or, if the bank sent the national ID, the one in the Farmer Registry's record. Today they always run after step 6 (`depends_on`); running them alongside the Farmer Registry search when the request already carries the Farmer ID is not built yet.
 8. **Composite → Bank.** The Composite maps the results, signs the response and returns it, then keeps nothing. Each source has a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. Fields from a failed source are `null`. Every hop emits audit events linked by the request ID.
 
 {% hint style="info" %}
 **When a source is left out.** A mandatory source that the consent doesn't cover fails the whole request. An optional source whose scopes the consent does not grant is **not called** and is reported `denied`. An optional source whose registry is down is reported `unavailable`; the bank still gets the rest.
 {% endhint %}
 
-What each part of the use case does (sources, scopes, templates, mapping, timeouts) is in the [use-case Composite design](../design/use-case-composite.md) and the [Composite configuration guide](../guides/composite-configuration.md). The request and response formats are in the [Composite API](../guides/composite-api.md) reference.
+What each part of the use case does (sources, scopes, templates, mapping, timeouts) is in the [Composite design](../design/composite.md) and the [Composite configuration guide](../guides/composite-configuration.md). The request and response formats are in the [Composite API](../guides/composite-api.md) reference.
 
 ## Variants
 

@@ -14,12 +14,13 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | Part | Status | Where |
 | --- | --- | --- |
 | Activity registers in the registry platform | Built | [Activity register](../../products/registry/registry/features/activity-register.md) |
-| Register model, phase 1 (typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data) | Built | [Register model design](../design/register-model-design.md#phase-1-built) |
-| Register model, phase 2 (common verification model, disputes, beneficiary API for occurrences, subscribe/notify) | Design | [Register model design](../design/register-model-design.md#phase-2-proposed) |
+| Typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data | Built | [Activity register](../../products/registry/registry/features/activity-register.md); [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) |
+| Common verification and correction model, disputes, beneficiary API for occurrences, subscribe/notify | Design | [Verification and Correction (Proposal)](../../products/registry/registry/design/verification-and-correction.md) |
+| Livestock Registry | Design | [Livestock Registry](../design/livestock-registry.md) |
 | Crop Sown Registry | Built | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md); [configuration](../configuration/crop-sown-registry.md) |
 | Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../../products/registry/farmer-registry/README.md); [configuration](../configuration/farmer-registry.md) |
 | One consent with a grant per registry, in CM | Built | [Consent](../architecture/consent.md); [Consent Manager](../../consent-management/README.md) |
-| Use-case Composite, first version | Built | [Composite](../configuration/composite.md) |
+| Composite, first version | Built | [Composite](../configuration/composite.md) |
 | Exchange mode: the Exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the Composite (`consent_id`) | Built | [Request flow](../architecture/request-flow.md); [Exchange](../configuration/exchange.md); [Exchange setup](../guides/exchange-setup.md) |
 | Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent](../architecture/consent.md) |
 | Composite staff console | Built | [Composite console](../guides/composite-console.md) |
@@ -29,6 +30,9 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 
 * **Common farmer identifier.** Confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup). If each registry is a separate MOSIP relying party with its own token, records can't be joined.
 * **Consent collected in CM, remaining paths.** Built in Exchange mode: a consent recorded in CM's partner portal (national-ID login, evidence, staff verification) is presented to the Composite as `message.consent_id`, and the Exchange CM turns it into a consent token per registry ([partner guide](../guides/partner-guide.md#step-6-collect-the-farmers-consent)). Still to do: presenting a CM-held consent directly at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom); see [consent](../architecture/consent.md)). Decide whether consent spanning registries should always be collected in CM (recommended). See [consent](../architecture/consent.md).
+* **More ways to give consent** at the Exchange CM: in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). See [consent](../architecture/consent.md).
+* **Partner policy within the department's policy.** The Exchange CM should refuse a partner policy that grants more than a department's standing policy for the Composite allows, when the policy is created or widened. Today the department CM only cuts the scopes at request time. Needs each department to publish its policy for the Composite and its scope catalogue.
+* **Which CM to trust, per partner.** A department CM trusts the Exchange CM's consent tokens for every partner the Composite presents. A per-partner choice of trusted CM is to design.
 * **Moving policies to PM.** Move `PartnerPolicy` from CM to Partner Management, with a section per department, AWE approval per section, and partner associations; `/validate` then reads from PM. Until then the Composite's `allowed_partners` stands in for the partner association ([policy and consent](../architecture/policy-and-consent.md)).
 * **Who may search across subjects.** Activity-register aggregates can be searched without a subject (e.g. for a benefit run). Today the registry operator allow-lists those partners and their scopes in the partner API's configuration (`dci_bulk_aggregate_partners`), because there is no per-person consent for such a search. This belongs in a Partner Management policy (a programme's legal basis for bulk access, approved by the department), checked like any other policy.
 * **Partner self-service in PM.** Onboarding and key rotation are done by a PM administrator today; partners can't submit their own requests.
@@ -39,7 +43,7 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 
 The [Composite](../configuration/composite.md) as built leaves these for later:
 
-* **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
+* **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../design/composite.md#checks-when-a-use-case-is-published)).
 * **Data-blind mode:** each registry encrypts its part to the partner's PM key and the Composite only bundles the parts.
 * **No separate API gateway.** Partners come in through the OpenG2P deployment's ingress (Nginx, Istio); see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway). What remains to do:
   * **Restrict the registries' partner APIs** with an Istio `AuthorizationPolicy`, so only the Composite (and partners deliberately allowed direct access) can call them, and partners cannot bypass the Composite.
@@ -61,9 +65,15 @@ The [Composite](../configuration/composite.md) as built leaves these for later:
 
 ## Registries
 
-* **Scripted installs for multi-department setups (later).** The Exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the Exchange choices as override files, so one git repo describes the Exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
+* **Scripted installs for multi-department setups (later).** The Exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the Exchange choices as override files and pinned chart versions, so one git repo describes the Exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
 
-* **TODO: distributed deployment.** Built: department installs plus one shared Exchange tier, registries trusting the Exchange CM's consent tokens, and the exchange-tier install (by hand in Rancher). Still to do: remote shared services in registry charts, and an inter-department gateway. See [Distributed Deployment Architecture](../design/distributed-deployment-architecture.md#todo).
+* **TODO: across departments.** Built: department installs and one shared Exchange install (by hand in Rancher), department CMs trusting the Exchange CM's consent tokens, the Composite's Exchange mode and `scripts/setup_exchange.py` ([architecture](../architecture/README.md#across-departments)). Still to do:
+  * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, Exchange CM) in the Rancher form; setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs).
+  * **Gateway between departments** with mutual TLS (a client certificate per department) on top of signed requests, exposing only the service APIs others need; document site-to-site WireGuard as the alternative for a few departments.
+  * **Request ID** passed through the Composite, registries and CMs, and recorded in every audit log, to trace one request across departments.
+  * **API versioning** and a compatibility promise for the shared APIs (Composite, consent tokens, catalogue, registry partner API), since the Exchange and departments upgrade on their own schedules.
+  * **Usage metering** per partner at the Exchange (later: billing, for a marketplace).
+  * **Onboarding a department** to the Exchange as one documented step list: keys in both PMs, the standing policy, its published scope catalogue, its client certificate, the Exchange URLs in its charts.
 
 * **TODO: sync farmer data into other registries.** Read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. See [Registry Data Sync](../design/registry-data-sync.md).
 
@@ -71,7 +81,7 @@ The [Composite](../configuration/composite.md) as built leaves these for later:
 * **Code-free activity registers for simple cases.** Today every activity register needs a small extension (models and a domain service). We keep a table per register rather than the Observations design's single generic table, for typed columns (indexes, data policies, indicators, DCI filters), yearly partitions and isolation per register (see [relation to the Observations design](../../products/registry/registry/design/activity-register.md#relation-to-the-observations-design)). The middle path: the platform creates the per-register table itself from metadata (the activity types and which fields to promote to columns), with a default domain service. Simple registers such as attendance would then need no code, and Add Register could offer "Activity"; an extension would be needed only for custom logic, as in crop sown.
 * **Geography of a plot in two places.** The Crop Sown Registry records the plot's district on the crop season; the Farmer Registry has its own location for the Land record. If they disagree, the crop season's district is what CSR's figures use. Decide whether CSR should check it against the Farmer Registry when it looks plots up.
 * **Dashboards on the reporting views.** The Crop Sown Registry has reporting views by administrative level; the Superset/Insights dashboards on them are not built. Views bypass data policies, so dashboard access must be limited to roles allowed to see all locations.
-* **Register model design, phase 2.** Phase 1 of the [register model design](../design/register-model-design.md#platform-changes-in-phases) is built:
+* **Verification and correction, phase 2.** Phase 1 is built:
   * typed participants;
   * entities first, with temporary plot IDs withdrawn;
   * partner corrections;
@@ -80,7 +90,7 @@ The [Composite](../configuration/composite.md) as built leaves these for later:
   * verification status in DCI;
   * shared sample data.
 
-  Phase 2 remains, from the [concept notes review](../design/concept-notes-review.md):
+  Phase 2 remains (design: [Verification and Correction (Proposal)](../../products/registry/registry/design/verification-and-correction.md)):
   1. a common verification model for both kinds: what to verify configurable per field, section, record or activity type; verification records with evidence; automatic verification from trusted sources; status in DCI;
   2. corrections marked as such on entity change requests, disputes, and verification reset on change;
   3. a beneficiary API for occurrences (it needs beneficiary authentication on the registry first);
@@ -113,7 +123,7 @@ The [Composite](../configuration/composite.md) as built leaves these for later:
 
 ## Catalogues
 
-* **In progress: extending the catalogues.** Decided: extend the existing catalogue rather than use the registry platform or adopt another DPG. See the [Master Data Service](../../platform/platform-services/master-data-service/README.md): versioned lists and geography, drafts with AWE or maker-checker approval, typed attributes per list, a crosswalk for boundary changes, a change feed and an opt-in public read API. The GeoPrism Registry was evaluated: strong temporal geography, but versioning and approvals only for geographic lists, a Java and OrientDB stack, and no Helm chart or Keycloak integration; the catalogue borrows its working/published versions and split/merge lineage. An import adapter from GeoPrism or the Common Geo Registry is a possible later add-on. Still to do once it is built: registries move from reading the catalogue's database to the catalogue APIs (below). See [catalogues](../architecture/registry-model.md#catalogues).
+* **In progress: extending the catalogues.** Decided: extend the existing catalogue rather than use the registry platform or adopt another DPG. See the [Master Data Service](../../platform/platform-services/master-data-service/README.md): versioned lists and geography, drafts with AWE or maker-checker approval, typed attributes per list, a crosswalk for boundary changes, a change feed and an opt-in public read API. The GeoPrism Registry was evaluated: strong temporal geography, but versioning and approvals only for geographic lists, a Java and OrientDB stack, and no Helm chart or Keycloak integration; the catalogue borrows its working/published versions and split/merge lineage. An import adapter from GeoPrism or the Common Geo Registry is a possible later add-on. Still to do once it is built: registries move from reading the catalogue's database to the catalogue APIs (below). See [catalogues](../README.md#catalogues-platform-services-and-the-exchange).
 
 The items below are about the catalogue as it runs today.
 
@@ -135,7 +145,7 @@ The items below are about the catalogue as it runs today.
 * **TODO: evaluate agricultural data standards for every catalogue dataset** (AGROVOC, ICC, CPC/FAOSTAT, EPPO, BBCH, DAD-IS, WIEWS, WRB, GAEZ, WCA 2020, ADAPT, ISIC, UCUM, …) and pick the best fit per dataset: map our codes (SKOS matches in the public catalogue) or adopt the standard's. Preferred direction (later): standard-agnostic, so a country chooses each dataset's standard and registries and other modules read whichever it chose. Candidates and method: [standards](../architecture/standards.md#todo-agricultural-data-standards-for-the-catalogues).
 * **OData for BI tools (to explore).** An OData query endpoint on the public catalogue would let Excel, Power BI and Tableau query datasets live. Revisit when BI-tool users ask; CSV/JSON downloads cover today's need.
 
-* **Central catalogue and mirroring.** Decided for now: each department runs its own catalogue, loaded from the same `openg2p-data` country pack version, so codes and geography match. A central (exchange-level) catalogue that departments read or mirror comes later; see [Distributed deployment](../design/distributed-deployment-architecture.md).
+* **Central catalogue and mirroring.** Decided for now: each department runs its own catalogue, loaded from the same `openg2p-data` country pack version, so codes and geography match. Later: the Exchange's catalogue becomes the authoritative copy, and departments read it through its API (cached, pinned to a release, a remote catalogue URL in the registry charts) or mirror its published versions; department-only datasets can live in it under their own publisher. Needs authorised access and per-publisher edit rights (above). See [across departments](../architecture/README.md#across-departments).
 
 ## Platform and build
 

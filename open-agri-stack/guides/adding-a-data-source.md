@@ -11,7 +11,7 @@ description: >-
 A use case's data sources are registries. Adding one needs **no code in the Composite**: the registry must speak DCI with consent, PM and CM must know about it, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
 
 {% hint style="info" %}
-The Livestock Registry is [planned](../design/register-model-design.md#livestock-registry-an-entity-and-occurrences-in-one-registry), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
+The Livestock Registry is [planned](../design/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
 {% endhint %}
 
 ## Overview

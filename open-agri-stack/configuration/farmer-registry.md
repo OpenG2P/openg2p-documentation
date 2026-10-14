@@ -9,6 +9,12 @@ description: >-
 
 The [Farmer Registry](../../products/registry/farmer-registry/README.md) is the agriculture department's registry of farmers, their land, households and (for now) livestock. Its registers, fields, data scopes and installation are documented there. This page says what is set for Agri Stack.
 
+What it holds in Agri Stack (decided):
+
+* **Crops:** only the farmer's declared main crops. Crop seasons (planned, sown, harvested) are held only in the [Crop Sown Registry](crop-sown-registry.md). A deployment could instead keep crop seasons in an activity register of the Farmer Registry (not built), but then it should not also run the Crop Sown Registry for the same farmers: each fact has one authoritative registry, and two would count sown area twice.
+* **Land:** stays in the Farmer Registry for now, as a section of the farmer; the Crop Sown Registry's plot IDs refer to it. If a land administration (cadastre) registry is set up, the parcel moves there and the Farmer Registry keeps a reference to it and how the farmer uses it.
+* **Livestock:** stays as it is until a [Livestock Registry](../design/livestock-registry.md) exists.
+
 In the three-namespace setup it runs in the department namespace `trial`, release `fr`, with its own commons (Partner Management, Consent Manager, Master Data: the catalogue). See [deploying on a cluster](../guides/deployment.md#farmer-registry).
 
 ## Registry settings

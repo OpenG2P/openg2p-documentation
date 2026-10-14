@@ -29,7 +29,7 @@ A misconfigured use case or partner policy can never leak more than the departme
 
 | | Held in | Owner | Defines | Changes |
 | --- | --- | --- | --- | --- |
-| **Use case** ([Composite](../design/use-case-composite.md)) | the Composite's configuration | Agri Stack platform team | Sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), response, timeouts | Versioned like an API |
+| **Use case** ([Composite](../design/composite.md)) | the Composite's configuration | Agri Stack platform team | Sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), response, timeouts | Versioned like an API |
 | **Partner's data-share policy** | the Exchange's Consent Manager, one per partner and registry (Partner Management: target) | The Exchange, on behalf of the departments | Allowed scopes per registry, purposes, subject ID types, validity ceiling, fetch type | Rarely; a widening can need approval (AWE, optional, off by default) |
 | **Department's policy for the Composite** | each registry's own Consent Manager (a binding for `agri-composite`) | The department (data controller) | What its registry may release through the Composite, at most | When the department decides; [Exchange setup](../guides/exchange-setup.md) creates it from the published use cases |
 | **Consent** | the Exchange's Consent Manager | The farmer | One consent with a grant per registry, for one partner and purpose | Per farmer; revocable |
@@ -78,5 +78,5 @@ Through the Composite, as built:
 
 * **PM:** add policy, policy-section and association entities, with optional AWE approval per section.
 * **CM:** `/validate` reads policies from PM instead of CM's own `PartnerPolicy` tables.
-* **Composite service:** check each use case against its PM policy when the use case is published (see [publish checks](../design/use-case-composite.md#checks-when-a-use-case-is-published)).
+* **Composite service:** check each use case against its PM policy when the use case is published (see [publish checks](../design/composite.md#checks-when-a-use-case-is-published)).
 * **Consent:** see [consent](consent.md).

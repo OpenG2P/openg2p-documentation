@@ -1,6 +1,6 @@
 ---
 description: >-
-  The use-case Composite as built and configured for Agri Stack: the service,
+  The Composite as built and configured for Agri Stack: the service,
   its identity, the registries it calls, the consent mode, the loan-profile use
   case, audit, scaling, and what is not built yet.
 ---
@@ -11,9 +11,9 @@ description: >-
 **Source code:** [github.com/openg2p/agri-stack/tree/develop/composite](https://github.com/openg2p/agri-stack/tree/develop/composite): the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), Helm chart ([`charts/`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)); the partner test, Exchange setup and uninstall scripts are in [`scripts/`](https://github.com/openg2p/agri-stack/tree/develop/scripts).
 {% endhint %}
 
-The use-case Composite is the partners' entry point. It serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response. It runs in the [Exchange](exchange.md).
+The Composite is the partners' entry point. It serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response. It runs in the [Exchange](exchange.md).
 
-The design is on the [use-case Composite](../design/use-case-composite.md) page. Every setting, the use-case file format and the error codes are in the [Composite configuration guide](../guides/composite-configuration.md); how partners call it is in the [partner guide](../guides/partner-guide.md). This page says what is built and what Agri Stack sets.
+The design is on the [Composite](../design/composite.md) page. Every setting, the use-case file format and the error codes are in the [Composite configuration guide](../guides/composite-configuration.md); how partners call it is in the [partner guide](../guides/partner-guide.md). This page says what is built and what Agri Stack sets.
 
 ## Service
 
