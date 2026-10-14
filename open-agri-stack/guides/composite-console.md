@@ -19,7 +19,7 @@ The console shows how the Composite is set up and what it has been doing. It is 
 
 ## Access
 
-Staff log in through the IAM staff portal (Keycloak staff realm), as for Master Data. The console registers itself in IAM as the application `agri-composite`:
+Staff log in through the IAM staff portal (Keycloak staff realm), as for the catalogue. The console registers itself in IAM as the application `agri-composite`:
 
 | Role | Permissions |
 | --- | --- |

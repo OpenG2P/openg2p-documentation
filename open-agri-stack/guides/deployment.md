@@ -1,7 +1,7 @@
 ---
 description: >-
   Deploying Agri Stack on a cluster: the order of installs and the
-  settings for commons (Master Data with a country pack, ETH by default, and the agriculture
+  settings for commons (Master Data, the catalogue, with a country pack, ETH by default, and the agriculture
   domain, PM, CM), the Farmer and Crop Sown registries, and the Composite;
   the three-namespace Exchange setup; uninstalling.
 ---
@@ -28,7 +28,7 @@ The Composite has no default registry URLs: in step 6, give each registry's full
 ## Commons services: Master Data, PM, CM
 
 {% hint style="info" %}
-Master Data (MDS) serves Agri Stack's **catalogues** (datasets such as lists of crops and seasons, reference entities, geography) for now. Proper catalogues are still to be designed; see [catalogues](../architecture/registry-model.md#catalogues).
+Master Data is the commons component that serves Agri Stack's **catalogues** (datasets such as lists of crops and seasons, reference entities, geography). See [catalogues](../architecture/registry-model.md#catalogues).
 {% endhint %}
 
 See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In the `openg2p-commons-services` form:
@@ -36,7 +36,7 @@ See the [Commons Helm Chart](../../deployment/openg2p-commons-helm-chart.md). In
 | Group | Setting | Value for Agri Stack |
 | --- | --- | --- |
 | Country Pack | **Country Pack** (`masterData.geoSeed.countryPack`) | `ETH` (Ethiopia; the commons default) |
-| Country Pack | **Dataset Themes** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from Master Data, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
+| Country Pack | **Dataset Themes** (`masterData.geoSeed.domains`) | `agriculture` (default) — needed by the Farmer Registry and the Crop Sown Registry: they read these lists live from the catalogue, and without them their dropdowns are empty and every coded entry is rejected. Leave it as is; a pack without the `agriculture` domain skips it with a warning in the geo-seed Job log |
 | Country Pack | **Load Datasets** (`masterData.geoSeed.load.codelists`) | on (default) |
 | Country Pack | **Load Sample People** (`masterData.geoSeed.load.samples`) | on (default) — the registries' sample farmers and crop seasons are derived from them |
 | Partner Management | **Install Partner Management?** (`partner-management.enabled`) | on |
@@ -56,7 +56,7 @@ Install as in [Farmer Registry → Deployment](../../products/registry/farmer-re
 | --- | --- |
 | **Verify Partner Signature** (`global.partnerSignatureValidationEnabled`) | on (default) |
 | **Enforce Consent** (`global.consentEnforcementEnabled`) | on (default) |
-| **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo (sample farmers from Master Data's sample people, lands numbered `LAND-<n>-<k>`) |
+| **Load Sample Data** (`registry.dbSeed.loadSampleData`) | **off by default**; on for a demo (sample farmers from the catalogue's sample people, lands numbered `LAND-<n>-<k>`) |
 
 Not in the form, and right by default: the partner key backend (`global.registryCryptoBackend: partner-mgmt`), the Partner Management and Consent Manager URLs (`http://commons-services-pm-partner-api`, `http://commons-services-cm-partner-api`) and the consent data controller (`global.consentDataController`, the registry variant: `farmer-registry`). Change them in the YAML editor only if you know why.
 

@@ -19,12 +19,12 @@ Everything public is **opt-in, and off by default**, twice over:
    (`masterDataAPI.catalogue.public.enabled`, default `false`). While it is off,
    every `/public` path answers **404**.
 2. An administrator marks each dataset, and the geography, **public**. Everything
-   is **private** by default, including lists loaded from a country pack.
+   is **private** by default, including datasets loaded from a country pack.
 
 Whatever the settings, the public API serves **published versions only**. Drafts,
 submitted, rejected and discarded versions, private datasets, the change feed,
 who made or approved a version, and the
-[sample people](api-reference.md#sample-people-testing-and-demos-only) are never
+[sample people](../api-reference.md#sample-people-testing-and-demos-only) are never
 reachable through it. A private dataset, an unpublished version and a dataset that
 does not exist all get the same 404, so the API does not reveal what exists
 behind it.
@@ -37,24 +37,23 @@ keep requiring a token.
 
 | Field | Where | Meaning |
 |---|---|---|
-| `visibility` | Each list; the geography | `private` (default) or `public`. Administrative: applies at once, is not part of a version, and is recorded in the change log (`list.updated`, `geo.settings.updated`). |
-| `licence_uri`, `licence_label` | Each list; the geography | Optional licence, e.g. `https://creativecommons.org/licenses/by/4.0/` and `CC BY 4.0`. Shown in the public API and as `dct:license` in DCAT and SKOS. |
+| `visibility` | Each dataset; the geography | `private` (default) or `public`. Administrative: applies at once, is not part of a version, and is recorded in the change log (`list.updated`, `geo.settings.updated`). |
+| `licence_uri`, `licence_label` | Each dataset; the geography | Optional licence, e.g. `https://creativecommons.org/licenses/by/4.0/` and `CC BY 4.0`. Shown in the public API, DCAT and SKOS. |
 
-* **Lists:** set on `create_list` or `update_list` (permission
+* **Datasets:** set on `create_list` or `update_list` (permission
   `referenceData:create` / `referenceData:edit`), or in the dataset dialog of the
   [admin UI](ui.md#visibility-and-licence).
 * **Geography:** `update_geo_settings` (permission `geo:edit`) or **Publication
-  settings** on the Geo Locations page. Read with `get_geo_settings`. These
+  settings** on the Geography page. Read with `get_geo_settings`. These
   settings are kept outside the geography versions (a published version is
   immutable), so making the geography public makes all its **published** versions
   readable.
 * **Country packs:** the loader fills the geography's licence from the pack
-  manifest (`license`, and `license_uri` when given; the URI of a well-known
-  licence such as CC BY-IGO or CC0-1.0 is derived from its label) when no licence
-  is set; one an administrator set is kept. The loader never makes anything public.
+  manifest when no licence is set; one an administrator set is kept (see
+  [Country packs](country-packs-and-migration.md#licence)). The loader never makes anything public.
 
 A dataset marked public appears once it has a published version **in effect**;
-a list whose only published version is future-effective is not listed yet, but
+a dataset whose only published version is future-effective is not listed yet, but
 that version can be read by number.
 
 {% hint style="info" %}
@@ -66,30 +65,24 @@ all of it.
 ## Public API
 
 Anonymous `GET` requests; JSON responses (JSON-LD for DCAT and SKOS). Errors are
-`{"detail": "…"}` with HTTP 400, 404 or 429.
+`{"detail": "…"}` with HTTP 400, 404 or 429. Every operation is listed, with its
+parameters and responses, in the
+[API reference](../api-reference.md#public-catalogue).
+
+| Path | Returns |
+|---|---|
+| `/public/catalog` | The [DCAT catalogue](#dcat-catalogue) |
+| `/public/datasets`, `/public/datasets/{code}` | Public datasets with a published version in effect: title, description, theme, publisher, licence, version, dates, links; one dataset adds its published versions |
+| `/public/datasets/{code}/entries`, `…/entries/{entry_code}` | Entries of the selected version (paged, `page_size` up to 5000); one entry, which is also its SKOS concept's address |
+| `/public/datasets/{code}/download.csv`, `…/download.json`, `…/skos` | The selected version as CSV, JSON or a [SKOS concept scheme](#skos-concept-schemes) |
+| `/public/geography`, `/public/geography/levels`, `/public/geography/units` | The geography (404 unless public), its levels, its units (filtered by `level` and `parent`, paged) |
+| `/public/geography/levels/{level}/units.csv`, `…/boundaries.geojson` | Units of a level as CSV; the level's boundaries, streamed from the boundary store |
+| `/public/releases`, `/public/releases/{code}` | Published releases with only their public members; a release with nothing public is not listed |
 
 Version selection, where a version applies: `version` (a published version number,
 or `latest`, the default: the published version in effect now) or `as_of`
-(ISO date-time: the published version in effect then). `version=draft` is refused
-(400).
-
-| Endpoint | Returns |
-|---|---|
-| `GET /public/catalog` | The [DCAT catalogue](#dcat-catalogue) (JSON-LD) |
-| `GET /public/datasets` | Public datasets with a published version in effect: `code`, `title`, `title_i18n`, `description`, `theme` (the list's domain), `publisher` (`owner_org`), `licence`, `version`, `effective_from`, `issued` (first publication), `modified` (current version's publication), `links` |
-| `GET /public/datasets/{code}` | One dataset, plus its published `versions` (`version`, `effective_from`, `published_at`, `change_note`). A `Link` header points at the SKOS form. |
-| `GET /public/datasets/{code}/entries` | Entries of the selected version: `code`, `label`, `labels` (per language), `parent_code`, `sort_order`, `attributes`, `roles`, `status`. Active entries only unless `include_retired=true`; `parent_code` filters (`""` for the top level); paged with `page` and `page_size` (default 1000, at most 5000), with `total`. |
-| `GET /public/datasets/{code}/entries/{entry_code}` | One entry (also the IRI of its SKOS concept) |
-| `GET /public/datasets/{code}/download.csv` | The selected version as CSV (below) |
-| `GET /public/datasets/{code}/download.json` | The selected version as JSON: `dataset`, `version`, `effective_from`, `published_at`, `title`, `entries` |
-| `GET /public/datasets/{code}/skos` | The selected version as a [SKOS concept scheme](#skos-concept-schemes) (JSON-LD) |
-| `GET /public/geography` | 404 unless the geography is public. `country`, `publisher`, `licence`, `version`, `effective_from`, `issued`, `modified`, `levels` (with unit counts and download links), published `versions` |
-| `GET /public/geography/levels` | Levels of the selected version |
-| `GET /public/geography/units` | Units, filtered by `level` (mnemonic or id) and `parent` (`""` for the root); paged; `include_retired` |
-| `GET /public/geography/levels/{level}/units.csv` | Units of a level as CSV |
-| `GET /public/geography/levels/{level}/boundaries.geojson` | Boundaries of a level as GeoJSON, streamed from the boundary object store (404 when the version has none) |
-| `GET /public/releases` | Published releases with only their **public** members, and the geography version only when the geography is public; a release with nothing public is not listed |
-| `GET /public/releases/{code}` | One published release (public members only) |
+(date-time: the published version in effect then). `version=draft` is refused
+(400). Retired entries and units are left out unless `include_retired=true`.
 
 ### Downloads
 
@@ -98,7 +91,7 @@ or `latest`, the default: the published version in effect now) or `as_of`
 | Dataset CSV | `code`, `label`, `label_<lang>` per language present, `parent_code`, `sort_order`, `status`, `attributes` (JSON), `roles` (JSON) |
 | Dataset JSON | As `entries`, for the whole version |
 | Units CSV | `unit_id`, `name`, `name_<lang>` per language present, `level`, `parent_unit_id`, `status`, `valid_from`, `valid_to` |
-| Boundaries GeoJSON | The version's boundary object for the level, as loaded (RFC 7946 `FeatureCollection`) |
+| Boundaries GeoJSON | The version's boundary file for the level, as loaded (a `FeatureCollection`) |
 
 Downloads carry `Content-Disposition` file names such as `CROP_COMMODITY-v4.csv`
 and `geography-v2-woreda.geojson`. They are generated (or streamed) on request; no
@@ -122,65 +115,21 @@ bucket is made public.
 
 ### DCAT catalogue
 
-`GET /public/catalog` returns a `dcat:Catalog` as JSON-LD, DCAT-AP style, that
-CKAN's DCAT harvester (ckanext-dcat) and other DCAT harvesters can read:
-
-* the catalogue: `dct:title`, `dct:description`, `dct:publisher` (`foaf:Agent`),
-  `dct:modified`, `dcat:themeTaxonomy` (a SKOS scheme of the themes in use);
-* one **`dcat:Dataset`** per public dataset with a published version in effect,
-  plus one for the geography when it is public: `dct:identifier`, `dct:title`
-  (language-tagged), `dct:description`, `dct:publisher`, `dct:license`,
-  `dct:issued`, `dct:modified`, `dcat:theme`, `dcat:keyword`, `dcat:version` and
-  `owl:versionInfo` (the version in effect), `dcat:landingPage`;
-* one **`dcat:Distribution`** per format, pinned to that version: `dcat:downloadURL`,
-  `dcat:accessURL`, `dcat:mediaType` (IANA media type IRI), `dct:format` (EU file
-  type IRI) and `dct:license`. Lists have CSV, JSON and SKOS (JSON-LD); the
-  geography has a units CSV per level and, where the version has boundaries, a
-  GeoJSON per level.
-
-```json
-{
-  "@context": { "dcat": "http://www.w3.org/ns/dcat#", "dct": "http://purl.org/dc/terms/", "…": "…" },
-  "@id": "https://catalogue.example.gov/public/catalog",
-  "@type": "dcat:Catalog",
-  "dct:title": "Master data catalogue",
-  "dcat:dataset": [
-    {
-      "@id": "https://catalogue.example.gov/public/datasets/CROP_COMMODITY",
-      "@type": "dcat:Dataset",
-      "dct:identifier": "CROP_COMMODITY",
-      "dct:title": [ { "@value": "Crop", "@language": "en" }, { "@value": "ሰብል", "@language": "am" } ],
-      "dct:license": { "@id": "https://creativecommons.org/licenses/by/4.0/", "@type": "dct:LicenseDocument", "rdfs:label": "CC BY 4.0" },
-      "dcat:theme": { "@id": "https://catalogue.example.gov/public/catalog#themes-agriculture" },
-      "dcat:version": "4",
-      "dcat:distribution": [
-        { "@type": "dcat:Distribution", "dct:title": "CROP_COMMODITY (CSV)",
-          "dcat:downloadURL": { "@id": "https://catalogue.example.gov/public/datasets/CROP_COMMODITY/download.csv?version=4" },
-          "dcat:mediaType": { "@id": "https://www.iana.org/assignments/media-types/text/csv" },
-          "dct:format": { "@id": "http://publications.europa.eu/resource/authority/file-type/CSV" } }
-      ]
-    }
-  ]
-}
-```
+`GET /public/catalog` describes the catalogue in DCAT (JSON-LD), so CKAN's DCAT
+harvester and other open-data portals can harvest it. It lists one dataset per
+public dataset with a published version in effect, plus the geography when it is
+public, each with its licence, theme, version and one distribution per download
+format (pinned to that version). The vocabulary and how fully it is followed are
+on [Standards](../standards.md#catalogue-metadata-public-catalogue).
 
 ### SKOS concept schemes
 
-`GET /public/datasets/{code}/skos` returns the selected version as JSON-LD
-(`@graph`):
-
-* a **`skos:ConceptScheme`** (`@id` `…/datasets/{code}/skos`): `skos:prefLabel`
-  per language, `dct:title`, `dct:description`, `skos:notation` (the dataset code),
-  `owl:versionInfo` and `dcat:version`, `dct:issued`, `dct:license`,
-  `dct:publisher`, `skos:hasTopConcept`;
-* one **`skos:Concept`** per active entry (`@id` `…/datasets/{code}/entries/{entry_code}`,
-  which resolves): `skos:notation` (the code), `skos:prefLabel` with a language tag
-  per `display_i18n` locale (plus `display` in the default language,
-  `public_catalogue_default_language`, when `display_i18n` lacks it),
-  `skos:inScheme`, and `skos:broader` (the parent) or `skos:topConceptOf`.
-
-Concept IRIs do not carry the version, so a code keeps the same IRI across
-versions.
+`GET /public/datasets/{code}/skos` gives the selected version as a SKOS concept
+scheme (JSON-LD): one concept per active entry, with its code, labels per
+language and parent. A concept's address
+(`/public/datasets/{code}/entries/{entry_code}`) resolves and does not carry the
+version, so a code keeps the same address across versions. See
+[Standards](../standards.md#datasets-and-entries).
 
 ## Base URL
 

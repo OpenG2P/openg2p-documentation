@@ -17,5 +17,5 @@ description: >-
 | [Testing after install](testing-after-install.md) | Operators, developers | The order to test once installed: Exchange setup, partner portal realm, partner test, consent through the portal; common failures |
 | [Partner test](partner-test.md) | Developers, operators, partners | Testing a use case end to end as a partner would, through public APIs only |
 | [Exchange setup](exchange-setup.md) | Operators | One-time setup after install: the Composite's signing key, its PM entries and its department CM policies |
-| [Deploying on a cluster](deployment.md) | Operators | The order and settings for commons (MDS, PM, CM), the registries and the Composite; uninstalling |
+| [Deploying on a cluster](deployment.md) | Operators | The order and settings for commons (catalogue, PM, CM), the registries and the Composite; uninstalling |
 | [Running the Composite locally](running-the-composite-locally.md) | Developers | Running the Composite and its tests on a laptop |

@@ -26,7 +26,7 @@ Two needs pull in different directions:
 
 Each department runs its own Kubernetes cluster behind its own ingress (Nginx, Istio), the public entry point for that cluster.
 
-1. **Department tier: one install per registry, complete.** Each registry is its own install (commons and the registry) with its **own** Partner Management (PM: identity and keys), Consent Manager (CM), catalogue (MDS), IAM, approvals (AWE), audit, Keycloak and database. It runs its own partners and use cases without depending on anyone, and shares data on its own: a partner can call a registry directly (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)).
+1. **Department tier: one install per registry, complete.** Each registry is its own install (commons and the registry) with its **own** Partner Management (PM: identity and keys), Consent Manager (CM), catalogue, IAM, approvals (AWE), audit, Keycloak and database. It runs its own partners and use cases without depending on anyone, and shares data on its own: a partner can call a registry directly (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)).
 2. **Agri Stack Exchange tier: one install, shared, facing OAN.** A separate install of the cross-cutting pieces, hosted by one department. Here the Agriculture Department, which holds the Farmer Registry, hosts it; other arrangements are possible. It serves path B (one onboarding, one consent, one query across registries):
    * the **[Composite](use-case-composite.md)**, which runs the use cases across registries;
    * **PM**, where OAN partners onboard **once**;
@@ -46,7 +46,7 @@ A third path, registry to registry, is not in use ([registry data sync](registry
 | --- | --- | --- |
 | Composite | Exchange | One query across registries for OAN partners (path B); partners can still call a registry directly (path A) |
 | Partner Management, Consent Manager | **Both** | Each registry install's for its own partners; the Exchange's for OAN partners and farmer consent. Data-share policies are in the CM today; PM is the target |
-| Catalogue | **Shared, authoritative at Agri Stack level** | Crop codes, seasons and geography (P-codes) must be identical across registries, or the Composite cannot join their data. Target: departments read it through its API (cached, version-pinned); department-only datasets can live in it under their own publisher. **For now (phase 1):** each department runs its own MDS from the same `openg2p-data` pack; the central catalogue and mirroring come in phase 2. |
+| Catalogue | **Shared, authoritative at Agri Stack level** | Crop codes, seasons and geography (P-codes) must be identical across registries, or the Composite cannot join their data. Target: departments read it through its API (cached, version-pinned); department-only datasets can live in it under their own publisher. **For now (phase 1):** each department runs its own catalogue from the same `openg2p-data` pack; the central catalogue and mirroring come in phase 2. |
 | Audit | **Both** | Each department audits access to its data, including calls from the Exchange, recorded "on behalf of" the partner. The Exchange audits who asked what. A **request ID passed through every hop** ties them together for forensics. |
 | Verifiable credentials | Issuer per department, verification shared | The Farmer Registry issues farmer credentials under its own issuer identity; verification is public and can be shared. |
 | Farmer identity | National ID (Fayda FAN in the reference setup) and the FR farmer ID | The join key across registries; departments resolve farmers through FR (lookups or [data sync](registry-data-sync.md)). |
@@ -126,7 +126,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 * **Reaching the registries:** each registry already publishes its partner API on its gateway (`https://partner-fr.trial.openg2p.org`, `https://partner-csr.dept1.openg2p.org`). The Composite's registry URLs are values (`composite.registries.<name>.url`); set them to these.
 * **The Composite as a partner of each department:** register the Composite's public key in the `trial` PM and the `dept1` PM, and give it a policy in each department's CM. Each registry then verifies the Composite's signature as for any partner.
 * **Partner onboarding at the Exchange:** the bank onboards in the `agrix` PM and CM only; the Composite verifies the bank there (same namespace).
-* **Catalogue, phase 1 (decided):** each department runs its **own MDS**, loaded from the **same `openg2p-data` country pack version**, so codes and geography are identical. A central catalogue, and departments mirroring it, is phase 2. Each MDS can also publish an opt-in, read-only [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md) (DCAT, SKOS, downloads) of the datasets it marks public.
+* **Catalogue, phase 1 (decided):** each department runs its **own catalogue**, loaded from the **same `openg2p-data` country pack version**, so codes and geography are identical. A central catalogue, and departments mirroring it, is phase 2. Each catalogue can also publish an opt-in, read-only [public catalogue](../../platform/platform-services/master-data-service/catalogue/public-catalogue.md) (DCAT, SKOS, downloads) of the datasets it marks public.
 
 **Consent (phase 1, built):** without the Exchange, a registry validates the partner's consent with its **own** CM, so the bank would have to be bound in every department's CM as well. With phase 1, the bank onboards and the farmer consents only at the Exchange; the Exchange CM issues a consent token per registry, and each department CM trusts it. After the install, `scripts/setup_exchange.py` registers the Composite's key in each department PM, binds the Composite in each department CM and checks consent-token trust; `scripts/partner_test.py` and `scripts/exchange_test.sh` test the whole path ([testing after install](../guides/testing-after-install.md)).
 
@@ -148,7 +148,7 @@ The model is tested on one cluster with three namespaces, each installed as if i
 **Phase 2: shared catalogue and policy subset check**
 
 * Departments may point at the `agrix` catalogue (a remote catalogue URL; default stays local), with read access by signed request.
-* **Central catalogue and mirroring:** the `agrix` catalogue becomes the authoritative copy; department MDSs mirror its published versions (pull by release or change feed) instead of loading the pack themselves. Not before phase 2: for now each department loads the same pack.
+* **Central catalogue and mirroring:** the `agrix` catalogue becomes the authoritative copy; department catalogues mirror its published versions (pull by release or change feed) instead of loading the pack themselves. Not before phase 2: for now each department loads the same pack.
 * The Exchange CM refuses a partner policy that grants more than a department's published Exchange policy allows.
 
 **Phase 3: production hardening**

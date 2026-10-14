@@ -1,18 +1,18 @@
 ---
 description: >-
-  How reference data changes in MDS as Catalogue: drafts, submission, approval
-  through a maker-checker permission or AWE, permissions, audit, and what the
-  legacy write endpoints do now
+  How datasets and geography change in MDS as Catalogue: drafts, submission,
+  approval through a maker-checker permission or AWE, permissions, audit, and
+  what the original write endpoints do now
 ---
 
 # Change Control and Approvals
 
-In MDS as Catalogue, **published data is never edited**. Every change, to a list or
-to the geography, follows the same path:
+In MDS as Catalogue, **published data is never edited**. Every change, to a dataset
+or to the geography, follows the same path:
 
 ```mermaid
 flowchart LR
-    A["Create draft<br/>(copy of the highest<br/>published version)"] --> B["Edit draft<br/>values · metadata · levels · units<br/>change events · boundaries"]
+    A["Create draft<br/>(copy of the highest<br/>published version)"] --> B["Edit draft<br/>entries · metadata · levels · units<br/>change events · boundaries"]
     B --> C["Submit<br/>(change note,<br/>effective_from)"]
     C --> D{"Approval<br/>permission or AWE"}
     D -->|approve| E["Published<br/>immutable<br/>current tables refreshed"]
@@ -22,21 +22,22 @@ flowchart LR
 
 ## Drafts
 
-* A list has **at most one open draft** (`DRAFT` or `SUBMITTED`) at a time; so does
+* A dataset has **at most one open draft** (`DRAFT` or `SUBMITTED`) at a time; so does
   the geography. A second `create_list_draft` fails with `G2P-CAT-409`.
 * A draft starts as a copy of the **highest published version** (its base). Any
   edit endpoint creates the draft if none is open, so an explicit
   `create_list_draft` is needed only to set a change note or effective date up
   front, or to copy an older version's content (`copy_from_version`).
-* Anyone with the edit permission can change a draft: add, change or retire values
-  (`upsert_draft_values`, `retire_draft_values`); change the list's code, labels,
+* Anyone with the edit permission can change a draft: add, change or retire entries
+  (`upsert_draft_values`, `retire_draft_values`); change the dataset's code, labels,
   hierarchy flag or attribute schema (`update_list`); set its change note and
   effective date (`update_list_draft`). For geography: levels, units, change
   events, boundaries, note, effective date and owner.
-* `description` and `owner_org` of a list are administrative: `update_list`
-  applies them at once, outside the draft.
-* Values are validated against the list's attribute schema as they are written, so
-  errors surface while editing rather than at approval.
+* A dataset's `description`, `owner_org`, theme (`domain`), visibility and licence
+  are administrative: `update_list` applies them at once, outside the draft. The
+  geography's visibility and licence are set with `update_geo_settings`.
+* Entries are validated against the dataset's attribute schema as they are
+  written, so errors surface while editing rather than at approval.
 * Consumers do not see a draft unless they ask for it (`version: "draft"` or its
   number).
 * A draft can be **discarded**: nothing it contained is published. The version is
@@ -54,9 +55,9 @@ submitter may give:
 * an **`effective_from`**, if the version should take effect later than its
   approval. It may not be earlier than the latest published version's.
 
-On submit, MDS validates the whole draft again: labels, the value hierarchy (no
-missing parents, no cycles), every value against the attribute schema and every
-`x-list-ref` against the referenced list's version in effect (on the draft's
+On submit, MDS validates the whole draft again: labels, the entry hierarchy (no
+missing parents, no cycles), every entry against the attribute schema and every
+`x-list-ref` against the referenced dataset's version in effect (on the draft's
 `effective_from`, when that is in the future; never a draft: see
 [Typed attributes](concepts.md#typed-attributes)); for geography, levels, units and every
 recorded change event. A draft with **no changes** from its base is refused
@@ -74,7 +75,7 @@ How a submitted draft is approved is a deployment setting: the chart value
 
 ### `permission`: maker-checker within MDS
 
-A user holding the publish permission (`referenceData:publish` for lists,
+A user holding the publish permission (`referenceData:publish` for datasets,
 `geo:publish` for geography) approves or rejects the draft with `approve_draft` /
 `reject_draft` (`approve_geo_draft` / `reject_geo_draft`). A rejection needs a
 `decision_note`.
@@ -93,7 +94,7 @@ On submit, MDS opens an approval request in the
 [Approval Workflow Engine](../../approval-workflow-engine/README.md), forwarding the
 submitter's bearer token:
 
-| | Lists | Geography |
+| | Datasets | Geography |
 |---|---|---|
 | Policy key | `awe.policyKeyList` (default `master_data.list_version.v1`) | `awe.policyKeyGeo` (default `master_data.geo_version.v1`) |
 | Artifact type | `master_data.list_version` | `master_data.geo_version` |
@@ -161,10 +162,10 @@ announced again when it **takes effect** (`*.version.effective`).
 
 ## Retiring
 
-A **value** or **unit** is retired in a draft and stops being current when that
+An **entry** or **unit** is retired in a draft and stops being current when that
 draft is published. It is never deleted. There is no endpoint to retire a whole
-published version or list: a list that is no longer used can have all its values
-retired in a new version.
+published version or dataset: a dataset that is no longer used can have all its
+entries retired in a new version.
 
 ## Permissions
 
@@ -173,12 +174,12 @@ All permissions are held under the `master-data` Keycloak client (the chart's
 
 | Permission | Allows |
 |---|---|
-| `referenceData:create` | Create lists (`create_list`; legacy `add_attribute`, `add_attribute_value`) |
-| `referenceData:edit` | Open, edit, submit and discard list drafts; update list metadata; create releases and set their members |
-| `referenceData:delete` | Retire values in a draft; delete a draft release; legacy `delete_attribute`, `delete_attribute_value` |
-| `referenceData:publish` | Approve or reject list drafts (`permission` mode); publish releases |
+| `referenceData:create` | Create datasets (`create_list`; legacy `add_attribute`, `add_attribute_value`) |
+| `referenceData:edit` | Open, edit, submit and discard dataset drafts; update dataset metadata (including theme, visibility, licence); create releases and set their members |
+| `referenceData:delete` | Retire entries in a draft; delete a draft release; legacy `delete_attribute`, `delete_attribute_value` |
+| `referenceData:publish` | Approve or reject dataset drafts (`permission` mode); publish releases |
 | `geo:create` | Legacy `add_geo_level`, `add_geo_level_value` only |
-| `geo:edit` | Open, edit, submit and discard the geography draft: levels, units, change events, boundaries |
+| `geo:edit` | Open, edit, submit and discard the geography draft: levels, units, change events, boundaries; set the geography's visibility and licence |
 | `geo:delete` | Retire units in the geography draft; legacy `delete_geo_level`, `delete_geo_level_value` |
 | `geo:publish` | Approve or reject geography drafts (`permission` mode) |
 
@@ -187,18 +188,30 @@ All permissions are held under the `master-data` Keycloak client (the chart's
 | `MASTER_DATA_ADMIN` | All of the above |
 | `MASTER_DATA_APPROVER` | `referenceData:publish`, `geo:publish` only: approves and publishes, cannot edit |
 
-Reads need authentication only, as before.
+Reads need authentication only, as before. The chart registers the permissions
+and both roles with IAM (`iamRegister`) and creates the roles in Keycloak.
 
 ## Audit
+
+MDS sends two kinds of audit events to the
+[Audit Manager](../../audit-manager/README.md) (off when no Audit Manager URL is
+configured; `masterDataAPI.catalogue.auditManagerUrl`, by default the `commons-services` Audit
+Manager):
+
+* **Every API call**, from an audit middleware like the registry APIs': who
+  called which endpoint and the outcome (source `/openg2p/master-data-api`).
+  Authenticated calls are always recorded; anonymous calls only when they fail
+  (for example a 404 or 429 on the public catalogue). `/ping` and the OpenAPI
+  pages are not recorded. Sending never delays the response.
+* **Every catalogue lifecycle step**, from the change log, described below.
 
 Every lifecycle step is recorded twice:
 
 * in MDS's own **change log** (`g2p_catalogue_change_log`), append-only (a trigger
   refuses updates and deletes; the one column that may change is `forwarded_at`),
   which also backs the [change feed](consumers.md#following-changes);
-* in the [Audit Manager](../../audit-manager/README.md), as a CloudEvent
-  (`POST <auditManagerUrl>/v1/auditmanager/events`). If no Audit Manager URL is
-  configured, this is off; the change log is always kept.
+* in the Audit Manager, as a CloudEvent (`POST <auditManagerUrl>/v1/auditmanager/events`;
+  see [Standards](../standards.md)). The change log is always kept.
 
 **The change log is the outbox.** An event is written to the change log in the same
 transaction as the change, so the log is exact; delivery happens afterwards and is
@@ -236,32 +249,33 @@ The CloudEvent `type` is `org.openg2p.master_data.<event_type>`, its `subject`
 user's stable id and display name, or a system actor), the action, the resource
 (`master_data.list`, `master_data.geo` or `master_data.release`), the change-log
 `event_id` and the details. The event types are listed in the
-[API reference](api-reference.md#change-feed).
+[API reference](../api-reference.md#change-feed-and-configuration).
 
 ## What the legacy write endpoints do now
 
-The existing write endpoints keep their paths, payloads and response shapes but
+The original `/attributes` and `/geo` write endpoints keep their paths, payloads
+and response shapes but
 **no longer change published data**. Each one writes into the open draft, creating
 a draft from the highest published version if there is none, and returns the
-changed object as before (not the draft). A legacy write to a list or geography
+changed object as before (not the draft). A legacy write to a dataset or geography
 whose draft is already `SUBMITTED` fails until that draft is decided or discarded.
 
 | Endpoint | Before | Now |
 |---|---|---|
-| `/attributes/add_attribute` | Created a live list | Creates the list with an empty draft (version 1); nothing is published |
-| `/attributes/update_attribute` | Changed a list | Changes the list's code, label or hierarchy flag in the draft |
-| `/attributes/delete_attribute` | Deleted a list | A list never published is **deleted**. A published list is never deleted: all its values are **retired** in the draft. Either way, existing values block it unless `cascade` is set |
-| `/attributes/add_attribute_value` | Added a live value | Adds the value to the draft |
-| `/attributes/update_attribute_value` | Changed a live value | Changes the value in the draft (children follow a changed code) |
-| `/attributes/delete_attribute_value` | Deleted a live value | **Retires** the value in the draft (removes it if it was new in the draft); refused while it has active children |
+| `/attributes/add_attribute` | Created a live dataset | Creates the dataset with an empty draft (version 1); nothing is published |
+| `/attributes/update_attribute` | Changed a dataset | Changes the dataset's code, label or hierarchy flag in the draft |
+| `/attributes/delete_attribute` | Deleted a dataset | A dataset never published is **deleted**. A published dataset is never deleted: all its entries are **retired** in the draft. Either way, existing entries block it unless `cascade` is set |
+| `/attributes/add_attribute_value` | Added a live entry | Adds the entry to the draft |
+| `/attributes/update_attribute_value` | Changed a live entry | Changes the entry in the draft (children follow a changed code) |
+| `/attributes/delete_attribute_value` | Deleted a live entry | **Retires** the entry in the draft (removes it if it was new in the draft); refused while it has active children |
 | `/geo/add_geo_level`, `update_geo_level`, `delete_geo_level` | Changed live levels | Change the levels in the geography draft; a level is removed only if it has no child levels and no units |
 | `/geo/add_geo_level_value`, `update_geo_level_value`, `delete_geo_level_value` | Changed live units | Add, change or **retire** the unit in the geography draft |
 
 {% hint style="warning" %}
 **A legacy write is not visible until the draft is approved.** A script or screen
-that adds a value and immediately reads it back through `/attributes/get_attribute_values`
-will not find it: the read returns the current published data. The value appears
-once the draft is submitted and approved. A list created with `add_attribute` does
+that adds an entry and immediately reads it back through `/attributes/get_attribute_values`
+will not find it: the read returns the current published data. The entry appears
+once the draft is submitted and approved. A dataset created with `add_attribute` does
 appear in `/attributes/get_all_attributes` at once, with `current_version_no: null`
-and no values.
+and no entries.
 {% endhint %}

@@ -274,7 +274,7 @@ No verification work: entity change requests keep their AWE approval, and activi
 | **Verification in DCI** | CSR | Activities carry `verification_status`; the crop-season state carries `sowing_verified`, `harvest_verified` and `pending_verification_count` |
 | **Sample data** | Platform, CSR, FR | See below |
 
-**Sample data, shared by convention.** The Farmer and Crop Sown registries never read each other's database. Both derive sample IDs from Master Data's sample people (the country pack's `samples/individuals.json`):
+**Sample data, shared by convention.** The Farmer and Crop Sown registries never read each other's database. Both derive sample IDs from the catalogue's sample people (the country pack's `samples/individuals.json`):
 
 * sample person `ETH-IND-0007` is farmer `FR-0007`;
 * their plots are `LAND-0007-1`, `LAND-0007-2`… in their district.
@@ -310,7 +310,7 @@ What is built is documented with each product: [activity registers](../../produc
 | Verification vocabulary | `NOT_REQUIRED`, `PENDING`, `VERIFIED`, `FAILED`, `DISPUTED`. Occurrence lifecycle as built (`ACTIVE`, `SUPERSEDED`, `VOIDED`; FHIR `amended` / `entered-in-error`) |
 | What is verified | **Configurable per case:** a field, a section, the whole record, or an activity type. Each target says whether it is required, which methods count, who verifies and what evidence |
 | Temporary IDs | **Withdrawn.** Offline capture registers the entity first |
-| Sample data across registries | **Shared by convention, not by reading another registry's database.** IDs derive from Master Data's sample people |
+| Sample data across registries | **Shared by convention, not by reading another registry's database.** IDs derive from the catalogue's sample people |
 | Cluster changes | **Approved in AWE,** like other entity registers |
 | Crops in the Farmer Registry? | **Declared "main crops" only**: the crops the farmer mainly grows, from the CROP_COMMODITY list, recorded at registration. FR's Crops tab (crop records per land) is removed; what was planned, sown and harvested each season is held only in the Crop Sown Registry |
 | Livestock in the Farmer Registry? | **Kept as it is** (FR's Livestock tab) until a Livestock registry exists; then reduced to a declared summary or removed |

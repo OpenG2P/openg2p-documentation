@@ -21,7 +21,7 @@ In the three-namespace setup it runs in the department namespace `dept1`, releas
 | **Load Sample Data**, **Load sample crop seasons** | On for a demo only | Off |
 | **Pull submissions from ODK Central** | Off, unless sowings are collected with ODK | Off |
 
-Master Data in `dept1` needs the **agriculture** dataset theme (the default): every coded field is checked against it. Settings, ODK and sample data are explained in [Deploying on Rancher](../../products/registry/crop-sown-registry/deployment/rancher.md).
+Master Data (the catalogue) in `dept1` needs the **agriculture** dataset theme (the default): every coded field is checked against it. Settings, ODK and sample data are explained in [Deploying on Rancher](../../products/registry/crop-sown-registry/deployment/rancher.md).
 
 ## How it relates to the Farmer Registry
 
@@ -79,4 +79,4 @@ A programme system can read season summaries for many farmers at once (e.g. ever
 
 ## Sample data
 
-For a demo, **Load Sample Data** loads two sample clusters and **Load sample crop seasons** records crop seasons for Master Data's sample people through the post-install Job `<release>-activity-samples`. The farmers and plots match the Farmer Registry's sample data (`FR-0007`, `LAND-0007-1`), so a demo of the `loan-profile` use case returns crop seasons for the same farmer. See [Sample data](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data).
+For a demo, **Load Sample Data** loads two sample clusters and **Load sample crop seasons** records crop seasons for the catalogue's sample people through the post-install Job `<release>-activity-samples`. The farmers and plots match the Farmer Registry's sample data (`FR-0007`, `LAND-0007-1`), so a demo of the `loan-profile` use case returns crop seasons for the same farmer. See [Sample data](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data).

@@ -24,7 +24,7 @@ country pack stops at woreda.
 
 ## Geography is versioned as one dataset
 
-Code lists are versioned **one list at a time**. Geography is versioned **as a
+Datasets are versioned **one at a time**. Geography is versioned **as a
 whole**: its levels, all its units and their boundaries together form one
 **geography version**.
 
@@ -36,7 +36,7 @@ and woredas at another and get a hierarchy that never existed. One version numbe
 for the whole geography means **every read sees a consistent hierarchy and a
 matching set of boundaries.**
 
-A geography version has the same lifecycle as a list version
+A geography version has the same lifecycle as a dataset version
 (`DRAFT` → `SUBMITTED` → `PUBLISHED`, or `REJECTED` or `DISCARDED`; see
 [Concepts](concepts.md#version)), the same never-reused version numbers, the same
 `effective_from`, and the same latest / pinned / as-of reads. In addition it carries:
@@ -53,7 +53,7 @@ A geography version has the same lifecycle as a list version
 
 ## Units are never deleted
 
-As with list values, a unit is **never deleted**. When a woreda ceases to exist, the
+As with dataset entries, a unit is **never deleted**. When a woreda ceases to exist, the
 next geography version keeps it with status `RETIRED` and a `valid_to` date. So:
 
 * a record holding the old P-code still resolves to a name, a level and a parent;
@@ -369,4 +369,4 @@ review or an update by the field team.
 | `get_geo_crosswalk` | Successors of a unit between two versions |
 | `get_geo_boundary` | A level's boundary file at a version |
 
-See [API reference](api-reference.md#geography) for requests and responses.
+See [API reference](../api-reference.md#geography) for requests and responses.

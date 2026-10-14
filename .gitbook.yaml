@@ -18,3 +18,5 @@ redirects:
   open-agri-stack/design/crop-sown-registry: products/registry/crop-sown-registry/README.md
   open-agri-stack/architecture/consent-model: open-agri-stack/architecture/consent.md
   open-agri-stack/architecture/consent-scenarios: open-agri-stack/architecture/consent.md
+  platform/platform-services/master-data-service/catalogue/standards: platform/platform-services/master-data-service/standards.md
+  platform/platform-services/master-data-service/catalogue/api-reference: platform/platform-services/master-data-service/api-reference.md

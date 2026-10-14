@@ -68,7 +68,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="t" x="742" y="352" text-anchor="middle">Partner Mgmt</text>
   <text class="s" x="742" y="369" text-anchor="middle">partners onboard here</text>
   <rect class="l2" x="470" y="446" width="180" height="48" rx="6"/>
-  <text class="t" x="560" y="466" text-anchor="middle">Catalogue (MDS)</text>
+  <text class="t" x="560" y="466" text-anchor="middle">Catalogue</text>
   <text class="s" x="560" y="482" text-anchor="middle">datasets · geography</text>
   <rect class="dpi" x="670" y="446" width="145" height="48" rx="6"/>
   <text class="t" x="742" y="466" text-anchor="middle">Audit Manager</text>
@@ -88,7 +88,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="t" x="1147" y="352" text-anchor="middle">Partner Management</text>
   <text class="s" x="1147" y="369" text-anchor="middle">the FR's partners</text>
   <rect class="l2" x="875" y="446" width="170" height="48" rx="6"/>
-  <text class="t" x="960" y="466" text-anchor="middle">Catalogue (MDS)</text>
+  <text class="t" x="960" y="466" text-anchor="middle">Catalogue</text>
   <text class="s" x="960" y="482" text-anchor="middle">datasets · geography</text>
   <rect class="dpi" x="1065" y="446" width="165" height="48" rx="6"/>
   <text class="t" x="1147" y="466" text-anchor="middle">Audit Manager</text>
@@ -108,7 +108,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="t" x="1147" y="714" text-anchor="middle">Crop Sown Registry</text>
   <text class="s" x="1147" y="730" text-anchor="middle">activity register</text>
   <rect class="l2" x="875" y="758" width="170" height="40" rx="6"/>
-  <text class="t" x="960" y="775" text-anchor="middle">Catalogue (MDS)</text>
+  <text class="t" x="960" y="775" text-anchor="middle">Catalogue</text>
   <text class="s" x="960" y="790" text-anchor="middle">datasets · geography</text>
   <rect class="dpi" x="1065" y="758" width="165" height="40" rx="6"/>
   <text class="t" x="1147" y="775" text-anchor="middle">Consent Manager</text>

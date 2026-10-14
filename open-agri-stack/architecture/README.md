@@ -13,7 +13,7 @@ description: >-
 | Colour | Part |
 | --- | --- |
 | Blue | Registries (systems of record) |
-| Ochre | Catalogues (reference data; MDS for now) |
+| Ochre | Catalogues (reference data) |
 | Teal | Platform services (Partner Management, Consent Manager, Audit Manager), and the Exchange's partner portal and eSignet |
 | Green | The Composite (the Exchange's use-case service) |
 

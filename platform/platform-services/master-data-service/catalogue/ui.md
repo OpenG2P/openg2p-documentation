@@ -8,18 +8,18 @@ description: >-
 
 # Admin UI
 
-The catalogue is managed from the existing **Master Data admin UI**
-(`master-data-ui`). It is extended, not replaced. The UI uses common
-data-catalogue terms (W3C DCAT, SKOS): the whole service is the **Catalogue**,
-each code list is a **dataset**, a dataset's values are its **entries**, and a
-dataset's domain is its **theme**. The API keeps its own names (`get_lists`,
-`list_code`, `owner_org`, `domain`, ...); the table below maps them.
+The catalogue is managed from the **Master Data admin UI** (`master-data-ui`).
+The UI uses common data-catalogue terms (see [Standards](../standards.md)): the
+whole service is the **Catalogue**, reference data comes in **datasets**, a
+dataset holds **entries**, and a dataset's domain is its **theme**. The API keeps
+its own names (`get_lists`, `list_code`, `owner_org`, `domain`, ...); the table
+below maps them.
 
 | In the UI | In the API |
 |---|---|
 | Catalogue | MDS as Catalogue (`/catalogue/*`) |
-| Dataset | A list (code list): `list_id`, `list_code` |
-| Entry, with its **Code** and **Label** | A list value: `value_code`, `display` |
+| Dataset | A list: `list_id`, `list_code` |
+| Entry, with its **Code** and **Label** | A value: `value_code`, `display` |
 | Labels by language | `display_i18n` |
 | Parent entry | `parent_code` |
 | Schema, and an entry's **Fields** | `attribute_schema`, a value's `attributes` |

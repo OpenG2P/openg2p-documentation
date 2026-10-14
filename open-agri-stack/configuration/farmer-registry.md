@@ -9,7 +9,7 @@ description: >-
 
 The [Farmer Registry](../../products/registry/farmer-registry/README.md) is the agriculture department's registry of farmers, their land, households and (for now) livestock. Its registers, fields, data scopes and installation are documented there. This page says what is set for Agri Stack.
 
-In the three-namespace setup it runs in the department namespace `trial`, release `fr`, with its own commons (Partner Management, Consent Manager, Master Data). See [deploying on a cluster](../guides/deployment.md#farmer-registry).
+In the three-namespace setup it runs in the department namespace `trial`, release `fr`, with its own commons (Partner Management, Consent Manager, Master Data: the catalogue). See [deploying on a cluster](../guides/deployment.md#farmer-registry).
 
 ## Registry settings
 
@@ -83,4 +83,4 @@ A rerun of the setup only widens this policy, never narrows it. The department c
 
 ## Sample data
 
-For a demo, **Load Sample Data** loads farmers from Master Data's sample people, numbered so that they match the Crop Sown Registry's sample crop seasons: person `ETH-IND-0007` is farmer `FR-0007`, with lands `LAND-0007-1`, `LAND-0007-2`… ([data seeding](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data)). The mock identity system's identities are the same people, so a sample farmer can log in with their national ID in the partner portal.
+For a demo, **Load Sample Data** loads farmers from the catalogue's sample people, numbered so that they match the Crop Sown Registry's sample crop seasons: person `ETH-IND-0007` is farmer `FR-0007`, with lands `LAND-0007-1`, `LAND-0007-2`… ([data seeding](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data)). The mock identity system's identities are the same people, so a sample farmer can log in with their national ID in the partner portal.

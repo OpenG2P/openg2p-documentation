@@ -1,18 +1,20 @@
 ---
 description: >-
-  How registries, PBMS and other services should read reference data from MDS as
-  Catalogue: latest, pinned or as-of reads, caching, the change feed, pinning in
-  configuration, storing the version used, retired values and geography changes
+  How registries, PBMS and other services should read datasets and geography
+  from MDS: latest, pinned or as-of reads, caching, the change feed, pinning in
+  configuration, storing the version used, retired entries and geography changes
 ---
 
 # For Consumers
 
 This page is for teams building on MDS: registries, PBMS, reporting, the Composite,
-and any other service that reads code lists or geography.
+and any other service that reads datasets or geography. Open-data portals and
+other websites without a token use the [public catalogue](public-catalogue.md)
+instead.
 
 {% hint style="info" %}
 **The registry platform reads MDS through the catalogue API.** A client in the
-registry platform's core reads lists, values and geography through `/catalogue`,
+registry platform's core reads datasets, entries and geography through `/catalogue`,
 caches them by version, follows the change feed (`get_changes`) to notice newly
 published versions, and keeps serving the last good data if MDS is briefly
 unreachable. It authenticates with the registry's own Keycloak client (client
@@ -38,11 +40,11 @@ used for:
 
 | Use | Read | Why |
 |---|---|---|
-| Data-entry dropdowns for new records | `latest` | New records should use the current list |
+| Data-entry dropdowns for new records | `latest` | New records should use the current entries |
 | Displaying an existing record | `latest` with `include_retired: true` | The record's code must still show a label, even if retired |
 | A programme's eligibility or entitlement rules | **Pinned** version (or a release) | The rules were defined against that version and must not change silently |
 | A report for a past period | `as_of` the period's date, or pinned to the version used | Reproducible: run it again next year and get the same answer |
-| A survey, programme cycle or national report that needs everything consistent | A **catalogue release** | All lists and the geography at one agreed set of versions |
+| A survey, programme cycle or national report that needs everything consistent | A **catalogue release** | All datasets and the geography at one agreed set of versions |
 
 ## Pin in configuration
 
@@ -51,13 +53,13 @@ A pin belongs in configuration, where it can be reviewed, not in code:
 ```yaml
 catalogue:
   release: "2027.1"            # pin everything at once, or
-  lists:
-    SEED_VARIETY: 7            # pin individual lists
+  datasets:
+    SEED_VARIETY: 7            # pin individual datasets
     CROP_COMMODITY: latest
   geography: 3
 ```
 
-Moving a pin is a deliberate change: read the [diff](api-reference.md#lists)
+Moving a pin is a deliberate change: read the [diff](../api-reference.md#datasets) (`get_list_diff`)
 between the pinned and the new version, check what it does to your rules, then
 change the configuration.
 
@@ -83,7 +85,7 @@ read are the fallback.
 **A published version never changes.** So:
 
 * a response for a **specific version number** can be cached **indefinitely**,
-  keyed by list (or geography) and version number;
+  keyed by dataset (or geography) and version number;
 * a `latest` response should be cached only until the change feed says something
   new was published (or for a short time), then re-read. The `version` object in
   the response tells you which version you got, so the cache can be keyed by it;
@@ -104,12 +106,12 @@ entries also expire after `cache_expire_seconds` (300 s) in any case. The
 
 ## Following changes
 
-Do not poll lists to notice changes. Use the **change feed**:
+Do not poll datasets to notice changes. Use the **change feed**:
 
 1. Keep the last `event_id` you processed (start with `0`).
-2. Call [`get_changes`](api-reference.md#change-feed) with it as the
+2. Call [`get_changes`](../api-reference.md#change-feed-and-configuration) with it as the
    `cursor`, process the events in order, and store the new cursor.
-3. On a `*.version.published` or `*.version.effective` event for a list or the
+3. On a `*.version.published` or `*.version.effective` event for a dataset or the
    geography you use: drop `latest` caches, and, if you pin, flag that a newer
    version exists for someone to review.
 
@@ -129,10 +131,10 @@ A version with a **future `effective_from`** is announced twice: when it is
 current, and use the time to prepare), and when it **takes effect**
 (`*.version.effective`, on the change feed and on the `*.effective` WebSub topic).
 
-## Retired values
+## Retired entries
 
-* **Do not offer retired values for new data.** Reads leave them out by default.
-* **Do not reject records that hold a retired value.** The value was valid when
+* **Do not offer retired entries for new data.** Reads leave them out by default.
+* **Do not reject records that hold a retired entry.** The entry was valid when
   recorded. Read with `include_retired: true` (or `get_list_value`) to show it.
 * A registry's coded-value check should validate **new** values against `latest` and
   accept existing values that are retired. (The registry platform validates new
@@ -162,5 +164,5 @@ The details, with examples, are in
       configuration.
 * [ ] Store the version (or release) used alongside records that hold codes.
 * [ ] Cache by version number; follow the change feed with a stored cursor.
-* [ ] Show retired values on existing records; hide them in new-entry dropdowns.
+* [ ] Show retired entries on existing records; hide them in new-entry dropdowns.
 * [ ] Have a plan for geography splits affecting your records.
