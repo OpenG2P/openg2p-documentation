@@ -85,7 +85,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 
       <!-- 7 Crop Sown Registry -->
       <line class="ar" x1="320" y1="556" x2="953" y2="556" marker-end="url(#a2)"/>
-      <text class="lbl" x="637" y="549" text-anchor="middle">7 · DCI search + its consent token (by the Farmer ID from step 6)</text>
+      <text class="lbl" x="637" y="549" text-anchor="middle">7 · two DCI searches + its consent token (by the Farmer ID from step 6)</text>
       <line class="ar" x1="955" y1="588" x2="1076" y2="588" marker-end="url(#a2)"/>
       <text class="lbl" x="1016" y="581" text-anchor="middle">/validate</text>
       <line class="ar d" x1="1078" y1="618" x2="957" y2="618" marker-end="url(#a2)"/>

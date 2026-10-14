@@ -32,7 +32,7 @@ kubectl -n agrix get pods
 ./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
 ```
 
-`--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--consent-id <ID>` queries with a consent collected in the partner portal (step 4). The steps one by one follow.
+The whole run is also saved to `scripts/out/exchange-test-<namespace>-<time>.log` (git-ignored), next to the response JSON. `--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--consent-id <ID>` queries with a consent collected in the partner portal (step 4). The steps one by one follow.
 
 Prepare the scripts once:
 
