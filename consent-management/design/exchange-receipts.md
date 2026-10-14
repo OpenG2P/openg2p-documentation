@@ -9,7 +9,7 @@ description: >-
 
 In [Agri Stack across departments](../../open-agri-stack/architecture/README.md#across-departments)
 a partner (e.g. a bank) onboards and the farmer consents **only at the Exchange** (the data exchange layer, `agrix`), while
-each department registry (`trial`, `csr`) still decides at its own boundary through its own Consent
+each department registry (`trial`, `dept1`) still decides at its own boundary through its own Consent
 Manager. The link between the two is a **consent token** (called *receipt* in the API and settings):
 a short-lived JWS the Exchange CM signs for one registry and one query, which the department CM
 verifies and evaluates against its own policy. It is not the long-lived
@@ -20,6 +20,22 @@ Everything here is **opt-in and off by default**. With the settings empty — ev
 install — no new code path runs, `/validate` behaves exactly as before, and the Helm chart renders
 the same manifests. API changes are additive only (an optional request field, an optional response
 field, a new status endpoint, new reason codes).
+
+## Why a consent token
+
+The partner's consent and its data-share policy are held at the Exchange, but each department must decide for itself what leaves its registry. Without a token there are two ways to connect them, and both fall short:
+
+| Option | Problem |
+| --- | --- |
+| **Pass the partner's whole consent to every registry** | Each registry must hold the partner as its own partner (key, binding, policy), so the partner onboards at every department. Each registry also sees the whole consent, including grants for other departments' data. |
+| **Let each registry ask the Exchange CM per request** | Every department depends on the Exchange's live answer, and keeps nothing signed as proof of why it released the data. |
+
+A consent token avoids both. The Exchange CM checks the partner's policy and the subject's consent once, then signs a short note for **one** registry and **one** query, with only the scopes allowed there. The registry's own CM verifies the signature, checks the token is addressed to it and presented by the named caller (the Composite), checks it has not been revoked, and applies its own standing policy. So:
+
+* each department stays sovereign and sees only what concerns it;
+* the partner onboards once, at the Exchange;
+* a token is useless to anyone else, expires within minutes, and stops working as soon as the consent is revoked;
+* the registry keeps a signed record of why it released the data.
 
 ## Two roles, one codebase
 
