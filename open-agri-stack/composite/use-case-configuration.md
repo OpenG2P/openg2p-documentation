@@ -1,13 +1,13 @@
 ---
 description: >-
-  Configuring the Composite: its API, which registry APIs it calls and
-  where that is configured, the use-case file format, failure handling, output
-  format, environment settings, Helm values and scaling.
+  The Composite's use-case file format and how it behaves at run time: its
+  API, which registry APIs it calls, query templates, response mapping,
+  failure handling, the consent mode and the output format.
 ---
 
-# Composite Configuration
+# Use-Case Configuration
 
-How to configure the [Composite](../design/composite.md) as built. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); what is built and what is not is on [Composite](../configuration/composite.md). Partners calling it should read the [partner guide](partner-guide.md).
+The use-case file format of the [Composite](README.md) as built, and how a use case runs. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); installing it, every chart option and what is not built yet are in [Deployment: Composite](../deployment/composite.md). Partners calling it should read the [partner guide](../partner-guide.md).
 
 ## API reference
 
@@ -43,7 +43,7 @@ Response: signed by the Composite, `header.status` `succ`/`rjct`. The message is
 | 429 | Rate limit reached |
 | 502 / 503 / 504 | A mandatory source failed (error / unavailable / timed out); or the Exchange CM failed (`consent_exchange_error` 502, `consent_exchange_unavailable` 503) |
 
-The error codes, response envelope and signature verification are detailed in the [partner guide](partner-guide.md#step-10-read-the-response).
+The error codes, response envelope and signature verification are detailed in the [partner guide](../partner-guide.md#step-10-read-the-response).
 
 ## Which registry APIs the Composite calls
 
@@ -195,7 +195,7 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 ## Consent mode
 
-The consent mode is `exchange` (the chart default), as on the Agri Stack Exchange (`agrix`, see [Three-namespace setup](deployment.md#three-namespace-setup-exchange-and-departments)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is bound only at the Exchange; each department CM trusts the Exchange CM's consent tokens and applies its standing policy for the Composite.
+The consent mode is `exchange` (the chart default), as on the Agri Stack Exchange (`agrix`, see the [deployment topology](../deployment/README.md#topology)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is bound only at the Exchange; each department CM trusts the Exchange CM's consent tokens and applies its standing policy for the Composite.
 
 After the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
 
@@ -378,68 +378,6 @@ limits:
   * `farmer-registry`: `farmer_identifiers`, `personal_details`, `land`, `main_crops` (required); `household_location`, `land_location` (optional);
   * `crop-sown-registry`: `farmer_reference`, `crop_season`, `measures` (required); `location` (optional). Each as `<registry>.<name>`, e.g. `crop-sown-registry.crop_season`.
 
-## Configuration (environment, prefix `AGRI_COMPOSITE_`)
+## Service settings, Helm values and scaling
 
-| Variable | Default | |
-| --- | --- | --- |
-| `USE_CASES_DIR` | `use-cases` (`/app/config/use-cases` in the chart) | Use-case directory |
-| `USE_CASES_RELOAD_SECONDS` | `30` | `0` = no reload |
-| `REGISTRIES` | `{}` | JSON `{controller: {url, partner_id?, receiver_id?}}`. `url` is the registry's DCI sync search URL. If `partner_id` (its DCI ID, e.g. `farmer-registry`) is set, the registry's response signature is verified against `PARTNER_<ID>` in PM. |
-| `COMPOSITE_PARTNER_ID` | `agri-composite` | The Composite's ID. It is the `sender_id` towards registries, and partners use it as `receiver_id`. |
-| `SIGNING_P12_PATH`, `SIGNING_P12_PASSWORD`, `SIGNING_KID`, `SIGNING_ALGORITHM` | –, –, thumbprint, `auto` | The Composite's key. If the kid is set, it must match the kid registered in PM. `auto` picks the algorithm from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256). Without a key every query fails with `signing_unavailable`; the describe endpoints still work. |
-| `PARTNER_MGMT_API_URL` | `http://commons-services-pm-partner-api` | Partner keys are fetched by `PARTNER_<SENDER_ID>` and cached |
-| `PARTNER_KEY_CACHE_TTL_SECONDS`, `PARTNER_KEY_HARD_TTL_SECONDS`, `PARTNER_KEY_NEGATIVE_TTL_SECONDS`, `PARTNER_KEY_REFRESH_COOLDOWN_SECONDS`, `PARTNER_KEY_FETCH_TIMEOUT_SECONDS` | `300`, `21600`, `30`, `10`, `3.0` | Partner key cache: soft TTL, last-known-good during a PM outage, cache of "unknown", refresh cooldown on an unknown `kid`, fetch timeout |
-| `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` | |
-| `REQUEST_MAX_SKEW_SECONDS` | `300` | How far `header.message_ts` may be from now (`0` disables) |
-| `DEFAULT_SOURCE_TIMEOUT_MS`, `DEFAULT_OVERALL_TIMEOUT_MS` | `5000`, `10000` | Used when the use case doesn't set them |
-| `HTTP_MAX_CONNECTIONS`, `HTTP_MAX_KEEPALIVE_CONNECTIONS`, `HTTP_KEEPALIVE_EXPIRY_SECONDS` | `200`, `50`, `30` | One pooled client per worker |
-| `CONSENT_MODE` | `exchange` (chart) | Consent mode (see [Consent mode](#consent-mode)); an unknown value stops startup |
-| `CONSENT_EXCHANGE_CM_URL` | empty | The Exchange CM partner-api base URL (`/consent/v1/validate` is appended), e.g. `http://commons-services-cm-partner-api` |
-| `CONSENT_EXCHANGE_CM_TIMEOUT_SECONDS` | `5.0` | Timeout of that call |
-| `CORS_ALLOW_ORIGINS` | `[]` | Browser origins allowed to call the Composite, as a **JSON list**, e.g. `["https://consent-partner-portal.<namespace>.openg2p.org"]` (the CM partner portal reads the use-case list). The chart renders it from `composite.corsAllowOrigins`; a plain URL or an empty string stops startup. |
-| `CONSOLE_ENABLED` | `false` (`true` in the chart) | The staff [console](composite-console.md): admin API, IAM login and a database (`DB_*`) for its call log |
-| `AUDIT_MANAGER_URL` | empty (off) | e.g. `http://commons-services-auditmanager:80` |
-| `AUDIT_TIMEOUT_SECONDS`, `AUDIT_SOURCE` | `2.0`, `/openg2p/agri-composite` | |
-| `NO_OF_WORKERS` | `2` | gunicorn workers per pod |
-| `LOGGING_LEVEL` | `INFO` (chart) | |
-
-## Helm values
-
-The chart is `openg2p-agri-composite` (Rancher catalog: **"Agri Stack Composite"**). Its [values](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/values.yaml) and [Rancher questions](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/questions.yaml):
-
-| Value | Default | Rancher form |
-| --- | --- | --- |
-| `global.compositeHostname` | `agri-composite.<namespace>.openg2p.org` | General: Composite Hostname (Istio `internal` gateway) |
-| `composite.image.tag` | `develop` | General: Image Tag |
-| `composite.existingUseCasesConfigMap` | empty | General: your own ConfigMap of use cases (keys `<name>.yaml`) instead of `composite.useCases` |
-| `composite.useCasesReloadSeconds` | `30` | General: Use-Case Reload Interval |
-| `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID (its key must be in PM) |
-| `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Integration |
-| `global.auditManagerUrl` | `http://commons-services-auditmanager:80` | Integration (empty disables auditing) |
-| `composite.registries.farmer-registry.url` | empty (required) | Integration: Farmer Registry Search URL. Full URL; the registry may be in another department or cluster |
-| `composite.registries.crop-sown-registry.url` | empty (required) | Integration: Crop Sown Registry Search URL. Full URL, as above |
-| `composite.registries.<controller>.partnerId`, `.receiverId` | empty | values only |
-| `composite.consent.mode` | `exchange` | Agri Stack exchange: Consent Mode |
-| `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL |
-| `composite.corsAllowOrigins` | `https://consent-partner-portal.<namespace>.openg2p.org` | Agri Stack exchange: Allowed Browser Origins (CORS); comma-separated, empty for none. Rendered into `AGRI_COMPOSITE_CORS_ALLOW_ORIGINS` as a JSON list |
-| `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
-| `console.enabled` | `true` | Console: Enable Console (with its hostname, IAM, database `agri_composite` and portal links in the same group); see [Composite console](composite-console.md) |
-| `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: the Secret with `composite.p12`, `password`, and optionally `kid` and `algorithm` |
-| `composite.autoscaling.enabled`, `minReplicas`, `maxReplicas` | `false`, `1`, `5` (70% CPU) | Scaling |
-| `composite.replicaCount` | `1` | Scaling (when autoscaling is off) |
-| `composite.workers` | `2` | Scaling: Workers per Pod |
-| `composite.useCases` | `loan-profile` | **Not in the form**: edit in **Edit YAML** |
-| `sanity.enabled`, `sanity.failOnError` | `true`, `true` | values only: the post-install hook pings the API and lists the use cases |
-
-The registry URLs have no default and are required in the Rancher form; an empty URL makes that source fail (`error`).
-
-**Use cases in Helm.** `composite.useCases` is a map of name → YAML text, one use case per entry. Edit it in Rancher's **Edit YAML** view of the values. The chart renders it into the ConfigMap `<release>-use-cases`, mounted at `/app/config/use-cases`; running pods pick up changes within the reload interval (about a minute after the ConfigMap updates), without a restart. To manage use cases elsewhere (e.g. GitOps), set `composite.existingUseCasesConfigMap` to your own ConfigMap with keys `<name>.yaml` (and any `.j2` template files).
-
-Registry settings (`composite.registries`) are environment variables, so changing them rolls the pods.
-
-## Scaling notes
-
-* Pods are stateless; one replica by default. Autoscaling on CPU is opt-in (`composite.autoscaling.enabled`); memory autoscaling is off on purpose.
-* Each worker keeps its own connection pool and partner-key cache.
-* Rate limits are per pod and worker (up to pods × workers × the configured rate in total); limits across pods and daily quotas are to do (shared counters in the Composite).
-* Startup never calls a registry; a registry being down only affects requests.
+The chart's options, the service's environment settings and scaling are in [Deployment: Composite](../deployment/composite.md#all-options).

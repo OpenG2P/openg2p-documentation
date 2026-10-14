@@ -3,13 +3,13 @@ description: >-
   Proposal: registries sharing data with each other (registry to registry),
   using the registry platform's outgestion and ingestion. Reference design:
   crop activity from the Crop Sown Registry kept in the Farmer Registry; the
-  gaps to close; mirrors the other way.
+  gaps to close; how it would be set up; mirrors the other way.
 ---
 
 # Registry Data Sync
 
 {% hint style="warning" %}
-**Status: proposal, not in use.** Registries do not share data with each other today. This page is the reference design and the gaps; the [registry-to-registry sync guide](../guides/registry-to-registry-sync.md) shows how it would be set up. The relay it needs is not built.
+**Status: proposal, not in use.** Registries do not share data with each other today. This page is the reference design, the gaps, and [how it would be set up](#how-it-would-be-set-up). The relay it needs is not built.
 {% endhint %}
 
 ## The need
@@ -19,7 +19,7 @@ Registries are owned by different departments, and some data recorded in one is 
 * **Into the Farmer Registry (FR).** The FR is the farmer's single record, the one most services ask first, e.g. "is this an active farmer?". Facts recorded elsewhere, such as what the farmer sowed last season, are worth keeping on that record, read-only, with the other registry staying their source of truth.
 * **Out of the Farmer Registry.** The Crop Sown Registry (CSR), and later Livestock and others, need basic farmer details (demographics, household size) to search, filter and link their own records, and to keep working when the FR is slow or briefly down (see [mirrors](#the-other-direction-mirrors-of-farmer-data)).
 
-This is a department operating on another department's data, not a partner asking for one farmer's data: that is the [Composite](composite.md)'s job. In the [architecture](../architecture/README.md#components-and-who-talks-to-whom) it is **path C**: one registry is simply a partner of the other.
+This is a department operating on another department's data, not a partner asking for one farmer's data: that is the [Composite](../composite/README.md)'s job. In the [architecture](../architecture/README.md#components-and-who-talks-to-whom) it is **path C**: one registry is simply a partner of the other.
 
 ## Reference design: crop activity in the Farmer Registry
 
@@ -73,6 +73,93 @@ A department-level agreement, not each farmer's consent: the CSR shares these fi
 **In the Consent Manager:** the standing permission for a purpose (see above).
 
 With the first two rows in the platform, registry-to-registry sync becomes configuration on both sides: a topic and template in the source, a data model and template in the target, and partner entries in both.
+
+## How it would be set up
+
+The steps for the reference design, once the relay exists. Field names are illustrative; map them from your registers' actual fields. Both registries already have what they need (outgestion in the CSR, ingestion in the FR); the relay between them is not built.
+
+| Step | Where | What |
+| --- | --- | --- |
+| 1 | CSR's install | WebSub hub; an outgestion template and topic for crop sown records |
+| 2 | FR's install | The Crop activity section; the CSR as a partner; an update-only ingestion data model and template |
+| 3 | Relay | Subscribe to the CSR's topic; sign and forward to the FR |
+| 4 | CSR's install | The relay as a partner of the CSR, for the nightly search |
+| 5 | Both | Check |
+
+### Crop Sown Registry: publish crop sown records
+
+**WebSub hub.** The CSR's commons-services must have **Install WebSub?** on (the default for a department install), and the CSR pointed at its hub.
+
+**Outgestion template.** In the CSR staff portal, **Configuration → Outgest configurations → Templates**: a Jinja template for the crop sown register that turns an approved record into the event the FR will ingest. Only what the FR may receive leaves; the template is the filter.
+
+```jinja
+{
+  "header": {
+    "message_id": "{{ change_request_id }}",
+    "message_ts": "{{ approved_at }}",
+    "sender_id": "crop-sown-registry",
+    "action": "crop-activity"
+  },
+  "message": {
+    "farmer_id": "{{ record.farmer_reference.farmer_id }}",
+    "crop_activity": {
+      "crop_year": {{ record.crop_season.crop_year }},
+      "season": "{{ record.crop_season.season }}",
+      "crops": {{ record.crops | map(attribute="crop_code") | list | tojson }},
+      "cluster_id": "{{ record.cluster_id }}",
+      "source_record_id": "{{ internal_record_id }}",
+      "source_version": {{ record_version }}
+    }
+  }
+}
+```
+
+**Topic.** **Configuration → Outgest configurations → Topics**: a `REGISTER` topic for the crop sown register and this data model, e.g. `csr.crop-activity`. It registers itself with the hub and becomes active; from then on every approved crop sown record is rendered and published.
+
+### Farmer Registry: accept crop activity
+
+**The section.** Add a **Crop activity** section to the Farmer register (last reported season, crops, area sown, cluster, active farmer, updated at, CSR record ID), read-only for staff. Set the section's **auto-approve for partner** (`cr_auto_approve_for_partner`), so the sync's change requests are applied without a staff step; staff never edit this section.
+
+**The CSR as a partner.** In the FR's Partner Management, onboard `PARTNER_CROP_SOWN_REGISTRY` with the relay's signing key. The FR's ingestion accepts only signed messages from an active partner.
+
+**Ingestion configuration** (the FR's ingestion tables):
+
+| Table | Setting |
+| --- | --- |
+| `data_models` | `crop_activity_v1`, identified by `header.action = crop-activity` |
+| `incoming_model_key_paths` | message ID `$.body.header.message_id`, sender `$.body.header.sender_id`, signature `$.body.signature`, signed payload `$.body.message` |
+| `incoming_model_register_semantic_patterns` | register Farmer; record identifier `$.body.message.farmer_id` (the Farmer ID) |
+| `incoming_model_semantic_patterns` | **section** Crop activity (update), business payload `$.body.message.crop_activity`; **no intake form** |
+| `incoming_templates` | Jinja from `crop_activity` to the section's fields |
+
+{% hint style="danger" %}
+Configure **no intake form** for this data model. Ingestion picks add or update by whether the farmer exists; with an intake form, an event for an unknown Farmer ID would create a farmer. Without one, it is rejected. (An update-only data model is one of the [platform gaps](#what-has-to-be-built).)
+{% endhint %}
+
+### Relay: from the CSR's hub to the FR's ingestion
+
+*Not built yet.* Its configuration would be:
+
+| Setting | Example |
+| --- | --- |
+| Hub and topic | the CSR's WebSub hub, `csr.crop-activity`; the relay subscribes with a secret |
+| Target | the FR's ingestion, `https://partner-fr.<department domain>/partner/ingest_data?data_model=CROP_ACTIVITY_V1` |
+| Sign as | partner `crop-sown-registry`, with the key onboarded in the FR (detached JWS over `message`) |
+| Nightly search | the CSR's partner API, season summaries changed since the last run; schedule e.g. 02:00 |
+
+It retries on failure and skips events older than the farmer's last applied `source_version` (what it does is in [how the data flows](#how-the-data-flows)).
+
+### Crop Sown Registry: allow the nightly search
+
+The nightly search is a partner's search like any other: in the **CSR's** Partner Management, onboard the relay (acting for the FR, e.g. `PARTNER_FARMER_REGISTRY_SYNC`); in the **CSR's** Consent Manager, a binding and policy for it with only the season summary scopes and the purpose "farmer record maintenance". It rests on the standing permission described in [who allows it](#who-allows-it), not built yet.
+
+### Check
+
+1. Approve a crop sown record in the CSR for a farmer that exists in the FR (e.g. `FR-0007`).
+2. In the CSR's outgoing messages, the record is transformed and published.
+3. In the FR, a change request from the partner appears for that farmer, approved; the Crop activity section shows the season.
+4. Repeat with a Farmer ID unknown to the FR: the FR rejects it; no farmer is created.
+5. After the nightly run, area sown and the active flag are filled.
 
 ## The other direction: mirrors of farmer data
 

@@ -30,7 +30,7 @@ description: >-
 5. **Search.** The Composite searches each registry with its consent token: the Farmer Registry in the same cluster, the Crop Sown Registry in the Crops Department's.
 6. **Check.** Each registry checks its consent token at its **own** Consent Manager, which trusts the Exchange's consent tokens (its public keys) and applies its standing policy for the Composite.
 
-**C — registry to registry (not in use today).** A registry that needs another's data is simply one of its partners: onboarded in its Partner Management, with a policy in its Consent Manager, no Composite involved. The reference design is crop activity from the Crop Sown Registry kept in the Farmer Registry, through the registries' outgestion and ingestion and a small relay (not built): [registry data sync](../design/registry-data-sync.md) and the [setup guide](../guides/registry-to-registry-sync.md). Sharing of this kind usually rests on a mandate rather than each farmer's consent; the Consent Manager's rule for that (a standing permission for a purpose) is an [open item](../open-items/README.md).
+**C — registry to registry (not in use today).** A registry that needs another's data is simply one of its partners: onboarded in its Partner Management, with a policy in its Consent Manager, no Composite involved. The reference design is crop activity from the Crop Sown Registry kept in the Farmer Registry, through the registries' outgestion and ingestion and a small relay (not built): [registry data sync](../design/registry-data-sync.md), including [how it would be set up](../design/registry-data-sync.md#how-it-would-be-set-up). Sharing of this kind usually rests on a mandate rather than each farmer's consent; the Consent Manager's rule for that (a standing permission for a purpose) is an [open item](../open-items/README.md).
 
 * The ingress (dashed grey: OpenG2P deployment infrastructure, not an Agri Stack service) routes requests but never reads data. The Composite runs only approved use cases and keeps nothing after it responds.
 * Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data.
@@ -42,21 +42,21 @@ Each department runs its registries for its own work: its staff, approvals, part
 | Part | Where | Note |
 | --- | --- | --- |
 | Composite | Exchange | Path B. Partners can still call a registry directly (path A) |
-| Partner Management, Consent Manager | Every install | A registry's for its own partners and the Composite; the Exchange's for OAN partners and the farmer's consent. Data-share policies are in the Consent Manager today; Partner Management is the target |
+| Partner Management, Consent Manager | Every install | A registry's for its own partners and the Composite; the Exchange's for OAN partners and the farmer's consent. Data-sharing policies are held in the Consent Manager |
 | Audit Manager | Every install | Each department audits access to its data, including calls from the Composite on behalf of a partner. The Exchange audits who asked what |
 | Catalogue | Every install | Codes and geography must match across registries, or the Composite cannot join their data. Today each install loads the same country pack version; a central catalogue is an [open item](../open-items/README.md#catalogues) |
 | Farmer identity | Every registry | The national ID (Fayda FAN in the shipped example) and the Farmer ID are the join key across registries |
 | Verifiable credentials | Each registry | Each registry issues under its own issuer identity; verification is public |
 | Keycloak, IAM, AWE, Kafka, Redis, object store, databases | Each install | Internal. Registry data leaves its department only through the registry's APIs |
 
-**To each department, the Exchange is one partner.** The department's Partner Management holds the Composite's public key, and its Consent Manager holds one standing policy for the Composite and trusts the Exchange's consent tokens. The department decides at its own boundary what leaves its registry: see [policy and consent](policy-and-consent.md) and [request flow](request-flow.md).
+**To each department, the Exchange is one partner.** The department's Partner Management holds the Composite's public key, and its Consent Manager holds one standing policy for the Composite and trusts the Exchange's consent tokens. The department decides at its own boundary what leaves its registry: see [data-sharing policies](data-sharing-policies.md) and [request flow](request-flow.md).
 
 **Standalone installs are not affected.** The Exchange settings in commons are opt-in and off by default. A registry installed without the Exchange checks partners and consents at its own Partner Management and Consent Manager, as in path A; the registry itself is the same in both cases.
 
 **Networking.** Each department's partner-facing APIs (the registries' partner APIs; at the Exchange, the Composite, the Consent Manager's partner API and partner portal) are on public hostnames on its own ingress. Staff UIs and admin APIs can stay on an internal gateway reached over WireGuard. Calls between departments use those public hostnames, protected by signed requests with keys in Partner Management, not shared Keycloak tokens: each department is a partner of the services it calls, and no secrets are exchanged. A gateway between departments with mutual TLS is an [open item](../open-items/README.md#registries).
 
 {% hint style="info" %}
-How the departments and the Exchange are installed and set up: [deploying on a cluster](../guides/deployment.md#three-namespace-setup-exchange-and-departments).
+How the departments and the Exchange are installed and set up: [Deployment](../deployment/README.md#topology).
 {% endhint %}
 
 ## Entry point: the OpenG2P deployment, not a separate API gateway
@@ -71,7 +71,7 @@ Agri Stack has **no API gateway product**. Partners reach it through the ingress
 | Rate limits and quotas | In the Composite, which knows the partner on every request: per pod today, shared across pods and daily quotas to do |
 | Usage reports | Audit events from every hop, in the Audit Manager |
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
-| Developer portal | The [partner guide](../guides/partner-guide.md) and the Composite's describe endpoints |
+| Developer portal | The [partner guide](../partner-guide.md) and the Composite's describe endpoints |
 
 {% hint style="info" %}
 A gateway product is worth adding only if many partner-facing APIs from different teams need a common portal, keys, analytics or billing, or if a national API gateway is mandated. It would then sit in front of the Composite, unchanged.
@@ -82,7 +82,7 @@ A gateway product is worth adding only if many partner-facing APIs from differen
 | Page | Covers |
 | --- | --- |
 | [Consent](consent.md) | One consent per partner and farmer with a grant per registry; how a farmer gives it (in person with a form, built; in person digitally; self-service) |
-| [Policy and consent](policy-and-consent.md) | What gets released; policy vs use case vs consent |
+| [Data-Sharing Policies](data-sharing-policies.md) | What gets released; policy vs use case vs consent |
 | [Request flow](request-flow.md) | One request, end to end |
 | [Terms](terms.md) | Validation, change, correction, void, approval of changes, verification, dispute |
 | [Standards](standards.md) | The open standards used in each area, our own formats, and standards still to explore |

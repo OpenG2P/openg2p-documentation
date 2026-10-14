@@ -17,23 +17,23 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 | Typed participants, entities first, partner corrections, Cluster register, crop-change link, verification status in DCI, shared sample data | Built | [Activity register](../../products/registry/registry/features/activity-register.md); [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) |
 | Common verification and correction model, disputes, beneficiary API for occurrences, subscribe/notify | Design | [Verification and Correction (Proposal)](../../products/registry/registry/design/verification-and-correction.md) |
 | Livestock Registry | Design | [Livestock Registry](../design/livestock-registry.md) |
-| Crop Sown Registry | Built | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md); [configuration](../configuration/crop-sown-registry.md) |
-| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../../products/registry/farmer-registry/README.md); [configuration](../configuration/farmer-registry.md) |
+| Crop Sown Registry | Built | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md); [deployment](../deployment/crop-sown-registry.md) |
+| Farmer Registry: declared main crops, `FARMER_ID` in DCI, sample lands | Built | [Farmer Registry](../../products/registry/farmer-registry/README.md); [deployment](../deployment/farmer-registry.md) |
 | One consent with a grant per registry, in CM | Built | [Consent](../architecture/consent.md); [Consent Manager](../../consent-management/README.md) |
-| Composite, first version | Built | [Composite](../configuration/composite.md) |
-| Exchange mode: the Exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the Composite (`consent_id`) | Built | [Request flow](../architecture/request-flow.md); [Exchange](../configuration/exchange.md); [Exchange setup](../guides/exchange-setup.md) |
+| Composite, first version | Built | [Composite](../deployment/composite.md) |
+| Exchange mode: the Exchange CM issues a consent token per registry, each registry checks it at its own CM; a consent collected in CM used through the Composite (`consent_id`) | Built | [Request flow](../architecture/request-flow.md); [Exchange](../deployment/exchange.md); [Exchange setup](../deployment/after-install.md#exchange-setup) |
 | Consent collection, scenario 1 (in person): partner portal, national-ID login (eSignet), signed form as evidence, CM staff verification, Farmer ID check in the Farmer Registry, consent record for the partner | Built | [Consent](../architecture/consent.md) |
-| Composite staff console | Built | [Composite console](../guides/composite-console.md) |
+| Composite staff console | Built | [Composite console](../composite/console.md) |
 | Consent in person digitally (no form, no staff step) and self-service; a consent collected in CM presented directly at a registry; policies held in PM; registry-to-registry sync; rate limits across pods and quotas; publish checks; data-blind mode | Design / TODO | [TODOs and open items](../open-items/README.md) |
 
 ## Identity, consent and policies
 
 * **Common farmer identifier.** Confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup). If each registry is a separate MOSIP relying party with its own token, records can't be joined.
-* **Consent collected in CM, remaining paths.** Built in Exchange mode: a consent recorded in CM's partner portal (national-ID login, evidence, staff verification) is presented to the Composite as `message.consent_id`, and the Exchange CM turns it into a consent token per registry ([partner guide](../guides/partner-guide.md#step-6-collect-the-farmers-consent)). Still to do: presenting a CM-held consent directly at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom); see [consent](../architecture/consent.md)). Decide whether consent spanning registries should always be collected in CM (recommended). See [consent](../architecture/consent.md).
+* **Consent collected in CM, remaining paths.** Built in Exchange mode: a consent recorded in CM's partner portal (national-ID login, evidence, staff verification) is presented to the Composite as `message.consent_id`, and the Exchange CM turns it into a consent token per registry ([partner guide](../partner-guide.md#step-6-collect-the-farmers-consent)). Still to do: presenting a CM-held consent directly at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom); see [consent](../architecture/consent.md)). Decide whether consent spanning registries should always be collected in CM (recommended). See [consent](../architecture/consent.md).
 * **More ways to give consent** at the Exchange CM: in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). See [consent](../architecture/consent.md).
 * **Partner policy within the department's policy.** The Exchange CM should refuse a partner policy that grants more than a department's standing policy for the Composite allows, when the policy is created or widened. Today the department CM only cuts the scopes at request time. Needs each department to publish its policy for the Composite and its scope catalogue.
 * **Which CM to trust, per partner.** A department CM trusts the Exchange CM's consent tokens for every partner the Composite presents. A per-partner choice of trusted CM is to design.
-* **Moving policies to PM.** Move `PartnerPolicy` from CM to Partner Management, with a section per department, AWE approval per section, and partner associations; `/validate` then reads from PM. Until then the Composite's `allowed_partners` stands in for the partner association ([policy and consent](../architecture/policy-and-consent.md)).
+* **Moving policies to PM.** Move `PartnerPolicy` from CM to Partner Management, with a section per department, AWE approval per section, and partner associations; `/validate` then reads from PM. Until then the Composite's `allowed_partners` stands in for the partner association ([data-sharing policies](../architecture/data-sharing-policies.md)).
 * **Who may search across subjects.** Activity-register aggregates can be searched without a subject (e.g. for a benefit run). Today the registry operator allow-lists those partners and their scopes in the partner API's configuration (`dci_bulk_aggregate_partners`), because there is no per-person consent for such a search. This belongs in a Partner Management policy (a programme's legal basis for bulk access, approved by the department), checked like any other policy.
 * **Partner self-service in PM.** Onboarding and key rotation are done by a PM administrator today; partners can't submit their own requests.
 
@@ -41,9 +41,9 @@ Besides the existing OpenG2P registries, PM and CM, the following are built (Oct
 
 ## Composite
 
-The [Composite](../configuration/composite.md) as built leaves these for later:
+The [Composite](../deployment/composite.md) as built leaves these for later:
 
-* **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../design/composite.md#checks-when-a-use-case-is-published)).
+* **Publish checks** when a use case is published, against PM policies (which PM doesn't hold yet): policy and purpose, requested scopes within approved sections, subject types, mapping paths within scopes, response schema ([design](../composite/README.md#checks-when-a-use-case-is-published)).
 * **Data-blind mode:** each registry encrypts its part to the partner's PM key and the Composite only bundles the parts.
 * **No separate API gateway.** Partners come in through the OpenG2P deployment's ingress (Nginx, Istio); see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway). What remains to do:
   * **Restrict the registries' partner APIs** with an Istio `AuthorizationPolicy`, so only the Composite (and partners deliberately allowed direct access) can call them, and partners cannot bypass the Composite.
@@ -51,7 +51,7 @@ The [Composite](../configuration/composite.md) as built leaves these for later:
   * **Reconsider a gateway product** only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated.
 * **Registry endpoints held in PM** rather than in the Composite's configuration (`composite.registries`).
 * **Calling the crop sources in parallel with the farmer** when the partner already sends a farmer ID.
-* **Console, next steps** (the read-only [console](../guides/composite-console.md) is built):
+* **Console, next steps** (the read-only [console](../composite/console.md) is built):
   * **TODO: make adding a use case easy.** Today a use case is YAML in the Helm values (`composite.useCases`), with a Jinja query template and JSONPath mappings per source. In order:
     1. **Query shorthand** instead of Jinja for common sources, e.g. `query: {by: subject}` (FAN or farmer ID → the registry's field) or `query: {by: farmer.identifiers.FARMER_ID, filters: [crop_year, season]}`; raw `query_template` stays for unusual cases.
     2. **"New use case" in the console** (with editing, below): live validation, and a "try it" run for a sample farmer showing the registries' records beside the mapped output; publish / retire / partners from the UI.

@@ -106,4 +106,4 @@ A consent names the registry's [data scopes](../registry/design/data-scopes.md).
 
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. How it is set up for Agri Stack is in [Agri Stack → Configuration → Farmer Registry](../../../open-agri-stack/configuration/farmer-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).

@@ -48,7 +48,7 @@ See the PM [API reference](../../platform/platform-services/partner-management/a
 There are two Consent Managers to set up ([consent](../architecture/consent.md)):
 
 * **The department CM** (the one the new registry validates with) checks the Composite's consent tokens. It needs:
-  * a binding and policy for the **Composite** (audience `agri-composite`, controller `livestock-registry`, `partner_mgmt_id` `PARTNER_AGRI_COMPOSITE`) with the scopes and purposes of the use cases that read the registry. [`scripts/setup_exchange.py`](exchange-setup.md) creates it from the published use cases ([step 7](#step-7-test));
+  * a binding and policy for the **Composite** (audience `agri-composite`, controller `livestock-registry`, `partner_mgmt_id` `PARTNER_AGRI_COMPOSITE`) with the scopes and purposes of the use cases that read the registry. [`scripts/setup_exchange.py`](../deployment/after-install.md#exchange-setup) creates it from the published use cases ([step 7](#step-7-test));
   * trust of the Exchange CM as a consent-token issuer: **Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). The setup script checks it and stops if it is missing. See [Exchange consent tokens](../../consent-management/design/exchange-receipts.md#setting-up-a-department-for-the-exchange).
 * **The Exchange CM** checks the partner's consent. For **each partner** that will receive the new data, the CM administrator of the Exchange creates a binding of the partner to the new controller and a policy for it ([Partner policy binding & approval](../../consent-management/design/partner-onboarding-and-policy.md)):
 
@@ -124,10 +124,10 @@ response:
 
 * **`depends_on`:** leave it out if the registry can be searched by the partner's subject directly (then it is called in the first level, in parallel with the farmer). Keep it if the query needs another source's result.
 * **`requirement`:** `optional` for data that is useful but not essential; `mandatory` only if the use case is meaningless without it (a failure or missing grant then fails the whole request).
-* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in Exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](composite-configuration.md#data-scopes).
+* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in Exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](use-case-configuration.md#data-scopes).
 * **Timeouts:** `timeout_ms` and `retries` per source; check that `execution.overall_timeout_ms` still covers the slowest path. In `loan-profile` it is 25000 ms, for two levels of 10000 ms; `herd` depends on the farmer, so it runs in the second level with the crop sources and adds no level.
 * **Version:** adding an optional source and new output fields is backward compatible: bump the minor version (`1.1.0`). A change that breaks the response (renamed or removed fields) needs a new major.
-* The template is rendered with sample input when the file loads; a template that doesn't render valid JSON stops the file from loading (the previous version keeps serving). The rules are in [query templates](composite-configuration.md#query-templates).
+* The template is rendered with sample input when the file loads; a template that doesn't render valid JSON stops the file from loading (the previous version keeps serving). The rules are in [query templates](use-case-configuration.md#query-templates).
 
 ## Step 6 — Partners add a grant
 
@@ -153,5 +153,5 @@ So add a new source as `optional` unless every partner can be asked to update it
 ## Step 7 — Test
 
 * **Describe:** `GET /composite/v1/use-cases/loan-profile` should list the new source, its `depends_on`, the new output fields and `livestock-registry` in `consent_grants_needed`. If it doesn't, check the Composite's logs for a load error.
-* **End to end:** rerun the [Exchange setup](exchange-setup.md) with `--registry <controller>=<namespace>` for the new registry: it adds the Composite's key to that department's PM and a binding and policy with the use cases' scopes to its CM. Then test with the [partner test](partner-test.md), which builds the consent from the use case's `consent_scopes`.
+* **End to end:** rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) with `--registry <controller>=<namespace>` for the new registry: it adds the Composite's key to that department's PM and a binding and policy with the use cases' scopes to its CM. Then test with the [partner test](../deployment/testing.md#partner-test-public-apis), which builds the consent from the use case's `consent_scopes`.
 * **Check the statuses:** with a grant and a matching record the new source is `ok`; without a record `no_record`; without a grant `denied`; with the registry down `unavailable`, while the rest of the response still comes back.

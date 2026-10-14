@@ -275,9 +275,9 @@ the Composite URL to `https://agri-composite.<this domain>`. Further backend set
 **Exchange (`agrix`)** — role `exchange`, and bind each partner
 (e.g. `bank-a`) to each registry with its Exchange policy. Everything is in the commons-services
 form (see the Agri Stack
-[deployment guide](../../open-agri-stack/guides/deployment.md#what-to-install-in-agrix)).
+[deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
-**Department (`trial`, `csr`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
+**Department (`trial`, `dept1`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
 Exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API)
 and bind `agri-composite` at this CM for each of its registries with the department's standing
 policy. The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;

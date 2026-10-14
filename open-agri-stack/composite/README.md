@@ -1,23 +1,34 @@
 ---
 description: >-
-  Design of the Composite: one generic service that serves approved
-  use cases, each a configuration file — the format, what each section does,
-  checks when a use case is published, and where configurations live.
+  The Composite, Agri Stack's partner entry point: one generic service that
+  serves approved use cases, each a configuration file. Design overview, with
+  the pages on its API, use-case configuration, adding a data source, console
+  and local running.
 ---
 
 # Composite
 
+The **Composite** is the partners' entry point to Agri Stack. It serves one approved use case at a time, such as `loan-profile`: a partner sends one signed request about one farmer, with the farmer's consent, and the Composite queries several departmental registries and returns one signed response. There is **one generic Composite service**; each use case is a **configuration file** that it loads, not new code. This page is the design; the pages below cover the built service.
+
+| Page | Covers |
+| --- | --- |
+| [Composite API](api.md) | The partner and console endpoints, request and response formats, error codes (OpenAPI) |
+| [Use-Case Configuration](use-case-configuration.md) | The use-case file format and how a use case runs: which registry APIs it calls, failure handling, consent mode, output format |
+| [Adding a Data Source](adding-a-data-source.md) | Adding a registry (e.g. a Livestock Registry) as a source of a use case, step by step |
+| [Composite Console](console.md) | The read-only staff console: use cases, registries and their data scopes, partners, the call log |
+| [Running the Composite Locally](running-locally.md) | Running the service and its tests on a laptop |
+
+Installing the Composite and every chart option (registries, consent mode, use cases, signing key, console, scaling) is in [Deployment: Composite](../deployment/composite.md).
+
 {% hint style="info" %}
-**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See the [Composite configuration](../configuration/composite.md) page for what is in it and what is not yet, and the [Composite configuration guide](../guides/composite-configuration.md) for the file format the service accepts.
+**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [Deployment: Composite](../deployment/composite.md) for what is in it and what is not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
 {% endhint %}
 
-A **Composite** serves one approved use case, such as `loan-profile`, by querying several departmental registries and returning one response. There is **one generic Composite service**; each use case is a **configuration file** that it loads, not new code.
-
-The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [policy and consent](../architecture/policy-and-consent.md)).
+The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [data-sharing policies](../architecture/data-sharing-policies.md)).
 
 ## Example configuration (full design)
 
-This example is a hypothetical next version of the shipped use case, `loan-profile@2`: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([Composite configuration guide](../guides/composite-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](../guides/composite-configuration.md#the-loan-profile-use-case).
+This example is a hypothetical next version of the shipped use case, `loan-profile@2`: it shows the full design, including a livestock source that does not exist yet. The built service accepts all of these keys, acts on most of them, and lists the rest as not yet enforced ([Use-Case Configuration](use-case-configuration.md#use-case-file-format)). The sample use case that ships is [`loan-profile`](use-case-configuration.md#the-loan-profile-use-case).
 
 ```yaml
 # ── Identity ──────────────────────────────────────────────────────────────
@@ -120,7 +131,7 @@ audit:
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../configuration/composite.md).
+**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../deployment/composite.md).
 {% endhint %}
 
 ## Checks when a use case is published
@@ -142,7 +153,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 ## At runtime and worked example
 
-How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request, and its consent checks per source, is in [Composite](../configuration/composite.md#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../guides/partner-guide.md#worked-example-loan-profile).
+How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request, and its consent checks per source, is in [Composite](../deployment/composite.md#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../partner-guide.md#worked-example-loan-profile).
 
 ## Where configurations live
 

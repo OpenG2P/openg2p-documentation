@@ -16,7 +16,7 @@ The Composite serves approved use cases. A partner sends one signed request abou
 * **Result:** each source (registry query) gets a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. A failed optional source leaves its fields null. A failed mandatory source fails the request.
 
 {% hint style="info" %}
-For the step-by-step (onboarding, keys, consent, signing, verifying the response), see the [Partner Guide](partner-guide.md).
+For the step-by-step (onboarding, keys, consent, signing, verifying the response), see the [Partner Guide](../partner-guide.md).
 {% endhint %}
 
 ## Operations
@@ -62,7 +62,7 @@ An error from a query is a signed envelope too. `header.status` is `rjct`, and `
 
 ## Console API (staff)
 
-The console's read-only API, used by the [Composite Console](composite-console.md). It needs a staff login (IAM) with the `composite:view` permission. It is present only when the console is on.
+The console's read-only API, used by the [Composite Console](console.md). It needs a staff login (IAM) with the `composite:view` permission. It is present only when the console is on.
 
 {% openapi-operation spec="agri-composite-api" path="/composite/v1/admin/overview" method="get" %}
 [OpenAPI agri-composite-api](https://raw.githubusercontent.com/OpenG2P/agri-stack/develop/composite/docs/openapi/openapi-composite.json)
