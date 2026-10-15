@@ -17,6 +17,34 @@ and signing keys are owned by **Partner Management (PM)** — CM fetches partner
 only a policy binding — and data-share **policy changes** are approved through the shared **Approval
 Workflow Engine (AWE)**.
 
+## Key terms
+
+Four things are easily confused; the CM keeps them apart:
+
+| Term | What it is | Signed by | Lives | Standard |
+| --- | --- | --- | --- | --- |
+| **Consent object** | A consent the partner collected itself and presents with a request (`consent_jws`) | the partner | as long as its validity | the CM's JSON-LD consent object |
+| **Consent artefact** | The consent as the CM stores it: subject, partner, purpose, a grant per data controller, validity, assurance | — (stored in the CM) | until it expires or is revoked | DEPA (consent artefact) |
+| **Consent receipt** | The proof that a consent was given, created when it is approved (and per decision at `/validate`); the partner's copy is in its consent record | the CM | long-lived | Kantara Consent Receipt v1.1, ISO/IEC 27560 |
+| **Consent token** | A short-lived note the Exchange's CM issues for **one** data controller and **one** query, with only the scopes allowed there; the controller's own CM checks it (called *receipt* in the API and settings) | the Exchange's CM | about 15 minutes | in the spirit of OAuth 2.0 token exchange (RFC 8693) |
+
+See [data model](data-model.md), [standards](standards-and-best-practices.md) and [Exchange consent tokens](exchange-receipts.md).
+
+## Design decisions
+
+| Decision | Why | Details |
+| --- | --- | --- |
+| **One consent, a grant per data controller.** A partner asks the subject once for everything it needs; the consent lists a grant per registry (data controller). | The partner thinks in terms of the data it needs, not of who holds it. The subject sees one request. India's Account Aggregator works the same way: one consent artefact, several data providers. | [Verification & enforcement](verification-and-enforcement.md), [data model](data-model.md) |
+| **Each data controller validates only its own grant, at its own CM.** `/validate` takes the calling controller and returns its grant ∩ its policy. | Each department stays sovereign over its data: no other party decides what it releases. | [Verification & enforcement](verification-and-enforcement.md) |
+| **Replay and usage are counted per consent and controller.** | One consent is presented to several registries; one-shot and periodic limits apply to each separately. | [Security & trust](security-and-trust.md) |
+| **Consent is preferably collected by the CM.** The partner can also sign a consent it collected itself. | Departments trust a consent the CM witnessed (national-ID login, evidence, verification) more than one a partner vouches for, and the subject sees the same process whoever asks. | [Consent collection](consent-collection.md) |
+| **The subject proves who they are with the national ID; an SMS is only a notification.** Demographics shown to staff come from that login and are never compared automatically. | A phone number or a reply proves little. Registry data is not exposed to the CM. | [Consent collection](consent-collection.md#identifiers-and-demographics) |
+| **The stored consent never changes.** The partner's downloadable consent record only adds to it (evidence, the CM's signed statement). | The consent stays the single source of truth; the record is a copy the partner can prove. | [Consent collection](consent-collection.md#the-partners-copy-of-a-consent) |
+| **Across installs, a short-lived consent token per controller** instead of passing the consent on. The issuing CM signs a token with only that controller's allowed scopes; the controller's CM verifies it, checks its status, and applies its own policy. Only named presenters may ask for tokens. | A controller in another install sees only what concerns it, for one query; revocation takes effect at once; a stolen token is useless to anyone else. | [Exchange consent tokens](exchange-receipts.md) |
+| **Data-share policies are in the CM today; Partner Management will hold them.** | Policies describe the partner agreement, which belongs with the partner; the CM keeps the consents. | [Partner onboarding & policy](partner-onboarding-and-policy.md) |
+
+## Pages
+
 | Page | What it covers |
 | --- | --- |
 | [Architecture](architecture.md) | Components, the PDP/PEP model, the API-audience split, PM and AWE integration, registry integration, end-to-end sequence diagrams, information flow. |
@@ -25,8 +53,9 @@ Workflow Engine (AWE)**.
 | [Partner onboarding &amp; policy](partner-onboarding-and-policy.md) | How partner policy bindings and versioned data-share policies are managed and evaluated. |
 | [Partner Management integration](partner-management-integration.md) | How CM fetches and caches partner verifying keys from PM, and holds only a policy binding (no partner identity or keys of its own). |
 | [Approval Workflow integration](approval-workflow-integration.md) | How CM gates data-share policy widening through AWE — pending version, proxied approvals inbox, HMAC webhook, activate/supersede. |
-| [Exchange receipts](exchange-receipts.md) | Agri Stack exchange (opt-in): the exchange CM signs a consent receipt per registry; a department CM accepts receipts from a trusted issuer under its own standing policy. |
+| [Exchange consent tokens](exchange-receipts.md) | Agri Stack Exchange (opt-in): the Exchange CM signs a short-lived consent token per registry and query; a department CM accepts tokens from a trusted issuer under its own standing policy. |
 | [Consent lifecycle](consent-lifecycle.md) | The **secondary** flow: originating consent (request → authenticate → approve → artefact → receipt), revocation, and expiry. |
+| [Consent collection](consent-collection.md) | How a partner seeks consent and how the subject gives it: in person with a form (built), in person digitally, self-service; national-ID login, identifiers and demographics, the partner's copy, the gaps, and the partner portal. |
 | [Security &amp; trust](security-and-trust.md) | Signing and key management, ID-token validation, replay protection, and the threat model. |
 | [Standards &amp; best practices](standards-and-best-practices.md) | Alignment with Kantara/ISO 27560, GDPR, DEPA/AA, and DCI/OIDC — and the gaps we deliberately close. |
 

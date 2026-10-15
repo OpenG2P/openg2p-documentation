@@ -185,6 +185,53 @@ The service itself **validates tokens via JWKS only** — it consumes no client 
 generated `client_secret` exists for *callers*: the registry/PEP obtaining a client-credentials
 token to call `/validate`, and admin automation obtaining a token that carries the admin role.
 
+## Partner portal and consent evidence — optional
+
+{% hint style="info" %}
+**In Rancher (commons-services):** the signing key, consent tokens (exchange and department roles), partner portal, national-ID login and required subject identifiers are all fields in the **Consent Manager** group of the commons-services form; no Edit YAML is needed. The values below are what those fields set.
+{% endhint %}
+
+The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then verify it in the CM console (**Consent verifications**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
+
+| Value | Default | |
+| --- | --- | --- |
+| `partnerPortal.enabled` | `false` | The portal SPA (`consent-partner-portal.<namespace>.openg2p.org`), the partner realm in Keycloak, and evidence storage |
+| `partnerPortal.requiredSubjectIdentifiers` | `[]` | Other identifiers every request must carry besides the subject ID, e.g. `[FARMER_ID]` in Agri Stack; staff confirm them in the registry before approving ([identifiers and demographics](../design/consent-collection.md#identifiers-and-demographics)) |
+| `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<namespace>.openg2p.org` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
+| `partnerPortal.compositeUrl` | empty | Optional: a Composite URL; the portal then shows its use cases and pre-fills requests from them (the Composite must allow the portal's origin: `composite.corsAllowOrigins`) |
+| `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files; the commons Garage init job creates the bucket |
+
+The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
+
+**One-time Keycloak setup.** The chart's keycloak-init creates the `partner` realm and the `consent-partner-portal` client, but cannot create realm roles, user-profile attributes, token mappers or users with attributes. After installing, run [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh) (idempotent) — it creates the roles `PARTNER_OPERATOR` / `PARTNER_ADMIN`, declares the `partner_id` user attribute, adds its token mapper, and optionally creates partner users with a generated password kept in a Secret `partner-user-<username>`:
+
+```bash
+deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operator:bank-a:PARTNER_OPERATOR
+```
+
+A partner user's `partner_id` must be the partner's ID as bound in the CM (its policy bindings' audience, e.g. `bank-a`).
+
+## National ID authentication of the subject (eSignet)
+
+Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner portal on), the subject of every assisted request must log in with their national ID through eSignet before the request can be submitted ([how it works](../design/consent-collection.md#national-id-authentication-in-the-partner-portal)). Needs **eSignet** in the namespace and, to test with sample identities, the **mock identity system** (and Artifactory, which they use); in commons-services: Install eSignet, Install Mock Identity System and Install Artifactory on.
+
+| Value (`partnerPortal.subjectAuth.*`) | Default | |
+| --- | --- | --- |
+| `enabled` | `false` | Turns it on (mandatory once on) |
+| `esignetHostname` | `esignet.<namespace>.openg2p.org` | eSignet's public host; `discoveryUrl` is derived from it |
+| `clientId` | `<release>-consent-partner-portal` | The CM's OIDC client in eSignet |
+| `redirectUri` | `https://<partner portal host>/consent/v1/partner-portal/subject-auth/callback` | eSignet sends the browser back here (the portal host routes it to the CM API) |
+| `acrValues` | `mosip:idp:acr:generated-code` | How the person logs in (one-time code); e.g. `mosip:idp:acr:biometrics` |
+| `idTypes` | `[FAYDA_FAN, NATIONAL_ID, national_id]` | Subject ID types that are the national ID; only these can log in |
+| `keySecretName` | `<release>-subject-auth-client-key` | The client's RSA key (`client.pem`), mounted into the staff API |
+| `bootstrap.enabled` | `true` | The Job below |
+
+**The client in eSignet.** A Job (re-run on each upgrade) generates the client's RSA key once and keeps it in the Secret (never rotating it), then registers the client in eSignet's database (`esignet.client_detail`: redirect URI, claims `name` and `individual_id`, the ACR, `private_key_jwt` with the public key, `kid` = the client ID). eSignet's client API needs a scope an install cannot obtain, so the row is written directly, as the registry does for its credential flow. The Job waits up to 20 minutes for eSignet's tables. The staff API reads the key when it is first needed, so it works as soon as the Job has run.
+
+The staff API gets `CONSENT_MANAGER_SUBJECT_AUTH_*` (enabled, provider name, discovery URL, client ID, redirect URI, ACR, ID types, key path). Further backend settings, defaulted: `subject_auth_scope` (`openid profile`), `subject_auth_claims`, `subject_auth_subject_claim` (`individual_id`), `subject_auth_stored_claims` (`[name]`), `subject_auth_session_ttl_seconds` (300).
+
+**Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People), so a request for sample person `ETH-IND-0007` uses FAN `946053125409`. For the one-time code it accepts, see the mock identity system's configuration.
+
 ## Approval workflow (AWE) — optional
 
 Off by default (`global.aweEnabled: false`): policy changes take effect immediately. Setting it to
@@ -195,35 +242,43 @@ approval policy `consent-manager.policy_change.v1` (approvers: holders of
 approvers that role. Details, settings and the state machine:
 [Approval Workflow (AWE) Integration](../design/approval-workflow-integration.md#enabling-awe-approval).
 
-## Agri Stack exchange — optional
+## Exchange — optional
 
 Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
-install. In Rancher the settings sit in the **Agri Stack exchange** group, shown once
-`global.agriStackExchange.enabled` is ticked. How the two roles work:
-[Exchange receipts](../design/exchange-receipts.md).
+install. In Rancher, pick **Exchange Role** (`global.agriStackExchange.role`):
+**exchange** or **department**. The role alone gives working defaults, the reference values the Agri Stack test
+scripts use; the other fields only override them. The Exchange CM
+issues short-lived **consent tokens** (called *receipts* in the API and settings), one per registry
+and query; a department CM accepts them. How the two roles work:
+[Exchange consent tokens](../design/exchange-receipts.md).
 
 | Value (`global.agriStackExchange.*`) | Env (`CONSENT_MANAGER_*`) | Role | Meaning |
 | --- | --- | --- | --- |
-| `issuer` | `RECEIPT_ISSUER` | exchange | Issuer ID stamped as `iss` on receipts (e.g. `agri-stack-exchange-cm`). Empty = no receipts |
-| `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) allowed to request receipts, e.g. `agri-composite`. List or comma-separated string |
-| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | Receipt lifetime, capped by the consent's expiry (default 900) |
-| `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
-| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | `always` (default) or `never` |
+| `role` | — | both | `exchange`, `department`, or empty (none: the fields below act as set) |
+| `defaultIssuer`, `defaultPresenter` | — | both | Used for an empty issuer or presenter in a role: `agri-stack-exchange-cm`, `agri-composite` |
+| `exchangeDomain` | — | department | **Exchange Domain**; empty = `agrix.<parent of this install's domain>`. The JWKS URL defaults to `https://consent-manager-partner.<exchange domain>/api/consent-manager-partner/.well-known/jwks.json` |
+| `defaultSubjectIdentifiers` | — | exchange | Required subject identifiers when the partner portal leaves them empty: `[FARMER_ID]` |
+| `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
+| `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
+| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token TTL Seconds** — consent-token lifetime, capped by the consent's expiry (default 900) |
+| `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
+| `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `always` (default) or `never` |
 
-Receipt issuing uses the **signing key** above (same `kid`, same JWKS) — give the exchange CM a real
-`.p12`, not the demo key. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
+Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
+demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner
+portal on, the national-ID login is always on, required subject identifiers default to `FARMER_ID`, and
+the Composite URL to `https://agri-composite.<this domain>`. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).
 
-**Exchange (`agrix`)** — set `issuer` and `receiptPresenters: [agri-composite]`, and bind each partner
-(e.g. `bank-a`) to each registry with its exchange policy. The Agri Stack
-[Agri Exchange bundle](https://github.com/openg2p/agri-stack/tree/develop/deploy/agri-exchange)
-sets these, and the signing key, as overrides on the commons install (see the Agri Stack
-[deployment guide](../../open-agri-stack/guides/deployment.md#three-namespace-setup-exchange-and-departments)).
+**Exchange (`agrix`)** — role `exchange`, and bind each partner
+(e.g. `bank-a`) to each registry with its Exchange policy. Everything is in the commons-services
+form (see the Agri Stack
+[deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
-**Department (`trial`, `csr`)** — set the trusted issuer (`jwksUrl` reachable from this CM's partner
-API, e.g. the `agrix` CM partner API's in-cluster or internal-gateway URL, `presenter: agri-composite`)
+**Department (`trial`, `dept1`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
+Exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API)
 and bind `agri-composite` at this CM for each of its registries with the department's standing
 policy. The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
 both stay empty on a standalone install.

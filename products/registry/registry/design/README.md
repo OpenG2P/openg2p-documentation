@@ -73,6 +73,18 @@ The following sub-pages cover individual design topics in detail:
 [partner-apis.md](partner-apis.md)
 {% endcontent-ref %}
 
+{% content-ref url="partner-register-search/" %}
+[partner-register-search](partner-register-search/)
+{% endcontent-ref %}
+
+{% content-ref url="activity-register.md" %}
+[activity-register.md](activity-register.md)
+{% endcontent-ref %}
+
+{% content-ref url="verification-and-correction.md" %}
+[verification-and-correction.md](verification-and-correction.md)
+{% endcontent-ref %}
+
 {% content-ref url="deduplication.md" %}
 [deduplication.md](deduplication.md)
 {% endcontent-ref %}

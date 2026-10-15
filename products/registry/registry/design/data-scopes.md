@@ -60,7 +60,7 @@ A scope's `fields` is a list of references to the registry's internal record:
 | `<Register>.context.<field>` | a column of a context's current state (the projection), e.g. `CropSown.context.stage` |
 | `<Register>.aggregate.<field>` | a column of an aggregate (roll-up) row, e.g. `CropSown.aggregate.aggregate_value` |
 
-`<Register>` is the register mnemonic. `.*` works for every form. An aggregate's figures are one JSON column (`aggregate_value`), so aggregates can be scoped by column only.
+`<Register>` is the register mnemonic. `.*` works for every form. An aggregate's figures are one JSON column (`aggregate_value`), so aggregates can be scoped by column only. For activity registers see [Activity Register Design](activity-register.md#sharing-through-partner-search).
 
 The catalogue is **validated** against the extension's models and register sections when it is published. An unknown register, field or section refuses the whole catalogue, listing every problem, and the previously published catalogue stays in force.
 

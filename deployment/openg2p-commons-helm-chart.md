@@ -4,6 +4,14 @@ The OpenG2P Commons Helm charts ([source code](https://github.com/OpenG2P/openg2
 
 ## Versions
 
+Every version, with its changes: [Commons changelog](https://openg2p.github.io/versions/commons/CHANGELOG.html).
+
+The `openg2p-commons-base` and `openg2p-commons-services` charts are published together, at the same version. How versions are derived: [Helm & Docker Versioning Strategy and CI](../releases/helm-docker-versioning-and-ci/README.md).
+
+### Earlier versions
+
+The changelog starts at 2.1.0 (2026-07-13). Earlier versions:
+
 | Chart                                          | Version                                                                         | Last Modified | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------- | ------------------------------------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | openg2p-commons-base, openg2p-commons-services | 0.0.0-develop.128                                                               | 03-Jul-2026   | **Partner Management added to commons-services** — central registry of partner public keys, deployed as `commons-services-pm-*` (staff-portal-api + partner-api + admin UI). Pinned to PM chart `0.0.0-develop.4`; while both are on develop, bump the `partner-management` dependency to PM's latest published develop version on each PM update. |

@@ -1,7 +1,19 @@
 # Event Publishing and WebSub Integration
 
-The Base Registry includes event publishing support using a WebSub-compatible mechanism. Whenever a registry changes state, the system generates and publishes a notification to subscribers who have registered interest in that registry type or event type. Topics can be aligned with interoperability standards, enabling external systems to receive updates in standardized payload formats.
+When an approved registry change should leave the registry, the outgestion
+pipeline renders it with a Jinja template and publishes it through the shared
+[WebSub](../../../../platform/platform-services/websub/README.md) hub.
+Subscribers receive the rendered payload on the topic they joined. The same
+change can be published in more than one external shape by using a separate
+topic and template for each shape.
 
-#### Standards-based Message Transformation
+That path is for register-change events. It is specified in the
+[Outgestion Pipeline](outgestion-pipeline.md).
 
-Outgoing messages are generated using template-driven mapping engines that convert internal registry records into standard payload structures defined by interoperability specifications. The registry can publish the same registry event in multiple formats by using separate topic namespaces, enabling compatibility with different consumers. The registry engine uses Jinja templates, stored as metadata configurations for these transformations.
+Asynchronous partner search uses the same hub, but it publishes a search
+result for one partner rather than a register change. That behaviour is
+specified in [Partner Register Search](partner-register-search.md).
+
+Topic registration, callback challenges, and delivery signatures belong to the
+hub, not to either registry feature. See
+[Subscription and delivery](../../../../platform/platform-services/websub/subscription.md).

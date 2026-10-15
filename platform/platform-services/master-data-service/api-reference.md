@@ -1,307 +1,668 @@
 ---
-description: Geo and Attribute APIs served by the Master Data Service
+description: >-
+  Every Master Data Service (Catalogue) endpoint: datasets, geography, releases,
+  the change feed, the original /attributes and /geo endpoints, sample people
+  and the public catalogue
 ---
 
 # API Reference
 
-The Master Data Service exposes two groups of APIs — **reads**, used by registries
-and other services, and **writes**, used to maintain the data (the Master Data admin
-UI) — plus a health check.
+This is the API reference for the whole Master Data Service (MDS). One OpenAPI
+spec covers every endpoint. It is generated from the code by
+`master-data-api/scripts/generate_openapi.py` into
+[`docs/openapi/openapi-master-data.json`](https://github.com/OpenG2P/master-data-service/blob/develop/docs/openapi/openapi-master-data.json).
+A running instance also serves its own spec at `/openapi.json`, with interactive
+docs at `/docs`.
 
-| Group | Prefix | What it serves |
-|---|---|---|
-| [Geo](#geo-apis) | `/geo` | The administrative hierarchy and its units |
-| [Attributes](#attribute-apis) | `/attributes` | The country's code lists and their values |
-| [Health](#health) | `/ping` | Liveness |
+## Audiences
 
-{% hint style="info" %}
-**MDS holds no partners.** Partner organisations and their keys are served by
-[Partner Management](../partner-management/README.md); the `/partner` APIs this
-service once had are gone.
-{% endhint %}
+MDS has two audiences: staff and the public. One API deployment serves both.
 
-{% hint style="info" %}
-**Every lookup is a `POST`, including the reads.** These follow the OpenG2P common
-request/response envelope, which carries a request header alongside the payload, so
-arguments travel in a body rather than the query string. `/ping` is the only `GET`.
-{% endhint %}
+| Audience | Base path / host | Auth | Section |
+|---|---|---|---|
+| Staff | `/catalogue`, `/attributes`, `/geo`, `/samples` on the MDS API host | Keycloak bearer token (staff realm); permissions on writes | [Staff API](#staff-api) |
+| Agent | — | — | — |
+| Partner | — | — | — |
+| Beneficiary | — | — | — |
+| Public | `/public` on the MDS API host | None (anonymous); off by default | [Public API](#public-api) |
 
-{% hint style="warning" %}
-**Every endpoint except `/ping` needs a bearer token** from the deployment's
-Keycloak. Reads need authentication only (geo units and attribute values are
-additionally filtered by the caller's data policy); writes need a permission — `geo:create`, `geo:edit`,
-`geo:delete`, `referenceData:create`, `referenceData:edit` or
-`referenceData:delete` — held under the `master-data-ui` client.
-{% endhint %}
+Two endpoints serve no audience: the [AWE callback](#awe-callback) (called by
+the Approval Workflow Engine, HMAC-signed) and [Health](#health) (`/ping`). See
+[Service endpoints](#service-endpoints).
 
-A machine-readable OpenAPI document is available at
-[`master-data.json`](openapi/master-data.json), and any running instance serves its
-own at `/openapi.json` with interactive docs at `/docs`.
+The standards behind the API (OpenAPI, ISO 8601, JSON Schema, DCAT, SKOS, …)
+are listed on [Standards](standards.md).
 
-## The envelope
+## Conventions
 
-Every request is `{ request_header, request_body }` and every response is
-`{ response_header, response_body }`. Arguments go in
-`request_body.request_payload`; results come back in
-`response_body.response_payload`.
+### Authentication and permissions
 
-**Request header**
+* Every endpoint except `/ping`, `/public/...` and the AWE callback needs a
+  **bearer token** from the deployment's Keycloak.
+* **Reads** need authentication only. Some reads are also filtered by the
+  caller's **data policy** (said on the operation).
+* **Writes** need a permission under the `master-data` Keycloak client (the
+  chart's `global.authClientId`): `referenceData:create|edit|delete|publish` for
+  datasets and releases, `geo:create|edit|delete|publish` for geography. Each
+  operation below names its permission. See
+  [Change control: permissions](change-control.md#permissions).
+* The approve, reject and publish operations also enforce **maker ≠ checker**,
+  compared by stable user id.
+* With CSRF protection on (`global.csrfEnabled`, the default), a `POST` also
+  needs the double-submit CSRF token (cookie plus `X-CSRF-Token` header) that the
+  admin UI sends. The **reads** of `/catalogue`, `/attributes`, `/geo` and
+  `/samples` (all but `get_geo_settings`) and the AWE callback are exempt, so
+  services can call them with a bearer token only.
+* Every authenticated call, and every failed anonymous call, is recorded in the
+  Audit Manager (see [Change control: audit](change-control.md#audit)).
 
-| Field | Type | Required |
-|---|---|---|
-| `sender_app_mnemonic` | string | yes |
-| `sender_app_url` | string | yes |
-| `request_id` | string | yes |
-| `request_timestamp` | string (ISO 8601) | yes |
-| `instance_id` | string | no |
+### The envelope
 
-**Response header**
+Every `POST` uses the OpenG2P envelope, including reads:
 
-| Field | Type | Notes |
-|---|---|---|
-| `request_id` | string | Echoed back from the request |
-| `response_status` | string | `SUCCESS` or an error status |
-| `response_error_code` | string | Empty on success |
-| `response_error_message` | string | Empty on success |
-| `response_timestamp` | string | |
-
-{% hint style="warning" %}
-**Errors come back inside the envelope, not as HTTP error bodies.** A failed lookup
-can still return `200` with `response_status` set to an error and the detail in
-`response_error_code` / `response_error_message`. Check the status field rather than
-relying on the HTTP code alone.
-{% endhint %}
-
----
-
-## Geo APIs
-
-### `POST /geo/get_all_geo_levels`
-
-Returns the **entire** level hierarchy in one call. Takes an empty payload. Use it
-to learn the shape of the hierarchy up front — how many levels, and what the
-country calls them — for example to build a set of cascading dropdowns. A level's
-children are the levels whose `parent_level_id` is its `level_id`.
-
-**Response payload** — a list of level objects:
-
-| Field | Description |
-|---|---|
-| `level_id` | Level identifier, e.g. `l0`, `l1` |
-| `level_mnemonic` | The country's name for the level, e.g. `region`, `woreda` — unique under its parent |
-| `parent_level_id` | Parent level, `null` at the root |
-
-**Example**
-
-{% code title="Request" %}
 ```json
 {
   "request_header": {
     "sender_app_mnemonic": "my-service",
     "sender_app_url": "http://my-service",
     "request_id": "11111111-1111-1111-1111-111111111111",
-    "request_timestamp": "2026-08-04T10:00:00Z"
-  },
-  "request_body": { "request_payload": {} }
-}
-```
-{% endcode %}
-
-{% code title="Response" %}
-```json
-{
-  "response_header": {
-    "request_id": "11111111-1111-1111-1111-111111111111",
-    "response_status": "SUCCESS",
-    "response_error_code": "",
-    "response_error_message": "",
-    "response_timestamp": "2026-08-06T02:33:33.177919"
-  },
-  "response_body": {
-    "pagination_response": null,
-    "response_payload": [
-      { "level_id": "l0", "level_mnemonic": "country", "parent_level_id": null },
-      { "level_id": "l1", "level_mnemonic": "region",  "parent_level_id": "l0" }
-    ]
-  }
-}
-```
-{% endcode %}
-
-### `POST /geo/get_geo_level_values`
-
-Returns the administrative **units** at a level, optionally only those under a given
-parent. This is the call that drives cascading address dropdowns: ask for level `l1`
-to fill the first dropdown, then for `l2` with the chosen unit as
-`parent_level_value_id` to fill the second.
-
-**Request payload**
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `level_id` | string | yes | Which level's units to return |
-| `parent_level_value_id` | string | no | Restrict to children of this unit |
-
-**Response payload** — a list of unit objects:
-
-| Field | Description |
-|---|---|
-| `level_value_id` | The unit's identifier — for a unit loaded from a country pack, **this is its P-code** |
-| `level_id` | Which level it belongs to |
-| `level_value_mnemonic` | Short name — unique under its parent at that level |
-| `parent_level_value_id` | Parent unit |
-
-The results are filtered by the caller's **data policy**, so two callers can see
-different subsets of the same level.
-
-See [Country Data Architecture](../../country-data-architecture.md) for what
-P-codes are.
-
-### Geo writes
-
-For maintaining the hierarchy. Each returns the object it created or changed, or —
-for a delete — its id.
-
-| Endpoint | Permission | Request payload |
-|---|---|---|
-| `POST /geo/add_geo_level` | `geo:create` | `level_mnemonic`, `parent_level_id`? |
-| `POST /geo/update_geo_level` | `geo:edit` | `level_id`, `level_mnemonic`?, `parent_level_id`? |
-| `POST /geo/delete_geo_level` | `geo:delete` | `level_id` |
-| `POST /geo/add_geo_level_value` | `geo:create` | `level_id`, `level_value_mnemonic`, `parent_level_value_id`? |
-| `POST /geo/update_geo_level_value` | `geo:edit` | `level_value_id`, `level_id`?, `level_value_mnemonic`?, `parent_level_value_id`? |
-| `POST /geo/delete_geo_level_value` | `geo:delete` | `level_value_id`, `cascade` (default `false`) |
-
-`?` marks an optional field.
-
----
-
-## Attribute APIs
-
-These serve the country's code lists — the vocabularies registry dropdowns read
-their options from, and that a registry's coded-value check validates against.
-
-### `POST /attributes/get_all_attributes`
-
-Returns the list of attributes (the code lists themselves, not their values). Takes
-an empty payload.
-
-**Response payload** — `{ "attributes": [...] }`, each attribute carrying
-`attribute_id`, `attribute_code`, `attribute_display` and `is_hierarchical`.
-
-### `POST /attributes/get_attribute_values`
-
-Returns the values of one code list — or, with no `attribute_id`, of every list.
-
-**Request payload**
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `attribute_id` | string | no | The code list, e.g. `GENDER`. Omitted → every value of every list |
-
-Paging is not part of the payload: it goes in the envelope, as
-`request_body.pagination_request` (`current_page`, `page_size`).
-
-**Response payload** — `{ "attribute_values": [...], "total": n }`:
-
-| Field | Description |
-|---|---|
-| `attribute_id`, `value_id` | Which list, and the value's identifier — the code a registry stores |
-| `value_code`, `value_display` | Code and human-readable label |
-| `parent_value_id` | Set for hierarchical lists |
-| `sort_order` | Display order |
-
-As with geo units, the values are filtered by the caller's **data policy**.
-
-**Example**
-
-{% code title="Request" %}
-```json
-{
-  "request_header": {
-    "sender_app_mnemonic": "my-service",
-    "sender_app_url": "http://my-service",
-    "request_id": "11111111-1111-1111-1111-111111111111",
-    "request_timestamp": "2026-08-04T10:00:00Z"
+    "request_timestamp": "2026-10-01T10:00:00Z"
   },
   "request_body": {
-    "request_payload": { "attribute_id": "GENDER" },
-    "pagination_request": { "current_page": 1, "page_size": 3 }
+    "request_payload": { "list_code": "GENDER" },
+    "pagination_request": { "current_page": 1, "page_size": 100 }
   }
 }
 ```
-{% endcode %}
 
-{% code title="Response (payload only)" %}
-```json
-{
-  "attribute_values": [
-    {
-      "attribute_id": "GENDER",
-      "value_id": "FEMALE",
-      "value_code": "FEMALE",
-      "value_display": "Female",
-      "parent_value_id": null,
-      "sort_order": 1
-    }
-  ],
-  "total": 4
-}
-```
-{% endcode %}
+The response is `{ response_header, response_body }`, with the result in
+`response_body.response_payload` and, for paged reads,
+`response_body.pagination_response` (`number_of_items`, `number_of_pages`).
+`pagination_request` is optional; paged reads default to 1000 per page.
 
-{% hint style="info" %}
-Attribute ids are **upper-case**: `GENDER`, `COOKING_FUEL_TYPE`,
-`DISABILITY_SEVERITY`. Call `get_all_attributes` to list what a deployment actually
-holds — it varies with the country pack loaded, and a pack's **domain** lists (such
-as `agriculture`) are there only if the deployment asked for that domain
-(`geoSeed.domains`, which defaults to `agriculture`; a pack without a requested
-domain skips it with a warning).
-{% endhint %}
+`/public/...` (`GET`, plain JSON), the AWE callback and `/ping` do not use the
+envelope.
 
-{% hint style="warning" %}
-**Only the codes and labels are stored.** A pack's values may also declare semantic
-`roles`, a domain and provenance, but MDS does not keep them and these APIs do not
-return them. See
-[Country Data Architecture → Semantic roles](../../country-data-architecture.md#semantic-roles).
-{% endhint %}
+### Errors
 
-### Attribute writes
+A business error comes back **inside the envelope with HTTP 200**:
+`response_status` is `ERROR`, with a code in `response_error_code` and a message
+in `response_error_message`. Check the status, not only the HTTP code. HTTP 401,
+403 and 422 still come from authentication, permissions and request validation.
 
-| Endpoint | Permission | Request payload |
+| Code | Meaning |
+|---|---|
+| `G2P-CAT-400` | Validation failed: bad entry, schema or `x-list-ref`; no changes to submit; `effective_from` earlier than the latest published version's |
+| `G2P-CAT-403` | Maker ≠ checker refused, or no bearer token to forward to AWE |
+| `G2P-CAT-404` | Dataset, entry, version, unit, release or draft not found |
+| `G2P-CAT-409` | State conflict: a draft is already open, wrong draft status, approval runs through AWE, no boundary store, a boundary key used by another version, or a write to a published (immutable) row (message starts `immutable:`) |
+| `G2P-CAT-502` | AWE could not be reached |
+| `G2P-CAT-500` | Unexpected error |
+| `G2P-ATTR-*`, `G2P-GEO-*` | The same, from the original `/attributes` and `/geo` endpoints |
+
+### Choosing a version
+
+Every read that returns versioned data takes **at most one** of:
+
+| Field | Value | Returns |
 |---|---|---|
-| `POST /attributes/add_attribute` | `referenceData:create` | `attribute_code`, `attribute_display`, `is_hierarchical`? |
-| `POST /attributes/update_attribute` | `referenceData:edit` | `attribute_id`, `attribute_code`?, `attribute_display`?, `is_hierarchical`? |
-| `POST /attributes/delete_attribute` | `referenceData:delete` | `attribute_id`, `cascade` (default `false`) |
-| `POST /attributes/add_attribute_value` | `referenceData:create` | `attribute_id`, `value_code`, `value_display`, `parent_value_id`?, `sort_order`? |
-| `POST /attributes/update_attribute_value` | `referenceData:edit` | `value_id`, `attribute_id`?, `value_code`?, `value_display`?, `parent_value_id`?, `sort_order`? |
-| `POST /attributes/delete_attribute_value` | `referenceData:delete` | `value_id`, `attribute_id`? |
+| `version` | a number, `"latest"` (default) or `"draft"` | That version; the latest published version in effect; or the open draft |
+| `as_of` | ISO 8601 date-time | The published version in effect at that moment |
+| `release` | a release code | The version that release pins |
+
+Every such response has a `version` object (`version_no`, `status`,
+`base_version_no`, `effective_from`, `published_at`, `is_latest`, notes, and who
+created, submitted and decided it). `*_by` fields hold the stable user id (token
+`sub`) or a system name; `*_by_name` the display name. Status is `DRAFT`,
+`SUBMITTED`, `PUBLISHED`, `REJECTED` or `DISCARDED`. Numbers are never reused.
+See [Concepts](concepts.md#reading-latest-pinned-as-of-release).
+
+### Names in the API
+
+The admin UI uses catalogue words; the API keeps its field names.
+
+| Admin UI | API |
+|---|---|
+| Dataset | list: `list_id`, `list_code` (a request may give either as `list_code`) |
+| Entry | value: `value_id`, `value_code`, `display` |
+| Theme | `domain` |
+| Publisher | `owner_org` |
+
+## Staff API
+
+For staff in the MDS admin UI and the registry staff UIs. Calls need a bearer
+token from the deployment's Keycloak. Writes need a permission (named on each
+operation). Reads marked so are filtered by the caller's IAM data policy.
+Registry backends also call the reads, with a service account token.
+
+| Group | Prefix | For |
+|---|---|---|
+| [Datasets](#datasets) | `/catalogue` | Versioned datasets and their entries; drafts and approval |
+| [Geography](#geography) | `/catalogue` | Versioned levels, units, change events, crosswalk and boundaries |
+| [Releases](#releases) | `/catalogue` | Named sets of pinned dataset and geography versions |
+| [Change feed and configuration](#change-feed-and-configuration) | `/catalogue` | What changed, and how this catalogue is set up |
+| [Original endpoints](#original-endpoints) | `/attributes`, `/geo` | The current published state, for existing consumers |
+| [Sample people](#sample-people-testing-and-demos-only) | `/samples` | Testing and demos only |
+
+### Datasets
+
+Reads and the draft workflow for datasets. Every write that edits a draft opens
+one (a copy of the highest published version) if none is open. Approve and
+reject work only in `permission` approval mode. See
+[Concepts](concepts.md) and
+[Change control](change-control.md).
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /catalogue/get_lists` | Authenticated | All datasets |
+| `POST /catalogue/get_list` | Authenticated | One dataset at a version |
+| `POST /catalogue/get_list_values` | Authenticated | Entries (values) of a dataset at a version |
+| `POST /catalogue/get_list_value` | Authenticated | One entry by code at a version |
+| `POST /catalogue/get_list_versions` | Authenticated | Version history of a dataset |
+| `POST /catalogue/get_list_diff` | Authenticated | Differences between two versions |
+| `POST /catalogue/create_list` | `referenceData:create` | Create a dataset |
+| `POST /catalogue/update_list` | `referenceData:edit` | Update a dataset's metadata |
+| `POST /catalogue/create_list_draft` | `referenceData:edit` | Open a draft |
+| `POST /catalogue/update_list_draft` | `referenceData:edit` | Set a draft's change note / effective date |
+| `POST /catalogue/upsert_draft_values` | `referenceData:edit` | Add or change entries in the draft (batch) |
+| `POST /catalogue/retire_draft_values` | `referenceData:delete` | Retire entries in the draft |
+| `POST /catalogue/discard_draft` | `referenceData:edit` | Discard the open draft |
+| `POST /catalogue/submit_draft` | `referenceData:edit` | Submit the draft for approval |
+| `POST /catalogue/approve_draft` | `referenceData:publish` | Approve and publish (permission mode) |
+| `POST /catalogue/reject_draft` | `referenceData:publish` | Reject the submitted draft (permission mode) |
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_lists" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_list" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_list_values" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_list_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_list_versions" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_list_diff" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/create_list" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/update_list" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/create_list_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/update_list_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/upsert_draft_values" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/retire_draft_values" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/discard_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/submit_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/approve_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/reject_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Geography
+
+The geography is versioned as one dataset: levels, units (`unit_id` is the
+P-code), change events and boundaries together. `get_geo_units` is paged and
+filtered by `GEO` data policies. See
+[Geography and boundary changes](geography.md).
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /catalogue/get_geo_versions` | Authenticated | Geography version history |
+| `POST /catalogue/get_geo_levels` | Authenticated | Levels of a geography version |
+| `POST /catalogue/get_geo_units` | Authenticated | Units of a geography version |
+| `POST /catalogue/get_geo_unit` | Authenticated | One unit, with its ancestors |
+| `POST /catalogue/get_geo_changes` | Authenticated | Change events (lineage) between versions |
+| `POST /catalogue/get_geo_crosswalk` | Authenticated | Map a unit across versions |
+| `POST /catalogue/get_geo_boundary` | Authenticated | Boundary GeoJSON of a level |
+| `POST /catalogue/get_geo_settings` | Authenticated | Geography settings (visibility, licence) |
+| `POST /catalogue/create_geo_draft` | `geo:edit` | Open a geography draft |
+| `POST /catalogue/update_geo_draft` | `geo:edit` | Set the geography draft's note / effective date / owner |
+| `POST /catalogue/update_geo_settings` | `geo:edit` | Set the geography's visibility / licence |
+| `POST /catalogue/upsert_draft_levels` | `geo:edit` | Add or change levels in the geography draft |
+| `POST /catalogue/upsert_draft_units` | `geo:edit` | Add or change units in the geography draft (batch) |
+| `POST /catalogue/retire_draft_units` | `geo:delete` | Retire units in the geography draft |
+| `POST /catalogue/record_geo_change` | `geo:edit` | Record a change event in the geography draft |
+| `POST /catalogue/delete_geo_change` | `geo:edit` | Remove a change event from the geography draft |
+| `POST /catalogue/upload_draft_boundary` | `geo:edit` | Upload a level's boundary GeoJSON to the draft |
+| `POST /catalogue/submit_geo_draft` | `geo:edit` | Submit the geography draft for approval |
+| `POST /catalogue/approve_geo_draft` | `geo:publish` | Approve and publish the geography draft (permission mode) |
+| `POST /catalogue/reject_geo_draft` | `geo:publish` | Reject the geography draft (permission mode) |
+| `POST /catalogue/discard_geo_draft` | `geo:edit` | Discard the geography draft |
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_versions" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_levels" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_units" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_unit" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_changes" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_crosswalk" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_boundary" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_geo_settings" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/create_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/update_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/update_geo_settings" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/upsert_draft_levels" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/upsert_draft_units" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/retire_draft_units" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/record_geo_change" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/delete_geo_change" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/upload_draft_boundary" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/submit_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/approve_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/reject_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/discard_geo_draft" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Releases
+
+A release pins a set of published dataset versions and at most one geography
+version. A published release is immutable. Its publisher must be neither its
+creator nor whoever last set its members. See
+[Concepts: catalogue release](concepts.md#catalogue-release).
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /catalogue/get_releases` | Authenticated | All catalogue releases |
+| `POST /catalogue/get_release` | Authenticated | One release with its members |
+| `POST /catalogue/create_release` | `referenceData:edit` | Create a draft release |
+| `POST /catalogue/set_release_members` | `referenceData:edit` | Pin dataset versions and a geography version |
+| `POST /catalogue/publish_release` | `referenceData:publish` | Publish a release (immutable) |
+| `POST /catalogue/delete_release` | `referenceData:delete` | Delete a draft release |
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_releases" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_release" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/create_release" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/set_release_members" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/publish_release" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/delete_release" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Change feed and configuration
+
+`get_changes` reads the append-only change log after a cursor (the last
+`event_id` processed), oldest first. Call again with `next_cursor` while
+`has_more` is true. `newest: true` returns the newest events instead, for an
+activity view. See [For consumers](consumers.md#following-changes).
+
+| Subject | Event types |
+|---|---|
+| Datasets | `list.created`, `list.updated`, `list.deleted` (never-published only), `list.draft.created`, `list.draft.updated`, `list.draft.metadata_changed`, `list.draft.values_changed`, `list.draft.values_retired`, `list.draft.submitted`, `list.approval.requested`, `list.draft.approved`, `list.draft.rejected`, `list.draft.discarded`, `list.version.published`, `list.version.effective`, `list.version.migrated` |
+| Geography | `geo.draft.created`, `geo.draft.updated`, `geo.draft.levels_changed`, `geo.draft.level_removed`, `geo.draft.units_changed`, `geo.draft.units_retired`, `geo.change.recorded`, `geo.change.deleted`, `geo.draft.boundary_uploaded`, `geo.draft.submitted`, `geo.approval.requested`, `geo.draft.approved`, `geo.draft.rejected`, `geo.draft.discarded`, `geo.settings.updated`, `geo.version.published`, `geo.version.effective`, `geo.version.migrated` |
+| Releases | `release.created`, `release.members_set`, `release.published`, `release.deleted` |
+
+When a WebSub hub is configured, MDS also publishes to these topics (prefix
+`openg2p.master-data` by default). Delivery is at least once: de-duplicate on
+`event_id`.
+
+| Topic | Sent on |
+|---|---|
+| `<prefix>.list.published`, `<prefix>.geo.published` | `*.version.published` |
+| `<prefix>.list.effective`, `<prefix>.geo.effective` | `*.version.effective`: a future-effective version came into effect |
+| `<prefix>.release.published` | `release.published` |
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /catalogue/get_changes` | Authenticated | Change feed |
+| `POST /catalogue/get_catalogue_config` | Authenticated | How this catalogue is configured |
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_changes" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/catalogue/get_catalogue_config" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Original endpoints
+
+The endpoints MDS had before versioning keep their paths and shapes for
+existing consumers (the registry staff UI fills dropdowns from them).
+
+* **Reads** return the **current published** state, cached per API worker, and
+  filtered by the caller's data policy. `/attributes` reads add
+  `current_version_no` and `list_versions`. For other versions use the
+  `/catalogue` reads.
+* **Writes** no longer change published data: they edit the open **draft**,
+  which must then be submitted and approved. See
+  [What the legacy write endpoints do now](change-control.md#what-the-legacy-write-endpoints-do-now).
 
 {% hint style="danger" %}
-**A registry stores these codes.** Changing a `value_code` or deleting a value that
-records already hold leaves those records with a code no dropdown can show — and,
-with the registry's coded-value check on, a record that cannot be saved until the
-field is re-picked. Add new values freely; change or remove existing ones only with
-the registries' data in mind.
+**Registries store these codes.** Do not change or retire an entry that records
+hold without planning for those records. Retired entries still resolve; see
+[Retired entries](concepts.md#retired-entries).
 {% endhint %}
 
----
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /attributes/get_all_attributes` | Authenticated | All datasets (current published version) |
+| `POST /attributes/get_attribute_values` | Authenticated | Entries of datasets (current published version) |
+| `POST /attributes/add_attribute` | `referenceData:create` | Add a dataset (into a draft) |
+| `POST /attributes/update_attribute` | `referenceData:edit` | Update a dataset (in its draft) |
+| `POST /attributes/delete_attribute` | `referenceData:delete` | Delete a dataset |
+| `POST /attributes/add_attribute_value` | `referenceData:create` | Add an entry (into the draft) |
+| `POST /attributes/update_attribute_value` | `referenceData:edit` | Update an entry (in the draft) |
+| `POST /attributes/delete_attribute_value` | `referenceData:delete` | Retire an entry (in the draft) |
+| `POST /geo/get_all_geo_levels` | Authenticated | All geography levels (current published version) |
+| `POST /geo/get_geo_level_values` | Authenticated | Units of a geography level (current published version) |
+| `POST /geo/add_geo_level` | `geo:create` | Add a geography level (into the draft) |
+| `POST /geo/update_geo_level` | `geo:edit` | Update a geography level (in the draft) |
+| `POST /geo/delete_geo_level` | `geo:delete` | Delete a geography level (in the draft) |
+| `POST /geo/add_geo_level_value` | `geo:create` | Add a geography unit (into the draft) |
+| `POST /geo/update_geo_level_value` | `geo:edit` | Update a geography unit (in the draft) |
+| `POST /geo/delete_geo_level_value` | `geo:delete` | Retire a geography unit (in the draft) |
 
-## Health
+{% openapi-operation spec="master-data-api" path="/attributes/get_all_attributes" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
 
-### `GET /ping`
+{% openapi-operation spec="master-data-api" path="/attributes/get_attribute_values" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
 
-Liveness probe. The only `GET`, and the only endpoint without the envelope.
+{% openapi-operation spec="master-data-api" path="/attributes/add_attribute" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
 
----
+{% openapi-operation spec="master-data-api" path="/attributes/update_attribute" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
 
-## What is *not* exposed
+{% openapi-operation spec="master-data-api" path="/attributes/delete_attribute" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/attributes/add_attribute_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/attributes/update_attribute_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/attributes/delete_attribute_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/get_all_geo_levels" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/get_geo_level_values" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/add_geo_level" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/update_geo_level" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/delete_geo_level" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/add_geo_level_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/update_geo_level_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/geo/delete_geo_level_value" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Sample people (testing and demos only)
 
 {% hint style="warning" %}
-**Sample individuals and households have no API.** Master Data stores the country
-pack's sample people, but registries load them **database-to-database** during
-seeding rather than over HTTP. There is no endpoint for them.
+**For testing and demos only; do not use in production.** These endpoints serve
+the made-up sample people a country pack ships, so that several registries in a
+demo share the same people. They are not reference data: not versioned, not
+approved. A production deployment should not load them.
 {% endhint %}
 
-Boundary geometry is likewise not served by this API, and the geo endpoints carry
-no link to it: a unit's map shape is not part of its record. See
-[Country Data Architecture](../../country-data-architecture.md).
+Any authenticated caller. Paged. Empty unless the deployment loaded the pack's
+samples.
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `POST /samples/get_individuals` | Authenticated | Sample people (testing and demos only) |
+| `POST /samples/get_households` | Authenticated | Sample households (testing and demos only) |
+
+{% openapi-operation spec="master-data-api" path="/samples/get_individuals" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/samples/get_households" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+## Public API
+
+For anyone. No login.
+
+Anonymous `GET` endpoints, **off by default** (every `/public` path answers 404
+until the deployment enables it). Only datasets and geography marked public, at
+their **published** versions. Plain JSON (JSON-LD for DCAT and SKOS); errors are
+`{"detail": "…"}` with 400, 404 or 429. Responses carry `ETag`,
+`Last-Modified` and `Cache-Control`, allow any origin (CORS), and are rate
+limited per client IP. See [Public catalogue](public-catalogue.md).
+
+| Operation | Permission | Summary |
+|---|---|---|
+| `GET /public/catalog` | None (anonymous) | DCAT catalogue (JSON-LD) |
+| `GET /public/datasets` | None (anonymous) | Public datasets |
+| `GET /public/datasets/{code}` | None (anonymous) | One public dataset |
+| `GET /public/datasets/{code}/entries` | None (anonymous) | Entries of a public dataset |
+| `GET /public/datasets/{code}/entries/{entry_code}` | None (anonymous) | One entry of a public dataset |
+| `GET /public/datasets/{code}/download.csv` | None (anonymous) | Download a version as CSV |
+| `GET /public/datasets/{code}/download.json` | None (anonymous) | Download a version as JSON |
+| `GET /public/datasets/{code}/skos` | None (anonymous) | SKOS concept scheme (JSON-LD) |
+| `GET /public/geography` | None (anonymous) | Public geography |
+| `GET /public/geography/levels` | None (anonymous) | Geography levels |
+| `GET /public/geography/units` | None (anonymous) | Geography units |
+| `GET /public/geography/levels/{level}/units.csv` | None (anonymous) | Units of a level as CSV |
+| `GET /public/geography/levels/{level}/boundaries.geojson` | None (anonymous) | Boundaries of a level (GeoJSON) |
+| `GET /public/releases` | None (anonymous) | Published releases |
+| `GET /public/releases/{code}` | None (anonymous) | One published release |
+
+{% openapi-operation spec="master-data-api" path="/public/catalog" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}/entries" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}/entries/{entry_code}" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}/download.csv" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}/download.json" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/datasets/{code}/skos" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/geography" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/geography/levels" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/geography/units" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/geography/levels/{level}/units.csv" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/geography/levels/{level}/boundaries.geojson" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/releases" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+{% openapi-operation spec="master-data-api" path="/public/releases/{code}" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+## Service endpoints
+
+These are not for an audience. They are called by other services or by the
+platform.
+
+### AWE callback
+
+In `awe` approval mode, AWE posts its decision here. It is for AWE only:
+authenticated by an HMAC signature (`X-Approval-Signature`,
+`X-Approval-Timestamp`, `X-Approval-Event-Id`), not a user token, and without the
+envelope. Idempotent on `event_id`. See
+[Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
+
+{% openapi-operation spec="master-data-api" path="/catalogue/awe/callback" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Health
+
+`GET /ping` answers `pong` while the service is up. No token, no envelope.
+
+{% openapi-operation spec="master-data-api" path="/ping" method="get" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}

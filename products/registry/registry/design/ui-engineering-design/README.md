@@ -4,7 +4,7 @@ description: Engineering design of the OpenG2P Registry staff portal UI and sche
 
 # UI engineering / design
 
-OpenG2P Registry presents a single, config-driven staff portal UI. Domain registries such as Farmer Registry and National Social Registry do not ship separate frontend applications. They share one Staff Portal binary and customize behaviour through register metadata, UI schemas, themes, languages, and environment configuration.
+OpenG2P Registry presents a single, config-driven staff portal UI. Domain registries share that Staff Portal codebase. They customize behaviour through register metadata, UI schemas, themes, languages, and environment configuration. When a domain needs a different page or component, it pins Staff Portal and overlays replacement files — Farmer Registry is the reference. See [UI extendability](ui-extendability.md).
 
 The UI is implemented in the `registry-platform` repository under `ui/`:
 
@@ -23,6 +23,14 @@ This page describes the overall UI engineering design. Widget-library internals 
 [widget-reference.md](widget-reference.md)
 {% endcontent-ref %}
 
+{% content-ref url="ui-extendability.md" %}
+[ui-extendability.md](ui-extendability.md)
+{% endcontent-ref %}
+
+{% content-ref url="role-based-screen.md" %}
+[role-based-screen.md](role-based-screen.md)
+{% endcontent-ref %}
+
 Related design topics: [Dynamic UI rendering](../../features/dynamic-ui-rendering.md), [Registry themes](../registry-themes.md), [Dynamic languages](../dynamic-languages.md), [Change management](../change-management.md), [Registrant Auth — OIDC](../registrant-authentication-oidc-widget/), [Intake forms](../intake-forms/).
 
 ## Design goals
@@ -35,6 +43,7 @@ Related design topics: [Dynamic UI rendering](../../features/dynamic-ui-renderin
 | **Secure by default** | Browser calls Next.js route handlers (BFF); tokens stay in HTTP-only cookies; RBAC gates actions in the UI |
 | **Runtime customization** | Themes, languages, and feature behaviour come from backend config without rebuilding the UI image |
 | **Extensible widgets** | New field types register into `@openg2p/registry-widgets` without forking the portal |
+| **File overlays** | A domain image pins Staff Portal and replaces individual pages or components. See [UI extendability](ui-extendability.md) |
 
 ## High-level architecture
 
@@ -283,6 +292,7 @@ Redux is intentionally scoped to the widget subsystem. The application shell pre
 | Language packs (core + domain) | Labels and copy | No |
 | Environment variables | Backend URLs, IAM, CSP, VP/verify, page size | No (ops) |
 | `widgetRegistry.register` | New widget types | Yes (library or portal extension) |
+| File overlay (`overrides/` on a pinned Staff Portal) | A page or component in a domain image | Yes (domain repo; not a fork). See [UI extendability](ui-extendability.md) |
 
 Domain registers still share the same hierarchical tab navigation, verification panels, version history, pending-change alerts, and deduplication screens. That shared chrome is what [Dynamic UI rendering](../../features/dynamic-ui-rendering.md) refers to when it says customized registers render themselves with the same navigation patterns.
 
@@ -349,6 +359,14 @@ Local development typically runs the Next app against deployed or local Staff Po
 
 {% content-ref url="widget-reference.md" %}
 [Widget Reference](widget-reference.md)
+{% endcontent-ref %}
+
+{% content-ref url="ui-extendability.md" %}
+[UI extendability](ui-extendability.md)
+{% endcontent-ref %}
+
+{% content-ref url="role-based-screen.md" %}
+[Role-based screen](role-based-screen.md)
 {% endcontent-ref %}
 
 {% content-ref url="../registrant-authentication-oidc-widget/" %}

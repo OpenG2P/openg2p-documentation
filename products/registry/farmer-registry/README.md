@@ -59,7 +59,7 @@ Two **registers** hold the main records: **Farmer** and **Household**. The other
 | **Membership details** (`g2p_register_membership_details`) | Section of Farmer | `is_primary_cooperative_member`, `primary_cooperative_name`, `is_cooperative_union_member`, `cooperative_union_name`, `is_farmer_cluster_member`, `farmer_cluster_role` (*form*) |
 
 {% hint style="info" %}
-The **Crop** register (`g2p_register_crops`) is retired: the crops a farmer grows are declared as `main_crops` on the Farmer record, and crops actually sown each season are recorded in the [Crop Sown Registry](../../../open-agri-stack/design/crop-sown-registry.md). Existing installs are migrated by the `zz-upgrades` seed SQL.
+The **Crop** register (`g2p_register_crops`) is retired: the crops a farmer grows are declared as `main_crops` on the Farmer record, and crops actually sown each season are recorded in the [Crop Sown Registry](../crop-sown-registry/README.md). Existing installs are migrated by the `zz-upgrades` seed SQL.
 {% endhint %}
 
 ### Poverty score
@@ -71,3 +71,39 @@ The poverty score is **not a register table**. It is a score computation the ext
 * `G2PRegisterSchemaPovertyScore` exposes `poverty_score` and `poverty_score_type` on the API.
 
 Because the score is defined in seed metadata rather than code, the contributing attributes and their weights can be changed without a code release.
+
+## Sharing with partners
+
+Partners read farmers through [DCI search](../registry/design/partner-register-search/dci-search.md), register `Farmer`. A farmer can be found by Fayda FAN (`foundational_id`, identifier type `UIN`) or by Farmer ID (`functional_record_id`). The record comes with the farmer's linked records: land, household and livestock.
+
+The DCI farmer record carries both identifiers in `farmer_personal_details.member_identifier`: the Fayda FAN as `UIN` and the Farmer ID as `FARMER_ID` (e.g. `FR-0007`). Another registry keyed on the Farmer ID, such as the [Crop Sown Registry](../crop-sown-registry/README.md), can then be searched with the Farmer ID read from this record.
+
+### Data scopes
+
+A consent names the registry's [data scopes](../registry/design/data-scopes.md). The consent data controller is `farmer-registry` (`global.consentDataController`, by default the registry variant), so scope IDs are `farmer-registry.<name>`. The extension ships them in `meta_data/data-scopes/data_scopes.json`; partners read the catalogue with the signed `POST /partner/data_scopes`.
+
+| Scope | Label | Fields |
+| --- | --- | --- |
+| `farmer_identifiers` | Farmer ID and national ID | Farmer ID, Fayda FAN, registration and last-approval dates |
+| `personal_details` | Personal details | Section `fr_farmer_personal_info` (name, sex, birth date or estimated age, marital status, education) and language spoken |
+| `contact` | Contact details | Phone numbers, has a personal phone, emails |
+| `location` | Farmer's address and location | Section `fr_farmer_location` |
+| `main_crops` | Main crops | Declared main crops |
+| `socio_economic_and_health` | Socio-economic and health details | Section `fr_farmer_socio_and_health` |
+| `land` | Land parcels | Section `fr_farmer_land` and the parcel ID, without location |
+| `land_location` | Land parcel locations | Parcels' address, administrative area, GPS point and boundary |
+| `livestock` | Livestock | Section `register_fr_farmer_livestocks` |
+| `farm_inputs` | Farm inputs | Section `register_fr_farmer_farm_input` |
+| `memberships` | Cooperative and cluster memberships | Section `fr_farmer_membership` |
+| `household` | Household details | Sections `fr_household_information`, `hh_information` and the household ID |
+| `household_location` | Household address and location | Section `fr_household_location` |
+| `household_members` | Household members | Section `fr_household_members` |
+| `poverty_score` | Household poverty score | Section `hh_score` |
+
+* **Named scopes only.** The default one-scope-per-section is off (`exclude_section_scopes: true`). Scope IDs are permanent, while section mnemonics are UI names and the Household register repeats the Farmer register's sections. Each scope names its section (`section:<mnemonic>`), so it follows the section's fields, and a renamed section makes the catalogue fail to load rather than silently retiring a scope.
+* **Finer than a section:** contact details, main crops and the farmer and parcel identifiers are scopes of their own. A partner can get main crops without the disability fields of the same section.
+* **Never shared:** the record header (status, approvers, image), documents, ID authentication, the farmer–household link (internal IDs), the intake-only farm-input and livestock sections, and the Household register's copies of the Farmer sections.
+
+## In Agri Stack
+
+In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).

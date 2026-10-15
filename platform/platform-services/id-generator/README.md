@@ -52,11 +52,17 @@ AVAILABLE  →  TAKEN
 
 ## Versions
 
-| Helm Chart Version                                                 | Docker Image                           | Date        | Comments       |
-| ------------------------------------------------------------------ | -------------------------------------- | ----------- | -------------- |
-| [1.0.0](https://github.com/OpenG2P/id-generator/tree/1.0.0)        | `openg2p/openg2p-id-generator:1.0.0`   | 2026-04-17  | Stable version |
-| [1.0](https://github.com/OpenG2P/id-generator/tree/1.0)            | `openg2p/openg2p-id-generator:1.0`     | in progress | Moving version |
-| [0.0.0-develop](https://github.com/OpenG2P/id-generator/tree/main) | `openg2p/openg2p-id-generator:develop` | in progress | —              |
+Every version, with its changes: [ID Generator changelog](https://openg2p.github.io/versions/id-generator/CHANGELOG.html).
+
+The `openg2p-id-generator` chart and the `openg2p/openg2p-id-generator` image carry the same version. How versions are derived: [Helm & Docker Versioning Strategy and CI](../../../releases/helm-docker-versioning-and-ci/README.md).
+
+### Earlier versions
+
+The changelog starts at 1.1.0 (2026-07-14). Earlier release:
+
+| Helm Chart Version                                          | Docker Image                         | Date       | Comments       |
+| ----------------------------------------------------------- | ------------------------------------ | ---------- | -------------- |
+| [1.0.0](https://github.com/OpenG2P/id-generator/tree/1.0.0) | `openg2p/openg2p-id-generator:1.0.0` | 2026-04-17 | Stable version |
 
 ## Source code
 

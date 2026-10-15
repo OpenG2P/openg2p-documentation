@@ -40,7 +40,8 @@ The registry partner-api then:
 3. **Checks the subject** — the consent's subject must be the person searched. In an
    entity register every returned record's foundational or functional ID must equal it;
    in an activity register the searched subject must equal it or be linked to it by the
-   register's own data (e.g. a crop record holding the farmer's Fayda FAN).
+   register's own data (e.g. a crop record holding the farmer's Fayda FAN); see
+   [Activity Register](activity-register.md#sharing-with-partners).
 4. **Enforces the decision** — filters every record to the fields of those effective
    scopes, then renders it. A scope is a named group of the registry's own fields (by
    default one per register section), not a key of the output format; see

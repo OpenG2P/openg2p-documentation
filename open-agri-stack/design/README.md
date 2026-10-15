@@ -1,20 +1,17 @@
 ---
 description: >-
-  Design notes for Agri Stack: the register model, activity registers, the
-  Crop Sown Registry, the use-case composite, and the review of the Activity
-  Registry concept notes.
+  Design notes for Agri Stack: registry data sync, the Livestock Registry.
 ---
 
 # Design
 
-These pages record where the design discussion has landed. Each page says what is built and what is proposed; the [Implementation](../implementation/README.md) part describes what is built, component by component.
+These pages record where the design discussion has landed. Each page says what is built and what is proposed. Built products are documented with each product (for example [activity registers](../../products/registry/registry/features/activity-register.md) and the [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)); how each install is set up for Agri Stack is in [Deployment](../deployment/README.md).
+
+The Composite's design is in its own section: [Composite](../composite/README.md).
 
 | Page | Covers | Status |
 | --- | --- | --- |
-| [Register model design](register-model-design.md) | One register model with entity and occurrence records; one verification model and one correction model for both; participants and entities first; how the Farmer, Crop Sown and Livestock registries fit; API changes; phases; decisions | Phase 1 built, phase 2 proposed |
-| [Activity register](activity-register.md) | Append-only activity registers (attendance, crop sown): what the registry platform needed, where an activity register lives, and how it relates to the Observations design | Built |
-| [Crop Sown Registry](crop-sown-registry.md) | The crop season activity register: context, activity types, code lists, projection, indicators, season summary, clusters, channels | Built |
-| [Use-case composite](use-case-composite.md) | How a composite use case is configured, validated and run: configuration format, publishing checks, runtime, worked example | First version built |
-| [Registry data sync (TODO)](registry-data-sync.md) | Proposal: read-only copies of Farmer Registry data in other registries (Crop Sown, Livestock, …), kept up to date by publish/subscribe and set up by configuration |
-| [Distributed deployment architecture](distributed-deployment-architecture.md) | Department installs and one shared exchange tier for Open AgriNet: what is shared, the consent and policy model between tiers, networking, and what is still to build |
-| [Concept notes review](concept-notes-review.md) | How the Activity Registry concept notes (crop sown, livestock, work log) compare with the activity register, with suggested priorities | Review (30 September 2026) |
+| [Registry data sync](registry-data-sync.md) | Registries sharing data with each other through outgestion and ingestion: crop activity from Crop Sown kept in the Farmer Registry (reference design), the gaps, mirrors of farmer data | Proposal, not in use |
+| [Livestock Registry](livestock-registry.md) | An Animal register and a livestock events activity register in one registry: events, entities first, corrections, keys, relation to the Farmer Registry, what it would share | Planned, design only |
+
+The platform-wide proposal for one verification model and one correction model for both register kinds is in the Registry Platform: [Verification and Correction (Proposal)](../../products/registry/registry/design/verification-and-correction.md).
