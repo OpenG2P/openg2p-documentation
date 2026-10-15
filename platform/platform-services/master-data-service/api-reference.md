@@ -14,17 +14,21 @@ spec covers every endpoint. It is generated from the code by
 A running instance also serves its own spec at `/openapi.json`, with interactive
 docs at `/docs`.
 
-| Group | Prefix | For |
-|---|---|---|
-| [Datasets](#datasets) | `/catalogue` | Versioned datasets and their entries; drafts and approval |
-| [Geography](#geography) | `/catalogue` | Versioned levels, units, change events, crosswalk and boundaries |
-| [Releases](#releases) | `/catalogue` | Named sets of pinned dataset and geography versions |
-| [Change feed and configuration](#change-feed-and-configuration) | `/catalogue` | What changed, and how this catalogue is set up |
-| [AWE callback](#awe-callback) | `/catalogue/awe` | Approval decisions from the Approval Workflow Engine |
-| [Original endpoints](#original-endpoints) | `/attributes`, `/geo` | The current published state, for existing consumers |
-| [Sample people](#sample-people-testing-and-demos-only) | `/samples` | Testing and demos only |
-| [Public catalogue](#public-catalogue) | `/public` | Anonymous, read-only, opt-in |
-| [Health](#health) | `/ping` | Liveness |
+## Audiences
+
+MDS has two audiences: staff and the public. One API deployment serves both.
+
+| Audience | Base path / host | Auth | Section |
+|---|---|---|---|
+| Staff | `/catalogue`, `/attributes`, `/geo`, `/samples` on the MDS API host | Keycloak bearer token (staff realm); permissions on writes | [Staff API](#staff-api) |
+| Agent | — | — | — |
+| Partner | — | — | — |
+| Beneficiary | — | — | — |
+| Public | `/public` on the MDS API host | None (anonymous); off by default | [Public API](#public-api) |
+
+Two endpoints serve no audience: the [AWE callback](#awe-callback) (called by
+the Approval Workflow Engine, HMAC-signed) and [Health](#health) (`/ping`). See
+[Service endpoints](#service-endpoints).
 
 The standards behind the API (OpenAPI, ISO 8601, JSON Schema, DCAT, SKOS, …)
 are listed on [Standards](standards.md).
@@ -124,7 +128,23 @@ The admin UI uses catalogue words; the API keeps its field names.
 | Theme | `domain` |
 | Publisher | `owner_org` |
 
-## Datasets
+## Staff API
+
+For staff in the MDS admin UI and the registry staff UIs. Calls need a bearer
+token from the deployment's Keycloak. Writes need a permission (named on each
+operation). Reads marked so are filtered by the caller's IAM data policy.
+Registry backends also call the reads, with a service account token.
+
+| Group | Prefix | For |
+|---|---|---|
+| [Datasets](#datasets) | `/catalogue` | Versioned datasets and their entries; drafts and approval |
+| [Geography](#geography) | `/catalogue` | Versioned levels, units, change events, crosswalk and boundaries |
+| [Releases](#releases) | `/catalogue` | Named sets of pinned dataset and geography versions |
+| [Change feed and configuration](#change-feed-and-configuration) | `/catalogue` | What changed, and how this catalogue is set up |
+| [Original endpoints](#original-endpoints) | `/attributes`, `/geo` | The current published state, for existing consumers |
+| [Sample people](#sample-people-testing-and-demos-only) | `/samples` | Testing and demos only |
+
+### Datasets
 
 Reads and the draft workflow for datasets. Every write that edits a draft opens
 one (a copy of the highest published version) if none is open. Approve and
@@ -215,7 +235,7 @@ reject work only in `permission` approval mode. See
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Geography
+### Geography
 
 The geography is versioned as one dataset: levels, units (`unit_id` is the
 P-code), change events and boundaries together. `get_geo_units` is paged and
@@ -330,7 +350,7 @@ filtered by `GEO` data policies. See
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Releases
+### Releases
 
 A release pins a set of published dataset versions and at most one geography
 version. A published release is immutable. Its publisher must be neither its
@@ -370,7 +390,7 @@ creator nor whoever last set its members. See
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Change feed and configuration
+### Change feed and configuration
 
 `get_changes` reads the append-only change log after a cursor (the last
 `event_id` processed), oldest first. Call again with `next_cursor` while
@@ -406,19 +426,7 @@ When a WebSub hub is configured, MDS also publishes to these topics (prefix
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## AWE callback
-
-In `awe` approval mode, AWE posts its decision here. It is for AWE only:
-authenticated by an HMAC signature (`X-Approval-Signature`,
-`X-Approval-Timestamp`, `X-Approval-Event-Id`), not a user token, and without the
-envelope. Idempotent on `event_id`. See
-[Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
-
-{% openapi-operation spec="master-data-api" path="/catalogue/awe/callback" method="post" %}
-[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
-{% endopenapi-operation %}
-
-## Original endpoints
+### Original endpoints
 
 The endpoints MDS had before versioning keep their paths and shapes for
 existing consumers (the registry staff UI fills dropdowns from them).
@@ -520,7 +528,7 @@ hold without planning for those records. Retired entries still resolve; see
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Sample people (testing and demos only)
+### Sample people (testing and demos only)
 
 {% hint style="warning" %}
 **For testing and demos only; do not use in production.** These endpoints serve
@@ -545,7 +553,9 @@ samples.
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Public catalogue
+## Public API
+
+For anyone. No login.
 
 Anonymous `GET` endpoints, **off by default** (every `/public` path answers 404
 until the deployment enables it). Only datasets and geography marked public, at
@@ -632,7 +642,24 @@ limited per client IP. See [Public catalogue](public-catalogue.md).
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
 {% endopenapi-operation %}
 
-## Health
+## Service endpoints
+
+These are not for an audience. They are called by other services or by the
+platform.
+
+### AWE callback
+
+In `awe` approval mode, AWE posts its decision here. It is for AWE only:
+authenticated by an HMAC signature (`X-Approval-Signature`,
+`X-Approval-Timestamp`, `X-Approval-Event-Id`), not a user token, and without the
+envelope. Idempotent on `event_id`. See
+[Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
+
+{% openapi-operation spec="master-data-api" path="/catalogue/awe/callback" method="post" %}
+[OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)
+{% endopenapi-operation %}
+
+### Health
 
 `GET /ping` answers `pong` while the service is up. No token, no envelope.
 

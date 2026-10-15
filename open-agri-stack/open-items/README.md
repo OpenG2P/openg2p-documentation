@@ -65,6 +65,8 @@ The [Composite](../deployment/composite.md) as built leaves these for later:
 
 ## Registries
 
+* **Activity register UI configuration.** Make the activity register staff UI configurable where implementations differ (tabs, list columns, context and summary pages, form widgets from the platform's widget library): [details](activity-register-ui-configuration.md).
+
 * **Scripted installs for multi-department setups (later).** The Exchange is installed by hand in Rancher today. For production across departments and clusters, add Rancher Fleet (`fleet.yaml` per release with `dependsOn` ordering and `releaseName` `commons` / `commons-services`) with the Exchange choices as override files and pinned chart versions, so one git repo describes the Exchange and each department. Trade-offs: changes only through git, secrets kept outside git, drift correction undoes manual patches.
 
 * **TODO: across departments.** Built: department installs and one shared Exchange install (by hand in Rancher), department CMs trusting the Exchange CM's consent tokens, the Composite's Exchange mode and `scripts/setup_exchange.py` ([architecture](../architecture/README.md#across-departments)). Still to do:

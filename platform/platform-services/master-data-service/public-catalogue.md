@@ -67,7 +67,7 @@ all of it.
 Anonymous `GET` requests; JSON responses (JSON-LD for DCAT and SKOS). Errors are
 `{"detail": "…"}` with HTTP 400, 404 or 429. Every operation is listed, with its
 parameters and responses, in the
-[API reference](api-reference.md#public-catalogue).
+[API reference](api-reference.md#public-api).
 
 | Path | Returns |
 |---|---|
