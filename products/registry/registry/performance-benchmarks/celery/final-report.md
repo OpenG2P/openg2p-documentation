@@ -1,6 +1,6 @@
 # Farmer Registry Celery — Backlog Drain Performance Test Report
 
-Detailed, per-scenario interpretation of the Celery beat + worker backlog-drain runs in [`raw-report.md`](raw-report.md), against the test design in [`test-scenarios.md`](test-scenarios.md). One scenario at a time, beat held at 1 pod, worker pods at 1 → 2 → 3, from a fixed backlog populated fresh before each worker count (test-scenarios.md §3/§6). Every table below is built from the same per-minute CSVs as `raw-report.md`; the "done this minute" column and the Observations sections are this document's own interpretation, not raw Locust/collector output.
+Detailed, per-scenario interpretation of the Celery beat + worker backlog-drain runs in [`raw-report.md`](raw-report.md), against the test design in [`test-scenarios.md`](test-scenarios.md). One scenario at a time, beat held at 1 pod, worker pods at 1 → 2 → 3, from a fixed backlog populated fresh before each worker count (test-scenarios.md §3/§6). Every table below is built from the same per-minute CSVs as `raw-report.md`; the "done this minute" column and the Observations sections are this document's own interpretation, not raw Locust/collector output. The final section before "Code changes" breaks from that one-scenario-at-a-time shape — it covers a **Blended** run where all 14 measured scenarios ran simultaneously against the same beat and worker pods.
 
 **A cross-cutting note on beat's claim size:** `cases.py`'s per-scenario `frequency_s` (20s/30s) is only a code-level fallback. The live `farmer-registry-celery-beat-producer` deployment on the compute node overrides every producer to fire every **10s**, with a per-producer `..._NO_OF_TASKS` claim size of either **3,000** or **20,000** per tick (confirmed directly off the deployment's env vars — see `final-report-summary.md` § Measurements). That fully explains why `pending` reaches 0 so early in almost every run below: e.g. `ingest_data_classification` claims 3,000/tick × 5 ticks in the first ~50s = 15,000 — exactly what mark 1 shows. These runs measure worker throughput, not beat's enqueue ceiling (the one likely exception is called out under `score_compute`).
 
@@ -573,6 +573,311 @@ Overall: beat pods show a short burst then idle; worker pods sustain ~1–1.5 cp
 - **Bottleneck:** worker CPU plateaus in the 0.9–1.5 cpu band with headroom to the 2-cpu ceiling at every pod-scale — not CPU-bound, consistent with time spent waiting on the external HTTP call rather than computing.
 - **Potential improvement:** instrument the external endpoint's own latency/retry count — it isn't visible in this results set — before concluding whether 3 worker pods is the practical ceiling for this scenario.
 
+## Deduplication
+
+### `dedup_intake_vs_register`
+
+Intake submission dedup against the register.
+
+**1. Items in the queue at the beginning:** 40,000 rows — `g2p_intake_form_submissions.deduplication_status_vs_register` re-seeded to `PENDING` for this cohort before each of the pod-1/pod-2/pod-3 runs below (same size every time).
+
+**2. Beat parameters:** fires every **10s** (`REGISTRY_CELERY_BEAT_DEDUPLICATION_BEAT_PRODUCER_FREQUENCY` on this cluster, confirmed via the live deployment; code default differs). Claims **3,000** tasks/tick (confirmed via the live deployment). The producer does mark the row before `send_task`. Producer also requires draft_status FINAL. The sibling intake-vs-intake producer uses the same FINAL filter on a different column.
+
+**3. Worker Pod-1 (1 worker pod) — Measurements: Tasks vs Time** (`dedup_intake_vs_register-workers-1-size-40000.csv`, finished at mark_min 24)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 31000 | 7947 | 1053 | +1053 |
+| 2 | 19000 | 18636 | 2364 | +1311 |
+| 3 | 4000 | 32302 | 3698 | +1334 |
+| 4 | 0 | 34590 | 5410 | +1712 |
+| 5 | 0 | 32763 | 7237 | +1827 |
+| 6 | 0 | 30865 | 9135 | +1898 |
+| 7 | 0 | 29006 | 10994 | +1859 |
+| 8 | 0 | 27167 | 12833 | +1839 |
+| 9 | 0 | 25408 | 14592 | +1759 |
+| 10 | 0 | 23575 | 16425 | +1833 |
+| 11 | 0 | 21698 | 18302 | +1877 |
+| 12 | 0 | 19875 | 20125 | +1823 |
+| 13 | 0 | 18083 | 21917 | +1792 |
+| 14 | 0 | 16229 | 23771 | +1854 |
+| 15 | 0 | 14428 | 25572 | +1801 |
+| 16 | 0 | 12638 | 27362 | +1790 |
+| 17 | 0 | 10977 | 29023 | +1661 |
+| 18 | 0 | 9306 | 30694 | +1671 |
+| 19 | 0 | 7568 | 32432 | +1738 |
+| 20 | 0 | 5780 | 34220 | +1788 |
+| 21 | 0 | 3948 | 36052 | +1832 |
+| 22 | 0 | 2105 | 37895 | +1843 |
+| 23 | 0 | 274 | 39726 | +1831 |
+| 24 | 0 | 0 | 40000 | +274 |
+
+**4. Worker Pod-2 (2 worker pods) — Measurements: Tasks vs Time** (`dedup_intake_vs_register-workers-2-size-40000.csv`, finished at mark_min 18)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 28000 | 10633 | 1367 | +1367 |
+| 2 | 19000 | 17745 | 3255 | +1888 |
+| 3 | 7000 | 27489 | 5511 | +2256 |
+| 4 | 0 | 32061 | 7939 | +2428 |
+| 5 | 0 | 29560 | 10440 | +2501 |
+| 6 | 0 | 27233 | 12767 | +2327 |
+| 7 | 0 | 24723 | 15277 | +2510 |
+| 8 | 0 | 22227 | 17773 | +2496 |
+| 9 | 0 | 19757 | 20243 | +2470 |
+| 10 | 0 | 17326 | 22674 | +2431 |
+| 11 | 0 | 14900 | 25100 | +2426 |
+| 12 | 0 | 12368 | 27632 | +2532 |
+| 13 | 0 | 9869 | 30131 | +2499 |
+| 14 | 0 | 7462 | 32538 | +2407 |
+| 15 | 0 | 5009 | 34991 | +2453 |
+| 16 | 0 | 2639 | 37361 | +2370 |
+| 17 | 0 | 236 | 39764 | +2403 |
+| 18 | 0 | 0 | 40000 | +236 |
+
+**5. Worker Pod-3 (3 worker pods) — Measurements: Tasks vs Time** (`dedup_intake_vs_register-workers-3-size-40000.csv`, finished at mark_min 13)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 28000 | 9698 | 2302 | +2302 |
+| 2 | 19000 | 15769 | 5231 | +2929 |
+| 3 | 7000 | 24333 | 8667 | +3436 |
+| 4 | 0 | 27861 | 12139 | +3472 |
+| 5 | 0 | 24546 | 15454 | +3315 |
+| 6 | 0 | 21094 | 18906 | +3452 |
+| 7 | 0 | 17603 | 22397 | +3491 |
+| 8 | 0 | 14098 | 25902 | +3505 |
+| 9 | 0 | 10652 | 29348 | +3446 |
+| 10 | 0 | 7226 | 32774 | +3426 |
+| 11 | 0 | 3704 | 36296 | +3522 |
+| 12 | 0 | 311 | 39689 | +3393 |
+| 13 | 0 | 0 | 40000 | +311 |
+
+**6. Pod CPU / Memory (per run):**
+
+No graph shows an explicit CPU/memory limit line; axis max in all panels tops out well under the stated 2-cpu limit, so no pod appears throttled — all show headroom.
+
+| Pod-Scale | Pod | CPU | Memory | Notes |
+|---|---|---|---|---|
+| pod-1 | beat-pod | 0→0.85 cpu | 196.5→204.1 MiB | brief spike, idles after drain; no limit line |
+| pod-1 | worker-pod-1 | 0→~1.1 cpu, plateau ~0.85-1 cpu | ~214.6→333.8 MiB plateau | headroom vs 2 cpu limit; axis maxes 1.25 cpu |
+| pod-2 | beat-pod | 0→0.75 cpu | 193.1→205 MiB | short spike, idles after; no limit line |
+| pod-2 | worker-pod-1 | 0→~0.9 cpu plateau | ~214.6→333.8 MiB plateau | headroom vs 2 cpu limit |
+| pod-2 | worker-pod-2 | 0→~0.9 cpu plateau | ~214.6→333.8 MiB plateau | headroom vs 2 cpu limit |
+| pod-3 | beat-pod | 0→0.85 cpu | 0→190.7 MiB | brief spike, idles after; no limit line |
+| pod-3 | worker-pod-1 | 0→~1 cpu plateau (sawtooth 0.5-1) | 95.4→381.5 MiB plateau | headroom vs 2 cpu limit |
+| pod-3 | worker-pod-2 | 0→~0.8 cpu plateau | 95.4→381.5 MiB plateau | headroom vs 2 cpu limit |
+| pod-3 | worker-pod-3 | 0→~0.8 cpu plateau | 95.4→381.5 MiB plateau | headroom vs 2 cpu limit |
+
+**7. Observations / Bottlenecks / Potential improvements:**
+
+- **Scaling:** finish minute drops 24 → 18 → 13 (steady rate 1,758 → 2,400 → 3,399 rows/min) — the slowest-finishing of the three now-measured dedup scenarios at every pod-scale.
+- **Where the time goes:** `pending` clears by mark 3–4; `in_progress` dominates the rest of the run — worker-bound.
+- **Bottleneck:** worker CPU plateaus ~0.85–1.1 cpu, somewhat higher than `dedup_cr_vs_register`'s but still well short of the 2-cpu ceiling — scoring an intake submission against the register costs more per record than a change-request-vs-register comparison, consistent with this being the slowest of the three.
+- **Scope note:** this producer also requires `draft_status = FINAL` (`cases.py`); the isolated run's cohort already satisfies that filter, so this measurement reflects the matching cost itself, not the filter.
+
+### `dedup_intake_vs_intake`
+
+Intake submission dedup against other intake submissions.
+
+**1. Items in the queue at the beginning:** 40,000 rows — `g2p_intake_form_submissions.deduplication_status_vs_intake_forms` re-seeded to `PENDING` for this cohort before each of the pod-1/pod-2/pod-3 runs below (same size every time).
+
+**2. Beat parameters:** fires every **10s** (`REGISTRY_CELERY_BEAT_DEDUPLICATION_BEAT_PRODUCER_FREQUENCY` on this cluster, confirmed via the live deployment; code default differs). Claims **3,000** tasks/tick (confirmed via the live deployment). The producer does mark the row before `send_task`. Keep deduplication_status_vs_register off PENDING on this cohort so the other intake dedup producer stays idle.
+
+**3. Worker Pod-1 (1 worker pod) — Measurements: Tasks vs Time** (`dedup_intake_vs_intake-workers-1-size-40000.csv`, finished at mark_min 26)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 28000 | 10864 | 1136 | +1136 |
+| 2 | 16000 | 21393 | 2607 | +1471 |
+| 3 | 4000 | 31968 | 4032 | +1425 |
+| 4 | 0 | 34449 | 5551 | +1519 |
+| 5 | 0 | 32909 | 7091 | +1540 |
+| 6 | 0 | 31266 | 8734 | +1643 |
+| 7 | 0 | 29617 | 10383 | +1649 |
+| 8 | 0 | 28025 | 11975 | +1592 |
+| 9 | 0 | 26334 | 13666 | +1691 |
+| 10 | 0 | 24661 | 15339 | +1673 |
+| 11 | 0 | 22972 | 17028 | +1689 |
+| 12 | 0 | 21429 | 18571 | +1543 |
+| 13 | 0 | 19840 | 20160 | +1589 |
+| 14 | 0 | 18233 | 21767 | +1607 |
+| 15 | 0 | 16618 | 23382 | +1615 |
+| 16 | 0 | 15013 | 24987 | +1605 |
+| 17 | 0 | 13465 | 26535 | +1548 |
+| 18 | 0 | 11962 | 28038 | +1503 |
+| 19 | 0 | 10430 | 29570 | +1532 |
+| 20 | 0 | 8855 | 31145 | +1575 |
+| 21 | 0 | 7240 | 32760 | +1615 |
+| 22 | 0 | 5645 | 34355 | +1595 |
+| 23 | 0 | 4027 | 35973 | +1618 |
+| 24 | 0 | 2397 | 37603 | +1630 |
+| 25 | 0 | 691 | 39309 | +1706 |
+| 26 | 0 | 0 | 40000 | +691 |
+
+**4. Worker Pod-2 (2 worker pods) — Measurements: Tasks vs Time** (`dedup_intake_vs_intake-workers-2-size-40000.csv`, finished at mark_min 15)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 28000 | 9653 | 2347 | +2347 |
+| 2 | 16000 | 19098 | 4902 | +2555 |
+| 3 | 7000 | 25523 | 7477 | +2575 |
+| 4 | 0 | 29766 | 10234 | +2757 |
+| 5 | 0 | 26736 | 13264 | +3030 |
+| 6 | 0 | 23793 | 16207 | +2943 |
+| 7 | 0 | 20817 | 19183 | +2976 |
+| 8 | 0 | 17980 | 22020 | +2837 |
+| 9 | 0 | 15096 | 24904 | +2884 |
+| 10 | 0 | 12048 | 27952 | +3048 |
+| 11 | 0 | 9074 | 30926 | +2974 |
+| 12 | 0 | 6089 | 33911 | +2985 |
+| 13 | 0 | 3180 | 36820 | +2909 |
+| 14 | 0 | 154 | 39846 | +3026 |
+| 15 | 0 | 0 | 40000 | +154 |
+
+**5. Worker Pod-3 (3 worker pods) — Measurements: Tasks vs Time** (`dedup_intake_vs_intake-workers-3-size-40000.csv`, finished at mark_min 13)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 34000 | 3101 | 2899 | +2899 |
+| 2 | 22000 | 11287 | 6713 | +3814 |
+| 3 | 13000 | 16950 | 10050 | +3337 |
+| 4 | 1000 | 26049 | 12951 | +2901 |
+| 5 | 0 | 23885 | 16115 | +3164 |
+| 6 | 0 | 21044 | 18956 | +2841 |
+| 7 | 0 | 17888 | 22112 | +3156 |
+| 8 | 0 | 14721 | 25279 | +3167 |
+| 9 | 0 | 11678 | 28322 | +3043 |
+| 10 | 0 | 8534 | 31466 | +3144 |
+| 11 | 0 | 5369 | 34631 | +3165 |
+| 12 | 0 | 2392 | 37608 | +2977 |
+| 13 | 0 | 0 | 40000 | +2392 |
+
+**6. Pod CPU / Memory (per run):**
+
+No limit line is drawn on any graph; axis max is the only scale reference, and all pods stay well under 1 CPU core per axis max (no flatline at 2 cpu), so none show throttling.
+
+| Pod-Scale | Pod | CPU | Memory | Notes |
+|---|---|---|---|---|
+| pod-1 | beat-pod | 0→0.85 cpu, plateau 0.6-0.85, →0 | 0→190 MiB, plateau ~185 MiB | Short run (~10min), no throttle |
+| pod-1 | worker-pod-1 | 0→1.1 cpu peak, plateau ~0.85-1.0 cpu | ~333.8 MiB plateau | Axis max 1.25 cpu, headroom |
+| pod-2 | beat-pod | 0→0.85 cpu peak, plateau 0.6-0.85, →0 | 167.8→175.5 MiB plateau | Similar to pod-1 beat |
+| pod-2 | worker-pod-1 | Oscillates 0.75-1.25 cpu | ~333.8 MiB plateau | Sawtooth pattern, headroom |
+| pod-2 | worker-pod-2 | Oscillates 0.75-1.25 cpu | ~333.8 MiB plateau | Same pattern as worker-1 |
+| pod-3 | beat-pod | 0→0.85 cpu peak, plateau 0.6-0.85, →0 | 0→~190 MiB plateau | Axis max 238.4 MiB |
+| pod-3 | worker-pod-1 | 0→1.1 cpu peak, settles ~0.5-0.75 cpu | 0→381.5 MiB plateau | Higher mem than pod-1/2 workers |
+| pod-3 | worker-pod-2 | 0→1.1 cpu peak, settles ~0.4-0.75 cpu | 0→381.5 MiB plateau | Brief dip to ~0.4 cpu mid-run |
+| pod-3 | worker-pod-3 | 0→1.1 cpu peak, settles ~0.5-0.75 cpu | 0→381.5 MiB plateau | Consistent with worker-1/2 |
+
+**7. Observations / Bottlenecks / Potential improvements:**
+
+- **Scaling:** finish minute drops 26 → 15 → 13 (steady rate 1,591 → 2,885 → 3,155 rows/min) — the slowest-finishing dedup scenario at pod-1, though it narrows the gap with `dedup_intake_vs_register` by pod-3.
+- **Where the time goes:** `pending` clears by mark 2–4; `in_progress` dominates the rest of the run — worker-bound.
+- **Bottleneck:** worker CPU plateaus ~0.85–1.1 cpu at pod-1, actually *dropping* to ~0.4–0.75 cpu at pod-3 — each pod does proportionally less work once three share the backlog, with no sign of CPU saturation at any scale.
+- **Scope note:** scores one `FINAL` intake submission against *other* intake submissions (`cases.py`); the sibling `dedup_intake_vs_register` producer is parked for this isolated run.
+
+### `dedup_cr_vs_register`
+
+Change-request dedup against the register.
+
+**1. Items in the queue at the beginning:** 40,000 rows — `g2p_register_change_requests.deduplication_register_status` re-seeded to `PENDING` for this cohort before each of the pod-1/pod-2/pod-3 runs below (same size every time).
+
+**2. Beat parameters:** fires every **10s** (`REGISTRY_CELERY_BEAT_DEDUPLICATION_BEAT_PRODUCER_FREQUENCY` on this cluster, confirmed via the live deployment; code default differs). Claims **3,000** tasks/tick (confirmed via the live deployment). The producer does mark the row before `send_task`. New change requests default both dedup statuses to PENDING, so deduplication_change_request_beat_producer will share the workers unless that sibling column is not PENDING on this cohort.
+
+**3. Worker Pod-1 (1 worker pod) — Measurements: Tasks vs Time** (`dedup_register-workers-1-size-40000.csv`, finished at mark_min 18)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 28000 | 10320 | 1680 | +1680 |
+| 2 | 16000 | 20218 | 3782 | +2102 |
+| 3 | 1000 | 33047 | 5953 | +2171 |
+| 4 | 0 | 31889 | 8111 | +2158 |
+| 5 | 0 | 29627 | 10373 | +2262 |
+| 6 | 0 | 27293 | 12707 | +2334 |
+| 7 | 0 | 24893 | 15107 | +2400 |
+| 8 | 0 | 22532 | 17468 | +2361 |
+| 9 | 0 | 20235 | 19765 | +2297 |
+| 10 | 0 | 17462 | 22538 | +2773 |
+| 11 | 0 | 15657 | 24343 | +1805 |
+| 12 | 0 | 13297 | 26703 | +2360 |
+| 13 | 0 | 10993 | 29007 | +2304 |
+| 14 | 0 | 8651 | 31349 | +2342 |
+| 15 | 0 | 6492 | 33508 | +2159 |
+| 16 | 0 | 4239 | 35761 | +2253 |
+| 17 | 0 | 1944 | 38056 | +2295 |
+| 18 | 0 | 0 | 40000 | +1944 |
+
+**4. Worker Pod-2 (2 worker pods) — Measurements: Tasks vs Time** (`dedup_register-workers-2-size-40000.csv`, finished at mark_min 11)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 31000 | 6195 | 2805 | +2805 |
+| 2 | 19000 | 14400 | 6600 | +3795 |
+| 3 | 7000 | 22715 | 10285 | +3685 |
+| 4 | 0 | 25715 | 14285 | +4000 |
+| 5 | 0 | 21591 | 18409 | +4124 |
+| 6 | 0 | 17665 | 22335 | +3926 |
+| 7 | 0 | 13406 | 26594 | +4259 |
+| 8 | 0 | 9441 | 30559 | +3965 |
+| 9 | 0 | 5251 | 34749 | +4190 |
+| 10 | 0 | 1364 | 38636 | +3887 |
+| 11 | 0 | 0 | 40000 | +1364 |
+
+**5. Worker Pod-3 (3 worker pods) — Measurements: Tasks vs Time** (`dedup_register-workers-3-size-40000.csv`, finished at mark_min 8)
+
+| mark_min | pending | in_progress | done | done this minute |
+|---|---|---|---|---|
+| 0 | 40000 | 0 | 0 | +0 |
+| 1 | 31000 | 5998 | 3002 | +3002 |
+| 2 | 19000 | 12855 | 8145 | +5143 |
+| 3 | 7000 | 19110 | 13890 | +5745 |
+| 4 | 0 | 21180 | 18820 | +4930 |
+| 5 | 0 | 15422 | 24578 | +5758 |
+| 6 | 0 | 9720 | 30280 | +5702 |
+| 7 | 0 | 3517 | 36483 | +6203 |
+| 8 | 0 | 0 | 40000 | +3517 |
+
+**6. Pod CPU / Memory (per run):**
+
+No limit/threshold line is drawn on any graph (axes auto-scale to actual usage, max ~1.0 cpu); none of the 9 pods approach the stated 2-cpu limit — all show clear CPU/memory headroom, no throttling observed.
+
+| Pod-Scale | Pod | CPU | Memory | Notes |
+|---|---|---|---|---|
+| pod-1 | beat-pod | 0→1.0 cpu (peak ~1.0, spike) | 0→190.7 MiB plateau | spike then settle, well under 2-cpu limit |
+| pod-1 | worker-pod-1 | 0→~0.65 cpu plateau (fluctuating 0.4-0.65) | 0→286.1 MiB plateau | well under limit |
+| pod-2 | beat-pod | 0→0.8 cpu peak, back to ~0 | 0→190.7 MiB plateau | spike then settle, well under limit |
+| pod-2 | worker-pod-1 | 0→~0.45 cpu plateau (0.3-0.5 range) | 0→286.1 MiB plateau | well under limit |
+| pod-2 | worker-pod-2 | 0→~0.45 cpu plateau (0.3-0.5 range) | 0→309.9 MiB plateau | well under limit |
+| pod-3 | beat-pod | 0→0.85 cpu peak, back to ~0 | 0→190.7 MiB plateau | spike then settle, well under limit |
+| pod-3 | worker-pod-1 | 0→~0.5 cpu plateau, dip at end | 0→333.8 MiB (~350) plateau | well under limit |
+| pod-3 | worker-pod-2 | 0→~0.5 cpu plateau, dip at end | 0→286.1 MiB plateau | well under limit |
+| pod-3 | worker-pod-3 | 0→~0.5 cpu plateau, dip at end | 0→286.1 MiB plateau | well under limit |
+
+**7. Observations / Bottlenecks / Potential improvements:**
+
+- **Scaling:** finish minute drops 18 → 11 → 8 as worker pods go 1 → 2 → 3 (steady rate 2,274 → 3,981 → 5,580 rows/min).
+- **Where the time goes:** `pending` clears by mark 2–3 at every pod-scale while `in_progress` stays high for most of the run — worker-bound, same pattern as the ingest/outgest scenarios.
+- **Bottleneck:** CPU stays well under the 2-vCPU ceiling at every pod-scale (worker plateaus ~0.45–0.65 cpu) — this scenario is far from CPU-bound in isolation. That headroom is exactly why the blended run's CPU saturation (see the new Blended section below) is a genuine finding rather than an artifact of dedup work alone.
+- **Sibling note:** `cases.py` flags `dedup_change_request_beat_producer` as a sibling that shares this table — the isolated run here parks that producer, so a production cohort with both dedup statuses still `PENDING` would see roughly double this load on the shared worker queue.
+
+### `dedup_cr_vs_cr`
+
+Change-request dedup against other change requests.
+
+**1. Items in the queue at the beginning:** not measured — no backlog has been drained for this scenario.
+
+**2. Beat parameters:** `REGISTRY_CELERY_BEAT_DEDUPLICATION_BEAT_PRODUCER_FREQUENCY` (shared with the other three dedup producers, confirmed as **10s** on this cluster) and a dedicated `REGISTRY_CELERY_BEAT_DEDUPLICATION_CHANGE_REQUEST_BEAT_PRODUCER_NO_OF_TASKS` (confirmed **3,000** tasks/tick on the live deployment) both exist and are configured identically to the other dedup producers — the scenario is wired up and could be run, but has not been.
+
+**Status: not yet measured.** `g2p_register_change_requests.deduplication_change_request_status` stores each change request's payload as JSON, and matching one change request against the *other pending change requests* on this column has to compare that JSON payload record by record rather than via a set-based SQL comparison — unlike `dedup_cr_vs_register` (change request vs. the register) or the two intake-form dedup scenarios, there's no indexed/structured column this comparison can run against directly. That makes a full-backlog run of this scenario extremely time-consuming, to the point that it has not yet been completed against any backlog size at any worker-pod count. This is a real, open gap in this test cycle, not an oversight in the harness: `cases.py`'s case definition, `k8s/run.sh`'s scenario handling, and the dedup beat-producer/worker code path are all already in place for it (see `dedup_cr_vs_register` above, which shares the same table and producer family).
+
 ## Intake ingest
 
 ### `intake_register_ingest`
@@ -994,6 +1299,98 @@ Only pod-1 was run (2 files, one process each; by design this scenario is never 
 - **Where the time goes:** only ~1,091 of 20,000 records are logged by mark 1 even though both files are claimed immediately — `in_progress` pins at exactly 2 (the pod's `concurrency=2` process count) from mark 1 onward. Unlike every queue-based scenario above, the limiting resource here is literally "one process per file," not beat's claim size.
 - **Bottleneck:** worker CPU plateaus 1.5–1.8 cpu (one dip to ~1 cpu), close to the 2-cpu ceiling — both processes busy for nearly the whole run, consistent with one CPU-bound ingestion thread per file.
 - **Why no pod-2/pod-3 run:** a file stays on one process until it finishes; a second pod can't split the same file (test-scenarios.md §4, "Import file"). This 2-file, 1-pod run is already the designed ceiling test — a 3rd/4th file queued alongside would show whether idle processes on *other* pods pick up extra files, which this run doesn't exercise.
+
+## Blended (all scenarios concurrently)
+
+A different run shape from every scenario above: one beat pod and N worker pods run **all 14 measured scenarios at once** (every scenario in this document except `dedup_cr_vs_cr`, which isn't measured at all — see above — and `outgest_topic_register`, which is out of the 1/2/3-worker series by design per `test-scenarios.md` §4). Each of the 14 is seeded to a uniform 10,000-row backlog rather than its own isolated-run size, so this section is not directly rate-comparable to the per-scenario sections above — it answers a different question: what happens when every beat producer and every worker task type contend for the same beat pod, the same worker pool, and the same Postgres connection at once. Beat frequency/pickup size are unchanged from the isolated runs — every producer still fires on its own individually-configured 10s tick at its own `..._NO_OF_TASKS` (3,000 or 20,000, `final-report-summary.md` § Measurements) — there is no single shared "blend" setting.
+
+### Worker Pod-1 (1 worker pod)
+
+Collection window: 112 minutes (`blend-workers-1.csv`). "Status" is each scenario's own `pending`/`in_progress` state — not every scenario necessarily finishes inside this pod-scale's own window.
+
+| Scenario | Backlog | Avg rate (steady, rows/min) | Status |
+|---|---:|---:|---|
+| `change_request_ingest` | 10,000 | 90.9 | **not finished** — 99.9% done, 6 still in_progress @ mark 112 |
+| `completion_score` | 10,000 | 63.6 | finished @ mark 77 |
+| `dedup_intake_vs_intake` | 10,000 | 90.9 | finished @ mark 78 |
+| `dedup_intake_vs_register` | 10,000 | 90.9 | finished @ mark 94 |
+| `dedup_cr_vs_register` | 10,000 | 88.0 | finished @ mark 85 |
+| `functional_id_allocation` | 10,000 | 90.9 | finished @ mark 90 |
+| `import_file_process` | 10,000 | 90.9 | finished @ mark 32 |
+| `ingest_data` | 10,000 | 90.9 | **not finished** — 100.0% done, 2 still in_progress @ mark 112 |
+| `ingest_data_classification` | 10,000 | 63.6 | finished @ mark 78 |
+| `ingest_data_transformation` | 10,000 | 90.9 | finished @ mark 93 |
+| `intake_register_ingest` | 10,000 | 90.9 | **not finished** — 99.9% done, 6 still in_progress @ mark 112 |
+| `outgest_data_publish` | 10,000 | 90.7 | **not finished** — 99.7% done, 28 still in_progress @ mark 112 |
+| `outgest_data_transformation` | 10,000 | 90.9 | finished @ mark 75 |
+| `score_compute` | 10,000 | 90.9 | finished @ mark 89 |
+
+### Worker Pod-2 (2 worker pods)
+
+Collection window: 64 minutes (`blend-workers-2.csv`). "Status" is each scenario's own `pending`/`in_progress` state — not every scenario necessarily finishes inside this pod-scale's own window.
+
+| Scenario | Backlog | Avg rate (steady, rows/min) | Status |
+|---|---:|---:|---|
+| `change_request_ingest` | 10,000 | 161.2 | **not finished** — 100.0% done, 4 still in_progress @ mark 64 |
+| `completion_score` | 10,000 | 139.7 | finished @ mark 64 |
+| `dedup_intake_vs_intake` | 10,000 | 161.3 | finished @ mark 53 |
+| `dedup_intake_vs_register` | 10,000 | 161.3 | finished @ mark 53 |
+| `dedup_cr_vs_register` | 10,000 | 161.3 | finished @ mark 58 |
+| `functional_id_allocation` | 10,000 | 161.3 | finished @ mark 55 |
+| `import_file_process` | 10,000 | 161.3 | finished @ mark 13 |
+| `ingest_data` | 10,000 | 161.0 | **not finished** — 99.8% done, 16 still in_progress @ mark 64 |
+| `ingest_data_classification` | 10,000 | 161.3 | finished @ mark 59 |
+| `ingest_data_transformation` | 10,000 | 161.3 | finished @ mark 58 |
+| `intake_register_ingest` | 10,000 | 137.8 | **not finished** — 99.9% done, 12 still in_progress @ mark 64 |
+| `outgest_data_publish` | 10,000 | 159.0 | **not finished** — 98.6% done, 141 still in_progress @ mark 64 |
+| `outgest_data_transformation` | 10,000 | 161.3 | finished @ mark 55 |
+| `score_compute` | 10,000 | 161.3 | finished @ mark 60 |
+
+### Worker Pod-3 (3 worker pods)
+
+Collection window: 73 minutes (`blend-workers-3.csv`). "Status" is each scenario's own `pending`/`in_progress` state — not every scenario necessarily finishes inside this pod-scale's own window.
+
+| Scenario | Backlog | Avg rate (steady, rows/min) | Status |
+|---|---:|---:|---|
+| `change_request_ingest` | 10,000 | 124.4 | **not finished** — 88.3% done, 1166 still in_progress @ mark 73 |
+| `completion_score` | 10,000 | 140.8 | finished @ mark 36 |
+| `dedup_intake_vs_intake` | 10,000 | 140.8 | finished @ mark 37 |
+| `dedup_intake_vs_register` | 10,000 | 140.8 | finished @ mark 36 |
+| `dedup_cr_vs_register` | 10,000 | 140.8 | finished @ mark 36 |
+| `functional_id_allocation` | 10,000 | 121.5 | finished @ mark 34 |
+| `import_file_process` | 9,996 | 0.0 | finished @ mark 1 — **data artifact, see below** |
+| `ingest_data` | 10,000 | 125.5 | **not finished** — 89.1% done, 1091 still in_progress @ mark 73 |
+| `ingest_data_classification` | 10,000 | 140.8 | finished @ mark 36 |
+| `ingest_data_transformation` | 10,000 | 140.8 | finished @ mark 41 |
+| `intake_register_ingest` | 10,000 | 140.6 | **not finished** — 99.8% done, 18 still in_progress @ mark 73 |
+| `outgest_data_publish` | 10,000 | 139.5 | **not finished** — 99.0% done, 95 still in_progress @ mark 73 |
+| `outgest_data_transformation` | 10,000 | 140.8 | finished @ mark 38 |
+| `score_compute` | 10,000 | 140.8 | finished @ mark 36 |
+
+**Pod CPU / Memory (per run):**
+
+No explicit limit line drawn on any graph (axis max used as reference, e.g. 2/2.5 cpu); "ceiling" is 2 cpu (the pod's CPU limit). Only pod-2's two workers show a long sustained flatline at the ceiling (vs. just brief peak-touches elsewhere) — the clearest throttling signature across this whole test cycle.
+
+| Pod-Scale | Pod | CPU | Memory | Notes |
+|---|---|---|---|---|
+| pod-1 | beat-pod | 0→0.85 cpu | 190.7→205 MiB | Ramps up, drops to 0 at end; no saturation |
+| pod-1 | worker-pod-1 | 0.5→2 cpu | 190.7→385 MiB plateau | Frequent peaks touch 2-cpu ceiling, oscillating (not sustained) |
+| pod-2 | beat-pod | 0.4→0.85 cpu | 124→181 MiB plateau | Normal, no ceiling contact |
+| pod-2 | worker-pod-1 | 0.5→2.5 cpu (axis), flatlines ~2.1 cpu last ~10min | 238→477 MiB, then jumps to ~953 MiB-1.0 GiB flat | Sustained flatline at ceiling near run end = throttled; memory nearly doubled concurrently |
+| pod-2 | worker-pod-2 | same as worker-pod-1: flatlines ~2.1 cpu last ~10min | same jump to ~953 MiB-1.0 GiB | Mirrors worker-pod-1, sustained throttling at tail end |
+| pod-3 | beat-pod | 0.1→0.85 cpu | 0→190.7 MiB plateau (~175-185) | Dip near run, otherwise steady |
+| pod-3 | worker-pod-1 | 0→2 cpu, peaks repeatedly touch ceiling | steps up 190→730-760 MiB plateau | Oscillating saturation at peaks, troughs give headroom (0.5-1.5) |
+| pod-3 | worker-pod-2 | 0→2 cpu, peaks repeatedly touch ceiling | steps up to ~730-760 MiB plateau | Same pattern as worker-pod-1 |
+| pod-3 | worker-pod-3 | 0→1.9 cpu, peaks near ceiling | steps up to ~730-760 MiB plateau | Same pattern, slightly fewer peaks pinned exactly at 2 |
+
+**Observations / Bottlenecks / Potential improvements:**
+
+- **Two scenarios never fully drain, at every pod-scale:** `change_request_ingest` and `ingest_data` — which share one beat producer (`cases.py`) — are the only scenarios that leave rows `in_progress` at the end of the collection window at pod-1, pod-2, *and* pod-3. At pod-1/pod-2 the shortfall is tiny (2–16 rows out of 10,000, effectively finished); at **pod-3 it's dramatic — 1,166 and 1,091 rows respectively still `in_progress` at mark 73, only 88–89% done.** Neither scenario showed this pattern in its own isolated run (both scaled cleanly 1→2→3 there — see the Partner ingest section above). This is a genuine blended-load finding: with 14 producers and worker types contending for the same beat pod, worker pool, and Postgres connection, the shared `ingest_data`/`change_request_ingest` producer is the one that degrades, not the ones with more worker pods to split across.
+- **Two more scenarios leave small stragglers:** `intake_register_ingest` (6–18 rows short) and `outgest_data_publish` (28–141 rows short) don't fully drain either, at every pod-scale. Both had their own reasons to expect this in isolation — `intake_register_ingest`'s producer doesn't claim the row before `send_task` (`cases.py`), and `outgest_data_publish` already showed rows cycling back to `PENDING` against the external WebSub endpoint in its isolated run (Outgest section above) — blending just makes the existing tail longer.
+- **Overall run length is not monotonic in worker-pod count:** pod-1 takes 112 minutes, pod-2 takes 64, but **pod-3 takes 73 — longer than pod-2**, driven entirely by the `change_request_ingest`/`ingest_data` stragglers above. Taken alone this would look like the same kind of anomaly flagged for `completion_score` in the isolated runs; here it has a direct, visible cause in the same dataset.
+- **The clearest CPU saturation in the whole test cycle is here, not in any isolated run:** at pod-2, both worker pods show a **sustained flatline around ~2.1 cpu for the last ~10 minutes** of the run, with memory jumping from ~400–477 MiB to **~950 MiB–1 GiB** at the same time — a real capacity signal that only shows up once all 14 task types are competing for the same two worker pods. Pod-1 and pod-3 workers show CPU peaks repeatedly *touching* the 2-cpu ceiling but not a sustained flatline — pod-2 is the one pod-scale where this blended load genuinely saturates the pod.
+- **`import_file_process` at pod-3 has a data artifact, not a real result:** its own `mark_min=0` row already shows `pending=7068, in_progress=6, done=2922` instead of the `10000,0,0` every other scenario (and every other pod-scale) starts from, and the cohort only ever reaches `done=9996` (not 10000) — 4 records are unaccounted for. Most likely the pod-3 blend run's seeding/clock-start step overlapped with leftover `import_file_process` work from a prior run rather than this scenario genuinely starting mid-flight. Treat the pod-3 `import_file_process` row above as unreliable; pod-1 and pod-2's `import_file_process` rows (clean `10000,0,0` starts, finishing at mark 32 and 13) are not affected.
+- **Potential improvement:** given the `change_request_ingest`/`ingest_data` finding is the standout result here, a focused re-run of just those two scenarios blended together (without the other 12) would isolate whether it's beat contention, worker contention, or Postgres contention that specifically degrades their shared producer under load — the current 14-way blend can't distinguish between those three causes on its own.
 
 ## Code changes made during this test/measurement cycle
 

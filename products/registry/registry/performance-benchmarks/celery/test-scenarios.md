@@ -24,6 +24,7 @@ See [../staff-api/test-scenarios.md](../staff-api/test-scenarios.md).
 **In scope**
 
 - The scenarios in §4, one at a time. `ingest_data` and `change_request_ingest` share one beat producer. The other scenarios each have their own. `outgest_topic_register` and `import_file_process` are not 1, 2, 3 worker runs.
+- The blend in §7, where those producers run together. `dedup_change_request` and `outgest_topic_register` stay off.
 - One beat pod. Worker pods at 1, then 2, then 3.
 - A fixed backlog size, passed to `./k8s/run.sh`.
 - The perftest namespace, image `vin0dkhichar/ofr-staff-celery:performance-test`.
@@ -286,3 +287,72 @@ From `farmer-registry/performance-testing/locust/celery`, with
 If `./k8s/run.sh` stops after the pods are already running, do not start it
 again. Use `./k8s/collect.sh <workers> <scenario> <size>`. That command only
 appends the CSV.
+
+## 7. Blend
+
+Every beat producer and every worker runs in one clock. Beat stays at 1 pod.
+Worker pods are 1, then 2, then 3. `dedup_change_request`,
+`outgest_topic_register`, and `functional_id_updation` stay disabled and
+their pending rows are parked.
+
+Each producer keeps the frequency from its isolated run. Every producer
+claims at most 3000 tasks per tick. Each case keeps that run's backlog.
+`import_file_process` keeps 2 files per worker pod (2, 4, then 6). The files
+together hold 10000 records. `./k8s/blend.sh`
+populates every included case, then pins those backlogs, then starts beat
+and the workers.
+
+`ingest_data` and `change_request_ingest` still share one producer, so both
+use frequency 10 and 3000 tasks. The deduplication producers share frequency
+10. Ingest transformation and outgest transformation share frequency 10.
+
+| Case | Backlog | Frequency (seconds) | Tasks per tick | How the CSV counts it |
+| --- | --- | --- | --- | --- |
+| `dedup_register` | 10000 | 10 | 3000 | status rows |
+| `completion_score` | 10000 | 10 | 3000 | status rows |
+| `dedup_intake_vs_register` | 10000 | 10 | 3000 | status rows |
+| `dedup_intake_vs_intake` | 10000 | 10 | 3000 | status rows |
+| `intake_register_ingest` | 10000 | 10 | 3000 | status rows |
+| `functional_id_allocation` | 10000 | 10 | 3000 | status rows |
+| `score_compute` | 10000 | 10 | 3000 | status rows |
+| `ingest_data_classification` | 10000 | 10 | 3000 | status rows |
+| `ingest_data_transformation` | 10000 | 10 | 3000 | status rows |
+| `ingest_data` | 10000 | 10 | 3000 | status rows |
+| `change_request_ingest` | 10000 | 10 | 3000 | status rows |
+| `outgest_data_transformation` | 10000 | 10 | 3000 | status rows |
+| `outgest_data_publish` | 10000 | 10 | 3000 | status rows |
+| `import_file_process` | 10000 records, 2 files per worker pod | 10 | 3000 | records in those files |
+
+One CSV holds every case. A minute is several rows, one per case. Status
+cases use the same pending, in-progress, and done columns as an isolated
+run. `import_file_process` uses the record reading from its isolated run.
+
+`locust/celery/results/pod-<workers>/blend/blend-workers-<workers>.csv`
+
+| Column | Meaning |
+| --- | --- |
+| `mark_min` | Minutes since beat became ready. Minute 0 is the first count. |
+| `case` | Scenario name. |
+| `pending` | Cohort still waiting, counted the way that case's isolated CSV counts it. |
+| `in_progress` | Cohort in `PROCESSING` or `INPROGRESS`, same reading as the isolated CSV. |
+| `done` | Cohort finished, same reading as the isolated CSV. |
+
+From `farmer-registry/performance-testing/locust/celery`:
+
+```bash
+./k8s/blend.sh 1
+./k8s/blend.sh 2
+./k8s/blend.sh 3
+```
+
+The script starts beat and the workers, then leaves. The CSV is written
+inside pod `celery-collect` at `/csv/blend-workers-<workers>.csv`, one sample
+a minute, until every included case has `pending` and `in_progress` at 0.
+Copy it while that pod is still up:
+
+```bash
+kubectl -n perftest cp celery-collect:/csv/blend-workers-1.csv results/pod-1/blend/blend-workers-1.csv
+```
+
+Beat and workers stay up after the script returns. Scale both back to 0 when
+the copy is done.

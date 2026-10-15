@@ -233,6 +233,13 @@ Row counts and table/index sizes from `psql`, captured per tier in
 | `primary` (10M target) | 10,150,268 | 203,079,145 | 79.6 GB | 59.1 GB | 139.3 GB |
 | `stretch` (50M target) | 50,000,264 | 1,000,170,349 | 393.9 GB | 318.8 GB | 715.1 GB |
 
+Raw `psql` output behind the table above:
+
+- [`primary-volume/table_sizes.txt`](https://github.com/OpenG2P/farmer-registry/blob/performance-test/performance-testing/seeding/primary-volume/table_sizes.txt)
+- [`primary-volume/index_sizes.txt`](https://github.com/OpenG2P/farmer-registry/blob/performance-test/performance-testing/seeding/primary-volume/index_sizes.txt)
+- [`stretch-volume/table_sizes.txt`](https://github.com/OpenG2P/farmer-registry/blob/performance-test/performance-testing/seeding/stretch-volume/table_sizes.txt)
+- [`stretch-volume/index_sizes.txt`](https://github.com/OpenG2P/farmer-registry/blob/performance-test/performance-testing/seeding/stretch-volume/index_sizes.txt)
+
 Farmer rows land slightly above each tier's round target (10M/50M) for the
 same reason noted above — the household loop overshoots its last draw, not
 a bug. Growth from `primary` to `stretch` (5× the farmer target) is ~5.13×

@@ -2,7 +2,7 @@
 
 ## Methodology
 
-One scenario at a time: beat held at 1 pod, worker pods stepped 1 → 2 → 3, against a fixed backlog re-seeded to `PENDING` before each worker count (test-scenarios.md §3/§6). A collector counts `pending`/`in_progress`/`done` on that scenario's status column once a minute until both `pending` and `in_progress` reach 0, or minute 30. There is no latency SLO and no PASS/FAIL gate here — unlike the staff-api tiers, this is a pure drain-time and scaling measurement (test-scenarios.md §5).
+One scenario at a time: beat held at 1 pod, worker pods stepped 1 → 2 → 3, against a fixed backlog re-seeded to `PENDING` before each worker count (test-scenarios.md §3/§6). A collector counts `pending`/`in_progress`/`done` on that scenario's status column once a minute until both `pending` and `in_progress` reach 0, or minute 30. There is no latency SLO and no PASS/FAIL gate here — unlike the staff-api tiers, this is a pure drain-time and scaling measurement (test-scenarios.md §5). One additional **Blended** run breaks that one-at-a-time shape: all 14 measured scenarios ran simultaneously against the same beat and worker pods, to see how they contend for the same resources together (see Measurements below).
 
 ## Data Seeding
 
@@ -18,15 +18,18 @@ All scenarios ran against the register already seeded to the **`stretch`** volum
 | `outgest_data_publish` | 50,000 rows |
 | `intake_register_ingest` | 10,000 rows |
 | `functional_id_allocation` | 50,000 rows |
+| `dedup_intake_vs_register` | 40,000 rows |
+| `dedup_intake_vs_intake` | 40,000 rows |
+| `dedup_cr_vs_register` | 40,000 rows |
 | `score_compute` | 100,000 rows |
 | `completion_score` | 100,000 rows |
 | `import_file_process` | 20,000 records (2 files × 10,000) |
 
-50,000 is the single most common value (4 of 11 scenarios), not the backlog for every scenario — `score_compute`/`completion_score` ran at 100,000, the three transformation/intake-sized queues at 10,000, `ingest_data` at 40,000, and `import_file_process` at 20,000 records across 2 files.
+50,000 is the single most common value (4 of 14 scenarios), not the backlog for every scenario — `score_compute`/`completion_score` ran at 100,000, `ingest_data` and the three dedup scenarios at 40,000, the three transformation/intake-sized queues at 10,000, and `import_file_process` at 20,000 records across 2 files. A fourth dedup scenario, `dedup_cr_vs_cr`, has **no backlog run yet** — see Measurements § Deduplication. The separate Blended run (Measurements, below) used its own uniform 10,000-row backlog per scenario instead of these isolated-run sizes.
 
 ## Test Environment
 
-Celery beat and worker both run as a single container, image `vin0dkhichar/ofr-staff-celery:performance-test`, namespace `perftest`, on the same shared `m5a.4xlarge` (16 vCPU/64 GB) compute node every other service runs on (`environment-topology.md`). Beat pod: 2 vCPU / 4 GB, `requests == limits`, 1 replica throughout. Worker pod: 2 vCPU / 4 GB, `requests == limits`, `--concurrency=2` (2 processes/pod), stepped 1 → 2 → 3 replicas per scenario. PostgreSQL is the same host-based instance (`172.29.2.191`) the staff-api tests used.
+Celery beat and worker both run as a single container, built from the `performance-test` branch, namespace `perftest`, on the same shared `m5a.4xlarge` (16 vCPU/64 GB) compute node every other service runs on (`environment-topology.md`). Beat pod: 2 vCPU / 4 GB, `requests == limits`, 1 replica throughout. Worker pod: 2 vCPU / 4 GB, `requests == limits`, `--concurrency=2` (2 processes/pod), stepped 1 → 2 → 3 replicas per scenario. PostgreSQL is the same host-based instance (`172.29.2.191`) the staff-api tests used.
 
 ## Measurements
 
@@ -102,6 +105,43 @@ Beat frequency and per-scenario pickup size below were read directly off the liv
 |---:|---:|---:|
 | 2,396 | 3,680 | 4,217 |
 
+### Deduplication
+
+**`dedup_intake_vs_register`**
+
+- CPU peak — beat: ~0.85 cpu; worker: ~1.1 cpu (of a 2-vCPU pod limit)
+- Memory peak — beat: ~205 MiB; worker: ~382 MiB (of a 4 GiB pod limit)
+- Beat frequency: 10s
+- Beat pickup size: 3,000 tasks/tick
+
+| Rate/min — Pod-1 | Rate/min — Pod-2 | Rate/min — Pod-3 |
+|---:|---:|---:|
+| 1,758 | 2,400 | 3,399 |
+
+**`dedup_intake_vs_intake`**
+
+- CPU peak — beat: ~0.85 cpu; worker: ~1.25 cpu (of a 2-vCPU pod limit)
+- Memory peak — beat: ~190 MiB; worker: ~382 MiB (of a 4 GiB pod limit)
+- Beat frequency: 10s
+- Beat pickup size: 3,000 tasks/tick
+
+| Rate/min — Pod-1 | Rate/min — Pod-2 | Rate/min — Pod-3 |
+|---:|---:|---:|
+| 1,591 | 2,885 | 3,155 |
+
+**`dedup_cr_vs_register`**
+
+- CPU peak — beat: ~1.0 cpu; worker: ~0.65 cpu (of a 2-vCPU pod limit)
+- Memory peak — beat: ~191 MiB; worker: ~334 MiB (of a 4 GiB pod limit)
+- Beat frequency: 10s
+- Beat pickup size: 3,000 tasks/tick
+
+| Rate/min — Pod-1 | Rate/min — Pod-2 | Rate/min — Pod-3 |
+|---:|---:|---:|
+| 2,274 | 3,981 | 5,580 |
+
+**`dedup_cr_vs_cr`** — **not yet measured.** `g2p_register_change_requests.deduplication_change_request_status` matches one change request's JSON payload against every other *pending* change request record by record — there's no indexed/structured column this can run against as a set-based SQL comparison, unlike the three dedup scenarios above. That makes a full-backlog run extremely time-consuming, so no backlog has been drained for this scenario at any worker-pod count yet. The beat producer is fully configured (`REGISTRY_CELERY_BEAT_DEDUPLICATION_BEAT_PRODUCER_FREQUENCY` = 10s, shared with the other three; its own `..._NO_OF_TASKS` = 3,000) — this is an open measurement gap, not a missing feature.
+
 ### Intake ingest
 
 **`intake_register_ingest`**
@@ -165,4 +205,14 @@ Beat frequency and per-scenario pickup size below were read directly off the liv
 |---:|---:|---:|
 | 1,398 | — | — |
 
-## Conclusion
+### Blended (all 14 scenarios concurrently)
+
+A different run shape: one beat pod and N worker pods run all 14 measured scenarios at once, each seeded to a uniform 10,000-row backlog (not the isolated-run sizes in Data Seeding above). Not rate-comparable to the per-scenario tables above — see `final-report.md` § Blended for the full per-scenario breakdown.
+
+| Pod-Scale | Window | Finished | Did not finish within window | CPU peak (worker) |
+|---|---:|---|---|---|
+| Pod-1 | 112 min | 10 / 14 | `change_request_ingest`, `ingest_data`, `intake_register_ingest`, `outgest_data_publish` (all ≥99.7% done) | ~2.0 cpu, oscillating peaks |
+| Pod-2 | 64 min | 10 / 14 | same 4 (all ≥98.6% done) | **~2.1 cpu, sustained flatline for the last ~10 min** — the clearest CPU saturation in this whole test cycle; worker memory jumps to ~950 MiB–1 GiB at the same time |
+| Pod-3 | 73 min | 10 / 14 | same 4 — but `change_request_ingest`/`ingest_data` are only 88–89% done here, far behind their pod-1/pod-2 showing | ~2.0 cpu, oscillating peaks (not sustained) |
+
+**Headline finding:** `change_request_ingest` and `ingest_data` — which share one beat producer — are the only scenarios that fail to fully drain at *every* pod-scale, and get dramatically worse at pod-3 (1,166 and 1,091 rows still `in_progress` out of 10,000) despite scaling cleanly in their own isolated runs. Pod-3's overall window (73 min) is longer than pod-2's (64 min) for exactly this reason. `import_file_process`'s pod-3 row has a data artifact (starts already 29% done) and should be disregarded — see `final-report.md` § Blended for detail.
