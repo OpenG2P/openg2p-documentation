@@ -425,7 +425,7 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
       "identifiers": [{"@type": "Identifier", "identifier_type": "UIN", "identifier_value": "946053125409"},
                       {"@type": "Identifier", "identifier_type": "FARMER_ID", "identifier_value": "FR-0007"}],
       "location": {"…": "…"},
-      "main_crops": ["CROP_TEFF", "CROP_WHEAT"]
+      "main_crops": ["CROP_TEFF", "CROP_BREAD_WHEAT"]
     },
     "land": {"parcels": [{"…": "…"}, {"…": "…"}], "parcel_count": 2, "total_size": 1.4},
     "crops": {

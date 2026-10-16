@@ -621,6 +621,7 @@
   * [TODOs & Open Items](open-agri-stack/open-items/README.md)
     * [Service Guide Notes](open-agri-stack/open-items/service-guide-notes.md)
     * [Activity Register UI Configuration](open-agri-stack/open-items/activity-register-ui-configuration.md)
+    * [Catalogue Content (TODO)](open-agri-stack/open-items/catalogue-content.md)
 
 ## Platform
 

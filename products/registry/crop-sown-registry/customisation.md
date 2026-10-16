@@ -30,13 +30,14 @@ The registry keeps **no lists**. Every coded field is checked against Master Dat
 
 | Used for | Lists |
 | --- | --- |
-| The crop season | `CROP_COMMODITY`, `CROP_SEASON`, `SEED_VARIETY` |
+| The crop season | `CROP_COMMODITY` (each crop in a `CROP_CATEGORY`), `CROP_SEASON`, `SEED_VARIETY` (each variety names its crop) |
 | Plan and land preparation | `CROPPING_SYSTEM`, `LAND_PREPARATION_METHOD`, `IRRIGATION_SOURCE`, `IRRIGATION_METHOD`, `SOIL_FERTILITY` |
 | Sowing | `SEED_TYPE`, `SEED_SOURCE`, `SOWING_METHOD`, `FERTILIZER_TYPE`, `FARM_MACHINERY` |
 | Field visits, pests and damage | `CROP_GROWTH_STAGE`, `CROP_CONDITION`, `INFESTATION_TYPE`, `INFESTATION_AGENT`, `INFESTATION_SEVERITY`, `PEST_CONTROL_ACTION`, `CROP_DAMAGE_CAUSE` |
 | Clusters | `CROP_COMMODITY`, `AGRO_ECOLOGICAL_ZONE`, `WATER_SOURCE` |
 
 * **Codes carry their list's prefix:** `CROP_TEFF`, `SEASON_MEHER`, `SEV_HIGH`.
+* **Crops follow the Ministry of Agriculture's crop variety list:** one `CROP_COMMODITY` entry per MoA crop (e.g. `CROP_BREAD_WHEAT`, `CROP_DURUM_WHEAT`), with its category and scientific name as typed attributes, plus `CROP_MALT_BARLEY` and `CROP_OTHER`. The former `CROP_WHEAT` is retired.
 * **Adding a code** (a new crop, a new pest) is a change to the pack or in Master Data's admin UI. No registry change.
 * **A variety** not in `SEED_VARIETY` is accepted with a warning. Every other list is strict: an unknown code is rejected.
 * **Without the agriculture domain,** every activity is rejected on its crop code.

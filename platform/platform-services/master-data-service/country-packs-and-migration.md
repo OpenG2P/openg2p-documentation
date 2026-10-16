@@ -83,6 +83,13 @@ already published** (see
 * to recode in a pack, give the new code a **new `value_id`** and drop the old
   entry. The loader then retires the old entry and adds the new one.
 
+Typed attributes are checked when a draft is submitted and approved, not when the
+loader writes it. An entry whose `x-list-ref` names a code that exists only in
+another dataset's draft cannot be approved until that draft is published. Approve
+the referenced dataset first: for ETH, `CROP_COMMODITY` before `SEED_VARIETY`.
+A dataset that is new in the pack (such as `CROP_CATEGORY`) is published as
+version 1 by the same load, so references to it resolve at once.
+
 The drafts are left as **`DRAFT`, not submitted**. Someone reviews them (the diff
 against the base version), submits them, and they are approved like any other
 change (see [Change control and approvals](change-control.md)). Nothing a consumer
