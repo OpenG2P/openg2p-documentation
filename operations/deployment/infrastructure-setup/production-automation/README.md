@@ -27,13 +27,14 @@ The source code lives in the [`openg2p-deployment`](https://github.com/OpenG2P/o
 
 ## How it works (in brief)
 
-Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher) are reached only over the Wireguard VPN (the **private channel**); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
+Three role-specialised VMs — **Reverse Proxy** (Nginx + optional Wireguard), **Compute** (RKE2 Kubernetes + Istio + Rancher + monitoring + logging), and **Storage** (NFS + host PostgreSQL). Admin tools (Rancher) are reached over the **private channel** (OpenG2P Wireguard by default, or a customer VPN when `wireguard: false`); citizen-facing services use the **public channel**. For the architecture detail, see [Deployment Architecture → Production — Minimum](../../../../deployment/openg2p-deployment-model.md#production-minimum) and [Channel separation](../../../../deployment/openg2p-deployment-model.md#channel-separation-public-vs-private-access).
 
 **What gets installed and configured:**
 
 * RKE2 single-control-plane Kubernetes, Istio, Rancher (cluster manager, **local authentication**), Prometheus + Grafana, OpenTelemetry + Grafana Loki (cluster-wide logging) — all on the Compute node via Helmfile.
 * Rancher uses local auth — admins are created directly in Rancher (no SSO). The OpenG2P apps' Keycloak is installed separately, per environment.
-* Wireguard VPN server + N peer configs on the RP; Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
+* **Wireguard** VPN server + N peer configs on the RP when `wireguard: true` (default). Set `wireguard: false` to skip OpenG2P Wireguard if the customer already has a VPN into the private subnet — see [Skip OpenG2P Wireguard](./#skip-openg2p-wireguard-customer-vpn).
+* Nginx admin server blocks bound to the RP's private IP using **customer-supplied TLS certs** (validated locally before push); firewall keeps admin 443 off the public internet.
 * NFS server + host PostgreSQL 16 on the Storage node.
 * **One OpenG2P environment scaffolding** (default name `prod`) — namespace, Rancher Project, Istio Gateway, OpenG2P Helm repo registered in Rancher (`openg2p`), and the external-PostgreSQL secret. On by default; toggle with `install_environment`. **Commons charts are not installed here** — install them from the **Rancher UI only**. See [The environment stage](./#the-environment-stage).
 
@@ -48,8 +49,27 @@ Three role-specialised VMs — **Reverse Proxy** (Nginx + Wireguard), **Compute*
 
 All prerequisites — compute, DNS, TLS certificate, server access, firewall — are listed on the [**Prerequisites & Procurement**](../../prerequisites-procurement.md) page. Everything in that checklist must be in place before you run the install. Two install-time specifics not in the procurement page:
 
-* **Operator's workstation** must have the required tooling installed — bash 4+, ssh, rsync, openssl, git, and (for the post-install login) a Wireguard client. See [**Operator's workstation**](../provisioning.md#operators-workstation) on the Provisioning page for the canonical list, supported OSes (Linux / macOS / WSL2), and per-OS install commands.
+* **Operator's workstation** must have the required tooling installed — bash 4+, ssh, rsync, openssl, git, and (for the post-install login) a Wireguard client **or** the customer's VPN client when `wireguard: false`. See [**Operator's workstation**](../provisioning.md#operators-workstation) on the Provisioning page for the canonical list, supported OSes (Linux / macOS / WSL2), and per-OS install commands.
 * **Single-NIC RP** is the only supported topology — channel separation is enforced by the firewall + Nginx allowlist, not by physical interfaces. Existing two-NIC RPs should leave the secondary detached.
+
+## Skip OpenG2P Wireguard (customer VPN)
+
+When the customer already has a VPN that reaches the private subnet, set in `prod-config.yaml`:
+
+```yaml
+wireguard: false
+```
+
+If you use AWS provisioning, set the same key in `aws/aws-config.yaml` so the RP security group does **not** open UDP 51820.
+
+| With `wireguard: true` (default) | With `wireguard: false` |
+| -------------------------------- | ----------------------- |
+| Installs Wireguard on the RP, generates peer configs, opens UDP `wg_port` | Skips Wireguard packages, peers, and UDP |
+| Admin Nginx / compute ufw allow `wg_subnet` + `private_subnet` | Admin allowlists use `private_subnet` only |
+| Day-2: import `artifacts/peer1.conf` | Day-2: connect the **customer VPN**, then open Rancher / use `kubectl` |
+| Backup configs group backs up `/etc/wireguard` | Wireguard config backup/restore is skipped |
+
+Environment scaffolding still uses an SSH tunnel (Wireguard not required). The customer's VPN must reach the RP private IP (Rancher hostname) and the compute private IP (kubectl API) for day-2 operations.
 
 ## Validate before you install
 
@@ -124,6 +144,11 @@ compute_private_ip: ""
 storage_private_ip: ""
 private_subnet:     ""
 
+# [USER] OpenG2P Wireguard on the RP (default true). Set false if the
+# customer already has a VPN into private_subnet — see "Skip OpenG2P Wireguard".
+wireguard: true
+# wg_subnet / wg_port / wg_peers / wg_endpoint — used only when wireguard: true
+
 # [USER, optional] Push a DNS resolver to every WG peer. Useful when admin
 # hostnames are resolvable only via the customer's internal DNS (split-
 # horizon DNS, AWS Route53 private zone, etc.). The resolver IP must live
@@ -131,6 +156,7 @@ private_subnet:     ""
 #   On-prem example:  wg_peer_dns: "10.0.0.10"     (internal DNS server)
 #   AWS example:      wg_peer_dns: "172.31.0.2"    (VPC DNS — <vpc-base>.2)
 # Leave blank to skip the push (laptop uses its own resolver or /etc/hosts).
+# Ignored when wireguard: false.
 wg_peer_dns: ""
 # ... and corresponding *_ssh_host, *_ssh_user, *_ssh_key, admin_cidr
 
@@ -657,7 +683,7 @@ The orchestrator runs phases in this order. Total runtime: 25–40 minutes.
 | 0 | All 3 nodes   | Preflight: OS, CPU, RAM, disk, internet, IP-matches-config (in parallel)                                                                                                                           |
 | 1 | Storage       | apt basics, ufw, NFS server export, host PostgreSQL install (no app DBs yet)                                                                                                                       |
 | 2 | Compute       | apt basics, kubectl/helm/istioctl/helmfile, ufw, NFS client mount, RKE2 server, NFS CSI default StorageClass                                                                                       |
-| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs (with optional `wg_peer_dns` push), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip`                       |
+| 3 | Reverse Proxy | apt basics, ufw, Wireguard server + peer configs when `wireguard: true` (skipped when `false`), customer cert ingest + validate + install, Nginx server blocks bound to `rp_private_ip`                       |
 | 4 | Compute       | helmfile sync — Istio, Rancher (local auth, NFS-backed embedded Postgres), monitoring, logging                                                                                                     |
 | 5 | Laptop        | Environment scaffolding — Helm ClusterRepo (`openg2p`), namespace, Rancher Project, Istio Gateway, external-PG secret. Uses SSH tunnel to compute (**Wireguard not required**). Commons is **not** installed here. |
 
