@@ -104,7 +104,7 @@ Registry adapter's behaviour where it narrows or extends that structure.
 | `message.transaction_id` | Caller id copied into the search response. It is not on the async ACK. |
 | `search_request[].reference_id` | Caller id copied into the matching response item. |
 | `search_criteria.reg_type` | Register mnemonic, such as `Farmer`. This selects the table. |
-| `search_criteria.reg_record_type` | DCI output label. It does not select the table. |
+| `search_criteria.reg_record_type` | DCI output label. It does not select the table. On an activity register it selects activities, current state or aggregates; see [Activity Register Design](../activity-register.md#sharing-through-partner-search). |
 | `search_criteria.query_type` | Decoder name. |
 | `search_criteria.sort` | Ordered sort keys. Core applies every entry. |
 | `search_criteria.pagination` | Root-register page. Defaults to page 1 and size 10 when omitted. |

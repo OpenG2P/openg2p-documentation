@@ -37,7 +37,7 @@ Rules: [Helm & Docker versioning and CI](https://docs.openg2p.org/operations/dep
 ## 2. Load the real country pack
 
 Same mechanism as the sandbox, different content — the real administrative
-hierarchy and code lists, and **no sample people**:
+hierarchy and datasets, and **no sample people**:
 
 ```yaml
 geoSeed:
@@ -50,7 +50,7 @@ geoSeed:
 ```
 
 {% hint style="warning" %}
-Load the hierarchy and code lists **before** the registry. Records reference
+Load the hierarchy and datasets **before** the registry. Records reference
 administrative units and codes; if either arrives later, existing records point at
 nothing — maps stay empty and coded fields show no value.
 {% endhint %}
@@ -80,7 +80,7 @@ analytics:
 Two switches are load-bearing and must stay **on**:
 
 * **`dbSeed.enabled`** — without the metadata SQL you have tables but no
-  registers or screens. It creates no registrant data. (Code lists are not part of
+  registers or screens. It creates no registrant data. (Datasets are not part of
   it — they come from Master Data; see step 2.)
 * **`loadTemplates`** — without the DCI templates in MinIO every record fails to
   render, and a DCI search returns an empty `200` rather than an error.

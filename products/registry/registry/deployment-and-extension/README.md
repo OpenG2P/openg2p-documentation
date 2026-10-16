@@ -56,7 +56,7 @@ All Docker images and the Helm chart are built by a **single CI workflow** and c
 
 * [**Packaging & the reference registry**](packaging-and-reference-registry.md) — the images, the single chart, the reference registry, and how the domain model is selected at runtime.
 * [**Extending into a new registry**](extending-into-a-new-registry.md) — what a domain registry owns versus inherits, why extension rather than a fork, and how one image serves several registries.
-* [**Country data & seeding**](country-data-and-seeding.md) — country packs, code lists, the seeding switches, and what an empty production install looks like.
+* [**Country data & seeding**](country-data-and-seeding.md) — country packs, datasets, the seeding switches, and what an empty production install looks like.
 * [**Testing & the sanity suite**](testing-and-sanity-suite.md) — the two-part test model (extension-independent vs field-specific) and how to extend the tests for your registry.
 
 {% hint style="success" %}

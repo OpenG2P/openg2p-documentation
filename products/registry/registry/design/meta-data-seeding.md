@@ -46,7 +46,7 @@ farmer-registry/                      ← the registry's own repo
 │       └── sample_data/
 ```
 
-Each variant defines its own set of registers, UI sections, and sample records. Code lists are not among them: registries read them live from Master Data, which loads them from the country pack — see [Country data & seeding](../deployment-and-extension/country-data-and-seeding.md#code-lists). When adding a new variant, create a new extension folder following the same structure.
+Each variant defines its own set of registers, UI sections, and sample records. Datasets are not among them: registries read them live from Master Data, which loads them from the country pack — see [Country data & seeding](../deployment-and-extension/country-data-and-seeding.md#datasets). When adding a new variant, create a new extension folder following the same structure.
 
 ## Docker image
 

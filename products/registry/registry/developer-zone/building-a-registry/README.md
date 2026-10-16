@@ -47,7 +47,7 @@ model.
 | A **domain model** on paper — which registers, which fields, which relationships | Phase 1 step 1 turns this into code; guessing here is expensive to undo |
 | A **GitLab project** under your group | CI, images and the chart are published from it |
 | Access to an **OpenG2P environment** with commons-services | Needed only from Phase 2 |
-| A **country pack** (or the intent to use the sample one) | Decides what geography and code lists your registry carries |
+| A **country pack** (or the intent to use the sample one) | Decides what geography and datasets your registry carries |
 
 ## Standards this follows
 

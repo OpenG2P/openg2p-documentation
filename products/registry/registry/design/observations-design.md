@@ -311,7 +311,7 @@ Write path: one transaction inserts one `g2p_observations` row and one `g2p_obse
 
 `schema_version` on `G2PObservationTypeDefinition` increments on any schema change. `schema_version` on `G2PObservation` stores the version active at capture time.
 
-Enumerated payload fields reference `G2PAttribute`/`G2PAttributeValue` code lists (`core/.../models/g2p_attributes.py`) where an equivalent code list already exists (e.g. `commodity_code` reuses the same list as `G2PCrop.commodity`).
+Enumerated payload fields reference `G2PAttribute`/`G2PAttributeValue` datasets (`core/.../models/g2p_attributes.py`) where an equivalent dataset already exists (e.g. `commodity_code` reuses the same list as `G2PCrop.commodity`).
 
 Reportable payload keys per `observation_type` are declared in `reporting.yaml`/`reporting_views.sql` (farmer-registry), one entry per key that a materialized reporting view extracts.
 

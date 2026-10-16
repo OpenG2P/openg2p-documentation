@@ -193,11 +193,11 @@ The demography CSV is **not uniformly JSON in its JSON columns** —
 address. A `json.loads` over both raises and takes the whole load down.
 {% endhint %}
 
-## 9. Code lists and enums must agree
+## 9. Datasets and enums must agree
 
 A coded field's dropdown reads its options **live from Master Data** — the list
 named by its `attribute_id`, which MDS loaded from the country pack. The registry
-keeps no copy and your extension ships no code-list SQL. But the codes still have
+keeps no copy and your extension ships no dataset SQL. But the codes still have
 to agree with several things you *do* own:
 
 | Divergence | Symptom |

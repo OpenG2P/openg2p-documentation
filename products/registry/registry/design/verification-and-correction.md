@@ -28,7 +28,7 @@ The registry's job is that its records are **authentic, and verified where that 
 | | Entity register | Activity register |
 | --- | --- | --- |
 | **Verification** | Rows in `g2p_register_verifications`, each tied to a change request or an intake submission (`/verifications/get_verifications`, `add_verification`) | Columns on the activity: `verification_status` (`NOT_REQUIRED`, `SUBMITTED`, `VERIFIED`, `REJECTED`), `verified_by`, `verified_at`, `verification_remarks`. Switched on per activity type (`requires_verification`); `verify_activity` and `reject_activity` |
-| **Approval of changes** | AWE, on change requests and intake submissions | None: appends and corrections are governed by permissions (`activity:correct`) and rules |
+| **Approval of changes** | AWE, on change requests and intake submissions | None: appends and corrections are governed by permissions (`activity:create`, `activity:correct`) and rules |
 | **Corrections** | A change request: a new version, the old one kept in history. Nothing marks it as a correction rather than a change | Supersede or void, with a reason |
 | **Disputes** | None | None |
 | **Certificates** | Verifiable credentials from the agent portal ([VC issuance](vc-issuance.md)) | None |

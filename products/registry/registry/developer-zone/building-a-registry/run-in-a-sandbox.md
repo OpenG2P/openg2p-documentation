@@ -42,7 +42,7 @@ diagnose from.
 ## 2. Load a country pack into Master Data
 
 Do this **before** installing the registry. A country pack gives the deployment
-its administrative hierarchy, its **code lists** — the options of every coded
+its administrative hierarchy, its **datasets** — the options of every coded
 dropdown — and, optionally, sample people who live at real addresses in it.
 
 Enable them on the Master Data chart (`masterData.geoSeed` when it is installed
@@ -53,7 +53,7 @@ geoSeed:
   countryPack: ETH      # a directory under openg2p-data/packs — see the note below
   load:
     geo: true           # administrative units — required
-    codelists: true     # code lists — required: dropdowns read them live
+    codelists: true     # datasets — required: dropdowns read them live
     samples: true       # sample individuals and households
   domains: []           # domain lists your registry needs, e.g. [agriculture]
 ```
@@ -62,13 +62,13 @@ geoSeed:
 **Without a hierarchy in MDS, bulk generation refuses to run and maps break.**
 Every generated record must point at a real administrative unit.
 
-**Without code lists in MDS, every coded dropdown is empty.** A list under a pack's
+**Without datasets in MDS, every coded dropdown is empty.** A list under a pack's
 `domains/` (for example `agriculture`) is loaded only when that domain is named in
 `domains` — a Farmer Registry needs `[agriculture]` — and naming a domain the pack
 lacks fails the Master Data seed Job.
 
-**Pick a pack that carries code lists.** The chart's default, the fictitious `XKM`,
-is geography only — no code lists and no sample people — so a registry sandboxed
+**Pick a pack that carries datasets.** The chart's default, the fictitious `XKM`,
+is geography only — no datasets and no sample people — so a registry sandboxed
 on it cannot fill in a single coded field. `ETH` carries both; it is real
 geography under CC BY-IGO, so attribute it wherever its boundaries are shown.
 

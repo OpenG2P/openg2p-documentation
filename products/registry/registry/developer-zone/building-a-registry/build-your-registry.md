@@ -27,7 +27,7 @@ Write this down before touching code — it drives everything after it.
 1. **List your registers.** A register is a top-level entity a staff user searches for and raises change requests against (Farmer, Individual, Household). Things that only ever hang off a register — a land parcel, a crop — are **sub-registers**, not registers.
 2. **Give each a mnemonic** — one CamelCase word (`Farmer`, `IndividualLand`). It becomes the class-name suffix and the DCI `reg_type`. Changing it later means touching code, SQL and templates.
 3. **Freeze a UUID per register** now. Metadata rows reference each other by these.
-4. **List the fields per register**, marking which are code lists (dropdowns) and which are free text. For each code list, note the **Master Data list** it uses (its `attribute_id` in the country pack) — if the pack does not carry it, it is added to the pack, not to your extension.
+4. **List the fields per register**, marking which are datasets (dropdowns) and which are free text. For each dataset, note the **Master Data list** it uses (its `attribute_id` in the country pack) — if the pack does not carry it, it is added to the pack, not to your extension.
 5. **Decide which registers mint functional IDs.** Only those get `functional_id_generation_required = TRUE`, an ID pool in the chart (`registry.idgenerator.idGenerator.appConfig.idTypes.<mnemonic-lowercase>`) and a branch in `id_generator/`. Sub-registers reached through a parent normally need none of the three.
 
 A single-register registry is a perfectly good shape — do not add a household register because the worked examples have one. Unsure whether something is a register: [Registry vs Register](concepts/registry-vs-register.md).
@@ -93,7 +93,7 @@ In `src/openg2p_registry_<domain>_extension/`:
 3. **`register_domain/services/`** — `G2PRegisterDomainService{Mnemonic}` per register.
 4. **`register_domain/factory/`** — map each mnemonic to your classes. Alongside it, `register_domain/id_generator/` returns the prefix/suffix for each register that mints functional IDs. It branches on the **lowercased mnemonic**, and those branches must match the ID pools you declare in the chart — see [Functional-ID pools](build-your-registry.md#functional-id-pools) in step 5.
 5. **`meta_data/register-metadata/`** — the seed SQL, in this order: register definitions → sections → schemas → UI tabs → tab-sections → intake equivalents.
-6. **Dropdowns** — bind each coded field to its Master Data list in the section JSON (`widget-data-source` with an `attribute_id`). The extension ships **no code-list SQL**; the options come from Master Data live. See [Contracts that fail silently §9](contracts-that-fail-silently.md#id-9.-code-lists-and-enums-must-agree).
+6. **Dropdowns** — bind each coded field to its Master Data list in the section JSON (`widget-data-source` with an `attribute_id`). The extension ships **no dataset SQL**; the options come from Master Data live. See [Contracts that fail silently §9](contracts-that-fail-silently.md#id-9.-datasets-and-enums-must-agree).
 7. **`templates/`** — your DCI templates.
 8. **`awe_meta_data/`** — your approval policy and stages.
 
@@ -173,7 +173,7 @@ COPY docker/db-seed/load_sample_data.py /seed/load_sample_data.py
 COPY docker/db-seed/upload_images.py    /seed/upload_images.py
 ```
 
-Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `upload_templates.py`, `mds_client.py`. There is no code-list or geo loader — the registry reads code lists and geo levels from Master Data live, and a register's geo dropdowns are built from MDS's levels when the form loads. Your loaders read Master Data through `mds_client.py` (the MDS API), never its database; seeding writes only your registry's own DB.
+Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`, `upload_templates.py`, `mds_client.py`. There is no dataset or geo loader — the registry reads datasets and geo levels from Master Data live, and a register's geo dropdowns are built from MDS's levels when the form loads. Your loaders read Master Data through `mds_client.py` (the MDS API), never its database; seeding writes only your registry's own DB.
 
 #### Where sample people come from
 
@@ -181,7 +181,7 @@ This is the decision that most often gets made wrong, because both sources work 
 
 | Source                          | Table / file                                                            | Use it                                                                                                                                 |
 | ------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Master Data country samples** | MDS `/samples` API (via `mds_client.py`)                                 | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and code lists |
+| **Master Data country samples** | MDS `/samples` API (via `mds_client.py`)                                 | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and datasets |
 | Shared demography CSV           | `/openg2p-data/demography/individuals.csv`                              | Fallback only                                                                                                                          |
 
 **Read Master Data first and fall back to the CSV**, exactly as the reference registries do. Your loader's job is to add _your_ fields to the country's people, not to invent a second population.
@@ -396,7 +396,7 @@ COPY test/sanity/tests/test_e2e_change_request.py /app/tests/test_e2e_change_req
 | `crTabId`, `crSectionId`     | A real, **editable** section of yours, or the change-request test's write is rejected                                                                            |
 | `searchText`                 | The injected record's `functional_record_id` — must equal what your `data_seed.py` writes                                                                        |
 
-**Also write the repository guards.** The sanity suite proves a _deployed_ registry works and needs a cluster, commons-services and Keycloak admin. A second, much cheaper set proves the _repository_ is coherent — field names resolving, code lists existing, scopes matching the template, seed SQL re-runnable — and runs in CI on every push, before anything is published. Those are the checks that catch the silent failures listed in step 3.
+**Also write the repository guards.** The sanity suite proves a _deployed_ registry works and needs a cluster, commons-services and Keycloak admin. A second, much cheaper set proves the _repository_ is coherent — field names resolving, datasets existing, scopes matching the template, seed SQL re-runnable — and runs in CI on every push, before anything is published. Those are the checks that catch the silent failures listed in step 3.
 
 **Done when:**
 

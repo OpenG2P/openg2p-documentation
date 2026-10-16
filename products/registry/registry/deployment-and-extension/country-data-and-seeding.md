@@ -1,6 +1,6 @@
 ---
 description: >-
-  How a registry gets its country's geography and code lists from Master Data,
+  How a registry gets its country's geography and datasets from Master Data,
   and the three kinds of data a registry install can create
 ---
 
@@ -29,7 +29,7 @@ with, and adapts:
 | What the registry takes | Held in MDS as (read via its API) | When | Effect |
 |---|---|---|---|
 | The geo hierarchy | `g2p_geo_levels`, `g2p_geo_level_values` | **Live**, as a form loads and is filled | Address dropdowns match the country's levels, however many there are |
-| The code lists | `g2p_attributes`, `g2p_attribute_values` | **Live**, as a form is filled | Gender, education, water source… are the country's own |
+| The datasets | `g2p_attributes`, `g2p_attribute_values` | **Live**, as a form is filled | Gender, education, water source… are the country's own |
 | The sample people | `g2p_sample_individuals`, `g2p_sample_households` | At install, by the sample loader | Demo records that belong to the country |
 
 This is what lets **one registry image serve any country**. Changing country is a
@@ -46,10 +46,10 @@ country than this deployment was set up for. Left empty (the default), no check 
 made. Nothing in the registry chooses the country — only MDS does.
 {% endhint %}
 
-Geography and code lists are **not copied** into the registry, and the registry
+Geography and datasets are **not copied** into the registry, and the registry
 never reads MDS's database: the staff portal asks the MDS API each time a form
 needs them, and so does the coded-value check
-when it is switched on (see [Code lists](#code-lists)). MDS is therefore a
+when it is switched on (see [Datasets](#datasets)). MDS is therefore a
 **runtime dependency for data entry** — while it is unavailable, coded dropdowns
 have no options. Records already stored are unaffected; they hold the codes.
 
@@ -81,7 +81,7 @@ generator and no country content.
 | In the platform image | What it is |
 |---|---|
 | `entrypoint.sh` | Runs the ordered steps, entirely from environment variables |
-| `mds_client.py` | Small client for the Master Data API, used by seed scripts that need geography or code lists |
+| `mds_client.py` | Small client for the Master Data API, used by seed scripts that need geography or datasets |
 | `upload_templates.py` | Jinja templates → object store (Garage) |
 
 There is deliberately **no `load_sample_data.py` and no bulk generator in the
@@ -103,7 +103,7 @@ in the individual registry:
 | | Registry Platform | NSR / Farmer Registry |
 |---|---|---|
 | Seeding machinery, hook order, switches | **yes** | inherited |
-| Code lists | **none** — read live from Master Data | **none** — read live from Master Data |
+| Datasets | **none** — read live from Master Data | **none** — read live from Master Data |
 | Sample-data loader | **none** | **its own** |
 | Sample content (the domain overlay) | **none** | **its own** |
 | Bulk data generator | **none** | **its own** |
@@ -115,7 +115,7 @@ So a bare platform install creates no sample data, no bulk data, no reporting vi
 and no dashboards. Each registry defines all four, because each writes its own
 tables and its dashboards read its own views.
 
-## Code lists
+## Datasets
 
 ### Where they are defined
 
@@ -126,8 +126,8 @@ registries need under `packs/<country>/domains/<domain>/` (for example
 `domains/agriculture/` for a Farmer Registry). MDS's own seed Job loads them into
 its `g2p_attributes` and `g2p_attribute_values` when it installs.
 
-A registry extension ships **no** code-list SQL, and the registry keeps no copy of
-the lists: there is no code-list table in the registry database.
+A registry extension ships **no** dataset SQL, and the registry keeps no copy of
+the lists: there is no dataset table in the registry database.
 
 ### How a registry uses them
 
@@ -200,7 +200,7 @@ These are `registry.dbSeed.*`, **not** `global.*`. The db-seed Job reads
 ### Seeding never touches Master Data's database
 
 Seeding writes only the registry's own database. A seed script that needs
-geography or code lists — a sample loader, a bulk generator, the reporting-view
+geography or datasets — a sample loader, a bulk generator, the reporting-view
 generator — reads them from the MDS API through `mds_client.py`, with a
 client-credentials token from the `<release>-staff-portal` Keycloak client:
 
@@ -289,7 +289,7 @@ analytics:
 the register itself — without it there is no registry. Without the Jinja templates
 in MinIO every record fails to render and a DCI search returns an empty result.
 
-The same goes for **code lists on the Master Data side**: they are configuration,
+The same goes for **datasets on the Master Data side**: they are configuration,
 not demo data. Keep `geoSeed.load.codelists: true` (and any `geoSeed.domains` your
 registries need) in production — only `geoSeed.load.samples` is demo data.
 {% endhint %}
@@ -341,7 +341,7 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 | 4 | **templates** → object store | `loadTemplates` |
 | 5 | **AWE seed** → AWE DB | `aweDbSeed` |
 
-Code lists and geo dropdowns are not steps here: the registry does not load them.
+Datasets and geo dropdowns are not steps here: the registry does not load them.
 MDS's own seed Job loads them from the pack, so — like the geography — they must be in MDS **before**
 the registry is installed, or seeded records carry codes no dropdown can show.
 

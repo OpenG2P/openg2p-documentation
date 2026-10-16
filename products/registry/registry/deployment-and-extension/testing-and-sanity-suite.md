@@ -75,7 +75,7 @@ Left at their defaults these carry the **reference registry's** values, so the s
 
 ### The tests that need no cluster
 
-The sanity suite proves a **deployed** registry works, and needs commons-services, Keycloak admin and a namespace. A second, much cheaper set proves the **repository** is coherent — field names resolving to real columns, dropdowns having code lists, consent scopes existing in the DCI template, seed SQL being re-runnable — and runs in CI on every push, before anything is published.
+The sanity suite proves a **deployed** registry works, and needs commons-services, Keycloak admin and a namespace. A second, much cheaper set proves the **repository** is coherent — field names resolving to real columns, dropdowns having datasets, consent scopes existing in the DCI template, seed SQL being re-runnable — and runs in CI on every push, before anything is published.
 
 Those checks catch a class of failure the sanity suite cannot see early enough, because it is silent: see [Contracts that fail silently](../developer-zone/building-a-registry/contracts-that-fail-silently.md). Every registry should ship both.
 

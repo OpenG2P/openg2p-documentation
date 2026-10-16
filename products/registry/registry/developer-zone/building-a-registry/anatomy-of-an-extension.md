@@ -118,11 +118,11 @@ Each metadata table is documented under
 [Concepts → Register Metadata](concepts/registry-and-register-metadata/README.md).
 
 {% hint style="info" %}
-**There is no code-list folder.** Code lists are country data: they live in the
+**There is no dataset folder.** Datasets are country data: they live in the
 country pack, Master Data loads them, and your dropdowns read them from Master Data
 live. Your extension only names which list each coded field uses — its
 `attribute_id` in the section metadata. See
-[Country data & seeding → Code lists](../../deployment-and-extension/country-data-and-seeding.md#code-lists).
+[Country data & seeding → Datasets](../../deployment-and-extension/country-data-and-seeding.md#datasets).
 {% endhint %}
 
 ### `awe_meta_data/` — approval workflow

@@ -92,7 +92,7 @@ Each activity is about a **subject**. The subject can be:
 
 **Entities first.** An activity never creates or changes a record in an entity register. The record is registered, or changed through its own change request, first; the activity then records what happened (a birth, a sale) against it.
 
-Records in the same registry show an **Activities** tab. It lists the activities about the record and its children, with their aggregates.
+Records in the same registry show an **Activities** tab. It lists the activities about the record and its children, and those it took part in, with their aggregates. From there staff can record a new activity about the record.
 
 Where an activity happened is stored on it as named geography levels (for example region, district). It comes from the activity's own location field, else from the subject's record, else from its context. It is a snapshot, so history stays stable when a record is later edited.
 
@@ -102,15 +102,15 @@ Activity registers are listed with the other registers. The home page's Register
 
 | Tab | Shows | Permission |
 | --- | --- | --- |
-| **Activities** | Activities with filters; a detail panel with participants and the verify, reject, correct and void actions | `activity:view` |
-| **Current state** | One row per context | `activity:view` |
+| **Activities** | Activities with filters; a detail panel with participants, warnings, enrichment and the verify, reject, correct and void actions | `activity:view` |
+| **Current state** | One row per context (named **Contexts** when the register has no current-state table) | `activity:view` |
 | **Work list** | Activities due or overdue, from each type's due rule | `activity:view` |
 | **Summaries** | Aggregates and their history | `activity:view` |
 | **Indicators** | The register's indicators | `activity:view` |
-| **Record** | Single or batch entry. The form is built from the type's JSON Schema, with lists as dropdowns, a geography picker and an Ethiopian-calendar date picker. Batch entry carries chosen fields from row to row | `activity:create` |
+| **Record** | Single or batch entry. The form is built from the type's JSON Schema, with lists as dropdowns, a geography picker and an Ethiopian-calendar date picker. It is prefilled from the latest activity of the type. Batch entry carries chosen fields from row to row | `activity:create` |
 | **Settings** | Closed periods (lock and reopen), temporary IDs awaiting resolution, rebuilding the current state | `activity:configure` |
 
-A context has its own page: its current state, a timeline of its activities, and the context it replaced or was replaced by. Records in the same registry show an **Activities** tab (see [Linking to a subject](#linking-to-a-subject)).
+A context has its own page: its current state, a timeline of its activities, and the context it replaced or was replaced by. From there staff can record the next activity (`activity:create`) and close or reopen the context (`activity:correct`). Records in the same registry show an **Activities** tab (see [Linking to a subject](#linking-to-a-subject)).
 
 ## Partner activity submission
 
@@ -131,6 +131,6 @@ A partner reads an activity register through partner search and can ask for **ac
 
 ## Not built yet
 
-Managing activity types through an API, activity entry from file import or the agent portal, bulk export and archiving: see [design, not built](../design/activity-register.md#not-built).
+Managing activity types through an API, activity entry from file import or the agent portal, reviewing failed ODK submissions, bulk export and archiving: see [design, not built](../design/activity-register.md#not-built).
 
 One verification model and one correction model for both register kinds (verification records with evidence, trusted sources, disputes) are proposed in [Verification and Correction (Proposal)](../design/verification-and-correction.md).

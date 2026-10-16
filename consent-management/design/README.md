@@ -19,7 +19,7 @@ Workflow Engine (AWE)**.
 
 ## Key terms
 
-Four things are easily confused; the CM keeps them apart:
+Four things are easily confused; the CM keeps them apart. A fifth term, **data scope**, is what they are all written in:
 
 | Term | What it is | Signed by | Lives | Standard |
 | --- | --- | --- | --- | --- |
@@ -27,6 +27,7 @@ Four things are easily confused; the CM keeps them apart:
 | **Consent artefact** | The consent as the CM stores it: subject, partner, purpose, a grant per data controller, validity, assurance | — (stored in the CM) | until it expires or is revoked | DEPA (consent artefact) |
 | **Consent receipt** | The proof that a consent was given, created when it is approved (and per decision at `/validate`); the partner's copy is in its consent record | the CM | long-lived | Kantara Consent Receipt v1.1, ISO/IEC 27560 |
 | **Consent token** | A short-lived note the Exchange's CM issues for **one** data controller and **one** query, with only the scopes allowed there; the controller's own CM checks it (called *receipt* in the API and settings) | the Exchange's CM | about 15 minutes | in the spirit of OAuth 2.0 token exchange (RFC 8693) |
+| **Data scope** | A named group of one data controller's (registry's) own fields, e.g. `farmer-registry.land`. Consents, policies and tokens list scopes, never fields or output keys; the registry maps each scope to its fields and filters records to them before rendering | — (defined and published by the registry) | permanent ID, versioned contents | the registry's catalogue ([Data Scopes](../../products/registry/registry/design/data-scopes.md)) |
 
 See [data model](data-model.md), [standards](standards-and-best-practices.md) and [Exchange consent tokens](exchange-receipts.md).
 
