@@ -1,8 +1,9 @@
 ---
 description: >-
   Datasets and entries, versions and their lifecycle, effective dates, latest /
-  pinned / as-of reads, retired entries, typed attributes, labels, owner and
-  theme, visibility, catalogue releases and the change log
+  pinned / as-of reads, retired entries, codes fixed once published, typed
+  attributes and lists of references, labels, owner and theme, visibility,
+  catalogue releases and the change log
 ---
 
 # Concepts
@@ -37,8 +38,9 @@ Each **entry** in a version has a stable `value_id`, a `value_code` (what a
 registry stores), `display`, `display_i18n`, an optional `parent_code` (for
 hierarchical datasets), `sort_order`, `attributes` (typed fields), `roles` (the
 role tags a country pack gives an entry) and a `status` of `ACTIVE` or
-`RETIRED`. Because `value_id` is stable, an entry's code can change between
-versions and the diff still sees it as the same entry.
+`RETIRED`. `value_id` is stable across versions, so the diff follows an entry
+from one version to the next. Once an entry has been published, its code is
+fixed too: see [Codes are fixed once published](#codes-are-fixed-once-published).
 
 The **geography** (levels, units and boundaries) is versioned the same way but as
 a single dataset, not one per level. See
@@ -167,6 +169,42 @@ retired entries too.
 Geography units are retired the same way; see
 [Geography and boundary changes](geography.md).
 
+## Codes are fixed once published
+
+Registries store **codes**. So once an entry is in a published version, its
+`value_code` never changes in a later version. Everything else about the entry
+stays editable in a draft:
+
+| Part of an entry | Can change in a later version? |
+|---|---|
+| `value_code` | **No**, once the entry has been published |
+| `display`, `display_i18n` (labels, per language) | Yes |
+| `attributes`, `parent_code`, `sort_order`, `roles` | Yes |
+| `status` | Yes: retire, or bring back |
+
+To **recode**, retire the old entry and add a new entry with the new code. The old
+code keeps resolving (as `RETIRED`), so records that hold it still show a label.
+
+An entry that is only in the open draft and was never published may still change
+its code.
+
+A change to a published code is refused with **`G2P-CAT-CODE-IMMUTABLE`**,
+whichever way it is attempted:
+
+* `upsert_draft_values` with the entry's `value_id` and a new `value_code`;
+* the original `/attributes/update_attribute_value` endpoint;
+* on submit, for a draft changed in any other way;
+* on publish, by the database function every publisher uses, including the
+  [country-pack loader](country-packs-and-migration.md);
+* by the country-pack loader itself, before it writes anything, when a pack gives a
+  published entry (same `value_id`) a new code.
+
+The Admin UI shows the code of a published entry as read-only.
+
+Geography unit IDs (P-codes) follow the same rule by construction: the unit ID is
+the unit's key, so a new code is a new unit, linked to the old one by a `RECODE`
+change event. See [Geography and boundary changes](geography.md).
+
 ## Typed attributes
 
 Simple datasets need only a code and a label. Reference **entities** need more: a
@@ -210,6 +248,43 @@ An entry of `SEED_VARIETY` then looks like:
   }
 }
 ```
+
+### Lists of references
+
+A field may hold **several** codes of another dataset: an array whose `items` carry
+`x-list-ref`, like `agro_ecological_zones` above. This is how an entry is
+**cross-classified**: a crop that is both a cereal and a fodder crop keeps one
+parent in its own hierarchy and lists its groups in an attribute:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "groups": {
+      "type": "array",
+      "items": { "type": "string", "x-list-ref": "CROP_GROUP" },
+      "uniqueItems": true
+    }
+  }
+}
+```
+
+```json
+{ "value_code": "MAIZE", "display": "Maize", "attributes": { "groups": ["CEREAL", "FODDER"] } }
+```
+
+* Every code in the array is checked, like a single reference. The error names
+  the codes that are missing.
+* The rest of the schema applies too (`minItems`, `uniqueItems`, and so on).
+* Reads return the array as stored. `attribute_filters` matches entries whose
+  array contains the given codes: `{"groups": ["FODDER"]}` finds `MAIZE`.
+* The Admin UI edits such a field as a multi-select of the referenced dataset's
+  entries.
+
+See [Design decisions](design-decisions.md#classification-hierarchy) for why
+cross-classification is an attribute rather than a second parent.
+
+### Which version a reference is checked against
 
 An `x-list-ref` code must be an **`ACTIVE`** entry of the referenced dataset's
 version **in effect**, so a reference to a retired entry is rejected:

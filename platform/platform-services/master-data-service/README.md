@@ -176,7 +176,8 @@ The loader's other flags are in
 
 | Page | What it covers |
 |---|---|
-| [Concepts](concepts.md) | Datasets and entries, versions and their lifecycle, effective dates, latest / pinned / as-of reads, retired entries, typed fields, labels, owner and theme, visibility, releases, the change log, storage |
+| [Concepts](concepts.md) | Datasets and entries, versions and their lifecycle, effective dates, latest / pinned / as-of reads, retired entries, codes fixed once published, typed fields and lists of references, labels, owner and theme, visibility, releases, the change log, storage |
+| [Design Decisions](design-decisions.md) | Why MDS is designed as it is: versioning per dataset, effective dates per version, no expiry date on entries, classification hierarchy, fixed codes, mapping to international standards, approvals and audit |
 | [Geography and Boundary Changes](geography.md) | Why geography is versioned as one dataset, change events with worked examples, future-effective changes, the crosswalk, boundaries in MinIO, what consumers do when geography changes |
 | [Change Control and Approvals](change-control.md) | Drafts, submit, approval modes (maker-checker or AWE), permissions and roles, audit, what the original write endpoints do now |
 | [Country Packs and Migration](country-packs-and-migration.md) | First and later pack loads, loader flags, boundaries, licences, migration of existing data to version 1 |

@@ -155,12 +155,17 @@ hint to switch to the draft (or to open one). On the draft:
 
 * **Add entry** and **Edit** open the entry form: code, label, labels by
   language, parent entry (for hierarchical datasets), sort order and fields.
-  Changing an entry's code keeps the same entry (a recode).
+  The code of an entry that has been published is **read-only**: to recode,
+  retire the entry and add a new one (see
+  [Codes are fixed once published](concepts.md#codes-are-fixed-once-published)).
+  The code of an entry that is only in the draft can still be changed.
 * Fields are generated from the dataset's schema: a field with `x-list-ref` is a
   dropdown of the referenced dataset's entries in its **published version in
   effect** (a referenced dataset's draft is never offered, because the API accepts
-  only published entries); enums are selects, numbers, booleans and text are
-  inputs. A dataset without a schema takes its fields as free JSON.
+  only published entries), and an array field whose items carry `x-list-ref` (a
+  [list of references](concepts.md#lists-of-references)) is a multi-select of
+  them; a stored code no longer active there stays shown. Enums are selects,
+  numbers, booleans and text are inputs. A dataset without a schema takes its fields as free JSON.
 * Entries are never deleted: **Retire** retires an entry in the draft (an entry
   added in the same draft is removed instead), optionally with its child entries;
   **Reactivate** brings a retired entry back.

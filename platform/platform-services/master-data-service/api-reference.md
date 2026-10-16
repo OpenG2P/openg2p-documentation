@@ -96,6 +96,7 @@ in `response_error_message`. Check the status, not only the HTTP code. HTTP 401,
 | `G2P-CAT-403` | Maker ≠ checker refused, or no bearer token to forward to AWE |
 | `G2P-CAT-404` | Dataset, entry, version, unit, release or draft not found |
 | `G2P-CAT-409` | State conflict: a draft is already open, wrong draft status, approval runs through AWE, no boundary store, a boundary key used by another version, or a write to a published (immutable) row (message starts `immutable:`) |
+| `G2P-CAT-CODE-IMMUTABLE` | The code of an entry that is in a published version cannot change. Retire the entry and add a new one instead. Returned by `upsert_draft_values`, `/attributes/update_attribute_value`, submit and approve |
 | `G2P-CAT-502` | AWE could not be reached |
 | `G2P-CAT-500` | Unexpected error |
 | `G2P-ATTR-*`, `G2P-GEO-*` | The same, from the original `/attributes` and `/geo` endpoints |

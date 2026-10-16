@@ -38,6 +38,10 @@ flowchart LR
   geography's visibility and licence are set with `update_geo_settings`.
 * Entries are validated against the dataset's attribute schema as they are
   written, so errors surface while editing rather than at approval.
+* An entry's labels, attributes, parent and sort order can change in a draft. Its
+  **code cannot**, once the entry has been published
+  (`G2P-CAT-CODE-IMMUTABLE`): to recode, retire the entry and add a new one. See
+  [Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
 * Consumers do not see a draft unless they ask for it (`version: "draft"` or its
   number).
 * A draft can be **discarded**: nothing it contained is published. The version is
@@ -59,7 +63,8 @@ On submit, MDS validates the whole draft again: labels, the entry hierarchy (no
 missing parents, no cycles), every entry against the attribute schema and every
 `x-list-ref` against the referenced dataset's version in effect (on the draft's
 `effective_from`, when that is in the future; never a draft: see
-[Typed attributes](concepts.md#typed-attributes)); for geography, levels, units and every
+[Typed attributes](concepts.md#typed-attributes)); that no published entry has a
+changed code (`G2P-CAT-CODE-IMMUTABLE`); for geography, levels, units and every
 recorded change event. A draft with **no changes** from its base is refused
 (`G2P-CAT-400`). A geography draft also gets its lineage completed: units created,
 retired, renamed or moved without a recorded event, and units whose boundary
@@ -144,7 +149,9 @@ the creator** of the release **nor whoever last set its members** (recorded as
 
 Publishing is not a separate call; it happens on approval. In one transaction MDS:
 
-1. validates the version once more;
+1. validates the version once more, including, in the database, that no
+   published entry's code has changed (so the country-pack loader is held to it
+   too);
 2. marks it `PUBLISHED`, sets `published_at` and `effective_from` (the approval's,
    else the draft's, else now);
 3. for geography, sets `valid_from` on new units and `valid_to` on retired ones,
@@ -266,7 +273,7 @@ whose draft is already `SUBMITTED` fails until that draft is decided or discarde
 | `/attributes/update_attribute` | Changed a dataset | Changes the dataset's code, label or hierarchy flag in the draft |
 | `/attributes/delete_attribute` | Deleted a dataset | A dataset never published is **deleted**. A published dataset is never deleted: all its entries are **retired** in the draft. Either way, existing entries block it unless `cascade` is set |
 | `/attributes/add_attribute_value` | Added a live entry | Adds the entry to the draft |
-| `/attributes/update_attribute_value` | Changed a live entry | Changes the entry in the draft (children follow a changed code) |
+| `/attributes/update_attribute_value` | Changed a live entry | Changes the entry in the draft. The code changes only for an entry never published (children follow it); a published code is refused (`G2P-CAT-CODE-IMMUTABLE`) |
 | `/attributes/delete_attribute_value` | Deleted a live entry | **Retires** the entry in the draft (removes it if it was new in the draft); refused while it has active children |
 | `/geo/add_geo_level`, `update_geo_level`, `delete_geo_level` | Changed live levels | Change the levels in the geography draft; a level is removed only if it has no child levels and no units |
 | `/geo/add_geo_level_value`, `update_geo_level_value`, `delete_geo_level_value` | Changed live units | Add, change or **retire** the unit in the geography draft |

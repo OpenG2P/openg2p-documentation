@@ -663,6 +663,7 @@
     * [Testing](platform/platform-services/id-generator/testing.md)
   * [Master Data Service (Catalogue)](platform/platform-services/master-data-service/README.md)
     * [Concepts](platform/platform-services/master-data-service/concepts.md)
+    * [Design Decisions](platform/platform-services/master-data-service/design-decisions.md)
     * [Geography and Boundary Changes](platform/platform-services/master-data-service/geography.md)
     * [Change Control and Approvals](platform/platform-services/master-data-service/change-control.md)
     * [Country Packs and Migration](platform/platform-services/master-data-service/country-packs-and-migration.md)

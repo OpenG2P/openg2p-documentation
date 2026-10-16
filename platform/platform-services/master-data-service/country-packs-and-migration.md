@@ -71,6 +71,18 @@ the **highest published version**:
 A dataset's `description` and `owner_org`, which are not versioned, are updated in
 place when the pack changes them.
 
+Entries are matched on `value_id`. A pack may change an entry's labels,
+attributes, parent and sort order, but **not the code of an entry that is
+already published** (see
+[Codes are fixed once published](concepts.md#codes-are-fixed-once-published)):
+
+* a pack that gives a published entry (same `value_id`) a new `value_code` **stops
+  the dataset load** with `G2P-CAT-CODE-IMMUTABLE`, naming the dataset, the
+  entry and both codes. No dataset is written, with or without
+  `--publish`;
+* to recode in a pack, give the new code a **new `value_id`** and drop the old
+  entry. The loader then retires the old entry and adds the new one.
+
 The drafts are left as **`DRAFT`, not submitted**. Someone reviews them (the diff
 against the base version), submits them, and they are approved like any other
 change (see [Change control and approvals](change-control.md)). Nothing a consumer
