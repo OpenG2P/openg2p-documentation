@@ -379,5 +379,3 @@ are a representative subset chosen for this summary.
 | Intake-Create | 3.60 | 2.811s | 1.281 | 60s | 77 |
 | Intake-Read-and-Approve | 7.20 | 3.659s | 1.968 | 30s | 59 |
 | **Total** | **36.00** | — | — | — | **409** |
-
-## Conclusion
