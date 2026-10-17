@@ -96,6 +96,7 @@ rke2_version: "v1.35.8+rke2r1"
 node_ip: "172.29.4.176"
 node_name: "worker"
 node_role: "worker"
+node_label: "shouldInstallIstioIngress=true"   # worker only; "" to omit
 vpc_subnet: "172.29.0.0/16"
 wireguard_subnet: "10.15.0.0/16"
 ```
@@ -103,6 +104,22 @@ wireguard_subnet: "10.15.0.0/16"
 {% hint style="warning" %}
 **`server_url` format:** exactly `https://<ip>:9345` — no extra slashes.
 {% endhint %}
+
+For a **worker**, the join writes this `/etc/rancher/rke2/config.yaml` on the new node:
+
+```yaml
+token: <rke2_token>
+server: <server_url>
+node-name: <node_name>
+node-ip: <node_ip>
+node-label: "shouldInstallIstioIngress=true"
+disable:
+  - rke2-ingress-nginx
+kubelet-arg:
+  - --allowed-unsafe-sysctls=net.ipv4.conf.all.src_valid_mark,net.ipv4.ip_forward
+```
+
+Re-running the join on a node that has already joined keeps this file in sync with `add-node-config.yaml`. If it differs, the old file is backed up as `config.yaml.bak.<timestamp>`, the new one is written, and `rke2-agent` (or `rke2-server`) is restarted once. If it already matches, nothing is restarted.
 
 For remove-node later, also set `primary_ssh_host` (SSH to a control-plane).
 
