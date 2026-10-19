@@ -196,7 +196,7 @@ See [Country Packs](country-packs.md).
 
 1. Open the dataset and click **Edit dataset details** (for the geography:
    **Publication settings**).
-2. Set **Visibility** to *Public*, and give a **Licence** and **Licence URL**.
+2. Set **Visibility** to *Public*, and give a **Licence** and **Licence URL**: the [data licence](public-catalogue.md#data-licence) under which others may reuse it.
 3. Save.
 
 This applies at once; no approval is needed. Only published versions are shown.

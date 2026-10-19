@@ -118,7 +118,8 @@ Do not poll datasets to notice changes. Use the **change feed**:
 Events are ordered and the cursor is monotonic, so a consumer that was down simply
 catches up from its last cursor.
 
-If the deployment has a WebSub hub configured, a consumer can also subscribe to the
+MDS also publishes to the deployment's WebSub hub (the commons hub by default), so a
+consumer can subscribe to the
 topics `openg2p.master-data.list.published`, `openg2p.master-data.list.effective`,
 `openg2p.master-data.geo.published`, `openg2p.master-data.geo.effective` and
 `openg2p.master-data.release.published` (the prefix is configurable) to be told

@@ -32,14 +32,28 @@ visibility.
 Each dataset, and the geography, has:
 
 * a **visibility**: *Private* (default) or *Public*;
-* an optional **licence**: a label and a URL, for example *CC BY 4.0*.
+* an optional **data licence**: a label and a URL, for example *CC BY 4.0*.
 
 Both are set in the admin UI and apply at once;
 they are not part of a version. Making the geography public makes all its
 published versions readable. A public dataset is listed once it has a published
-version in effect. The country-pack loader fills the geography's licence from the
-pack when none is set, and never makes anything public. The steps are in the
-[Admin Guide](admin-guide.md#make-a-dataset-public).
+version in effect. The country-pack loader never makes anything public. The steps
+are in the [Admin Guide](admin-guide.md#make-a-dataset-public).
+
+### Data licence
+
+The licence of a dataset or of the geography is the **terms under which others may
+reuse that data** once it is public. It is shown with the data in the public
+catalogue and its downloads, as open-data catalogues (DCAT) expect.
+
+* It often follows the **source's licence**. A country's boundaries from OCHA
+  COD-AB, for example, are CC BY-IGO, which requires attribution wherever they are
+  shown. The country-pack loader therefore sets the geography's licence from the
+  pack's manifest when none is set; see
+  [Sources and licence](country-packs.md#sources-and-licence).
+* It is set per dataset by the catalogue administrator, who knows the terms of
+  each source.
+* It is **not** the licence of OpenG2P's code (MPL 2.0).
 
 {% hint style="info" %}
 Staff data policies do not apply to the public catalogue: marking a dataset public

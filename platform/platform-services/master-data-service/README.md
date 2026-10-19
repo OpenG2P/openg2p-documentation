@@ -47,8 +47,8 @@ and no registry records. All data first arrives from a **country pack**; see
 | **Typed fields and references** | Entries can carry typed fields, a parent (hierarchy) and references to other datasets (cross-classification) | [Concepts](concepts.md#typed-attributes) |
 | **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#multilingual-labels) |
 | **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old codes to new. Boundaries are kept per version | [Geography](geography.md) |
-| **Change feed** | Every change is in an ordered feed, also pushed to WebSub | [For Consumers](consumers.md#following-changes) |
-| **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS | [Public Catalogue](public-catalogue.md) |
+| **Change feed** | Every change is in an ordered feed; new and effective versions are also published to the WebSub hub | [For Consumers](consumers.md#following-changes) |
+| **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS, each with its [data licence](public-catalogue.md#data-licence) | [Public Catalogue](public-catalogue.md) |
 | **Audit** | Every change and every API call is sent to the Audit Manager | [Change Control](change-control.md#audit) |
 | **Data policies for staff** | Some reads are filtered by the caller's IAM data policy (for example, which geography units a staff member sees) | [API Reference](api-reference.md#authentication-and-permissions) |
 | **One deployment per country** | A deployment is seeded with exactly one country pack. A second country needs a second deployment, so registry images stay country-neutral | [Deployment](deployment.md) |
@@ -89,7 +89,7 @@ its own. The country pack is chosen in the chart's **Country Pack** group. See
 | [Design Decisions](design-decisions.md) | Why reference data needs versions, and why MDS is designed as it is |
 | [Geography and Boundary Changes](geography.md) | How geography and boundaries are represented, change events, the crosswalk |
 | [Change Control and Approvals](change-control.md) | Drafts, approval modes, permissions, audit |
-| [Country Packs](country-packs.md) | What a country pack is, how to build one, how it loads and how an older MDS is migrated |
+| [Country Packs](country-packs.md) | What a country pack is, how to build one, and how it loads |
 | [For Consumers](consumers.md) | Who reads MDS, and how to read, cache, pin and follow changes |
 | [Admin Guide](admin-guide.md) | The admin UI, who can do what, and the common tasks |
 | [Public Catalogue](public-catalogue.md) | The opt-in, anonymous catalogue for other websites |

@@ -48,15 +48,18 @@ shows the first four in the **Country Pack** group.
 | `geoSeed.load.codelists` | Load Datasets | On by default |
 | `geoSeed.load.samples` | Load Sample People | On by default. **Turn it off in production** |
 | `geoSeed.load.geo` | Load Geography (MDS chart form only) | On by default |
+| `geoSeed.publishInitial` | — | On by default: a dataset's first load is published at once. Off: left as a draft for approval |
+| `geoSeed.autoPublish` | — | Off by default. On: later loads are published at once, without approval. **Development and test only** |
+| `geoSeed.ownerOrg` | — | Publisher recorded on what the loader creates. Empty by default |
 | `masterDataAPI.catalogue.approvalMode` | — | `permission` (default) or `awe`. See [Approval modes](change-control.md#approval-modes) |
 | `masterDataAPI.catalogue.auditManagerUrl` | — | The Audit Manager; by default the one in `commons-services`. Empty turns audit off |
-| `masterDataAPI.catalogue.websubHubUrl` | — | A WebSub hub for change notifications. Empty (default) turns them off |
+| `masterDataAPI.catalogue.websubHubUrl` | — | The WebSub hub for version notifications. `commons-services` points it at its own hub (`http://<release>-websub/hub`; installed by default). The MDS chart alone leaves it empty, which turns notifications off |
 | `masterDataAPI.catalogue.public.*` | Public catalogue (MDS chart form only) | Off by default. See [Public catalogue host](#public-catalogue-host) |
 | `iamRegister.runAsHook` | — | MDS chart default `true` (a Helm hook); `commons-services` sets `false`, because an umbrella chart chains or skips hooks |
 
-The country-pack loader has more flags (publish the first load directly,
-auto-publish drafts, owner department); see
-[Country Packs](country-packs.md#loader-settings).
+Each `geoSeed` setting also has a loader command-line flag and environment
+variable (see the chart's `values.yaml`). How loads work:
+[Country Packs](country-packs.md#loading-and-upgrading-in-mds).
 
 ## Object store for boundaries
 

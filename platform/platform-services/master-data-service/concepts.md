@@ -140,9 +140,6 @@ Every read names which version it wants, in one of these ways (at most one):
 (`version_no`, `status`, `effective_from`, `is_latest`, notes, who and when). A
 consumer never has to guess.
 
-Data migrated from before versioning is version 1 with `effective_from`
-1970-01-01, so an `as_of` read for any past date still resolves.
-
 Which read to use is covered in
 [For consumers](consumers.md#latest-pinned-or-as-of).
 
@@ -334,12 +331,11 @@ datasets by theme, and the public catalogue publishes it as the dataset's theme.
 ## Visibility and licence
 
 Each dataset, and the geography, has a **`visibility`**: `private` (the default)
-or `public`, and an optional **licence** (`licence_uri`, `licence_label`). Both
+or `public`, and an optional [data licence](public-catalogue.md#data-licence) (`licence_uri`, `licence_label`). Both
 apply at once and are not part of a version. `public` lets the opt-in, anonymous
 [public catalogue](public-catalogue.md) show the **published** versions;
 authenticated reads, including the registries', ignore visibility. The
-country-pack loader sets the geography's licence from the pack when none is set,
-and never makes anything public.
+country-pack loader never makes anything public.
 
 ## Catalogue release
 
