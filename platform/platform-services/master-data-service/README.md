@@ -45,7 +45,7 @@ and no registry records. All data first arrives from a **country pack**; see
 | **Change control with approvals** | Edits go into a draft, which is submitted and approved by another person (maker-checker) or through the Approval Workflow Engine | [Change Control](change-control.md) |
 | **Codes fixed once published** | Labels can change; codes cannot. A recode is a retire plus an add. Entries are retired, never deleted | [Concepts](concepts.md#codes-are-fixed-once-published) |
 | **Typed fields and references** | Entries can carry typed fields, a parent (hierarchy) and references to other datasets (cross-classification) | [Concepts](concepts.md#typed-attributes) |
-| **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#multilingual-labels) |
+| **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#datasets-and-entries) |
 | **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old codes to new. Boundaries are kept per version | [Geography](geography.md) |
 | **Change feed** | Every change is in an ordered feed; new and effective versions are also published to the WebSub hub | [For Consumers](consumers.md#following-changes) |
 | **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS, each with its [data licence](public-catalogue.md#data-licence) | [Public Catalogue](public-catalogue.md) |
@@ -85,7 +85,7 @@ its own. The country pack is chosen in the chart's **Country Pack** group. See
 
 | Page | What it covers |
 |---|---|
-| [Concepts](concepts.md) | Datasets and entries, versions, effective dates, reads, retired entries, fixed codes, typed fields, labels, releases, the change log |
+| [Concepts](concepts.md) | The ideas: datasets and the geography, versions and effective dates, fixed codes and retired entries, reads and releases, the change feed; then the details: fields, statuses, typed fields and references |
 | [Design Decisions](design-decisions.md) | Why reference data needs versions, and why MDS is designed as it is |
 | [Geography and Boundary Changes](geography.md) | How geography and boundaries are represented, change events, the crosswalk |
 | [Change Control and Approvals](change-control.md) | Drafts, approval modes, permissions, audit |

@@ -1,19 +1,162 @@
 ---
 description: >-
-  Datasets and entries, versions and their lifecycle, effective dates, latest /
-  pinned / as-of reads, retired entries, codes fixed once published, typed
-  attributes and lists of references, labels, owner and theme, visibility,
-  catalogue releases and the change log
+  The ideas behind MDS in plain language (datasets and entries, the geography,
+  versions and effective dates, fixed codes and retired entries, reading latest,
+  pinned, as of a date or by release, the change feed, visibility and licence),
+  then the details for developers: fields, statuses, typed attributes and
+  references, the change log
 ---
 
 # Concepts
 
-## Dataset
+This page first explains the ideas, then gives the [details](#details) a
+developer needs.
 
-A **dataset** is one set of reference data: `GENDER`, `CROP_COMMODITY`,
-`SEED_VARIETY`, `UNIT_OF_MEASURE`. Its items are **entries**. In the API a
-dataset is a *list* (`list_id`, `list_code`) and an entry is a *value*; in the
-database a dataset is a row in `g2p_attributes`.
+## What MDS holds
+
+MDS holds two kinds of reference data: **datasets** and the **geography**.
+
+| | A dataset | The geography |
+|---|---|---|
+| **How many** | Many: gender, disability type, units of measure, crops… | One per country |
+| **Shape** | A list of entries, optionally a hierarchy | A hierarchy of levels (e.g. region → zone → woreda); each unit belongs to one unit of the level above |
+| **Codes** | Chosen by the country | P-codes, which usually nest (a child's code starts with its parent's); MDS does not enforce this |
+| **Extra content** | Optional typed fields | Boundaries (map shapes) per level |
+| **How it changes** | Entries added, changed, retired (or brought back) | Change events: create, retire, rename, recode, split, merge, move to another parent, boundary change, with a crosswalk from old units to new |
+| **Validity** | Retired entries are kept | Retired units are kept, and units also carry valid-from and valid-to dates |
+| **Versioned** | Each dataset on its own | All levels together as one version, because a change at one level ripples to the others |
+
+They are treated differently because they behave differently. A dataset is a
+self-contained list that one department maintains. The geography is one connected
+structure: splitting a woreda moves its kebeles and redraws the map, so its levels
+must change together.
+
+## Datasets and entries
+
+A dataset is a list; each item in it is an **entry**, for example *Female* in the
+Gender dataset.
+
+Each entry has a **code** and a **label**. The code is what systems store (a
+registry records `F`, not *Female*); the label is what people see, with a label
+per language where needed (*Maize*, *በቆሎ*, *Boqqolloo*). Datasets and geography
+units have labels per language in the same way.
+
+Each dataset has a **theme** (core, agriculture, …) that groups it in the admin
+UI and the public catalogue, and a **publisher**: the department responsible for
+it.
+
+A dataset may be **hierarchical**: each entry may have one parent entry in the
+same dataset, as crop categories contain crops.
+
+Some datasets need more than a code and a label. A seed variety has a crop,
+maturity days and a release year; an input product has a type and a unit. Their
+entries carry **typed fields**, which MDS checks against the dataset's rules. A
+field may **refer to another dataset**: a seed variety's crop is an entry of the
+Crops dataset. A field may also hold **a list of references**, which is how an
+entry belongs to several groups at once (maize is both a cereal and a fodder
+crop) while keeping a single parent. See [Typed attributes](#typed-attributes).
+
+## The geography
+
+The geography holds the country's administrative **levels**, every **unit** at
+each level with its **P-code**, and each level's **boundaries**. When units are
+split, merged, renamed, recoded or moved, the change is recorded as a **change
+event**. The events form a **crosswalk**, so a record that holds an old unit's
+code can be mapped to the units that replaced it. Units, like entries, are never
+deleted. Worked examples are in
+[Geography and Boundary Changes](geography.md).
+
+## Versions
+
+Every dataset, and the geography, has numbered **versions**: 1, 2, 3, …
+
+A change is made in a **draft**, a copy of the latest published version. The
+draft is submitted, and another person approves it (or rejects it). When it is
+approved it is **published** as the next version. A published version **never
+changes**: every later change, however small, is a new version. A dataset has at
+most one draft at a time.
+
+### Effective dates
+
+Each published version has an **effective date**: the moment it takes effect. By
+default that is when it is published, but it may be in the future. New woredas
+that come into force on 1 January 2027 can be approved in October 2026: the
+version is published and can be read by number, but it becomes the latest only on
+1 January. Effective dates only move forward: a version cannot take effect before
+the version published before it.
+
+### Codes are fixed once published
+
+Records hold codes, so once an entry has been published its **code never
+changes**. Its labels, typed fields, parent and order can change in any later
+version. To **recode**, retire the old entry and add a new one with the new code;
+the old code still resolves. Geography follows the same rule: a new P-code is a
+new unit, linked to the old one by a recode event.
+
+### Retired entries
+
+An entry that should no longer be used is **retired** in the next version, not
+deleted. It stays in that version and every later one, so a record holding its
+code still shows a label ("Season: Summer (retired)"), and a consumer reading an
+older version sees it as it was. Lists for new data entry leave retired entries
+out; a screen showing an existing record includes them. Geography units are
+retired the same way.
+
+## Reading: latest, pinned, as of, release
+
+Every read says which version it wants:
+
+* **Latest** (the default): the newest published version that has taken effect.
+* **Pinned**: one version by number, whatever has been published since.
+* **As of a date**: the version that was in effect at that moment, for example to
+  check a record dated 30 June 2026 against the data of that day.
+* **Release**: the version a named [catalogue release](#catalogue-release) pins.
+
+Every answer says which version it came from. Which read to use is covered in
+[For Consumers](consumers.md#latest-pinned-or-as-of).
+
+### Catalogue release
+
+Most consumers pin one or two datasets. Some need **everything** to be
+consistent: a programme cycle, a survey, a national report. A **catalogue
+release** is a named set of published versions of datasets, plus at most one
+version of the geography:
+
+| Release `2027.1` | |
+|---|---|
+| Crops | version 4 |
+| Seed varieties | version 7 |
+| Units of measure | version 2 |
+| Geography | version 3 |
+
+A release is put together as a draft and, once published, never changes. Reading
+by release gives each dataset at the version the release names.
+
+## Change log and change feed
+
+Every step (a draft created, entries changed, submitted, approved, published, a
+version taking effect) is recorded in an append-only **change log**. It is the
+audit trail, and it is also the **change feed**: a consumer asks for everything
+after the last event it saw, and so learns what was published or took effect.
+When a WebSub hub is configured, MDS also pushes new and effective versions and
+published releases to it. See
+[For Consumers](consumers.md#following-changes).
+
+## Visibility and licence
+
+Each dataset, and the geography, is **private** (the default) or **public**, and
+may carry a [data licence](public-catalogue.md#data-licence). Public data appears
+in the anonymous [public catalogue](public-catalogue.md); signed-in reads,
+including the registries', see everything regardless. Both settings apply at once
+and are not part of a version.
+
+## Details
+
+This part is for developers. The API keeps its own field names: a dataset is a
+*list* and an entry a *value* (see
+[Names in the API](api-reference.md#names-in-the-api)).
+
+### Dataset fields
 
 | Field | Meaning | Versioned? |
 |---|---|---|
@@ -23,33 +166,30 @@ database a dataset is a row in `g2p_attributes`.
 | `is_hierarchical` | Whether entries may have a parent entry | Yes |
 | `attribute_schema` | Optional schema for each entry's typed fields (see [Typed attributes](#typed-attributes)) | Yes |
 | `description` | What the dataset is for | No: applied at once |
-| `owner_org` | The department that owns it (the **Publisher** in the UI) | No: applied at once |
-| `domain` | Its **theme** (`core`, `agriculture`, …) | No: applied at once |
-| `visibility`, `licence_uri`, `licence_label` | Whether the [public catalogue](public-catalogue.md) may show it, and its licence | No: applied at once |
+| `owner_org` | The publisher. Defaults to the chart's `catalogue.defaultOwnerOrg` (for the geography, the loader's `geoSeed.ownerOrg`); in `awe` mode it is sent to AWE with the [approval request](change-control.md#awe-through-the-approval-workflow-engine) | No: applied at once |
+| `domain` | The theme: `core` for a country pack's core datasets, the pack domain (such as `agriculture`), or what a maker set; `null` (*Other*) when unknown | No: applied at once |
+| `visibility`, `licence_uri`, `licence_label` | `private` or `public`, and the licence | No: applied at once |
 
-"Versioned" fields change only through a draft and are published with it; the
-others are administrative and take effect at once. Reads of a dataset also return
-`current_version_no` (the published version in effect now),
+Versioned fields change only through a draft and are published with it. Reads of
+a dataset also return `current_version_no` (the published version in effect now),
 `latest_published_version_no` (the highest published version, which may be
 future-effective), `open_draft_version_no`, `open_draft_status` and an
 `attribute_schema_summary` (field names, required fields, dataset references).
 
-Each **entry** in a version has a stable `value_id`, a `value_code` (what a
-registry stores), `display`, `display_i18n`, an optional `parent_code` (for
-hierarchical datasets), `sort_order`, `attributes` (typed fields), `roles` (the
-role tags a country pack gives an entry) and a `status` of `ACTIVE` or
-`RETIRED`. `value_id` is stable across versions, so the diff follows an entry
-from one version to the next. Once an entry has been published, its code is
-fixed too: see [Codes are fixed once published](#codes-are-fixed-once-published).
+### Entry fields
 
-The **geography** (levels, units and boundaries) is versioned the same way but as
-a single dataset, not one per level. See
-[Geography and boundary changes](geography.md).
+| Field | Meaning |
+|---|---|
+| `value_id` | Stable across versions, so a diff follows an entry from one version to the next |
+| `value_code` | The code a registry stores; fixed once published |
+| `display`, `display_i18n` | Label, and labels per language (e.g. `{"am": "በቆሎ", "om": "Boqqolloo"}`); geography units use `name`, `name_i18n` |
+| `parent_code` | Parent entry, for hierarchical datasets |
+| `sort_order` | Display order |
+| `attributes` | Typed fields |
+| `roles` | Role tags a country pack gives the entry |
+| `status` | `ACTIVE` or `RETIRED` |
 
-## Version
-
-A **version** is a numbered state of a dataset: version 1, 2, 3, … Each version
-has a status:
+### Version statuses
 
 | Status | Meaning | Readable by consumers? | Editable? |
 |---|---|---|---|
@@ -58,9 +198,6 @@ has a status:
 | `PUBLISHED` | Approved. **Immutable** from here on | Yes | No, never |
 | `REJECTED` | Approval refused. Kept for the record | By number | No |
 | `DISCARDED` | Thrown away by its maker before it was published. Kept, with its content, so its number is never used again | By number | No |
-
-A dataset has **at most one open version** (`DRAFT` or `SUBMITTED`) at a time,
-enforced by a unique index; so does the geography.
 
 ```mermaid
 stateDiagram-v2
@@ -73,149 +210,81 @@ stateDiagram-v2
     SUBMITTED --> REJECTED: reject
 ```
 
-A draft always starts from the **highest published version**, which it records as
-`base_version_no`, so a diff always has something to compare with. To bring older
-content forward (for example to rework a rejected draft), a new draft can copy
-another version's content with `copy_from_version`; its base is still the highest
-published version.
+* **One open version.** At most one `DRAFT` or `SUBMITTED` version per dataset,
+  and for the geography, enforced by a unique index.
+* **Base version.** A draft starts from the highest published version and records
+  it as `base_version_no`, so a diff always has something to compare with. To
+  bring older content forward (for example to rework a rejected draft), a new
+  draft can copy another version with `copy_from_version`; its base is still the
+  highest published version.
+* **Numbers are never reused**, so the published sequence may have gaps. A draft
+  takes one more than the highest number ever used for that dataset (or the
+  geography), counting rejected and discarded versions and the change log, so the
+  change log, audit trail and boundary files of two versions cannot be confused.
+* **Immutability is enforced in the database** by triggers, not only in the
+  service, so no script, loader or direct SQL can alter a published version or its
+  entries.
+* **Who and when.** Each version records who created, last edited, submitted and
+  decided it, and when, with the change note, decision note and approval
+  reference. `*_by` holds the stable user id (the token's `sub`) or a system name
+  such as `country-pack-loader`; `*_by_name` the display name at the time (`null`
+  for a system).
+* A dataset no longer used keeps its versions; retire its entries in a new
+  version. (A `RETIRED` version status exists but nothing sets it.)
 
-Each version records who created, last edited, submitted and decided it, and
-when, plus the change note, the decision note and the approval reference. The
-`*_by` fields hold the person's **stable user id** (the token's `sub`) or a system
-name such as `country-pack-loader`; the `*_by_name` fields hold the person's
-display name as it was when they acted. A system actor has no name (`null`).
+### Taking effect
 
-{% hint style="info" %}
-**Version numbers are never reused, so the published sequence may have gaps.** A
-draft takes one more than the highest number ever used for that dataset (or the
-geography), counting rejected and discarded versions and the change log. So the
-change log, the audit trail and the boundary files of one version can never be
-confused with another's.
-{% endhint %}
+`effective_from` can be set when the draft is created, edited later
+(`update_list_draft`), given on submit, or overridden on approval. When a
+future-effective version's date comes, MDS refreshes the current-state tables (on
+start, on every publish, and every `catalogue.effectiveRefreshSeconds`, 300 by
+default) and writes a `list.version.effective` (or `geo.version.effective`)
+event, which is announced like any other.
 
-A dataset that is no longer used keeps its versions; its entries can be retired
-in a new version. (The status `RETIRED` exists for versions but nothing sets it.)
+### Reading in the API
 
-### Published means immutable
+A read takes at most one of `version` (a number, `"latest"` or `"draft"`),
+`as_of` (an ISO 8601 date-time) or `release` (a release code). Every response has
+a `version` object (`version_no`, `status`, `effective_from`, `is_latest`, notes,
+who and when). Reading a dataset that the named release does not pin is an error.
+See [Choosing a version](api-reference.md#choosing-a-version).
 
-Once a version is `PUBLISHED`, neither the version nor its entries can be changed
-or deleted. This is enforced **in the database by triggers**, not only in the
-service code, so no script, loader or direct SQL can alter a published version by
-accident. Every change, however small, is a new version.
+A release is `DRAFT` while its members are chosen and `PUBLISHED` once fixed; a
+draft release can be deleted, a published one cannot be changed or deleted. It
+must pin at least one dataset or a geography version, and is published by a user
+with the publish permission who is **neither its creator nor whoever last set its
+members** (compared by stable user id).
 
-## Effective dates
+### Retiring and recoding in the API
 
-Every published version has an `effective_from` date and time:
+* Reads leave retired entries out unless `include_retired: true`.
+  `get_list_value` resolves a code and returns retired entries too.
+* Retiring an entry that has active children fails unless `cascade: true`.
+* An entry added in the open draft and never published is removed when retired.
+  Upserting a retired code in a draft brings it back (`ACTIVE`).
+* An entry only in the open draft, never published, may still change its code.
 
-* By default it is the moment of publishing.
-* It may be in the **future**: new woredas that come into force on 2027-01-01 can
-  be approved and published in October 2026.
-* It can only **move forward**: not earlier than the `effective_from` of the
-  latest published version.
-
-It can be set when the draft is created, edited later (`update_list_draft`), given
-on submit, or overridden on approval.
-
-A future-effective version is published and immutable, and can be read by number,
-but it is **not yet `latest`**. When its date comes, MDS refreshes the
-current-state tables (on start, on every publish, and every
-`catalogue.effectiveRefreshSeconds`, 300 by default) and writes a
-`list.version.effective` (or `geo.version.effective`) event. That event is
-announced like any other, so a consumer learns when a version **takes effect**,
-not only when it was published.
-
-## Reading: latest, pinned, as of, release
-
-Every read names which version it wants, in one of these ways (at most one):
-
-| Read | Request | Returns |
-|---|---|---|
-| **Latest** (default) | `version: "latest"` or nothing | The latest **published** version whose `effective_from` is now or earlier |
-| **Pinned** | `version: 3` | Exactly version 3, whatever has been published since |
-| **As of** | `as_of: "2026-06-30T00:00:00Z"` | The latest published version whose `effective_from` is on or before that moment |
-| **Release** | `release: "2027.1"` | The version that [catalogue release](#catalogue-release) pins |
-| **Draft** | `version: "draft"` | The open draft, for review before approval |
-
-**Every response says which version it came from**, in a `version` object
-(`version_no`, `status`, `effective_from`, `is_latest`, notes, who and when). A
-consumer never has to guess.
-
-Which read to use is covered in
-[For consumers](consumers.md#latest-pinned-or-as-of).
-
-## Retired entries
-
-A published entry is **never deleted**. When an entry should no longer be used,
-the next version marks it `RETIRED`. It stays in that version and every later one,
-so:
-
-* records that hold the code still resolve to a label;
-* a report can still show "Season: Summer (retired)";
-* a pinned consumer reading an older version sees it as it was.
-
-An entry added in the current draft and never published is simply removed when it
-is retired. Upserting a retired code in a draft brings it back (`ACTIVE`).
-Retiring an entry that has active children fails unless `cascade: true` is
-passed.
-
-Reads leave retired entries out unless asked (`include_retired: true`). A dropdown
-for new data entry should leave them out; a screen that shows an existing record
-should include them, or resolve the code with `get_list_value`, which returns
-retired entries too.
-
-Geography units are retired the same way; see
-[Geography and boundary changes](geography.md).
-
-## Codes are fixed once published
-
-Registries store **codes**. So once an entry is in a published version, its
-`value_code` never changes in a later version. Everything else about the entry
-stays editable in a draft:
-
-| Part of an entry | Can change in a later version? |
-|---|---|
-| `value_code` | **No**, once the entry has been published |
-| `display`, `display_i18n` (labels, per language) | Yes |
-| `attributes`, `parent_code`, `sort_order`, `roles` | Yes |
-| `status` | Yes: retire, or bring back |
-
-To **recode**, retire the old entry and add a new entry with the new code. The old
-code keeps resolving (as `RETIRED`), so records that hold it still show a label.
-
-An entry that is only in the open draft and was never published may still change
-its code.
-
-A change to a published code is refused with **`G2P-CAT-CODE-IMMUTABLE`**,
-whichever way it is attempted:
+A change to a published `value_code` is refused with
+**`G2P-CAT-CODE-IMMUTABLE`**, whichever way it is attempted:
 
 * `upsert_draft_values` with the entry's `value_id` and a new `value_code`;
 * the original `/attributes/update_attribute_value` endpoint;
 * on submit, for a draft changed in any other way;
 * on publish, by the database function every publisher uses, including the
   [country-pack loader](country-packs.md);
-* by the country-pack loader itself, before it writes anything, when a pack gives a
-  published entry (same `value_id`) a new code.
+* by the country-pack loader itself, before it writes anything, when a pack gives
+  a published entry (same `value_id`) a new code.
 
 The Admin UI shows the code of a published entry as read-only.
 
-Geography unit IDs (P-codes) follow the same rule by construction: the unit ID is
-the unit's key, so a new code is a new unit, linked to the old one by a `RECODE`
-change event. See [Geography and boundary changes](geography.md).
-
-## Typed attributes
-
-Simple datasets need only a code and a label. Others need more: a seed variety
-has a crop, maturity days, release year and agro-ecological zones; an input product
-has a type and unit. Such a dataset (sometimes called a *reference entity*) is still
-a dataset: its entries carry **typed attributes**, and an attribute can refer to
-entries of another dataset.
+### Typed attributes
 
 A dataset may declare an **`attribute_schema`**, a JSON Schema that every entry's
 `attributes` object must satisfy (see [Standards](standards.md)). Entries are
-validated against it as they are written to a draft, again on submit, and again
-on approval.
+validated as they are written to a draft, again on submit, and again on approval.
+Changing the schema is itself a change and goes through a draft.
 
-A field may refer to another dataset with **`x-list-ref`**:
+A field refers to another dataset with **`x-list-ref`**:
 
 ```json
 {
@@ -248,12 +317,12 @@ An entry of `SEED_VARIETY` then looks like:
 }
 ```
 
-### Lists of references
+#### Lists of references
 
-A field may hold **several** codes of another dataset: an array whose `items` carry
-`x-list-ref`, like `agro_ecological_zones` above. This is how an entry is
-**cross-classified**: a crop that is both a cereal and a fodder crop keeps one
-parent in its own hierarchy and lists its groups in an attribute:
+An array whose `items` carry `x-list-ref` holds **several** codes of another
+dataset, like `agro_ecological_zones` above. This is how an entry is
+cross-classified: a crop keeps one parent in its own hierarchy and lists its
+groups in an attribute:
 
 ```json
 {
@@ -272,140 +341,49 @@ parent in its own hierarchy and lists its groups in an attribute:
 { "value_code": "MAIZE", "display": "Maize", "attributes": { "groups": ["CEREAL", "FODDER"] } }
 ```
 
-* Every code in the array is checked, like a single reference. The error names
-  the codes that are missing.
-* The rest of the schema applies too (`minItems`, `uniqueItems`, and so on).
+* Every code in the array is checked, like a single reference; the error names
+  the missing codes. The rest of the schema applies too (`minItems`,
+  `uniqueItems`, …).
 * Reads return the array as stored. `attribute_filters` matches entries whose
   array contains the given codes: `{"groups": ["FODDER"]}` finds `MAIZE`.
-* The Admin UI edits such a field as a multi-select of the referenced dataset's
-  entries.
+* The Admin UI edits such a field as a multi-select.
 
 See [Design decisions](design-decisions.md#classification-hierarchy) for why
 cross-classification is an attribute rather than a second parent.
 
-### Which version a reference is checked against
+#### Which version a reference is checked against
 
 An `x-list-ref` code must be an **`ACTIVE`** entry of the referenced dataset's
-version **in effect**, so a reference to a retired entry is rejected:
+version **in effect**:
 
-* normally, the referenced dataset's latest published version in effect now;
-* for a draft with a **future** `effective_from`, the referenced dataset's version
-  in effect **on that date**;
+* normally, the latest published version in effect now;
+* for a draft with a **future** `effective_from`, the version in effect **on that
+  date**;
 * when a [release](#catalogue-release) is published, the version **pinned in the
-  release**, if the release pins it.
+  release**, if it pins one.
 
-**Drafts never count**: a code that exists only in the referenced dataset's open
-draft is not accepted. When two datasets change together (a new crop and its
-varieties), **publish the referenced dataset first**, with the same or an earlier
-effective date, then submit the one that refers to it. A failure is
-`G2P-CAT-400`; the message names the referenced dataset, the missing codes and the
-version they were checked against.
+**Drafts never count**: a code only in the referenced dataset's open draft is
+rejected. When two datasets change together (a new crop and its varieties),
+publish the referenced dataset first, with the same or an earlier effective date.
+A failure is `G2P-CAT-400`, naming the referenced dataset, the missing codes and
+the version checked.
 
-Changing a dataset's schema is itself a change and goes through a draft.
+### Change log entries
 
-## Multilingual labels
-
-Datasets, entries and geography levels carry a default label (`display`) and labels
-per language (`display_i18n`); geography units carry `name` and `name_i18n`:
-
-```json
-{ "display": "Maize", "display_i18n": { "am": "በቆሎ", "om": "Boqqolloo" } }
-```
-
-Country packs carry these labels, and they are loaded as they are.
-
-## Owner department and theme
-
-Each dataset, and the geography, has an **`owner_org`**: the department
-responsible for it, shown as the **Publisher**. Datasets and geography created
-without one get the chart's `catalogue.defaultOwnerOrg` (or the loader's
-`geoSeed.ownerOrg`). In `awe` approval mode it is passed to AWE with the approval
-request (see
-[Change control and approvals](change-control.md#awe-through-the-approval-workflow-engine)).
-
-Each dataset also has a **theme** (`domain`): `core` for a country pack's core
-datasets, the pack domain (such as `agriculture`) for a domain's datasets, or what
-a maker set. It is `null` (*Other*) when unknown. The admin UI groups and filters
-datasets by theme, and the public catalogue publishes it as the dataset's theme.
-
-## Visibility and licence
-
-Each dataset, and the geography, has a **`visibility`**: `private` (the default)
-or `public`, and an optional [data licence](public-catalogue.md#data-licence) (`licence_uri`, `licence_label`). Both
-apply at once and are not part of a version. `public` lets the opt-in, anonymous
-[public catalogue](public-catalogue.md) show the **published** versions;
-authenticated reads, including the registries', ignore visibility. The
-country-pack loader never makes anything public.
-
-## Catalogue release
-
-Most consumers pin one or two datasets. Some need **everything** to be
-consistent: a programme cycle, a survey, a national report. For them there are
-**catalogue releases**.
-
-A release is a named set of **dataset versions plus at most one geography
-version**:
-
-| Release `2027.1` | |
-|---|---|
-| `CROP_COMMODITY` | version 4 |
-| `SEED_VARIETY` | version 7 |
-| `UNIT_OF_MEASURE` | version 2 |
-| Geography | version 3 |
-
-A release is `DRAFT` while its members are chosen and `PUBLISHED` once fixed; a
-draft release can be deleted, a published one cannot be changed or deleted.
-Only published versions can be members, and a release must pin at least one
-dataset or a geography version. A release is published by a user with the
-publish permission who is **neither its creator nor whoever last set its
-members**, compared by stable user id. Reading with `release: "2027.1"` gives each
-dataset at the version the release names; reading a dataset the release does not
-pin is an error.
-
-## Change log and change feed
-
-Every lifecycle step is recorded in an append-only **change log**
-(`g2p_catalogue_change_log`): created, draft created, entries or units changed,
-change events recorded, boundary uploaded, submitted, approval requested,
-approved, rejected, published, come into effect, discarded, migrated, settings
-changed, and the release events. Each entry has a monotonically increasing
-`event_id`, an `event_type` (such as `list.version.published`), a `subject_type`
-(`list`, `geo` or `release`), a `subject_id`, the version number, the `actor`
-(stable user id, or a system name), the `actor_name`, the time and details. The
-event types are listed in the
+Each change-log entry has a monotonically increasing `event_id`, an `event_type`
+(such as `list.version.published`), a `subject_type` (`list`, `geo` or
+`release`), a `subject_id`, the version number, the `actor` (stable user id or a
+system name), `actor_name`, the time and details. The event types and WebSub
+topics are in the
 [API reference](api-reference.md#change-feed-and-configuration).
 
-The change log serves three purposes:
+* **Audit.** Every event goes to the [Audit Manager](../audit-manager/README.md),
+  whoever wrote it: the API, the country-pack loader, or the database itself
+  (`*.version.effective`, `*.version.migrated`).
+* **Change feed.** `get_changes` with a cursor (the last `event_id` seen).
+* **Delivery.** The change log is also the outbox for the Audit Manager and the
+  WebSub hub, so delivery is at least once: de-duplicate on `event_id`. See
+  [Change control: audit](change-control.md#audit).
 
-* **Audit.** Every event is sent to the
-  [Audit Manager](../audit-manager/README.md), whoever wrote it: the API, the
-  country-pack loader, or the database itself (`*.version.effective`,
-  `*.version.migrated`).
-* **Change feed.** Consumers read it with `get_changes` and a cursor (the last
-  event id they saw) to learn what was published since.
-* **Push.** When a WebSub hub is configured, MDS also announces published and
-  effective versions and published releases.
-
-The change log is also the **outbox** for these deliveries, so delivery is **at
-least once**. See [Change control: audit](change-control.md#audit) and
-[For consumers](consumers.md#following-changes).
-
-## Where it is stored
-
-The authoritative schema is in the
-[repository](https://github.com/OpenG2P/master-data-service)
-(`models/g2p_catalogue.py` and `catalogue_sql.py`).
-
-| Table | Holds |
-|---|---|
-| `g2p_attributes` (extended) | Datasets, with the columns `description`, `display_i18n`, `attribute_schema`, `owner_org`, `domain`, `visibility`, `licence_uri`, `licence_label`, `current_version_no` |
-| `g2p_list_versions` | One row per dataset version: status, base version, the versioned metadata, change note, `effective_from`, who and when, decision, `approval_ref` |
-| `g2p_list_version_values` | Entries per dataset version |
-| `g2p_geo_versions` | Geography versions, with `country`, `owner_org`, `boundary_objects` (level → object key) and `boundary_checksums` |
-| `g2p_geo_version_levels`, `g2p_geo_version_units` | Levels and units per geography version; units with status and `valid_from` / `valid_to` |
-| `g2p_geo_changes` | Change events (lineage) per geography version |
-| `g2p_catalogue_releases`, `g2p_catalogue_release_members` | Releases and their members |
-| `g2p_catalogue_change_log` | The append-only change log, also the delivery outbox (`forwarded_at` is the only column that ever changes) |
-| `g2p_catalogue_awe_events` | AWE callbacks received, for idempotency |
-| `g2p_catalogue_state` | Catalogue schema version (`schema_version`, now 5), the geography version in effect, the geography's visibility and licence, and `legacy.generation` (bumped whenever the current-state tables are refreshed) |
-| `g2p_attribute_values`, `g2p_geo_levels`, `g2p_geo_level_values` | Unchanged in shape: the materialised **current published** state, `ACTIVE` entries and units only |
+The database tables are listed in
+[Design decisions: storage](design-decisions.md#storage).

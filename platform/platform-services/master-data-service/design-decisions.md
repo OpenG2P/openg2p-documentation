@@ -4,7 +4,7 @@ description: >-
   reference data needs versions, why a service of its own, versioning per
   dataset, effective dates per version, no expiry date on entries,
   classification hierarchies, fixed codes, mappings to international
-  standards, approvals and audit
+  standards, approvals and audit, storage
 ---
 
 # Design Decisions
@@ -59,7 +59,7 @@ Registry is a possible later add-on.
 A **dataset** has versions, not each entry. Every change, to one entry or to
 fifty, goes into a draft. When the draft is approved it becomes the next version
 of the whole dataset. Versions are plain numbers: 1, 2, 3. There is no major or
-minor part. See [Version](concepts.md#version).
+minor part. See [Versions](concepts.md#versions).
 
 ### Why
 
@@ -364,3 +364,20 @@ to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
 * Nothing a consumer reads changes until a version is approved and takes effect.
 * Who changed what, when and why is available from the version history, the change
   feed and the Audit Manager.
+
+## Storage
+
+MDS keeps the original `g2p_attributes` and `g2p_geo_*` tables, extended, and adds
+versioned tables beside them. The schema is in the
+[repository](https://github.com/OpenG2P/master-data-service)
+(`models/g2p_catalogue.py`, `catalogue_sql.py`).
+
+| Tables | Hold |
+|---|---|
+| `g2p_attributes` (extended) | Datasets and their administrative fields |
+| `g2p_list_versions`, `g2p_list_version_values` | Dataset versions and their entries |
+| `g2p_geo_versions`, `g2p_geo_version_levels`, `g2p_geo_version_units`, `g2p_geo_changes` | Geography versions, levels, units and change events |
+| `g2p_catalogue_releases`, `g2p_catalogue_release_members` | Releases and their members |
+| `g2p_catalogue_change_log` | The append-only change log, also the delivery outbox |
+| `g2p_catalogue_awe_events`, `g2p_catalogue_state` | AWE callbacks received; catalogue settings and schema version |
+| `g2p_attribute_values`, `g2p_geo_levels`, `g2p_geo_level_values` | The current published state (active entries and units only), refreshed from the versions |

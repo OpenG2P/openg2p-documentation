@@ -31,7 +31,7 @@ The examples use Ethiopian P-codes (region `ET04` → zone `ET0412` → woreda
 | **Boundaries** | One GeoJSON file per level and version, in the object store |
 
 A geography version has the same lifecycle, effective date and latest / pinned /
-as-of reads as any dataset version; see [Concepts](concepts.md#version).
+as-of reads as any dataset version; see [Concepts](concepts.md#versions).
 
 **Units are never deleted.** When a woreda ceases to exist, the next version keeps
 it as **retired**, with the date it ended. A record holding the old code still
