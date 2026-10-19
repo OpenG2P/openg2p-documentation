@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="680" viewBox="0 0 1000 680" role="img" aria-label="Master Data Service (the catalogue), in three layers. Interfaces: the Admin UI for catalogue administrators, which uses the Staff API, the Staff API for registries and other services, the opt-in Public API for open-data portals and anyone, and a change feed to subscribed systems. Functions: the country pack loader, which loads the country's datasets and geography at install and on upgrade; change control; effective dates with latest, pinned and as-of reads; access control and data policies. Data: datasets, simple or with typed fields that refer to other datasets, and geography with levels, units, boundaries and a crosswalk. MDS relies on IAM, the Approval Workflow Engine, the Audit Manager, an object store and a database."><style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.t{font-size:13.5px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11px;fill:#3B4640}
+.cap{font-size:10px;letter-spacing:.08em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
+.actor{fill:#FFFFFF;stroke:#8A948E;stroke-width:1.2}
+.mds{fill:#FCFAF4;stroke:#A88A3D;stroke-width:2}
+.if{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.3}
+.ifp{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.3}
+.fn{fill:#FFFFFF;stroke:#A88A3D;stroke-width:1.2}
+.data{fill:#F3E9CC;stroke:#A88A3D;stroke-width:1.3}
+.sup{fill:#F3F4F3;stroke:#8A948E;stroke-width:1.2;stroke-dasharray:5 4}
+.ar{stroke:#3B4640;stroke-width:1.4;fill:none} .ar.d{stroke-dasharray:4 4;stroke:#8A948E}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+
+<!-- users of each interface -->
+<rect class="actor" x="196" y="16" width="180" height="56" rx="8"/>
+<text class="t" x="210" y="40">Catalogue administrators</text>
+<text class="s" x="210" y="58">maintain the data</text>
+<rect class="actor" x="392" y="16" width="180" height="56" rx="8"/>
+<text class="t" x="406" y="40">Registries and services</text>
+<text class="s" x="406" y="58">any sector; maps, dashboards</text>
+<rect class="actor" x="588" y="16" width="180" height="56" rx="8"/>
+<text class="t" x="602" y="40">Open-data portals, anyone</text>
+<text class="s" x="602" y="58">no login</text>
+<rect class="actor" x="784" y="16" width="180" height="56" rx="8"/>
+<text class="t" x="798" y="40">Subscribed systems</text>
+<text class="s" x="798" y="58">told when data changes</text>
+
+<!-- MDS -->
+<rect class="mds" x="180" y="104" width="800" height="412" rx="12"/>
+<text class="t" x="964" y="128" text-anchor="end">Master Data Service (Catalogue)</text>
+
+<text class="cap" x="196" y="152">INTERFACES</text>
+<rect class="if" x="196" y="160" width="180" height="50" rx="7"/>
+<text class="t" x="210" y="182">Admin UI</text><text class="s" x="210" y="199">edit, submit, approve</text>
+<rect class="if" x="392" y="160" width="180" height="50" rx="7"/>
+<text class="t" x="406" y="182">Staff API</text><text class="s" x="406" y="199">signed-in users and services</text>
+<rect class="ifp" x="588" y="160" width="180" height="50" rx="7"/>
+<text class="t" x="602" y="182">Public API</text><text class="s" x="602" y="199">opt-in; CSV, GeoJSON, DCAT</text>
+<rect class="if" x="784" y="160" width="180" height="50" rx="7"/>
+<text class="t" x="798" y="182">Change feed</text><text class="s" x="798" y="199">events on each new version</text>
+
+<text class="cap" x="196" y="240">FUNCTIONS</text>
+<rect class="fn" x="196" y="248" width="180" height="66" rx="7"/>
+<text class="t" x="210" y="270">Country pack loader</text><text class="s" x="210" y="287">loads the country's data</text><text class="s" x="210" y="302">at install and on upgrade</text>
+<rect class="fn" x="392" y="248" width="180" height="66" rx="7"/>
+<text class="t" x="406" y="270">Change control</text><text class="s" x="406" y="287">drafts and approval;</text><text class="s" x="406" y="302">published versions are fixed</text>
+<rect class="fn" x="588" y="248" width="180" height="66" rx="7"/>
+<text class="t" x="602" y="270">Effective dates</text><text class="s" x="602" y="287">staged changes; read latest,</text><text class="s" x="602" y="302">a pinned version or as of a date</text>
+<rect class="fn" x="784" y="248" width="180" height="66" rx="7"/>
+<text class="t" x="798" y="270">Access control</text><text class="s" x="798" y="287">permissions; data policies</text><text class="s" x="798" y="302">narrow what staff see</text>
+
+<text class="cap" x="196" y="344">DATA</text>
+<rect class="data" x="196" y="352" width="376" height="96" rx="7"/>
+<text class="t" x="210" y="374">Datasets</text><text class="s" x="210" y="392">simple lists of entries (e.g. gender, units, crops), or entries with</text><text class="s" x="210" y="407">typed fields that refer to other datasets (e.g. a seed variety's crop);</text><text class="s" x="210" y="422">codes, labels per language, parent entries (hierarchy)</text>
+<rect class="data" x="588" y="352" width="376" height="96" rx="7"/>
+<text class="t" x="602" y="374">Geography</text><text class="s" x="602" y="392">administrative levels and units (P-codes), boundary files per level,</text><text class="s" x="602" y="407">change events (split, merge, rename) and a crosswalk from old</text><text class="s" x="602" y="422">to new units</text>
+
+<text class="s" x="196" y="476">Each dataset and the geography are versioned as a whole. One deployment per country.</text>
+<text class="s" x="196" y="493">Codes are the country's own and never change once published.</text>
+
+<!-- country pack -->
+<rect class="actor" x="16" y="248" width="144" height="66" rx="8"/>
+<text class="t" x="30" y="272">Country pack</text><text class="s" x="30" y="289">datasets and geography</text><text class="s" x="30" y="304">of one country</text>
+<line class="ar" x1="160" y1="281" x2="194" y2="281" marker-end="url(#a)"/>
+
+<!-- users and interfaces -->
+<line class="ar" x1="286" y1="74" x2="286" y2="158" marker-end="url(#a)" marker-start="url(#a)"/>
+<line class="ar" x1="482" y1="74" x2="482" y2="158" marker-end="url(#a)" marker-start="url(#a)"/>
+<line class="ar" x1="678" y1="74" x2="678" y2="158" marker-end="url(#a)" marker-start="url(#a)"/>
+<line class="ar" x1="874" y1="158" x2="874" y2="74" marker-end="url(#a)"/>
+
+<!-- Admin UI uses the Staff API -->
+<line class="ar" x1="376" y1="185" x2="390" y2="185" marker-end="url(#a)"/>
+
+<!-- platform services -->
+<text class="cap" x="196" y="552">RELIES ON (PLATFORM SERVICES)</text>
+<rect class="sup" x="196" y="562" width="140" height="52" rx="7"/><text class="t" x="210" y="584">IAM</text><text class="s" x="210" y="601">login, roles, policies</text>
+<rect class="sup" x="352" y="562" width="140" height="52" rx="7"/><text class="t" x="366" y="584">AWE</text><text class="s" x="366" y="601">approval workflows</text>
+<rect class="sup" x="508" y="562" width="140" height="52" rx="7"/><text class="t" x="522" y="584">Audit Manager</text><text class="s" x="522" y="601">every call and change</text>
+<rect class="sup" x="664" y="562" width="140" height="52" rx="7"/><text class="t" x="678" y="584">Object store</text><text class="s" x="678" y="601">boundary files (S3)</text>
+<rect class="sup" x="820" y="562" width="144" height="52" rx="7"/><text class="t" x="834" y="584">PostgreSQL</text><text class="s" x="834" y="601">the catalogue's data</text>
+<line class="ar d" x1="266" y1="516" x2="266" y2="560"/>
+<line class="ar d" x1="422" y1="516" x2="422" y2="560"/>
+<line class="ar d" x1="578" y1="516" x2="578" y2="560"/>
+<line class="ar d" x1="734" y1="516" x2="734" y2="560"/>
+<line class="ar d" x1="892" y1="516" x2="892" y2="560"/>
+
+<text class="s" x="16" y="652">Consumers read datasets and geography live, keep only the codes in their own records, and can pin a version for stability.</text>
+</svg>

@@ -18,7 +18,7 @@ description: >-
 Agri Stack is the digital public infrastructure (DPI) for agriculture. It has four parts:
 
 * **Registries:** the functional registries (farmer, crop sown, livestock, DA), each run by its department.
-* **Catalogues:** the reference data every registry uses (datasets such as crop types and units, reference entities such as seed varieties, geography).
+* **Catalogues:** the reference data every registry uses (datasets such as crop types, units and seed varieties, geography).
 * **Platform services:** Partner Management, Consent Manager and Audit Manager. Every install has its own.
 * **The Exchange** (the data exchange layer): where service providers (banks, MFIs, agritechs: **partners**) onboard once and use one farmer consent across registries: the partner portal, the Exchange's own Consent Manager and Partner Management, eSignet, and the Composite (the Exchange's use-case service).
 
@@ -43,7 +43,7 @@ All registries are keyed to the same national identifier (Fayda in the reference
 
 | Service | Role in Agri Stack |
 | --- | --- |
-| **Catalogues** | All reference data, defined once for the country; registries hold none of their own: datasets (the core datasets plus the agriculture theme of the country pack in use; ETH ships, its crops following the Ministry of Agriculture's crop variety list; see [catalogue content](open-items/catalogue-content.md)), reference entities, geography, sample people. Served by the OpenG2P [Master Data Service](../platform/platform-services/master-data-service/README.md). Versions, approvals and a change feed: see [how MDS works](../platform/platform-services/master-data-service/README.md#how-it-works) and [open items](open-items/README.md#catalogues) |
+| **Catalogues** | All reference data, defined once for the country; registries hold none of their own: datasets (the core datasets plus the agriculture theme of the country pack in use; ETH ships, its crops following the Ministry of Agriculture's crop variety list; see [catalogue content](open-items/catalogue-content.md)), geography, sample people. Served by the OpenG2P [Master Data Service](../platform/platform-services/master-data-service/README.md). Versions, approvals and a change feed: see [how MDS works](../platform/platform-services/master-data-service/README.md#key-features) and [open items](open-items/README.md#catalogues) |
 | [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the Composite): identities and public keys. One per install |
 | [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the Exchange's CM collects consents and issues a consent token per registry |
 | **Composite** (in the Exchange) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |

@@ -1,189 +1,100 @@
 ---
 description: >-
-  The platform's catalogue: versioned datasets, reference entities and
-  geography, with drafts, approvals, releases, a change feed and an opt-in
-  public catalogue
+  The platform's catalogue of reference data: versioned datasets, reference
+  entities and geography, with approvals, a change feed and an opt-in public
+  catalogue
 ---
 
-# Master Data Service
+# Master Data Service (Catalogue)
 
-The **Master Data Service (MDS)** is the platform's **catalogue**, also called
-*Master Data Service (Catalogue)*. It keeps the reference data that more than one
-service needs, so it is defined once and reused everywhere. Its data is:
+A **catalogue** is the single, governed home of a country's **reference data**:
+the datasets and geography that many systems use but none of
+them owns. Examples are genders, education levels, units of measure, benefit
+types, crops or administrative areas.
 
-* **governed:** every change goes through a draft that is approved before it is
-  published;
-* **versioned:** every published version is kept and can be read again;
-* **pinnable:** a consumer can say exactly which version it used.
+The **Master Data Service (MDS)** is OpenG2P's catalogue. It defines each piece of
+reference data once, for every service in the deployment. Every change is
+approved before it is published, every published version is kept, and a consumer
+can always say exactly which version it used. MDS is generic: it serves any sector
+(social protection, agriculture, health, …). The examples on these pages use one
+country pack (Ethiopia) and a few sectors.
 
-## Why reference data needs versions
+<figure><img src="../../../.gitbook/assets/master-data-service-overview.svg" alt="Master Data Service in three layers. Interfaces: the Admin UI for catalogue administrators, which uses the Staff API; the Staff API for registries and other services; the opt-in Public API for open-data portals and anyone; a change feed to subscribed systems. Functions: the country pack loader, change control, effective dates, access control. Data: datasets and geography. It relies on IAM, AWE, the Audit Manager, an object store and PostgreSQL."><figcaption><p>What MDS holds, what it does, and who uses it</p></figcaption></figure>
 
-Reference data looks static, but it changes. A ministry adds a disability type,
-renames a benefit category, adds seed varieties every season, retires a unit of
-measure. A district is split in two, two villages are merged, a province is
-renamed. Systems that build on the data need to know which version they used:
+## What it holds
 
-* **A programme defines entitlements against a dataset.** A cash transfer for
-  "households with a member with a severe disability", or a subsidy for "improved
-  seed varieties of maize", names a set of entries. If the dataset changes under
-  it, the programme's eligibility changes too.
-* **A registry records codes.** A person recorded in district `ET041203` in 2026
-  must still resolve after that district is split in 2027, and a report must be
-  able to say where those people belong now.
-* **Two services must agree.** A registry and a payment system that read the same
-  dataset at different moments may see different entries.
+MDS holds reference data only:
 
-The examples on these pages use the shipped country pack (Ethiopia's P-codes, where
-a district is a *woreda*) and datasets from several sectors.
+| | What it is | Example |
+|---|---|---|
+| **Datasets** | A country's own lists. A dataset holds **entries**: each a code and labels, and optionally typed fields that refer to other datasets. Each dataset has a **theme** (Core, or a sector) | Gender, units of measure, disability type; a seed variety with its crop and maturity days |
+| **Geography** | The administrative hierarchy: levels, every unit with its code (P-code), and its boundaries | Country → region → zone → woreda |
+| **Releases** | Named sets of pinned dataset and geography versions | "2027.1" for a census round |
+| **Sample people** | A few dozen made-up people and households from the country pack, for **testing and demos only** | — |
 
-So the rule is: **a consumer that defined something against a version is never
-switched to another version silently.** It reads the latest version when it wants
-the latest, pins a version when it needs stability, and moves deliberately.
-
-## What it contains
-
-* **Datasets.** The country's own vocabularies and reference entities: gender,
-  education level, water source, crop, seed variety, and so on. A dataset holds
-  **entries** (a code and labels, optionally typed fields) and has a **theme**
-  (such as Core, or a sector such as Agriculture).
-* **Geography.** The country's administrative hierarchy: levels, every unit with
-  its **P-code**, change events (split, merge, rename, …) and boundary files per
-  version.
-* **Releases.** Named sets of pinned dataset and geography versions.
-* **Sample people.** A few dozen made-up individuals and households from the
-  country pack, for **testing and demos only**.
-
-MDS holds **no partners**: partner organisations and their keys are in
-[Partner Management](../partner-management/README.md).
-
-Datasets, geography and sample people first arrive from a **country pack**. What
-a pack is, and how a country is configured end to end, is in
-[Country Data Architecture](../../country-data-architecture.md). How a pack
-loads, and how an older MDS is migrated, is in
+MDS holds no partners (see [Partner Management](../partner-management/README.md))
+and no registry records. All data first arrives from a **country pack**; see
 [Country Packs and Migration](country-packs-and-migration.md).
 
-The admin UI says datasets, entries and themes. The API keeps its own names
-(`list_code`, `value_code`, `domain`); see
-[Names in the API](api-reference.md#names-in-the-api).
+## Key features
 
-## How it works
-
-| | |
-|---|---|
-| **Versions** | Each dataset, and the geography, has numbered versions. A published version is immutable; entries and units are retired in a later version, never deleted. See [Concepts](concepts.md#version) |
-| **Reads** | `latest`, a pinned version number, a date (`as_of`) or a release. Every response says which version it came from. See [Concepts](concepts.md#reading-latest-pinned-as-of-release) |
-| **Effective dates** | A version has an `effective_from`, which may be in the future |
-| **Typed fields and labels** | A dataset may declare a schema for its entries' fields, including references to other datasets. Labels can be given per language |
-| **Change control** | Edits go into a draft. The draft is submitted and approved (maker-checker, or through the Approval Workflow Engine) before it is published. See [Change Control and Approvals](change-control.md) |
-| **Geography changes** | The geography is versioned as one dataset. Change events (split, merge, rename, …) link old units to new, and a crosswalk maps codes across versions. See [Geography and Boundary Changes](geography.md) |
-| **Change feed** | Every step is in an append-only change log, readable with a cursor, sent to the Audit Manager and, optionally, to WebSub |
-| **Audit** | Every API call, and every catalogue change, is recorded in the Audit Manager |
-| **Public catalogue** | Opt-in and off by default: datasets and geography marked public can be read anonymously, with downloads, DCAT and SKOS. See [Public Catalogue](public-catalogue.md) |
-
-The original `/attributes` and `/geo` endpoints keep their shapes and show the
-current published data; their writes go into the open draft. See
-[What the legacy write endpoints do now](change-control.md#what-the-legacy-write-endpoints-do-now).
-The standards MDS uses are on [Standards](standards.md).
-
-{% hint style="info" %}
-**Why MDS rather than another product.** Catalogues could have been built on the
-registry platform (as registers) or on an existing open-source product. The
-**GeoPrism Registry** was evaluated: it has strong temporal geography, but its
-versioning and approvals cover only geographic lists, it runs on Java and
-OrientDB, and it has no Helm chart or Keycloak integration. MDS borrows its ideas
-of **working and published versions** and **split/merge lineage**. An import
-adapter from GeoPrism or the Common Geo Registry is a possible later add-on.
-{% endhint %}
-
-## What it serves, and to whom
-
-| Consumer | What it takes | How |
+| Feature | In one line | More |
 |---|---|---|
-| **Registries** (NSR, Farmer Registry, …) | Datasets and geography | At **runtime**, through the `/catalogue` API (versioned, cached, following the change feed). The staff UI fills its dropdowns from the `/attributes` and `/geo` endpoints, and a form's geography levels from `/catalogue/get_geo_levels`. The registry keeps no copy |
-| **Registry seed scripts** | Datasets, geography, sample people | At **install**, through the API (`/catalogue`, and `/samples` for demo data) |
-| **Staff portal screens** | Geography units, level by level | At **runtime**, via `/geo`; this fills cascading address dropdowns |
-| **PBMS, Bridge, SPAR** | Geography lookups | At runtime, via `/geo` |
-| **Maps** | Boundary GeoJSON per level and version | `get_geo_boundary`, or the public download when the geography is public |
-| **Open-data portals, other websites** | Public datasets and geography | The opt-in [public catalogue](public-catalogue.md) (`/public`, anonymous) |
+| **Versioned datasets and geography** | Every dataset, and the geography, has numbered versions. A consumer reads the latest, pins a version, or reads as of a date | [Concepts](concepts.md#reading-latest-pinned-as-of-release) |
+| **Effective dates and staged changes** | A version can be approved now and take effect on a future date | [Concepts](concepts.md#effective-dates) |
+| **Change control with approvals** | Edits go into a draft, which is submitted and approved by another person (maker-checker) or through the Approval Workflow Engine | [Change Control](change-control.md) |
+| **Codes fixed once published** | Labels can change; codes cannot. A recode is a retire plus an add. Entries are retired, never deleted | [Concepts](concepts.md#codes-are-fixed-once-published) |
+| **Typed fields and references** | Entries can carry typed fields, a parent (hierarchy) and references to other datasets (cross-classification) | [Concepts](concepts.md#typed-attributes) |
+| **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#multilingual-labels) |
+| **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old codes to new. Boundaries are kept per version | [Geography](geography.md) |
+| **Change feed** | Every change is in an ordered feed, also pushed to WebSub | [For Consumers](consumers.md#following-changes) |
+| **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS | [Public Catalogue](public-catalogue.md) |
+| **Audit** | Every change and every API call is sent to the Audit Manager | [Change Control](change-control.md#audit) |
+| **Data policies for staff** | Some reads are filtered by the caller's IAM data policy (for example, which geography units a staff member sees) | [API Reference](api-reference.md#authentication-and-permissions) |
+| **One deployment per country** | A deployment is seeded with exactly one country pack. A second country needs a second deployment, so registry images stay country-neutral | [Deployment](deployment.md) |
 
-{% hint style="warning" %}
-**Registries depend on MDS at runtime for data entry.** A registry's dropdowns
-read datasets and geography from MDS. While MDS is unavailable they are empty, so
-new records cannot be completed. Records already stored are unaffected: they hold
-the codes.
-{% endhint %}
+Why MDS is built this way is on [Design Decisions](design-decisions.md). The
+standards it uses are on [Standards](standards.md).
 
-How consumers should read, cache and pin is in [For Consumers](consumers.md).
-The endpoints are on [API Reference](api-reference.md).
+## Who uses it
 
-## One deployment serves one country
+| Consumer | Uses |
+|---|---|
+| **Registries** | Datasets and geography for data entry and validation, read live |
+| **Other OpenG2P services** (PBMS, Bridge, SPAR, reporting) | Geography and dataset lookups |
+| **Maps** | Boundary files per level and version |
+| **Open-data portals and other websites** | Public datasets and geography, through the [public catalogue](public-catalogue.md) |
 
-MDS is **single-tenant with respect to country**. A deployment is seeded with
-exactly one country pack, declared in one place:
-
-```yaml
-geoSeed:
-  countryPack: ETH      # chart default: XKM, the fictitious demo country
-```
-
-Everything MDS holds belongs to that pack. There is no country dimension on the
-data; serving a second country means a second deployment. This keeps registry
-images country-agnostic: the same registry build serves Ethiopia or Kamuntu
-depending only on the pack the MDS beside it was seeded with.
-
-## Source code
-
-* **Repository:** [`github.com/OpenG2P/master-data-service`](https://github.com/OpenG2P/master-data-service)
-
-One repository holds the FastAPI application (`master-data-api`), the admin UI
-(`master-data-ui`), the Docker image builds, the Helm chart and the country-pack
-loader (`docker/db-seed`). The OpenAPI spec is generated into
-`docs/openapi/openapi-master-data.json`. Chart and image versions are on
-[Versions](versions.md).
+How to read, cache, pin and follow changes is on [For Consumers](consumers.md).
+Catalogue administrators manage the data in the [Admin UI](ui.md); the
+[Admin Guide](admin-guide.md) has the common tasks.
 
 ## Deployment
 
-MDS is **not installed on its own**. It ships as part of the
-**`commons-services`** Helm chart, alongside the other shared platform services.
+MDS ships inside the **`commons-services`** Helm chart; it is not installed on
+its own. The country pack is chosen in the chart's **Country Pack** group. See
+[Deployment](deployment.md).
 
-* **Chart repository:** [`github.com/OpenG2P/commons`](https://github.com/OpenG2P/commons)
+## Source code and versions
 
-{% hint style="warning" %}
-**Version bumps must be made in `commons-services`.** Publishing a new MDS chart
-or image does not change any deployment by itself: the version pinned in
-`commons-services` is what an install gets.
-{% endhint %}
-
-Settings that matter at install. In `commons-services` they sit under
-`masterData.` (for example `masterData.geoSeed.countryPack`); its Rancher form
-shows the first four in the **Country Pack** group.
-
-| Setting | Rancher label | Notes |
-|---|---|---|
-| `geoSeed.countryPack` | Country Pack | `ETH` or `XKM` (the fictitious demo country). The MDS chart alone defaults to `XKM`; the `commons-services` form to `ETH` |
-| `geoSeed.domains` | Dataset Themes | Themes (pack domains) to load besides the core datasets, as a list or comma-separated. Default `agriculture`; a theme the pack lacks is skipped with a warning |
-| `geoSeed.load.codelists` | Load Datasets | On by default |
-| `geoSeed.load.samples` | Load Sample People | On by default. Turn it off in production |
-| `geoSeed.load.geo` | Load Geography (MDS chart form only) | On by default |
-| `masterDataAPI.catalogue.approvalMode` | — | `permission` (default) or `awe`. See [Approval modes](change-control.md#approval-modes) |
-| `masterDataAPI.catalogue.public.*` | Public catalogue group (MDS chart form only) | Off by default. See [Public Catalogue](public-catalogue.md#deployment) |
-| `iamRegister.runAsHook` | — | `true` (MDS chart default): the IAM registration Job runs as a Helm hook. `false`: a regular resource; `commons-services` sets `false`, because an umbrella chart chains or skips hooks |
-
-The loader's other flags are in
-[Country Packs and Migration](country-packs-and-migration.md).
+* **Repository:** [`github.com/OpenG2P/master-data-service`](https://github.com/OpenG2P/master-data-service)
+  (API, admin UI, Helm chart and country-pack loader).
+* **Versions and changelog:** [Versions](versions.md).
 
 ## Pages
 
 | Page | What it covers |
 |---|---|
-| [Concepts](concepts.md) | Datasets and entries, versions and their lifecycle, effective dates, latest / pinned / as-of reads, retired entries, codes fixed once published, typed fields and lists of references, labels, owner and theme, visibility, releases, the change log, storage |
-| [Design Decisions](design-decisions.md) | Why MDS is designed as it is: versioning per dataset, effective dates per version, no expiry date on entries, classification hierarchy, fixed codes, mapping to international standards, approvals and audit |
-| [Geography and Boundary Changes](geography.md) | Why geography is versioned as one dataset, change events with worked examples, future-effective changes, the crosswalk, boundaries in MinIO, what consumers do when geography changes |
-| [Change Control and Approvals](change-control.md) | Drafts, submit, approval modes (maker-checker or AWE), permissions and roles, audit, what the original write endpoints do now |
-| [Country Packs and Migration](country-packs-and-migration.md) | First and later pack loads, loader flags, boundaries, licences, migration of existing data to version 1 |
-| [For Consumers](consumers.md) | How registries, PBMS and other services read, cache, pin and follow changes |
-| [Admin UI](ui.md) | The Master Data admin UI (`master-data-ui`): catalogue overview, datasets, versions, drafts, approvals, geography, releases and activity |
-| [Public Catalogue](public-catalogue.md) | Visibility and licence, the anonymous `/public` API, downloads, DCAT and SKOS, deployment settings |
-| [API Reference](api-reference.md) | Every MDS endpoint, on one page |
-| [Standards](standards.md) | Every standard MDS uses, where, and how fully |
+| [Concepts](concepts.md) | Datasets and entries, versions, effective dates, reads, retired entries, fixed codes, typed fields, labels, releases, the change log |
+| [Design Decisions](design-decisions.md) | Why reference data needs versions, and why MDS is designed as it is |
+| [Geography and Boundary Changes](geography.md) | How geography and boundaries are represented, change events, the crosswalk |
+| [Change Control and Approvals](change-control.md) | Drafts, approval modes, permissions, audit |
+| [Country Packs and Migration](country-packs-and-migration.md) | How a country pack loads, and how an older MDS is migrated |
+| [For Consumers](consumers.md) | Who reads MDS, and how to read, cache, pin and follow changes |
+| [Admin UI](ui.md) | The screens of the admin UI |
+| [Admin Guide](admin-guide.md) | Step-by-step tasks for catalogue administrators |
+| [Public Catalogue](public-catalogue.md) | The opt-in, anonymous catalogue for other websites |
+| [Deployment](deployment.md) | Installing MDS and its settings |
+| [API Reference](api-reference.md) | Every endpoint |
+| [Standards](standards.md) | The standards MDS uses |
 | [Versions](versions.md) | Chart and image versions, and the changelog |

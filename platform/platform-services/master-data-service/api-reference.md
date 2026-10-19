@@ -436,9 +436,22 @@ existing consumers (the registry staff UI fills dropdowns from them).
   filtered by the caller's data policy. `/attributes` reads add
   `current_version_no` and `list_versions`. For other versions use the
   `/catalogue` reads.
-* **Writes** no longer change published data: they edit the open **draft**,
-  which must then be submitted and approved. See
-  [What the legacy write endpoints do now](change-control.md#what-the-legacy-write-endpoints-do-now).
+* **Writes** no longer change published data: they edit the open **draft**
+  (opening one from the highest published version if none is open), which must
+  then be submitted and approved. They return the changed object as before, not
+  the draft, and fail while the draft is `SUBMITTED`. See
+  [Change control](change-control.md#what-the-original-write-endpoints-do-now).
+
+| Endpoint | Before versioning | Now |
+|---|---|---|
+| `add_attribute` | Created a live dataset | Creates the dataset with an empty draft (version 1). It appears in `get_all_attributes` at once, with `current_version_no: null` and no entries |
+| `update_attribute` | Changed a dataset | Changes the code, label or hierarchy flag in the draft |
+| `delete_attribute` | Deleted a dataset | Deletes a dataset never published. A published dataset is never deleted: all its entries are retired in the draft. Existing entries block it unless `cascade` is set |
+| `add_attribute_value` | Added a live entry | Adds the entry to the draft |
+| `update_attribute_value` | Changed a live entry | Changes the entry in the draft. A published entry's code is refused (`G2P-CAT-CODE-IMMUTABLE`) |
+| `delete_attribute_value` | Deleted a live entry | Retires the entry in the draft (removes it if new in the draft); refused while it has active children |
+| `add_geo_level`, `update_geo_level`, `delete_geo_level` | Changed live levels | Change the levels in the geography draft; a level is removed only if it has no child levels and no units |
+| `add_geo_level_value`, `update_geo_level_value`, `delete_geo_level_value` | Changed live units | Add, change or retire the unit in the geography draft |
 
 {% hint style="danger" %}
 **Registries store these codes.** Do not change or retire an entry that records
@@ -565,6 +578,33 @@ their **published** versions. Plain JSON (JSON-LD for DCAT and SKOS); errors are
 `Last-Modified` and `Cache-Control`, allow any origin (CORS), and are rate
 limited per client IP. See [Public catalogue](public-catalogue.md).
 
+* **Version:** `version` (a published version number, or `latest`, the default)
+  or `as_of` (date-time). `version=draft` is refused (400). Retired entries and
+  units are left out unless `include_retired=true`. Entries and units are paged
+  (`page_size` up to 5000).
+* **Caching:** `If-None-Match` gives 304; `Last-Modified` is the version's
+  publication time and `If-Modified-Since` is honoured;
+  `Cache-Control: public, max-age=<cacheSeconds>`.
+* **Rate limit:** per client IP and API worker (default 60 a minute, also the
+  burst); over it, 429 with `Retry-After`. The client IP is read from
+  `X-Forwarded-For`, `trustedProxyHops` entries from the right.
+* **Audit:** anonymous failures (404, 429) are sent to the Audit Manager;
+  successes are not.
+* **Links** in DCAT, SKOS and JSON are absolute: based on `catalogue.public.baseUrl`
+  when set, else on the request (`X-Forwarded-Proto`, `X-Forwarded-Host`). Plain
+  labels in SKOS and DCAT use `public_catalogue_default_language` (default `en`).
+
+| Download | Columns / content |
+|---|---|
+| Dataset CSV | `code`, `label`, `label_<lang>` per language, `parent_code`, `sort_order`, `status`, `attributes` (JSON), `roles` (JSON) |
+| Dataset JSON | As `entries`, for the whole version |
+| Units CSV | `unit_id`, `name`, `name_<lang>` per language, `level`, `parent_unit_id`, `status`, `valid_from`, `valid_to` |
+| Boundaries GeoJSON | The version's boundary file for the level, as loaded, streamed from the object store |
+
+Downloads are named like `CROP_COMMODITY-v4.csv` and
+`geography-v2-woreda.geojson`, and are generated or streamed on request; no
+bucket is made public.
+
 | Operation | Permission | Summary |
 |---|---|---|
 | `GET /public/catalog` | None (anonymous) | DCAT catalogue (JSON-LD) |
@@ -650,11 +690,25 @@ platform.
 
 ### AWE callback
 
-In `awe` approval mode, AWE posts its decision here. It is for AWE only:
-authenticated by an HMAC signature (`X-Approval-Signature`,
-`X-Approval-Timestamp`, `X-Approval-Event-Id`), not a user token, and without the
-envelope. Idempotent on `event_id`. See
-[Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
+In `awe` approval mode, AWE posts its decision here
+(`POST /catalogue/awe/callback`). It is for AWE only: no user token and no
+envelope, but an HMAC signature, as in the
+[registry's AWE integration](../approval-workflow-engine/integration-with-registry.md):
+`X-Approval-Signature: sha256=HMAC_SHA256(secret, "<X-Approval-Timestamp>." + body)`,
+with `X-Approval-Timestamp` (within 300 s) and `X-Approval-Event-Id`. The body is
+AWE's webhook event. `request_approved` publishes the version;
+`request_rejected` and `request_cancelled` mark it `REJECTED`. The decision is
+recorded with the actor AWE reports (or `awe`). Idempotent on `event_id`; answers
+401 for a bad signature and 422 for an event that cannot be applied.
+
+| | Datasets | Geography |
+|---|---|---|
+| Policy key | `master_data.list_version.v1` (`awe.policyKeyList`) | `master_data.geo_version.v1` (`awe.policyKeyGeo`) |
+| Artifact type | `master_data.list_version` | `master_data.geo_version` |
+| Artifact id | `<list_id>:<version_no>` | `geography:<version_no>` |
+| Context | `list_code`, `list_id`, `version_no`, `owner_org`, `change_note` | `version_no`, `owner_org`, `country`, `change_note` |
+
+See [Change control: AWE](change-control.md#awe-through-the-approval-workflow-engine).
 
 {% openapi-operation spec="master-data-api" path="/catalogue/awe/callback" method="post" %}
 [OpenAPI master-data-api](https://raw.githubusercontent.com/OpenG2P/master-data-service/develop/docs/openapi/openapi-master-data.json)

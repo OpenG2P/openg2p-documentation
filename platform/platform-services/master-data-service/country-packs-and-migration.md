@@ -1,237 +1,124 @@
 ---
 description: >-
-  How country packs load into MDS (version 1 on first load, drafts
-  on later loads), where boundaries go, and how an existing MDS is migrated
+  How a country pack loads into MDS (version 1 on first load, drafts on later
+  loads), the loader settings, licences, and how an MDS installed before
+  versioning is migrated
 ---
 
 # Country Packs and Migration
 
-A [country pack](../../country-data-architecture.md) is still how a country's
-data first reaches MDS. What changes is what a load does to data that is already
-there: **a pack never overwrites published data.**
+A **country pack** is a folder of a country's data: its geography, its datasets
+and a few sample people. What a pack contains, where packs live and how to build
+one are on [Country Data Architecture](../../country-data-architecture.md). This
+page is about what happens when a pack is loaded into MDS.
 
-The pack loader (`docker/db-seed/load_geo_pack.py`) runs in the chart's geo-seed
-Job after the API has created the catalogue schema: the Job waits until
-`g2p_catalogue_state.schema_version` reaches the catalogue schema version it was
-built for (`CATALOGUE_SCHEMA_VERSION`, currently **5**, set in the Job and kept
-equal to the API's), and the loader itself refuses to run against an older
-schema. It decides **per subject**: each dataset, and the geography, is handled on
-its own.
+The rule is: **a pack never overwrites published data.**
 
-## First load of a subject: version 1, published
+The loader runs as a Job in the MDS chart, after the API has prepared the
+database. It handles each dataset, and the geography, on its own.
 
-A dataset that does not exist yet, or the geography when it has no version yet, is
-loaded as **version 1** and **published directly**:
+## First load: version 1, published
 
-* each such dataset in the pack becomes version 1 of that dataset, `PUBLISHED`;
-* the pack's levels and units become **geography version 1**, `PUBLISHED`;
-* the pack's boundary files are uploaded to MinIO under the version 1 keys,
-  `geo/<country>/v1/<level>.geojson`;
-* the current-state tables (`g2p_attributes`, `g2p_attribute_values`,
-  `g2p_geo_levels`, `g2p_geo_level_values`) are filled as before, so registries
-  work immediately.
+A dataset that does not exist yet, or the geography when it has no version yet,
+is loaded as **version 1** and **published at once**. There is nothing published
+to protect yet, so no approval is needed. Registries can use the data immediately.
 
-Version 1 is effective from the moment of the load. This applies on a fresh
-install, and equally later to a dataset that appears for the first time: a dataset
-added in a newer pack release, or a theme (such as `agriculture`) enabled after the
-first install. There is no approval step: there is
-nothing published to protect yet. This is the loader's `--publish-initial`
-behaviour, on by default (chart `geoSeed.publishInitial: true`);
-`--no-publish-initial` (`publishInitial: false`) leaves version 1 as a draft for
-approval instead.
-
-Labels in other languages (`display_i18n`, `name_i18n`), P-codes, each entry's
-`roles`, `attributes`, a dataset's `attribute_schema`, and its `description` and
-`owner_org` (default `geoSeed.ownerOrg`) are kept as the pack gives them.
-
-Each dataset's theme (`domain`) is set to `core` for the pack's core folder
-(`codelists/`) and to the domain name for `domains/<domain>/` (datasets a domain's
-SQL fixtures add get that theme too). A later load fills the theme of a dataset
-that has none (one loaded before the field existed) and never changes one already
-set; it is not versioned, so no draft is created for it. A requested theme the
-pack does not have is skipped with a warning; the load does not fail.
+This applies on a fresh install, and later to any dataset that appears for the
+first time (a dataset added in a newer pack, or a theme turned on after install).
+Labels in every language, codes, typed fields, schemas, descriptions and the
+publisher are kept as the pack gives them. Each dataset gets its theme from the
+pack folder it came from (Core, or the theme's name, such as Agriculture).
 
 ## Later loads: drafts, not overwrites
 
-When a subject already has a published version, the loader compares the pack with
-the **highest published version**:
+When a dataset or the geography already has a published version, the loader
+compares the pack with it:
 
-* a dataset whose entries or versioned metadata **differ** gets a **draft**: new
-  entries added, changed entries updated, and entries missing from the pack
-  **retired** (never deleted);
-* a dataset that is **unchanged** is left alone; no version is created, so re-running
-  the loader is a no-op;
-* if the geography differs (levels, units or boundary files), a **geography
-  draft** is created: new units added, changed units updated, units missing from
-  the pack **retired**, and changed boundary files uploaded under the draft's keys.
-  Levels missing from the pack are kept, with a warning;
-* a subject that already has an **open draft** (`DRAFT` or `SUBMITTED`) is
-  skipped, as is a dataset that exists but was never published.
+| Pack compared with the published version | What the loader does |
+|---|---|
+| Unchanged | Nothing. Re-running the loader is safe |
+| Different | Creates a **draft**: new entries or units added, changed ones updated, missing ones **retired** (never deleted). For geography, changed boundary files are uploaded to the draft |
+| An open draft already exists | Skips it |
 
-A dataset's `description` and `owner_org`, which are not versioned, are updated in
-place when the pack changes them.
+The drafts are left as **drafts, not submitted**. Someone reviews the difference,
+submits it and has it approved like any other change (see
+[Change Control and Approvals](change-control.md)). Nothing consumers read
+changes until then. The steps are in the
+[Admin Guide](admin-guide.md#load-a-newer-country-pack-version).
 
-Entries are matched on `value_id`. A pack may change an entry's labels,
-attributes, parent and sort order, but **not the code of an entry that is
-already published** (see
-[Codes are fixed once published](concepts.md#codes-are-fixed-once-published)):
+Things to know:
 
-* a pack that gives a published entry (same `value_id`) a new `value_code` **stops
-  the dataset load** with `G2P-CAT-CODE-IMMUTABLE`, naming the dataset, the
-  entry and both codes. No dataset is written, with or without
-  `--publish`;
-* to recode in a pack, give the new code a **new `value_id`** and drop the old
-  entry. The loader then retires the old entry and adds the new one.
+* **Codes are fixed once published.** A pack that gives a published entry a new
+  code stops that dataset's load with a clear error. To recode in a pack, give the
+  new code a new entry id and drop the old entry; the loader retires the old one
+  and adds the new one. See
+  [Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
+* **References between datasets.** An entry that refers to a code that exists
+  only in another dataset's draft cannot be approved until that draft is
+  published. Approve the referenced dataset first (for example, crops before seed
+  varieties).
+* **A pack is a snapshot.** It says which units exist, not that one was split
+  into two. On submit MDS adds automatic change events, but they do not link old
+  units to new ones. Record the real events (split, merge, recode, …) in the draft
+  before submitting, or ship them in the pack's optional **`changes.json`**; the
+  loader checks them with the same rules as the API and stops the geography load
+  if one is invalid. See [Geography: change events](geography.md#change-events).
 
-Typed attributes are checked when a draft is submitted and approved, not when the
-loader writes it. An entry whose `x-list-ref` names a code that exists only in
-another dataset's draft cannot be approved until that draft is published. Approve
-the referenced dataset first: for ETH, `CROP_COMMODITY` before `SEED_VARIETY`.
-A dataset that is new in the pack (such as `CROP_CATEGORY`) is published as
-version 1 by the same load, so references to it resolve at once.
+Earlier loaders updated data in place and never removed anything, so entries a
+pack had dropped stayed in use. Now they are **retired** in a new version: they
+still resolve for old records and disappear from data-entry dropdowns.
 
-The drafts are left as **`DRAFT`, not submitted**. Someone reviews them (the diff
-against the base version), submits them, and they are approved like any other
-change (see [Change control and approvals](change-control.md)). Nothing a consumer
-reads changes until then.
+## Loader settings
 
-{% hint style="warning" %}
-**A pack usually carries no change events.** A pack is a snapshot; it says which
-units exist, not that `ET041203` was split into `ET041217` and `ET041218`. On submit
-MDS completes the lineage with automatic `RETIRE` and `CREATE` events, which the
-crosswalk can follow but which do not link old units to new ones. Before
-submitting, record the real change events (split, merge, recode, …) so that the
-crosswalk maps old codes. See [Geography and boundary changes](geography.md#change-events).
-
-A pack may include an optional **`changes.json`**
-(`[{"change_type", "from_units", "to_units", "note"}]`). The loader records those
-of its events that apply to the draft's base (their from-units still active
-there) as explicit events in the geography draft. Each event is first **validated
-with the same rules as the API's `record_geo_change`** (the loader uses the API's
-own rules module), against the base version and the draft as loaded. An invalid
-event **fails the geography load** with a message naming the event, before any
-boundary file is uploaded: nothing is written for the geography. Fix
-`changes.json` (or the units) and load again.
-{% endhint %}
-
-For development and test environments, the loader's **`--publish`** flag (chart
-`geoSeed.autoPublish: true`) publishes the drafts it creates straight away. For
-the geography it first validates the `changes.json` events as above, then completes
-the lineage exactly as the API does on submit (automatic `CREATE`, `RETIRE`,
-`RENAME`, `REPARENT` and `BOUNDARY_CHANGE` events), then publishes. Do not use it in
-production: it bypasses approval.
-
-| Loader flag | Environment | Chart value | Default |
-|---|---|---|---|
-| `--publish-initial` / `--no-publish-initial` | `PACK_PUBLISH_INITIAL` | `geoSeed.publishInitial` | on |
-| `--publish` | `PACK_AUTO_PUBLISH` | `geoSeed.autoPublish` | off |
-| `--owner-org` | `PACK_OWNER_ORG` | `geoSeed.ownerOrg` | none |
-| `--load` | `PACK_LOAD` | `geoSeed.load.geo`, `.codelists`, `.samples` | chart: all three (loader alone: `geo`) |
-| `--domains` | `PACK_DOMAINS` | `geoSeed.domains` (Rancher: Dataset Themes) | chart: `agriculture`, as a list or comma-separated (loader alone: none); a theme the pack lacks is skipped with a warning |
-| `--actor` | `PACK_ACTOR` | — | `country-pack-loader` |
-
-Every load step is written to the change log with the loader as the actor
-(`country-pack-loader`, a system actor with no display name, so its versions have
-`*_by_name` `null`). The loader no longer calls the Audit Manager or WebSub itself:
-the change log is the outbox, and the API's relay delivers these events like its
-own (to the Audit Manager, and the `*.version.published` ones to WebSub) within
-`catalogue_outbox_relay_seconds` (see [Audit](change-control.md#audit)). Version
-numbers come from the same database functions as the API's and are never reused.
-The old `--purge` flag is deprecated: published geography is immutable, so it now
-only re-materialises the current-state geography tables.
-
-### This replaces the old upsert behaviour
-
-Previously the loader **upserted** in place and never deleted, so a reloaded MDS kept
-codes the pack had dropped (for example the old `CROP_SEASON` entries
-`SEASON_SUMMER`, `SEASON_MONSOON` and `SEASON_WINTER`) with no way to mark them as
-no longer in use. Now such entries are **retired** in a new version: they stay
-resolvable for records that hold them, and disappear from data-entry dropdowns once
-the version is published.
-
-Datasets that come from the remaining SQL seed fixtures (ones a pack does not
-define) are inserted only if missing, versioned as version 1, and the current-state
-tables are then re-materialised so a fixture can never bring back a retired entry.
-
-## Boundaries
-
-Boundaries are uploaded to MinIO under **per-version, immutable keys**: version 1
-on first load, the draft's version on later loads. Only levels whose file changed
-are uploaded; an unchanged level keeps pointing at the earlier version's object.
-Because version numbers are never reused, a new version's keys are its own; as a
-safeguard the loader (like the API) refuses to write a key that another version
-already records. Without an
-object store endpoint the hierarchy still loads; only the map layer is missing.
-
-The loader and the API each have their object store settings; keep them in step:
-
-| | Loader (geo-seed Job) | API |
+| Chart value (`geoSeed.`) | Default | What it does |
 |---|---|---|
-| Endpoint | `geoSeed.objectStore.endpoint` | `masterDataAPI.catalogue.boundaryStore.endpoint` |
-| Bucket | `geoSeed.objectStore.bucket` | `masterDataAPI.catalogue.boundaryStore.bucket` |
-| Public base URL | `geoSeed.objectStore.publicBaseUrl` | `masterDataAPI.catalogue.boundaryStore.publicBaseUrl` |
-| Credentials | `geoSeed.objectStore.existingSecret` with `accessKeyKey` / `secretKeyKey` | `masterDataAPI.catalogue.boundaryStore.existingSecret` with the same keys |
+| `countryPack` | `XKM` (MDS chart), `ETH` (`commons-services`) | Which pack to load |
+| `load.geo`, `load.codelists`, `load.samples` | all on | Which parts to load |
+| `domains` | `agriculture` | Themes to load besides the core datasets. A theme the pack lacks is skipped with a warning |
+| `publishInitial` | on | Publish a first load as version 1. Off: leave it as a draft for approval |
+| `autoPublish` | off | Publish the drafts of later loads at once, without approval. **Development and test only** |
+| `ownerOrg` | none | Publisher recorded on what the loader creates |
 
-The defaults are `http://commons-minio:9000`, bucket `openg2p-geo`, and the
-`commons-minio` Secret (`root-user`, `root-password`).
+The loader has a matching command-line flag and environment variable for each
+(see the chart's `values.yaml`). Every load step is written to the change log with
+the loader (`country-pack-loader`) as the actor, and delivered to the Audit
+Manager and WebSub like any other change.
 
-See [Boundaries in MinIO, per version](geography.md#boundaries-in-minio-per-version).
+Boundary files go to the object store; see
+[Geography: boundaries per version](geography.md#boundaries-per-version) and
+[Deployment](deployment.md#object-store-for-boundaries).
 
 ## Licence
 
-When the pack's `manifest.json` names a licence (`license`, and optionally
-`license_uri`), the loader sets the geography's licence from it, unless an
-administrator has already set one. For a well-known licence it derives the URI from
-the label or id (see [Standards: licences](standards.md#licences)). The loader never changes visibility: everything
-it loads stays **private** until someone marks it public (see
-[Public catalogue](public-catalogue.md)). The loader needs catalogue schema 5.
+When the pack's manifest names a licence, the loader sets the geography's licence
+from it, unless an administrator has already set one. The loader never makes
+anything public: everything it loads stays **private** until someone marks it
+public (see [Public Catalogue](public-catalogue.md)).
 
 ## Migrating an existing MDS
 
-An MDS installed before versioning already has data in `g2p_attributes`,
-`g2p_attribute_values`, `g2p_geo_levels` and `g2p_geo_level_values`. On start, the
-API's database migration (and the loader, before it loads) converts it:
+An MDS installed before versioning already has datasets and geography. On start,
+MDS converts them:
 
-* every existing dataset without a version becomes **version 1, `PUBLISHED`**, with
-  exactly the entries it had;
-* the existing geography becomes **geography version 1, `PUBLISHED`**;
-* both get **`effective_from` 1970-01-01**: the data was in force before
-  versioning was added, so an `as_of` read for any past date resolves to it;
-* `list.version.migrated` and `geo.version.migrated` events are written to the
-  change log, with `migration` as the actor (and delivered to the Audit Manager by
-  the relay);
-* the existing tables are left as they are; they are now the current published
-  state and match version 1.
+* every existing dataset becomes **version 1, published**, with exactly the
+  entries it had;
+* the existing geography becomes **geography version 1, published**;
+* both are **effective from 1970-01-01**, so a read as of any past date finds them;
+* a migration event is written to the change log for each.
 
-The migration is **idempotent**: it runs on every start and skips any dataset, and
-the geography, that already has a version. It records the catalogue schema version
-it created (`schema_version` in `g2p_catalogue_state`, currently 5) last, which is
-what the geo-seed Job waits for.
+The migration runs on every start and skips anything that already has a version.
+Later schema upgrades add new fields in place (theme, visibility, licence, display
+names of who made each change).
 
-Upgrading a catalogue created by an earlier release adds what is new in place:
-schema 4 added the theme (`g2p_attributes.domain`), schema 5 visibility and
-licence. For schema version 3 that was the `*_by_name` columns (display names next to the user
-ids in `created_by`, `updated_by`, `submitted_by`, `decided_by`, and on releases
-`created_by`, `members_set_by`, `published_by`, and on change events
-`created_by`). Existing rows get the name the change log records for that user id,
-where it has one, else `null` (the UI then shows the id). This one-time fill is the
-only change ever made to published rows: it runs inside the migration's
-transaction with the immutability trigger switched off for that table and on again
-before the transaction ends, and writes only the new name columns.
-
-Migrated datasets keep whatever `owner_org` they have (none, unless set); the
-geography version 1 has no `country`, no `owner_org` and **no boundary objects**.
-The next pack load with an object store configured therefore finds the boundaries
-missing and creates a geography draft that adds them under the new version's keys,
-to be approved like any other draft.
+The migrated geography has **no boundary files**. The next pack load with an
+object store configured adds them in a geography draft, to be approved like any
+other.
 
 {% hint style="info" %}
-**Nothing changes for consumers on migration.** The same data is returned by the
-same endpoints and is in the same tables. Consumers can start using versions (and
-pinning version 1) whenever they are ready.
+**Nothing changes for consumers on migration.** The same endpoints return the same
+data. Consumers can start pinning versions when they are ready.
 {% endhint %}
 
-After migration, direct edits to the old tables are no longer the way to change
-data: use drafts, the admin UI, or a pack load. A direct SQL change to the
-current-state tables is overwritten the next time that dataset (or the geography)
-is published or comes into effect.
+After migration, change data through drafts, the Admin UI or a pack load, not by
+editing the database. A direct database change is overwritten the next time that
+dataset or the geography is published.

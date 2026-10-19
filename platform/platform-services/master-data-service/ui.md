@@ -8,6 +8,9 @@ description: >-
 
 # Admin UI
 
+This page describes the screens. For step-by-step tasks, see the
+[Admin Guide](admin-guide.md).
+
 The catalogue is managed from the **Master Data admin UI** (`master-data-ui`).
 The UI uses common data-catalogue terms (see [Standards](standards.md)): the
 whole service is the **Catalogue**, reference data comes in **datasets**, a

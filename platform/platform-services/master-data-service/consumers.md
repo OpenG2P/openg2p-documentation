@@ -1,35 +1,43 @@
 ---
 description: >-
-  How registries, PBMS and other services should read datasets and geography
-  from MDS: latest, pinned or as-of reads, caching, the change feed, pinning in
+  Who reads MDS and how, and how services should read datasets and geography:
+  latest, pinned or as-of reads, caching, the change feed, pinning in
   configuration, storing the version used, retired entries and geography changes
 ---
 
 # For Consumers
 
-This page is for teams building on MDS: registries, PBMS, reporting, the Composite,
-and any other service that reads datasets or geography. Open-data portals and
-other websites without a token use the [public catalogue](public-catalogue.md)
-instead.
+This page is for teams building on MDS: registries, PBMS, reporting and any other
+service that reads datasets or geography. Open-data portals and other websites
+without a token use the [public catalogue](public-catalogue.md) instead. The
+operations are in the [API Reference](api-reference.md).
+
+## Who reads MDS, and how
+
+| Consumer | What it takes | How |
+|---|---|---|
+| **Registries** (social, farmer, …) | Datasets and geography | At **runtime**, through the catalogue API: versioned, cached, following the change feed. The staff UI fills its dropdowns from the original `/attributes` and `/geo` reads, and a form's geography levels from the catalogue. The registry keeps no copy |
+| **Registry seed scripts** | Datasets, geography, sample people | At **install**, through the same API |
+| **Staff portal screens** | Geography units, level by level | At **runtime**, for cascading address dropdowns |
+| **PBMS, Bridge, SPAR** | Geography lookups | At runtime |
+| **Maps** | Boundary files per level and version | The boundary read, or the public download when the geography is public |
+| **Open-data portals, other websites** | Public datasets and geography | The opt-in [public catalogue](public-catalogue.md), anonymous |
+
+{% hint style="warning" %}
+**Registries depend on MDS at runtime for data entry.** A registry's dropdowns
+read datasets and geography from MDS. While MDS is unavailable they are empty, so
+new records cannot be completed. Records already stored are unaffected: they hold
+the codes.
+{% endhint %}
 
 {% hint style="info" %}
-**The registry platform reads MDS through the catalogue API.** A client in the
-registry platform's core reads datasets, entries and geography through `/catalogue`,
-caches them by version, follows the change feed (`get_changes`) to notice newly
-published versions, and keeps serving the last good data if MDS is briefly
-unreachable. It authenticates with the registry's own Keycloak client (client
-credentials), so background workers read the same way as the APIs. Activities record
-the catalogue versions they were checked against (`catalogue_versions`), and a
-registry can pin a catalogue release (`catalogue_release`). The old direct database
-reads remain as a rollback switch (`master_data_read_mode: db`; the chart renders
-MDS database credentials only in that mode). The registry's staff UI still fills
-dropdowns from the legacy `/attributes` and `/geo` APIs, but a register form's geo
-**levels** (how many dropdowns, and their names) come from `/catalogue/get_geo_levels`
-when the form loads, so the form follows the country's geography with no install
-step. Install-time seed scripts (sample loaders, bulk generators, reporting views)
-read MDS through the same API with a small client in the seed image (`mds_client.py`),
-so they need read access to `/catalogue` (and `/samples` for demo data). **A registry
-never reads or writes MDS's database**; its seeding writes only its own.
+**How the registry platform reads MDS.** A client in the registry core reads
+through the catalogue API with the registry's own Keycloak client, caches by
+version, follows the change feed, and keeps serving the last good data if MDS is
+briefly unreachable. Activities record the catalogue versions they were checked
+against, and a registry can pin a catalogue release. **A registry never reads or
+writes MDS's database**; its seeding writes only its own. (Direct database reads
+remain only as a rollback switch.)
 {% endhint %}
 
 ## Latest, pinned or as of
@@ -54,7 +62,7 @@ A pin belongs in configuration, where it can be reviewed, not in code:
 catalogue:
   release: "2027.1"            # pin everything at once, or
   datasets:
-    SEED_VARIETY: 7            # pin individual datasets
+    DISABILITY_TYPE: 7         # pin individual datasets
     CROP_COMMODITY: latest
   geography: 3
 ```
@@ -91,18 +99,10 @@ read are the fallback.
   the response tells you which version you got, so the cache can be keyed by it;
 * boundary files under a version key are immutable and can be cached the same way.
 
-The legacy `/attributes` and `/geo` reads are cached inside MDS, per API worker. A
-publish clears the cache at once on the worker that handled it. Every other worker
-(other processes and other replicas) watches a counter, `legacy.generation` in
-`g2p_catalogue_state`, which the database bumps whenever it refreshes the
-current-state tables (a publish on any worker, a future-effective version coming
-into effect, or a country-pack load); each worker checks it every
-`catalogue_outbox_relay_seconds` (30 s by default) and clears its own cache when it
-has moved. So a legacy read is stale for at most that interval after a publish,
-plus, after a future `effective_from` passes, up to `effectiveRefreshSeconds`
-(300 s by default) until MDS notices the date and refreshes the tables. Cache
-entries also expire after `cache_expire_seconds` (300 s) in any case. The
-`/catalogue` reads are not cached.
+The original `/attributes` and `/geo` reads are cached inside MDS, per API
+worker. After a publish they may be stale for up to about 30 seconds on other
+workers, and up to about five minutes more when a future-dated version comes
+into effect. The `/catalogue` reads are not cached.
 
 ## Following changes
 

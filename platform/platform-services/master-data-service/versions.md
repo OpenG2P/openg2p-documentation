@@ -23,4 +23,4 @@ The changelog starts at 1.1.0 (01-Sep-2026). Earlier develop builds:
 
 ***
 
-MDS is deployed through the **`commons-services`** umbrella chart, not as a standalone install. The version pinned there is what an environment actually runs — see [Deployment](README.md#deployment).
+MDS is deployed through the **`commons-services`** umbrella chart, not as a standalone install. The version pinned there is what an environment actually runs — see [Deployment](deployment.md).

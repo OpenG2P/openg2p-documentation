@@ -1,30 +1,56 @@
 ---
 description: >-
-  Why the Master Data Service (Catalogue) is designed the way it is: versioning
-  per dataset, effective dates per version, no expiry date on entries,
+  Why the Master Data Service (Catalogue) is designed the way it is: why
+  reference data needs versions, why a service of its own, versioning per
+  dataset, effective dates per version, no expiry date on entries,
   classification hierarchies, fixed codes, mappings to international
   standards, approvals and audit
 ---
 
 # Design Decisions
 
-Requirements for a master-data catalogue come up again and again, for example
-in digital public infrastructure for agriculture: version every change, give
-entries effective and expiry dates, support classification hierarchies, map to
-international standards, approve changes and keep an audit trail.
-
-MDS meets these needs, but not always in the shape the requirement is written in.
-This page explains each choice and the reasoning behind it. Each topic has the
-same three parts:
+This page explains why MDS is designed as it is. It starts with the reason for
+versioning at all, then takes common catalogue requirements (version every change,
+effective and expiry dates, classification hierarchies, mapping to international
+standards, approvals and audit) one by one. Each topic has three parts:
 
 * **Choice**: what MDS does.
 * **Why**: the reasoning.
 * **What this means for consumers**: what a registry, report or other service does
   with it.
 
-The examples use Ethiopia's country pack. The details are in
-[Concepts](concepts.md), [Geography and Boundary Changes](geography.md),
+The details are in [Concepts](concepts.md), [Geography and Boundary Changes](geography.md),
 [Change Control and Approvals](change-control.md) and [Standards](standards.md).
+
+## Why versions
+
+Reference data looks static, but it changes. A ministry adds a disability type,
+renames a benefit category, adds seed varieties every season, retires a unit of
+measure. A district is split in two, two villages are merged, a province is
+renamed. Systems that build on the data need to know which version they used:
+
+* **A programme defines entitlements against a dataset.** A cash transfer for
+  "households with a member with a severe disability" names a set of entries. If
+  the dataset changes under it, the programme's eligibility changes too.
+* **A registry records codes.** A person recorded in district `ET041203` in 2026
+  must still resolve after that district is split in 2027, and a report must be
+  able to say where those people belong now.
+* **Two services must agree.** A registry and a payment system that read the same
+  dataset at different moments may see different entries.
+
+So the rule is: **a consumer that defined something against a version is never
+switched to another version silently.** It reads the latest version when it wants
+the latest, pins a version when it needs stability, and moves deliberately.
+
+## Why a service of its own
+
+Catalogues could have been built on the registry platform (as registers) or on an
+existing open-source product. The **GeoPrism Registry** was evaluated: it has
+strong temporal geography, but its versioning and approvals cover only geographic
+lists, it runs on Java and OrientDB, and it has no Helm chart or Keycloak
+integration. MDS borrows its ideas of **working and published versions** and
+**split/merge lineage**. An import adapter from GeoPrism or the Common Geo
+Registry is a possible later add-on.
 
 ## Versioning per dataset, with plain version numbers
 

@@ -207,9 +207,11 @@ change event. See [Geography and boundary changes](geography.md).
 
 ## Typed attributes
 
-Simple datasets need only a code and a label. Reference **entities** need more: a
-seed variety has a crop, maturity days, release year and agro-ecological zones; an
-input product has a type and unit.
+Simple datasets need only a code and a label. Others need more: a seed variety
+has a crop, maturity days, release year and agro-ecological zones; an input product
+has a type and unit. Such a dataset (sometimes called a *reference entity*) is still
+a dataset: its entries carry **typed attributes**, and an attribute can refer to
+entries of another dataset.
 
 A dataset may declare an **`attribute_schema`**, a JSON Schema that every entry's
 `attributes` object must satisfy (see [Standards](standards.md)). Entries are
