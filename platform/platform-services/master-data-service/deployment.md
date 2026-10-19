@@ -56,7 +56,7 @@ shows the first four in the **Country Pack** group.
 
 The country-pack loader has more flags (publish the first load directly,
 auto-publish drafts, owner department); see
-[Country Packs and Migration](country-packs-and-migration.md#loader-settings).
+[Country Packs](country-packs.md#loader-settings).
 
 ## Object store for boundaries
 

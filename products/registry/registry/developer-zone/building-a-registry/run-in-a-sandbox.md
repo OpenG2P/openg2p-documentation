@@ -77,7 +77,7 @@ into the image. That CSV describes one fixed country, so you get people whose
 addresses do not match your pack.
 {% endhint %}
 
-Concepts: [Country Data Architecture](../../../../../platform/country-data-architecture.md)
+Concepts: [Country Packs](../../../../../platform/platform-services/master-data-service/country-packs.md)
 · [Master Data Service](../../../../../platform/platform-services/master-data-service/README.md)
 
 ## 3. Install

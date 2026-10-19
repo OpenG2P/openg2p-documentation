@@ -17,7 +17,7 @@ The switches, the code-list mechanism, the Rancher form and the production
 ("empty") install are all platform-level and documented once in
 [**Country data & seeding**](../../registry/deployment-and-extension/country-data-and-seeding.md).
 For what a country pack is, see
-[**Country Data Architecture**](../../../../platform/country-data-architecture.md).
+[**Country Packs**](../../../../platform/platform-services/master-data-service/country-packs.md).
 This page covers only what is specific to NSR.
 {% endhint %}
 

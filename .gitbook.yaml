@@ -24,7 +24,9 @@ redirects:
   platform/platform-services/master-data-service/catalogue/concepts: platform/platform-services/master-data-service/concepts.md
   platform/platform-services/master-data-service/catalogue/geography: platform/platform-services/master-data-service/geography.md
   platform/platform-services/master-data-service/catalogue/change-control: platform/platform-services/master-data-service/change-control.md
-  platform/platform-services/master-data-service/catalogue/country-packs-and-migration: platform/platform-services/master-data-service/country-packs-and-migration.md
+  platform/platform-services/master-data-service/catalogue/country-packs-and-migration: platform/platform-services/master-data-service/country-packs.md
+  platform/platform-services/master-data-service/country-packs-and-migration: platform/platform-services/master-data-service/country-packs.md
+  platform/country-data-architecture: platform/platform-services/master-data-service/country-packs.md
   platform/platform-services/master-data-service/catalogue/consumers: platform/platform-services/master-data-service/consumers.md
   platform/platform-services/master-data-service/catalogue/ui: platform/platform-services/master-data-service/admin-guide.md
   platform/platform-services/master-data-service/ui: platform/platform-services/master-data-service/admin-guide.md

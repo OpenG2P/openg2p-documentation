@@ -58,9 +58,10 @@ with no configuration at all, what to write when your schema differs, and what
 to do when a country pack or a registry schema later changes.
 
 {% hint style="info" %}
-**Where the data itself comes from** — country packs, P-codes, the geographic
-hierarchy in Master Data, boundary shapes in MinIO, and how bulk sample data is
-generated — is
-[Country Data Architecture](../../country-data-architecture.md). This section
-assumes that data exists and describes what is built on top of it.
+**Where the data itself comes from:** country packs, P-codes, the geographic
+hierarchy in Master Data and boundary shapes in the object store are on
+[Country Packs](../master-data-service/country-packs.md); how bulk sample data is
+generated is on
+[Country data & seeding](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#bulk-data-is-generated-by-each-registry).
+This section assumes that data exists and describes what is built on top of it.
 {% endhint %}

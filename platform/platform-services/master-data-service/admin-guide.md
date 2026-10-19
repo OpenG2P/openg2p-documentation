@@ -190,7 +190,7 @@ See [Geography and Boundary Changes](geography.md).
    against the published version, so a dataset that uses another's new entries
    can only be approved after that one.
 
-See [Country Packs and Migration](country-packs-and-migration.md).
+See [Country Packs](country-packs.md).
 
 ## Make a dataset public
 

@@ -195,7 +195,7 @@ whichever way it is attempted:
 * the original `/attributes/update_attribute_value` endpoint;
 * on submit, for a draft changed in any other way;
 * on publish, by the database function every publisher uses, including the
-  [country-pack loader](country-packs-and-migration.md);
+  [country-pack loader](country-packs.md);
 * by the country-pack loader itself, before it writes anything, when a pack gives a
   published entry (same `value_id`) a new code.
 

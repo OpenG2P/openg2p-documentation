@@ -148,8 +148,11 @@ For Example 1, the crosswalk of `ET041203` from version 2 to version 3 returns
 ## Boundaries per version
 
 Boundaries are GeoJSON files in the platform's S3-compatible object store (Garage
-in the commons install; see [Deployment](deployment.md#object-store-for-boundaries)).
-They are stored **per geography version, under keys that never change**:
+in the commons install, bucket `openg2p-geo`; see
+[Deployment](deployment.md#object-store-for-boundaries)). They are **simplified per
+level** when the pack is built, coarser at country level and finer further down,
+so a browser can load a whole level. They are stored **per geography version,
+under keys that never change**:
 
 ```
 geo/<country>/v<version>/<level>.geojson      e.g. geo/ETH/v3/woreda.geojson
@@ -173,7 +176,7 @@ see [Change Control and Approvals](change-control.md). In the
 admin UI, units, change events and boundary files are edited on the Geography
 page; the [Admin Guide](admin-guide.md#change-geography-split-merge-rename)
 has the steps. A country pack can also bring geography changes; see
-[Country Packs and Migration](country-packs-and-migration.md#later-loads-drafts-not-overwrites).
+[Country Packs](country-packs.md#later-loads-drafts-not-overwrites).
 
 ## When a new geography version is published
 

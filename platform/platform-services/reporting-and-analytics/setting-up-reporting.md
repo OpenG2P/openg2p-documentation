@@ -88,7 +88,7 @@ pipeline once with bulk data in a test environment before turning it off.
 
 Bulk generation reads Master Data's geographic hierarchy, so it fails rather than
 producing records that point nowhere if Master Data has not been seeded. See
-[Country Data Architecture](../../country-data-architecture.md).
+[Country data & seeding](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#bulk-data-is-generated-by-each-registry).
 
 ## 4. When things change afterwards
 
@@ -141,7 +141,7 @@ See [Map drill-down](map-drill-down.md).
 ## A checklist for a new country
 
 1. Country pack built and Master Data seeded — geographic hierarchy and boundary
-   shapes present. ([Country Data Architecture](../../country-data-architecture.md))
+   shapes present. ([Country Packs](../master-data-service/country-packs.md#setting-up-a-new-country))
 2. Registry installed; reporting job log shows the right level count and a
    `verified` line.
 3. `<prefix>_rpt_geo_levels` names the country's own levels.

@@ -34,7 +34,7 @@ MDS holds reference data only:
 
 MDS holds no partners (see [Partner Management](../partner-management/README.md))
 and no registry records. All data first arrives from a **country pack**; see
-[Country Packs and Migration](country-packs-and-migration.md).
+[Country Packs](country-packs.md).
 
 ## Key features
 
@@ -89,7 +89,7 @@ its own. The country pack is chosen in the chart's **Country Pack** group. See
 | [Design Decisions](design-decisions.md) | Why reference data needs versions, and why MDS is designed as it is |
 | [Geography and Boundary Changes](geography.md) | How geography and boundaries are represented, change events, the crosswalk |
 | [Change Control and Approvals](change-control.md) | Drafts, approval modes, permissions, audit |
-| [Country Packs and Migration](country-packs-and-migration.md) | How a country pack loads, and how an older MDS is migrated |
+| [Country Packs](country-packs.md) | What a country pack is, how to build one, how it loads and how an older MDS is migrated |
 | [For Consumers](consumers.md) | Who reads MDS, and how to read, cache, pin and follow changes |
 | [Admin Guide](admin-guide.md) | The admin UI, who can do what, and the common tasks |
 | [Public Catalogue](public-catalogue.md) | The opt-in, anonymous catalogue for other websites |

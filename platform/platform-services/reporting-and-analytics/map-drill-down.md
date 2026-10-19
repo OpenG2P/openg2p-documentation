@@ -84,9 +84,27 @@ and a source file that references `geo_5` returns nothing.
 
 To add a level, copy the deepest existing file, shift the `geo_N` references down
 one, and add the corresponding section to `index.md`. The shapes come from the
-pack — Master Data uploads one GeoJSON per level to MinIO during seeding, and the
-build fetches them — so a level with no boundary file in the pack has no map to
-draw, whatever the SQL returns.
+pack (see [Where the shapes come from](#where-the-shapes-come-from)), so a level
+with no boundary file in the pack has no map to draw, whatever the SQL returns.
+
+## Where the shapes come from
+
+Master Data uploads the pack's boundary files, one GeoJSON per level, to the
+object store when it is seeded. The **map build** asks Master Data where this
+deployment's files are and fetches them **at build time**, then publishes them
+with the figures it extracts from the reporting views.
+
+So the shapes follow the deployment's country pack: reseed Master Data with
+another pack and rebuild the map. No image is rebuilt.
+
+{% hint style="warning" %}
+**Shapes and figures must come from the same pack.** The map joins them on
+P-code. Shapes from one country beside figures from another render an **empty
+map**, with no error: every join misses. If the build cannot reach Master Data,
+it falls back to the shapes baked into its image (the default pack) and logs a
+warning; for any other country that also gives an empty map. Check the map after
+any pack change.
+{% endhint %}
 
 ## Changing what the map shows
 
@@ -122,5 +140,5 @@ no image is rebuilt.
 ---
 
 **See also:** [Reporting views](reporting-views.md) ·
-[Country Data Architecture](../../country-data-architecture.md) for P-codes,
+[Country Packs](../master-data-service/country-packs.md) for P-codes,
 boundary files and how packs are built.
