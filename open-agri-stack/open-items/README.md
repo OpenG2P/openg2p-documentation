@@ -9,6 +9,23 @@ description: >-
 
 Each item says what is to be done and where its design stands: a link to the design, the approach already decided, or "not designed yet".
 
+## Priorities
+
+Functional work, in order, for the first production release. Country data and registry settings are set by the system integrator for each rollout; livestock and the DA Registry come later.
+
+| # | Item | Details |
+| --- | --- | --- |
+| 1 | **Consent without a form:** in person digitally (national-ID login, approval on the CM's screen), self-service, and notifications to farmers | [More ways to give consent](#identity-consent-and-policies) |
+| 2 | **Sharing on a mandate:** a standing permission for a purpose (programmes such as a subsidy run, registry-to-registry checks) instead of each farmer's consent | [Standing permission for a purpose](#identity-consent-and-policies) |
+| 3 | **Dashboards and cross-registry figures:** dashboards on the reporting views, and figures that combine registries (e.g. area sown by farmer gender) | [Dashboards](#registries); [Observations gaps, item 4](#registries) |
+| 4 | **Land ownership as events:** transfers, inheritance and tenure changes recorded as dated events with history and evidence | [Land ownership events](#registries) |
+| 5 | **Contributions from value-chain actors:** cooperatives, input suppliers, buyers and certification bodies registering and updating records directly | [Value-chain contributions](#registries) |
+| 6 | **Attestation on entity records:** who verified a record, when and with what evidence, visible to partners | [Verification and correction, phase 2](#registries) |
+| 7 | **Registry-to-registry sync:** crop activity in the Farmer Registry; basic farmer data in other registries | [Sync farmer data into other registries](#registries) |
+| 8 | **Use case authoring in the Composite console:** "New use case", "try it", publish from the UI | [Make adding a use case easy](#composite) |
+
+**Phase 2:** farmer-facing access to their own records (see [Farmer access](#identity-consent-and-policies)).
+
 ## Identity, consent and policies
 
 * **Common farmer identifier** — confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup); with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
@@ -18,6 +35,7 @@ Each item says what is to be done and where its design stands: a link to the des
 * **Which CM to trust, per partner** — let a department CM choose, per partner, which CM's consent tokens it trusts (today it trusts the Exchange CM for every partner the Composite presents). *Design:* not designed yet.
 * **Policies in Partner Management** — move `PartnerPolicy` from CM to PM, with a section per department, AWE approval per section and partner associations; `/validate` then reads from PM, and the Composite's `allowed_partners` goes. *Design:* [data-sharing policies](../architecture/data-sharing-policies.md).
 * **Who may search across subjects** — searches of activity-register aggregates without a subject (e.g. for a benefit run) checked against a PM policy (a programme's legal basis for bulk access, approved by the department), instead of the partner API's `dci_bulk_aggregate_partners` allow-list. *Depends on:* policies in PM.
+* **Farmer access to their own records (phase 2)** — a farmer-facing portal or app and beneficiary APIs for the Farmer Registry and Crop Sown Registry, to see their records and request corrections (the CM's beneficiary API is scaffolded). *Design:* not designed yet.
 * **Partner self-service in PM** — partners submit their own onboarding and key-rotation requests (today a PM administrator does both). *Design:* not designed yet.
 * **Standing permission for a purpose** — a Consent Manager rule for sharing on a mandate instead of consent (registry to registry, e.g. CSR checking a farmer is registered; a yes/no Farmer ID check before consent): one caller, one purpose, narrow scopes, legal basis recorded, every use logged. *Depends on:* the departments agreeing the legal basis.
 
@@ -47,6 +65,8 @@ Each item says what is to be done and where its design stands: a link to the des
 
 * **Sync farmer data into other registries** — read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. *Design:* [Registry Data Sync](../design/registry-data-sync.md). *Depends on:* standing permission for a purpose.
 * **WebSub for registry outgestion** — point the registry platform's outgestion at the commons WebSub hub (`websub.<baseDomain>`) where push is wanted; consumers poll meanwhile. *Design:* decided as stated ([standards](../architecture/standards.md)).
+* **Land ownership events** — transfers, inheritance and tenure changes recorded as dated events (an activity register on land parcels, or events on the Farmer Registry's land records), with history and evidence. *Design:* not designed yet; the [activity register](../../products/registry/registry/features/activity-register.md) is the likely mechanism.
+* **Value-chain contributions** — cooperatives, input suppliers, buyers and certification bodies onboarded as partners that add or update records directly: activities already ([partner activity submission](../../products/registry/registry/features/activity-register.md#partner-activity-submission)); entity records through partner ingestion with change requests; registries for inputs used or produce transactions when needed. *Design:* not designed yet.
 * **Activity registers from configuration** — a projection spec, an aggregate spec, and per-register tables created by the platform from metadata (activity types, fields promoted to columns) with a default domain service, so simple registers (e.g. attendance) need no extension and Add Register can offer "Activity". *Design:* [configuration file](../../products/registry/registry/design/activity-register.md#configuration-file) and [relation to the Observations design](../../products/registry/registry/design/activity-register.md#relation-to-the-observations-design); decided: keep a table per register. *Depends on:* a second real activity register, so the specs come from two domains.
 * **Verification and correction, phase 2** — a common verification model for entity and activity registers; corrections marked as such, disputes and verification reset on change; a beneficiary API for occurrences (needs beneficiary authentication first); DCI subscribe/notify for occurrence events; a season-window date check. Programme approval stays in PBMS. *Design:* [Verification and Correction (Proposal), phase 2](../../products/registry/registry/design/verification-and-correction.md#phase-2).
 * **Gaps compared with the Observations design** — *Design:* [relation to the Observations design](../../products/registry/registry/design/activity-register.md#relation-to-the-observations-design).
