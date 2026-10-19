@@ -1,8 +1,8 @@
 ---
 description: >-
   How datasets and geography change in MDS: drafts, submission, approval by
-  maker-checker or through AWE, publication with an effective date,
-  permissions, audit, and what the original write endpoints do now
+  maker-checker or through AWE, publication with an effective date, settings
+  that apply at once, permissions, audit and the delivery of change events
 ---
 
 # Change Control and Approvals
@@ -33,17 +33,12 @@ and [Releases](api-reference.md#releases).
 * In a draft you can add, change and retire entries, and change the dataset's
   versioned details (code, labels, hierarchy, schema). For geography: levels,
   units, change events and boundary files.
-* Some details are **administrative** and apply at once, outside the draft: a
-  dataset's description, publisher, theme, visibility and licence, and the
-  geography's visibility and licence.
+* Some details are administrative and apply at once, outside the draft; see
+  [Settings that apply at once](#settings-that-apply-at-once).
 * Entries are checked against the dataset's schema as they are written, so errors
   show while editing.
-* An entry's **code cannot change** once it has been published. To recode, retire
-  the entry and add a new one; see
-  [Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
 * Consumers do not see a draft unless they ask for it.
-* A draft can be **discarded**. It is kept, marked discarded, so its version number
-  is never used again.
+* A draft can be **discarded**. It is kept, marked discarded.
 
 ## Submit
 
@@ -53,7 +48,7 @@ Submitting freezes the draft and asks for approval. The submitter gives a
 
 MDS checks the whole draft again: labels, the entry hierarchy, every entry against
 the schema, references to other datasets (against their published versions; see
-[Typed attributes](concepts.md#typed-attributes)), fixed codes, and for geography
+[Typed fields](concepts.md#typed-fields)), fixed codes, and for geography
 the levels, units and change events. A draft with no changes is refused. For
 geography, MDS also adds automatic change events for changes left without one; see
 [Change events](geography.md#change-events).
@@ -70,15 +65,15 @@ A deployment chooses one mode (see [Deployment](deployment.md#settings-at-instal
 ### `permission`: maker-checker within MDS
 
 **Maker ≠ checker** is enforced: the approver must not be the person who created,
-last edited or submitted the draft. People are compared by their **stable user
-id** (the token's `sub`), never by display name, since two people can share a name.
-Versions keep display names beside the ids for people to read.
+last edited or submitted the draft. People are compared by their stable user id,
+never by display name, since two people can share a name. The admin UI hides
+buttons a user may not use, but the API enforces the rule.
 
 ### `awe`: through the Approval Workflow Engine
 
 * There is one AWE policy for datasets and one for geography. The draft's
-  publisher (`owner_org`) and change note travel with the request, where the
-  policy can use them.
+  publisher and change note travel with the request, where the policy can use
+  them.
 * If AWE cannot be reached, submit fails and the draft stays a draft.
 * AWE's approval **publishes** the version; a rejection or cancellation marks it
   **rejected**.
@@ -106,11 +101,12 @@ The change is then announced on the change feed, to the Audit Manager and, if
 configured, to WebSub. A version with a future effective date is announced again
 when it **takes effect**.
 
-## Retiring
+## Settings that apply at once
 
-An entry or unit is **retired** in a draft and stops being current when the draft
-is published. It is never deleted. A dataset that is no longer used has all its
-entries retired in a new version.
+Some details are administrative: they are not part of a version and apply as soon
+as they are saved, without approval. They are a dataset's description, publisher,
+theme, visibility and licence, and the geography's visibility and licence. Each
+change is still recorded in the change log and sent to the Audit Manager.
 
 ## Permissions
 
@@ -119,7 +115,7 @@ IAM by the chart. Reads need only a signed-in user.
 
 | Permission | Allows |
 |---|---|
-| `referenceData:create` | Create datasets |
+| `referenceData:create` | Create datasets; add entries through the original `/attributes` endpoints |
 | `referenceData:edit` | Open, edit, submit and discard dataset drafts; change dataset details (including theme, visibility, licence); create releases and set their members |
 | `referenceData:delete` | Retire entries in a draft; delete a dataset that was never published; delete a draft release |
 | `referenceData:publish` | Approve or reject dataset drafts (`permission` mode); publish releases |
@@ -145,8 +141,9 @@ MDS sends two kinds of events to the [Audit Manager](../audit-manager/README.md)
 Every change is first written to MDS's own **change log**, append-only, in the
 same transaction as the change. The change log feeds the
 [change feed](consumers.md#following-changes) and is the **outbox** for delivery:
-events are sent after the change commits, and a relay in the API retries any
-that were not accepted (every 30 seconds by default). Delivery is therefore **at
+events are sent after the change commits, and a relay in the API retries, at a
+regular interval (see [Deployment](deployment.md#settings-at-install)), any that
+were not accepted. Delivery is therefore **at
 least once**; receivers de-duplicate on the event id. Events reach the Audit
 Manager as CloudEvents; see [Standards](standards.md#events-and-notifications).
 
@@ -157,20 +154,3 @@ Manager as CloudEvents; see [Standards](standards.md#events-and-notifications).
 
 The event types and the WebSub topics are in the
 [API Reference](api-reference.md#change-feed-and-configuration).
-
-## What the original write endpoints do now
-
-The original `/attributes` and `/geo` write endpoints keep their paths and
-payloads but **no longer change published data**. Each writes into the open draft
-(opening one if needed), which must then be submitted and approved. Deleting a
-published entry, unit or dataset **retires** it instead. A write is refused while
-the draft is submitted.
-
-{% hint style="warning" %}
-**An original write is not visible until the draft is approved.** A script that
-adds an entry and reads it back at once will not find it: reads return the
-current published data.
-{% endhint %}
-
-Each endpoint's behaviour is in the
-[API Reference](api-reference.md#original-endpoints).

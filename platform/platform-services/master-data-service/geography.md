@@ -1,15 +1,15 @@
 ---
 description: >-
-  How MDS represents geography and administrative boundaries: one versioned
-  dataset, units that are never deleted, change events (split, merge, rename,
-  recode, reparent, boundary change) with worked examples, the crosswalk,
-  boundaries per version, and what consumers do when the geography changes
+  How MDS represents geography and administrative boundaries: P-codes, one
+  version for the whole geography, units that are never deleted, change events
+  (split, merge, rename, recode, reparent, boundary change) with worked examples,
+  the crosswalk and boundaries per version
 ---
 
 # Geography and Boundary Changes
 
-Geography is a **special dataset** in MDS. It holds the country's administrative
-hierarchy: its **levels** (for example country → region → zone → woreda), every
+Geography is its own kind of reference data in MDS. It holds the country's
+administrative hierarchy: its **levels** (for example country → region → zone → woreda), every
 **unit** with its code (the P-code), and each level's **boundaries**.
 
 Administrative geography changes more often than it seems. Districts are split,
@@ -26,9 +26,27 @@ The examples use Ethiopian P-codes (region `ET04` → zone `ET0412` → woreda
 | | What it is |
 |---|---|
 | **One version for the whole geography** | Levels, units and boundaries are versioned together, so a read never mixes zones of one version with woredas of another |
-| **Units** | Each unit has its P-code, level, name (and names per language), parent, status (active or retired) and the dates it was valid from and to |
+| **Units** | Each unit has its P-code, level, name (and names per language), parent (one unit of the level above), status (active or retired) and the dates it was valid from and to |
 | **Change events** | Why units changed between two versions: the link from old units to new ones |
 | **Boundaries** | One GeoJSON file per level and version, in the object store |
+
+### P-codes
+
+A **P-code** (place code) is a published identifier for an administrative area,
+such as `ET0101` for one zone. OCHA publishes them in its
+[Common Operational Datasets](https://cod.unocha.org/) so that every organisation
+uses the same code for the same area.
+
+* **P-codes usually nest.** A child's code starts with its parent's: `ET` →
+  `ET01` → `ET0101` → `ET010101`. MDS does not enforce this (see
+  [Example 4](#example-4-a-woreda-moves-to-another-zone)).
+* **The P-code is the identifier.** A unit's id is its P-code; no second internal
+  id is minted.
+
+So the code a registry stores on a record, the key of the map shape and the
+column a report groups by are the same value. Nothing needs translating.
+
+### Versions and retired units
 
 A geography version has the same lifecycle, effective date and latest / pinned /
 as-of reads as any dataset version; see [Concepts](concepts.md#versions).
@@ -76,16 +94,9 @@ Woreda `ET041203` (Adaa) is split into Adaa North (`ET041217`) and Adaa South
 5. Upload the new woreda boundary file.
 6. Set the effective date to 1 January 2027 and submit.
 
-```json
-{ "change_type": "SPLIT", "from_units": ["ET041203"],
-  "to_units": ["ET041217", "ET041218"], "effective_date": "2027-01-01",
-  "note": "Regional proclamation 123/2026" }
-```
-
 Once approved, the new version is published but does not become `latest` until
 1 January 2027. If the old woreda continues for the remaining area, list it among
-the parts (`to_units: ["ET041203", "ET041217"]`); it stays active with a new
-boundary.
+the parts of the split; it stays active with a new boundary.
 
 ### Example 2: two kebeles are merged
 
@@ -118,15 +129,9 @@ use.
 
 ## Future changes and effective dates
 
-Administrative changes are usually decided before they take effect. A geography
-version can be prepared, approved and published ahead of its **effective date**.
-Until then, `latest` returns the previous version; the new one can be read by
-number to prepare (train staff, build a map). An **as-of** read returns the
-geography in effect on a date, so a report for 30 June 2026 uses the woredas of
-that day.
-
-MDS announces the version twice on the [change feed](consumers.md#following-changes):
-when it is **published** (to prepare) and when it **takes effect** (to switch).
+A geography change is usually approved ahead of its **effective date**, like any
+[future-dated version](concepts.md#effective-dates): it can be read by number to
+prepare, and an **as-of** read gives the woredas in effect on a given day.
 
 ## The crosswalk
 
@@ -147,8 +152,7 @@ For Example 1, the crosswalk of `ET041203` from version 2 to version 3 returns
 
 ## Boundaries per version
 
-Boundaries are GeoJSON files in the platform's S3-compatible object store (Garage
-in the commons install, bucket `openg2p-geo`; see
+Boundaries are GeoJSON files in the platform's object store (see
 [Deployment](deployment.md#object-store-for-boundaries)). They are **simplified per
 level** when the pack is built, coarser at country level and finer further down,
 so a browser can load a whole level. They are stored **per geography version,
@@ -165,10 +169,6 @@ geo/<country>/v<version>/<level>.geojson      e.g. geo/ETH/v3/woreda.geojson
   change points at the earlier version's file; nothing is copied.
 * So a map for version 2 and a map for version 3 can sit side by side.
 
-Database rows hold only the file's key; the files themselves are too large to
-store or query as rows. Without an object store, the hierarchy still works; only
-the boundaries are missing.
-
 ## Making a change
 
 Geography changes follow the same draft → submit → approve flow as any dataset;
@@ -180,17 +180,9 @@ has the steps. A country pack can also bring geography changes; see
 
 ## When a new geography version is published
 
-Publishing does **not** change any data a consumer holds.
-
-| Consumer | What to do |
-|---|---|
-| **Registries** | **Keep the recorded code**; it still resolves. Store the geography version with the record if you can. Do not rewrite records automatically |
-| **Data entry** | Use `latest`: new units appear and retired ones disappear from the effective date. Show existing records with retired units included |
-| **Current reporting** | Map old codes to current units through the crosswalk. Splits need the record's location or a review |
-| **Aggregates and dashboards** | **Recompute** per-unit figures against the new version; never mix versions |
-| **Historical reports** | Read the geography as of the report date, or pinned to the version used |
-| **Maps** | Rebuild with the new boundary files; keep the old build for historical views |
-| **Programmes and anything pinned** | **Re-pin deliberately** after reviewing the targeting |
+Publishing does **not** change any data a consumer holds: recorded codes still
+resolve. What each kind of consumer should do is on
+[For Consumers](consumers.md#geography-changes).
 
 {% hint style="warning" %}
 **MDS alone cannot resolve a split.** It knows that `ET041203` became two woredas;

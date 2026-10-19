@@ -1,8 +1,8 @@
 ---
 description: >-
-  How the Master Data Service is installed (inside commons-services), the
-  settings that matter at install, the object store for boundaries, approval
-  mode and the public catalogue host
+  How the Master Data Service is installed (inside commons-services), every
+  setting that matters at install, the object store for boundaries, approval
+  through AWE and the public catalogue host
 ---
 
 # Deployment
@@ -18,7 +18,7 @@ MDS is **not installed on its own**. It ships as part of the
 {% hint style="warning" %}
 **Version bumps must be made in `commons-services`.** Publishing a new MDS chart
 or image does not change any deployment by itself: the version pinned in
-`commons-services` is what an install gets. See [Versions](versions.md).
+`commons-services` is what an install gets. See [Software Versions](versions.md).
 {% endhint %}
 
 ## One deployment serves one country
@@ -51,7 +51,11 @@ shows the first four in the **Country Pack** group.
 | `geoSeed.publishInitial` | — | On by default: a dataset's first load is published at once. Off: left as a draft for approval |
 | `geoSeed.autoPublish` | — | Off by default. On: later loads are published at once, without approval. **Development and test only** |
 | `geoSeed.ownerOrg` | — | Publisher recorded on what the loader creates. Empty by default |
-| `masterDataAPI.catalogue.approvalMode` | — | `permission` (default) or `awe`. See [Approval modes](change-control.md#approval-modes) |
+| `global.authClientId` | — | The Keycloak client that holds the MDS permissions. Default `master-data` |
+| `global.csrfEnabled` | — | Double-submit CSRF check on writes. On by default |
+| `masterDataAPI.catalogue.approvalMode` | — | `permission` (default) or `awe`. See [Approval modes](change-control.md#approval-modes) and [Approval through AWE](#approval-through-awe) |
+| `masterDataAPI.catalogue.defaultOwnerOrg` | — | Publisher given to datasets and the geography created without one; also the DCAT publisher when `public.publisher` is empty. Empty by default |
+| `masterDataAPI.catalogue.effectiveRefreshSeconds` | — | How often MDS checks whether a future-dated version has taken effect, so a version takes effect at most this long after its date. Default `300`; `0` checks only on start and on publish |
 | `masterDataAPI.catalogue.auditManagerUrl` | — | The Audit Manager; by default the one in `commons-services`. Empty turns audit off |
 | `masterDataAPI.catalogue.websubHubUrl` | — | The WebSub hub for version notifications. `commons-services` points it at its own hub (`http://<release>-websub/hub`; installed by default). The MDS chart alone leaves it empty, which turns notifications off |
 | `masterDataAPI.catalogue.public.*` | Public catalogue (MDS chart form only) | Off by default. See [Public catalogue host](#public-catalogue-host) |
@@ -61,13 +65,22 @@ Each `geoSeed` setting also has a loader command-line flag and environment
 variable (see the chart's `values.yaml`). How loads work:
 [Country Packs](country-packs.md#loading-and-upgrading-in-mds).
 
+A few API settings have no chart value of their own. Set them as environment
+variables under `masterDataAPI.envVars`:
+
+| Environment variable | Default | Meaning |
+|---|---|---|
+| `MASTER_DATA_API_CATALOGUE_OUTBOX_RELAY_SECONDS` | `30` | How often the API retries change events not yet accepted by the Audit Manager or WebSub (see [Audit](change-control.md#audit)), and how often each worker notices a publish made by another and drops its cache of the original `/attributes` and `/geo` reads. `0` turns both off |
+| `MASTER_DATA_API_CACHE_EXPIRE_SECONDS` | `300` | The longest a cached original `/attributes` or `/geo` read is kept |
+
 ## Object store for boundaries
 
 Boundary files (GeoJSON) are kept in an **S3-compatible object store**: Garage in
 the commons install (see
 [Object store (Garage)](../../../deployment/openg2p-commons-helm-chart.md#object-store-garage)).
-The country-pack loader uploads them, and the API serves and accepts them. Both
-have their own settings; **keep them in step**:
+Database rows hold only each file's key. The country-pack loader uploads the
+files, and the API serves and accepts them. Both have their own settings; **keep
+them in step**:
 
 | | Loader | API |
 |---|---|---|
@@ -76,26 +89,31 @@ have their own settings; **keep them in step**:
 | Bucket | `openg2p-geo` | the same |
 | Credentials | Secret `commons-minio` (`root-user`, `root-password`) | the same |
 
-The Secret keeps the name `commons-minio` for compatibility; the Garage init job
-writes the credentials to it. The MDS chart on its own still defaults to
-`http://commons-minio:9000`, so set the endpoint when installing it outside
-`commons-services`. Set `publicBaseUrl` when browsers need a different address
-than the in-cluster one.
+The Garage init job writes the credentials to the `commons-minio` Secret; the MDS
+chart on its own defaults to `http://commons-minio:9000`, so set the endpoint when
+installing it outside `commons-services`. Set `publicBaseUrl` when browsers need
+a different address than the in-cluster one.
 
 Without an endpoint, the hierarchy still loads; only boundaries are missing.
 
 ## Approval through AWE
 
+The AWE values are under `masterDataAPI.catalogue.awe`:
+
+| Value | Default | Meaning |
+|---|---|---|
+| `baseUrl` | `""` | AWE's in-cluster address. Empty: MDS falls back to `permission` mode |
+| `policyKeyList`, `policyKeyGeo` | `master_data.list_version.v1`, `master_data.geo_version.v1` | The AWE policies for datasets and for geography |
+| `seed.enabled` | `true` | Register the two policies and the callback secret in AWE's database |
+
 With `approvalMode: awe`, the chart also:
 
 * creates the callback HMAC secret (`<release>-master-data-awe-callback-hmac`),
   kept across upgrades;
-* with `awe.seed.enabled` (default on), registers the two approval policies (one
-  for datasets, one for geography) and the callback secret in the shared AWE
-  database. Approvers hold the client role `MASTER_DATA_APPROVER`;
-  self-approval is forbidden. The stages can be changed in AWE afterwards.
-
-If no AWE base URL is set, MDS falls back to `permission` mode.
+* with `seed.enabled`, registers the two approval policies and the callback
+  secret in the shared AWE database. Approvers hold the client role
+  `MASTER_DATA_APPROVER`; self-approval is forbidden. The stages can be changed
+  in AWE afterwards.
 
 ## Public catalogue host
 
@@ -109,8 +127,12 @@ under `masterDataAPI.catalogue.public`:
 | `rateLimitPerMinute` | `60` | Per client IP and API worker; `0` disables |
 | `trustedProxyHops` | `1` | Proxies that append to `X-Forwarded-For` |
 | `cacheSeconds` | `300` | `Cache-Control` max-age |
-| `title`, `publisher` | `Master data catalogue`, `""` | DCAT catalogue title and publisher |
+| `title`, `publisher` | `Master data catalogue`, `""` | DCAT catalogue title and publisher (empty: `catalogue.defaultOwnerOrg`) |
 | `istio.enabled`, `istio.host`, `istio.gateway` | `false`, `catalogue.<namespace>.openg2p.org`, `internal` | A separate host that routes **only** `/public/` to the API |
+
+The language of the plain labels in SKOS and DCAT is the environment variable
+`MASTER_DATA_API_PUBLIC_CATALOGUE_DEFAULT_LANGUAGE` (default `en`), set under
+`masterDataAPI.envVars`.
 
 {% hint style="warning" %}
 The default gateway is the **internal** one, so the catalogue is reachable on the

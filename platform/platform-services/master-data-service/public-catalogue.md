@@ -13,9 +13,10 @@ with downloads and standard metadata they can harvest.
 
 Everything public is **opt-in, and off by default**, twice over:
 
-1. The deployment switches the public catalogue on (see
-   [Deployment](deployment.md#public-catalogue-host)). While it is off, nothing is
-   served.
+1. The deployment switches the public catalogue on. While it is off, nothing is
+   served. An operator turns it on in the MDS chart and, to reach it from
+   outside, gives it its own host; the settings are on
+   [Deployment: public catalogue host](deployment.md#public-catalogue-host).
 2. An administrator marks each dataset, and the geography, **public**. Everything
    is **private** by default, including what a country pack loads.
 

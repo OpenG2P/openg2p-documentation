@@ -52,7 +52,7 @@ All registries are keyed to the same national identifier (Fayda in the reference
 
 ## Map of this section
 
-What is built today, and what is still design: [TODOs & Open Items](open-items/README.md#what-is-built).
+Built today: the Farmer and Crop Sown registries, activity registers in the registry platform, the catalogues (Master Data Service), and the Exchange: the [Composite](deployment/composite.md) with its [console](composite/console.md), a [consent token per registry](architecture/request-flow.md) from one consent, and [consent collection](architecture/consent.md) in person with a form. Still to do: [TODOs & Open Items](open-items/README.md).
 
 | Part | Pages |
 | --- | --- |
@@ -61,4 +61,4 @@ What is built today, and what is still design: [TODOs & Open Items](open-items/R
 | **[Composite](composite/README.md)** | The partners' entry point: design; [Composite API](composite/api.md); [use-case configuration](composite/use-case-configuration.md); [adding a data source](composite/adding-a-data-source.md); [Composite console](composite/console.md); [running the Composite locally](composite/running-locally.md) |
 | **[Deployment](deployment/README.md)** | Topology, install order and the names that must match; installing the [Exchange](deployment/exchange.md), the [Farmer Registry](deployment/farmer-registry.md), the [Crop Sown Registry](deployment/crop-sown-registry.md) and the [Composite](deployment/composite.md); [after install](deployment/after-install.md); [testing](deployment/testing.md); [upgrades and uninstall](deployment/upgrades-and-uninstall.md); [separate clusters](deployment/separate-clusters.md) |
 | **[Partner guide](partner-guide.md)** | For banks, MFIs and agritechs: joining Agri Stack and calling a use case end to end |
-| **[TODOs and open items](open-items/README.md)** | Decisions and checks still pending; [service guide notes](open-items/service-guide-notes.md) |
+| **[TODOs and open items](open-items/README.md)** | Work still to do, with the design worked out so far; [activity register UI configuration](open-items/activity-register-ui-configuration.md); [catalogue content](open-items/catalogue-content.md); [service guide notes](open-items/service-guide-notes.md) |

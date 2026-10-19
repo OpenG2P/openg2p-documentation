@@ -34,17 +34,19 @@ the pack.
 
 Packs live in the [`openg2p-data`](https://github.com/OpenG2P/openg2p-data)
 repository, under `packs/<CODE>`, where the code is usually the
-[ISO 3166 alpha-3](standards.md) country code. There is no other way for country data to enter the platform.
+[ISO 3166 alpha-3](standards.md) country code. Country data first arrives from a
+pack; after that it changes through MDS's own drafts and approvals.
 
 Two packs ship today:
 
-| Pack | Country | Levels | Units | Datasets | Samples | Licence | Used by |
-|---|---|---|---|---|---|---|---|
-| `XKM` | Kamuntu (**fictitious**) | country → region → district → ward → village | 884 | none | none | CC0-1.0 | Default of the MDS chart |
-| `ETH` | Ethiopia | country → region → zone → woreda | 1,271 | core + `agriculture` theme | yes | CC BY-IGO (attribution required) | Default of `commons-services` |
+| Pack | Country | Levels | Units | Datasets | Samples | Licence |
+|---|---|---|---|---|---|---|
+| `XKM` | Kamuntu (**fictitious**) | country → region → district → ward → village | 884 | none | none | CC0-1.0 |
+| `ETH` | Ethiopia | country → region → zone → woreda | 1,271 | core + `agriculture` theme | yes | CC BY-IGO (attribution required) |
 
 {% hint style="warning" %}
-`XKM` is the MDS chart default on purpose: an unconfigured install shows a country
+`XKM` is the MDS chart default on purpose (the defaults are on
+[Deployment](deployment.md#settings-at-install)): an unconfigured install shows a country
 that does not exist, so invented figures are never attached to a real place. But
 it is **geography only**. For a registry you can fill in, use a pack with
 datasets (today, `ETH`).
@@ -52,18 +54,8 @@ datasets (today, `ETH`).
 
 ### P-codes
 
-A **P-code** (place code) is a published identifier for an administrative area,
-such as `ET0101` for one zone. OCHA publishes them so that every organisation uses
-the same code for the same area (see
-[Common Operational Datasets](https://cod.unocha.org/)).
-
-* **P-codes nest.** A child's code starts with its parent's: `ET` → `ET01` →
-  `ET0101` → `ET010101`.
-* **The P-code is the identifier.** A unit's id in the pack is its P-code; no
-  second internal id is minted.
-
-So the code a registry stores on a record, the key of the map shape and the
-column a report groups by are the same value. Nothing needs translating.
+Units are identified by their OCHA **P-codes**; see
+[Geography: P-codes](geography.md#p-codes).
 
 ### Sources and licence
 
@@ -77,50 +69,6 @@ On load, MDS sets the geography's [data licence](public-catalogue.md#data-licenc
 from it, unless an administrator already set one.
 COD-AB boundaries are **operational**: they are not a statement on the legal or
 political status of any territory.
-
-### Pack file layout
-
-| Path | What it holds |
-|---|---|
-| `manifest.json` | Source, licence, version, level names, unit counts |
-| `levels.json` | The levels: id, name, parent level |
-| `values.json` | Every unit: id (its P-code), level, parent, name |
-| `boundaries/<level>.geojson` | Simplified map shapes for one level, keyed on P-code |
-| `codelists/<attribute>.json` | Core datasets |
-| `domains/<theme>/*.json` | Theme datasets, for example `domains/agriculture/` |
-| `address.json` | The address parts below the lowest level |
-| `samples/individuals.json`, `samples/households.json` | Sample people and their households |
-| `changes.json` | Optional: real geography change events for the next load (see [Later loads](#later-loads-drafts-not-overwrites)) |
-
-Next to the packs, `openg2p-data` holds `packs/roles.json` (the role vocabulary)
-and the tooling in `scripts/packs/`.
-
-### Semantic roles
-
-Reports ask about meaning, not literal values: "is this person the head of the
-household?", "is this an improved water source?". A literal such as `'SELF'`
-breaks silently when a country uses another code.
-
-So a pack's dataset entries may carry **roles** from `packs/roles.json`, a closed
-vocabulary. Each role names its dataset and whether one entry holds it
-(`head_of_household`) or many may (`improved_water`; which sources count as
-improved is a national definition).
-
-{% hint style="warning" %}
-**Stored and served, not yet used.** MDS keeps each entry's roles when it loads a
-pack and returns them with the entry in dataset reads (catalogue and public
-catalogue). No API filters by role, and no registry or report reads them yet:
-reporting views still test literal codes. Keep roles in packs (they are
-validated), but do not build on them yet.
-{% endhint %}
-
-### Addresses
-
-**An address is a P-code plus what is written below it, never both.** The P-code
-already gives the whole chain of units, so no address repeats it as text.
-`address.json` declares only the parts below the lowest level (for Ethiopia:
-kebele and house number). Storing unit names beside the P-code holds the same fact
-twice, and one copy goes wrong when a unit is renamed.
 
 ## How a pack reaches the services
 
@@ -159,9 +107,46 @@ and repairs the shapes, and writes provenance and licence to the manifest.
 
 ### 2. Add the country's content
 
-Add the datasets, any themes, the address format and a few dozen sample people
-(see [Pack file layout](#pack-file-layout)). Use the role vocabulary where an
-entry has a role.
+Add the datasets, any themes, the address format and a few dozen sample people.
+Use the role vocabulary where an entry has a role.
+
+#### Pack file layout
+
+| Path | What it holds |
+|---|---|
+| `manifest.json` | Source, licence, version, level names, unit counts |
+| `levels.json` | The levels: id, name, parent level |
+| `values.json` | Every unit: id (its P-code), level, parent, name |
+| `boundaries/<level>.geojson` | Simplified map shapes for one level, keyed on P-code |
+| `codelists/<attribute>.json` | Core datasets |
+| `domains/<theme>/*.json` | Theme datasets, for example `domains/agriculture/` |
+| `address.json` | The address parts below the lowest level |
+| `samples/individuals.json`, `samples/households.json` | Sample people and their households |
+| `changes.json` | Optional: real geography change events for the next load (see [Later loads](#later-loads-drafts-not-overwrites)) |
+
+Next to the packs, `openg2p-data` holds `packs/roles.json` (the role vocabulary)
+and the tooling in `scripts/packs/`.
+
+#### Semantic roles
+
+Reports ask about meaning, not literal values ("is this person the head of the
+household?"), and a literal such as `'SELF'` breaks when a country uses another
+code. So dataset entries may carry **roles** from `packs/roles.json`, a closed
+vocabulary; each role names its dataset and whether one entry or many may hold it.
+
+{% hint style="warning" %}
+**Stored and served, not yet used.** MDS keeps each entry's roles and returns
+them in dataset reads, but no API filters by role and no registry or report reads
+them yet. Keep roles in packs (they are validated), but do not build on them yet.
+{% endhint %}
+
+#### Addresses
+
+**An address is a P-code plus what is written below it, never both.** The P-code
+already gives the whole chain of units, so no address repeats it as text.
+`address.json` declares only the parts below the lowest level (for Ethiopia:
+kebele and house number). Storing unit names beside the P-code holds the same fact
+twice, and one copy goes wrong when a unit is renamed.
 
 ### 3. Validate
 
@@ -234,9 +219,8 @@ see nothing until then. Steps:
   code stops that dataset's load with an error. To recode, give the new code a
   new entry id and drop the old entry. See
   [Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
-* **References between datasets.** An entry that refers to a code only in
-  another dataset's draft cannot be approved until that draft is published.
-  Approve the referenced dataset first (for example, crops before seed varieties).
+* **References between datasets.** Approve the referenced dataset first; see
+  [Typed fields](concepts.md#typed-fields).
 * **A pack is a snapshot.** It says which units exist, not that one was split.
   Record the real events (split, merge, recode, …) in the draft, or ship them in
   `changes.json`; the loader checks them with the API's rules and stops the
@@ -245,15 +229,7 @@ see nothing until then. Steps:
 
 ### What you choose at install
 
-Which pack to load, which parts of it (geography, datasets, sample people), which
-themes besides the core datasets, and whether a first load is published at once.
-The settings are on [Deployment](deployment.md#settings-at-install).
-
-Every load step is written to the change log with `country-pack-loader` as the
-actor, and sent to the Audit Manager and the change feed like any other change.
-Boundary files go to the object store; see
-[Geography: boundaries per version](geography.md#boundaries-per-version).
-
-{% hint style="info" %}
-Change data through drafts, the Admin UI or a pack load, never directly in the database. A direct change is overwritten the next time that dataset or the geography is published.
-{% endhint %}
+Which pack to load, which parts of it, which themes, and whether a first load is
+published at once are set on
+[Deployment](deployment.md#settings-at-install). Boundary files go to the object
+store; see [Geography: boundaries per version](geography.md#boundaries-per-version).

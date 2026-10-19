@@ -53,7 +53,7 @@ Each department runs its registries for its own work: its staff, approvals, part
 
 **Standalone installs are not affected.** The Exchange settings in commons are opt-in and off by default. A registry installed without the Exchange checks partners and consents at its own Partner Management and Consent Manager, as in path A; the registry itself is the same in both cases.
 
-**Networking.** Each department's partner-facing APIs (the registries' partner APIs; at the Exchange, the Composite, the Consent Manager's partner API and partner portal) are on public hostnames on its own ingress. Staff UIs and admin APIs can stay on an internal gateway reached over WireGuard. Calls between departments use those public hostnames, protected by signed requests with keys in Partner Management, not shared Keycloak tokens: each department is a partner of the services it calls, and no secrets are exchanged. A gateway between departments with mutual TLS is an [open item](../open-items/README.md#registries).
+**Networking.** Each department's partner-facing APIs (the registries' partner APIs; at the Exchange, the Composite, the Consent Manager's partner API and partner portal) are on public hostnames on its own ingress. Staff UIs and admin APIs can stay on an internal gateway reached over WireGuard. Calls between departments use those public hostnames, protected by signed requests with keys in Partner Management, not shared Keycloak tokens: each department is a partner of the services it calls, and no secrets are exchanged. A gateway between departments with mutual TLS is an [open item](../open-items/README.md#platform-and-build).
 
 {% hint style="info" %}
 How the departments and the Exchange are installed and set up: [Deployment](../deployment/README.md#topology).

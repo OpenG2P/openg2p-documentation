@@ -45,7 +45,7 @@ MoA lists about 1,460 released varieties. Import them into `SEED_VARIETY` only w
 
 ### 3. Cross-classification, only if asked
 
-A crop has one category. Further groupings (cash crop, export crop, fodder) would be a `CROP_GROUP` dataset and an array attribute on `CROP_COMMODITY` whose items carry `x-list-ref: CROP_GROUP` (see [typed attributes](../../platform/platform-services/master-data-service/concepts.md#typed-attributes)).
+A crop has one category. Further groupings (cash crop, export crop, fodder) would be a `CROP_GROUP` dataset and an array attribute on `CROP_COMMODITY` whose items carry `x-list-ref: CROP_GROUP` (see [typed attributes](../../platform/platform-services/master-data-service/concepts.md#typed-fields)).
 
 ### 4. International code mappings
 

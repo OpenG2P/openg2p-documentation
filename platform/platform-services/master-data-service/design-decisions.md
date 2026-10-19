@@ -4,20 +4,17 @@ description: >-
   reference data needs versions, why a service of its own, versioning per
   dataset, effective dates per version, no expiry date on entries,
   classification hierarchies, fixed codes, mappings to international
-  standards, approvals and audit, storage
+  standards, approvals and audit
 ---
 
 # Design Decisions
 
 This page explains why MDS is designed as it is. It starts with the reason for
-versioning at all, then takes common catalogue requirements (version every change,
-effective and expiry dates, classification hierarchies, mapping to international
-standards, approvals and audit) one by one. Each topic has three parts:
-
-* **Choice**: what MDS does.
-* **Why**: the reasoning.
-* **What this means for consumers**: what a registry, report or other service does
-  with it.
+versioning at all, then takes the main design choices one by one: versions per
+dataset, effective dates, no expiry dates on entries, classification
+hierarchies, fixed codes, mappings to international standards, and approvals and
+audit. Each topic gives the **choice** (what MDS does) and **why**, and links to
+what it means for a consumer on [For Consumers](consumers.md).
 
 The details are in [Concepts](concepts.md), [Geography and Boundary Changes](geography.md),
 [Change Control and Approvals](change-control.md) and [Standards](standards.md).
@@ -70,14 +67,13 @@ minor part. See [Versions](concepts.md#versions).
 * **Per-entry versions would leave the consumer to assemble the state.** It would
   have to work out which version of each entry was current at a moment. A dataset
   version answers that once, for everyone.
-* **The tools that a major/minor number tries to signal already exist:**
-  * **pinning** (`version: 4`): a consumer that must not move stays put;
-  * **latest** and **as-of** reads: a consumer that wants the current, or a past,
-    state asks for it;
-  * the **change feed** (`get_changes`): a consumer learns that a new version
-    exists;
-  * the **version diff** (`get_list_diff`): a consumer sees exactly what was
-    added, changed, retired or brought back.
+* **What a major/minor number tries to signal is already available:**
+  * a consumer that must not move **pins** a version and stays put;
+  * a consumer that wants the current, or a past, state reads the **latest**
+    version or the version **as of** a date;
+  * the **change feed** tells a consumer that a new version exists;
+  * the **comparison of two versions** shows exactly what was added, changed,
+    retired or brought back.
 * **A major/minor number is a judgement that someone must make on every change.**
   The diff is a fact. A consumer that cares reads the diff, whatever the number.
 
@@ -90,25 +86,12 @@ What counts as **breaking** for reference data is narrow:
 | An entry's **meaning** changes (same code, different thing) | Yes | Records that hold the code now mean something else. Avoid it: retire and add a new code |
 | A new entry | No | Additive |
 | A new or corrected label, or a label in another language | No | Codes are unchanged |
-| New or changed typed attributes | Usually no | Unless a consumer's rule reads that attribute |
+| New or changed typed fields | Usually no | Unless a consumer's rule reads that field |
 
 For several datasets that must stay consistent with each other, a
 [catalogue release](concepts.md#catalogue-release) pins a named set of versions.
 
-An automatic **"breaking change" flag** on a version is a possible addition: it
-could be set on publish when the diff retires an entry. It is **not built**. A
-change of meaning cannot be detected automatically; the maker must say so in the
-change note.
-
-### What this means for consumers
-
-* Pin a version (or a release) where a change must be reviewed first. Read
-  `latest` where the current entries are wanted.
-* Follow the change feed. When a dataset you pin has a new version, read the diff
-  and decide when to move.
-* Treat **retired** entries in the diff as the signal to review.
-* Store the version you used with the record where it matters
-  (see [For Consumers](consumers.md#store-the-version-with-the-record)).
+**For consumers:** [Pin in configuration](consumers.md#pin-in-configuration).
 
 ## Effective dates per version
 
@@ -120,8 +103,8 @@ have no effective dates of their own. See [Effective dates](concepts.md#effectiv
 
 ### Why
 
-* **Changes come in sets.** New woredas, a new season's varieties, a revised
-  fertiliser subsidy list: these take effect together, on one date. One date per
+* **Changes come in sets.** New woredas, revised benefit amounts, a new season's
+  seed varieties: these take effect together, on one date. One date per
   version says that once.
 * **Staging works naturally.** A version for 2027-01-01 can be prepared, approved
   and published in October 2026. Until that date `latest` returns the previous
@@ -133,23 +116,10 @@ have no effective dates of their own. See [Effective dates](concepts.md#effectiv
 
 The limitation: **effective dates only move forward.** While a future-dated
 version is pending, a new version cannot take effect before it. An urgent
-correction then has to wait for the pending date, or take effect on it.
+correction then has to wait for the pending date, or take effect on it; see
+[Admin Guide: schedule a change](admin-guide.md#schedule-a-change-for-a-future-date).
 
-The practice to follow:
-
-* Publish a future-dated version **close to its date**, not months ahead, unless
-  the dataset rarely changes.
-* Make urgent corrections **before** staging a future-dated version.
-* If an urgent correction is needed while one is pending, publish it with the
-  **same effective date** as the pending version. It then takes effect together
-  with it.
-
-### What this means for consumers
-
-* `latest` is the version in effect **now**, not the highest number. A higher,
-  future-dated version can exist; check `effective_from` and `is_latest`.
-* Use the time between "published" and "effective" to prepare: train staff,
-  update forms, pre-load caches.
+**For consumers:** [Latest, pinned or as of](consumers.md#latest-pinned-or-as-of).
 
 ## No expiry date on entries
 
@@ -176,25 +146,7 @@ publish from the version's `effective_from`.
   woreda is split in 2027. `valid_from` and `valid_to` say when each unit existed,
   and the [crosswalk](geography.md#the-crosswalk) says what replaced it.
 
-### What this means for consumers
-
-* To know whether an entry was current on a date, read the dataset **as of** that
-  date.
-* For geography, a unit's `valid_from` and `valid_to` answer the same question
-  directly, and the crosswalk maps old units to new ones.
-
-## Where effective dates matter
-
-Effective dates are not decoration. Three uses depend on them:
-
-| Use | How |
-|---|---|
-| **Validating an event against the catalogue as it was then** | To check a crop-sown record dated 2026-06-30, read `CROP_COMMODITY` `as_of` that date, not today's version. A crop retired since then is still valid for that date |
-| **Reports over past periods** | "Farmers per woreda on 30 June 2026" reads the geography `as_of` that day, so the woredas are the ones that existed then. Running the report again next year gives the same answer |
-| **Staging changes** | A version published now, effective later, is visible by number before its date and becomes `latest` on the date |
-
-See [Reading: latest, pinned, as of, release](concepts.md#reading-latest-pinned-as-of-release)
-and [Future changes and effective dates](geography.md#future-changes-and-effective-dates).
+**For consumers:** [Retired entries](consumers.md#retired-entries).
 
 ## Classification hierarchy
 
@@ -203,49 +155,42 @@ and [Future changes and effective dates](geography.md#future-changes-and-effecti
 * **Within a dataset, a single-parent hierarchy.** A hierarchical dataset gives
   each entry at most one parent (`parent_code`). MDS checks that the parent exists
   and is active, and that there are no cycles.
-* **Across datasets, links through typed attributes.** A field with `x-list-ref`
-  holds a code of another dataset: a seed variety's `crop` is a code of
-  `CROP_COMMODITY`. See [Typed attributes](concepts.md#typed-attributes).
+* **Across datasets, links through typed fields.** A field can hold a code of
+  another dataset: a benefit type's frequency is a code of the Payment frequency
+  dataset; a seed variety's crop is a code of the Crops dataset. See
+  [Typed fields](concepts.md#typed-fields).
 * **Cross-classification as a list of references.** An entry that belongs to
-  several groups lists them in an array attribute, such as
-  `"groups": ["CEREAL", "FODDER"]`, each a code of `CROP_GROUP`. It does not get
-  several parents. See [Lists of references](concepts.md#lists-of-references).
+  several groups lists them in a field, such as `"groups": ["CEREAL", "FODDER"]`,
+  each a code of a Crop groups dataset. It does not get several parents. See
+  [Lists of references](api-reference.md#lists-of-references).
 
 ### Why
 
 * **One tree gives exact roll-ups.** In a tree, each entry counts once at each
   level, so totals add up. With several parents, a crop that is both a cereal and
   a fodder crop would be counted under both, and the totals would not add up.
-* **Other classifications are attributes, with their own datasets.** "Crop group",
-  "agro-ecological zone" or "commodity class" are classifications in their own
+* **Other classifications are fields, with their own datasets.** "Crop group",
+  "agro-ecological zone" or "benefit category" are classifications in their own
   right. As datasets they have their own codes, labels, versions and owners.
-  Linking to them by `x-list-ref` keeps each one maintained in one place.
+  Referring to them keeps each one maintained in one place.
 * **References are checked.** Every referenced code, single or in a list, must be
   an active entry of the referenced dataset's version in effect.
 
-### What this means for consumers
-
-* **Store the most specific code.** A registry stores the crop (or the variety),
-  not the group.
-* **Roll up in reports.** Follow `parent_code` up the tree for the main
-  hierarchy. Use the attributes for other groupings, for example
-  `attribute_filters: {"groups": ["FODDER"]}` to find every fodder crop.
-* A report that groups by a list-of-references attribute must expect an entry in
-  more than one group.
+**For consumers:** [Hierarchies and groupings in reports](consumers.md#hierarchies-and-groupings-in-reports).
 
 ## Codes fixed once published, labels per language
 
 ### Choice
 
 * An entry's **code** cannot change once the entry has been published.
-* Its **labels** (`display`, and `display_i18n` per language), attributes, parent
-  and sort order can change in any later version.
+* Its **labels** (one per language), typed fields, parent and sort order can
+  change in any later version.
 * A **recode** is: retire the old entry, add a new one with the new code.
 
-MDS enforces this on every write path: the API, the original `/attributes`
-endpoints, submit, publish (in the database) and the country-pack loader. A change
-to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
-[Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
+MDS enforces this on every write path, including the database and the
+country-pack loader. See
+[Codes are fixed once published](concepts.md#codes-are-fixed-once-published) and
+[API errors](api-reference.md#errors).
 
 ### Why
 
@@ -260,13 +205,7 @@ to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
   new P-code is a new unit, linked to the old one by a `RECODE` change event that
   the crosswalk follows.
 
-### What this means for consumers
-
-* A stored code always resolves, in every later version (as `RETIRED` if it was
-  retired).
-* Cache labels by version: they may change. Codes do not.
-* When a diff shows a retirement and an addition together, check the change note:
-  it may be a recode, and records may need mapping.
+**For consumers:** [Retired entries](consumers.md#retired-entries).
 
 ## Mapping to international standards
 
@@ -274,12 +213,16 @@ to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
 
 * **Codes stay the country's own.** MDS does not replace a country's codes with
   an international scheme.
-* **A mapping is an attribute of the entry.** When a country pack provides one, a
-  dataset's attribute schema declares a field for it, and each entry carries the
-  international code or URI. For example:
+* **A mapping is a typed field of the entry.** When a country pack provides one,
+  the dataset declares a field for it, and each entry carries the international
+  code or URI. For example:
 
-| International scheme | Example attribute | On which dataset |
+| International scheme | Example field | On which dataset |
 |---|---|---|
+| ISCED (UNESCO International Standard Classification of Education) | `isced_level` | Education levels |
+| ISCO (ILO International Standard Classification of Occupations) | `isco_code` | Occupations |
+| ICD-10 (WHO International Classification of Diseases) | `icd10_code` | Health conditions, disability causes |
+| ISO 4217 currency codes | `iso4217_code` | Currencies, benefit types |
 | FAO World Programme for the Census of Agriculture 2020, Indicative Crop Classification | `fao_wca_icc` | Crops |
 | FAOSTAT item codes | `faostat_item_code` | Crops, livestock products |
 | AGROVOC concept URIs | `agrovoc_uri` | Crops, pests, practices |
@@ -295,56 +238,27 @@ to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
 * **Registries, laws and forms use the country's codes.** Replacing them would
   break existing records and systems.
 * **International schemes do not map one-to-one.** A national crop may map to one
-  FAO item, to several, or to none. An attribute can hold that, including an
-  array, and can be left empty where there is no match.
-* **Attributes are already validated and versioned.** A mapping added or corrected
-  goes through a draft and an approval like any other change, and its JSON Schema
-  can check the format with a `pattern`.
+  FAO item, to several, or to none. A field can hold that, including a list, and
+  can be left empty where there is no match.
+* **Typed fields are already checked and versioned.** A mapping added or
+  corrected goes through a draft and an approval like any other change, and the
+  dataset's rules can check its format.
 
-### What is built and what is a convention
+What is built and what is only a convention is on
+[Standards](standards.md#mappings-to-international-schemes).
 
-| | Status |
-|---|---|
-| Typed attributes per entry, validated by JSON Schema, versioned with the dataset | **Built** |
-| Finding entries by an attribute value (`attribute_filters`) | **Built** |
-| COD-AB P-codes as geography unit IDs | **Built** (from the shipped country pack) |
-| Attribute names for international mappings (the table above) | **Convention**: a suggestion, not enforced |
-| International mappings in the shipped Ethiopia pack | **Not provided**: the pack carries none today |
-| International schemes loaded as datasets of their own, referenced with `x-list-ref` | **Option**: possible with what is built; no pack does it |
-| Publishing mappings as `skos:exactMatch` in the [public catalogue's](public-catalogue.md) SKOS | **Not built** (see [Standards](standards.md#datasets-and-entries)) |
-
-### What this means for consumers
-
-* Store and exchange the country's codes.
-* To report to an international body, read the mapping attribute of each entry
-  (at the version the report uses) and translate on output.
-* Expect gaps: an entry may have no mapping, or several.
+**For consumers:** [International codes](consumers.md#international-codes).
 
 ## Approval workflow and audit history
 
 ### Choice
 
-* **Every change goes through a draft.** Edits are made in a draft, submitted, and
-  approved before they are published. A published version never changes; the
-  database refuses it. See [Change Control and Approvals](change-control.md).
-* **Two approval modes**, set per deployment:
-  * `permission`: maker-checker inside MDS. An approver holds the publish
-    permission and must not be the person who created, last edited or submitted
-    the draft.
-  * `awe`: the draft goes to the
-    [Approval Workflow Engine](../approval-workflow-engine/README.md), whose policy
-    decides the stages and approvers. The owner department travels with the
-    request.
-* **Role-based permissions.** Separate permissions to create, edit, retire and
-  publish, for datasets and for geography. The `MASTER_DATA_APPROVER` role can
-  approve but not edit. See [Permissions](change-control.md#permissions).
-* **Audit history at three levels:**
-  * each **version** records who created, edited, submitted and decided it, when,
-    and the change and decision notes;
-  * an append-only **change log** records every step, and also feeds the change
-    feed;
-  * the [Audit Manager](../audit-manager/README.md) receives every change-log
-    event and every API call. See [Audit](change-control.md#audit).
+Every change goes through a draft and is approved by a second person, either
+inside MDS (maker-checker) or through the
+[Approval Workflow Engine](../approval-workflow-engine/README.md). Every step is
+recorded in an append-only change log and sent to the
+[Audit Manager](../audit-manager/README.md). The modes, permissions and audit are
+on [Change Control and Approvals](change-control.md).
 
 ### Why
 
@@ -358,26 +272,3 @@ to a published code is refused with `G2P-CAT-CODE-IMMUTABLE`. See
   written in the same transaction as the change, and the database refuses to
   update or delete its rows. Delivery to the Audit
   Manager is retried until it succeeds.
-
-### What this means for consumers
-
-* Nothing a consumer reads changes until a version is approved and takes effect.
-* Who changed what, when and why is available from the version history, the change
-  feed and the Audit Manager.
-
-## Storage
-
-MDS keeps the original `g2p_attributes` and `g2p_geo_*` tables, extended, and adds
-versioned tables beside them. The schema is in the
-[repository](https://github.com/OpenG2P/master-data-service)
-(`models/g2p_catalogue.py`, `catalogue_sql.py`).
-
-| Tables | Hold |
-|---|---|
-| `g2p_attributes` (extended) | Datasets and their administrative fields |
-| `g2p_list_versions`, `g2p_list_version_values` | Dataset versions and their entries |
-| `g2p_geo_versions`, `g2p_geo_version_levels`, `g2p_geo_version_units`, `g2p_geo_changes` | Geography versions, levels, units and change events |
-| `g2p_catalogue_releases`, `g2p_catalogue_release_members` | Releases and their members |
-| `g2p_catalogue_change_log` | The append-only change log, also the delivery outbox |
-| `g2p_catalogue_awe_events`, `g2p_catalogue_state` | AWE callbacks received; catalogue settings and schema version |
-| `g2p_attribute_values`, `g2p_geo_levels`, `g2p_geo_level_values` | The current published state (active entries and units only), refreshed from the versions |

@@ -36,7 +36,7 @@ These apply to the opt-in [public catalogue](public-catalogue.md)
 |---|---|---|---|
 | [W3C SKOS](https://www.w3.org/TR/skos-reference/) | `GET /public/datasets/{code}/skos` | Used | A dataset version is a `skos:ConceptScheme` (`skos:notation`, `skos:prefLabel`, `skos:hasTopConcept`); each active entry a `skos:Concept` with `skos:notation` (the code), `skos:prefLabel` per language, `skos:broader` (parent) or `skos:topConceptOf`, `skos:inScheme`. Concept IRIs (`/public/datasets/{code}/entries/{entry_code}`) resolve and do not carry the version. Mappings to other vocabularies (`skos:exactMatch`) are not published |
 | [JSON Schema](https://json-schema.org/draft/2020-12) 2020-12 | A dataset's `attribute_schema` (typed entry fields) | Used | Entries are validated on write, submit and approval. `x-list-ref` (a field, or each item of an array field, that must hold an entry of another dataset) is an OpenG2P extension |
-| [ISO 639](https://www.iso.org/iso-639-language-code) / [BCP 47](https://www.rfc-editor.org/info/bcp47) language tags | `display_i18n`, `name_i18n` keys (e.g. `en`, `am`, `om`); SKOS and DCAT language tags | Partly | Used as given by the country pack; MDS does not validate the tags. The plain label's language is `public_catalogue_default_language` (`en`) |
+| [ISO 639](https://www.iso.org/iso-639-language-code) / [BCP 47](https://www.rfc-editor.org/info/bcp47) language tags | `display_i18n`, `name_i18n` keys (e.g. `en`, `am`, `om`); SKOS and DCAT language tags | Partly | Used as given by the country pack; MDS does not validate the tags. The plain label's language is set per deployment (see [Deployment](deployment.md#public-catalogue-host)) |
 | [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) / [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) | All dates and times: `effective_from`, `as_of`, `published_at`, change-event dates | Used | |
 
 ## Geography
@@ -52,8 +52,24 @@ These apply to the opt-in [public catalogue](public-catalogue.md)
 
 | Standard | Where in MDS | Status | Notes |
 |---|---|---|---|
-| Licence URIs ([Creative Commons](https://creativecommons.org/licenses/), [Open Data Commons](https://opendatacommons.org/licenses/)) | `licence_uri` and `licence_label` on each dataset and the geography; `dct:license` in DCAT and SKOS | Used | Free text; the admin UI suggests CC BY 4.0, CC BY-SA 4.0, CC0 1.0, CC BY-IGO, ODbL 1.0. The `ETH` geography is [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/), attribution required |
+| Licence URIs ([Creative Commons](https://creativecommons.org/licenses/), [Open Data Commons](https://opendatacommons.org/licenses/)) | `licence_uri` and `licence_label` on each dataset and the geography; `dct:license` in DCAT and SKOS | Used | Free text; the admin UI suggests CC BY 4.0, CC BY-SA 4.0, CC0 1.0, CC BY-IGO, ODbL 1.0. A pack's geography licence comes from its source (see [Country Packs](country-packs.md#sources-and-licence)) |
 | [SPDX licence ids](https://spdx.org/licenses/) | Country-pack `manifest.json` `license` | Partly | The loader accepts an SPDX id (e.g. `CC0-1.0`, `CC-BY-4.0`, `ODbL-1.0`) or a label and derives the licence URI. MDS stores URI and label, not an SPDX id |
+
+## Mappings to international schemes
+
+Codes stay the country's own; a mapping to an international scheme is a typed
+field of the entry (see
+[Design Decisions](design-decisions.md#mapping-to-international-standards)).
+
+| | Status |
+|---|---|
+| Typed fields per entry, checked by JSON Schema, versioned with the dataset | **Used** |
+| Finding entries by a field value (`attribute_filters`) | **Used** |
+| COD-AB P-codes as geography unit ids | **Used** (from the shipped country pack) |
+| Field names for international mappings (`isced_level`, `isco_code`, `icd10_code`, `iso4217_code`, `fao_wca_icc`, `faostat_item_code`, `agrovoc_uri`, `dadis_breed_id`, `ucum_code`, `hs_code`) | **Convention**: a suggestion, not enforced |
+| International mappings in the shipped Ethiopia pack | **Not provided**: the pack carries none today |
+| International schemes loaded as datasets of their own and referenced from a field | **To explore**: possible with what is built; no pack does it |
+| Publishing mappings as `skos:exactMatch` in the [public catalogue's](public-catalogue.md) SKOS | **To explore** (see [Datasets and entries](#datasets-and-entries)) |
 
 ## Formats
 

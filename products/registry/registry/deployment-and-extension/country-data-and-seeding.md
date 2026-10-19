@@ -53,6 +53,23 @@ when it is switched on (see [Datasets](#datasets)). MDS is therefore a
 **runtime dependency for data entry** — while it is unavailable, coded dropdowns
 have no options. Records already stored are unaffected; they hold the codes.
 
+## How the registry reads MDS
+
+A client in the registry core reads through the MDS catalogue API with the
+registry's own Keycloak client. It caches by version, follows the MDS change
+feed, and keeps serving the last good data if MDS is briefly unreachable.
+Activities record the catalogue versions they were checked against, and a
+registry can pin a catalogue release. New coded values are validated against the
+version in effect; a retired code's label is shown at the version recorded on the
+activity. Accepting an unchanged retired value when an entity record is edited is
+still to do.
+
+Direct reads of MDS's database remain only as a rollback switch
+(`masterDataReadMode: db`; see
+[Seeding never touches Master Data's database](#seeding-never-touches-master-datas-database)).
+How any consumer should read MDS is in
+[For Consumers](../../../../platform/platform-services/master-data-service/consumers.md).
+
 ## Three different kinds of data
 
 These are routinely confused. They have different purposes, different volumes, and
