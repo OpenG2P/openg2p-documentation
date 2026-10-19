@@ -66,8 +66,8 @@ standards it uses are on [Standards](standards.md).
 | **Open-data portals and other websites** | Public datasets and geography, through the [public catalogue](public-catalogue.md) |
 
 How to read, cache, pin and follow changes is on [For Consumers](consumers.md).
-Catalogue administrators manage the data in the [Admin UI](ui.md); the
-[Admin Guide](admin-guide.md) has the common tasks.
+Catalogue administrators manage the data in the admin UI; the
+[Admin Guide](admin-guide.md) explains it and has the common tasks.
 
 ## Deployment
 
@@ -91,8 +91,7 @@ its own. The country pack is chosen in the chart's **Country Pack** group. See
 | [Change Control and Approvals](change-control.md) | Drafts, approval modes, permissions, audit |
 | [Country Packs and Migration](country-packs-and-migration.md) | How a country pack loads, and how an older MDS is migrated |
 | [For Consumers](consumers.md) | Who reads MDS, and how to read, cache, pin and follow changes |
-| [Admin UI](ui.md) | The screens of the admin UI |
-| [Admin Guide](admin-guide.md) | Step-by-step tasks for catalogue administrators |
+| [Admin Guide](admin-guide.md) | The admin UI, who can do what, and the common tasks |
 | [Public Catalogue](public-catalogue.md) | The opt-in, anonymous catalogue for other websites |
 | [Deployment](deployment.md) | Installing MDS and its settings |
 | [API Reference](api-reference.md) | Every endpoint |

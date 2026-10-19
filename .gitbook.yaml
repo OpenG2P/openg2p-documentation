@@ -26,7 +26,8 @@ redirects:
   platform/platform-services/master-data-service/catalogue/change-control: platform/platform-services/master-data-service/change-control.md
   platform/platform-services/master-data-service/catalogue/country-packs-and-migration: platform/platform-services/master-data-service/country-packs-and-migration.md
   platform/platform-services/master-data-service/catalogue/consumers: platform/platform-services/master-data-service/consumers.md
-  platform/platform-services/master-data-service/catalogue/ui: platform/platform-services/master-data-service/ui.md
+  platform/platform-services/master-data-service/catalogue/ui: platform/platform-services/master-data-service/admin-guide.md
+  platform/platform-services/master-data-service/ui: platform/platform-services/master-data-service/admin-guide.md
   platform/platform-services/master-data-service/catalogue/public-catalogue: platform/platform-services/master-data-service/public-catalogue.md
   open-agri-stack/architecture/registry-model: open-agri-stack/README.md
   open-agri-stack/design/register-model-design: products/registry/registry/design/verification-and-correction.md

@@ -121,7 +121,7 @@ IAM by the chart. Reads need only a signed-in user.
 |---|---|
 | `referenceData:create` | Create datasets |
 | `referenceData:edit` | Open, edit, submit and discard dataset drafts; change dataset details (including theme, visibility, licence); create releases and set their members |
-| `referenceData:delete` | Retire entries in a draft; delete a draft release |
+| `referenceData:delete` | Retire entries in a draft; delete a dataset that was never published; delete a draft release |
 | `referenceData:publish` | Approve or reject dataset drafts (`permission` mode); publish releases |
 | `geo:create` | Add levels and units through the original `/geo` endpoints only |
 | `geo:edit` | Open, edit, submit and discard the geography draft; set the geography's visibility and licence |

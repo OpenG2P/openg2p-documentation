@@ -170,8 +170,8 @@ the boundaries are missing.
 
 Geography changes follow the same draft → submit → approve flow as any dataset;
 see [Change Control and Approvals](change-control.md). In the
-[Admin UI](ui.md#geography), units, change events and boundary files are edited on
-the Geography page; the [Admin Guide](admin-guide.md#change-geography-split-merge-rename)
+admin UI, units, change events and boundary files are edited on the Geography
+page; the [Admin Guide](admin-guide.md#change-geography-split-merge-rename)
 has the steps. A country pack can also bring geography changes; see
 [Country Packs and Migration](country-packs-and-migration.md#later-loads-drafts-not-overwrites).
 

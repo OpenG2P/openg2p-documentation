@@ -34,7 +34,7 @@ Each dataset, and the geography, has:
 * a **visibility**: *Private* (default) or *Public*;
 * an optional **licence**: a label and a URL, for example *CC BY 4.0*.
 
-Both are set in the [Admin UI](ui.md#visibility-and-licence) and apply at once;
+Both are set in the admin UI and apply at once;
 they are not part of a version. Making the geography public makes all its
 published versions readable. A public dataset is listed once it has a published
 version in effect. The country-pack loader fills the geography's licence from the
