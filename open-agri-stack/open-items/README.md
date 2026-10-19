@@ -45,7 +45,6 @@ Each item says what is to be done and where its design stands: a link to the des
 
 ## Registries
 
-* **Activity register UI configuration** — make the activity register staff UI configurable where implementations differ (tabs, list columns, context and summary pages, form widgets). *Design:* [Activity Register UI Configuration](activity-register-ui-configuration.md).
 * **Sync farmer data into other registries** — read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. *Design:* [Registry Data Sync](../design/registry-data-sync.md). *Depends on:* standing permission for a purpose.
 * **WebSub for registry outgestion** — point the registry platform's outgestion at the commons WebSub hub (`websub.<baseDomain>`) where push is wanted; consumers poll meanwhile. *Design:* decided as stated ([standards](../architecture/standards.md)).
 * **Activity registers from configuration** — a projection spec, an aggregate spec, and per-register tables created by the platform from metadata (activity types, fields promoted to columns) with a default domain service, so simple registers (e.g. attendance) need no extension and Add Register can offer "Activity". *Design:* [configuration file](../../products/registry/registry/design/activity-register.md#configuration-file) and [relation to the Observations design](../../products/registry/registry/design/activity-register.md#relation-to-the-observations-design); decided: keep a table per register. *Depends on:* a second real activity register, so the specs come from two domains.
@@ -66,7 +65,7 @@ Each item says what is to be done and where its design stands: a link to the des
 
 ## Catalogues
 
-* **Catalogue content** — what the datasets still lack: variety details, more varieties, cross-classification, international code mappings, agri input and livestock catalogues, the kebele level. *Design:* [Catalogue Content](catalogue-content.md).
+* **Agri input datasets** — inputs (fertilisers, pesticides, equipment) are not in the shipped country pack. Add them as pack datasets with typed fields when a deployment needs them; no code change. *Design:* [typed fields](../../platform/platform-services/master-data-service/concepts.md#typed-fields). Livestock datasets come with the Livestock Registry.
 * **Registries on the catalogue API, remaining** — *Design:* registries read the catalogue only through its API ([Master Data Service consumers](../../platform/platform-services/master-data-service/consumers.md)).
   * bump the registry-platform version pinned by the Farmer Registry, Crop Sown Registry and NSR charts;
   * entity registers record the catalogue versions used (activities already do), and accept an unchanged retired value when an entity record is edited;
@@ -99,5 +98,4 @@ Each item says what is to be done and where its design stands: a link to the des
 * **SQLAlchemy dependency at the root** — declare `sqlalchemy[asyncio]` in [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) (and test against 2.1), instead of each service pinning `sqlalchemy[asyncio] >=2.0,<2.1` (SQLAlchemy 2.1 no longer installs `greenlet`). *Depends on:* openg2p-fastapi-common changes, frozen for now.
 * **Migrations run once** — run migrations as a Helm hook Job instead of in every API on start (extension migrations still run unlocked and can collide). *Design:* decided as stated.
 * **Changelog path option (CI)** — an option in the shared [openg2p-packaging](https://github.com/openg2p/openg2p-packaging) workflow to build a repository's changelog from one path's commits (here `composite/`). *Design:* not designed yet.
-* **Composite on a fastapi-common release** — the Composite pins openg2p-fastapi-common `develop`, where `PartnerMgmtKeyStore` is in `utils.crypto`; release that, or move to the 1.2.x layout. See [service guide notes](service-guide-notes.md), item 15.
-* **Service guide fixes** — where the "Creating a new service" guide disagrees with current practice. *Design:* [Service Guide Notes](service-guide-notes.md).
+* **Composite on a fastapi-common release** — the Composite pins openg2p-fastapi-common `develop` (and iam-core `develop` with it), where `PartnerMgmtKeyStore` is in `utils.crypto` instead of the 1.2.x releases' `crypto`; release that layout, or move the Composite to 1.2.x. *Design:* decided as stated.

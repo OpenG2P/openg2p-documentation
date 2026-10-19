@@ -342,6 +342,7 @@ An activity register that only some installs need can ship as an optional seed a
 * Activity entry from file import or the agent portal. The `IMPORT_FILE` and `AGENT_PORTAL` channels exist but nothing writes them.
 * A bulk export API, and retention or archiving of old partitions.
 * Per-type switches and per-stage status for enrichment and aggregation. One outbox status covers all steps.
+* Configuring the staff UI per register (tabs, list columns, context and summary pages, form widgets): see [Activity Register UI Configuration (Proposal)](activity-register-ui-configuration.md).
 
 ## Relation to the Observations design
 

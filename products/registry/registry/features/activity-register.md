@@ -134,3 +134,5 @@ A partner reads an activity register through partner search and can ask for **ac
 Managing activity types through an API, activity entry from file import or the agent portal, reviewing failed ODK submissions, bulk export and archiving: see [design, not built](../design/activity-register.md#not-built).
 
 One verification model and one correction model for both register kinds (verification records with evidence, trusted sources, disputes) are proposed in [Verification and Correction (Proposal)](../design/verification-and-correction.md).
+
+Configuring the staff UI per register (tabs, list columns, context and summary pages, form widgets) is proposed in [Activity Register UI Configuration (Proposal)](../design/activity-register-ui-configuration.md).

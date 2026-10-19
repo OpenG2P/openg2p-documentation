@@ -37,6 +37,7 @@
       * [Data Model](products/registry/registry/design/data-model.md)
       * [Activity Register](products/registry/registry/design/activity-register.md)
       * [Verification and Correction (Proposal)](products/registry/registry/design/verification-and-correction.md)
+      * [Activity Register UI Configuration (Proposal)](products/registry/registry/design/activity-register-ui-configuration.md)
       * [Document Storage](products/registry/registry/design/file-attachments.md)
       * [Document Attachments](products/registry/registry/design/document-attachments.md)
       * [Meta Data Seeding](products/registry/registry/design/meta-data-seeding.md)
@@ -619,9 +620,6 @@
     * [Separate Clusters](open-agri-stack/deployment/separate-clusters.md)
   * [Partner Guide](open-agri-stack/partner-guide.md)
   * [TODOs & Open Items](open-agri-stack/open-items/README.md)
-    * [Service Guide Notes](open-agri-stack/open-items/service-guide-notes.md)
-    * [Activity Register UI Configuration](open-agri-stack/open-items/activity-register-ui-configuration.md)
-    * [Catalogue Content (TODO)](open-agri-stack/open-items/catalogue-content.md)
 
 ## Platform
 

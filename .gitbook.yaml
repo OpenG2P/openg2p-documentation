@@ -18,6 +18,8 @@ redirects:
   open-agri-stack/design/crop-sown-registry: products/registry/crop-sown-registry/README.md
   open-agri-stack/architecture/consent-model: open-agri-stack/architecture/consent.md
   open-agri-stack/architecture/consent-scenarios: open-agri-stack/architecture/consent.md
+  open-agri-stack/open-items/service-guide-notes: platform/platform-services/creating-a-new-service.md
+  open-agri-stack/open-items/activity-register-ui-configuration: products/registry/registry/design/activity-register-ui-configuration.md
   platform/platform-services/master-data-service/catalogue/standards: platform/platform-services/master-data-service/standards.md
   platform/platform-services/master-data-service/catalogue/api-reference: platform/platform-services/master-data-service/api-reference.md
   platform/platform-services/master-data-service/catalogue: platform/platform-services/master-data-service/README.md
@@ -55,3 +57,4 @@ redirects:
   open-agri-stack/guides/partner-guide: open-agri-stack/partner-guide.md
   open-agri-stack/guides/adding-a-data-source: open-agri-stack/composite/adding-a-data-source.md
   open-agri-stack/guides/registry-to-registry-sync: open-agri-stack/design/registry-data-sync.md
+  open-agri-stack/open-items/catalogue-content: open-agri-stack/open-items/README.md
