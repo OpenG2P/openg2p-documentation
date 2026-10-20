@@ -20,7 +20,7 @@ Agri Stack is the digital public infrastructure (DPI) for agriculture. It has fo
 * **Registries:** the functional registries (farmer, crop sown, livestock, DA), each run by its department.
 * **Catalogues:** the reference data every registry uses (datasets such as crop types, units and seed varieties, geography).
 * **Platform services:** Partner Management, Consent Manager and Audit Manager. Every install has its own.
-* **The Exchange** (the data exchange layer): where service providers (banks, MFIs, agritechs: **partners**) onboard once and use one farmer consent across registries: the partner portal, the Exchange's own Consent Manager and Partner Management, eSignet, and the Composite (the Exchange's use-case service).
+* **[The Exchange](architecture/exchange.md)** (the data exchange layer): where service providers (banks, MFIs, agritechs: **partners**) onboard once and use one farmer consent across registries: the partner portal, the Exchange's own Consent Manager and Partner Management, eSignet, and the Composite (the Exchange's use-case service).
 
 These pages describe how a partner gets farmer data held across the registries: who routes a request, who decides what may be shared, and who enforces it.
 
@@ -52,13 +52,13 @@ All registries are keyed to the same national identifier (Fayda in the reference
 
 ## Map of this section
 
-Built today: the Farmer and Crop Sown registries, activity registers in the registry platform, the catalogues (Master Data Service), and the Exchange: the [Composite](deployment/composite.md) with its [console](composite/console.md), a [consent token per registry](architecture/request-flow.md) from one consent, and [consent collection](architecture/consent.md) in person with a form. Still to do: [TODOs & Open Items](open-items/README.md).
+Built today: the Farmer and Crop Sown registries, activity registers in the registry platform, the catalogues (Master Data Service), and the [Exchange](architecture/exchange.md): the [Composite](composite/README.md) with its [console](composite/console.md), a [consent token per registry](architecture/request-flow.md) from one consent, and [consent collection](architecture/consent.md) in person with a form. Still to do: [TODOs & Open Items](open-items/README.md).
 
 | Part | Pages |
 | --- | --- |
-| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [consent](architecture/consent.md); [data-sharing policies](architecture/data-sharing-policies.md); [request flow](architecture/request-flow.md); [registries](architecture/registries.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
+| **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [the Exchange](architecture/exchange.md); [consent](architecture/consent.md); [data-sharing policies](architecture/data-sharing-policies.md); [request flow](architecture/request-flow.md); [registries](architecture/registries.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
 | **[Design](design/README.md)** | [Registry data sync](design/registry-data-sync.md); [Livestock Registry](design/livestock-registry.md) |
-| **[Composite](composite/README.md)** | The partners' entry point: design; [Composite API](composite/api.md); [use-case configuration](composite/use-case-configuration.md); [adding a data source](composite/adding-a-data-source.md); [Composite console](composite/console.md); [running the Composite locally](composite/running-locally.md) |
+| **[Exchange](exchange.md)** | The [Composite](composite/README.md), the partners' entry point: design; [Composite API](composite/api.md); [use-case configuration](composite/use-case-configuration.md); [adding a data source](composite/adding-a-data-source.md); [Composite console](composite/console.md); [running the Composite locally](composite/running-locally.md) |
 | **[Deployment](deployment/README.md)** | Topology, install order and the names that must match; installing the [Exchange](deployment/exchange.md), the [Farmer Registry](deployment/farmer-registry.md), the [Crop Sown Registry](deployment/crop-sown-registry.md) and the [Composite](deployment/composite.md); [after install](deployment/after-install.md); [testing](deployment/testing.md); [upgrades and uninstall](deployment/upgrades-and-uninstall.md); [separate clusters](deployment/separate-clusters.md) |
 | **[Partner guide](partner-guide.md)** | For banks, MFIs and agritechs: joining Agri Stack and calling a use case end to end |
 | **[TODOs and open items](open-items/README.md)** | Work still to do, with the design worked out so far |

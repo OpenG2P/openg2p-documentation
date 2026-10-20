@@ -2,12 +2,12 @@
 description: >-
   Installing the Composite in the Exchange: the chart and all its options
   (hostnames, consent mode, registries, use cases, signing key, console, CORS,
-  scaling, audit, environment settings) and what it does in Agri Stack.
+  scaling, audit, environment settings).
 ---
 
 # Composite
 
-The [Composite](../composite/README.md) is the partners' entry point. It serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response. It runs in the [Exchange](exchange.md) namespace (`agrix`), next to the Exchange CM it asks for consent tokens.
+Installing the [Composite](../composite/README.md), the partners' entry point and part of the [Exchange](../architecture/exchange.md). It runs in the Exchange namespace (`agrix`), next to the Exchange CM it asks for consent tokens.
 
 {% hint style="info" %}
 **Source code:** [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite): the service ([`backend/`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend)), the chart ([`charts/openg2p-agri-composite`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts/openg2p-agri-composite): [values](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/values.yaml), [Rancher questions](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/questions.yaml)), use cases ([`use-cases/`](https://github.com/openg2p/agri-stack/tree/develop/composite/use-cases)) and console ([`ui/`](https://github.com/openg2p/agri-stack/tree/develop/composite/ui)).
@@ -18,7 +18,7 @@ The [Composite](../composite/README.md) is the partners' entry point. It serves 
 | # | What | Release |
 | --- | --- | --- |
 | 1 | The [Exchange](exchange.md) commons, ready | — |
-| 2 | **Agri Stack Composite** (`openg2p-agri-composite`) from **Apps → Charts**, in `agrix` | e.g. `agri-composite` |
+| 2 | **Agri Stack Composite** (`openg2p-agri-composite`, image `openg2p/openg2p-agri-composite-api`) from **Apps → Charts**, in `agrix` | e.g. `agri-composite` |
 | 3 | The [Exchange setup](after-install.md#exchange-setup): creates the signing key Secret and restarts the Composite | — |
 
 The Composite starts without its signing key Secret: describing use cases works, and every query fails with `signing_unavailable` until the Exchange setup has run.
@@ -73,7 +73,7 @@ Both the API and the console are served through the Istio `internal` gateway, li
 | `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL. `/consent/v1/validate` is appended |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
 
-Keep the mode `exchange`. The partner is onboarded and bound only at the Exchange. The Composite presents the partner's consent, or the ID of a consent the Exchange CM holds (`consent_id`), to the Exchange CM with `issue_receipts: true` and the use case's scopes. The Exchange CM returns one signed **consent token** per registry, and the Composite sends each registry only its own, which the registry validates at its own department CM. A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [Use-Case Configuration](../composite/use-case-configuration.md#consent-mode).
+Keep the mode `exchange`: the Composite presents the partner's consent (or its `consent_id`) to the Exchange CM and gets one consent token per registry ([how departments trust the Exchange](../architecture/exchange.md#how-departments-trust-it)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [Use-Case Configuration](../composite/use-case-configuration.md#consent-mode).
 
 ### Registries
 
@@ -229,37 +229,6 @@ The service reads its settings from environment variables with the prefix `AGRI_
 | `AUDIT_TIMEOUT_SECONDS`, `AUDIT_SOURCE` | `2.0`, `/openg2p/agri-composite` | |
 | `NO_OF_WORKERS` | `2` | gunicorn workers per pod |
 | `LOGGING_LEVEL` | `INFO` (chart) | |
-
-## What it does in Agri Stack
-
-* **One generic service**, `openg2p-agri-composite` (image `openg2p/openg2p-agri-composite-api`). The partner API is stateless. A database is used only by the console, for its call log.
-* **Use cases are configuration**, not code: YAML files in a ConfigMap.
-* **No partner data is stored.** Logs carry the request ID, use case, partner, statuses and timings only.
-
-### What it does per request
-
-1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`). Checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the Composite.
-2. Checks the partner is in the use case's `allowed_partners`.
-3. Validates the input (subject type, parameters) and applies the per-partner rate limit.
-4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](../composite/use-case-configuration.md#data-scopes) for every mandatory source. A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject).
-5. Gets a consent token per registry from the Exchange CM. A deny fails the request; a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
-6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the Composite's key, naming the partner in `header.meta.on_behalf_of` and carrying that registry's consent token. Per-source timeout and retries; overall timeout.
-7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
-8. Sends audit events to the Audit Manager, without ever blocking the request.
-
-**Each registry still decides.** It verifies the Composite's signature at its own PM, validates its consent token at its own CM (with its standing policy for the Composite), checks that the consent's subject is the person searched, and cuts the record down to the effective scopes.
-
-### Not built yet
-
-* Checks when a use case is published (against PM policies, which PM does not hold yet).
-* Data-blind mode.
-* Daily quotas and rate limits across pods (shared counters).
-* Registry endpoints and policies held in PM rather than in configuration.
-* Calling the crop sources in parallel with the farmer when the partner already sends a Farmer ID.
-* A configuration UI.
-* A machine-readable response schema per use case. The describe endpoint lists output field names only.
-
-These are tracked in [TODOs and open items](../open-items/README.md#composite).
 
 ## Check
 

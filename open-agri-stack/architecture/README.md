@@ -17,7 +17,7 @@ description: >-
 | Teal | Platform services (Partner Management, Consent Manager, Audit Manager), and the Exchange's partner portal and eSignet |
 | Green | The Composite (the Exchange's use-case service) |
 
-**Departments and installs.** Each department runs its own Kubernetes cluster, behind its own ingress (Nginx, Istio): the public entry point for everything in that cluster. An **install** is one namespace in a cluster with its own commons: Partner Management, Consent Manager, Audit Manager and catalogue. Each registry is its own install. The **Exchange** (the data exchange layer: partner portal, Consent Manager, Partner Management, eSignet, the Composite) is one more install, hosted by one department. Here the Agriculture Department hosts both the Farmer Registry and the Exchange, in two namespaces of its cluster, each with its own Partner Management, Consent Manager and Audit Manager; other arrangements are possible.
+**Departments and installs.** Each department runs its own Kubernetes cluster, behind its own ingress (Nginx, Istio): the public entry point for everything in that cluster. An **install** is one namespace in a cluster with its own commons: Partner Management, Consent Manager, Audit Manager and catalogue. Each registry is its own install. The **Exchange** (the data exchange layer: partner portal, Consent Manager, Partner Management, eSignet, the Composite) is one more install, hosted by one department: see [The Exchange](exchange.md). Here the Agriculture Department hosts both the Farmer Registry and the Exchange, in two namespaces of its cluster, each with its own Partner Management, Consent Manager and Audit Manager; other arrangements are possible.
 
 **A — a partner uses one registry directly (no Composite).** The partner is onboarded in that registry's Partner Management and bound in its Consent Manager, and calls the registry's partner API (DCI) with a consent for it. The registry checks the signature at its own Partner Management and the consent at its own Consent Manager, and releases only the effective scopes. Every registry shares data this way, Composite or not.
 
@@ -49,7 +49,7 @@ Each department runs its registries for its own work: its staff, approvals, part
 | Verifiable credentials | Each registry | Each registry issues under its own issuer identity; verification is public |
 | Keycloak, IAM, AWE, Kafka, Redis, object store, databases | Each install | Internal. Registry data leaves its department only through the registry's APIs |
 
-**To each department, the Exchange is one partner.** The department's Partner Management holds the Composite's public key, and its Consent Manager holds one standing policy for the Composite and trusts the Exchange's consent tokens. The department decides at its own boundary what leaves its registry: see [data-sharing policies](data-sharing-policies.md) and [request flow](request-flow.md).
+**To each department, the Exchange is one partner.** The department's Partner Management holds the Composite's public key, and its Consent Manager holds one standing policy for the Composite and trusts the Exchange's consent tokens. The department decides at its own boundary what leaves its registry: see [how departments trust the Exchange](exchange.md#how-departments-trust-it), [data-sharing policies](data-sharing-policies.md) and [request flow](request-flow.md).
 
 **Standalone installs are not affected.** The Exchange settings in commons are opt-in and off by default. A registry installed without the Exchange checks partners and consents at its own Partner Management and Consent Manager, as in path A; the registry itself is the same in both cases.
 
@@ -81,6 +81,7 @@ A gateway product is worth adding only if many partner-facing APIs from differen
 
 | Page | Covers |
 | --- | --- |
+| [The Exchange](exchange.md) | Where partners onboard once and use one consent across registries: its parts, what it holds and does not hold, partners and their policies, how departments trust it |
 | [Consent](consent.md) | One consent per partner and farmer with a grant per registry; how a farmer gives it (in person with a form, built; in person digitally; self-service) |
 | [Data-Sharing Policies](data-sharing-policies.md) | What gets released; policy vs use case vs consent |
 | [Request flow](request-flow.md) | One request, end to end |

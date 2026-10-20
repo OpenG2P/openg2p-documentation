@@ -8,7 +8,7 @@ description: >-
 
 # Composite
 
-The **Composite** is the partners' entry point to Agri Stack. It serves one approved use case at a time, such as `loan-profile`: a partner sends one signed request about one farmer, with the farmer's consent, and the Composite queries several departmental registries and returns one signed response. There is **one generic Composite service**; each use case is a **configuration file** that it loads, not new code. This page is the design; the pages below cover the built service.
+The **Composite** is the partners' entry point to Agri Stack and the Agri Stack–specific part of the [Exchange](../architecture/exchange.md). It serves one approved use case at a time, such as `loan-profile`: a partner sends one signed request about one farmer, with the farmer's consent, and the Composite queries several departmental registries and returns one signed response. There is **one generic Composite service**; each use case is a **configuration file** that it loads, not new code. This page is the design; the pages below cover the built service.
 
 | Page | Covers |
 | --- | --- |
@@ -21,7 +21,7 @@ The **Composite** is the partners' entry point to Agri Stack. It serves one appr
 Installing the Composite and every chart option (registries, consent mode, use cases, signing key, console, scaling) is in [Deployment: Composite](../deployment/composite.md).
 
 {% hint style="info" %}
-**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [Deployment: Composite](../deployment/composite.md) for what is in it and what is not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
+**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [what the first version does](#what-the-first-version-does) and what it does not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
 {% endhint %}
 
 The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [data-sharing policies](../architecture/data-sharing-policies.md)).
@@ -131,7 +131,7 @@ audit:
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [Composite](../deployment/composite.md).
+**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [what the first version does](#what-the-first-version-does).
 {% endhint %}
 
 ## Checks when a use case is published
@@ -153,7 +153,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 ## At runtime and worked example
 
-How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request, and its consent checks per source, is in [Composite](../deployment/composite.md#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../partner-guide.md#worked-example-loan-profile).
+How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request is [below](#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../partner-guide.md#worked-example-loan-profile).
 
 ## Where configurations live
 
@@ -164,3 +164,34 @@ How the Composite serves a request, hop by hop (partner checks, consent tokens, 
 {% hint style="info" %}
 **First version:** use cases are YAML entries in the Composite's Helm values, rendered into a ConfigMap and edited in Rancher's **Edit YAML** view (or your own ConfigMap); the sample is also kept in the repository at [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml). There is no sandbox yet.
 {% endhint %}
+
+## What the first version does
+
+* **One generic service**, `openg2p-agri-composite`. The partner API is stateless; a database is used only by the [console](console.md), for its call log.
+* **Use cases are configuration**, not code: YAML files in a ConfigMap.
+* **No partner data is stored.** Logs carry the request ID, use case, partner, statuses and timings only.
+
+### What it does per request
+
+1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`). Checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the Composite.
+2. Checks the partner is in the use case's `allowed_partners`.
+3. Validates the input (subject type, parameters) and applies the per-partner rate limit.
+4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source. A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject).
+5. Gets a consent token per registry from the Exchange CM. A deny fails the request; a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
+6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the Composite's key, naming the partner in `header.meta.on_behalf_of` and carrying that registry's consent token. Per-source timeout and retries; overall timeout.
+7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
+8. Sends audit events to the Audit Manager, without ever blocking the request.
+
+Each registry still decides what it releases ([how departments trust the Exchange](../architecture/exchange.md#how-departments-trust-it)).
+
+### Not built yet
+
+* Checks when a use case is published (against PM policies, which PM does not hold yet).
+* Data-blind mode.
+* Daily quotas and rate limits across pods (shared counters).
+* Registry endpoints and policies held in PM rather than in configuration.
+* Calling the crop sources in parallel with the farmer when the partner already sends a Farmer ID.
+* A configuration UI.
+* A machine-readable response schema per use case. The describe endpoint lists output field names only.
+
+These are tracked in [TODOs and open items](../open-items/README.md#composite).
