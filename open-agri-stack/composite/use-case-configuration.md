@@ -1,7 +1,7 @@
 ---
 description: >-
-  The Composite's use-case file format and how it behaves at run time: its
-  API, which registry APIs it calls, query templates, response mapping,
+  The Composite's use-case file format and how it behaves at run time: which
+  registry APIs it calls, query templates, response mapping,
   failure handling, the consent mode and the output format.
 ---
 
@@ -9,41 +9,7 @@ description: >-
 
 The use-case file format of the [Composite](README.md) as built, and how a use case runs. The code, Helm chart and scripts are in [agri-stack/composite](https://github.com/openg2p/agri-stack/tree/develop/composite); installing it, every chart option and what is not built yet are in [Deployment: Composite](../deployment/composite.md). Partners calling it should read the [partner guide](../partner-guide.md).
 
-## API reference
-
-| Method | Path | Auth | |
-| --- | --- | --- | --- |
-| `GET` | `/composite/v1/use-cases` | none | Published use cases: input, parameters, sources, output fields, the consent grants needed |
-| `GET` | `/composite/v1/use-cases/{use_case}` | none | One use case (`name` or `name@major`; or the `X-Use-Case-Major` header) |
-| `POST` | `/composite/v1/use-cases/{use_case}/query` | signed envelope | Run a query, with `message.consent_jws` or `message.consent_id`. `use_case` is `name` or `name@major`; the major version can also be sent in the `X-Use-Case-Major` header. Without a major, the highest published major is used. |
-| `GET` | `/ping` | none | Health check |
-| `GET` | `/docs` | none | OpenAPI UI |
-
-Request (a detached JWS over `{header, message}`, as in DCI; `sender_id` is the partner's ID):
-
-```json
-{"signature": "<header>..<signature>",
- "header": {"version": "1.0.0", "message_id": "…", "message_ts": "2026-10-01T10:00:00Z",
-            "action": "query", "sender_id": "bank-a", "receiver_id": "agri-composite"},
- "message": {"subject": {"type": "FAYDA_FAN", "value": "946053125409"},
-             "parameters": {"crop_year": 2019, "season": "SEASON_MEHER"},
-             "consent_jws": "<partner-signed consent with a grant per registry>"}}
-```
-
-Instead of `consent_jws`, a partner may send `"consent_id": "<ID of a consent held in the exchange Consent Manager>"` (e.g. one recorded in its partner portal). Send one of the two, not both.
-
-Response: signed by the Composite, `header.status` `succ`/`rjct`. The message is `{use_case, version, request_id, subject, sources: {id: {status, detail?}}, data}`. On failure, `data` is replaced by `error: {code, message}`, and the HTTP status is one of:
-
-| Status | Meaning |
-| --- | --- |
-| 400 | Invalid envelope, input or stale timestamp |
-| 401 | Bad signature or unknown partner |
-| 403 | Partner not allowed, or a consent problem (`consent_*`, including a deny or a missing consent token from the Exchange CM), or a mandatory source denied |
-| 404 | Unknown use case |
-| 429 | Rate limit reached |
-| 502 / 503 / 504 | A mandatory source failed (error / unavailable / timed out); or the Exchange CM failed (`consent_exchange_error` 502, `consent_exchange_unavailable` 503) |
-
-The error codes, response envelope and signature verification are detailed in the [partner guide](../partner-guide.md#step-10-read-the-response).
+The endpoints partners call, with request and response formats and error codes, are on [Composite API](api.md); how a partner signs and reads them, step by step, in the [partner guide](../partner-guide.md).
 
 ## Which registry APIs the Composite calls
 

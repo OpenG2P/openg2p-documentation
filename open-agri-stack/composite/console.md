@@ -12,7 +12,7 @@ The console shows how the Composite is set up and what it has been doing. It is 
 | Page | What it shows |
 | --- | --- |
 | **Overview** | Composite partner ID, consent mode and Exchange Consent Manager, signing key, Audit Manager on/off; counts of use cases (and files that failed to load), registries and partners; calls and failures in the last 24 hours |
-| **Use cases** | Each published use case: sources and their registry, mandatory/optional, required and optional [data scopes](use-case-configuration.md#data-scopes), what the consent must grant per registry, inputs, output fields (with their mapping), allowed partners, and the use case file |
+| **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), allowed partners, and the use case file. The labels are explained in [reading a use case in the console](creating-a-use-case.md#reading-a-use-case-in-the-console) |
 | **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the Composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
 | **Partners** | Every partner named in a use case's `allowed_partners`, its use cases and the keys Partner Management serves for it |
 | **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, duration and each source's status |

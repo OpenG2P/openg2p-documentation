@@ -606,6 +606,7 @@
     * [Livestock Registry](open-agri-stack/design/livestock-registry.md)
   * [Exchange](open-agri-stack/exchange.md)
     * [Composite](open-agri-stack/composite/README.md)
+      * [Creating a Use Case](open-agri-stack/composite/creating-a-use-case.md)
       * [Composite API](open-agri-stack/composite/api.md)
       * [Use-Case Configuration](open-agri-stack/composite/use-case-configuration.md)
       * [Adding a Data Source](open-agri-stack/composite/adding-a-data-source.md)

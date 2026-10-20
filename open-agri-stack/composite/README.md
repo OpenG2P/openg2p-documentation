@@ -2,8 +2,8 @@
 description: >-
   The Composite, Agri Stack's partner entry point: one generic service that
   serves approved use cases, each a configuration file. Design overview, with
-  the pages on its API, use-case configuration, adding a data source, console
-  and local running.
+  the pages on creating a use case, its API, use-case configuration, adding a
+  data source, console and local running.
 ---
 
 # Composite
@@ -12,6 +12,7 @@ The **Composite** is the partners' entry point to Agri Stack and the Agri Stackâ
 
 | Page | Covers |
 | --- | --- |
+| [Creating a Use Case](creating-a-use-case.md) | The steps to add a use case: the file, the configuration, partners, the department policies, testing |
 | [Composite API](api.md) | The partner and console endpoints, request and response formats, error codes (OpenAPI) |
 | [Use-Case Configuration](use-case-configuration.md) | The use-case file format and how a use case runs: which registry APIs it calls, failure handling, consent mode, output format |
 | [Adding a Data Source](adding-a-data-source.md) | Adding a registry (e.g. a Livestock Registry) as a source of a use case, step by step |
