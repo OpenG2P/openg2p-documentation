@@ -1,69 +1,46 @@
 ---
 description: >-
-  The in-cluster sanity suite for the Farmer Registry — what it inherits from the
-  platform and the field-specific tests this repo contributes.
+  Running the Farmer Registry's sanity suite, choosing smoke or full e2e, and
+  reading the results.
 ---
 
 # Sanity testing
 
-{% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
+This page lists the steps and choices. What the suite tests and how it is built: [Testing & the sanity suite](../../registry/deployment-and-extension/testing-and-sanity-suite.md) (all registries) and [Sanity tests](../README.md#sanity-tests) (what the Farmer Registry adds).
+
+The suite runs as the Job `<release>-sanity` on every install and upgrade.
+
+## Choose smoke or full e2e
+
+| Choice | Form fields | Use it for |
+| --- | --- | --- |
+| **Smoke** (default) | **Run Sanity Tests** on, **Sanity - Run Full E2E** off | Every environment, including production. Creates nothing |
+| **Full e2e** | **Sanity - Run Full E2E** on | Test environments only. Checks a signed, consented DCI search and a change request through AWE approval |
+
+By default a failing test fails the install (**Sanity - Fail the Deploy on Test Failure**). Turn that off only where an unverified deploy is better than a failed one.
+
+## Run the full e2e
+
+1. Check commons-services has Partner Management, the Consent Manager and AWE running, and **Verify Partner Signature** and **Enforce Consent** are on.
+2. Turn on **Sanity - Run Full E2E** and install or upgrade.
+3. The install first seeds the test partner, the consent binding, the sanity farmer `SANITY-FARMER-0001` and a `sanity-e2e` Keycloak user ([Install sequence](data-seeding.md#install-sequence)), then runs the suite.
+
+{% hint style="warning" %}
+The e2e's test data is **never deleted**: the test partner in Partner Management, its Consent Manager binding, the sanity farmer and the Keycloak user stay for inspection. An environment that has once run the e2e keeps them. Remove the partner and binding in Partner Management and the Consent Manager when you decommission the environment.
 {% endhint %}
 
-The Farmer Registry is verified end-to-end in-cluster by a pytest suite run as a post-install/upgrade Helm Job. As with the chart and the images, the suite is **inherited from the platform and narrowed here**.
-
-{% hint style="info" %}
-The two-part test model — what is extension-independent, what is field-specific, and how a registry extends it — is documented once in the platform docs: [**Testing & the sanity suite**](../../registry/deployment-and-extension/testing-and-sanity-suite.md). This page covers only the farmer side.
-{% endhint %}
-
-## What is inherited, what is farmer's
-
-The platform publishes `openg2p/openg2p-registry-sanity-tests` containing the **harness** (signing, DCI envelope building, PM/CM/Keycloak/AWE seeding, DB helpers, step logging, the run entrypoint) and **Set 1 — the extension-independent tests**: liveness and wiring, and the fail-closed cases (a search without consent, with a bad signature, or with an unknown consent audience must all be rejected). Those run unchanged on every registry.
-
-The Farmer Registry image is a thin `FROM` of it that layers on **Set 2 — the field-specific parts**, four files in [`test/sanity`](https://github.com/OpenG2P/farmer-registry/tree/develop/test/sanity):
-
-| File | What is farmer-specific |
-|---|---|
-| `sanity/fixtures.py` | The seeded test record and the `g2p_register_farmers` tables |
-| `sanity/data_seed.py` | Idempotent injection into `g2p_register_farmers` |
-| `tests/test_e2e_dci.py` | The farmer DCI template nests demographics under `<scope>.demographic_info` |
-| `tests/test_e2e_change_request.py` | The register and history rows are verified in the farmer tables |
-
-Everything else — the register id, DCI reg-type, search text, consent scopes and the change-request tab/section — is **configuration**, supplied as env from the chart's `registry.sanity.*` values rather than baked into the image.
-
-The practical consequence: the platform-level guarantees (auth, consent enforcement, approval-workflow integrity, audit) are re-verified on the Farmer Registry for free, and this repo only has to prove that *farmer fields* flow correctly.
-
-## What the e2e covers
-
-Two flows, both against a live deployment:
-
-* **DCI data-sharing** — the partner signs a DCI envelope and an embedded consent JWS with its Partner Management key; the registry verifies the envelope, calls Consent Manager `/validate`, renders the record through the farmer DCI template, and clamps it to the consented scopes. The suite asserts the consented scope carries the seeded values *and* that unconsented scopes never appear.
-* **Change request → approval → history → audit** — a change request is raised through the staff-portal-api, every AWE stage is approved through the AWE proxy, AWE's HMAC-signed webhook applies the change, and the suite asserts the new value, the history row and the audit trail.
-
-The change-request flow deliberately never calls `approve_change_request` directly — that endpoint flips the request to approved without consulting AWE, so using it would make the test pass while proving nothing about the approval policy.
-
-## Running it
-
-| Value | Default | Effect |
-|---|---|---|
-| `registry.sanity.enabled` | `true` (farmer overlay) | Create the sanity Job at all |
-| `registry.sanity.runE2e` | `false` | `false` → smoke only, creates no data. `true` → the full e2e, which seeds a persistent test partner and test user |
-| `registry.sanity.failOnError` | `true` | `true` → the Job propagates pytest's exit code, so a failing suite fails the install. `false` → always exit 0 (opt-out). Gates on **failures**, not skips: tests whose dependencies are unconfigured still skip and stay green |
-
-A dependency that is **configured but broken** now fails rather than skips — a green run that had silently dropped every consent and signature test was worse than a red one.
-
-The sanity Job runs **last**, after `db-seed` and `iam-register` — its change-request tests need the registry's roles→permissions catalog registered in IAM first, or they get a 403. Finished pods are retained so their logs stay readable:
+## Read the results
 
 ```bash
 kubectl -n <namespace> logs job/<release>-sanity
 ```
 
-Output is narrated: each e2e test prints a titled banner, timestamped step lines, and a pass/fail footer, so the Job log reads as an end-to-end story rather than raw assertions.
+The finished pod is kept, so the log stays readable until the next run. Each e2e test prints a titled banner, timestamped steps and a pass or fail line.
 
-{% hint style="warning" %}
-The e2e seeds a **shared, persistent** test partner in Partner Management and a binding in Consent Manager, and provisions a `sanity-e2e` Keycloak user. These are deliberately left in place after a run so a failure can be inspected. Remove them explicitly when decommissioning an environment.
-{% endhint %}
+* A test that **skips** had a dependency that is not configured (e.g. no commons-services yet). Skips do not fail the install.
+* A test that **fails** had a configured dependency that is broken. Check that service first.
+* No `<release>-sanity` Job at all means an earlier Job failed. See [Install sequence](data-seeding.md#install-sequence).
 
-## Extending the tests
+## When a farmer field changes
 
-A change to a farmer field that the e2e asserts on — the DCI template shape, the register tables, or the edited field — means updating the corresponding Set 2 file above. Anything that is only a different id, scope or tab/section is a values change, not a code change. The same pattern applies to any new registry built on the platform; see [Testing & the sanity suite](../../registry/deployment-and-extension/testing-and-sanity-suite.md).
+A change to what the e2e checks (the farmer DCI template, the farmer tables, or the field the change request edits) means updating the matching file in [`test/sanity`](https://github.com/OpenG2P/farmer-registry/tree/develop/test/sanity) ([which files](../README.md#sanity-tests)). A different register, scope, tab or section is a change to the chart's `registry.sanity.*` values, not to code.

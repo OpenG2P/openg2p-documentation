@@ -1,7 +1,7 @@
 # Farmer Registry
 
 {% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
+**Source:** [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry)
 {% endhint %}
 
 <figure><img src="../../../.gitbook/assets/farmer-registry-view.png" alt=""><figcaption></figcaption></figure>
@@ -23,22 +23,19 @@ This registry contains the following [**registers**](../registry/concepts.md#reg
 1. Farmer Register
 2. Household Register
 
-The domain models for these registers live in the [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) package in this repository.
+The domain models for these registers live in the [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) package of the `farmer-registry` repository.
 
 The Farmer Registry inherits all the [features of the registry platform](../registry/features/).
 
 ## How it is packaged
 
-The Farmer Registry is a thin **extension** of the [Registry Platform](../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the farmer domain — the extension package, its seed content, a field-specific test set, and a wrapper chart that pins the platform chart and overlays farmer values. Nothing from the platform is copied or vendored.
+The Farmer Registry is a thin **extension** of the Registry Platform. The platform publishes the runnable images and the `openg2p-registry` Helm chart. The `farmer-registry` repository adds only the farmer domain:
 
-* [**Deployment**](deployment/README.md) — how it is packaged, prerequisites, and installing from Rancher or the Helm CLI.
-* [**Helm chart**](deployment/helm-chart.md) — the wrapper chart, what it deploys and how it is configured.
-* [**Data seeding**](deployment/data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
-* [**Sanity testing**](deployment/sanity-testing.md) — the two-part test model and the farmer field tests.
+* the `farmer-extension` package (models, schemas, services, seed metadata, DCI templates, data scopes);
+* six images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `agent-portal-api`. The staff portal UI is the platform's image, used as is;
+* the `openg2p-farmer-registry` chart, a wrapper over the platform chart. Beyond the platform it adds the [reporting and dashboards](#reporting-and-dashboards) templates, the map content and the [credential](#farmer-credentials) card designs.
 
-## Versions
-
-Chart and image versions — and what changed in each — are published by the central CI pipeline. See [**Versions**](versions/README.md), or go straight to the [changelog](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG).
+How domain registries are packaged in general: [Packaging & the reference registry](../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts).
 
 ## Domain models
 
@@ -104,6 +101,56 @@ A consent names the registry's [data scopes](../registry/design/data-scopes.md).
 * **Finer than a section:** contact details, main crops and the farmer and parcel identifiers are scopes of their own. A partner can get main crops without the disability fields of the same section.
 * **Never shared:** the record header (status, approvers, image), documents, ID authentication, the farmer–household link (internal IDs), the intake-only farm-input and livestock sections, and the Household register's copies of the Farmer sections.
 
+## Data the registry can create
+
+The platform defines three kinds of data an install can create: sample, bulk and sanity data ([Country data & seeding](../registry/deployment-and-extension/country-data-and-seeding.md#three-different-kinds-of-data)). All three are for demos and tests, and all are off by default. In the Farmer Registry:
+
+| | What it is |
+| --- | --- |
+| **Sample data** | Master Data's sample people from the country pack, each given farmer fields from the registry's own overlay (`docker/db-seed/seed-data/*.json`: farmers, lands, livestock, farm inputs, household members, memberships, scores). A few dozen farmers, records a person reads |
+| **Bulk data** | 100,000 invented farmers by default, with land, main crops and livestock, so reports and dashboards have volume. Names are invented; every record still points at a real administrative unit read from Master Data |
+| **Sanity data** | The e2e test's own fixtures: the farmer `SANITY-FARMER-0001`, a Keycloak user and an approver rule. Never deleted |
+
+**Sample IDs follow the sample people.** Sample person `ETH-IND-0007` becomes farmer `FR-0007`, and that person's lands are `LAND-0007-1`, `LAND-0007-2`… in the person's lowest administrative unit. The [Crop Sown Registry](../crop-sown-registry/README.md) numbers its sample farmers and plots the same way, so a demo of both shows the same farmers and plots. Neither registry reads the other.
+
+**Coded fields** read their options live from Master Data (see [Domain models](#domain-models)). `SOURCE_OF_INCOME` and the crop list `CROP_COMMODITY` come from the pack's `agriculture` domain; the others from its core lists. Without the `agriculture` domain those dropdowns are empty.
+
+## Reporting and dashboards
+
+Dashboards and maps never read the register tables. They read **reporting views**, `fr_rpt_*`, one per entity, with geography and workflow columns and no personal data ([Reporting views](../../../platform/platform-services/reporting-and-analytics/reporting-views.md)).
+
+* **Generated views.** Most views are generated at install by the platform's generator, from this registry's schema, its short declaration `reporting.yaml`, and the country's hierarchy in Master Data.
+* **Hand-written views.** `fr_rpt_farmer` and `fr_rpt_land` are written by hand in `reporting_views.sql`. They turn a free-text land size into hectares, roll parcels, crops, livestock and inputs up onto the farmer, and set the age bands and what "uses modern inputs" means.
+* **Refresh.** Some views are materialized. Postgres does not update them when the tables change, so a CronJob of this chart refreshes them, hourly by default. Farmers registered since the last refresh are not in any report yet.
+* **Dashboards.** The dashboard bundle ships in this registry's chart. An install Job imports it into the environment's Superset, points it at this registry's database, and enables embedding. If Superset is not reachable, the import is skipped and the registry still installs.
+* **Maps.** The chart ships the map content that G2P Insights uses for drill-down ([Map drill-down](../../../platform/platform-services/reporting-and-analytics/map-drill-down.md)).
+
+## Farmer credentials
+
+The Farmer Registry turns on the platform's [Agent Portal](../registry/features/agent-portal.md) and [verifiable credential issuance](../registry/design/vc-issuance.md), which are off on the bare platform. An agent issues a **Farmer Credential** to a farmer who has authenticated with their national ID through eSignet. It carries the Farmer ID, name, date of birth and gender, as a printed card with a signed QR code or into the farmer's wallet. The card design ships in the chart (`files/pdf-templates/`). The Agent Portal can also verify a credential someone presents.
+
+## Sanity tests
+
+The Farmer Registry's sanity image runs the platform's suite unchanged and adds the farmer **field-specific** tests ([Testing & the sanity suite](../registry/deployment-and-extension/testing-and-sanity-suite.md)). Four files in [`test/sanity`](https://github.com/OpenG2P/farmer-registry/tree/develop/test/sanity) replace the reference registry's:
+
+| File | What is farmer-specific |
+| --- | --- |
+| `sanity/fixtures.py` | The seeded test farmer and the `g2p_register_farmers` tables |
+| `sanity/data_seed.py` | Inserting that farmer into `g2p_register_farmers` |
+| `tests/test_e2e_dci.py` | The farmer DCI template, which nests demographics under `<scope>.demographic_info` |
+| `tests/test_e2e_change_request.py` | Checking the register and history rows in the farmer tables |
+
+The register, DCI record type, search text, consent scopes and the tab and section the change request edits are chart values (`registry.sanity.*`), not code.
+
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md#farmer-registry). How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).
+
+## In this section
+
+| | |
+| --- | --- |
+| [**Deployment**](deployment/README.md) | Prerequisites, install order, the choices to make, and checks after install |
+| [**Data seeding**](deployment/data-seeding.md) | Turning on sample, bulk and sanity data, reporting views and dashboards; the install Jobs in order |
+| [**Sanity testing**](deployment/sanity-testing.md) | Running the sanity suite and reading its results |
+| [**Versions**](versions/README.md) | Where releases and changelogs are published |

@@ -7,7 +7,7 @@ description: >-
 
 # Deployment
 
-Agri Stack is installed from unchanged OpenG2P Helm charts, through Rancher. These pages say which charts go where, which form fields to change, and what each install does in Agri Stack. Each product's own install details stay in its own docs, linked from each page.
+Agri Stack is installed from unchanged OpenG2P Helm charts, through Rancher. These pages say which charts go where and which form fields to change. What each registry does in Agri Stack: [Registries in Agri Stack](../architecture/registries.md). Each product's own install details stay in its own docs, linked from each page.
 
 ## Topology
 

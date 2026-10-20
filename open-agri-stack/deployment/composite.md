@@ -111,7 +111,7 @@ The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`,
 | **Allowed partners** | `[bank-a]`, the test partner |
 | **Rate limit** | 60 per minute per partner |
 
-The scopes it needs from each registry: [Farmer Registry](farmer-registry.md#what-agri-stack-reads), [Crop Sown Registry](crop-sown-registry.md#what-agri-stack-reads). The file, setting by setting: [the `loan-profile` use case](../composite/use-case-configuration.md#the-loan-profile-use-case).
+The scopes it needs from each registry: [Farmer Registry](../architecture/registries.md#farmer-data-the-composite-reads), [Crop Sown Registry](../architecture/registries.md#crop-data-the-composite-reads). The file, setting by setting: [the `loan-profile` use case](../composite/use-case-configuration.md#the-loan-profile-use-case).
 
 ### Signing key
 

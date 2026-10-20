@@ -2,13 +2,13 @@
 description: >-
   How the OpenG2P Registry is packaged, deployed and extended. The platform is
   now a complete, installable registry in its own right — with a reference
-  registry, Helm chart, Docker images, seeding and t
+  registry, Helm chart, Docker images, seeding and tests.
 ---
 
 # Deployment and Extension
 
 {% hint style="info" %}
-**New home: GitLab.** **`registry-platform`** is now developed at [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
+**Source:** [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform)
 {% endhint %}
 
 This section explains **how the OpenG2P Registry is packaged, published, deployed and extended** under the current model. It is self-contained: read it to understand how the images and Helm chart are produced, how the platform runs out of the box, and how you turn it into a domain-specific registry.
@@ -37,24 +37,24 @@ A domain registry (social registry, farmer registry, disability registry, …) i
 
 | Artifact                             | Location                                                                                                                                                         |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Platform + reference registry source | [`openg2p/registry/registry-platform`](https://github.com/OpenG2P/registry-platform)                                                                    |
+| Platform + reference registry source | [`OpenG2P/registry-platform`](https://github.com/OpenG2P/registry-platform)                                                                    |
 | Dockerfiles                          | `registry-platform/docker/*` (+ `ui/staff-ui/Dockerfile`)                                                                                                        |
 | Helm chart                           | `registry-platform/helm/openg2p-registry`, published to the OpenG2P Helm repository — [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
 | Docker images                        | Docker Hub, the `openg2p/openg2p-registry-*` repositories                                                                                                        |
 | Reference extension (example)        | `registry-platform/reference-extension`                                                                                                                          |
-| Version catalogue / changelog        | [`openg2p.github.io/openg2p-packaging/registry-platform/CHANGELOG`](https://openg2p.github.io/openg2p-packaging/registry-platform/CHANGELOG)                     |
+| Version catalogue / changelog        | [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html)                     |
 
 ## Versioning & CI
 
 All Docker images and the Helm chart are built by a **single CI workflow** and carry **one version per commit** — images and chart never drift. The versioning scheme, derivation rules and lockstep tagging are documented once, org-wide, here:
 
 {% hint style="info" %}
-[**Helm & Docker versioning and CI**](https://docs.openg2p.org/operations/deployment/helm-docker-versioning-and-ci) — the authoritative reference (not repeated here).
+[**Helm & Docker versioning and CI**](../../../../releases/helm-docker-versioning-and-ci/README.md) — the authoritative reference (not repeated here).
 {% endhint %}
 
 ## In this section
 
-* [**Packaging & the reference registry**](packaging-and-reference-registry.md) — the images, the single chart, the reference registry, and how the domain model is selected at runtime.
+* [**Packaging & the reference registry**](packaging-and-reference-registry.md) — the images, the single chart, the reference registry, how the domain model is selected at runtime, and how a domain registry's chart wraps the platform chart (inherited Rancher form, platform version pin).
 * [**Extending into a new registry**](extending-into-a-new-registry.md) — what a domain registry owns versus inherits, why extension rather than a fork, and how one image serves several registries.
 * [**Country data & seeding**](country-data-and-seeding.md) — country packs, datasets, the seeding switches, and what an empty production install looks like.
 * [**Testing & the sanity suite**](testing-and-sanity-suite.md) — the two-part test model (extension-independent vs field-specific) and how to extend the tests for your registry.

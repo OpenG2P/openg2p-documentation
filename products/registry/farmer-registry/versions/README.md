@@ -15,18 +15,11 @@ The Farmer Registry publishes its own Docker images and Helm chart. Every image 
 | Artifact | Where |
 |---|---|
 | Helm chart `openg2p-farmer-registry` | [`openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
-| Docker images | Docker Hub `openg2p/openg2p-farmer-registry-<name>` |
+| Docker images | Docker Hub `openg2p/openg2p-farmer-registry-<name>`: `staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `agent-portal-api` |
 
 ## The two version lines
 
-This registry's version and the platform's move independently:
-
-* **This registry's version** — the wrapper chart and its images, locked together,
-  stamped by CI on every commit.
-* **Platform version** — the `openg2p-registry` chart and images it extends,
-  pinned deliberately in `RP_VERSION` (each Dockerfile) and in the chart
-  dependency, and changed as a pair. See the
-  [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html).
+This registry's chart and images share one version. The platform version it extends moves separately, only when it is bumped ([Domain registry charts](../../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts)). Platform changes: [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html).
 
 How versions are derived, frozen and promoted: [Helm & Docker Versioning Strategy and CI](../../../../releases/helm-docker-versioning-and-ci/README.md).
 

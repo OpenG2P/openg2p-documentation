@@ -84,5 +84,6 @@ A gateway product is worth adding only if many partner-facing APIs from differen
 | [Consent](consent.md) | One consent per partner and farmer with a grant per registry; how a farmer gives it (in person with a form, built; in person digitally; self-service) |
 | [Data-Sharing Policies](data-sharing-policies.md) | What gets released; policy vs use case vs consent |
 | [Request flow](request-flow.md) | One request, end to end |
+| [Registries](registries.md) | The Farmer and Crop Sown registries in Agri Stack: what each holds, Farmer ID and national ID, what the Composite reads, the Composite as a partner |
 | [Terms](terms.md) | Validation, change, correction, void, approval of changes, verification, dispute |
 | [Standards](standards.md) | The open standards used in each area, our own formats, and standards still to explore |

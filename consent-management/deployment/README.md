@@ -213,7 +213,7 @@ A partner user's `partner_id` must be the partner's ID as bound in the CM (its p
 
 ## National ID authentication of the subject (eSignet)
 
-Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner portal on), the subject of every assisted request must log in with their national ID through eSignet before the request can be submitted ([how it works](../design/consent-collection.md#national-id-authentication-in-the-partner-portal)). Needs **eSignet** in the namespace and, to test with sample identities, the **mock identity system** (and Artifactory, which they use); in commons-services: Install eSignet, Install Mock Identity System and Install Artifactory on.
+Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner portal on), the subject of every assisted request must log in with their national ID through eSignet before the request can be submitted ([how it works](../design/consent-collection.md#national-id-authentication-in-the-partner-portal)). Needs **eSignet** in the namespace and, to test with sample identities, the **mock identity system** (and Artifactory, which they use); in commons-services: Install eSignet and Install Mock Identity System on (Artifactory is always installed).
 
 | Value (`partnerPortal.subjectAuth.*`) | Default | |
 | --- | --- | --- |

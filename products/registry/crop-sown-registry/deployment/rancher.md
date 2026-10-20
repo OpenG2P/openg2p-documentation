@@ -1,11 +1,13 @@
 ---
 description: >-
   Installing the Crop Sown Registry from the OpenG2P catalogue in Rancher:
-  prerequisites, the form fields that matter, sample data, ODK Central, and
-  checks after install.
+  prerequisites, the choices to make, sample data, ODK Central, checks after
+  install, and uninstall.
 ---
 
 # Deploying on Rancher
+
+This page lists the steps and choices. What the registry is and how it is packaged: [Crop Sown Registry](../README.md). Install order and the install Jobs: [Deployment](README.md).
 
 ## Prerequisites
 
@@ -34,31 +36,33 @@ Without the **agriculture** domain in Master Data, the install succeeds but ever
 3. Choose the version. Tick **Show pre-release versions** to see `0.0.0-develop.N` versions.
 4. Name the release, e.g. `csr`. The release name is part of the hostnames and the database name.
 5. Tick **Customize Helm options before install**, then **Next**.
-6. Fill the form (below), then **Install**.
+6. Make the choices below, then **Install**.
 
-The form shows the **platform chart's questions**, inherited at packaging time, plus a **Crop Sown Registry** group. Platform settings sit under `registry.`; `global.*` settings keep their names.
+The form is the platform chart's form plus a **Crop Sown Registry** group. Each field is described in the form. In a values file, platform settings sit under `registry.*` and shared settings under `global.*`.
 
-## Form fields that matter
+## Choices
 
-| Field | Key | Value |
+The defaults suit a production-like install. Change only these.
+
+| Field | Choose | Why |
 | --- | --- | --- |
-| **Base Domain** | `global.baseDomain` | Your environment's domain. Default `<namespace>.openg2p.org` |
-| **Registry Hostname** | `global.registryHostname` | Default `<release>.<Base Domain>`. The partner API is at `partner-<Registry Hostname>` |
-| **Verify Partner Signature** | `global.partnerSignatureValidationEnabled` | On (default) |
-| **Enforce Consent** | `global.consentEnforcementEnabled` | On (default) |
-| **Install ID Generator?** | `registry.idgenerator.enabled` | On (chart default). It issues Cluster IDs |
-| **Enable DB Seed** | `registry.dbSeed.enabled` | On. The seed **is** the registry's configuration |
-| **Load Templates to Object Store** | `registry.dbSeed.loadTemplates` | On. Without the templates, every DCI search fails |
-| **Load Sample Data** | `registry.dbSeed.loadSampleData` | Off (default). On for a demo: loads two sample clusters |
-| **Load sample crop seasons** | `registry.celeryWorker.envVars.REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA` | `false` (default). Shown only when Load Sample Data is on. See [Sample data](#sample-data) |
-| **Pull submissions from ODK Central** | `registry.celeryWorker.envVars.REGISTRY_CELERY_WORKERS_ACTIVITY_ODK_ENABLED` | `false` (default). See [ODK Central](#collecting-sowings-with-odk-central) |
-| **Pinned Catalogue Release** | `global.catalogueRelease` | Empty: read the latest lists. Set a release to freeze them |
-| **Install AWE?** / **AWE Approver User Password** | `global.aweEnabled`, `global.aweApproverUserPassword` | On. The password is the initial one of the cluster approvers `alex.carter` and `nina.patel` |
-| **Run Sanity Tests** / **Sanity - Run Full E2E** | `registry.sanity.enabled`, `registry.sanity.runE2e` | On / **off**. The platform's end-to-end tier seeds an entity record this registry does not have |
+| **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`. The partner API is then at `partner-<release>.<Base Domain>` |
+| **Load Sample Data** | On for a demo only | Loads two sample clusters. See [Sample data](#sample-data) |
+| **Load sample crop seasons** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
+| **Pull submissions from ODK Central** | On only if sowings are collected with ODK | Needs more steps. See [ODK Central](#collecting-sowings-with-odk-central) |
+| **Pinned Catalogue Release** | Empty, or a release to freeze the lists for a season | Empty reads the latest lists from Master Data |
+| **AWE Approver User Password** | Your own | The initial password of the demo cluster approvers `alex.carter` and `nina.patel` |
 
-**Ignore** for this registry: **Load Sample Images** (there are none) and **Optional Seeds** (none ship).
+**Leave as they are:**
 
-**Not in the form, and right by default:** the consent data controller (`crop-sown-registry`), the Partner Management and Consent Manager URLs, the partner key backend, and the ID generator pool `cluster`. You will also see the platform's unused pools (`individual`, `household`, `farmer`); they are harmless.
+* **Install ID Generator?**, **Enable DB Seed** and **Load Templates to Object Store** on. The ID generator issues Cluster IDs, the seed is the registry's configuration, and without the templates every DCI search fails.
+* **Sanity - Run Full E2E** off. The platform's e2e tier seeds an entity record this registry does not have.
+* **Load Sample Images** and **Optional Seeds**: this registry ships none.
+* The ID generator's unused platform pools (`individual`, `household`, `farmer`) are harmless.
+
+{% hint style="warning" %}
+**Verify Partner Signature** and **Enforce Consent** are on by default. Turning either off returns data to partners unchecked or not cut down to their consent ([Consent-aware data sharing](../../registry/features/consent-aware-data-sharing.md#configuration)).
+{% endhint %}
 
 ### Settings only in YAML
 
@@ -85,24 +89,9 @@ registry:
 
 ### Production
 
-```yaml
-global:
-  partnerSignatureValidationEnabled: true
-  consentEnforcementEnabled: true
-registry:
-  dbSeed:
-    enabled: true
-    loadTemplates: true
-    loadSampleData: false
-  celeryWorker:
-    envVars:
-      REGISTRY_CELERY_WORKERS_ACTIVITY_LOAD_SAMPLE_DATA: "false"
-  sanity:
-    enabled: true
-    runE2e: false
-```
-
-Before going live, replace the demo cluster approvers (see [Customisation](../customisation.md#clusters)).
+* Keep **Load Sample Data** and **Load sample crop seasons** off, and **Sanity - Run Full E2E** off.
+* Keep **Verify Partner Signature** and **Enforce Consent** on.
+* Replace the demo cluster approvers (see [Customisation](../customisation.md#clusters)).
 
 {% hint style="danger" %}
 **Never promote a demo namespace to production.** Sample crop seasons are recorded through the normal write path and cannot be separated cleanly afterwards. Install fresh.

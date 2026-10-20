@@ -1,99 +1,111 @@
 ---
 description: >-
-  How the Farmer Registry is packaged as an extension of the Registry Platform,
-  and how to deploy it on Kubernetes.
+  Installing the Farmer Registry: prerequisites, order, the choices to make in
+  the Rancher form, and checks after install.
 ---
 
 # Deployment
 
-{% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
-{% endhint %}
+This page lists the steps and choices. What the Farmer Registry is and what its chart adds: [Farmer Registry](../README.md). How domain registries are packaged: [Packaging & the reference registry](../../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts).
 
-The Farmer Registry is **not** a registry built from scratch. It is a thin **extension** of the [OpenG2P Registry Platform](../../registry/deployment-and-extension/README.md), which publishes the runnable Docker images and the `openg2p-registry` Helm chart. This repository adds only the farmer domain on top.
-
-{% hint style="info" %}
-The packaging model — why the platform publishes the artifacts and a domain registry extends them — is described once, in the platform docs: [**Deployment and Extension**](../../registry/deployment-and-extension/README.md). This section covers only what is farmer-specific.
-{% endhint %}
-
-## How the Farmer Registry is packaged
-
-Three layers, each inherited from the platform and narrowed by this repo:
-
-| Layer | Platform provides | Farmer Registry adds |
-|---|---|---|
-| **Code** | The runtime images (`openg2p-registry-*`) — core, APIs, celery, UI | `farmer-extension` — domain models, schemas, services, seed metadata. Thin `FROM`-image Dockerfiles select it at runtime via `REGISTRY_EXTENSION_MODULE`. |
-| **Deployment** | The `openg2p-registry` chart — every template, service, IAM/Keycloak wiring | `openg2p-farmer-registry` — a wrapper chart: a pinned dependency plus a values overlay, and templates only for the analytics/reporting layer. See [Helm chart](helm-chart.md). |
-| **Tests** | The sanity harness + the extension-independent tests | Only the farmer **field-specific** tests. See [Sanity testing](sanity-testing.md). |
-
-The platform version is **pinned in two places that move together**: `RP_VERSION` in each Dockerfile (the base image tag) and the `openg2p-registry` dependency version in the wrapper chart's `Chart.yaml`. Nothing about the platform is vendored or copied.
-
-* [**Helm chart**](helm-chart.md) — the wrapper chart, what it deploys, and how it is configured.
-* [**Data seeding**](data-seeding.md) — the seed content this repo owns and the inherited machinery that applies it.
-* [**Sanity testing**](sanity-testing.md) — the two-part test model and what the Farmer Registry contributes.
-
-## Where the artifacts are
-
-| Artifact | Location |
-|---|---|
-| Source | [`openg2p/registry/farmer-registry`](https://github.com/OpenG2P/farmer-registry) |
-| Helm chart | [`helm/openg2p-farmer-registry`](https://github.com/OpenG2P/farmer-registry/tree/develop/helm/openg2p-farmer-registry), published to the `openg2p/charts` GitLab Helm registry |
-| Docker images | `openg2p/openg2p-farmer-registry-<name>` |
-| Versions & changelog | [openg2p-packaging/farmer-registry/CHANGELOG](https://openg2p.github.io/openg2p-packaging/farmer-registry/CHANGELOG) — see [Versions](../versions/README.md) |
-
-## Deployment steps
+## Order
 
 1. [Infrastructure setup](../../../../operations/deployment/infrastructure-setup/)
 2. [Environment creation](../../../../operations/deployment/environment-setup-multi-node.md)
-3. Farmer Registry installation (below)
+3. **commons-base**, then **commons-services**, in the namespace ([Commons Helm Chart](../../../../deployment/openg2p-commons-helm-chart.md))
+4. The Farmer Registry (below)
 
 ## Prerequisites
 
-1. Infrastructure and environment created as above.
-2. Full admin rights to the cluster and the Rancher UI.
-3. **commons-services** deployed in the environment. The registry bundles none of the shared services — Keycloak, master-data, Consent Manager, Partner Management, the Approval Workflow Engine (AWE) and Audit Manager all come from commons-services and are reached through `global.*` URLs.
+1. Admin rights to the cluster and to Rancher.
+2. commons-base and commons-services installed and healthy in the namespace. The registry bundles none of the shared services. From commons-services it uses:
+
+   | Service | Needed for | Setting in the commons-services form |
+   | --- | --- | --- |
+   | **Master Data** | Coded fields, the geography, sample farmers | **Dataset Themes** includes `agriculture` (the default), **Load Datasets** on. For a demo, also **Load Sample People** on |
+   | **AWE** | Change requests. The db-seed Job waits for it | **Install AWE?** on |
+   | **Partner Management** and **Consent Manager** | Partner calls: signature checks and consent | On (defaults) |
+   | **eSignet**, **Inji Certify**, **Inji Verify** | [Farmer credentials](../README.md#farmer-credentials), which are on in this chart | On. Set **Agent Portal Hostname** to the registry's agent portal host, `<release>-agent.<Base Domain>` ([why](../../registry/features/agent-portal.md#signing-out)) |
+   | **Superset** | Dashboards. Optional: without it the dashboard import is skipped | **Install Superset?** on, if dashboards are wanted |
+
+3. The OpenG2P catalogue added in Rancher (**Apps → Repositories**).
 
 {% hint style="warning" %}
-The db-seed Job waits for AWE to be healthy before it runs. If AWE is down, db-seed blocks, Helm's install timeout expires, and the release is marked failed **before the sanity Job is ever created**. Confirm commons-services is healthy first.
+The db-seed Job waits for AWE. If AWE is down, db-seed blocks, the install times out, and the later Jobs are never created. Check commons-services first.
 {% endhint %}
 
-## Installation
+## Install
 
-### Using Rancher (recommended)
+### Using Rancher
 
-1. Log in to the Rancher console and select the cluster and namespace.
-2. Under **Apps → Repositories**, ensure the OpenG2P catalogue repository is added.
-3. Under **Apps → Charts**, refresh repositories and select **OpenG2P Farmer Registry**.
-4. Choose the version. Three-digit versions are frozen; `-develop` versions are moving — tick **Show pre-release versions** to see `0.0.0-develop.N`.
-5. Give the installation a name (the release name is free and scopes the resources, so more than one registry can share a namespace), tick **Customize Helm options before install**, then **Next**.
-6. Review the values and **Install**.
+1. Select the cluster and the namespace.
+2. Under **Apps → Charts**, refresh the repositories and select **OpenG2P Farmer Registry**.
+3. Choose the version. Three-digit versions are frozen. Tick **Show pre-release versions** to see moving `0.0.0-develop.N` versions.
+4. Name the release, e.g. `fr`. The release name is part of the hostnames and the database name, so several registries can share a namespace.
+5. Tick **Customize Helm options before install**, then **Next**.
+6. Make the choices below, then **Install**.
 
-The configuration form shows the **same questions as the platform chart** — they are inherited from the pinned `openg2p-registry` dependency at packaging time rather than duplicated here, so they never drift. Platform-level settings appear under the `registry` key; `global.*` settings are unchanged.
+The form is the platform chart's form plus an **Analytics** group. Each field is described in the form.
 
-### Using Helm CLI
+### Choices
+
+The defaults suit a production-like install. Change only these.
+
+| Field | Choose | Why |
+| --- | --- | --- |
+| **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org` |
+| **Load Sample Data** (+ **Load Sample Images**) | On for a demo only | Sample farmers from Master Data's sample people ([data seeding](data-seeding.md#sample-data)) |
+| **Generate bulk demo data** | On for a dashboards or load-test demo only | 100,000 invented farmers ([data seeding](data-seeding.md#bulk-data)) |
+| **Sanity - Run Full E2E** | Off, except on a test environment | It leaves test data behind ([sanity testing](sanity-testing.md)) |
+| **Verifiable Credentials (Agent Portal)** | Off if farmer credentials are not issued, or eSignet and Inji Certify are not installed | On in this chart |
+| **AWE Approver User Password** | Your own | The initial password of the demo change-request approvers |
+
+{% hint style="warning" %}
+**Verify Partner Signature** and **Enforce Consent** are on by default. Turning either off returns data to partners unchecked or not cut down to their consent ([Consent-aware data sharing](../../registry/features/consent-aware-data-sharing.md#configuration)).
+{% endhint %}
+
+### Settings only in YAML
+
+Set these in **Edit YAML**, if at all. In a values file, platform settings sit under `registry.*` and shared settings under `global.*`.
+
+| Key | Default | Set it when |
+| --- | --- | --- |
+| `analytics.bulkSample.expectedCountry` | empty | You want bulk generation to fail if Master Data holds another country (e.g. `ETH`) |
+| `analytics.dashboards.superset.required` | `false` | The dashboards must load: the install then fails if Superset is not reachable |
+| `global.consentDataController` | `farmer-registry` | Partners are bound in the Consent Manager under another controller ID. It changes every scope ID |
+
+### Using the Helm CLI
 
 ```bash
-helm dependency update ./helm/openg2p-farmer-registry
-
-helm install farmer-registry ./helm/openg2p-farmer-registry \
-  --namespace <namespace> --create-namespace \
-  --version <chart-version> \
-  -f values-custom.yaml
+helm repo add openg2p https://openg2p.github.io/openg2p-helm
+helm install fr openg2p/openg2p-farmer-registry \
+  --namespace <namespace> --version <chart-version> -f values.yaml
 ```
 
-Use `--devel` to resolve a moving `0.0.0-develop.N` version.
+Add `--devel` to install a `0.0.0-develop.N` version.
 
 ## Post-install check
 
-1. The install runs ordered hook Jobs — `db-seed` → the sanity seeds → `iam-register` → `sanity` → and, when analytics is on,
-   `bulk-sample` → `reporting-views` → `dashboards`. Check they all completed: `kubectl -n <namespace> get jobs`.
-   Helm stops at the first failure, so a job that never appears means an **earlier** one failed — see the
-   [install sequence](data-seeding.md#install-sequence) for the full order and what each step does.
-2. Open `<release>.<your-domain>` in a browser; you should get the Keycloak login page.
-3. Log in with the credentials provisioned by `keycloak-init` and change the password when prompted.
-4. Review the sanity Job logs — by default it reports results but never fails the install: `kubectl -n <namespace> logs job/<release>-sanity`.
+1. Check the Jobs completed: `kubectl -n <namespace> get jobs`. The install runs them in a fixed order; Helm stops at the first failure, so a missing Job means an **earlier** one failed. Order and names: [Install sequence](data-seeding.md#install-sequence).
+2. Read the sanity Job's log: `kubectl -n <namespace> logs job/<release>-sanity` ([sanity testing](sanity-testing.md)).
+3. Open `https://<release>.<Base Domain>`. You should get the Keycloak login page.
+4. Log in with the credentials set up by `keycloak-init`, and change the password when asked.
+5. With credentials on, open the agent portal at `https://<release>-agent.<Base Domain>`.
 
 ## Before going to production
 
-* Leave `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` **on** (the default) — they govern real PII egress and the chart fails closed. See [Helm chart](helm-chart.md#consent-manager-and-partner-management).
-* Turn **off** the sample-data loaders (`registry.dbSeed.loadSampleData`, `loadImages`) — see [Data seeding](data-seeding.md).
+* Keep **Verify Partner Signature** and **Enforce Consent** on.
+* Keep sample data, sample images, bulk data and the full e2e off ([An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production)). On commons-services, turn **Load Sample People** off.
+* Replace the demo change-request approvers (`alex.carter`, `nina.patel`, in the extension's `awe_meta_data/30_approver_rule.sql`) with your officials.
+* Never promote a demo namespace to production. Install fresh.
+
+## Uninstall
+
+`helm uninstall` leaves the database, PVCs, IAM rows and the Superset dashboards behind. Use the repository's script, with `--dry-run` first:
+
+```bash
+./scripts/uninstall-registry.sh --namespace <namespace> --release fr --dry-run
+./scripts/uninstall-registry.sh --namespace <namespace> --release fr
+```
+
+Options include `--keep-iam`, `--keep-dashboards`, `--keep-pvs`, `--force` and `--yes`. It leaves the sanity test partner in Partner Management and the Consent Manager; remove those there if needed.

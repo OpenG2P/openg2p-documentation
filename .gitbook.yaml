@@ -58,3 +58,4 @@ redirects:
   open-agri-stack/guides/adding-a-data-source: open-agri-stack/composite/adding-a-data-source.md
   open-agri-stack/guides/registry-to-registry-sync: open-agri-stack/design/registry-data-sync.md
   open-agri-stack/open-items/catalogue-content: open-agri-stack/open-items/README.md
+  products/registry/farmer-registry/deployment/helm-chart: products/registry/farmer-registry/deployment/README.md

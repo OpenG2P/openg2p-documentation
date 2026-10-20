@@ -46,7 +46,7 @@ The defaults work for a demo. Change only these.
 | Exchange Role (Consent Manager) | **exchange** | The CM issues a consent token per registry to the Composite |
 | Partner Portal? (Consent Manager) | **Yes** | Partner users (e.g. bank staff) raise consent requests for farmers |
 
-Left at their defaults, and needed: **Install Master Data?** (the catalogue), **Install Partner Management?**, **Install Consent Manager?**, **Install eSignet?** (the farmer's national-ID login in the partner portal), **Install Mock Identity System?** (the identities eSignet checks, for testing), **Install Artifactory?** (eSignet and the mock identity system need it). **Install Keymanager?** stays off: Agri Stack does not use it. The IAM service, the Audit Manager and keycloak-init have no form field and are on.
+Left at their defaults, and needed: **Install Master Data?** (the catalogue), **Install Partner Management?**, **Install Consent Manager?**, **Install eSignet?** (the farmer's national-ID login in the partner portal), **Install Mock Identity System?** (the identities eSignet checks, for testing). Artifactory, which eSignet and the mock identity system use, is always installed. **Install Keymanager?** stays off: Agri Stack does not use it. The IAM service, the Audit Manager and keycloak-init have no form field and are on.
 
 With **Exchange Role** `exchange`, the other Consent Manager fields can stay empty: their defaults are the reference values ([below](#consent-manager-exchange-role)).
 
@@ -115,7 +115,7 @@ Replacing the demo key, step by step: [CM deployment](../../consent-management/d
 | Signing key | The CM's signing key (same `kid`, same public JWKS) | The department CMs fetch the public key from `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json` |
 | AWE approval of policies | Off | Policies take effect when the CM administrator saves them |
 
-A consent token carries only the scopes in the consent's grant for that registry ∩ the partner's policy for that registry ∩ the scopes the use case asks for. Each department CM then applies its own standing policy for the Composite on top ([Farmer Registry](farmer-registry.md#standing-policy-for-the-composite), [Crop Sown Registry](crop-sown-registry.md#the-composite-as-a-partner)). The token format, its status check and the department side: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md); every CM setting: [CM deployment](../../consent-management/deployment/README.md#exchange-optional).
+A consent token carries only the scopes in the consent's grant for that registry ∩ the partner's policy for that registry ∩ the scopes the use case asks for. Each department CM then applies its own standing policy for the Composite on top ([standing policy for the Composite](../architecture/registries.md#standing-policy-for-the-composite)). The token format, its status check and the department side: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md); every CM setting: [CM deployment](../../consent-management/deployment/README.md#exchange-optional).
 
 ### Partner portal
 
@@ -124,7 +124,7 @@ With the exchange role, the portal is set up for Agri Stack without further fiel
 | Setting | Value with the exchange role | Meaning |
 | --- | --- | --- |
 | National-ID login | Always on | The farmer logs in with their national ID through eSignet before a request can be submitted. Only subject ID types `FAYDA_FAN`, `NATIONAL_ID`, `national_id` can log in |
-| Required subject identifiers | `FARMER_ID` | Every request carries the farmer's Farmer ID besides the national ID. CM staff check it in the [Farmer Registry](farmer-registry.md#farmer-id-and-national-id) before approving the consent |
+| Required subject identifiers | `FARMER_ID` | Every request carries the farmer's Farmer ID besides the national ID. CM staff check it in the [Farmer Registry](../architecture/registries.md#farmer-id-and-national-id) before approving the consent |
 | Composite URL | `https://agri-composite.<this domain>` | The portal lists the Composite's published use cases and fills a request's grants from them. The Composite allows the portal's origin by default ([CORS](composite.md#cors)) |
 | Evidence storage | Garage, bucket `consent-evidence` (created by Commons Base) | The form the farmer signed |
 
@@ -146,7 +146,7 @@ For each partner, the Exchange CM holds one **binding** per registry the partner
 | Policy field | Example for `bank-a` |
 | --- | --- |
 | Controller | `farmer-registry`, and a second binding for `crop-sown-registry` |
-| Allowed data scopes | At least the scopes the use case requires from that registry ([Farmer Registry](farmer-registry.md#what-agri-stack-reads), [Crop Sown Registry](crop-sown-registry.md#what-agri-stack-reads)) |
+| Allowed data scopes | At least the scopes the use case requires from that registry ([Farmer Registry](../architecture/registries.md#farmer-data-the-composite-reads), [Crop Sown Registry](../architecture/registries.md#crop-data-the-composite-reads)) |
 | Allowed purposes | The use case's purpose, e.g. `credit-assessment` |
 | Allowed subject ID types | `FAYDA_FAN`, `FARMER_ID` |
 

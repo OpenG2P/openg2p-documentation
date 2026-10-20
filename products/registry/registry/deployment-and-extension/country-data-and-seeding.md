@@ -6,11 +6,6 @@ description: >-
 
 # Country data & seeding
 
-{% hint style="info" %}
-**New home: GitLab.** The registry repositories are now developed at
-[gitlab.com/openg2p/registry](https://gitlab.com/openg2p/registry).
-{% endhint %}
-
 A registry's **structure** — its tables, fields, validation rules and reports — is
 built into its extension. Everything country-specific comes from the **Master Data
 Service** (MDS), which is seeded from a **country pack**.
@@ -186,10 +181,12 @@ templates, enums in the extension's schemas — must use **the pack's codes**.
 
 {% hint style="warning" %}
 **Domain lists load only when asked for.** A list under `domains/<domain>/` reaches
-MDS only if that domain is named in the Master Data chart's `geoSeed.domains`
-(`masterData.geoSeed.domains` under commons-services). A Farmer Registry needs
-`[agriculture]`; without it a field such as `SOURCE_OF_INCOME` shows an **empty
-dropdown**, with no error anywhere. `agriculture` is the default; a social registry can set `[]`.
+MDS only if that domain is named in **Dataset Themes** (`masterData.geoSeed.domains`)
+on the commons-services form. The Farmer Registry and the Crop Sown Registry need
+`agriculture`, which is the commons-services default; without it a field such as
+`SOURCE_OF_INCOME` shows an **empty dropdown**, with no error anywhere. A social
+registry can clear the field. A pack that lacks a requested domain skips it, with a
+warning in the Master Data seed Job's log.
 {% endhint %}
 
 ### Enforcing them on writes
@@ -206,7 +203,7 @@ that field is corrected.
 | Switch | Where | Default | Effect |
 |---|---|---|---|
 | `geoSeed.load.codelists` | `openg2p-master-data` chart | `true` | MDS loads the pack's core lists |
-| `geoSeed.domains` | `openg2p-master-data` chart | `["agriculture"]` | MDS also loads these domain lists |
+| `geoSeed.domains` | `openg2p-master-data` chart (**Dataset Themes** on commons-services) | `agriculture` on commons-services | MDS also loads these domain lists |
 | `registry_core_validate_attribute_values` | registry API config | `false` | Registry rejects writes whose coded values are not in MDS |
 
 ## The seeding switches
@@ -264,17 +261,9 @@ four dropdowns with no extension change and no seed step. An older
 
 ## Configuring from Rancher
 
-The variant charts (NSR, Farmer Registry) carry **no `questions.yaml` of their
-own**. Rancher only reads `questions.yaml` from the root of the chart being
-installed, never from a subchart, so a wrapper chart would otherwise show an empty
-form. Instead the file is **generated at package time** from the platform chart's
-questions, by `inherit-questions.sh` in the packaging repository, which:
-
-* **prefixes the paths** — `dbSeed.loadSampleData` becomes
-  `registry.dbSeed.loadSampleData`, while `global.*` passes through unchanged;
-* **backfills defaults** from the wrapper's own `values.yaml`, falling back to the
-  platform's. Without this a field would render blank, and a blank boolean submits
-  as **false** — silently disabling db-seed on install.
+A domain registry's Rancher form is generated from the platform chart's questions,
+with platform paths prefixed `registry.`. How that works:
+[Domain registry charts](packaging-and-reference-registry.md#domain-registry-charts).
 
 {% hint style="info" %}
 **Object store.** Registries store documents, images and templates in the commons **Garage** (S3-compatible; it replaced MinIO), reached in-cluster. The chart values keep their `minio*` names: `global.minioHost` defaults to `commons-garage:3900` and `global.minioSecure` to `false`; credentials come from the `commons-minio` Secret written by the Garage init job. The buckets `default`, `templates`, `documents`, `import-files` and `export-files` must exist (the commons Garage init job creates them). Pre-signed document URLs are signed for this in-cluster host.
@@ -324,7 +313,7 @@ analytics:
 {% hint style="danger" %}
 **Do not turn off `dbSeed.enabled` or `loadTemplates`.** The meta-data SQL defines
 the register itself — without it there is no registry. Without the Jinja templates
-in MinIO every record fails to render and a DCI search returns an empty result.
+in the object store every record fails to render and a DCI search returns an empty result.
 
 The same goes for **datasets on the Master Data side**: they are configuration,
 not demo data. Keep `geoSeed.load.codelists: true` (and any `geoSeed.domains` your

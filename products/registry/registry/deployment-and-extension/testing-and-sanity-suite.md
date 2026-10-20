@@ -57,7 +57,7 @@ Everything above is supplied as env from the chart's `registry.sanity.*` values 
 
 | Value | Type | Note |
 |---|---|---|
-| `farmerRegisterId` | string | **This is the register id**, whatever the registry is about — the subchart helpers, the suite's `cfg` object and every variant's override use this spelling. See *inherited names* below |
+| `registerId` | string | The id of the register the sanity record is seeded into and the change request is raised against. Empty means the reference Individual register. The old key `farmerRegisterId` is still read when this is empty |
 | `regType` | string | Your register mnemonic; goes into the DCI envelope as `reg_type` |
 | `regRecordType` | string | The DCI record type |
 | `searchText` | string | The injected record's `functional_record_id`. Must equal what your `data_seed.py` writes — the DCI search matches `search_text ILIKE '%…%'` |
@@ -66,11 +66,11 @@ Everything above is supplied as env from the chart's `registry.sanity.*` values 
 | `crTabId` / `crSectionId` | string | A real, **editable** section, or the change-request write is rejected |
 
 {% hint style="warning" %}
-Left at their defaults these carry the **reference registry's** values, so the suite passes or fails for reasons unrelated to your registry. A mistyped values key renders happily with the subchart default and gives no warning — after `helm template`, grep the output for `SANITY_FARMER_REGISTER_ID` and `SANITY_DCI_REG_TYPE` and check they are yours.
+Left at their defaults these carry the **reference registry's** values, so the suite passes or fails for reasons unrelated to your registry. A mistyped values key renders happily with the subchart default and gives no warning — after `helm template`, grep the output for `SANITY_REGISTER_ID` and `SANITY_DCI_REG_TYPE` and check they are yours.
 {% endhint %}
 
 {% hint style="info" %}
-**Inherited names.** `farmerRegisterId` in the chart, and `FARMER_INTERNAL_ID` / `farmer_seeded` / `cfg.farmer_register_id` in the suite, are named for the registry the harness was first written against. They mean *"the seeded registrant"*. Renaming them means changing the platform harness, `conftest.py` and every variant's overlay in one commit, so they stay — treat them as generic.
+**Old names.** The suite was first written for the Farmer Registry. Its names are now registry-neutral: `RECORD_*` fixture symbols, the `record_seeded` fixture, `cfg.register_id` and `SANITY_REGISTER_ID`. The old names (`FARMER_*`, `farmer_seeded`, `cfg.farmer_register_id`, `SANITY_FARMER_REGISTER_ID`, the chart key `sanity.farmerRegisterId`) still work, so an older overlay keeps running. New code uses the new names.
 {% endhint %}
 
 ### The tests that need no cluster

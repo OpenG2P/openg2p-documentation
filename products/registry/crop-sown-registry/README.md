@@ -209,15 +209,33 @@ The Crop Sown Registry needs no other registry to run. It needs commons-services
 
 Used alone, farmer and plot IDs are whatever the operator uses, as long as they match the format (letters, digits and dashes, 3–64 characters).
 
+## How it is packaged
+
+The Crop Sown Registry is a thin extension of the Registry Platform. How domain registries are packaged in general: [Packaging & the reference registry](../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts). What is specific to this one:
+
+* **Four images**, each a `FROM` of the matching platform image plus the `crop-sown-extension` package:
+
+  | Image | Runs as | Adds |
+  | --- | --- | --- |
+  | `staff-api` | Staff portal API | The crop domain. Creates the activity tables and the Cluster tables on start |
+  | `partner-api` | Partner API | Partner activities, DCI search, data scopes |
+  | `celery` | Celery worker and beat | The activity outbox (crop season status, season summaries), the ODK pull, the sample crop seasons |
+  | `db-seed` | Install and upgrade Job | The seed SQL, DCI templates, Cluster approval policies and the sample cluster loader |
+
+  The staff portal UI and the sanity tests are the platform's images, used as is. The sanity tests run the platform's smoke tier only.
+* **The chart** `openg2p-crop-sown-registry` has no templates of its own. It is a values overlay that sets the registry variant (`crop-sown-registry`, also the consent data controller), the four images, the ID generator with one pool (`cluster`), IAM registration as a regular Job, and the ODK pull and sample crop seasons switches (both off). Its own questions (**Crop Sown Registry** group) are in `questions.own.yaml`.
+* **No dashboards yet.** The reporting views are plain SQL views created by db-seed; they need no refresh Job.
+* **Extra CI checks**, without Docker: the generated seed SQL matches `scripts/activity_definitions.py`, and every list and code the activity definitions use is in the shipped country pack (ETH).
+
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. How it is set up for Agri Stack is in [Agri Stack → Deployment → Crop Sown Registry](../../../open-agri-stack/deployment/crop-sown-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md#crop-sown-registry). How it is set up for Agri Stack is in [Agri Stack → Deployment → Crop Sown Registry](../../../open-agri-stack/deployment/crop-sown-registry.md).
 
 ## In this section
 
 | | |
 | --- | --- |
 | [**Customisation**](customisation.md) | What a country or programme changes — lists, activities, rules, scopes — and how |
-| [**Deployment**](deployment/README.md) | How it is packaged: images, chart, platform version, install order |
-| [**Deploying on Rancher**](deployment/rancher.md) | Prerequisites, form fields, sample data, ODK, checks after install |
+| [**Deployment**](deployment/README.md) | Install order and the Jobs that run on install |
+| [**Deploying on Rancher**](deployment/rancher.md) | Prerequisites, the choices to make, sample data, ODK, checks after install, uninstall |
 | [**Versions**](versions/README.md) | Where releases and changelogs are published |

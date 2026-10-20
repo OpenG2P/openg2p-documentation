@@ -24,7 +24,7 @@ phases from an empty repository, through a sandbox, to production.
 | **Seed content** — register/UI/AWE metadata SQL, DCI templates, sample data | The seeding machinery in `db-seed` |
 | **Field-specific tests** — the assertions shaped by your fields | The test harness and the extension-independent tests in `sanity-tests` |
 | **Thin Dockerfiles**, a **values overlay**, and templates for anything the platform has no concept of (analytics, dashboards, maps) | Every service template, IAM/Keycloak wiring and job in the `openg2p-registry` chart |
-| A **~40-line CI stub** declaring what this repo has | All build, version, publish and changelog logic, centrally in `openg2p/packaging` |
+| A **~40-line CI stub** declaring what this repo has | All build, version, publish and changelog logic, centrally in [`openg2p-packaging`](https://github.com/OpenG2P/openg2p-packaging) |
 
 Folder-by-folder detail:
 [Anatomy of an extension](../developer-zone/building-a-registry/anatomy-of-an-extension.md).
@@ -38,7 +38,7 @@ by moving one pinned version rather than by being reapplied N times.
 
 The cost is one rule: your registry pins **one** platform version, used both for
 the Docker base images (`RP_VERSION`) and the chart dependency, and the two move
-together.
+together. See [Domain registry charts](packaging-and-reference-registry.md#domain-registry-charts).
 
 ## How one image serves several registries
 
@@ -65,10 +65,12 @@ The classes the platform resolves by register mnemonic are specified in the
 
 ## Worked examples
 
-Both are built exactly this way, and are the best reference while you work:
+These are built exactly this way, and are the best reference while you work:
 
 * [Farmer Registry](https://github.com/OpenG2P/farmer-registry) — Farmer
-  and Household, with land, crop, livestock and cooperative sub-registers.
+  and Household, with land, livestock, farm-input and cooperative sections.
+* [Crop Sown Registry](https://github.com/OpenG2P/crop-sown-registry) — an
+  activity register of crop seasons, plus a Cluster register.
 * [National Social Registry](https://github.com/OpenG2P/national-social-registry)
   — Individual and Household, with the socio-economic sub-registers used for
   targeting.

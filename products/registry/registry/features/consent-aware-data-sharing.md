@@ -57,10 +57,10 @@ receipt** — the audit / non-repudiation evidence. The registry keeps none of i
 Enforcement is governed by two **independent** switches on the partner-api. Both default
 **on** (the chart fails closed); turn one off only for testing or a bring-up install:
 
-| Switch | Effect when ON |
-| --- | --- |
-| **Verify Partner Signature** | verify the DCI envelope signature against Partner Management keys |
-| **Enforce Consent** | call the Consent Manager and filter returned records to the consented scopes' fields |
+| Switch | Key | When on | When off |
+| --- | --- | --- | --- |
+| **Verify Partner Signature** | `global.partnerSignatureValidationEnabled` | Verify the DCI envelope signature against Partner Management keys | Requests are accepted without checking who signed them |
+| **Enforce Consent** | `global.consentEnforcementEnabled` | Call the Consent Manager and filter returned records to the consented scopes' fields | Records are returned in full, not cut down to any consent |
 
 The registry's data-controller ID is `global.consentDataController` (set in the
 YAML editor; it is not in the Rancher form), which defaults to the registry variant. It must match

@@ -21,7 +21,7 @@ The Crop Sown Registry has **no frozen release yet**. Only moving `0.0.0-develop
 | **This registry** | The `openg2p-crop-sown-registry` chart and its four images (`staff-api`, `partner-api`, `celery`, `db-seed`), always at the same version | The [Crop Sown Registry changelog](https://openg2p.github.io/versions/crop-sown-registry/CHANGELOG.html) |
 | **Registry platform** | The `openg2p-registry` chart and images this registry extends, pinned in the chart and the Dockerfiles together | The [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html) |
 
-The platform pin is set in `Chart.yaml` and moves only when `scripts/bump-rp-version.sh` is run.
+The platform version is pinned in `Chart.yaml` and the Dockerfiles together, and moves only when it is bumped ([Domain registry charts](../../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts)).
 
 How versions are derived, frozen and promoted: [Helm & Docker Versioning Strategy and CI](../../../../releases/helm-docker-versioning-and-ci/README.md).
 

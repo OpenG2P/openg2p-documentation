@@ -1,344 +1,92 @@
 ---
 description: >-
-  How the Farmer Registry is seeded at install — the seed content this repo owns
-  and the seeding machinery it inherits from the platform.
+  Turning on the Farmer Registry's sample, bulk and sanity data, the reporting
+  views and the dashboards, and the install Jobs in the order they run.
 ---
 
 # Data seeding
 
-{% hint style="info" %}
-**New home: GitLab.** **`farmer-registry`** is now developed at [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry).
-{% endhint %}
+This page lists the steps and choices. What each kind of data is: [Data the registry can create](../README.md#data-the-registry-can-create) and, for all registries, [Country data & seeding](../../registry/deployment-and-extension/country-data-and-seeding.md). What the reporting views and dashboards are: [Reporting and dashboards](../README.md#reporting-and-dashboards).
 
-Seeding follows the same split as everything else: the **machinery** is inherited from the platform's `db-seed` image, and the Farmer Registry supplies only its **content**.
+The registry's own configuration (registers, screens, DCI templates, approval policies) is always seeded by the db-seed Job. Everything below is optional.
 
-{% hint style="info" %}
-The switches, the code-list mechanism, the Rancher form and the production
-("empty") install are all platform-level and documented once in
-[**Country data & seeding**](../../registry/deployment-and-extension/country-data-and-seeding.md).
-For what a country pack is, see
-[**Country Packs**](../../../../platform/platform-services/master-data-service/country-packs.md).
-This page covers only what is specific to the Farmer Registry.
-{% endhint %}
+## Before you install
 
-## Three kinds of data the Farmer Registry can create
+On the **commons-services** form:
 
-| | Sample data | Bulk data | Sanity data |
-|---|---|---|---|
-| **How much** | A few dozen people from the country pack, plus the farmer overlay below | **100,000 farmers** when on (adjustable) | A handful of fixtures |
-| **Purpose** | Demonstrations — records a person reads | Volume for reports and dashboards | Verifying the deploy |
-| **Switch** | `registry.dbSeed.loadSampleData` | `analytics.bulkSample.enabled` | `registry.sanity.runE2e` |
-| **Default here** | `false` | `false` | `false` |
-| **Rancher form** | DB Seed → *Load Sample Data* (+ *Load Sample Images*) | Analytics → *Generate bulk demo data* | Sanity → *Sanity - Run Full E2E* |
+* **Dataset Themes** includes `agriculture` (the default) and **Load Datasets** is on. Without them the coded dropdowns are empty.
+* **Load Sample People** is on, if you want sample data.
+
+The Farmer Registry's Jobs read Master Data through its API, with the `<release>-staff-portal` Keycloak client. That client needs read access to Master Data's `/catalogue` and `/samples`.
 
 ## Sample data
 
-### Where the people come from
-
-The individuals and households come from **Master Data**, which holds the country
-pack's sample people (`g2p_sample_individuals`, `g2p_sample_households`), complete
-with their geo ancestry — so every record points at a real administrative unit in
-whatever country the deployment carries.
-
-The Farmer Registry then **augments** each person with its own agricultural fields:
-
-| Farmer overlay | Rows |
-|---|---|
-| `lands.json` | 509 |
-| `farmers.json` | 500 |
-| `livestocks.json` | 471 |
-| `farm_inputs.json` | 434 |
-| `household_members.json` | 428 |
-| `membership_details.json` | 122 |
-| `scores.json` | 100 |
-
-These live in [`docker/db-seed/seed-data`](https://github.com/OpenG2P/farmer-registry/tree/develop/docker/db-seed/seed-data) and are linked to whoever was actually loaded, rather than to a fixed set of ids.
-
-**Sample IDs follow the sample people.** Sample person `ETH-IND-0007` becomes farmer `FR-0007`, and that person's lands are numbered `LAND-0007-1`, `LAND-0007-2`… in the person's woreda. The [Crop Sown Registry](../../crop-sown-registry/deployment/rancher.md#sample-data) numbers its sample farmers and plots the same way, so a demo of both shows the same farmers and plots. Neither registry reads the other.
+1. On the Farmer Registry form, turn on **Load Sample Data**. Turn on **Load Sample Images** too for profile photos.
+2. Install or upgrade.
+3. Check: the staff portal lists farmers numbered like the sample people, e.g. `FR-0007`, with lands `LAND-0007-1`.
 
 {% hint style="warning" %}
-**If Master Data holds no samples, the loader falls back** to the shared demography
-CSV baked into the image and says so in its log. That CSV can only ever describe
-one country — it has five fixed level names — so the fallback produces people whose
-addresses do not match the deployment's country pack. Enable
-`geoSeed.load.samples` on the Master Data chart to get a pack-coherent set.
+If Master Data holds no sample people, the loader falls back to a CSV baked into the image and says so in its log. Those people's addresses do not match your country pack. Turn on **Load Sample People** on commons-services and upgrade both.
 {% endhint %}
-
-## Code lists — including the agriculture domain
-
-Nothing to seed here: the Farmer Registry's coded dropdowns read their options
-**live from Master Data**, and the registry keeps no copy. Six farmer fields are
-bound to Master Data lists this way:
-
-| Field | Master Data list | Where it comes from |
-|---|---|---|
-| `gender` | `GENDER` | the pack's core lists |
-| `marital_status` | `MARITAL_STATUS` | the pack's core lists |
-| `education_level` | `EDUCATION_LEVEL` | the pack's core lists |
-| `disability_type` | `DISABILITY_DOMAIN` | the pack's core lists |
-| `disability_severity` | `DISABILITY_SEVERITY` | the pack's core lists |
-| `source_of_income` | `SOURCE_OF_INCOME` | the pack's **`agriculture` domain** |
-
-The other dropdowns — crops, livestock, land use and the like — still carry fixed
-options in the section metadata.
-
-`SOURCE_OF_INCOME` lives in a domain subtree of the pack, which Master Data loads
-only when asked — on the **Master Data** chart, not the registry's:
-
-```yaml
-masterData:              # under commons-services
-  geoSeed:
-    domains:
-      - agriculture
-```
-
-{% hint style="warning" %}
-**The domain must exist in the pack.** The ETH pack carries `agriculture`;
-naming a domain the pack lacks **fails the Master Data seed Job**. The fictitious
-XKM pack carries no code lists at all — on XKM leave `domains` empty, and expect
-all six coded dropdowns above to be empty.
-{% endhint %}
-
-Because the codes come from Master Data, everything the Farmer Registry writes into
-these fields uses them too: the sample loader maps its seed JSON onto them (e.g.
-income becomes `SOI_CROP_PRODUCTION`, gender `OTHER`), and the bulk generator and
-the inbound DCI template emit them directly.
 
 ## Bulk data
 
-When switched on, the Farmer Registry generates **100,000 farmers** (adjustable)
-at install so that load tests have volume and the dashboards have something to
-show. It is **off by default**, and it is independent of the reporting views and
-dashboards — those install either way, over whatever data the register holds. Nobody reads an individual bulk row, so the
-names and phone numbers are invented and need not belong to the country.
+1. On the form, under **Analytics**, turn on **Generate bulk demo data**.
+2. Set **Bulk demo farmers** if 100,000 is not the size you want.
+3. Optional, in YAML: set `analytics.bulkSample.expectedCountry` (e.g. `ETH`) so the Job fails if Master Data holds another country.
+4. Install or upgrade. Check the `<release>-fr-bulk-sample` Job completed.
 
-{% hint style="warning" %}
-**Bulk generation still reads Master Data — it is not country-independent.**
-
-It is the *people* that are country-agnostic, not the *geography*. Every generated
-record must point at a real administrative unit or maps and drill-downs break, so
-the generator reads the hierarchy from the MDS API (through the platform's
-`mds_client.py`) and fails if it is not there. No Farmer Registry job reads or
-writes MDS's database.
-
-What this buys is that **one generator serves every country** — the same build
-generates for Ethiopia or Kamuntu unchanged. It does not mean MDS is optional.
-{% endhint %}
-
-`analytics.bulkSample.expectedCountry` is a **guard, not a selector**: set it and
-the job fails if MDS holds a different country than expected. Empty (the default)
-means no check.
-
-### Turning it on
-
-In the Rancher form, under **Analytics**: tick **Generate bulk demo data**, and set
-**Bulk demo farmers** if 100,000 is not the size you want. In values:
-
-```yaml
-analytics:
-  bulkSample:
-    enabled: true
-    farmers: 100000
-```
+Bulk generation needs Master Data's geography; the Job fails if it is not there.
 
 ## Sanity data
 
-Completely separate from sample and bulk data, and created for a different reason:
-to prove the deploy actually works.
-
-With `sanity.runE2e: false` (the default) the suite is smoke-only and **creates
-nothing**. With it on, a deploy-time job seeds the e2e's *own* fixtures — a sanity
-farmer (`SANITY-FARMER-0001`) injected by SQL rather than reused from the sample
-data, the suite's own Keycloak user with a non-temporary password, and that user as
-an approver on the change-request policy.
-
-{% hint style="danger" %}
-**Sanity fixtures are never deleted.** They are left in place for inspection after
-the run, so an environment that has ever had `runE2e: true` carries them
-permanently. Keep it off for production.
-{% endhint %}
+Sanity data is created only with **Sanity - Run Full E2E** on. Its fixtures are never deleted, so use it only on a test environment. Steps: [Sanity testing](sanity-testing.md).
 
 ## Reporting views
 
-Dashboards and the map never read the register tables directly — they read
-**reporting views**, `fr_rpt_*`, one per entity, with geography and
-workflow columns and personal data withheld.
+On by default (**Build reporting views**). Choose the refresh interval in **Reporting data refresh** (cron, hourly by default; empty means never). Between refreshes, new farmers are not in reports.
 
-**Most of them are generated**, at install, by the platform's
-`generate_reporting_views.py` reading this registry's schema and the country's
-hierarchy from Master Data. This registry supplies two things:
+Check the `<release>-fr-reporting-views` Job completed, and the CronJob `<release>-fr-reporting-views-refresh` exists.
 
-* **`reporting_views.sql`** — the views it maintains by hand: `fr_rpt_farmer` and `fr_rpt_land`,
-  because they normalise a free-text land size into hectares, roll the parcels, crops, livestock and inputs up onto the farmer, and define what this registry means by "uses modern inputs" and where its age bands fall. Nothing can infer those from a schema.
-* **`reporting.yaml`** — a short declaration: which entity hangs off which, which
-  views are hand-written, and what its own columns mean.
-  ([this registry's copy](https://github.com/OpenG2P/farmer-registry/blob/develop/docker/db-seed/reporting.yaml))
+## Dashboards
 
-Everything else is generated: crop, livestock, farm inputs, membership, scores, households, household members, change requests and record history.
+The dashboards are imported into the environment's Superset at install. To load them:
 
-**Who runs it:** a job of this chart, `<release>-fr-reporting-views`, at
-hook weight 45 — after bulk data, so the first build has rows behind it. It runs
-the hand-written SQL first and the generator second, because a generated child
-reads its parent's columns.
+1. Install Superset with commons-services (**Install Superset?**).
+2. Install or upgrade the Farmer Registry.
+3. Check the `<release>-fr-dashboards` Job's log says the dashboards were imported.
 
-Switched by `analytics.reportingViews.enabled`; generation alone by
-`analytics.reportingViews.generate`.
+If Superset was not reachable, the Job skips the import and says so. Upgrade the registry once Superset is up. To fail the install instead, set `analytics.dashboards.superset.required: true` in YAML.
 
-{% hint style="info" %}
-**Why this changed.** The reporting SQL used to be hand-written in full, here, so
-coverage was whatever somebody had thought of — livestock — the register holds 132,824 livestock records, and before these views the only thing reporting could say about them was whether a farmer kept any. Generation makes
-coverage structural instead. The reasoning, the declaration reference and the
-`--discover` workflow are in
-[Reporting views](../../../../platform/platform-services/reporting-and-analytics/reporting-views.md).
-{% endhint %}
-
-### Keeping them current
-
-Some views are materialized, and **Postgres never updates a materialized view when
-its base tables change**. This chart therefore refreshes its own, on a schedule:
-
-```yaml
-analytics:
-  reportingViews:
-    refreshSchedule: "0 * * * *"   # hourly; empty disables the CronJob
-```
-
-`<release>-fr-reporting-views-refresh` rebuilds every `fr_rpt_*`
-materialized view in dependency order resolved from the catalog, using `REFRESH
-MATERIALIZED VIEW CONCURRENTLY` so dashboards keep reading the previous snapshot
-while it runs. The cadence is on the Rancher form under **Analytics**.
-
-Between refreshes, farmers registered since the last run do not appear in any
-report. Choose the interval accordingly.
+Bringing reporting up for a country: [Setting up reporting](../../../../platform/platform-services/reporting-and-analytics/setting-up-reporting.md).
 
 ## Install sequence
 
-Everything below runs as Helm **post-install / post-upgrade hooks**, in hook-weight
-order. Helm waits for each weight to succeed before creating the next, so this is a
-strict sequence — and **a failure at any step blocks everything after it**.
+The install Jobs run as Helm post-install and post-upgrade hooks, in hook-weight order. Helm waits for each to succeed before the next, so **a failure blocks every Job after it**.
 
-```mermaid
-flowchart TD
-    A["Application pods<br/><i>Deployments pass their probes</i>"] --> B
+| Weight | Job | Does | Runs when |
+| --- | --- | --- | --- |
+| — | the `iam-register` Job | Registers the registry's roles and permissions in IAM. A regular Job, started with the pods; a failure does not fail the release | always |
+| 10 | `<release>-db-seed` | Registry configuration, sample data, images, templates. Waits for AWE and for Master Data's geography | **Enable DB Seed** (on) |
+| 11 | `<release>-sanity-pm-seed` | Registers the test partner in Partner Management | **Sanity - Run Full E2E** |
+| 12 | `<release>-sanity-cm-seed` | The Consent Manager binding and policy for that partner | **Sanity - Run Full E2E** |
+| 13 | `<release>-sanity-data-seed` | The sanity farmer, Keycloak user and approver rule | **Sanity - Run Full E2E** |
+| 15 | `<release>-registrant-auth-bootstrap` | Sets up the eSignet login farmers use before a credential is issued | credentials on |
+| 16 | `<release>-agent-vc-register` | Registers the Farmer Credential with Inji Certify | credentials on |
+| 25 | `<release>-sanity` | Runs the sanity suite | **Run Sanity Tests** (on) |
+| 40 | `<release>-fr-bulk-sample` | Generates the bulk farmers | **Generate bulk demo data** |
+| 45 | `<release>-fr-reporting-views` | Builds the reporting views | **Build reporting views** (on) |
+| 50 | `<release>-fr-dashboards` | Imports the dashboards into Superset | `analytics.dashboards.enabled` (on) |
 
-    B["<b>10 · db-seed</b><br/>meta-data<br/><b>sample data</b> · images · templates"] --> C
+Two dependencies are on other releases, which Helm cannot order:
 
-    subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
-        direction TB
-        C["<b>11 · sanity-pm-seed</b><br/>partner in Partner Management"] --> D
-        D["<b>12 · sanity-cm-seed</b><br/>Consent Manager binding + policy"] --> E
-        E["<b>13 · sanity-data-seed</b><br/><b>test record · Keycloak user · approver rule</b><br/><i>never deleted afterwards</i>"]
-    end
-
-    E --> F["<b>20 · iam-register</b><br/>roles + permissions into IAM"]
-    F --> G["<b>25 · sanity</b><br/>smoke, plus the e2e when runE2e = true"]
-
-    subgraph AN ["Analytics — only when analytics.* enabled"]
-        direction TB
-        H["<b>40 · bulk-sample</b><br/><b>100,000 farmers</b><br/><i>off by default</i>"] --> I
-        I["<b>45 · reporting-views</b><br/>views the dashboards read"] --> J
-        J["<b>50 · dashboards</b><br/><b>import into Superset</b>"]
-    end
-
-    G --> H
-
-    MD(["Master Data<br/><i>separate release</i>"]) -.->|"must be seeded first"| B
-    MD -.->|"geo hierarchy"| H
-    SS(["Superset<br/><i>separate release</i>"]) -.->|"must be reachable"| J
-```
-
-Read the diagram top to bottom: each box only starts once the one above it has
-succeeded. The two dotted arrows are the dependencies Helm cannot order, because
-they belong to other releases — see [Cross-release dependencies](#cross-release-dependencies).
-
-| Weight | Job | What it does | Runs when |
-|---|---|---|---|
-| — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
-| 10 | `fr-db-seed` | Meta-data SQL, **sample data**, images, templates | `dbSeed.enabled` |
-| 11 | `fr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
-| 12 | `fr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
-| 13 | `fr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
-| 20 | `fr-iam-register` | Registers the registry's roles and permissions in IAM | always |
-| 25 | `fr-sanity` | Runs the sanity suite | `sanity.enabled` |
-| 40 | `fr-fr-bulk-sample` | Generates **100,000 farmers** | `analytics.bulkSample.enabled` |
-| 45 | `fr-fr-reporting-views` | Creates the reporting views the dashboards read | `analytics.reportingViews.enabled` |
-| 50 | `fr-fr-dashboards` | **Imports the dashboards into Superset** | `analytics.dashboards.enabled` |
-
-{% hint style="info" %}
-**The dashboards are loaded by this registry, not by the analytics platform.** The
-dashboard bundle ships in this repository, and the weight-50 job imports it into the
-environment's Superset, points its database connection at this registry, publishes
-the dashboards and enables embedding on them.
-
-The ordering is the point: dashboards are imported **after** bulk data and **after**
-the reporting views exist, so that a dashboard opened straight after install already
-has data behind it rather than rendering empty.
-{% endhint %}
-
-### Cross-release dependencies
-
-Two of these steps depend on releases Helm cannot order against, because they are
-separate installs:
-
-* **Master Data** must be seeded before weight 10 (code lists, geo, sample people)
-  and before weight 40 (the bulk generator reads its geo hierarchy). The db-seed and
-  bulk jobs each wait for it and fail with a clear message rather than producing
-  records that point nowhere.
-* **Superset** must be reachable before weight 50. That job waits for it rather
-  than failing immediately, so a Superset that is merely restarting does not lose
-  the dashboard import.
+* **Master Data** must be seeded before db-seed (weight 10) and bulk generation (weight 40). Both wait for it, then fail with a clear message.
+* **Superset** must be reachable for the dashboard import (weight 50). The Job waits, then skips.
 
 {% hint style="warning" %}
-Because Helm stops at a failed hook, a failure in bulk generation (weight 40) also
-prevents the reporting views and the dashboard import from ever running. If Superset
-has no dashboards after an install, check the **earlier** jobs first.
+If Superset has no dashboards after an install, check the **earlier** Jobs first. A failed bulk Job (weight 40) stops the reporting views and the dashboard import from running.
 {% endhint %}
 
-## What the image contains
+## For production
 
-The Farmer Registry's `db-seed` image is a thin `FROM` of the platform's, clearing
-the reference registry's content and copying its own — the extension's
-`meta_data/`, `awe_meta_data/` and `templates/`, the `seed-data/*.json` overlay
-above, `generate_fr_bulk_sample.py` and `reporting_views.sql`.
-
-The bulk generator lives here, beside the reporting views it must move in step
-with, rather than in a shared repository.
-
-## Chart defaults
-
-```yaml
-registry:
-  dbSeed:
-    loadSampleData: false  # demo farmers — opt in from the form
-    loadImages: false
-
-analytics:
-  bulkSample:
-    enabled: false         # bulk demo data — opt in from the form
-    farmers: 100000        # used only when enabled
-  reportingViews:
-    enabled: true          # independent of bulk data
-```
-
-There is no geo-dropdown setting: register forms take their geo levels from Master
-Data when they load. `loadGeoData` and `syncGeoWidgets` were removed from the
-registry platform and take effect here once the chart's registry-platform version
-is bumped; until then leave `loadGeoData` off.
-
-The seed and analytics Jobs reach Master Data through its API (`MDS_API_URL` and a
-client-credentials token from the `<release>-staff-portal` Keycloak client), so
-that client needs read access to MDS `/catalogue` and `/samples`.
-
-For a production install, see
-[An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).
-
----
-
-{% hint style="info" %}
-**Beyond seeding.** What is built on these views — the dashboards, the map
-drill-down, how to add your own, and what to do when a country pack or this
-registry's schema changes — is under
-[**Reporting & Analytics**](../../../../platform/platform-services/reporting-and-analytics/README.md). Start with
-[Setting up reporting](../../../../platform/platform-services/reporting-and-analytics/setting-up-reporting.md) if you are bringing this
-registry up for a country.
-{% endhint %}
+Keep sample data, sample images, bulk data and the full e2e off. Keep **Enable DB Seed** and **Load Templates to Object Store** on. Details: [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).
