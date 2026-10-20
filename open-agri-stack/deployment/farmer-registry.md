@@ -28,6 +28,7 @@ The defaults work for a demo. Change only these.
 | Chart | Field | Value | Why |
 | --- | --- | --- | --- |
 | Commons Services | Exchange Role (Consent Manager) | **department** | The CM trusts consent tokens from the Exchange CM (`agri-stack-exchange-cm`), presented by the Composite (`agri-composite`), with the public key at `https://consent-manager-partner.agrix.<parent domain>/…/.well-known/jwks.json` (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
+| Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Partners of this registry present a consent they collected and signed themselves; consents collected in person in a CM are used through the Exchange. With the portal off, Require National-ID Login is not shown |
 | Farmer Registry | Release name | `fr` | The partner API is then `https://partner-fr.<domain>`, the URL the Composite is given |
 | Farmer Registry | Load Sample Data (`registry.dbSeed.loadSampleData`) | **On**, for a demo only | Sample farmers from the catalogue's sample people, matching the Crop Sown Registry's samples ([sample data](#sample-data)) |
 

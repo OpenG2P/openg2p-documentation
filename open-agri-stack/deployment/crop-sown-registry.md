@@ -29,6 +29,7 @@ The defaults work for a demo. Change only these.
 | Chart | Field | Value | Why |
 | --- | --- | --- | --- |
 | Commons Services | Exchange Role (Consent Manager) | **department** | The CM trusts consent tokens from the Exchange CM, presented by the Composite, with the public key at `https://consent-manager-partner.agrix.<parent domain>/…/.well-known/jwks.json` |
+| Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Partners of this registry present a consent they collected and signed themselves; consents collected in person in a CM are used through the Exchange. With the portal off, Require National-ID Login is not shown |
 | Crop Sown Registry | Release name | `csr` | The partner API is then `https://partner-csr.<domain>`, the URL the Composite is given |
 | Crop Sown Registry | Load Sample Data | **On**, for a demo only | The two sample clusters |
 | Crop Sown Registry | Load sample crop seasons | `true`, for a demo only | Crop seasons for the same farmers and plots as the Farmer Registry's samples ([sample data](#sample-data)) |
