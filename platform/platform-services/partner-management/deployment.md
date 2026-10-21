@@ -113,10 +113,10 @@ staffPortalApi:
 * `data_controller` — scopes only, required: the policy's data controller,
   exactly as the registry reports it (a mismatch shows as the source's error).
 * `url` — read with an unsigned `GET` from the staff-portal-api (in-cluster
-  service names work). **A registry source needs that registry's "Allow Unsigned
-  Read of Data Scope Catalogue" on** (`data_scopes_public_get_enabled`): PM has
-  no signing key, so it cannot use the signed `POST`. Otherwise the source shows
-  `HTTP 403`.
+  service names work). A registry source needs that registry's **Allow Unsigned
+  Read of Data Scope Catalogue** (on by default in the registry chart): PM has
+  no signing key, so it cannot use the signed `POST`. If the registry has turned
+  it off, the source shows `HTTP 403` and the form falls back to free text.
 * `label` — shown in the portal.
 
 In Rancher, **Catalogue Sources** is a text field: paste the same list as YAML

@@ -98,6 +98,8 @@ outward signal is a field in the DCI response header.
 
 Detail: [Partner APIs](../../design/partner-apis.md)
 
+One more to decide: `global.partnerDataScopesPublicGetEnabled` (on by default) lets anyone who can reach the partner API list the data scope catalogue — field names, no data. Turn it off if field names must stay private ([why it is on](../../design/data-scopes.md)).
+
 ## 5. Point at the production commons
 
 The registry reaches every shared service by URL. Set these to your production

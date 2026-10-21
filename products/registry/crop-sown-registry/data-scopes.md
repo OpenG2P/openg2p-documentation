@@ -33,7 +33,7 @@ A scope ID is `<data controller>.<scope>`. The data controller is the registry's
 This table is what ships. An install's catalogue, with each scope's fields, is served by its partner API:
 
 * `POST /partner/data_scopes`, signed by a partner onboarded in Partner Management;
-* `GET /partner/data_scopes`, only when **Allow Unsigned Read of Data Scope Catalogue** is on.
+* `GET /partner/data_scopes`, unsigned, while **Allow Unsigned Read of Data Scope Catalogue** is on (the default).
 
 ## Where they are defined
 

@@ -217,7 +217,7 @@ Management holds for that partner.
 | `POST /partner/activity/append_activities` | `{header, message}` | yes |
 | `POST /partner/activity/correct_activities` | `{header, message}` | yes |
 | `POST /partner/data_scopes` | `{header, message}` | yes |
-| `GET /partner/data_scopes` | nothing (no body) | **off by default** — use the signed POST |
+| `GET /partner/data_scopes` | nothing (no body) | **on by default in the chart** — the signed POST always works |
 | `GET /ping`, `/docs`, `/openapi.json` | — | open (health and API description) |
 
 One switch, `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (Helm
@@ -225,10 +225,11 @@ One switch, `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (Helm
 Turn it off only for testing: unsigned messages are then accepted, a warning is
 logged and the audit actor is recorded as unverified.
 
-`GET /partner/data_scopes` is the one unsigned read. It is disabled unless
-`REGISTRY_PARTNER_API_DATA_SCOPES_PUBLIC_GET_ENABLED=true` (Helm
-`global.partnerDataScopesPublicGetEnabled`); when disabled it answers HTTP 403 and
-points to the signed `POST /partner/data_scopes`.
+`GET /partner/data_scopes` is the one unsigned read, enabled by
+`REGISTRY_PARTNER_API_DATA_SCOPES_PUBLIC_GET_ENABLED` (Helm
+`global.partnerDataScopesPublicGetEnabled`, **on** in the chart; the service's own
+default is off). When disabled it answers HTTP 403 and points to the signed
+`POST /partner/data_scopes`. Why it is on: [data scopes](data-scopes.md).
 
 ### How the signature is checked
 
@@ -266,7 +267,7 @@ Settings (env prefix `REGISTRY_PARTNER_API_`):
 | `PARTNER_MGMT_API_URL` | PM partner-api, e.g. `http://commons-services-pm-partner-api` — **required** when the backend is `partner-mgmt` |
 | `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` (widened from fastapi-common's RS256-only) |
 | `SIGNATURE_VALIDATION_ENABLED` | gates the check on every partner call; **on** by default — testing only when off |
-| `DATA_SCOPES_PUBLIC_GET_ENABLED` | allows the unsigned `GET /partner/data_scopes`; **off** by default |
+| `DATA_SCOPES_PUBLIC_GET_ENABLED` | allows the unsigned `GET /partner/data_scopes`; off in the service, **on** in the chart |
 
 See [Integration — consuming partner keys](../../../../platform/platform-services/partner-management/integration.md)
 for the fetch/caching contract.

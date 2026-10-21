@@ -214,7 +214,7 @@ Optionally, PM is told where the choices for a policy come from
 * a **use_cases** source per exchange: its published use cases
   (`GET /composite/v1/use-cases` on the Composite).
 
-PM reads each source server to server (an unsigned GET; PM has no signing key),
+PM reads each source server to server (an unsigned GET, which registries allow by default; PM has no signing key),
 caches it (`catalogue_cache_ttl`, default 300 s) and serves them to the staff
 portal (`GET /catalogue`). Retired scopes are not offered.
 

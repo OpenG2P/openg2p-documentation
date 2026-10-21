@@ -91,6 +91,7 @@ registry:
 
 * Keep **Load Sample Data** and **Load sample crop seasons** off, and **Sanity - Run Full E2E** off.
 * Keep **Verify Partner Signature** and **Enforce Consent** on.
+* **Allow Unsigned Read of Data Scope Catalogue** is on by default: anyone who can reach the partner API can list the scopes (field names, no data). Turn it off to keep them private; Partner Management then takes scopes as free text.
 * Replace the demo cluster approvers (see [Customisation](../customisation.md#clusters)).
 
 {% hint style="danger" %}
