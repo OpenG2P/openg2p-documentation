@@ -85,9 +85,9 @@ A compact JWS signed with the CM's **existing receipt-signing key** — the same
 algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27560), published at
 `/.well-known/jwks.json` on the partner API.
 
-**Header:** `{"alg": "<EdDSA|ES256|RS256>", "kid": "<CM kid>", "typ": "consent-receipt+jwt"}`
+**Header:** `{"alg": "<EdDSA|ES256|RS256>", "kid": "<CM kid>", "typ": "consent-token+jwt"}`
 
-`typ` marks the JWS as a consent token, so a CM never mistakes it for a partner-signed consent. The value is OpenG2P's own (explicit typing, as RFC 8725 §3.11 recommends), not a registered media type; its name dates from when these tokens were called consent receipts.
+`typ` marks the JWS as a consent token, so a CM never mistakes it for a partner-signed consent. The value is OpenG2P's own (explicit typing, as RFC 8725 §3.11 recommends), not a registered media type. A CM also still recognises the earlier value `consent-receipt+jwt` (from when these tokens were called consent receipts), so the Exchange and the departments can be upgraded one at a time.
 
 | Claim | Meaning |
 | --- | --- |
@@ -142,7 +142,7 @@ partner API (no Keycloak; the jti is an unguessable UUID and the answer is only 
 
 ## Department role: accepting
 
-When `/validate` receives a JWS whose header `typ` is `consent-receipt+jwt`:
+When `/validate` receives a JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`):
 
 1. **Issuer** — `iss` must be in `trusted_receipt_issuers`; otherwise deny
    `receipt_issuer_not_trusted` (also when no issuers are configured — a consent token is never

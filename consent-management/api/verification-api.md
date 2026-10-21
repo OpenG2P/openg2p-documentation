@@ -47,7 +47,7 @@ against the partner's Partner-Management key referenced by `kid`.
 | `request_context.purpose` | no | Use-case mode: the purpose the use case serves; the consent's `purpose.code` must equal it, else `purpose_not_allowed` |
 | `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
-`consent_jws` may also be a **consent token** (header `typ: consent-receipt+jwt`) from an Exchange
+`consent_jws` may also be a **consent token** (header `typ: consent-token+jwt`; the earlier `consent-receipt+jwt` is still recognised) from an Exchange
 CM. It is accepted only when its issuer is configured as trusted on this CM (department role); then
 `data_controller` must be the token's `aud` and `partner_id` its `presenter`. See
 [Department role: accepting](../design/exchange-receipts.md#department-role-accepting).

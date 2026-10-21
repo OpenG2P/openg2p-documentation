@@ -29,7 +29,7 @@ A registry never decides which kind of consent a caller uses: it passes whatever
 
 | The request carries | Treated as | Accepted when |
 | --- | --- | --- |
-| A JWS whose header `typ` is `consent-receipt+jwt` | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md)) | This CM's Exchange Role is `department`, the token's issuer is its trusted Exchange CM, and the token's `presenter` is the caller and the configured trusted presenter (the Composite) |
+| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md)) | This CM's Exchange Role is `department`, the token's issuer is its trusted Exchange CM, and the token's `presenter` is the caller and the configured trusted presenter (the Composite) |
 | `consent_id` | A consent this CM holds, named by ID | The consent is the caller's, active and valid |
 | No consent | A **lookup** of a consent this CM holds ([below](#consent-by-lookup-at-a-registry); [use-case mode](#use-case-mode) at an Exchange) | This CM holds an active consent of that partner for that subject and registry (or use case) |
 | Any other JWS | A **partner-signed consent** | The partner's policy has `allow_partner_consents` |
