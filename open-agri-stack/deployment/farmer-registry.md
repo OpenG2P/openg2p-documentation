@@ -21,7 +21,7 @@ Install the Farmer Registry by its own guide: [Farmer Registry → Deployment](.
 
 ## After install
 
-Run the [Exchange setup](after-install.md#exchange-setup) with `--registry farmer-registry=trial`, once the Composite is installed. It registers the Composite in this namespace's Partner Management and gives it a binding and standing policy in this CM ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). If this CM does not trust the Exchange's consent tokens, it stops and names the form field.
+Run the [Exchange setup](after-install.md#exchange-setup) with `--registry farmer-registry=trial`, once the Composite is installed. It registers the Composite in this namespace's Partner Management with its key and its scope policy for this registry, the ceiling of what this department releases through the Exchange ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). If this CM does not trust the Exchange's consent tokens, it stops and names the form field.
 
 ## Check
 

@@ -1,22 +1,21 @@
 ---
 description: >-
-  The trust model, the authN/authZ split with Partner Management, signing and
-  key management (partner keys from PM, CM receipts via .p12/JWKS), the
-  algorithm-confusion guard, replay protection, and the
+  The trust model, what Partner Management and the Consent Manager each
+  answer, signing and key management (partner keys from PM, CM receipts via
+  .p12/JWKS), the algorithm-confusion guard, replay protection, and the threat
+  model.
 ---
 
 # Security & trust
 
 The Consent Manager's value depends entirely on its cryptography and trust boundaries. This page defines them.
 
-## authN vs authZ — who owns what
+## Who owns what
 
-The CM's trust model splits cleanly along two axes, and the split decides where keys live:
+* **Partner Management (PM)** holds partner identity, organisation, lifecycle, the partner's **signing keys** and its **access policies** (the standing agreement: what it may ever ask for). Changes to any of them are approved in PM. "Is this a known party, is this signature genuinely theirs, and what may they ever receive?" is answered with material from PM.
+* **The Consent Manager** holds the **consent** and makes the decision. "Did the subject consent to this, and what is released now?" is answered inside the CM, by applying the PM policy to the consent.
 
-* **Authentication (who the partner is)** is owned by the **Partner Management (PM)** service. PM holds partner identity, organisation, lifecycle, and — crucially — the partner's **signing keys**. "Is this a known party, and is this signature genuinely theirs?" is answered with material from PM.
-* **Authorization (what the partner may receive)** is owned by the **Consent Manager**. CM holds the **data-share policy** and the consent decision. "Given a genuine partner, what fields may they get for this purpose?" is answered entirely inside CM.
-
-The CM is a **verifier / PDP, not a PM partner** — it is _not_ onboarded as a partner in PM. It does not store partner public keys, and it does not poll a partner `jwks_url`; both mechanisms have been removed. Instead the CM **fetches partner keys from PM on demand** and caches them per pod (see [Partner Management Integration](partner-management-integration.md)).
+The CM is a **verifier / PDP, not a PM partner** — it is _not_ onboarded as a partner in PM. It stores no partner keys or policies and does not poll a partner `jwks_url`; it **reads keys and policies from PM on demand** and caches them per pod (see [Partner Management integration](partner-management-integration.md)).
 
 ## Trust model
 
@@ -47,7 +46,7 @@ The consent object is a **compact JWS** (RFC 7515) — `base64url(header).base64
 Verification runs through the shared **openg2p-fastapi-common `CryptoHelper`** (`build_crypto_helper`, `partner-mgmt` backend). To verify, the CM:
 
 1. recovers the claims from the JWS payload (unverified) to identify the partner by `aud` and read the requested scopes/validity,
-2. reads `kid` + `alg` from the JWS protected header and fetches the matching partner key from PM (`GET {pm}/keys/{reference_id}` — reference `PARTNER_<sender_id>` / the partner's `partner_mgmt_id` — served from the per-pod cache),
+2. reads `kid` + `alg` from the JWS protected header and fetches the matching partner key from PM (`GET {pm}/keys/PARTNER_<AUD>/…` — the partner ID follows from `aud` by [convention](partner-management-integration.md#partner-id-convention) — served from the per-pod cache),
 3. enforces **algorithm safety** — `alg` must be in the allowed set and must match a key PM registered under that `kid` (prevents alg-confusion / downgrade), and additionally `alg` must be permitted by the partner's policy (`allowed_signing_algs`),
 4. verifies the JWS signature against the PM-supplied public key.
 
@@ -80,7 +79,7 @@ When an ID token arrives, the CM:
 The partner-facing PDP API does **not** use Keycloak. Different endpoint classes are protected differently:
 
 * **`/validate` and status (the PDP API)** — **no Keycloak.** Trust is the **partner-signed consent object**, verified locally against the partner key fetched from PM, and replay-guarded by `jti` plus the freshness window. There is no bearer token on this path; the signature _is_ the application-layer proof of a known party. The Registry ↔ CM channel itself is secured at the **transport level** — **Istio mTLS** and/or Kubernetes network policy — so only the registry can reach `/validate`.
-* **Partner/policy admin APIs** — require the `CONSENT_MANAGER_ADMIN` role (configurable), validated against the realm JWKS. Admin endpoints carry **no** consent object, so the signature mechanism does not protect them — role-based auth is essential here. Note these bind _policy_; partner identity and keys are administered in **PM**, not CM.
+* **Staff APIs** — the decision log requires the `CONSENT_MANAGER_ADMIN` role and verifying assisted consents the `CONSENT_MANAGER_APPROVER` role (both configurable), validated against the realm JWKS. They carry **no** consent object, so the signature mechanism does not protect them — role-based auth is essential here. Partners, keys and policies are administered in **PM** (role `partner_manager`), not in the CM.
 * **Subject APIs (`/my/*`)** — require a subject bearer token; every query is scoped to the token's identity, so a subject can only ever see their own consents.
 * **Public** — receipt fetch and `/.well-known/jwks.json` are unauthenticated (signatures make them self-verifying).
 
@@ -97,8 +96,8 @@ The partner-facing PDP API does **not** use Keycloak. Different endpoint classes
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Forged consent from an unknown party      | Signature must verify against a partner key fetched from PM; PM `404` (unknown/disabled/no active key) fails closed (`unknown_partner` / `signature_invalid`) |
 | Algorithm-confusion / alg downgrade       | Declared `signature.algorithm` must equal the algorithm PM reports for that key, else reject                                                                  |
-| PM outage during a decision               | Per-pod cache serves last-known-good within the hard TTL; beyond it the CM fails closed                                                                       |
-| Partner over-asking beyond its contract   | Policy intersection caps scope (`scope_exceeds_policy`)                                                                                                       |
+| PM outage during a decision               | Per-pod cache serves the last keys and policies PM gave within the hard TTL; beyond it the CM fails closed (`policy_unavailable`)                              |
+| Partner over-asking beyond its contract   | Policy intersection caps scope (`scope_exceeds_policy`); at an Exchange, only granted use cases (`use_case_not_granted`)                                      |
 | Replaying a captured consent object       | `jti` + freshness window (`replay`)                                                                                                                           |
 | Using consent meant for another recipient | Audience check (`audience_mismatch`)                                                                                                                          |
 | Using one registry's grant at another     | Grant selected by the calling registry's `data_controller`; policy per (partner, controller) (`controller_not_granted`, `unknown_partner`)                    |

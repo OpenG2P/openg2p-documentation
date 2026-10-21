@@ -4,7 +4,7 @@ description: Consent data scopes — named groups of a registry's own fields, in
 
 # Data Scopes
 
-A **data scope** is what a consent, and a Consent Manager (CM) policy, names when it says which data a partner may receive from a registry. In the OpenG2P Registry a scope is a **named group of the registry's own fields** — not a key of a DCI record or of any other output format. The registry keeps a **scope catalogue** that maps each scope ID to its fields, version by version, and filters every record to the consented fields **before** rendering it in any output format.
+A **data scope** is what a consent, and a partner's access policy in Partner Management (PM), names when it says which data a partner may receive from a registry. In the OpenG2P Registry a scope is a **named group of the registry's own fields** — not a key of a DCI record or of any other output format. The registry keeps a **scope catalogue** that maps each scope ID to its fields, version by version, and filters every record to the consented fields **before** rendering it in any output format.
 
 So:
 
@@ -16,7 +16,7 @@ So:
 
 A scope ID is `<consent_data_controller>.<name>`, for example `farmer-registry.land` or `crop-sown-registry.crop_season`.
 
-* `<consent_data_controller>` is the registry's data-controller ID in the Consent Manager: setting `consent_data_controller`, Helm value `global.consentDataController`, which defaults to the registry variant (`global.registryVariant`).
+* `<consent_data_controller>` is the registry's data-controller ID, named in consent grants and in partners' PM scope policies: setting `consent_data_controller`, Helm value `global.consentDataController`, which defaults to the registry variant (`global.registryVariant`).
 * `<name>` is letters, digits, `_` and `-`.
 
 A scope ID is **permanent**: it is never renamed and never reused for something else. Its label and description may change. A registry ignores scope IDs from another controller's namespace and scope IDs it does not know: they grant nothing (fail closed).
@@ -109,7 +109,7 @@ A section scope follows its section: when a section's widgets change, the scope 
 The catalogue holds field references, never values.
 
 * **Partner API:** `POST /partner/data_scopes` with a signed partner envelope (`header`, `message`, `signature`, checked like every other partner call). The unsigned `GET /partner/data_scopes` is **off by default** (HTTP 403 pointing to the POST); an operator who wants to publish the catalogue openly turns it on with `REGISTRY_PARTNER_API_DATA_SCOPES_PUBLIC_GET_ENABLED=true` (Helm `global.partnerDataScopesPublicGetEnabled`).
-* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI and, later, for choosing scopes when writing a CM policy.
+* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI and, later, for choosing scopes when writing a partner's PM policy.
 
 ```json
 {
@@ -141,7 +141,7 @@ The catalogue holds field references, never values.
 ## Who uses scope IDs
 
 * **Partners** ask for consent with `grants: [{data_controller, data_scopes}]`, where `data_scopes` are this registry's scope IDs. See the [Consent Manager partner integration guide](../../../../consent-management/partner-integration-guide.md).
-* **Registry administrators** set a partner's CM policy `allowed_data_scopes` to scope IDs from the catalogue. See [Partner onboarding and policy](../../../../consent-management/design/partner-onboarding-and-policy.md).
-* **CM** treats scopes as opaque strings (`effective = grant ∩ policy`); it needs no change when a registry changes its catalogue.
+* **Registry administrators** set `allowed_data_scopes` of a partner's scope policy for this registry in Partner Management to scope IDs from the catalogue, through a PM onboarding or policy request. See [Partner Management: access policies](../../../../platform/platform-services/partner-management/functional-specifications.md#access-policies).
+* **CM** reads the partner's policy from PM and treats scopes as opaque strings (`effective = grant ∩ policy`); it needs no change when a registry changes its catalogue.
 
 See also [Consent-aware data sharing](../features/consent-aware-data-sharing.md) and [Partner APIs](partner-apis.md).

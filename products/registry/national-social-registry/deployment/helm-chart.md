@@ -92,7 +92,7 @@ in **`questions.own.yaml`** and CI appends them verbatim to the generated file.
 
 ## Consent Manager and Partner Management
 
-The **partner-api** is the policy-enforcement point for DCI requests and depends on two commons-services components: **Partner Management** (source of partner public keys, used to verify the DCI envelope signature) and **Consent Manager** (the decision point — the partner-api calls `/validate` and clamps the response to the consented scopes).
+The **partner-api** is the policy-enforcement point for DCI requests and depends on two commons-services components: **Partner Management** (source of partner public keys, used to verify the DCI envelope signature, and of partners' access policies) and **Consent Manager** (the decision point — the partner-api calls `/validate`, the CM checks the consent against the partner's access policy read from Partner Management, and the partner-api clamps the response to the effective scopes).
 
 | Parameter | Default | Purpose |
 |---|---|---|
@@ -100,7 +100,7 @@ The **partner-api** is the policy-enforcement point for DCI requests and depends
 | `global.consentEnforcementEnabled` | `true` | Call CM `/validate` and clamp fields to the consented scopes |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Partner key lookup |
 | `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | The `/validate` endpoint |
-| `global.consentDataController` | the registry variant (`global.registryVariant`) | This registry's data-controller ID in CM, sent as `data_controller` on every `/validate`. Must match the `controller_id` partners are bound to in CM |
+| `global.consentDataController` | the registry variant (`global.registryVariant`) | This registry's data-controller ID, sent as `data_controller` on every `/validate`. Must match the `data_controller` of partners' scope policies in Partner Management |
 
 {% hint style="warning" %}
 **Both switches default to `true` — the chart fails closed.** Turning either off opens real PII egress: with signature validation off the `signature` field is required but never inspected, and with consent enforcement off records are returned **unclamped**. Either bypass is stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.

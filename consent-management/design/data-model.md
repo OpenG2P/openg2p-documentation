@@ -9,7 +9,10 @@ description: >-
 
 The Consent Manager keeps two kinds of structures:
 
-* **Stored entities** — relational records it owns (partners, policies, artefacts, receipts, logs).
+* **Stored entities** — relational records it owns (consent requests, artefacts, receipts, logs).
+  Partners and their access policies are not stored here: they live in Partner Management, and
+  records name the partner by its **audience** (e.g. `bank-a`) with the `policy_version` applied
+  ([Partner Management integration](partner-management-integration.md)).
 * **Exchanged documents** — JSON-LD documents passed in/out (the consent object a partner embeds,
   the ID token from the IdP, and the artefact + receipt the CM issues).
 
@@ -20,67 +23,12 @@ timestamps are never overwritten, and the decision log is immutable.
 
 ```mermaid
 erDiagram
-  PARTNER ||--o{ PARTNER_POLICY : "has (versioned)"
-  PARTNER ||--o{ CONSENT_ARTEFACT : "is audience of"
   CONSENT_REQUEST ||--o| AUTH_CONTEXT : "bound by (origination)"
   CONSENT_REQUEST ||--o| CONSENT_ARTEFACT : produces
   CONSENT_ARTEFACT ||--|| CONSENT_RECEIPT : "proven by"
   CONSENT_ARTEFACT ||--o{ REVOCATION_RECORD : "may be revoked by"
   CONSENT_ARTEFACT ||--o{ DECISION_LOG : "evaluated in"
 ```
-
-### Partner (policy binding)
-
-Partner **identity and signing keys live in the Partner Management (PM) service**, not in the CM.
-The CM's `Partner` record is a **thin policy binding** — it maps a PM partner to a CM authorization
-context and carries nothing more. There is **no local `PartnerKey` table** and the CM does **not**
-poll a `jwks_url`; at verification time the CM fetches the partner's public key (PEM) from PM by
-`partner_mgmt_id` + the object's `kid`. See
-[Partner Management Integration](partner-management-integration.md).
-
-A partner (`audience`) can be bound to **several controllers**: one row per
-(`audience`, `controller_id`), unique on that pair, each with its own policy. All bindings of one
-audience share the same `partner_mgmt_id`.
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| partner_id | UUID | Primary key (the CM-local binding id) |
-| partner_mgmt_id | str | Reference to the partner in PM; inherited from the audience's other bindings, else falls back to `audience`. Changing it updates every binding of the audience |
-| name | str | Optional display name, for the admin UI only |
-| status | enum | `active`, `suspended` — whether this binding is active in the CM (per binding) |
-| audience | str | The `aud` value the partner's consent objects must carry (not unique on its own) |
-| controller_id | str | The data controller (registry) this binding is for; unique per audience |
-| created_at / updated_at | datetime | |
-
-### PartnerPolicy
-
-The data-share contract a partner was onboarded under. **Consent can never grant more than the
-policy.** Versioned; every decision records the version used, and the hot path only evaluates the
-`active` version. A **widening** change sits `pending` until approved via the
-[Approval Workflow Engine](approval-workflow-integration.md), then becomes `active` and supersedes
-the prior version; a rejected/cancelled request marks the new version `rejected` and the prior
-active version stays in force. At most one version per binding is `pending`; an approval that
-arrives after the active version changed ends `stale` (not applied), and a failed submission ends
-`failed` — see the [state machine](approval-workflow-integration.md#policy-version-state-machine).
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| policy_id | UUID | Primary key |
-| partner_id | UUID | FK → Partner (the binding), so a policy is per (audience, controller) |
-| version | int | Monotonic; the active version is evaluated |
-| allowed_data_scopes | list[str] | Fields/registers the partner may ever receive |
-| allowed_purposes | list[str] | Purpose codes the partner may assert |
-| allowed_subject_id_types | list[str] | e.g. `national_id`, `farmer_id` |
-| allowed_signing_algs | list[str] | Acceptable JWS algorithms |
-| max_validity_duration | duration | ISO-8601 upper bound on consent validity (e.g. `P1Y`) |
-| fetch_type | enum | `oneshot`, `periodic` (DEPA-style) |
-| max_fetch_frequency | duration | For `periodic` — minimum interval between fetches |
-| data_life | duration | How long the partner may retain data after fetch |
-| status | enum | `pending`, `active`, `superseded`, `rejected`, `failed`, `stale` (at most one `pending` per binding) |
-| awe_request_id | str | The AWE request id for the approval of a widening change (null for narrowing / AWE-disabled) |
-| base_version | int | Version that was active when this one was created (`0` = none); an approval applies only if it is still the active one |
-| status_reason | text | Why the version ended `failed` / `stale` / `rejected` |
-| effective_from | datetime | |
 
 ### ConsentArtefact (CM-issued, canonical)
 
@@ -97,17 +45,17 @@ carried grants, the approved grants are stored on it.
 | consent_id | UUID | Primary key |
 | subject_id_type / subject_id_value | str | The data subject |
 | controller_id | str | Data controller (registry). Null for an originated consent with several approved grants |
-| partner_id | UUID | Audience / data recipient |
+| partner_id | str | The partner the consent was given to: its audience (e.g. `bank-a`) |
 | purpose | json | `{code, text}` |
 | data_scopes | list[str] | Consented fields for this controller's grant (pre-policy-intersection) |
 | effective_data_scopes | list[str] | `data_scopes ∩ policy.allowed_data_scopes` at issue time |
-| grants | json | Originated consents only: `[{data_controller, data_scopes, granted_scopes, effective_data_scopes, partner_binding_id, policy_version}]` |
+| grants | json | Originated consents only: `[{data_controller, data_scopes, granted_scopes, effective_data_scopes, policy_version}]` |
 | object_jti | str | The embedded consent's `jti`; unique together with `controller_id` |
 | valid_from / valid_until | datetime | |
 | fetch_type | enum | `oneshot`, `periodic` |
 | auth_context_id | UUID | FK → AuthContext (origination) or `null` (embedded, partner-attested) |
 | source | enum | `embedded` (partner-signed) or `originated` (CM-collected) |
-| policy_version | int | Policy version evaluated at issue |
+| policy_version | int | Version of the partner's policy in Partner Management evaluated at issue |
 | status | enum | `active`, `revoked`, `expired` |
 | created_at / revoked_at / expired_at | datetime | Append-only |
 
@@ -148,9 +96,9 @@ without PM. (The CM is **not** a PM partner.) See the JSON below.
 
 | Entity | Key fields |
 | --- | --- |
-| **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id, requested_scopes (union), grants (`[{data_controller, data_scopes, partner_binding_id}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
+| **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
 | **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, created_at |
-| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id, object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, receipt_jti / receipt_issuer (decisions on an Exchange consent token; null otherwise), evaluated_at |
+| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id (the partner's audience, when known), object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, receipt_jti / receipt_issuer (decisions on an Exchange consent token; null otherwise), evaluated_at |
 | **IssuedReceipt** (exchange role) | A consent token issued: jti, consent_id (the artefact it was issued from), data_controller, presenter, partner, expires_at — see [Exchange consent tokens](exchange-receipts.md) |
 
 ---
@@ -182,7 +130,7 @@ Received from the identity provider after subject authentication (origination fl
 The **partner signs this as a compact JWS** (RFC 7515) and embeds it in the registry request. The
 claims below are the **JWS payload**; the JWS protected header carries `alg` + `kid`. The CM
 recovers the claims from the payload and verifies the signature using the partner's public key
-**fetched from Partner Management** by `partner_mgmt_id` + the JWS `kid` (see
+**fetched from Partner Management** (partner ID `PARTNER_<AUD>`) by the JWS `kid` (see
 [Partner Management Integration](partner-management-integration.md)). `jti` + `issued_at` give
 replay protection.
 
@@ -197,8 +145,7 @@ treated as one grant; a consent may not mix the two.
   "@type": "ConsentObject",
   "jti": "b2f1...-unique-per-object",
   "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "partner_system": "PARTNER_SYSTEM_A",
-  "aud": "PARTNER_SYSTEM_A",
+  "aud": "bank-a",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
   "grants": [
     { "data_controller": "farmer-registry",
@@ -247,7 +194,7 @@ The CM's canonical decision document. Stored, and checked before any data is rel
   "consent_id": "CONSENT-123456",
   "subject_id": "FARMER_1234",
   "data_controller": "farmer-registry",
-  "partner_system": "PARTNER_SYSTEM_A",
+  "partner_id": "bank-a",
   "source": "embedded",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
   "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"],
@@ -291,7 +238,7 @@ cryptographic proof and a human-readable consent record for the subject, audit, 
   ],
   "data_categories": ["farmer_profile.basic", "farmer_profile.crops"],
   "sensitive": false,
-  "third_parties": ["PARTNER_SYSTEM_A"],
+  "third_parties": ["bank-a"],
   "withdrawal": { "method": "POST /consent/v1/consents/CONSENT-123456/revoke" },
   "consent_artefact": { "@id": "CONSENT-123456", "hash": "sha256:7b0a933e7cd398a..." },
   "signature": {

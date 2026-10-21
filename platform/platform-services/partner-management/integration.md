@@ -1,14 +1,16 @@
 ---
 description: >-
-  Handover note for a new OpenG2P service that needs to verify partner signatures
-  — how to consume partner public keys from Partner Management (PM).
+  Handover note for an OpenG2P service that needs to verify partner signatures or
+  check what a partner may ask for — how to consume partner public keys and access
+  policies from Partner Management (PM).
 ---
 
-# Integration — consuming partner keys
+# Integration — consuming partner keys and policies
 
-**TL;DR:** Don't store or seed partner keys in your service. Fetch them from PM's
-**partner-api** and cache them. If you're built on `openg2p-fastapi-common`, this
-is **config only** — no code.
+**TL;DR:** Don't store or seed partner keys or access policies in your service.
+Fetch them from PM's **partner-api** and cache them. For keys, if you're built on
+`openg2p-fastapi-common`, this is **config only** — no code. Policies are read
+over the same API with the same caching discipline (§6).
 
 ## 1. Decide your path
 
@@ -61,18 +63,59 @@ inbound request to identify the partner **must equal that `partner_id`.**
 
 - Commons partner-auth path derives `PARTNER_<MNEMONIC>` (from the JWS
   `sender_app_mnemonic`) → **onboard the partner in PM with `partner_id = PARTNER_<MNEMONIC>`.**
-- If you key on something else (e.g. an `audience`), onboard the partner in PM
-  under that value (or request a PM alias).
+- A service that identifies the partner by its audience / DCI `sender_id` maps
+  it by the platform convention: upper-case, `-` → `_`, prefix `PARTNER_`
+  (`bank-a` → `PARTNER_BANK_A`). Keys and policies are both looked up under that
+  ID; there is no per-partner override. See
+  [Partner ID convention](functional-specifications.md#partner-id-convention).
 
-## 6. Onboarding & ops checklist
+## 6. Consuming access policies
 
-- [ ] Partner is **onboarded in PM and `active`** (an admin approves it) with its public key(s). Until then, fetch returns `404` and you reject — by design.
+What a partner may ask for is an **access policy** in PM — a scope policy per
+registry data controller, or a use-case policy for an Exchange (model and
+lifecycle: [Access policies](functional-specifications.md#access-policies)).
+Policies change only through approved PM requests; your service never stores or
+edits them.
+
+Read them from the partner-api ([API](api-reference.md)):
+
+```
+GET {PM_PARTNER_API_URL}/policies/{partner_id}?data_controller=<controller>  -> that registry's scope policy
+GET {PM_PARTNER_API_URL}/policies/{partner_id}?data_controller=              -> the use-case policy
+GET {PM_PARTNER_API_URL}/policies?use_case=<name@major>                      -> listing (who is granted a use case)
+```
+
+Apply the §4 discipline, per (partner, data controller):
+
+- **Soft TTL** — honour `Cache-Control: max-age` (PM default 60 s, shorter than
+  keys so a narrowed or revoked policy takes effect quickly).
+- **Hard TTL** — while PM is unreachable, keep using the last answer up to a
+  bounded age (hours), then deny.
+- **Negative TTL** — remember a `404` briefly (seconds), and wait as long before
+  retrying after a failure.
+- **Single-flight** — one fetch per key at a time; a short fetch timeout.
+- **Fail closed** — `404` (`PM-POLICY-404`) means no policy: deny. PM down with
+  nothing usable cached: deny with a retryable error.
+
+Current consumers and where their settings are documented:
+
+| Consumer | Reads | Settings |
+| --- | --- | --- |
+| Consent Manager | The consenting partner's scope policy for the registry's data controller; in an Exchange, the partner's use-case policy | [Consent Manager deployment](../../../consent-management/deployment/README.md) |
+| Composite (Exchange) | The calling partner's use-case policy (is `name@major` granted?); listings for its console | [Composite deployment](../../../open-agri-stack/deployment/composite.md) |
+
+How the Consent Manager evaluates a policy:
+[Verification and enforcement](../../../consent-management/design/verification-and-enforcement.md).
+
+## 7. Onboarding & ops checklist
+
+- [ ] Partner is **onboarded in PM and `active`** (an admin approves it) with its public key(s) and the policies it needs. Until then, fetch returns `404` and you reject — by design.
 - [ ] `partner_id` in PM matches your lookup key (§5).
 - [ ] Your namespace can reach `partner-management-partner-api` (in-cluster Service DNS / internal gateway).
-- [ ] You do **not** ship partner keys in your own Helm values or DB.
-- [ ] Key rotation is a PM operation (admin adds a new key, revokes the old); you get it automatically via cache refresh / unknown-kid.
+- [ ] You do **not** ship partner keys or policies in your own Helm values or DB.
+- [ ] Key rotation and policy changes are PM operations (approved requests); you get them automatically via cache refresh / unknown-kid.
 
 ## What not to do
-- ❌ Don't call `/keys` on every verification — always cache.
-- ❌ Don't put PM's admin/staff APIs in your path — you only need the public `/keys` fetch.
-- ❌ Don't manage partners or keys inside your own service.
+- ❌ Don't call `/keys` or `/policies` on every request — always cache.
+- ❌ Don't put PM's admin/staff APIs in your path — you only need the internal `/keys` and `/policies` fetch.
+- ❌ Don't manage partners, keys or policies inside your own service.

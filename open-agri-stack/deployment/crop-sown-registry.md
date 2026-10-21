@@ -21,7 +21,7 @@ Install the Crop Sown Registry by its own guide: [Crop Sown Registry → Deploym
 
 ## After install
 
-Run the [Exchange setup](after-install.md#exchange-setup) with `--registry crop-sown-registry=dept1`, once the Composite is installed. It registers the Composite in this namespace's Partner Management and gives it a binding and standing policy in this CM ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). The script reaches only namespaces in the Exchange's cluster; on a separate cluster, do it by hand: [Separate Clusters](separate-clusters.md#the-composite-in-a-department-on-another-cluster).
+Run the [Exchange setup](after-install.md#exchange-setup) with `--registry crop-sown-registry=dept1`, once the Composite is installed. It registers the Composite in this namespace's Partner Management with its key and its scope policy for this registry, the ceiling of what this department releases through the Exchange ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). The script reaches only namespaces in the Exchange's cluster; on a separate cluster, do it by hand: [Separate Clusters](separate-clusters.md#the-composite-in-a-department-on-another-cluster).
 
 ## Check
 

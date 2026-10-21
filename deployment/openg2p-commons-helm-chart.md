@@ -65,7 +65,7 @@ Installs application services:
 | **Artifactory**           | Artifact repository                                                                |
 | **OpenG2P IAM Service**   | Identity and access management API                                                 |
 | **OpenG2P Audit Manager** | Centralized audit event collector (Kafka-backed, stores audit trail in PostgreSQL) |
-| **Partner Management**    | Central registry of partner public keys — onboarding, approval & key rotation, plus the unauthenticated key-fetch API other modules use (deployed as `commons-services-pm-*`) |
+| **Partner Management**    | Central registry of partners, their public keys and their access policies — onboarding, key and policy changes approved here, key rotation, plus the unauthenticated internal key and policy fetch API other modules use (deployed as `commons-services-pm-*`) |
 
 ## Configuration & behaviour
 

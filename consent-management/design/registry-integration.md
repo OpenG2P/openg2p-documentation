@@ -76,7 +76,8 @@ the `aud` claim plus `data_controller`; `partner_id` is sent for traceability on
 **`data_controller` is this registry's controller ID in CM** (config
 `consent_data_controller`; in the chart `global.consentDataController`, defaulting to the registry
 variant, e.g. `farmer-registry`, `crop-sown-registry`). A consent can cover several registries with
-one grant each; CM uses only this registry's grant and this registry's binding policy. If the value
+one grant each; CM uses only this registry's grant and the partner's policy for this registry.
+It is also the `data_controller` of partners' scope policies for this registry in Partner Management. If the value
 is empty the field is not sent, which works only for single-registry consents.
 
 {% hint style="warning" %}
@@ -136,11 +137,10 @@ adding, renaming or regrouping fields never needs a CM change.
 | Scope vocabulary and scope → field mapping | **Registry (PEP)** | the data scope catalogue: default section scopes plus the extension's `meta_data/data-scopes/*.json`, versioned in the registry database |
 | Publishing the catalogue (discovery) | **Registry (PEP)** | `POST /partner/data_scopes` (partners, signed; the unsigned `GET` is off by default), `GET /data_scopes` (staff API) |
 | Set-math authorization (`⊆`, `∩`) | **Consent Manager** | opaque strings — no catalogue |
-| Knowing which scopes to request / grant | **Partner + CM policy admin** | read the registry's published catalogue |
+| Knowing which scopes to request / grant | **Partner + Partner Management staff** (who set the partner's policy) | read the registry's published catalogue |
 
-The only shared contract is the scope IDs: CM policies and consents use the registry's IDs as they
-are. CM's admin UI may later fetch a registry's catalogue to offer a scope picker, but never
-hardcodes it. Design and rules: [Data Scopes](../../products/registry/registry/design/data-scopes.md).
+The only shared contract is the scope IDs: partner policies (in Partner Management) and consents
+use the registry's IDs as they are, and no catalogue is hardcoded elsewhere. Design and rules: [Data Scopes](../../products/registry/registry/design/data-scopes.md).
 
 ## Two kill-switches (testing)
 
@@ -183,13 +183,13 @@ In the Farmer Registry Helm chart these map to `global.registryCryptoBackend`,
 3. Registry verifies the envelope signature via PM keys (if `signature_validation_enabled`).
 4. Registry POSTs each item's `consent_jws` with its own `data_controller` to CM
    `/validate` (if `consent_enforcement_enabled`); CM selects this registry's grant, verifies,
-   evaluates this registry's binding policy, and returns `effective_data_scopes` and the
+   applies the partner's policy for this registry (from Partner Management), and returns `effective_data_scopes` and the
    consent's `subject_id`.
 5. Registry fetches records, checks they belong to the consent's subject, and **filters** each to
    the effective scopes' fields before rendering it.
 6. Registry returns the DCI response, signed and stamped with the enforcement posture.
 
-> **Note — farmer consent is never a government approval.** The AWE approval workflow
-> gates only partner onboarding and policy widening (see
-> [Approval Workflow integration](approval-workflow-integration.md)); it is never in the
+> **Note — farmer consent is never a government approval.** Staff approval in Partner Management
+> covers only partner onboarding, keys and access policies (see
+> [Partner Management integration](partner-management-integration.md)); it is never in the
 > path of a beneficiary's data-share consent or of `/validate`.

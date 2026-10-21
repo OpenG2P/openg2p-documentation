@@ -12,7 +12,7 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 * **One consent covers every registry the partner needs.** The bank asks once, for the data its use case needs; inside, the consent holds a **grant per registry** (Farmer Registry, Crop Sown Registry, …). The bank never deals with which registry holds what.
 * **The Exchange's Consent Manager (CM) collects and keeps it,** not the bank. The farmer confirms it there and proves who they are with the national ID.
-* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against its own policy ([request flow](request-flow.md)) Why a token rather than passing the consent on: [why a consent token](../../consent-management/design/exchange-receipts.md#why-a-consent-token).
+* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the department's ceiling for the Composite ([request flow](request-flow.md)). Why a token rather than passing the consent on: [why a consent token](../../consent-management/design/exchange-receipts.md#why-a-consent-token).
 
 {% hint style="info" %}
 **Consent object, artefact, receipt, token** are four different things; see [key terms](../../consent-management/design/README.md#key-terms). The reasons behind this model (one consent with a grant per registry, each registry validating its own grant, consent tokens across installs) are the Consent Manager's [design decisions](../../consent-management/design/README.md#design-decisions).
@@ -33,15 +33,15 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 ## What is specific to Agri Stack
 
 * **The farmer is identified by the national ID and the Farmer ID.** The consent's subject is the national ID (`FAYDA_FAN` in the reference setup), which the farmer logs in with. Every request must also carry the **Farmer ID** (`requiredSubjectIdentifiers: [FARMER_ID]`, the Exchange role's default). CM staff check it in the **Farmer Registry**, the source of truth for the link between the two, before approving. Demographics shown to them are those of the national-ID login, labelled as such, and never compared automatically ([identifiers and demographics](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
-* **The data asked for comes from a use case.** In the partner portal a request can start from a published use case of the Composite (e.g. `loan-profile@1`): its scopes per registry (required and optional) fill the consent's grants.
+* **The data asked for comes from a use case.** In the Exchange's partner portal a request is made for one of the use cases the partner is granted (e.g. `loan-profile@1`): the use case's purpose and its scopes per registry (required and optional), read from the Composite, are the consent's purpose and grants. The consent can then be used only for that use case ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
 * **The registries are the data controllers.** Each grant names a registry (`farmer-registry`, `crop-sown-registry`) and that registry's data scopes (`<registry>.<scope>`, e.g. `farmer-registry.personal_details`).
-* **One consent, every registry.** The bank queries the Composite with the consent's ID (`message.consent_id`), or with a consent it signed itself (`message.consent_jws`, a `grants` claim with one grant per registry). Either way the Exchange CM turns it into a consent token per registry, limited to **use case ∩ bank's policy ∩ consent** ([data-sharing policies](data-sharing-policies.md)).
+* **One consent, every registry.** The bank queries the Composite with the consent's ID (`message.consent_id`), or with a consent it signed itself (`message.consent_jws`, a `grants` claim with one grant per registry). Either way the Exchange CM turns it into a consent token per registry, limited to **the use case's scopes ∩ consent**, provided the bank's use-case policy in Partner Management grants that use case ([data-sharing policies](data-sharing-policies.md)).
 * **Usage per registry.** One-shot and periodic limits are counted per consent and registry.
 * **The bank keeps a provable copy.** The consent record it downloads (receipt, signed form, the CM's signed statement) is the same in every scenario ([the partner's copy](../../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent)).
 * **Revocation** is of the whole consent; every registry's next consent token is refused.
 
 {% hint style="warning" %}
-**Not built yet:** scenarios 2 and 3; declining individual items or revoking one registry's grant only; presenting a consent held in the CM directly at a registry, without the Composite (path A, [open items](../open-items/README.md)); data-share policies in Partner Management.
+**Not built yet:** scenarios 2 and 3; declining individual items or revoking one registry's grant only; presenting a consent held in the CM directly at a registry, without the Composite (path A, [open items](../open-items/README.md)).
 {% endhint %}
 
 ## Details

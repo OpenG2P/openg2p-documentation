@@ -21,8 +21,8 @@ The installs on these pages already treat each namespace as a separate organisat
 
 What the Exchange setup does in a department, done by that department's administrators:
 
-1. **PM:** onboard and approve `PARTNER_AGRI_COMPOSITE` with the Composite's public key and `kid` (the same as in the Exchange PM; the Exchange setup keeps them in `~/.agri-stack-setup/<ns>/`).
-2. **CM:** a binding with audience `agri-composite` for the registry's controller, and a policy with the data scopes and purposes of the Composite's published use cases for that registry (`GET /composite/v1/use-cases`, `consent_scopes`), subject ID types `FAYDA_FAN`, `FARMER_ID`, maximum validity `P90D`, fetch type `oneshot` ([standing policy for the Composite](../architecture/registries.md#standing-policy-for-the-composite)).
+1. **PM, key:** onboard `PARTNER_AGRI_COMPOSITE` with the Composite's public key and `kid` (the same as in the Exchange PM; the Exchange setup keeps them in `~/.agri-stack-setup/<ns>/`).
+2. **PM, scope policy:** in the same onboarding request (or a policy request, if the Composite is already onboarded), a scope policy for the registry's data controller with the data scopes (required and optional) and purposes of the Composite's published use cases for that registry (`GET /composite/v1/use-cases`, `consent_scopes`), subject ID types `FAYDA_FAN`, `FARMER_ID`, signing algorithm `ES256`, maximum validity `P90D`, fetch type `oneshot`. Approve the request ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies); why: [the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)).
 
 {% hint style="info" %}
 **To be written:** running the Exchange setup against departments on other clusters (a kubectl context per department).

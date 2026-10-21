@@ -51,7 +51,7 @@ CSR partner API (DCI search, nightly) ◄─────────────
 A department-level agreement, not each farmer's consent: the CSR shares these fields with the FR for one purpose (keeping the farmer record), and the FR accepts them only from the CSR.
 
 * **The FR's Partner Management** holds the CSR as a partner (its key). The FR's ingestion accepts only signed events from an active partner.
-* **The CSR's Partner Management and Consent Manager** hold the relay (acting for the FR) as a partner with a policy for the nightly search: these scopes only, this purpose.
+* **The CSR's Partner Management** holds the relay (acting for the FR) as a partner with its key and a scope policy for the nightly search: these scopes only, this purpose. The CSR's Consent Manager reads that policy from there.
 * The Consent Manager has no rule yet for sharing on a standing permission instead of a consent: the [standing permission for a purpose](../open-items/README.md) open item. Until then the nightly search needs that rule, and the trigger path rests on the CSR's outgestion configuration (the topic and its template decide what leaves).
 
 ## What has to be built
@@ -151,7 +151,7 @@ It retries on failure and skips events older than the farmer's last applied `sou
 
 ### Crop Sown Registry: allow the nightly search
 
-The nightly search is a partner's search like any other: in the **CSR's** Partner Management, onboard the relay (acting for the FR, e.g. `PARTNER_FARMER_REGISTRY_SYNC`); in the **CSR's** Consent Manager, a binding and policy for it with only the season summary scopes and the purpose "farmer record maintenance". It rests on the standing permission described in [who allows it](#who-allows-it), not built yet.
+The nightly search is a partner's search like any other: in the **CSR's** Partner Management, onboard the relay (acting for the FR, e.g. `PARTNER_FARMER_REGISTRY_SYNC`) with its key and a scope policy for `crop-sown-registry` with only the season summary scopes and the purpose "farmer record maintenance" ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)). It rests on the standing permission described in [who allows it](#who-allows-it), not built yet.
 
 ### Check
 

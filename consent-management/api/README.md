@@ -12,7 +12,7 @@ endpoint follows; the endpoint pages document the individual contracts.
 | Group | Page | API audience |
 | --- | --- | --- |
 | Verification &amp; enforcement | [Verification API](verification-api.md) | **partner-api** — Registry / PEPs (partner-signed, machine-to-machine) |
-| Partner onboarding &amp; policy | [Partner &amp; Policy API](partner-and-policy-api.md) | **staff-api** — Administrators / controller onboarding |
+| Audit | [Decisions](#staff-endpoints) | **staff-api** — administrators |
 | Consent lifecycle | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary-api** — origination clients (scaffolded/later) |
 | Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary-api** — authenticated subjects (scaffolded/later) |
 
@@ -30,7 +30,7 @@ serve and how they authenticate callers. Authentication therefore differs by aud
 
 | Audience | Endpoints | Auth model |
 | --- | --- | --- |
-| **staff-api** | partner &amp; policy, AWE approver proxy, audit `/decisions` | Keycloak, **staff realm**. Roles `CONSENT_MANAGER_ADMIN` (onboarding/policy) and `CONSENT_MANAGER_APPROVER` (approval decisions), from `realm_access` / `resource_access.*` |
+| **staff-api** | audit `/decisions`, assisted-consent verifications, partner portal API | Keycloak, **staff realm**. Roles `CONSENT_MANAGER_ADMIN` (decisions) and `CONSENT_MANAGER_APPROVER` (verify assisted consents), from `realm_access` / `resource_access.*`. The partner portal API uses the **partner realm** |
 | **partner-api** | `/validate`, `/consents/{id}/status`, `/receipts/{id}`, JWKS | **No Keycloak.** Trust is the **partner-signed consent object**, verified against Partner Management (PM) keys and replay-guarded by `jti`. The Registry↔CM link is secured at transport (**Istio mTLS**). This deployment is the **PDP** |
 | **beneficiary-api** | `/my/*`, `/consent-requests/*` | Keycloak, **beneficiary realm**, scoped to the authenticated subject (scaffolded/later) |
 | any | receipts, JWKS | Public read (signatures make them self-verifying) |
@@ -67,13 +67,15 @@ Used in decisions (`reason_code`) and errors (`error`):
 | --- | --- |
 | `ok` | Permit — all checks passed |
 | `malformed_object` | Consent object failed schema validation (incl. both `grants` and `data_controller`/`data_scopes`, a duplicate controller in `grants`, or no `data_controller` on `/validate` for a consent with `grants`) |
-| `unknown_partner` | Partner not onboarded / suspended, or `kid` not found in Partner Management |
-| `signature_invalid` | JWS signature did not verify |
+| `unknown_partner` | Partner Management has no active policy for the partner and this data controller (partner unknown or not active, or not granted this registry), or no use-case policy in use-case mode |
+| `policy_unavailable` | Partner Management could not be reached and no policy answer is cached (fail closed; retry later) |
+| `signature_invalid` | JWS signature did not verify, the `kid` has no active key in Partner Management, or the algorithm is not allowed |
 | `audience_mismatch` | `aud` is not this partner / controller |
 | `controller_not_granted` | The consent has no grant for the `data_controller` in the request (or a single-registry consent names another controller) |
 | `subject_mismatch` | `request_context.subject_id` has the consent subject's type but a different value |
 | `subject_not_allowed` | Subject missing or `subject_id_type` not permitted |
-| `purpose_not_allowed` | Purpose code outside policy |
+| `purpose_not_allowed` | Purpose code outside policy, or (use-case mode) not the use case's purpose |
+| `use_case_not_granted` | Use-case mode: `request_context.use_case` is not in the partner's use-case policy, or the partner has none |
 | `scope_exceeds_policy` | Requested scope not permitted; empty effective intersection |
 | `validity_exceeds_policy` | Requested validity longer than `max_validity_duration` |
 | `expired` | Consent outside its validity window |
@@ -85,14 +87,36 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `presenter_mismatch` | The consent token's `presenter` is not the caller (`partner_id`) or not the issuer's configured presenter |
 | `receipt_status_unavailable` | The consent token's status could not be checked at its issuer (fail closed) |
 
+## Staff endpoints
+
+### `GET /consent/v1/decisions`
+
+Read the decision log (staff-api, role `CONSENT_MANAGER_ADMIN`). Filters: `partner_id` (the
+partner's audience, e.g. `bank-a`), `decision` (`permit` or `deny`); `limit` (1–200, default 50).
+
+```json
+// response 200
+[
+  { "id": "d-5512", "consent_id": "CONSENT-123456", "partner_id": "bank-a",
+    "object_jti": "6f1c-unique-per-object", "data_controller": "farmer-registry",
+    "decision": "permit", "reason_code": "ok", "detail": null, "policy_version": 4,
+    "created_at": "2026-10-01T10:00:02Z" }
+]
+```
+
+`policy_version` is the version of the partner's policy in Partner Management that was applied.
+
 ## Implementation
 
 The service is built on [`openg2p-fastapi-common`](https://github.com/OpenG2P/openg2p-fastapi-common)
 with **PostgreSQL** for storage. It is **stateless and horizontally scalable** — scale by adding
 pods/workers behind a load balancer; the only shared state is Postgres. Consent expiry runs as an
 external CronJob (`python -m openg2p_consent_manager.expire`) rather than an in-pod scheduler, and
-the hot path lazily expires on read. Partner keys/policies are cached per pod with a short TTL to
-keep `/validate` cheap under high request rates.
+the hot path lazily expires on read. Partner keys and policies, read from Partner Management, are
+cached per pod with a short TTL to keep `/validate` cheap under high request rates
+([Partner Management integration](../design/partner-management-integration.md)). Partners and their
+policies are managed in Partner Management
+([API reference](../../platform/platform-services/partner-management/api-reference.md)), not here.
 
 These pages are the **normative source** for the contract — the API is documented here in GitBook
 directly (FastAPI also serves a live OpenAPI/Swagger UI at `/docs` for the running service).

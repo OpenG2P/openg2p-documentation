@@ -1,8 +1,8 @@
 ---
 description: >-
   Architecture of the Consent Manager — the PDP/PEP model, the API-audience
-  split, Partner Management and Approval Workflow integration, how the registry
-  integrates, and the end-to-end information flow.
+  split, how partner keys and policies are read from Partner Management, how
+  the registry integrates, and the end-to-end information flow.
 ---
 
 # Architecture
@@ -18,12 +18,12 @@ flowchart LR
   Partner["Partner / Requesting System"]
   Registry["OpenG2P Registry (PEP)\nholds the data"]
   CM["Consent Manager (PDP)\npartner-api · verifies + decides"]
-  PM["Partner Management (PM)\nowns partner keys"]
-  Store[("CM stores:\nartefacts · receipts ·\npolicy bindings · audit")]
+  PM["Partner Management (PM)\npartners · keys · policies"]
+  Store[("CM stores:\nconsents · artefacts ·\nreceipts · audit")]
 
   Partner -->|"1 API call + embedded\nsigned consent object"| Registry
   Registry -->|"2 validate(consent_object, ctx)"| CM
-  CM -->|"fetch + cache verifying keys"| PM
+  CM -->|"read + cache keys and policies"| PM
   CM --> Store
   CM -->|"3 decision + effective_data_scopes"| Registry
   Registry -->|"4 release only permitted fields"| Partner
@@ -32,25 +32,24 @@ flowchart LR
 The registry never parses or interprets the consent object. It forwards it, receives a decision
 that includes the **effective set of fields**, and releases only those.
 
-CM does **not** store partner signing keys or onboard partner identity. Partner identity and
-signing keys are owned by **Partner Management (PM)**; the CM `partner-api` fetches a partner's
-verifying keys from PM's key API and caches them, and holds only a **policy binding** (which PM
-partner, under which controller/audience, is bound to which data-share policy). See
+CM keeps **no partner records**. Partners, their signing keys and their access policies are owned
+by **Partner Management (PM)**, where changes are approved; the CM reads a partner's policy and
+verifying key from PM's internal partner API and caches them. See
 [Partner Management integration](partner-management-integration.md).
 
 ## One shared CM across modules
 
 A single Consent Manager is deployed **per environment** and shared by every data-holding module
-(farmer registry, social registry, PBMS, …). This keeps the policy bindings, policy engine,
-audit log, and signing key central — one consent authority for the whole installation.
+(farmer registry, social registry, PBMS, …). This keeps the consents, policy evaluation, audit log,
+and signing key central — one consent authority for the whole installation.
 
-The module a consent concerns is a **per-binding attribute**: each partner binding carries a
-`controller_id` (its module). There is no single global controller — the same CM serves all
-modules. A partner that needs data from two modules has one binding per module, each with its own
-policy, and asks the subject **once**: the consent carries a **grant per module**
-(`grants: [{data_controller, data_scopes}]`). Each registry names itself as `data_controller` on
-`/validate` and is evaluated only on its grant against its binding's policy, so a grant for one
-module never authorises data from another. The single-controller consent form remains valid.
+There is no single global controller — the same CM serves all modules. A partner's access policies
+in PM name the module (data controller) each is for: a partner that needs data from two modules has
+one scope policy per module, and asks the subject **once**: the consent carries a **grant per
+module** (`grants: [{data_controller, data_scopes}]`). Each registry names itself as
+`data_controller` on `/validate` and is evaluated only on its grant against the partner's policy for
+that module, so a grant for one module never authorises data from another. The single-controller
+consent form remains valid.
 
 ## APIs by audience
 
@@ -66,24 +65,22 @@ its own hostname.
 
 | Audience | Auth | Hosts |
 | --- | --- | --- |
-| **staff-api** | Keycloak (staff realm; roles `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | Policy-binding + versioned data-share-policy admin; the AWE approvals inbox (CM proxies AWE) + webhook receiver; a decisions/audit view. |
+| **staff-api** | Keycloak (staff realm; roles `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`; the partner portal API uses the partner realm) | The decisions/audit view; verification of assisted consents; the partner portal API. |
 | **partner-api** | **No Keycloak** — trust is the partner-signed consent object verified against PM keys, replay-guarded by `jti`; registry↔CM secured at transport (Istio mTLS). | The PDP `POST /consent/v1/validate`, consent status, receipts, and `/.well-known/jwks.json`. Mints CM receipts (mounts the `.p12` signing key). |
 | **beneficiary-api** *(later)* | Keycloak (beneficiary realm) | `/my/*` self-service + consent origination. |
 | **agent-api** | — | Not applicable to CM. |
 
 The hot path (`/validate`) therefore lands on the **partner-api**, which has no Keycloak: it
-verifies the partner-signed object against keys fetched from PM. Admin, approvals, and audit views
-live on the **staff-api** behind Keycloak.
+verifies the partner-signed object against keys fetched from PM. The audit view and assisted-consent
+verification live on the **staff-api** behind Keycloak.
 
 ## Components
 
 | Component | Audience | Responsibility |
 | --- | --- | --- |
 | **Verification API** | partner | Validates an embedded consent object and returns a decision (the hot path). |
-| **Policy Engine** | partner · staff | Evaluates a consent object against the bound partner's versioned data-share policy; computes the effective scope. |
-| **Policy Binding &amp; Policy Admin** | staff | Manages the **policy bindings** — one per (partner `audience`, `controller`), each with `partner_mgmt_id` + policy — and the versioned data-share policies. |
-| **PM Key Client** | partner | Fetches partner verifying keys from **Partner Management** and caches them; CM stores no partner keys of its own. |
-| **Approval Proxy &amp; Webhook** | staff | Proxies the **AWE** approvals inbox with the approver's JWT and receives AWE's terminal HMAC webhook for policy-change approvals. |
+| **Policy Engine** | partner · staff | Evaluates a consent object against the partner's active access policy from PM; computes the effective scope. |
+| **PM Client** | partner · staff | Reads partner verifying keys and access policies from **Partner Management** and caches them per pod; CM stores no partner keys or policies of its own. |
 | **Trust / Signing Store** | partner | The CM's own key pair (`.p12`) for signing receipts. Partner verifying keys are **not** stored here — they come from PM. |
 | **Artefact &amp; Receipt Service** | partner | Produces canonical consent artefacts and CM-signed receipts (JSON-LD). |
 | **Origination Service** | beneficiary *(later)* | The secondary flow — consent requests, OIDC authentication, approval. |
@@ -110,7 +107,7 @@ sequenceDiagram
   P->>R: GET /farmer/{id}?... + signed consent_object
   R->>CM: POST /consent/v1/validate {consent_jws, data_controller, request_ctx}
   CM->>CM: 1. schema-validate object; select the grant for data_controller
-  CM->>DB: 2. look up the (aud, data_controller) binding + its policy
+  CM->>PM: 2. read the partner's policy for data_controller — cached
   CM->>PM: 3. fetch verifying key (kid) — cached
   CM->>CM: 4. verify JWS signature + replay guard per (jti, controller)
   CM->>CM: 5. audience / subject / purpose checks
@@ -149,36 +146,12 @@ sequenceDiagram
 
 This is covered in detail in [Consent lifecycle](consent-lifecycle.md).
 
-## Policy-change approval (AWE)
+## Partners and policies
 
-Data-share policies are a **ceiling** on what a partner may receive. **Widening** a policy — adding
-scopes/purposes, loosening validity — must be approved before it takes effect. CM integrates the
-shared **Approval Workflow Engine (AWE)** for this: a widening edit creates a new **pending** policy
-version (the prior active version stays in force), CM submits an approval request to AWE, and only on
-approval does the new version become **active** and supersede the prior one.
-
-AWE has no approver UI. Approvers act in CM's **own** UI on the **staff-api**, which **proxies** the
-AWE task-list and decision calls, forwarding the approver's own JWT (role
-`CONSENT_MANAGER_APPROVER`). AWE signals the terminal outcome back to the staff-api via an
-**HMAC-signed webhook**.
-
-```mermaid
-sequenceDiagram
-  participant Admin as Staff (admin)
-  participant CM as CM staff-api
-  participant AWE as Approval Workflow Engine
-  participant Appr as Staff (approver)
-
-  Admin->>CM: widen data-share policy
-  CM->>CM: new version = pending (prior active stays in force)
-  CM->>AWE: create approval request (service token)
-  Appr->>CM: open approvals inbox / decide
-  CM->>AWE: proxy tasks + decision (approver's JWT)
-  AWE-->>CM: terminal HMAC webhook (approved / rejected)
-  CM->>CM: approved → activate + supersede prior · rejected → mark rejected
-```
-
-Details in [Approval Workflow integration](approval-workflow-integration.md).
+Partner onboarding, key changes and access-policy changes are requested and approved in **Partner
+Management**, not in the CM; the CM console links to PM's UI (**Partners & policies**). An approved
+policy change reaches the CM within its policy cache time; a pending change never affects a
+decision. See [Partner Management integration](partner-management-integration.md).
 
 ## Registry integration
 

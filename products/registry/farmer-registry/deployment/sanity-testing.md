@@ -23,10 +23,10 @@ By default a failing test fails the install (**Sanity - Fail the Deploy on Test 
 
 1. Check commons-services has Partner Management, the Consent Manager and AWE running, and **Verify Partner Signature** and **Enforce Consent** are on.
 2. Turn on **Sanity - Run Full E2E** and install or upgrade.
-3. The install first seeds the test partner, the consent binding, the sanity farmer `SANITY-FARMER-0001` and a `sanity-e2e` Keycloak user ([Install sequence](data-seeding.md#install-sequence)), then runs the suite.
+3. The install first seeds the test partner (its key and access policy in Partner Management), the sanity farmer `SANITY-FARMER-0001` and a `sanity-e2e` Keycloak user ([Install sequence](data-seeding.md#install-sequence)), then runs the suite.
 
 {% hint style="warning" %}
-The e2e's test data is **never deleted**: the test partner in Partner Management, its Consent Manager binding, the sanity farmer and the Keycloak user stay for inspection. An environment that has once run the e2e keeps them. Remove the partner and binding in Partner Management and the Consent Manager when you decommission the environment.
+The e2e's test data is **never deleted**: the test partner in Partner Management (`PARTNER_CM_SANITY`, its key and its access policy), the sanity farmer and the Keycloak user stay for inspection. An environment that has once run the e2e keeps them. Disable the partner in Partner Management when you decommission the environment.
 {% endhint %}
 
 ## Read the results

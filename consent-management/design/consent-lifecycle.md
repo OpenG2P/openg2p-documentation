@@ -37,7 +37,8 @@ sequenceDiagram
    `ConsentRequest` (status `pending`) naming the subject, the partner (audience), requested
    scopes, and purpose. The scopes can be for one controller, or a **grant per registry**
    (`grants: [{data_controller, data_scopes}]`). The request is validated against the partner's
-   policy for each controller up front, so an impossible request is rejected early.
+   policy for each controller (read from Partner Management) up front, so an impossible request is
+   rejected early.
 2. **Authenticate** — the subject authenticates with the configured OIDC provider and the ID token
    is posted to the CM. The CM validates the token signature and claims (`iss`, `aud`, `exp`,
    `auth_time`, `amr`) against the IdP's JWKS, stores only the **hash**, and builds an

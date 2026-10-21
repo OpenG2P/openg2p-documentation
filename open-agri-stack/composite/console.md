@@ -7,14 +7,14 @@ description: >-
 
 # Composite Console
 
-The console shows how the Composite is set up and what it has been doing. It is **read-only**: use cases, registries and settings are still changed in the Helm values (Git and Helm history record those changes); partner onboarding stays in the Partner Management and Consent Manager portals, which the console links to.
+The console shows how the Composite is set up and what it has been doing. It is **read-only**: use cases, registries and settings are still changed in the Helm values (Git and Helm history record those changes); partners, their keys and their use-case grants are managed in Partner Management, and consents in the Consent Manager; the console links to both portals.
 
 | Page | What it shows |
 | --- | --- |
 | **Overview** | Composite partner ID, consent mode and Exchange Consent Manager, signing key, Audit Manager on/off; counts of use cases (and files that failed to load), registries and partners; calls and failures in the last 24 hours |
-| **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), allowed partners, and the use case file. The labels are explained in [reading a use case in the console](creating-a-use-case.md#reading-a-use-case-in-the-console) |
+| **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), **Granted to** (the partners whose use-case policy in Partner Management grants this use case, `name@major`), and the use case file. The labels are explained in [reading a use case in the console](creating-a-use-case.md#reading-a-use-case-in-the-console) |
 | **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the Composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
-| **Partners** | Every partner named in a use case's `allowed_partners`, its use cases and the keys Partner Management serves for it |
+| **Partners** | Read from Partner Management: every partner whose use-case policy grants a published use case, with its **Partner (Partner Management ID)**, **Granted use cases**, **Policy version** and the keys PM serves for it. If PM cannot be read, the page says *Partner Management could not be read* and the list may be incomplete; the Overview's partner count shows a dash |
 | **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, duration and each source's status |
 
 ## Access
@@ -53,5 +53,5 @@ With the console on, the chart also creates the Keycloak client and registers th
 **Uninstall:** [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns>` removes the release and what survives `helm uninstall`: its Jobs, ConfigMaps and Secrets, the console database and role, and the console's IAM application rows (`--keep-db`, `--keep-iam` to keep them; `--dry-run` to see the plan). It keeps the console's Keycloak client (a reinstall updates it), the PM/CM entries, and the signing Secret unless `--drop-signing-secret`.
 
 {% hint style="info" %}
-**Later:** editing use cases in the console (stored in the database, with a record of who changed what and when, also sent to the Audit Manager), and a "give partner X use case Y" flow that checks the partner's key in PM, creates its Consent Manager policy from the use case's scopes and adds it to the use case. See the [open items](../open-items/README.md).
+**Later:** editing use cases in the console (stored in the database, with a record of who changed what and when, also sent to the Audit Manager), and a "give partner X use case Y" flow that raises the policy request in Partner Management from the console. See the [open items](../open-items/README.md).
 {% endhint %}

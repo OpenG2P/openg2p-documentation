@@ -36,7 +36,7 @@ The defaults work for a demo. Change only these.
 
 | Field | Value | Why |
 | --- | --- | --- |
-| Install AWE? | **No** | Only needed if approvals in the CM or Master Data are switched on (both off by default) |
+| Install AWE? | **No** | Only needed if approvals in Master Data are switched on (off by default). Partner and policy changes are approved in Partner Management |
 | Install Staff Portal UI? | **No** | The registry staff home page; no registry here |
 | Install ODK Central? | **No** | Registry data collection |
 | Install Superset? | **No** | Registry dashboards |
@@ -61,7 +61,6 @@ openg2p-inji-verify:
   enabled: false
 openg2p-consent-manager:
   global:
-    aweEnabled: false
     agriStackExchange:
       role: exchange
   partnerPortal:
@@ -104,7 +103,6 @@ Replacing the demo key, step by step: [CM deployment](../../consent-management/d
 | Token presenters | `agri-composite` | Only the Composite may ask for consent tokens (`/validate` with `issue_receipts: true`) |
 | Token lifetime | 900 seconds, capped by the consent's expiry | A consent token is used for one query |
 | Signing key | The CM's signing key (same `kid`, same public JWKS) | The department CMs fetch the public key from `https://consent-manager-partner.agrix.<parent domain>/api/consent-manager-partner/.well-known/jwks.json` |
-| AWE approval of policies | Off | Policies take effect when the CM administrator saves them |
 
 Every CM setting: [CM deployment](../../consent-management/deployment/README.md#exchange-optional).
 
@@ -119,7 +117,7 @@ Every CM setting: [CM deployment](../../consent-management/deployment/README.md#
 
 A Job registers the CM's client in eSignet once eSignet is up ([national ID authentication](../../consent-management/deployment/README.md#national-id-authentication-of-the-subject-esignet)). Partner users log in through the CM's `partner` realm in Keycloak; they are created after install ([After Install](after-install.md#partner-portal-realm-and-users)).
 
-Partners themselves (their PM entry, and a binding and policy per registry) are added by administrators after install: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management); the [partner test](testing.md#partner-test-public-apis) adds a test partner. The Composite's PM entry is added by the [Exchange setup](after-install.md#exchange-setup).
+Partners themselves (their PM entry with their key and their use-case policy, raised and approved in Partner Management; the CM reads the policy from there) are added by PM administrators after install: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management); the [partner test](testing.md#partner-test-public-apis) adds a test partner. The Composite's PM entries, and its scope policies in the department PMs, are added by the [Exchange setup](after-install.md#exchange-setup).
 
 ## Check
 

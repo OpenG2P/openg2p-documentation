@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1206" height="330" viewBox="0 0 1206 330" role="img" aria-label="What a registry releases through the Composite: what the use case asks for, intersected with the partner's policy and the farmer's consent at the Exchange Consent Manager, which puts the result into each registry's consent token, then intersected with the department's own policy for the Composite at that registry's Consent Manager. In the example the bank's policy leaves out crop measures, the farmer declines land, and the Livestock Department does not allow herd data, so farmer personal details and crop season are released."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1206" height="330" viewBox="0 0 1206 330" role="img" aria-label="What a registry releases through the Composite: what the use case asks for, limited to a use case the partner is granted in the Exchange's Partner Management, intersected with the farmer's consent at the Exchange Consent Manager, which puts the result into each registry's consent token, then intersected with the department's ceiling for the Composite (its scope policy in the department's Partner Management) at that registry's Consent Manager. In the example the bank is granted the use case, the farmer declines land, and the Livestock Department does not allow herd data, so farmer personal details, crop season and crop measures are released."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11.5px;fill:#56625B}
 .cap{font-size:10px;letter-spacing:.07em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
@@ -27,9 +27,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <rect class="dpi" x="756" y="46" width="200" height="262" rx="8"/>
   <rect class="l1" x="976" y="46" width="214" height="262" rx="8"/>
   <text class="t" x="30" y="70">Use case asks for</text><text class="s" x="30" y="86">Composite: scopes, optional scopes</text>
-  <text class="t" x="277" y="70">Partner's policy allows</text><text class="s" x="277" y="86">per registry · in the CM (PM: target)</text>
+  <text class="t" x="277" y="70">Partner is granted</text><text class="s" x="277" y="86">the use case · its policy in PM</text>
   <text class="t" x="524" y="70">Farmer consented to</text><text class="s" x="524" y="86">one consent, a grant per registry</text>
-  <text class="t" x="770" y="70">Department allows</text><text class="s" x="770" y="86">its standing policy for the Composite</text>
+  <text class="t" x="770" y="70">Department allows</text><text class="s" x="770" y="86">Composite's ceiling, in its PM</text>
   <text class="t" x="990" y="70">Released</text><text class="s" x="990" y="86">each registry, its own slice</text>
   <text class="op" x="240" y="180" text-anchor="middle">∩</text>
   <text class="op" x="487" y="180" text-anchor="middle">∩</text>
@@ -47,10 +47,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <rect class="chip-ok" x="277" y="100" width="172" height="26" rx="5"/><text class="ok" x="287" y="118">FR · personal details</text>
   <rect class="chip-ok" x="277" y="134" width="172" height="26" rx="5"/><text class="ok" x="287" y="152">FR · land</text>
   <rect class="chip-ok" x="277" y="168" width="172" height="26" rx="5"/><text class="ok" x="287" y="186">CSR · crop season</text>
-  <rect class="chip-no" x="277" y="202" width="172" height="26" rx="5"/><text class="no" x="287" y="220">CSR · measures</text>
-  <line class="strike" x1="285" y1="216" x2="388" y2="216"/>
+  <rect class="chip-ok" x="277" y="202" width="172" height="26" rx="5"/><text class="ok" x="287" y="220">CSR · measures</text>
   <rect class="chip-ok" x="277" y="236" width="172" height="26" rx="5"/><text class="ok" x="287" y="254">LS · herd</text>
-  <text class="s" x="277" y="290">not in the bank's policy: measures</text>
+  <text class="s" x="277" y="290">loan-profile@1 granted: all pass</text>
 
   <!-- 3 consent -->
   <rect class="chip-ok" x="524" y="100" width="172" height="26" rx="5"/><text class="ok" x="534" y="118">FR · personal details</text>
@@ -73,6 +72,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <!-- 5 released -->
   <rect class="chip-ok" x="990" y="100" width="186" height="26" rx="5"/><text class="ok" x="1000" y="118">FR · personal details</text>
   <rect class="chip-ok" x="990" y="168" width="186" height="26" rx="5"/><text class="ok" x="1000" y="186">CSR · crop season</text>
+  <rect class="chip-ok" x="990" y="202" width="186" height="26" rx="5"/><text class="ok" x="1000" y="220">CSR · measures</text>
   <text class="s" x="990" y="290">FR: Farmer Registry · CSR: Crop Sown</text>
   <text class="s" x="990" y="303">LS: a Livestock registry</text>
 </svg>

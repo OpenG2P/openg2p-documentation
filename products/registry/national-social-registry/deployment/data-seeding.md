@@ -216,8 +216,7 @@ flowchart TD
 
     subgraph S ["Sanity fixtures &amp; test — only when sanity.runE2e = true"]
         direction TB
-        C["<b>11 · sanity-pm-seed</b><br/>partner in Partner Management"] --> D
-        D["<b>12 · sanity-cm-seed</b><br/>Consent Manager binding + policy"] --> E
+        C["<b>11 · sanity-pm-seed</b><br/>partner in Partner Management<br/>key + access policy"] --> E
         E["<b>13 · sanity-data-seed</b><br/><b>test record · Keycloak user · approver rule</b><br/><i>never deleted afterwards</i>"]
     end
 
@@ -246,8 +245,7 @@ they belong to other releases — see [Cross-release dependencies](#cross-releas
 |---|---|---|---|
 | — | *(application pods)* | The registry's own Deployments start and pass their probes | always |
 | 10 | `nsr-db-seed` | Meta-data SQL, **sample data**, images, templates | `dbSeed.enabled` |
-| 11 | `nsr-sanity-pm-seed` | Registers the sanity partner in Partner Management | `sanity.runE2e` |
-| 12 | `nsr-sanity-cm-seed` | Consent Manager binding and policy for that partner | `sanity.runE2e` |
+| 11 | `nsr-sanity-pm-seed` | Registers the sanity partner in Partner Management, with its key and its scope policy for this registry | `sanity.runE2e` |
 | 13 | `nsr-sanity-data-seed` | **Sanity fixtures** — the test record, Keycloak user, approver rule | `sanity.runE2e` |
 | 20 | `nsr-iam-register` | Registers the registry's roles and permissions in IAM | always |
 | 25 | `nsr-sanity` | Runs the sanity suite | `sanity.enabled` |

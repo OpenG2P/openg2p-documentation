@@ -2,12 +2,13 @@
 description: >-
   One-time setup after installing Agri Stack: the partner portal's realm and
   users, and the Exchange setup script (the Composite's signing key, its key in
-  each Partner Management, its bindings and policies in each department CM).
+  each Partner Management, its scope policy per registry in each department's
+  Partner Management).
 ---
 
 # After Install
 
-Two steps the charts cannot do, run once by an operator after the [Exchange](exchange.md), the registries and the [Composite](composite.md) are installed. Partners (e.g. a bank) are **not** set up here: they onboard through Partner Management and the Consent Manager ([partner guide](../partner-guide.md)).
+Two steps the charts cannot do, run once by an operator after the [Exchange](exchange.md), the registries and the [Composite](composite.md) are installed. Partners (e.g. a bank) are **not** set up here: they are onboarded in the Exchange's Partner Management with a use-case policy ([partner guide](../partner-guide.md)).
 
 | Step | Needed for | Rerun |
 | --- | --- | --- |
@@ -22,7 +23,7 @@ Partner users (e.g. bank staff) log in to the Consent Manager's partner portal t
 ./deployment/scripts/setup-partner-realm.sh --namespace agrix --user bank-a-operator:bank-a:PARTNER_OPERATOR
 ```
 
-The user's password is in the Secret `partner-user-bank-a-operator` in the namespace. A user's `partner_id` (here `bank-a`) must be the partner's ID as bound in the Exchange CM. See [partner portal and consent evidence](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional).
+The user's password is in the Secret `partner-user-bank-a-operator` in the namespace. A user's `partner_id` (here `bank-a`) must be the partner's ID, the `aud` of its consents (its Partner Management entry is `PARTNER_BANK_A`). See [partner portal and consent evidence](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional).
 
 ## Exchange setup
 
@@ -34,7 +35,7 @@ The user's password is in the Secret `partner-user-bank-a-operator` in the names
 | --- | --- |
 | Exchange namespace | Secret `agri-composite-signing` (a generated `.p12`), then a restart of the Composite. A Secret whose key the Exchange PM already serves is left alone |
 | Exchange PM and each department PM | The Composite (`PARTNER_AGRI_COMPOSITE`) with its signing key: onboarded and approved, or the key added with a key-update request and approved. Each registry checks the Composite's signature at its **own** PM |
-| Each department CM | A binding and policy for the Composite (audience `agri-composite`) per registry. **Scopes and purposes come from the Composite's published use cases**: per registry, the union of each use case's `consent_scopes` (required and optional) and their purposes. An existing policy is only widened, never narrowed |
+| Each department PM | The Composite's **scope policy** per registry served there (its ceiling in that department), in the same onboarding request or a policy request, raised and approved. **Scopes and purposes come from the Composite's published use cases**: per registry, the union of each use case's `consent_scopes` (required and optional) and their purposes. An existing policy is only widened, never narrowed. The script then checks that PM's policy API serves it. See [data sharing policies](../architecture/data-sharing-policies.md) |
 | Each department CM and the Exchange CM (checked, not set) | That each department CM trusts the Exchange CM's consent tokens for the Composite (**Exchange Role** `department`), and that the Exchange CM issues them (**Exchange Role** `exchange`). These are form choices; the script names the missing one and stops |
 
 ### Prerequisites
@@ -64,7 +65,7 @@ python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --reg
 | `--dry-run` | Discover and plan with GETs only, and list the writes |
 | `--yes` | Make the listed writes without the typed `yes` |
 | `--new-key` | A new Composite key (new `kid`) instead of the saved one |
-| `--pm-client-id`, `--cm-client-id` | The Keycloak admin clients (default PM's `PARTNER_MANAGER_AUTH_ADMIN_CLIENT_ID`, and `consent-manager`). Their secrets are read with kubectl into memory, never printed |
+| `--pm-client-id` | The Keycloak client with PM's admin role (default PM's `PARTNER_MANAGER_AUTH_ADMIN_CLIENT_ID`). Its secret is read with kubectl into memory, never printed |
 | `--state-dir` | Where the Composite's key is kept (below) |
 
 ### Steps
@@ -72,12 +73,12 @@ python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --reg
 | Step | What happens |
 | --- | --- |
 | Discover | The Composite, PM, CM and Keycloak of the Exchange and of each department, from the Deployments' environment; the consent-token trust check |
-| Admin tokens | Keycloak client credentials for each PM and CM; checks the admin roles |
+| Admin tokens | Keycloak client credentials for each PM; checks the admin role. No CM credentials are needed |
 | Use cases | The Composite's published use cases (`GET /composite/v1/use-cases`) and the policy each registry needs |
-| Plan | GETs only: the signing Secret, the Composite in each PM, the bindings and policies in each department CM |
-| Apply | After confirmation: PM requests raised and approved, CM bindings and policies, the Secret and the restart |
+| Plan | GETs only: the signing Secret, the Composite and its key in each PM, its scope policies and open requests in each department PM |
+| Apply | After confirmation: PM requests (onboarding, key update, policy) raised and approved, the Secret and the restart |
 
-**Exit codes:** `0` ok; `1` error; `2` a decision is needed: a department CM does not trust the Exchange's consent tokens, a CM policy waits for AWE approval (approve it in AWE, then rerun), a PM key conflicts (rerun with `--new-key`), or the writes were not confirmed.
+**Exit codes:** `0` ok; `1` error; `2` a decision is needed: a department CM does not trust the Exchange's consent tokens, an open PM request proposes a policy that does not cover what is needed (approve or reject it in Partner Management, then rerun), a PM key conflicts (rerun with `--new-key`), the PM admin client lacks its role, or the writes were not confirmed.
 
 ### Where the key is stored
 

@@ -97,14 +97,13 @@ Each registry sees only the Composite, never the partner (e.g. a bank). The part
 
 | Where | What |
 | --- | --- |
-| Partner Management | `PARTNER_AGRI_COMPOSITE`, with the Composite's public key and `kid`. The registry checks the Composite's signature against it |
+| Partner Management, key | `PARTNER_AGRI_COMPOSITE`, with the Composite's public key and `kid`. The registry checks the Composite's signature against it |
+| Partner Management, scope policy | The Composite's policy for this registry's data controller (`farmer-registry` or `crop-sown-registry`): below |
 | Consent Manager, role | **Exchange Role** `department`: it trusts consent tokens from the Exchange CM (`agri-stack-exchange-cm`) presented by the Composite (`agri-composite`), and checks each token's status there |
-| Consent Manager, binding | Audience `agri-composite`, controller `farmer-registry` or `crop-sown-registry` |
-| Consent Manager, standing policy | Below |
 
-### Standing policy for the Composite
+### Scope policy for the Composite
 
-The department decides once what it releases through the Exchange. Every consent token is cut down to this policy (token scopes ∩ policy).
+The department decides once what it releases through the Exchange: the Composite's scope policy for the registry, in the department's Partner Management, is the **ceiling**. The department's CM reads it from PM and cuts every consent token down to it (token scopes ∩ ceiling); without it, every search through the Composite is denied.
 
 | Policy field | Value |
 | --- | --- |
@@ -114,7 +113,7 @@ The department decides once what it releases through the Exchange. Every consent
 | Maximum validity | `P90D` |
 | Fetch type | `oneshot` |
 
-The [Exchange setup](../deployment/after-install.md#exchange-setup) sets these values and only ever widens them. The department can narrow the policy by hand in its CM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
+The [Exchange setup](../deployment/after-install.md#exchange-setup) proposes these values as a Partner Management policy request, which is approved in the department's PM, and only ever widens them. The department can narrow the policy with its own policy request in its PM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
 
 ## Sample data
 

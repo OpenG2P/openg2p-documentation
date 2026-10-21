@@ -13,7 +13,8 @@ The hot path used by the registry (and any PEP) to authorise outbound data shari
 **Audience:** **partner-api** — the CM **PDP** deployment. There is **no Keycloak** on this path.
 Trust rests entirely on the **partner-signed consent object**, whose JWS signature is verified
 against the partner's keys in **Partner Management (PM)** and replay-guarded by its `jti` (per
-data controller). The
+data controller). The partner's access policy is also read from PM
+([Partner Management integration](../design/partner-management-integration.md)). The
 Registry↔CM transport is secured by **Istio mTLS**.
 
 ## `POST /consent/v1/validate`
@@ -33,10 +34,12 @@ against the partner's Partner-Management key referenced by `kid`.
 | Field | Required | Meaning |
 | --- | --- | --- |
 | `consent_jws` | yes | The partner-signed consent, forwarded verbatim |
-| `partner_id` | no | The caller's view of the partner (traceability only; the partner is keyed off `aud`) |
+| `partner_id` | no | The caller (a registry sends the DCI `sender_id`). Traceability only, except for a consent-token presenter: it identifies the presenter for `issue_receipts`, use-case mode and consent tokens. The partner is keyed off `aud` |
 | `data_controller` | when the consent has `grants` | The **calling registry**. Selects that registry's grant in the consent |
-| `request_context.requested_scopes` | no | Narrows the effective scopes further |
+| `request_context.requested_scopes` | no (yes in use-case mode) | Narrows the effective scopes further; in use-case mode, the use case's scopes |
 | `request_context.subject_id` | no | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch` |
+| `request_context.use_case` | no | **Use-case mode** (Exchange): the use case the caller serves, `name@major` (e.g. `loan-profile@1`). Applies only when `partner_id` is a configured token presenter; ignored otherwise. The consenting partner's use-case policy must grant it, else `use_case_not_granted` ([use-case mode](../design/verification-and-enforcement.md#use-case-mode)) |
+| `request_context.purpose` | no | Use-case mode: the purpose the use case serves; the consent's `purpose.code` must equal it, else `purpose_not_allowed` |
 | `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
 `consent_jws` may also be a **consent token** (header `typ: consent-receipt+jwt`) from an Exchange
@@ -60,8 +63,8 @@ A consent carrying both forms, an empty `grants` list, or two grants for the sam
 // consent claims (JWS payload) with one grant per registry
 {
   "jti": "6f1c-unique-per-object",
-  "aud": "PARTNER_SYSTEM_A",
-  "subject_id": { "type": "fayda_fan", "value": "1234567890123456" },
+  "aud": "bank-a",
+  "subject_id": { "type": "national_id", "value": "1234567890123456" },
   "purpose": { "code": "credit_scoring", "text": "Farm loan eligibility" },
   "grants": [
     { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"] },
@@ -77,11 +80,11 @@ A consent carrying both forms, an empty `grants` list, or two grants for the sam
 // POST /consent/v1/validate — sent by the Farmer Registry
 {
   "consent_jws": "eyJhbGciOiJFZERTQSIsImtpZCI6InBhcnRuZXJBLTIwMjYtMDEifQ.eyJqdGkiOiI2ZjFjLXVuaXF1ZS...}.<signature>",
-  "partner_id": "PARTNER_SYSTEM_A",
+  "partner_id": "bank-a",
   "data_controller": "farmer-registry",
   "request_context": {
     "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
-    "subject_id": { "type": "fayda_fan", "value": "1234567890123456" }
+    "subject_id": { "type": "national_id", "value": "1234567890123456" }
   }
 }
 ```
@@ -92,10 +95,11 @@ How the controller is resolved:
   selects the grant; no grant for it → `controller_not_granted`.
 * **Single-registry consent:** `data_controller` is optional; if given it must equal the consent's
   (else `controller_not_granted`). Registries that do not send it keep working unchanged.
-* The partner (`aud`) must have an **active binding to that controller** (else `unknown_partner`).
-  A partner can be bound to several controllers, each with its own policy.
-* **Effective scopes = the grant's `data_scopes` ∩ that binding's policy** (∩ `requested_scopes` if
-  sent).
+* The partner (`aud`, PM partner `PARTNER_<AUD>`) must have an **active policy for that
+  controller in Partner Management** (else `unknown_partner`; PM unreachable with nothing cached →
+  `policy_unavailable`). A partner has one scope policy per controller.
+* **Effective scopes = the grant's `data_scopes` ∩ that policy's `allowed_data_scopes`** (∩
+  `requested_scopes` if sent). In use-case mode the ceiling is `requested_scopes` instead.
 
 **Response — permit (HTTP 200)**
 
@@ -104,7 +108,7 @@ How the controller is resolved:
   "decision": "permit",
   "consent_id": "CONSENT-123456",
   "receipt_id": "RECEIPT-998877",
-  "subject_id": { "type": "fayda_fan", "value": "1234567890123456" },
+  "subject_id": { "type": "national_id", "value": "1234567890123456" },
   "data_controller": "farmer-registry",
   "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
   "valid_until": "2027-10-01T00:00:00Z",
@@ -143,13 +147,31 @@ and no consent tokens are issued. `receipts` is `null` on every other response.
 {
   "decision": "permit",
   "reason_code": "ok",
-  "subject_id": { "type": "FAYDA_FAN", "value": "1234567890123456" },
+  "subject_id": { "type": "NATIONAL_ID", "value": "1234567890123456" },
   "valid_until": "2027-10-01T00:00:00Z",
   "receipts": {
     "farmer-registry": "eyJhbGciOiJFZERTQSIsImtpZCI6ImNtLTIwMjUtMDEiLCJ0eXAiOiJjb25zZW50LXJlY2VpcHQrand0In0…",
     "crop-sown-registry": "eyJhbGciOiJFZERTQSIs…"
   },
   "evaluated_at": "2026-10-01T10:00:02Z"
+}
+```
+
+**Request — use-case mode** (the Composite at the Exchange). The Composite names the use case and
+its purpose; the CM checks the consenting partner's use-case policy and limits each registry's
+scopes to `requested_scopes`.
+
+```json
+{
+  "consent_jws": "eyJhbGciOiJFZERTQSIs…",
+  "partner_id": "agri-composite",
+  "issue_receipts": true,
+  "request_context": {
+    "use_case": "loan-profile@1",
+    "purpose": "credit-assessment",
+    "requested_scopes": ["farmer-registry.personal_details", "crop-sown-registry.crop_season"],
+    "subject_id": { "type": "national_id", "value": "1234567890123456" }
+  }
 }
 ```
 
@@ -209,8 +231,8 @@ The CM's signing public keys, so any party can verify receipts independently.
 ## Reason / error codes
 
 This endpoint can return any [shared reason code](README.md#shared-reason-codes). The common
-denials are `unknown_partner`, `signature_invalid`, `audience_mismatch`, `controller_not_granted`,
+denials are `unknown_partner`, `policy_unavailable`, `signature_invalid`, `audience_mismatch`, `controller_not_granted`,
 `subject_mismatch`, `purpose_not_allowed`, `scope_exceeds_policy`, `expired`, `revoked`, and
-`replay`. With the Agri Stack Exchange settings on, also `receipt_presenter_not_allowed`,
+`replay`. In use-case mode, also `use_case_not_granted`. With the Agri Stack Exchange settings on, also `receipt_presenter_not_allowed`,
 `receipt_issuer_not_trusted`, `receipt_invalid`, `presenter_mismatch` and
 `receipt_status_unavailable`.

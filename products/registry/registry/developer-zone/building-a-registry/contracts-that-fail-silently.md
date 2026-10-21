@@ -103,7 +103,7 @@ or empty — the partner receives HTTP `200` and no error appears anywhere in th
 chain. Renaming a section retires its default scope.
 
 **Check:** `POST /partner/data_scopes` (signed) lists every scope ID; every scope named in a
-CM policy, in `registry.sanity.dataScopes` and in `deniedScopes` must be there.
+partner's Partner Management policy, in `registry.sanity.dataScopes` and in `deniedScopes` must be there.
 Ship named scopes in the catalogue if partners need IDs that survive UI changes.
 
 ## 5. The sanity suite's chart values

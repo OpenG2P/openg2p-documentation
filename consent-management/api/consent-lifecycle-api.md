@@ -14,24 +14,26 @@ require the subject's authentication. **Base path:** `/consent/v1`.
 
 ## `POST /consent-requests`
 
-Create a pending consent request. Validated against the partner policy up front.
+Create a pending consent request. `partner_id` is the partner's **audience** (e.g. `bank-a`).
+Validated up front against the partner's active policy in Partner Management **for each
+controller**.
 
 Give **exactly one** of:
 
-* `requested_scopes` — one controller: that of the binding `partner_id`; or
+* `data_controller` + `requested_scopes` — one controller; or
 * `grants: [{data_controller, data_scopes}]` — several controllers (one consent, one grant per
-  registry). `partner_id` is any binding of the partner; each grant is checked against the
-  partner's binding and active policy **for that controller**. A controller may appear once.
+  registry). A controller may appear once; `data_controller` is not sent beside `grants`.
 
 ```json
 // request — one controller
 { "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "partner_id": "8c0b...", "purpose": { "code": "share_farm_profile", "text": "..." },
+  "partner_id": "bank-a", "data_controller": "farmer-registry",
+  "purpose": { "code": "share_farm_profile", "text": "..." },
   "requested_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" } }
 // request — one grant per registry
 { "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "partner_id": "8c0b...", "purpose": { "code": "credit_scoring", "text": "..." },
+  "partner_id": "bank-a", "purpose": { "code": "credit_scoring", "text": "..." },
   "grants": [
     { "data_controller": "farmer-registry", "data_scopes": ["farmer_profile.basic"] },
     { "data_controller": "crop-sown-registry", "data_scopes": ["crops_sown"] }
@@ -44,8 +46,23 @@ The response also echoes `controller_id` (null when there are several grants), `
 (the union, for a grants request) and `grants`.
 
 Returns `422` with `scope_exceeds_policy` if the request can never be satisfied under the
-partner's policy (for a grants request, naming the controller), or if the partner has no active
-binding to a requested controller; `404` if there is no active policy.
+partner's policy (naming the controller), or if the partner has no active policy in Partner
+Management for a requested controller; `503` if Partner Management cannot be reached.
+
+**By use case (exchange role).** On a CM in the [exchange role](../design/exchange-receipts.md),
+a request **must** name a `use_case` (`name@major`) and no grants: the consent is made for that
+use case. A request with `grants` or `data_controller` + `requested_scopes` is refused (`400`, "at
+the Exchange, consents are made for a use case"). The partner's use-case policy in Partner Management must grant it (else `422`
+`use_case_not_granted`); the grants (each registry with the use case's scopes) and the purpose are
+the use case's, read from the Composite; `purpose`, if sent, must be the use case's. The use-case
+policy's purposes, subject ID types and longest validity apply. The request and the consent carry
+`use_case`; on approval each grant is narrowed to the use case's scopes at that time, and the
+consent is valid at `/validate` only for that use case. `503` if the Composite cannot be reached.
+
+```json
+{ "subject_id": { "type": "FAYDA_FAN", "value": "1234567890" },
+  "partner_id": "bank-a", "use_case": "loan-profile@1" }
+```
 
 ## `GET /consent-requests/{request_id}`
 
@@ -87,7 +104,7 @@ issues a signed artefact + receipt.
   request's `requested_scopes`; the CM further intersects with policy to compute
   `effective_data_scopes`.
 * For a grants request, each approved grant must be within that controller's requested scopes,
-  and is narrowed to that controller's binding policy. A controller left out (or with no scopes
+  and is narrowed to the partner's current policy for that controller. A controller left out (or with no scopes
   left) is **declined**. `granted_scopes` on a grants request applies the same list to every
   grant. `400` if nothing is left. The artefact holds the approved grants (with each one's
   `effective_data_scopes` and `policy_version`) and the receipt lists one `data_controllers`

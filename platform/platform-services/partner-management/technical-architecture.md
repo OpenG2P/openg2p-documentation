@@ -1,3 +1,9 @@
+---
+description: >-
+  Partner Management components, staff authentication, data model (partners,
+  keys, policies, requests), the key- and policy-fetch paths and auditability.
+---
+
 # Technical Architecture
 
 ## Components
@@ -8,7 +14,7 @@ deployables that share **one Python package and one database**:
 | Component | Stack | Auth |
 | --- | --- | --- |
 | **staff-portal-api** | FastAPI on `openg2p-fastapi-common` (async SQLAlchemy 2.0, PostgreSQL) | Keycloak **staff**-realm JWT + `partner_manager` role |
-| **partner-api** | Same package, key-fetch entrypoint only | None (public, internal gateway) |
+| **partner-api** | Same package, key- and policy-fetch entrypoint only | None (internal gateway) |
 | **staff-portal-ui** | Next.js (App Router), OpenG2P/AWE theme | Shared commons IAM login |
 
 The two API images are built from the same `openg2p-partner-management-api`
@@ -35,7 +41,8 @@ Both backend services are built on **[`openg2p-fastapi-common`](https://github.c
 
               ┌───────────────────────────┐
    g2p-bridge │ partner-api               │  GET /keys/{partner_id}
-   consent-mgr│ (public key fetch, no auth)│◀── other modules, in-cluster,
+   consent-mgr│ (key + policy fetch,      │  GET /policies/{partner_id}
+   composite  │  no auth)                 │◀── other modules, in-cluster,
    … ────────▶│ fail-closed, cached        │    internal gateway
               └───────────────────────────┘
 ```
@@ -62,13 +69,26 @@ Keycloak client that `keycloak-init` provisions.
 
 ## Data model
 
-Three tables (`pm_partners`, `pm_partner_keys`, `pm_partner_requests`), UUID
-string PKs, created/updated timestamps. JSON columns use `JSONB` on PostgreSQL
+Five tables, UUID string PKs, created/updated timestamps:
+
+| Table | Holds |
+| --- | --- |
+| `pm_partners` | Partners and their status. |
+| `pm_partner_keys` | Public keys (never deleted; revoked keys kept). |
+| `pm_partner_policies` | Access policies, one row per version per (partner, data controller) — `data_controller` null for the use-case policy; status `pending` / `active` / `superseded` / `rejected` / `revoked`; the grants and limits; `request_id`, `effective_from`, `created_by`, `approved_by`. Never deleted. |
+| `pm_partner_requests` | Requests of type `onboarding`, `key_update` or `policy`, with `proposed_keys`, `revoke_kids`, `proposed_policies`, `revoke_data_controllers`. |
+| `pm_audit_events` | Append-only audit ledger (see below). |
+
+ JSON columns use `JSONB` on PostgreSQL
 and fall back to `JSON` elsewhere (so the suite runs on SQLite).
 
 Key material is normalised and validated at request-creation time and stashed in
 the request's `proposed_keys`, so approval is a cheap, deterministic apply — the
-same path a future AWE webhook would call.
+same path a future AWE webhook would call. Policies follow the same pattern:
+a request validates them and writes `pending` versions in the same transaction
+(refusing a second pending change per partner and data controller); approval
+activates them and supersedes the previous active version, rejection marks them
+`rejected`. Model and rules: [Access policies](functional-specifications.md#access-policies).
 
 ## Key fetch path
 
@@ -77,6 +97,16 @@ an `active` partner, else `None`; controllers map `None` to a uniform
 `404 not available`. Responses set `Cache-Control` so a caller-side cache (e.g.
 the commons `PartnerKeyStore`) absorbs load and picks up rotations within the TTL.
 
+## Policy fetch path
+
+The partner-api's policy-fetch controller serves `GET /policies/{partner_id}`
+(optionally one data controller, `""` = the use-case policy) and
+`GET /policies?use_case=&data_controller=` (a filter is required). It returns
+active policies **only** for an `active` partner; an unknown or non-active
+partner, or no matching active policy, maps to a uniform `404 PM-POLICY-404`.
+Responses set `Cache-Control: public, max-age=<policy_fetch_cache_max_age>`
+(default 60 s, shorter than keys).
+
 ## Auditability
 
 Partner Management keeps **two complementary audit trails** — appropriate for
@@ -84,7 +114,8 @@ government infrastructure where every change must be accountable:
 
 1. **Local ledger (`pm_audit_events`) — authoritative, always on.** Every
    material state change (partner created/approved/disabled/enabled, key
-   added/revoked, request submitted/approved/rejected) writes an append-only row
+   added/revoked, policy requested/approved/rejected/revoked, request
+   submitted/approved/rejected) writes an append-only row
    **in the same DB transaction** as the change itself. Because it is atomic with
    the change, it can never be lost or drift, and it survives independently of any
    other service. It records actor, timestamp, entity, request id, and a
@@ -129,3 +160,7 @@ the partner is onboarded once, centrally, in Partner Management under
 See [OpenG2P FastAPI Common → JWS crypto](../../architecture/openg2p-fastapi-common/README.md#jws-crypto)
 for the full backend/cache reference. (consent-manager keys on `audience` and uses
 its own model, so it is a separate integration.)
+
+Policies are read the same way over `GET /policies/...` by the modules that
+enforce them (the Consent Manager, an Exchange's Composite), each with its own
+pod-local cache; see [Integration](integration.md).

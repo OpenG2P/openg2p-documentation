@@ -38,10 +38,12 @@ backend/src/openg2p_consent_manager/
   config.py            Settings (env prefix CONSENT_MANAGER_)
   db.py                Shared async session factory
   auth.py              Keycloak bearer auth — CallerIdentity, require_role
-  models/              SQLAlchemy models (partner, consent, audit)
+  models/              SQLAlchemy models (consent, audit, exchange) — no partner tables
   schemas/             Pydantic request/response models
-  services/            crypto · partner · policy · receipt · verification · consent · lifecycle
-  controllers/         verification · well-known · partner · lifecycle · subject
+  services/            crypto · partner + pm_policy_client (policies from Partner Management) ·
+                       policy · receipt · verification · consent · lifecycle · assisted · exchange
+  controllers/         verification · well-known · decisions · consent verification ·
+                       partner portal · lifecycle · subject
   app.py               Initializer (wires services + controllers, runs migrations)
   main.py              ASGI entrypoint (gunicorn/uvicorn)
   expire.py            Standalone expiry runner (for a CronJob)
@@ -85,7 +87,9 @@ CM_TEST_DB_DATASOURCE=postgresql+asyncpg://postgres@localhost:5432/cm_test pytes
 ## Configuration
 
 All settings use the `CONSENT_MANAGER_` env prefix; see `backend/.env.example` for the full
-list (database, `.p12` signing key, Keycloak auth, replay window, cache TTL). Key
+list (database, `.p12` signing key, Keycloak auth, replay window, Partner Management URL and the
+partner key and policy caches). Without a Partner Management URL every `/validate` fails closed; tests
+stand in for PM with an in-memory fake. Key
 operational settings are summarised in [Deployment](../deployment/README.md).
 
 ## Background expiry

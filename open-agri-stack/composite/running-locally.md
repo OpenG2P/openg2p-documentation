@@ -25,7 +25,7 @@ python -m openg2p_agri_composite.main run  # http://localhost:8000/docs
 ```
 
 * The ports are examples: point `PARTNER_MGMT_API_URL` and `REGISTRIES` at a PM partner API and the registries' partner APIs you can reach, e.g. through `kubectl port-forward`.
-* The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`); `partner_kit.py keys` prints the onboarding requests.
+* The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`), and the partner needs a use-case policy there granting the use case (`loan-profile@1`); `partner_kit.py keys` prints the onboarding requests, the partner's with its use-case policy.
 * With the console off (the default outside the chart) the service has no database; startup only loads the use cases. The chart turns the console on, which needs a database, IAM and Redis (see [Composite console](console.md)).
 * The chart sets the consent mode to `exchange`. Run this way, set `AGRI_COMPOSITE_CONSENT_MODE=exchange` too, and `AGRI_COMPOSITE_CONSENT_EXCHANGE_CM_URL` to a reachable CM partner API.
 * Every setting is listed in [Use-Case Configuration](use-case-configuration.md).

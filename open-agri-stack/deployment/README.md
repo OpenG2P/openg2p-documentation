@@ -55,12 +55,12 @@ Install each step only after the previous one is ready (all pods running, releas
 
 | Where | What |
 | --- | --- |
-| `agrix` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) |
-| `agrix` CM | For each partner, a binding and policy **per registry** it reads (`farmer-registry`, `crop-sown-registry`): purposes, data scopes, subject ID types. The partner is onboarded **only here** |
-| `trial` PM and `dept1` PM | The Composite's public key (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the Composite's signature |
-| `trial` CM and `dept1` CM | The **standing policy for the Composite**: a binding with audience `agri-composite` for the registry's controller, its allowed purposes, data scopes and subject ID types; and the Exchange CM as a **trusted token issuer** (issuer `agri-stack-exchange-cm`, its public keys at `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite`) |
+| `agrix` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) with its key and its **use-case policy**: the use cases it may call (`loan-profile@1`), purposes, subject ID types. A partner is onboarded **only here** |
+| `agrix` CM | The partners' consents; it reads each partner's use-case policy from the `agrix` PM |
+| `trial` PM and `dept1` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the Composite's signature, and its **scope policy** for the registry's data controller: the ceiling of what the department releases through the Exchange (allowed purposes, data scopes, subject ID types) |
+| `trial` CM and `dept1` CM | The Exchange CM as a **trusted token issuer** (issuer `agri-stack-exchange-cm`, its public keys at `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite`) |
 
-The registries need no change: each keeps calling its own CM, which accepts the Exchange's consent tokens. A department's scopes for the Composite cap what any partner gets from it (token scopes ∩ standing policy). A denial from a department shows as that source's `denied` status with the registry's reason.
+The registries need no change: each keeps calling its own CM, which accepts the Exchange's consent tokens. A department's scope policy for the Composite caps what any partner gets from it (token scopes ∩ the Composite's scope policy); see [Data-Sharing Policies](../architecture/data-sharing-policies.md). A denial from a department shows as that source's `denied` status with the registry's reason.
 
 ## Names that must match across installs
 
@@ -68,10 +68,10 @@ The installs only work together if these names match. The defaults match everywh
 
 | Name | Value | Used by |
 | --- | --- | --- |
-| Composite partner ID | `agri-composite` | The Composite (**Composite Partner ID**); its PM entry `PARTNER_AGRI_COMPOSITE` in every PM; the audience of its bindings in the department CMs; the token presenter at the Exchange CM; the trusted presenter at the department CMs |
+| Composite partner ID | `agri-composite` | The Composite (**Composite Partner ID**); its PM entry `PARTNER_AGRI_COMPOSITE` in every PM, with its scope policies in the department PMs; the token presenter at the Exchange CM; the trusted presenter at the department CMs |
 | Consent token issuer | `agri-stack-exchange-cm` | The Exchange CM (issuer); the department CMs (trusted issuer) |
-| Data controllers | `farmer-registry`, `crop-sown-registry` | Each registry (its variant); the grants in a consent; the Composite's registries; the bindings at each CM |
-| Subject ID types | `FAYDA_FAN`, `FARMER_ID` | The use case's input; the CM policies |
+| Data controllers | `farmer-registry`, `crop-sown-registry` | Each registry (its variant); the grants in a consent; the Composite's registries; the data controller of each PM scope policy |
+| Subject ID types | `FAYDA_FAN`, `FARMER_ID` | The use case's input; the PM policies |
 | Exchange domain | `agrix.<parent domain>` | The department CMs find the Exchange CM's public keys there |
 
 ## Pages

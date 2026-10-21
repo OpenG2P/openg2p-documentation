@@ -34,8 +34,10 @@ The registry partner-api then:
 2. **Delegates the decision** — forwards the consent JWS verbatim to the Consent
    Manager's `/validate`, naming itself as the **data controller** (for example
    `farmer-registry`). A partner's consent can cover several registries with one grant
-   each; CM evaluates only this registry's grant against the partner's policy for this
-   registry, and returns a decision, the **effective data scopes** (grant ∩ policy) and
+   each; CM evaluates only this registry's grant against the partner's access policy for
+   this registry (a scope policy held in
+   [Partner Management](../../../../platform/platform-services/partner-management/functional-specifications.md#access-policies),
+   which the CM reads), and returns a decision, the **effective data scopes** (grant ∩ policy) and
    the consent's subject.
 3. **Checks the subject** — the consent's subject must be the person searched. In an
    entity register every returned record's foundational or functional ID must equal it;
@@ -64,7 +66,8 @@ Enforcement is governed by two **independent** switches on the partner-api. Both
 
 The registry's data-controller ID is `global.consentDataController` (set in the
 YAML editor; it is not in the Rancher form), which defaults to the registry variant. It must match
-the controller ID that partners are bound to in the Consent Manager.
+the data controller of partners' scope policies in Partner Management, and of the grants
+in their consents.
 
 A composite service or aggregator calling the registry for a partner signs the request
 with its own key, forwards the partner's consent unchanged, and names the partner in
@@ -80,4 +83,5 @@ env vars and Helm values are listed in
 * [Consent Management](../../../../consent-management/README.md) — the service, its design and APIs
 * [Registry integration (the PEP side)](../../../../consent-management/design/registry-integration.md) — the full contract
 * [Partner integration guide](../../../../consent-management/partner-integration-guide.md) — for partners: onboarding, keys, obtaining consent, signing
+* [Partner Management: access policies](../../../../platform/platform-services/partner-management/functional-specifications.md#access-policies) — what each partner may read from which registry
 * [Partner APIs](../design/partner-apis.md) — the registry's DCI search API

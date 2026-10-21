@@ -41,7 +41,7 @@ VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AU
 
 | Deployment | Audience | Auth | Hosts |
 | --- | --- | --- | --- |
-| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | policy bindings + policy admin, AWE approvals inbox (proxy) + webhook, decisions/audit view |
+| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | decisions/audit view, assisted-consent verification, partner portal API |
 | `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — trust is the partner-signed consent object verified against Partner Management keys (`jti` replay-guarded); registry↔CM is Istio mTLS at transport | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key) |
 | `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination — **scaffolded, `enabled: false`** |
 
@@ -64,10 +64,27 @@ Rendered resources per audience:
 
 Configuration is supplied through `values.yaml` as `CONSENT_MANAGER_*` env vars (database from
 `postgres-init`'s Secret, Keycloak issuer/JWKS, admin role, `.p12` path) — see
-`backend/.env.example` for the full variable list. The data controller / module is a per-binding
-attribute set at onboarding (a partner can have one binding per controller), not a chart value.
-The registry names its controller on each `/validate` call (registry chart value
-`global.consentDataController`).
+`backend/.env.example` for the full variable list. There is no data controller chart value: each
+partner policy in Partner Management names its controller, and the registry names its controller on
+each `/validate` call (registry chart value `global.consentDataController`).
+
+### Partner Management
+
+Partners, their keys and their access policies are read from Partner Management
+([how](../design/partner-management-integration.md)).
+
+| Value (`global.*`) | Default | |
+| --- | --- | --- |
+| `partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | PM partner API (keys and policies) → `CONSENT_MANAGER_PARTNER_MGMT_API_URL`. Empty = nothing can be fetched; every check fails closed |
+| `partnerPolicyCache.ttlSeconds` | `60` | `CONSENT_MANAGER_PARTNER_POLICY_CACHE_TTL_SECONDS` — how long a fetched policy is reused (also capped by PM's `max-age`); an approved policy change applies within this time |
+| `partnerPolicyCache.hardTtlSeconds` | `21600` | `CONSENT_MANAGER_PARTNER_POLICY_HARD_TTL_SECONDS` — while PM is down, the last fetched policy is used this long; then requests are denied `policy_unavailable` |
+| `partnerPolicyCache.negativeTtlSeconds` | `30` | `CONSENT_MANAGER_PARTNER_POLICY_NEGATIVE_TTL_SECONDS` — how long "no policy" (PM `404`) is remembered |
+| `partnerPolicyCache.fetchTimeoutSeconds` | `3` | `CONSENT_MANAGER_PARTNER_POLICY_FETCH_TIMEOUT_SECONDS` — timeout of one call to PM |
+| `partnerManagementUiUrl` | `https://partner-management.<baseDomain>` | **Partner Management UI URL** in Rancher: PM's staff UI, linked from the CM console as **Partners & policies**. Empty = no link |
+| `partnerManagementAdminApiUrl`, `pmSeedClientId` | `http://commons-services-pm-staff-portal-api`, `commons-services-staff-portal` | Used only by the sanity e2e to seed its test partner in PM (below) |
+
+Partner key caching has its own defaulted settings (`CONSENT_MANAGER_PARTNER_KEY_*`, see
+[caching](../design/partner-management-integration.md#caching)).
 
 ### Publishing &amp; Rancher catalog
 
@@ -175,15 +192,18 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 
 * a confidential client **`consent-manager`** (service account enabled) — keycloak-init
   auto-creates a Kubernetes Secret named `consent-manager` holding its `client_secret`;
-* the **`CONSENT_MANAGER_ADMIN`** client role required by the partner/policy admin endpoints;
-* the **`CONSENT_MANAGER_APPROVER`** client role, which opens the approvals inbox and (with AWE on)
-  makes a user an approver of policy widenings;
+* the **`CONSENT_MANAGER_ADMIN`** client role required by the admin endpoints (the decision log);
+* the **`CONSENT_MANAGER_APPROVER`** client role, which lets a user verify assisted consents
+  (approve or reject their evidence);
 * role mappings granting `CONSENT_MANAGER_ADMIN` and `CONSENT_MANAGER_APPROVER` to the `admin` user,
-  and `CONSENT_MANAGER_ADMIN` to the client's own service account (for onboarding automation).
+  and `CONSENT_MANAGER_ADMIN` to the client's own service account.
+
+Partners and their policies are managed in Partner Management, with PM's own role
+(`partner_manager`).
 
 The service itself **validates tokens via JWKS only** — it consumes no client secret. The
 generated `client_secret` exists for *callers*: the registry/PEP obtaining a client-credentials
-token to call `/validate`, and admin automation obtaining a token that carries the admin role.
+token to call `/validate`, and automation obtaining a token that carries the admin role.
 
 ## Partner portal and consent evidence — optional
 
@@ -209,7 +229,7 @@ The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner 
 deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operator:bank-a:PARTNER_OPERATOR
 ```
 
-A partner user's `partner_id` must be the partner's ID as bound in the CM (its policy bindings' audience, e.g. `bank-a`).
+A partner user's `partner_id` must be the partner's audience (e.g. `bank-a`, PM partner `PARTNER_BANK_A`).
 
 ## National ID authentication of the subject (eSignet)
 
@@ -232,16 +252,6 @@ The staff API gets `CONSENT_MANAGER_SUBJECT_AUTH_*` (enabled, provider name, dis
 
 **Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People), so a request for sample person `ETH-IND-0007` uses FAN `946053125409`. For the one-time code it accepts, see the mock identity system's configuration.
 
-## Approval workflow (AWE) — optional
-
-Off by default (`global.aweEnabled: false`): policy changes take effect immediately. Setting it to
-`true` is the only switch needed against the shared AWE in `commons-services`: the chart mints the
-callback HMAC secret, its `awe-callback-seed` Job registers CM's callback secret and seeds the
-approval policy `consent-manager.policy_change.v1` (approvers: holders of
-`CONSENT_MANAGER_APPROVER`) into the AWE database, and the callback / token URLs are derived. Grant
-approvers that role. Details, settings and the state machine:
-[Approval Workflow (AWE) Integration](../design/approval-workflow-integration.md#enabling-awe-approval).
-
 ## Exchange — optional
 
 Off by default: with these values empty nothing is rendered and CM behaves exactly as a standalone
@@ -261,6 +271,7 @@ and query; a department CM accepts them. How the two roles work:
 | `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
 | `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
 | `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token TTL Seconds** — consent-token lifetime, capped by the consent's expiry (default 900) |
+| `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
 | `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `always` (default) or `never` |
@@ -272,15 +283,16 @@ the Composite URL to `https://agri-composite.<this domain>`. Further backend set
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).
 
-**Exchange (`agrix`)** — role `exchange`, and bind each partner
-(e.g. `bank-a`) to each registry with its Exchange policy. Everything is in the commons-services
+**Exchange (`agrix`)** — role `exchange`. Each partner (e.g. `bank-a`) needs a use-case policy in
+the Exchange's Partner Management granting its use cases. Everything is in the commons-services
 form (see the Agri Stack
 [deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
 **Department (`trial`, `dept1`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
-Exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API)
-and bind `agri-composite` at this CM for each of its registries with the department's standing
-policy. The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
+Exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API).
+The Composite (`agri-composite`, PM partner `PARTNER_AGRI_COMPOSITE`) needs a scope policy for each of
+the department's registries in the department's Partner Management: that is the department's
+ceiling ([Exchange consent tokens](../design/exchange-receipts.md#setting-up-a-department-for-the-exchange)). The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
 both stay empty on a standalone install.
 
 ## Horizontal scalability
@@ -293,7 +305,7 @@ The service is designed to scale out under a high rate of consent verification:
   pool_size + headroom`.
 * **No in-process scheduler** — expiry is the external CronJob above, so it fires exactly once per
   tick regardless of replica count; the hot path also lazily expires on read.
-* **Hot-path cache** — partner keys and policies are cached per pod with a short TTL, keeping
+* **Hot-path cache** — partner keys and policies (from Partner Management) are cached per pod with a short TTL, keeping
   `/validate` cheap under load (each pod's cache is independent — safe across replicas).
 * **Idempotent `/validate`** — re-validating the same consent object (`jti`) for the same
   `data_controller` returns the same decision instead of minting duplicates.
@@ -348,12 +360,12 @@ don't want test data:
   is open (no Keycloak), while the staff-api's admin endpoints reject an unauthenticated call.
   Needs no token and **creates no data**. Catches a broken/booting-wrong image immediately.
 * **Full e2e** (`Run Full E2E` / `sanity.runE2e`, **default on**) — ensures a persistent test
-  partner + key exist in **Partner Management** (a `pm-seed` Job registers them if absent), creates a
-  CM policy **binding** to that PM partner on the **staff-api**, signs a consent object with the
-  matching private key, and exercises a real `POST /validate` on the **partner-api** (permit + the
-  `signature_invalid` and `scope_exceeds_policy` denials), then verifies the CM's receipt signature
-  against the partner-api's JWKS. It obtains a client-credentials token from Keycloak (the
-  `consent-manager` client) for the staff calls and **suspends** the test binding afterwards.
+  partner (`PARTNER_CM_SANITY`) exists in **Partner Management** with its key and a scope policy for
+  the sanity data controller (a `pm-seed` Job raises and approves the onboarding, key-update or
+  policy request when something is missing, using the `pmSeedClientId` client), signs a consent
+  object with the matching private key, and exercises a real `POST /validate` on the
+  **partner-api** (permit + the `signature_invalid` and `scope_exceeds_policy` denials), then
+  verifies the CM's receipt signature against the partner-api's JWKS.
   **Turn this off for production** to avoid creating test data; smoke + contract still run and gate.
   Because it runs by default and gates, **Keycloak and Partner Management must be reachable at deploy
   time** — if they aren't, the e2e fails/skips (turn the e2e off, or fix the dependency).

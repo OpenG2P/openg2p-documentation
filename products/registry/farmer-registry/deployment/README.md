@@ -72,7 +72,7 @@ Set these in **Edit YAML**, if at all. In a values file, platform settings sit u
 | --- | --- | --- |
 | `analytics.bulkSample.expectedCountry` | empty | You want bulk generation to fail if Master Data holds another country (e.g. `ETH`) |
 | `analytics.dashboards.superset.required` | `false` | The dashboards must load: the install then fails if Superset is not reachable |
-| `global.consentDataController` | `farmer-registry` | Partners are bound in the Consent Manager under another controller ID. It changes every scope ID |
+| `global.consentDataController` | `farmer-registry` | Partners' scope policies in Partner Management name another data controller ID. It changes every scope ID |
 
 ### Using the Helm CLI
 
@@ -108,4 +108,4 @@ Add `--devel` to install a `0.0.0-develop.N` version.
 ./scripts/uninstall-registry.sh --namespace <namespace> --release fr
 ```
 
-Options include `--keep-iam`, `--keep-dashboards`, `--keep-pvs`, `--force` and `--yes`. It leaves the sanity test partner in Partner Management and the Consent Manager; remove those there if needed.
+Options include `--keep-iam`, `--keep-dashboards`, `--keep-pvs`, `--force` and `--yes`. It leaves the sanity test partner, its key and its access policy in Partner Management; disable it there if needed.

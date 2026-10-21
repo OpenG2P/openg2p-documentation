@@ -1,3 +1,9 @@
+---
+description: >-
+  Partner Management automated tests, a manual smoke test without Keycloak, and
+  the UI build check.
+---
+
 # Testing
 
 ## Automated tests
@@ -23,6 +29,14 @@ Coverage:
 * **Disable/enable** — disabled partners fail-closed on both fetch and JWKS.
 * **Reject** — rejected onboarding is never served, and a decided request cannot
   be approved.
+* **Policies** — onboarding with policies activates version 1 on approval
+  (rejection marks them `rejected`); fetch by data controller and use-case
+  policy; fail-closed `404` for unknown, non-active or policy-less partners;
+  listing by use case; policy requests create new versions that supersede the
+  old, can be rejected or revoke policies; one pending change per data
+  controller (`PM-POLICY-409`); policy requests only for approved partners;
+  audit events; field validation (scopes vs use cases, `name@major`, algorithms,
+  fetch type, ISO-8601 durations) and one policy per controller per request.
 * **Validation** — `GET /metadata` lists the allowed values; unsupported or
   wrong-case algorithms, malformed `partner_id` / `kid`, non-http(s) `jwks_url`,
   unknown or already-revoked `revoke_kids`, and unknown status / request-type
@@ -48,7 +62,9 @@ Then, against `http://localhost:8000`:
 2. `GET /keys/<partner_id>` → `404` (not yet approved).
 3. `POST /partners/requests/<id>/approve`.
 4. `GET /keys/<partner_id>` → `200` with the key; `GET /keys/<partner_id>/jwks.json`.
-5. `POST /partners/<partner_id>/disable` → fetch returns `404` again.
+5. `POST /partners/requests/policy` with a policy, approve it, then
+   `GET /policies/<partner_id>` → `200` with the policy.
+6. `POST /partners/<partner_id>/disable` → key and policy fetch return `404` again.
 
 ## UI
 

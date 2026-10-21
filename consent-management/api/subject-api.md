@@ -21,7 +21,7 @@ List the authenticated subject's consents (right of access). Paginated.
 // GET /my/consents?status=active&page=1&size=20  → 200
 {
   "items": [
-    { "consent_id": "CONSENT-123456", "partner": "Partner A",
+    { "consent_id": "CONSENT-123456", "partner_id": "bank-a",
       "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
       "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
       "status": "active", "valid_until": "2026-05-01T12:02:10Z",

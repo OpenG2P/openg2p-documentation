@@ -25,7 +25,7 @@ Installing the Composite and every chart option (registries, consent mode, use c
 **Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [what the first version does](#what-the-first-version-does) and what it does not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
 {% endhint %}
 
-The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policy and the farmer's consent, and each registry enforces that itself (see [data-sharing policies](../architecture/data-sharing-policies.md)).
+The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policies in Partner Management (the partner's use-case grant, each department's ceiling for the Composite) and the farmer's consent, and each registry enforces that itself (see [data-sharing policies](../architecture/data-sharing-policies.md)).
 
 ## Example configuration (full design)
 
@@ -41,8 +41,8 @@ description: Identity, landholding, recent crops and herd, for credit assessment
 owner: agri-stack-platform
 
 # ── Governance (links, does not grant) ────────────────────────────────────
-policy: credit-assessment             # PM policy; caller must be associated with it
-purpose: credit-assessment            # must be one of the policy's allowed purposes
+policy: credit-assessment             # a label; callers are the partners whose PM use-case policy grants loan-profile@2
+purpose: credit-assessment            # must be allowed by the partners' and departments' PM policies
 consent:
   required: true
   collection: cm-originated           # accepted, not enforced
@@ -51,7 +51,7 @@ consent:
 # ── Input: what the SP sends ──────────────────────────────────────────────
 input:
   subject:
-    id_types: [FAYDA_FAN, FARMER_ID]     # must be within the CM policy's allowed_subject_id_types
+    id_types: [FAYDA_FAN, FARMER_ID]     # must be within the PM policies' allowed_subject_id_types
   parameters:
     seasons: { type: integer, min: 1, max: 4, default: 2 }
   batch: { max_subjects: 1 }             # 1 = one farmer per request
@@ -125,31 +125,31 @@ audit:
 | Section | Purpose | Notes |
 | --- | --- | --- |
 | **Identity** | Name, version and lifecycle status | Partners call `use_case@major`. A breaking change to the response means a new major version, and the old one is deprecated with a sunset date. |
-| **Governance** | Links the use case to a policy, a purpose and the consent settings | The Composite rejects callers not associated with `policy`. The consent settings follow the [consent](../architecture/consent.md). As built, `consent.collection` and `consent.mode` are accepted but not enforced: how consent is checked is one setting for the whole service, in its Helm chart (`exchange`, the default). |
+| **Governance** | The purpose and the consent settings | Who may call is not in the file: partners whose use-case policy in the Exchange's PM grants `name@major`; the Composite rejects any other caller. The consent settings follow the [consent](../architecture/consent.md). As built, `consent.collection` and `consent.mode` are accepted but not enforced: how consent is checked is one setting for the whole service, in its Helm chart (`exchange`, the default). |
 | **Input** | What the partner sends: subject identifier types, parameters, batch size | Checked before any registry is called |
 | **Sources** | One entry per registry: controller, whether it's mandatory, the data scopes it needs (`scopes`) and may use (`optional_scopes`), DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
 | **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the Composite only bundles the parts. |
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet; the Composite enforces a per-pod rate limit itself; and `allowed_partners` in each use case stands in for the policy association. See [what the first version does](#what-the-first-version-does).
+**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet, and the Composite enforces a per-pod rate limit itself. See [what the first version does](#what-the-first-version-does).
 {% endhint %}
 
 ## Checks when a use case is published
 
 A use case moves from `draft` → `validated` → `published` only if all of these pass:
 
-1. The `policy` exists in PM and is active, and `purpose` is one of its allowed purposes.
-2. Each source's `scopes` and `optional_scopes` (earlier `request_scopes`) ⊆ that controller's **approved** section of the policy. A source whose section isn't yet approved can stay in the configuration, but it will always return `denied` until the section is approved.
-3. `input.subject.id_types` ⊆ the policy's allowed subject identifier types.
+1. `purpose` is allowed by the Composite's scope policy (the department's ceiling) in the PM of each department the use case reads.
+2. Each source's `scopes` and `optional_scopes` (earlier `request_scopes`) ⊆ that controller's **approved** ceiling. A source whose scopes aren't yet approved can stay in the configuration, but it returns `denied` until the department approves them.
+3. `input.subject.id_types` ⊆ the ceilings' allowed subject identifier types.
 4. Every `mapping` path refers only to fields covered by the requested scopes, using each registry's published scope-to-field mapping. A use case can't map a field it didn't ask for.
 5. The query templates render valid DCI requests against sample data. The sandbox runs each use case end to end with test fixtures.
 6. The response schema validates against the mapped output.
 
-Publishing is done by the Agri Stack platform team. Because the configuration can't widen access, it doesn't need department approval; the departments have already approved the policy.
+Publishing is done by the Agri Stack platform team. Because the configuration can't widen access, it doesn't need department approval: each department approves its ceiling in its own PM, and each partner's grant of the use case is approved in the Exchange's PM ([who approves what](../architecture/data-sharing-policies.md#who-approves-what)).
 
 {% hint style="info" %}
-**First version:** only check 5 is done, partly: every template is rendered with sample input when the file is loaded, and must produce a valid query. The other checks need policies in PM ([open items](../open-items/README.md)).
+**First version:** only check 5 is done, partly: every template is rendered with sample input when the file is loaded, and must produce a valid query. The other checks are not built yet ([open items](../open-items/README.md)).
 {% endhint %}
 
 ## At runtime and worked example
@@ -160,7 +160,7 @@ How the Composite serves a request, hop by hop (partner checks, consent tokens, 
 
 * **Storage:** configuration files, query templates and schemas are kept in a Git repository, reviewed like code, and loaded by the Composite service. An admin UI is optional.
 * **Sandbox:** each published use case appears in the developer sandbox with its schema, sample request and response, and a test harness.
-* **Adding a use case** (e.g. `input-subsidy-eligibility`) means a new configuration file plus the matching PM policy. No code changes are needed unless the use case requires a new kind of derived field.
+* **Adding a use case** (e.g. `input-subsidy-eligibility`) means a new configuration file, plus use-case policies in the Exchange's PM granting it to partners. No code changes are needed unless the use case requires a new kind of derived field.
 
 {% hint style="info" %}
 **First version:** use cases are YAML entries in the Composite's Helm values, rendered into a ConfigMap and edited in Rancher's **Edit YAML** view (or your own ConfigMap); the sample is also kept in the repository at [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml). There is no sandbox yet.
@@ -175,10 +175,10 @@ How the Composite serves a request, hop by hop (partner checks, consent tokens, 
 ### What it does per request
 
 1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`). Checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the Composite.
-2. Checks the partner is in the use case's `allowed_partners`.
+2. Checks that the partner's use-case policy in the Exchange's PM grants the use case (`name@major`): cached; no grant fails with `partner_not_allowed`, and PM unreadable with nothing cached with `partner_policy_unavailable`.
 3. Validates the input (subject type, parameters) and applies the per-partner rate limit.
 4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source. A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject).
-5. Gets a consent token per registry from the Exchange CM. A deny fails the request; a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
+5. Gets a consent token per registry from the Exchange CM, sending the use case and its purpose so that the CM applies the partner's use-case policy. A deny fails the request; a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
 6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the Composite's key, naming the partner in `header.meta.on_behalf_of` and carrying that registry's consent token. Per-source timeout and retries; overall timeout.
 7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
 8. Sends audit events to the Audit Manager, without ever blocking the request.
@@ -187,10 +187,10 @@ Each registry still decides what it releases ([how departments trust the Exchang
 
 ### Not built yet
 
-* Checks when a use case is published (against PM policies, which PM does not hold yet).
+* Checks when a use case is published (against the departments' ceilings in PM).
 * Data-blind mode.
 * Daily quotas and rate limits across pods (shared counters).
-* Registry endpoints and policies held in PM rather than in configuration.
+* Registry endpoints held in PM rather than in configuration.
 * Calling the crop sources in parallel with the farmer when the partner already sends a Farmer ID.
 * A configuration UI.
 * A machine-readable response schema per use case. The describe endpoint lists output field names only.

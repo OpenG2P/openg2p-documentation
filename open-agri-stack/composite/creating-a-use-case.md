@@ -2,7 +2,7 @@
 description: >-
   Creating a Composite use case, step by step: what the partner needs, the
   use-case file, putting it into the Composite's configuration, checking it
-  loaded, allowing partners, the department policies, and testing. Also how to
+  loaded, granting it to partners, the departments' ceilings, and testing. Also how to
   read a use case in the console.
 ---
 
@@ -14,7 +14,7 @@ A use case is one configuration file the [Composite](README.md) loads; no code c
 
 Write down:
 
-* **Purpose:** why the partner asks (e.g. `credit-assessment`). It goes in the consent and in each Consent Manager policy.
+* **Purpose:** why the partner asks (e.g. `credit-assessment`). It goes in the consent, and the partners' and departments' policies in Partner Management must allow it.
 * **Inputs:** how the farmer is identified ([subject ID types](use-case-configuration.md#subject-id-types)) and any parameters (e.g. a crop year).
 * **Output fields:** what the partner gets back.
 
@@ -50,14 +50,18 @@ Running pods pick up the change within the reload interval (`composite.useCasesR
 
 Only `status: published` is served. If it is missing, check the error on the console or in the Composite's logs.
 
-## Step 5 — Allow partners
+## Step 5 — Grant it to partners
 
-* Add each partner's ID to the use case's `allowed_partners` (step 3 again).
-* At the Exchange CM, give each partner a binding per registry the use case reads and a policy with the use case's scopes and purpose ([Adding a Data Source, step 3](adding-a-data-source.md#step-3-bindings-and-policies-in-the-consent-manager)). The [partner test](../deployment/testing.md#partner-test-public-apis) creates them for its test partner when given the CM admin credentials.
+In the Exchange's Partner Management, add the use case as `name@major` (e.g. `my-use-case@1`) to each partner's **use-case policy**, with the use case's purpose:
 
-## Step 6 — Update the departments' policies for the Composite
+* **A new partner:** in its onboarding request, with its keys.
+* **An onboarded partner:** in a policy request (**Change policy** on the partner's page), as a new version of its use-case policy.
 
-Each department CM has a standing policy for the Composite with the scopes and purposes it may read ([standing policy for the Composite](../architecture/registries.md#standing-policy-for-the-composite)). Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`): it reads the published use cases and widens each policy to cover the new scopes and purpose. Run it after step 4, so the new use case is published.
+Then approve the request under **Requests**. The screens and rules: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies). The [partner test](../deployment/testing.md#partner-test-public-apis) does this for its test partner when given the PM admin credentials (`--use-case`).
+
+## Step 6 — Update the departments' ceilings for the Composite
+
+Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)).
 
 ## Step 7 — Test
 

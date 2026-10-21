@@ -68,8 +68,7 @@ The install Jobs run as Helm post-install and post-upgrade hooks, in hook-weight
 | --- | --- | --- | --- |
 | — | the `iam-register` Job | Registers the registry's roles and permissions in IAM. A regular Job, started with the pods; a failure does not fail the release | always |
 | 10 | `<release>-db-seed` | Registry configuration, sample data, images, templates. Waits for AWE and for Master Data's geography | **Enable DB Seed** (on) |
-| 11 | `<release>-sanity-pm-seed` | Registers the test partner in Partner Management | **Sanity - Run Full E2E** |
-| 12 | `<release>-sanity-cm-seed` | The Consent Manager binding and policy for that partner | **Sanity - Run Full E2E** |
+| 11 | `<release>-sanity-pm-seed` | Registers the test partner in Partner Management, with its key and its scope policy for this registry | **Sanity - Run Full E2E** |
 | 13 | `<release>-sanity-data-seed` | The sanity farmer, Keycloak user and approver rule | **Sanity - Run Full E2E** |
 | 15 | `<release>-registrant-auth-bootstrap` | Sets up the eSignet login farmers use before a credential is issued | credentials on |
 | 16 | `<release>-agent-vc-register` | Registers the Farmer Credential with Inji Certify | credentials on |

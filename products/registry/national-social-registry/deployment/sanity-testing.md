@@ -18,7 +18,7 @@ The two-part test model — what is extension-independent, what is field-specifi
 
 ## What is inherited, what is NSR's
 
-The platform publishes `openg2p/openg2p-registry-sanity-tests` containing the **harness** (signing, DCI envelope building, PM/CM/Keycloak/AWE seeding, DB helpers, step logging, the run entrypoint) and **Set 1 — the extension-independent tests**: liveness and wiring, and the fail-closed cases (a search without consent, with a bad signature, or with an unknown consent audience must all be rejected). Those run unchanged on every registry.
+The platform publishes `openg2p/openg2p-registry-sanity-tests` containing the **harness** (signing, DCI envelope building, PM/Keycloak/AWE seeding, DB helpers, step logging, the run entrypoint) and **Set 1 — the extension-independent tests**: liveness and wiring, and the fail-closed cases (a search without consent, with a bad signature, or with a consent audience that has no access policy in Partner Management must all be rejected). Those run unchanged on every registry.
 
 The NSR image is a thin `FROM` of it that layers on **Set 2 — the field-specific parts**, four files in [`test/sanity`](https://github.com/OpenG2P/national-social-registry/tree/develop/test/sanity):
 
@@ -71,7 +71,7 @@ Because the hooks are ordered, **a db-seed failure stops the chain before the sa
 {% endhint %}
 
 {% hint style="warning" %}
-The e2e seeds a **shared, persistent** test partner in Partner Management and a binding in Consent Manager, and provisions a `sanity-e2e` Keycloak user. These are deliberately left in place after a run so a failure can be inspected. Remove them explicitly when decommissioning an environment.
+The e2e seeds a **shared, persistent** test partner in Partner Management (its key and its access policy for this registry), and provisions a `sanity-e2e` Keycloak user. These are deliberately left in place after a run so a failure can be inspected. Remove them explicitly when decommissioning an environment.
 {% endhint %}
 
 ## Extending the tests

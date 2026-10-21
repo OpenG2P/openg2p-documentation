@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1310" height="880" viewBox="0 0 1310 880" role="img" aria-label="Agri Stack across departments. Each department runs its own Kubernetes cluster behind its own ingress. In the Agriculture Department, which hosts the Composite in this arrangement, the Exchange (partner portal, Consent Manager, Partner Management, eSignet, Composite) and the Farmer Registry are separate installs, each with its own Partner Management, Consent Manager and Audit Manager. Path A: a partner calls the Farmer Registry directly with a consent for it. Path B, distributed registries: the farmer's consent is collected at the Exchange (the farmer logs in with the national ID), the partner's system queries the Composite, which gets a consent token per registry from the Exchange Consent Manager and searches the Farmer Registry and the Crop Sown Registry; each registry checks its consent token at its own Consent Manager, which trusts the Exchange's consent tokens. Path C: the Crop Sown Registry calls the Farmer Registry as one of its partners."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1310" height="880" viewBox="0 0 1310 880" role="img" aria-label="Agri Stack across departments. Each department runs its own Kubernetes cluster behind its own ingress. In the Agriculture Department, which hosts the Composite in this arrangement, the Exchange (partner portal, Consent Manager, Partner Management, eSignet, Composite) and the Farmer Registry are separate installs, each with its own Partner Management (partners, their keys and access policies), Consent Manager and Audit Manager. Path A: a partner calls the Farmer Registry directly with a consent for it. Path B, distributed registries: the farmer's consent is collected at the Exchange (the farmer logs in with the national ID), the partner's system queries the Composite, which gets a consent token per registry from the Exchange Consent Manager and searches the Farmer Registry and the Crop Sown Registry; each registry checks its consent token at its own Consent Manager, which trusts the Exchange's consent tokens. Path C: the Crop Sown Registry calls the Farmer Registry as one of its partners."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .t{font-size:13px;font-weight:600} .s{font-size:11px;fill:#56625B} .lbl{font-size:11px;fill:#56625B}
 .cap{font-size:10.5px;letter-spacing:.07em;fill:#56625B;font-family:'JetBrains Mono',Menlo,monospace}
@@ -66,7 +66,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="s" x="560" y="379" text-anchor="middle">/validate → consent tokens</text>
   <rect class="dpi" x="670" y="330" width="145" height="56" rx="6"/>
   <text class="t" x="742" y="352" text-anchor="middle">Partner Mgmt</text>
-  <text class="s" x="742" y="369" text-anchor="middle">partners onboard here</text>
+  <text class="s" x="742" y="369" text-anchor="middle">partner keys · policies</text>
   <rect class="l2" x="470" y="446" width="180" height="48" rx="6"/>
   <text class="t" x="560" y="466" text-anchor="middle">Catalogue</text>
   <text class="s" x="560" y="482" text-anchor="middle">datasets · geography</text>
@@ -86,7 +86,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="s" x="960" y="379" text-anchor="middle">checks consents, tokens</text>
   <rect class="dpi" x="1065" y="330" width="165" height="56" rx="6"/>
   <text class="t" x="1147" y="352" text-anchor="middle">Partner Management</text>
-  <text class="s" x="1147" y="369" text-anchor="middle">the FR's partners</text>
+  <text class="s" x="1147" y="369" text-anchor="middle">partners, keys, policies</text>
   <rect class="l2" x="875" y="446" width="170" height="48" rx="6"/>
   <text class="t" x="960" y="466" text-anchor="middle">Catalogue</text>
   <text class="s" x="960" y="482" text-anchor="middle">datasets · geography</text>
@@ -103,7 +103,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="cap2" x="867" y="672">CROP SOWN REGISTRY · OWN INSTALL</text>
   <rect class="dpi" x="875" y="696" width="170" height="44" rx="6"/>
   <text class="t" x="960" y="714" text-anchor="middle">Partner Management</text>
-  <text class="s" x="960" y="730" text-anchor="middle">Composite's key · partners</text>
+  <text class="s" x="960" y="730" text-anchor="middle">Composite's key and ceiling</text>
   <rect class="l1" x="1065" y="696" width="165" height="44" rx="6"/>
   <text class="t" x="1147" y="714" text-anchor="middle">Crop Sown Registry</text>
   <text class="s" x="1147" y="730" text-anchor="middle">activity register</text>

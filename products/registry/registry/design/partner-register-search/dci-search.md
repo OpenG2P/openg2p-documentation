@@ -35,7 +35,7 @@ There is no partner-facing discovery API for deployment metadata. Obtain:
 * Partner API base URL
 * Register mnemonic and DCI `reg_record_type`
 * Allowed search fields and identifier-type mappings
-* Consent requirements and data scopes
+* Consent requirements and data scopes, and the partner's access policy (a scope policy for this registry in Partner Management)
 * WebSub hub URL, topic name, and callback secret
 
 Register models and outgoing templates come from the domain extension. The

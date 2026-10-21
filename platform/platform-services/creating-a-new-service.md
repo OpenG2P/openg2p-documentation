@@ -122,13 +122,14 @@ Provision via the chart's **`keycloak-init`** dependency (it creates clients, ro
 
 ***
 
-## 5. Partner keys & caching (partner-facing services)
+## 5. Partner keys, policies & caching (partner-facing services)
 
-Partner **identity and signing keys live in Partner Management (PM)** — do NOT store partner keys locally or poll a partner `jwks_url`. Fetch them from PM and verify locally. Full contract + caching discipline: [Partner Management Integration](../../consent-management/design/partner-management-integration.md).
+Partner **identity, signing keys and access policies live in Partner Management (PM)** — do NOT store partner keys or policies locally or poll a partner `jwks_url`. Fetch them from PM and verify locally. Full contract + caching discipline: [PM Integration — consuming partner keys and policies](partner-management/integration.md).
 
 * Fetch: `GET {partner_mgmt_api_url}/keys/{partner_id}` (also `/keys/{id}/{kid}`, `/keys/{id}/jwks.json`) → PEM + kid + algorithm. **404 = fail-closed reject.**
 * Cache per pod with the full discipline: **soft TTL** (respect the response `Cache-Control: max-age`), **hard TTL** (serve last-known-good during a PM outage, then fail closed), **negative cache** (brief 404 memo), **unknown-kid refresh** (rate-limited, to pick up rotation), **single-flight**.
-* Your service stores only a **binding/reference** to the PM partner (`partner_mgmt_id`, falling back to an audience), plus its own domain data.
+* Your service stores no partner data of its own: it derives the PM partner ID from the caller by the platform convention (`bank-a` → `PARTNER_BANK_A`), plus its own domain data.
+* If you enforce what a partner may ask for, read its **access policy** from PM (`GET {partner_mgmt_api_url}/policies/{partner_id}`) with the same cache discipline. **404 = deny.**
 * Add an **algorithm-confusion guard** (declared alg must equal the PM key's alg).
 * **Use the framework's `PartnerMgmtKeyStore`** rather than writing the fetch and cache yourself; it implements the cache discipline above. On the 1.2.x releases import it from `openg2p_fastapi_common.crypto`; on the framework's `develop` line it moved to `openg2p_fastapi_common.utils.crypto`. Prefer a 1.2.x release; build on `develop` only if you need something not yet released, and then pin `develop` in CI (§11).
 
@@ -136,7 +137,7 @@ Partner **identity and signing keys live in Partner Management (PM)** — do NOT
 
 ## 6. Integration with AWE (if an approval process is involved)
 
-If any action needs human approval, integrate the shared **Approval Workflow Engine** rather than building your own. Full mechanics: [Approval Workflow (AWE) Integration](../../consent-management/design/approval-workflow-integration.md) and [AWE](approval-workflow-engine/).
+If any action needs human approval, integrate the shared **Approval Workflow Engine** rather than building your own. Full mechanics: [AWE](approval-workflow-engine/).
 
 * Make it **opt-in** (`<PREFIX>_AWE_ENABLED`, default **false**). The service must be fully usable with AWE off (the gated action just proceeds immediately).
 * **Caller side**: on the gated action, create the artifact in a `pending` state and `POST {awe}/v1/awe/requests` with a **service token**, `policy_key`, `artifact_type`, `artifact_id`, a context snapshot, `callback_url` and `callback_secret_id`. Apply the terminal decision only on AWE's **HMAC-signed** webhook (`X-Approval-Signature: sha256=` HMAC(secret, `"<ts>.<rawbody>"`), verify over RAW bytes; dedupe on the event id).
@@ -302,8 +303,8 @@ Make each hostname a `global.<name>Hostname` value built from the Base Domain, e
 ## Related pages
 
 * [Identity & Access Management](../../identity-and-access-management/)
-* [Partner Management](partner-management/) · [PM integration (keys + caching)](../../consent-management/design/partner-management-integration.md)
-* [Approval Workflow Engine](approval-workflow-engine/) · [AWE integration](../../consent-management/design/approval-workflow-integration.md)
+* [Partner Management](partner-management/) · [PM integration (keys, policies, caching)](partner-management/integration.md)
+* [Approval Workflow Engine](approval-workflow-engine/)
 * [Audit Manager](audit-manager/)
 * [Staff Portal Application Registration](../../identity-and-access-management/staff-portal-application-registration.md)
 * [Consent Manager](../../consent-management/) — the most complete worked example of every pattern here.

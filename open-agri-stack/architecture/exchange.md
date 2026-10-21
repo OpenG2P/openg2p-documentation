@@ -2,7 +2,7 @@
 description: >-
   The Agri Stack Exchange: where partners onboard once and use one farmer
   consent across registries. Its parts, what it holds and does not hold,
-  partners and their policies, and how departments trust it.
+  partners and their use-case grants, and how departments trust it.
 ---
 
 # The Exchange
@@ -16,8 +16,8 @@ The Exchange is one more install, hosted by one department, next to the registri
 | Part | Product | Role in the Exchange |
 | --- | --- | --- |
 | Partner portal | Part of the [Consent Manager](../../consent-management/README.md) | Partner staff (e.g. bank staff) raise consent requests and record a consent the farmer gives in person |
-| Consent Manager (CM), exchange role | [Consent Manager](../../consent-management/README.md) | Collects and keeps the farmers' consents and the partners' policies; issues a consent token per registry to the Composite |
-| Partner Management (PM) | [Partner Management](../../platform/platform-services/partner-management/README.md) | The identities and public keys of the partners and of the Composite |
+| Consent Manager (CM), exchange role | [Consent Manager](../../consent-management/README.md) | Collects and keeps the farmers' consents; validates them against the partners' policies in PM and issues a consent token per registry to the Composite |
+| Partner Management (PM) | [Partner Management](../../platform/platform-services/partner-management/README.md) | The identities, public keys and access policies of the partners; the Composite's identity and key |
 | eSignet | Commons services | The farmer's national-ID login in the partner portal, before a consent request is submitted. A mock identity system stands in for the national ID system in testing |
 | Composite | [Composite](../composite/README.md) | The partners' entry point |
 | Audit Manager | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | Who asked what: the Composite's audit events |
@@ -31,30 +31,21 @@ In the partner portal, every consent request carries the farmer's Farmer ID besi
 | Holds | Does not hold |
 | --- | --- |
 | The farmers' consents, and the form the farmer signed (evidence) | Any registry, or any farmer data: the Composite keeps nothing after it responds |
-| Each partner's identity, key and policy per registry | Any department's policy: each department decides at its own CM what it releases to the Composite |
+| Each partner's identity, key and use-case policy (in PM) | Any department's ceiling: each department decides in its own PM what it releases to the Composite |
 | The Composite's key and its published use cases | Any partner's key in the departments: they trust the Composite and the Exchange's consent tokens, not each partner |
 
-## Partners and their policies
+## Partners and their use-case grants
 
-A partner onboards in the Exchange's PM with its public key, as `PARTNER_<ID>` (e.g. `PARTNER_BANK_A`). A partner of the Exchange is never onboarded in a department.
+A partner onboards in the Exchange's PM as `PARTNER_<ID>` (e.g. `PARTNER_BANK_A`), with its public key and a **use-case policy**: the use cases it may call (e.g. `loan-profile@1`), with the purposes, subject ID types and consent validity allowed. Both are approved in the Exchange's PM. A partner of the Exchange is never onboarded in a department. A granted use case brings its own scopes, so a partner needs no policy per registry. This holds for consents its staff collect in the partner portal too: there a consent is made for one of the partner's granted use cases ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
 
-For each partner, the Exchange CM holds one **binding** per registry the partner reads, each with its own **policy**:
-
-| Policy field | Example for `bank-a` |
-| --- | --- |
-| Controller | `farmer-registry`, and a second binding for `crop-sown-registry` |
-| Allowed data scopes | At least the scopes the use case requires from that registry ([Farmer Registry](registries.md#farmer-data-the-composite-reads), [Crop Sown Registry](registries.md#crop-data-the-composite-reads)) |
-| Allowed purposes | The use case's purpose, e.g. `credit-assessment` |
-| Allowed subject ID types | `FAYDA_FAN`, `FARMER_ID` |
-
-A partner must also be in the use case's `allowed_partners`. How policy, use case and consent combine: [data-sharing policies](data-sharing-policies.md). Getting onboarded, as a partner: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management).
+How the use-case grant, the consent and each department's ceiling combine, and who approves what: [data-sharing policies](data-sharing-policies.md). Getting onboarded, as a partner: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management).
 
 ## How departments trust it
 
-**To each department, the Exchange is one partner.** The department's PM holds only the Composite's public key, and its CM holds one standing policy for the Composite and trusts the Exchange CM's consent tokens.
+**To each department, the Exchange is one partner.** The department's PM holds only the Composite's public key and its scope policy per registry (the ceiling), and its CM trusts the Exchange CM's consent tokens.
 
-* **Consent tokens.** For each request, the Composite asks the Exchange CM for one signed consent token per registry. A token carries only the scopes in the consent's grant for that registry ∩ the partner's policy for that registry ∩ the scopes the use case asks for. It is short-lived and used for one query.
-* **Each registry still decides.** It verifies the Composite's signature at its own PM, validates its consent token at its own CM, checks that the consent's subject is the person searched, and releases only what its [standing policy for the Composite](registries.md#standing-policy-for-the-composite) also allows. Its CM checks with the Exchange CM that the consent has not been revoked since the token was issued.
+* **Consent tokens.** For each request, the Composite asks the Exchange CM for one signed consent token per registry. The Exchange CM issues them only if the partner's use-case policy grants the use case, and a token carries only the scopes in the consent's grant for that registry ∩ the scopes the use case asks for. It is short-lived and used for one query.
+* **Each registry still decides.** It verifies the Composite's signature at its own PM, validates its consent token at its own CM, checks that the consent's subject is the person searched, and releases only what the [Composite's scope policy](registries.md#scope-policy-for-the-composite) for that registry, in the department's PM, also allows. Its CM checks with the Exchange CM that the consent has not been revoked since the token was issued.
 
 One request, hop by hop: [request flow](request-flow.md). The token format, its status check and the department side: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md).
 
@@ -63,7 +54,6 @@ A registry installed without the Exchange is not affected: it checks partners an
 ## Not built yet
 
 * Consent given in person digitally (no form, no staff step) and self-service consent by the farmer ([consent](consent.md#how-a-farmer-gives-consent)).
-* Policies held in Partner Management rather than in the Consent Manager.
 * A consent collected in the Exchange CM presented directly at a registry, without the Composite.
 
 See [TODOs and open items](../open-items/README.md).

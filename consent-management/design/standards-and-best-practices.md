@@ -55,7 +55,8 @@ the **gap we add**.
   parties.
 * **Gaps closed:**
   * `fetch_type` (`oneshot` / `periodic`), `max_fetch_frequency`, and `data_life` on the
-    [policy](partner-onboarding-and-policy.md#policy-model) and artefact.
+    partner's [access policy](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)
+    (in Partner Management); `fetch_type` also on the artefact.
   * A **purpose-code taxonomy** asserted in the object and capped by policy.
   * **Consent templates** for standardised, comparable consents.
   * **Revocation notification** to all parties + a live status endpoint.
@@ -75,8 +76,8 @@ Beyond the four frameworks, the design adds:
 
 | Gap | Resolution |
 | --- | --- |
-| Symmetric (HS256) signing with a shared secret | **Asymmetric** signing throughout. Partner consent objects are verified with **public keys sourced from Partner Management** (fetched by `partner_mgmt_id` + `kid`, verified locally — the CM keeps no partner-key store); CM **receipts** are signed with the CM's own `.p12` key (EdDSA/ES256/RS256) and published at `/.well-known/jwks.json` |
-| No partner / policy concept | First-class **partner policy binding + versioned data-share policy engine** (identity/keys in PM; widening gated by AWE approval) |
+| Symmetric (HS256) signing with a shared secret | **Asymmetric** signing throughout. Partner consent objects are verified with **public keys sourced from Partner Management** (fetched by partner ID + `kid`, verified locally — the CM keeps no partner-key store); CM **receipts** are signed with the CM's own `.p12` key (EdDSA/ES256/RS256) and published at `/.well-known/jwks.json` |
+| No partner / policy concept | First-class **versioned partner access policies** in Partner Management (with identity and keys; changes approved there), applied by the CM's policy engine on every decision |
 | Registry would interpret consent | Strict **PDP/PEP** split; CM returns effective fields |
 | No non-repudiation | **Append-only signed decision log** + signed receipts |
 | Revocation not propagated | **Status endpoint (OCSP-like) + webhooks** |

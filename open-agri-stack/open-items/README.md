@@ -31,17 +31,15 @@ Functional work, in order, for the first production release. Country data and re
 * **Common farmer identifier** — confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup); with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
 * **Consent held in CM, presented directly at a registry** — without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)). Also decide whether consent spanning registries is always collected in CM. *Design:* [consent](../architecture/consent.md); recommended: always collect it in CM.
 * **More ways to give consent** at the Exchange CM — in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). *Design:* [consent](../architecture/consent.md).
-* **Partner policy within the department's policy** — the Exchange CM refuses a partner policy that grants more than the department's standing policy for the Composite allows, when the policy is created or widened (today the department CM only cuts scopes at request time). *Depends on:* each department publishing its policy for the Composite and its scope catalogue.
 * **Which CM to trust, per partner** — let a department CM choose, per partner, which CM's consent tokens it trusts (today it trusts the Exchange CM for every partner the Composite presents). *Design:* not designed yet.
-* **Policies in Partner Management** — move `PartnerPolicy` from CM to PM, with a section per department, AWE approval per section and partner associations; `/validate` then reads from PM, and the Composite's `allowed_partners` goes. *Design:* [data-sharing policies](../architecture/data-sharing-policies.md).
-* **Who may search across subjects** — searches of activity-register aggregates without a subject (e.g. for a benefit run) checked against a PM policy (a programme's legal basis for bulk access, approved by the department), instead of the partner API's `dci_bulk_aggregate_partners` allow-list. *Depends on:* policies in PM.
+* **Who may search across subjects** — searches of activity-register aggregates without a subject (e.g. for a benefit run) checked against a PM policy (a programme's legal basis for bulk access, approved by the department), instead of the partner API's `dci_bulk_aggregate_partners` allow-list. *Design:* not designed yet ([data-sharing policies](../architecture/data-sharing-policies.md)).
 * **Farmer access to their own records (phase 2)** — a farmer-facing portal or app and beneficiary APIs for the Farmer Registry and Crop Sown Registry, to see their records and request corrections (the CM's beneficiary API is scaffolded). *Design:* not designed yet.
-* **Partner self-service in PM** — partners submit their own onboarding and key-rotation requests (today a PM administrator does both). *Design:* not designed yet.
+* **Partner self-service in PM** — partners submit their own onboarding, key-rotation and policy requests (today a PM administrator files them). *Design:* not designed yet.
 * **Standing permission for a purpose** — a Consent Manager rule for sharing on a mandate instead of consent (registry to registry, e.g. CSR checking a farmer is registered; a yes/no Farmer ID check before consent): one caller, one purpose, narrow scopes, legal basis recorded, every use logged. *Depends on:* the departments agreeing the legal basis.
 
 ## Composite
 
-* **Publish checks** — when a use case is published, check it against PM policies: policy and purpose, scopes within approved sections, subject types, mapping paths within scopes, response schema. *Design:* [checks when a use case is published](../composite/README.md#checks-when-a-use-case-is-published). *Depends on:* policies in PM.
+* **Publish checks** — when a use case is published, check it against the departments' ceilings for the Composite in PM (purpose, scopes, subject types), and its mapping paths and response schema against its scopes. *Design:* [checks when a use case is published](../composite/README.md#checks-when-a-use-case-is-published).
 * **JSON Schema per use case** — an endpoint serving each use case's JSON Schema (`response.schema`, accepted but not used today), and responses validated against it. *Design:* decided as stated; see [use-case configuration](../composite/use-case-configuration.md).
 * **Developer sandbox** — each published use case's schema, sample request and response, and a test harness. *Design:* not designed yet.
 * **Data-blind mode** — each registry encrypts its part to the partner's PM key; the Composite only bundles the parts. *Design:* not designed yet.
@@ -58,8 +56,8 @@ Functional work, in order, for the first production release. Country data and re
 
   *Design:* decided as listed.
 * **Editing use cases in the console** — use cases stored in the Composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run, and who changed what and when (in the database and the Audit Manager). Earlier versions need not be kept. *Design:* decided as stated.
-* **"Give partner X use case Y"** — one console flow: check the partner's key in PM, create its CM policy from the use case's data scopes, add it to the use case's partners. *Design:* decided as stated.
-* **Data scopes for registries a partner calls directly** — list a registry's data scopes in its staff UI and in CM's policy form (the registry staff API has them: `/data_scopes/get_data_scopes`). *Design:* not designed yet.
+* **"Give partner X use case Y"** — one console flow: check the partner's key in PM and raise the PM policy request that adds `name@major` to its use-case policy (approved in PM as usual). *Design:* decided as stated.
+* **Data scopes for registries a partner calls directly** — list a registry's data scopes in its staff UI and in PM's policy form (the registry staff API has them: `/data_scopes/get_data_scopes`). *Design:* not designed yet.
 
 ## Registries
 
@@ -113,7 +111,7 @@ Functional work, in order, for the first production release. Country data and re
   * **Request ID** passed through the Composite, registries and CMs, and recorded in every audit log;
   * **API versioning** and a compatibility promise for the shared APIs (Composite, consent tokens, catalogue, registry partner API);
   * **Usage metering** per partner at the Exchange (later: billing);
-  * **Onboarding a department** as one documented step list: keys in both PMs, the standing policy, its published scope catalogue, its client certificate, the Exchange URLs in its charts.
+  * **Onboarding a department** as one documented step list: keys in both PMs, the Composite's scope policy (the department's ceiling), its published scope catalogue, its client certificate, the Exchange URLs in its charts.
 * **Scripted installs for multi-department setups (later)** — Rancher Fleet (`fleet.yaml` per release, `dependsOn` ordering, `releaseName` `commons` / `commons-services`), Exchange choices as override files, pinned chart versions, one git repo for the Exchange and each department. Trade-offs: changes only through git, secrets outside git, drift correction undoes manual patches. *Design:* decided as stated.
 * **SQLAlchemy dependency at the root** — declare `sqlalchemy[asyncio]` in [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) (and test against 2.1), instead of each service pinning `sqlalchemy[asyncio] >=2.0,<2.1` (SQLAlchemy 2.1 no longer installs `greenlet`). *Depends on:* openg2p-fastapi-common changes, frozen for now.
 * **Migrations run once** — run migrations as a Helm hook Job instead of in every API on start (extension migrations still run unlocked and can collide). *Design:* decided as stated.

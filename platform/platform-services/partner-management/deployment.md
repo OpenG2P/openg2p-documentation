@@ -1,3 +1,9 @@
+---
+description: >-
+  Installing Partner Management — images, Helm chart, key values, routing,
+  migrations, uninstall and configuration.
+---
+
 # Deployment
 
 Partner Management ships a single Helm chart (`partner-management`) with three
@@ -75,6 +81,7 @@ helm install partner-management openg2p/partner-management \
 | `global.auditManagerUrl` | `http://commons-services-auditmanager:80` | Shared Audit Manager (commons-services release). |
 | `staffPortalApi.image.tag` | `develop` | staff-portal-api image tag. |
 | `partnerApi.image.tag` | `develop` | partner-api image tag. |
+| `staffPortalApi.envVars.PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`, `partnerApi.envVars.PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE` | `60` | `Cache-Control` max-age (seconds) on policy-fetch responses; bounds how long callers may use a policy before re-reading it (keys use 300). |
 | `staffPortalUi.image.tag` | `develop` | UI image tag. |
 
 ### Routing
@@ -86,8 +93,9 @@ Each component exposes an Istio `VirtualService` on the **internal** gateway:
 * partner-api — `partner-management-partner-api.<ns>.openg2p.org`
 
 In-cluster consumers reach the **partner-api** directly via its Service DNS
-(`<release>-partner-api`); the key-fetch API is not intended for the public
-internet, which is why it needs no caller signature. The UI reaches the
+(`<release>-partner-api`) to fetch partner keys and access policies; the
+fetch API is not intended for the public internet, which is why it needs no
+caller signature. The UI reaches the
 staff-portal-api server-side via `http://<release>-staff-portal-api`.
 
 ### Migrations
@@ -124,7 +132,8 @@ Flags: `--release`, `--postgres-release`, `--postgres-namespace`, `--keep-pvs`,
 
 ## Configuration reference
 
-The APIs read `PARTNER_MANAGER_*` env vars for their own settings; the
+The APIs read `PARTNER_MANAGER_*` env vars for their own settings (e.g.
+`PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`, default `60`); the
 staff-portal-api additionally reads `COMMON_AUTH_*` (consumed by
 `openg2p-fastapi-auth`) for staff-realm JWT validation. The UI reads `IAM_URL`
 (shared IAM), `STAFF_PORTAL_API_URL` (this release's staff-portal-api),

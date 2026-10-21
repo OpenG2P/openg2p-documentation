@@ -44,10 +44,10 @@ All registries are keyed to the same national identifier (Fayda in the reference
 | Service | Role in Agri Stack |
 | --- | --- |
 | **Catalogues** | All reference data, defined once for the country; registries hold none of their own: datasets (the core datasets plus the agriculture theme of the country pack in use; ETH ships, its crops following the Ministry of Agriculture's crop variety list), geography, sample people. Served by the OpenG2P [Master Data Service](../platform/platform-services/master-data-service/README.md). Versions, approvals and a change feed: see [how MDS works](../platform/platform-services/master-data-service/README.md#key-features) and [open items](open-items/README.md#catalogues) |
-| [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the Composite): identities and public keys. One per install |
-| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent and, today, the data-share policies; `/validate` tells each registry what it may release. One per install; the Exchange's CM collects consents and issues a consent token per registry |
+| [Partner Management (PM)](../platform/platform-services/partner-management/README.md) | Trust root for every participant (partners, registries, the Composite): identities, public keys and access policies (what each partner may ask for), approved there. One per install |
+| [Consent Manager (CM)](../consent-management/README.md) | The farmer's consent; `/validate` checks it against the partner's policy in PM and tells each registry what it may release. One per install; the Exchange's CM collects consents and issues a consent token per registry |
 | **Composite** (in the Exchange) | One generic service that serves approved use cases (e.g. `loan-profile@1`) by querying several registries with one consent and returning one signed response |
-| [Approval Workflow Engine (AWE)](../platform/platform-services/approval-workflow-engine/README.md) | Approval of registers' changes; approval of policies is optional and off by default |
+| [Approval Workflow Engine (AWE)](../platform/platform-services/approval-workflow-engine/README.md) | Approval of registers' changes |
 | [Audit Manager](../platform/platform-services/audit-manager/README.md) | Audit events from every hop, linked by the request ID. One per install |
 
 ## Map of this section
