@@ -17,10 +17,8 @@ verifies and evaluates against the policy its own Partner Management holds for t
 [consent receipt](data-model.md#consent-receipt-kantara-iso-27560) document (Kantara / ISO 27560)
 the CM keeps as the record of a consent (all four terms side by side: [key terms](README.md#key-terms)).
 
-Everything here is **opt-in and off by default**. With the settings empty — every standalone
-install — no new code path runs, `/validate` behaves exactly as before, and the Helm chart renders
-the same manifests. API changes are additive only (optional request fields, an optional response
-field, a new status endpoint, new reason codes).
+Everything here is **opt-in and off by default**. With the settings empty, as in every standalone
+install, none of it runs. Settings: [Deployment](../deployment/README.md#exchange-optional).
 
 ## Why a consent token
 
@@ -32,23 +30,23 @@ The partner's consent and its access policy are held at the Exchange, but each d
 | **Let each registry ask the Exchange CM per request** | Every department depends on the Exchange's live answer, and keeps nothing signed as proof of why it released the data. |
 | **Trust the Composite, capped by the ceiling** | See below. |
 
-**Why trusting the Composite and the ceiling is not enough.** A department could release data to any Composite request, up to its ceiling, with no token. It would lose four things:
+**Why trusting the Composite and the ceiling is not enough.** A department could release data to any Composite request, up to the ceiling it set for the Composite, with no token. It would lose four things:
 
 1. **Proof per farmer.** With a token, the registry releases a farmer's data only on a statement signed by the Exchange CM (another service, another key) naming that farmer, that registry and those scopes. Without it, a bug, a misconfiguration or a compromise of the Composite alone could read every farmer's data up to the ceiling; with tokens, the Composite and the Exchange CM would both have to fail.
 2. **Data minimisation.** The ceiling is the superset of every use case. The token narrows each request to what this farmer consented to for this use case (a declined item is left out). Without it the registry releases everything the ceiling allows and the Composite discards the rest: more personal data leaves the department than the purpose needs.
 3. **The department's accountability.** The department is the data controller for its registry. With tokens, each release is recorded in its own Consent Manager and audit against a consent ID and token ID, so it can show the legal basis for every disclosure. Without them it can show only that the Composite asked.
 4. **Binding to the subject.** The token names the farmer, so a consent for one farmer cannot be used to fetch another. Without it, nothing at the registry checks this.
 
-Tokens cost almost nothing extra: the Composite calls the Exchange CM to check the consent anyway, the tokens are issued in that same call, and departments verify them offline with a cached key.
-
-A consent token avoids both. The Exchange CM checks the partner's policy and the subject's consent once, then signs a short note for **one** registry and **one** query, with only the scopes allowed there. The registry's own CM verifies the signature, checks the token is addressed to it, presented by the named caller (the Composite) and not expired, and applies the **ceiling** its department set for the Composite. So:
+A consent token avoids these problems. The Exchange CM checks the partner's policy and the subject's consent once, then signs a short note for **one** registry and **one** query, with only the scopes allowed there. The registry's own CM verifies the signature, checks the token is addressed to it, presented by the named caller (the Composite) and not expired, and applies the **ceiling** its department set for the Composite. So:
 
 * each department stays sovereign and sees only what concerns it;
 * the partner onboards once, at the Exchange;
 * a token is useless to anyone else and expires within minutes (default 5); once the consent is revoked the Exchange issues no new token, and those already issued lapse within that time;
 * the registry keeps a signed record of why it released the data.
 
-**The trade-off: no live revocation check.** A department checks a token offline and never asks the Exchange whether the consent is still in force. If the farmer revokes a consent, a token issued just before stays usable until it expires: up to the token lifetime (default 5 minutes, never past the consent's own expiry), and only by the Composite, for the one registry and query it was issued for. In exchange, no department depends on the Exchange being up, and no request waits on a call to another organisation. A deployment that needs revocation to apply instantly can shorten the lifetime, or turn on the optional status check (each department then calls the Exchange per token, and refuses tokens while the Exchange is unreachable); see [Department role: accepting](#department-role-accepting) below and the [settings](../deployment/README.md#exchange-optional).
+Tokens cost almost nothing extra: the Composite calls the Exchange CM to check the consent anyway, the tokens are issued in that same call, and departments verify them offline with a cached key.
+
+**The trade-off: no live revocation check.** A department checks a token offline and never asks the Exchange whether the consent is still in force. If the farmer revokes a consent, a token issued just before stays usable until it expires: up to the token lifetime (default 5 minutes, never past the consent's own expiry), and only by the Composite, for the one registry and query it was issued for. In exchange, no department depends on the Exchange being up, and no request waits on a call to another organisation. A deployment that needs revocation to apply at once can shorten the lifetime, or turn on the optional status check (each department then calls the Exchange per token, and refuses tokens while the Exchange is unreachable); see [Department role: accepting](#department-role-accepting).
 
 ## Two roles, one codebase
 
@@ -149,45 +147,32 @@ published on the Exchange's public host only when enabled there, for departments
 When `/validate` receives a JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`):
 
 1. **Issuer** — `iss` must be in `trusted_receipt_issuers`; otherwise deny
-   `receipt_issuer_not_trusted` (also when no issuers are configured — a consent token is never
+   `receipt_issuer_not_trusted` (also when no issuers are configured: a consent token is never
    accepted by default).
-2. **Signature** — verified against the issuer's JWKS (cached `receipt_jwks_cache_ttl_seconds`,
-   refetched — throttled — when the `kid` is unknown, so a key rotation is picked up at once). A bad
-   signature, `alg` mismatch or missing claims → `receipt_invalid`.
-3. **Audience, presenter, time** — `aud` must equal `data_controller` (`audience_mismatch`);
-   `presenter` must equal the caller's `partner_id` (the registry's DCI `sender_id`) and the trusted
-   issuer's configured `presenter`, if set (`presenter_mismatch`); `nbf`/`exp` (`expired`, 30 s
-   clock leeway on `nbf`).
-4. **Status** (optional, **off by default**) — the token is checked offline: signature, issuer,
-   presenter, audience, subject, expiry and ceiling. Tokens are short-lived and issued for one
-   registry and one query; a revocation applies at the Exchange at once (no new tokens) and to issued
-   tokens within their lifetime. With `receipt_status_check: always` the department also `GET`s the
-   token's status at the issuer (cached `receipt_status_cache_ttl_seconds`, default 10 s) — a runtime
-   call to the Exchange CM per token: `revoked`/`expired` deny with that reason; unreachable →
-   `receipt_status_unavailable` (fail closed).
+2. **Signature** — verified against the issuer's JWKS (cached, refetched when the `kid` is unknown,
+   so a key rotation is picked up at once). A bad signature, an `alg` that is not the key's, or a
+   missing claim → `receipt_invalid`.
+3. **Audience, presenter, time, subject** — `aud` must equal `data_controller`
+   (`audience_mismatch`); `presenter` must equal the caller's `partner_id` (the registry's DCI
+   `sender_id`) and the trusted issuer's configured `presenter`, if set (`presenter_mismatch`);
+   `nbf`/`exp` (`expired`, 30 s leeway on `nbf`); `request_context.subject_id` of the same type as
+   `sub` must match it (`subject_mismatch`).
+4. **Status** (optional, **off by default**) — with `receipt_status_check: always` the department
+   also asks the issuer for the token's status (cached 10 s): `revoked` / `expired` deny with that
+   reason; unreachable → `receipt_status_unavailable` (fail closed). Off, the token is checked
+   offline only; see the trade-off [above](#why-a-consent-token).
 5. **Department ceiling** — the **presenter's** (the Composite's, PM partner
    `PARTNER_AGRI_COMPOSITE`) active scope policy for this controller in the department's Partner
-   Management (none → `unknown_partner`; PM unreachable with nothing cached → `policy_unavailable`). Subject type and purpose must be allowed; validity
-   (`consent_issued_at` → `consent_exp`) is checked against `max_validity_duration`; **effective
-   scopes = token `scopes` ∩ policy `allowed_data_scopes`** (∩ `requested_scopes`, if sent).
-6. **Decision** — the normal response (`permit`/`deny`, `effective_data_scopes`, `subject_id` from
-   `sub`, `policy_version`, `consent_id`). A permit mints an artefact (`source: receipt`, valid until
-   the token expires) and a Kantara consent receipt as usual; presenting the same token again
-   returns the stored decision. Every decision on a consent token — permit or deny — logs
-   `receipt_jti` and `receipt_issuer` in the decision log.
+   Management (none → `unknown_partner`; PM unreachable with nothing cached → `policy_unavailable`).
+   Subject type and purpose must be allowed; validity (`consent_issued_at` → `consent_exp`) is
+   checked against `max_validity_duration`; **effective scopes = token `scopes` ∩ policy
+   `allowed_data_scopes`** (∩ `requested_scopes`, if sent).
+6. **Decision** — the normal response (`effective_data_scopes`, `subject_id` from `sub`, the policy
+   reference, `consent_id`). A permit stores an artefact (`source: receipt`, valid until the token
+   expires) and a consent receipt; presenting the same token again returns the stored decision.
+   Every decision on a consent token logs `receipt_jti` and `receipt_issuer`.
 
 The policy's `allowed_signing_algs` governs partner signatures and is not applied to consent tokens
 (the Exchange CM's key is trusted through `trusted_receipt_issuers`).
 
-## Setting up a department for the Exchange
-
-1. Choose the department role (Helm `global.agriStackExchange.role: department`, which trusts the
-   Exchange CM by default; or set `trustedIssuer` yourself, see
-   [Deployment](../deployment/README.md#exchange-optional)).
-2. In the department's **Partner Management**, give the presenter (`agri-composite`, PM partner
-   `PARTNER_AGRI_COMPOSITE`) its key and a **scope policy for each registry** it may read, raised and
-   approved as a PM request: that policy is the department's ceiling on what the Exchange may
-   receive, so it must cover the registry's scopes of every published use case ([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
-   The Agri Stack setup script does this; see
-   [Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
-3. The registry needs no change beyond accepting the presenter as a DCI sender.
+Setting up a department: [Deployment](../deployment/README.md#setting-up-a-department).

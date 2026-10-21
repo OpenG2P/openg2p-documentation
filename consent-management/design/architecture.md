@@ -1,178 +1,66 @@
 ---
 description: >-
-  Architecture of the Consent Manager — the PDP/PEP model, the API-audience
-  split, how partner keys and policies are read from Partner Management, how
-  the registry integrates, and the end-to-end information flow.
+  Architecture of the Consent Manager: the PDP/PEP model, one shared CM per
+  install, the API audiences, and the components.
 ---
 
 # Architecture
 
 ## The PDP / PEP model
 
-The Consent Manager (CM) is a **Policy Decision Point (PDP)**. Any service that holds personal
-data — primarily the OpenG2P Registry — is a **Policy Enforcement Point (PEP)**. The PEP holds
-the data; the PDP holds the consent and policy logic and renders decisions.
+The Consent Manager (CM) is a **Policy Decision Point (PDP)**. A service that holds personal data, primarily an OpenG2P registry, is a **Policy Enforcement Point (PEP)**: it holds the data, asks the CM, and releases only what the CM permits.
 
 ```mermaid
 flowchart LR
-  Partner["Partner / Requesting System"]
-  Registry["OpenG2P Registry (PEP)\nholds the data"]
-  CM["Consent Manager (PDP)\npartner-api · verifies + decides"]
-  PM["Partner Management (PM)\npartners · keys · policies"]
-  Store[("CM stores:\nconsents · artefacts ·\nreceipts · audit")]
+  Partner["Partner"]
+  Registry["Registry (PEP)\nholds the data"]
+  CM["Consent Manager (PDP)\npartner API"]
+  PM["Partner Management\npartners · keys · policies"]
+  Store[("CM database:\nconsents · receipts ·\ndecision log")]
 
-  Partner -->|"1 API call (+ consent_id,\nsigned consent, or none)"| Registry
-  Registry -->|"2 validate(consent, ctx)"| CM
-  CM -->|"read + cache keys and policies"| PM
+  Partner -->|"1 search (+ consent_id,\nsigned consent, or none)"| Registry
+  Registry -->|"2 /validate"| CM
+  CM -->|"keys and policies (cached)"| PM
   CM --> Store
   CM -->|"3 decision + effective_data_scopes"| Registry
-  Registry -->|"4 release only permitted fields"| Partner
+  Registry -->|"4 only the permitted fields"| Partner
 ```
 
-The registry never parses or interprets a consent. It forwards what the partner sent (a consent ID,
-a partner-signed consent object, or nothing — the CM then looks the consent up), receives a decision
-that includes the **effective data scopes**, and releases only their fields.
+The registry forwards what the partner sent (or, with nothing, the person searched), receives a decision with the **effective data scopes** and the consent's subject, and releases only those scopes' fields. The flow and its checks: [Verification & enforcement](verification-and-enforcement.md). The registry side: [Registry integration](registry-integration.md).
 
-CM keeps **no partner records**. Partners, their signing keys and their access policies are owned
-by **Partner Management (PM)**, where changes are approved; the CM reads a partner's policy and
-verifying key from PM's internal partner API and caches them. See
-[Partner Management integration](partner-management-integration.md).
+The CM keeps **no partner records**. Partners, keys and access policies are in Partner Management (PM), where changes are approved; the CM console links to PM's UI (**Partners & policies**). See [Partner Management integration](partner-management-integration.md).
 
-## One shared CM across modules
+## One shared CM per install
 
-A single Consent Manager is deployed **per environment** and shared by every data-holding module
-(farmer registry, social registry, PBMS, …). This keeps the consents, policy evaluation, audit log,
-and signing key central — one consent authority for the whole installation.
-
-There is no single global controller — the same CM serves all modules. A partner's access policies
-in PM name the module (data controller) each is for: a partner that needs data from two modules has
-one scope policy per module, and asks the subject **once**: the consent carries a **grant per
-module** (`grants: [{data_controller, data_scopes}]`). Each registry names itself as
-`data_controller` on `/validate` and is evaluated only on its grant against the partner's policy for
-that module, so a grant for one module never authorises data from another. The single-controller
-consent form remains valid.
+One CM serves every data-holding module of an install (farmer registry, social registry, …), so consents, decisions, audit and the signing key are in one place. There is no global data controller: each registry names itself as `data_controller` on `/validate`, and the CM evaluates only that registry's grant against the partner's policy for that registry.
 
 ## APIs by audience
 
-CM follows the OpenG2P platform **4-API audience pattern**: distinct API audiences — **staff**,
-**beneficiary**, **agent**, **partner** — where the first three authenticate via Keycloak (each in
-its own realm) and the partner audience authenticates via partner keys rather than Keycloak. CM
-today ships a **staff** API and a **partner** API, has a **beneficiary** API scaffolded for a later
-phase, and has **no agent** API.
+The CM follows the platform's **4-API audience pattern**: one image and one Helm chart, a Deployment per audience, selected by `CONSENT_MANAGER_API_AUDIENCE`. There is no agent API.
 
-It is **one Helm chart and one Docker image**, with a separate Deployment/Service per audience —
-selected by the env var `CONSENT_MANAGER_API_AUDIENCE=staff|partner|beneficiary` — each exposed on
-its own hostname.
-
-| Audience | Auth | Hosts |
+| Audience | Auth | Serves |
 | --- | --- | --- |
-| **staff-api** | Keycloak (staff realm; roles `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`; the partner portal API uses the partner realm) | The decisions/audit view; verification of assisted consents; the partner portal API. |
-| **partner-api** | **No Keycloak** — trust is the partner-signed consent object verified against PM keys, replay-guarded by `jti`; registry↔CM secured at transport (Istio mTLS). | The PDP `POST /consent/v1/validate`, consent status, receipts, and `/.well-known/jwks.json`. Mints CM receipts (mounts the `.p12` signing key). |
-| **beneficiary-api** *(later)* | Keycloak (beneficiary realm) | `/my/*` self-service + consent origination. |
-| **agent-api** | — | Not applicable to CM. |
+| **staff** | Keycloak, staff realm (`CONSENT_MANAGER_ADMIN`, `CONSENT_MANAGER_APPROVER`); the partner portal API checks partner-realm tokens | The decision log (console **Access Log**), verification of assisted consents (console **Consent Approvals**), the partner portal API |
+| **partner** | **No Keycloak.** Called in-cluster only (Istio mTLS); a partner-signed consent is verified against PM keys | `/validate`, consent status, consent-token status, receipts, `/.well-known/jwks.json`. Mounts the `.p12` signing key |
+| **beneficiary** | Keycloak, beneficiary realm | `/my/*` (subject rights) and the origination API. **Off by default** |
 
-The hot path (`/validate`) therefore lands on the **partner-api**, which has no Keycloak: it
-verifies the partner-signed object against keys fetched from PM. The audit view and assisted-consent
-verification live on the **staff-api** behind Keycloak.
+Endpoints: [API Reference](../api/README.md). Which paths are reachable from outside the cluster: [Deployment](../deployment/README.md#what-is-reachable-from-outside).
 
 ## Components
 
 | Component | Audience | Responsibility |
 | --- | --- | --- |
-| **Verification API** | partner | Validates an embedded consent object and returns a decision (the hot path). |
-| **Policy Engine** | partner · staff | Evaluates a consent object against the partner's active access policy from PM; computes the effective scope. |
-| **PM Client** | partner · staff | Reads partner verifying keys and access policies from **Partner Management** and caches them per pod; CM stores no partner keys or policies of its own. |
-| **Trust / Signing Store** | partner | The CM's own key pair (`.p12`) for signing receipts. Partner verifying keys are **not** stored here — they come from PM. |
-| **Artefact &amp; Receipt Service** | partner | Produces canonical consent artefacts and CM-signed receipts (JSON-LD). |
-| **Origination Service** | beneficiary *(later)* | The secondary flow — consent requests, OIDC authentication, approval. |
-| **Revocation &amp; Expiry** | partner | Revocation store + status endpoint; background expiry of stale consents. |
-| **Audit / Decision Log** | staff (view) | Append-only, tamper-evident record of every decision and state change. |
-| **Notification Worker** | — | Async notifications to subjects/partners on grant, revoke, and expiry. |
-
-## Primary flow — verify &amp; enforce
-
-The diagram shows the partner-signed case: the partner collected the consent itself and embeds
-the **signed consent object** in its request (allowed only if its policy has
-`allow_partner_consents`). With a consent the CM holds — named by `consent_id`, or found by the
-CM when the request names none — steps 3–4 are skipped. All three paths:
-[Verification & enforcement](verification-and-enforcement.md).
-
-The registry calls the CM **partner-api**, which has no Keycloak; registry↔CM is secured at
-transport (mTLS).
-
-```mermaid
-sequenceDiagram
-  participant P as Partner
-  participant R as Registry (PEP)
-  participant CM as Consent Manager (partner-api / PDP)
-  participant PM as Partner Management
-  participant DB as CM Store
-
-  P->>R: GET /farmer/{id}?... + signed consent_object
-  R->>CM: POST /consent/v1/validate {consent_jws, data_controller, request_ctx}
-  CM->>CM: 1. schema-validate object; select the grant for data_controller
-  CM->>PM: 2. read the partner's policy for data_controller — cached
-  CM->>PM: 3. fetch verifying key (kid) — cached; policy must allow partner consents
-  CM->>CM: 4. verify JWS signature + replay guard per (jti, controller)
-  CM->>CM: 5. audience / subject / purpose checks
-  CM->>CM: 6. effective = consent_scope ∩ policy_scope
-  CM->>DB: 7. revocation + validity check
-  CM->>DB: 8. persist artefact + signed receipt + decision log
-  CM-->>R: {decision: permit, subject_id, effective_data_scopes, receipt_id, ...}
-  R->>R: check subject; project record to effective_data_scopes
-  R-->>P: data (only permitted fields) + receipt_id
-```
-
-If any check fails, the CM returns `decision: deny` with a precise `reason_code`, the registry
-releases nothing, and the denial is still logged.
-
-## Secondary flow — originate consent
-
-When OpenG2P itself collects consent (no pre-existing partner-signed object), the CM drives an
-authentication + approval flow and issues the artefact and receipt.
-
-```mermaid
-sequenceDiagram
-  participant Sub as Subject
-  participant CM as Consent Manager
-  participant IdP as OIDC Provider
-
-  CM->>CM: create ConsentRequest (status=pending)
-  Sub->>IdP: authenticate (OTP / biometric / ...)
-  IdP-->>Sub: ID Token (JWS)
-  Sub->>CM: approve(request_id, id_token, granted_scopes or per-controller grants)
-  CM->>IdP: validate signature + claims (JWKS)
-  CM->>CM: build AuthContext (id_token_hash, verified_claims)
-  CM->>CM: issue ConsentArtefact (status=active)
-  CM->>CM: sign ConsentReceipt (CM private key)
-  CM-->>Sub: artefact + receipt
-```
-
-This is covered in detail in [Consent lifecycle](consent-lifecycle.md).
-
-## Partners and policies
-
-Partner onboarding, key changes and access-policy changes are requested and approved in **Partner
-Management**, not in the CM; the CM console links to PM's UI (**Partners & policies**). An approved
-policy change reaches the CM within its policy cache time; a pending change never affects a
-decision. See [Partner Management integration](partner-management-integration.md).
-
-## Registry integration
-
-The registry's consent-aware data sharing supports two ingestion patterns, both terminating at
-`POST /consent/v1/validate`:
-
-1. **Stored consent** — the individual consented through the CM. The partner names the consent
-   (`consent_id`) or sends none: the CM then finds the partner's active consent for that subject and
-   registry.
-2. **Embedded consent payload** — the partner includes a consent object it collected and signed
-   itself (DCI / UNDP-style), accepted only if its policy allows partner-signed consents. The CM
-   validates it, generates a canonical artefact + signed receipt, stores them, and returns the
-   decision.
-
-{% content-ref url="../../products/registry/registry/features/consent-aware-data-sharing.md" %}
-[consent-aware-data-sharing.md](../../products/registry/registry/features/consent-aware-data-sharing.md)
-{% endcontent-ref %}
+| **Verification** | partner | `/validate`: finds or verifies the consent, applies the policy, returns the decision |
+| **Policy evaluation** | all | Applies the partner's PM policy to a consent; computes the effective scopes. Deterministic |
+| **PM client** | all | Reads partner keys and policies from PM; caches them per pod |
+| **Signing** | partner | The CM's own key (`.p12`): signs receipts and consent tokens; publishes the JWKS |
+| **Artefacts and receipts** | partner · staff · beneficiary | Stores the canonical consent artefact and its CM-signed receipt |
+| **Exchange** | partner | Issues consent tokens (Exchange role) and accepts them (department role); opt-in |
+| **Assisted consent** | staff | Partner portal requests, evidence upload (object storage), the subject's national-ID login, staff verification, the partner's consent record |
+| **Origination and subject rights** | beneficiary | The origination API and `/my/*` |
+| **Decision log** | staff (view) | Append-only record of every decision |
+| **Expiry** | — | A CronJob that marks consents past `valid_until` as expired |
+| **Console** and **partner portal** | — | Web UIs: the staff console (Consent Approvals, Access Log, link to PM) and the partner portal for partner users |
 
 ## Information flow
 

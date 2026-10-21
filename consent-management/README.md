@@ -1,8 +1,9 @@
 ---
 description: >-
-  The OpenG2P Consent Management service — a purpose-built microservice that
-  governs all outbound data sharing from the registry through verifiable,
-  policy-bound, cryptographically provable consent.
+  The OpenG2P Consent Manager: the Policy Decision Point for outbound data
+  sharing. It holds the subject's consent, checks it against the partner's
+  access policy in Partner Management, and tells the registry what it may
+  release.
 ---
 
 # Consent Management
@@ -13,62 +14,55 @@ description: >-
 
 ## Overview
 
-OpenG2P includes a dedicated **Consent Management** microservice (the "Consent Manager", or **CM**) that governs how personal data leaves the registry. The registry never interprets consent itself — it **delegates every consent decision to the CM**.
+The **Consent Manager** (CM) decides whether personal data may leave a registry. The registry never interprets consent: it asks the CM and releases only what the CM permits.
 
-The fundamental rule is simple:
+> **No outbound data is shared from a registry without a permit from the Consent Manager.**
 
-> **No outbound data is shared from the registry without a positive authorization decision from the Consent Manager.**
-
-This service is the system's **Policy Decision Point (PDP)**. The registry — and any other data-holding service — is a **Policy Enforcement Point (PEP)**: it asks the CM "may I release this data?", and releases only what the CM permits.
+The CM is the **Policy Decision Point (PDP)**. A registry, or any other data-holding service, is a **Policy Enforcement Point (PEP)**.
 
 ## Where responsibilities sit
 
-The CM owns **consent only**. Partners and what they may ask for live elsewhere:
-
-* **Partner Management (PM) owns partners, their signing keys and their access policies.** A policy caps what a partner may ever receive (data scopes per registry, or use cases at an Exchange; purposes, validity, …); onboarding, key and policy changes are requested and approved in PM. At verification time the CM **reads the partner's policy and public key from PM** (cached) and verifies the consent object's signature locally. See [Partner Management integration](design/partner-management-integration.md).
-* **The CM owns consents, the PDP decision, receipts and consent tokens.** Receipts are signed with the CM's own `.p12` key and published at `/.well-known/jwks.json` (self-verifying — the CM is **not** a PM partner).
-* **API-audience split.** The CM follows the platform's 4-API audience pattern — **staff** (console: decision log, verification of assisted consents; partner portal API), **partner** (the PDP `/validate`, no Keycloak — called by registries and the Composite inside the cluster over mTLS), and **beneficiary** (subject self-service).
+| Concern | Owner |
+| --- | --- |
+| Partners, their signing keys and their **access policies** (what a partner may ever receive) | **Partner Management (PM)**. Changes are requested and approved there. The CM reads them, cached ([Partner Management integration](design/partner-management-integration.md)) |
+| The subject's **consent**, the decision at `/validate`, consent receipts and consent tokens | **Consent Manager**. Receipts and tokens are signed with the CM's own `.p12` key, published at `/.well-known/jwks.json`; the CM is not a PM partner |
+| The data, its [data scopes](../products/registry/registry/design/data-scopes.md), and releasing only the permitted fields | **The registry** ([Registry integration](design/registry-integration.md)) |
 
 ## What problem it solves
 
-Programmes share beneficiary data with partners (banks, agencies, other registries, interoperability gateways). Doing this safely requires answering, on every request:
+Programmes share beneficiary data with partners (banks, agencies, other registries). On every request someone must answer:
 
 * Is the requester a **known, onboarded party**?
-* Did the **data subject** actually consent, and is that consent still valid?
-* Does the request stay **within the policy** the partner was onboarded under (which fields, which purpose, how long)?
-* Is there **cryptographic, auditable proof** of the decision for later dispute resolution?
+* Did the **subject** consent, and is the consent still valid?
+* Does the request stay **within the partner's policy** (data, purpose, validity)?
+* Is there **signed, auditable proof** of the decision?
 
-The Consent Manager centralises these answers so individual services don't each re-implement consent logic.
+The CM answers these once, for every registry.
 
 ## Two operating modes
 
-The CM supports two complementary modes. The first is the priority.
-
-### 1. Verify &amp; Enforce — _primary_
-
-A partner calls a registry API about a person. The registry asks the CM whether it may answer, passing the consent the partner names: a consent the CM holds (by `consent_id`), **none** (the CM then finds the partner's consent for that person and registry), or a consent object the partner collected and **signed itself** (accepted only if the partner's policy allows it). The CM:
-
-1. finds the consent; for a partner-signed one, verifies its signature against the partner's public key **fetched from Partner Management** (**known-party** check),
-2. evaluates the consent's grant **for that registry** against the partner's **access policy for that registry** in Partner Management (allowed scopes, purpose, validity),
-3. checks it is **not revoked or expired**, and
-4. returns a **decision** containing the **effective data scopes** the registry may release (`grant ∩ partner policy`) and the consent's subject, which the registry checks against what it searches.
-
-One consent can cover **several registries**: the partner asks the subject once and lists a grant per registry (`grants: [{data_controller, data_scopes}]`); each registry validates only its own grant and gets its own receipt. The earlier single-registry consent (`data_controller` + `data_scopes`) still works.
-
-The registry releases only those fields. The CM persists a canonical artefact, a signed receipt, and an immutable decision log.
-
-### 2. Originate — _secondary_
-
-For first-party flows where consent is collected through OpenG2P itself: the CM creates a consent request, the subject authenticates via an OIDC provider, and the CM issues a signed artefact and receipt. Includes revocation and expiry.
+1. **Verify &amp; enforce (primary).** A partner calls a registry about a person. The registry asks the CM, which finds or verifies the consent, applies the partner's policy for that registry, and returns the **effective data scopes**. See [Verification & enforcement](design/verification-and-enforcement.md).
+2. **Originate (secondary).** Consent is collected through the CM itself: in person through the partner portal (a signed form checked by CM staff, optionally the subject's national-ID login), or through the origination API. See [Consent collection](design/consent-collection.md) and [Consent lifecycle](design/consent-lifecycle.md).
 
 ## Design principles
 
-* **Delegated consent.** Data-holding services never interpret consent semantics; they enforce a decision.
-* **Policy-bound consent.** Every partner has an explicit, versioned access policy in Partner Management (one per registry, or one per use case at an Exchange), changed only through approval there. Consent can never exceed the active policy.
-* **Cryptographic proof.** Consents are signed — by the CM, or by the partner for a consent it collected itself (keys sourced from PM); receipts are CM-signed with the CM's own `.p12` key and published via JWKS. Anyone can verify.
-* **Data minimisation &amp; purpose limitation.** The CM returns the intersection of what was consented and what policy allows — never more.
-* **Append-only audit.** Every decision and state transition is logged immutably for non-repudiation.
-* **Standards-aligned.** Built around Kantara/ISO 27560 consent receipts, GDPR data-subject rights, the DEPA / Account-Aggregator artefact model, and DCI + OAuth2/OIDC interoperability.
+* **Delegated consent.** Data-holding services enforce a decision; they never interpret consent.
+* **Policy-bound consent.** Every partner has a versioned access policy in Partner Management. A consent can never exceed it.
+* **Signed proof.** Receipts and consent tokens are signed by the CM; anyone can check them against its public keys.
+* **Data minimisation and purpose limitation.** The CM returns the intersection of what was consented and what the policy allows.
+* **Append-only audit.** Every decision and state change is logged.
+* **Standards-aligned.** Kantara / ISO 27560 receipts, GDPR subject rights, the DEPA artefact model, DCI and OIDC ([Standards](design/standards-and-best-practices.md)).
+
+## Not built yet
+
+* **Beneficiary API deployed by default.** The subject API (`/my/*`) and origination API are built but run on the beneficiary API, which the chart ships disabled. The console's subject pages log in through the staff Keycloak, not with national ID.
+* **Consent scenarios 2 and 3:** the subject approving digitally after the national-ID login, and self-service with a redirect back to the partner ([Consent collection](design/consent-collection.md#scenarios)).
+* **Notifications** to subjects and partners (grant, revoke, expiry; an SMS with a revoke link after digital approval) and revocation webhooks.
+* **A minimum assurance per policy.**
+* **Partner portal:** partner-user management from the portal (staff create users today); a partner-signed API for partners with their own systems.
+* **Evidence:** encryption at rest beyond the object store's, retention and deletion rules.
+* **Receipts:** the controller's name, contact and DPO, retention and jurisdiction are not filled in yet.
+* **Forwarding decisions to the Audit Manager.**
 
 ## How to read this section
 

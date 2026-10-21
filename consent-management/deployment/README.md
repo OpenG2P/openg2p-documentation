@@ -1,7 +1,8 @@
 ---
 description: >-
-  Deploying the Consent Manager — Docker image, Helm chart, Keycloak
-  provisioning, and how the service scales horizontally.
+  Deploying the Consent Manager: images, Helm chart, all settings (Partner
+  Management, signing key, partner portal, national-ID login, Exchange roles),
+  Keycloak provisioning, scaling, and the in-cluster sanity tests.
 ---
 
 # Deployment
@@ -20,9 +21,10 @@ python3 -m openg2p_consent_manager.main migrate
 gunicorn openg2p_consent_manager.main:app --worker-class uvicorn.workers.UvicornWorker ...
 ```
 
-`migrate` is idempotent (`CREATE TABLE IF NOT EXISTS`), so concurrent replicas starting together
-are safe. Published as `openg2p/openg2p-consent-manager` by `.github/workflows/docker-build.yml`,
-tagged from the branch/tag name.
+`migrate` is idempotent (`CREATE TABLE IF NOT EXISTS`), so replicas starting together are safe.
+The workflow `.github/workflows/build-publish.yml` builds and publishes four images to Docker Hub,
+tagged from the branch or tag: `openg2p/consent-manager-api`, `openg2p/consent-manager-ui` (the
+staff console), `openg2p/consent-manager-partner-portal` and `openg2p/consent-manager-sanity`.
 
 ## Helm chart
 
@@ -32,7 +34,8 @@ Chart: `deployment/charts/openg2p-consent-manager/`. Dependencies (from the Open
 | --- | --- |
 | `common` | Shared template helpers (names, labels, image, capabilities). |
 | `postgres-init` | Creates the database, user, and password Secret on the commons Postgres. |
-| `keycloak-init` | Provisions the Consent Manager Keycloak client and admin role (see below). |
+| `keycloak-init` | Provisions the Consent Manager's Keycloak clients and roles ([below](#keycloak-provisioning)). |
+| `keycloak-init` as `partner-keycloak-init` | The partner realm and the partner portal client, only with `partnerPortal.enabled`. |
 
 ### API audiences (one chart, one image, a Deployment per audience)
 
@@ -43,10 +46,12 @@ VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AU
 | --- | --- | --- | --- |
 | `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | Access Log, consent approvals, partner portal API |
 | `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — callers (registries, the Composite) reach it in-cluster over Istio mTLS; partner-signed consent objects are verified against Partner Management keys (`jti` replay-guarded) | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key). In cluster only, except the JWKS ([below](#what-is-reachable-from-outside)) |
-| `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination — **scaffolded, `enabled: false`** |
+| `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination. **Off** (`enabled: false`) |
 
 `extraApis[]` entries are merged over `consentManagerApi`, so each only states its differences
-(audience, auth, signing, hostname). Only the **partner-api** mounts the signing key.
+(audience, auth, signing, hostname). Only the **partner-api** mounts the signing key. The chart also
+runs the staff **console** (`ui.*`, on the staff host) and, with `partnerPortal.enabled`, the
+**partner portal** (`partnerPortal.*`).
 
 Rendered resources per audience:
 
@@ -81,7 +86,7 @@ as does the sanity suite.
 | Value | Default | Routed |
 | --- | --- | --- |
 | `partnerApi.publicPaths` | `[/.well-known/jwks.json]` | The CM's public keys: departments on other clusters check consent tokens with them, partners check their consent record |
-| `partnerApi.exposeReceiptStatus` | `false` | `GET /consent/v1/receipts/{jti}/status` only (not the receipts themselves). Turn on at the Exchange only when a department sets **Token Status Check** to `always`. Rancher: **Expose Token Status Endpoint** (Exchange group, exchange role) |
+| `partnerApi.exposeReceiptStatus` | `false` | `GET /consent/v1/receipts/{jti}/status` only (not the receipts themselves). Turn on at the Exchange only when a department sets **Token Status Check** to `always`. Rancher: **Expose Token Status Endpoint** (Exchange group) |
 
 ### Partner Management
 
@@ -100,7 +105,7 @@ Partners, their keys and their access policies are read from Partner Management
 
 What these times mean for policy changes and PM outages: [caching](../design/partner-management-integration.md#caching).
 
-**Changing them:** `ttlSeconds` and `hardTtlSeconds` are in the Rancher form (**Partner Management** group: **Partner Policy Cache TTL**, **Partner Policy Hard TTL**). The hard TTL is a trade-off during a PM outage: a revoked partner can still get through for up to that long; shorter stops it sooner but refuses everyone sooner. The others: **Edit YAML** on the release, `global.partnerPolicyCache.*`. Installed through Commons Services, set them under `global.partnerPolicyCache` in its values; the CM picks them up on upgrade.
+**Changing them:** `ttlSeconds` and `hardTtlSeconds` are in the Rancher form (**Partner Management** group: **Partner Policy Cache TTL**, **Partner Policy Hard TTL**); the others through **Edit YAML**, `global.partnerPolicyCache.*` (through Commons Services, under its `global.partnerPolicyCache`).
 
 Partner keys are cached the same way, with settings that have no chart value of their own; to change one, add it under `consentManagerApi.envVars` in **Edit YAML**:
 
@@ -114,13 +119,11 @@ Partner keys are cached the same way, with settings that have no chart value of 
 
 ### Publishing &amp; Rancher catalog
 
-The `.github/workflows/helm-publish.yml` workflow (mirroring the other OpenG2P services) packages
-the chart and pushes it to the **central `openg2p/openg2p-helm`** repo's `gh-pages` branch, then
-merges it into that repo's `rancher/index.yaml`. The chart carries the
-`openg2p.org/add-to-rancher` annotation plus a `questions.yaml` form and `app-readme.md`, so it
-surfaces in the **Rancher catalog**. Publishing runs only from the `OpenG2P` org and requires the
-`OPENG2P_BOT_GITHUB_PAT` secret; chart versions are derived from the branch
-(`develop` → `0.0.0-develop.<run>`, `N.N.N` → frozen release).
+The same `build-publish.yml` workflow (the shared OpenG2P packaging workflow) packages the chart and
+publishes it to the central `openg2p/openg2p-helm` repository and its Rancher catalog; the chart
+carries the `openg2p.org/add-to-rancher` annotation and a `questions.yaml` form. Chart versions
+follow the branch or tag: `develop` → `0.0.0-develop.<run>`, `N.N` → `N.N.0-develop.<run>`,
+`N.N.N` → `N.N.N`.
 
 ### Signing key (`.p12`)
 
@@ -218,14 +221,12 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 
 * a confidential client **`consent-manager`** (service account enabled) — keycloak-init
   auto-creates a Kubernetes Secret named `consent-manager` holding its `client_secret`;
+* a public client **`consent-manager-ui`** for the console;
 * the **`CONSENT_MANAGER_ADMIN`** client role required by the admin endpoints (the Access Log);
 * the **`CONSENT_MANAGER_APPROVER`** client role, which lets a user verify assisted consents
   (approve or reject their evidence);
 * role mappings granting `CONSENT_MANAGER_ADMIN` and `CONSENT_MANAGER_APPROVER` to the `admin` user,
   and `CONSENT_MANAGER_ADMIN` to the client's own service account.
-
-Partners and their policies are managed in Partner Management, with PM's own role
-(`partner_manager`).
 
 The service **validates tokens via JWKS only**. The generated `client_secret` is used for
 client-credentials tokens: by the staff API to read [Master Data code lists](#master-data-code-lists),
@@ -241,11 +242,11 @@ The partner portal lets partner users (a partner's own employees) collect consen
 
 | Value | Default | |
 | --- | --- | --- |
-| `partnerPortal.enabled` | `false` | The portal SPA (`consent-partner-portal.<namespace>.openg2p.org`), the partner realm in Keycloak, and evidence storage |
+| `partnerPortal.enabled` | `false` | The portal (`consent-partner-portal.<baseDomain>`), the partner realm in Keycloak, and evidence storage |
 | `partnerPortal.requiredSubjectIdentifiers` | `[]` | Other identifiers every request must carry besides the subject ID, e.g. `[FARMER_ID]` in Agri Stack; staff confirm them in the registry before approving ([identifiers and demographics](../design/consent-collection.md#identifiers-and-demographics)) |
-| `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<namespace>.openg2p.org` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
+| `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<baseDomain>` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
 | `partnerPortal.compositeUrl` | empty | Optional: a Composite URL; the portal then shows its use cases and pre-fills requests from them (the Composite must allow the portal's origin: `composite.corsAllowOrigins`) |
-| `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files; the commons Garage init job creates the bucket |
+| `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files (PDF, JPEG, PNG; up to 10 MB each); the commons Garage init job creates the bucket |
 
 The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
 
@@ -290,7 +291,7 @@ Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner 
 
 The staff API gets `CONSENT_MANAGER_SUBJECT_AUTH_*` (enabled, provider name, discovery URL, client ID, redirect URI, ACR, ID types, key path). Further backend settings, defaulted: `subject_auth_scope` (`openid profile`), `subject_auth_claims`, `subject_auth_subject_claim` (`individual_id`), `subject_auth_stored_claims` (`[name]`), `subject_auth_session_ttl_seconds` (300).
 
-**Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People), so a request for sample person `ETH-IND-0007` uses FAN `946053125409`. For the one-time code it accepts, see the mock identity system's configuration.
+**Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People); use a sample person's national ID as the request's subject ID. For the one-time code it accepts, see the mock identity system's configuration.
 
 ## Exchange — optional
 
@@ -314,7 +315,7 @@ and query; a department CM accepts them. How the two roles work:
 | `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status (if checked) is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#department-role-accepting)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#why-a-consent-token)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
 
 Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
 demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner
@@ -324,16 +325,21 @@ the Composite URL to `https://agri-composite.<this domain>`. Further backend set
 `receipt_fetch_timeout_seconds` (3).
 
 **Exchange (`agrix`)** — role `exchange`. Each partner (e.g. `bank-a`) needs one policy per use case
-it calls in the Exchange's Partner Management. Everything is in the commons-services
-form (see the Agri Stack
-[deployment guide](../../open-agri-stack/deployment/exchange.md)).
+it calls in the Exchange's Partner Management. Everything is in the commons-services form (see the
+Agri Stack [deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
-**Department (`trial`, `dept1`)** — role `department` (set **Exchange Domain** or the JWKS URL if the
-Exchange is not at `agrix.<parent domain>`; it must be reachable from this CM's partner API).
-The Composite (`agri-composite`, PM partner `PARTNER_AGRI_COMPOSITE`) needs a scope policy for each of
-the department's registries in the department's Partner Management: that is the department's
-ceiling ([Exchange consent tokens](../design/exchange-receipts.md#setting-up-a-department-for-the-exchange)). The migration adds two nullable columns to `decision_logs` and an `issued_receipts` table;
-both stay empty on a standalone install.
+### Setting up a department
+
+1. Set **Exchange Role** `department` (`global.agriStackExchange.role`). It trusts the Exchange CM
+   (`agri-stack-exchange-cm`, presenter `agri-composite`) at `agrix.<parent domain>`; set
+   **Exchange Domain** or **Trusted Issuer JWKS URL** if the Exchange is elsewhere. The JWKS must be
+   reachable from this CM's partner API.
+2. In the department's **Partner Management**, give the presenter (`agri-composite`, PM partner
+   `PARTNER_AGRI_COMPOSITE`) its key and a **scope policy for each registry** it may read, raised and
+   approved as a PM request. That policy is the department's ceiling on what the Exchange may
+   receive, so it must cover the registry's scopes of every published use case. The Agri Stack
+   setup script does this ([Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md)).
+3. The registry needs no change beyond accepting the presenter as a DCI sender.
 
 ## Horizontal scalability
 
@@ -345,10 +351,8 @@ The service is designed to scale out under a high rate of consent verification:
   pool_size + headroom`.
 * **No in-process scheduler** — expiry is the external CronJob above, so it fires exactly once per
   tick regardless of replica count; the hot path also lazily expires on read.
-* **Hot-path cache** — partner keys and policies (from Partner Management) are cached per pod with a short TTL, keeping
-  `/validate` cheap under load (each pod's cache is independent — safe across replicas).
-* **Idempotent `/validate`** — re-validating the same consent object (`jti`) for the same
-  `data_controller` returns the same decision instead of minting duplicates.
+* **Hot-path cache** — partner keys and policies are cached per pod, so `/validate` rarely calls
+  Partner Management ([caching](../design/partner-management-integration.md#caching)).
 
 ## Database
 

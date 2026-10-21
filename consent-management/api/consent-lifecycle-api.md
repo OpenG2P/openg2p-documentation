@@ -1,16 +1,18 @@
 ---
 description: >-
-  The origination API — create a consent request, bind an authentication
-  context from an OIDC ID token, approve or deny, and revoke.
+  The origination API: create a consent request, bind an authentication
+  context from an OIDC ID token, approve or deny, and revoke. Runs on the
+  beneficiary API (off by default).
 ---
 
 # Consent Lifecycle API
 
-Endpoints for the secondary **origination** flow, where OpenG2P collects consent directly. See
-[Consent lifecycle](../design/consent-lifecycle.md) for the flow and rules.
+Endpoints for the **origination** flow, where the CM collects consent itself. Flow and rules:
+[Consent lifecycle](../design/consent-lifecycle.md). They run on the **beneficiary API**, off by
+default. (Assisted consent through the partner portal uses the
+[partner portal endpoints](README.md#partner-portal-endpoints) instead.)
 
-**Auth:** origination client credentials; the `authenticate` and `approve` steps additionally
-require the subject's authentication. **Base path:** `/consent/v1`.
+**Auth:** Keycloak bearer token. **Base path:** `/consent/v1`. Errors: `{"error": "<message>"}`.
 
 ## `POST /consent-requests`
 
@@ -39,26 +41,30 @@ Give **exactly one** of:
     { "data_controller": "crop-sown-registry", "data_scopes": ["crop-sown-registry.crop_season"] }
   ] }
 // response 201
-{ "request_id": "req-123", "status": "pending", "created_at": "2025-05-01T11:55:00Z" }
+{ "id": "3c9d…", "subject_id_type": "national_id", "subject_id_value": "FARMER_1234",
+  "partner_id": "bank-a", "controller_id": "farmer-registry",
+  "purpose": { "code": "share_farm_profile", "text": "..." },
+  "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
+  "grants": null, "use_case": null, "status": "pending",
+  "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z",
+  "created_at": "2025-05-01T11:55:00Z" }
 ```
 
-The response also echoes `controller_id` (null when there are several grants), `requested_scopes`
-(the union, for a grants request) and `grants`.
+For a grants request `controller_id` is null (several grants), `requested_scopes` is the union, and
+`grants` lists each with its policy reference.
 
-Returns `422` with `scope_exceeds_policy` if the request can never be satisfied under the
-partner's policy (naming the controller), or if the partner has no active policy in Partner
-Management for a requested controller; `503` if Partner Management cannot be reached.
+`422` if a requested scope is outside the partner's policy (`scope_exceeds_policy for
+data_controller '…'`) or the partner has no active policy for a requested controller; `503` if
+Partner Management cannot be reached.
 
 **By use case (exchange role).** On a CM in the [exchange role](../design/exchange-receipts.md),
-a request **must** name a `use_case` (`name@major`) and no grants: the consent is made for that
-use case. A request with `grants` or `data_controller` + `requested_scopes` is refused (`400`, "at
-the Exchange, consents are made for a use case"). The partner must have a policy for that use case in
-Partner Management — one policy per use case (else `422` `use_case_not_granted`); the grants (each
-registry with the use case's scopes) and the purpose are the use case's, read from the Composite;
-`purpose`, if sent, must be the use case's. That policy's purposes, subject ID types and longest
-validity apply. The request and the consent carry
-`use_case`; on approval each grant is narrowed to the use case's scopes at that time, and the
-consent is valid at `/validate` only for that use case. `503` if the Composite cannot be reached.
+a request **must** name a `use_case` (`name@major`) and nothing else to share (without it: `400`;
+with `grants`, `data_controller` or `requested_scopes` beside it: `422`). The partner must have a
+policy for that use case in Partner Management (else `422` `use_case_not_granted`). The grants and
+the purpose are the use case's, read from the Composite; `purpose`, if sent, must be the use case's.
+That policy's purposes, subject ID types and longest validity apply. On approval each grant is
+narrowed to the use case's scopes at that time; the consent serves only that use case. `503` if the
+Composite cannot be reached. Outside the exchange role, `use_case` is refused (`422`).
 
 ```json
 { "subject_id": { "type": "FAYDA_FAN", "value": "1234567890" },
@@ -67,7 +73,7 @@ consent is valid at `/validate` only for that use case. `503` if the Composite c
 
 ## `GET /consent-requests/{request_id}`
 
-Return the request and its current status (`pending` / `approved` / `denied` / `expired`).
+The request, as created, with its current status (`pending`, `approved`, `denied`). `404` if unknown.
 
 ## `POST /consent-requests/{request_id}/authenticate`
 
@@ -82,23 +88,24 @@ signature and claims against the IdP JWKS and stores only the token hash.
   "auth_method": "otp" }
 ```
 
-Returns `401` with `signature_invalid` / `audience_mismatch` / `expired` if the token fails
-validation.
+`401` if the token fails validation (`ID token validation failed: …`); `403` if its subject is not
+the request's; `409` if the request is not `pending`.
 
 ## `POST /consent-requests/{request_id}/approve`
 
-Approve the request, choosing which scopes to grant. Requires an existing auth context. The CM
-issues a signed artefact + receipt.
+Approve the request, choosing which scopes to grant. Requires an auth context. The CM stores the
+consent and signs its receipt, and returns the consent.
 
 ```json
 // request — one controller
 { "granted_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"] }
 // request — a grants request: the subject approves per registry
 { "grants": [ { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details"] } ] }
-// response 201
-{ "consent_id": "CONSENT-123456", "receipt_id": "RECEIPT-998877",
+// response 201: the consent, as in GET /my/consents
+{ "id": "5b0e…", "consent_id": "5b0e…", "partner_id": "bank-a",
+  "controller_id": "farmer-registry",
   "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
-  "status": "active", "valid_until": "2026-05-01T12:02:10Z" }
+  "status": "active", "source": "originated", "valid_until": "2026-05-01T12:00:00Z", "...": "..." }
 ```
 
 * Give exactly one of `granted_scopes` or `grants`. `granted_scopes` must be a subset of the
@@ -112,8 +119,8 @@ issues a signed artefact + receipt.
   entry per grant.
 * `409` if the request is not `pending`; `412` if no auth context exists.
 
-An originated consent is used at `/validate` by its `consent_id`, or found by lookup when the
-partner sends none ([Verification API](verification-api.md#consent-by-lookup)).
+The consent's receipt is at [`GET /consent/v1/receipts/{receipt_id}`](verification-api.md) (partner
+API) and [`GET /my/receipts/{receipt_id}`](subject-api.md).
 
 ## `POST /consent-requests/{request_id}/deny`
 
@@ -122,15 +129,13 @@ Deny the request. No artefact or receipt is created.
 ```json
 // request
 { "reason": "subject declined" }
-// response 200
-{ "request_id": "req-123", "status": "denied" }
+// response 200: the request, with "status": "denied"
 ```
 
 ## `POST /consent/v1/consents/{consent_id}/revoke`
 
-Revoke an active consent (callable by controller/partner integrations; subjects use the
-[Subject API](subject-api.md)). Writes an append-only revocation record and enqueues
-notifications.
+Revoke an active consent, for the controller or partner (`originated_by`, default `controller`);
+subjects use the [Subject API](subject-api.md). Writes a revocation record.
 
 ```json
 // request
@@ -139,9 +144,9 @@ notifications.
 { "consent_id": "CONSENT-123456", "status": "revoked", "revoked_at": "2025-07-01T10:00:00Z" }
 ```
 
-`409` if the consent is already `revoked` or `expired`.
+`409` if the consent is already `revoked` or `expired`; `404` if unknown.
 
 ## Expiry
 
-Expiry is automatic — a scheduled job moves artefacts past `valid_until` to `expired` and notifies
-the subject; validation also lazily treats them as expired. There is no expiry endpoint.
+There is no expiry endpoint: a CronJob marks consents past `valid_until` as `expired`, and
+`/validate` checks validity itself ([Consent lifecycle](../design/consent-lifecycle.md#expiry)).

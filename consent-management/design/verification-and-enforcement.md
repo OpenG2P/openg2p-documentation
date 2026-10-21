@@ -1,268 +1,145 @@
 ---
 description: >-
-  The primary flow — a registry asks the Consent Manager whether it may answer
-  a partner (by a consent the CM holds, found by lookup, or partner-signed);
-  the CM checks it against the partner's access policy from Partner Management
-  (including the Exchange's use-case mode) and returns the effective scopes.
+  The primary flow: a registry asks the Consent Manager whether it may answer a
+  partner. The kinds of consent a request can carry, the validation pipeline,
+  how the partner's policy from Partner Management is applied, use-case mode,
+  and consent by lookup.
 ---
 
 # Verification & enforcement
 
-This is the **primary** use case. A partner calls a registry API about a person; the registry enforces, the Consent Manager (CM) decides. The partner's request names the consent in one of three ways:
-
-| The partner sends | The registry passes to `/validate` | Notes |
-| --- | --- | --- |
-| A consent the CM holds (collected through the CM) | `consent_id` | No signature or replay check: the CM checks the stored consent (partner, subject, grant, active, valid now), then narrows it to the partner's current policy |
-| Nothing | Only the subject | The CM [looks the consent up](#consent-by-lookup-at-a-registry) by partner, subject and registry; none → `consent_not_found` |
-| A consent object it collected and **signed itself** | `consent_jws` | Only if its policy has `allow_partner_consents` (step 2b); the full pipeline below |
-
-The pipeline below is written for the partner-signed object, the longest path.
-
-## Roles
-
-* **Registry (PEP)** — holds the data, passes the partner's consent (or the subject, for a lookup) to the CM, and releases only the fields the CM returns. It does not interpret consent.
-* **Consent Manager (PDP)** — finds or verifies the consent, applies the partner's access policy (read from [Partner Management](partner-management-integration.md)), and returns a decision with the **effective data scopes**.
+A partner calls a registry about a person. The registry calls its Consent Manager's `POST /consent/v1/validate`, naming itself as `data_controller`. The CM decides and returns the **effective data scopes**; the registry releases only their fields ([Registry integration](registry-integration.md)). Request and response fields: [Verification API](../api/verification-api.md).
 
 ## What a request carries, and how the CM treats it
 
-A registry never decides which kind of consent a caller uses: it passes whatever came with the request, or nothing, to its CM's `/validate`. There are no partner types; the CM tells the cases apart by the request itself and by its own settings:
+A registry never decides which kind of consent a caller uses: it passes whatever came with the request, or nothing. There are no partner types; the CM tells the cases apart by the request and by its own settings.
 
 | The request carries | Treated as | Accepted when |
 | --- | --- | --- |
-| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md)) | This CM's Exchange Role is `department`, the token's issuer is its trusted Exchange CM, and the token's `presenter` is the caller and the configured trusted presenter (the Composite) |
-| `consent_id` | A consent this CM holds, named by ID | The consent is the caller's, active and valid |
-| No consent | A **lookup** of a consent this CM holds ([below](#consent-by-lookup-at-a-registry); [use-case mode](#use-case-mode) at an Exchange) | This CM holds an active consent of that partner for that subject and registry (or use case) |
-| Any other JWS | A **partner-signed consent** | The partner's policy has `allow_partner_consents` |
+| `consent_id` | A consent this CM collected (originated), named by ID | It is the partner's, active, valid now, and has a grant for the caller ([below](#a-consent-the-cm-holds)) |
+| No consent | A **lookup** of a consent this CM holds ([at a registry](#consent-by-lookup-at-a-registry); [in use-case mode](#use-case-mode)) | This CM holds an active consent of that partner for that subject and registry (or use case); none → `consent_not_found` |
+| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md#department-role-accepting)) | This CM trusts the token's issuer, and the token's `presenter` is the caller |
+| Any other JWS (`consent_jws`) | A **partner-signed consent**: one the partner collected and signed itself | The partner's policy sets `allow_partner_consents`; the [pipeline](#validation-pipeline-partner-signed-consent) passes |
 
-So the Composite, at a department, in practice always presents consent tokens: the farmer's consent is held by the Exchange CM, not the department's (a lookup finds nothing), and the Composite's policy there does not allow partner-signed consents. A department's own partners send nothing and rely on the lookup. Where this is configured: the department's **Exchange Role**, **Trusted Token Issuer** and **Trusted Token Presenter** ([deployment](../deployment/README.md#exchange-optional)), and each partner's policy in Partner Management.
+So at a department the Composite presents consent tokens: the farmer's consent is held by the Exchange CM, not the department's, and the Composite's policy there does not allow partner-signed consents. A department's own partners send nothing and rely on the lookup.
 
-## Request shape
+**One consent, one grant per registry.** A consent lists a grant per registry (`grants: [{data_controller, data_scopes}]`). Each registry is evaluated **only on its grant**, against the partner's **policy for that registry**. The single-registry form (`data_controller` + `data_scopes`) is accepted as one grant.
 
-For a partner-signed consent, the partner embeds the consent object in its call (e.g. a `consent` body field, or per the interop protocol) and the registry forwards it unchanged to the CM's `/validate` endpoint. `/validate` is on the **partner API** and requires **no Keycloak token** — a partner-signed object is verified with keys from Partner Management plus the `jti` replay guard; the registry↔CM hop is transport-secured (Istio mTLS).
+## Validation pipeline (partner-signed consent)
 
-```
-POST /consent/v1/validate
-{
-  "consent_jws": "eyJhbGciOiJFZERTQS...<compact JWS>...",
-  "partner_id": "bank-a",
-  "data_controller": "farmer-registry",
-  "request_context": {
-    "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
-    "subject_id": { "type": "national_id", "value": "FARMER_1234" }
-  }
-}
-```
-
-The consent object is a **compact JWS** (RFC 7515); the CM recovers the claims from its payload and verifies the signature against the partner's Partner-Management key referenced by the JWS `kid`.
-
-**One consent, one grant per registry.** A partner asks the subject once for everything it needs; the consent lists a grant per registry (`grants: [{data_controller, data_scopes}]`). Each registry sends its own `data_controller` and is evaluated **only on its grant**, against the partner's **policy for that registry**. The earlier single-registry form (`data_controller` + `data_scopes` in the claims) is still accepted as one grant. See the [Verification API](../api/verification-api.md) for the claim shapes and examples.
-
-`requested_scopes` lets the CM intersect three sets: what the partner is **asking for now**, what the subject **consented to** (for this registry), and what **policy allows** (for this registry).
-
-## Validation pipeline (the PDP)
-
-The CM evaluates these checks in order. The first failure short-circuits to `deny` with a precise `reason_code`; the denial is still logged.
+The checks run in this order. The first failure is a `deny` with its `reason_code`, and is logged.
 
 ```mermaid
 flowchart TD
-  A["1. Schema-validate consent object;\nselect the grant for data_controller;\nsubject matches request_context"] --> B["2. Read the partner's policy for this\ncontroller from PM (PARTNER_<AUD>);\nallow_partner_consents set"]
-  B --> C["3. Fetch key from PM by kid; alg guard +\nverify JWS signature locally"]
-  C --> D["4. aud == partner;\ngrant's controller == policy's"]
-  D --> E["5. Subject present, id_type allowed"]
-  E --> F["6. Purpose ∈ allowed_purposes"]
-  F --> G["7. effective = grant scopes ∩\npolicy scopes (∩ requested)"]
-  G --> H["8. Validity window + max duration"]
-  H --> I["9. Not revoked / not expired"]
-  I --> J["10. Replay: issued_at fresh;\n(jti, controller) idempotent"]
-  J --> K["persist artefact + signed receipt + decision log"]
-  K --> L["return permit + effective_data_scopes"]
+  A["1–3. Decode; select the grant for\ndata_controller; subject matches"] --> B["4–5. The partner's policy from PM;\nallow_partner_consents set"]
+  B --> C["6. Algorithm guard;\nverify the JWS with the PM key"]
+  C --> D["7. Use-case mode checks"]
+  D --> E["8. jti seen for this controller?\nreturn that decision"]
+  E --> F["9. issued_at fresh"]
+  F --> G["10–14. Audience, subject type, purpose,\nscopes, validity"]
+  G --> H["persist artefact + signed receipt;\npermit + effective_data_scopes"]
   A -. fail .-> X["deny + reason_code"]
-  B -. "no policy / PM down (fail closed) /\npartner consents not allowed" .-> X
+  B -. fail .-> X
   C -. fail .-> X
   D -. fail .-> X
+  E -. "other consent\nreusing the jti" .-> X
   F -. fail .-> X
   G -. fail .-> X
-  H -. fail .-> X
-  I -. fail .-> X
-  J -. fail .-> X
 ```
 
-| #  | Check                                                                                                               | Reason code on failure                |
-| -- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| 1  | The consent JWS decodes and its claims match the consent-object schema (exactly one of `grants` or `data_controller` + `data_scopes`; no controller twice) | `malformed_object`                    |
-| 1a | Grant selection: with `grants`, the request names a `data_controller` (else `malformed_object`) that has a grant; with the single-registry form, a named `data_controller` equals the consent's | `controller_not_granted`              |
-| 1b | If `request_context.subject_id` has the consent subject's `type`, its `value` matches (another type is left to the registry) | `subject_mismatch`                    |
-| 2  | Partner Management has an active policy for the partner (`aud` → `PARTNER_<AUD>`) and the selected controller — in use-case mode, for `request_context.use_case` (a `404` — unknown or inactive partner, or no such policy — is a **fail-closed reject**); PM unreachable with nothing usable cached | `unknown_partner` (use-case mode: `use_case_not_granted`) / `policy_unavailable` |
-| 2b | The policy sets `allow_partner_consents`: the CM cannot verify that the subject agreed, only the partner's signature | `partner_consent_not_accepted` |
-| 3  | The JWS `alg` is permitted (allowed set + policy `allowed_signing_algs`, matched to the PM key for the JWS `kid` — **algorithm-confusion guard**), and the JWS signature verifies against that key | `signature_invalid`                   |
-| 3b | [Use-case mode](#use-case-mode) only: `requested_scopes` is sent, and the consent's purpose is the use case's | `scope_exceeds_policy` / `purpose_not_allowed` |
-| 4  | `aud` == the partner, and the grant's `data_controller` == the policy's data controller (not in use-case mode)    | `audience_mismatch`                   |
-| 5  | Subject present; `subject_id_type` ∈ `allowed_subject_id_types`                                                     | `subject_not_allowed`                 |
-| 6  | `purpose.code` ∈ `allowed_purposes`                                                                                 | `purpose_not_allowed`                 |
-| 7  | effective = grant `data_scopes` ∩ `allowed_data_scopes` (∩ `requested_scopes`) is non-empty                       | `scope_exceeds_policy`                |
-| 8  | `now ∈ [valid_from, valid_until]` and `(valid_until − valid_from) ≤ max_validity_duration`                          | `expired` / `validity_exceeds_policy` |
-| 9  | `consent_id` not in revocation store                                                                                | `revoked`                             |
-| 10 | `issued_at` within the freshness window; a `jti` already decided for this controller returns that decision        | `replay`                              |
+| # | Check | Reason code on failure |
+| -- | --- | --- |
+| 1 | The JWS decodes and its claims match the consent-object schema: exactly one of `grants` or `data_controller` + `data_scopes`, no controller twice | `malformed_object` |
+| 2 | Grant selection: a consent with `grants` needs the request's `data_controller` (else `malformed_object`) and a grant for it; a single-registry consent must name the requested `data_controller`, if one is sent | `controller_not_granted` |
+| 3 | If `request_context.subject_id` has the consent subject's `type`, its `value` matches (another type is left to the registry) | `subject_mismatch` |
+| 4 | Partner Management has an active policy for the partner (`aud` → `PARTNER_<AUD>`): its scope policy for the controller, or in use-case mode its policy for `request_context.use_case`. A `404` fails closed | `unknown_partner` (use-case mode: `use_case_not_granted`); PM unreachable, nothing cached: `policy_unavailable` |
+| 5 | The policy sets `allow_partner_consents`: the CM cannot verify that the subject agreed, only the partner's signature | `partner_consent_not_accepted` |
+| 6 | The JWS `alg` is in the policy's `allowed_signing_algs` and the CM's allowed set, matches the PM key for the JWS `kid` (algorithm-confusion guard), and the signature verifies | `signature_invalid` |
+| 7 | [Use-case mode](#use-case-mode) only: the policy is the use case's; `requested_scopes` is sent; the consent's purpose is `request_context.purpose`, if sent | `use_case_not_granted` / `scope_exceeds_policy` / `purpose_not_allowed` |
+| 8 | A `jti` already decided **for this controller** returns that decision (`revoked` or `expired` if the stored consent is), provided it is the same consent (partner, subject, scopes) | `replay` (a different consent reusing the `jti`) |
+| 9 | `issued_at` within the freshness window (default ±300 s) | `replay` |
+| 10 | `aud` is the partner, and the grant's `data_controller` is the policy's (not in use-case mode) | `audience_mismatch` |
+| 11 | The subject's `type` ∈ `allowed_subject_id_types` | `subject_not_allowed` |
+| 12 | `purpose.code` ∈ `allowed_purposes` | `purpose_not_allowed` |
+| 13 | Effective scopes = the grant's `data_scopes` ∩ the ceiling (∩ `requested_scopes`) is not empty | `scope_exceeds_policy` |
+| 14 | `now ∈ [valid_from, valid_until]`, and `valid_until − valid_from ≤ max_validity_duration` | `expired` / `validity_exceeds_policy` |
 
-> **Policy is a ceiling, consent is a request.** Step 7 never widens scope. The effective scope is `requested_scopes ∩ grant.data_scopes ∩ allowed_data_scopes`, where the grant and the policy are both those of the calling registry (in use-case mode `requested_scopes` is the ceiling). If that intersection is empty, the result is `deny` with `scope_exceeds_policy`.
+> **Policy is a ceiling, consent is a request.** The ceiling is the policy's `allowed_data_scopes` for the calling registry; in use-case mode it is `requested_scopes` (the use case's scopes). The effective scopes never exceed it.
 
-> **The policy and the verifying key come from Partner Management, not CM tables.** At steps 2 and 3 the CM reads the partner's policy and public key from PM (partner ID `PARTNER_<AUD>`), caching both per pod. The signature check itself is always **local** to the CM. A `404` from PM fails closed. See [Partner Management integration](partner-management-integration.md).
+The key and the policy come from PM (cached per pod); the signature check itself is always local to the CM ([Partner Management integration](partner-management-integration.md)).
+
+## A consent the CM holds
+
+By `consent_id` (or found by [lookup](#consent-by-lookup-at-a-registry)) there is no signature or freshness check: the CM collected the consent itself. It checks, in order:
+
+| Check | Reason code on failure |
+| --- | --- |
+| The CM holds a consent with that ID that it collected (`originated`). A lookup also finds partner-signed consents it has already validated | `unknown_consent` |
+| Not revoked; not expired; validity started | `revoked` / `expired` / `not_yet_valid` |
+| `consent_partner_id` is the partner the consent was given to (a lookup at a registry sets it to the caller) | `partner_mismatch` |
+| `request_context.subject_id`, if sent, matches the consent's subject or one of its `subject_identifiers` of that type | `subject_mismatch` |
+| The consent has a grant for `data_controller`, if sent | `controller_not_granted` |
+| Use-case mode: a consent made for a use case serves only it; the use case's policy, purpose, subject type and validity | `use_case_not_granted`, `purpose_not_allowed`, `subject_not_allowed`, `validity_exceeds_policy` |
+| Each grant ∩ the partner's **current** scope policy for that registry (use-case mode: ∩ `requested_scopes`) leaves something. A grant whose registry has no policy is dropped | `scope_exceeds_policy`; PM unreachable: `policy_unavailable` |
 
 ## How the policy is applied
 
-The partner's policy is its **access policy in Partner Management**: one **scope policy** per
-registry (data controller) and, at an Exchange, one **use-case policy** per use case. Its fields, versions and
-how changes are approved are PM's
-([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
-The CM only reads the **active** version and records its full reference on every decision,
-artefact and grant: `policy_ref` (`data_controller:<registry>` or `use_case:<name@major>`),
-`policy_version` and `policy_id` (PM's id of that version).
+A partner has one **scope policy** per registry and, at an Exchange, one **use-case policy** per use case, in Partner Management ([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)). The CM reads only the **active** version and records it on every decision, artefact and grant: `policy_ref` (`data_controller:<registry>` or `use_case:<name@major>`), `policy_version`, and `policy_id` (PM's id of that version).
 
 | Policy field | How `/validate` applies it |
 | --- | --- |
-| `data_controller` | Selects a scope policy: the calling registry's (step 2) |
-| `use_case` | Selects a use-case policy (`name@major`): `request_context.use_case` in use-case mode (step 2). Exactly one of `data_controller` / `use_case` is set |
-| `allowed_data_scopes` | Ceiling on the effective scopes (step 7). Not in a use-case policy |
-| `allowed_purposes` | The consent's `purpose.code` must be listed (empty = any) (step 6) |
-| `allowed_subject_id_types` | The consent subject's `type` must be listed (empty = any) (step 5) |
-| `allowed_signing_algs` | The consent JWS `alg` must be listed (step 3) |
-| `allow_partner_consents` | Default false. True: the partner may present a consent it collected and signed itself (`consent_jws`, step 2b). Consents the CM holds (`consent_id`, lookup) and consent tokens do not need it |
-| `max_validity_duration` | `valid_until − valid_from` may not exceed it (step 8) |
-| `fetch_type` | Default fetch type of a consent the CM collects (consent requests); recorded on the artefact |
+| `data_controller` | Selects a scope policy: the calling registry's (step 4) |
+| `use_case` | Selects a use-case policy (`name@major`) in use-case mode (step 4). Exactly one of `data_controller` / `use_case` is set |
+| `allowed_data_scopes` | Ceiling on the effective scopes (step 13). Not in a use-case policy |
+| `allowed_purposes` | The consent's `purpose.code` must be listed; empty = any (step 12) |
+| `allowed_subject_id_types` | The consent subject's `type` must be listed; empty = any (step 11) |
+| `allowed_signing_algs` | The consent JWS `alg` must be listed (step 6). Not applied to consent tokens |
+| `allow_partner_consents` | Default false. True: the partner may present a consent it signed itself (step 5). Consents the CM holds and consent tokens do not need it |
+| `max_validity_duration` | `valid_until − valid_from` may not exceed it (step 14) |
+| `fetch_type` | Default fetch type of a consent the CM collects; recorded on the artefact |
 | `max_fetch_frequency`, `data_life` | Not checked by the CM |
 
-Evaluation is **deterministic and side-effect-free** (logging aside): the same consent object,
-policy version and request context always give the same decision.
+Evaluation is **deterministic**: the same consent, policy version and request context give the same decision.
 
-```
-decide(consent_object, data_controller, policy, request_context) -> {
-  decision: permit | deny,
-  effective_data_scopes: grant(data_controller).data_scopes ∩ ceiling ∩ requested,
-  reason_code,
-  policy_version
-}
-ceiling = policy.allowed_data_scopes          (scope policy)
-        = requested_scopes                    (use-case mode)
-```
-
-**Data scopes are the registry's.** The CM treats scope IDs (`<controller>.<name>`, e.g.
-`farmer-registry.land`) as opaque strings; each registry publishes its catalogue and maps each scope
-to its own fields. A registry ignores IDs it does not know, so a mistyped or outdated scope grants
-nothing. See [Data Scopes](../../products/registry/registry/design/data-scopes.md).
+**Data scopes are the registry's.** The CM treats scope IDs (`<controller>.<name>`) as opaque strings. Each registry publishes its catalogue and maps each scope to its fields; an ID it does not know grants nothing. See [Data Scopes](../../products/registry/registry/design/data-scopes.md).
 
 ## Use-case mode
 
-At an Exchange, partners are granted **use cases** (e.g. `loan-profile@1`) rather than registry
-scopes; the Composite runs the use case and asks the Exchange CM for consent tokens. The CM then
-checks the partner's policy **for that use case** instead of its per-registry scope policies. Each
-use case has its own policy, so purposes, subject ID types, algorithms and validity can differ per
-use case.
+At an Exchange, partners are granted **use cases** (e.g. `loan-profile@1`), not registry scopes. The Composite runs the use case and asks the Exchange CM for consent tokens; the CM checks the partner's policy **for that use case**. Each use case has its own policy, so purposes, subject ID types, algorithms and validity can differ per use case.
 
 Use-case mode applies only when **both** hold:
 
-* the caller (`partner_id`) is a configured consent-token presenter (`receipt_presenters`, e.g.
-  `agri-composite`), and
-* `request_context.use_case` is sent (`name@major`).
+* the caller (`partner_id`) is a configured consent-token presenter (`receipt_presenters`, e.g. `agri-composite`), and
+* `request_context.use_case` is sent.
 
-For any other caller `use_case` is ignored and the normal mode applies. In use-case mode:
+For any other caller `use_case` is ignored. In use-case mode:
 
-1. The CM reads the consenting partner's policy for the use case
-   (`GET /policies/PARTNER_<AUD>?use_case=<name@major>`). None (`404`) → `use_case_not_granted`.
-2. `request_context.requested_scopes` is required (the use case's scopes), else
-   `scope_exceeds_policy`.
-3. If `request_context.purpose` is sent, the consent's `purpose.code` must equal it, else
-   `purpose_not_allowed`.
-4. That policy's purposes, subject ID types, signing algorithms and maximum validity apply as above.
+1. The CM reads the consenting partner's policy for the use case. None → `use_case_not_granted`.
+2. `request_context.requested_scopes` (the use case's scopes) is required, else `scope_exceeds_policy`.
+3. If `request_context.purpose` is sent, the consent's `purpose.code` must equal it, else `purpose_not_allowed`.
+4. That policy's purposes, subject ID types, signing algorithms and maximum validity apply.
 5. For each registry, **effective scopes = the consent's grant ∩ `requested_scopes`**.
 
-A partner-signed consent (`consent_jws`) may be presented for another use case, so these checks run
-before a stored decision is reused. A stored consent (`consent_id`) made **by use case** in the
-Exchange's partner portal records its use case and is valid only for it: another `use_case` is
-denied `use_case_not_granted` ([consent collection](consent-collection.md#partner-portal)).
+A consent made **by use case** (in the Exchange's partner portal or origination API) records its use case and serves only it. A partner-signed consent validated in use-case mode also records the use case.
 
-**Consent by lookup.** In use-case mode the Composite may send no consent at all. The CM then picks
-the consent it holds for the partner (`consent_partner_id`), the subject ([matched](#consent-by-lookup-at-a-registry)
-to the consent's subject or one of its other identifiers) and the use case — active
-and valid now; if several, the latest `valid_until`, then the newest — and validates it as a stored
-consent. None → `consent_not_found`. It finds consents collected through the CM and partner-signed
-consents it has already validated in use-case mode (each records the use case). The search is
-served by one index (partner, subject, use case; active consents only), so its cost does not grow
-with the number of consents. Request shape: [Verification API](../api/verification-api.md#consent-by-lookup).
+**Consent by lookup.** The Composite may send no consent. The CM then picks the consent it holds for the partner (`consent_partner_id`), the subject (its main subject or one of its `subject_identifiers`) and the use case: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). An index on (partner, subject, use case) over active consents serves the search.
 
-Consents the CM holds (`consent_id`, lookup) are not subject to `allow_partner_consents`.
-
-How the Composite and the departments fit together:
-[Exchange consent tokens](exchange-receipts.md) and
-[Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
+How the Composite and the departments fit together: [Exchange consent tokens](exchange-receipts.md) and [Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
 
 ## Consent by lookup at a registry
 
-A registry used directly (no use case) may send no consent: `partner_id`, `data_controller` and
-`request_context.subject_id`. The CM picks the consent it holds for that partner and subject with a
-grant for that registry — active and valid now; if several, the latest `valid_until`, then the
-newest — and validates it as a stored consent: effective scopes = the grant ∩ the partner's scope
-policy for that registry (∩ `requested_scopes`). None → `consent_not_found`. It finds consents
-collected through the CM and partner-signed consents it has already validated, not consents given
-for a use case. One index (partner, subject, controller; active consents only) serves the search.
+A registry called directly (no use case) may send no consent: `partner_id`, `data_controller` and `request_context.subject_id`. The CM picks the partner's consent for that subject with a grant for that registry: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). It finds consents collected through the CM and partner-signed consents it has already validated, but not consents given for a use case. An index on (partner, subject, controller) over active consents serves the search.
 
-**Subject matching (both lookups).** `request_context.subject_id` matches the consent's subject or
-one of its other identifiers (`subject_identifiers`, e.g. the `FARMER_ID` the portal records), so a
-registry may search by either — the Crop Sown Registry by `FARMER_ID` for a `FAYDA_FAN` consent.
-Types are matched as spelled, with no aliasing: the registry maps its identifier type names (e.g. DCI
-`UIN`) to the consent's. The stored-consent subject check accepts the same: a value differing from
-the consent's subject or identifier of that type is `subject_mismatch`. Request shape:
-[Verification API](../api/verification-api.md#consent-by-lookup).
-
-## Decision object (CM → registry)
-
-```json
-{
-  "decision": "permit",
-  "consent_id": "CONSENT-123456",
-  "receipt_id": "RECEIPT-998877",
-  "subject_id": { "type": "national_id", "value": "FARMER_1234" },
-  "data_controller": "farmer-registry",
-  "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
-  "valid_until": "2026-05-01T12:02:10Z",
-  "policy_version": 3,
-  "policy_id": "7d0c9a52-…",
-  "policy_ref": "data_controller:farmer-registry",
-  "reason_code": "ok",
-  "evaluated_at": "2025-05-01T12:02:12Z"
-}
-```
-
-On denial:
-
-```json
-{ "decision": "deny", "reason_code": "scope_exceeds_policy",
-  "detail": "requested 'farmer-registry.land' not permitted by policy",
-  "evaluated_at": "2025-05-01T12:02:12Z" }
-```
-
-## Enforcement at the registry (PEP)
-
-The registry's contract is intentionally tiny:
-
-1. Call `POST /consent/v1/validate`, naming itself as `data_controller`.
-2. If `decision != "permit"` → return nothing (HTTP 403 with `reason_code`).
-3. Check that the decision's `subject_id` (the consent's subject) is the person being searched — directly, or through the registry's own data (e.g. a farmer ID recorded with the farmer's national ID). See [Registry integration](registry-integration.md#subject-enforcement).
-4. Project the record down to the fields of `effective_data_scopes` (the registry's own [data scopes](../../products/registry/registry/design/data-scopes.md), resolved as of the consent's issue time) and return only those fields, echoing `receipt_id` for the partner's audit trail.
-
-Because the CM returns the field list and the subject, the registry needs **no consent logic** — only a subject check and a field-projection step. This is the deliberate division of labour decided in the design: **CM returns the effective fields; the registry is a dumb enforcement point.**
+**Subject matching (both lookups).** `request_context.subject_id` matches the consent's subject or one of its other identifiers (`subject_identifiers`, e.g. a `FARMER_ID` recorded in the partner portal), so a registry may search by either. Types are matched as spelled, with no aliasing: the registry maps its own type names (e.g. DCI `UIN`) to the consent's ([Registry integration](registry-integration.md#no-consent-in-the-search)).
 
 ## What the CM persists
 
-On every evaluation (permit or deny) the CM writes an immutable **DecisionLog** entry, including the `data_controller` it was made for. On a permit it additionally:
+Every evaluation, permit or deny, writes an immutable **decision log** entry with the `data_controller` and the policy reference. A permit for a partner-signed consent or a consent token also:
 
-* records the verified consent claims **for that controller's grant** as a **ConsentArtefact** (`source = embedded`) — one per (`jti`, `data_controller`),
-* signs a **ConsentReceipt** with its own `.p12` key (self-verifying via the CM's published JWKS), and
-* stores both, returning `consent_id` + `receipt_id`.
+* stores the verified consent for that controller's grant as a **consent artefact**, one per (`jti`, `data_controller`);
+* signs a **consent receipt** with the CM's `.p12` key, verifiable against its JWKS;
+* returns `consent_id` and `receipt_id`.
 
-This gives non-repudiable proof — independently verifiable via the CM's published JWKS — for audit and dispute resolution.
+A consent the CM holds already has its artefact and receipt; a permit on it is logged and returns them.
 
-## Idempotency & performance
-
-* The hot path is a single round trip; partner keys and policies (both from PM) are cached per pod. A key is refreshed at once on an unknown `kid`; an approved policy change applies within the policy cache TTL (default 60 s).
-* Re-validating the same object (same `jti`) **by the same registry** returns the same `consent_id` / `receipt_id` rather than minting duplicates. The stored decision is returned only **after** the partner's policy and the signature are checked, and only if the presented object is the stored one (same partner, subject and scopes); a different object reusing a known `jti` is denied `replay`. Idempotency is keyed on (`jti`, `data_controller`): two registries validating one multi-grant consent each get their own decision, artefact and receipt, and revoking one leaves the other in force.
-* Revocation is checked live (see [Consent lifecycle](consent-lifecycle.md)); enforcement points that cache decisions must respect the status endpoint.
+Two registries validating one multi-grant consent each get their own decision, artefact and receipt; revoking one leaves the other in force. Revocation applies at once on the next `/validate`; an enforcement point that caches decisions checks [consent status](../api/verification-api.md).

@@ -1,13 +1,16 @@
+---
+description: >-
+  How an OpenG2P registry (the PEP) uses the Consent Manager: where the
+  consent sits in a DCI search, consent by lookup, subject and field
+  enforcement, the data-scope catalogue, and the registry's settings.
+---
+
 # Registry integration (the PEP side)
 
-This page describes how an OpenG2P **Registry** (e.g. the Farmer Registry) integrates
-with the Consent Manager (CM) to govern outbound data sharing. The registry is the
-**Policy Enforcement Point (PEP)**; CM is the **Policy Decision Point (PDP)**. The
-registry never interprets consent — it passes the partner's consent (or, with none, the
-person searched) to CM, and enforces the decision CM returns.
-
-The concrete integration lives in the **registry partner-api** (the DCI search API,
-`POST /dci/registry/sync/search`).
+How an OpenG2P **registry** (e.g. the Farmer Registry), the **PEP**, uses the Consent Manager
+(CM), the **PDP**. The registry never interprets consent: it passes the partner's consent (or, with
+none, the person searched) to the CM and enforces the decision. The integration is in the
+**registry partner API** (the DCI search, `POST /dci/registry/sync/search`).
 
 ## Two independent signatures, one key source
 
@@ -21,12 +24,10 @@ keys **served by Partner Management (PM)** — a single trust root:
 
 Both are **JWS** verified against PM keys via the shared `CryptoHelper.verify_jwt` — one signature format, one verify path across the platform.
 
-The registry verifies the envelope with openg2p-fastapi-common's `build_crypto_helper`
-using the **`partner-mgmt`** backend (partner keys fetched from PM). The legacy Mosip
-**Keymanager** remains a selectable backend (`crypto_backend: keymanager`) but is not
-the default — we are not encrypting payloads yet. Partner keys are looked up under the
-platform-standard reference **`PARTNER_<sender_id>`** (upper-cased, `-`→`_`), the same
-convention used by Partner Management, g2p-bridge, and openg2p-fastapi-partner-auth.
+The registry verifies the envelope with openg2p-fastapi-common's `build_crypto_helper`, backend
+**`partner-mgmt`** (keys from PM; `keymanager` and `local` remain selectable). Keys are looked up
+under **`PARTNER_<sender_id>`** (upper-cased, `-` → `_`), the platform convention
+([partner ID convention](partner-management-integration.md#partner-id-convention)).
 
 ## Where the consent object is embedded
 
@@ -165,9 +166,8 @@ use the registry's IDs as they are, and no catalogue is hardcoded elsewhere. Des
 
 ## Two kill-switches (testing)
 
-Two **independent** flags gate the two checks. Both default **on** in code (safe PII
-posture); the Farmer Registry chart ships them **off** so a fresh install works before
-CM/PM are wired. Turn both **on** for production.
+Two **independent** flags gate the two checks. Both default **on**, in code and in the registry
+chart. Turn one off only for testing or a bring-up install.
 
 | Config (env) | Off behaviour |
 | --- | --- |

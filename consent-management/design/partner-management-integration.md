@@ -57,7 +57,7 @@ and `policy_id` (PM's id of that version).
 
 ## What the CM reads from PM
 
-Both reads go to PM's internal partner API (`CONSENT_MANAGER_PARTNER_MGMT_API_URL`, in-cluster
+All reads go to PM's internal partner API (`CONSENT_MANAGER_PARTNER_MGMT_API_URL`, in-cluster
 `http://commons-services-pm-partner-api`), which needs no authentication and is reachable only
 inside the cluster. Request and response shapes:
 [PM API reference](../../platform/platform-services/partner-management/api-reference.md).
@@ -90,9 +90,9 @@ Keys and policies change rarely but are read on every `/validate`, so the CM cac
 
 | Behaviour | Keys | Policies |
 | --- | --- | --- |
-| **Reuse** — no call to PM | up to the soft TTL (and PM's `max-age`, 300 s) | per partner and registry or use case, up to the soft TTL (and PM's `max-age`, 60 s) |
+| **Reuse** — no call to PM | up to the soft TTL (default 300 s), capped by PM's `Cache-Control: max-age` | per partner and registry (or use case), up to the soft TTL (default 60 s), capped likewise |
 | **PM unreachable** | the last answer, up to the hard TTL; then fail closed | the same; then deny `policy_unavailable` |
-| **PM says "none"** (`404`) | remembered for the negative TTL | the same |
+| **PM says "none"** (`404`) | remembered for the negative TTL (30 s) | the same; a failed call is also not retried for that long |
 | **Unknown `kid`** | a rate-limited refresh (catches key rotation) | — |
 | **Concurrent misses** | share one call | share one call |
 
@@ -111,41 +111,12 @@ active policy or key. The CM never treats a missing answer as "skip the check":
 
 | PM answer | Decision |
 | --- | --- |
-| No active policy for the partner and registry | deny `unknown_partner` |
+| No active policy for the partner and registry | deny `unknown_partner` (for a consent the CM holds: that grant is dropped; none left → `scope_exceeds_policy`) |
 | Use-case mode: no active policy for the partner and use case | deny `use_case_not_granted` |
 | No usable key for the JWS `kid` | deny `signature_invalid` |
 | PM unreachable and nothing usable cached | deny `policy_unavailable` (retry later) |
 
-## Sequence: validate
-
-```mermaid
-sequenceDiagram
-  participant R as Registry (PEP)
-  participant CM as Consent Manager (PDP)
-  participant PM as Partner Management
-  R->>CM: POST /validate (partner-signed consent object, data_controller)
-  CM->>CM: read aud → PARTNER_<AUD>
-  alt policy cached and fresh
-    CM->>CM: use cached policy
-  else
-    CM->>PM: GET /policies/PARTNER_<AUD>?data_controller=<controller>
-    PM-->>CM: active policy (or 404 → deny unknown_partner)
-  end
-  alt key cached and fresh
-    CM->>CM: use cached key
-  else miss or unknown kid
-    CM->>PM: GET /keys/PARTNER_<AUD>/{kid}
-    PM-->>CM: public key (or 404 → deny signature_invalid)
-  end
-  CM->>CM: algorithm guard + verify JWS signature locally
-  CM->>CM: apply the policy to the consent's grant
-  CM-->>R: permit + effective_data_scopes  |  deny + reason_code
-```
-
-The signature check is always local to the CM; PM supplies only the key and the policy.
-
 ## Managing partners and policies
 
-Partners, keys and policies are managed in PM's staff UI; the CM console links to it
-(**Partners & policies**, chart value `global.partnerManagementUiUrl`). The CM console itself has no
-partner pages.
+Partners, keys and policies are managed in PM's staff UI. The CM console has no partner pages; it
+links to PM (**Partners & policies**, chart value `global.partnerManagementUiUrl`).

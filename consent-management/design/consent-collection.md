@@ -1,8 +1,8 @@
 ---
 description: >-
-  How a partner seeks a subject's consent and how the subject gives it: three
-  scenarios (in person with a form, in person digital, self-service), what the Consent Manager does today,
-  the gaps, and the partner portal.
+  How a partner seeks a subject's consent and how the subject gives it: the
+  scenarios (in person with a form is built), national-ID login, identifiers
+  and demographics, the partner's copy of a consent, and the partner portal.
 ---
 
 # Consent collection
@@ -17,28 +17,28 @@ A partner (e.g. a bank) needs a subject's (e.g. a farmer's) consent before it ca
 
 ## Principle
 
-**The subject's confirmation happens at the CM, or through a channel the CM verifies, never on the partner's word.** The CM records how the subject confirmed (the **assurance**), and a policy can demand a minimum assurance for a purpose.
+**The subject's confirmation happens at the CM, or through a channel the CM verifies, never on the partner's word.** The CM records how the subject confirmed (the **assurance**) on the consent.
 
 ## Scenarios
 
-In every scenario the subject proves who they are with their **national ID** (e.g. Fayda through eSignet): never by a phone number, a signature or the partner's word alone.
+The subject proves who they are with their **national ID** (e.g. through eSignet): never by a phone number, a signature or the partner's word alone.
 
-| | Where the subject is | Agreement | Staff check | Active |
-| --- | --- | --- | --- | --- |
-| **1 · In person, with a form** | with the partner (office or field agent) | a signed form, uploaded | yes: CM staff verify the form (and, e.g., the Farmer ID) | after staff approve |
-| **2 · In person, digital** | with the partner (office or field agent) | the subject approves the request on the CM's screen after logging in | none | at once |
-| **3 · Self-service** | anywhere, on their own device | the subject approves in their own portal or app | none | at once |
+| | Where the subject is | Agreement | Staff check | Active | Status |
+| --- | --- | --- | --- | --- | --- |
+| **1 · In person, with a form** | with the partner (office or field agent) | a signed form, uploaded | yes: CM staff verify the form (and, e.g., the Farmer ID) | after staff approve | **Built** |
+| **2 · In person, digital** | with the partner | the subject approves on the CM's screen after logging in | none | at once | Not built yet |
+| **3 · Self-service** | anywhere, on their own device | the subject approves in their own portal or app | none | at once | Not built yet |
 
 ### 1. In person, with a form (subject at the partner's office, or the partner's user in the field)
 
 1. A partner user creates the consent request in the partner portal: the use case (or purpose and registries), the subject's ID, the validity.
-2. The subject is authenticated on the spot through national ID (e.g. Fayda): OTP to the phone registered with the ID, or biometrics. The CM records the authentication (provider, method, time).
-3. The subject signs a consent form; the partner user uploads it as evidence.
-4. Staff check the uploaded form (it matches the subject and the request) and verify it. Only then is the consent active.
+2. The subject logs in with their national ID on the spot (OTP to the phone registered with the ID, or biometrics); the CM records the authentication. Required when the install turns it on, always at an Exchange ([below](#national-id-authentication-in-the-partner-portal)).
+3. The subject signs a consent form; the partner user uploads it as evidence and submits the request.
+4. CM staff check the form against the subject and the request (console **Consent Approvals**) and approve it. Only then is the consent active.
 
-### 2. In person, digital (no form, no staff step)
+### 2. In person, digital (not built yet)
 
-An extension of scenario 1 for when the partner and the subject are together (at the office, or the partner's agent in the field), without the paper form and the back-office check:
+An extension of scenario 1 without the paper form and the back-office check:
 
 1. A partner user creates the consent request in the partner portal, choosing **digital approval**.
 2. The subject logs in with their national ID (eSignet: OTP to the phone registered with the ID, or biometrics), as in scenario 1.
@@ -46,49 +46,30 @@ An extension of scenario 1 for when the partner and the subject are together (at
 4. On approval the consent is **active at once**; no staff step.
 5. The CM texts the **phone registered with the national ID** (never a number from the partner): "You gave Bank A consent to see … until …; reply STOP or use this link to revoke." SMS here is a safeguard after the fact, not the proof.
 
-The consent's assurance records it as *national-ID authenticated, approved digitally, no form, no staff check*. A policy can require scenario 1 instead for sensitive purposes (minimum assurance per policy, a gap below).
+The consent's assurance would record *national-ID authenticated, approved digitally, no form, no staff check*, and a policy could require scenario 1 for sensitive purposes (a minimum assurance per policy).
 
 {% hint style="info" %}
 **Why not "reply YES to an SMS".** A reply from a phone proves only that someone holds that SIM: not who they are (SIM swap, a shared phone), and not that they read what they agreed to. It can at most be a weaker option that a policy may refuse. When the partner reaches the subject remotely, a link that the subject opens on their own phone and logs into is scenario 3.
 {% endhint %}
 
-### 3. Self-service
+### 3. Self-service (not built yet)
 
 The subject logs in to a self-service portal or app (national ID login), sees the pending request (who asks, for what, which data from which registry), and approves (all or part) or declines. The same place lists the subject's consents and lets them revoke any.
 
-## What the CM has today
+## What is built
 
-| Capability | Status |
-| --- | --- |
-| Consent request (subject, partner, purpose, grants per registry and scopes, validity) | **Built** (`POST /consent/v1/consent-requests`; staff or service callers) |
-| Subject authentication: an OIDC ID token, checked against the identity provider's JWKS; the token's subject must be the request's subject; provider, method (`amr`) and time recorded | **Built** (`…/authenticate`) |
-| Approve (per registry) or deny; a consent record (`originated`) with its signed receipt | **Built** |
-| Subject's own consents and revocation | **Built** (`/consent/v1/my/…`) |
-| Subject-facing pages: a consent request page and "my consents" | **Built**, but they log in through the staff Keycloak, not national ID |
-| Partner-signed consent presented in each query, checked at `/validate` | **Built**; accepted only from partners whose policy allows it (`allow_partner_consents`, off by default; see the gap below) |
-| **Scenario 1, phase 1:** partner portal and partner realm; requests by partner users, signed-form upload (evidence in object storage), submit, staff verification in the CM console, consents with assurance and receipts; `/validate` by `consent_id` or by lookup with no consent (consent tokens in an Exchange deployment); the Composite accepts `message.consent_id` or no consent | **Built** ([deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)) |
-| **Scenario 1, phase 2:** the subject's national-ID login (eSignet: OTP or biometrics) from the partner portal, matched to the request's subject; mandatory when on, together with the signed form and the staff check | **Built** ([how it works](#national-id-authentication-in-the-partner-portal), [deployment](../deployment/README.md#national-id-authentication-of-the-subject-esignet)) |
+* **Scenario 1**, end to end: the partner portal and partner realm, requests by partner users, signed-form upload (object storage), optional national-ID login, staff verification in the CM console, consents with their assurance and receipt, the partner's consent record.
+* **Using the consent:** a partner sends no consent and the CM finds it by lookup; at an Exchange the Composite gets a consent token per registry ([Verification & enforcement](verification-and-enforcement.md)).
+* **Partner-signed consents**, only from partners whose policy allows them (`allow_partner_consents`, off by default): the CM checks the partner's signature, not that the subject took part.
+* **The origination API and the subject's own consents** (`/my/*`), on the beneficiary API (off by default).
 
-## Gaps
-
-| Gap | Scenarios | Notes |
-| --- | --- | --- |
-| ~~A consent the subject gave cannot be used in a query~~ | all | **Done**: at a registry, the partner searches a person by identifier with no consent and the CM finds it; in an Exchange deployment, the Composite sends `consent_id` or nothing and the Exchange CM issues a consent token per registry. |
-| ~~**Partner-signed consent proves nothing about the subject.**~~ The CM checks the partner's signature, its policy, the subject, validity and replay; nothing shows the subject took part | partner-signed | **Contained**: refused unless the partner's policy in Partner Management allows it (`allow_partner_consents`, off by default), for partners trusted to collect consent in their own systems. |
-| ~~**National ID authentication**~~ for the subject on a partner user's device | 1 | **Done** for scenario 1 (eSignet). To do: scenario 3 (the subject's own login on the self-service pages). |
-| ~~Evidence~~ (signed form on a request) | 1 | **Done** (bucket `consent-evidence`). To do: encryption at rest beyond the store's, retention and deletion rules. |
-| ~~Staff verification~~ of assisted consents | 1 | **Done** in the CM console (Consent Approvals). |
-| **Assurance** on each consent | all | **Recorded** (method, evidence, verifier, whether the subject was authenticated). To do: a minimum assurance per policy. |
-| ~~Partner access~~ | 1, 2 | **Done**: partner realm and the partner-portal API. To do: partner user management from the portal (staff create users today), a partner-signed API for partners with their own systems. |
-| **Digital approval by the subject**: after the national-ID login, the CM's screen showing the request (in the subject's language) with approve, approve in part and decline; the consent active at once | 2, 3 | Builds on scenario 1's login (same popup); the request carries the method *digital approval* and needs no form or staff step. |
-| **Notification after consent** to the phone registered with the national ID, with a revoke link (and STOP) | 2, 3 | Through the platform's notification service (Novu) or the national SMS gateway; the number comes from the national ID login or the registry, never from the partner. |
-| **Back to the partner**: redirect to the partner's app with the consent ID, or a notification, when the subject approves | 3 | |
+What is not built yet: [Consent Management](../README.md#not-built-yet).
 
 ## National ID authentication in the partner portal
 
-When it is on, every assisted request needs **three** things before the consent is active: the subject's national-ID login, the signed form, and a CM staff member's verification. The design is the registry's beneficiary authentication for credentials, with the CM's own code.
+When it is on, every assisted request needs **three** things before the consent is active: the subject's national-ID login, the signed form, and a CM staff member's verification. Settings: [Deployment](../deployment/README.md#national-id-authentication-of-the-subject-esignet).
 
-1. The partner user opens the request and chooses **Authenticate with national ID**. The CM starts a login at eSignet: authorization code with PKCE, a single-use `state` and a `nonce`, `acr_values` (e.g. a one-time code), and the `individual_id` claim (the national ID; eSignet's `sub` is pairwise, so it cannot be compared). The request's subject ID type must be a national ID type (e.g. `FAYDA_FAN`).
+1. The partner user opens the request and chooses **Authenticate with national ID**. The CM starts a login at eSignet: authorization code with PKCE, a single-use `state` and a `nonce`, `acr_values` (e.g. a one-time code), and the `individual_id` claim (the national ID; eSignet's `sub` is pairwise, so it cannot be compared). The request's subject ID type must be one of the configured national-ID types.
 2. eSignet opens in a popup. The person logs in there (the OTP goes to the phone registered with their ID), on the partner user's device or their own.
 3. eSignet redirects to the CM's callback on the portal host. The CM claims the `state` once (an atomic update, so a replayed or concurrent callback finds nothing), exchanges the code with `private_key_jwt`, and checks the ID token's signature (eSignet's JWKS), `iss`, `aud`, `exp` and `nonce`. It reads the userinfo straight from eSignet over HTTPS with the access token, which is what makes it authentic (OIDC Core 5.3.2): eSignet passes on the identity system's signed answer, with that system's key (not published by eSignet) and its own `iss`, so the signature is checked only when the key is one eSignet publishes; its `aud` must be this client and its `sub` the ID token's (the same pairwise ID). The `individual_id` must equal the request's subject ID.
 4. The portal follows the result (polling) and shows it; **Submit** is possible only after a successful login and the signed-form upload.
@@ -121,29 +102,22 @@ With it a partner can show, without the CM, that this exact signed form backed t
 
 ## Partner portal
 
-Most partners will not build their own consent screens, so a central **partner portal** is the main way in; partners with their own systems use the same APIs.
+Most partners will not build their own consent screens, so the **partner portal** is the main way in. It is a front end over the CM's partner portal API ([API Reference](../api/README.md#partner-portal-endpoints)).
 
-* **Consent (backed by the CM):** create a request (pick a use case or purpose, enter the subject's ID, choose how the subject confirms: in person with national ID and a signed form (scenario 1), in person digitally (scenario 2), or a link to self-service (scenario 3)); follow requests by status; list consents with their ID, scopes, validity, assurance and status (including revocations by the subject), and download receipts and the [consent record](#the-partners-copy-of-a-consent).
-* **Their access (read-only):** what the partner may use and the data it returns, and its query history (in Agri Stack, from the Composite).
-* **Administration:** a partner admin manages the partner's own portal users (roles: *operator*, who creates requests and runs in-person consent; *partner admin*, who also sees all the partner's consents and manages users).
-* **Not in the portal:** changing partner policies and keys (requested and approved in Partner Management by staff; the portal's "What we can ask for" page, `GET /consent/v1/partner-portal/access`, shows the partner's policies read-only) and the verification of uploaded forms (staff, in the CM console).
+* **Consent requests:** create one (scenario 1), upload the signed form, start the subject's national-ID login, submit, follow its status, cancel.
+* **Consents:** list them with their scopes, validity, assurance and status (including revocations), and download the receipt and the [consent record](#the-partners-copy-of-a-consent).
+* **What we can ask for** (read-only): the partner's policies, read from Partner Management.
+* **Not in the portal:** policies and keys (requested and approved in Partner Management by staff), the verification of uploaded forms (CM staff, in the console), and partner users (created by staff; see [Deployment](../deployment/README.md#partner-portal-and-consent-evidence-optional)). A partner user has the role `PARTNER_OPERATOR` or `PARTNER_ADMIN`; the CM treats them alike.
 
-**At an Exchange** (a CM in the [exchange role](exchange-receipts.md)), partners are granted use cases, not registry scopes, so the portal works **by use case**. The partner has one policy per use case in Partner Management. "What we can ask for" lists one entry per such policy: the use case with its purpose and data per registry (read from the Composite) and the policy's purposes, subject ID types and longest validity. A new request must name one of them (a request naming registries and scopes is refused; a use case without a policy is refused `use_case_not_granted`): its purpose and grants are the use case's, and that use case's policy limits apply. Staff approval narrows the consent to the use case's scopes at that time, and the consent records the use case: the Composite can use it for that use case only. The partner need not keep or send the consent ID: a request to the Composite may carry no consent, and the Exchange CM then finds the partner's consent for that subject and use case ([consent by lookup](verification-and-enforcement.md#use-case-mode)). If the Composite cannot be reached, no such request can be raised or approved (fail closed).
+**At an Exchange** (a CM in the [exchange role](exchange-receipts.md)), partners are granted use cases, not registry scopes, so the portal works **by use case**. The partner has one policy per use case in Partner Management. "What we can ask for" lists one entry per such policy: the use case with its purpose and data per registry (read from the Composite) and the policy's purposes, subject ID types and longest validity. A new request must name one of them (a request naming registries and scopes is refused; a use case without a policy is refused `use_case_not_granted`): its purpose and grants are the use case's, and that use case's policy limits apply. Staff approval narrows the consent to the use case's scopes at that time, and the consent records the use case: the Composite can use it for that use case only. The partner need not keep the consent ID: a request to the Composite may carry no consent, and the Exchange CM finds it ([consent by lookup](verification-and-enforcement.md#use-case-mode)). If the Composite cannot be reached, no such request can be raised or approved (fail closed).
 
 ### Purposes and subject ID types
 
-The portal offers purposes and subject ID types from the country's **Master Data** code lists (`CONSENT_PURPOSE`, `SUBJECT_ID_TYPE`), the lists Partner Management uses in policies, so a request and the policy it falls under use the same codes. The CM reads them with its own service account (not the partner user's token) and caches them; `GET /consent/v1/partner-portal/request-settings` returns them with their labels (`purposes`, `subject_id_types`).
+The portal offers purposes and subject ID types from the country's **Master Data** code lists (by default `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE`), the lists Partner Management uses in policies, so a request and its policy use the same codes. The CM reads them with its own service account and caches them; the portal gets them from `GET /consent/v1/partner-portal/request-settings`. Settings: [Deployment](../deployment/README.md#master-data-code-lists).
 
 * **List loaded:** the form offers a dropdown, and a request naming a value outside the list is refused (`400`). At an Exchange only the subject ID type is checked; the purpose is the use case's.
 * **No list** (not in the country's Master Data, Master Data unreachable, or not configured): free text, and requests are accepted. Master Data never blocks a request.
 
 The partner's policy still limits both (an empty allowed list in the policy means any value).
 
-**Ownership:** the consent logic and its evidence (requests, authentication records, uploaded files, verification, the consent and its revocation) belong to the CM, files in the CM's object store bucket. The portal is a partner-facing front end over the CM's APIs (and, in Agri Stack, the Composite's); Partner Management needs no partner-facing UI.
-
-## Order of work
-
-1. Presenting a stored consent by its ID at `/validate` (and consent tokens from it in an Exchange deployment).
-2. Scenario 1: partner portal and partner users, request creation, national ID authentication, evidence upload, staff verification, assurance.
-3. Scenario 2: the subject's digital approval after the national-ID login, and the notification afterwards (builds directly on scenario 1).
-4. Scenario 3: national ID login on the subject pages, redirect back to the partner.
+**Ownership:** requests, authentication records, uploaded files (in the CM's object-store bucket), verification and the consent belong to the CM. Partner Management needs no partner-facing UI.

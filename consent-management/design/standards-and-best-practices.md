@@ -1,102 +1,51 @@
 ---
 description: >-
-  How the Consent Manager design aligns with Kantara/ISO 27560, GDPR, DEPA /
-  Account Aggregator, and DCI/OIDC — and the gaps the design deliberately closes.
+  How the Consent Manager aligns with Kantara / ISO 27560, GDPR, DEPA /
+  Account Aggregator and DCI / OIDC, and what is built against each.
 ---
 
 # Standards &amp; best practices
 
-The design is measured against four reference frameworks. This page records where we align and,
-importantly, the **gaps** the design closes relative to the original prototype and notes.
-
-## Reference frameworks
+The design is measured against four reference frameworks.
 
 | Framework | Why it applies |
 | --- | --- |
-| **Kantara Consent Receipt v1.1 / ISO/IEC 29184 &amp; 27560** | Canonical, portable consent-record/receipt structure. |
-| **GDPR** | Lawful basis, purpose limitation, minimisation, and data-subject rights. |
-| **DEPA / Account Aggregator** | Granular, revocable, time-bound data-sharing consent artefacts with fetch semantics. |
-| **DCI + OAuth2 / OIDC** | Interoperable consent payloads and ID-token-based authentication context. |
+| **Kantara Consent Receipt v1.1 / ISO/IEC 29184 &amp; 27560** | A portable consent record and receipt. |
+| **GDPR** | Lawful basis, purpose limitation, minimisation, data-subject rights. |
+| **DEPA / Account Aggregator** | Granular, revocable, time-bound consent artefacts with fetch semantics. |
+| **DCI + OAuth2 / OIDC** | Interoperable consent payloads; an authentication context from a validated ID token. |
 
-## Alignment &amp; gaps closed
+## Kantara / ISO 27560: consent receipts
 
-Each row is a best practice, our position, and — where it was missing in the prototype/notes —
-the **gap we add**.
+* **Best practice:** a receipt is a complete consent record (controller and contact, DPO, purposes with legal basis, data categories, retention, third parties, withdrawal method, jurisdiction, version) with a cryptographic proof.
+* **Built:** every consent has a [receipt](data-model.md#consent-receipt-kantara-iso-27560) signed with the CM's asymmetric key: controllers, purposes with legal basis, data categories, third parties, withdrawal method, version, and the artefact hash.
+* **Not yet:** the controller's name, contact and DPO, retention and jurisdiction.
+* **Not to be confused with the consent token**, a short-lived JWS for one registry and query ([Exchange consent tokens](exchange-receipts.md)), closer to an OAuth 2.0 token-exchange token (RFC 8693) than to a receipt.
 
-### Kantara / ISO 27560 — consent receipts
+## GDPR: data-subject rights
 
-* **Best practice:** a receipt is a complete, human-readable consent record: controller identity
-  &amp; contact, DPO, purposes with legal basis, data categories, retention, third parties,
-  withdrawal method, sensitivity, jurisdiction, version — plus a cryptographic proof.
-* **Gap closed:** the prototype's receipt held only a hash + signature. The
-  [Consent Receipt](data-model.md#consent-receipt-kantara-iso-27560) now carries the full record
-  set, signed with an asymmetric key.
-* **Not to be confused with the consent token.** The consent receipt is the long-lived record of
-  a consent. In the Agri Stack Exchange the CM also issues
-  [consent tokens](exchange-receipts.md): short-lived JWSs, one per registry and query, that carry
-  a subset of a consent to a department CM — akin to an OAuth 2.0 token-exchange token (RFC 8693)
-  rather than a receipt.
+* **Best practice:** subjects can access their consents, withdraw at any time, and be informed; every consent records a lawful basis and a purpose.
+* **Built:** access ([`GET /my/consents`](../api/subject-api.md), `GET /my/receipts/{id}`) and withdrawal (`POST /my/consents/{id}/revoke`), on the beneficiary API (off by default); purpose, recipients and lawful basis on every receipt; purpose limitation and minimisation at every decision.
+* **Not yet:** notifying the subject of grants, revocations and expiry.
 
-### GDPR — data-subject rights
+## DEPA / Account Aggregator: artefact semantics
 
-* **Best practice:** subjects can be informed, access their consents, withdraw at any time, and be
-  notified of changes; every consent records a **lawful basis** and a purpose.
-* **Gaps closed:**
-  * **Right of access** — [`GET /my/consents`](../api/subject-api.md) and `GET /my/receipts/{id}`.
-  * **Right to withdraw** — `POST /my/consents/{id}/revoke`, with propagation.
-  * **Right to be informed** — purpose, retention, and recipients are on every receipt.
-  * **Notification** — grant / revoke / expiry events notify the subject and partner.
-  * **Lawful basis** — recorded per purpose on the receipt.
+* **Best practice:** consent is granular, time-bound and revocable, with fetch semantics (one-shot or periodic, frequency, data life).
+* **Built:** a grant per data controller; validity bounded by policy; revocation per artefact with a status endpoint; `fetch_type`, `max_fetch_frequency` and `data_life` on the partner's [access policy](../../platform/platform-services/partner-management/functional-specifications.md#access-policies), `fetch_type` also on the artefact; purpose codes capped by policy.
+* **Not yet:** enforcing fetch frequency and data life; notifying all parties of a revocation.
 
-### DEPA / Account Aggregator — artefact semantics
+## DCI / OIDC: interoperability and authentication context
 
-* **Best practice:** consent is granular, time-bound, revocable, and carries **fetch semantics** —
-  one-shot vs periodic, frequency, and post-fetch data life — with revocation notified to all
-  parties.
-* **Gaps closed:**
-  * `fetch_type` (`oneshot` / `periodic`), `max_fetch_frequency`, and `data_life` on the
-    partner's [access policy](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)
-    (in Partner Management); `fetch_type` also on the artefact.
-  * A **purpose-code taxonomy** asserted in the object and capped by policy.
-  * **Consent templates** for standardised, comparable consents.
-  * **Revocation notification** to all parties + a live status endpoint.
+* **Best practice:** accept interoperable, signed consent payloads; build an authentication context from a validated ID token, with JWKS-based key rotation.
+* **Built:** a partner-signed consent as a compact JWS in the DCI `authorize` block, verified against Partner Management keys (from partners whose policy allows it); consents collected through the CM used by ID or found by lookup; ID tokens checked against the provider's JWKS ([Security & trust](security-and-trust.md#id-token-validation-origination)).
 
-### DCI / OIDC — interoperability &amp; auth context
+## Cross-cutting
 
-* **Best practice:** accept interoperable, signed consent payloads; build an auth context from a
-  **validated** ID token (signature + claims), with JWKS-based key rotation.
-* **Gaps closed:**
-  * The primary flow accepts a **partner-signed, DCI-style embedded object** as a compact JWS (RFC 7515), verified via the shared `CryptoHelper` against Partner-Management keys, from partners whose policy allows it; consents collected through the CM are used by ID or found by lookup.
-  * ID-token validation is real (JWKS, `iss`/`aud`/`exp`/`auth_time`/`amr`), replacing the
-    prototype's HS256 shortcut. See [Security &amp; trust](security-and-trust.md#id-token-validation-origination).
-
-## Cross-cutting gaps closed
-
-Beyond the four frameworks, the design adds:
-
-| Gap | Resolution |
+| Concern | How it is met |
 | --- | --- |
-| Symmetric (HS256) signing with a shared secret | **Asymmetric** signing throughout. Partner consent objects are verified with **public keys sourced from Partner Management** (fetched by partner ID + `kid`, verified locally — the CM keeps no partner-key store); CM **receipts** are signed with the CM's own `.p12` key (EdDSA/ES256/RS256) and published at `/.well-known/jwks.json` |
-| No partner / policy concept | First-class **versioned partner access policies** in Partner Management (with identity and keys; changes approved there), applied by the CM's policy engine on every decision |
-| Registry would interpret consent | Strict **PDP/PEP** split; CM returns effective fields |
-| No non-repudiation | **Append-only signed decision log** + signed receipts |
-| Revocation not propagated | **Status endpoint (OCSP-like) + webhooks** |
-| No replay protection | **`jti` + freshness window** |
-| Policies/templates unversioned | **Versioned** policies; decisions record the version |
-| Mutable state, lost history | **Append-only** transitions; timestamps never overwritten |
-
-## Conformance summary
-
-| Capability | Status |
-| --- | --- |
-| Partner-signed consent verification (known party) | ✅ Designed |
-| Policy ceiling &amp; effective-scope intersection | ✅ Designed |
-| Kantara/ISO-27560 receipt | ✅ Designed |
-| GDPR access / withdraw / inform / notify | ✅ Designed |
-| DEPA fetch semantics &amp; revocation propagation | ✅ Designed |
-| DCI embedded payload + OIDC auth context | ✅ Designed |
-| Asymmetric signing + JWKS + rotation | ✅ Designed |
-| Append-only audit / non-repudiation | ✅ Designed |
-
-> "Designed" means specified in this section and reflected in the [API contract](../api/README.md).
-> Implementation tracking will live in the development/release pages once build begins.
+| Signing | Asymmetric only: partner consents verified with keys from Partner Management; receipts and tokens signed with the CM's `.p12` key (EdDSA / ES256 / RS256) and published at `/.well-known/jwks.json` |
+| Partner agreement | Versioned access policies in Partner Management, changed by approval there, applied on every decision; decisions record the policy version |
+| Separation of duties | PDP/PEP: the CM decides, the registry enforces |
+| Non-repudiation | Signed receipts and an append-only decision log |
+| Replay | `jti` + freshness window |
+| History | Status changes only add; timestamps are never overwritten |

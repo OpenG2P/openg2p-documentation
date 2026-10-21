@@ -1,7 +1,7 @@
 ---
 description: >-
-  Developing the Consent Manager service — technology stack, repository layout,
-  and local setup.
+  Developing the Consent Manager: technology stack, repository layout, local
+  setup, tests and configuration.
 ---
 
 # Development
@@ -31,22 +31,26 @@ The Consent Manager is a FastAPI service built on
 
 ## Repository layout
 
-The service lives under `backend/` in the [`consent-manager`](https://github.com/OpenG2P/consent-manager) repository:
+The [`consent-manager`](https://github.com/OpenG2P/consent-manager) repository holds the service
+(`backend/`), the staff console (`ui/`), the partner portal (`partner-portal/`), the Helm chart and
+scripts (`deployment/`), Dockerfiles (`docker/`) and the in-cluster sanity suite (`test/sanity/`).
 
 ```
 backend/src/openg2p_consent_manager/
   config.py            Settings (env prefix CONSENT_MANAGER_)
   db.py                Shared async session factory
-  auth.py              Keycloak bearer auth — CallerIdentity, require_role
-  models/              SQLAlchemy models (consent, audit, exchange) — no partner tables
+  auth.py              Keycloak bearer auth (staff and partner realms)
+  models/              SQLAlchemy models (consent, audit, exchange); no partner tables
   schemas/             Pydantic request/response models
-  services/            crypto · partner + pm_policy_client (policies from Partner Management) ·
-                       policy · receipt · verification · consent · lifecycle · assisted · exchange
+  services/            verification · policy · partner + pm_policy_client (Partner Management) ·
+                       crypto · receipt · consent · lifecycle · exchange · assisted · evidence ·
+                       subject_auth · consent_record · master_data_client · composite_client
   controllers/         verification · well-known · decisions · consent verification ·
                        partner portal · lifecycle · subject
-  app.py               Initializer (wires services + controllers, runs migrations)
+  utils/               canonical JSON, JWKS, caches
+  app.py               Initializer (wires services and controllers per API audience, runs migrations)
   main.py              ASGI entrypoint (gunicorn/uvicorn)
-  expire.py            Standalone expiry runner (for a CronJob)
+  expire.py            Standalone expiry runner (for the CronJob)
 ```
 
 The HTTP surface is documented in the [API Reference](../api/README.md).
@@ -61,8 +65,8 @@ python -m openg2p_consent_manager.main migrate   # create tables
 uvicorn openg2p_consent_manager.main:app --reload
 ```
 
-For local dev without Keycloak, set `CONSENT_MANAGER_AUTH_ENABLED=false` (tokens are then
-accepted unverified and role checks pass). With no signing key configured, an ephemeral key is
+For local dev without Keycloak, set `CONSENT_MANAGER_AUTH_ENABLED=false` (staff tokens are then
+accepted unverified and role checks pass; partner-portal tokens are always verified). With no signing key configured, an ephemeral key is
 generated — fine for dev, but receipts will not verify across restarts.
 
 The whole stack (Postgres + service) also runs via Docker Compose from the repo root:
@@ -89,17 +93,9 @@ CM_TEST_DB_DATASOURCE=postgresql+asyncpg://postgres@localhost:5432/cm_test pytes
 All settings use the `CONSENT_MANAGER_` env prefix; see `backend/.env.example` for the full
 list (database, `.p12` signing key, Keycloak auth, replay window, Partner Management URL and the
 partner key and policy caches). Without a Partner Management URL every `/validate` fails closed; tests
-stand in for PM with an in-memory fake. Key
-operational settings are summarised in [Deployment](../deployment/README.md).
+stand in for PM with an in-memory fake. Chart values for each setting: [Deployment](../deployment/README.md).
 
 ## Background expiry
 
-Consent expiry is **not** an in-process scheduler (so API pods stay stateless). It runs as a
-standalone command, intended for a Kubernetes CronJob:
-
-```bash
-python -m openg2p_consent_manager.expire
-```
-
-The validation hot path also lazily expires artefacts on read, so an expired consent is never
-treated as active even between CronJob ticks.
+Expiry is not an in-process scheduler, so API pods stay stateless. It is a standalone command, run
+by the chart's CronJob: `python -m openg2p_consent_manager.expire`.

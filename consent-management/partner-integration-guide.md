@@ -42,7 +42,7 @@ sequenceDiagram
 | --------------------------- | ---------------------------------------------------------------- | ---------------------------- |
 | **Partner Management (PM)** | onboarding, registering + rotating your keys, your access policy | through the PM operator (PM staff UI / API) |
 | **The Registry**            | the actual data fetch                                            | the registry's data API      |
-| **Consent Manager (CM)**    | collecting consent (partner portal); _(optional)_ receipts, consent status, its JWKS | its partner portal and public endpoints |
+| **Consent Manager (CM)**    | collecting consent; your consents, their receipts and consent records | its partner portal; its public keys (`/.well-known/jwks.json`) |
 
 ***
 
@@ -69,7 +69,7 @@ Register yourself as a partner in **Partner Management (PM)** and upload your **
 
 * Agree your **audience** — the ID you put in `aud` of every consent and use as DCI `sender_id` (e.g. `bank-a`). Your PM partner ID follows from it: upper-case, `-` → `_`, prefix `PARTNER_` (`bank-a` → `PARTNER_BANK_A`). See the [partner ID convention](design/partner-management-integration.md#partner-id-convention).
 * The PM operator raises an onboarding request with that partner ID, a name, and your public key(s) as PEM or JWK with `kid` + `algorithm` — and, usually, your access policy (Step 3) — and approves it.
-* After approval, your keys are served at `GET {pm}/keys/PARTNER_<AUD>` (PEM + kid + algorithm). Verify you can fetch them — that's exactly what CM will do to verify your signatures. PM returns `404` for unknown/disabled partners, which the CM treats as **reject**, so make sure your partner is **active**.
+* After approval, PM serves your keys inside the cluster to the registries and the CM, which verify your signatures with them. PM answers nothing for an unknown or disabled partner, which they treat as **reject**, so make sure your partner is **active**.
 
 > PM stores only your **public** key. Rotation and revocation are also done here (Step 10).
 
@@ -174,9 +174,7 @@ You do **not** call the Consent Manager's `/validate` — the registry does that
 
 **Several registries, one consent.** A consent may hold a grant per registry. Send your own consent JWS unchanged to each registry you need (a consent the CM holds is found by each registry's CM the same way). Each validates its own grant and returns its own `consent_id` and `receipt_id`; the same `jti` gets one decision per registry (presenting it again to that registry returns the same decision). The `subject_id` in the consent must be the person you search for at each registry (a registry may accept a different identifier for the same person when its own data links them, e.g. a farmer ID recorded with the farmer's national ID).
 
-**Composite services and aggregators.** If a composite service fans your request out to several registries, it presents your consent (or asks the Exchange CM to find it, when you send none) to an Exchange CM, which issues one signed consent token per registry ([Exchange consent tokens](design/exchange-receipts.md)). The composite sends each registry only its own consent token, signs each registry call with its own key, and names you in `header.meta.on_behalf_of`. At such an Exchange you are granted **use cases** rather than registry scopes: you need a policy for the use case you call in the Exchange's Partner Management (one policy per use case) ([use-case mode](design/verification-and-enforcement.md#use-case-mode)). A consent your staff collect in the Exchange's partner portal is made for one of those use cases and can be used only for it ([consent collection](design/consent-collection.md#partner-portal)). For reference, the call the registry makes on your behalf is [`POST /consent/v1/validate`](api/verification-api.md); it returns `permit` + `effective_data_scopes` or `deny` + a `reason_code`, and the registry releases **only** the permitted fields.
-
-_(The Consent Manager's `/validate` is for registries and the Composite, not for partners: the authoritative decision and the data both come via the registry.)_
+**Composite services and aggregators.** If a composite service fans your request out to several registries, it presents your consent (or asks the Exchange CM to find it, when you send none) to an Exchange CM, which issues one signed consent token per registry ([Exchange consent tokens](design/exchange-receipts.md)). The composite sends each registry only its own consent token, signs each registry call with its own key, and names you in `header.meta.on_behalf_of`. At such an Exchange you are granted **use cases** rather than registry scopes: you need a policy for the use case you call in the Exchange's Partner Management (one policy per use case) ([use-case mode](design/verification-and-enforcement.md#use-case-mode)). A consent your staff collect in the Exchange's partner portal is made for one of those use cases and can be used only for it ([consent collection](design/consent-collection.md#partner-portal)). For reference, the call the registry makes is [`POST /consent/v1/validate`](api/verification-api.md). It is reachable only inside the cluster, by registries and the Composite: the decision and the data both come to you via the registry.
 
 ***
 
@@ -207,9 +205,8 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 
 ## Step 9 — Receipts, status & revocation
 
-* **Receipt (proof):** a permit issues a signed **consent receipt** (`receipt_id`) — one per registry that validated your consent. Fetch it — [`GET /consent/v1/receipts/{receipt_id}`](api/verification-api.md) — it's public and **self-verifying** against the Consent Manager's `GET /.well-known/jwks.json`, so you can prove independently that the decision happened. Keep receipts for audit.
-* **Status:** for cached or periodic access, re-check `GET /consent/v1/consents/{consent_id}/status` (`active | revoked | expired`) rather than trusting a stale decision.
-* **Revocation:** the beneficiary can revoke consent at any time. Revocation is per `consent_id`, i.e. per registry: revoking at one registry leaves the others in force. Honour it — a revoked/expired consent must stop further fetches.
+* **Receipt (proof):** every consent has a signed **consent receipt** (a consent you sign yourself gets one per registry that validated it). For a consent collected in the partner portal, download the receipt or the full [consent record](design/consent-collection.md#the-partners-copy-of-a-consent) there. A receipt verifies against the Consent Manager's public `/.well-known/jwks.json`, so you can prove the consent without the CM. Keep them for audit.
+* **Status and revocation:** the beneficiary can revoke at any time. Every fetch is checked again, so a revoked or expired consent is refused on the next call (`revoked` / `expired`); the partner portal shows each consent's status. Revocation is per `consent_id`: for a consent you signed, per registry.
 
 ***
 
@@ -233,7 +230,7 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 
 ## Related pages
 
-* [Verification API](api/verification-api.md) — the exact `/validate` request/response the registry makes on your behalf, plus receipts, status and JWKS.
+* [Verification API](api/verification-api.md) — the exact `/validate` request and response the registry makes on your behalf.
 * [Partner Management integration](design/partner-management-integration.md) — how your keys and policy are read and cached.
 * [Access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies) — the policy that bounds what you can receive.
 * [Security & trust](design/security-and-trust.md) · [Data model](design/data-model.md) — the consent object, artefact and receipt in detail.
