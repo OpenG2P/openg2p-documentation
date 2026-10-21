@@ -23,6 +23,19 @@ The pipeline below is written for the partner-signed object, the longest path.
 * **Registry (PEP)** — holds the data, passes the partner's consent (or the subject, for a lookup) to the CM, and releases only the fields the CM returns. It does not interpret consent.
 * **Consent Manager (PDP)** — finds or verifies the consent, applies the partner's access policy (read from [Partner Management](partner-management-integration.md)), and returns a decision with the **effective data scopes**.
 
+## What a request carries, and how the CM treats it
+
+A registry never decides which kind of consent a caller uses: it passes whatever came with the request, or nothing, to its CM's `/validate`. There are no partner types; the CM tells the cases apart by the request itself and by its own settings:
+
+| The request carries | Treated as | Accepted when |
+| --- | --- | --- |
+| A JWS whose header `typ` is `consent-receipt+jwt` | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md)) | This CM's Exchange Role is `department`, the token's issuer is its trusted Exchange CM, and the token's `presenter` is the caller and the configured trusted presenter (the Composite) |
+| `consent_id` | A consent this CM holds, named by ID | The consent is the caller's, active and valid |
+| No consent | A **lookup** of a consent this CM holds ([below](#consent-by-lookup-at-a-registry); [use-case mode](#use-case-mode) at an Exchange) | This CM holds an active consent of that partner for that subject and registry (or use case) |
+| Any other JWS | A **partner-signed consent** | The partner's policy has `allow_partner_consents` |
+
+So the Composite, at a department, in practice always presents consent tokens: the farmer's consent is held by the Exchange CM, not the department's (a lookup finds nothing), and the Composite's policy there does not allow partner-signed consents. A department's own partners send nothing and rely on the lookup. Where this is configured: the department's **Exchange Role**, **Trusted Token Issuer** and **Trusted Token Presenter** ([deployment](../deployment/README.md#exchange-optional)), and each partner's policy in Partner Management.
+
 ## Request shape
 
 For a partner-signed consent, the partner embeds the consent object in its call (e.g. a `consent` body field, or per the interop protocol) and the registry forwards it unchanged to the CM's `/validate` endpoint. `/validate` is on the **partner API** and requires **no Keycloak token** — a partner-signed object is verified with keys from Partner Management plus the `jti` replay guard; the registry↔CM hop is transport-secured (Istio mTLS).

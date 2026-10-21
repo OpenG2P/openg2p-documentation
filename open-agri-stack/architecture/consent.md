@@ -12,7 +12,7 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 * **One consent covers every registry the partner needs.** The bank asks once, for the data its use case needs; inside, the consent holds a **grant per registry** (Farmer Registry, Crop Sown Registry, …). The bank never deals with which registry holds what.
 * **The Exchange's Consent Manager (CM) collects and keeps it,** not the bank. The farmer confirms it there and proves who they are with the national ID.
-* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the department's ceiling for the Composite ([request flow](request-flow.md)). Why a token rather than passing the consent on: [why a consent token](../../consent-management/design/exchange-receipts.md#why-a-consent-token).
+* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the department's ceiling for the Composite ([request flow](request-flow.md)). Why a token, rather than passing the consent on or simply trusting the Composite up to the ceiling: [why a consent token](../../consent-management/design/exchange-receipts.md#why-a-consent-token).
 
 {% hint style="info" %}
 **Consent object, artefact, receipt, token** are four different things; see [key terms](../../consent-management/design/README.md#key-terms). The reasons behind this model (one consent with a grant per registry, each registry validating its own grant, consent tokens across installs) are the Consent Manager's [design decisions](../../consent-management/design/README.md#design-decisions).
@@ -41,7 +41,7 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 * **Revocation** is of the whole consent; the Exchange CM issues no further consent token for it. Registries check tokens offline, so a token already issued stays usable until it expires (5 minutes by default).
 
 {% hint style="warning" %}
-**Not built yet:** scenarios 2 and 3; declining individual items or revoking one registry's grant only; presenting a consent held in the CM directly at a registry, without the Composite (path A, [open items](../open-items/README.md)).
+**Not built yet:** scenarios 2 and 3; declining individual items or revoking one registry's grant only; using a consent held by the **Exchange** CM directly at a registry, without the Composite (a registry looks consents up only in its own CM; [open items](../open-items/README.md)).
 {% endhint %}
 
 ## Details

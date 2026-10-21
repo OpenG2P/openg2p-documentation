@@ -24,12 +24,22 @@ field, a new status endpoint, new reason codes).
 
 ## Why a consent token
 
-The partner's consent and its access policy are held at the Exchange, but each department must decide for itself what leaves its registry. Without a token there are two ways to connect them, and both fall short:
+The partner's consent and its access policy are held at the Exchange, but each department must decide for itself what leaves its registry. Without a token there are three ways to connect them, and each falls short:
 
 | Option | Problem |
 | --- | --- |
 | **Pass the partner's whole consent to every registry** | Each department must hold the partner as its own partner (key and policy in its Partner Management), so the partner onboards at every department. Each registry also sees the whole consent, including grants for other departments' data. |
 | **Let each registry ask the Exchange CM per request** | Every department depends on the Exchange's live answer, and keeps nothing signed as proof of why it released the data. |
+| **Trust the Composite, capped by the ceiling** | See below. |
+
+**Why trusting the Composite and the ceiling is not enough.** A department could release data to any Composite request, up to its ceiling, with no token. It would lose four things:
+
+1. **Proof per farmer.** With a token, the registry releases a farmer's data only on a statement signed by the Exchange CM (another service, another key) naming that farmer, that registry and those scopes. Without it, a bug, a misconfiguration or a compromise of the Composite alone could read every farmer's data up to the ceiling; with tokens, the Composite and the Exchange CM would both have to fail.
+2. **Data minimisation.** The ceiling is the superset of every use case. The token narrows each request to what this farmer consented to for this use case (a declined item is left out). Without it the registry releases everything the ceiling allows and the Composite discards the rest: more personal data leaves the department than the purpose needs.
+3. **The department's accountability.** The department is the data controller for its registry. With tokens, each release is recorded in its own Consent Manager and audit against a consent ID and token ID, so it can show the legal basis for every disclosure. Without them it can show only that the Composite asked.
+4. **Binding to the subject.** The token names the farmer, so a consent for one farmer cannot be used to fetch another. Without it, nothing at the registry checks this.
+
+Tokens cost almost nothing extra: the Composite calls the Exchange CM to check the consent anyway, the tokens are issued in that same call, and departments verify them offline with a cached key.
 
 A consent token avoids both. The Exchange CM checks the partner's policy and the subject's consent once, then signs a short note for **one** registry and **one** query, with only the scopes allowed there. The registry's own CM verifies the signature, checks the token is addressed to it, presented by the named caller (the Composite) and not expired, and applies the **ceiling** its department set for the Composite. So:
 
@@ -37,6 +47,8 @@ A consent token avoids both. The Exchange CM checks the partner's policy and the
 * the partner onboards once, at the Exchange;
 * a token is useless to anyone else and expires within minutes (default 5); once the consent is revoked the Exchange issues no new token, and those already issued lapse within that time;
 * the registry keeps a signed record of why it released the data.
+
+**The trade-off: no live revocation check.** A department checks a token offline and never asks the Exchange whether the consent is still in force. If the farmer revokes a consent, a token issued just before stays usable until it expires: up to the token lifetime (default 5 minutes, never past the consent's own expiry), and only by the Composite, for the one registry and query it was issued for. In exchange, no department depends on the Exchange being up, and no request waits on a call to another organisation. A deployment that needs revocation to apply instantly can shorten the lifetime, or turn on the optional status check (each department then calls the Exchange per token, and refuses tokens while the Exchange is unreachable); see [Department role: accepting](#department-role-accepting) below and the [settings](../deployment/README.md#exchange-optional).
 
 ## Two roles, one codebase
 
@@ -74,6 +86,8 @@ algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27
 `/.well-known/jwks.json` on the partner API.
 
 **Header:** `{"alg": "<EdDSA|ES256|RS256>", "kid": "<CM kid>", "typ": "consent-receipt+jwt"}`
+
+`typ` marks the JWS as a consent token, so a CM never mistakes it for a partner-signed consent. The value is OpenG2P's own (explicit typing, as RFC 8725 §3.11 recommends), not a registered media type; its name dates from when these tokens were called consent receipts.
 
 | Claim | Meaning |
 | --- | --- |
