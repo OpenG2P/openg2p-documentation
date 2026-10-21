@@ -447,11 +447,15 @@ The registry signs synchronous responses and `on-search` envelopes. With
 validation disabled, the signature value is `signature_validation_disabled`.
 The async ACK stays unsigned either way.
 
-When consent enforcement is on, each item needs
-`search_criteria.authorize.consent_jws`. Consent Manager is called before
-search. A missing or non-permit consent rejects the whole request: a rejected
+When consent enforcement is on, each item carries
+`search_criteria.authorize.consent_jws`, or omits it and searches one subject by
+identifier (`idtype-value`): the registry then asks its Consent Manager to find
+the consent it holds for the partner and that subject. Any other search without
+a consent is rejected. Consent Manager is called before search. A missing or
+non-permit consent rejects the whole request: a rejected
 search envelope for sync, and an `ERR` acknowledgement with no publish for
-async. Effective scopes remove top-level keys after template rendering. They
+async. Each record is filtered to the effective scopes' fields before the template
+renders it ([Data Scopes](../data-scopes.md#enforcement)). Scopes
 do not change which rows match.
 
 See [Data Scopes](../data-scopes.md),
@@ -468,6 +472,7 @@ and [Registry integration](../../../../../consent-management/design/registry-int
 | `REGISTRY_PARTNER_API_CONSENT_ENFORCEMENT_ENABLED` | Validate consent and clamp rendered records. Keep on in production. |
 | `REGISTRY_PARTNER_API_PARTNER_MGMT_API_URL` | Partner Management key API. |
 | `REGISTRY_PARTNER_API_CONSENT_MANAGER_URL` | Consent validation API. |
+| `REGISTRY_PARTNER_API_CONSENT_SUBJECT_ID_TYPES` | JSON object of search identifier type to consent subject ID type for the consent lookup, e.g. `{"UIN": "FAYDA_FAN"}`; a type not listed is sent as is (`global.consentSubjectIdTypes`). |
 | `REGISTRY_PARTNER_API_WEBSUB_BASE_URL` | Hub root for async publish. Do not include `/hub`. |
 
 ```yaml

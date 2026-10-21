@@ -101,6 +101,7 @@ The **partner-api** is the policy-enforcement point for DCI requests and depends
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Partner key lookup |
 | `global.consentManagerUrl` | `http://commons-services-cm-partner-api` | The `/validate` endpoint |
 | `global.consentDataController` | the registry variant (`global.registryVariant`) | This registry's data-controller ID, sent as `data_controller` on every `/validate`. Must match the `data_controller` of partners' scope policies in Partner Management |
+| `global.consentSubjectIdTypes` | `{}` | For a search by identifier without a consent (the CM then looks the consent up): DCI ID type → the consents' subject ID type, e.g. `{"UIN": "NATIONAL_ID"}`; a type not listed is sent as is |
 
 {% hint style="warning" %}
 **Both switches default to `true` — the chart fails closed.** Turning either off opens real PII egress: with signature validation off the `signature` field is required but never inspected, and with consent enforcement off records are returned **unclamped**. Either bypass is stamped into the DCI response header meta (`signature_validation` / `consent_enforcement`), which is the only outward signal.

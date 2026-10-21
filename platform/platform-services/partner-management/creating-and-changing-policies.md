@@ -26,6 +26,7 @@ The partner's PM ID is its ID upper-cased, `-` replaced by `_`, prefixed `PARTNE
 | **Fetch type** | `oneshot` (one query per consent) or `periodic` (repeated queries under one consent) | `oneshot` | Recorded on the consent |
 | **Max fetch frequency** | For `periodic`, ISO-8601, e.g. `P1D` | — | Recorded only |
 | **Data life** | How long the partner may keep the data, ISO-8601, e.g. `P30D` | — | Recorded only (a contractual term) |
+| **May present its own signed consents** | Tick only for a partner that collects consent in its own trusted system: the Consent Manager then accepts consents the partner signed itself. It cannot verify the person agreed, only the partner's signature | Off: the partner uses consents held by the Consent Manager | Consent Manager (a partner-signed consent is refused when off) |
 
 "Recorded" fields are kept with the policy and the consent for audit; no module enforces them yet.
 

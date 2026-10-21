@@ -24,6 +24,11 @@ DCI-standard `authorize` block:
 message.search_request[i].search_criteria.authorize.consent_jws
 ```
 
+A partner may omit the consent: the registry then asks its Consent Manager to find
+the consent it holds for that partner and the subject searched (an `idtype-value`
+search: identifier type and value). A search that names no single subject still needs
+a consent.
+
 The registry partner-api then:
 
 1. **Verifies the caller** — checks the DCI envelope signature against the partner's
@@ -31,8 +36,8 @@ The registry partner-api then:
    [**Partner Management**](../../../../platform/platform-services/partner-management/README.md)
    (looked up as `PARTNER_<sender_id>`, cached in-process). The registry stores no
    partner keys.
-2. **Delegates the decision** — forwards the consent JWS verbatim to the Consent
-   Manager's `/validate`, naming itself as the **data controller** (for example
+2. **Delegates the decision** — forwards the consent JWS verbatim (or, without one,
+   the subject searched) to the Consent Manager's `/validate`, naming itself as the **data controller** (for example
    `farmer-registry`). A partner's consent can cover several registries with one grant
    each; CM evaluates only this registry's grant against the partner's access policy for
    this registry (a scope policy held in
@@ -68,6 +73,10 @@ The registry's data-controller ID is `global.consentDataController` (set in the
 YAML editor; it is not in the Rancher form), which defaults to the registry variant. It must match
 the data controller of partners' scope policies in Partner Management, and of the grants
 in their consents.
+
+The CM matches subject ID types exactly. When the identifier type a search names
+differs from the consents' subject ID type, map it in `global.consentSubjectIdTypes`
+(for example `{"UIN": "FAYDA_FAN"}`; a type not listed is sent as is).
 
 A composite service or aggregator calling the registry for a partner signs the request
 with its own key, forwards the partner's consent unchanged, and names the partner in

@@ -21,16 +21,17 @@ flowchart LR
   PM["Partner Management (PM)\npartners · keys · policies"]
   Store[("CM stores:\nconsents · artefacts ·\nreceipts · audit")]
 
-  Partner -->|"1 API call + embedded\nsigned consent object"| Registry
-  Registry -->|"2 validate(consent_object, ctx)"| CM
+  Partner -->|"1 API call (+ consent_id,\nsigned consent, or none)"| Registry
+  Registry -->|"2 validate(consent, ctx)"| CM
   CM -->|"read + cache keys and policies"| PM
   CM --> Store
   CM -->|"3 decision + effective_data_scopes"| Registry
   Registry -->|"4 release only permitted fields"| Partner
 ```
 
-The registry never parses or interprets the consent object. It forwards it, receives a decision
-that includes the **effective set of fields**, and releases only those.
+The registry never parses or interprets a consent. It forwards what the partner sent (a consent ID,
+a partner-signed consent object, or nothing — the CM then looks the consent up), receives a decision
+that includes the **effective data scopes**, and releases only their fields.
 
 CM keeps **no partner records**. Partners, their signing keys and their access policies are owned
 by **Partner Management (PM)**, where changes are approved; the CM reads a partner's policy and
@@ -90,11 +91,14 @@ verification live on the **staff-api** behind Keycloak.
 
 ## Primary flow — verify &amp; enforce
 
-A partner already holds (or has collected) consent and embeds a **partner-signed consent
-object** in its data request to the registry.
+The diagram shows the partner-signed case: the partner collected the consent itself and embeds
+the **signed consent object** in its request (allowed only if its policy has
+`allow_partner_consents`). With a consent the CM holds — named by `consent_id`, or found by the
+CM when the request names none — steps 3–4 are skipped. All three paths:
+[Verification & enforcement](verification-and-enforcement.md).
 
-The registry calls the CM **partner-api**, which has no Keycloak — trust rests on the
-partner-signed object, verified against keys fetched from Partner Management (PM).
+The registry calls the CM **partner-api**, which has no Keycloak; registry↔CM is secured at
+transport (mTLS).
 
 ```mermaid
 sequenceDiagram
@@ -108,7 +112,7 @@ sequenceDiagram
   R->>CM: POST /consent/v1/validate {consent_jws, data_controller, request_ctx}
   CM->>CM: 1. schema-validate object; select the grant for data_controller
   CM->>PM: 2. read the partner's policy for data_controller — cached
-  CM->>PM: 3. fetch verifying key (kid) — cached
+  CM->>PM: 3. fetch verifying key (kid) — cached; policy must allow partner consents
   CM->>CM: 4. verify JWS signature + replay guard per (jti, controller)
   CM->>CM: 5. audience / subject / purpose checks
   CM->>CM: 6. effective = consent_scope ∩ policy_scope
@@ -158,11 +162,13 @@ decision. See [Partner Management integration](partner-management-integration.md
 The registry's consent-aware data sharing supports two ingestion patterns, both terminating at
 `POST /consent/v1/validate`:
 
-1. **Stored consent** — the individual previously consented; the registry passes the request
-   context and the CM matches an existing active artefact.
-2. **Embedded consent payload** — the partner includes a signed consent object directly
-   (DCI / UNDP-style). The CM validates it, generates a canonical artefact + signed receipt,
-   stores them, and returns the decision.
+1. **Stored consent** — the individual consented through the CM. The partner names the consent
+   (`consent_id`) or sends none: the CM then finds the partner's active consent for that subject and
+   registry.
+2. **Embedded consent payload** — the partner includes a consent object it collected and signed
+   itself (DCI / UNDP-style), accepted only if its policy allows partner-signed consents. The CM
+   validates it, generates a canonical artefact + signed receipt, stores them, and returns the
+   decision.
 
 {% content-ref url="../../products/registry/registry/features/consent-aware-data-sharing.md" %}
 [consent-aware-data-sharing.md](../../products/registry/registry/features/consent-aware-data-sharing.md)

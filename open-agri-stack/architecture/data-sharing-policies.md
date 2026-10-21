@@ -19,7 +19,7 @@ Access policies say what a partner may ask for. In Agri Stack they are all held 
 
 A partner of the Exchange has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange only with its partners.
 
-Consents collected in the Exchange's partner portal (a `consent_id`) are made **by use case**: the partner's staff pick one of the use cases it has a policy for, and the consent takes that use case's purpose and scopes per registry, read from the Composite; that policy's purposes, subject ID types and longest validity apply. Such a consent can then be used only for that use case. A partner of the Exchange therefore needs only its use-case policies, whether its staff collect the consent in the portal or it signs the consent itself (`consent_jws`).
+Consents collected in the Exchange's partner portal (a `consent_id`) are made **by use case**: the partner's staff pick one of the use cases it has a policy for, and the consent takes that use case's purpose and scopes per registry, read from the Composite; that policy's purposes, subject ID types and longest validity apply. Such a consent can then be used only for that use case. A partner of the Exchange therefore needs only its use-case policies, whether its staff collect the consent in the portal or it signs the consent itself (`consent_jws`, accepted only if that use case's policy allows partner-signed consents).
 
 **The use case** itself ([Composite](../composite/README.md)) is configuration owned by the Agri Stack platform team: its sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), its purpose and its response. A use-case grant gives the partner exactly that use case's scopes; it carries no scopes of its own. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
 
@@ -41,11 +41,11 @@ A misconfigured use case or use-case grant can never leak more than the departme
 <figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: the use case asks for five scopes; the bank is granted the use case, so all five pass; the farmer declines land; the Livestock Department does not allow herd data; released: Farmer Registry personal details, Crop Sown crop season and measures"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
 
 {% hint style="info" %}
-**A partner using one registry directly** (path A, no Composite): effective scopes = the partner's scope policy for that registry, in the registry's own PM ∩ the farmer's consent.
+**A partner using one registry directly** (path A, no Composite): effective scopes = the partner's scope policy for that registry, in the registry's own PM ∩ the farmer's consent (held by the registry's CM, or signed by the partner if its policy allows).
 {% endhint %}
 
 {% hint style="info" %}
-In the registries, a scope is a registry **data scope**: a named group of the registry's own fields, with ID `<controller>.<name>` (e.g. `farmer-registry.personal_details`, `crop-sown-registry.crop_season`). Each registry publishes its versioned catalogue at `POST /partner/data_scopes` (signed) and filters records to the consented fields before rendering them. See [Data Scopes](../../products/registry/registry/design/data-scopes.md), and the [Farmer Registry](../../products/registry/farmer-registry/data-scopes.md) and [Crop Sown Registry](../../products/registry/crop-sown-registry/data-scopes.md) scopes.
+In the registries, a scope is a registry **data scope**: a named group of the registry's own fields, with ID `<controller>.<name>` (e.g. `farmer-registry.personal_details`, `crop-sown-registry.crop_season`). Each registry publishes its versioned catalogue at `POST /partner/data_scopes` (signed) and, unless turned off, an unsigned `GET` (which Partner Management reads for its policy form), and filters records to the consented fields before rendering them. See [Data Scopes](../../products/registry/registry/design/data-scopes.md), and the [Farmer Registry](../../products/registry/farmer-registry/data-scopes.md) and [Crop Sown Registry](../../products/registry/crop-sown-registry/data-scopes.md) scopes.
 {% endhint %}
 
 ## Who approves what

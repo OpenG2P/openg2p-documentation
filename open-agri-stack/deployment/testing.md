@@ -31,13 +31,13 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r scripts/requirements.txt
 ```
 
-**In one shot:** [`scripts/exchange_test.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/exchange_test.sh) runs step 1 (a rerun changes nothing already in place), reads the PM admin client secret from the cluster, and runs step 3 with `--auto-approve`:
+**In one shot:** [`scripts/exchange_test.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/exchange_test.sh) runs step 1 (a rerun changes nothing already in place), reads the PM admin client secret from the cluster, runs step 3 with `--auto-approve`, and creates the partner's portal user `<partner>-operator` (e.g. `bank-a-operator`, password in the Secret `partner-user-bank-a-operator`) so the same partner can use the [partner portal](#consent-through-the-partner-portal); `--no-portal-user` skips it:
 
 ```bash
 ./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
 ```
 
-The whole run is saved to `scripts/out/exchange-test-<namespace>-<time>.log` (git-ignored), next to the response JSON. `--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--use-case <name>` and `--fan <ID>` pick the use case and farmer to test; `--consent-id <ID>` queries with a consent collected in the partner portal for that use case (step 4). If the run onboarded the partner or changed its policy, the query is retried for up to 90 s while the Composite and the Exchange CM still hold PM's earlier answer in their caches. The steps one by one follow.
+The whole run is saved to `scripts/out/exchange-test-<namespace>-<time>.log` (git-ignored), next to the response JSON. `--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--use-case <name>` and `--fan <ID>` pick the use case and farmer to test; `--consent-lookup` (or `--consent-id <ID>`) queries with a consent collected in the partner portal for that use case (step 4). If the run onboarded the partner or changed its policy, the query is retried for up to 90 s while the Composite and the Exchange CM still hold PM's earlier answer in their caches. The steps one by one follow.
 
 ## Exchange setup
 
@@ -78,7 +78,8 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 | `--base-domain` | Every URL defaults to `https://<service>.<base domain>`: `agri-composite`, `partner-management-partner-api`, `pm-staff-portal` (PM's admin API), `partner-management` (PM's portal), and Keycloak's staff realm. Each can be overridden (`--composite-url`, `--pm-staff-url`, …) |
 | `--partner` | The partner's ID, e.g. `bank-a` (in PM `PARTNER_BANK_A`). The script sets up its policy for the use case under test |
 | `--fan` | The farmer's ID, as the farmer would give it to the bank (`--subject-type FARMER_ID` for a Farmer ID). Default `946053125409`: sample person `ETH-IND-0007` of the shipped Ethiopia country pack, who is sample farmer `FR-0007` with land in the Farmer Registry and crop seasons in the Crop Sown Registry of any install with sample data |
-| `--consent-id` | Query with a consent the Exchange CM holds ([step 4](#consent-through-the-partner-portal)) |
+| `--consent-lookup` | Query with no consent: the Exchange CM looks up the one it holds for the partner, farmer and use case ([step 4](#consent-through-the-partner-portal)) |
+| `--consent-id` | Query with the ID of a consent the Exchange CM holds |
 | `--auto-approve` | Approve the PM requests with the same admin credentials |
 | `--wait` | How long to wait for a manual approval (default 30 min) |
 
@@ -89,9 +90,9 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 | Use case | GET the use case from the Composite: its `name@major` (e.g. `loan-profile@1`), purpose, inputs, the registries the consent must grant |
 | Key | The partner's signing key (EC P-256), kept in `--state-dir` (default `~/.agri-partner-test/<base domain>`) and reused |
 | Onboard | The partner in the Exchange's Partner Management: its key, and its policy for the use case in the same onboarding request. **With PM admin credentials:** the script raises the onboarding (or key-update) request and waits for a PM admin to approve it in the PM portal; `--auto-approve` approves it with the same credentials. **Without:** it prints the partner ID, the public key (also written to the state directory) and the policy for a PM admin to onboard and approve. Either way it waits until PM's public key API serves the key |
-| Access | The partner's policy for the use case in the Exchange PM (one policy per use case). An already onboarded partner without it gets a policy request adding it (an existing one is only widened, never narrowed; other use cases' policies are untouched), approved as above; without PM admin credentials the script prints the policy for a PM admin. Either way it waits until PM's policy API serves it. [Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies) |
-| Consent and query | A consent for the farmer with a grant per registry, signed by the partner; the signed request is POSTed to the Composite's public URL |
-| Result | The response signature is checked against the Composite's key served by PM; each source's status is printed, and the JSON is saved (git-ignored, owner-only) |
+| Access | The partner's policy for the use case in the Exchange PM (one policy per use case). When the script signs the consent itself (no `--consent-lookup` / `--consent-id`), the policy also allows partner-signed consents (`allow_partner_consents`); otherwise it is left off. An already onboarded partner without it gets a policy request adding it (an existing one is only widened, never narrowed, so a flag set by an earlier run stays; other use cases' policies are untouched), approved as above; without PM admin credentials the script prints the policy for a PM admin. Either way it waits until PM's policy API serves it. [Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies) |
+| Consent and query | A consent for the farmer with a grant per registry, signed by the partner (none with `--consent-lookup`, its ID with `--consent-id`); the signed request is POSTed to the Composite's public URL |
+| Result | The response signature is checked against the Composite's key served by PM; the consent used and each source's status are printed, and the JSON is saved (git-ignored, owner-only) |
 
 ### Admin credentials
 
@@ -111,17 +112,18 @@ The script covers only the partner's side. The rest is part of the install, and 
 
 ## Consent through the partner portal
 
-In the partner test the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries only its ID.
+In the partner test the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries no consent: the Exchange CM finds it.
 
 1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request**, picking the use case to test (`loan-profile@1`; only use cases granted to `bank-a` in PM are offered), with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`) and Farmer ID (e.g. `FR-0007`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
-2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Note the consent ID. Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
+2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
 3. Query with it:
 
 ```bash
-python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --fan <the consent's FAN> --consent-id <consent ID>
+python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --fan <the consent's FAN> --consent-lookup
+# or in one shot: ./scripts/exchange_test.sh --namespace agrix --test-only --fan <the consent's FAN> --consent-lookup
 ```
 
-The query then carries `message.consent_id`. The Exchange CM checks the consent (active, in its validity, obtained by this partner, about this farmer, made for this use case) and what it grants, and the registries get consent tokens as before. See [consent collection](../../consent-management/design/consent-collection.md).
+The Exchange CM looks up `bank-a`'s active consent for this farmer and use case, checks what it grants, and the registries get consent tokens as before; the result names the consent used. With no such consent the query is refused (`consent_denied`, `consent_not_found`). `--consent-id <ID>` instead names one consent. See [consent collection](../../consent-management/design/consent-collection.md).
 
 ## Where to look
 
@@ -136,6 +138,7 @@ The query then carries `message.consent_id`. The Exchange CM checks the consent 
 | Every query fails with `signing_unavailable` | The Composite has no signing key Secret | Run the [Exchange setup](#exchange-setup) |
 | Response signature not verified, or registries answer 401 | The Composite is not in PM | Run the [Exchange setup](#exchange-setup) |
 | The query fails with 403 `partner_not_allowed` | The partner has no policy for the use case (`name@major`) in the Exchange PM | Rerun the partner test with PM admin credentials, or **Add policy** for the use case on the partner in the PM portal |
+| The query fails with 403 `consent_denied` (`partner_consent_not_accepted`) | The partner signed its own consent but its use-case policy does not allow it | Use a consent collected in the partner portal (`--consent-lookup`), or tick **May present its own signed consents** on the policy (the partner test does this when it signs) |
 | The query fails with 503 `partner_policy_unavailable` | The Composite cannot read Partner Management and has no cached answer | Check the Exchange PM's partner API |
 | Sources `denied` for consent | The department PM has no scope policy for the Composite covering the use case, or the department CM does not trust the Exchange's consent tokens | Rerun the Exchange setup and fix what it reports |
 | The Composite API restarts at start | A setting it cannot read (the log names it) | Check the release's values: [Composite](composite.md#environment-settings) |

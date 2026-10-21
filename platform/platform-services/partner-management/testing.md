@@ -30,13 +30,13 @@ Coverage:
 * **Reject** — rejected onboarding is never served, and a decided request cannot
   be approved.
 * **Policies** — onboarding with policies activates version 1 on approval
-  (rejection marks them `rejected`); fetch by data controller and use-case
-  policy; fail-closed `404` for unknown, non-active or policy-less partners;
+  (rejection marks them `rejected`); fetch by data controller, by use case and
+  unfiltered; fail-closed `404` for unknown, non-active or policy-less partners;
   listing by use case; policy requests create new versions that supersede the
-  old, can be rejected or revoke policies; one pending change per data
-  controller (`PM-POLICY-409`); policy requests only for approved partners;
+  old, can be rejected or revoke policies; one pending change per policy
+  key (`PM-POLICY-409`); policy requests only for approved partners;
   audit events; field validation (scopes vs use cases, `name@major`, algorithms,
-  fetch type, ISO-8601 durations) and one policy per controller per request.
+  fetch type, ISO-8601 durations) and one policy per key per request.
 * **Validation** — `GET /metadata` lists the allowed values; unsupported or
   wrong-case algorithms, malformed `partner_id` / `kid`, non-http(s) `jwks_url`,
   unknown or already-revoked `revoke_kids`, and unknown status / request-type

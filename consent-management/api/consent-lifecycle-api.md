@@ -29,14 +29,14 @@ Give **exactly one** of:
 { "subject_id": { "type": "national_id", "value": "FARMER_1234" },
   "partner_id": "bank-a", "data_controller": "farmer-registry",
   "purpose": { "code": "share_farm_profile", "text": "..." },
-  "requested_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+  "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" } }
 // request — one grant per registry
 { "subject_id": { "type": "national_id", "value": "FARMER_1234" },
   "partner_id": "bank-a", "purpose": { "code": "credit_scoring", "text": "..." },
   "grants": [
-    { "data_controller": "farmer-registry", "data_scopes": ["farmer_profile.basic"] },
-    { "data_controller": "crop-sown-registry", "data_scopes": ["crops_sown"] }
+    { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details"] },
+    { "data_controller": "crop-sown-registry", "data_scopes": ["crop-sown-registry.crop_season"] }
   ] }
 // response 201
 { "request_id": "req-123", "status": "pending", "created_at": "2025-05-01T11:55:00Z" }
@@ -92,12 +92,12 @@ issues a signed artefact + receipt.
 
 ```json
 // request — one controller
-{ "granted_scopes": ["farmer_profile.basic", "farmer_profile.crops"] }
+{ "granted_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"] }
 // request — a grants request: the subject approves per registry
-{ "grants": [ { "data_controller": "farmer-registry", "data_scopes": ["farmer_profile.basic"] } ] }
+{ "grants": [ { "data_controller": "farmer-registry", "data_scopes": ["farmer-registry.personal_details"] } ] }
 // response 201
 { "consent_id": "CONSENT-123456", "receipt_id": "RECEIPT-998877",
-  "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+  "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
   "status": "active", "valid_until": "2026-05-01T12:02:10Z" }
 ```
 
@@ -110,12 +110,10 @@ issues a signed artefact + receipt.
   grant. `400` if nothing is left. The artefact holds the approved grants (with each one's
   `effective_data_scopes` and policy reference: `policy_ref`, `policy_version`, `policy_id`) and the receipt lists one `data_controllers`
   entry per grant.
-
-{% hint style="warning" %}
-An originated consent cannot yet be presented at a registry: `/validate` accepts only a
-partner-signed consent JWS.
-{% endhint %}
 * `409` if the request is not `pending`; `412` if no auth context exists.
+
+An originated consent is used at `/validate` by its `consent_id`, or found by lookup when the
+partner sends none ([Verification API](verification-api.md#consent-by-lookup)).
 
 ## `POST /consent-requests/{request_id}/deny`
 

@@ -13,7 +13,7 @@ The Consent Manager keeps two kinds of structures:
   Partners and their access policies are not stored here: they live in Partner Management, and
   records name the partner by its **audience** (e.g. `bank-a`) with the **policy reference** applied: `policy_ref` (its key, `kind:key` — `data_controller:farmer-registry` or `use_case:loan-profile@1`), `policy_version` and `policy_id` (PM's id of that version)
   ([Partner Management integration](partner-management-integration.md)).
-* **Exchanged documents** — JSON-LD documents passed in/out (the consent object a partner embeds,
+* **Exchanged documents** — JSON-LD documents passed in/out (the consent object a partner signs and embeds,
   the ID token from the IdP, and the artefact + receipt the CM issues).
 
 All status transitions are **append-only**: a new status and timestamp are written, prior
@@ -44,6 +44,7 @@ carried grants, the approved grants are stored on it.
 | --- | --- | --- |
 | consent_id | UUID | Primary key |
 | subject_id_type / subject_id_value | str | The data subject |
+| subject_identifiers | json | The subject's other identifiers recorded with the consent, `[{type, value}]` (e.g. the `FARMER_ID` the partner portal records); a lookup or subject check may match any of them |
 | controller_id | str | Data controller (registry). Null for an originated consent with several approved grants |
 | partner_id | str | The partner the consent was given to: its audience (e.g. `bank-a`) |
 | purpose | json | `{code, text}` |
@@ -58,8 +59,23 @@ carried grants, the approved grants are stored on it.
 | policy_version | int | Version of the partner's policy in Partner Management evaluated at issue |
 | policy_id | str | PM's id of that policy version |
 | policy_ref | str | The policy's key, `kind:key`: `data_controller:farmer-registry` or `use_case:loan-profile@1`. On an originated consent with several grants, set only when all grants share one policy (a consent by use case) |
+| use_case | str | Exchange role: the use case (`name@major`) the consent serves — a consent made by use case, or a partner-signed one validated in use-case mode. Null otherwise |
 | status | enum | `active`, `revoked`, `expired` |
 | created_at / revoked_at / expired_at | datetime | Append-only |
+
+**Lookup indexes.** They serve consent by lookup with one index
+range per request, whatever the number of consents:
+
+* `ix_consent_artefacts_lookup`, partial on `status = 'active'` (`partner_id`, `subject_id_type`, `subject_id_value`, `use_case`,
+  `valid_until DESC`) — [with a use case](verification-and-enforcement.md#use-case-mode);
+* `ix_consent_artefacts_controller_lookup`, partial likewise (`partner_id`, `subject_id_type`, `subject_id_value`,
+  `controller_id`, `valid_until DESC`) —
+  [at a registry](verification-and-enforcement.md#consent-by-lookup-at-a-registry). An originated
+  consent with several grants (no `controller_id`) is matched on its `grants` within the same
+  (partner, subject) range;
+* `ix_consent_artefacts_subject_identifiers`, GIN (`jsonb_path_ops`) on `subject_identifiers`
+  (not partial) — a lookup by one of the subject's other identifiers
+  (`subject_identifiers @> [{"type", "value"}]`).
 
 ### AuthContext (origination flow)
 
@@ -127,9 +143,9 @@ Received from the identity provider after subject authentication (origination fl
 }
 ```
 
-### Consent object (partner-embedded, the primary flow)
+### Consent object (partner-signed)
 
-The **partner signs this as a compact JWS** (RFC 7515) and embeds it in the registry request. The
+A partner that collects consent in its own system **signs this as a compact JWS** (RFC 7515) and embeds it in the registry request; the CM accepts it only if the partner's policy allows partner-signed consents (`allow_partner_consents`). The
 claims below are the **JWS payload**; the JWS protected header carries `alg` + `kid`. The CM
 recovers the claims from the payload and verifies the signature using the partner's public key
 **fetched from Partner Management** (partner ID `PARTNER_<AUD>`) by the JWS `kid` (see
@@ -151,8 +167,9 @@ treated as one grant; a consent may not mix the two.
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
   "grants": [
     { "data_controller": "farmer-registry",
-      "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"] },
-    { "data_controller": "crop-sown-registry", "data_scopes": ["crop_season", "crops_sown"] }
+      "data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops", "farmer-registry.land"] },
+    { "data_controller": "crop-sown-registry",
+      "data_scopes": ["crop-sown-registry.crop_season", "crop-sown-registry.measures"] }
   ],
   "fetch_type": "oneshot",
   "validity": { "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z" },
@@ -199,8 +216,8 @@ The CM's canonical decision document. Stored, and checked before any data is rel
   "partner_id": "bank-a",
   "source": "embedded",
   "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
-  "data_scopes": ["farmer_profile.basic", "farmer_profile.crops", "farmer_profile.landholdings"],
-  "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+  "data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops", "farmer-registry.land"],
+  "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
   "fetch_type": "oneshot",
   "policy_version": 3,
   "policy_id": "7d0c9a52-…",
@@ -211,7 +228,7 @@ The CM's canonical decision document. Stored, and checked before any data is rel
 ```
 
 > This is the Farmer Registry's artefact for the consent above: its grant only.
-> `effective_data_scopes` excludes `farmer_profile.landholdings` because the partner's policy for
+> `effective_data_scopes` excludes `farmer-registry.land` because the partner's policy for
 > this registry did not allow it — data minimisation enforced at the point of decision. An
 > originated consent with several approved grants carries them under `grants` instead.
 
@@ -240,7 +257,7 @@ cryptographic proof and a human-readable consent record for the subject, audit, 
     { "code": "share_farm_profile", "text": "Share farmer profile with Partner A",
       "legal_basis": "consent", "retention": "P0D-after-fetch" }
   ],
-  "data_categories": ["farmer_profile.basic", "farmer_profile.crops"],
+  "data_categories": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
   "sensitive": false,
   "third_parties": ["bank-a"],
   "withdrawal": { "method": "POST /consent/v1/consents/CONSENT-123456/revoke" },

@@ -42,7 +42,7 @@ VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AU
 | Deployment | Audience | Auth | Hosts |
 | --- | --- | --- | --- |
 | `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | decisions/audit view, assisted-consent verification, partner portal API |
-| `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — trust is the partner-signed consent object verified against Partner Management keys (`jti` replay-guarded); registry↔CM is Istio mTLS at transport | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key) |
+| `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — callers (registries, the Composite) reach it in-cluster over Istio mTLS; partner-signed consent objects are verified against Partner Management keys (`jti` replay-guarded) | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key) |
 | `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination — **scaffolded, `enabled: false`** |
 
 `extraApis[]` entries are merged over `consentManagerApi`, so each only states its differences
@@ -213,8 +213,8 @@ Partners and their policies are managed in Partner Management, with PM's own rol
 (`partner_manager`).
 
 The service itself **validates tokens via JWKS only** — it consumes no client secret. The
-generated `client_secret` exists for *callers*: the registry/PEP obtaining a client-credentials
-token to call `/validate`, and automation obtaining a token that carries the admin role.
+generated `client_secret` exists for *callers*: automation (e.g. the sanity suite) obtaining a
+client-credentials token that carries the admin role. `/validate` needs no token.
 
 ## Partner portal and consent evidence — optional
 
@@ -234,7 +234,7 @@ The partner portal lets partner users (a partner's own employees) collect consen
 
 The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
 
-**One-time Keycloak setup.** The chart's keycloak-init creates the `partner` realm and the `consent-partner-portal` client, but cannot create realm roles, user-profile attributes, token mappers or users with attributes. After installing, run [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh) (idempotent) — it creates the roles `PARTNER_OPERATOR` / `PARTNER_ADMIN`, declares the `partner_id` user attribute, adds its token mapper, and optionally creates partner users with a generated password kept in a Secret `partner-user-<username>`:
+**One-time Keycloak setup.** The chart's keycloak-init creates the `partner` realm, the `consent-partner-portal` client and its **client roles** `PARTNER_OPERATOR` and `PARTNER_ADMIN` (a partner user needs one; the CM treats them alike). It cannot declare user-profile attributes, add token mappers or create users with attributes. After installing, run [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh) (idempotent): it declares the `partner_id` user attribute, adds its token mapper, and optionally creates partner users, each with the client role and a generated password kept in a Secret `partner-user-<username>` (on an older install it also creates the client roles):
 
 ```bash
 deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operator:bank-a:PARTNER_OPERATOR
@@ -281,11 +281,11 @@ and query; a department CM accepts them. How the two roles work:
 | `defaultSubjectIdentifiers` | — | exchange | Required subject identifiers when the partner portal leaves them empty: `[FARMER_ID]` |
 | `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
 | `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
-| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token TTL Seconds** — consent-token lifetime, capped by the consent's expiry (default 900) |
+| `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token Lifetime (seconds)** — consent-token lifetime, capped by the consent's expiry (default 300) |
 | `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
-| `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
+| `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status (if checked) is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `always` (default) or `never` |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#department-role-accepting)) |
 
 Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
 demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner
@@ -372,7 +372,7 @@ don't want test data:
   Needs no token and **creates no data**. Catches a broken/booting-wrong image immediately.
 * **Full e2e** (`Run Full E2E` / `sanity.runE2e`, **default on**) — ensures a persistent test
   partner (`PARTNER_CM_SANITY`) exists in **Partner Management** with its key and a scope policy for
-  the sanity data controller (a `pm-seed` Job raises and approves the onboarding, key-update or
+  the sanity data controller that accepts its own signed consents (`allow_partner_consents`; a `pm-seed` Job raises and approves the onboarding, key-update or
   policy request when something is missing, using the `pmSeedClientId` client), signs a consent
   object with the matching private key, and exercises a real `POST /validate` on the
   **partner-api** (permit + the `signature_invalid` and `scope_exceeds_policy` denials), then

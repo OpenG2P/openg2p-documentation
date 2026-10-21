@@ -109,7 +109,7 @@ A section scope follows its section: when a section's widgets change, the scope 
 The catalogue holds field references, never values.
 
 * **Partner API:** `POST /partner/data_scopes` with a signed partner envelope (`header`, `message`, `signature`, checked like every other partner call). The unsigned `GET /partner/data_scopes` is **on in the chart by default**: the catalogue holds no data, partners need it anyway, and Partner Management, which has no signing key, reads it to offer scopes as a checklist when policies are written. A deployment that wants its field names private turns it off (**Allow Unsigned Read of Data Scope Catalogue**, `global.partnerDataScopesPublicGetEnabled`): the GET then answers HTTP 403 pointing to the POST, and PM falls back to free text.
-* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI and, later, for choosing scopes when writing a partner's PM policy.
+* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI.
 
 ```json
 {

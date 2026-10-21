@@ -34,7 +34,7 @@ Onboard a new partner and its initial key(s).
     { "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----", "kid": "key-1" }
   ],
   "policies": [
-    { "data_controller": "farmer_registry", "allowed_data_scopes": ["farmer.basic"] }
+    { "data_controller": "farmer-registry", "allowed_data_scopes": ["farmer-registry.land"] }
   ]
 }
 ```
@@ -87,14 +87,15 @@ policies.
   "policies": [
     {
       "use_case": "loan-profile@1",
-      "allowed_purposes": ["loan-assessment"],
+      "allowed_purposes": ["credit-assessment"],
       "allowed_signing_algs": ["EdDSA", "ES256"],
       "max_validity_duration": "P1Y",
       "fetch_type": "oneshot",
-      "data_life": "P30D"
+      "data_life": "P30D",
+      "allow_partner_consents": false
     }
   ],
-  "revoke": [{ "data_controller": "farmer_registry" }, { "use_case": "name-check@2" }]
+  "revoke": [{ "data_controller": "farmer-registry" }, { "use_case": "name-check@2" }]
 }
 ```
 
@@ -220,7 +221,7 @@ The choices for policy forms, one entry per configured
       "kind": "purposes",
       "data_controller": null,
       "label": "Purposes (Master Data CONSENT_PURPOSE v3)",
-      "items": [{ "id": "CREDIT_ASSESSMENT", "label": "Credit assessment", "fields": [] }],
+      "items": [{ "id": "credit-assessment", "label": "Credit assessment", "fields": [] }],
       "error": null,
       "note": null
     },
@@ -290,7 +291,7 @@ default `60` seconds).
 
 ### `GET /policies/{partner_id}[?data_controller=|?use_case=]`
 Active policies of an **active** partner: with no filter, all of them (registries
-first, then use cases). `?data_controller=farmer_registry` returns only that
+first, then use cases). `?data_controller=farmer-registry` returns only that
 registry's scope policy; `?use_case=loan-profile@1` only that use case's policy;
 `?data_controller=` (empty) only the use-case policies.
 
@@ -301,10 +302,10 @@ registry's scope policy; `?use_case=loan-profile@1` only that use case's policy;
     {
       "id": "9b2f6c1e-…",
       "partner_id": "PARTNER_BANK_A",
-      "data_controller": "farmer_registry",
+      "data_controller": "farmer-registry",
       "use_case": null,
       "version": 2,
-      "allowed_data_scopes": ["farmer.basic"],
+      "allowed_data_scopes": ["farmer-registry.land"],
       "allowed_purposes": [],
       "allowed_subject_id_types": [],
       "allowed_signing_algs": ["EdDSA", "ES256"],
@@ -312,6 +313,7 @@ registry's scope policy; `?use_case=loan-profile@1` only that use case's policy;
       "fetch_type": "oneshot",
       "max_fetch_frequency": null,
       "data_life": null,
+      "allow_partner_consents": false,
       "effective_from": "2026-10-20T09:15:00"
     }
   ]
@@ -359,6 +361,6 @@ otherwise); `data_controller=` (empty) selects use-case policies.
 | `PM-REQ-409` | Request is not open for review. |
 | `PM-JWK-502` | Failed to import from the partner's JWKS URL. |
 | `PM-KEY-404` | Key fetch: nothing available (fail-closed). |
-| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same key, revoke of a key with no active policy, a scope or use case not in its catalogue source), or `GET /policies` without a filter. |
+| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same key, revoke of a key with no active policy, a scope or use case not in its catalogue source, a purpose or subject ID type not in its Master Data list), or `GET /policies` without a filter. |
 | `PM-POLICY-409` | A policy change is already pending for that key — data controller or use case (returned with HTTP 400). |
 | `PM-POLICY-404` | Policy fetch: nothing available (fail-closed). |

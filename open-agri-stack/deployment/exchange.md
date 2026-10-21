@@ -127,7 +127,7 @@ In each department's Partner Management portal, **Onboard partner** `PARTNER_AGR
 | Maximum validity | e.g. `P90D` |
 | Fetch type | `oneshot` |
 
-Approve the request. If the Composite is already onboarded, raise a **Change policy** request instead. Steps in the portal: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). Why the department holds this policy: [the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner); the fields: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies).
+Approve the request. If the Composite is already onboarded, open it under **Partners**: **Edit** on its scope policy row for that registry, or **Add policy** for a registry it has none for (a policy request either way). Steps in the portal: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). Why the department holds this policy: [the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner); the fields: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies).
 
 ### 4. Consent-token trust
 
@@ -157,7 +157,7 @@ The `kid` must be the one registered in the PMs. Other Secret names and keys: [C
 
 ### When use cases change
 
-A new use case, or one that reads more scopes or another registry, needs the departments' ceilings widened first: each department raises a **Change policy** request for `PARTNER_AGRI_COMPOSITE` with the new scopes and purposes (step 3), or the operator reruns the script. Until then the registry denies what the ceiling does not cover. Narrowing a ceiling is always done by hand: the script never narrows.
+A new use case, or one that reads more scopes or another registry, needs the departments' ceilings widened first: each department **Edits** the scope policy of `PARTNER_AGRI_COMPOSITE` for that registry, adding the new scopes and purposes (step 3; **Add policy** for a new registry), or the operator reruns the script. Until then the registry denies what the ceiling does not cover. Narrowing a ceiling is always done by hand: the script never narrows.
 
 ## For production
 
@@ -209,7 +209,7 @@ Replacing the demo key, step by step: [CM deployment](../../consent-management/d
 
 ### Revocation takes effect after the caches
 
-The Composite and the CMs keep a partner's policy for up to 60 s, and the last known answer for up to 6 h while PM is unreachable. A revoked policy or disabled partner is therefore refused within a minute normally, but not during a PM outage. Lower the hard TTL (`PARTNER_POLICY_HARD_TTL_SECONDS` in the [Composite](composite.md) and the CM) if that window is too long for you.
+The Composite and the CMs keep a partner's policy for up to 60 s, and the last known answer for up to 6 h while PM is unreachable. A revoked policy or disabled partner is therefore refused within a minute normally, but not during a PM outage. Lower the hard TTL (`AGRI_COMPOSITE_PARTNER_POLICY_HARD_TTL_SECONDS` in the [Composite](composite.md); `global.partnerPolicyCache.hardTtlSeconds` in the [CM](../../consent-management/deployment/README.md#partner-management)) if that window is too long for you.
 
 ### Demo leftovers
 

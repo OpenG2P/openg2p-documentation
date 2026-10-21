@@ -12,7 +12,7 @@ The Composite serves approved use cases. A partner sends one signed request abou
 * **Base URL:** `https://<composite host>/composite/v1`
 * **Who calls it:** partners (banks, MFIs, agritechs) onboarded in Partner Management with a policy there for the use case (`name@major`). Staff use the console API.
 * **Signing:** the query body is an envelope `{signature, header, message}`. `signature` is a detached JWS over `{header, message}`, made with the partner's key. The Composite verifies it against the partner's keys in Partner Management (`header.sender_id`). The Composite signs every response, errors included, with its own key.
-* **Consent:** send `message.consent_id` (a consent the farmer gave, held by the Exchange's Consent Manager) or `message.consent_jws` (a consent the partner signed). The Exchange turns it into a consent token for each registry.
+* **Consent:** send nothing (the Exchange's Consent Manager looks up the consent it holds from this partner for this farmer and use case), `message.consent_id` (a consent it holds) or `message.consent_jws` (a consent the partner signed, accepted only if its policy for the use case allows partner-signed consents). The first two need the Exchange consent mode. The Exchange turns the consent into a consent token for each registry, and the response names the one used (`message.consent_id`).
 * **Result:** each source (registry query) gets a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. A failed optional source leaves its fields null. A failed mandatory source fails the request.
 
 {% hint style="info" %}
@@ -50,6 +50,8 @@ The two codes about the partner's use-case grant ([data-sharing policies](../arc
 
 * **`403 partner_not_allowed`:** the partner has no policy for this use case (`name@major`) in Partner Management. Message: `partner 'bank-b' is not granted the use case loan-profile@1 in Partner Management`.
 * **`503 partner_policy_unavailable`:** Partner Management cannot be read to check the grant and no recent answer is cached. Message: `Partner Management cannot be read to check the partner's use-case grant; try again later`.
+
+**`403 consent_denied`** carries the Exchange Consent Manager's reason in its message, e.g. `consent_not_found` when the partner sent no consent and the CM holds none for this farmer and use case. **`403 consent_required`**: no consent sent in passthrough mode.
 
 ## Use cases
 

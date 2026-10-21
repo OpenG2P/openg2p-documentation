@@ -21,6 +21,7 @@ operations are in the [API Reference](api-reference.md).
 | **Registry seed scripts** | Datasets, geography, sample people | At **install**, through the same API |
 | **Staff portal screens** | Geography units, level by level | At **runtime**, for cascading address dropdowns |
 | **PBMS, Bridge, SPAR** | Geography lookups | At runtime |
+| **Partner Management** | The code lists `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` (purposes and subject ID types a partner's access policy may name) | At **runtime**, with its own service account, cached; a list the pack lacks, or MDS down, leaves the policy form free text. See [Master Data code lists](../partner-management/functional-specifications.md#master-data-code-lists) |
 | **Maps** | Boundary files per level and version | The boundary read, or the public download when the geography is public |
 | **Open-data portals, other websites** | Public datasets and geography | The opt-in [public catalogue](public-catalogue.md), anonymous |
 

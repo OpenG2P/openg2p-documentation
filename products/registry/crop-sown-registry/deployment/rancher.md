@@ -69,6 +69,11 @@ The defaults suit a production-like install. Change only these.
 Set these in **Edit YAML**:
 
 ```yaml
+global:
+  # A search by identifier without a consent: the DCI ID type → the consents'
+  # subject ID type (the chart default; FARMER_ID is the same in both).
+  consentSubjectIdTypes:
+    UIN: FAYDA_FAN
 registry:
   partnerApi:
     envVars:

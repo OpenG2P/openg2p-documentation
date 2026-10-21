@@ -5,7 +5,7 @@ description: APIs available for the Registry Partner ecosystem
 # Partner API
 
 {% hint style="info" %}
-**Every partner API call must be signed.** `POST /dci/registry/sync/search`, `POST /partner/ingest_data`, `POST /partner/activity/append_activities`, `POST /partner/activity/correct_activities` and `POST /partner/data_scopes` carry a detached JWS made with the partner's key, which the registry verifies against Partner Management. The unsigned `GET /partner/data_scopes` is off by default. Only `/ping` and the API description are open. `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (on by default) switches the check off for testing only. See [Authentication and signature verification](../../design/partner-apis.md#authentication-and-signature-verification).
+**Every partner API call must be signed.** `POST /dci/registry/sync/search`, `POST /partner/ingest_data`, `POST /partner/activity/append_activities`, `POST /partner/activity/correct_activities` and `POST /partner/data_scopes` carry a detached JWS made with the partner's key, which the registry verifies against Partner Management. The unsigned `GET /partner/data_scopes` is on by default in the chart (off in the service's own default). Only `/ping` and the API description are open. `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` (on by default) switches the check off for testing only. See [Authentication and signature verification](../../design/partner-apis.md#authentication-and-signature-verification).
 {% endhint %}
 
 {% openapi-operation spec="registry-partner-api" path="/partner/ingest_data" method="post" %}

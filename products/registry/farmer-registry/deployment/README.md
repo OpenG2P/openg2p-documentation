@@ -73,6 +73,7 @@ Set these in **Edit YAML**, if at all. In a values file, platform settings sit u
 | `analytics.bulkSample.expectedCountry` | empty | You want bulk generation to fail if Master Data holds another country (e.g. `ETH`) |
 | `analytics.dashboards.superset.required` | `false` | The dashboards must load: the install then fails if Superset is not reachable |
 | `global.consentDataController` | `farmer-registry` | Partners' scope policies in Partner Management name another data controller ID. It changes every scope ID |
+| `global.consentSubjectIdTypes` | `{UIN: FAYDA_FAN}` | Consents name the person by another ID type than the DCI search's: a search by identifier without a consent sends the mapped type to the Consent Manager ([no consent in the search](../../../../consent-management/design/registry-integration.md#no-consent-in-the-search)) |
 
 ### Using the Helm CLI
 

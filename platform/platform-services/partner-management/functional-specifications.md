@@ -159,6 +159,7 @@ subject ID types, algorithms and limits are set per use case.
 | `fetch_type` | `oneshot` (default) or `periodic`. |
 | `max_fetch_frequency` | How often a periodic partner may fetch (ISO-8601). Optional. |
 | `data_life` | How long the partner may keep the data (ISO-8601, e.g. `P30D`). Optional. |
+| `allow_partner_consents` | `true` = the partner may present consents it collected and signed itself; the Consent Manager accepts them (it can verify only the partner's signature, not that the person agreed). Default `false`: such consents are refused. |
 
 Lists are trimmed and blanks and duplicates dropped; durations must be longer
 than zero. Each stored version also records the request that proposed it,

@@ -71,7 +71,7 @@ Because the hooks are ordered, **a db-seed failure stops the chain before the sa
 {% endhint %}
 
 {% hint style="warning" %}
-The e2e seeds a **shared, persistent** test partner in Partner Management (its key and its access policy for this registry), and provisions a `sanity-e2e` Keycloak user. These are deliberately left in place after a run so a failure can be inspected. Remove them explicitly when decommissioning an environment.
+The e2e seeds a **shared, persistent** test partner in Partner Management (its key and its access policy for this registry; the policy sets `allow_partner_consents`, as the suite signs its own consents, and a policy without it is replaced by a new version), and provisions a `sanity-e2e` Keycloak user. These are deliberately left in place after a run so a failure can be inspected. Remove them explicitly when decommissioning an environment.
 {% endhint %}
 
 ## Extending the tests

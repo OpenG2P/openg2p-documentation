@@ -73,9 +73,9 @@ Both the API and the console are served through the Istio `internal` gateway, li
 | `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL. `/consent/v1/validate` is appended |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
 
-Keep the mode `exchange`: the Composite presents the partner's consent (or its `consent_id`) to the Exchange CM and gets one consent token per registry ([how departments trust the Exchange](../architecture/exchange.md#how-departments-trust-it)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [Use-Case Configuration](../composite/use-case-configuration.md#consent-mode).
+Keep the mode `exchange`: the Composite presents the partner's consent (its `consent_id`, or a consent the partner signed), or asks the Exchange CM to look it up when the partner sent none, and gets one consent token per registry ([how departments trust the Exchange](../architecture/exchange.md#how-departments-trust-it)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [Use-Case Configuration](../composite/use-case-configuration.md#consent-mode).
 
-The other mode, `passthrough`, sends the partner's consent to each registry unchanged, so each registry's Partner Management needs a scope policy for every partner. It suits only a single install where the registries share the Composite's commons.
+The other mode, `passthrough`, sends the partner's consent to each registry unchanged (it needs a partner-signed consent), so each registry's Partner Management needs a scope policy for every partner. It suits only a single install where the registries share the Composite's commons.
 
 ### Registries
 
@@ -153,7 +153,7 @@ On by default: the read-only staff [console](../composite/console.md). Off (`con
 | `console.keycloakInit.adminUsers` | `[admin]` | Values only: staff users given `AGRI_COMPOSITE_ADMIN` |
 | `console.iamRegister.runAsHook` | `true` | Values only: `false` in umbrella charts or helmfiles |
 
-With the console on, the chart runs Jobs that create the database and its user in the commons Postgres, the console's Keycloak client in the `staff` realm (roles `AGRI_COMPOSITE_ADMIN`, `AGRI_COMPOSITE_VIEWER`) and its IAM application. The call log holds the request ID, use case, partner, statuses and timings, never the subject, the consent or any data.
+With the console on, the chart runs Jobs that create the database and its user in the commons Postgres, the console's Keycloak client in the `staff` realm (roles `AGRI_COMPOSITE_ADMIN`, `AGRI_COMPOSITE_VIEWER`) and its IAM application. The call log holds the request ID, use case, partner, statuses, timings and the ID of the consent used, never the subject, the consent's content or any data.
 
 ### CORS
 
@@ -188,9 +188,9 @@ The Composite posts CloudEvents to the Audit Manager's `/v1/auditmanager/events`
 
 | Event | When | Context |
 | --- | --- | --- |
-| `request` | The request is accepted, or rejected before any source is called | Outcome (`success`, `denied`, `failure`) and reason code |
+| `request` | The request is accepted, or rejected before any source is called | Outcome (`success`, `denied`, `failure`) and reason code; the consent used (`consent_id`), once known |
 | `source_call` | Each registry call | Source, controller, status, attempts, duration |
-| `response` | Every response | HTTP status, duration, status per source |
+| `response` | Every response | HTTP status, duration, status per source, the consent used |
 
 Events are sent in the background; a failure is logged and never fails the request. A use case can limit which events it sends (`audit.events`).
 

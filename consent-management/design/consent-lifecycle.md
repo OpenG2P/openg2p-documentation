@@ -38,7 +38,8 @@ sequenceDiagram
    scopes, and purpose. The scopes can be for one controller, or a **grant per registry**
    (`grants: [{data_controller, data_scopes}]`). The request is validated against the partner's
    policy for each controller (read from Partner Management) up front, so an impossible request is
-   rejected early.
+   rejected early. A CM in the Exchange role takes requests **by use case** instead, checked against
+   the partner's policy for that use case ([partner portal](consent-collection.md#partner-portal)).
 2. **Authenticate** — the subject authenticates with the configured OIDC provider and the ID token
    is posted to the CM. The CM validates the token signature and claims (`iss`, `aud`, `exp`,
    `auth_time`, `amr`) against the IdP's JWKS, stores only the **hash**, and builds an
@@ -58,8 +59,8 @@ sequenceDiagram
 * A **receipt is only created after an artefact** exists.
 * The **granted scope can never exceed policy**, even if the subject "approves" more.
 * Approval requires a valid **AuthContext** — the subject must have authenticated.
-* An originated consent cannot yet be presented at a registry's `/validate`, which takes a
-  partner-signed consent JWS only.
+* An originated consent is used at `/validate` by its `consent_id`, or found there by lookup when
+  the partner sends no consent ([Verification API](../api/verification-api.md#consent-by-lookup)).
 
 ## Revocation
 

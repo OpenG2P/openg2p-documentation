@@ -15,7 +15,7 @@ The console shows how the Composite is set up and what it has been doing. It is 
 | **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), **Granted to** (the partners with a policy for this use case, `name@major`, in Partner Management), and the use case file. The labels are explained in [reading a use case in the console](creating-a-use-case.md#reading-a-use-case-in-the-console) |
 | **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the Composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
 | **Partners** | Read from Partner Management: every partner with a policy for a published use case (one policy per use case), with its **Partner (Partner Management ID)**, **Granted use cases** and the keys PM serves for it. Policy versions are in Partner Management. If PM cannot be read, the page says *Partner Management could not be read* and the list may be incomplete; the Overview's partner count shows a dash |
-| **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, duration and each source's status |
+| **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, the consent used, duration and each source's status |
 
 ## Access
 
@@ -30,7 +30,7 @@ The console's API is `GET /composite/v1/admin/...` on the Composite service, all
 
 ## Call log
 
-The Audit Manager stays the record of every request (it has no read API), so the console keeps its own call log in a small database (`agri_composite` in the shared Postgres): one row per query whose partner signature verified (unsigned or forged requests are not logged, so nobody can write rows under another partner's name), with the time, use case, partner, HTTP status, outcome and reason, duration and each source's status. Never the subject, the consent or any data. Rows are written in batches in the background, so a query never waits on the database. Once a day one worker (across all pods) deletes rows older than `console.activityRetentionDays` (default 90). The Activity page counts up to 10,000 matching rows and shows "10000+" beyond that.
+The Audit Manager stays the record of every request (it has no read API), so the console keeps its own call log in a small database (`agri_composite` in the shared Postgres): one row per query whose partner signature verified (unsigned or forged requests are not logged, so nobody can write rows under another partner's name), with the time, use case, partner, HTTP status, outcome and reason, duration, each source's status and the consent's ID (as the Exchange CM names it). Never the subject, the consent's content or any data. Rows are written in batches in the background, so a query never waits on the database. Once a day one worker (across all pods) deletes rows older than `console.activityRetentionDays` (default 90). The Activity page counts up to 10,000 matching rows and shows "10000+" beyond that.
 
 ## Install
 

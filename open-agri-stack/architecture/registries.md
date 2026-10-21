@@ -99,7 +99,7 @@ Each registry sees only the Composite, never the partner (e.g. a bank). The part
 | --- | --- |
 | Partner Management, key | `PARTNER_AGRI_COMPOSITE`, with the Composite's public key and `kid`. The registry checks the Composite's signature against it |
 | Partner Management, scope policy | The Composite's policy for this registry's data controller (`farmer-registry` or `crop-sown-registry`): below |
-| Consent Manager, role | **Exchange Role** `department`: it trusts consent tokens from the Exchange CM (`agri-stack-exchange-cm`) presented by the Composite (`agri-composite`), and checks each token's status there |
+| Consent Manager, role | **Exchange Role** `department`: it trusts consent tokens from the Exchange CM (`agri-stack-exchange-cm`) presented by the Composite (`agri-composite`), checked offline (a status check at the Exchange CM is optional, off by default) |
 
 ### Scope policy for the Composite
 

@@ -29,7 +29,7 @@ Functional work, in order, for the first production release. Country data and re
 ## Identity, consent and policies
 
 * **Common farmer identifier** — confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup); with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
-* **Consent held in CM, presented directly at a registry** — without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)). Also decide whether consent spanning registries is always collected in CM. *Design:* [consent](../architecture/consent.md); recommended: always collect it in CM.
+* **Exchange consent used directly at a registry** — a consent held in the Exchange CM used at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)); today a registry's own CM finds only the consents it holds. Also decide whether consent spanning registries is always collected in CM. *Design:* [consent](../architecture/consent.md); recommended: always collect it in CM.
 * **More ways to give consent** at the Exchange CM — in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). *Design:* [consent](../architecture/consent.md).
 * **Which CM to trust, per partner** — let a department CM choose, per partner, which CM's consent tokens it trusts (today it trusts the Exchange CM for every partner the Composite presents). *Design:* not designed yet.
 * **Who may search across subjects** — searches of activity-register aggregates without a subject (e.g. for a benefit run) checked against a PM policy (a programme's legal basis for bulk access, approved by the department), instead of the partner API's `dci_bulk_aggregate_partners` allow-list. *Design:* not designed yet ([data-sharing policies](../architecture/data-sharing-policies.md)).
@@ -57,7 +57,7 @@ Functional work, in order, for the first production release. Country data and re
   *Design:* decided as listed.
 * **Editing use cases in the console** — use cases stored in the Composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run, and who changed what and when (in the database and the Audit Manager). Earlier versions need not be kept. *Design:* decided as stated.
 * **"Give partner X use case Y"** — one console flow: check the partner's key in PM and raise the PM policy request that adds a policy for `name@major` (approved in PM as usual). *Design:* decided as stated.
-* **Data scopes for registries a partner calls directly** — list a registry's data scopes in its staff UI and in PM's policy form (the registry staff API has them: `/data_scopes/get_data_scopes`). *Design:* not designed yet.
+* **Data scopes in the registry's staff UI** — list a registry's data scopes in its staff UI (the registry staff API has them: `/data_scopes/get_data_scopes`). PM's policy form already offers them, from the registry's catalogue ([catalogue sources](../../platform/platform-services/partner-management/functional-specifications.md#catalogue-sources)). *Design:* not designed yet.
 
 ## Registries
 

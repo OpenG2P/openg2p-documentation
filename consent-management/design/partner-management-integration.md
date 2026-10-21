@@ -26,8 +26,9 @@ Why policies live in PM:
 
 * **A policy describes the partner agreement**, which belongs with the partner. Onboarding, key and
   policy changes are approved in one place, through PM's request-and-approve flow.
-* **Several modules read the same policies.** The CM, the Composite and the registries all use the
-  partner's policies from PM, so there is no copy to keep in step.
+* **Several modules read the same policies.** The CM and an Exchange's Composite read the partner's
+  policies from PM, and registries verify partner signatures with PM's keys, so there is no copy to
+  keep in step.
 * **The CM stays a verifier.** It checks consent against a policy; it does not govern the policy.
 
 The CM is **not** a PM partner: it signs receipts and consent tokens with its own `.p12` key and

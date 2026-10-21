@@ -25,7 +25,7 @@ Set these env vars (they use **your service's own prefix**, e.g. `G2P_BRIDGE_`, 
 
 ```
 <PREFIX>_CRYPTO_BACKEND=partner-mgmt
-<PREFIX>_PARTNER_MGMT_API_URL=http://partner-management-partner-api
+<PREFIX>_PARTNER_MGMT_API_URL=http://commons-services-pm-partner-api
 # optional cache overrides (sensible defaults exist):
 # <PREFIX>_PARTNER_KEY_CACHE_TTL_SECONDS=300
 # <PREFIX>_PARTNER_KEY_HARD_TTL_SECONDS=21600
@@ -115,7 +115,7 @@ How the Consent Manager evaluates a policy:
 
 - [ ] Partner is **onboarded in PM and `active`** (an admin approves it) with its public key(s) and the policies it needs. Until then, fetch returns `404` and you reject — by design.
 - [ ] `partner_id` in PM matches your lookup key (§5).
-- [ ] Your namespace can reach `partner-management-partner-api` (in-cluster Service DNS / internal gateway).
+- [ ] Your namespace can reach `commons-services-pm-partner-api` (in-cluster Service DNS / internal gateway).
 - [ ] You do **not** ship partner keys or policies in your own Helm values or DB.
 - [ ] Key rotation and policy changes are PM operations (approved requests); you get them automatically via cache refresh / unknown-kid.
 

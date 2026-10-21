@@ -65,7 +65,7 @@ Boot sequence (`main.py` → `app.py`) initialises core, extensions, ping, inges
 
 ### API surface
 
-<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/sync/search</code></td><td>Run DCI search and return results synchronously</td></tr><tr><td><code>POST</code></td><td><code>/dci/async/search</code></td><td>Acknowledge DCI search and publish results through WebSub</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction; see <a href="activity-register.md#partner-api">Activity Register Design</a></td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); <code>GET</code> is off by default</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
+<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/sync/search</code></td><td>Run DCI search and return results synchronously</td></tr><tr><td><code>POST</code></td><td><code>/dci/async/search</code></td><td>Acknowledge DCI search and publish results through WebSub</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction; see <a href="activity-register.md#partner-api">Activity Register Design</a></td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); also an unsigned <code>GET</code>, on by default in the chart</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
 
 {% hint style="info" %}
 OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
@@ -84,6 +84,8 @@ OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
 `AuditMiddleware` (registered in `main.py`) emits one CloudEvent per audited call to OpenG2P Audit Manager when both `REGISTRY_PARTNER_API_AUDIT_ENABLED=true` and `REGISTRY_PARTNER_API_AUDIT_MANAGER_URL` are set. Emission is fire-and-forget and never blocks the response.
 
 Because partner-api has no JWT auth middleware, audit rows need controller-supplied identity via `request.state.audit_actor`. Without it, successful anonymous calls are skipped; rejected calls are still audited when `audit_anonymous_failures=true` (default). Health probes (`/ping`, `/docs`, `/openapi.json`) are excluded.
+
+A DCI search's event also carries, per search item, the consent it was checked against in `data.context.consents`: consent ID (also of a consent the CM looked up), consent token ID (`jti`), released data scopes, the decision with its reason code on deny, and the Partner Management policy applied (`policy_ref`, `policy_version`) — never the subject. Items served by the bulk aggregate allow-list are recorded with decision `bulk_allow_list`.
 
 Both ingest and DCI controllers currently return HTTP 200 for business failures inside the envelope - set `request.state.audit_outcome` on error paths if Audit Manager should record those as failures rather than successes.
 
@@ -186,6 +188,10 @@ The Partner API exposes synchronous and asynchronous search over the same signed
 Both calls decode into the same core search. The DCI wire format, query
 grammars, and asynchronous acknowledgement are specified separately from the
 SQL engine.
+
+Each search item carries the partner's consent (`search_criteria.authorize.consent_jws`),
+or omits it and searches one subject by identifier (`idtype-value`); the registry then
+asks its Consent Manager to find the consent it holds for the partner and that subject.
 
 {% content-ref url="partner-register-search/dci-search.md" %}
 [DCI partner search](partner-register-search/dci-search.md)

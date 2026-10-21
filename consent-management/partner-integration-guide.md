@@ -1,16 +1,23 @@
 ---
 description: >-
   End-to-end guide for a partner (data consumer) who wants to fetch a
-  beneficiary's data from an OpenG2P registry — onboarding, keys, capturing
-  consent, signing the consent object, calling the API, and handling the
-  outcome.
+  beneficiary's data from an OpenG2P registry — onboarding, keys, policy,
+  obtaining consent (through the Consent Manager, or signing your own),
+  calling the API, and handling the outcome.
 ---
 
 # Partner Integration Guide
 
-You are a **partner** — a system that wants to fetch some data about a beneficiary (e.g. a farmer's profile) held in an OpenG2P **registry**. Data is released **only** against a valid, **partner-signed, policy-bound consent**. This page walks the whole journey from your side.
+You are a **partner** — a system that wants to fetch some data about a beneficiary (e.g. a farmer's profile) held in an OpenG2P **registry**. Data is released **only** against a valid consent, within your **access policy**. This page walks the whole journey from your side.
 
-> **The one thing to internalise:** you do **not** fetch data from the Consent Manager. You call the **registry's** data API and _embed a consent object you signed_. The registry (the enforcement point) asks the Consent Manager to validate it, and returns **only** the fields the consent + policy allow. The Consent Manager is the decision-maker, never the data source.
+> **The one thing to internalise:** you do **not** fetch data from the Consent Manager. You call the **registry's** data API; the registry (the enforcement point) asks the Consent Manager for the consent and its decision, and returns **only** the fields the consent + policy allow. The Consent Manager is the decision-maker, never the data source.
+
+There are two ways to hold the consent:
+
+| | How consent is collected | What you send the registry | Steps |
+| --- | --- | --- | --- |
+| **Held by the Consent Manager** (the default) | Through the Consent Manager, e.g. your staff in its partner portal with the beneficiary's national-ID login and a signed form | Nothing: you search the person by identifier and the Consent Manager finds the consent | 1–4, 7–10 |
+| **Signed by you** | In your own trusted system | A consent object you sign, embedded in each request. Only if your policy allows it (off by default) | 1–10 |
 
 ## Who you talk to
 
@@ -23,10 +30,10 @@ sequenceDiagram
   Note over P,PM: One-time: onboard, register your PUBLIC key, get an access policy
   P->>PM: onboarding request (partner ID + public key + policy), approved by PM staff
   Note over P,R: Per data fetch
-  P->>P: capture consent + build & SIGN a consent object (private key)
-  P->>R: call the registry data API, embedding the signed consent object
-  R->>CM: POST /consent/v1/validate (your object + its own data_controller)
-  CM->>PM: read your policy for this registry + your public key (by kid)
+  Note over P,CM: Consent collected through the CM (or signed by you, if allowed)
+  P->>R: call the registry data API (signed request; your consent object, or none)
+  R->>CM: POST /consent/v1/validate (your object, or the person searched + its own data_controller)
+  CM->>PM: read your policy for this registry (+ your public key, for your own object)
   CM-->>R: decision = permit + effective_data_scopes (or deny + reason)
   R-->>P: only the permitted fields (or an error)
 ```
@@ -34,14 +41,14 @@ sequenceDiagram
 | You interact with           | For                                                              | How                          |
 | --------------------------- | ---------------------------------------------------------------- | ---------------------------- |
 | **Partner Management (PM)** | onboarding, registering + rotating your keys, your access policy | through the PM operator (PM staff UI / API) |
-| **The Registry**            | the actual data fetch (embed your signed consent)                | the registry's data API      |
-| **Consent Manager (CM)**    | _(optional)_ fetch receipts, check consent status, read its JWKS | its public/partner endpoints |
+| **The Registry**            | the actual data fetch                                            | the registry's data API      |
+| **Consent Manager (CM)**    | collecting consent (partner portal); _(optional)_ receipts, consent status, its JWKS | its partner portal and public endpoints |
 
 ***
 
 ## Step 1 — Generate and hold your signing key
 
-You sign every consent object with your **private key**; only your **public key** is shared (with PM). Supported algorithms: **EdDSA (Ed25519, recommended)**, **ES256** (EC P-256), **RS256** (RSA).
+You sign every request to a registry (the DCI envelope) and, if you sign your own consents, every consent object with your **private key**; only your **public key** is shared (with PM). Supported algorithms: **EdDSA (Ed25519, recommended)**, **ES256** (EC P-256), **RS256** (RSA).
 
 *   Keep the private key in a secure keystore. A **PKCS#12 (`.p12`)** file is the recommended format (it holds the private key, optionally with a cert):
 
@@ -52,13 +59,13 @@ You sign every consent object with your **private key**; only your **public key*
     # bundle the private key into a .p12 you keep
     openssl pkcs12 -export -inkey partner_priv.pem -nocerts -out partner.p12
     ```
-* Choose a stable **`kid`** (key id), e.g. `partnerA-2025-01`. You put it in every consent object and use it to rotate keys (Step 10). **Never** share the private key or the `.p12` — the Consent Manager never needs it and never asks for it.
+* Choose a stable **`kid`** (key id), e.g. `partnerA-2025-01`. You put it in every signature header and use it to rotate keys (Step 10). **Never** share the private key or the `.p12` — the Consent Manager never needs it and never asks for it.
 
 ***
 
 ## Step 2 — Onboard in Partner Management
 
-Register yourself as a partner in **Partner Management (PM)** and upload your **public** key(s). See [Partner Management](https://docs.openg2p.org/platform/platform-services/partner-management) and [how CM consumes PM keys](design/partner-management-integration.md).
+Register yourself as a partner in **Partner Management (PM)** and upload your **public** key(s). See [Partner Management](../platform/platform-services/partner-management/README.md) and [how CM consumes PM keys](design/partner-management-integration.md).
 
 * Agree your **audience** — the ID you put in `aud` of every consent and use as DCI `sender_id` (e.g. `bank-a`). Your PM partner ID follows from it: upper-case, `-` → `_`, prefix `PARTNER_` (`bank-a` → `PARTNER_BANK_A`). See the [partner ID convention](design/partner-management-integration.md#partner-id-convention).
 * The PM operator raises an onboarding request with that partner ID, a name, and your public key(s) as PEM or JWK with `kid` + `algorithm` — and, usually, your access policy (Step 3) — and approves it.
@@ -70,12 +77,12 @@ Register yourself as a partner in **Partner Management (PM)** and upload your **
 
 ## Step 3 — Get an access policy (per registry)
 
-For each registry whose data you want, you need an **access policy** in Partner Management for that registry (data controller): the data scopes, purposes, subject-id types, validity limit, fetch type and signing algorithms you may **ever** receive. See [Access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies).
+For each registry whose data you want, you need an **access policy** in Partner Management for that registry (data controller): the data scopes, purposes, subject-id types, validity limit, fetch type and signing algorithms you may **ever** receive, and whether you may present consents you sign yourself (**May present its own signed consents**, off by default). See [Access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies).
 
 * This policy is the **ceiling**: what you actually get back is always `consent scope ∩ policy`. You cannot exceed it, no matter what the consent says.
 * Ask the PM operator for exactly the scopes and purposes you need. They add the policy to your onboarding request, or raise a policy request later; it applies once approved in PM. Plan for lead time.
 * You'll agree on the registry's **`data_controller`** identifier to use in the consent object (Step 5).
-* **Data scopes are the registry's scope IDs**, `<data_controller>.<name>` (e.g. `farmer-registry.land`), from that registry's scope catalogue: `POST /partner/data_scopes` on its partner API (a signed call) lists each scope with its label, description and fields. A scope is a named group of the registry's own fields, not a field of an output format such as DCI. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
+* **Data scopes are the registry's scope IDs**, `<data_controller>.<name>` (e.g. `farmer-registry.land`), from that registry's scope catalogue: `POST /partner/data_scopes` on its partner API (a signed call, or an unsigned `GET` where the registry allows it) lists each scope with its label, description and fields. A scope is a named group of the registry's own fields, not a field of an output format such as DCI. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
 * Needing data from **several registries** means one policy per registry, all for the same partner. You still collect **one** consent from the beneficiary (Step 5).
 
 ***
@@ -84,16 +91,16 @@ For each registry whose data you want, you need an **access policy** in Partner 
 
 Sharing requires the **beneficiary's consent** for the specific purpose and scopes. Consent is captured one of two ways:
 
-1. **Via the Consent Manager's consent-giving flow** — the beneficiary is directed to the Consent Manager, authenticates, and approves; the Consent Manager records the grant. _(The beneficiary-facing origination surface is being finalised — confirm availability with the platform operator.)_
-2. **Via your own authorised consent-capture** — you obtain the beneficiary's consent through your channel and **assert** it in the consent object you sign.
+1. **Through the Consent Manager** (preferred) — your staff raise a consent request in the CM's **partner portal**; the beneficiary logs in with their national ID and signs a form, which CM staff verify ([consent collection](design/consent-collection.md)). The Consent Manager then holds the consent. You need not keep its ID: when you search the person by identifier without a consent, the CM finds it. **Skip to Step 7.**
+2. **In your own system** — only if your policy allows it (Step 3): you obtain the beneficiary's consent through your channel and **assert** it in a consent object you sign (Steps 5–6). The Consent Manager can verify only your signature, not that the beneficiary agreed.
 
-Either way, the consent you assert must stay within what the beneficiary agreed to **and** within the policy (Step 3). Misrepresenting consent is a compliance breach — the signed object + the issued receipt (Step 9) are the audit evidence.
+Either way, the consent must stay within what the beneficiary agreed to **and** within the policy (Step 3). Misrepresenting consent is a compliance breach — the signed object + the issued receipt (Step 9) are the audit evidence.
 
 ***
 
 ## Step 5 — Construct the consent claims
 
-Build the consent claims — these become the **payload** of the JWS you sign in Step 6. Fields:
+_Only for a consent you sign yourself (Step 4, way 2)._ Build the consent claims — these become the **payload** of the JWS you sign in Step 6. Fields:
 
 | Field             | Meaning                                                                  |
 | ----------------- | ------------------------------------------------------------------------ |
@@ -134,6 +141,8 @@ There is **no `signature` field** — the whole object is signed as a JWS in Ste
 
 ## Step 6 — Sign the consent object as a compact JWS
 
+_Only for a consent you sign yourself._
+
 The consent object is signed as a **compact JWS** (RFC 7515) — the standard `header.payload.signature` form used by JWTs and OIDC. The claims from Step 5 are the payload; the protected header carries `alg` and `kid`. This is a standard operation in any JWS/JWT library — **no custom canonicalisation to get wrong**.
 
 ```python
@@ -154,15 +163,20 @@ consent_jws = sign_consent_jws(consent_claims, priv, kid="partnerA-2025-01", alg
 
 ***
 
-## Step 7 — Call the registry's data API (embed the consent JWS)
+## Step 7 — Call the registry's data API
 
-Send the **consent JWS** to the **registry's** data endpoint, per that registry's API contract. For the OpenG2P registry (DCI search) you embed it at `search_criteria.authorize.consent_jws` — see [Registry integration](design/registry-integration.md). You do **not** call the Consent Manager's `/validate` — the registry does that for you, naming itself as `data_controller` so the CM picks its grant.
+Call the **registry's** data endpoint, per that registry's API contract — for the OpenG2P registry, a signed DCI search ([Registry integration](design/registry-integration.md)):
 
-**Several registries, one consent.** Send the **same** consent JWS to each registry you need. Each validates its own grant and returns its own `consent_id` and `receipt_id`; the same `jti` gets one decision per registry (presenting it again to that registry returns the same decision). The `subject_id` in the consent must be the person you search for at each registry (a registry may accept a different identifier for the same person when its own data links them, e.g. a farmer ID recorded with the farmer's national ID).
+* **Consent held by the CM:** send **no** consent and search **one person by identifier** (`query_type: idtype-value`, `id_type` and `id_value`); the registry asks its CM for your consent for that person. Other searches (e.g. a predicate) need a consent object. None found → `consent_not_found`.
+* **Your own consent:** embed the consent JWS at `search_criteria.authorize.consent_jws`.
 
-**Composite services and aggregators.** If a composite service fans your request out to several registries, it presents your consent to an Exchange CM, which issues one signed consent token per registry ([Exchange consent tokens](design/exchange-receipts.md)). The composite sends each registry only its own consent token, signs each registry call with its own key, and names you in `header.meta.on_behalf_of`. At such an Exchange you are granted **use cases** rather than registry scopes: you need a policy for the use case you call in the Exchange's Partner Management (one policy per use case) ([use-case mode](design/verification-and-enforcement.md#use-case-mode)). A consent your staff collect in the Exchange's partner portal is made for one of those use cases and can be used only for it ([consent collection](design/consent-collection.md#partner-portal)). For reference, the call the registry makes on your behalf is [`POST /consent/v1/validate`](api/verification-api.md); it returns `permit` + `effective_data_scopes` or `deny` + a `reason_code`, and the registry releases **only** the permitted fields.
+You do **not** call the Consent Manager's `/validate` — the registry does that for you, naming itself as `data_controller` so the CM picks its grant.
 
-_(You may optionally call the Consent Manager's `partner-api`_ _`/validate` yourself to pre-check an object before sending it to the registry — pass the registry's `data_controller` when the consent has `grants` — but the authoritative decision and the data both come via the registry.)_
+**Several registries, one consent.** A consent may hold a grant per registry. Send your own consent JWS unchanged to each registry you need (a consent the CM holds is found by each registry's CM the same way). Each validates its own grant and returns its own `consent_id` and `receipt_id`; the same `jti` gets one decision per registry (presenting it again to that registry returns the same decision). The `subject_id` in the consent must be the person you search for at each registry (a registry may accept a different identifier for the same person when its own data links them, e.g. a farmer ID recorded with the farmer's national ID).
+
+**Composite services and aggregators.** If a composite service fans your request out to several registries, it presents your consent (or asks the Exchange CM to find it, when you send none) to an Exchange CM, which issues one signed consent token per registry ([Exchange consent tokens](design/exchange-receipts.md)). The composite sends each registry only its own consent token, signs each registry call with its own key, and names you in `header.meta.on_behalf_of`. At such an Exchange you are granted **use cases** rather than registry scopes: you need a policy for the use case you call in the Exchange's Partner Management (one policy per use case) ([use-case mode](design/verification-and-enforcement.md#use-case-mode)). A consent your staff collect in the Exchange's partner portal is made for one of those use cases and can be used only for it ([consent collection](design/consent-collection.md#partner-portal)). For reference, the call the registry makes on your behalf is [`POST /consent/v1/validate`](api/verification-api.md); it returns `permit` + `effective_data_scopes` or `deny` + a `reason_code`, and the registry releases **only** the permitted fields.
+
+_(The Consent Manager's `/validate` is for registries and the Composite, not for partners: the authoritative decision and the data both come via the registry.)_
 
 ***
 
@@ -175,6 +189,8 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 | `ok`                   | Permitted — you got `effective_data_scopes`.                                                           |
 | `unknown_partner`      | Your partner isn't active in PM, or you have no active policy for this registry there. Re-check Steps 2 & 3. |
 | `policy_unavailable`   | The Consent Manager could not read your policy from PM. Temporary — retry later.                       |
+| `consent_not_found`    | You sent no consent and the CM holds no active, valid consent of yours for that person (and registry or use case). Collect one (Step 4). |
+| `partner_consent_not_accepted` | You sent a consent you signed, but your policy does not allow your own consents. Use a consent held by the CM, or ask for the policy change (Step 3). |
 | `signature_invalid`    | The consent JWS didn't verify — wrong `kid`, a key/alg mismatch, or the JWS was altered after signing. |
 | `audience_mismatch`    | `aud` / `data_controller` don't match your policy. Re-check Steps 2, 3 & 5.                            |
 | `controller_not_granted` | Your consent has no grant for the registry you called. Add a grant for it (Step 5).                  |
@@ -207,12 +223,12 @@ You receive back **only** the effective fields (`consent scope ∩ policy`), or 
 
 ## Common pitfalls (checklist)
 
-* [ ] The consent object is a valid **compact JWS** (Step 6), signed with your PM key.
-* [ ] JWS header `kid` + `alg` match a key you registered in PM (and the policy's `allowed_signing_algs`).
-* [ ] `aud` = your audience; each grant's `data_controller` = a registry you have a policy for.
-* [ ] Each grant's `data_scopes` are that registry's scope IDs (signed `POST /partner/data_scopes`) and, with the `purpose`, within your policy (else get the policy changed first).
-* [ ] The `subject_id` is the person you search for at every registry.
-* [ ] `issued_at` is fresh and clocks are synced; `jti` is unique.
+* [ ] You have an active policy in PM for each registry (or Exchange use case) you call.
+* [ ] With no consent in the request, you search one person by identifier (`idtype-value`), and the CM holds a consent of yours for that person.
+* [ ] Your own consents only: your policy allows them; the consent object is a valid **compact JWS** (Step 6), signed with your PM key; header `kid` + `alg` match a key you registered in PM (and the policy's `allowed_signing_algs`).
+* [ ] Own consents: `aud` = your audience; each grant's `data_controller` = a registry you have a policy for; its `data_scopes` are that registry's scope IDs and, with the `purpose`, within your policy.
+* [ ] The consent's subject is the person you search for at every registry.
+* [ ] Own consents: `issued_at` is fresh and clocks are synced; `jti` is unique.
 * [ ] You handle `deny` outcomes and honour `revoked` / `expired`.
 
 ## Related pages

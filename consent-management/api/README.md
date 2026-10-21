@@ -11,7 +11,7 @@ endpoint follows; the endpoint pages document the individual contracts.
 
 | Group | Page | API audience |
 | --- | --- | --- |
-| Verification &amp; enforcement | [Verification API](verification-api.md) | **partner-api** — Registry / PEPs (partner-signed, machine-to-machine) |
+| Verification &amp; enforcement | [Verification API](verification-api.md) | **partner-api** — registries / PEPs and the Composite (machine-to-machine) |
 | Audit | [Decisions](#staff-endpoints) | **staff-api** — administrators |
 | Consent lifecycle | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary-api** — origination clients (scaffolded/later) |
 | Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary-api** — authenticated subjects (scaffolded/later) |
@@ -31,13 +31,13 @@ serve and how they authenticate callers. Authentication therefore differs by aud
 | Audience | Endpoints | Auth model |
 | --- | --- | --- |
 | **staff-api** | audit `/decisions`, assisted-consent verifications, partner portal API | Keycloak, **staff realm**. Roles `CONSENT_MANAGER_ADMIN` (decisions) and `CONSENT_MANAGER_APPROVER` (verify assisted consents), from `realm_access` / `resource_access.*`. The partner portal API uses the **partner realm** |
-| **partner-api** | `/validate`, `/consents/{id}/status`, `/receipts/{id}`, JWKS | **No Keycloak.** Trust is the **partner-signed consent object**, verified against Partner Management (PM) keys and replay-guarded by `jti`. The Registry↔CM link is secured at transport (**Istio mTLS**). This deployment is the **PDP** |
+| **partner-api** | `/validate`, `/consents/{id}/status`, `/receipts/{id}`, JWKS | **No Keycloak.** Callers (registries, the Composite) reach it inside the cluster over **Istio mTLS**. A partner-signed consent object is verified against Partner Management (PM) keys and replay-guarded by `jti`; consents the CM holds need no partner signature. This deployment is the **PDP** |
 | **beneficiary-api** | `/my/*`, `/consent-requests/*` | Keycloak, **beneficiary realm**, scoped to the authenticated subject (scaffolded/later) |
 | any | receipts, JWKS | Public read (signatures make them self-verifying) |
 
-On **partner-api** there is no caller token: the consent object's own JWS signature (verified via
-PM keys) is the sole application-layer proof, with Istio mTLS providing transport authentication
-between the Registry and CM.
+On **partner-api** there is no caller token: Istio mTLS authenticates the caller at transport; at
+the application layer the proof is the consent itself — one the CM holds, or a partner-signed
+object verified via PM keys.
 
 ## Conventions
 
@@ -76,10 +76,15 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `subject_not_allowed` | Subject missing or `subject_id_type` not permitted |
 | `purpose_not_allowed` | Purpose code outside policy, or (use-case mode) not the use case's purpose |
 | `use_case_not_granted` | Use-case mode: the partner has no active policy for `request_context.use_case` in Partner Management, or a stored consent was given for another use case |
+| `consent_not_found` | Consent by lookup (no `consent_jws` / `consent_id`): no active, valid consent of that partner for the subject and use case (without a use case: with a grant for `data_controller`) |
+| `partner_consent_not_accepted` | A partner-signed consent (`consent_jws`) whose applicable policy does not set `allow_partner_consents` |
 | `scope_exceeds_policy` | Requested scope not permitted; empty effective intersection |
 | `validity_exceeds_policy` | Requested validity longer than `max_validity_duration` |
 | `expired` | Consent outside its validity window |
 | `revoked` | Consent has been revoked |
+| `unknown_consent` | `consent_id` names no consent this CM holds (or one not active) |
+| `not_yet_valid` | A stored consent whose validity has not started |
+| `partner_mismatch` | `consent_partner_id` is not the partner the stored consent was given to |
 | `replay` | Stale `issued_at`, or a known `jti` reused for a different consent (a repeat of the same signed consent for the same `data_controller` returns the stored decision instead) |
 | `receipt_presenter_not_allowed` | `issue_receipts` from a caller that is not a configured token presenter, or consent-token issuing is not enabled ([Exchange consent tokens](../design/exchange-receipts.md)) |
 | `receipt_issuer_not_trusted` | A consent token from an issuer this CM does not trust (or no trusted issuers configured) |

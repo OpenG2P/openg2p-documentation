@@ -66,7 +66,7 @@ the **gap we add**.
 * **Best practice:** accept interoperable, signed consent payloads; build an auth context from a
   **validated** ID token (signature + claims), with JWKS-based key rotation.
 * **Gaps closed:**
-  * The primary flow accepts a **partner-signed, DCI-style embedded object** as a compact JWS (RFC 7515), verified via the shared `CryptoHelper` against Partner-Management keys.
+  * The primary flow accepts a **partner-signed, DCI-style embedded object** as a compact JWS (RFC 7515), verified via the shared `CryptoHelper` against Partner-Management keys, from partners whose policy allows it; consents collected through the CM are used by ID or found by lookup.
   * ID-token validation is real (JWKS, `iss`/`aud`/`exp`/`auth_time`/`amr`), replacing the
     prototype's HS256 shortcut. See [Security &amp; trust](security-and-trust.md#id-token-validation-origination).
 

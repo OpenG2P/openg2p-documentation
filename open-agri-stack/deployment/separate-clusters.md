@@ -10,10 +10,10 @@ The installs on these pages already treat each namespace as a separate organisat
 
 | Topic | What to do |
 | --- | --- |
-| **Hostnames reachable across departments** | From the Exchange: the Composite's API and the Exchange CM's partner API (its public keys at `/.well-known/jwks.json` and the consent token status check). From each department: its registry's partner API. Use public DNS names and trusted TLS for them |
+| **Hostnames reachable across departments** | From the Exchange: the Composite's API and the Exchange CM's partner API (its public keys at `/.well-known/jwks.json`; also the consent token status check, if switched on). From each department: its registry's partner API. Use public DNS names and trusted TLS for them |
 | **Domains** | Each department CM finds the Exchange CM at `agrix.<parent of its own domain>`. On another cluster with another domain, set **Exchange Domain** in the department's Commons Services form (Consent Manager group) |
 | **Registry URLs** | The Composite's **Farmer Registry Search URL** and **Crop Sown Registry Search URL** are the departments' public partner API URLs, as on one cluster |
-| **Availability** | The Exchange depends on each department's partner API. Partner keys and catalogue reads are cached, and consent tokens are verified with cached keys, but the status check needs the Exchange CM: consent fails closed when it is down. Set timeouts and alerts |
+| **Availability** | The Exchange depends on each department's partner API. Partner keys and catalogue reads are cached, and departments verify consent tokens offline with cached keys; only the optional status check (off by default) needs the Exchange CM per query, and then consent fails closed when it is down. Set timeouts and alerts |
 | **Upgrades** | The Exchange and each department upgrade on their own schedules. Check the Composite, the CMs and the registries' partner APIs together after an upgrade ([Upgrades and Uninstall](upgrades-and-uninstall.md)) |
 | **Exchange setup** | The [Exchange setup](after-install.md#exchange-setup) uses **one** kubectl context for the Exchange and every department, so it reaches only departments in the Exchange's cluster. For a department on another cluster, set up the Composite there by hand (below) |
 

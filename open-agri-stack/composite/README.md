@@ -170,15 +170,15 @@ How the Composite serves a request, hop by hop (partner checks, consent tokens, 
 
 * **One generic service**, `openg2p-agri-composite`. The partner API is stateless; a database is used only by the [console](console.md), for its call log.
 * **Use cases are configuration**, not code: YAML files in a ConfigMap.
-* **No partner data is stored.** Logs carry the request ID, use case, partner, statuses and timings only.
+* **No partner data is stored.** Logs carry the request ID, use case, partner, statuses and timings only; the response, audit events and call log also name the consent used (its ID, as the Exchange CM gives it).
 
 ### What it does per request
 
 1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`). Checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the Composite.
 2. Checks that the partner has a policy for the use case (`name@major`) in the Exchange's PM: cached; no grant fails with `partner_not_allowed`, and PM unreadable with nothing cached with `partner_policy_unavailable`.
 3. Validates the input (subject type, parameters) and applies the per-partner rate limit.
-4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source. A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject).
-5. Gets a consent token per registry from the Exchange CM, sending the use case and its purpose so that the CM applies the partner's policy for that use case. A deny fails the request; a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
+4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source; the Exchange CM then accepts it only if the partner's policy for the use case allows partner-signed consents (`partner_consent_not_accepted`). A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject). With no consent, the Exchange CM looks up the partner's active consent for this subject and use case (Exchange mode only; passthrough mode refuses with `consent_required`).
+5. Gets a consent token per registry from the Exchange CM, sending the partner, the subject, the use case and its purpose so that the CM applies the partner's policy for that use case. A deny fails the request (`consent_denied`, with the CM's reason, e.g. `consent_not_found`); a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
 6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the Composite's key, naming the partner in `header.meta.on_behalf_of` and carrying that registry's consent token. Per-source timeout and retries; overall timeout.
 7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
 8. Sends audit events to the Audit Manager, without ever blocking the request.

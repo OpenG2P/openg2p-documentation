@@ -170,6 +170,8 @@ A search can add filters, e.g. one crop year and season, or a stage. Results com
 
 Signature checks and consent enforcement are on by default. The request format is in [DCI search](../registry/design/partner-register-search/dci-search.md).
 
+A search carries the partner's signed consent, or none when the farmer's consent is held by the Consent Manager: the registry then asks its Consent Manager to find it, for a search of one farmer by identifier (the DCI type `UIN` is sent as `FAYDA_FAN`, `global.consentSubjectIdTypes`). See [Consent-aware data sharing](../registry/features/consent-aware-data-sharing.md).
+
 ### Data scopes
 
 A consent and a partner's access policy name the registry's data scopes, `crop-sown-registry.<scope>`: [Data Scopes](data-scopes.md).

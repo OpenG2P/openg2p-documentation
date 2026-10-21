@@ -22,8 +22,9 @@ response or arrive later on a WebSub callback.
   template, so the partner sees the agreed external shape rather than internal
   columns.
 * **Share only what consent allows.** When consent enforcement is on, the
-  registry checks the consent and removes rendered fields outside the effective
-  data scopes.
+  registry has its Consent Manager check the consent (or find it, for a search of
+  one person by identifier without a consent) and filters each record to the
+  effective data scopes' fields before rendering it.
 
 Signature checks and consent checks apply to both delivery modes. Business
 failures stay inside the protocol body, usually with HTTP 200.

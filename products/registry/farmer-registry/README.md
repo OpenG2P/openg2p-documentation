@@ -75,6 +75,8 @@ Partners read farmers through [DCI search](../registry/design/partner-register-s
 
 The DCI farmer record carries both identifiers in `farmer_personal_details.member_identifier`: the Fayda FAN as `UIN` and the Farmer ID as `FARMER_ID` (e.g. `FR-0007`). Another registry keyed on the Farmer ID, such as the [Crop Sown Registry](../crop-sown-registry/README.md), can then be searched with the Farmer ID read from this record.
 
+A search carries the partner's signed consent, or none when the farmer's consent is held by the Consent Manager: the registry then asks its Consent Manager to find it, for a search of one farmer by identifier (the DCI type `UIN` is sent as `FAYDA_FAN`, `global.consentSubjectIdTypes`). See [Consent-aware data sharing](../registry/features/consent-aware-data-sharing.md).
+
 ### Data scopes
 
 A consent and a partner's access policy name the registry's data scopes, `farmer-registry.<scope>`: [Data Scopes](data-scopes.md).

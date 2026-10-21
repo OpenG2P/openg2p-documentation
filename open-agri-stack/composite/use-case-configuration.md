@@ -70,7 +70,7 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `title`, `description` | Shown by the describe endpoints |
 | `policy` | Informational |
 | `purpose` | Sent to the Exchange CM with the use case (`name@major`); the consent's purpose must match it, and the partner's policy for the use case must allow it |
-| `consent.required` | Default `true`: requires `message.consent_jws` (checked: signature, subject, validity, grants for mandatory sources) or `message.consent_id` (checked by the Exchange CM) |
+| `consent.required` | Default `true`: a consent is needed — `message.consent_jws` (checked: signature, subject, validity, grants for mandatory sources), `message.consent_id`, or neither, when the Exchange CM looks it up (both checked by the Exchange CM; exchange mode only) |
 | `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` (see [subject ID types](#subject-id-types)) |
 | `input.parameters.<name>` | `{type: integer\|number\|string\|boolean, description, required, default, min, max, enum}`. For strings, `min`/`max` bound the length. Unknown parameters are rejected. |
 | `input.batch.max_subjects` | Must be 1 |
@@ -163,7 +163,7 @@ A template is sandboxed Jinja, given inline or as the name of a `.j2` (`.jinja`,
 
 The consent mode is `exchange` (the chart default), as on the Agri Stack Exchange (`agrix`, see the [deployment topology](../deployment/README.md#topology)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is granted use cases only at the Exchange (its PM); each department CM trusts the Exchange CM's consent tokens and applies the department's ceiling for the Composite, its scope policy in the department's PM.
 
-After the partner's request signature and consent checks (signature, subject, validity, grants — unchanged), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
+After the partner's request signature and, for a `consent_jws`, consent checks (signature, subject, validity, grants), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
 
 ```json
 {"consent_jws": "<the partner's consent>", "partner_id": "agri-composite",
@@ -173,7 +173,7 @@ After the partner's request signature and consent checks (signature, subject, va
                      "requested_scopes": ["<the use case's scopes>"]}}
 ```
 
-With a `consent_id`, the Composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. With `use_case` (and the use case's `purpose`), the Exchange CM applies the calling partner's policy for that use case from PM: it must exist (else `use_case_not_granted`) and the consent's purpose must match. The Exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the Composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
+With a `consent_id`, the Composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`; with neither, only `consent_partner_id`, and the Exchange CM looks up the partner's active consent for this subject and use case (none → `consent_not_found`, [consent by lookup](../../consent-management/api/verification-api.md#consent-by-lookup)). A `consent_jws` is accepted only if the partner's policy for the use case allows partner-signed consents (else `partner_consent_not_accepted`). With `use_case` (and the use case's `purpose`), the Exchange CM applies the calling partner's policy for that use case from PM: it must exist (else `use_case_not_granted`) and the consent's purpose must match. The Exchange CM checks a stored or looked-up consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the Composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
 
 `partner_id` is the Composite's partner ID, which must be one of the Exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), and each source's DCI search carries its controller's consent token in `search_criteria.authorize.consent_jws`. The registry passes it to its own CM as usual.
 

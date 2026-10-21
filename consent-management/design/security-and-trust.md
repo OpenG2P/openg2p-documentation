@@ -23,8 +23,8 @@ There are three keyholders:
 
 | Party               | Holds                                   | Used for                                                 |
 | ------------------- | --------------------------------------- | -------------------------------------------------------- |
-| **Partner**         | Its private signing key (managed in PM) | Signs the consent object it embeds in a registry request |
-| **Consent Manager** | Its own private signing key (`.p12`)    | Signs consent receipts (proof of decision)               |
+| **Partner**         | Its private signing key (managed in PM) | Signs its DCI requests and, if its policy allows partner-signed consents, the consent object it embeds |
+| **Consent Manager** | Its own private signing key (`.p12`)    | Signs consent receipts (proof of decision) and, in the Exchange role, consent tokens |
 | **OIDC Provider**   | Its private signing key                 | Signs ID tokens in the origination flow                  |
 
 The CM uses the **public** counterpart of each, but stores only its own:
@@ -78,7 +78,7 @@ When an ID token arrives, the CM:
 
 The partner-facing PDP API does **not** use Keycloak. Different endpoint classes are protected differently:
 
-* **`/validate` and status (the PDP API)** — **no Keycloak.** Trust is the **partner-signed consent object**, verified locally against the partner key fetched from PM, and replay-guarded by `jti` plus the freshness window. There is no bearer token on this path; the signature _is_ the application-layer proof of a known party. The Registry ↔ CM channel itself is secured at the **transport level** — **Istio mTLS** and/or Kubernetes network policy — so only the registry can reach `/validate`.
+* **`/validate` and status (the PDP API)** — **no Keycloak.** A **partner-signed consent object** is verified locally against the partner key fetched from PM and replay-guarded by `jti` plus the freshness window; a consent the CM holds (by `consent_id` or lookup) was collected and verified by the CM itself. There is no bearer token on this path, and a lookup names only a partner and a subject, so the caller ↔ CM channel must be secured at the **transport level** — **Istio mTLS** and/or Kubernetes network policy — so only the registries (and, at an Exchange, the Composite) can reach `/validate`.
 * **Staff APIs** — the decision log requires the `CONSENT_MANAGER_ADMIN` role and verifying assisted consents the `CONSENT_MANAGER_APPROVER` role (both configurable), validated against the realm JWKS. They carry **no** consent object, so the signature mechanism does not protect them — role-based auth is essential here. Partners, keys and policies are administered in **PM** (role `partner_manager`), not in the CM.
 * **Subject APIs (`/my/*`)** — require a subject bearer token; every query is scoped to the token's identity, so a subject can only ever see their own consents.
 * **Public** — receipt fetch and `/.well-known/jwks.json` are unauthenticated (signatures make them self-verifying).
@@ -98,11 +98,12 @@ The partner-facing PDP API does **not** use Keycloak. Different endpoint classes
 | Algorithm-confusion / alg downgrade       | Declared `signature.algorithm` must equal the algorithm PM reports for that key, else reject                                                                  |
 | PM outage during a decision               | Per-pod cache serves the last keys and policies PM gave within the hard TTL; beyond it the CM fails closed (`policy_unavailable`)                              |
 | Partner over-asking beyond its contract   | Policy intersection caps scope (`scope_exceeds_policy`); at an Exchange, only granted use cases (`use_case_not_granted`)                                      |
+| Partner claiming a consent it never collected | Partner-signed consents refused unless the partner's policy allows them (`partner_consent_not_accepted`); consents collected through the CM carry national-ID authentication and evidence |
 | Replaying a captured consent object       | `jti` + freshness window (`replay`)                                                                                                                           |
 | Using consent meant for another recipient | Audience check (`audience_mismatch`)                                                                                                                          |
 | Using one registry's grant at another     | Grant selected by the calling registry's `data_controller`; policy per (partner, controller) (`controller_not_granted`, `unknown_partner`)                    |
 | Using a consent for a different person    | `subject_mismatch` when the caller declares a same-type subject; the registry also checks the consent's subject against what it searches                     |
-| Acting on revoked consent                 | Live status endpoint + revocation notifications (`revoked`)                                                                                                   |
+| Acting on revoked consent                 | Live status endpoint + revocation notifications (`revoked`); an Exchange consent token already issued lapses within its lifetime (default 5 minutes)              |
 | Tampering with a stored artefact          | Receipt signs the artefact hash; mismatch is detectable                                                                                                       |
 | Key compromise                            | Key revocation + rotation; short validity windows                                                                                                             |
 | Repudiation of a decision                 | CM-signed receipt + immutable decision log                                                                                                                    |

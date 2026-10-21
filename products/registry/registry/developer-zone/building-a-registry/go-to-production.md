@@ -142,7 +142,7 @@ Then verify **emptiness as well as function**:
 | No `SANITY-*` record exists | Sanity fixtures never ran |
 | Staff sign-in works, demo passwords rotated | Keycloak |
 | Dashboards render (empty until real data) | Reporting views exist |
-| A DCI search without consent is **rejected** | Enforcement gates on |
+| A DCI search without consent (and none held by the Consent Manager) is **rejected** | Enforcement gates on |
 
 ## 7. Before you hand over
 

@@ -23,7 +23,7 @@ List the authenticated subject's consents (right of access). Paginated.
   "items": [
     { "consent_id": "CONSENT-123456", "partner_id": "bank-a",
       "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
-      "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
+      "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
       "status": "active", "valid_until": "2026-05-01T12:02:10Z",
       "receipt_id": "RECEIPT-998877" }
   ],

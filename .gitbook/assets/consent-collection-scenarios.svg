@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-label="Three ways a farmer gives a bank consent, each with a national-ID login. 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries with the consent ID and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later.">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-label="Three ways a farmer gives a bank consent, each with a national-ID login. 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later; the bank queries and the consent is looked up.">
 <style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .h1{font-size:22px;font-weight:700} .sub{font-size:13px;fill:#56625B}
@@ -95,7 +95,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text x="1104" y="228" font-size="8.5" fill="#56799F" font-weight="700">CS</text>
   <text class="pt" x="942" y="268">Data shared</text>
   <text class="pc" x="942" y="288">The bank's system queries</text>
-  <text class="pc" x="942" y="304">with the consent ID. Each</text>
+  <text class="pc" x="942" y="304">(no consent ID needed). Each</text>
   <text class="pc" x="942" y="320">registry gets a consent token</text>
   <text class="pc" x="942" y="336">and releases only what the</text>
   <text class="pc" x="942" y="352">farmer consented to.</text>
@@ -165,7 +165,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <svg x="1148" y="490" width="44" height="38" viewBox="0 0 64 54" overflow="visible"><path d="M32,2 L62,16 L2,16 Z" fill="#56799F"/><rect x="6" y="18" width="52" height="4" fill="#56799F"/><rect x="10" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="22" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="36" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="48" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="2" y="46" width="60" height="6" fill="#56799F"/></svg><svg x="1194" y="502" width="22" height="12" viewBox="0 0 30 16" overflow="visible"><circle cx="7" cy="8" r="5.5" fill="none" stroke="#AE8433" stroke-width="2.6"/><path d="M12,8 L28,8 M23,8 L23,13 M27,8 L27,12" fill="none" stroke="#AE8433" stroke-width="2.6" stroke-linecap="round"/></svg><svg x="1218" y="486" width="24" height="28" viewBox="0 0 40 46" overflow="visible"><path d="M2,8 L2,38 C2,46 38,46 38,38 L38,8" fill="#E5EDF6" stroke="#56799F" stroke-width="2"/><ellipse cx="20" cy="8" rx="18" ry="6" fill="#C9D9EA" stroke="#56799F" stroke-width="2"/><path d="M2,22 C2,30 38,30 38,22" fill="none" stroke="#56799F" stroke-width="1.6"/></svg>
   <svg x="1260" y="486" width="36" height="42" viewBox="0 0 44 50" overflow="visible"><rect x="2" y="10" width="40" height="38" rx="4" fill="#F7ECD4" stroke="#AE8433" stroke-width="2"/><rect x="2" y="10" width="40" height="9" rx="3" fill="#E9CF95"/><path d="M22,22 L22,40 M14,32 L22,40 L30,32" fill="none" stroke="#7A5A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="2" width="10" height="10" rx="2" fill="#AE8433"/></svg>
   <text class="pt" x="1142" y="568">Data shared; bank keeps a copy</text>
-  <text class="pc" x="1142" y="588">Queries with the consent ID; the</text>
+  <text class="pc" x="1142" y="588">Queries (consent looked up); the</text>
   <text class="pc" x="1142" y="604">consent record has no signed form.</text>
 </g>
 <g><path class="chev" d="M295,535 L302,541 L295,547"/><path class="chev" d="M567,535 L574,541 L567,547"/><path class="chev" d="M839,535 L846,541 L839,547"/><path class="chev" d="M1111,535 L1118,541 L1111,547"/></g>
@@ -203,8 +203,8 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <circle cx="876" cy="735" r="11" fill="#1B231F"/><text class="num" x="876" y="739" text-anchor="middle">4</text>
   <svg x="896" y="746" width="52" height="44" viewBox="0 0 64 54" overflow="visible"><path d="M32,2 L62,16 L2,16 Z" fill="#56799F"/><rect x="6" y="18" width="52" height="4" fill="#56799F"/><rect x="10" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="22" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="36" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="48" y="24" width="6" height="20" fill="#7E9BBB"/><rect x="2" y="46" width="60" height="6" fill="#56799F"/></svg><svg x="952" y="760" width="26" height="14" viewBox="0 0 30 16" overflow="visible"><circle cx="7" cy="8" r="5.5" fill="none" stroke="#AE8433" stroke-width="2.6"/><path d="M12,8 L28,8 M23,8 L23,13 M27,8 L27,12" fill="none" stroke="#AE8433" stroke-width="2.6" stroke-linecap="round"/></svg><svg x="984" y="742" width="28" height="32" viewBox="0 0 40 46" overflow="visible"><path d="M2,8 L2,38 C2,46 38,46 38,38 L38,8" fill="#E5EDF6" stroke="#56799F" stroke-width="2"/><ellipse cx="20" cy="8" rx="18" ry="6" fill="#C9D9EA" stroke="#56799F" stroke-width="2"/><path d="M2,22 C2,30 38,30 38,22" fill="none" stroke="#56799F" stroke-width="1.6"/></svg><svg x="1016" y="756" width="28" height="32" viewBox="0 0 40 46" overflow="visible"><path d="M2,8 L2,38 C2,46 38,46 38,38 L38,8" fill="#E5EDF6" stroke="#56799F" stroke-width="2"/><ellipse cx="20" cy="8" rx="18" ry="6" fill="#C9D9EA" stroke="#56799F" stroke-width="2"/><path d="M2,22 C2,30 38,30 38,22" fill="none" stroke="#56799F" stroke-width="1.6"/></svg>
   <text class="pt" x="870" y="828">Bank notified, data shared</text>
-  <text class="pc" x="870" y="848">The bank queries with the consent</text>
-  <text class="pc" x="870" y="864">ID; it downloads the consent record.</text>
+  <text class="pc" x="870" y="848">The bank queries (consent looked</text>
+  <text class="pc" x="870" y="864">up); it downloads the consent record.</text>
   <rect class="panel" x="1128" y="715" width="232" height="180" rx="10"/>
   <circle cx="1148" cy="735" r="11" fill="#1B231F"/><text class="num" x="1148" y="739" text-anchor="middle">5</text>
   <svg x="1166" y="740" width="38" height="56" viewBox="0 0 40 60" overflow="visible"><g fill="#E39B4E"><circle cx="20" cy="11" r="9"/><path d="M4,58 C4,36 10,25 20,25 C30,25 36,36 36,58 Z"/></g></svg>
@@ -213,7 +213,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
     <text x="8" y="45" font-size="8.5" fill="#8A948E">MFI B · revoked</text></g>
   <text class="pt" x="1142" y="828">Farmer stays in control</text>
   <text class="pc" x="1142" y="848">Sees all their consents and can</text>
-  <text class="pc" x="1142" y="864">revoke any; sharing stops at once.</text>
+  <text class="pc" x="1142" y="864">revoke any; sharing stops in minutes.</text>
 </g>
 <g><path class="chev" d="M295,795 L302,801 L295,807"/><path class="chev" d="M567,795 L574,801 L567,807"/><path class="chev" d="M839,795 L846,801 L839,807"/><path class="chev" d="M1111,795 L1118,801 L1111,807"/></g>
 </svg>
