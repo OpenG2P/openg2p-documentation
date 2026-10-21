@@ -114,11 +114,7 @@ The file is read from the extension package, so a change needs new images. The f
 
 ## Data scopes
 
-Scopes are defined in `meta_data/data-scopes/`: `10_crop_sown.json` for crop data, `20_cluster.json` for clusters. A scope is a named list of fields, independent of the DCI layout. See [Data scopes](../registry/design/data-scopes.md) for the format and the rules.
-
-* **Never rename or reuse a scope name.** Consents and partners' access policies in Partner Management refer to it.
-* **Narrowing** a scope is safe. **Widening** it does not reach consents given before.
-* The consent data controller is the registry variant, `crop-sown-registry`. Changing it (`global.consentDataController`) changes every scope ID.
+Scopes are defined in `meta_data/data-scopes/` (`10_crop_sown.json`, `20_cluster.json`); a scope is a named list of fields, independent of the DCI layout. The scopes that ship, and the rules for changing them: [Data Scopes](data-scopes.md).
 
 ## Branding and languages
 

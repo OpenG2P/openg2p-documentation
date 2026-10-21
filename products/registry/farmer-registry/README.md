@@ -77,29 +77,7 @@ The DCI farmer record carries both identifiers in `farmer_personal_details.membe
 
 ### Data scopes
 
-A consent names the registry's [data scopes](../registry/design/data-scopes.md). The consent data controller is `farmer-registry` (`global.consentDataController`, by default the registry variant), so scope IDs are `farmer-registry.<name>`. The extension ships them in `meta_data/data-scopes/data_scopes.json`; partners read the catalogue with the signed `POST /partner/data_scopes`.
-
-| Scope | Label | Fields |
-| --- | --- | --- |
-| `farmer_identifiers` | Farmer ID and national ID | Farmer ID, Fayda FAN, registration and last-approval dates |
-| `personal_details` | Personal details | Section `fr_farmer_personal_info` (name, sex, birth date or estimated age, marital status, education) and language spoken |
-| `contact` | Contact details | Phone numbers, has a personal phone, emails |
-| `location` | Farmer's address and location | Section `fr_farmer_location` |
-| `main_crops` | Main crops | Declared main crops |
-| `socio_economic_and_health` | Socio-economic and health details | Section `fr_farmer_socio_and_health` |
-| `land` | Land parcels | Section `fr_farmer_land` and the parcel ID, without location |
-| `land_location` | Land parcel locations | Parcels' address, administrative area, GPS point and boundary |
-| `livestock` | Livestock | Section `register_fr_farmer_livestocks` |
-| `farm_inputs` | Farm inputs | Section `register_fr_farmer_farm_input` |
-| `memberships` | Cooperative and cluster memberships | Section `fr_farmer_membership` |
-| `household` | Household details | Sections `fr_household_information`, `hh_information` and the household ID |
-| `household_location` | Household address and location | Section `fr_household_location` |
-| `household_members` | Household members | Section `fr_household_members` |
-| `poverty_score` | Household poverty score | Section `hh_score` |
-
-* **Named scopes only.** The default one-scope-per-section is off (`exclude_section_scopes: true`). Scope IDs are permanent, while section mnemonics are UI names and the Household register repeats the Farmer register's sections. Each scope names its section (`section:<mnemonic>`), so it follows the section's fields, and a renamed section makes the catalogue fail to load rather than silently retiring a scope.
-* **Finer than a section:** contact details, main crops and the farmer and parcel identifiers are scopes of their own. A partner can get main crops without the disability fields of the same section.
-* **Never shared:** the record header (status, approvers, image), documents, ID authentication, the farmer–household link (internal IDs), the intake-only farm-input and livestock sections, and the Household register's copies of the Farmer sections.
+A consent and a partner's access policy name the registry's data scopes, `farmer-registry.<scope>`: [Data Scopes](data-scopes.md).
 
 ## Data the registry can create
 
@@ -150,6 +128,7 @@ In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the 
 
 | | |
 | --- | --- |
+| [**Data Scopes**](data-scopes.md) | The scopes partners' consents and access policies name, and how to read the live catalogue |
 | [**Deployment**](deployment/README.md) | Prerequisites, install order, the choices to make, and checks after install |
 | [**Data seeding**](deployment/data-seeding.md) | Turning on sample, bulk and sanity data, reporting views and dashboards; the install Jobs in order |
 | [**Sanity testing**](deployment/sanity-testing.md) | Running the sanity suite and reading its results |

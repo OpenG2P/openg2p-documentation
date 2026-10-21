@@ -35,7 +35,7 @@ The `loan-profile` use case searches the `Farmer` register (`spdci-extensions-dc
 | `farmer-registry.household_location` | Optional | The farmer's location |
 | `farmer-registry.land_location` | Optional | Parcel locations |
 
-Without an optional scope in the consent, those fields come back `null`. All scopes: [Farmer Registry → Data scopes](../../products/registry/farmer-registry/README.md#data-scopes); the use case: [Use-Case Configuration](../composite/use-case-configuration.md#the-loan-profile-use-case).
+Without an optional scope in the consent, those fields come back `null`. All scopes: [Farmer Registry → Data scopes](../../products/registry/farmer-registry/data-scopes.md); the use case: [Use-Case Configuration](../composite/use-case-configuration.md#the-loan-profile-use-case).
 
 ## Crop Sown Registry
 
@@ -70,7 +70,7 @@ Activities and the Cluster register are not read today.
 | `crop-sown-registry.measures` | Required |
 | `crop-sown-registry.location` | Optional |
 
-What each scope covers: [Crop Sown Registry → Data scopes](../../products/registry/crop-sown-registry/README.md#data-scopes).
+What each scope covers: [Crop Sown Registry → Data scopes](../../products/registry/crop-sown-registry/data-scopes.md).
 
 **Final figures.** A season summary is final (`is_final`) once the season's period is locked in the register's **Settings**. A lender or subsidy programme that relies on a season's figures should read final summaries. Lock from the planning start, or a late change to a plan makes the summary provisional again.
 

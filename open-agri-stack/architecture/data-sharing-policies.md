@@ -45,7 +45,7 @@ A misconfigured use case or use-case grant can never leak more than the departme
 {% endhint %}
 
 {% hint style="info" %}
-In the registries, a scope is a registry **data scope**: a named group of the registry's own fields, with ID `<controller>.<name>` (e.g. `farmer-registry.personal_details`, `crop-sown-registry.crop_season`). Each registry publishes its versioned catalogue at `POST /partner/data_scopes` (signed) and filters records to the consented fields before rendering them. See [Data Scopes](../../products/registry/registry/design/data-scopes.md), and the [Farmer Registry](../../products/registry/farmer-registry/README.md#data-scopes) and [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md#data-scopes) scopes.
+In the registries, a scope is a registry **data scope**: a named group of the registry's own fields, with ID `<controller>.<name>` (e.g. `farmer-registry.personal_details`, `crop-sown-registry.crop_season`). Each registry publishes its versioned catalogue at `POST /partner/data_scopes` (signed) and filters records to the consented fields before rendering them. See [Data Scopes](../../products/registry/registry/design/data-scopes.md), and the [Farmer Registry](../../products/registry/farmer-registry/data-scopes.md) and [Crop Sown Registry](../../products/registry/crop-sown-registry/data-scopes.md) scopes.
 {% endhint %}
 
 ## Who approves what

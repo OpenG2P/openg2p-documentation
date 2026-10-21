@@ -172,24 +172,7 @@ Signature checks and consent enforcement are on by default. The request format i
 
 ### Data scopes
 
-A consent names [data scopes](../registry/design/data-scopes.md). The registry's consent data controller is `crop-sown-registry`, so scope IDs are `crop-sown-registry.<name>`. Each scope covers the matching fields of all three record types. Records are cut down to the consented fields before they are rendered.
-
-| Scope | Covers |
-| --- | --- |
-| `crop_season` | Which crop on which plot in which season: plot, crop year, season, crop, variety, cluster; a crop season's stage and status; a summary's period and whether it is final |
-| `measures` | Areas, quantities, yields, dates, seed type, crop condition, pest and damage counts, verification flags, each activity's details, a summary's figures |
-| `farmer_reference` | Farmer ID and national ID. More sensitive |
-| `location` | The administrative areas, and an activity's GPS point. More sensitive |
-| `activity` | An activity's ID, type, dates, channel and verification status |
-| `cluster_profile` | Cluster ID, programme code, name, crop, year established |
-| `csr_cluster_details` | The cluster's details section, including the coordinator's name and phone |
-| `csr_cluster_location_resources` | The cluster's district, GPS point, area, smallholders, agro-ecological zone and water source |
-
-Partners read the catalogue with the signed `POST /partner/data_scopes`.
-
-{% hint style="warning" %}
-The three Cluster scopes are in the catalogue, but the registry ships **no DCI template for the Cluster register**. A DCI search on `Cluster` fails. Partners read clusters only as the Cluster ID on activities and crop seasons.
-{% endhint %}
+A consent and a partner's access policy name the registry's data scopes, `crop-sown-registry.<scope>`: [Data Scopes](data-scopes.md).
 
 ## How it relates to the Farmer Registry
 
@@ -235,6 +218,7 @@ In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is t
 
 | | |
 | --- | --- |
+| [**Data Scopes**](data-scopes.md) | The scopes partners' consents and access policies name, and how to read the live catalogue |
 | [**Customisation**](customisation.md) | What a country or programme changes — lists, activities, rules, scopes — and how |
 | [**Deployment**](deployment/README.md) | Install order and the Jobs that run on install |
 | [**Deploying on Rancher**](deployment/rancher.md) | Prerequisites, the choices to make, sample data, ODK, checks after install, uninstall |

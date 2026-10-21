@@ -7,24 +7,32 @@ description: >-
 
 # Creating and Changing Policies
 
-How a partner manager gives a partner an access policy and changes it later, in the Partner Management staff portal (`https://partner-management.<base domain>`, role `partner_manager`). What a policy is, its fields and the rules PM applies: [Access policies](functional-specifications.md#access-policies).
+How a partner manager gives a partner an access policy and changes it later, in the Partner Management staff portal (`https://partner-management.<base domain>`, role `partner_manager`). What a policy is and the rules PM applies: [Access policies](functional-specifications.md#access-policies).
 
-Before you start, know:
+The partner's PM ID is its ID upper-cased, `-` replaced by `_`, prefixed `PARTNER_` (`bank-a` → `PARTNER_BANK_A`).
 
-* **The partner's PM ID:** the partner's ID upper-cased, `-` replaced by `_`, prefixed `PARTNER_` (`bank-a` → `PARTNER_BANK_A`).
-* **The kind of policy** and what it grants:
-  * **Scope policy:** the registry's data controller ID and the scopes from that registry's data scope catalogue.
-  * **Use-case policy:** the use cases, each as `name@major`, from the service that publishes them (e.g. an Exchange's Composite).
-* **The limits:** purposes, subject ID types, signing algorithms (the partner's key type), longest consent validity, fetch type.
+## Filling in a policy
+
+| Field | Enter | Empty means | Checked by |
+| --- | --- | --- | --- |
+| **Policy for** | **Data controller (registry)** for a scope policy (a partner of one registry); **Use cases (exchange)** for a use-case policy (a partner of an Exchange) | — | — |
+| **Data controller** | Not free text: the registry's **Consent Data Controller** setting, exactly (e.g. `farmer-registry`), which is also the prefix of its scope IDs. A mismatch means the policy is never found and every request is denied | Not allowed (scope policy) | — |
+| **Allowed scopes** | Full scope IDs from the registry's catalogue, e.g. `farmer-registry.land`: listed on the registry's **Data Scopes** page (e.g. [Farmer Registry](../../../products/registry/farmer-registry/data-scopes.md), [Crop Sown Registry](../../../products/registry/crop-sown-registry/data-scopes.md)), or read live from its partner API. Only these can ever be released, whatever the consent says | Not allowed | The registry's Consent Manager |
+| **Allowed use cases** | Published use cases as `name@major`, e.g. `loan-profile@1`. A new major version needs its own entry | Not allowed | The Exchange's Composite and Consent Manager |
+| **Purposes** | The codes the partner may give as a consent's purpose (`purpose.code`), agreed with the partner, e.g. `credit-assessment`. A use-case policy needs each granted use case's purpose (shown in the use case's description) | Any purpose | Consent Manager |
+| **Subject ID types** | The ID types the partner's consents may name the person by (`subject_id.type`), spelt as the registries and partners use them, e.g. `FAYDA_FAN`, `FARMER_ID` in Agri Stack | Any type | Consent Manager |
+| **Signing algorithms** | The algorithm of the partner's key, shown on the partner's **Keys**: EC P-256 → `ES256`, Ed25519 → `EdDSA`, RSA → `RS256`. Add a second one only while the partner moves to a key of another type | Not allowed | Consent Manager (a consent signed otherwise is refused) |
+| **Max consent validity** | ISO-8601 duration, e.g. `P90D`, `P1Y` | No limit | Consent Manager |
+| **Fetch type** | `oneshot` (one query per consent) or `periodic` (repeated queries under one consent) | `oneshot` | Recorded on the consent |
+| **Max fetch frequency** | For `periodic`, ISO-8601, e.g. `P1D` | — | Recorded only |
+| **Data life** | How long the partner may keep the data, ISO-8601, e.g. `P30D` | — | Recorded only (a contractual term) |
+
+"Recorded" fields are kept with the policy and the consent for audit; no module enforces them yet.
 
 ## A new partner, with its policy
 
 1. **Onboard partner** (top menu): fill in the partner (Partner ID, Name, Organisation), its public key, and the **Reason for onboarding**.
-2. Under **Policies (optional)**, click **+ Add policy**:
-   * **Policy for:** **Data controller (registry)** for a scope policy, then **Data controller** and **Allowed scopes**; or **Use cases (exchange)**, then **Allowed use cases** (`name@major`).
-   * **Purposes**, **Subject ID types**, **Signing algorithms**, **Max consent validity**, **Fetch type** (and **Max fetch frequency**, **Data life** if needed).
-
-   Add one policy per registry (and at most one use-case policy).
+2. Under **Policies (optional)**, click **+ Add policy** and [fill it in](#filling-in-a-policy). One policy per registry, at most one use-case policy.
 3. **Submit request.** The keys and policies wait as `pending` until the request is approved.
 4. [Approve the request](#approve-or-reject).
 
