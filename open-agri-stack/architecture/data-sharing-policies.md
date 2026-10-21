@@ -36,6 +36,8 @@ Through the Composite (path B in the [architecture](README.md#components-and-who
 
 A misconfigured use case or use-case grant can never leak more than the department allows.
 
+**The ceiling must cover every use case.** Partner Management does not know what a use case contains, so no department policy is derived from the grants automatically. Each department's ceiling for the Composite is the **superset** of what all published use cases read from its registry: every scope, required and optional, and every purpose. A new use case, or one that reads more, gets nothing extra from a registry until that department widens the ceiling; until then the registry withholds the scopes not covered, and denies the call if none of the requested scopes is covered (a mandatory source then fails the request). Widening is the department's decision: [when use cases change](../deployment/exchange.md#when-use-cases-change).
+
 <figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: the use case asks for five scopes; the bank is granted the use case, so all five pass; the farmer declines land; the Livestock Department does not allow herd data; released: Farmer Registry personal details, Crop Sown crop season and measures"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
 
 {% hint style="info" %}

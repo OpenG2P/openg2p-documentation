@@ -53,5 +53,5 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 | Grants, `/validate`, replay per consent and registry | [Verification & enforcement](../../consent-management/design/verification-and-enforcement.md) |
 | Consent tokens between the Exchange and the departments | [Exchange consent tokens](../../consent-management/design/exchange-receipts.md) |
 | A partner signing its own consent (`grants` claim) | [Partner Integration Guide](../../consent-management/partner-integration-guide.md) and the [partner guide](../partner-guide.md) |
-| Turning on the partner portal, the login and the required Farmer ID | [Deployment: Exchange](../deployment/exchange.md#partner-portal) |
+| Turning on the partner portal, the login and the required Farmer ID | [Deployment: Exchange](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional) |
 | Trying it end to end | [Testing](../deployment/testing.md#consent-through-the-partner-portal) |

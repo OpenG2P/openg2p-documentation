@@ -55,13 +55,13 @@ Only `status: published` is served. If it is missing, check the error on the con
 In the Exchange's Partner Management, add the use case as `name@major` (e.g. `my-use-case@1`) to each partner's **use-case policy**, with the use case's purpose:
 
 * **A new partner:** in its onboarding request, with its keys.
-* **An onboarded partner:** in a policy request (**Change policy** on the partner's page), as a new version of its use-case policy.
+* **An onboarded partner:** a new version of its use-case policy that keeps the use cases it already has and adds this one.
 
-Then approve the request under **Requests**. The screens and rules: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies). The [partner test](../deployment/testing.md#partner-test-public-apis) does this for its test partner when given the PM admin credentials (`--use-case`).
+Steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). The [partner test](../deployment/testing.md#partner-test-public-apis) does this for its test partner when given the PM admin credentials (`--use-case`).
 
 ## Step 6 — Update the departments' ceilings for the Composite
 
-Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)).
+Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Without the script, each department widens it itself ([when use cases change](../deployment/exchange.md#when-use-cases-change)). Until then the registry withholds the new scopes.
 
 ## Step 7 — Test
 

@@ -37,7 +37,7 @@ pip install -r scripts/requirements.txt
 ./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
 ```
 
-The whole run is saved to `scripts/out/exchange-test-<namespace>-<time>.log` (git-ignored), next to the response JSON. `--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--consent-id <ID>` queries with a consent collected in the partner portal (step 4). The steps one by one follow.
+The whole run is saved to `scripts/out/exchange-test-<namespace>-<time>.log` (git-ignored), next to the response JSON. `--dry-run` plans step 1 only; `--setup-only` / `--test-only` run one part; `--use-case <name>` and `--fan <ID>` pick the use case and farmer to test; `--consent-id <ID>` queries with a consent collected in the partner portal for that use case (step 4). If the run onboarded the partner or changed its policy, the query is retried for up to 90 s while the Composite and the Exchange CM still hold PM's earlier answer in their caches. The steps one by one follow.
 
 ## Exchange setup
 
@@ -113,7 +113,7 @@ The script covers only the partner's side. The rest is part of the install, and 
 
 In the partner test the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries only its ID.
 
-1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request** (or from the use case) with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`) and Farmer ID (e.g. `FR-0007`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
+1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request**, picking the use case to test (`loan-profile@1`; only use cases granted to `bank-a` in PM are offered), with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`) and Farmer ID (e.g. `FR-0007`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
 2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Note the consent ID. Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
 3. Query with it:
 
@@ -121,7 +121,7 @@ In the partner test the partner signs the consent itself. Here the farmer's cons
 python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a --fan <the consent's FAN> --consent-id <consent ID>
 ```
 
-The query then carries `message.consent_id`. The Exchange CM checks the consent (active, in its validity, obtained by this partner, about this farmer) and what it grants, and the registries get consent tokens as before. See [consent collection](../../consent-management/design/consent-collection.md).
+The query then carries `message.consent_id`. The Exchange CM checks the consent (active, in its validity, obtained by this partner, about this farmer, made for this use case) and what it grants, and the registries get consent tokens as before. See [consent collection](../../consent-management/design/consent-collection.md).
 
 ## Where to look
 

@@ -83,7 +83,7 @@ Partner Management (PM) is the trust root: it holds your public key and your **a
 | Signing algorithms | `ES256` | Your key's algorithm |
 | Longest consent validity | `P90D` | As agreed with the Exchange |
 
-These go into a **use-case policy** (a policy with no data controller): see [access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies) for its fields. It carries no data scopes: a granted use case brings its own scopes, and each department's ceiling for the Composite still applies ([data-sharing policies](architecture/data-sharing-policies.md)).
+These go into a **use-case policy** (a policy with no data controller): the partner manager creates it as in [Creating and Changing Policies](../platform/platform-services/partner-management/creating-and-changing-policies.md) (its fields: [access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies)). It carries no data scopes: a granted use case brings its own scopes, and each department's ceiling for the Composite still applies ([data-sharing policies](architecture/data-sharing-policies.md)).
 
 {% hint style="info" %}
 **Consents collected in the partner portal** (`consent_id`, [step 4](#step-4-collect-the-farmers-consent)) need nothing more: your staff pick one of your granted use cases, and the consent takes its purpose and its scopes per registry. It can be used only for that use case.

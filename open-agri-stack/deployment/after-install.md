@@ -42,7 +42,7 @@ The user's password is in the Secret `partner-user-bank-a-operator` in the names
 
 * The Exchange (commons and the Composite) and each department (commons and its registry) installed.
 * `kubectl` with a context that can read Deployments, Services and Secrets, port-forward, and (for the signing key) create a Secret and restart the Composite in the Exchange namespace. `--context` picks another context.
-* **One cluster.** The script uses one kubectl context for the Exchange and every department. It reaches a department only in the Exchange's cluster, as when all three namespaces run on one cluster for testing. A department on its own cluster (the Crops Department in the [topology](README.md#topology)) is set up by hand: [Separate Clusters](separate-clusters.md#the-composite-in-a-department-on-another-cluster).
+* **One cluster.** The script uses one kubectl context for the Exchange and every department. It reaches a department only in the Exchange's cluster, as when all three namespaces run on one cluster for testing. A department on its own cluster (the Crops Department in the [topology](README.md#topology)) is set up by hand: [the Composite's key and access](exchange.md#the-composites-key-and-access).
 * Python 3 with a virtual environment:
 
 ```bash
@@ -89,3 +89,5 @@ python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --reg
 | The directory | Mode 0700; `--state-dir` puts it elsewhere |
 
 The cluster holds the same key in the Secret `agri-composite-signing`; the local copy lets a rerun see that nothing changed. To use your own key instead of a generated one: [Composite: signing key](composite.md#signing-key).
+
+The same setup by hand, and what production needs: [Exchange](exchange.md#the-composites-key-and-access).

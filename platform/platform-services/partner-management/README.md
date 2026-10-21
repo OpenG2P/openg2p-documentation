@@ -69,6 +69,7 @@ The two backend services are built on **[`openg2p-fastapi-common`](https://githu
 
 * [Versions](versions.md)
 * [Functional Specifications](functional-specifications.md)
+* [Creating and Changing Policies](creating-and-changing-policies.md)
 * [API Reference](api-reference.md)
 * [Technical Architecture](technical-architecture.md)
 * [Integration — consuming partner keys and policies](integration.md)

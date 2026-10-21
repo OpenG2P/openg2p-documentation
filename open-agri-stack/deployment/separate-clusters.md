@@ -19,10 +19,7 @@ The installs on these pages already treat each namespace as a separate organisat
 
 ## The Composite in a department on another cluster
 
-What the Exchange setup does in a department, done by that department's administrators:
-
-1. **PM, key:** onboard `PARTNER_AGRI_COMPOSITE` with the Composite's public key and `kid` (the same as in the Exchange PM; the Exchange setup keeps them in `~/.agri-stack-setup/<ns>/`).
-2. **PM, scope policy:** in the same onboarding request (or a policy request, if the Composite is already onboarded), a scope policy for the registry's data controller with the data scopes (required and optional) and purposes of the Composite's published use cases for that registry (`GET /composite/v1/use-cases`, `consent_scopes`), subject ID types `FAYDA_FAN`, `FARMER_ID`, signing algorithm `ES256`, maximum validity `P90D`, fetch type `oneshot`. Approve the request ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies); why: [the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)).
+The department's administrators do steps 3 and 4 of the [Composite's key and access](exchange.md#the-composites-key-and-access): the Composite onboarded in their PM with its public key and `kid` (from the Exchange), and its scope policy for their registry; and their CM trusting the Exchange's consent tokens.
 
 {% hint style="info" %}
 **To be written:** running the Exchange setup against departments on other clusters (a kubectl context per department).

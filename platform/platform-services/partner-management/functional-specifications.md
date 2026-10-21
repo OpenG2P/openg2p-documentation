@@ -136,7 +136,7 @@ partner API — see [Integration](integration.md).
 
 | Kind | `data_controller` | Grants | Used by |
 | --- | --- | --- | --- |
-| **Scope policy** | The registry's data controller ID (e.g. `farmer_registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
+| **Scope policy** | The registry's data controller ID (e.g. `farmer-registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
 | **Use-case policy** | `null` | `allowed_use_cases` — published use cases as `name@major` (e.g. `loan-profile@1`) (required, non-empty) | An Exchange: its Composite and its Consent Manager |
 
 A scope policy must not list use cases, and a use-case policy must not list scopes.
@@ -206,17 +206,7 @@ per-partner override.
 
 ### In the staff portal
 
-* **Onboard a partner with policies** — on **Onboard**, under **Policies
-  (optional)**, click **+ Add policy**, choose **Policy for** (*Data controller
-  (registry)* with its scopes, or *Use cases (exchange)* with its use cases),
-  fill the other fields and submit.
-* **See a partner's policies** — open the partner: **Policies** lists the active
-  ones; **Show policy version history** lists every version (policy for,
-  version, status, grants, created, request).
-* **Change or revoke a policy** — on the partner page click **Change policy**
-  (active partners only). Tick **Revoke** on an active policy, and/or add
-  **New policy versions**, give a **Description** and click **Submit request**.
-* **Approve** — open the request under **Requests** and approve or reject it.
+Step by step: [Creating and Changing Policies](creating-and-changing-policies.md).
 
 ## Audit trail
 
