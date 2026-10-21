@@ -83,6 +83,57 @@ helm install partner-management openg2p/partner-management \
 | `partnerApi.image.tag` | `develop` | partner-api image tag. |
 | `staffPortalApi.envVars.PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`, `partnerApi.envVars.PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE` | `60` | `Cache-Control` max-age (seconds) on policy-fetch responses; bounds how long callers may use a policy before re-reading it (keys use 300). |
 | `staffPortalUi.image.tag` | `develop` | UI image tag. |
+| `staffPortalApi.catalogueSources` | `[]` | Where policy forms get their choices; see [Catalogue sources](#catalogue-sources). |
+| `staffPortalApi.catalogueCacheTtl`, `staffPortalApi.catalogueFetchTimeout` | `300`, `3` | Seconds a fetched catalogue is reused; per-source fetch timeout. |
+| `staffPortalApi.masterData.url` | `http://commons-services-master-data-api` | Master Data Service for purposes and subject ID types; `""` = free text. See [Master Data code lists](#master-data-code-lists). |
+| `staffPortalApi.masterData.purposeListCode`, `.subjectIdTypeListCode` | `CONSENT_PURPOSE`, `SUBJECT_ID_TYPE` | The code lists; `""` = free text for that field. |
+| `staffPortalApi.masterData.cacheTtl`, `.timeout` | `300`, `5` | Seconds a list is reused; request timeout. |
+
+### Catalogue sources
+
+Optional. With sources, the staff portal offers registries' scopes and an
+exchange's use cases as choices, and the staff-portal-api checks policy requests
+against them ([how](functional-specifications.md#catalogue-sources)). Empty =
+free text, no checks.
+
+```yaml
+staffPortalApi:
+  catalogueSources:
+    - kind: scopes
+      data_controller: farmer-registry   # the registry's Consent Data Controller
+      url: http://farmer-registry-partner-api/partner/data_scopes
+      label: Farmer Registry
+    - kind: use_cases
+      url: http://agri-composite-api/composite/v1/use-cases
+      label: Agri Stack Composite
+```
+
+* `kind` — `scopes` (a registry's data scope catalogue) or `use_cases` (an
+  exchange's published use cases).
+* `data_controller` — scopes only, required: the policy's data controller,
+  exactly as the registry reports it (a mismatch shows as the source's error).
+* `url` — read with an unsigned `GET` from the staff-portal-api (in-cluster
+  service names work). **A registry source needs that registry's "Allow Unsigned
+  Read of Data Scope Catalogue" on** (`data_scopes_public_get_enabled`): PM has
+  no signing key, so it cannot use the signed `POST`. Otherwise the source shows
+  `HTTP 403`.
+* `label` — shown in the portal.
+
+In Rancher, **Catalogue Sources** is a text field: paste the same list as YAML
+(or JSON). It reaches the API as `PARTNER_MANAGER_CATALOGUE_SOURCES` (JSON).
+
+### Master Data code lists
+
+On by default: the policy form's **Purposes** and **Subject ID types** are
+checklists of the country's Master Data lists, and requests are checked against
+them ([how](functional-specifications.md#master-data-code-lists)). The
+staff-portal-api reads them with a client-credentials token of this release's own
+Keycloak client (`global.authClientId`, secret `global.authClientSecret`, token
+URL from `global.keycloakIssuerUrl`), so that client's service account must be
+allowed to read Master Data (any authenticated staff-realm caller can). A list the
+country's pack does not have, or an unreachable MDS, leaves the field free text
+and never blocks a request. In Rancher: **Catalogue Sources → Master Data URL**,
+**Purposes List Code**, **Subject ID Types List Code**.
 
 ### Routing
 
@@ -103,6 +154,8 @@ staff-portal-api server-side via `http://<release>-staff-portal-api`.
 Each API container runs `... <entrypoint> migrate && gunicorn ...` — a failed
 migration crashes the pod rather than serving against an un-migrated schema.
 Both entrypoints run the same idempotent `create_migrate()` against the shared DB.
+Columns added to an existing table later (e.g. `pm_partner_requests.warnings`)
+are added with `ALTER TABLE … ADD COLUMN IF NOT EXISTS` in the same step.
 
 ## Uninstall
 
@@ -133,7 +186,15 @@ Flags: `--release`, `--postgres-release`, `--postgres-namespace`, `--keep-pvs`,
 ## Configuration reference
 
 The APIs read `PARTNER_MANAGER_*` env vars for their own settings (e.g.
-`PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`, default `60`); the
+`PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`, default `60`;
+`PARTNER_MANAGER_CATALOGUE_SOURCES`, a JSON list, default `[]`;
+`PARTNER_MANAGER_CATALOGUE_CACHE_TTL`, default `300`;
+`PARTNER_MANAGER_CATALOGUE_FETCH_TIMEOUT`, default `3`;
+`PARTNER_MANAGER_MDS_URL`, default `""` (off; the chart sets it),
+`PARTNER_MANAGER_MDS_TOKEN_URL`, `PARTNER_MANAGER_MDS_CLIENT_ID`,
+`PARTNER_MANAGER_MDS_CLIENT_SECRET`, `PARTNER_MANAGER_MDS_PURPOSE_LIST_CODE`,
+`PARTNER_MANAGER_MDS_SUBJECT_ID_TYPE_LIST_CODE`, `PARTNER_MANAGER_MDS_CACHE_TTL`
+(`300`), `PARTNER_MANAGER_MDS_TIMEOUT` (`5`)); the
 staff-portal-api additionally reads `COMMON_AUTH_*` (consumed by
 `openg2p-fastapi-auth`) for staff-realm JWT validation. The UI reads `IAM_URL`
 (shared IAM), `STAFF_PORTAL_API_URL` (this release's staff-portal-api),

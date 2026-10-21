@@ -54,6 +54,12 @@ Validation (rejected with `400`, code `G2P-REQ-102`):
 * `partner_id`, `kid` — no spaces or `/`, `?`, `#`, `%`.
 * `jwks_url` — an `http(s)://` URL, or omitted / `""`.
 
+Policies are also checked against the [catalogue sources](functional-specifications.md#catalogue-sources)
+and the [Master Data code lists](functional-specifications.md#master-data-code-lists),
+if configured (`PM-POLICY-400` for an unknown scope, use case, purpose or subject
+ID type; see [`GET /catalogue`](#get-catalogue)). A signing algorithm that matches
+none of the proposed keys adds a `warnings` entry.
+
 ### `POST /partners/requests/key-update`
 File a key rotation/update for an existing partner.
 
@@ -108,9 +114,19 @@ Errors:
   revoked; or a revoked controller has no active policy.
 * `PM-POLICY-409` (HTTP 400) — a change is already pending for that data
   controller; approve or reject it first.
+* `PM-POLICY-400` — a scope or use case is not in its configured
+  [catalogue source](functional-specifications.md#catalogue-sources), or a purpose
+  or subject ID type not in its [Master Data list](functional-specifications.md#master-data-code-lists)
+  (the message names them).
 * `G2P-REQ-102` — a policy field is invalid (e.g. scopes missing for a data
   controller, a use case not `name@major`, an unsupported algorithm, a bad
   duration), or two policies for the same data controller.
+
+If a catalogue source or the Master Data Service needed for the check cannot be
+read, the request is accepted and its response carries `warnings`, e.g.
+`["Could not check scopes for 'farmer-registry' ['farmer-registry.land'] against Farmer Registry (cannot reach …). Accepted unchecked: verify before approving."]`.
+So does an `allowed_signing_algs` entry that matches none of the partner's
+active keys (the request names it; the default is not checked).
 
 ### `GET /partners/requests?status=&request_type=&partner_id=`
 List requests (optionally filtered). `status` is one of `created`, `approved`,
@@ -118,8 +134,9 @@ List requests (optionally filtered). `status` is one of `created`, `approved`,
 are rejected with `400` (`G2P-REQ-102`).
 
 ### `GET /partners/requests/{request_id}`
-Request detail, including `proposed_keys`, `revoke_kids`, `proposed_policies` and
-`revoke_data_controllers` (the same fields are on every request response).
+Request detail, including `proposed_keys`, `revoke_kids`, `proposed_policies`,
+`revoke_data_controllers` and `warnings` (checks that could not run at
+submission; empty normally). The same fields are on every request response.
 
 ### `POST /partners/requests/{request_id}/approve`
 Body `{ "notes": "optional" }`. Applies the proposed keys (and revocations) and
@@ -134,6 +151,7 @@ Body `{ "notes": "optional" }`. Proposed policy versions become `rejected`.
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET | `/metadata` | Allowed values for the UI selects (see below) |
+| GET | `/catalogue` | Scopes and use cases from the configured catalogue sources (see below) |
 | GET | `/partners?status=` | List partners. `status`: `created`, `active` or `disabled` |
 | GET | `/partners/{partner_id}` | Partner detail |
 | GET | `/partners/{partner_id}/keys` | All keys (any status) |
@@ -169,6 +187,61 @@ the admin UI and the validators share one source of truth:
 `algorithms` and `signing_algorithms` list only the supported algorithms the
 deployment's `crypto_allowed_algorithms` keeps; `signing_algorithms` is what a
 policy's `allowed_signing_algs` may contain.
+
+### `GET /catalogue`
+
+The choices for policy forms, one entry per configured
+[catalogue source](functional-specifications.md#catalogue-sources) (cached
+`catalogue_cache_ttl` seconds), then one per
+[Master Data list](functional-specifications.md#master-data-code-lists):
+
+```json
+{
+  "sources": [
+    {
+      "kind": "scopes",
+      "data_controller": "farmer-registry",
+      "label": "Farmer Registry",
+      "items": [
+        { "id": "farmer-registry.land", "label": "Land", "description": "Parcels and areas",
+          "purpose": null, "fields": ["parcels"] }
+      ],
+      "error": null
+    },
+    {
+      "kind": "use_cases",
+      "data_controller": null,
+      "label": "Agri Stack Composite",
+      "items": [],
+      "error": "cannot reach http://agri-composite-api/composite/v1/use-cases: ConnectError …"
+    },
+    {
+      "kind": "purposes",
+      "data_controller": null,
+      "label": "Purposes (Master Data CONSENT_PURPOSE v3)",
+      "items": [{ "id": "CREDIT_ASSESSMENT", "label": "Credit assessment", "fields": [] }],
+      "error": null,
+      "note": null
+    },
+    {
+      "kind": "subject_id_types",
+      "data_controller": null,
+      "label": "Subject ID types (Master Data SUBJECT_ID_TYPE)",
+      "items": [],
+      "error": null,
+      "note": "SUBJECT_ID_TYPE is not in this country's Master Data: free text."
+    }
+  ]
+}
+```
+
+`items[].id` is a scope ID (scopes) or `name@major` (use cases); `purpose` is
+set for use cases, `fields` (the scope's current fields) for scopes. Retired
+scopes are left out; for `purposes` / `subject_id_types`, `id` is the list's
+`value_code` and `label` its `display` (active codes only). A source that cannot
+be read has `error` set and no items; a Master Data list the country does not
+have, or an empty one, has `note` set instead (free text, not checked). The call
+itself still returns `200`. `sources` is empty when none are configured.
 
 ## Public — key fetch (no auth)
 
@@ -280,6 +353,6 @@ otherwise); `data_controller=` (empty) selects use-case policies.
 | `PM-REQ-409` | Request is not open for review. |
 | `PM-JWK-502` | Failed to import from the partner's JWKS URL. |
 | `PM-KEY-404` | Key fetch: nothing available (fail-closed). |
-| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same controller, revoke of a controller with no active policy), or `GET /policies` without a filter. |
+| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same controller, revoke of a controller with no active policy, a scope or use case not in its catalogue source), or `GET /policies` without a filter. |
 | `PM-POLICY-409` | A policy change is already pending for that data controller (returned with HTTP 400). |
 | `PM-POLICY-404` | Policy fetch: nothing available (fail-closed). |

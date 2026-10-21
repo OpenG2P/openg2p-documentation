@@ -19,15 +19,17 @@ The partner's PM ID is its ID upper-cased, `-` replaced by `_`, prefixed `PARTNE
 | **Data controller** | Not free text: the registry's **Consent Data Controller** setting, exactly (e.g. `farmer-registry`), which is also the prefix of its scope IDs. A mismatch means the policy is never found and every request is denied | Not allowed (scope policy) | — |
 | **Allowed scopes** | Full scope IDs from the registry's catalogue, e.g. `farmer-registry.land`: listed on the registry's **Data Scopes** page (e.g. [Farmer Registry](../../../products/registry/farmer-registry/data-scopes.md), [Crop Sown Registry](../../../products/registry/crop-sown-registry/data-scopes.md)), or read live from its partner API. Only these can ever be released, whatever the consent says | Not allowed | The registry's Consent Manager |
 | **Allowed use cases** | Published use cases as `name@major`, e.g. `loan-profile@1`. A new major version needs its own entry | Not allowed | The Exchange's Composite and Consent Manager |
-| **Purposes** | The codes the partner may give as a consent's purpose (`purpose.code`), agreed with the partner, e.g. `credit-assessment`. A use-case policy needs each granted use case's purpose (shown in the use case's description) | Any purpose | Consent Manager |
-| **Subject ID types** | The ID types the partner's consents may name the person by (`subject_id.type`), spelt as the registries and partners use them, e.g. `FAYDA_FAN`, `FARMER_ID` in Agri Stack | Any type | Consent Manager |
-| **Signing algorithms** | The algorithm of the partner's key, shown on the partner's **Keys**: EC P-256 → `ES256`, Ed25519 → `EdDSA`, RSA → `RS256`. Add a second one only while the partner moves to a key of another type | Not allowed | Consent Manager (a consent signed otherwise is refused) |
+| **Purposes** | The codes the partner may give as a consent's purpose (`purpose.code`). When configured, a checklist of the country's code list `CONSENT_PURPOSE` in the Master Data Service; otherwise free text agreed with the partner, e.g. `credit-assessment`. A use-case policy needs each granted use case's purpose (shown in the use case's description) | Any purpose | Consent Manager |
+| **Subject ID types** | The ID types the partner's consents may name the person by (`subject_id.type`). When configured, a checklist of the country's code list `SUBJECT_ID_TYPE` in the Master Data Service; otherwise free text, spelt as the registries and partners use them, e.g. `FAYDA_FAN`, `FARMER_ID` in Agri Stack | Any type | Consent Manager |
+| **Signing algorithms** | Pre-filled from the partner's keys (its active keys, or on onboarding the keys entered above): EC P-256 → `ES256`, Ed25519 → `EdDSA`, RSA → `RS256`. Add a second one only while the partner moves to a key of another type; one with no key is accepted with a warning | Not allowed | Consent Manager (a consent signed otherwise is refused) |
 | **Max consent validity** | ISO-8601 duration, e.g. `P90D`, `P1Y` | No limit | Consent Manager |
 | **Fetch type** | `oneshot` (one query per consent) or `periodic` (repeated queries under one consent) | `oneshot` | Recorded on the consent |
 | **Max fetch frequency** | For `periodic`, ISO-8601, e.g. `P1D` | — | Recorded only |
 | **Data life** | How long the partner may keep the data, ISO-8601, e.g. `P30D` | — | Recorded only (a contractual term) |
 
 "Recorded" fields are kept with the policy and the consent for audit; no module enforces them yet.
+
+If the deployment has [catalogue sources](functional-specifications.md#catalogue-sources), **Data controller** is a list of the configured registries (**Other…** for any other), and **Allowed scopes** / **Allowed use cases** are checklists of what the registry or exchange publishes; **Set purposes from selected use cases** fills **Purposes**. If a source (or the Master Data Service) cannot be read, its error is shown and the field is free text; the request then carries a warning for the approver. A code list the country does not have is free text, without a warning.
 
 ## A new partner, with its policy
 

@@ -47,6 +47,7 @@ The admin-facing workflow record.
 | `revoke_kids` | Kids to revoke on approval. Each must be a current (non-revoked) key of the partner. |
 | `proposed_policies` | Policies to activate on approval (onboarding or `policy` requests). |
 | `revoke_data_controllers` | Policies to revoke on approval, by data controller (`null` = the use-case policy). |
+| `warnings` | For the approver to verify by hand: checks that could not run at submission (a [catalogue source](#catalogue-sources) or the Master Data Service was unreachable), and signing algorithms that match none of the partner's keys. |
 | `status` | One of `created`, `approved`, `rejected` (`created` → `approved` / `rejected`). |
 | `submitted_by`, `reviewed_by`, `review_notes` | Audit. |
 
@@ -65,8 +66,11 @@ admin portal, not free text, and the API rejects anything else:
 | Requests | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
 | Partners | Status filter | Select | All, `created`, `active`, `disabled` |
 | Onboard / Change policy | Policy for | Select | *Data controller (registry)*, *Use cases (exchange)* |
-| Onboard / Change policy | Signing algorithms | Checkbox list | The key algorithms the deployment allows |
+| Onboard / Change policy | Signing algorithms | Checkbox list, new policies pre-filled from the partner's keys | The key algorithms the deployment allows |
 | Onboard / Change policy | Fetch type | Select | `oneshot`, `periodic` |
+| Onboard / Change policy | Data controller | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |
+| Onboard / Change policy | Allowed scopes / Allowed use cases | Checkbox list (when the data controller's, or a use-case, catalogue source is configured) | The source's scopes / use cases |
+| Onboard / Change policy | Purposes / Subject ID types | Checkbox list (when the [Master Data list](#master-data-code-lists) loaded) | The list's active codes |
 | Change policy | Revoke | Checkbox (per active policy) | The partner's active policies |
 
 The portal reads these lists from `GET /metadata` (see [API Reference](api-reference.md#get-metadata)),
@@ -145,9 +149,9 @@ A scope policy must not list use cases, and a use-case policy must not list scop
 
 | Field | Meaning |
 | --- | --- |
-| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. |
-| `allowed_subject_id_types` | ID types the partner may identify a person by. Empty = any. |
-| `allowed_signing_algs` | Algorithms the partner may sign with. At least one, from PM's key algorithms (`EdDSA`, `ES256`, `RS256`) as narrowed by `crypto_allowed_algorithms`. Default `EdDSA`, `ES256`. |
+| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-code-lists) is configured. |
+| `allowed_subject_id_types` | ID types the partner may identify a person by. Empty = any. Codes of `SUBJECT_ID_TYPE` when configured. |
+| `allowed_signing_algs` | Algorithms the partner may sign with. At least one, from PM's key algorithms (`EdDSA`, `ES256`, `RS256`) as narrowed by `crypto_allowed_algorithms`. Default `EdDSA`, `ES256`. One that matches none of the partner's active (or, on onboarding, proposed) keys is accepted with a warning. |
 | `max_validity_duration` | Longest consent the partner may ask for (ISO-8601, e.g. `P1Y`). Empty = no limit. |
 | `fetch_type` | `oneshot` (default) or `periodic`. |
 | `max_fetch_frequency` | How often a periodic partner may fetch (ISO-8601). Optional. |
@@ -196,6 +200,58 @@ On approval each proposed version becomes `active` (the previous one
 versions become `rejected`. Every step is audited (`policy.requested`,
 `policy.approved`, `policy.rejected`, `policy.revoked`). API details:
 [API Reference](api-reference.md).
+
+### Catalogue sources
+
+Optionally, PM is told where the choices for a policy come from
+(`catalogue_sources`, see [Deployment](deployment.md#catalogue-sources)):
+
+* a **scopes** source per registry: its data controller and its data scope
+  catalogue (`GET /partner/data_scopes` on the registry's partner API);
+* a **use_cases** source per exchange: its published use cases
+  (`GET /composite/v1/use-cases` on the Composite).
+
+PM reads each source server to server (an unsigned GET; PM has no signing key),
+caches it (`catalogue_cache_ttl`, default 300 s) and serves them to the staff
+portal (`GET /catalogue`). Retired scopes are not offered.
+
+With sources configured:
+
+* **The portal** offers the configured registries as the data controller (plus
+  *Other…* for one without a source) and the source's scopes or use cases as a
+  checkbox list, with their labels and descriptions (a use case also with its
+  purpose, which can fill **Purposes**). A source that cannot be read shows its
+  error and the field falls back to free text.
+* **Requests are checked** (onboarding and policy): every scope of a scope policy
+  whose data controller has a source, and every use case of a use-case policy
+  when a use_cases source exists, must be in the catalogue, else `400
+  PM-POLICY-400` naming the unknown ones. A data controller with no source is not
+  checked.
+* **An unreachable source does not block a request.** Approval is a human check,
+  so the request is accepted and carries a `warnings` entry naming what could not
+  be checked; the request page shows it to the approver.
+
+With no sources (the default), scopes and use cases are free text and not
+checked.
+
+### Master Data code lists
+
+Purposes and subject ID types come from the country's code lists in the Master
+Data Service (MDS): `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` by default
+(`mds_purpose_list_code`, `mds_subject_id_type_list_code`; see
+[Deployment](deployment.md#master-data-code-lists)). PM reads the latest version
+of each (`POST /catalogue/get_list_values`) with a client-credentials token of its
+own Keycloak client: a service account, not the staff user's token, so a user's
+data policies cannot narrow the shared cache (`mds_cache_ttl`, default 300 s).
+They appear in `GET /catalogue` as `purposes` and `subject_id_types` sources.
+
+* **List loaded**: the portal shows a checklist; requests naming other codes
+  (retired ones included) get `400 PM-POLICY-400`.
+* **MDS unreachable**: free text; the request is accepted with a `warnings` entry.
+* **List not in the country's pack** (`G2P-CAT-404`): free text, not checked, a
+  short note in the portal.
+
+Nothing at run time depends on MDS: key and policy fetch never call it.
 
 ### Partner ID convention
 
