@@ -8,7 +8,7 @@ description: >-
 
 # After Install
 
-Two steps the charts cannot do, run once by an operator after the [Exchange](exchange.md), the registries and the [Composite](composite.md) are installed. Partners (e.g. a bank) are **not** set up here: they are onboarded in the Exchange's Partner Management with a use-case policy ([partner guide](../partner-guide.md)).
+Two steps the charts cannot do, run once by an operator after the [Exchange](exchange.md), the registries and the [Composite](composite.md) are installed. Partners (e.g. a bank) are **not** set up here: they are onboarded in the Exchange's Partner Management with a policy per use case ([partner guide](../partner-guide.md)).
 
 | Step | Needed for | Rerun |
 | --- | --- | --- |

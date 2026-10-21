@@ -1,7 +1,7 @@
 ---
 description: >-
   Agri Stack Exchange — one Consent Manager codebase in two roles: the Exchange
-  CM issues signed consent tokens (checking the partner's use-case policy), a
+  CM issues signed consent tokens (checking the partner's policy for the use case), a
   department CM accepts them from a trusted issuer and applies the Composite's
   scope policy in its own Partner Management. Opt-in, off by default.
 ---
@@ -42,7 +42,7 @@ A consent token avoids both. The Exchange CM checks the partner's policy and the
 
 | Role | Install | Configured by | What it does |
 | --- | --- | --- | --- |
-| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the partner's **use-case policy** in the Exchange's Partner Management ([use-case mode](verification-and-enforcement.md#use-case-mode)) and, when a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
+| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the partner's policy **for the use case** (one per use case) in the Exchange's Partner Management ([use-case mode](verification-and-enforcement.md#use-case-mode)) and, when a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
 | **Department CM** | `trial`, `csr` | `trusted_receipt_issuers` | Accepts a consent token from a trusted issuer on `/validate`, checks it, applies the **presenter's scope policy** in the department's Partner Management (the department ceiling), and returns its normal decision to the registry. |
 
 The registry is unchanged: it calls its **own** CM `/validate` with the consent JWS it received (now
@@ -57,7 +57,7 @@ sequenceDiagram
     participant D as Department CM (trial)
     B->>C: request + farmer consent (signed by bank-a)
     C->>X: POST /validate {consent_jws, partner_id: agri-composite, issue_receipts: true, use_case, purpose, requested_scopes}
-    X->>X: bank-a's use-case policy grants the use case; each grant ∩ the use case's scopes
+    X->>X: bank-a has a policy for the use case; each grant ∩ the use case's scopes
     X-->>C: permit + receipts {farmer-registry: token JWS, crop-sown-registry: token JWS}
     C->>R: DCI search, sender_id agri-composite, consent = FR consent token
     R->>D: POST /validate {consent_jws: token, data_controller, partner_id: agri-composite}
@@ -105,8 +105,8 @@ algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27
    request: a consent token is only usable by the presenter it was issued to.
 2. **Validation** — each granted controller (or only `data_controller`, if sent) is validated
    as a registry's call would be: signature via Partner Management, replay, validity. The policy
-   is the partner's **use-case policy** when the Composite sends `request_context.use_case` (it
-   must grant that use case; effective scopes = grant ∩ `requested_scopes`), otherwise the partner's
+   is the partner's policy **for that use case** when the Composite sends `request_context.use_case`
+   (none → `use_case_not_granted`; effective scopes = grant ∩ `requested_scopes`), otherwise the partner's
    scope policy for that controller in the Exchange's Partner Management
    ([use-case mode](verification-and-enforcement.md#use-case-mode)). Each writes its artefact and
    decision log as usual.

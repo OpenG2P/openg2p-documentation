@@ -55,8 +55,8 @@ Install each step only after the previous one is ready (all pods running, releas
 
 | Where | What |
 | --- | --- |
-| `agrix` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) with its key and its **use-case policy**: the use cases it may call (`loan-profile@1`), purposes, subject ID types. A partner is onboarded **only here** |
-| `agrix` CM | The partners' consents; it reads each partner's use-case policy from the `agrix` PM |
+| `agrix` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, its key) and each partner (`PARTNER_BANK_A`, …) with its key and a **use-case policy per use case** it may call (`loan-profile@1`), with purposes and subject ID types. A partner is onboarded **only here** |
+| `agrix` CM | The partners' consents; it reads each partner's use-case policies from the `agrix` PM |
 | `trial` PM and `dept1` PM | The Composite (`PARTNER_AGRI_COMPOSITE`, same `kid`), so each registry verifies the Composite's signature, and its **scope policy** for the registry's data controller: the ceiling of what the department releases through the Exchange (allowed purposes, data scopes, subject ID types) |
 | `trial` CM and `dept1` CM | The Exchange CM as a **trusted token issuer** (issuer `agri-stack-exchange-cm`, its public keys at `https://consent-manager-partner.agrix.openg2p.org/api/consent-manager-partner/.well-known/jwks.json`, presenter `agri-composite`) |
 

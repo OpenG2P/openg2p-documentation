@@ -11,7 +11,7 @@ The Consent Manager keeps two kinds of structures:
 
 * **Stored entities** — relational records it owns (consent requests, artefacts, receipts, logs).
   Partners and their access policies are not stored here: they live in Partner Management, and
-  records name the partner by its **audience** (e.g. `bank-a`) with the `policy_version` applied
+  records name the partner by its **audience** (e.g. `bank-a`) with the **policy reference** applied: `policy_ref` (its key, `kind:key` — `data_controller:farmer-registry` or `use_case:loan-profile@1`), `policy_version` and `policy_id` (PM's id of that version)
   ([Partner Management integration](partner-management-integration.md)).
 * **Exchanged documents** — JSON-LD documents passed in/out (the consent object a partner embeds,
   the ID token from the IdP, and the artefact + receipt the CM issues).
@@ -49,13 +49,15 @@ carried grants, the approved grants are stored on it.
 | purpose | json | `{code, text}` |
 | data_scopes | list[str] | Consented fields for this controller's grant (pre-policy-intersection) |
 | effective_data_scopes | list[str] | `data_scopes ∩ policy.allowed_data_scopes` at issue time |
-| grants | json | Originated consents only: `[{data_controller, data_scopes, granted_scopes, effective_data_scopes, policy_version}]` |
+| grants | json | Originated consents only: `[{data_controller, data_scopes, granted_scopes, effective_data_scopes, policy_version, policy_id, policy_ref}]` |
 | object_jti | str | The embedded consent's `jti`; unique together with `controller_id` |
 | valid_from / valid_until | datetime | |
 | fetch_type | enum | `oneshot`, `periodic` |
 | auth_context_id | UUID | FK → AuthContext (origination) or `null` (embedded, partner-attested) |
 | source | enum | `embedded` (partner-signed) or `originated` (CM-collected) |
 | policy_version | int | Version of the partner's policy in Partner Management evaluated at issue |
+| policy_id | str | PM's id of that policy version |
+| policy_ref | str | The policy's key, `kind:key`: `data_controller:farmer-registry` or `use_case:loan-profile@1`. On an originated consent with several grants, set only when all grants share one policy (a consent by use case) |
 | status | enum | `active`, `revoked`, `expired` |
 | created_at / revoked_at / expired_at | datetime | Append-only |
 
@@ -96,9 +98,9 @@ without PM. (The CM is **not** a PM partner.) See the JSON below.
 
 | Entity | Key fields |
 | --- | --- |
-| **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
+| **ConsentRequest** (origination) | request_id, subject, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version, policy_id, policy_ref}]` or null), purpose, status (`pending`/`approved`/`denied`/`expired`), timestamps |
 | **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, created_at |
-| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id (the partner's audience, when known), object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version, receipt_jti / receipt_issuer (decisions on an Exchange consent token; null otherwise), evaluated_at |
+| **DecisionLog** (immutable) | decision_id, consent_id (nullable on deny), partner_id (the partner's audience, when known), object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, policy_version / policy_id / policy_ref (null when no policy was read), receipt_jti / receipt_issuer (decisions on an Exchange consent token; null otherwise), evaluated_at |
 | **IssuedReceipt** (exchange role) | A consent token issued: jti, consent_id (the artefact it was issued from), data_controller, presenter, partner, expires_at — see [Exchange consent tokens](exchange-receipts.md) |
 
 ---
@@ -201,6 +203,8 @@ The CM's canonical decision document. Stored, and checked before any data is rel
   "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
   "fetch_type": "oneshot",
   "policy_version": 3,
+  "policy_id": "7d0c9a52-…",
+  "policy_ref": "data_controller:farmer-registry",
   "validity": { "consent_timestamp": "2025-05-01T12:02:10Z", "expiry_timestamp": "2026-05-01T12:02:10Z" },
   "auth_context": { "...": "Auth Context (origination) or omitted for partner-attested embedded consent" }
 }

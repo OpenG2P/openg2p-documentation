@@ -64,7 +64,7 @@ For first-party flows where consent is collected through OpenG2P itself: the CM 
 ## Design principles
 
 * **Delegated consent.** Data-holding services never interpret consent semantics; they enforce a decision.
-* **Policy-bound consent.** Every partner has an explicit, versioned access policy in Partner Management (one per registry, or a use-case policy at an Exchange), changed only through approval there. Consent can never exceed the active policy.
+* **Policy-bound consent.** Every partner has an explicit, versioned access policy in Partner Management (one per registry, or one per use case at an Exchange), changed only through approval there. Consent can never exceed the active policy.
 * **Cryptographic proof.** Consent objects are partner-signed (keys sourced from PM); receipts are CM-signed with the CM's own `.p12` key and published via JWKS. Anyone can verify.
 * **Data minimisation &amp; purpose limitation.** The CM returns the intersection of what was consented and what policy allows — never more.
 * **Append-only audit.** Every decision and state transition is logged immutably for non-repudiation.

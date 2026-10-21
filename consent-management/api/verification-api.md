@@ -38,7 +38,7 @@ against the partner's Partner-Management key referenced by `kid`.
 | `data_controller` | when the consent has `grants` | The **calling registry**. Selects that registry's grant in the consent |
 | `request_context.requested_scopes` | no (yes in use-case mode) | Narrows the effective scopes further; in use-case mode, the use case's scopes |
 | `request_context.subject_id` | no | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch` |
-| `request_context.use_case` | no | **Use-case mode** (Exchange): the use case the caller serves, `name@major` (e.g. `loan-profile@1`). Applies only when `partner_id` is a configured token presenter; ignored otherwise. The consenting partner's use-case policy must grant it, else `use_case_not_granted` ([use-case mode](../design/verification-and-enforcement.md#use-case-mode)) |
+| `request_context.use_case` | no | **Use-case mode** (Exchange): the use case the caller serves, `name@major` (e.g. `loan-profile@1`). Applies only when `partner_id` is a configured token presenter; ignored otherwise. The consenting partner's policy for this use case applies; none → `use_case_not_granted` ([use-case mode](../design/verification-and-enforcement.md#use-case-mode)) |
 | `request_context.purpose` | no | Use-case mode: the purpose the use case serves; the consent's `purpose.code` must equal it, else `purpose_not_allowed` |
 | `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
@@ -113,6 +113,8 @@ How the controller is resolved:
   "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.land"],
   "valid_until": "2027-10-01T00:00:00Z",
   "policy_version": 3,
+  "policy_id": "7d0c9a52-…",
+  "policy_ref": "data_controller:farmer-registry",
   "reason_code": "ok",
   "evaluated_at": "2026-10-01T10:00:02Z"
 }
@@ -120,6 +122,9 @@ How the controller is resolved:
 
 `subject_id` is the **consent's** subject: the registry checks it against what it actually searches.
 `data_controller` is the controller the decision was made for (also set on a deny, when known).
+`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied: its key
+(`data_controller:<registry>`, or `use_case:<name@major>` in use-case mode), version and PM's id of
+that version.
 
 **Response — deny (HTTP 200)**
 
@@ -158,7 +163,7 @@ and no consent tokens are issued. `receipts` is `null` on every other response.
 ```
 
 **Request — use-case mode** (the Composite at the Exchange). The Composite names the use case and
-its purpose; the CM checks the consenting partner's use-case policy and limits each registry's
+its purpose; the CM applies the consenting partner's policy for that use case and limits each registry's
 scopes to `requested_scopes`.
 
 ```json

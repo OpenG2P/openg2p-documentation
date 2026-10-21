@@ -60,7 +60,7 @@ The Composite first makes one call to the Exchange Consent Manager (see [consent
 
 ## Use-case file format
 
-One YAML file per use case, validated strictly when loaded (**unknown keys are errors**). Who may call a use case is not in the file: a partner's use-case policy in the Exchange's Partner Management grants it as `name@major` ([data-sharing policies](../architecture/data-sharing-policies.md)); the former `allowed_partners` key is an unknown key. Pods check the directory every 30 s and reload changed files without a restart. A file that fails validation is logged and skipped; if an earlier version of it loaded, that version keeps serving. Only `status: published` is served; if two files publish the same name and major, the higher version is served.
+One YAML file per use case, validated strictly when loaded (**unknown keys are errors**). Who may call a use case is not in the file: a partner needs a policy for it (`name@major`) in the Exchange's Partner Management ([data-sharing policies](../architecture/data-sharing-policies.md)); the former `allowed_partners` key is an unknown key. Pods check the directory every 30 s and reload changed files without a restart. A file that fails validation is logged and skipped; if an earlier version of it loaded, that version keeps serving. Only `status: published` is served; if two files publish the same name and major, the higher version is served.
 
 | Key | |
 | --- | --- |
@@ -69,7 +69,7 @@ One YAML file per use case, validated strictly when loaded (**unknown keys are e
 | `status` | `draft`, `validated`, `published`, `deprecated` or `retired`; only `published` is served |
 | `title`, `description` | Shown by the describe endpoints |
 | `policy` | Informational |
-| `purpose` | Sent to the Exchange CM with the use case (`name@major`); the consent's purpose must match it, and the partner's use-case policy must allow it |
+| `purpose` | Sent to the Exchange CM with the use case (`name@major`); the consent's purpose must match it, and the partner's policy for the use case must allow it |
 | `consent.required` | Default `true`: requires `message.consent_jws` (checked: signature, subject, validity, grants for mandatory sources) or `message.consent_id` (checked by the Exchange CM) |
 | `input.subject.id_types` | Allowed `message.subject.type` values, e.g. `[FAYDA_FAN, FARMER_ID]` (see [subject ID types](#subject-id-types)) |
 | `input.parameters.<name>` | `{type: integer\|number\|string\|boolean, description, required, default, min, max, enum}`. For strings, `min`/`max` bound the length. Unknown parameters are rejected. |
@@ -94,7 +94,7 @@ A subject ID type names the kind of identifier a request's subject is given in. 
 | `FARMER_ID` | Farmer Registry ID, e.g. `FR-0007` | `functional_record_id` | `farmer_id` |
 
 * **Use case:** `input.subject.id_types` lists the types a partner may send as `message.subject.type`.
-* **Policies in Partner Management:** the partner's use-case policy and the Composite's scope policy in each department must allow the type (`allowed_subject_id_types`, empty = any), or the CM refuses the consent.
+* **Policies in Partner Management:** the partner's policy for the use case and the Composite's scope policy in each department must allow the type (`allowed_subject_id_types`, empty = any), or the CM refuses the consent.
 
 
 ### Data scopes
@@ -173,7 +173,7 @@ After the partner's request signature and consent checks (signature, subject, va
                      "requested_scopes": ["<the use case's scopes>"]}}
 ```
 
-With a `consent_id`, the Composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. With `use_case` (and the use case's `purpose`), the Exchange CM applies the calling partner's use-case policy from PM: the use case must be granted (else `use_case_not_granted`) and the consent's purpose must match. The Exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the Composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
+With a `consent_id`, the Composite sends `"consent_id"` and `"consent_partner_id": "<the calling partner>"` instead of `consent_jws`. With `use_case` (and the use case's `purpose`), the Exchange CM applies the calling partner's policy for that use case from PM: it must exist (else `use_case_not_granted`) and the consent's purpose must match. The Exchange CM checks the stored consent (active, in its validity, obtained by that partner, about this subject) and returns its grants per registry with the consent tokens; the Composite applies the use case's scope rules to those grants (`consent_grant_missing`, `consent_scope_missing`).
 
 `partner_id` is the Composite's partner ID, which must be one of the Exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), and each source's DCI search carries its controller's consent token in `search_criteria.authorize.consent_jws`. The registry passes it to its own CM as usual.
 

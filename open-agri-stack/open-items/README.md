@@ -56,7 +56,7 @@ Functional work, in order, for the first production release. Country data and re
 
   *Design:* decided as listed.
 * **Editing use cases in the console** — use cases stored in the Composite's database instead of the Helm ConfigMap (registries and settings stay in Helm), YAML editing with validation and a "try it" run, and who changed what and when (in the database and the Audit Manager). Earlier versions need not be kept. *Design:* decided as stated.
-* **"Give partner X use case Y"** — one console flow: check the partner's key in PM and raise the PM policy request that adds `name@major` to its use-case policy (approved in PM as usual). *Design:* decided as stated.
+* **"Give partner X use case Y"** — one console flow: check the partner's key in PM and raise the PM policy request that adds a policy for `name@major` (approved in PM as usual). *Design:* decided as stated.
 * **Data scopes for registries a partner calls directly** — list a registry's data scopes in its staff UI and in PM's policy form (the registry staff API has them: `/data_scopes/get_data_scopes`). *Design:* not designed yet.
 
 ## Registries

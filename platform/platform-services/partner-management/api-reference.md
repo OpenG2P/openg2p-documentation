@@ -40,7 +40,7 @@ Onboard a new partner and its initial key(s).
 ```
 
 Creates the partner in `created` and a request in `created`. `policies` is
-optional (at most one per data controller); each becomes a `pending` version 1,
+optional (any mix, at most one per data controller and one per use case); each becomes a `pending` version 1,
 activated when the request is approved. Policy fields and rules:
 [Access policies](functional-specifications.md#access-policies). Each key may instead
 supply `jwk` (a JSON Web Key) rather than `public_key`; `kid` and `algorithm` are
@@ -86,8 +86,7 @@ policies.
   "description": "Grant the loan profile use case",
   "policies": [
     {
-      "data_controller": null,
-      "allowed_use_cases": ["loan-profile@1"],
+      "use_case": "loan-profile@1",
       "allowed_purposes": ["loan-assessment"],
       "allowed_signing_algs": ["EdDSA", "ES256"],
       "max_validity_duration": "P1Y",
@@ -95,32 +94,34 @@ policies.
       "data_life": "P30D"
     }
   ],
-  "revoke_data_controllers": ["farmer_registry"]
+  "revoke": [{ "data_controller": "farmer_registry" }, { "use_case": "name-check@2" }]
 }
 ```
 
 Each policy (`PolicyInput`) has the fields in
-[Access policies](functional-specifications.md#access-policies): set
-`data_controller` and `allowed_data_scopes` for a scope policy, or leave
-`data_controller` null / `""` and set `allowed_use_cases` (`name@major`) for the
-use-case policy. In `revoke_data_controllers`, `null` or `""` names the use-case
-policy. Proposed versions are created `pending` at once.
+[Access policies](functional-specifications.md#access-policies) and exactly one
+key: `data_controller` (with `allowed_data_scopes`) for a registry's scope
+policy, or `use_case` (`name@major`) for a use-case policy. A policy for a key
+that already has an active policy is its next version. Each `revoke` entry names
+one active policy by key, `{"data_controller": X}` or `{"use_case": Y}`.
+Proposed versions are created `pending` at once.
 
 Errors:
 
 * `PM-PRT-404` — unknown partner.
 * `PM-POLICY-400` — the partner is still `created` (use its onboarding request) or
-  `disabled`; nothing proposed or revoked; the same controller both changed and
-  revoked; or a revoked controller has no active policy.
-* `PM-POLICY-409` (HTTP 400) — a change is already pending for that data
-  controller; approve or reject it first.
+  `disabled`; nothing proposed or revoked; the same key both changed and
+  revoked; or a revoked key has no active policy.
+* `PM-POLICY-409` (HTTP 400) — a change (new version or revocation) is already
+  pending for that key; approve or reject it first. Other keys are not blocked.
 * `PM-POLICY-400` — a scope or use case is not in its configured
   [catalogue source](functional-specifications.md#catalogue-sources), or a purpose
   or subject ID type not in its [Master Data list](functional-specifications.md#master-data-code-lists)
   (the message names them).
-* `G2P-REQ-102` — a policy field is invalid (e.g. scopes missing for a data
-  controller, a use case not `name@major`, an unsupported algorithm, a bad
-  duration), or two policies for the same data controller.
+* `G2P-REQ-102` — a policy field is invalid (e.g. both or neither of
+  `data_controller` / `use_case`, scopes missing for a data controller or given
+  for a use case, a use case not `name@major`, an unsupported algorithm, a bad
+  duration), or two entries for the same key in `policies` or in `revoke`.
 
 If a catalogue source or the Master Data Service needed for the check cannot be
 read, the request is accepted and its response carries `warnings`, e.g.
@@ -135,7 +136,7 @@ are rejected with `400` (`G2P-REQ-102`).
 
 ### `GET /partners/requests/{request_id}`
 Request detail, including `proposed_keys`, `revoke_kids`, `proposed_policies`,
-`revoke_data_controllers` and `warnings` (checks that could not run at
+`revoke` (by key) and `warnings` (checks that could not run at
 submission; empty normally). The same fields are on every request response.
 
 ### `POST /partners/requests/{request_id}/approve`
@@ -287,21 +288,23 @@ see [Integration](integration.md) for caching and the partner ID convention.
 Responses carry `Cache-Control: public, max-age=<n>` (`PARTNER_MANAGER_POLICY_FETCH_CACHE_MAX_AGE`,
 default `60` seconds).
 
-### `GET /policies/{partner_id}[?data_controller=]`
-Active policies of an **active** partner. `?data_controller=farmer_registry`
-returns only that registry's scope policy; `?data_controller=` (empty) returns
-only the use-case policy; omit it for all.
+### `GET /policies/{partner_id}[?data_controller=|?use_case=]`
+Active policies of an **active** partner: with no filter, all of them (registries
+first, then use cases). `?data_controller=farmer_registry` returns only that
+registry's scope policy; `?use_case=loan-profile@1` only that use case's policy;
+`?data_controller=` (empty) only the use-case policies.
 
 ```json
 {
   "partner_id": "PARTNER_BANK_A",
   "policies": [
     {
+      "id": "9b2f6c1e-…",
       "partner_id": "PARTNER_BANK_A",
       "data_controller": "farmer_registry",
+      "use_case": null,
       "version": 2,
       "allowed_data_scopes": ["farmer.basic"],
-      "allowed_use_cases": [],
       "allowed_purposes": [],
       "allowed_subject_id_types": [],
       "allowed_signing_algs": ["EdDSA", "ES256"],
@@ -314,6 +317,9 @@ only the use-case policy; omit it for all.
   ]
 }
 ```
+
+`id` identifies this policy version (each version has its own): a consumer can
+record it to show exactly which version it applied.
 
 **Fail-closed:** an unknown partner, a partner that is not `active`, and one with
 no matching active policy all return `404`:
@@ -331,8 +337,8 @@ otherwise); `data_controller=` (empty) selects use-case policies.
 {
   "count": 1,
   "policies": [
-    { "partner_id": "PARTNER_BANK_A", "data_controller": null, "version": 1,
-      "allowed_use_cases": ["loan-profile@1"], "...": "..." }
+    { "id": "4d0a…", "partner_id": "PARTNER_BANK_A", "data_controller": null,
+      "use_case": "loan-profile@1", "version": 1, "...": "..." }
   ]
 }
 ```
@@ -353,6 +359,6 @@ otherwise); `data_controller=` (empty) selects use-case policies.
 | `PM-REQ-409` | Request is not open for review. |
 | `PM-JWK-502` | Failed to import from the partner's JWKS URL. |
 | `PM-KEY-404` | Key fetch: nothing available (fail-closed). |
-| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same controller, revoke of a controller with no active policy, a scope or use case not in its catalogue source), or `GET /policies` without a filter. |
-| `PM-POLICY-409` | A policy change is already pending for that data controller (returned with HTTP 400). |
+| `PM-POLICY-400` | Invalid policy request (partner not approved or disabled, nothing to change, change and revoke of the same key, revoke of a key with no active policy, a scope or use case not in its catalogue source), or `GET /policies` without a filter. |
+| `PM-POLICY-409` | A policy change is already pending for that key — data controller or use case (returned with HTTP 400). |
 | `PM-POLICY-404` | Policy fetch: nothing available (fail-closed). |

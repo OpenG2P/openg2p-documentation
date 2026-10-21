@@ -71,9 +71,9 @@ flowchart TD
 | 1  | The consent JWS decodes and its claims match the consent-object schema (exactly one of `grants` or `data_controller` + `data_scopes`; no controller twice) | `malformed_object`                    |
 | 1a | Grant selection: with `grants`, the request names a `data_controller` (else `malformed_object`) that has a grant; with the single-registry form, a named `data_controller` equals the consent's | `controller_not_granted`              |
 | 1b | If `request_context.subject_id` has the consent subject's `type`, its `value` matches (another type is left to the registry) | `subject_mismatch`                    |
-| 2  | Partner Management has an active policy for the partner (`aud` → `PARTNER_<AUD>`) and the selected controller — in use-case mode, its use-case policy (a `404` — unknown or inactive partner, or no policy for this registry — is a **fail-closed reject**); PM unreachable with nothing usable cached | `unknown_partner` / `policy_unavailable` |
+| 2  | Partner Management has an active policy for the partner (`aud` → `PARTNER_<AUD>`) and the selected controller — in use-case mode, for `request_context.use_case` (a `404` — unknown or inactive partner, or no such policy — is a **fail-closed reject**); PM unreachable with nothing usable cached | `unknown_partner` (use-case mode: `use_case_not_granted`) / `policy_unavailable` |
 | 3  | The JWS `alg` is permitted (allowed set + policy `allowed_signing_algs`, matched to the PM key for the JWS `kid` — **algorithm-confusion guard**), and the JWS signature verifies against that key | `signature_invalid`                   |
-| 3b | [Use-case mode](#use-case-mode) only: the use case is granted, `requested_scopes` is sent, and the consent's purpose is the use case's | `use_case_not_granted` / `scope_exceeds_policy` / `purpose_not_allowed` |
+| 3b | [Use-case mode](#use-case-mode) only: `requested_scopes` is sent, and the consent's purpose is the use case's | `scope_exceeds_policy` / `purpose_not_allowed` |
 | 4  | `aud` == the partner, and the grant's `data_controller` == the policy's data controller (not in use-case mode)    | `audience_mismatch`                   |
 | 5  | Subject present; `subject_id_type` ∈ `allowed_subject_id_types`                                                     | `subject_not_allowed`                 |
 | 6  | `purpose.code` ∈ `allowed_purposes`                                                                                 | `purpose_not_allowed`                 |
@@ -89,17 +89,18 @@ flowchart TD
 ## How the policy is applied
 
 The partner's policy is its **access policy in Partner Management**: one **scope policy** per
-registry (data controller), and at an Exchange one **use-case policy**. Its fields, versions and
+registry (data controller) and, at an Exchange, one **use-case policy** per use case. Its fields, versions and
 how changes are approved are PM's
 ([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
-The CM only reads the **active** version and records its `version` as `policy_version` on every
-decision, artefact and grant.
+The CM only reads the **active** version and records its full reference on every decision,
+artefact and grant: `policy_ref` (`data_controller:<registry>` or `use_case:<name@major>`),
+`policy_version` and `policy_id` (PM's id of that version).
 
 | Policy field | How `/validate` applies it |
 | --- | --- |
-| `data_controller` | Selects the policy: the calling registry's (step 2). A use-case policy has none |
+| `data_controller` | Selects a scope policy: the calling registry's (step 2) |
+| `use_case` | Selects a use-case policy (`name@major`): `request_context.use_case` in use-case mode (step 2). Exactly one of `data_controller` / `use_case` is set |
 | `allowed_data_scopes` | Ceiling on the effective scopes (step 7). Not in a use-case policy |
-| `allowed_use_cases` | Use-case mode only: must contain `request_context.use_case` (step 3b) |
 | `allowed_purposes` | The consent's `purpose.code` must be listed (empty = any) (step 6) |
 | `allowed_subject_id_types` | The consent subject's `type` must be listed (empty = any) (step 5) |
 | `allowed_signing_algs` | The consent JWS `alg` must be listed (step 3) |
@@ -130,7 +131,9 @@ nothing. See [Data Scopes](../../products/registry/registry/design/data-scopes.m
 
 At an Exchange, partners are granted **use cases** (e.g. `loan-profile@1`) rather than registry
 scopes; the Composite runs the use case and asks the Exchange CM for consent tokens. The CM then
-checks the partner's **use-case policy** instead of its per-registry scope policies.
+checks the partner's policy **for that use case** instead of its per-registry scope policies. Each
+use case has its own policy, so purposes, subject ID types, algorithms and validity can differ per
+use case.
 
 Use-case mode applies only when **both** hold:
 
@@ -140,15 +143,14 @@ Use-case mode applies only when **both** hold:
 
 For any other caller `use_case` is ignored and the normal mode applies. In use-case mode:
 
-1. The CM reads the consenting partner's use-case policy (`GET /policies/PARTNER_<AUD>?data_controller=`).
-   None → `unknown_partner`.
-2. `use_case` must be in its `allowed_use_cases`, else `use_case_not_granted`.
-3. `request_context.requested_scopes` is required (the use case's scopes), else
+1. The CM reads the consenting partner's policy for the use case
+   (`GET /policies/PARTNER_<AUD>?use_case=<name@major>`). None (`404`) → `use_case_not_granted`.
+2. `request_context.requested_scopes` is required (the use case's scopes), else
    `scope_exceeds_policy`.
-4. If `request_context.purpose` is sent, the consent's `purpose.code` must equal it, else
+3. If `request_context.purpose` is sent, the consent's `purpose.code` must equal it, else
    `purpose_not_allowed`.
-5. The policy's purposes, subject ID types, signing algorithms and maximum validity apply as above.
-6. For each registry, **effective scopes = the consent's grant ∩ `requested_scopes`**.
+4. That policy's purposes, subject ID types, signing algorithms and maximum validity apply as above.
+5. For each registry, **effective scopes = the consent's grant ∩ `requested_scopes`**.
 
 A partner-signed consent (`consent_jws`) may be presented for another use case, so these checks run
 before a stored decision is reused. A stored consent (`consent_id`) made **by use case** in the
@@ -169,6 +171,8 @@ denied `use_case_not_granted` ([consent collection](consent-collection.md#partne
   "effective_data_scopes": ["farmer_profile.basic", "farmer_profile.crops"],
   "valid_until": "2026-05-01T12:02:10Z",
   "policy_version": 3,
+  "policy_id": "7d0c9a52-…",
+  "policy_ref": "data_controller:farmer-registry",
   "reason_code": "ok",
   "evaluated_at": "2025-05-01T12:02:12Z"
 }

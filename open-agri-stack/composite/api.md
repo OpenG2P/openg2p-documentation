@@ -10,7 +10,7 @@ description: >-
 The Composite serves approved use cases. A partner sends one signed request about one farmer, with the farmer's consent. The Composite queries each registry the use case names and returns one signed response.
 
 * **Base URL:** `https://<composite host>/composite/v1`
-* **Who calls it:** partners (banks, MFIs, agritechs) onboarded in Partner Management whose use-case policy there grants the use case (`name@major`). Staff use the console API.
+* **Who calls it:** partners (banks, MFIs, agritechs) onboarded in Partner Management with a policy there for the use case (`name@major`). Staff use the console API.
 * **Signing:** the query body is an envelope `{signature, header, message}`. `signature` is a detached JWS over `{header, message}`, made with the partner's key. The Composite verifies it against the partner's keys in Partner Management (`header.sender_id`). The Composite signs every response, errors included, with its own key.
 * **Consent:** send `message.consent_id` (a consent the farmer gave, held by the Exchange's Consent Manager) or `message.consent_jws` (a consent the partner signed). The Exchange turns it into a consent token for each registry.
 * **Result:** each source (registry query) gets a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. A failed optional source leaves its fields null. A failed mandatory source fails the request.
@@ -48,7 +48,7 @@ An error from a query is a signed envelope too. `header.status` is `rjct`, and `
 
 The two codes about the partner's use-case grant ([data-sharing policies](../architecture/data-sharing-policies.md#fail-closed)):
 
-* **`403 partner_not_allowed`:** the partner's use-case policy in Partner Management does not grant this use case, or the partner has none. Message: `partner 'bank-b' is not granted the use case loan-profile@1 in Partner Management`.
+* **`403 partner_not_allowed`:** the partner has no policy for this use case (`name@major`) in Partner Management. Message: `partner 'bank-b' is not granted the use case loan-profile@1 in Partner Management`.
 * **`503 partner_policy_unavailable`:** Partner Management cannot be read to check the grant and no recent answer is cached. Message: `Partner Management cannot be read to check the partner's use-case grant; try again later`.
 
 ## Use cases

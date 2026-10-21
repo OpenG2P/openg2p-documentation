@@ -46,7 +46,7 @@ The admin-facing workflow record.
 | `proposed_keys` | Normalised keys to activate on approval. |
 | `revoke_kids` | Kids to revoke on approval. Each must be a current (non-revoked) key of the partner. |
 | `proposed_policies` | Policies to activate on approval (onboarding or `policy` requests). |
-| `revoke_data_controllers` | Policies to revoke on approval, by data controller (`null` = the use-case policy). |
+| `revoke` | Policies to revoke on approval, by key: `{"data_controller": X}` or `{"use_case": Y}`. |
 | `warnings` | For the approver to verify by hand: checks that could not run at submission (a [catalogue source](#catalogue-sources) or the Master Data Service was unreachable), and signing algorithms that match none of the partner's keys. |
 | `status` | One of `created`, `approved`, `rejected` (`created` → `approved` / `rejected`). |
 | `submitted_by`, `reviewed_by`, `review_notes` | Audit. |
@@ -65,13 +65,13 @@ admin portal, not free text, and the API rejects anything else:
 | Requests | Status filter | Buttons | All, `created`, `approved`, `rejected` |
 | Requests | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
 | Partners | Status filter | Select | All, `created`, `active`, `disabled` |
-| Onboard / Change policy | Policy for | Select | *Data controller (registry)*, *Use cases (exchange)* |
-| Onboard / Change policy | Signing algorithms | Checkbox list, new policies pre-filled from the partner's keys | The key algorithms the deployment allows |
-| Onboard / Change policy | Fetch type | Select | `oneshot`, `periodic` |
-| Onboard / Change policy | Data controller | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |
-| Onboard / Change policy | Allowed scopes / Allowed use cases | Checkbox list (when the data controller's, or a use-case, catalogue source is configured) | The source's scopes / use cases |
-| Onboard / Change policy | Purposes / Subject ID types | Checkbox list (when the [Master Data list](#master-data-code-lists) loaded) | The list's active codes |
-| Change policy | Revoke | Checkbox (per active policy) | The partner's active policies |
+| Onboard / Add policy | Policy for | Select | *Registry*, *Use case* |
+| Onboard / Add policy | Registry | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |
+| Onboard / Add policy | Use case | Select + *Other…* (when a use_cases source is configured) | The source's use cases |
+| Onboard / Add / Edit policy | Allowed scopes | Checkbox list (when the registry's catalogue source is configured) | The source's scopes |
+| Onboard / Add / Edit policy | Purposes / Subject ID types | Checkbox list (when the [Master Data list](#master-data-code-lists) loaded) | The list's active codes |
+| Onboard / Add / Edit policy | Signing algorithms | Checkbox list, new policies pre-filled from the partner's keys | The key algorithms the deployment allows |
+| Onboard / Add / Edit policy | Fetch type | Select | `oneshot`, `periodic` |
 
 The portal reads these lists from `GET /metadata` (see [API Reference](api-reference.md#get-metadata)),
 which builds them from the same enums the API validates against. Partner ID,
@@ -138,12 +138,15 @@ partner API — see [Integration](integration.md).
 
 ### Two kinds of policy
 
-| Kind | `data_controller` | Grants | Used by |
-| --- | --- | --- | --- |
-| **Scope policy** | The registry's data controller ID (e.g. `farmer-registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
-| **Use-case policy** | `null` | `allowed_use_cases` — published use cases as `name@major` (e.g. `loan-profile@1`) (required, non-empty) | An Exchange: its Composite and its Consent Manager |
+Each policy has exactly one **key**, `data_controller` or `use_case`:
 
-A scope policy must not list use cases, and a use-case policy must not list scopes.
+| Kind | Key | Grants | Used by |
+| --- | --- | --- | --- |
+| **Scope policy** | `data_controller`: the registry's data controller ID (e.g. `farmer-registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
+| **Use-case policy** | `use_case`: one published use case as `name@major` (e.g. `loan-profile@1`) | That use case; `allowed_data_scopes` must be empty | An Exchange: its Composite and its Consent Manager |
+
+A partner of an Exchange has one use-case policy per use case, so purposes,
+subject ID types, algorithms and limits are set per use case.
 
 ### Fields
 
@@ -163,35 +166,35 @@ than zero. Each stored version also records the request that proposed it,
 
 ### Versions and statuses
 
-A partner has at most one policy per data controller (one use-case policy, one
-scope policy per registry). Each change creates a new **version** (1, 2, …):
+A partner has at most one policy per key (one per registry, one per use case).
+Each change creates a new **version** (1, 2, …) of that key, with its own `id`:
 
 | Status | Meaning |
 | --- | --- |
 | `pending` | Proposed by an open request. Not served. |
-| `active` | Approved and served. At most one per (partner, data controller). |
+| `active` | Approved and served. At most one per (partner, key). |
 | `superseded` | Replaced by a newer approved version. |
 | `rejected` | Its request was rejected. |
 | `revoked` | Withdrawn by an approved policy request; nothing replaces it. |
 
-There is **at most one pending change** per (partner, data controller). Versions
-are never deleted.
+There is **at most one pending change** per (partner, key); other keys can change
+meanwhile. Versions are never deleted.
 
 ### Changing policies
 
 Policies change only through requests, approved like any other request (role
 `partner_manager`; the same person may raise and approve):
 
-* **Onboarding request** — may carry initial policies (at most one per data
-  controller). On approval the partner, its keys and each policy (version 1)
+* **Onboarding request** — may carry initial policies, any mix of registries and
+  use cases (at most one per key). On approval the partner, its keys and each policy (version 1)
   become active.
 * **Policy request** (`policy`) — for an approved (`active`) partner. Proposes
-  new versions and/or revokes policies by data controller. Rules:
+  new versions and/or revokes policies by key. Rules:
   * a partner still in `created` gets its policies through its onboarding
     request; a `disabled` partner must be enabled first;
   * propose or revoke at least one policy;
-  * the same data controller cannot be both changed and revoked;
-  * a data controller with a change already pending is refused
+  * the same key cannot be both changed and revoked;
+  * a key with a change already pending is refused
     (`PM-POLICY-409`: approve or reject that request first);
   * only an active policy can be revoked.
 
@@ -218,12 +221,12 @@ portal (`GET /catalogue`). Retired scopes are not offered.
 With sources configured:
 
 * **The portal** offers the configured registries as the data controller (plus
-  *Other…* for one without a source) and the source's scopes or use cases as a
-  checkbox list, with their labels and descriptions (a use case also with its
-  purpose, which can fill **Purposes**). A source that cannot be read shows its
+  *Other…* for one without a source) and its scopes as a checkbox list, and the
+  source's use cases as a select, with their labels and descriptions (a use case
+  also with its purpose, which can fill **Purposes**). A source that cannot be read shows its
   error and the field falls back to free text.
 * **Requests are checked** (onboarding and policy): every scope of a scope policy
-  whose data controller has a source, and every use case of a use-case policy
+  whose data controller has a source, and the use case of a use-case policy
   when a use_cases source exists, must be in the catalogue, else `400
   PM-POLICY-400` naming the unknown ones. A data controller with no source is not
   checked.

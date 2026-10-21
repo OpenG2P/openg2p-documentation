@@ -75,8 +75,8 @@ Five tables, UUID string PKs, created/updated timestamps:
 | --- | --- |
 | `pm_partners` | Partners and their status. |
 | `pm_partner_keys` | Public keys (never deleted; revoked keys kept). |
-| `pm_partner_policies` | Access policies, one row per version per (partner, data controller) — `data_controller` null for the use-case policy; status `pending` / `active` / `superseded` / `rejected` / `revoked`; the grants and limits; `request_id`, `effective_from`, `created_by`, `approved_by`. Never deleted. |
-| `pm_partner_requests` | Requests of type `onboarding`, `key_update` or `policy`, with `proposed_keys`, `revoke_kids`, `proposed_policies`, `revoke_data_controllers`. |
+| `pm_partner_policies` | Access policies, one row per version per key: (partner, `data_controller`) for a scope policy or (partner, `use_case`) for a use-case policy, exactly one of the two set; status `pending` / `active` / `superseded` / `rejected` / `revoked`; the grants and limits; `request_id`, `effective_from`, `created_by`, `approved_by`. Never deleted. |
+| `pm_partner_requests` | Requests of type `onboarding`, `key_update` or `policy`, with `proposed_keys`, `revoke_kids`, `proposed_policies`, `revoke` (policy keys, column `revoke_policies`). |
 | `pm_audit_events` | Append-only audit ledger (see below). |
 
  JSON columns use `JSONB` on PostgreSQL
@@ -86,7 +86,7 @@ Key material is normalised and validated at request-creation time and stashed in
 the request's `proposed_keys`, so approval is a cheap, deterministic apply — the
 same path a future AWE webhook would call. Policies follow the same pattern:
 a request validates them and writes `pending` versions in the same transaction
-(refusing a second pending change per partner and data controller); approval
+(refusing a second pending change per policy key); approval
 activates them and supersedes the previous active version, rejection marks them
 `rejected`. Model and rules: [Access policies](functional-specifications.md#access-policies).
 
@@ -100,7 +100,7 @@ the commons `PartnerKeyStore`) absorbs load and picks up rotations within the TT
 ## Policy fetch path
 
 The partner-api's policy-fetch controller serves `GET /policies/{partner_id}`
-(optionally one data controller, `""` = the use-case policy) and
+(all active policies, or one by `?data_controller=` / `?use_case=`) and
 `GET /policies?use_case=&data_controller=` (a filter is required). It returns
 active policies **only** for an `active` partner; an unknown or non-active
 partner, or no matching active policy, maps to a uniform `404 PM-POLICY-404`.

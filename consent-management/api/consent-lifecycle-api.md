@@ -52,10 +52,11 @@ Management for a requested controller; `503` if Partner Management cannot be rea
 **By use case (exchange role).** On a CM in the [exchange role](../design/exchange-receipts.md),
 a request **must** name a `use_case` (`name@major`) and no grants: the consent is made for that
 use case. A request with `grants` or `data_controller` + `requested_scopes` is refused (`400`, "at
-the Exchange, consents are made for a use case"). The partner's use-case policy in Partner Management must grant it (else `422`
-`use_case_not_granted`); the grants (each registry with the use case's scopes) and the purpose are
-the use case's, read from the Composite; `purpose`, if sent, must be the use case's. The use-case
-policy's purposes, subject ID types and longest validity apply. The request and the consent carry
+the Exchange, consents are made for a use case"). The partner must have a policy for that use case in
+Partner Management — one policy per use case (else `422` `use_case_not_granted`); the grants (each
+registry with the use case's scopes) and the purpose are the use case's, read from the Composite;
+`purpose`, if sent, must be the use case's. That policy's purposes, subject ID types and longest
+validity apply. The request and the consent carry
 `use_case`; on approval each grant is narrowed to the use case's scopes at that time, and the
 consent is valid at `/validate` only for that use case. `503` if the Composite cannot be reached.
 
@@ -107,7 +108,7 @@ issues a signed artefact + receipt.
   and is narrowed to the partner's current policy for that controller. A controller left out (or with no scopes
   left) is **declined**. `granted_scopes` on a grants request applies the same list to every
   grant. `400` if nothing is left. The artefact holds the approved grants (with each one's
-  `effective_data_scopes` and `policy_version`) and the receipt lists one `data_controllers`
+  `effective_data_scopes` and policy reference: `policy_ref`, `policy_version`, `policy_id`) and the receipt lists one `data_controllers`
   entry per grant.
 
 {% hint style="warning" %}

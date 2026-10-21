@@ -44,7 +44,7 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
   that adds new keys and/or revokes old ones. New and old keys can be active at
   once for zero-downtime rotation.
 * **Access policies** — per partner, a scope policy for each registry (data
-  controller) and/or a use-case policy for an Exchange, versioned and changed
+  controller) and a policy for each Exchange use case, each versioned and changed
   through approved onboarding or policy requests. See
   [Access policies](functional-specifications.md#access-policies).
 * **Key and policy fetch** — unauthenticated internal APIs return a partner's

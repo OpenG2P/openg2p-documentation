@@ -72,7 +72,7 @@ inbound request to identify the partner **must equal that `partner_id`.**
 ## 6. Consuming access policies
 
 What a partner may ask for is an **access policy** in PM — a scope policy per
-registry data controller, or a use-case policy for an Exchange (model and
+registry data controller, or a use-case policy per Exchange use case (model and
 lifecycle: [Access policies](functional-specifications.md#access-policies)).
 Policies change only through approved PM requests; your service never stores or
 edits them.
@@ -81,11 +81,15 @@ Read them from the partner-api ([API](api-reference.md)):
 
 ```
 GET {PM_PARTNER_API_URL}/policies/{partner_id}?data_controller=<controller>  -> that registry's scope policy
-GET {PM_PARTNER_API_URL}/policies/{partner_id}?data_controller=              -> the use-case policy
+GET {PM_PARTNER_API_URL}/policies/{partner_id}?use_case=<name@major>         -> that use case's policy
+GET {PM_PARTNER_API_URL}/policies/{partner_id}                               -> all its active policies
 GET {PM_PARTNER_API_URL}/policies?use_case=<name@major>                      -> listing (who is granted a use case)
 ```
 
-Apply the §4 discipline, per (partner, data controller):
+Each policy carries its version's `id`; record it with what you decide (e.g. a
+consent) to show which policy version applied.
+
+Apply the §4 discipline, per (partner, data controller) or (partner, use case):
 
 - **Soft TTL** — honour `Cache-Control: max-age` (PM default 60 s, shorter than
   keys so a narrowed or revoked policy takes effect quickly).
@@ -101,8 +105,8 @@ Current consumers and where their settings are documented:
 
 | Consumer | Reads | Settings |
 | --- | --- | --- |
-| Consent Manager | The consenting partner's scope policy for the registry's data controller; in an Exchange, the partner's use-case policy | [Consent Manager deployment](../../../consent-management/deployment/README.md) |
-| Composite (Exchange) | The calling partner's use-case policy (is `name@major` granted?); listings for its console | [Composite deployment](../../../open-agri-stack/deployment/composite.md) |
+| Consent Manager | The consenting partner's scope policy for the registry's data controller; in an Exchange, the partner's policy for the request's use case | [Consent Manager deployment](../../../consent-management/deployment/README.md) |
+| Composite (Exchange) | The calling partner's policy for the use case (`?use_case=name@major`; 404 = not granted); listings for its console | [Composite deployment](../../../open-agri-stack/deployment/composite.md) |
 
 How the Consent Manager evaluates a policy:
 [Verification and enforcement](../../../consent-management/design/verification-and-enforcement.md).

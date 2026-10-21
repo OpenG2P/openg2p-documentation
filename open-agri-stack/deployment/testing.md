@@ -62,7 +62,7 @@ The user's password is in the Secret `partner-user-bank-a-operator`. Details: [p
 
 ## Partner test (public APIs)
 
-[`scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_test.py) does what a partner (here `bank-a`) does, using only the environment's public URLs: gets onboarded in the Exchange PM with a use-case policy granting the use case, signs a consent and the request, calls the use case and checks the Composite's signature. It runs from any machine that can reach those URLs, with no kubectl and no database.
+[`scripts/partner_test.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_test.py) does what a partner (here `bank-a`) does, using only the environment's public URLs: gets onboarded in the Exchange PM with a policy for the use case, signs a consent and the request, calls the use case and checks the Composite's signature. It runs from any machine that can reach those URLs, with no kubectl and no database.
 
 With the PM admin credentials it needs no manual step:
 
@@ -76,7 +76,7 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 | Option | Meaning |
 | --- | --- |
 | `--base-domain` | Every URL defaults to `https://<service>.<base domain>`: `agri-composite`, `partner-management-partner-api`, `pm-staff-portal` (PM's admin API), `partner-management` (PM's portal), and Keycloak's staff realm. Each can be overridden (`--composite-url`, `--pm-staff-url`, …) |
-| `--partner` | The partner's ID, e.g. `bank-a` (in PM `PARTNER_BANK_A`). The script sets up its use-case policy granting the use case under test |
+| `--partner` | The partner's ID, e.g. `bank-a` (in PM `PARTNER_BANK_A`). The script sets up its policy for the use case under test |
 | `--fan` | The farmer's ID, as the farmer would give it to the bank (`--subject-type FARMER_ID` for a Farmer ID). Default `946053125409`: sample person `ETH-IND-0007` of the shipped Ethiopia country pack, who is sample farmer `FR-0007` with land in the Farmer Registry and crop seasons in the Crop Sown Registry of any install with sample data |
 | `--consent-id` | Query with a consent the Exchange CM holds ([step 4](#consent-through-the-partner-portal)) |
 | `--auto-approve` | Approve the PM requests with the same admin credentials |
@@ -88,8 +88,8 @@ python scripts/partner_test.py --base-domain agrix.openg2p.org --partner bank-a 
 | --- | --- |
 | Use case | GET the use case from the Composite: its `name@major` (e.g. `loan-profile@1`), purpose, inputs, the registries the consent must grant |
 | Key | The partner's signing key (EC P-256), kept in `--state-dir` (default `~/.agri-partner-test/<base domain>`) and reused |
-| Onboard | The partner in the Exchange's Partner Management: its key, and its use-case policy granting the use case in the same onboarding request. **With PM admin credentials:** the script raises the onboarding (or key-update) request and waits for a PM admin to approve it in the PM portal; `--auto-approve` approves it with the same credentials. **Without:** it prints the partner ID, the public key (also written to the state directory) and the policy for a PM admin to onboard and approve. Either way it waits until PM's public key API serves the key |
-| Access | The partner's use-case policy in the Exchange PM grants the use case. An already onboarded partner without it gets a PM policy request (only widened, never narrowed), approved as above; without PM admin credentials the script prints the policy for a PM admin. Either way it waits until PM's policy API serves it. [Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies) |
+| Onboard | The partner in the Exchange's Partner Management: its key, and its policy for the use case in the same onboarding request. **With PM admin credentials:** the script raises the onboarding (or key-update) request and waits for a PM admin to approve it in the PM portal; `--auto-approve` approves it with the same credentials. **Without:** it prints the partner ID, the public key (also written to the state directory) and the policy for a PM admin to onboard and approve. Either way it waits until PM's public key API serves the key |
+| Access | The partner's policy for the use case in the Exchange PM (one policy per use case). An already onboarded partner without it gets a policy request adding it (an existing one is only widened, never narrowed; other use cases' policies are untouched), approved as above; without PM admin credentials the script prints the policy for a PM admin. Either way it waits until PM's policy API serves it. [Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies) |
 | Consent and query | A consent for the farmer with a grant per registry, signed by the partner; the signed request is POSTed to the Composite's public URL |
 | Result | The response signature is checked against the Composite's key served by PM; each source's status is printed, and the JSON is saved (git-ignored, owner-only) |
 
@@ -135,7 +135,7 @@ The query then carries `message.consent_id`. The Exchange CM checks the consent 
 | The partner test waits for PM approval and the PM portal shows no request | No `PM_ADMIN_CLIENT_SECRET`: the script raised no request, it waits for a PM admin to onboard the partner by hand | Set the credentials, or onboard `PARTNER_<ID>` in the PM portal with the printed key |
 | Every query fails with `signing_unavailable` | The Composite has no signing key Secret | Run the [Exchange setup](#exchange-setup) |
 | Response signature not verified, or registries answer 401 | The Composite is not in PM | Run the [Exchange setup](#exchange-setup) |
-| The query fails with 403 `partner_not_allowed` | The partner's use-case policy in the Exchange PM does not grant the use case (`name@major`) | Rerun the partner test with PM admin credentials, or raise and approve a policy request in the PM portal |
+| The query fails with 403 `partner_not_allowed` | The partner has no policy for the use case (`name@major`) in the Exchange PM | Rerun the partner test with PM admin credentials, or **Add policy** for the use case on the partner in the PM portal |
 | The query fails with 503 `partner_policy_unavailable` | The Composite cannot read Partner Management and has no cached answer | Check the Exchange PM's partner API |
 | Sources `denied` for consent | The department PM has no scope policy for the Composite covering the use case, or the department CM does not trust the Exchange's consent tokens | Rerun the Exchange setup and fix what it reports |
 | The Composite API restarts at start | A setting it cannot read (the log names it) | Check the release's values: [Composite](composite.md#environment-settings) |

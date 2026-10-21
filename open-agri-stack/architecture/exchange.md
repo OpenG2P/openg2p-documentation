@@ -31,12 +31,12 @@ In the partner portal, every consent request carries the farmer's Farmer ID besi
 | Holds | Does not hold |
 | --- | --- |
 | The farmers' consents, and the form the farmer signed (evidence) | Any registry, or any farmer data: the Composite keeps nothing after it responds |
-| Each partner's identity, key and use-case policy (in PM) | Any department's ceiling: each department decides in its own PM what it releases to the Composite |
+| Each partner's identity, key and use-case policies (in PM) | Any department's ceiling: each department decides in its own PM what it releases to the Composite |
 | The Composite's key and its published use cases | Any partner's key in the departments: they trust the Composite and the Exchange's consent tokens, not each partner |
 
 ## Partners and their use-case grants
 
-A partner onboards in the Exchange's PM as `PARTNER_<ID>` (e.g. `PARTNER_BANK_A`), with its public key and a **use-case policy**: the use cases it may call (e.g. `loan-profile@1`), with the purposes, subject ID types and consent validity allowed. Both are approved in the Exchange's PM. A partner of the Exchange is never onboarded in a department. A granted use case brings its own scopes, so a partner needs no policy per registry. This holds for consents its staff collect in the partner portal too: there a consent is made for one of the partner's granted use cases ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
+A partner onboards in the Exchange's PM as `PARTNER_<ID>` (e.g. `PARTNER_BANK_A`), with its public key and **one use-case policy per use case it may call** (e.g. `loan-profile@1`), each with the purposes, subject ID types and consent validity allowed. All are approved in the Exchange's PM; adding a use case later is **Add policy** on the partner. A partner of the Exchange is never onboarded in a department. A granted use case brings its own scopes, so a partner needs no policy per registry. This holds for consents its staff collect in the partner portal too: there a consent is made for one of the partner's granted use cases ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
 
 How the use-case grant, the consent and each department's ceiling combine, and who approves what: [data-sharing policies](data-sharing-policies.md). Getting onboarded, as a partner: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management).
 
@@ -44,7 +44,7 @@ How the use-case grant, the consent and each department's ceiling combine, and w
 
 **To each department, the Exchange is one partner.** The department's PM holds only the Composite's public key and its scope policy per registry (the ceiling), and its CM trusts the Exchange CM's consent tokens.
 
-* **Consent tokens.** For each request, the Composite asks the Exchange CM for one signed consent token per registry. The Exchange CM issues them only if the partner's use-case policy grants the use case, and a token carries only the scopes in the consent's grant for that registry ∩ the scopes the use case asks for. It is short-lived and used for one query.
+* **Consent tokens.** For each request, the Composite asks the Exchange CM for one signed consent token per registry. The Exchange CM issues them only if the partner has a policy for the use case, and a token carries only the scopes in the consent's grant for that registry ∩ the scopes the use case asks for. It is short-lived and used for one query.
 * **Each registry still decides.** It verifies the Composite's signature at its own PM, validates its consent token at its own CM, checks that the consent's subject is the person searched, and releases only what the [Composite's scope policy](registries.md#scope-policy-for-the-composite) for that registry, in the department's PM, also allows. Its CM checks with the Exchange CM that the consent has not been revoked since the token was issued.
 
 One request, hop by hop: [request flow](request-flow.md). The token format, its status check and the department side: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md).

@@ -52,10 +52,10 @@ Only `status: published` is served. If it is missing, check the error on the con
 
 ## Step 5 — Grant it to partners
 
-In the Exchange's Partner Management, add the use case as `name@major` (e.g. `my-use-case@1`) to each partner's **use-case policy**, with the use case's purpose:
+A partner gets one **use-case policy per use case** it may call. In the Exchange's Partner Management, give each partner a policy for this use case as `name@major` (e.g. `my-use-case@1`), with the use case's purpose:
 
 * **A new partner:** in its onboarding request, with its keys.
-* **An onboarded partner:** a new version of its use-case policy that keeps the use cases it already has and adds this one.
+* **An onboarded partner:** **Add policy** on the partner (a policy request). Its other use cases' policies are untouched.
 
 Steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). The [partner test](../deployment/testing.md#partner-test-public-apis) does this for its test partner when given the PM admin credentials (`--use-case`).
 
@@ -66,7 +66,7 @@ Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scri
 ## Step 7 — Test
 
 * **Partner test:** `python scripts/partner_test.py --base-domain <domain> --partner <partner> --use-case <name> --auto-approve` ([partner test](../deployment/testing.md#partner-test-public-apis)). It builds the consent from the use case's scopes. It sends only the `crop_year` and `season` parameters (`--crop-year`, `--season`).
-* **`scripts/exchange_test.sh`** runs the Exchange setup and the partner test in one go, for `loan-profile` only (it has no use-case option).
+* **`scripts/exchange_test.sh`** runs the Exchange setup and the partner test in one go (`--use-case <name>`, default `loan-profile`).
 
 Read the status of each source in the response: `ok`, `no_record`, `denied`, `unavailable` or `error` ([source statuses](use-case-configuration.md#failure-handling)). A mandatory source that isn't `ok` or `no_record` fails the request.
 

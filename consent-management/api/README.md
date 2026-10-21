@@ -67,7 +67,7 @@ Used in decisions (`reason_code`) and errors (`error`):
 | --- | --- |
 | `ok` | Permit — all checks passed |
 | `malformed_object` | Consent object failed schema validation (incl. both `grants` and `data_controller`/`data_scopes`, a duplicate controller in `grants`, or no `data_controller` on `/validate` for a consent with `grants`) |
-| `unknown_partner` | Partner Management has no active policy for the partner and this data controller (partner unknown or not active, or not granted this registry), or no use-case policy in use-case mode |
+| `unknown_partner` | Partner Management has no active policy for the partner and this data controller (partner unknown or not active, or not granted this registry) |
 | `policy_unavailable` | Partner Management could not be reached and no policy answer is cached (fail closed; retry later) |
 | `signature_invalid` | JWS signature did not verify, the `kid` has no active key in Partner Management, or the algorithm is not allowed |
 | `audience_mismatch` | `aud` is not this partner / controller |
@@ -75,7 +75,7 @@ Used in decisions (`reason_code`) and errors (`error`):
 | `subject_mismatch` | `request_context.subject_id` has the consent subject's type but a different value |
 | `subject_not_allowed` | Subject missing or `subject_id_type` not permitted |
 | `purpose_not_allowed` | Purpose code outside policy, or (use-case mode) not the use case's purpose |
-| `use_case_not_granted` | Use-case mode: `request_context.use_case` is not in the partner's use-case policy, or the partner has none |
+| `use_case_not_granted` | Use-case mode: the partner has no active policy for `request_context.use_case` in Partner Management, or a stored consent was given for another use case |
 | `scope_exceeds_policy` | Requested scope not permitted; empty effective intersection |
 | `validity_exceeds_policy` | Requested validity longer than `max_validity_duration` |
 | `expired` | Consent outside its validity window |
@@ -100,11 +100,16 @@ partner's audience, e.g. `bank-a`), `decision` (`permit` or `deny`); `limit` (1�
   { "id": "d-5512", "consent_id": "CONSENT-123456", "partner_id": "bank-a",
     "object_jti": "6f1c-unique-per-object", "data_controller": "farmer-registry",
     "decision": "permit", "reason_code": "ok", "detail": null, "policy_version": 4,
+    "policy_id": "7d0c9a52-…", "policy_ref": "data_controller:farmer-registry",
     "created_at": "2026-10-01T10:00:02Z" }
 ]
 ```
 
-`policy_version` is the version of the partner's policy in Partner Management that was applied.
+The policy applied in Partner Management: `policy_ref` is its key (`data_controller:<registry>` or
+`use_case:<name@major>`), `policy_version` its version, `policy_id` PM's id of that version (all
+null when no policy was read, e.g. `unknown_partner`). The staff console shows it as "Registry
+farmer-registry · v4" / "Use case loan-profile@1 · v1", linked to the partner's page in Partner
+Management (`partnerManagementUiUrl`).
 
 ## Implementation
 

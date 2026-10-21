@@ -83,8 +83,19 @@ Partners, their keys and their access policies are read from Partner Management
 | `partnerManagementUiUrl` | `https://partner-management.<baseDomain>` | **Partner Management UI URL** in Rancher: PM's staff UI, linked from the CM console as **Partners & policies**. Empty = no link |
 | `partnerManagementAdminApiUrl`, `pmSeedClientId` | `http://commons-services-pm-staff-portal-api`, `commons-services-staff-portal` | Used only by the sanity e2e to seed its test partner in PM (below) |
 
-Partner key caching has its own defaulted settings (`CONSENT_MANAGER_PARTNER_KEY_*`, see
-[caching](../design/partner-management-integration.md#caching)).
+What these times mean for policy changes and PM outages: [caching](../design/partner-management-integration.md#caching).
+
+**Changing them:** in Rancher, **Edit YAML** on the release (they are not in the form) and set `global.partnerPolicyCache.*`. Installed through Commons Services, set them under `global.partnerPolicyCache` in its values; the CM picks them up on upgrade.
+
+Partner keys are cached the same way, with settings that have no chart value of their own; to change one, add it under `consentManagerApi.envVars` in **Edit YAML**:
+
+| Environment variable | Default | |
+| --- | --- | --- |
+| `CONSENT_MANAGER_PARTNER_KEY_CACHE_TTL_SECONDS` | `300` | Reuse a fetched key this long |
+| `CONSENT_MANAGER_PARTNER_KEY_HARD_TTL_SECONDS` | `21600` | While PM is down, use the last key this long |
+| `CONSENT_MANAGER_PARTNER_KEY_NEGATIVE_TTL_SECONDS` | `30` | Remember "no key" this long |
+| `CONSENT_MANAGER_PARTNER_KEY_REFRESH_COOLDOWN_SECONDS` | `10` | Minimum interval between refreshes for an unknown `kid` |
+| `CONSENT_MANAGER_PARTNER_KEY_FETCH_TIMEOUT_SECONDS` | `3` | Timeout of one key fetch |
 
 ### Publishing &amp; Rancher catalog
 
@@ -283,8 +294,8 @@ the Composite URL to `https://agri-composite.<this domain>`. Further backend set
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).
 
-**Exchange (`agrix`)** — role `exchange`. Each partner (e.g. `bank-a`) needs a use-case policy in
-the Exchange's Partner Management granting its use cases. Everything is in the commons-services
+**Exchange (`agrix`)** — role `exchange`. Each partner (e.g. `bank-a`) needs one policy per use case
+it calls in the Exchange's Partner Management. Everything is in the commons-services
 form (see the Agri Stack
 [deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
