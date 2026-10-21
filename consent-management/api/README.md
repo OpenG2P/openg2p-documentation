@@ -12,7 +12,7 @@ endpoint follows; the endpoint pages document the individual contracts.
 | Group | Page | API audience |
 | --- | --- | --- |
 | Verification &amp; enforcement | [Verification API](verification-api.md) | **partner-api** — registries / PEPs and the Composite (machine-to-machine) |
-| Audit | [Decisions](#staff-endpoints) | **staff-api** — administrators |
+| Audit | [Decisions](#staff-endpoints) (the console's Access Log) | **staff-api** — administrators |
 | Consent lifecycle | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary-api** — origination clients (scaffolded/later) |
 | Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary-api** — authenticated subjects (scaffolded/later) |
 

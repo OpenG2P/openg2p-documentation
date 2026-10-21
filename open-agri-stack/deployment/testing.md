@@ -115,7 +115,7 @@ The script covers only the partner's side. The rest is part of the install, and 
 In the partner test the partner signs the consent itself. Here the farmer's consent is collected in person and verified by CM staff, and the query carries no consent: the Exchange CM finds it.
 
 1. Partner portal (`https://consent-partner-portal.<base domain>`), as `bank-a-operator`: **New request**, picking the use case to test (`loan-profile@1`; only use cases granted to `bank-a` in PM are offered), with the farmer's national ID (`FAYDA_FAN`, e.g. `946053125409`) and Farmer ID (e.g. `FR-0007`). On the request, **Authenticate with national ID**: the farmer logs in with eSignet in the popup (a one-time code to their registered phone). Upload the signed form, **Submit**.
-2. CM console (`https://consent-manager.<base domain>`), **Consent verifications**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
+2. CM console (`https://consent-manager.<base domain>`), **Consent Approvals**: a staff user checks the form, that the person was authenticated, and the Farmer ID in the Farmer Registry (ticking that they did), and approves it. Back in the partner portal, the consent's **Download consent record** gives the bank its own copy (receipt, signed form and the CM's signed statement).
 3. Query with it:
 
 ```bash

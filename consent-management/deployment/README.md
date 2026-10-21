@@ -41,8 +41,8 @@ VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AU
 
 | Deployment | Audience | Auth | Hosts |
 | --- | --- | --- | --- |
-| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | decisions/audit view, assisted-consent verification, partner portal API |
-| `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — callers (registries, the Composite) reach it in-cluster over Istio mTLS; partner-signed consent objects are verified against Partner Management keys (`jti` replay-guarded) | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key) |
+| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | Access Log, consent approvals, partner portal API |
+| `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — callers (registries, the Composite) reach it in-cluster over Istio mTLS; partner-signed consent objects are verified against Partner Management keys (`jti` replay-guarded) | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key). In cluster only, except the JWKS ([below](#what-is-reachable-from-outside)) |
 | `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination — **scaffolded, `enabled: false`** |
 
 `extraApis[]` entries are merged over `consentManagerApi`, so each only states its differences
@@ -54,7 +54,8 @@ Rendered resources per audience:
   `/ping` for startup/liveness/readiness probes. The partner-api additionally mounts the `.p12`
   signing key from a Secret.
 * **Service** (`ClusterIP`) and an Istio **VirtualService** routing
-  `/<openapiRootPath>/` on that audience's hostname to the service.
+  `/<openapiRootPath>/` on that audience's hostname to the service — for the partner-api only the
+  paths below.
 * **HorizontalPodAutoscaler** — opt-in (off by default; a single replica suffices). Enable it for
   high consent-verification load (1–10 replicas, **CPU-only** target at 80% — memory-based
   autoscaling is deliberately off, as a Python process's memory baseline would make it scale up
@@ -67,6 +68,20 @@ Configuration is supplied through `values.yaml` as `CONSENT_MANAGER_*` env vars 
 `backend/.env.example` for the full variable list. There is no data controller chart value: each
 partner policy in Partner Management names its controller, and the registry names its controller on
 each `/validate` call (registry chart value `global.consentDataController`).
+
+### What is reachable from outside
+
+Every VirtualService uses the `internal` gateway, which is reachable from outside the cluster like
+the Composite. The partner-api has no login (`/validate` trusts its in-cluster callers), so its
+VirtualService routes **only an allow-list of paths** on `consent-manager-partner.<baseDomain>`
+(prefix `/api/consent-manager-partner`); any other path gets a `404` at the gateway. Registries
+and the Composite call the partner-api at its in-cluster Service (`http://<release>-partner-api`),
+as does the sanity suite.
+
+| Value | Default | Routed |
+| --- | --- | --- |
+| `partnerApi.publicPaths` | `[/.well-known/jwks.json]` | The CM's public keys: departments on other clusters check consent tokens with them, partners check their consent record |
+| `partnerApi.exposeReceiptStatus` | `false` | `GET /consent/v1/receipts/{jti}/status` only (not the receipts themselves). Turn on at the Exchange only when a department sets **Token Status Check** to `always`. Rancher: **Expose Token Status Endpoint** (Exchange group, exchange role) |
 
 ### Partner Management
 
@@ -85,7 +100,7 @@ Partners, their keys and their access policies are read from Partner Management
 
 What these times mean for policy changes and PM outages: [caching](../design/partner-management-integration.md#caching).
 
-**Changing them:** in Rancher, **Edit YAML** on the release (they are not in the form) and set `global.partnerPolicyCache.*`. Installed through Commons Services, set them under `global.partnerPolicyCache` in its values; the CM picks them up on upgrade.
+**Changing them:** `ttlSeconds` and `hardTtlSeconds` are in the Rancher form (**Partner Management** group: **Partner Policy Cache TTL**, **Partner Policy Hard TTL**). The hard TTL is a trade-off during a PM outage: a revoked partner can still get through for up to that long; shorter stops it sooner but refuses everyone sooner. The others: **Edit YAML** on the release, `global.partnerPolicyCache.*`. Installed through Commons Services, set them under `global.partnerPolicyCache` in its values; the CM picks them up on upgrade.
 
 Partner keys are cached the same way, with settings that have no chart value of their own; to change one, add it under `consentManagerApi.envVars` in **Edit YAML**:
 
@@ -203,7 +218,7 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 
 * a confidential client **`consent-manager`** (service account enabled) — keycloak-init
   auto-creates a Kubernetes Secret named `consent-manager` holding its `client_secret`;
-* the **`CONSENT_MANAGER_ADMIN`** client role required by the admin endpoints (the decision log);
+* the **`CONSENT_MANAGER_ADMIN`** client role required by the admin endpoints (the Access Log);
 * the **`CONSENT_MANAGER_APPROVER`** client role, which lets a user verify assisted consents
   (approve or reject their evidence);
 * role mappings granting `CONSENT_MANAGER_ADMIN` and `CONSENT_MANAGER_APPROVER` to the `admin` user,
@@ -212,9 +227,9 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 Partners and their policies are managed in Partner Management, with PM's own role
 (`partner_manager`).
 
-The service itself **validates tokens via JWKS only** — it consumes no client secret. The
-generated `client_secret` exists for *callers*: automation (e.g. the sanity suite) obtaining a
-client-credentials token that carries the admin role. `/validate` needs no token.
+The service **validates tokens via JWKS only**. The generated `client_secret` is used for
+client-credentials tokens: by the staff API to read [Master Data code lists](#master-data-code-lists),
+and by automation (e.g. the sanity suite) for the admin role. `/validate` needs no token.
 
 ## Partner portal and consent evidence — optional
 
@@ -222,7 +237,7 @@ client-credentials token that carries the admin role. `/validate` needs no token
 **In Rancher (commons-services):** the signing key, consent tokens (exchange and department roles), partner portal, national-ID login and required subject identifiers are all fields in the **Consent Manager** group of the commons-services form; no Edit YAML is needed. The values below are what those fields set.
 {% endhint %}
 
-The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then verify it in the CM console (**Consent verifications**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
+The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then check it in the CM console (**Consent Approvals**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
 
 | Value | Default | |
 | --- | --- | --- |
@@ -241,6 +256,20 @@ deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operato
 ```
 
 A partner user's `partner_id` must be the partner's audience (e.g. `bank-a`, PM partner `PARTNER_BANK_A`).
+
+### Master Data code lists
+
+The portal's purposes and subject ID types come from Master Data code lists, as in Partner Management ([how](../design/consent-collection.md#purposes-and-subject-id-types)). Rancher: **Partner portal** group of this chart's form; through Commons Services, **Edit YAML** under `openg2p-consent-manager.masterData`.
+
+| Value (`masterData.*`) | Default | Env (`CONSENT_MANAGER_*`) |
+| --- | --- | --- |
+| `url` | `http://commons-services-master-data-api` | `MDS_URL` — **Master Data URL**; empty = free text |
+| `purposeListCode` | `CONSENT_PURPOSE` | `MDS_PURPOSE_LIST_CODE` — **Purposes List Code** |
+| `subjectIdTypeListCode` | `SUBJECT_ID_TYPE` | `MDS_SUBJECT_ID_TYPE_LIST_CODE` — **Subject ID Types List Code** |
+| `cacheTtl` | `300` | `MDS_CACHE_TTL` — seconds a list is reused (a failed read is retried after 30 s) |
+| `timeout` | `5` | `MDS_TIMEOUT` — seconds per call |
+
+The token comes from `global.keycloakIssuerUrl` (`MDS_TOKEN_URL`) for the `consent-manager` client (`MDS_CLIENT_ID`), its secret from the keycloak-init Secret `consent-manager` (`MDS_CLIENT_SECRET`). Set on the staff API only.
 
 ## National ID authentication of the subject (eSignet)
 
@@ -285,7 +314,7 @@ and query; a department CM accepts them. How the two roles work:
 | `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status (if checked) is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#department-role-accepting)) |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#department-role-accepting)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
 
 Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
 demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner

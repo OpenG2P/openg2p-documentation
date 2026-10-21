@@ -59,7 +59,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <rect class="data" x="588" y="352" width="376" height="96" rx="7"/>
 <text class="t" x="602" y="374">Geography</text><text class="s" x="602" y="392">administrative levels and units (P-codes), boundary files per level,</text><text class="s" x="602" y="407">change events (split, merge, rename) and a crosswalk from old</text><text class="s" x="602" y="422">to new units</text>
 
-<text class="s" x="196" y="476">Each dataset and the geography are versioned as a whole. One deployment per country.</text>
+<text class="s" x="196" y="476">Each dataset and the geography are versioned as a whole. Each deployment serves one country.</text>
 <text class="s" x="196" y="493">Codes are the country's own and never change once published.</text>
 
 <!-- country pack -->

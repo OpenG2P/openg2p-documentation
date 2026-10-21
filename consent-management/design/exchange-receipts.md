@@ -83,7 +83,9 @@ sequenceDiagram
 
 A compact JWS signed with the CM's **existing receipt-signing key** — the same key, `kid` and
 algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27560), published at
-`/.well-known/jwks.json` on the partner API.
+`/.well-known/jwks.json` on the partner API. Departments, on other clusters, fetch it from the
+Exchange CM's **public host**; it is the one path of the partner API published outside the cluster
+(`/validate` is in-cluster only, [security](security-and-trust.md#caller-authentication)).
 
 **Header:** `{"alg": "<EdDSA|ES256|RS256>", "kid": "<CM kid>", "typ": "consent-token+jwt"}`
 
@@ -138,7 +140,9 @@ algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27
 that turn the optional status check on. A consent token
 is `revoked` when its consent artefact is revoked (per registry: revoking the farmer-registry consent
 revokes only that token), `expired` after its `exp` or when its consent expires. Auth follows the
-partner API (no Keycloak; the jti is an unguessable UUID and the answer is only the status).
+partner API (no Keycloak; the jti is an unguessable UUID and the answer is only the status). It is
+published on the Exchange's public host only when enabled there, for departments that check status
+([settings](../deployment/README.md#what-is-reachable-from-outside)).
 
 ## Department role: accepting
 

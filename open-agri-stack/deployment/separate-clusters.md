@@ -10,7 +10,7 @@ The installs on these pages already treat each namespace as a separate organisat
 
 | Topic | What to do |
 | --- | --- |
-| **Hostnames reachable across departments** | From the Exchange: the Composite's API and the Exchange CM's partner API (its public keys at `/.well-known/jwks.json`; also the consent token status check, if switched on). From each department: its registry's partner API. Use public DNS names and trusted TLS for them |
+| **Hostnames reachable across departments** | From the Exchange: the Composite's API and the Exchange CM's public keys (`/.well-known/jwks.json` on its partner host, the only partner API path published; also the consent token status endpoint when **Expose Token Status Endpoint** is on, needed only if a department switches the status check on). From each department: its registry's partner API. Use public DNS names and trusted TLS for them |
 | **Domains** | Each department CM finds the Exchange CM at `agrix.<parent of its own domain>`. On another cluster with another domain, set **Exchange Domain** in the department's Commons Services form (Consent Manager group) |
 | **Registry URLs** | The Composite's **Farmer Registry Search URL** and **Crop Sown Registry Search URL** are the departments' public partner API URLs, as on one cluster |
 | **Availability** | The Exchange depends on each department's partner API. Partner keys and catalogue reads are cached, and departments verify consent tokens offline with cached keys; only the optional status check (off by default) needs the Exchange CM per query, and then consent fails closed when it is down. Set timeouts and alerts |

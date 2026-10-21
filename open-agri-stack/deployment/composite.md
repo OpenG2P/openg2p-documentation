@@ -217,13 +217,13 @@ The service reads its settings from environment variables with the prefix `AGRI_
 | `SIGNING_P12_PATH`, `SIGNING_P12_PASSWORD`, `SIGNING_KID`, `SIGNING_ALGORITHM` | –, –, thumbprint, `auto` | The Composite's key, from the signing key Secret |
 | `PARTNER_MGMT_API_URL` | `http://commons-services-pm-partner-api` | Partner keys and use-case policies |
 | `PARTNER_KEY_CACHE_TTL_SECONDS`, `PARTNER_KEY_HARD_TTL_SECONDS`, `PARTNER_KEY_NEGATIVE_TTL_SECONDS`, `PARTNER_KEY_REFRESH_COOLDOWN_SECONDS`, `PARTNER_KEY_FETCH_TIMEOUT_SECONDS` | `300`, `21600`, `30`, `10`, `3.0` | Partner key cache: soft TTL, last-known-good during a PM outage, cache of "unknown", refresh cooldown on an unknown `kid`, fetch timeout |
-| `PARTNER_POLICY_CACHE_TTL_SECONDS`, `PARTNER_POLICY_HARD_TTL_SECONDS`, `PARTNER_POLICY_NEGATIVE_TTL_SECONDS`, `PARTNER_POLICY_REFRESH_COOLDOWN_SECONDS`, `PARTNER_POLICY_FETCH_TIMEOUT_SECONDS` | `60`, `21600`, `30`, `10`, `3.0` (the chart sets the first three) | Partner use-case policy cache: soft TTL (also capped by PM's `Cache-Control`), last answer kept during a PM outage (then 503 `partner_policy_unavailable`), cache of "no grant", at most one PM call per partner per cooldown while PM fails, fetch timeout |
+| `PARTNER_POLICY_CACHE_TTL_SECONDS`, `PARTNER_POLICY_HARD_TTL_SECONDS`, `PARTNER_POLICY_NEGATIVE_TTL_SECONDS`, `PARTNER_POLICY_REFRESH_COOLDOWN_SECONDS`, `PARTNER_POLICY_FETCH_TIMEOUT_SECONDS` | `60`, `21600`, `30`, `10`, `3.0` (the chart sets the first three; the hard TTL is in the Rancher form, **Partner Policy Hard TTL**: during a PM outage a revoked partner can be served for up to this long) | Partner use-case policy cache: soft TTL (also capped by PM's `Cache-Control`), last answer kept during a PM outage (then 503 `partner_policy_unavailable`), cache of "no grant", at most one PM call per partner per cooldown while PM fails, fetch timeout |
 | `CRYPTO_ALLOWED_ALGORITHMS` | `EdDSA,ES256,RS256` | |
 | `REQUEST_MAX_SKEW_SECONDS` | `300` | How far `header.message_ts` may be from now (`0` disables) |
 | `DEFAULT_SOURCE_TIMEOUT_MS`, `DEFAULT_OVERALL_TIMEOUT_MS` | `5000`, `10000` | Used when the use case does not set them |
 | `HTTP_MAX_CONNECTIONS`, `HTTP_MAX_KEEPALIVE_CONNECTIONS`, `HTTP_KEEPALIVE_EXPIRY_SECONDS` | `200`, `50`, `30` | One pooled client per worker |
-| `CONSENT_MODE` | `exchange` (chart) | An unknown value stops startup |
-| `CONSENT_EXCHANGE_CM_URL` | Empty (chart: `http://commons-services-cm-partner-api`) | The Exchange CM partner API base URL |
+| `CONSENT_MODE` | `exchange` | An unknown value stops startup |
+| `CONSENT_EXCHANGE_CM_URL` | `http://commons-services-cm-partner-api` | The Exchange CM partner API base URL (the CM in the Composite's own namespace) |
 | `CONSENT_EXCHANGE_CM_TIMEOUT_SECONDS` | `5.0` | |
 | `CORS_ALLOW_ORIGINS` | `[]` | A **JSON list**; a plain URL or an empty string stops startup |
 | `CONSOLE_ENABLED` | `false` (`true` in the chart) | The console's admin API, IAM login and database (`DB_*`) |

@@ -77,7 +77,7 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 | ~~**Partner-signed consent proves nothing about the subject.**~~ The CM checks the partner's signature, its policy, the subject, validity and replay; nothing shows the subject took part | partner-signed | **Contained**: refused unless the partner's policy in Partner Management allows it (`allow_partner_consents`, off by default), for partners trusted to collect consent in their own systems. |
 | ~~**National ID authentication**~~ for the subject on a partner user's device | 1 | **Done** for scenario 1 (eSignet). To do: scenario 3 (the subject's own login on the self-service pages). |
 | ~~Evidence~~ (signed form on a request) | 1 | **Done** (bucket `consent-evidence`). To do: encryption at rest beyond the store's, retention and deletion rules. |
-| ~~Staff verification~~ of assisted consents | 1 | **Done** in the CM console (Consent verifications). |
+| ~~Staff verification~~ of assisted consents | 1 | **Done** in the CM console (Consent Approvals). |
 | **Assurance** on each consent | all | **Recorded** (method, evidence, verifier, whether the subject was authenticated). To do: a minimum assurance per policy. |
 | ~~Partner access~~ | 1, 2 | **Done**: partner realm and the partner-portal API. To do: partner user management from the portal (staff create users today), a partner-signed API for partners with their own systems. |
 | **Digital approval by the subject**: after the national-ID login, the CM's screen showing the request (in the subject's language) with approve, approve in part and decline; the consent active at once | 2, 3 | Builds on scenario 1's login (same popup); the request carries the method *digital approval* and needs no form or staff step. |
@@ -129,6 +129,15 @@ Most partners will not build their own consent screens, so a central **partner p
 * **Not in the portal:** changing partner policies and keys (requested and approved in Partner Management by staff; the portal's "What we can ask for" page, `GET /consent/v1/partner-portal/access`, shows the partner's policies read-only) and the verification of uploaded forms (staff, in the CM console).
 
 **At an Exchange** (a CM in the [exchange role](exchange-receipts.md)), partners are granted use cases, not registry scopes, so the portal works **by use case**. The partner has one policy per use case in Partner Management. "What we can ask for" lists one entry per such policy: the use case with its purpose and data per registry (read from the Composite) and the policy's purposes, subject ID types and longest validity. A new request must name one of them (a request naming registries and scopes is refused; a use case without a policy is refused `use_case_not_granted`): its purpose and grants are the use case's, and that use case's policy limits apply. Staff approval narrows the consent to the use case's scopes at that time, and the consent records the use case: the Composite can use it for that use case only. The partner need not keep or send the consent ID: a request to the Composite may carry no consent, and the Exchange CM then finds the partner's consent for that subject and use case ([consent by lookup](verification-and-enforcement.md#use-case-mode)). If the Composite cannot be reached, no such request can be raised or approved (fail closed).
+
+### Purposes and subject ID types
+
+The portal offers purposes and subject ID types from the country's **Master Data** code lists (`CONSENT_PURPOSE`, `SUBJECT_ID_TYPE`), the lists Partner Management uses in policies, so a request and the policy it falls under use the same codes. The CM reads them with its own service account (not the partner user's token) and caches them; `GET /consent/v1/partner-portal/request-settings` returns them with their labels (`purposes`, `subject_id_types`).
+
+* **List loaded:** the form offers a dropdown, and a request naming a value outside the list is refused (`400`). At an Exchange only the subject ID type is checked; the purpose is the use case's.
+* **No list** (not in the country's Master Data, Master Data unreachable, or not configured): free text, and requests are accepted. Master Data never blocks a request.
+
+The partner's policy still limits both (an empty allowed list in the policy means any value).
 
 **Ownership:** the consent logic and its evidence (requests, authentication records, uploaded files, verification, the consent and its revocation) belong to the CM, files in the CM's object store bucket. The portal is a partner-facing front end over the CM's APIs (and, in Agri Stack, the Composite's); Partner Management needs no partner-facing UI.
 
