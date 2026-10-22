@@ -138,8 +138,8 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <line class="ar" x1="712" y1="106" x2="712" y2="226" marker-end="url(#a1)"/>
   <text class="n" x="718" y="121">B3</text><text class="lbl" x="736" y="121">signed query (consent looked up)</text>
   <!-- B4 composite → exchange CM -->
-  <polyline class="ar" points="630,284 630,328" marker-end="url(#a1)"/>
-  <text class="n" x="590" y="312">B4</text><text class="lbl" x="638" y="312">consent tokens</text>
+  <polyline class="ar" points="630,284 630,328" marker-end="url(#a1)" marker-start="url(#a1)"/>
+  <text class="n" x="590" y="312">B4</text><text class="lbl" x="638" y="303">↓ check or find the consent</text><text class="lbl" x="638" y="318">↑ a consent token per registry</text>
   <!-- B5 composite → FR, → Crop Sown -->
   <line class="ar" x1="815" y1="252" x2="873" y2="252" marker-end="url(#a1)"/>
   <text class="n" x="830" y="246">B5</text>
