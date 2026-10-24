@@ -12,7 +12,7 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 * **One consent covers every registry the partner needs.** The bank asks once, for the data its use case needs; inside, the consent holds a **grant per registry** (Farmer Registry, Crop Sown Registry, …). The bank never deals with which registry holds what.
 * **The Exchange's Consent Manager (CM) collects and keeps it,** not the bank. The farmer confirms it there and proves who they are with the national ID.
-* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the department's ceiling for the Composite ([request flow](request-flow.md)). Why a token, rather than passing the consent on or simply trusting the Composite up to the ceiling: [why a consent token](../../consent-management/design/exchange-receipts.md#why-a-consent-token).
+* **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the department's ceiling for the Composite ([request flow](request-flow.md)). Why a token, rather than passing the consent on or simply trusting the Composite up to the ceiling: [why a consent token](../../consent-management/design/exchange-consent-tokens.md#why-a-consent-token).
 
 {% hint style="info" %}
 **Consent object, artefact, receipt, token** are four different things; see [key terms](../../consent-management/design/README.md#key-terms). The reasons behind this model (one consent with a grant per registry, each registry validating its own grant, consent tokens across installs) are the Consent Manager's [design decisions](../../consent-management/design/README.md#design-decisions).
@@ -51,7 +51,7 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 | The scenarios step by step, the partner portal, the gaps | [Consent collection](../../consent-management/design/consent-collection.md) |
 | The national-ID login (eSignet) | [National ID authentication](../../consent-management/design/consent-collection.md#national-id-authentication-in-the-partner-portal) |
 | Grants, `/validate`, replay per consent and registry | [Verification & enforcement](../../consent-management/design/verification-and-enforcement.md) |
-| Consent tokens between the Exchange and the departments | [Exchange consent tokens](../../consent-management/design/exchange-receipts.md) |
+| Consent tokens between the Exchange and the departments | [Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md) |
 | A partner signing its own consent (`grants` claim) | [Partner Integration Guide](../../consent-management/partner-integration-guide.md) and the [partner guide](../partner-guide.md) |
 | Turning on the partner portal, the login and the required Farmer ID | [Deployment: Exchange](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional) |
 | Trying it end to end | [Testing](../deployment/testing.md#consent-through-the-partner-portal) |

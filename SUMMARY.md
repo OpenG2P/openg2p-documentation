@@ -732,7 +732,7 @@
       * [Verification & enforcement](consent-management/design/verification-and-enforcement.md)
       * [Partner Management integration (keys and policies)](consent-management/design/partner-management-integration.md)
       * [Registry integration (the PEP side)](consent-management/design/registry-integration.md)
-      * [Exchange consent tokens (Agri Stack Exchange)](consent-management/design/exchange-receipts.md)
+      * [Exchange consent tokens (Agri Stack Exchange)](consent-management/design/exchange-consent-tokens.md)
       * [Consent lifecycle](consent-management/design/consent-lifecycle.md)
       * [Consent collection](consent-management/design/consent-collection.md)
       * [Security & trust](consent-management/design/security-and-trust.md)

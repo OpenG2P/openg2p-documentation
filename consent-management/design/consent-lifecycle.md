@@ -48,12 +48,12 @@ Rules:
 
 ## Revocation
 
-A subject (`/my/consents/{id}/revoke`), or the controller or partner (`/consents/{id}/revoke`), can revoke an active consent at any time.
+An active consent can be revoked at any time. **Today, staff revoke it on the subject's request:** the subject asks the organisation operating the CM (the receipt's [withdrawal method](data-model.md#consent-receipt-kantara-iso-27560)), and an approver or admin revokes it from the console's consent page, with a reason (`POST /consents/{id}/revocations`, [staff API](../api/README.md#consents-console-consent-page)). Self-service revocation by the subject is planned with the self-service portal ([scenario 3](consent-collection.md#3-self-service-not-built-yet)); the beneficiary API, off by default, already serves it (`/my/consents/{id}/revoke`), as well as revocation by the controller or partner (`/consents/{id}/revoke`).
 
-* The artefact moves to `revoked` and a `RevocationRecord` is written; earlier timestamps are kept.
+* The artefact moves to `revoked` and a `RevocationRecord` is written (who asked, the reason and, for staff, who revoked it); earlier timestamps are kept.
 * The next `/validate` on it is denied `revoked`. An enforcement point that caches decisions checks `GET /consent/v1/consents/{id}/status`.
 * Revocation is per artefact. A partner-signed consent validated by two registries has one artefact per registry, so revoking one leaves the other in force.
-* An Exchange issues no new consent token for a revoked consent; tokens already issued lapse within their lifetime ([Exchange consent tokens](exchange-receipts.md#why-a-consent-token)).
+* An Exchange issues no new consent token for a revoked consent; tokens already issued lapse within their lifetime ([Exchange consent tokens](exchange-consent-tokens.md#why-a-consent-token)).
 
 ## Expiry
 

@@ -78,7 +78,7 @@ decision; once approved in PM it applies within the cache time below.
 | --- | --- |
 | A registry validates a consent (`/validate`) | The consenting partner's scope policy for the calling registry (`data_controller`) |
 | The Composite validates at the Exchange with `request_context.use_case` ([use-case mode](verification-and-enforcement.md#use-case-mode)) | The consenting partner's policy for `request_context.use_case` |
-| A department CM accepts a consent token ([Exchange consent tokens](exchange-receipts.md#department-role-accepting)) | The **presenter's** (the Composite's) scope policy for the calling registry |
+| A department CM accepts a consent token ([Exchange consent tokens](exchange-consent-tokens.md#department-role-accepting)) | The **presenter's** (the Composite's) scope policy for the calling registry |
 | A consent request is created or approved (origination, partner portal) | The partner's scope policy for each requested registry; at an Exchange, for a request made by use case, its policy for that use case ([consent collection](consent-collection.md#partner-portal)) |
 
 How the CM applies a policy at `/validate` is described in

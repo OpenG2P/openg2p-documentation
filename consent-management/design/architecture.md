@@ -40,7 +40,7 @@ The CM follows the platform's **4-API audience pattern**: one image and one Helm
 
 | Audience | Auth | Serves |
 | --- | --- | --- |
-| **staff** | Keycloak, staff realm (`CONSENT_MANAGER_ADMIN`, `CONSENT_MANAGER_APPROVER`); the partner portal API checks partner-realm tokens | The decision log (console **Access Log**), verification of assisted consents (console **Consent Approvals**), the partner portal API |
+| **staff** | Keycloak, staff realm (`CONSENT_MANAGER_ADMIN`, `CONSENT_MANAGER_APPROVER`); the partner portal API checks partner-realm tokens | The decision log (console **Access Log**), verification of assisted consents (console **Consent Approvals**), consents by ID and their revocation on the subject's request, the partner portal API |
 | **partner** | **No Keycloak.** Called in-cluster only (Istio mTLS); a partner-signed consent is verified against PM keys | `/validate`, consent status, consent-token status, receipts, `/.well-known/jwks.json`. Mounts the `.p12` signing key |
 | **beneficiary** | Keycloak, beneficiary realm | `/my/*` (subject rights) and the origination API. **Off by default** |
 
@@ -60,7 +60,7 @@ Endpoints: [API Reference](../api/README.md). Which paths are reachable from out
 | **Origination and subject rights** | beneficiary | The origination API and `/my/*` |
 | **Decision log** | staff (view) | Append-only record of every decision |
 | **Expiry** | — | A CronJob that marks consents past `valid_until` as expired |
-| **Console** and **partner portal** | — | Web UIs: the staff console (Consent Approvals, Access Log, link to PM) and the partner portal for partner users |
+| **Console** and **partner portal** | — | Web UIs: the staff console (Consent Approvals, Access Log, consent pages, link to PM) and the partner portal for partner users |
 
 ## Information flow
 

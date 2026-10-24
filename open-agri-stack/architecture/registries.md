@@ -113,7 +113,7 @@ The department decides once what it releases through the Exchange: the Composite
 | Maximum validity | `P90D` |
 | Fetch type | `oneshot` |
 
-The [Exchange setup](../deployment/after-install.md#exchange-setup) proposes these values as a Partner Management policy request, which is approved in the department's PM, and only ever widens them. The department can narrow the policy with its own policy request in its PM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-receipts.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
+The [Exchange setup](../deployment/after-install.md#exchange-setup) proposes these values as a Partner Management policy request, which is approved in the department's PM, and only ever widens them. The department can narrow the policy with its own policy request in its PM; a scope it removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
 
 ## Sample data
 

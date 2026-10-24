@@ -44,7 +44,7 @@ VirtualService per API audience (same image, selected by `CONSENT_MANAGER_API_AU
 
 | Deployment | Audience | Auth | Hosts |
 | --- | --- | --- | --- |
-| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | Access Log, consent approvals, partner portal API |
+| `<release>-api` (`templates/api/`) | **staff** | Keycloak (staff realm; `CONSENT_MANAGER_ADMIN` + `CONSENT_MANAGER_APPROVER`) | Access Log, consent approvals, consents (view, revoke), partner portal API |
 | `<release>-partner-api` (`templates/extra-api/`) | **partner** | **none** — callers (registries, the Composite) reach it in-cluster over Istio mTLS; partner-signed consent objects are verified against Partner Management keys (`jti` replay-guarded) | the PDP `/validate`, consent status, receipts, `/.well-known/jwks.json` (mints receipts → mounts the `.p12` signing key). In cluster only, except the JWKS ([below](#what-is-reachable-from-outside)) |
 | `<release>-bene-api` | **beneficiary** | Keycloak (beneficiary realm) | `/my/*` + origination. **Off** (`enabled: false`) |
 
@@ -116,6 +116,12 @@ Partner keys are cached the same way, with settings that have no chart value of 
 | `CONSENT_MANAGER_PARTNER_KEY_NEGATIVE_TTL_SECONDS` | `30` | Remember "no key" this long |
 | `CONSENT_MANAGER_PARTNER_KEY_REFRESH_COOLDOWN_SECONDS` | `10` | Minimum interval between refreshes for an unknown `kid` |
 | `CONSENT_MANAGER_PARTNER_KEY_FETCH_TIMEOUT_SECONDS` | `3` | Timeout of one key fetch |
+
+### Consent receipt withdrawal method
+
+| Value (`global.*`) | Default | |
+| --- | --- | --- |
+| `consentReceiptWithdrawalMethod` | "Ask the organisation operating this Consent Manager to revoke it (consent ID {consent_id})." | **Consent Withdrawal Method** in Rancher (General) → `CONSENT_MANAGER_RECEIPT_WITHDRAWAL_METHOD`: the receipt's `withdrawal.method`. Name your contact or URL; `{consent_id}` is replaced. Empty = the default. With the beneficiary API enabled, the chart also sets `CONSENT_MANAGER_RECEIPT_WITHDRAWAL_SUBJECT_API_URL` and receipts list its subject endpoint |
 
 ### Publishing &amp; Rancher catalog
 
@@ -301,7 +307,7 @@ install. In Rancher, pick **Exchange Role** (`global.agriStackExchange.role`):
 scripts use; the other fields only override them. The Exchange CM
 issues short-lived **consent tokens** (called *receipts* in the API and settings), one per registry
 and query; a department CM accepts them. How the two roles work:
-[Exchange consent tokens](../design/exchange-receipts.md).
+[Exchange consent tokens](../design/exchange-consent-tokens.md).
 
 | Value (`global.agriStackExchange.*`) | Env (`CONSENT_MANAGER_*`) | Role | Meaning |
 | --- | --- | --- | --- |
@@ -315,7 +321,7 @@ and query; a department CM accepts them. How the two roles work:
 | `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status (if checked) is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
-| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-receipts.md#why-a-consent-token)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
+| `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-consent-tokens.md#why-a-consent-token)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
 
 Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
 demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner

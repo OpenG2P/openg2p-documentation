@@ -18,7 +18,7 @@ A registry never decides which kind of consent a caller uses: it passes whatever
 | --- | --- | --- |
 | `consent_id` | A consent this CM collected (originated), named by ID | It is the partner's, active, valid now, and has a grant for the caller ([below](#a-consent-the-cm-holds)) |
 | No consent | A **lookup** of a consent this CM holds ([at a registry](#consent-by-lookup-at-a-registry); [in use-case mode](#use-case-mode)) | This CM holds an active consent of that partner for that subject and registry (or use case); none → `consent_not_found` |
-| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-receipts.md#department-role-accepting)) | This CM trusts the token's issuer, and the token's `presenter` is the caller |
+| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-consent-tokens.md#department-role-accepting)) | This CM trusts the token's issuer, and the token's `presenter` is the caller |
 | Any other JWS (`consent_jws`) | A **partner-signed consent**: one the partner collected and signed itself | The partner's policy sets `allow_partner_consents`; the [pipeline](#validation-pipeline-partner-signed-consent) passes |
 
 So at a department the Composite presents consent tokens: the farmer's consent is held by the Exchange CM, not the department's, and the Composite's policy there does not allow partner-signed consents. A department's own partners send nothing and rely on the lookup.
@@ -124,7 +124,7 @@ A consent made **by use case** (in the Exchange's partner portal or origination 
 
 **Consent by lookup.** The Composite may send no consent. The CM then picks the consent it holds for the partner (`consent_partner_id`), the subject (its main subject or one of its `subject_identifiers`) and the use case: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). An index on (partner, subject, use case) over active consents serves the search.
 
-How the Composite and the departments fit together: [Exchange consent tokens](exchange-receipts.md) and [Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
+How the Composite and the departments fit together: [Exchange consent tokens](exchange-consent-tokens.md) and [Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
 
 ## Consent by lookup at a registry
 

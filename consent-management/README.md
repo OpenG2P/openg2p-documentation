@@ -55,7 +55,7 @@ The CM answers these once, for every registry.
 
 ## Not built yet
 
-* **Beneficiary API deployed by default.** The subject API (`/my/*`) and origination API are built but run on the beneficiary API, which the chart ships disabled. The console's subject pages log in through the staff Keycloak, not with national ID.
+* **Beneficiary API deployed by default.** The subject API (`/my/*`) and origination API are built but run on the beneficiary API, which the chart ships disabled; subjects have no portal yet (staff revoke on their request).
 * **Consent scenarios 2 and 3:** the subject approving digitally after the national-ID login, and self-service with a redirect back to the partner ([Consent collection](design/consent-collection.md#scenarios)).
 * **Notifications** to subjects and partners (grant, revoke, expiry; an SMS with a revoke link after digital approval) and revocation webhooks.
 * **A minimum assurance per policy.**

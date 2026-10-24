@@ -20,7 +20,7 @@ The design is measured against four reference frameworks.
 * **Best practice:** a receipt is a complete consent record (controller and contact, DPO, purposes with legal basis, data categories, retention, third parties, withdrawal method, jurisdiction, version) with a cryptographic proof.
 * **Built:** every consent has a [receipt](data-model.md#consent-receipt-kantara-iso-27560) signed with the CM's asymmetric key: controllers, purposes with legal basis, data categories, third parties, withdrawal method, version, and the artefact hash.
 * **Not yet:** the controller's name, contact and DPO, retention and jurisdiction.
-* **Not to be confused with the consent token**, a short-lived JWS for one registry and query ([Exchange consent tokens](exchange-receipts.md)), closer to an OAuth 2.0 token-exchange token (RFC 8693) than to a receipt.
+* **Not to be confused with the consent token**, a short-lived JWS for one registry and query ([Exchange consent tokens](exchange-consent-tokens.md)), closer to an OAuth 2.0 token-exchange token (RFC 8693) than to a receipt.
 
 ## GDPR: data-subject rights
 

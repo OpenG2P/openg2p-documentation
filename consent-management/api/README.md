@@ -2,7 +2,8 @@
 description: >-
   Conventions of the Consent Manager HTTP API: endpoints by audience,
   authentication, the decision and error model, the shared reason codes, and
-  the staff endpoints (decision log, consent verification, partner portal).
+  the staff endpoints (decision log, consent verification, consents, partner
+  portal).
 ---
 
 # API Reference
@@ -12,7 +13,7 @@ The Consent Manager exposes a versioned REST API. This page holds the convention
 | Group | Page | API audience |
 | --- | --- | --- |
 | Verification | [Verification API](verification-api.md) | **partner**: registries and the Composite, in cluster |
-| Decision log, consent verification, partner portal | [Staff endpoints](#staff-endpoints) | **staff**: CM staff (console) and partner users (partner portal) |
+| Decision log, consent verification, consents, partner portal | [Staff endpoints](#staff-endpoints) | **staff**: CM staff (console) and partner users (partner portal) |
 | Origination | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary** (off by default) |
 | Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary** (off by default) |
 
@@ -28,7 +29,7 @@ Each audience is a separate Deployment of the same image ([Architecture](../desi
 
 | Audience | Endpoints | Auth |
 | --- | --- | --- |
-| **staff** | `/decisions`, `/verifications/*`, `/partner-portal/*` | Keycloak bearer token. Staff realm: `CONSENT_MANAGER_ADMIN` (decisions; also reads verifications), `CONSENT_MANAGER_APPROVER` (verifications). Partner portal: a **partner-realm** token with a `partner_id` claim and the role `PARTNER_OPERATOR` or `PARTNER_ADMIN` |
+| **staff** | `/decisions`, `/verifications/*`, `/consents/{id}`, `/consents/{id}/receipt`, `/consents/{id}/revocations`, `/partner-portal/*` | Keycloak bearer token. Staff realm: `CONSENT_MANAGER_ADMIN` (decisions; also reads verifications), `CONSENT_MANAGER_APPROVER` (verifications); either for consents. Partner portal: a **partner-realm** token with a `partner_id` claim and the role `PARTNER_OPERATOR` or `PARTNER_ADMIN` |
 | **partner** | `/validate`, `/consents/{id}/status`, `/receipts/{jti}/status`, `/receipts/{id}`, JWKS | **None.** In cluster only (Istio mTLS); the proof is the consent itself. Only the JWKS (and, if enabled, the token status) is routed from outside ([Deployment](../deployment/README.md#what-is-reachable-from-outside)) |
 | **beneficiary** | `/my/*`, `/consent-requests/*`, `/consents/{id}/revoke` | Keycloak bearer token (beneficiary realm); `/my/*` is scoped to the token's subject |
 
@@ -68,7 +69,7 @@ Each audience is a separate Deployment of the same image ([Architecture](../desi
 | `unknown_consent` | `consent_id` names no consent this CM collected, or one that is not active |
 | `partner_mismatch` | `consent_partner_id` is not the partner the stored consent was given to |
 | `replay` | `issued_at` outside the freshness window, or a known `jti` reused for a different consent |
-| `receipt_presenter_not_allowed` | `issue_receipts` from a caller that is not a configured token presenter, or token issuing is not enabled ([Exchange consent tokens](../design/exchange-receipts.md)) |
+| `receipt_presenter_not_allowed` | `issue_receipts` from a caller that is not a configured token presenter, or token issuing is not enabled ([Exchange consent tokens](../design/exchange-consent-tokens.md)) |
 | `receipt_issuer_not_trusted` | A consent token from an issuer this CM does not trust (or none configured) |
 | `receipt_invalid` | A trusted issuer's consent token failed verification (signature, `alg`, claims, unknown at the issuer) |
 | `presenter_mismatch` | The token's `presenter` is not the caller or not the issuer's configured presenter |
@@ -105,6 +106,16 @@ Assisted consents submitted from the partner portal ([Consent collection](../des
 | `GET /consent/v1/verifications/{request_id}/evidence/{evidence_id}` | Download an uploaded file |
 | `POST /consent/v1/verifications/{request_id}/approve` | `{note?, identifiers_checked}`: makes the consent active. `identifiers_checked` must be true when the request carries other subject identifiers |
 | `POST /consent/v1/verifications/{request_id}/reject` | `{note}` (required) |
+
+### Consents (console consent page)
+
+A consent by ID, and its revocation when the subject asks the operating organisation ([Revocation](../design/consent-lifecycle.md#revocation)). Role `CONSENT_MANAGER_APPROVER` or `CONSENT_MANAGER_ADMIN`.
+
+| Endpoint | Does |
+| --- | --- |
+| `GET /consent/v1/consents/{id}` | The consent: partner, subject, purpose, grants with their policy reference, validity, assurance, use case, `source`, `receipt_id`, the request it came from (`consent_request_id`) and its evidence (download through that verification), and `revocations` |
+| `GET /consent/v1/consents/{id}/receipt` | The signed receipt |
+| `POST /consent/v1/consents/{id}/revocations` | `{reason}` (required): revokes it on the subject's request, as the subject's own revocation; records the staff user. `409` if not active |
 
 ### Partner portal endpoints
 

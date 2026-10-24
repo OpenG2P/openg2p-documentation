@@ -5,6 +5,7 @@ redirects:
   consent-management/api/partner-and-policy-api: platform/platform-services/partner-management/api-reference.md
   consent-management/design/approval-workflow-integration: platform/platform-services/partner-management/functional-specifications.md
   consent-management/design/partner-onboarding-and-policy: consent-management/design/partner-management-integration.md
+  consent-management/design/exchange-receipts: consent-management/design/exchange-consent-tokens.md
   products/registry/registry/developer-zone/api-documentation/1.0.0: products/registry/registry/developer-zone/api-documentation/README.md
   products/registry/registry/developer-zone/api-documentation/1.1.0: products/registry/registry/developer-zone/api-documentation/README.md
   products/registry/registry/developer-zone/api-documentation/1.1.0/staff-portal-api: products/registry/registry/developer-zone/api-documentation/staff-portal-api.md

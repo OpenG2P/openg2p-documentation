@@ -33,11 +33,11 @@ the effective data scopes. The consent is named by `consent_id`, sent as a partn
 | `request_context.subject_id` | for a lookup | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch`; the same holds for the consent's other identifiers (`subject_identifiers`, e.g. `FARMER_ID`). A lookup matches it to the consent's subject or one of those identifiers, `type` spelled exactly |
 | `request_context.use_case` | no | **Use-case mode** (Exchange): the use case the caller serves, `name@major` (e.g. `loan-profile@1`). Applies only when `partner_id` is a configured token presenter; ignored otherwise. The consenting partner's policy for this use case applies; none → `use_case_not_granted` ([use-case mode](../design/verification-and-enforcement.md#use-case-mode)) |
 | `request_context.purpose` | no | Use-case mode: the purpose the use case serves; the consent's `purpose.code` must equal it, else `purpose_not_allowed` |
-| `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-receipts.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
+| `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-consent-tokens.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
 `consent_jws` may also be a **consent token** (header `typ: consent-token+jwt`, or the earlier
 `consent-receipt+jwt`) from a trusted Exchange CM; then `data_controller` must be the token's `aud`
-and `partner_id` its `presenter` ([Department role](../design/exchange-receipts.md#department-role-accepting)).
+and `partner_id` its `presenter` ([Department role](../design/exchange-consent-tokens.md#department-role-accepting)).
 A partner-signed `consent_jws` is accepted only when the applicable policy sets
 `allow_partner_consents`.
 
@@ -130,7 +130,7 @@ consent the CM holds, or with `issue_receipts`, a permit also carries `grants`:
 > fields in `effective_data_scopes`.
 
 **Response — permit with consent tokens** (`issue_receipts: true`, exchange role). The response gains
-`receipts`, one consent token (compact JWS) per controller ([token format](../design/exchange-receipts.md#consent-token)).
+`receipts`, one consent token (compact JWS) per controller ([token format](../design/exchange-consent-tokens.md#consent-token)).
 With one controller the other fields are that controller's decision; with several, they hold the
 common `subject_id` and the earliest `valid_until`. If any controller denies, that deny is returned
 and no consent tokens are issued. `receipts` is `null` on every other response.
@@ -236,7 +236,7 @@ A lightweight, OCSP-like status check for enforcement points that cache decision
 
 Status of a consent token this CM issued in the **exchange role** (with `issue_receipts`). A
 department CM calls it only if its optional token status check is on (off by default,
-[why](../design/exchange-receipts.md#department-role-accepting)).
+[why](../design/exchange-consent-tokens.md#department-role-accepting)).
 
 **Auth:** none (partner API; Istio mTLS at transport). **Response (HTTP 200)**
 

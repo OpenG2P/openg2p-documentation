@@ -72,7 +72,7 @@ For production, add the signing key under `openg2p-consent-manager`: `global.con
 
 </details>
 
-**Exchange Role** `exchange` sets the rest: the CM issues consent tokens as `agri-stack-exchange-cm` to the Composite only, and the partner portal makes consents for a granted use case, with national-ID login and the Farmer ID required. Every value and how to change it: [CM deployment](../../consent-management/deployment/README.md#exchange-optional); why the Exchange works this way: [The Exchange](../architecture/exchange.md) and [Exchange consent tokens](../../consent-management/design/exchange-receipts.md). Partners themselves are onboarded in the Exchange's Partner Management after install ([partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management)); partner-portal users are created in [After Install](after-install.md#partner-portal-realm-and-users).
+**Exchange Role** `exchange` sets the rest: the CM issues consent tokens as `agri-stack-exchange-cm` to the Composite only, and the partner portal makes consents for a granted use case, with national-ID login and the Farmer ID required. Every value and how to change it: [CM deployment](../../consent-management/deployment/README.md#exchange-optional); why the Exchange works this way: [The Exchange](../architecture/exchange.md) and [Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md). Partners themselves are onboarded in the Exchange's Partner Management after install ([partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management)); partner-portal users are created in [After Install](after-install.md#partner-portal-realm-and-users).
 
 ## Check
 

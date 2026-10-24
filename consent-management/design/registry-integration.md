@@ -109,7 +109,7 @@ e.g. `{"UIN": "FAYDA_FAN"}`; a type not listed is sent as is.
 
 A composite service or aggregator that fans one partner request
 out to several registries presents the partner's consent to an Exchange CM, which issues one signed
-consent token per registry ([Exchange consent tokens](exchange-receipts.md)). It sends each registry
+consent token per registry ([Exchange consent tokens](exchange-consent-tokens.md)). It sends each registry
 only its own consent token, at the same place as a partner's consent, signs each DCI envelope with
 its **own** key, and names the partner in `header.meta.on_behalf_of`. Each registry validates its
 consent token at its own CM; the registry logs `on_behalf_of` alongside `sender_id`.

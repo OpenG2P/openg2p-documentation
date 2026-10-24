@@ -57,7 +57,7 @@ For a grants request `controller_id` is null (several grants), `requested_scopes
 data_controller '…'`) or the partner has no active policy for a requested controller; `503` if
 Partner Management cannot be reached.
 
-**By use case (exchange role).** On a CM in the [exchange role](../design/exchange-receipts.md),
+**By use case (exchange role).** On a CM in the [exchange role](../design/exchange-consent-tokens.md),
 a request **must** name a `use_case` (`name@major`) and nothing else to share (without it: `400`;
 with `grants`, `data_controller` or `requested_scopes` beside it: `422`). The partner must have a
 policy for that use case in Partner Management (else `422` `use_case_not_granted`). The grants and

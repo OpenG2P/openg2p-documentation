@@ -116,9 +116,9 @@ the CM's `GET /.well-known/jwks.json`, without Partner Management. Document: [be
 | **ConsentRequest** (origination, partner portal) | id, subject, subject_identifiers, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version, policy_id, policy_ref}]` or null), use_case, purpose, validity, method (`assisted`), status (`pending`, `pending_verification`, `approved`, `denied`, `rejected`, `cancelled`, `expired`), verification (who, when, note), timestamps |
 | **ConsentEvidence** (partner portal) | id, consent_request_id, kind (signed form), filename, content type, size, sha256, storage key (object store), uploaded by/at |
 | **SubjectAuthSession** (partner portal) | A national-ID login in progress: state, nonce, PKCE verifier, status, expiry (5 minutes), the resulting auth context |
-| **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, created_at |
+| **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, revoked_by (the staff user, when staff revoked it on the subject's request), created_at |
 | **DecisionLog** (immutable) | id, consent_id (null on most denials), partner_id (the partner's audience, when known), object_jti, data_controller (when known), request_ctx_hash, decision, reason_code, detail, policy_version / policy_id / policy_ref (null when no policy was read), receipt_jti / receipt_issuer (decisions on a consent token), created_at |
-| **IssuedReceipt** (exchange role) | A consent token issued: jti, consent_id (the artefact it was issued from), data_controller, presenter, partner, expires_at — see [Exchange consent tokens](exchange-receipts.md) |
+| **IssuedReceipt** (exchange role) | A consent token issued: jti, consent_id (the artefact it was issued from), data_controller, presenter, partner, expires_at — see [Exchange consent tokens](exchange-consent-tokens.md) |
 
 ---
 
@@ -209,7 +209,9 @@ jurisdiction are not filled in yet.
   ],
   "data_categories": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
   "third_parties": ["bank-a"],
-  "withdrawal": { "method": "POST /consent/v1/consents/5b0e…/revoke" },
+  "withdrawal": {
+    "method": "Ask the organisation operating this Consent Manager to revoke it (consent ID 5b0e…)."
+  },
   "consent_artefact": { "@id": "5b0e…", "hash": "sha256:7b0a933e7cd398a…" },
   "signature": {
     "algorithm": "EdDSA", "kid": "cm-2025-01",
@@ -220,6 +222,10 @@ jurisdiction are not filled in yet.
 
 The receipt is stored with its own `receipt_id`, which `/validate` returns and
 [`GET /consent/v1/receipts/{receipt_id}`](../api/verification-api.md) serves.
+`withdrawal.method` is the deployment's text (`CONSENT_MANAGER_RECEIPT_WITHDRAWAL_METHOD`, where
+an operator names its contact or URL; [Deployment](../deployment/README.md)): today staff revoke on
+the subject's request. When the beneficiary API is deployed, `withdrawal.additional_methods` also
+lists its subject endpoint (`POST …/consent/v1/my/consents/{id}/revoke`).
 `data_controllers` lists every controller the receipt covers: the one controller for an embedded
 consent (one receipt per registry), or one entry per approved grant — `{id, data_categories}` —
 for an originated consent with grants, where `data_controller` is null if there are several.

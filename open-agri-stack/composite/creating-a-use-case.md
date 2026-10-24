@@ -8,7 +8,7 @@ description: >-
 
 # Creating a Use Case
 
-A use case is one configuration file the [Composite](README.md) loads; no code changes. These are the steps. The file format and how a use case runs are in [Use-Case Configuration](use-case-configuration.md); adding a new registry as a source is in [Adding a Data Source](adding-a-data-source.md).
+A use case is one configuration file the [Composite](README.md) loads; no code changes. These are the steps. The file format is in [Use-Case Configuration](use-case-configuration.md), how a use case runs in the [Composite overview](README.md#what-the-first-version-does); adding a new registry as a source is in [Adding a Data Source](adding-a-data-source.md).
 
 ## Step 1 — Decide what the partner needs
 
@@ -26,13 +26,13 @@ Start by copying [`composite/use-cases/loan-profile.yaml`](https://github.com/op
 
 * **`sources`:** one search per registry. For each:
   * `controller`: the registry.
-  * `requirement`: what happens if it can't answer. `mandatory` fails the request; `optional` continues without it ([failure handling](use-case-configuration.md#failure-handling)).
+  * `requirement`: what happens if it can't answer. `mandatory` fails the request; `optional` continues without it ([failure handling](README.md#failure-handling)).
   * `depends_on`: the sources it runs after, when its query needs their result (e.g. the farmer ID from the farmer record).
   * `scopes` and `optional_scopes`: the data scopes from step 1 ([data scopes](use-case-configuration.md#data-scopes)).
   * `dci.query_template`: the search ([query templates](use-case-configuration.md#query-templates)).
 * **`response.mapping` and `response.derived`:** the output fields, copied from the sources or computed ([response mapping and derived values](use-case-configuration.md#response-mapping-and-derived-values)).
 
-Every key is listed in [use-case file format](use-case-configuration.md#use-case-file-format); unknown keys stop the file from loading. [The `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case) explains the sample setting by setting.
+Every key is listed in [use-case file structure](use-case-configuration.md#file-structure); unknown keys stop the file from loading. [The `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case) explains the sample setting by setting.
 
 ## Step 3 — Put it into the Composite's configuration
 
@@ -68,7 +68,7 @@ Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scri
 * **Partner test:** `python scripts/partner_test.py --base-domain <domain> --partner <partner> --use-case <name> --auto-approve` ([partner test](../deployment/testing.md#partner-test-public-apis)). It builds the consent from the use case's scopes. It sends only the `crop_year` and `season` parameters (`--crop-year`, `--season`).
 * **`scripts/exchange_test.sh`** runs the Exchange setup and the partner test in one go (`--use-case <name>`, default `loan-profile`).
 
-Read the status of each source in the response: `ok`, `no_record`, `denied`, `unavailable` or `error` ([source statuses](use-case-configuration.md#failure-handling)). A mandatory source that isn't `ok` or `no_record` fails the request.
+Read the status of each source in the response: `ok`, `no_record`, `denied`, `unavailable` or `error` ([source statuses](README.md#source-statuses)). A mandatory source that isn't `ok` or `no_record` fails the request.
 
 ## Reading a use case in the console
 
